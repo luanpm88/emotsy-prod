@@ -82,3 +82,6 @@ a {
 .filter-group .title {
     margin-right: 10px;
 }
+.stat-num {
+    font-size: 22px;
+}

@@ -140,7 +140,7 @@
 					</span>
 				</div>
 				<div class="">					
-					<table class="table table-box">
+					<table class="table table-box">						
 						<tr>
 							<td width="1%">
 								<div class="text-nowrap">
@@ -156,111 +156,18 @@
 							</td>
 							<td>
 								<div class="single-stat-box pull-left">
-									<h5 class="no-margin text-bold"><strong>100</strong></h5>
+									<span class="no-margin stat-num">100</span>
+									<br />
 									<span class="text-muted">Subscribers</span>
 								</div>
 								<div class="single-stat-box pull-left">
-									<h5 class="no-margin text-bold"><strong>90.0%</strong></h5>
+									<span class="no-margin stat-num">90.0%</span>
+									<br />
 									<span class="text-muted">Opens</span>
 								</div>
 								<div class="single-stat-box pull-left">
-									<h5 class="no-margin text-bold"><strong>10.0%</strong></h5>
-									<span class="text-muted">Clicks</span>
-								</div>
-								<br style="clear:both" />
-							</td>
-							<td class="text-right">
-								<button type="button" class="btn bg-teal btn-icon"><i class="icon icon-user-plus"></i></button>
-								<div class="btn-group">
-									<button type="button" class="btn bg-teal btn-icon">Overview</button>
-			                    	<button type="button" class="btn bg-teal dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-			                    	<ul class="dropdown-menu dropdown-menu-right">
-										<li><a href="#">Manage subscribers</a></li>
-										<li class="divider"></li>
-										<li><a href="#">Signup forms</a></li>
-										<li class="divider"></li>
-										<li><a href="#">Settings</a></li>
-										<li class="divider"></li>
-										<li><a href="#">Import</a></li>
-										<li><a href="#">Exports</a></li>
-										<li><a href="#">Duplicate list</a></li>
-										<li><a href="#">Combine lists</a></li>
-									</ul>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td width="1%">
-								<div class="text-nowrap">
-									<i class="icon icon-more list-drag-button"></i>
-									<input type="checkbox" class="styled">
-								</div>
-							</td>
-							<td>
-								<h5 class="no-margin text-bold"><a href="#">Mail list #1</a></h5>
-								<span class="text-muted">Created at: Jun 22, 2013 10:09 am</span>
-								<br />
-								<span class="text-muted2">Not rated yet</span>
-							</td>
-							<td>
-								<div class="single-stat-box pull-left">
-									<h5 class="no-margin text-bold"><strong>100</strong></h5>
-									<span class="text-muted">Subscribers</span>
-								</div>
-								<div class="single-stat-box pull-left">
-									<h5 class="no-margin text-bold"><strong>90.0%</strong></h5>
-									<span class="text-muted">Opens</span>
-								</div>
-								<div class="single-stat-box pull-left">
-									<h5 class="no-margin text-bold"><strong>10.0%</strong></h5>
-									<span class="text-muted">Clicks</span>
-								</div>
-								<br style="clear:both" />
-							</td>
-							<td class="text-right">
-								<button type="button" class="btn bg-teal btn-icon"><i class="icon icon-user-plus"></i></button>
-								<div class="btn-group">									
-									<button type="button" class="btn bg-teal btn-icon">Overview</button>
-			                    	<button type="button" class="btn bg-teal dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
-			                    	<ul class="dropdown-menu dropdown-menu-right">
-										<li><a href="#">Manage subscribers</a></li>
-										<li class="divider"></li>
-										<li><a href="#">Signup forms</a></li>
-										<li class="divider"></li>
-										<li><a href="#">Settings</a></li>
-										<li class="divider"></li>
-										<li><a href="#">Import</a></li>
-										<li><a href="#">Exports</a></li>
-										<li><a href="#">Duplicate list</a></li>
-										<li><a href="#">Combine lists</a></li>
-									</ul>
-								</div>
-							</td>
-						</tr>
-						<tr>
-							<td width="1%">
-								<div class="text-nowrap">
-									<i class="icon icon-more list-drag-button"></i>
-									<input type="checkbox" class="styled">
-								</div>
-							</td>
-							<td>
-								<h5 class="no-margin text-bold"><a href="#">Mail list #1</a></h5>
-								<span class="text-muted">Created at: Jun 22, 2013 10:09 am</span>
-								<br />
-								<span class="text-muted2">Not rated yet</span>
-							</td>
-							<td>
-								<div class="single-stat-box pull-left">
-									<h5 class="no-margin text-bold"><strong>100</strong></h5>
-									<span class="text-muted">Subscribers</span>
-								</div>
-								<div class="single-stat-box pull-left">
-									<h5 class="no-margin text-bold"><strong>90.0%</strong></h5>
-									<span class="text-muted">Opens</span>
-								</div>
-								<div class="single-stat-box pull-left">
-									<h5 class="no-margin text-bold"><strong>10.0%</strong></h5>
+									<span class="no-margin stat-num">10.0%</span>
+									<br />
 									<span class="text-muted">Clicks</span>
 								</div>
 								<br style="clear:both" />
