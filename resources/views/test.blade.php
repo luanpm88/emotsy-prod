@@ -8,6 +8,7 @@
 
 	<!-- Global stylesheets -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
+	<link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,600|Open+Sans:300italic,400italic,600italic,700italic,700,300,600,400" rel="stylesheet" type="text/css">
 	<link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
 	<link href="assets/css/bootstrap.css" rel="stylesheet" type="text/css">
 	<link href="assets/css/core.css" rel="stylesheet" type="text/css">
