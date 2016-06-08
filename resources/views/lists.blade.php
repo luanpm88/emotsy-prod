@@ -4,7 +4,7 @@
 	<div class="page-header">
 		<div class="page-header-content">			
 			<div class="page-title">
-				<a href="/create_list" type="button" class="btn bg-grey-600 pull-right">Create list</a>
+				<a href="/create_list" type="button" class="btn btn-lg bg-teal pull-right">Create list</a>
 				<h1>
 					<span class="text-semibold">My lists</span>
 				</h1>
@@ -19,7 +19,7 @@
 					<span class="filter-group">
 						<span class="title text-semibold text-muted">Sort by</span>
 						<div class="btn-group dropdown">
-							<button type="button" class="btn bg-grey-600 dropdown-toggle" data-toggle="dropdown">Custom order &nbsp;<span class="caret"></span></button>
+							<button type="button" class="btn btn-xs dropdown-toggle" data-toggle="dropdown">Custom order &nbsp;<span class="caret"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
 								<li class="active"><a href="#">Custom order</a></li>
 								<li><a href="#">Name</a></li>
@@ -34,8 +34,8 @@
 							<tr>
 								<td width="1%">
 									<div class="text-nowrap">
-										<i class="icon icon-more list-drag-button"></i>
 										<input type="checkbox" class="styled">
+										<i class="icon icon-more2 list-drag-button"></i>										
 									</div>
 								</td>
 								<td>
@@ -63,10 +63,10 @@
 									<br style="clear:both" />
 								</td>
 								<td class="text-right">
-									<button data-popup="tooltip" title="Add subscriber" type="button" class="btn bg-teal btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></button>
-									<div class="btn-group">
-										<button type="button" class="btn bg-teal btn-icon">Overview</button>
-										<button type="button" class="btn bg-teal dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+									<button data-popup="tooltip" title="Add subscriber" type="button" class="btn btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></button>
+									<button data-popup="tooltip" title="Overview" type="button" class="btn btn-icon"><i class="icon-stats-growth"></i> <i class="icon-search4"></i></button>
+									<div class="btn-group">										
+										<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
 										<ul class="dropdown-menu dropdown-menu-right">
 											<li><a href="#">Manage subscribers</a></li>
 											<li><a href="#">Signup forms</a></li>

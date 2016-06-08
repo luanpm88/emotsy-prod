@@ -111,11 +111,11 @@ $(function() {
     // ------------------------------
     
     $(".form-control").focus( function() {
-        $(this).parents(".form-group").find(".help").show();
+        $(this).parents(".form-group").find(".help").addClass("showed");
     });
 
     $(".form-control").blur( function() {
-        $(this).parents(".form-group").find(".help").hide();
+        $(this).parents(".form-group").find(".help").removeClass("showed");
     });
     
 });
