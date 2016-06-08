@@ -31,6 +31,9 @@ h1, .h1, h2, .h2, h3, .h3 {
 a {
     color: #009688;
 }
+textarea.form-control {
+    margin-top: 10px;
+}
 .form-control, .select2 {
     border-width: 2px;
     font-size: 15px;
