@@ -149,7 +149,7 @@
 								</div>
 							</td>
 							<td>
-								<h5 class="no-margin text-bold"><a href="#">Mail list #1</a></h5>
+								<h5 class="no-margin text-bold"><a href="#">Mail list 1</a></h5>
 								<span class="text-muted">Created at: Jun 22, 2013 10:09 am</span>
 								<br />
 								<span class="text-muted2">Not rated yet</span>
