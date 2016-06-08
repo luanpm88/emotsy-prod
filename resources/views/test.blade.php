@@ -149,22 +149,22 @@
 								</div>
 							</td>
 							<td>
-								<h4 class="no-margin text-bold"><a href="#">Mail list #1</a></h4>
+								<h5 class="no-margin text-bold"><a href="#">Mail list #1</a></h5>
 								<span class="text-muted">Created at: Jun 22, 2013 10:09 am</span>
 								<br />
 								<span class="text-muted2">Not rated yet</span>
 							</td>
 							<td>
 								<div class="single-stat-box pull-left">
-									<h4 class="no-margin text-bold"><strong>100</strong></h5>
+									<h5 class="no-margin text-bold"><strong>100</strong></h5>
 									<span class="text-muted">Subscribers</span>
 								</div>
 								<div class="single-stat-box pull-left">
-									<h4 class="no-margin text-bold"><strong>90.0%</strong></h5>
+									<h5 class="no-margin text-bold"><strong>90.0%</strong></h5>
 									<span class="text-muted">Opens</span>
 								</div>
 								<div class="single-stat-box pull-left">
-									<h4 class="no-margin text-bold"><strong>10.0%</strong></h5>
+									<h5 class="no-margin text-bold"><strong>10.0%</strong></h5>
 									<span class="text-muted">Clicks</span>
 								</div>
 								<br style="clear:both" />
@@ -197,22 +197,22 @@
 								</div>
 							</td>
 							<td>
-								<h4 class="no-margin text-semibold"><a href="#">Mail list #1</a></h4>
+								<h5 class="no-margin text-bold"><a href="#">Mail list #1</a></h5>
 								<span class="text-muted">Created at: Jun 22, 2013 10:09 am</span>
 								<br />
 								<span class="text-muted2">Not rated yet</span>
 							</td>
 							<td>
 								<div class="single-stat-box pull-left">
-									<h4 class="no-margin text-semibold"><strong>100</strong></h5>
+									<h5 class="no-margin text-bold"><strong>100</strong></h5>
 									<span class="text-muted">Subscribers</span>
 								</div>
 								<div class="single-stat-box pull-left">
-									<h4 class="no-margin text-semibold"><strong>90.0%</strong></h5>
+									<h5 class="no-margin text-bold"><strong>90.0%</strong></h5>
 									<span class="text-muted">Opens</span>
 								</div>
 								<div class="single-stat-box pull-left">
-									<h4 class="no-margin text-semibold"><strong>10.0%</strong></h5>
+									<h5 class="no-margin text-bold"><strong>10.0%</strong></h5>
 									<span class="text-muted">Clicks</span>
 								</div>
 								<br style="clear:both" />
@@ -245,22 +245,22 @@
 								</div>
 							</td>
 							<td>
-								<h4 class="no-margin text-semibold"><a href="#">Mail list #1</a></h4>
+								<h5 class="no-margin text-bold"><a href="#">Mail list #1</a></h5>
 								<span class="text-muted">Created at: Jun 22, 2013 10:09 am</span>
 								<br />
 								<span class="text-muted2">Not rated yet</span>
 							</td>
 							<td>
 								<div class="single-stat-box pull-left">
-									<h4 class="no-margin text-semibold"><strong>100</strong></h5>
+									<h5 class="no-margin text-bold"><strong>100</strong></h5>
 									<span class="text-muted">Subscribers</span>
 								</div>
 								<div class="single-stat-box pull-left">
-									<h4 class="no-margin text-semibold"><strong>90.0%</strong></h5>
+									<h5 class="no-margin text-bold"><strong>90.0%</strong></h5>
 									<span class="text-muted">Opens</span>
 								</div>
 								<div class="single-stat-box pull-left">
-									<h4 class="no-margin text-semibold"><strong>10.0%</strong></h5>
+									<h5 class="no-margin text-bold"><strong>10.0%</strong></h5>
 									<span class="text-muted">Clicks</span>
 								</div>
 								<br style="clear:both" />
