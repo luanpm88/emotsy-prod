@@ -1,0 +1,77 @@
+@media (max-width: 890px) {
+    .table-box td {
+        display: block;
+        width: 100%;
+        clear: both;
+    }
+}
+body {
+    font-size: 14px;
+}
+a {
+    color: #009688;
+}
+.btn {
+    font-size: 15px;
+}
+.navbar-header {
+    min-width: 140px;
+}
+.text-muted {
+    color: #666;
+}
+.text-muted2 {
+    color: #999;
+}
+.navbar-brand {
+    padding: 15px 20px;
+}
+.dropdown-menu > li > a {
+    padding: 12px 15px;
+    font-size: 15px;
+}
+.navbar-nav > li > a {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+.page-header-content {
+    margin: auto;
+    max-width: 1280px;
+}
+.page-container {
+    margin: auto;
+    max-width: 1280px;
+}
+.navbar-nav > .dropdown-user > a, .navbar-nav > .dropdown-user > a > span {
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+.table-box {
+    font-size: 16px;
+}
+.table-box tbody tr td {
+    vertical-align: top;
+    padding: 20px 10px;
+}
+.single-stat-box {
+    margin-right: 30px;
+}
+.list-drag-button {
+    color: #777;
+    font-size: 24px;
+    margin-right: 10px;
+    cursor: ns-resize;
+}
+.list-drag-button:hover {
+    color: #555;
+}
+.filter-box {
+    margin: 15px 0;
+}
+.filter-group {
+    display: inline-block;
+    margin-left: 15px;
+}
+.filter-group .title {
+    margin-right: 10px;
+}
