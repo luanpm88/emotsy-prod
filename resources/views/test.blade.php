@@ -138,7 +138,7 @@
 						</div>
 					</span>
 				</div>
-				<div class="panel panel-info">					
+				<div class="">					
 					<table class="table table-box">
 						<tr>
 							<td width="1%">

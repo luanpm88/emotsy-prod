@@ -5,14 +5,14 @@
         clear: both;
     }
 }
-@media (max-width: 768px)
+@media (max-width: 768px) {
     .page-title {
         padding-right: 0px;
     }
 }
 body {
     font-size: 14px;
-    background: #fff;
+    background-color: #fff;
 }
 a {
     color: #009688;
