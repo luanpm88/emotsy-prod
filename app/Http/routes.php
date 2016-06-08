@@ -12,5 +12,9 @@
 */
 
 Route::get('/', function () {
-    return view('test');
+    return view('lists');
+});
+
+Route::get('/create_list', function () {
+    return view('create_list');
 });

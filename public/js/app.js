@@ -106,4 +106,16 @@ $(function() {
     //
     //$(".switch").bootstrapSwitch();
     
+    
+    // Form help text
+    // ------------------------------
+    
+    $(".form-control").focus( function() {
+        $(this).parents(".form-group").find(".help").show();
+    });
+
+    $(".form-control").blur( function() {
+        $(this).parents(".form-group").find(".help").hide();
+    });
+    
 });
