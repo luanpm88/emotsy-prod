@@ -41,7 +41,7 @@ textarea.form-control {
     max-width: 650px;
     border-radius: 0;
     border: none;
-    border-bottom: solid 2px #ccc;
+    border-bottom: dashed 2px #ccc;
     font-weight: bold;
     padding-left: 0;
 }
