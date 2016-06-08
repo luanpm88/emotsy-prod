@@ -5,6 +5,11 @@
         clear: both;
     }
 }
+@media (max-width: 768px)
+    .page-title {
+        padding-right: 0px;
+    }
+}
 body {
     font-size: 14px;
 }
