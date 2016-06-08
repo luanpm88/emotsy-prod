@@ -19,7 +19,7 @@ a {
     color: #009688;
 }
 .btn {
-    font-size: 15px;
+    font-size: 14px;
 }
 .navbar-header {
     min-width: 140px;
@@ -35,7 +35,7 @@ a {
 }
 .dropdown-menu > li > a {
     padding: 12px 15px;
-    font-size: 15px;
+    font-size: 14px;
 }
 .navbar-nav > li > a {
     padding-top: 15px;
@@ -54,7 +54,7 @@ a {
     padding-bottom: 7px;
 }
 .table-box {
-    font-size: 16px;
+    font-size: 15px;
 }
 .table-box tbody tr td {
     vertical-align: top;
