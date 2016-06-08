@@ -44,8 +44,7 @@
                     </div>
                     <div class="form-group">
                         <label for="from_email">Remind people how they signed up to your list</label>
-                        <br />
-                        <select data-placeholder="Type 'aero'" class="select-search">
+                        <select data-placeholder="Type 'aero'" class="select">
                             <option>Aeróbics</option>
                             <option>Aeróbics en Agua</option>
                             <option>Aerografía</option>
@@ -57,7 +56,7 @@
                             <option>Alusivos</option>
                             <option>Análisis de Escritura a Mano</option>
                         </select>
-                        <br />
+                        <br /><br /><br />
                         <textarea placeholder="Write a short reminder about how the recipient joined your list." class="form-control"></textarea>
                         <div class="help">
                             <span>Your subscribers will see this, so make it something appropriate.</span><br> <span>Good example: “Acme Company Newsletter”</span><br> <span>Bad example: “Cust_11_01_2007”</span>

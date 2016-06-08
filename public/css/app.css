@@ -32,20 +32,26 @@ a {
     color: #009688;
 }
 textarea.form-control {
-    margin-top: 10px;
+    border: solid 2px #ccc;
 }
 .form-control, .select2 {
-    border-width: 2px;
     font-size: 15px;
     border-color: #bbb;
     max-width: 650px;
+    border-radius: 0;
+    border: none;
+    border-bottom: solid 2px #ccc;
+    border-left: solid 1px #ccc;
+    font-weight: bold;
+}
+.select2-selection--single .select2-selection__arrow:after {
+    font-size: 24px;
+    color: #777 !important;
 }
 .select2 {
 }
 .select2-selection--single:not([class*=bg-]) {
-    background: #e0e0e0;
     border: none;
-    font-weight: bold;
 }
 .form-control:hover {
     border-color: #aaa;
@@ -53,9 +59,14 @@ textarea.form-control {
 .form-control:focus {
     border-color: #4DB6AC;
 }
+.form-group {
+    margin-bottom: 40px;
+}
 .form-group label {
-    font-weight: 700;
     color: #666;
+    margin-bottom: 5px;
+    display: block;
+    font-size: 16px;
 }
 .form-group .help {
     padding: 10px 0;
