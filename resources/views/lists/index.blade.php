@@ -77,7 +77,8 @@
 								</td>
 								<td class="text-right">
 									<span class="text-muted2 list-status pull-left">
-										<span class="label label-flat border-grey text-grey">Not rated yet</span>
+										<!--<span class="label label-flat border-grey text-grey">Not rated yet</span>-->
+										<span class="label label-flat border-success text-success">active</span>
 									</span>
 									<button data-popup="tooltip" title="Add subscriber" type="button" class="btn bg-teal btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></button>
 									<button data-popup="tooltip" title="Overview" type="button" class="btn bg-grey btn-icon"><i class="icon-stats-growth"></i> <i class="icon-search4"></i></button>

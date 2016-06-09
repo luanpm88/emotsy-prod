@@ -1,6 +1,6 @@
 <?php
 
-namespace MailSpeed\Providers;
+namespace Mailixa\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

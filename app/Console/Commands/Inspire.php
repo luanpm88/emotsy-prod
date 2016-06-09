@@ -1,6 +1,6 @@
 <?php
 
-namespace MailSpeed\Console\Commands;
+namespace Mailixa\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Inspiring;

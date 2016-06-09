@@ -1,6 +1,6 @@
 <?php
 
-namespace MailSpeed\Http\Middleware;
+namespace Mailixa\Http\Middleware;
 
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as BaseVerifier;
 

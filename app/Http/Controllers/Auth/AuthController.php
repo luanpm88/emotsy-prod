@@ -1,10 +1,10 @@
 <?php
 
-namespace MailSpeed\Http\Controllers\Auth;
+namespace Mailixa\Http\Controllers\Auth;
 
-use MailSpeed\User;
+use Mailixa\User;
 use Validator;
-use MailSpeed\Http\Controllers\Controller;
+use Mailixa\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 

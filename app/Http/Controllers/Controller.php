@@ -1,6 +1,6 @@
 <?php
 
-namespace MailSpeed\Http\Controllers;
+namespace Mailixa\Http\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;

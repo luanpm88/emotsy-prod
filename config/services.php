@@ -30,7 +30,7 @@ return [
     ],
 
     'stripe' => [
-        'model' => MailSpeed\User::class,
+        'model' => Mailixa\User::class,
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],

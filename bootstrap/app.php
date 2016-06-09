@@ -28,17 +28,17 @@ $app = new Illuminate\Foundation\Application(
 
 $app->singleton(
     Illuminate\Contracts\Http\Kernel::class,
-    MailSpeed\Http\Kernel::class
+    Mailixa\Http\Kernel::class
 );
 
 $app->singleton(
     Illuminate\Contracts\Console\Kernel::class,
-    MailSpeed\Console\Kernel::class
+    Mailixa\Console\Kernel::class
 );
 
 $app->singleton(
     Illuminate\Contracts\Debug\ExceptionHandler::class,
-    MailSpeed\Exceptions\Handler::class
+    Mailixa\Exceptions\Handler::class
 );
 
 /*

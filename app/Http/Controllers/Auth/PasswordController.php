@@ -1,8 +1,8 @@
 <?php
 
-namespace MailSpeed\Http\Controllers\Auth;
+namespace Mailixa\Http\Controllers\Auth;
 
-use MailSpeed\Http\Controllers\Controller;
+use Mailixa\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 
 class PasswordController extends Controller

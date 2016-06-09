@@ -67,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => MailSpeed\User::class,
+            'model' => Mailixa\User::class,
         ],
 
         // 'users' => [

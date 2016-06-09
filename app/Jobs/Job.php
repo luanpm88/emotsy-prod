@@ -1,6 +1,6 @@
 <?php
 
-namespace MailSpeed\Jobs;
+namespace Mailixa\Jobs;
 
 use Illuminate\Bus\Queueable;
 

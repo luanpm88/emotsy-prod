@@ -151,10 +151,10 @@ return [
         /*
          * Application Service Providers...
          */
-        MailSpeed\Providers\AppServiceProvider::class,
-        MailSpeed\Providers\AuthServiceProvider::class,
-        MailSpeed\Providers\EventServiceProvider::class,
-        MailSpeed\Providers\RouteServiceProvider::class,
+        Mailixa\Providers\AppServiceProvider::class,
+        Mailixa\Providers\AuthServiceProvider::class,
+        Mailixa\Providers\EventServiceProvider::class,
+        Mailixa\Providers\RouteServiceProvider::class,
 
     ],
 

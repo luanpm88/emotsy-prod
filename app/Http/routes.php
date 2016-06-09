@@ -11,14 +11,18 @@
 |
 */
 
-Route::get('/', function () {
-    return view('lists');
-});
+Route::group(['middleware' => 'web'], function () {
+    
+    Route::get('/', function () {
+        return view('lists/index');
+    });
+    
+    Route::get('/lists', function () {
+        return view('lists/index');
+    });
+    
+    Route::get('/lists/create', function () {
+        return view('lists/create');
+    });
 
-Route::get('/lists', function () {
-    return view('lists');
-});
-
-Route::get('/create_list', function () {
-    return view('create_list');
 });

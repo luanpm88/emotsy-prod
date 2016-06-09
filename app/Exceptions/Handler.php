@@ -1,6 +1,6 @@
 <?php
 
-namespace MailSpeed\Exceptions;
+namespace Mailixa\Exceptions;
 
 use Exception;
 use Illuminate\Validation\ValidationException;

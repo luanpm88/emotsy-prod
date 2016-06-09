@@ -1,6 +1,6 @@
 <?php
 
-namespace MailSpeed;
+namespace Mailixa;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 

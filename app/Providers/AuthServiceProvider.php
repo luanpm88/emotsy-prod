@@ -1,6 +1,6 @@
 <?php
 
-namespace MailSpeed\Providers;
+namespace Mailixa\Providers;
 
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -13,7 +13,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'MailSpeed\Model' => 'MailSpeed\Policies\ModelPolicy',
+        'Mailixa\Model' => 'Mailixa\Policies\ModelPolicy',
     ];
 
     /**
