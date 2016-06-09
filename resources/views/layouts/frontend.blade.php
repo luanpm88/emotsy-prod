@@ -25,6 +25,7 @@
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/loaders/blockui.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/ui/nicescroll.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/ui/drilldown.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/selects/select2.min.js') }}"></script>            
 	<!-- /core JS files -->
 
 	<!-- Theme JS files -->
@@ -56,11 +57,13 @@
 
 		<div class="navbar-collapse collapse" id="navbar-mobile">
 			<ul class="nav navbar-nav">
-				<li class=""><a href="index.html">Campaigns</a></li>
-                <li class=""><a href="index.html">Templates</a></li>
-                <li class="active"><a href="index.html">Lists</a></li>
-                <li class=""><a href="index.html">Reports</a></li>
-                <li class=""><a href="index.html">Automation</a></li>
+				<li class="">
+					<a href="index.html"><i class="icon-paperplane"></i> Campaigns</a>
+				</li>
+                <li class=""><a href="index.html"><i class="icon-magazine"></i> Templates</a></li>
+                <li class="active"><a href="/lists"><i class="icon-address-book2"></i> Lists</a></li>
+                <li class=""><a href="index.html"><i class="icon-pie-chart5"></i> Reports</a></li>
+                <li class=""><a href="index.html"><i class="icon-server"></i> Servers</a></li>
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right">
@@ -72,11 +75,8 @@
 					</a>
 
 					<ul class="dropdown-menu">
-						<li><a class="deutsch"><img src="assets/images/flags/de.png" alt=""> Deutsch</a></li>
-						<li><a class="ukrainian"><img src="assets/images/flags/ua.png" alt=""> Українська</a></li>
 						<li><a class="english"><img src="assets/images/flags/gb.png" alt=""> English</a></li>
-						<li><a class="espana"><img src="assets/images/flags/es.png" alt=""> España</a></li>
-						<li><a class="russian"><img src="assets/images/flags/ru.png" alt=""> Русский</a></li>
+						<li><a class="russian"><img src="assets/images/flags/vn.png" alt=""> Việt Nam</a></li>
 					</ul>
                 </li>
 

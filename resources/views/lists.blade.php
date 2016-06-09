@@ -7,9 +7,12 @@
 				<a href="/create_list" type="button" class="btn btn-lg bg-success pull-right">
 					<i class="icon icon-plus2"></i> Create list
 				</a>
+				<ul class="breadcrumb breadcrumb-caret position-right">
+					<li><a href="/">Home</a></li>
+				</ul>
 				<h1>
-					<span class="text-semibold">My lists</span>
-				</h1>
+					<span class="text-semibold"><i class="icon-list2"></i> My lists</span>
+				</h1>				
 			</div>
 		</div>
 	</div>
@@ -17,7 +20,11 @@
 
 @section('content')
 				<div class="filter-box">
-					<input type="checkbox" class="styled">
+					<div class="checkbox inline">
+						<label>
+							<input type="checkbox" class="styled">
+						</label>
+					</div>
 					<span class="filter-group">
 						<span class="title text-semibold text-muted">Sort by</span>
 						<div class="btn-group dropdown">
@@ -28,7 +35,9 @@
 								<li><a href="#">Created at</a></li>
 							</ul>
 						</div>
+						<button type="button" class="btn btn-xs"><i class="icon-sort-amount-asc"></i></button>						
 					</span>
+					<input class="form-control search" placeholder="Type to search" />
 				</div>
 				<div class="">					
 					<table class="table table-box">
@@ -36,7 +45,11 @@
 							<tr>
 								<td width="1%">
 									<div class="text-nowrap">
-										<input type="checkbox" class="styled">
+										<div class="checkbox inline">
+											<label>
+												<input type="checkbox" class="styled">
+											</label>
+										</div>
 										<i class="icon icon-more2 list-drag-button"></i>										
 									</div>
 								</td>
