@@ -4,7 +4,7 @@
 	<div class="page-header">
 		<div class="page-header-content">			
 			<div class="page-title">
-				<a href="/create_list" type="button" class="btn btn-lg bg-success pull-right">
+				<a href="/create_list" type="button" class="btn bg-success-800 pull-right">
 					<i class="icon icon-plus2"></i> Create list
 				</a>
 				<ul class="breadcrumb breadcrumb-caret position-right">

@@ -69,14 +69,13 @@
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown language-switch">
 					<a class="dropdown-toggle" data-toggle="dropdown">
-						<img src="assets/images/flags/gb.png" class="position-left" alt="">
 						English
 						<span class="caret"></span>
 					</a>
 
 					<ul class="dropdown-menu">
-						<li><a class="english"><img src="assets/images/flags/gb.png" alt=""> English</a></li>
-						<li><a class="russian"><img src="assets/images/flags/vn.png" alt=""> Việt Nam</a></li>
+						<li><a class="english">English</a></li>
+						<li><a class="russian">Việt Nam</a></li>
 					</ul>
                 </li>
 
