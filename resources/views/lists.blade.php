@@ -4,7 +4,7 @@
 	<div class="page-header">
 		<div class="page-header-content">			
 			<div class="page-title">
-				<a href="/create_list" type="button" class="btn bg-success-800 pull-right">
+				<a href="/create_list" type="button" class="btn bg-teal pull-right">
 					<i class="icon icon-plus2"></i> Create list
 				</a>
 				<ul class="breadcrumb breadcrumb-caret position-right">
@@ -80,9 +80,9 @@
 										<span class="label label-flat border-grey text-grey">Not rated yet</span>
 									</span>
 									<button data-popup="tooltip" title="Add subscriber" type="button" class="btn bg-teal btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></button>
-									<button data-popup="tooltip" title="Overview" type="button" class="btn bg-teal btn-icon"><i class="icon-stats-growth"></i> <i class="icon-search4"></i></button>
+									<button data-popup="tooltip" title="Overview" type="button" class="btn bg-grey btn-icon"><i class="icon-stats-growth"></i> <i class="icon-search4"></i></button>
 									<div class="btn-group">										
-										<button type="button" class="btn bg-teal dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+										<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
 										<ul class="dropdown-menu dropdown-menu-right">
 											<li><a href="#">Manage subscribers</a></li>
 											<li><a href="#">Signup forms</a></li>

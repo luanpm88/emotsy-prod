@@ -17,6 +17,18 @@ body * {
     -ms-transition: all 200ms linear;
     transition: all 200ms linear;
 }
+.navbar-nav > li > a.mobile-menu-button {
+    padding: 11px 10px 9px 10px;
+}
+.navbar-nav > li > a.mobile-menu-button i {
+    font-size: 24px;
+}
+#navbar-mobile i {
+    font-size: 18px;
+}
+.navbar-brand > img {
+    height: 20px;
+}
 .row {
     margin-left: -20px;
     margin-right: -20px;
@@ -42,7 +54,7 @@ a {
     color: #00796B;
 }
 .sub_section {
-    margin-bottom: 60px;
+    margin-bottom: 40px;
 }
 .page-container {
     padding-bottom: 100px;
@@ -95,8 +107,12 @@ textarea.form-control {
     border-radius: 5px;
 }
 .select2-selection--single:not([class*=bg-]) {
-    border: none;
-    background: #e5e5e5;
+    font-size: 15px;
+    border-color: #bbb;
+    border-radius: 5px;
+    border: solid 2px #ccc;
+    font-weight: 600;
+    padding: 5px 0;
 }
 .form-control:hover {
     border-color: #aaa;
@@ -117,6 +133,7 @@ textarea.form-control {
     opacity: 0;
     padding: 0;
     overflow: hidden;
+    margin-top: -2px;
 }
 .form-group .help.showed {
     margin: 10px 0;
@@ -144,7 +161,7 @@ textarea.form-control {
     color: #999;
 }
 .navbar-brand {
-    padding: 15px 20px;
+    padding: 15px 10px;
 }
 .dropdown-menu > li > a {
     padding: 12px 15px;
@@ -164,7 +181,7 @@ textarea.form-control {
 }
 .navbar-nav > .dropdown-user > a, .navbar-nav > .dropdown-user > a > span {
     padding-top: 7px;
-    padding-bottom: 7px;
+    padding-bottom: 8px;
 }
 .table-box {
     font-size: 15px;

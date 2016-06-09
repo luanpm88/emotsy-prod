@@ -37,7 +37,7 @@
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/ui/moment/moment.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/daterangepicker.js') }}"></script>
 
-	<script type="text/javascript" src="{{ URL::asset('assets/js/core/app.js') }}"></script>
+	
     <script type="text/javascript" src="{{ URL::asset('js/app.js') }}"></script>
 	<!-- /theme JS files -->
 
@@ -46,12 +46,12 @@
 <body>
 
 	<!-- Main navbar -->
-	<div class="navbar navbar-default">
+	<div class="navbar navbar-inverse">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="index.html"><img src="assets/images/logo_dark.png" alt=""></a>
+			<a class="navbar-brand" href="index.html"><img src="assets/images/logo_light.png" alt=""></a>
 
 			<ul class="nav navbar-nav pull-right visible-xs-block">
-				<li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-menu7"></i></a></li>
+				<li><a class="mobile-menu-button" data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-menu7"></i></a></li>
 			</ul>
 		</div>
 
