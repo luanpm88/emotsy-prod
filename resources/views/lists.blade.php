@@ -4,7 +4,9 @@
 	<div class="page-header">
 		<div class="page-header-content">			
 			<div class="page-title">
-				<a href="/create_list" type="button" class="btn btn-lg bg-teal pull-right">Create list</a>
+				<a href="/create_list" type="button" class="btn btn-lg bg-success pull-right">
+					<i class="icon icon-plus2"></i> Create list
+				</a>
 				<h1>
 					<span class="text-semibold">My lists</span>
 				</h1>
@@ -41,8 +43,6 @@
 								<td>
 									<h5 class="no-margin text-bold"><a href="#">Mail list {{ $i }}</a></h5>
 									<span class="text-muted">Created at: Jun 22, 2013 10:09 am</span>
-									<br />
-									<span class="text-muted2">Not rated yet</span>
 								</td>
 								<td>
 									<div class="single-stat-box pull-left">
@@ -63,10 +63,13 @@
 									<br style="clear:both" />
 								</td>
 								<td class="text-right">
-									<button data-popup="tooltip" title="Add subscriber" type="button" class="btn btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></button>
-									<button data-popup="tooltip" title="Overview" type="button" class="btn btn-icon"><i class="icon-stats-growth"></i> <i class="icon-search4"></i></button>
+									<span class="text-muted2 list-status pull-left">
+										<span class="label label-flat border-grey text-grey">Not rated yet</span>
+									</span>
+									<button data-popup="tooltip" title="Add subscriber" type="button" class="btn bg-teal btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></button>
+									<button data-popup="tooltip" title="Overview" type="button" class="btn bg-teal btn-icon"><i class="icon-stats-growth"></i> <i class="icon-search4"></i></button>
 									<div class="btn-group">										
-										<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+										<button type="button" class="btn bg-teal dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
 										<ul class="dropdown-menu dropdown-menu-right">
 											<li><a href="#">Manage subscribers</a></li>
 											<li><a href="#">Signup forms</a></li>

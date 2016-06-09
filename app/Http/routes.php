@@ -15,6 +15,10 @@ Route::get('/', function () {
     return view('lists');
 });
 
+Route::get('/lists', function () {
+    return view('lists');
+});
+
 Route::get('/create_list', function () {
     return view('create_list');
 });

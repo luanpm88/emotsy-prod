@@ -26,15 +26,23 @@ h1, .h1, h2, .h2, h3, .h3 {
 a {
     color: #00796B;
 }
+.label {
+    font-size: 11px;
+    padding: 2px 10px;
+    margin: 2px 0;
+    border-radius: 20px;
+    font-weight: 600;
+}
 .page-title {
     padding: 40px 0 30px 0;
+}
+.page-title .breadcrumb.position-right {
+    margin-left: 0;
 }
 .text-semibold {
     font-weight: 600;
 }
 textarea.form-control {
-    background: #f5f5f5;
-    padding-left: 10px;
     font-weight: normal;
 }
 .checker span {
@@ -43,7 +51,6 @@ textarea.form-control {
 .form-control, .select2 {
     font-size: 16px;
     border-color: #bbb;
-    max-width: 650px;
     border-radius: 0;
     border: none;
     border-bottom: dashed 2px #ccc;
@@ -76,19 +83,18 @@ textarea.form-control {
     margin-bottom: 0;
     display: block;
     font-size: 16px;
-    color: #00796B;
 }
 .form-group .help {
-    padding: 10px 0;
-    color: #666;
     font-family: "Roboto", Helvetica Neue, Helvetica, Arial, sans-serif;
     height: 0;
     opacity: 0;
-    font-size: 15px;
+    padding: 0;
 }
 .form-group .help.showed {
+    margin: 10px 0;
     height: auto;
     opacity: 1;
+    padding: 10px 15px;
 }
 .dropdown-menu {
     padding: 0;
