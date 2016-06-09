@@ -46,9 +46,9 @@
 <body>
 
 	<!-- Main navbar -->
-	<div class="navbar navbar-inverse">
+	<div class="navbar navbar-default">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="index.html"><img src="assets/images/logo_light.png" alt=""></a>
+			<a class="navbar-brand" href="index.html"><img src="assets/images/logo_dark.png" alt=""></a>
 
 			<ul class="nav navbar-nav pull-right visible-xs-block">
 				<li><a data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-menu7"></i></a></li>
