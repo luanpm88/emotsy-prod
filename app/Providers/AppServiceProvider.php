@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Providers;
+namespace MailSpeed\Providers;
 
 use Illuminate\Support\ServiceProvider;
 

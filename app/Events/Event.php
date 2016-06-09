@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Events;
+namespace MailSpeed\Events;
 
 abstract class Event
 {
