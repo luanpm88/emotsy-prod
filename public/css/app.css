@@ -17,6 +17,16 @@ body * {
     -ms-transition: all 200ms linear;
     transition: all 200ms linear;
 }
+h4, .h4, h5, .h5, h6, .h6 {
+    margin-top: 15px;
+    margin-bottom: 15px;
+}
+.mt-0 {
+  margin-top: 0px!important;
+}
+p {
+    margin: 0 0 20px;
+}
 .navbar-nav > li > a.mobile-menu-button {
     padding: 11px 10px 9px 10px;
 }
@@ -296,4 +306,7 @@ textarea.form-control {
 .login-header img {
     max-width: 100%;
     margin-left: -40px;
+}
+.has-feedback label ~ .form-control-feedback.has-label {
+    top: 30px;
 }

@@ -11,4 +11,14 @@ use Illuminate\Foundation\Auth\Access\AuthorizesResources;
 class Controller extends BaseController
 {
     use AuthorizesRequests, AuthorizesResources, DispatchesJobs, ValidatesRequests;
+    
+    /**
+     * Check if the user is not authorized.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function notAuthorized()
+    {
+        return view('notAuthorized');
+    }
 }

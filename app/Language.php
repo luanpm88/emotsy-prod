@@ -1,0 +1,29 @@
+<?php
+
+namespace Mailixa;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Language extends Model
+{
+    /**
+     * Get all languages.
+     *
+     * @return collect
+     */
+    public static function getAll()
+    {
+        return Language::all();
+    }
+    
+    /**
+     * Get language by code.
+     *
+     * @param string $code
+     * @return collect
+     */
+    public static function getByCode($code)
+    {
+        return Language::where("code", "=", $code)->first();
+    }
+}

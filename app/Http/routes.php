@@ -15,13 +15,9 @@ Route::group(['middleware' => 'web'], function () {
     
     Route::get('/', "HomeController@index");
     
-    Route::get('/lists', function () {
-        return view('lists/index');
-    });
-    
-    Route::get('/lists/create', function () {
-        return view('lists/create');
-    });
+    // Update current user profile
+    Route::get('account/profile', 'AccountController@profile');
+    Route::post('account/profile', 'AccountController@profile');
 
 });
 

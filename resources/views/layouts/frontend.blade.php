@@ -4,7 +4,7 @@
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>Limitless - Responsive Web Application Kit by Eugene Kopyov</title>
+	<title>@yield('title')</title>
 
 	<!-- Global stylesheets -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
@@ -48,7 +48,9 @@
 	<!-- Main navbar -->
 	<div class="navbar navbar-inverse">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="index.html"><img src="assets/images/logo_light.png" alt=""></a>
+			<a class="navbar-brand" href="{{ action('HomeController@index') }}">
+				<img src="{{ URL::asset('assets/images/logo_light.png') }}" alt="">
+			</a>
 
 			<ul class="nav navbar-nav pull-right visible-xs-block">
 				<li><a class="mobile-menu-button" data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-menu7"></i></a></li>
@@ -58,41 +60,40 @@
 		<div class="navbar-collapse collapse" id="navbar-mobile">
 			<ul class="nav navbar-nav">
 				<li class="">
-					<a href="index.html"><i class="icon-paperplane"></i> Campaigns</a>
+					<a href="#"><i class="icon-paperplane"></i> {{ trans('messages.campaigns') }}</a>
 				</li>
-                <li class=""><a href="index.html"><i class="icon-magazine"></i> Templates</a></li>
-                <li class="active"><a href="/lists"><i class="icon-address-book2"></i> Lists</a></li>
-                <li class=""><a href="index.html"><i class="icon-pie-chart5"></i> Reports</a></li>
-                <li class=""><a href="index.html"><i class="icon-server"></i> Servers</a></li>
+                <li><a href="#"><i class="icon-magazine"></i> {{ trans('messages.templates') }}</a></li>
+                <li><a href="#"><i class="icon-address-book2"></i> {{ trans('messages.lists') }}</a></li>
+                <li><a href="#"><i class="icon-pie-chart5"></i> {{ trans('messages.reports') }}</a></li>
+                <li><a href="#"><i class="icon-server"></i> {{ trans('messages.servers') }}</a></li>
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown language-switch">
 					<a class="dropdown-toggle" data-toggle="dropdown">
-						English
+						{{ Mailixa\Language::getByCode(Config::get('app.locale'))->name }}
 						<span class="caret"></span>
 					</a>
 
 					<ul class="dropdown-menu">
-						<li><a class="english">English</a></li>
-						<li><a class="russian">Việt Nam</a></li>
+						@foreach(Mailixa\Language::getAll() as $language)
+							<li class="{{ Mailixa\Language::getByCode(Config::get('app.locale'))->code == $language->code ? "active" : "" }}">
+								<a>{{ $language->name }}</a>
+							</li>
+						@endforeach
 					</ul>
                 </li>
 
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						<img src="assets/images/placeholder.jpg" alt="">
-						<span>Victoria</span>
+						<span>{{ Auth::user()->name }}</span>
 						<i class="caret"></i>
 					</a>
 
 					<ul class="dropdown-menu dropdown-menu-right">
-						<li><a href="#"><i class="icon-user-plus"></i> My profile</a></li>
-						<li><a href="#"><i class="icon-coins"></i> My balance</a></li>
-						<li><a href="#"><span class="badge badge-warning pull-right">58</span> <i class="icon-comment-discussion"></i> Messages</a></li>
-						<li class="divider"></li>
-						<li><a href="#"><i class="icon-cog5"></i> Account settings</a></li>
-						<li><a href="#"><i class="icon-switch2"></i> Logout</a></li>
+						<li><a href="{{ action("AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.profile') }}</a></li>
+						<li><a href="{{ url("/logout") }}"><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a></li>
 					</ul>
 				</li>
 			</ul>
@@ -113,6 +114,12 @@
 			<!-- Main content -->
 			<div class="content-wrapper">
                 
+				<!-- Display Flash Message -->
+				@include('common.flash')
+				
+				<!-- Display Validation Errors -->
+				@include('common.errors')
+					
 				@yield('content')
                 
 			</div>
@@ -124,7 +131,7 @@
 
 		<!-- Footer -->
 		<div class="footer text-muted">
-			&copy; 2015. <a href="#">Limitless Web App Kit</a> by <a href="http://themeforest.net/user/Kopyov" target="_blank">Eugene Kopyov</a>
+			{!! trans('messages.copy_right') !!}
 		</div>
 		<!-- /footer -->
 

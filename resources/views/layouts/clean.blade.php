@@ -8,28 +8,28 @@
 
 	<!-- Global stylesheets -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,300,100,500,700,900" rel="stylesheet" type="text/css">
-	<link href="assets/css/icons/icomoon/styles.css" rel="stylesheet" type="text/css">
-	<link href="assets/css/bootstrap.css" rel="stylesheet" type="text/css">
-	<link href="assets/css/core.css" rel="stylesheet" type="text/css">
-	<link href="assets/css/components.css" rel="stylesheet" type="text/css">
-	<link href="assets/css/colors.css" rel="stylesheet" type="text/css">
-	<link href="css/app.css" rel="stylesheet" type="text/css">
+	<link href="{{ URL::asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ URL::asset('assets/css/bootstrap.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ URL::asset('assets/css/core.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ URL::asset('assets/css/components.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ URL::asset('assets/css/colors.css') }}" rel="stylesheet" type="text/css">
+	<link href="{{ URL::asset('css/app.css') }}" rel="stylesheet" type="text/css">
 	<!-- /global stylesheets -->
 
 	<!-- Core JS files -->
-	<script type="text/javascript" src="assets/js/plugins/loaders/pace.min.js"></script>
-	<script type="text/javascript" src="assets/js/core/libraries/jquery.min.js"></script>
-	<script type="text/javascript" src="assets/js/core/libraries/bootstrap.min.js"></script>
-	<script type="text/javascript" src="assets/js/plugins/loaders/blockui.min.js"></script>
-	<script type="text/javascript" src="assets/js/plugins/ui/nicescroll.min.js"></script>
-	<script type="text/javascript" src="assets/js/plugins/ui/drilldown.js"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/loaders/pace.min.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery.min.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/bootstrap.min.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/loaders/blockui.min.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/ui/nicescroll.min.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/ui/drilldown.js') }}"></script>
 	<!-- /core JS files -->
 
 	<!-- Theme JS files -->
-	<script type="text/javascript" src="assets/js/plugins/forms/styling/uniform.min.js"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
 
-	<script type="text/javascript" src="assets/js/core/app.js"></script>
-	<script type="text/javascript" src="assets/js/pages/login.js"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/core/app.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/pages/login.js') }}"></script>
 	<!-- /theme JS files -->
 
 </head>
@@ -45,11 +45,19 @@
 			<!-- Main content -->
 			<div class="content-wrapper">
 				<div class="row">
-					<div class="col-md-4">
+					<div class="col-sm-2 col-md-4">
 						
 					</div>
-					<div class="col-md-4">
+					<div class="col-sm-8 col-md-4">
+					
+						<div class="text-center login-header">
+							<a class="main-logo-big" href="{{ action('HomeController@index') }}">
+								<img src="{{ URL::asset('images/logo_big.png') }}" alt="">
+							</a>
+						</div>
+					
 						@yield('content')
+						
 					</div>
 				</div>
 			</div>
@@ -61,8 +69,7 @@
 
 		<!-- Footer -->
 		<div class="footer text-white">
-			{!! trans('messages.copy_right') !!}
-			
+			{!! trans('messages.copy_right_light') !!}			
 		</div>
 		<!-- /footer -->
 
