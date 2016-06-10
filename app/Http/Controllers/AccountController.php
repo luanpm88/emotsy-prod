@@ -26,7 +26,8 @@ class AccountController extends Controller
         
         // Save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, $user->rules);
+            
+            $this->validate($request, \Mailixa\User::$rules);
             
             // Save current user info
             $user->fill($request->all());
@@ -44,10 +45,10 @@ class AccountController extends Controller
             }
             
             if ($user->save()) {
-                $request->session()->flash('alert-success', 'Your profile was successfully updated!');
+                $request->session()->flash('alert-success', trans('messages.profile.updated'));
             }
         }
-
+        
         return view('account.profile', [
             'timezone_options' => \Mailixa\Library\Tool::allTimeZones(),
             'user' => $user->fill($request->old()),

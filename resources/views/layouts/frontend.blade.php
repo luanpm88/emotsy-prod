@@ -36,11 +36,13 @@
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/selects/bootstrap_multiselect.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/ui/moment/moment.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/daterangepicker.js') }}"></script>
-
+	
+	@yield('page_script')
 	
     <script type="text/javascript" src="{{ URL::asset('js/app.js') }}"></script>
 	<!-- /theme JS files -->
-
+	
+	@include('layouts._script_vars')
 </head>
 
 <body>
@@ -86,8 +88,8 @@
 
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
-						<img src="assets/images/placeholder.jpg" alt="">
-						<span>{{ Auth::user()->name }}</span>
+						<img src="{{ URL::asset('assets/images/placeholder.jpg') }}" alt="">
+						<span>{{ Auth::user()->displayName() }}</span>
 						<i class="caret"></i>
 					</a>
 
@@ -114,12 +116,10 @@
 			<!-- Main content -->
 			<div class="content-wrapper">
                 
-				<!-- Display Flash Message -->
+				<!-- display flash message -->
 				@include('common.flash')
 				
-				<!-- Display Validation Errors -->
-				@include('common.errors')
-					
+				<!-- main inner content -->
 				@yield('content')
                 
 			</div>

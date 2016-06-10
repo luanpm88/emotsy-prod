@@ -144,7 +144,7 @@ textarea.form-control {
     opacity: 0;
     padding: 0;
     overflow: hidden;
-    margin-top: -2px;
+    margin: 0;
 }
 .form-group .help.showed {
     margin: 10px 0;
@@ -309,4 +309,14 @@ textarea.form-control {
 }
 .has-feedback label ~ .form-control-feedback.has-label {
     top: 30px;
+}
+.dropdown-menu > li > a:hover {
+    background: #eee;
+}
+.profile-image .media-left img {
+    width: 110px;
+    height: 110px;
+}
+.media-left, .media > .pull-left {
+    padding-right: 30px;
 }
