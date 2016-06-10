@@ -126,6 +126,7 @@ textarea.form-control {
     margin-bottom: 5px;
     display: block;
     font-weight: 600;
+    line-height: 24px;
 }
 .form-group .help {
     font-family: "Roboto", Helvetica Neue, Helvetica, Arial, sans-serif;
@@ -288,4 +289,11 @@ textarea.form-control {
         margin: 10px 0;
         float: none;
     }
+}
+.login-header {
+    margin: 60px 0;
+}
+.login-header img {
+    max-width: 100%;
+    margin-left: -40px;
 }

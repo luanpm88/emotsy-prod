@@ -13,9 +13,7 @@
 
 Route::group(['middleware' => 'web'], function () {
     
-    Route::get('/', function () {
-        return view('lists/index');
-    });
+    Route::get('/', "HomeController@index");
     
     Route::get('/lists', function () {
         return view('lists/index');
@@ -26,3 +24,7 @@ Route::group(['middleware' => 'web'], function () {
     });
 
 });
+
+Route::auth();
+
+Route::get('/home', 'HomeController@index');
