@@ -3,6 +3,7 @@
 namespace Mailixa\Console\Commands;
 
 use Illuminate\Console\Command;
+use \Mailixa\Model\BounceHandler;
 
 class SendCampaign extends Command
 {
@@ -37,6 +38,7 @@ class SendCampaign extends Command
      */
     public function handle()
     {
-        echo "Hello world";
+        echo "Hello world\n";
+        echo BounceHandler::count();
     }
 }
