@@ -73,13 +73,13 @@
 			<ul class="nav navbar-nav navbar-right">
 				<li class="dropdown language-switch">
 					<a class="dropdown-toggle" data-toggle="dropdown">
-						{{ Mailixa\Language::getByCode(Config::get('app.locale'))->name }}
+						{{ Mailixa\Model\Language::getByCode(Config::get('app.locale'))->name }}
 						<span class="caret"></span>
 					</a>
 
 					<ul class="dropdown-menu">
-						@foreach(Mailixa\Language::getAll() as $language)
-							<li class="{{ Mailixa\Language::getByCode(Config::get('app.locale'))->code == $language->code ? "active" : "" }}">
+						@foreach(Mailixa\Model\Language::getAll() as $language)
+							<li class="{{ Mailixa\Model\Language::getByCode(Config::get('app.locale'))->code == $language->code ? "active" : "" }}">
 								<a>{{ $language->name }}</a>
 							</li>
 						@endforeach

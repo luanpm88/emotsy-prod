@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa;
+namespace Mailixa\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -42,6 +42,7 @@ class User extends Authenticatable
      */
     public function displayName()
     {
-        return $this->last_mame;
+        $name = $this->first_mame . " " . $this->last_mame;
+        return $name;
     }
 }

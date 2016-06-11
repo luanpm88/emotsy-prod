@@ -1,10 +1,10 @@
 <?php
 
-namespace Mailixa;
+namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Contact extends Model
+class MailList extends Model
 {
     //
 }
