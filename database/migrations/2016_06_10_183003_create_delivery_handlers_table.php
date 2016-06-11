@@ -15,6 +15,7 @@ class CreateDeliveryHandlersTable extends Migration
         Schema::create('delivery_handlers', function (Blueprint $table) {
             $table->increments('id');
             $table->string('type');
+            $table->string('protocol');
             $table->string('host');
             $table->string('username');
             $table->string('password');
