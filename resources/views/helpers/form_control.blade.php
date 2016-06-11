@@ -16,7 +16,7 @@
                                         @endif
                                     </label>
                                     
-									<input value="{{ isset($value) ? $value : "" }}" type="text" name="{{ $name }}" class="form-control{{ $classes }}">
+									@include('helpers._' . $type)
                                     
                                     @if (isset($help_class) && Lang::has('messages.' . $help_class . '.' . $name . '.help'))
                                         <div class="help alert alert-info">

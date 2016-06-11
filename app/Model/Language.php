@@ -26,4 +26,17 @@ class Language extends Model
     {
         return Language::where("code", "=", $code)->first();
     }
+    
+    /**
+     * Get select options.
+     *
+     * @return array
+     */
+    public static function getSelectOptions()
+    {
+        $options = Language::getAll()->map(function ($item) {
+            return ['value' => $item->id, 'text' => $item->name];
+        });
+        return $options;
+    }
 }

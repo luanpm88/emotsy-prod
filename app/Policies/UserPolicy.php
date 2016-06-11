@@ -18,7 +18,7 @@ class UserPolicy
         //
     }
     
-    public function update(\Mailixa\User $user, \Mailixa\User $item)
+    public function update(\Mailixa\Model\User $user, \Mailixa\Model\User $item)
     {
         return $user->id == $item->id;
     }

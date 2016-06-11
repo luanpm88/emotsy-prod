@@ -12,7 +12,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'first_name', 'last_name', 'email', 'image', 'timezone', 'language_id'
+        'name', 'email', 'first_name', 'last_name', 'email', 'image', 'timezone', 'language_id'
     ];
     
     /**
@@ -33,6 +33,9 @@ class User extends Authenticatable
         'email' => 'required|email',
         'first_name' => 'required',
         'last_name' => 'required',
+        'timezone' => 'required',
+        'language_id' => 'required',
+        'password' => 'confirmed|min:5',
     );
     
     /**
@@ -42,7 +45,6 @@ class User extends Authenticatable
      */
     public function displayName()
     {
-        $name = $this->first_mame . " " . $this->last_mame;
-        return $name;
+        return $this->first_name . " " . $this->last_name;
     }
 }

@@ -11,68 +11,68 @@ class Tool
     * @param       int      $permissions New folder creation permissions
     * @return      bool     Returns true on success, false on failure
     */
-   public static function xcopy($source, $dest, $permissions = 0755)
-   {
-       // Check for symlinks
-       if (is_link($source)) {
-           return symlink(readlink($source), $dest);
-       }
+    public static function xcopy($source, $dest, $permissions = 0755)
+    {
+         // Check for symlinks
+        if (is_link($source)) {
+            return symlink(readlink($source), $dest);
+        }
    
-       // Simple copy for a file
-       if (is_file($source)) {
-           return copy($source, $dest);
-       }
+        // Simple copy for a file
+        if (is_file($source)) {
+            return copy($source, $dest);
+        }
+    
+        // Make destination directory
+        if (!is_dir($dest)) {
+            mkdir($dest, $permissions);
+        }
+    
+        // Loop through the folder
+        $dir = dir($source);
+        while (false !== $entry = $dir->read()) {
+            // Skip pointers
+            if ($entry == '.' || $entry == '..') {
+                continue;
+            }
+    
+            // Deep copy directories
+            Tool::xcopy("$source/$entry", "$dest/$entry", $permissions);
+        }
    
-       // Make destination directory
-       if (!is_dir($dest)) {
-           mkdir($dest, $permissions);
-       }
+        // Clean up
+        $dir->close();
+        return true;
+    }
    
-       // Loop through the folder
-       $dir = dir($source);
-       while (false !== $entry = $dir->read()) {
-           // Skip pointers
-           if ($entry == '.' || $entry == '..') {
-               continue;
-           }
-   
-           // Deep copy directories
-           Tool::xcopy("$source/$entry", "$dest/$entry", $permissions);
-       }
-   
-       // Clean up
-       $dir->close();
-       return true;
-   }
-   
-   /**
-    * Delete a file, or recursively delete a folder and its contents
-    * @param       string   $source    Source path
-    * @return      bool     Returns true on success, false on failure
-    */
-   public static function xdelete($dir)
-   {
-       if (is_dir($dir)) {
-           $objects = scandir($dir);
-           foreach ($objects as $object) {
-               if ($object != "." && $object != "..") {
-                   if (is_dir($dir."/".$object)) {
-                       Tool::xdelete($dir."/".$object);
-                   } else {
-                       unlink($dir."/".$object);
-                   }
-               }
-           }
-           rmdir($dir);
-       }
-       return true;
-   }
-   
-   /**
-     * Get all time zone.
-     *
-     * @var array
+    /**
+     * Delete a file, or recursively delete a folder and its contents
+     * @param       string   $source    Source path
+     * @return      bool     Returns true on success, false on failure
      */
+    public static function xdelete($dir)
+    {
+        if (is_dir($dir)) {
+            $objects = scandir($dir);
+            foreach ($objects as $object) {
+                if ($object != "." && $object != "..") {
+                    if (is_dir($dir."/".$object)) {
+                        Tool::xdelete($dir."/".$object);
+                    } else {
+                        unlink($dir."/".$object);
+                    }
+                }
+            }
+            rmdir($dir);
+        }
+        return true;
+    }
+   
+    /**
+      * Get all time zone.
+      *
+      * @var array
+      */
     public static function allTimeZones()
     {
         // Get all time zones with offset
@@ -91,5 +91,20 @@ class Tool
         });
         
         return $zones_array;
+    }
+   
+    /**
+      * Get options array for select box.
+      *
+      * @var array
+      */
+    public static function getTimezoneSelectOptions()
+    {
+        $arr = [];        
+        foreach(Tool::allTimeZones() as $timezone) {
+            $row = ['value' => $timezone['zone'], 'text' => $timezone['text']];
+            $arr[] = $row;
+        }
+        return $arr;
     }
 }

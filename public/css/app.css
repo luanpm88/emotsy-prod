@@ -63,6 +63,10 @@ h1, .h1, h2, .h2, h3, .h3 {
 a {
     color: #00796B;
 }
+.caret:after {
+    font-size: 18px;
+    font-weight: 800;
+}
 .sub_section {
     margin-bottom: 40px;
 }
@@ -107,10 +111,20 @@ textarea.form-control {
     color: #777 !important;
     margin-top: -10px;
 }
+.select2-selection--single:not([class*=bg-]):not([class*=border-]) {
+    border-color: #ccc;
+}
+.select2-selection--single:not([class*=bg-]):not([class*=border-]):hover {
+    border-color: #aaa;
+}
+.select2-dropdown {
+    border: 2px solid #ccc;
+}
 .select2-results__option {
     font-weight: 600;
 }
 .select2-selection--single {
+    height: 37px;
 }
 .select2 {
     border: none;
@@ -311,7 +325,7 @@ textarea.form-control {
     top: 30px;
 }
 .dropdown-menu > li > a:hover {
-    background: #eee;
+    background: #c8e9e6;
 }
 .profile-image .media-left img {
     width: 110px;
@@ -319,4 +333,13 @@ textarea.form-control {
 }
 .media-left, .media > .pull-left {
     padding-right: 30px;
+}
+.form-group label.validation-valid-label {
+    display: none !important;
+}
+.profile-image .media-left {
+    display: block;
+    margin-bottom: 20px;
+    text-align: center;
+    padding: 0;
 }

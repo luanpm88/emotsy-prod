@@ -67,6 +67,11 @@ $(function() {
             else if (element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
                 error.appendTo( element.parent().parent() );
             }
+            
+            // Select2
+            else if (element.parents(".form-group").find('.select2').length) {
+                error.insertAfter( element.parents(".form-group").find('.select2') );
+            }
 
             // Input group, styled file input
             else if (element.parent().hasClass('uploader') || element.parents().hasClass('input-group')) {
@@ -75,6 +80,7 @@ $(function() {
             else {
                 error.insertAfter(element);
             }
+            
         },
         validClass: "validation-valid-label",
         success: function(label) {

@@ -9,6 +9,16 @@ use Mailixa\Http\Requests;
 class AccountController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
+    /**
      * Update user profile.
      *
      * @param  \Illuminate\Http\Request $request
@@ -27,7 +37,7 @@ class AccountController extends Controller
         // Save posted data
         if ($request->isMethod('post')) {
             
-            $this->validate($request, \Mailixa\User::$rules);
+            $this->validate($request, \Mailixa\Model\User::$rules);
             
             // Save current user info
             $user->fill($request->all());

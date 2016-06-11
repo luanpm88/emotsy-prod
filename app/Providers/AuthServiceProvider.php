@@ -14,7 +14,7 @@ class AuthServiceProvider extends ServiceProvider
      */
     protected $policies = [
         'Mailixa\Model' => 'Mailixa\Policies\ModelPolicy',
-        \Mailixa\User::class => \Mailixa\Policies\UserPolicy::class,
+        \Mailixa\Model\User::class => \Mailixa\Policies\UserPolicy::class,
     ];
 
     /**
