@@ -4,7 +4,7 @@
                             
 							@if(Session::has('alert-' . $msg))
                             
-							<p class="alert bg-{{ $msg }}">
+							<p class="alert alert-{{ $msg }} alert-styled-left alert-arrow-left alert-bordered">
 								<button data-dismiss="alert" class="close" type="button"><span>×</span><span class="sr-only">Close</span></button>
 								{{ Session::get('alert-' . $msg) }}
 							</p>
