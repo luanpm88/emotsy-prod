@@ -1,8 +1,7 @@
 @extends('layouts.frontend')
 
 @section('page_header')
-	<div class="page-header">
-		<div class="page-header-content">			
+	
 			<div class="page-title">
 				<ul class="breadcrumb breadcrumb-caret position-right">
 					<li><a href="/">Home</a></li>
@@ -12,8 +11,7 @@
 					<span class="text-semibold"><i class="icon-plus-circle2"></i> Create list</span>
 				</h1>
 			</div>
-		</div>
-	</div>
+
 @endsection
 
 @section('content')

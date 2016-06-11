@@ -1,8 +1,7 @@
 @extends('layouts.frontend')
 
 @section('page_header')
-	<div class="page-header">
-		<div class="page-header-content">			
+
 			<div class="page-title">
 				<a href="/create_list" type="button" class="btn bg-teal pull-right">
 					<i class="icon icon-plus2"></i> Create list
@@ -14,8 +13,7 @@
 					<span class="text-semibold"><i class="icon-list2"></i> My lists</span>
 				</h1>				
 			</div>
-		</div>
-	</div>
+
 @endsection
 
 @section('content')

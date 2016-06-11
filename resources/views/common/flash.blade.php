@@ -1,5 +1,5 @@
                     <!-- Display flash messages -->
-					<div class="flash-message">					
+					<div class="flash-message header-flash">					
 						@foreach (['danger', 'warning', 'success', 'info'] as $msg)
                             
 							@if(Session::has('alert-' . $msg))

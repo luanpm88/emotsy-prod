@@ -12,7 +12,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'first_name', 'last_name', 'email', 'image', 'timezone', 'language_id'
+        'name', 'email', 'first_name', 'last_name', 'email', 'timezone', 'language_id'
     ];
     
     /**
@@ -37,6 +37,16 @@ class User extends Authenticatable
         'language_id' => 'required',
         'password' => 'confirmed|min:5',
     );
+    
+    /**
+     * Associations.
+     *
+     * @var object | collect
+     */ 
+    public function contact()
+    {
+        return $this->belongsTo('Mailixa\Model\Contact');
+    }
     
     /**
      * Bootstrap any application services.
@@ -68,5 +78,51 @@ class User extends Authenticatable
     public function displayName()
     {
         return $this->first_name . " " . $this->last_name;
+    }
+    
+    /**
+     * Upload and resize avatar.
+     *
+     * @var void
+     */
+    public function uploadImage($file) {
+        $path = 'upload/user/image/';
+        $upload_path = storage_path($path);
+        $filename = "user-" . $this->id . "." . $file->getClientOriginalExtension();
+        
+        // save to server
+        $file->move($upload_path, $filename);
+        
+        // create thumbnails
+        $img = \Image::make($upload_path . $filename);
+        $img->fit(100, 100)->save($upload_path . $filename . '.thumb.jpg');
+  
+        return $path . $filename;
+    }
+    
+    /**
+     * Get image thumb path.
+     *
+     * @var string
+     */
+    public function imagePath() {
+        if(!empty($this->image) && !empty($this->id)) {
+            return storage_path($this->image).".thumb.jpg";
+        } else {
+            return "";
+        }
+    }
+    
+    /**
+     * Get image thumb path.
+     *
+     * @var string
+     */
+    public function removeImage() {
+        if(!empty($this->image) && !empty($this->id)) {
+            $path = storage_path($this->image);
+            unlink($path);
+            unlink($path.".thumb.jpg");
+        }
     }
 }

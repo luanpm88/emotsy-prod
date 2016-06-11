@@ -10,21 +10,23 @@
 @endsection
 
 @section('page_header')
-	<div class="page-header">
-		<div class="page-header-content">			
+	
 			<div class="page-title">
 				<ul class="breadcrumb breadcrumb-caret position-right">
 					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+					<li class="active">{{ trans('messages.profile') }}</li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-profile"></i> {{ trans('messages.my_profile') }}</span>
+					<span class="text-semibold"><i class="icon-profile"></i> {{ $user->displayName() }}</span>
 				</h1>
 			</div>
-		</div>
-	</div>
+				
 @endsection
 
-@section('content')    
+@section('content')
+	
+				@include("account._menu")	
+	
 				<form enctype="multipart/form-data" action="{{ action('AccountController@profile') }}" method="POST" class="form-validate-jquery">
 					{{ csrf_field() }}
 					
@@ -34,14 +36,18 @@
 								<h2 class="text-semibold text-teal-800">{{ trans('messages.profile_photo') }}</h2>
 								<div class="media profile-image">
 									<div class="media-left">
-										<a href="#"><img src="{{ URL::asset('assets/images/placeholder.jpg') }}" class="img-circle" alt=""></a>
+										<a href="#" class="upload-media-container">
+											<img preview-for="image" empty-src="{{ URL::asset('assets/images/placeholder.jpg') }}" src="{{ action('UserController@avatar', $user->id) }}" class="img-circle" alt="">
+										</a>
+										<input type="file" name="image" class="file-styled previewable hide">
+										<input type="hidden" name="_remove_image" value='' />
 									</div>
 									<div class="media-body text-center">
 										<h5 class="media-heading text-semibold">{{ trans('messages.upload_your_photo') }}</h5>
 										{{ trans('messages.photo_at_least', ["size" => "300px x 300px"]) }}
 										<br /><br />
-										<a href="" class="btn btn-xs bg-teal mr-10"><i class="icon-upload4"></i> {{ trans('messages.upload') }}</a>
-										<a href="" class="btn btn-xs bg-grey-800"><i class="icon-trash"></i> {{ trans('messages.remove') }}</a>
+										<a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-xs bg-teal mr-10"><i class="icon-upload4"></i> {{ trans('messages.upload') }}</a>
+										<a href="#remove" class="btn btn-xs bg-grey-800 remove-profile-image"><i class="icon-trash"></i> {{ trans('messages.remove') }}</a>
 									</div>
 								</div>
 							</div>								
@@ -80,8 +86,7 @@
 					</div>
 					
 					<div class="text-right">
-						<button class="btn bg-teal mr-10"><i class="icon-check"></i> Save</button>
-						<a href="/lists" class="btn bg-grey-800"><i class="icon-cross2"></i> Cancel</a>
+						<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 					</div>
 					
 				<form>

@@ -20,7 +20,7 @@ class CreateContactsTable extends Migration
             $table->string('company')->nullable();
             $table->string('address_1');
             $table->string('address_2')->nullable();
-            $table->integer('country_id');
+            $table->integer('country_id')->unsigned();
             $table->string('state');
             $table->string('zip');
             $table->string('phone')->nullable();

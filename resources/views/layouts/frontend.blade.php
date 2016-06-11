@@ -43,6 +43,7 @@
 	<!-- /theme JS files -->
 	
 	@include('layouts._script_vars')
+	@include('layouts._menu_script')
 </head>
 
 <body>
@@ -104,7 +105,16 @@
 	<!-- /main navbar -->
 	
 	<!-- Page header -->
-	@yield('page_header')
+	<div class="page-header">
+		<div class="page-header-content">
+			
+			<!-- display flash message -->
+			@include('common.flash')
+			
+			@yield('page_header')
+			
+		</div>
+	</div>
 	<!-- /page header -->
 
 	<!-- Page container -->
@@ -115,9 +125,6 @@
 
 			<!-- Main content -->
 			<div class="content-wrapper">
-                
-				<!-- display flash message -->
-				@include('common.flash')
 				
 				<!-- main inner content -->
 				@yield('content')

@@ -47,11 +47,19 @@ class AccountController extends Controller
                 $user->password = bcrypt($request->password);
             }
             
-            // Upload and save avatar
-            if ($request->hasFile('avatar')) {
-                if ($request->file('avatar')->isValid()) {
-                    $user->avatar = $user->uploadAvatar($request->file('avatar'));
+            // Upload and save image
+            if ($request->hasFile('image')) {
+                if ($request->file('image')->isValid()) {
+                    // Remove old images
+                    $user->removeImage();                    
+                    $user->image = $user->uploadImage($request->file('image'));
                 }
+            }
+            
+            // Remove image
+            if ($request->_remove_image == 'true') {
+                $user->removeImage();
+                $user->image = "";
             }
             
             if ($user->save()) {
@@ -60,8 +68,50 @@ class AccountController extends Controller
         }
         
         return view('account.profile', [
-            'timezone_options' => \Mailixa\Library\Tool::allTimeZones(),
             'user' => $user->fill($request->old()),
+        ]);
+    }
+    
+    /**
+     * Update user contact information.
+     *
+     * @param  \Illuminate\Http\Request $request
+     * @return \Illuminate\Http\Response
+    **/
+    public function contact(Request $request)
+    {
+        // Get current user
+        $user = $request->user();
+        $contact = $user->contact;
+        
+        // Create new company if null
+        if(!is_object($contact)) {
+            $contact = new \Mailixa\Model\Contact();
+            $contact->user_id = $user->id;
+        }
+        
+        // authorize
+        if (\Gate::denies('update', $contact)) {
+            return $this->notAuthorized();
+        }
+        
+        // save posted data
+        if ($request->isMethod('post'))
+        {            
+            $this->validate($request, \Mailixa\Model\Contact::$rules);
+            
+            $contact->fill($request->all());
+            
+            // Save current user info
+            if($contact->save())
+            {
+                $request->session()->flash('alert-success', 'Contact information was successfully updated!');
+            }
+        }
+
+        return view('account.contact', [
+            'user' => $user,
+            'contact' => $contact->fill($request->old()),
         ]);
     }
 }
