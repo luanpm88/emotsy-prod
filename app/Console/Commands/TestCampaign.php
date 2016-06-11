@@ -37,7 +37,7 @@ class TestCampaign extends Command
      */
     public function handle()
     {
-        $handler = \Mailixa\Model\DeliveryHandler::first();
+        $handler = \Mailixa\Model\BounceHandler::first();
         $handler->start();
     }
 }

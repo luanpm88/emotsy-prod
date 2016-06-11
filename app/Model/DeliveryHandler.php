@@ -9,15 +9,6 @@ class DeliveryHandler extends Model
     const TYPE_BOUNCE = 'bounce';
     const TYPE_FEEDBACK_LOOP = 'feedback';
 
-    public function getBouncedAddress($to) {
-        preg_match('/(?<=\+)[^\+]+=[^@]+(?=@)/', $to, $matched);
-        if (sizeof($matched) == 0) {
-            return;
-        } else {
-            return $matched[0];
-        }
-    }
-
     public function start() { 
         // Connect to IMAP server
         $imapPath = "{{$this->host}:{$this->port}/{$this->protocol}/{$this->encryption}}INBOX";
@@ -29,21 +20,17 @@ class DeliveryHandler extends Model
         $emails = imap_search($inbox, 'UNSEEN');
         
         if (!empty($emails)) {
-            foreach($emails as $mail) {
-                
-                $header = imap_headerinfo($inbox, $mail);
-                
-                $output = $header->subject." : ";
-                $output .= $header->toaddress." : ";
-                $output .= $header->Msgno." : ";
-                echo $output . "\n...............................\n";
-
-                imap_delete($inbox, $header->Msgno);
+            foreach($emails as $message) {
+                $this->processMessage($inbox, $message);
             }
         }
          
         // colse the connection
         imap_expunge($inbox);
         imap_close($inbox);
+    }
+
+    public function processMessage($mbox, $message) {
+        // for overwriting
     }
 }
