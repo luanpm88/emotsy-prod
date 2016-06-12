@@ -22,9 +22,9 @@ class CreateMailListsTable extends Migration
             $table->string('from_name')->nullable();
             $table->string('send_to');
             $table->text('description')->nullable();
-            $table->boolean('email_subscribe')->default(false);
-            $table->boolean('email_unsubscribe')->default(false);
-            $table->boolean('email_daily')->default(false);
+            $table->text('email_subscribe');
+            $table->text('email_unsubscribe');
+            $table->text('email_daily');
             
             $table->timestamps();
         });

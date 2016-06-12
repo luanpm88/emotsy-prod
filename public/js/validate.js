@@ -81,10 +81,13 @@ $(function() {
                 error.insertAfter(element);
             }
             
+            // Add error class to form group
+            element.parents(".form-group").addClass('has-error');
         },
         validClass: "validation-valid-label",
         success: function(label) {
-            label.addClass("validation-valid-label").text("Success.")
+            label.addClass("validation-valid-label").text("Success.");
+            label.parents(".form-group").removeClass('has-error');
         },
         rules: {
             vali: "required",

@@ -1,153 +1,119 @@
 @extends('layouts.frontend')
 
+@section('title', trans('messages.create_list'))
+	
+@section('page_script')
+    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/validation/validate.min.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
+		
+    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
+@endsection
+
 @section('page_header')
 	
 			<div class="page-title">
 				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li><a href="/">Home</a></li>
-					<li><a href="/lists">Lists</a></li>
+					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+					<li><a href="{{ action("MailListController@index") }}">{{ trans('messages.lists') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-plus-circle2"></i> Create list</span>
+					<span class="text-semibold"><i class="icon-plus-circle2"></i> {{ trans('messages.create_list') }}</span>
 				</h1>
 			</div>
 
 @endsection
 
 @section('content')
-                <form>
+                <form action="{{ action('MailListController@store') }}" method="POST" class="form-validate-jqueryz">
+					{{ csrf_field() }}
+					
 					<div class="sub_section">
-						<h2 class="text-semibold text-teal-800">List details</h2>
+						<h2 class="text-semibold text-teal-800">{{ trans('messages.list_details') }}</h2>
 						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-									<label>List name</label>
-									<input type="text" class="form-control">
-									<div class="help alert alert-info">
-										<span>Your subscribers will see this, so make it something appropriate.</span><br> <span>Good example: “Acme Company Newsletter”</span><br> <span>Bad example: “Cust_11_01_2007”</span>
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="from_email">Default <span class="keyword">From email address</span></label>
-									<input type="text" class="form-control">
-									<div class="help alert alert-info">
-										This is the address people will reply to.
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="from_email">Default <span class="keyword">From name</span></label>
-									<input type="text" class="form-control">
-									<div class="help alert alert-info">
-										This is who your emails will come from. Use something they'll instantly recognize, like your company name.
-									</div>
-								</div>
-								<div class="form-group">
-									<label for="from_email">Remind people how they signed up to your list</label>
-									<select data-placeholder="Type to search" class="select-search">
-										<option value="">Reuse a reminder from another list</option>
-										<option value="296621">List 1</option>
-										<option value="33197">Myself</option>
-									</select>
-									<br /><br />
-									<textarea placeholder="Write a short reminder about how the recipient joined your list." class="form-control"></textarea>
-									<div class="help alert alert-info">
-										Example: “You are receiving this email because you opted in at our website … ” or “We send special offers to customers who opted in at … ”
-									</div>
-								</div>																
+							<div class="col-md-6">									
+										
+									@include('helpers.form_control', ['type' => 'text', 'name' => 'name', 'value' => $list->name, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+									
+									@include('helpers.form_control', ['type' => 'text', 'name' => 'from_email', 'label' => trans('messages.default_from_email_address'), 'value' => $list->from_email, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+									
+									@include('helpers.form_control', ['type' => 'text', 'name' => 'from_name', 'label' => trans('messages.default_from_name'), 'value' => $list->from_name, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+									
+									
+									
 							</div>
 							<div class="col-md-6">
-								<div class="form-group">
-									<label>Company / organization</label>
-									<input type="text" class="form-control">
-								</div>
-								<div class="form-group">
-									<label>Address</label>
-									<div class="row">
-										<div class="col-md-6">
-											<input type="text" class="form-control">
-										</div>
-										<div class="col-md-6">
-											<input type="text" class="form-control">
-										</div>
-									</div>
-								</div>								
-								<div class="row">
-									<div class="col-md-6">
-										<div class="form-group">
-											<label>City</label>
-											<input type="text" class="form-control">
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label>Zip / Postal code</label>
-											<input type="text" class="form-control">
-										</div>
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-6">
-										<div class="form-group">
-											<label>Country</label>
-											<select data-placeholder="Type to search" class="select-search">
-												<option value="HCM">Ho Chi Minh</option>
-											</select>
-										</div>
-									</div>
-									<div class="col-md-6">
-										<div class="form-group">
-											<label>State / Province / Region</label>
-											<input type="text" class="form-control">
-										</div>
-									</div>
-								</div>
-								<div class="form-group">
-									<label>Phone</label>
-									<input type="text" class="form-control">
-								</div>
+									
+									@include('helpers.form_control', ['type' => 'textarea', 'name' => 'remind_message', 'value' => $list->remind_message, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+										
+									@include('helpers.form_control', ['type' => 'text', 'name' => 'subject', 'label' => trans('messages.default_email_subject'), 'value' => $list->subject, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+									
 							</div>
+							
 						</div>
 					</div>
 					
 					<div class="sub_section">
-						<h2 class="text-semibold text-teal-800">Notifications</h2>
+						<h2 class="text-semibold text-teal-800">
+							{{ trans('messages.contact_information') }}
+							<span class="subhead">{!! trans('messages.default_from_your_contact_information', ['link' => action('AccountController@contact')]) !!}</span>
+						</h2>
+						<div class="row">
+							<div class="col-md-6">									
+										
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'contact[company]', 'label' => trans('messages.company_organization'), 'value' => $list->contact->company, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+								
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'contact[address_1]', 'label' => trans('messages.address_1'), 'value' => $list->contact->address_1, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+								
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'contact[address_2]', 'label' => trans('messages.address_2'), 'value' => $list->contact->address_2, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+								
+								@include('helpers.form_control', ['type' => 'select', 'name' => 'contact[country_id]', 'label' => trans('messages.country'), 'value' => $list->contact->country_id, 'options' => Mailixa\Model\Country::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Mailixa\Model\MailList::$rules])
+								
+							</div>
+							<div class="col-md-6">
+								
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'contact[state]', 'label' => trans('messages.state_province_region'), 'value' => $list->contact->state, 'rules' => Mailixa\Model\MailList::$rules])						
+									
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'contact[city]', 'label' => trans('messages.city'), 'value' => $list->contact->city, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'contact[zip]', 'label' => trans('messages.zip_postal_code'), 'value' => $list->contact->zip, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+								
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'contact[phone]', 'label' => trans('messages.phone'), 'value' => $list->contact->phone, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+								
+							</div>
+							
+						</div>
+					</div>		
+						
+					<div class="sub_section">
+						<h2 class="text-semibold text-teal-800">{{ trans('messages.notifications') }}</h2>
 						<div class="row">
 							<div class="col-md-6">
-								<div class="form-group">
-									<label>Send to</label>
-									<input type="text" class="form-control">
-								</div>
+							
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'email_subscribe', 'value' => $list->email_subscribe, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+								
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'email_unsubscribe', 'value' => $list->email_unsubscribe, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+								
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'email_daily', 'value' => $list->email_daily, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+								
+								<br />									
 									
-								<div class="form-group">
-									<label>How to send notification</label>
-									<div class="checkbox">
-										<label>
-											<input type="checkbox" class="styled">
-											Daily summary
-											<span class="checkbox-description">Summary of subscribe/unsubscribe activity</span>
-										</label>
-									</div>
-									<div class="checkbox">
-										<label>
-											<input type="checkbox" class="styled">
-											One-by-one
-											<span class="checkbox-description">Subscribe notifications as they happen</span>
-										</label>
-									</div>
-									<div class="checkbox">
-										<label>
-											<input type="checkbox" class="styled">
-											One-by-one
-											<span class="checkbox-description">Unsubscribe notifications as they happen</span>
-										</label>
-									</div>
-								</div>
 							</div>
+							<div class="col-md-6">
+									<div class="form-group checkbox-right-switch">
+									
+										@include('helpers.form_control', ['type' => 'checkbox', 'name' => 'send_welcome_email', 'value' => $list->send_welcome_email, 'options' => [0,1], 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+										
+										@include('helpers.form_control', ['type' => 'checkbox', 'name' => 'unsubscribe_notification', 'value' => $list->unsubscribe_notification, 'options' => [0,1], 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+										
+									</div>
+							</div>
+							
 						</div>
 					</div>
+								
 					
 					<div class="text-right">
-						<button class="btn bg-teal"><i class="icon-check"></i> Save</button>
+						<button class="btn bg-teal mr-10"><i class="icon-check"></i> Save</button>
 						<a href="/lists" class="btn bg-grey-800"><i class="icon-cross2"></i> Cancel</a>
 					</div>
 					

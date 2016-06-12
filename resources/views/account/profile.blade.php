@@ -65,7 +65,7 @@
 									</div>
 								</div>
 								
-								@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $user->timezone, 'options' => Mailixa\Library\Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Mailixa\Model\User::$rules])								
+								@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $user->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Mailixa\Model\User::$rules])								
 								
 								@include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $user->language_id, 'options' => Mailixa\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Mailixa\Model\User::$rules])
 								

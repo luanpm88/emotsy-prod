@@ -44,6 +44,14 @@ function readURL(input, img) {
 }
 
 $(function() {
+    // Basic tooltip
+    // ------------------------------
+    
+    // Default tooltip
+    $('[data-popup=tooltip]').tooltip({
+		template: '<div class="tooltip"><div class="bg-teal-800"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div></div>'
+	});
+    
     // Basic select2
     // ------------------------------
 
@@ -87,5 +95,28 @@ $(function() {
         img.attr("src", img.attr("empty-src"));
         imput.val("true");
     });
+    
+    //
+    // Switchery
+    // ------------------------------
+
+    // Initialize multiple switches
+    if (Array.prototype.forEach) {
+        var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
+        elems.forEach(function(html) {
+            var switchery = new Switchery(html);
+        });
+    }
+    else {
+        var elems = document.querySelectorAll('.switchery');
+        for (var i = 0; i < elems.length; i++) {
+            var switchery = new Switchery(elems[i]);
+        }
+    }
+    
+    // Bootstrap switch
+    // ------------------------------
+
+    $(".switch").bootstrapSwitch();
     
 });

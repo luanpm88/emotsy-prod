@@ -107,4 +107,16 @@ class Tool
         }
         return $arr;
     }
+    
+    /**
+      * Format display datetime.
+      *
+      * @var string
+      */
+    public static function formatDateTime($datetime) {
+      $timezone = isset(\Auth::user()->timezone) ? \Auth::user()->timezone : date_default_timezone_get();
+      $result = $datetime->timezone($timezone)->format(trans('messages.datetime_format'));
+      
+      return $result;
+   }
 }

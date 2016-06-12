@@ -1,15 +1,23 @@
-                    <!-- Display flash messages -->
-					<div class="flash-message header-flash">					
-						@foreach (['danger', 'warning', 'success', 'info'] as $msg)
+					<script>
+						@foreach (['danger', 'warning', 'success', 'info', 'error', 'warning'] as $msg)
                             
 							@if(Session::has('alert-' . $msg))
                             
-							<p class="alert alert-{{ $msg }} alert-styled-left alert-arrow-left alert-bordered">
-								<button data-dismiss="alert" class="close" type="button"><span>×</span><span class="sr-only">Close</span></button>
-								{{ Session::get('alert-' . $msg) }}
-							</p>
+								$(document).ready(function() {
+									// Success alert
+									swal({
+										title: "{{ Session::get('alert-' . $msg) }}",
+										text: "",
+										confirmButtonColor: "#00695C",
+										type: "{{ $msg }}",
+										allowOutsideClick: true,
+										confirmButtonText: "{{ trans('messages.ok') }}",
+										customClass: "swl-{{ $msg }}"
+									});								
+									
+								});									
 							
-						  @endif
+							@endif
 						@endforeach
-					</div>
-					<!-- end .flash-message -->
+						
+					</script>

@@ -36,6 +36,12 @@
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/selects/bootstrap_multiselect.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/ui/moment/moment.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/daterangepicker.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/notifications/bootbox.min.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/notifications/sweet_alert.min.js') }}"></script>
+		
+	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/switchery.min.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/switch.min.js') }}"></script>
 	
 	@yield('page_script')
 	
@@ -44,6 +50,9 @@
 	
 	@include('layouts._script_vars')
 	@include('layouts._menu_script')
+	
+	<!-- display flash message -->
+	@include('common.flash')
 </head>
 
 <body>
@@ -66,7 +75,9 @@
 					<a href="#"><i class="icon-paperplane"></i> {{ trans('messages.campaigns') }}</a>
 				</li>
                 <li><a href="#"><i class="icon-magazine"></i> {{ trans('messages.templates') }}</a></li>
-                <li><a href="#"><i class="icon-address-book2"></i> {{ trans('messages.lists') }}</a></li>
+                <li rel0="MailListController">
+					<a href="{{ action('MailListController@index') }}"><i class="icon-address-book2"></i> {{ trans('messages.lists') }}</a>
+				</li>
                 <li><a href="#"><i class="icon-pie-chart5"></i> {{ trans('messages.reports') }}</a></li>
                 <li><a href="#"><i class="icon-server"></i> {{ trans('messages.servers') }}</a></li>
 			</ul>
@@ -89,7 +100,7 @@
 
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
-						<img src="{{ URL::asset('assets/images/placeholder.jpg') }}" alt="">
+						<img src="{{ action('UserController@avatar', Auth::user()->id) }}" alt="">
 						<span>{{ Auth::user()->displayName() }}</span>
 						<i class="caret"></i>
 					</a>
@@ -107,9 +118,6 @@
 	<!-- Page header -->
 	<div class="page-header">
 		<div class="page-header-content">
-			
-			<!-- display flash message -->
-			@include('common.flash')
 			
 			@yield('page_header')
 			

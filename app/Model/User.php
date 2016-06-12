@@ -95,7 +95,7 @@ class User extends Authenticatable
         
         // create thumbnails
         $img = \Image::make($upload_path . $filename);
-        $img->fit(100, 100)->save($upload_path . $filename . '.thumb.jpg');
+        $img->fit(120, 120)->save($upload_path . $filename . '.thumb.jpg');
   
         return $path . $filename;
     }
@@ -121,8 +121,12 @@ class User extends Authenticatable
     public function removeImage() {
         if(!empty($this->image) && !empty($this->id)) {
             $path = storage_path($this->image);
-            unlink($path);
-            unlink($path.".thumb.jpg");
+            if(is_file($path)) {
+                unlink($path);
+            }
+            if(is_file($path.".thumb.jpg")) {
+                unlink($path.".thumb.jpg");
+            }
         }
     }
 }

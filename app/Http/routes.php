@@ -11,21 +11,22 @@
 |
 */
 
-//Route::group(['middleware' => 'web'], function () {  
-    Route::auth();
-    
-    Route::get('/', "HomeController@index");
-    
-    // Update current user profile
-    Route::get('account/profile', 'AccountController@profile');
-    Route::post('account/profile', 'AccountController@profile');
-    Route::get('account/contact', 'AccountController@contact');
-    Route::post('account/contact', 'AccountController@contact');
-    
-    // Translation data
-    Route::get('/datatable_locale', 'Controller@datatable_locale');
-    Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
-    
-    // User avatar
-    Route::get('assets/images/avatar/user-{id}.jpg', 'UserController@avatar');
-//});
+Route::auth();
+
+Route::get('/', "HomeController@index");
+
+// Update current user profile
+Route::get('account/profile', 'AccountController@profile');
+Route::post('account/profile', 'AccountController@profile');
+Route::get('account/contact', 'AccountController@contact');
+Route::post('account/contact', 'AccountController@contact');
+
+// Translation data
+Route::get('/datatable_locale', 'Controller@datatable_locale');
+Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
+
+// User avatar
+Route::get('assets/images/avatar/user-{id}.jpg', 'UserController@avatar');
+
+// Mail list
+Route::resource('lists', 'MailListController');
