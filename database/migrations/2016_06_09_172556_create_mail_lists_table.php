@@ -20,11 +20,12 @@ class CreateMailListsTable extends Migration
             $table->string('name');
             $table->string('from_email')->nullable();
             $table->string('from_name')->nullable();
-            $table->string('send_to');
             $table->text('description')->nullable();
-            $table->text('email_subscribe');
-            $table->text('email_unsubscribe');
-            $table->text('email_daily');
+            $table->text('email_subscribe')->nullable();
+            $table->text('email_unsubscribe')->nullable();
+            $table->text('email_daily')->nullable();
+            $table->boolean('send_welcome_email')->default(false);
+            $table->boolean('unsubscribe_notification')->default(false);
             
             $table->timestamps();
         });

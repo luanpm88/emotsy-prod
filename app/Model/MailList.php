@@ -12,7 +12,7 @@ class MailList extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'from_email', 'from_name', 'remind_message', 'send_to', 'email_daily', 'email_subscribe', 'email_unsubscribe'
+        'name', 'from_email', 'from_name', 'remind_message', 'send_to', 'email_daily', 'email_subscribe', 'email_unsubscribe', 'send_welcome_email', 'unsubscribe_notification'
     ];
     
     /**
@@ -24,7 +24,6 @@ class MailList extends Model
         'name' => 'required',
         'from_email' => 'required',
         'from_name' => 'required',
-        'send_to' => 'required',
         'remind_message' => 'required',
         'contact.company' => 'required',
         'contact.address_1' => 'required',
@@ -33,6 +32,9 @@ class MailList extends Model
         'contact.city' => 'required',
         'contact.zip' => 'required',
         'contact.phone' => 'required',
+        'email_subscribe' => 'regex:"^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$"',
+        'email_unsubscribe' => 'regex:"^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$"',
+        'email_daily' => 'regex:"^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$"',
     );
     
     /**

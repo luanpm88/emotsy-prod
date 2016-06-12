@@ -114,9 +114,13 @@ class Tool
       * @var string
       */
     public static function formatDateTime($datetime) {
-      $timezone = isset(\Auth::user()->timezone) ? \Auth::user()->timezone : date_default_timezone_get();
-      $result = $datetime->timezone($timezone)->format(trans('messages.datetime_format'));
-      
-      return $result;
+        $timezone = \Auth::user()->timezone;
+        $result = $datetime;
+        if (!empty($timezone)) {
+            $result = $result->timezone($timezone);
+        }
+        $result = $result->format(trans('messages.datetime_format'));
+        
+        return $result;
    }
 }

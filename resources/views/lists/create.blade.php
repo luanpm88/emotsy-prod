@@ -101,9 +101,9 @@
 							<div class="col-md-6">
 									<div class="form-group checkbox-right-switch">
 									
-										@include('helpers.form_control', ['type' => 'checkbox', 'name' => 'send_welcome_email', 'value' => $list->send_welcome_email, 'options' => [0,1], 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+										@include('helpers.form_control', ['type' => 'checkbox', 'name' => 'send_welcome_email', 'value' => $list->send_welcome_email, 'options' => [false,true], 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
 										
-										@include('helpers.form_control', ['type' => 'checkbox', 'name' => 'unsubscribe_notification', 'value' => $list->unsubscribe_notification, 'options' => [0,1], 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+										@include('helpers.form_control', ['type' => 'checkbox', 'name' => 'unsubscribe_notification', 'value' => $list->unsubscribe_notification, 'options' => [false,true], 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
 										
 									</div>
 							</div>
