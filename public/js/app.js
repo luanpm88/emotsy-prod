@@ -116,7 +116,10 @@ $(function() {
     
     // Bootstrap switch
     // ------------------------------
-
     $(".switch").bootstrapSwitch();
     
+    
+    // Pagination class
+    // ------------------------------
+    $(".pagination").addClass('pagination-flat');
 });

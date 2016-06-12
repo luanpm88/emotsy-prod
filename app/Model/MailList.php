@@ -38,6 +38,13 @@ class MailList extends Model
     );
     
     /**
+     * Items per page.
+     *
+     * @var array
+     */
+    public static $itemsPerPage = 2;
+    
+    /**
      * Bootstrap any application services.
      *
      * @return void
@@ -56,6 +63,10 @@ class MailList extends Model
                 $uid = uniqid();
             }
             $item->uid = $uid;
+            
+            // Update custom order
+            \Mailixa\Model\MailList::getAll()->increment('custom_order', 1);
+            $item->custom_order = 0;
         });
     }
     
@@ -76,6 +87,26 @@ class MailList extends Model
      */
     public static function getAll()
     {
-        return MailList::all();
+        return MailList::select("*");
+    }
+    
+    /**
+     * Get all languages.
+     *
+     * @return collect
+     */
+    public static function filter()
+    {
+        return MailList::select("*");
+    }
+    
+    /**
+     * Get all languages.
+     *
+     * @return collect
+     */
+    public static function search()
+    {
+        return MailList::filter()->all();
     }
 }

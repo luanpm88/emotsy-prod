@@ -29,4 +29,5 @@ Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
 Route::get('assets/images/avatar/user-{id}.jpg', 'UserController@avatar');
 
 // Mail list
+Route::get('lists/sort', 'MailListController@sort');
 Route::resource('lists', 'MailListController');

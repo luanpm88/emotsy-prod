@@ -1,15 +1,15 @@
 @if (count($errors) > 0)
     <!-- Form Error List -->
-    <div class="alert alert-danger">
+    <div class="alert alert-danger alert-noborder">
         <button data-dismiss="alert" class="close" type="button"><span>×</span><span class="sr-only">Close</span></button>
-        <strong>Whoops! Something went wrong!</strong>
+        <strong>{{ trans('messages.check_entry_try_again') }}</strong>
 
-        <br><br>
+        <!--<br><br>
 
         <ul>
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
-        </ul>
+        </ul>-->
     </div>
 @endif

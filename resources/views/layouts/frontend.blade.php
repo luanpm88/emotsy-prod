@@ -133,6 +133,9 @@
 
 			<!-- Main content -->
 			<div class="content-wrapper">
+			
+				<!-- display flash message -->
+				@include('common.errors')
 				
 				<!-- main inner content -->
 				@yield('content')

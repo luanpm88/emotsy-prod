@@ -456,3 +456,31 @@ textarea.form-control {
     float: left;
     margin-left: 20px;
 }
+.pagination {
+    margin: 15px 0;
+    float: right;
+}
+.pagination-flat > li > a:hover {
+    background: #c8e9e6;
+}
+.pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
+    background: #00838F;
+}
+.filter-box .select2 {
+    width: 150px !important;
+}
+.filter-box .select2-selection--single {
+    height: 33px;
+    margin-top: -3px;
+}
+.filter-box .select2-selection--single:not([class*=bg-]) {
+    padding: 3px 0;
+}
+.filter-box .select2-selection--single .select2-selection__arrow:after {
+    margin-top: -12px;
+}
+.filter-box .checkbox.inline {
+    margin-top: 5px;
+    display: block;
+    float: left;
+}

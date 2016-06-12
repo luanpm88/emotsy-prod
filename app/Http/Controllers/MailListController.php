@@ -15,7 +15,7 @@ class MailListController extends Controller
      */
     public function index()
     {
-        $lists = \Mailixa\Model\MailList::getAll();
+        $lists = \Mailixa\Model\MailList::getAll()->orderBy("custom_order")->paginate(\Mailixa\Model\MailList::$itemsPerPage);
         
         return view('lists.index', [
             'lists' => $lists
@@ -132,5 +132,23 @@ class MailListController extends Controller
     public function destroy($id)
     {
         //
+    }
+    
+    /**
+     * Custom sort items.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function sort(Request $request)
+    {
+        $sort = json_decode($request->sort);
+        foreach($sort as $row) {
+            $list = \Mailixa\Model\MailList::find($row[0]);
+            $list->custom_order = $row[1];
+            $list->save();            
+        }
+        
+        echo trans('messages.lists.custom_order.updated');
     }
 }
