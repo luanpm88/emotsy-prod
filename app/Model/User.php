@@ -140,14 +140,14 @@ class User extends Authenticatable
         $path = base_path('.authenticate');
         
         if (file_exists($path)) {
-            $content = \File::get($path);
+            $content = \File::get($path);            
             $lines = explode("\n", $content);
-            if (count($lines) > 3) {
+            if (count($lines) > 1) {                
                 $demo = session()->get('demo');
                 if (!isset($demo) || $demo == "admin") {
-                    return ['email' => $lines[2], 'password' => $lines[3]];
+                    return ['email' => $lines[0], 'password' => $lines[1]];
                 } else {
-                    return ['email' => $lines[0], 'password' => $lines[0]];
+                    return ['email' => $lines[0], 'password' => $lines[1]];
                 }
             }
         }
