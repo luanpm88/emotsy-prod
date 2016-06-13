@@ -32,6 +32,14 @@
 						<div class="col-md-10">
 							@if ($lists->count() >= 0)					
 								<div class="filter-box">
+									<div class="btn-group list_actions hide">
+										<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
+											{{ trans('messages.actions') }} <span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu dropdown-menu-right">
+											<li><a href="#"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
+										</ul>
+									</div>
 									<div class="checkbox inline check_all_list">
 										<label>
 											<input type="checkbox" class="styled check_all">
@@ -43,12 +51,13 @@
 											<option value="custom_order" class="active">{{ trans('messages.custom_order') }}</option>
 											<option value="name">{{ trans('messages.name') }}</option>
 											<option value="created_at">{{ trans('messages.created_at') }}</option>
-										</select>
+										</select>										
 										<button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
 											<i class="icon-sort-amount-asc"></i>
 										</button>
 									</span>
 									<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+									<i class="icon-search4 keyword_search_button"></i>
 								</div>
 							@endif
 						</div>

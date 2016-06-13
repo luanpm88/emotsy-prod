@@ -56,14 +56,14 @@ function tableFilter(form, custom_url) {
 function listCheckAll(form) {
     form.find('table input[type=checkbox]').prop("checked", true);
     form.find('.check_all_list').removeClass('check-some');
-    
+    form.find('.list_actions').removeClass('hide');
     $.uniform.update();
 }
 
 function listUncheckAll(form) {
     form.find('table input[type=checkbox]').prop("checked", false);
     form.find('.check_all_list').removeClass('check-some');
-    
+    form.find('.list_actions').addClass('hide');
     $.uniform.update();
 }
 
@@ -79,6 +79,8 @@ function updateCheckList() {
         if (vals.length == 0) {
             form.find('.check_all_list input.check_all').prop("checked", false);            
             form.find('.check_all_list').removeClass('check-some');
+            form.find('.list_actions').removeClass('check-some');
+            form.find('.list_actions').addClass('hide');
             $.uniform.update();
         }
         
@@ -86,11 +88,13 @@ function updateCheckList() {
         else if (total > vals.length) {
             form.find('.check_all_list input.check_all').prop("checked", true);
             form.find('.check_all_list').addClass('check-some');
+            form.find('.list_actions').removeClass('hide');
             $.uniform.update();
         }
         
         // check if all checked
         else if (total == vals.length) {
+            form.find('.list_actions').removeClass('hide');
             listCheckAll(form);
         }
         

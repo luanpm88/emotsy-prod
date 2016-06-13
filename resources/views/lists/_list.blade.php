@@ -51,7 +51,7 @@
 											<button data-popup="tooltip" title="Add subscriber" type="button" class="btn bg-teal btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></button>
 											<button data-popup="tooltip" title="Overview" type="button" class="btn bg-grey btn-icon"><i class="icon-stats-growth"></i> <i class="icon-search4"></i></button>
 											<div class="btn-group">										
-												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret"></span></button>
+												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 												<ul class="dropdown-menu dropdown-menu-right">
 													<li><a href="#"><i class="icon-users4"></i> {{ trans("messages.subscribers") }}</a></li>
 													<li><a href="#"><i class="icon-make-group"></i> {{ trans('messages.segments') }}</a></li>
