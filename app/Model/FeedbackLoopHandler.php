@@ -20,6 +20,8 @@ class FeedbackLoopHandler extends DeliveryHandler
         if (!empty($matched)) {
             $type = preg_replace('/Received\s*:\s*/im', '', $matched[0]);
             echo "\n".$type."\n";
+        } else {
+            // not an ARF email
         }
         
         echo "\n...............................\n";
