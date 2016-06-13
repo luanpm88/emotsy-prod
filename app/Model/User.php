@@ -129,4 +129,29 @@ class User extends Authenticatable
             }
         }
     }
+    
+    /**
+     * Get authenticate from file.
+     *
+     * @return string
+     */
+    public static function getAuthenticateFromFile()
+    {
+        $path = base_path('.authenticate');
+        
+        if (file_exists($path)) {
+            $content = \File::get($path);
+            $lines = explode("\n", $content);
+            if (count($lines) > 3) {
+                $demo = session()->get('demo');
+                if (!isset($demo) || $demo == "admin") {
+                    return ['email' => $lines[2], 'password' => $lines[3]];
+                } else {
+                    return ['email' => $lines[0], 'password' => $lines[0]];
+                }
+            }
+        }
+        
+        return ['email' => '', 'password' => ''];
+    }
 }

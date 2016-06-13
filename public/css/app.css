@@ -63,6 +63,15 @@ h1, .h1, h2, .h2, h3, .h3 {
 .select2-search--dropdown .select2-search__field {
     border: solid 2px #bbb;
 }
+.select2-results__option[aria-selected=true] {
+    background: #009688;
+}
+.select2-results__option[aria-selected=false]:hover {
+    background: #c8e9e6 !important;
+}
+.select2-search--hide + .select2-results > .select2-results__options {
+    padding: 0;
+}
 a {
     color: #00796B;
 }
@@ -110,7 +119,7 @@ textarea.form-control {
     font-weight: 600;
 }
 .select2-selection--single .select2-selection__arrow:after {
-    font-size: 24px;
+    font-size: 22px;
     color: #777 !important;
     margin-top: -10px;
 }
@@ -266,7 +275,7 @@ textarea.form-control {
 }
 .filter-group {
     display: inline-block;
-    margin-left: 15px;
+    margin-left: 10px;
 }
 .filter-group .title {
     margin-right: 10px;
@@ -370,10 +379,14 @@ textarea.form-control {
     margin: 30px 0 20px 0;    
 }
 .page-second-nav li a.level-1 {
-    font-size: 16px;
     font-weight: 600;
-    margin-right: 40px;
     padding: 10px 0;
+}
+.page-second-nav li {
+    margin-right: 40px;
+}
+.page-second-nav li ul li {
+    margin-right: 0;
 }
 .page-second-nav li.active a.level-1 {
     
@@ -457,7 +470,7 @@ textarea.form-control {
     margin-left: 20px;
 }
 .pagination {
-    margin: 15px 0;
+    margin: 0;
     float: right;
 }
 .pagination-flat > li > a:hover {
@@ -475,12 +488,68 @@ textarea.form-control {
 }
 .filter-box .select2-selection--single:not([class*=bg-]) {
     padding: 3px 0;
+    background: #ddd;
+    border-color: #ddd;
 }
 .filter-box .select2-selection--single .select2-selection__arrow:after {
     margin-top: -12px;
+}
+.select2-selection--single .select2-selection__rendered {
+    padding-right: 32px;
 }
 .filter-box .checkbox.inline {
     margin-top: 5px;
     display: block;
     float: left;
+}
+.check_all_list.check-some .checker span.checked:after {
+    content: "\e9b7";
+    font-size: 20px;
+    padding: 2px;
+}
+.num_per_page {
+    margin: 15px 0;
+}
+.num_per_page label {
+    float: left;
+    font-weight: 600;
+    margin-left: 8px;
+    line-height: 33px;
+}
+.num_per_page .select2 {
+    float: left;
+    width: auto !important;    
+}
+.num_per_page .select2-selection--single {
+    padding: 2px 0;
+    height: 33px;
+    background: #ddd;
+    border-color: #ddd !important
+}
+.num_per_page .select2-selection--single .select2-selection__arrow:after {
+    margin-top: -12px;
+}
+@media (max-width: 768px) {
+    .page-second-nav li a.level-1 {
+        padding: 10px 15px;
+    }
+    .page-second-nav li ul li a {
+        padding-left: 50px;
+    }
+    .page-second-nav li ul li.head {
+        padding-left: 15px
+    }
+}
+.page-second-nav li ul li.head {
+    padding: 8px 15px 8px 18px;
+    font-weight: 600;
+    background: #ddd;
+    color: #333;
+}
+.page-second-nav li ul li.head i {
+    display: inline-block;
+    margin-right: 5px;
+}
+.nav-tabs > li > a {
+    color: #333;
 }

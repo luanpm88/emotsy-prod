@@ -44,9 +44,6 @@ function readURL(input, img) {
 }
 
 $(function() {
-    // Basic tooltip
-    // ------------------------------
-    
     // Default tooltip
     $('[data-popup=tooltip]').tooltip({
 		template: '<div class="tooltip"><div class="bg-teal-800"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div></div>'
@@ -118,8 +115,4 @@ $(function() {
     // ------------------------------
     $(".switch").bootstrapSwitch();
     
-    
-    // Pagination class
-    // ------------------------------
-    $(".pagination").addClass('pagination-flat');
 });

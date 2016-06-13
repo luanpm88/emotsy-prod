@@ -30,4 +30,6 @@ Route::get('assets/images/avatar/user-{id}.jpg', 'UserController@avatar');
 
 // Mail list
 Route::get('lists/sort', 'MailListController@sort');
+Route::get('lists/listing/{page?}', 'MailListController@listing');
 Route::resource('lists', 'MailListController');
+Route::get('lists/{uid}/edit', 'MailListController@edit');

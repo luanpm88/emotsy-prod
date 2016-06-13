@@ -22,4 +22,9 @@ class MailListPolicy
     {
         return true;
     }
+    
+    public function update(\Mailixa\Model\User $user, \Mailixa\Model\MailList $item)
+    {
+        return $item->user_id == $user->id;
+    }
 }

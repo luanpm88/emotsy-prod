@@ -9,15 +9,38 @@ use Mailixa\Http\Requests;
 class MailListController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $lists = \Mailixa\Model\MailList::getAll()->orderBy("custom_order")->paginate(\Mailixa\Model\MailList::$itemsPerPage);
-        
+        $lists = \Mailixa\Model\MailList::getAll();
         return view('lists.index', [
+            'lists' => $lists
+        ]);
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listing(Request $request)
+    {
+        $lists = \Mailixa\Model\MailList::search($request)->paginate($request->per_page);
+        
+        return view('lists._list', [
             'lists' => $lists
         ]);
     }
@@ -37,7 +60,7 @@ class MailListController extends Controller
         
         // authorize
         if (\Gate::denies('create', $list)) {
-            return $this->no_more_item($request);
+            return $this->notAuthorized();
         }
         
         // Get old post values
@@ -67,7 +90,7 @@ class MailListController extends Controller
         
         // authorize
         if (\Gate::denies('create', $list)) {
-            return $this->no_more_item($request);
+            return $this->notAuthorized();
         }
         
         // validate and save posted data
@@ -106,9 +129,28 @@ class MailListController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Request $request, $uid)
     {
-        //
+        // Generate info
+        $user = $request->user();
+        $list = \Mailixa\Model\MailList::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $list)) {
+            return $this->notAuthorized();
+        }
+        
+        // Get old post values
+        if(null !== $request->old()) {
+            $list->fill($request->old());
+        }
+        if(isset($request->old()["contact"])) {
+            $list->contact->fill($request->old()["contact"]);
+        }
+        
+        return view('lists.edit', [
+            'list' => $list,
+        ]);
     }
 
     /**
@@ -144,7 +186,7 @@ class MailListController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach($sort as $row) {
-            $list = \Mailixa\Model\MailList::find($row[0]);
+            $list = \Mailixa\Model\MailList::findByUid($row[0]);
             $list->custom_order = $row[1];
             $list->save();            
         }

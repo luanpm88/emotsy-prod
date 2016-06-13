@@ -42,7 +42,7 @@ class MailList extends Model
      *
      * @var array
      */
-    public static $itemsPerPage = 2;
+    public static $itemsPerPage = 25;
     
     /**
      * Bootstrap any application services.
@@ -95,9 +95,17 @@ class MailList extends Model
      *
      * @return collect
      */
-    public static function filter()
+    public static function filter($request)
     {
-        return MailList::select("*");
+        $user = $request->user();
+        $query = MailList::where("user_id", "=", $user->id);
+        
+        // Keyword
+        if(!empty(trim($request->keyword))) {
+            $query = $query->where('name', 'like', '%' . $request->keyword . '%');
+        }
+        
+        return $query;
     }
     
     /**
@@ -105,8 +113,22 @@ class MailList extends Model
      *
      * @return collect
      */
-    public static function search()
+    public static function search($request)
     {
-        return MailList::filter()->all();
+        $query = MailList::filter($request);
+        
+        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        
+        return $query;
+    }
+    
+    /**
+     * Find item by uid.
+     *
+     * @return object
+     */
+    public static function findByUid($uid)
+    {
+        return MailList::where("uid", "=", $uid)->first();
     }
 }

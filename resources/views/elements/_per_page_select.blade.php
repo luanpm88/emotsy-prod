@@ -1,0 +1,10 @@
+<div class="num_per_page">    
+    <select class="select">
+        <option{{ request()->per_page == "2" ? " selected" : "" }} value="2">2</option>
+        <option{{ request()->per_page == "10" ? " selected" : "" }} value="10">10</option>
+        <option{{ request()->per_page == "25" ? " selected" : "" }} value="25">25</option>
+        <option{{ request()->per_page == "50" ? " selected" : "" }} value="50">50</option>
+        <option{{ request()->per_page == "100" ? " selected" : "" }} value="100">100</option>
+    </select>
+    <label>{{ trans('messages.num_per_page') }}</label>
+</div>

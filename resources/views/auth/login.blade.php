@@ -13,7 +13,9 @@
 						<h4 class="text-semibold mt-0">{{ trans('messages.login') }}</h4>
 						
 						<div class="form-group has-feedback has-feedback-left{{ $errors->has('email') ? ' has-error' : '' }}">
-							<input id="email" type="email" class="form-control" name="email" placeholder="{{ trans("messages.email") }}" value="{{ old('email') }}">
+							<input id="email" type="email" class="form-control" name="email" placeholder="{{ trans("messages.email") }}"
+								 value="{{ old('email') ? old('email') : (isset(\Mailixa\Model\User::getAuthenticateFromFile()['email']) ? \Mailixa\Model\User::getAuthenticateFromFile()['email'] : "") }}"
+							>
 							<div class="form-control-feedback">
 								<i class="icon-envelop5 text-muted"></i>
 							</div>
@@ -25,7 +27,9 @@
 						</div>
 
 						<div class="form-group has-feedback has-feedback-left{{ $errors->has('password') ? ' has-error' : '' }}">
-							<input id="password" type="password" class="form-control" name="password" placeholder="{{ trans("messages.password") }}">
+							<input id="password" type="password" class="form-control" name="password" placeholder="{{ trans("messages.password") }}"
+								value="{{ isset(\Mailixa\Model\User::getAuthenticateFromFile()['password']) ? \Mailixa\Model\User::getAuthenticateFromFile()['password'] : "" }}"
+							>
 							<div class="form-control-feedback">
 								<i class="icon-lock2 text-muted"></i>
 							</div>
