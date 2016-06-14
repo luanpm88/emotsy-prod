@@ -20,7 +20,19 @@
 											</label>
 										@endif
 										
+										@if (!empty($prefix))
+											<span class="prefix">
+												{!! $prefix !!}
+											</span>
+										@endif
+										
 										@include('helpers._' . $type)
+										
+										@if (!empty($subfix))
+											<span class="subfix">
+												{!! $subfix !!}
+											</span>
+										@endif
 										
 										@if (isset($help_class) && Lang::has('messages.' . $help_class . '.' . $name . '.help'))
 											<div class="help alert alert-info">

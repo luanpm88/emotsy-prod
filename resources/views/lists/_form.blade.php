@@ -9,8 +9,6 @@
 									
 									@include('helpers.form_control', ['type' => 'text', 'name' => 'from_name', 'label' => trans('messages.default_from_name'), 'value' => $list->from_name, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
 									
-									
-									
 							</div>
 							<div class="col-md-6">
 									

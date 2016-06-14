@@ -12,15 +12,24 @@ class Field extends Model
      * @var array
      */
     protected $fillable = [
-        'mail_list_id', 'type', 'label', 'tag', 'default_value', 'visible', 'required'
+        'mail_list_id', 'type', 'label', 'tag', 'default_value', 'visible', 'required', 'custom_order'
     ];
+    
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public static $fields_rules = array(
+        
+    );
     
     /**
      * Associations.
      *
      * @var object | collect
      */ 
-    public function mail_list()
+    public function mailList()
     {
         return $this->belongsTo('Mailixa\Model\MailList');
     }

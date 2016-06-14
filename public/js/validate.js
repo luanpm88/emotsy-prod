@@ -52,6 +52,11 @@ $(function() {
                     error.appendTo( element.parent().parent().parent().parent().parent() );
                 }
             }
+            
+            // Select2
+            else if (element.parents(".form-group").find('.input_help').length) {
+                error.insertAfter( element.parents(".form-group").find('.input_help') );
+            }
 
             // Unstyled checkboxes, radios
             else if (element.parents('div').hasClass('checkbox') || element.parents('div').hasClass('radio')) {
@@ -72,7 +77,7 @@ $(function() {
             else if (element.parents(".form-group").find('.select2').length) {
                 error.insertAfter( element.parents(".form-group").find('.select2') );
             }
-
+            
             // Input group, styled file input
             else if (element.parent().hasClass('uploader') || element.parents().hasClass('input-group')) {
                 error.appendTo( element.parent().parent() );

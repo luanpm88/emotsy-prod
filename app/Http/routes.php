@@ -37,3 +37,5 @@ Route::get('lists/{uid}/edit', 'MailListController@edit');
 // Field
 Route::get('lists/{list_uid}/fields', 'FieldController@index');
 Route::get('lists/{list_uid}/fields/sort', 'FieldController@sort');
+Route::post('lists/{list_uid}/fields/store', 'FieldController@store');
+Route::get('lists/{list_uid}/fields/sample/{type}', 'FieldController@sample');

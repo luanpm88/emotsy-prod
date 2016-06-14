@@ -1,5 +1,5 @@
 @media (max-width: 890px) {
-    .table-box td {
+    .table-box td, .table-box th {
         display: block;
         width: 100%;
         clear: both;
@@ -264,8 +264,9 @@ textarea.form-control {
 .list-drag-button {
     color: #999;
     font-size: 20px;
-    margin-right: 0;
+    margin-right: 10px;
     cursor: move;
+    line-height: 36px;
 }
 .list-drag-button:hover {
     color: #555;
@@ -574,4 +575,14 @@ textarea.form-control {
 .hide {
     position: absolute;
     top: -9000px;
+}
+.field-list input {
+    width: auto;
+    margin: 0;
+    display: inline;
+    max-width: 150px;
+}
+.field-list .form-group {
+    margin: 0;
+    display: inline;
 }

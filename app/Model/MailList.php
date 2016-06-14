@@ -156,7 +156,7 @@ class MailList extends Model
      */
     public function getFields()
     {
-        return $this->fields;
+        return $this->fields()->orderBy("custom_order");
     }
     
     /**

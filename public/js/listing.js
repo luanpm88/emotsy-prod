@@ -105,32 +105,40 @@ function updateCustomOrder(form) {
     var per_page = parseInt(form.attr("per-page"));
     var page = parseInt(form.find('table').attr("current-page"));
     var sort = [];
+    var sort_url = form.attr("sort-url");
     form.find("table tr input.node").each(function(index) {
         var num = index + ((page-1)*per_page);
         var row = [];
         row.push($(this).val());
         row.push(num);
         sort.push(row);
+        
+        // if row has custom order input
+        if ($(this).parents('tr').find('input.custom_order').length) {
+            $(this).parents('tr').find('input.custom_order').val(num);
+        }
     });
     console.log(JSON.stringify(sort));
     
     // ajax update custom sort
-    $.ajax({
-        method: "GET",
-        url: form.attr("sort-url"),
-        data: { sort: JSON.stringify(sort) }
-    })
-    .done(function( msg ) {
-        // Success alert
-        swal({
-            title: msg,
-            text: "",
-            confirmButtonColor: "#00695C",
-            type: "success",
-            allowOutsideClick: true,
-            confirmButtonText: LANG_OK,
-        });	
-    });
+    if (typeof(sort_url) != 'undefined') {
+        $.ajax({
+            method: "GET",
+            url: sort_url,
+            data: { sort: JSON.stringify(sort) }
+        })
+        .done(function( msg ) {
+            // Success alert
+            swal({
+                title: msg,
+                text: "",
+                confirmButtonColor: "#00695C",
+                type: "success",
+                allowOutsideClick: true,
+                confirmButtonText: LANG_OK,
+            });	
+        });
+    }
 }
 
 $(document).ready(function() {

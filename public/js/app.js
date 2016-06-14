@@ -115,4 +115,44 @@ $(function() {
     // ------------------------------
     $(".switch").bootstrapSwitch();
     
+    
+    // List fields
+    // ------------------------------
+    // Change item per page
+    $(document).on("click", ".add-custom-field-button", function(e) {
+        var type_name = $(this).attr("type_name");
+        var sample = $("."+type_name+"_sample ");
+        var sample_url = $(this).attr("sample-url");
+        
+        // ajax update custom sort
+        $.ajax({
+            method: "GET",
+            url: sample_url,
+            data: {
+                type: type_name,
+            }
+        })
+        .done(function( msg ) {
+            var index = $('.field-list tr').length;
+            
+            msg = msg.replace(/__index__/g, index);
+            msg = msg.replace(/__type__/g, type_name);
+            
+            $('.field-list').append($('<div>').html(msg).find("table").html());
+            
+            // Switch effects
+            // Bootstrap switch
+            // ------------------------------
+            $(".switch").bootstrapSwitch();
+        });
+            
+        //var content = sample.find("table").html();
+        //
+        //// replace index
+        //var index = $('.field-list tr').length;
+        //content = content.replace(/__index__/g, index);
+        //content = content.replace(/__type__/g, type_name);
+        //
+        //$('.field-list').append(content);
+    });
 });
