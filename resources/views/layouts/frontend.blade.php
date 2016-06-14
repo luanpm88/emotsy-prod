@@ -25,7 +25,8 @@
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/loaders/blockui.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/ui/nicescroll.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/ui/drilldown.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/selects/select2.min.js') }}"></script>            
+	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/selects/select2.min.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/validation/validate.min.js') }}"></script>
 	<!-- /core JS files -->
 
 	<!-- Theme JS files -->
@@ -155,6 +156,37 @@
 
 	</div>
 	<!-- /page container -->
-
+	
+	<a type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#delete_confirm_model">aa</a>
+	<!-- Basic modal -->
+	<div id="delete_confirm_model" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form class="confirm-delete-form" onkeypress="return event.keyCode != 13;">
+					<div class="modal-header">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+					</div>
+	
+					<div class="modal-body">
+						
+							<h6></h6>
+							
+							<div class="form-group">
+								<label>{!! trans('messages.type_delete_to_confirm') !!}</label>
+								<input class="form-control" name="delete" />
+							</div>
+						
+					</div>
+	
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+						<a class="btn btn-danger delete-confirm-button">{{ trans('messages.delete') }}</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- /basic modal -->
 </body>
 </html>

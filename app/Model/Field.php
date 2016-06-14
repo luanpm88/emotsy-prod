@@ -33,6 +33,11 @@ class Field extends Model
     {
         return $this->belongsTo('Mailixa\Model\MailList');
     }
+
+    public function fieldOptions()
+    {
+        return $this->hasMany('Mailixa\Model\FieldOption');
+    }
     
     /**
      * Bootstrap any application services.

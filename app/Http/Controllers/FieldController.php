@@ -28,6 +28,16 @@ class FieldController extends Controller
                     $field->uid = $key;
                 }
                 $field->fill($item);
+                
+                // Field options
+                if(isset($item["options"])) {
+                    $field->fieldOptions = collect();
+                    foreach($item["options"] as $key2 => $item2) {
+                        $option = new \Mailixa\Model\FieldOption($item2);
+                        $option->uid = $key2;
+                        $field->fieldOptions->push($option);
+                    }
+                }
                 $fields[] = $field;
             }
         }
@@ -76,6 +86,14 @@ class FieldController extends Controller
                 $rules["fields." . $key . ".label"] = 'required';
                 $rules["fields." . $key . ".tag"] = 'required|alpha_dash';
                 
+                // check field options
+                if(isset($item["options"])) {
+                    foreach($item["options"] as $key2 => $item2) {
+                        $rules["fields." . $key . ".options." . $key2 . ".label"] = 'required';
+                        $rules["fields." . $key . ".options." . $key2 . ".value"] = 'required';
+                    }
+                }
+                
                 // Check tag exsit
                 $tag = \Mailixa\Model\Field::formatTag($item["tag"]);
                 if (in_array($tag, $tags)) {
@@ -84,10 +102,10 @@ class FieldController extends Controller
                 $tags[] = $tag;
             }
             if (!$has_main_tag) {
-                $rules["fields.miss_main_tag"] = 'required';
+                $rules["miss_main_field_tag"] = 'required';
             }
             if ($conflict_tag) {
-                $rules["fields.conflict_tag"] = 'required';
+                $rules["conflict_field_tags"] = 'required';
             }
             $this->validate($request, $rules);
             
@@ -104,6 +122,16 @@ class FieldController extends Controller
                 $item["tag"] = \Mailixa\Model\Field::formatTag($item["tag"]);
                 $field->fill($item);
                 $field->save();
+                
+                // save field options
+                $field->fieldOptions()->delete();
+                if(isset($item["options"])) {
+                    foreach($item["options"] as $key2 => $item2) {
+                        $option = new \Mailixa\Model\FieldOption($item2);
+                        $option->field_id = $field->id;
+                        $option->save();
+                    }
+                }
                 
                 // store save ids
                 $saved_ids[] = $field->uid;
@@ -198,5 +226,22 @@ class FieldController extends Controller
             'list' => $list,
             'type' => $request->type,
         ]);
+    }
+    
+    /**
+     * Delete an item.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {
+        $field = \Mailixa\Model\Field::findByUid($request->uid);
+        
+        $field->delete();
+        
+        // Redirect to my lists page
+        $request->session()->flash('alert-success', trans('messages.fields.deleted'));
+        return redirect()->action('FieldController@index', $request->list_uid);
     }
 }

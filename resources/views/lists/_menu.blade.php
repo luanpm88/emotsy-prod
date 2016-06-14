@@ -110,27 +110,16 @@
                                                         </li>
                                                     </ul>
 												</li>
-                                                <li  class="dropdown"
-													rel0="MailListController/edit"
-													rel1="FieldController"
-												>
-													<a href="{{ action("AccountController@contact") }}" class="level-1" data-toggle="dropdown">
-														<i class="icon-gear position-left"></i> {{ trans('messages.settings') }}
-                                                        <span class="caret"></span>
-                                                    </a>
-                                                    <ul class="dropdown-menu dropdown-menu-right">
-														<li rel0="MailListController/edit" class="dropdown">
-															<a href="{{ action('MailListController@edit', $list) }}">
-																<i class="icon-pencil7"></i> {{ trans('messages.list_information') }}
-															</a>
-														</li>
-                                                        <li rel0="FieldController/index">
-                                                            <a href="{{ action('FieldController@index', $list->uid) }}">
-                                                                <i class="icon-list3"></i> {{ trans('messages.manage_list_fields') }}
-                                                            </a>
-                                                        </li>
-                                                    </ul>
-												</li>
+												<li rel0="FieldController/index" class="level-1">
+														<a href="{{ action('FieldController@index', $list->uid) }}">
+															<i class="icon-list3"></i> {{ trans('messages.manage_list_fields') }}
+														</a>
+													</li>
+												<li rel0="MailListController/edit" class="level-1">
+													<a href="{{ action('MailListController@edit', $list->uid) }}">
+														<i class="icon-pencil7"></i> {{ trans('messages.list_information') }}
+													</a>
+												</li>                                                
 											</ul>
 										</div>
 									</div>

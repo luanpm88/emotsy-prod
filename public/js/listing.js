@@ -141,12 +141,13 @@ function updateCustomOrder(form) {
     }
 }
 
+var drag_child;
 $(document).ready(function() {
     
     $(".listing-form").each(function() {
         var form = $(this);
         
-        // Make list sortable
+        // Make list sortable        
         form.sortable({
             connectWith: '.row-sortable',
             items: 'tr',
@@ -160,11 +161,21 @@ $(document).ready(function() {
             forcePlaceholderSize: true,
             tolerance: 'pointer',
             start: function(e, ui) {
+                drag_child = ui.item.next().next();
+                $("tr.child").hide();
                 ui.placeholder.height(ui.item.outerHeight());
             },
             update: function(e, ui) {
+                $("tr.child").each(function() {
+                    var rel = $(this).attr("parent");
+                    $(this).insertAfter($("tr[rel='"+rel+"']"));   
+                });
+                $("tr.child").fadeIn();
                 updateCustomOrder(form);
             },
+            stop: function(event, ui) {
+                $("tr.child").fadeIn();
+            }
         });
         
         // Render table

@@ -98,23 +98,35 @@ $(function() {
     // ------------------------------
 
     // Initialize multiple switches
-    if (Array.prototype.forEach) {
-        var elems = Array.prototype.slice.call(document.querySelectorAll('.switchery'));
-        elems.forEach(function(html) {
-            var switchery = new Switchery(html);
-        });
-    }
-    else {
-        var elems = document.querySelectorAll('.switchery');
-        for (var i = 0; i < elems.length; i++) {
-            var switchery = new Switchery(elems[i]);
+    $('.switchery').each(function() {
+        if($(this).attr("data-switchery") != "true") {
+            var switchery = new Switchery(this);
         }
-    }
+    }); 
     
     // Bootstrap switch
     // ------------------------------
     $(".switch").bootstrapSwitch();
     
+    // Confirm event
+    // ------------------------------
+    $(document).on("click", "a[delete-confirm]", function(e) {
+        var mgs = $(this).attr("delete-confirm");
+        
+        $('a[data-target="#delete_confirm_model"]').trigger("click");        
+        $("#delete_confirm_model h6").html(mgs);
+        $(".delete-confirm-button").attr("href", $(this).attr("href"));
+        
+        e.stopImmediatePropagation();
+        e.preventDefault();
+    });
+    $(document).on("click", ".delete-confirm-button", function(e) {
+        if($('.confirm-delete-form').valid()) {
+            
+        } else {
+            e.preventDefault();
+        }        
+    });
     
     // List fields
     // ------------------------------
@@ -138,21 +150,54 @@ $(function() {
             msg = msg.replace(/__index__/g, index);
             msg = msg.replace(/__type__/g, type_name);
             
-            $('.field-list').append($('<div>').html(msg).find("table").html());
+            $('.field-list').append($('<div>').html(msg).find("table tbody").html());
             
-            // Switch effects
-            // Bootstrap switch
+            //
+            // Switchery
             // ------------------------------
-            $(".switch").bootstrapSwitch();
+        
+            // Initialize multiple switches
+            $('.switchery').each(function() {
+                if($(this).attr("data-switchery") != "true") {
+                    var switchery = new Switchery(this);
+                }
+            });                
         });
-            
-        //var content = sample.find("table").html();
-        //
-        //// replace index
-        //var index = $('.field-list tr').length;
-        //content = content.replace(/__index__/g, index);
-        //content = content.replace(/__type__/g, type_name);
-        //
-        //$('.field-list').append(content);
+    });
+    $(document).on("click", ".remove-not-saved-field", function(e) {
+        $('tr[parent="'+$(this).parents('tr').attr('rel')+'"]').remove();
+        $(this).parents('tr').remove();
+    });
+    $(document).on("click", ".add_label_value_group", function(e) {
+        var last_item = $(this).parents("tr").find(".label-value-groups .label-value-group").last();
+        var pre = last_item.attr("rel");
+        var num = parseInt(pre)+1;
+        var clone = $('<div>').append(last_item.clone()).html();
+
+        clone = clone.replace('rel="'+pre+'"', 'rel="'+num+'"');
+        clone = clone.replace('[options]['+pre+'][', '[options]['+num+'][');
+        clone = clone.replace('[options]['+pre+'][', '[options]['+num+'][');
+        clone = clone.replace('[options]['+pre+'][', '[options]['+num+'][');
+        clone = clone.replace('[options]['+pre+'][', '[options]['+num+'][');
+        clone = clone.replace('[options]['+pre+'][', '[options]['+num+'][');
+        clone = clone.replace('[options]['+pre+'][', '[options]['+num+'][');
+        clone = clone.replace('[options]['+pre+'][', '[options]['+num+'][');
+        
+        $(this).parents("tr").find(".label-value-groups").append(clone);
+        $(this).parents("tr").find(".label-value-groups .label-value-group").last().find("input").val("");
+        $(this).parents("tr").find(".label-value-groups .label-value-group").last().find(".help-block").remove();
+        $(this).parents("tr").find(".label-value-groups .label-value-group").last().find(".form-group").removeClass("has-error");
+    });
+    
+    // Validate confirm modal
+    jQuery.validator.addMethod("deleteConfirm", function(value, element) {
+        return value.toLowerCase() == "delete";
+    }, LANG_DELETE_VALIDATE);
+    $(".confirm-delete-form").each(function() {
+        $(this).validate({
+            rules: {
+                delete: { deleteConfirm: true }
+            }
+        });
     });
 });

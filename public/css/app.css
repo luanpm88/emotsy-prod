@@ -247,7 +247,7 @@ textarea.form-control {
 .table-box h5 {
     font-weight: 600;
 }
-.table-box tbody tr td {
+.table-box tbody tr td, .table-box tbody tr th {
     vertical-align: top;
     padding: 20px 10px;
 }
@@ -580,9 +580,38 @@ textarea.form-control {
     width: auto;
     margin: 0;
     display: inline;
-    max-width: 150px;
+    max-width: 300px;
 }
 .field-list .form-group {
     margin: 0;
     display: inline;
+}
+label.error {
+    color: #F44336;
+}
+input.error {
+    border-color: #F44336;
+}
+.label-value-group .btn {
+    line-height: 16px;
+    margin-top: 4px;
+    padding: 3px 3px 2px 3px;
+    border-radius: 100%;
+}
+.label-value-group {
+    width: 100%;
+    margin-bottom: 15px;
+    float: left;
+}
+.label-value-groups .label-value-group:first-child a.btn {
+    display: none;
+}
+.field-list .child input {
+    height: 32px;
+    font-size: 14px;
+    border-width: 1px;
+}
+.field-list .child td {
+    background: #f4f4f4;
+    border-top: solid 3px #ddd;
 }
