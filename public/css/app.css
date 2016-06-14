@@ -251,6 +251,13 @@ textarea.form-control {
     vertical-align: top;
     padding: 20px 10px;
 }
+.table-box-head tr th {
+    background: #eee;
+    font-weight: 600;
+}
+.table-box-head tr td:first-child {
+    padding-left: 20px;
+}
 .single-stat-box {
     margin-right: 30px;
 }

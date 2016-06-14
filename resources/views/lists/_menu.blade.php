@@ -112,6 +112,7 @@
 												</li>
                                                 <li  class="dropdown"
 													rel0="MailListController/edit"
+													rel1="FieldController"
 												>
 													<a href="{{ action("AccountController@contact") }}" class="level-1" data-toggle="dropdown">
 														<i class="icon-gear position-left"></i> {{ trans('messages.settings') }}
@@ -119,13 +120,13 @@
                                                     </a>
                                                     <ul class="dropdown-menu dropdown-menu-right">
 														<li rel0="MailListController/edit" class="dropdown">
-															<a href="">
+															<a href="{{ action('MailListController@edit', $list) }}">
 																<i class="icon-pencil7"></i> {{ trans('messages.list_information') }}
 															</a>
 														</li>
-                                                        <li>
-                                                            <a href="" data-toggle="tab">
-                                                                <i class="icon-grid-alt"></i> {{ trans('messages.manage_list_fields') }}
+                                                        <li rel0="FieldController/index">
+                                                            <a href="{{ action('FieldController@index', $list->uid) }}">
+                                                                <i class="icon-list3"></i> {{ trans('messages.manage_list_fields') }}
                                                             </a>
                                                         </li>
                                                     </ul>

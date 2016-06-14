@@ -12,7 +12,7 @@ class MailList extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'from_email', 'from_name', 'remind_message', 'send_to', 'email_daily', 'email_subscribe', 'email_unsubscribe', 'send_welcome_email', 'unsubscribe_notification'
+        'name', 'default_subject', 'from_email', 'from_name', 'remind_message', 'send_to', 'email_daily', 'email_subscribe', 'email_unsubscribe', 'send_welcome_email', 'unsubscribe_notification'
     ];
     
     /**
@@ -45,6 +45,16 @@ class MailList extends Model
     public static $itemsPerPage = 25;
     
     /**
+     * Associations.
+     *
+     * @var object | collect
+     */ 
+    public function fields()
+    {
+        return $this->hasMany('Mailixa\Model\Field');
+    }
+    
+    /**
      * Bootstrap any application services.
      *
      * @return void
@@ -65,8 +75,15 @@ class MailList extends Model
             $item->uid = $uid;
             
             // Update custom order
-            \Mailixa\Model\MailList::getAll()->increment('custom_order', 1);
+            MailList::getAll()->increment('custom_order', 1);
             $item->custom_order = 0;
+        });
+        
+        // Create uid when list created.
+        static::created(function($item)
+        {
+            //  Create list default fields
+            $item->createDefaultFieds();
         });
     }
     
@@ -81,7 +98,7 @@ class MailList extends Model
     }
     
     /**
-     * Get all languages.
+     * Get all items.
      *
      * @return collect
      */
@@ -130,5 +147,50 @@ class MailList extends Model
     public static function findByUid($uid)
     {
         return MailList::where("uid", "=", $uid)->first();
+    }
+    
+    /**
+     * Get all fields.
+     *
+     * @return object
+     */
+    public function getFields()
+    {
+        return $this->fields;
+    }
+    
+    /**
+     * Create default fields for list.
+     *
+     * @return void
+     */
+    public function createDefaultFieds()
+    {
+        $this->fields()->create([
+                            'mail_list_id' => $this->id,
+                            'type' => 'text',
+                            'label' => trans('messages.email'),
+                            'tag' => "EMAIL",
+                            'required' => true,
+                            'visible' => true,
+                        ]);
+        
+        $this->fields()->create([
+                            'mail_list_id' => $this->id,
+                            'type' => 'text',
+                            'label' => trans('messages.first_name'),
+                            'tag' => \Mailixa\Model\Field::formatTag(trans('messages.first_name_tag')),
+                            'required' => false,
+                            'visible' => true,
+                        ]);
+        
+        $this->fields()->create([
+                            'mail_list_id' => $this->id,
+                            'type' => 'text',
+                            'label' => trans('messages.last_name'),
+                            'tag' => \Mailixa\Model\Field::formatTag(trans('messages.last_name_tag')),
+                            'required' => false,
+                            'visible' => true,
+                        ]);
     }
 }

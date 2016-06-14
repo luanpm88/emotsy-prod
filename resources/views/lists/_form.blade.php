@@ -16,7 +16,7 @@
 									
 									@include('helpers.form_control', ['type' => 'textarea', 'name' => 'remind_message', 'value' => $list->remind_message, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
 										
-									@include('helpers.form_control', ['type' => 'text', 'name' => 'subject', 'label' => trans('messages.default_email_subject'), 'value' => $list->subject, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+									@include('helpers.form_control', ['type' => 'text', 'name' => 'default_subject', 'label' => trans('messages.default_email_subject'), 'value' => $list->default_subject, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
 									
 							</div>
 							

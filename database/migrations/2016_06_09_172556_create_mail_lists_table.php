@@ -18,6 +18,7 @@ class CreateMailListsTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->integer('contact_id')->unsigned();
             $table->string('name');
+            $table->string('default_subject');
             $table->string('from_email')->nullable();
             $table->string('from_name')->nullable();
             $table->text('description')->nullable();

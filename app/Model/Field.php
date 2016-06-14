@@ -1,0 +1,69 @@
+<?php
+
+namespace Mailixa\Model;
+
+use Illuminate\Database\Eloquent\Model;
+
+class Field extends Model
+{
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'mail_list_id', 'type', 'label', 'tag', 'default_value', 'visible', 'required'
+    ];
+    
+    /**
+     * Associations.
+     *
+     * @var object | collect
+     */ 
+    public function mail_list()
+    {
+        return $this->belongsTo('Mailixa\Model\MailList');
+    }
+    
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();        
+        
+        // Create uid when creating list.
+        static::creating(function($item)
+        {
+            // Create new uid
+            $uid = uniqid();
+            while(Field::where('uid','=',$uid)->count() > 0)
+            {
+                $uid = uniqid();
+            }
+            $item->uid = $uid;
+        });
+    }
+    
+    /**
+     * Format string to field tag.
+     *
+     * @var string
+     */ 
+    public static function formatTag($string)
+    {
+        return strtoupper(preg_replace("/[^0-9a-zA-Z_]/m", "", $string));
+    }
+    
+    /**
+     * Find item by uid.
+     *
+     * @return object
+     */
+    public static function findByUid($uid)
+    {
+        return Field::where("uid", "=", $uid)->first();
+    }
+}

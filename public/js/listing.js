@@ -106,10 +106,10 @@ function updateCustomOrder(form) {
     var page = parseInt(form.find('table').attr("current-page"));
     var sort = [];
     form.find("table tr input.node").each(function(index) {
-        var total = index + ((page-1)*per_page);
+        var num = index + ((page-1)*per_page);
         var row = [];
         row.push($(this).val());
-        row.push(total);
+        row.push(num);
         sort.push(row);
     });
     console.log(JSON.stringify(sort));

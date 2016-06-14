@@ -33,3 +33,7 @@ Route::get('lists/sort', 'MailListController@sort');
 Route::get('lists/listing/{page?}', 'MailListController@listing');
 Route::resource('lists', 'MailListController');
 Route::get('lists/{uid}/edit', 'MailListController@edit');
+
+// Field
+Route::get('lists/{list_uid}/fields', 'FieldController@index');
+Route::get('lists/{list_uid}/fields/sort', 'FieldController@sort');
