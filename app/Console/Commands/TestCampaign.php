@@ -4,6 +4,7 @@ namespace Mailixa\Console\Commands;
 
 use Illuminate\Console\Command;
 use Mailixa\Library\Log;
+use Mailixa\Model\Campaign;
 
 class TestCampaign extends Command
 {
@@ -41,6 +42,7 @@ class TestCampaign extends Command
         //$handler = \Mailixa\Model\FeedbackLoopHandler::first();
         //$handler->start();
 
+        /*
         Log::configure(storage_path() . '/logs/mail.log');
 
         Log::info('hello');
@@ -51,6 +53,9 @@ class TestCampaign extends Command
         Log::debug('hello');
         Log::critical('hello');
         Log::notice('hello');
+        */
 
+        $c = Campaign::first();
+        var_dump($c);
     }
 }
