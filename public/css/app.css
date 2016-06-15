@@ -149,13 +149,19 @@ textarea.form-control {
 .page-title .breadcrumb {
     margin-bottom: 10px;
 }
-.select2-selection--single:not([class*=bg-]) {
+.select2-selection--single:not([class*=bg-]), .select2-selection--multiple:not([class*=bg-]):not([class*=border-]) {
     font-size: 15px;
     border-color: #bbb;
     border-radius: 5px;
     border: solid 2px #ccc;
     font-weight: 600;
     padding: 5px 0;
+}
+.select2-selection--multiple:not([class*=bg-]):not([class*=border-]) {
+    padding: 0;
+}
+.has-error .select2-selection--multiple:not([class*=bg-]):not([class*=border-]) {
+    border-color: #D84315;
 }
 .form-control:hover {
     border-color: #aaa;
