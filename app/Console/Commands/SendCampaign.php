@@ -3,7 +3,8 @@
 namespace Mailixa\Console\Commands;
 
 use Illuminate\Console\Command;
-use \Mailixa\Model\BounceHandler;
+use Mailixa\Model\Campaign;
+use Mailixa\Library\Log;
 
 class SendCampaign extends Command
 {
@@ -38,7 +39,18 @@ class SendCampaign extends Command
      */
     public function handle()
     {
-        echo "Hello world\n";
-        echo BounceHandler::count();
+        // configure the logger
+        Log::configure(storage_path() . '/logs/mail.log');
+        
+        // get campaigns to run
+        $campaigns = Campaign::getPendingCampaigns();
+        Log::info(sizeof($campaigns) . " pending campaign(s) found");
+
+        $index = 0;
+        foreach ($campaigns as $campaign) {
+            $index += 1;
+            Log::info("Start sending campaign $index/" . sizeof($campaigns));
+            //$campaign->sendCampaign();
+        }
     }
 }

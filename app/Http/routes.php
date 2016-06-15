@@ -51,3 +51,6 @@ Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@
 Route::get('lists/{list_uid}/subscribers/delete', 'SubscriberController@delete');
 Route::get('lists/{list_uid}/subscribers/subscribe', 'SubscriberController@subscribe');
 Route::get('lists/{list_uid}/subscribers/unsubscribe', 'SubscriberController@unsubscribe');
+
+// Notification handler
+Route::get('delivery/notify', 'DeliveryController@notify');

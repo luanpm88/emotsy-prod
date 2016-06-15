@@ -9,7 +9,9 @@
         "laravel/framework": "5.2.*",
         "zendframework/zend-mail": "^2.7",
         "intervention/image": "^2.3",
-        "doctrine/dbal": "~2.4"
+        "doctrine/dbal": "~2.4",
+	"aws/aws-sdk-php": "2.*",
+	"swiftmailer/swiftmailer": "^5.4"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
