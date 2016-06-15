@@ -56,6 +56,6 @@ class TestCampaign extends Command
         */
 
         $c = Campaign::first();
-        var_dump($c);
+        var_dump($c->mailList);
     }
 }
