@@ -85,7 +85,7 @@ a {
 .page-container {
     padding-bottom: 100px;
 }
-.radio, .checkbox-right-switch .checkbox {
+.checkbox-right-switch .checkbox {
     margin-bottom: 30px;
     margin-top: 0;
 }
@@ -644,4 +644,14 @@ input.error {
 .modal-body h6 {
     font-size: 16px;
     font-weight: 600;
+}
+.input-icon-right {
+    position: relative;
+}
+.input-icon-right i {
+    position: absolute;
+    font-size: 20px;
+    top: 8px;
+    z-index: 100;
+    right: 10px;
 }

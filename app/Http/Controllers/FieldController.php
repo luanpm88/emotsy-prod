@@ -131,14 +131,13 @@ class FieldController extends Controller
             $saved_ids = [];
             foreach($request->fields as $uid => $item) {
                 $field = \Mailixa\Model\Field::findByUid($item["uid"]);
-                
-                // If email field
-                if ($list->getEmailField()->uid != $field->uid) {
-                    if (!is_object($field)) {
-                        $field = new \Mailixa\Model\Field();
-                        $field->mail_list_id = $list->id;
-                    }
+                if (!is_object($field)) {
+                    $field = new \Mailixa\Model\Field();
+                    $field->mail_list_id = $list->id;
+                }
                     
+                // If email field
+                if ($list->getEmailField()->uid != $field->uid) {    
                     // save exsit field
                     $item["tag"] = \Mailixa\Model\Field::formatTag($item["tag"]);
                     $field->fill($item);

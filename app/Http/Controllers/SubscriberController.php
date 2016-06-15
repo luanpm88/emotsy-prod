@@ -58,7 +58,11 @@ class SubscriberController extends Controller
         $values = [];
         if(null !== $request->old()) {
             foreach($request->old() as $key => $value) {
-                $values[$key] = $value;
+                if (is_array($value)) {
+                    $values[str_replace("[]", "", $key)] = implode(",", $value);
+                } else {
+                    $values[$key] = $value;
+                }                
             }
         }
         
@@ -140,7 +144,11 @@ class SubscriberController extends Controller
         }
         if(null !== $request->old()) {
             foreach($request->old() as $key => $value) {
-                $values[$key] = $value;
+                if (is_array($value)) {
+                    $values[str_replace("[]", "", $key)] = implode(",", $value);
+                } else {
+                    $values[$key] = $value;
+                }  
             }
         }
         

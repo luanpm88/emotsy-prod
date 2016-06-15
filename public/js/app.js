@@ -224,4 +224,10 @@ $(function() {
             }
         });
     });
+    
+    // Basic options
+    $('.pickadate').pickadate({format: LANG_DATE_FORMAT});
+    
+    // Numberic input
+    $(".numeric").numeric();
 });

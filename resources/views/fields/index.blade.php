@@ -136,6 +136,9 @@
 						<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "text"]) }}" class="btn btn-default btn-xs add-custom-field-button mr-10" type_name="text">
 							<i class="icon-font-size2"></i> {{ trans('messages.text_field') }}
 						</span>
+						<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "number"]) }}" class="btn btn-default btn-xs add-custom-field-button mr-10" type_name="number">
+							<i class="icon-sort-numeric-asc"></i> {{ trans('messages.number_field') }}
+						</span>
 						<span sample-url="{{ action("FieldController@sample", ['list_uid' => $list->uid, "type" => "dropdown"]) }}" class="btn btn-default btn-xs add-custom-field-button mr-10" type_name="dropdown">
 							<i class="icon-menu2"></i> {{ trans('messages.dropdown_field') }}
 						</span>

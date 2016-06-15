@@ -48,10 +48,10 @@
 											<span class="text-muted2">{{ trans('messages.updated_at') }}</span>
 										</td>
 										
-										<td class="text-right">
+										<td class="text-right text-nowrap">
 											@if (\Gate::allows('update', $item))
 												<a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid, "uids" => $item->uid]) }}" type="button" class="btn bg-grey btn-icon">
-													<i class="icon-pencil"></i> {{ trans('messages.edit') }}
+													<i class="icon-pencil"></i>
 												</a>
 											@endif
 											<div class="btn-group">										

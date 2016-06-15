@@ -80,4 +80,17 @@ class Field extends Model
     {
         return Field::where("uid", "=", $uid)->first();
     }
+    
+    /**
+     * Get select options.
+     *
+     * @return array
+     */
+    public function getSelectOptions()
+    {
+        $options = $this->fieldOptions->map(function ($item) {
+            return ['value' => $item->value, 'text' => $item->label];
+        });
+        return $options;
+    }
 }

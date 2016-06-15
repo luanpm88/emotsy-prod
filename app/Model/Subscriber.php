@@ -78,19 +78,20 @@ class Subscriber extends Model
     public function updateFields($params)
     {
         foreach($params as $tag => $value) {
-            $field = $this->mailList->getFieldByTag($tag);
+            $field = $this->mailList->getFieldByTag(str_replace("[]","",$tag));
             if (is_object($field)) {
                 $fv = FieldValue::where("subscriber_id", "=", $this->id)->where("field_id", "=", $field->id)->first();
-                if(is_object($fv)) {
-                    $fv->value = $value;
-                    $fv->save();
-                } else {
+                if(!is_object($fv)) {
                     $fv = new FieldValue();
                     $fv->subscriber_id = $this->id;
                     $fv->field_id = $field->id;
+                }
+                if(is_array($value)) {
+                    $fv->value = implode(",", $value);
+                } else {
                     $fv->value = $value;
-                    $fv->save();
-                }                
+                }
+                $fv->save();
             }
         }
     }
