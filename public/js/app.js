@@ -108,6 +108,19 @@ $(function() {
     // ------------------------------
     $(".switch").bootstrapSwitch();
     
+    
+    // Action list event
+    // ------------------------------
+    $(document).on("click", ".list_actions a", function(e) {
+        var form = $(this).parents(".listing-form");
+        var vals = form.find("input[name='ids[]']:checked").map(function () {
+            return this.value;
+        }).get();
+        
+        $(this).attr("href", $(this).attr("href") + "?uids=" + vals.join(","));
+    });
+    
+    
     // Confirm event
     // ------------------------------
     $(document).on("click", "a[delete-confirm]", function(e) {
@@ -126,6 +139,17 @@ $(function() {
         } else {
             e.preventDefault();
         }        
+    });
+    // Link confirm
+    $(document).on("click", "a[link-confirm]", function(e) {
+        var mgs = $(this).attr("link-confirm");
+        
+        $('a[data-target="#link_confirm_model"]').trigger("click");        
+        $("#link_confirm_model h6").html(mgs);
+        $(".link-confirm-button").attr("href", $(this).attr("href"));
+        
+        e.stopImmediatePropagation();
+        e.preventDefault();
     });
     
     // List fields

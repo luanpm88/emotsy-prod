@@ -27,8 +27,8 @@
                 
                 @include("lists._menu")
 				
-                <h2 class="text-bold">{{ trans('messages.manage_list_fields') }}</h2>
-                    
+                <h2 class="text-bold text-teal-800"><i class="icon-list3"></i> {{ trans('messages.manage_list_fields') }}</h2>
+                <br />
                 <p>{!! trans('messages.fields_intro') !!}</p>
                 
 				@if ($errors->has("miss_main_field_tag"))

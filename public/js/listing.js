@@ -76,7 +76,7 @@ function updateCheckList() {
                 }).get();
         
         // Check if none checked
-        if (vals.length == 0) {
+        if (vals.length == 0) {            
             form.find('.check_all_list input.check_all').prop("checked", false);            
             form.find('.check_all_list').removeClass('check-some');
             form.find('.list_actions').removeClass('check-some');
@@ -94,6 +94,8 @@ function updateCheckList() {
         
         // check if all checked
         else if (total == vals.length) {
+            form.find('.check_all_list input.check_all').prop("checked", true);
+            form.find('.check_all_list').removeClass('check-some');
             form.find('.list_actions').removeClass('hide');
             listCheckAll(form);
         }

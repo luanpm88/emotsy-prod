@@ -54,7 +54,7 @@ p {
     color: #333;
 }
 h1, .h1 {
-    font-size: 30px;
+    font-size: 38px;
 }
 h1, .h1, h2, .h2, h3, .h3 {
     margin-bottom: 20px;
@@ -73,7 +73,7 @@ h1, .h1, h2, .h2, h3, .h3 {
     padding: 0;
 }
 a {
-    color: #00796B;
+    color: #00838F;
 }
 .caret:after {
     font-size: 18px;
@@ -124,8 +124,8 @@ textarea.form-control {
     margin-top: -10px;
 }
 .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
-    border-color: #ccc;
-    background-color: #ccc;
+    border-color: #ddd;
+    background-color: #ddd;
 }
 .select2-selection--single:not([class*=bg-]):not([class*=border-]):hover {
     border-color: #aaa;
@@ -295,7 +295,7 @@ textarea.form-control {
     font-weight: 600;
 }
 .stat-num {
-    font-size: 17px;
+    font-size: 18px;
     font-weight: 600;
 }
 .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
@@ -614,4 +614,34 @@ input.error {
 .field-list .child td {
     background: #f4f4f4;
     border-top: solid 3px #ddd;
+}
+.table-sub .label {
+    font-size: 10px;
+    padding: 2px 8px;
+    margin: 10px 0 0 0;
+    border-radius: 5px;
+    font-weight: 600;
+    border-width: 0;
+}
+.table-sub .stat-num {
+    font-size: 15px;
+}
+.table-sub .text-muted2 {
+    font-size: 13px;
+}
+.table-sub .label {
+}
+.bg-cron-running, .bg-pending, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sent, .bg-sending, .bg-subscribed {
+    background-color: #4CAF50;
+    border-color: #4CAF50;
+    color: #fff;
+}
+.bg-canceled, .bg-disabled, .bg-inactive, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted {
+    background-color: #777;
+    border-color: #777;
+    color: #fff;
+}
+.modal-body h6 {
+    font-size: 16px;
+    font-weight: 600;
 }

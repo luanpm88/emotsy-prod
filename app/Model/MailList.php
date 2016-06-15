@@ -97,6 +97,11 @@ class MailList extends Model
         return $this->belongsTo('Mailixa\Model\Contact');
     }
     
+    public function subscribers()
+    {
+        return $this->hasMany('Mailixa\Model\Subscriber');
+    }
+    
     /**
      * Get all items.
      *
@@ -108,7 +113,7 @@ class MailList extends Model
     }
     
     /**
-     * Get all languages.
+     * Filter items.
      *
      * @return collect
      */
@@ -194,8 +199,41 @@ class MailList extends Model
                         ]);
     }
     
+    /**
+     * Get email field.
+     *
+     * @return object
+     */
     function getEmailField()
     {
-        return $this->fields()->where("tag", "=", "EMAIL")->first();
+        return $this->getFieldByTag("EMAIL");
+    }
+    
+    /**
+     * Get field by tag.
+     *
+     * @return object
+     */
+    function getFieldByTag($tag)
+    {
+        return $this->fields()->where("tag", "=", $tag)->first();
+    }
+    
+    /**
+     * Get field rules.
+     *
+     * @return object
+     */
+    function getFieldRules()
+    {
+        $rules = [];
+        foreach($this->getFields as $field) {
+            if($field->tag == 'EMAIL') {
+                $rules[$field->tag] = 'required|email';
+            } elseif ($field->required) {
+                $rules[$field->tag] = 'required';
+            }            
+        }
+        return $rules;
     }
 }

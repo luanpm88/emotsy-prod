@@ -44,4 +44,10 @@ Route::get('lists/{list_uid}/fields/{uid}/delete', 'FieldController@delete');
 // Subscriber
 Route::get('lists/{list_uid}/subscribers', 'SubscriberController@index');
 Route::get('lists/{list_uid}/subscribers/create', 'SubscriberController@create');
+Route::get('lists/{list_uid}/subscribers/listing', 'SubscriberController@listing');
 Route::post('lists/{list_uid}/subscribers/store', 'SubscriberController@store');
+Route::get('lists/{list_uid}/subscribers/{uid}/edit', 'SubscriberController@edit');
+Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@update');
+Route::get('lists/{list_uid}/subscribers/delete', 'SubscriberController@delete');
+Route::get('lists/{list_uid}/subscribers/subscribe', 'SubscriberController@subscribe');
+Route::get('lists/{list_uid}/subscribers/unsubscribe', 'SubscriberController@unsubscribe');

@@ -25,7 +25,7 @@
 @section('content')
 				@include("lists._menu")
 				
-                <form action="{{ action('MailListController@store') }}" method="POST" class="form-validate-jqueryz">
+                <form action="{{ action('SubscriberController@store', $list->uid) }}" method="POST" class="form-validate-jqueryz">
 					{{ csrf_field() }}
 					
 					@include("subscribers._form")					

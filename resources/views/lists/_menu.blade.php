@@ -17,8 +17,8 @@
                                                         <span class="caret"></span>
                                                     </a>
                                                     <ul class="dropdown-menu dropdown-menu-right">
-                                                        <li>
-                                                            <a href="{{ action('SubscriberController@create', $list->uid) }}" data-toggle="tab">
+                                                        <li rel0="SubscriberController/index">
+                                                            <a href="{{ action('SubscriberController@index', $list->uid) }}">
                                                                 <i class="icon-list2"></i> {{ trans('messages.view_all') }}
                                                             </a>
                                                         </li>

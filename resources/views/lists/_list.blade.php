@@ -28,9 +28,9 @@
 										</td>
 										<td>
 											<div class="single-stat-box pull-left">
-												<span class="no-margin stat-num">{{ rand(0, 1000) }}</span>
+												<span class="no-margin stat-num">{{ $item->subscribers()->count() }}</span>
 												<br />
-												<span class="text-muted">Subscribers</span>
+												<span class="text-muted">{{ trans("messages.subscribers") }}</span>
 											</div>
 											<div class="single-stat-box pull-left">
 												<span class="no-margin stat-num">{{ rand(0, 100) }}.0%</span>
@@ -46,9 +46,9 @@
 										</td>
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
-												<span class="label label-flat border-success-600 text-success-600">active</span>
+												<span class="label label-flat label-{{ $item->status }}">active</span>
 											</span>
-											<button data-popup="tooltip" title="Add subscriber" type="button" class="btn bg-teal btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></button>
+											<a href="{{ action('SubscriberController@create', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.create_subscriber') }}" type="button" class="btn bg-teal btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></a>
 											<button data-popup="tooltip" title="Overview" type="button" class="btn bg-grey btn-icon"><i class="icon-stats-growth"></i> <i class="icon-search4"></i></button>
 											<div class="btn-group">										
 												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>

@@ -28,6 +28,11 @@ class FieldController extends Controller
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
         $fields = $list->getFields;
         
+        // authorize
+        if (\Gate::denies('update', $list)) {
+            return $this->notAuthorized();
+        }
+        
         // Get old post values
         if(isset($request->old()["fields"])) {
             $fields = collect();
