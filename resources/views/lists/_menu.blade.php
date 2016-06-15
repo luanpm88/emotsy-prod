@@ -6,19 +6,24 @@
 														<i class="icon-stats-bars3"></i> {{ trans('messages.overview') }}
 													</a>
 												</li>
-												<li rel0="AccountController/contact" class="dropdown">
+												<li rel0="MailListController/edit">
+													<a class="level-1" href="{{ action('MailListController@edit', $list->uid) }}">
+														<i class="icon-pencil7"></i> {{ trans('messages.list_information') }}
+													</a>
+												</li> 
+												<li rel0="SubscriberController" class="dropdown">
 													<a href="{{ action("AccountController@contact") }}" class="level-1" data-toggle="dropdown">
 														<i class="icon-users4 position-left"></i> {{ trans('messages.subscribers') }}
                                                         <span class="caret"></span>
                                                     </a>
                                                     <ul class="dropdown-menu dropdown-menu-right">
                                                         <li>
-                                                            <a href="" data-toggle="tab">
+                                                            <a href="{{ action('SubscriberController@create', $list->uid) }}" data-toggle="tab">
                                                                 <i class="icon-list2"></i> {{ trans('messages.view_all') }}
                                                             </a>
                                                         </li>
-                                                        <li>
-                                                            <a href="" data-toggle="tab">
+                                                        <li rel0="SubscriberController/create">
+                                                            <a href="{{ action('SubscriberController@create', $list->uid) }}">
                                                                 <i class="icon-plus2"></i> {{ trans('messages.add') }}
                                                             </a>
                                                         </li>
@@ -110,16 +115,11 @@
                                                         </li>
                                                     </ul>
 												</li>
-												<li rel0="FieldController/index" class="level-1">
-														<a href="{{ action('FieldController@index', $list->uid) }}">
-															<i class="icon-list3"></i> {{ trans('messages.manage_list_fields') }}
-														</a>
-													</li>
-												<li rel0="MailListController/edit" class="level-1">
-													<a href="{{ action('MailListController@edit', $list->uid) }}">
-														<i class="icon-pencil7"></i> {{ trans('messages.list_information') }}
+												<li rel0="FieldController/index">
+													<a class="level-1" href="{{ action('FieldController@index', $list->uid) }}">
+														<i class="icon-list3"></i> {{ trans('messages.manage_list_fields') }}
 													</a>
-												</li>                                                
+												</li>												                                               
 											</ul>
 										</div>
 									</div>

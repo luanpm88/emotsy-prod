@@ -9,6 +9,16 @@ use Mailixa\Http\Requests;
 class FieldController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -29,6 +39,13 @@ class FieldController extends Controller
                 }
                 $field->fill($item);
                 
+                // If email field
+                if ($list->getEmailField()->uid == $field->uid) {
+                    $field = $list->getEmailField();
+                    $field->label = $item["label"];
+                    $field->default_value = $item["default_value"];
+                }
+                
                 // Field options
                 if(isset($item["options"])) {
                     $field->fieldOptions = collect();
@@ -38,6 +55,7 @@ class FieldController extends Controller
                         $field->fieldOptions->push($option);
                     }
                 }
+                
                 $fields[] = $field;
             }
         }
@@ -74,35 +92,30 @@ class FieldController extends Controller
             $rules = [];
             
             // Check if filed does not have EMAIL tag
-            $has_main_tag = false;
             $conflict_tag = false;
             $tags = [];
             foreach($request->fields as $key => $item) {
-                if ($item["tag"] == 'EMAIL') {
-                    $has_main_tag = true;
-                }
+                // If email field
+                if ($list->getEmailField()->uid != $item["uid"]) {
+                    // check required input
+                    $rules["fields." . $key . ".label"] = 'required';
+                    $rules["fields." . $key . ".tag"] = 'required|alpha_dash';
                 
-                // check required input
-                $rules["fields." . $key . ".label"] = 'required';
-                $rules["fields." . $key . ".tag"] = 'required|alpha_dash';
-                
-                // check field options
-                if(isset($item["options"])) {
-                    foreach($item["options"] as $key2 => $item2) {
-                        $rules["fields." . $key . ".options." . $key2 . ".label"] = 'required';
-                        $rules["fields." . $key . ".options." . $key2 . ".value"] = 'required';
+                    // check field options
+                    if(isset($item["options"])) {
+                        foreach($item["options"] as $key2 => $item2) {
+                            $rules["fields." . $key . ".options." . $key2 . ".label"] = 'required';
+                            $rules["fields." . $key . ".options." . $key2 . ".value"] = 'required';
+                        }
                     }
+                    
+                    // Check tag exsit
+                    $tag = \Mailixa\Model\Field::formatTag($item["tag"]);
+                    if (in_array($tag, $tags)) {
+                        $conflict_tag = true;
+                    }
+                    $tags[] = $tag;
                 }
-                
-                // Check tag exsit
-                $tag = \Mailixa\Model\Field::formatTag($item["tag"]);
-                if (in_array($tag, $tags)) {
-                    $conflict_tag = true;
-                }
-                $tags[] = $tag;
-            }
-            if (!$has_main_tag) {
-                $rules["miss_main_field_tag"] = 'required';
             }
             if ($conflict_tag) {
                 $rules["conflict_field_tags"] = 'required';
@@ -113,24 +126,33 @@ class FieldController extends Controller
             $saved_ids = [];
             foreach($request->fields as $uid => $item) {
                 $field = \Mailixa\Model\Field::findByUid($item["uid"]);
-                if (!is_object($field)) {
-                    $field = new \Mailixa\Model\Field();
-                    $field->mail_list_id = $list->id;
-                }
                 
-                // save exsit field
-                $item["tag"] = \Mailixa\Model\Field::formatTag($item["tag"]);
-                $field->fill($item);
-                $field->save();
-                
-                // save field options
-                $field->fieldOptions()->delete();
-                if(isset($item["options"])) {
-                    foreach($item["options"] as $key2 => $item2) {
-                        $option = new \Mailixa\Model\FieldOption($item2);
-                        $option->field_id = $field->id;
-                        $option->save();
+                // If email field
+                if ($list->getEmailField()->uid != $field->uid) {
+                    if (!is_object($field)) {
+                        $field = new \Mailixa\Model\Field();
+                        $field->mail_list_id = $list->id;
                     }
+                    
+                    // save exsit field
+                    $item["tag"] = \Mailixa\Model\Field::formatTag($item["tag"]);
+                    $field->fill($item);
+                    $field->save();
+                    
+                    // save field options
+                    $field->fieldOptions()->delete();
+                    if(isset($item["options"])) {
+                        foreach($item["options"] as $key2 => $item2) {
+                            $option = new \Mailixa\Model\FieldOption($item2);
+                            $option->field_id = $field->id;
+                            $option->save();
+                        }
+                    }
+                } else {
+                    $field->label = $item["label"];
+                    $field->custom_order = $item["custom_order"];
+                    $field->default_value = $item["default_value"];
+                    $field->save();
                 }
                 
                 // store save ids
@@ -138,7 +160,7 @@ class FieldController extends Controller
             }
             // Delete fields
             foreach($list->getFields as $field) {
-                if(!in_array($field->uid, $saved_ids)) {
+                if(!in_array($field->uid, $saved_ids) && $field->uid != $list->getEmailField()->uid) {
                     $field->delete();
                 }
             }

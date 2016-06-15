@@ -44,7 +44,7 @@
 							<div class="row">
 								<div class="col-sm-6">
 									<label class="checkbox-inline">
-										<input type="checkbox" class="styled" checked="checked">
+										<input type="checkbox" class="styled" checked="checked" name="remember">
 										{{ trans("messages.stay_logged_in") }}
 									</label>
 								</div>

@@ -193,4 +193,9 @@ class MailList extends Model
                             'visible' => true,
                         ]);
     }
+    
+    function getEmailField()
+    {
+        return $this->fields()->where("tag", "=", "EMAIL")->first();
+    }
 }

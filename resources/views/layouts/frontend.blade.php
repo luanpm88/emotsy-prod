@@ -76,7 +76,11 @@
 					<a href="#"><i class="icon-paperplane"></i> {{ trans('messages.campaigns') }}</a>
 				</li>
                 <li><a href="#"><i class="icon-magazine"></i> {{ trans('messages.templates') }}</a></li>
-                <li rel0="MailListController">
+                <li
+					rel0="MailListController"
+					rel1="FieldController"
+					rel2="SubscriberController"
+				>
 					<a href="{{ action('MailListController@index') }}"><i class="icon-address-book2"></i> {{ trans('messages.lists') }}</a>
 				</li>
                 <li><a href="#"><i class="icon-pie-chart5"></i> {{ trans('messages.reports') }}</a></li>
@@ -157,7 +161,7 @@
 	</div>
 	<!-- /page container -->
 	
-	<a type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#delete_confirm_model">aa</a>
+	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#delete_confirm_model">aa</a>
 	<!-- Basic modal -->
 	<div id="delete_confirm_model" class="modal fade">
 		<div class="modal-dialog">

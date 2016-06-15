@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', $list->name . "- " . trans('messages.manage_list_fields') )
+@section('title', $list->name . ": " . trans('messages.manage_list_fields') )
 	
 @section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
@@ -17,7 +17,7 @@
 					<li><a href="{{ action("MailListController@index") }}">{{ trans('messages.lists') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-list3"></i> {{ $list->name }}</span>
+					<span class="text-semibold">{{ $list->name }}</span>
 				</h1>
 			</div>
 
@@ -82,13 +82,13 @@
                                         />
                                     </td>
                                     <td class="text-nowrap">
-										@include('helpers.form_control', ['type' => 'checkbox', 'name' => 'fields[' . $item->uid . '][required]', 'label' => '', 'value' => $item->required, 'options' => [false,true], 'help_class' => 'field'])
+										@include('helpers.form_control', ['disabled' => $item->tag == 'EMAIL', 'type' => 'checkbox', 'name' => 'fields[' . $item->uid . '][required]', 'label' => '', 'value' => $item->required, 'options' => [false,true], 'help_class' => 'field'])
 									</td>
                                     <td class="text-nowrap">
-										@include('helpers.form_control', ['type' => 'checkbox', 'name' => 'fields[' . $item->uid . '][visible]', 'label' => '', 'value' => $item->visible, 'options' => [false,true], 'help_class' => 'field'])
+										@include('helpers.form_control', ['disabled' => $item->tag == 'EMAIL', 'type' => 'checkbox', 'name' => 'fields[' . $item->uid . '][visible]', 'label' => '', 'value' => $item->visible, 'options' => [false,true], 'help_class' => 'field'])
 									</td>
                                     <td class="text-nowrap">
-										@include('helpers.form_control', ['type' => 'text', 'name' => 'fields[' . $item->uid . '][tag]', 'label' => '', 'value' => $item->tag, 'help_class' => 'field', 'prefix' => "[", 'subfix' => "]"])
+										@include('helpers.form_control', ['disabled' => $item->tag == 'EMAIL', 'type' => 'text', 'name' => 'fields[' . $item->uid . '][tag]', 'label' => '', 'value' => $item->tag, 'help_class' => 'field', 'prefix' => "[", 'subfix' => "]"])
 									</td>
                                     <td class="text-nowrap">
 										@include('helpers.form_control', ['type' => 'text', 'name' => 'fields[' . $item->uid . '][default_value]', 'label' => '', 'value' => $item->default_value, 'help_class' => 'field'])
