@@ -230,4 +230,66 @@ $(function() {
     
     // Numberic input
     $(".numeric").numeric();
+    
+    // add segment condition
+    $(document).on("click", ".add-segment-condition", function(e) {
+        // ajax update custom sort
+        $.ajax({
+            method: "GET",
+            url: $(this).attr('sample-url'),
+        })
+        .done(function( msg ) {
+            var num = "0";
+            
+            if($('.segment-conditions-container .condition-line').length) {
+                num = parseInt($('.segment-conditions-container .condition-line').last().attr("rel"))+1;
+            }
+            
+            msg = msg.replace(/__index__/g, num);
+            
+            $('.segment-conditions-container').append(msg);
+            
+            var new_line = $('.segment-conditions-container .condition-line').last();
+            new_line.find('select').select2();
+        });
+    });
+    
+    // add segment condition
+    $(document).on("change", ".condition-line .operator-col select", function(e) {
+        var op = $(this).val();
+        
+        if(op == 'blank' || op == 'not_blank') {
+            $(this).parents(".condition-line").find('.value-col').css("visibility", "hidden");
+        } else {
+            $(this).parents(".condition-line").find('.value-col').css("visibility", "visible");
+        }
+    });
+    
+    // add segment condition
+    $(document).on("click", "a.ajax_link", function(e) {
+        e.preventDefault();
+        $(".modal").modal('hide');
+        
+        var url = $(this).attr("href");
+        var form = $(this).parents(".listing-form");
+        
+        $.ajax({
+            method: "GET",
+            url: url,
+        })
+        .done(function( msg ) {
+            tableFilter($(".listing-form"));
+            if(msg != '') {
+                swal({
+                    title: msg,
+                    text: "",
+                    confirmButtonColor: "#00695C",
+                    type: "success",
+                    allowOutsideClick: true,
+                    confirmButtonText: LANG_OK,
+                    customClass: "swl-success"
+                });
+            }
+        });        
+    });
 });

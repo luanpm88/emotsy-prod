@@ -37,6 +37,14 @@ function tableFilter(form, custom_url) {
         return this.value;
     }).get().join(",");
     
+    // all data
+    var d = {};
+    form.serializeArray().forEach(function(entry) {
+        if(entry.value!="") {
+            d[entry.name] = entry.value
+        }
+    });
+    
     // ajax update custom sort
     $.ajax({
         method: "GET",
@@ -47,6 +55,7 @@ function tableFilter(form, custom_url) {
             sort_direction: sort_direction,
             keyword: keyword,
             columns: columns,
+            filters: d
         }
     })
     .done(function( msg ) {
@@ -78,6 +87,9 @@ function tableFilter(form, custom_url) {
                 hiliterList(form, v.trim());
             });            
         }
+        
+        // update checklist
+        updateCheckList();
     });
 }
 
@@ -226,6 +238,8 @@ $(document).ready(function() {
         } else {
             listCheckAll($(this).parents(".listing-form"));
         }
+        
+        setTimeout("updateCheckList()", 200);
     });
     
     // Change page
@@ -262,7 +276,7 @@ $(document).ready(function() {
     });
     
     // Sort button
-    $(document).on("change", "select[name='sort-order']", function() {
+    $(document).on("change", ".listing-form select", function() {
         var form = $(this).parents(".listing-form");
         
         tableFilter(form);

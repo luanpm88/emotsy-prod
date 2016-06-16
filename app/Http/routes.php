@@ -54,3 +54,15 @@ Route::get('lists/{list_uid}/subscribers/unsubscribe', 'SubscriberController@uns
 
 // Notification handler
 Route::get('delivery/notify', 'DeliveryController@notify');
+
+// Segment
+Route::get('lists/{list_uid}/segments', 'SegmentController@index');
+Route::get('lists/{list_uid}/segments/{uid}/subscribers', 'SegmentController@subscribers');
+Route::get('lists/{list_uid}/segments/{uid}/listing_subscribers', 'SegmentController@listing_subscribers');
+Route::get('lists/{list_uid}/segments/create', 'SegmentController@create');
+Route::get('lists/{list_uid}/segments/listing', 'SegmentController@listing');
+Route::post('lists/{list_uid}/segments/store', 'SegmentController@store');
+Route::get('lists/{list_uid}/segments/{uid}/edit', 'SegmentController@edit');
+Route::patch('lists/{list_uid}/segments/{uid}/update', 'SegmentController@update');
+Route::get('lists/{list_uid}/segments/delete', 'SegmentController@delete');
+Route::get('lists/{list_uid}/segments/sample_condition', 'SegmentController@sample_condition');

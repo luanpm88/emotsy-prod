@@ -98,6 +98,9 @@ return [
         'conflict_field_tags' => [
             'required' => 'The field tags cannot be the same',
         ],
+        'segment_conditions_empty' => [
+            'required' => 'Conditions list cannot be empty',
+        ],
     ],
 
     /*

@@ -1,5 +1,4 @@
-                    <div class="sub_section">
-						<h2 class="text-semibold text-teal-800">{{ trans('messages.create_subscriber') }}</h2>
+                    <div class="sub_section">						
 						<div class="row">
 							<div class="col-md-6">									
 								@foreach ($list->getFields as $field)

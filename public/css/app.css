@@ -118,6 +118,9 @@ textarea.form-control {
     border: solid 2px #ccc;
     font-weight: 600;
 }
+h3 {
+    margin-bottom: 0;
+}
 .select2-selection--single .select2-selection__arrow:after {
     font-size: 20px;
     color: #777 !important;
@@ -498,7 +501,8 @@ textarea.form-control {
     background: #00838F;
 }
 .filter-box .select2 {
-    width: 150px !important;
+    max-width: 180px !important;
+    width: auto !important;
 }
 .filter-box .select2-selection--single {
     height: 33px;
@@ -677,4 +681,10 @@ input.error {
 hl {
     background: rgba(77, 208, 225, 0.30);
     color: #333;
+}
+.inline .select2 {
+    width: auto !important;    
+}
+.inline {
+    display: inline;
 }

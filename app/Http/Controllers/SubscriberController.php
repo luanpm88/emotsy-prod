@@ -216,7 +216,7 @@ class SubscriberController extends Controller
         foreach ($subscribers->get() as $subscriber) {
             // authorize
             if (\Gate::denies('delete', $subscriber)) {
-                return $this->notAuthorized();
+                return;
             }
         }
         
@@ -225,8 +225,7 @@ class SubscriberController extends Controller
         }
 
         // Redirect to my lists page
-        $request->session()->flash('alert-success', trans('messages.subscribers.deleted'));
-        return redirect()->action('SubscriberController@index', $request->list_uid);
+        echo(trans('messages.subscribers.deleted'));
     }
     
     /**
@@ -242,7 +241,7 @@ class SubscriberController extends Controller
         foreach ($subscribers->get() as $subscriber) {
             // authorize
             if (\Gate::denies('subscribe', $subscriber)) {
-                return $this->notAuthorized();
+                return;
             }
         }
         
@@ -252,8 +251,7 @@ class SubscriberController extends Controller
         }
 
         // Redirect to my lists page
-        $request->session()->flash('alert-success', trans('messages.subscribers.subscribed'));
-        return redirect()->action('SubscriberController@index', $request->list_uid);
+        echo(trans('messages.subscribers.subscribed'));
     }
     
     /**
@@ -269,7 +267,7 @@ class SubscriberController extends Controller
         foreach ($subscribers->get() as $subscriber) {
             // authorize
             if (\Gate::denies('unsubscribe', $subscriber)) {
-                return $this->notAuthorized();
+                return;
             }
         }
         
@@ -279,7 +277,7 @@ class SubscriberController extends Controller
         }
 
         // Redirect to my lists page
-        $request->session()->flash('alert-success', trans('messages.subscribers.unsubscribed'));
-        return redirect()->action('SubscriberController@index', $request->list_uid);
+        echo(trans('messages.subscribers.unsubscribed'));
+
     }
 }

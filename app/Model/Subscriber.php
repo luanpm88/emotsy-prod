@@ -80,9 +80,9 @@ class Subscriber extends Model
         foreach($params as $tag => $value) {
             $field = $this->mailList->getFieldByTag(str_replace("[]","",$tag));
             if (is_object($field)) {
-                $fv = FieldValue::where("subscriber_id", "=", $this->id)->where("field_id", "=", $field->id)->first();
+                $fv = SubscriberField::where("subscriber_id", "=", $this->id)->where("field_id", "=", $field->id)->first();
                 if(!is_object($fv)) {
-                    $fv = new FieldValue();
+                    $fv = new SubscriberField();
                     $fv->subscriber_id = $this->id;
                     $fv->field_id = $field->id;
                 }
@@ -101,21 +101,25 @@ class Subscriber extends Model
      *
      * @return collect
      */
-    public static function filter($request)
-    {
-        $user = $request->user();
-        $query = Subscriber::select("subscribers.*");
-        $query = $query->where("user_id", "=", $user->id);
-        $query = $query->rightJoin('field_values', 'subscribers.id', '=', 'field_values.subscriber_id');
+    public static function filter($query, $request)
+    {        
+        $query = $query->rightJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id');
         
         // Keyword
         if(!empty(trim($request->keyword))) {
             foreach(explode(" ",trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
                     $q->orwhere('subscribers.email', 'like', '%' . $keyword . '%')
-                        ->orWhere('field_values.value', 'like', '%' . $keyword . '%');
+                        ->orWhere('subscriber_fields.value', 'like', '%' . $keyword . '%');
                 });
             }                
+        }
+        // filters
+        $filters = $request->filters;
+        if(!empty($filters)) {
+            if(!empty($filters["status"])) {
+                $query = $query->where("subscribers.status", "=", $filters["status"]);     
+            }
         }
         
         return $query->distinct();
@@ -128,9 +132,13 @@ class Subscriber extends Model
      */
     public static function search($request)
     {
-        $query = Subscriber::filter($request);
+        $user = $request->user();
+        $query = Subscriber::select("subscribers.*");
+        $query = $query->where("user_id", "=", $user->id);
         
-        $query = $query->orderBy("subscribers.".$request->sort_order, $request->sort_direction);
+        $query = Subscriber::filter($query, $request);
+        
+        $query = $query->orderBy($request->sort_order, $request->sort_direction);
         
         return $query;
     }
@@ -141,13 +149,20 @@ class Subscriber extends Model
      * @return value
      */
     public function getValueByField($field) {
-        $fv = FieldValue::where("subscriber_id", "=", $this->id)->where("field_id", "=", $field->id)->first();
+        $fv = SubscriberField::where("subscriber_id", "=", $this->id)->where("field_id", "=", $field->id)->first();
         if(is_object($fv)) {
             return $fv->value;
         } else {
             return "";
         }
     }
+    
+    /**
+     * Items per page.
+     *
+     * @var array
+     */
+    public static $itemsPerPage = 25;
     
     /**
      * Find item by uid.

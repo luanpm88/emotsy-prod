@@ -84,6 +84,7 @@
 					rel0="MailListController"
 					rel1="FieldController"
 					rel2="SubscriberController"
+					rel2="SegmentController"
 				>
 					<a href="{{ action('MailListController@index') }}"><i class="icon-address-book2"></i> {{ trans('messages.lists') }}</a>
 				</li>
@@ -189,7 +190,7 @@
 	
 					<div class="modal-footer">
 						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
-						<a class="btn btn-danger delete-confirm-button">{{ trans('messages.delete') }}</a>
+						<a class="btn btn-danger delete-confirm-button ajax_link">{{ trans('messages.delete') }}</a>
 					</div>
 				</form>
 			</div>
@@ -216,7 +217,7 @@
 	
 					<div class="modal-footer">
 						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
-						<a class="btn bg-info-800 link-confirm-button">{{ trans('messages.confirm') }}</a>
+						<a class="btn bg-info-800 link-confirm-button ajax_link">{{ trans('messages.confirm') }}</a>
 					</div>
 				</form>
 			</div>

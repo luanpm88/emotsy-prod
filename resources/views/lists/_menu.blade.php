@@ -40,19 +40,19 @@
                                                         </li>
                                                     </ul>
 												</li>
-                                                <li rel0="AccountController/contact" class="dropdown">
+                                                <li rel0="SegmentController" class="dropdown">
 													<a href="{{ action("AccountController@contact") }}" class="level-1" data-toggle="dropdown">
 														<i class="icon-make-group position-left"></i> {{ trans('messages.segments') }}
                                                         <span class="caret"></span>
                                                     </a>
                                                     <ul class="dropdown-menu dropdown-menu-right">
-                                                        <li>
-                                                            <a href="" data-toggle="tab">
+                                                        <li rel0="SegmentController/index">
+                                                            <a href="{{ action('SegmentController@index', $list->uid) }}">
                                                                 <i class="icon-list2"></i> {{ trans('messages.view_all') }}
                                                             </a>
                                                         </li>
-                                                        <li>
-                                                            <a href="" data-toggle="tab">
+                                                        <li rel0="SegmentController/create">
+                                                            <a href="{{ action('SegmentController@create', $list->uid) }}">
                                                                 <i class="icon-plus2"></i> {{ trans('messages.add') }}
                                                             </a>
                                                         </li>

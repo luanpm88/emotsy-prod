@@ -60,10 +60,10 @@
 												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 												<ul class="dropdown-menu dropdown-menu-right">
 													@if (\Gate::allows('subscribe', $item))
-														<li><a href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><i class="icon-enter"></i> {{ trans('messages.subscribe') }}</a></li>
+														<li><a class="ajax_link" href="{{ action('SubscriberController@subscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><i class="icon-enter"></i> {{ trans('messages.subscribe') }}</a></li>
 													@endif
 													@if (\Gate::allows('unsubscribe', $item))
-														<li><a href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><i class="icon-exit"></i> {{ trans('messages.unsubscribe') }}</a></li>
+														<li><a class="ajax_link" href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><i class="icon-exit"></i> {{ trans('messages.unsubscribe') }}</a></li>
 													@endif
 													@if (\Gate::allows('delete', $item))
 														<li><a delete-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>

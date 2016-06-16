@@ -54,6 +54,11 @@ class MailList extends Model
         return $this->hasMany('Mailixa\Model\Field');
     }
     
+    public function segments()
+    {
+        return $this->hasMany('Mailixa\Model\Segment');
+    }
+    
     /**
      * Bootstrap any application services.
      *
