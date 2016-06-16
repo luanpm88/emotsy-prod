@@ -148,6 +148,7 @@ return [
         Illuminate\Validation\ValidationServiceProvider::class,
         Illuminate\View\ViewServiceProvider::class,
         Intervention\Image\ImageServiceProvider::Class,
+        Barryvdh\Queue\AsyncServiceProvider::class,
 
         /*
          * Application Service Providers...

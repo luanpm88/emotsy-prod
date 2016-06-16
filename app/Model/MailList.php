@@ -241,4 +241,17 @@ class MailList extends Model
         }
         return $rules;
     }
+    
+    /**
+     * Check if a email is exsit.
+     *
+     * @param string the email.
+     *
+     * @return boolean
+     */
+    public function checkExsitEmail($email)
+    {
+        $valid = !filter_var($email, FILTER_VALIDATE_EMAIL) === false && !empty($email) && $this->subscribers()->where("email", "=", $email)->count() == 0;
+        return $valid;
+    }
 }

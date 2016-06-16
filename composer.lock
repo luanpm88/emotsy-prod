@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "2099dfacfaeac3cf4512172ee949fea9",
-    "content-hash": "0064e374696be17f1a16b0a94618e685",
+    "hash": "bf164138f269504d1c3aac5da8212175",
+    "content-hash": "352d3db1a53fbcfdc7a1d720578d1c82",
     "packages": [
         {
             "name": "aws/aws-sdk-php",
@@ -69,6 +69,56 @@
                 "sdk"
             ],
             "time": "2016-05-03 17:42:24"
+        },
+        {
+            "name": "barryvdh/laravel-async-queue",
+            "version": "v0.4.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/barryvdh/laravel-async-queue.git",
+                "reference": "218e8b04834cdef5f15fd9c5229baa9c7e095652"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/barryvdh/laravel-async-queue/zipball/218e8b04834cdef5f15fd9c5229baa9c7e095652",
+                "reference": "218e8b04834cdef5f15fd9c5229baa9c7e095652",
+                "shasum": ""
+            },
+            "require": {
+                "illuminate/console": "5.0.x|5.1.x|5.2.x",
+                "illuminate/support": "5.0.x|5.1.x|5.2.x",
+                "php": ">=5.4.0",
+                "symfony/process": "~2.6|~3.0"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "0.4-dev"
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Barryvdh\\Queue\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Barry vd. Heuvel",
+                    "email": "barryvdh@gmail.com"
+                }
+            ],
+            "description": "Async Queue Driver for Laravel (Push to background)",
+            "keywords": [
+                "async",
+                "background",
+                "laravel",
+                "queue"
+            ],
+            "time": "2016-02-29 09:06:07"
         },
         {
             "name": "classpreloader/classpreloader",

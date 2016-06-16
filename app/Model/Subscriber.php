@@ -12,7 +12,7 @@ class Subscriber extends Model
      * @var array
      */
     protected $fillable = [
-        
+        'mail_list_id'
     ];
     
     /**
@@ -172,5 +172,111 @@ class Subscriber extends Model
     public static function findByUid($uid)
     {
         return Subscriber::where("uid", "=", $uid)->first();
+    }
+    
+    /**
+     * Import subscribers from file.
+     *
+     * @return object
+     */
+    public static function import($user, $list)
+    {
+        $directory = storage_path('import/');
+        
+        // Import to database
+        $filename = $list->id."-data.csv";
+        $content = \File::get($directory.$filename);
+        $lines = explode("\n", $content);
+        $total = count($lines)-1;
+        $success = 0;
+        $error = 0;
+        $lines_per_second = 1;
+        $headers = explode(",", $lines[0]);
+        $header_names = explode(",", $lines[0]);
+        
+        // update header tags
+        foreach ($headers as $key => $tag) {
+            $tag = trim(strtoupper(preg_replace('!\s+!', '_', preg_replace('![\'|\"]!', '', $tag))));
+            $headers[$key] = $tag;
+            if ($tag == 'EMAIL') {
+                $main_index = $key;
+            }
+        }
+        
+        // check valid file
+        if (!in_array('EMAIL', $headers)) {
+            $str = "error\n<span style='color:red'>".trans('messages.invalid_csv_file')."</span>";
+            $str .= "\n0";
+            $bytes_written = \File::put($directory.$mail_list->list_id."-process.log", $str);
+            return;
+        }
+        
+        
+        $content_cache = "";
+        $count = "0";
+        foreach ($lines as $key => $line) {
+               
+            // authorize
+            if ($user->cannot('create', new \Mailixa\Model\Subscriber(['mail_list_id' => $list->id]))) {
+                $str = "error\n<span style='color:red'>".trans('messages.error_add_max_quota')."</span><br />".$content_cache;
+                $str .= "\n".$count;
+                $bytes_written = \File::put($directory.$list->id."-process.log", $str);
+                
+                return;
+            }
+            
+            if ($key > 0) {
+                $parts = explode(",", $line);
+                $email = $parts[$main_index];
+                
+                $valid = $list->checkExsitEmail($email);
+                if ($valid) {
+                    //// save subscribers
+                    $subscriber = new \Mailixa\Model\Subscriber();
+                    $subscriber->mail_list_id = $list->id;
+                    $subscriber->email = $email;
+                    $subscriber->user_id = $list->user_id;
+                    $subscriber->save();
+                    
+                    foreach ($parts as $key => $value) {
+                        $lf = $list->fields()->where("tag", "=", $headers[$key])->first();
+                        if (is_object($lf)) {
+                            //// save fields
+                            $lfv = new \Mailixa\Model\SubscriberField(array(
+                                            'field_id' => $lf->id,
+                                            'subscriber_id' => $subscriber->id,
+                                            'value' => $value,
+                                        ));
+                            $lfv->save();
+                        }
+                    }
+                    
+                    $success++;
+                } else {
+                    $error++;
+                }
+                if ($key%$lines_per_second == 0) {
+                    $content_cache = trans('messages.import_export_statistics_line', [
+                                            'total' => $total,
+                                            'processed' => $success+$error,
+                                            'success' => $success,
+                                            'error' => $error,
+                                        ]); //"Total of ".$total." subscribers; ".($success+$error)." have been processed; ".$success." successfully and ".$error." with errors.";
+                    $count = round((($success+$error)/$total)*100, 0);
+                    $str = "processing\n".$content_cache;
+                    $str .= "\n".$count."";
+                    $bytes_written = \File::put($directory.$list->id."-process.log", $str);
+                }
+            }
+        }
+        
+        $content_cache = trans('messages.import_export_statistics_line', [
+                                            'total' => $total,
+                                            'processed' => $success+$error,
+                                            'success' => $success,
+                                            'error' => $error,
+                                        ]);
+        $str = "finished\n".$content_cache."\n100";
+        $bytes_written = \File::put($directory.$list->id."-process.log", $str);
     }
 }

@@ -11,7 +11,8 @@
         "intervention/image": "^2.3",
         "doctrine/dbal": "~2.4",
 	"aws/aws-sdk-php": "2.*",
-	"swiftmailer/swiftmailer": "^5.4"
+	"swiftmailer/swiftmailer": "^5.4",
+        "barryvdh/laravel-async-queue": "0.4.x"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

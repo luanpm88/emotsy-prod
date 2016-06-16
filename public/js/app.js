@@ -292,4 +292,16 @@ $(function() {
             }
         });        
     });
+    
+    // Primary file input
+	$(".file-styled-primary").uniform({
+		wrapperClass: 'bg-warning',
+		fileButtonHtml: '<i class="icon-plus2"></i>'
+	});
+    
+    // Styled file input
+    $(".file-styled").uniform({
+        wrapperClass: 'bg-teal-400',
+        fileButtonHtml: '<i class="icon-googleplus5"></i>'
+    });
 });

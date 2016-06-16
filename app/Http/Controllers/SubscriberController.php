@@ -195,7 +195,7 @@ class SubscriberController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
@@ -206,7 +206,7 @@ class SubscriberController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function delete(Request $request)
@@ -229,7 +229,7 @@ class SubscriberController extends Controller
     }
     
     /**
-     * Subscribe item.
+     * Subscribe subscriber.
      *
      * @param  int  $id
      * @return \Illuminate\Http\Response
@@ -255,9 +255,9 @@ class SubscriberController extends Controller
     }
     
     /**
-     * Remove the specified resource from storage.
+     * Unsubscribe subscriber.
      *
-     * @param  int  $id
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function unsubscribe(Request $request)
@@ -278,6 +278,59 @@ class SubscriberController extends Controller
 
         // Redirect to my lists page
         echo(trans('messages.subscribers.unsubscribed'));
-
+    }
+    
+    /**
+     * Import from file.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function import(Request $request)
+    {
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        
+        if ($request->hasFile('file'))
+        {
+            $upload_path = storage_path('import/');
+            
+            // mkdir if not exist
+            if (!file_exists($upload_path)) {
+                mkdir($upload_path, 0777, true);
+            }
+            
+            $str = "start\n\n0";
+            $bytes_written = \File::put($upload_path.$list->id."-process.log", $str);
+            
+            // Upload csv
+            $filename = $list->id."-data.csv";
+            $request->file('file')->move($upload_path, $filename);
+            
+            sleep(1);
+            //run import job
+            $job = (new \Mailixa\Jobs\ImportSubscribers($request->user(), $list));
+            $this->dispatch($job);
+            
+        } else {
+            return view('subscribers.import', [
+                'list' => $list,
+            ]);
+        }
+    }
+    
+    /**
+     * Check import proccessing.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function import_proccess(Request $request)
+    {
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        
+        $upload_path = storage_path('import/');
+        $filename = $list->id."-process.log";
+        $content = \File::get($upload_path.$filename);
+        return response()->json(explode("\n", $content));
     }
 }

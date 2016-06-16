@@ -28,8 +28,8 @@
                                                             </a>
                                                         </li>
                                                         <li class="divider"></li>
-                                                        <li>
-                                                            <a href="" data-toggle="tab">
+                                                        <li rel0="SubscriberController/import">
+                                                            <a href="{{ action('SubscriberController@import', $list->uid) }}">
                                                                 <i class="icon-download4"></i> {{ trans('messages.import') }}
                                                             </a>
                                                         </li>

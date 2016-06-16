@@ -42,7 +42,7 @@ $(function() {
 
         // Different components require proper error label placement
         errorPlacement: function(error, element) {
-
+            
             // Styled checkboxes, radios, bootstrap switch
             if (element.parents('div').hasClass("checker") || element.parents('div').hasClass("choice") || element.parent().hasClass('bootstrap-switch-container') ) {
                 if(element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
@@ -57,7 +57,7 @@ $(function() {
             else if (element.parents(".form-group").find('.input_help').length) {
                 error.insertAfter( element.parents(".form-group").find('.input_help') );
             }
-
+            
             // Unstyled checkboxes, radios
             else if (element.parents('div').hasClass('checkbox') || element.parents('div').hasClass('radio')) {
                 error.appendTo( element.parent().parent().parent() );
