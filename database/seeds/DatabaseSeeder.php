@@ -94,6 +94,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('mail_lists')->insert([
             'id' => 1,
+            'uid' => uniqid(),
             'contact_id' => 1,
             'user_id' => 1,
             'name' => 'My List',
