@@ -92,12 +92,49 @@ class DatabaseSeeder extends Seeder
             'updated_at' => $updated_at
         ]);
 
+        // Create list and default fields
         DB::table('mail_lists')->insert([
             'id' => 1,
             'uid' => uniqid(),
             'contact_id' => 1,
             'user_id' => 1,
             'name' => 'My List',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+        
+        DB::table('fields')->insert([
+            'id' => 1,
+            'uid' => uniqid(),
+            'mail_list_id' => 1,
+            'label' => 'Email',
+            'tag' => 'EMAIL',
+            'visible' => true,
+            'required' => true,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+        
+        DB::table('fields')->insert([
+            'id' => 2,
+            'uid' => uniqid(),
+            'mail_list_id' => 1,
+            'label' => 'First name',
+            'tag' => 'FNAME',
+            'visible' => true,
+            'required' => false,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+        
+        DB::table('fields')->insert([
+            'id' => 3,
+            'uid' => uniqid(),
+            'mail_list_id' => 1,
+            'label' => 'Last name',
+            'tag' => 'LNAME',
+            'visible' => true,
+            'required' => false,
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
