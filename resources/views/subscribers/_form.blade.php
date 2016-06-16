@@ -3,6 +3,7 @@
 						<div class="row">
 							<div class="col-md-6">									
 								@foreach ($list->getFields as $field)
+									aaa
 									@if ($field->visible)
 										@if ($field->type == "text")
 											@include('helpers.form_control', ['type' => $field->type, 'name' => $field->tag, 'label' => $field->label, 'value' => (isset($values[$field->tag]) ? $values[$field->tag] : $field->default_value), 'rules' => $list->getFieldRules()])
