@@ -18,7 +18,7 @@
 										</td>
 										<td>
 											<div class="no-margin text-bold">
-												<a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'uid' => $item->uid]) }}">
+												<a class="kq_search" href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid ,'uid' => $item->uid]) }}">
 													{{ $item->email }}
 												</a>
 												<br />
@@ -26,27 +26,29 @@
 											</div>											
 										</td>
 										
-										@foreach ($list->getFields as $field)
-											@if ($field->tag != "EMAIL")
-												<td>
-													<span class="no-margin stat-num">{{ empty($item->getValueByField($field)) ? "--" : $item->getValueByField($field) }}</span>
-													<br>
-													<span class="text-muted2">{{ $field->label }}</span>
-												</td>
-											@endif
+										@foreach ($fields as $field)
+											<td>
+												<span class="no-margin stat-num kq_search">{{ empty($item->getValueByField($field)) ? "--" : $item->getValueByField($field) }}</span>
+												<br>
+												<span class="text-muted2">{{ $field->label }}</span>
+											</td>
 										@endforeach
-											
-										<td>
-											<span class="no-margin stat-num">{{ Tool::formatDateTime($item->created_at) }}</span>
-											<br>
-											<span class="text-muted2">{{ trans('messages.created_at') }}</span>
-										</td>
-											
-										<td>
-											<span class="no-margin stat-num">{{ Tool::formatDateTime($item->updated_at) }}</span>
-											<br>
-											<span class="text-muted2">{{ trans('messages.updated_at') }}</span>
-										</td>
+										
+										@if (in_array("created_at", explode(",", request()->columns)))
+											<td>
+												<span class="no-margin stat-num">{{ Tool::formatDateTime($item->created_at) }}</span>
+												<br>
+												<span class="text-muted2">{{ trans('messages.created_at') }}</span>
+											</td>
+										@endif
+										
+										@if (in_array("created_at", explode(",", request()->columns)))
+											<td>
+												<span class="no-margin stat-num">{{ Tool::formatDateTime($item->updated_at) }}</span>
+												<br>
+												<span class="text-muted2">{{ trans('messages.updated_at') }}</span>
+											</td>
+										@endif
 										
 										<td class="text-right text-nowrap">
 											@if (\Gate::allows('update', $item))

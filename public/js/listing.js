@@ -1,3 +1,19 @@
+function hiliter(word, element) {
+    var rgxp = new RegExp(word, 'gi');
+    var string = element.html().match(rgxp);
+    var repl = '<hl>' + string + '</hl>';    
+    element.html(element.html().replace(rgxp, repl));
+}
+
+function hiliterList(form, keyword) {    
+    if (keyword.length > 1) {
+        form.find(".kq_search").each(function() {
+            hiliter(keyword, $(this));
+        });
+    }
+}
+
+
 function tableFilter(form, custom_url) {
     var url = form.attr("data-url");
     var per_page = form.attr("per-page")
@@ -16,6 +32,11 @@ function tableFilter(form, custom_url) {
         $(".sort-direction").show();
     }
     
+    // showed columns
+    var columns = form.find("input[name='columns[]']:checked").map(function () {
+        return this.value;
+    }).get().join(",");
+    
     // ajax update custom sort
     $.ajax({
         method: "GET",
@@ -24,7 +45,8 @@ function tableFilter(form, custom_url) {
             per_page: per_page,
             sort_order: sort_order,
             sort_direction: sort_direction,
-            keyword: keyword
+            keyword: keyword,
+            columns: columns,
         }
     })
     .done(function( msg ) {
@@ -49,7 +71,13 @@ function tableFilter(form, custom_url) {
         // ------------------------------
         $(".select").select2({minimumResultsForSearch: -1});
         
-        
+        // Hightlight
+        if (keyword != 'undefined' && keyword.trim() != '') {
+            keywords = keyword.split(" ");
+            keywords.forEach(function (v) {
+                hiliterList(form, v.trim());
+            });            
+        }
     });
 }
 
@@ -242,6 +270,18 @@ $(document).ready(function() {
     
     // Search when typing
     $(document).on("keyup", "input[name='search_keyword']", function() {
+        var form = $(this).parents(".listing-form");
+        
+        tableFilter(form);
+    });
+    
+    // Columns filters
+    $(document).on("click", ".list_columns ul li", function(e) {
+        e.stopImmediatePropagation();
+    });
+    
+    // Columns filters
+    $(document).on("change", ".listing-form input[name='columns[]']", function(e) {
         var form = $(this).parents(".listing-form");
         
         tableFilter(form);

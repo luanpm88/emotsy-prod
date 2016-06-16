@@ -104,14 +104,21 @@ class Subscriber extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = Subscriber::where("user_id", "=", $user->id);
+        $query = Subscriber::select("subscribers.*");
+        $query = $query->where("user_id", "=", $user->id);
+        $query = $query->rightJoin('field_values', 'subscribers.id', '=', 'field_values.subscriber_id');
         
         // Keyword
         if(!empty(trim($request->keyword))) {
-            $query = $query->where('email', 'like', '%' . $request->keyword . '%');
+            foreach(explode(" ",trim($request->keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('subscribers.email', 'like', '%' . $keyword . '%')
+                        ->orWhere('field_values.value', 'like', '%' . $keyword . '%');
+                });
+            }                
         }
         
-        return $query;
+        return $query->distinct();
     }
     
     /**
@@ -123,7 +130,7 @@ class Subscriber extends Model
     {
         $query = Subscriber::filter($request);
         
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        $query = $query->orderBy("subscribers.".$request->sort_order, $request->sort_direction);
         
         return $query;
     }

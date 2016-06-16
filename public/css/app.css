@@ -576,7 +576,10 @@ textarea.form-control {
 }
 .keyword_search_button {
     color: #999;
-    margin-left: -30px;
+    margin-left: -38px;
+    line-height: 26px;
+    background: #fff;
+    padding: 0 8px;
 }
 .hide {
     position: absolute;
@@ -660,4 +663,18 @@ input.error {
     top: 8px;
     z-index: 100;
     right: 10px;
+}
+.list_columns ul {
+    background: #eee;
+}
+.list_columns ul li {
+    padding: 1px 15px;
+    border-bottom: solid 1px #fff;
+}
+.list_columns ul li:last-child {
+    border-bottom: 0;
+}
+hl {
+    background: rgba(77, 208, 225, 0.30);
+    color: #333;
 }

@@ -32,10 +32,12 @@ class SubscriberController extends Controller
     {
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
         $subscribers = \Mailixa\Model\Subscriber::search($request)->paginate($request->per_page);
+        $fields = $list->getFields->whereIn("uid", explode(",", $request->columns));
         
         return view('subscribers._list', [
             'subscribers' => $subscribers,
             'list' => $list,
+            'fields' => $fields,
         ]);
     }
 

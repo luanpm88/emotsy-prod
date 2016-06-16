@@ -37,7 +37,7 @@
 						<div class="col-md-10">
 							@if ($subscribers->count() >= 0)					
 								<div class="filter-box">
-									<div class="btn-group list_actions hide">
+									<div class="btn-group list_actions hide mr-10">
 										<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
 											{{ trans('messages.actions') }} <span class="caret"></span>
 										</button>
@@ -63,7 +63,7 @@
 										<label>
 											<input type="checkbox" class="styled check_all">
 										</label>
-									</div>
+									</div>									
 									<span class="filter-group">
 										<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
 										<select class="select" name="sort-order">											
@@ -74,6 +74,41 @@
 											<i class="icon-sort-amount-asc"></i>
 										</button>
 									</span>
+									<div class="btn-group list_columns ml-10">
+										<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
+											{{ trans('messages.columns') }} <span class="caret"></span>
+										</button>
+										<ul class="dropdown-menu dropdown-menu-right">
+											@foreach ($list->getFields as $field)
+												@if ($field->tag != "EMAIL")
+													<li>
+														<div class="checkbox">
+															<label>
+																<input checked="checked" type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
+																{{ $field->label }}
+															</label>
+														</div>															
+													</li>	
+												@endif
+											@endforeach
+											<li>
+												<div class="checkbox">
+													<label>
+														<input checked="checked" type="checkbox" id="created_at" name="columns[]" value="created_at" class="styled">
+														{{ trans('messages.created_at') }}
+													</label>
+												</div>															
+											</li>
+											<li>
+												<div class="checkbox">
+													<label>
+														<input checked="checked" type="checkbox" id="updated_at" name="columns[]" value="updated_at" class="styled">
+														{{ trans('messages.updated_at') }}
+													</label>
+												</div>															
+											</li>
+										</ul>
+									</div>
 									<span class="text-nowrap">
 										<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 										<i class="icon-search4 keyword_search_button"></i>

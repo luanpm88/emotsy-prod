@@ -22,7 +22,7 @@
 										</td>
 										<td>
 											<h5 class="no-margin text-bold">
-												<a href="{{ action('MailListController@edit', ['uid' => $item->uid]) }}">{{ $item->name }}</a>
+												<a class="kq_search" href="{{ action('MailListController@edit', ['uid' => $item->uid]) }}">{{ $item->name }}</a>
 											</h5>
 											<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
@@ -53,7 +53,7 @@
 											<div class="btn-group">										
 												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 												<ul class="dropdown-menu dropdown-menu-right">
-													<li><a href="#"><i class="icon-users4"></i> {{ trans("messages.subscribers") }}</a></li>
+													<li><a href="{{ action('SubscriberController@index', $item->uid) }}"><i class="icon-users4"></i> {{ trans("messages.subscribers") }}</a></li>
 													<li><a href="#"><i class="icon-make-group"></i> {{ trans('messages.segments') }}</a></li>
 													<li><a href="#"><i class="icon-certificate"></i> {{ trans('messages.custom_forms_and_emails') }}</a></li>
 													<li><a href="#"><i class="icon-pencil7"></i> {{ trans("messages.edit_list") }}</a></li>

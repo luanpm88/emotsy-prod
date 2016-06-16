@@ -222,7 +222,7 @@ return [
     'confirm' => 'Confirm',
     'number_field' => 'Number',
     'number' => 'Number',
-    '' => '',
+    'columns' => 'Columns',
     '' => '',
     '' => '',
     '' => '',
