@@ -6,11 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Campaign extends Model
 {
-    const STATUS_NEW = 'new';
+    const STATUS_NEW     = 'new';
     const STATUS_PENDING = 'pending';
     const STATUS_SENDING = 'sending';
-    const STATUS_PAUSED = 'paused';
-    const STATUS_DONE = 'done';
+    const STATUS_PAUSED  = 'paused';
+    const STATUS_DONE    = 'done';
 
     /**
      * Get the user that owns the phone.
@@ -170,18 +170,11 @@ class Campaign extends Model
      */
     public function getPendingSubscribers()
     {
-        // prepare statement
-        $sql = "SELECT ls.* FROM &subscriber ls LEFT JOIN (SELECT * FROM &canpaign_delivery_log WHERE campaign_id = :campaign_id) cdl ON ls.subscriber_id = cdl.subscriber_id WHERE ls.list_id = :list_id AND cdl.log_id IS NULL AND ls.status = :status";
-
-        // bind SQL parameters using BUILD_SQL utility
-        $sql = MyHelper::buildSql($sql, array(
-            "campaign_id" => $this->campaign_id,
-            "list_id" => $this->subscriber_list->list_id,
-            "status" => Subscriber::STATUS_CONFIRMED,
-            "subscriber" => Subscriber::$table_name,
-            "canpaign_delivery_log" => CampaignDeliveryLog::$table_name
-        ));
-        return Subscriber::find_by_sql($sql);
+        return \DB::table('subscribers')
+            ->leftJoin(\DB::raw('(SELECT * FROM tracking_logs WHERE campaign_id = :campaign_id) log', ['campaign_id' => $this->id]), 'subscribers.id', '=', 'log.subscriber_id')
+            ->where('log.id', NULL)
+            ->select('subscribers.*')
+            ->get();
     }
 
     /**
@@ -230,3 +223,5 @@ class Campaign extends Model
         return $message;
     }
 }
+
+

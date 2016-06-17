@@ -235,6 +235,16 @@ class MailList extends Model
     {
         return $this->fields()->where("tag", "=", $tag)->first();
     }
+
+    /**
+     * Get field by tag.
+     *
+     * @return object
+     */
+    function getActiveSubscribers()
+    {
+        return $this->subscribers()->where("status", 'active')->get();
+    }
     
     /**
      * Get field rules.

@@ -56,6 +56,7 @@ class TestCampaign extends Command
         */
 
         $c = Campaign::first();
-        var_dump($c->mailList);
+
+        var_dump($c->getPendingSubscribers()[0]->id);
     }
 }

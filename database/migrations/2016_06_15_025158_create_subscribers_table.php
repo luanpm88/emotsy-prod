@@ -21,9 +21,10 @@ class CreateSubscribersTable extends Migration
             $table->string('status');
             $table->string('from');
             $table->string('ip');
-            
+            $table->boolean('confirmed');
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

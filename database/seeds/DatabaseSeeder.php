@@ -141,5 +141,25 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
+
+        DB::table('subscribers')->insert([
+            'id' => 1,
+            'user_id' => 1,
+            'mail_list_id' => 1,
+            'email' => 'minhnghivn@gmail.com',
+            'status' => 'active',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
+        DB::table('subscribers')->insert([
+            'id' => 2,
+            'user_id' => 1,
+            'mail_list_id' => 1,
+            'email' => 'minhnghivn@yahoo.com',
+            'status' => 'active',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
     }
 }
