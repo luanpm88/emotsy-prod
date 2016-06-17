@@ -1,0 +1,25 @@
+<?php
+
+namespace Mailixa\Policies;
+
+use Illuminate\Auth\Access\HandlesAuthorization;
+
+class LayoutPolicy
+{
+    use HandlesAuthorization;
+
+    /**
+     * Create a new policy instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+    
+    public function update(\Mailixa\Model\User $user, \Mailixa\Model\Layout $item)
+    {
+        return true;
+    }
+}

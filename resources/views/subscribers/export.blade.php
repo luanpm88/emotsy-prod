@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', $list->name . ": " . trans('messages.import'))
+@section('title', $list->name . ": " . trans('messages.export'))
 
 @section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
@@ -37,7 +37,7 @@
                             </div>
                             
                             <div class="form-group processing hide">
-								<h4>{{ trans('messages.please_wait_import') }}</h4>
+								<h4>{{ trans('messages.please_wait_export') }}</h4>
                                 <div class="progress progress-lg">
 
 									<!--<div class="progress-bar progress-success bg-success-400" style="width: 20%">
@@ -58,10 +58,10 @@
 								
 							<div class="form-group finish hide">
                                 <div class="text-right">
-                                    <a target="_blank" href="{{ action('SubscriberController@downloadExportedCsv', ["list_uid" => $list->uid]) }}" type="button" class="btn btn-primary finish hide">
+                                    <a target="_blank" href="{{ action('SubscriberController@downloadExportedCsv', ["list_uid" => $list->uid]) }}" type="button" class="btn bg-teal finish hide">
                                         <i class="icon-download"></i> {{ trans('messages.download_export') }}
                                     </a>
-                                    <a href="#retry" class="btn bg-teal mr-10 import_another"><i class="icon-reload-alt"></i> {{ trans('messages.retry') }}</a>
+                                    <a href="#retry" class="btn bg-grey-600 mr-10 retry"><i class="icon-reload-alt"></i> {{ trans('messages.retry') }}</a>
                                 </div>
                             </div>
                             
@@ -112,18 +112,20 @@
 										form.find('.before').addClass("hide");
                                     }
 									if (data[0] == "finished") {
+										if(!form.find('.finish').hasClass('hide')) {
+											// Success alert
+											swal({
+												title: '{{ trans('messages.export_completed') }}',
+												text: "",
+												confirmButtonColor: "#00695C",
+												type: "success",
+												allowOutsideClick: true,
+												confirmButtonText: LANG_OK,
+											});
+										}
 										form.find('.upload_file .progress-bar').addClass('success');
 										form.find('.finish').removeClass('hide');
-										form.find(".processing h4").html('{{ trans('messages.import_completed') }}');
-										// Success alert
-										swal({
-											title: '{{ trans('messages.import_completed') }}',
-											text: "",
-											confirmButtonColor: "#00695C",
-											type: "success",
-											allowOutsideClick: true,
-											confirmButtonText: LANG_OK,
-										});
+										form.find(".processing h4").html('{{ trans('messages.export_completed') }}');										
 									}
 								}
 							})
@@ -153,7 +155,7 @@
 								width: 0 + '%'
 							});
 							
-							form.find(".processing h4").html('{{ trans('messages.please_wait_import') }}');
+							form.find(".processing h4").html('{{ trans('messages.please_wait_export') }}');
 							
                             $(".processing label").html("{{ trans('messages.uploading') }}");
                             $(".before").addClass('hide');
@@ -197,11 +199,16 @@
 							
 							return false;
 						});
-						$(document).on("click", ".import_another", function() {
+						$(document).on("click", ".retry", function() {
 							$(".input[type=file]").val("");
 							$(".finish").addClass('hide');
                             $(".processing").addClass('hide');
 							$(".before").removeClass('hide');
+							var bars = $(".progress-bar");
+							bars.find(".number").html(parseInt(0));
+							bars.css({
+								width: 0 + '%'
+							});
 						});
 					</script>
 @endsection

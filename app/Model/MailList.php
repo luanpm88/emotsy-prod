@@ -59,6 +59,16 @@ class MailList extends Model
         return $this->hasMany('Mailixa\Model\Segment');
     }
     
+    public function pages()
+    {
+        return $this->hasMany('Mailixa\Model\Page');
+    }
+    
+    public function page($layout)
+    {
+        return $this->pages()->where("layout_id", $layout->id)->first();
+    }
+    
     /**
      * Bootstrap any application services.
      *

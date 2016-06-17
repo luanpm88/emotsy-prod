@@ -58,7 +58,7 @@
                                                         </li>
                                                     </ul>
 												</li>
-                                                <li rel0="AccountController/contact" class="dropdown">
+                                                <li rel0="PageController" class="dropdown">
 													<a href="{{ action("AccountController@contact") }}" class="level-1" data-toggle="dropdown">
 														<i class="icon-certificate position-left"></i> {{ trans('messages.custom_forms_and_emails') }}
                                                         <span class="caret"></span>
@@ -68,13 +68,18 @@
                                                             <i class="icon-enter"></i> {{ trans('messages.subscribe') }}
                                                         </li>
                                                         <li>
-                                                            <a href="" data-toggle="tab">
+                                                            <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_form']) }}">
                                                                 {{ trans('messages.sign_up_form') }}
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="" data-toggle="tab">
+                                                            <a  href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_thankyou_page']) }}">
                                                                 {{ trans('messages.sign_up_thankyou_page') }}
+                                                            </a>
+                                                        </li>															
+														<li>
+                                                            <a  href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_confirmation_email']) }}">
+                                                                {{ trans('messages.sign_up_confirmation_email') }}
                                                             </a>
                                                         </li>
                                                         <li>

@@ -1,0 +1,104 @@
+	<!-- Page container -->
+	<div class="page-container login-container" style="min-height:249px">
+
+		<!-- Page content -->
+		<div class="page-content">
+
+			<!-- Main content -->
+			<div class="content-wrapper">
+				<div class="row">
+					<div class="col-sm-2 col-md-3">
+						
+					</div>
+					<div class="col-sm-8 col-md-6">
+
+                    <!-- subscribe form -->
+				                  
+					<h2 class="text-semibold mt-40 text-white">[LIST_NAME]</h2>
+                        <div class="panel panel-body">						
+                                                
+                        <h4>Welcome to [COMPANY_NAME]</h4>
+                        <hr>
+                        [FIELDS]
+                        <br>
+                        [SUBSCRIBE_BUTTON]
+
+					</div>
+
+                    <!-- /subscribe form -->
+    
+						
+					</div>
+				</div>
+			</div>
+			<!-- /main content -->
+
+		</div>
+		<!-- /page content -->
+
+
+		<!-- Footer -->
+		<div class="footer text-white">
+			© 2016. <span class="text-white">Mailixa Email Marketing Application</span> by <a href="http://mailixa.net" class="text-white" target="_blank">Mailixa.net</a>			
+		</div>
+		<!-- /footer -->
+
+	</div>
+	<!-- /page container -->
+	
+	
+	
+	
+	
+	
+	<!-- Page container -->
+	<div class="page-container login-container" style="min-height:249px">
+
+		<!-- Page content -->
+		<div class="page-content">
+
+			<!-- Main content -->
+			<div class="content-wrapper">
+				<div class="row">
+					<div class="col-sm-2 col-md-3">
+						
+					</div>
+					<div class="col-sm-8 col-md-6">
+
+                    <!-- subscribe form -->
+				                  
+					<h2 class="text-semibold mt-40 text-white">[LIST_NAME]</h2>
+                        <div class="panel panel-body">						
+                                                
+                        <h4>Almost finished...</h4>
+                        <hr>
+						We need to confirm your email address.
+						<br />
+						To complete the subscription process, please click the link in the email we just sent you.
+						<br />
+						<br />
+						
+                        [COMPANY_NAME]
+
+					</div>
+
+                    <!-- /subscribe form -->
+    
+						
+					</div>
+				</div>
+			</div>
+			<!-- /main content -->
+
+		</div>
+		<!-- /page content -->
+
+
+		<!-- Footer -->
+		<div class="footer text-white">
+			© 2016. <span class="text-white">Mailixa Email Marketing Application</span> by <a href="http://mailixa.net" class="text-white" target="_blank">Mailixa.net</a>			
+		</div>
+		<!-- /footer -->
+
+	</div>
+	<!-- /page container -->

@@ -22,7 +22,7 @@
                 <form action="{{ action('SubscriberController@store', $list->uid) }}" method="POST" class="form-validate-jqueryz">
 					{{ csrf_field() }}
 					
-					@include("subscribers._form")					
+					@include("subscribers._form")
 					
 					<div class="text-right col-md-6">
 						<button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>

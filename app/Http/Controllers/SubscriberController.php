@@ -15,6 +15,7 @@ class SubscriberController extends Controller
      */
     public function index(Request $request)
     {
+        // \Mailixa\Model\Layout::createDefaultLayouts();
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
         $subscribers = $list->subscribers;
         return view('subscribers.index', [

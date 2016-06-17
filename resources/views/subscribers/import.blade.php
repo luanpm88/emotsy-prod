@@ -30,7 +30,7 @@
                             
                             <div class="upload_file before">
                                 <div class="alert alert-info">
-                                    {!! trans('messages.import_file_help', ['link' => '']) !!}
+                                    {!! trans('messages.import_file_help', ['csv_link' => url('files/csv_import_example.csv')]) !!}
                                 </div>
                                     
                                 @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file', 'value' => $list->name])
@@ -113,18 +113,21 @@
 										form.find('.before').addClass("hide");
                                     }
 									if (data[0] == "finished") {
+										if(!form.find('.finish').hasClass('hide')) {
+											// Success alert
+											swal({
+												title: '{{ trans('messages.import_completed') }}',
+												text: "",
+												confirmButtonColor: "#00695C",
+												type: "success",
+												allowOutsideClick: true,
+												confirmButtonText: LANG_OK,
+											});
+										}
 										form.find('.upload_file .progress-bar').addClass('success');
 										form.find('.finish').removeClass('hide');
 										form.find(".processing h4").html('{{ trans('messages.import_completed') }}');
-										// Success alert
-										swal({
-											title: '{{ trans('messages.import_completed') }}',
-											text: "",
-											confirmButtonColor: "#00695C",
-											type: "success",
-											allowOutsideClick: true,
-											confirmButtonText: LANG_OK,
-										});
+										
 									}
 								}
 							})
@@ -203,6 +206,11 @@
 							$(".finish").addClass('hide');
                             $(".processing").addClass('hide');
 							$(".before").removeClass('hide');
+							var bars = $(".progress-bar");
+							bars.find(".number").html(parseInt(0));
+							bars.css({
+								width: 0 + '%'
+							});
 						});
 					</script>
 @endsection
