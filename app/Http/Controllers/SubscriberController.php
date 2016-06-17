@@ -30,8 +30,12 @@ class SubscriberController extends Controller
      */
     public function listing(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $subscribers = \Mailixa\Model\Subscriber::search($request)->paginate($request->per_page);
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);       
+        
+        $subscribers = \Mailixa\Model\Subscriber::search($request)
+                                        ->where("mail_list_id", "=", $list->id)
+                                        ->groupBy('subscribers.id')
+                                        ->paginate($request->per_page);
         $fields = $list->getFields->whereIn("uid", explode(",", $request->columns));
         
         return view('subscribers._list', [
@@ -310,7 +314,6 @@ class SubscriberController extends Controller
             //run import job
             $job = (new \Mailixa\Jobs\ImportSubscribers($request->user(), $list));
             $this->dispatch($job);
-            
         } else {
             return view('subscribers.import', [
                 'list' => $list,
@@ -324,7 +327,7 @@ class SubscriberController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function import_proccess(Request $request)
+    public function importProccess(Request $request)
     {
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
         
@@ -332,5 +335,69 @@ class SubscriberController extends Controller
         $filename = $list->id."-process.log";
         $content = \File::get($upload_path.$filename);
         return response()->json(explode("\n", $content));
+    }
+    
+    /**
+     * Export to csv.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function export(Request $request)
+    {
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        
+        \Mailixa\Model\Subscriber::export($request->user(), $list);
+        
+        if ($request->hasFile('file'))
+        {
+            $upload_path = storage_path('export/');
+            
+            // mkdir if not exist
+            if (!file_exists($upload_path)) {
+                mkdir($upload_path, 0777, true);
+            }
+            
+            $str = "start\n\n0";
+            $bytes_written = \File::put($upload_path.$list->id."-process.log", $str);            
+            
+            sleep(1);
+            //run import job
+            $job = (new \Mailixa\Jobs\ExportSubscribers($request->user(), $list));
+            $this->dispatch($job);
+        } else {
+            return view('subscribers.export', [
+                'list' => $list,
+            ]);
+        }
+    }
+    
+    /**
+     * Check export proccessing.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function exportProccess(Request $request)
+    {
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        
+        $upload_path = storage_path('export/');
+        $filename = $list->id."-process.log";
+        $content = \File::get($upload_path.$filename);
+        return response()->json(explode("\n", $content));
+    }
+    
+    /**
+     * Download exported csv file after exporting.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function downloadExportedCsv(Request $request)
+    {
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        
+        return response()->download(storage_path('export/'.$list->id.'-data.csv'));
     }
 }

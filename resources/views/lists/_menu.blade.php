@@ -33,8 +33,8 @@
                                                                 <i class="icon-download4"></i> {{ trans('messages.import') }}
                                                             </a>
                                                         </li>
-                                                        <li>
-                                                            <a href="" data-toggle="tab">
+                                                        <li rel0="SubscriberController/export">
+                                                            <a href="{{ action('SubscriberController@export', $list->uid) }}">
                                                                 <i class="icon-upload4"></i> {{ trans('messages.export') }}
                                                             </a>
                                                         </li>

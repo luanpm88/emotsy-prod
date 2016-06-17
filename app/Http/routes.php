@@ -53,7 +53,11 @@ Route::get('lists/{list_uid}/subscribers/subscribe', 'SubscriberController@subsc
 Route::get('lists/{list_uid}/subscribers/unsubscribe', 'SubscriberController@unsubscribe');
 Route::get('lists/{list_uid}/subscribers/import', 'SubscriberController@import');
 Route::post('lists/{list_uid}/subscribers/import', 'SubscriberController@import');
-Route::get('lists/{list_uid}/subscribers/import_proccess', 'SubscriberController@import_proccess');
+Route::get('lists/{list_uid}/subscribers/import/proccess', 'SubscriberController@importProccess');
+Route::get('lists/{list_uid}/subscribers/export', 'SubscriberController@export');
+Route::post('lists/{list_uid}/subscribers/export', 'SubscriberController@export');
+Route::get('lists/{list_uid}/subscribers/export/proccess', 'SubscriberController@exportProccess');
+Route::get('lists/{list_uid}/subscribers/export/download', 'SubscriberController@downloadExportedCsv');
 
 // Notification handler
 Route::get('delivery/notify', 'DeliveryController@notify');

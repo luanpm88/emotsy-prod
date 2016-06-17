@@ -688,3 +688,11 @@ hl {
 .inline {
     display: inline;
 }
+.progress-lg {
+    height: 32px;
+    margin-bottom: 5px;
+}
+.progress-lg .progress-bar {
+    line-height: 32px;
+    font-size: 15px;
+}

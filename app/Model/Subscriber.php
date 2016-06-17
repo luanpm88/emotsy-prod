@@ -103,7 +103,7 @@ class Subscriber extends Model
      */
     public static function filter($query, $request)
     {        
-        $query = $query->rightJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id');
+        $query = $query->join('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id');
         
         // Keyword
         if(!empty(trim($request->keyword))) {
@@ -122,7 +122,7 @@ class Subscriber extends Model
             }
         }
         
-        return $query->distinct();
+        return $query;
     }
     
     /**
@@ -235,6 +235,7 @@ class Subscriber extends Model
                     $subscriber = new \Mailixa\Model\Subscriber();
                     $subscriber->mail_list_id = $list->id;
                     $subscriber->email = $email;
+                    $subscriber->status = "subscribed";
                     $subscriber->user_id = $list->user_id;
                     $subscriber->save();
                     
@@ -278,5 +279,66 @@ class Subscriber extends Model
                                         ]);
         $str = "finished\n".$content_cache."\n100";
         $bytes_written = \File::put($directory.$list->id."-process.log", $str);
+    }
+    
+     /**
+     * Export subscribers to csv.
+     *
+     * @return object
+     */
+    public static function export($user, $list)
+    {
+        $directory = storage_path('export/');
+        // Import to database
+        $total = $list->subscribers()->count();
+        $success = 0;
+        $error = 0;
+        $lines_per_second = 1;
+        $data = [];
+        $headers = [];
+        foreach ($list->getFields as $key => $field) {
+            $headers[] = $field->tag;
+        }
+        $headers = implode(",", $headers);
+        
+        foreach ($list->subscribers as $key => $item) {
+            $cols = [];
+            if (true) {
+                if (true) {
+                    foreach ($list->fields as $key => $field) {
+                        $value = $item->getValueByField($field);
+                        $cols[] = $value;
+                    }
+                    $data[] = implode(",", $cols);
+                    
+                    $success++;
+                } else {
+                    $error++;
+                }
+                if ($key%$lines_per_second == 0) {
+                    $content_cache = trans('messages.import_export_statistics_line', [
+                                            'total' => $total,
+                                            'processed' => $success+$error,
+                                            'success' => $success,
+                                            'error' => $error,
+                                        ]);
+                    $str = "processing\n".$content_cache;
+                    $str .= "\n".round((($success+$error)/$total)*100, 0)."";
+                    $bytes_written = \File::put($directory.$list->id."-process.log", $str);
+                }
+            }
+        }
+        
+        $str = $headers . "\n" . implode("\n", $data);
+        $bytes_written = \File::put($directory.$list->id."-data.csv", $str);
+        $content_cache = trans('messages.import_export_statistics_line', [
+                                            'total' => $total,
+                                            'processed' => $success+$error,
+                                            'success' => $success,
+                                            'error' => $error,
+                                        ]);
+        $str = "finished\n" . $content_cache . "\n100";
+        $bytes_written = \File::put($directory.$list->id."-process.log", $str);
+    
     }
 }
