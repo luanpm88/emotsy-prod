@@ -57,6 +57,16 @@ class Contact extends Model
     }
     
     /**
+     * Associations.
+     *
+     * @var object | collect
+     */ 
+    public function country()
+    {
+        return $this->belongsTo('Mailixa\Model\Country');
+    }
+    
+    /**
      * Display contact name.
      *
      * @var string

@@ -385,4 +385,32 @@ class PageController extends Controller
             'list_page' => $list_page,
         ]);
     }
+    
+    /**
+     * Preview page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function preview(Request $request)
+    {
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('update', $list)) {
+            return $this->notAuthorized();
+        }
+        
+        $layout = \Mailixa\Model\Layout::where("alias", $request->alias)->first();
+        $page = \Mailixa\Model\Page::findPage($list, $layout);
+        $page->content = $request->content;
+        
+        // render content
+        $page->renderContent();
+        
+        return view('pages.preview', [
+            'list' => $list,
+            'page' => $page,
+        ]);
+    }
 }

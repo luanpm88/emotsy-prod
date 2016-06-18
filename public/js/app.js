@@ -304,4 +304,26 @@ $(function() {
         wrapperClass: 'bg-teal-400',
         fileButtonHtml: '<i class="icon-googleplus5"></i>'
     });
+    
+    // add segment condition
+    $(document).on("click", ".preview-page-button", function(e) {
+        var url = $(this).attr('page-url');
+        tinyMCE.triggerSave();
+        var formData = new FormData($("#update-page")[0]);
+        var frame = $('.preview_page_frame');
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: formData,
+            success: function (data) {
+                var doc = frame[0].contentWindow.document;
+                var $body = $('body',doc);
+                $body.addClass('bg-slate-800');
+                $body.html(data);
+            },
+            cache: false,
+            contentType: false,
+            processData: false
+        });
+    });
 });

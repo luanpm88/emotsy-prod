@@ -341,4 +341,15 @@ class Subscriber extends Model
         $bytes_written = \File::put($directory.$list->id."-process.log", $str);
     
     }
+    
+    /**
+     * Get secure code for updating subscriber.
+     *
+     * @param string $action
+     * @return void
+     */
+    public function getSecurityToken($action) {
+        $string = $this->email + $action + env("APP_SECRET");
+        return md5($string);
+    }
 }

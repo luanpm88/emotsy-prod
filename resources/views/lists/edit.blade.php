@@ -26,8 +26,9 @@
                 
                 @include("lists._menu")
     
-                <form action="{{ action('MailListController@store') }}" method="POST" class="form-validate-jqueryz">
+                <form action="{{ action('MailListController@update', $list->uid) }}" method="POST" class="form-validate-jqueryz">
 					{{ csrf_field() }}
+					<input type="hidden" name="_method" value="PATCH">
 					
 					@include("lists._form")					
 					

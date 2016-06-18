@@ -32,7 +32,7 @@ class MailList extends Model
         'contact.city' => 'required',
         'contact.zip' => 'required',
         'contact.phone' => 'required',
-        'contact.email' => 'email',
+        'contact.email' => 'required|email',
         'contact.url' => 'url',
         'email_subscribe' => 'regex:"^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$"',
         'email_unsubscribe' => 'regex:"^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$"',

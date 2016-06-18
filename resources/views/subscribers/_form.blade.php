@@ -1,8 +1,8 @@
-                    <div class="sub_section">						
+                    <div class="sub_sectionz">						
 						<div class="row">
 							<div class="col-md-6">									
 								@foreach ($list->getFields as $field)
-									@if ($field->visible)
+									@if ($field->visible || !isset($is_page))
 										@if ($field->type == "text")
 											@include('helpers.form_control', ['type' => $field->type, 'name' => $field->tag, 'label' => $field->label, 'value' => (isset($values[$field->tag]) ? $values[$field->tag] : $field->default_value), 'rules' => $list->getFieldRules()])
 										@elseif ($field->type == "number")

@@ -162,7 +162,31 @@ class MailListController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        // Generate info
+        $user = $request->user();        
+        $list = \Mailixa\Model\MailList::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('update', $list)) {
+            return $this->notAuthorized();
+        }
+        
+        // validate and save posted data
+        if ($request->isMethod('patch'))
+        {
+            $this->validate($request, \Mailixa\Model\MailList::$rules);
+            
+            // Save contact
+            $list->contact->fill($request->all()["contact"]);
+            $list->contact->save();
+            $list->fill($request->all());
+            $list->save();
+            
+            // Redirect to my lists page
+            $request->session()->flash('alert-success', trans('messages.list.updated'));
+            return redirect()->action('MailListController@index');
+
+        }
     }
 
     /**

@@ -33,6 +33,7 @@ Route::get('lists/sort', 'MailListController@sort');
 Route::get('lists/listing/{page?}', 'MailListController@listing');
 Route::resource('lists', 'MailListController');
 Route::get('lists/{uid}/edit', 'MailListController@edit');
+Route::patch('lists/{uid}/update', 'MailListController@update');
 
 // Field
 Route::get('lists/{list_uid}/fields', 'FieldController@index');
@@ -74,6 +75,7 @@ Route::patch('lists/{list_uid}/segments/{uid}/update', 'SegmentController@update
 Route::get('lists/{list_uid}/segments/delete', 'SegmentController@delete');
 Route::get('lists/{list_uid}/segments/sample_condition', 'SegmentController@sample_condition');
 
-// Segment
+// Page
 Route::get('lists/{list_uid}/pages/{alias}/update', 'PageController@update');
 Route::post('lists/{list_uid}/pages/{alias}/update', 'PageController@update');
+Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');

@@ -60,66 +60,64 @@ class Layout extends Model
         switch ($this->alias) {
             case "sign_up_form":
                 $tags = array(
-                            array("name" => "[LIST_NAME]", "required" => false),
-                            array("name" => "[FIELDS]", "required" => true),
-                            array("name" => "[SUBSCRIBE_BUTTON]", "required" => true),
+                            array("name" => "//FIELDS//", "required" => true),
+                            array("name" => "//SUBSCRIBE_BUTTON//", "required" => true),
                         );
                 break;
             case "sign_up_thankyou_page":
                 $tags = array(
-                            array("name" => "[LIST_NAME]", "required" => false),
                         );
                 break;
             case "sign_up_confirmation_email":
                 $tags = array(
-                            array("name" => "[LIST_NAME]", "required" => false),
-                            array("name" => "[SUBSCRIBE_CONFIRM_URL]", "required" => true),
+                            array("name" => "//SUBSCRIBE_CONFIRM_URL//", "required" => true),
                         );
                 break;
-            case "update-profile":
+            case "sign_up_confirmation_thankyou":
                 $tags = array(
-                            array("name" => "[LIST_NAME]", "required" => false),
-                            array("name" => "[LIST_FIELDS]", "required" => true),
-                            array("name" => "[SUBMIT_BUTTON]", "required" => true),
                         );
                 break;
-            case "unsubscribe-form":
+            case "sign_up_welcome_email":
                 $tags = array(
-                            array("name" => "[LIST_NAME]", "required" => false),
-                            array("name" => "[UNSUBSCRIBE_EMAIL_FIELD]", "required" => true),
-                            array("name" => "[SUBMIT_BUTTON]", "required" => true),
+                            array("name" => "//UNSUBSCRIBE_URL//", "required" => true),
                         );
                 break;
-            case "unsubscribe-confirm":
+            case "unsubscribe_form":
                 $tags = array(
-                            array("name" => "[LIST_NAME]", "required" => false),
-                            array("name" => "[SUBSCRIBE_URL]", "required" => false),
+                            array("name" => "//EMAIL_FIELD//", "required" => true),
+                            array("name" => "//UNSUBSCRIBE_BUTTON//", "required" => true),
                         );
                 break;
-            case "subscribe-confirm-email":
+            case "sign_up_confirmation_thankyou":
                 $tags = array(
-                            array("name" => "[LIST_NAME]", "required" => false),
-                            array("name" => "[COMPANY_NAME]", "required" => false),
-                            array("name" => "[CURRENT_YEAR]", "required" => false),
-                            array("name" => "[SUBSCRIBE_CONFIRM_URL]", "required" => true),
                         );
                 break;
-            case "unsubscribe-confirm-email":
+            case "unsubscribe_success_page":
                 $tags = array(
-                            array("name" => "[LIST_NAME]", "required" => false),
-                            array("name" => "[COMPANY_NAME]", "required" => false),
-                            array("name" => "[CURRENT_YEAR]", "required" => false),
-                            array("name" => "[UNSUBSCRIBE_CONFIRM_URL]", "required" => true),
                         );
                 break;
-            case "welcome-email":
+            case "unsubscribe_goodbye_email":
                 $tags = array(
-                            array("name" => "[LIST_NAME]", "required" => false),
-                            array("name" => "[UPDATE_PROFILE_URL]", "required" => false),
-                            array("name" => "[COMPANY_NAME]", "required" => false),
-                            array("name" => "[CURRENT_YEAR]", "required" => false),
-                            array("name" => "[UNSUBSCRIBE_URL]", "required" => false),
-                            array("name" => "[COMPANY_FULL_ADDRESS]", "required" => false),
+                        );
+                break;
+            case "profile_update_email_sent":
+                $tags = array(
+                        );
+                break;
+            case "profile_update_email":
+                $tags = array(
+                            array("name" => "//UPDATE_PROFILE_URL//", "required" => true),
+                        );
+                break;
+            case "profile_update_form":
+                $tags = array(
+                            array("name" => "//FIELDS//", "required" => true),
+                            array("name" => "//UPDATE_PROFILE_BUTTON//", "required" => true),
+                            array("name" => "//UNSUBSCRIBE_URL//", "required" => true),
+                        );
+                break;
+            case "profile_update_success_page":
+                $tags = array(
                         );
                 break;
             default:
