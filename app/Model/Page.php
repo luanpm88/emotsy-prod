@@ -98,32 +98,11 @@ class Page extends Model
         if(isset($subsriber)) {
         } else {
             $this->content = str_replace('//SUBSCRIBE_CONFIRM_URL//', "<a href='http://domain.example/secure_token'>http://domain.example/secure_token</a>", $this->content);
-        }
-        
-        // UPDATE PROFILE URL
-        if(isset($subsriber)) {
-        } else {
             $this->content = str_replace('//UPDATE_PROFILE_URL//', "http://domain.example/secure_token", $this->content);
-        }
-        
-        // UNSUBSCRIBE_URL
-        if(isset($subsriber)) {
-        } else {
             $this->content = str_replace('//UNSUBSCRIBE_URL//', "http://domain.example/secure_token", $this->content);
-        }
-        
-        // SUBSCRIBE_URL
-        if(isset($subsriber)) {
-        } else {
             $this->content = str_replace('//SUBSCRIBE_URL//', "http://domain.example/secure_token", $this->content);
-        }    
-        
-        // SUBSCRIBER SUMMARY
-        if(isset($subsriber)) {
-        } else {
             $this->content = str_replace('//SUBSCRIBER_SUMMARY//', "<p><strong>" . trans('messages.email') . ":</strong></p><p><strong>" . trans('messages.first_name') . ":</strong></p><p><strong>" . trans('messages.last_name') . ":</strong></p>", $this->content);
         }
-        
         
         //// SUBMIT_BUTTON
         //$this->content = str_replace('[SUBMIT_BUTTON]', '<button class="btn btn-primary" type="submit">Submit <i class="icon-arrow-right14 position-right"></i></button>', $this->content);

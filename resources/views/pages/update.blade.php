@@ -28,9 +28,27 @@
                     
                 <form id="update-page" action="{{ action('PageController@update', ['list' => $list->uid, 'alias' => $layout->alias]) }}" method="POST" class="form-validate-jqueryz">
 					{{ csrf_field() }}
+					
+					
                     
+					<br />
                     @include('helpers.form_control', ['type' => 'textarea', 'name' => 'content', 'value' => $page->content, 'rules' => $list->getFieldRules()])
                     
+					@if (count($layout->tags()) > 0)
+                                
+						<div class="">
+							
+							<label>{{ trans('messages.required_tags') }}:</label>
+								@foreach($layout->tags() as $tag) 
+									<a data-popup="tooltip" title='{{ trans('messages.click_to_insert_tag') }}' href="javascript:;" class="btn btn-info bg-grey-800 btn-xs insert_tag_button" data-tag-name="{{ $tag["name"] }}">
+										{{ $tag["name"] }}
+									</a>
+								@endforeach
+								
+						</div>
+							
+					@endif
+					<hr />
                     <div class="">
                         <a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}" class="btn btn-info bg-grey-800 mr-10 preview-page-button" data-toggle="modal" data-target="#preview_page"><i class="icon-eye"></i> {{ trans('messages.preview') }}</a>
 						<button type="submit" class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
@@ -48,7 +66,7 @@
 							</div>
 
 							<div class="modal-body">
-								<iframe class="preview_page_frame" src="/"></iframe>
+								<iframe name="preview_page_frame" class="preview_page_frame" src="/"></iframe>
 							</div>
 
 							<div class="modal-footer">
