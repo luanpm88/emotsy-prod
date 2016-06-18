@@ -37,6 +37,8 @@
 								
 								@include('helpers.form_control', ['type' => 'select', 'name' => 'contact[country_id]', 'label' => trans('messages.country'), 'value' => $list->contact->country_id, 'options' => Mailixa\Model\Country::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Mailixa\Model\MailList::$rules])
 								
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'contact[email]', 'label' => trans('messages.email'), 'value' => $list->contact->email, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+								
 							</div>
 							<div class="col-md-6">
 								
@@ -47,6 +49,8 @@
 								@include('helpers.form_control', ['type' => 'text', 'name' => 'contact[zip]', 'label' => trans('messages.zip_postal_code'), 'value' => $list->contact->zip, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
 								
 								@include('helpers.form_control', ['type' => 'text', 'name' => 'contact[phone]', 'label' => trans('messages.phone'), 'value' => $list->contact->phone, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
+								
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'contact[url]', 'label' => trans('messages.url'), 'label' => trans('messages.home_page'), 'value' => $list->contact->url, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
 								
 							</div>
 							

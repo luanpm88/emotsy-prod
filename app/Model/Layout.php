@@ -49,8 +49,8 @@ class Layout extends Model
         //}
         // Sign-up form layout
         $layout = new Layout();
-        $layout->name = "Confimation 'Thank you' page";
-        $layout->alias = "sign_up_confirmation_thankyou";
+        $layout->name = "Unsubscribe form";
+        $layout->alias = "profile_update_email_sent";
         $layout->content = "...";
         $layout->save();
     }

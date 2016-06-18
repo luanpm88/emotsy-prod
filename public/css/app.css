@@ -402,9 +402,10 @@ h3 {
 .page-second-nav li a.level-1 {
     font-weight: 600;
     padding: 10px 0;
+    font-size: 16px;
 }
 .page-second-nav li {
-    margin-right: 40px;
+    margin-right: 30px;
 }
 .page-second-nav li ul li {
     margin-right: 0;
@@ -502,7 +503,7 @@ h3 {
 }
 .filter-box .select2 {
     max-width: 180px !important;
-    width: auto !important;
+    width: 135px !important;
 }
 .filter-box .select2-selection--single {
     height: 33px;
@@ -564,11 +565,31 @@ h3 {
     .page-second-nav li ul li.head {
         padding-left: 15px
     }
+    .page-second-nav li a.level-1 {
+        padding: 15px 20px;
+    }
+}
+@media (min-width: 768px) {
+    .nav-tabs.nav-tabs-top > li.active > a, .nav-tabs.nav-tabs-top > li.active > a:hover, .nav-tabs.nav-tabs-top > li.active > a:focus, .nav-tabs.nav-tabs-top > li > a:hover {
+        border-bottom-color: #26A69A;
+    }
+}
+@media (min-width: 769px) {
+    .nav-tabs.nav-tabs-top > li > a, .nav-tabs.nav-tabs-top > li > a:hover, .nav-tabs.nav-tabs-top > li > a:focus {
+        border-width: 0 0 4px 0;
+        cursor: pointer;
+    }
+    .nav-tabs.nav-tabs-top > li > a {
+        color: #777;
+    }
+    .nav-tabs.nav-tabs-top > li > a:hover, .nav-tabs.nav-tabs-top > li > a:focus, .nav-tabs.nav-tabs-top > li.active > a {
+        color: #333;
+    }
 }
 .page-second-nav li ul li.head {
     padding: 8px 0 8px 15px;
     font-weight: 600;
-    background: #ddd;
+    background: #efefef;
     color: #333;
 }
 .page-second-nav li ul li.head i {

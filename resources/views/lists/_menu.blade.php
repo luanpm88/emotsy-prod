@@ -82,42 +82,57 @@
                                                                 {{ trans('messages.sign_up_confirmation_email') }}
                                                             </a>
                                                         </li>
+														<li>
+                                                            <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_confirmation_thankyou']) }}">
+                                                                {{ trans('messages.sign_up_confirmation_thankyou') }}
+                                                            </a>
+                                                        </li>
                                                         <li>
-                                                            <a href="" data-toggle="tab">
-                                                                {{ trans('messages.final_welcome_email') }}
+                                                            <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_welcome_email']) }}">
+                                                                {{ trans('messages.sign_up_welcome_email') }}
                                                             </a>
                                                         </li>
                                                         <li class="head">
                                                             <i class="icon-exit"></i> {{ trans('messages.unsubscribe') }}
                                                         </li>
                                                         <li>
-                                                            <a href="" data-toggle="tab">
+                                                            <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_form']) }}">
                                                                 {{ trans('messages.unsubscribe_form') }}
                                                             </a>
                                                         </li>
-                                                        <li>
-                                                            <a href="" data-toggle="tab">
+														<li>
+                                                            <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_success_page']) }}">
                                                                 {{ trans('messages.unsubscribe_success_page') }}
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="" data-toggle="tab">
-                                                                {{ trans('messages.goodbye_email') }}
+                                                            <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'unsubscribe_goodbye_email']) }}">
+                                                                {{ trans('messages.unsubscribe_goodbye_email') }}
                                                             </a>
                                                         </li>
                                                         <li class="head">
                                                             <i class="icon-profile"></i> {{ trans('messages.update_profile') }}
                                                         </li>
-                                                        <li>
-                                                            <a href="" data-toggle="tab">
-                                                                {{ trans('messages.update_profile_form') }}
+														<li>
+                                                            <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_email_sent']) }}">
+                                                                {{ trans('messages.profile_update_email_sent') }}
                                                             </a>
                                                         </li>
-                                                        <li>
-                                                            <a href="" data-toggle="tab">
-                                                                {{ trans('messages.update_profile_success_page') }}
+														<li>
+                                                            <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_email']) }}">
+                                                                {{ trans('messages.profile_update_email') }}
                                                             </a>
                                                         </li>
+														<li>
+                                                            <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_form']) }}">
+                                                                {{ trans('messages.profile_update_form') }}
+                                                            </a>
+                                                        </li>
+														<li>
+                                                            <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_success_page']) }}">
+                                                                {{ trans('messages.profile_update_success_page') }}
+                                                            </a>
+                                                        </li>                                                        
                                                     </ul>
 												</li>
 												<li rel0="FieldController/index">
