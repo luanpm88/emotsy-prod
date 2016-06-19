@@ -85,8 +85,12 @@ class DatabaseSeeder extends Seeder
         DB::table('campaigns')->insert([
             'id' => 1,
             'mail_list_id' => 1,
+            'user_id' => 1,
             'name' => 'My Campaign',
             'subject' => 'Newsletter of June, 13',
+            'from_email' => 'gaugau@from.com',
+            'reply_to' => 'gaugau@from.com',
+            'from_name' => 'Those were the days',
             'status' => 'pending',
             'created_at' => $created_at,
             'updated_at' => $updated_at

@@ -56,7 +56,10 @@ class TestCampaign extends Command
         */
 
         $c = Campaign::first();
+        var_dump($c);
+        $c->status = 'pending';
+        $c->save();
 
-        var_dump($c->getPendingSubscribers()[0]->id);
+        var_dump($c->user);
     }
 }

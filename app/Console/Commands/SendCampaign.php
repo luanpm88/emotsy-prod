@@ -46,11 +46,11 @@ class SendCampaign extends Command
         $campaigns = Campaign::getPendingCampaigns();
         Log::info(sizeof($campaigns) . " pending campaign(s) found");
 
-        $index = 0;
+        $i = 0;
         foreach ($campaigns as $campaign) {
-            $index += 1;
-            Log::info("Start sending campaign $index/" . sizeof($campaigns));
-            //$campaign->sendCampaign();
+            $i += 1;
+            Log::info("Start sending campaign {$i}/" . sizeof($campaigns));
+            $campaign->start();
         }
     }
 }

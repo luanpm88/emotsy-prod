@@ -3,6 +3,7 @@
 namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Mailixa\Library\Log;
 
 class Campaign extends Model
 {
@@ -18,6 +19,14 @@ class Campaign extends Model
     public function mailList()
     {
         return $this->belongsTo('Mailixa\Model\MailList');
+    }
+
+    /**
+     * Get the user that owns the phone.
+     */
+    public function user()
+    {
+        return $this->belongsTo('Mailixa\Model\User');
     }
 
     public static function getPendingCampaigns()
@@ -63,16 +72,18 @@ class Campaign extends Model
     {
         try {
             $this->sending();
-            Log::info("Start sending campaign `{$this->name}` (ID: {$this->id})");
+            Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
 
             $subscribers = $this->getPendingSubscribers();
-            Log::info(sizeof($_subscribers) . " subscriber(s) selected");
+            Log::info(sizeof($subscribers) . " subscriber(s) selected");
 
-            $_index = 0;
+            $i = 0;
             foreach ($subscribers as $subscriber) {
-                $_index += 1;
-                Log::info("Try to send to subscriber `{$subscriber->email}` ({$_index}/" . sizeof($_subscribers) . ")");
+                $i += 1;
+                Log::info("Sending to subscriber `{$subscriber->email}` ({$i}/" . sizeof($subscribers) . ")");
+
                 $message = $this->prepareEmail($subscriber);
+                /*
                 $server = $this->pickServer();
           
                 if ($this->customer->isOverQuota()) {
@@ -87,11 +98,13 @@ class Campaign extends Model
                 ));
 
                 $this->logDelivery($sent, $subscriber);
+                */
             }
 
             $this->done();
             Log::info("Campaign sent!");
         } catch (\Exception $e) {
+            throw $e;
             $this->pending();
             Log::error($e->getMessage());
             Log::error("Campaign `{$this->name}` (ID: {$this->campaign_id}) deferred!");
@@ -100,7 +113,7 @@ class Campaign extends Model
         // reset server pools: just in case DeliveryServerAmazonSesWebApi
         // --> setup SNS requires using from_email of the corresponding campaign
         // but SNS is only made once when the server is initiated
-        DeliveryServer::resetServerPools();
+        //DeliveryServer::resetServerPools();
     }
 
     /**
@@ -158,7 +171,7 @@ class Campaign extends Model
         );
 
         foreach ($tags as $tag => $value) {
-            $message = str_replace("[$tag]", $value, $message);
+            $message = str_replace("<$tag>", $value, $message);
         }
 
         return $message;
@@ -201,21 +214,23 @@ class Campaign extends Model
 
         $message->setContentType("text/plain; charset=utf-8");
       
-        $message->getHeaders()->addTextHeader('X-Mailspeed-Campaign-Id', $this->campaign_uid);
-        $message->getHeaders()->addTextHeader('X-Mailspeed-Subscriber-Id', $subscriber->subscriber_uid);
-        $message->getHeaders()->addTextHeader('X-Mailspeed-Customer-Id', $this->customer->customer_uid);
+        $message->getHeaders()->addTextHeader('X-Mailspeed-Campaign-Id', $this->uid);
+        $message->getHeaders()->addTextHeader('X-Mailspeed-Subscriber-Id', $subscriber->uid);
+        $message->getHeaders()->addTextHeader('X-Mailspeed-User-Id', $this->user->uid);
 
         $message->setSubject($this->subject);
+        var_dump(array($this->from_email => $this->from_name));
         $message->setFrom(array($this->from_email => $this->from_name));
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
         //$message->setEncoder(Swift_Encoding::get8bitEncoding());
 
-        $body = $this->transformTags($this->campaign_template->content, $subscriber);
-        $body = $this->appendOpenTrackingUrl($body, $subscriber);
-
+        //$body = $this->transformTags($this->html, $subscriber);
+        //$body = $this->appendOpenTrackingUrl($body, $subscriber);
         $message->setBody($body, 'text/html');
-        $message->addPart($this->campaign_template->plain_text, 'text/plain');
+
+        $plain = $this->transformTags($this->plain);
+        $message->addPart($plain, 'text/plain');
 
         // attachment
         //$message->attach(Swift_Attachment::fromPath('/tmp/gaugau.csv'));
