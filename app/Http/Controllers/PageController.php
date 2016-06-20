@@ -145,8 +145,8 @@ class PageController extends Controller
             // SEND EMAIL
             $layout = \Mailixa\Model\Layout::where("alias", "sign_up_confirmation_email")->first();
             $send_page = \Mailixa\Model\Page::findPage($list, $layout);
-            $send_page->renderContent();    
-            $send_page->sendMail($subscriber, trans('messages.' . $layout->alias));
+            $send_page->renderContent(null, $subscriber);    
+            $send_page->sendMail($subscriber, trans('messages.' . $layout->alias . '.real'));
             
             return redirect()->action('PageController@sign_up_thankyou_page', $list->uid);
         }       
@@ -171,11 +171,114 @@ class PageController extends Controller
         $layout = \Mailixa\Model\Layout::where("alias", "sign_up_thankyou_page")->first();
         $page = \Mailixa\Model\Page::findPage($list, $layout);
         
+        
         $page->renderContent();
+        
         
         return view('pages.default', [
             'list' => $list,
             'page' => $page,
+        ]);
+    }
+    
+    /**
+     * Sign up confirmation thank you page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function sign_up_confirmation_thankyou(Request $request)
+    {
+        $user = $request->user();
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $layout = \Mailixa\Model\Layout::where("alias", "sign_up_confirmation_thankyou")->first();
+        $page = \Mailixa\Model\Page::findPage($list, $layout);
+        $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
+        
+        $page->renderContent();
+        
+        if($subscriber->getSecurityToken("subscribe-confirm") == $request->code && $subscriber->status == "unconfirmed") {
+            $subscriber->status = "subscribed";
+            $subscriber->save();
+            
+            // Send welcome email
+            // SEND EMAIL
+            $layout = \Mailixa\Model\Layout::where("alias", "sign_up_welcome_email")->first();
+            $send_page = \Mailixa\Model\Page::findPage($list, $layout);
+            $send_page->renderContent(null, $subscriber);    
+            $send_page->sendMail($subscriber, trans('messages.' . $layout->alias . '.real'));
+            
+            
+            return view('pages.default', [
+                'list' => $list,
+                'page' => $page,
+            ]);
+        } else {
+            return redirect()->action('PageController@sign_up_form', $list->uid);
+        }
+    }
+    
+    /**
+     * Unsibscribe form.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function unsubscribe_form(Request $request)
+    {
+        $user = $request->user();
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $layout = \Mailixa\Model\Layout::where("alias", "unsubscribe_form")->first();
+        $page = \Mailixa\Model\Page::findPage($list, $layout);
+        $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
+        
+        $page->renderContent(null, $subscriber);
+        
+        if ($request->isMethod('post')) {
+            if($subscriber->getSecurityToken("unsubscribe") == $request->code && $subscriber->status == "subscribed") {
+                // Validation
+                $this->validate($request, ['EMAIL' => 'required|email|exists:subscribers,email']);
+                
+                $subscriber->status = "unsubscribed";
+                $subscriber->save();
+                
+                // Send welcome email
+                // SEND EMAIL
+                $layout = \Mailixa\Model\Layout::where("alias", "unsubscribe_goodbye_email")->first();
+                $send_page = \Mailixa\Model\Page::findPage($list, $layout);
+                $send_page->renderContent(null, $subscriber);    
+                $send_page->sendMail($subscriber, trans('messages.' . $layout->alias . '.real'));
+                
+                return redirect()->action('PageController@unsubscribe_success_page', ['list_uid' => $list->uid, "uid" => $subscriber->uid]);
+            }     
+        }
+        
+        return view('pages.unsubscribe_form', [
+            'list' => $list,
+            'page' => $page,
+        ]);
+    }
+    
+    /**
+     * Unsibscribe form.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function unsubscribe_success_page(Request $request)
+    {
+        $user = $request->user();
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $layout = \Mailixa\Model\Layout::where("alias", "unsubscribe_success_page")->first();
+        $page = \Mailixa\Model\Page::findPage($list, $layout);
+        $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
+        
+        $page->renderContent(null, $subscriber);        
+        
+        return view('pages.default', [
+            'list' => $list,
+            'page' => $page,
+            'subscriber' => $subscriber
         ]);
     }
 }

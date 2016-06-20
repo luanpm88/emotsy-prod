@@ -76,7 +76,7 @@ class Page extends Model
      *
      * @var html
      */
-    public function renderContent($values=null, $subsriber=null)
+    public function renderContent($values=null, $subscriber=null)
     {
         // BAISC INFO
         $this->content = str_replace('//LIST_NAME//', $this->mailList->name, $this->content);
@@ -98,14 +98,23 @@ class Page extends Model
         $this->content = str_replace('//EMAIL_FIELD//', view('helpers.form_control', ['type' => 'text', 'name' => 'EMAIL', 'label' => trans('messages.email_address'), 'value' => '', 'rules' => $this->mailList->getFieldRules()])->render(), $this->content);
         $this->content = str_replace('//UNSUBSCRIBE_BUTTON//', '<button class="btn btn-info bg-teal-800" type="submit">' . trans('messages.unsubscribe') . ' <i class="icon-arrow-right14 position-right"></i></button>', $this->content);
         $this->content = str_replace('//UPDATE_PROFILE_BUTTON//', '<button class="btn btn-info bg-teal-800" type="submit">' . trans('messages.update_profile') . ' <i class="icon-arrow-right14 position-right"></i></button>', $this->content);
+        $this->content = str_replace('//SUBSCRIBE_URL//', action('PageController@sign_up_form', $this->mailList->uid), $this->content);
         
         // SUBSCRIBE CONFIRM URL
-        if(isset($subsriber)) {
+        if(isset($subscriber)) {
+            // [SUBSCRIBE_CONFIRM_URL]
+            $this->content = str_replace('//SUBSCRIBE_CONFIRM_URL//', action('PageController@sign_up_confirmation_thankyou', array("list_uid" => $this->mailList->uid, "uid" => $subscriber->uid, "code" => $subscriber->getSecurityToken("subscribe-confirm"))), $this->content);
+            
+            // Summary
+            $summary = view('subscribers._summary', ["list" => $this->mailList, 'subscriber' => $subscriber])->render();
+            $this->content = str_replace('//SUBSCRIBER_SUMMARY//', $summary, $this->content);
+            
+            // UBSUBSCRIBE URL
+            $this->content = str_replace('//UNSUBSCRIBE_URL//', action('PageController@unsubscribe_form', array("list_uid" => $this->mailList->uid, "uid" => $subscriber->uid, "code" => $subscriber->getSecurityToken("unsubscribe"))), $this->content);
         } else {
             $this->content = str_replace('//SUBSCRIBE_CONFIRM_URL//', "<a href='http://domain.example/secure_token'>http://domain.example/secure_token</a>", $this->content);
             $this->content = str_replace('//UPDATE_PROFILE_URL//', "http://domain.example/secure_token", $this->content);
             $this->content = str_replace('//UNSUBSCRIBE_URL//', "http://domain.example/secure_token", $this->content);
-            $this->content = str_replace('//SUBSCRIBE_URL//', "http://domain.example/secure_token", $this->content);
             $this->content = str_replace('//SUBSCRIBER_SUMMARY//', "<p><strong>" . trans('messages.email') . ":</strong></p><p><strong>" . trans('messages.first_name') . ":</strong></p><p><strong>" . trans('messages.last_name') . ":</strong></p>", $this->content);
         }
         
