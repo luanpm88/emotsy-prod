@@ -105,4 +105,3 @@ class SendingServer extends Model
         return $class_name::find($server->server_id);
     }
 }
-

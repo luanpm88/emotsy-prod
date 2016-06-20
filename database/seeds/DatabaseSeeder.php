@@ -91,6 +91,8 @@ class DatabaseSeeder extends Seeder
             'from_email' => 'gaugau@from.com',
             'reply_to' => 'gaugau@from.com',
             'from_name' => 'Those were the days',
+            'html' => '<b>Those</b> were the <span style="color:green">days</span>',
+            'plain' => 'Those were the <i>days</i>',
             'status' => 'pending',
             'created_at' => $created_at,
             'updated_at' => $updated_at

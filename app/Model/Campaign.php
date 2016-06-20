@@ -45,7 +45,7 @@ class Campaign extends Model
     }
 
     /**
-     * Mark the campaign as 'done' or 'sent'
+     * Mark the campaign as 'sending'
      *
      */
     public function sending()
@@ -104,7 +104,6 @@ class Campaign extends Model
             $this->done();
             Log::info("Campaign sent!");
         } catch (\Exception $e) {
-            throw $e;
             $this->pending();
             Log::error($e->getMessage());
             Log::error("Campaign `{$this->name}` (ID: {$this->campaign_id}) deferred!");
@@ -171,7 +170,7 @@ class Campaign extends Model
         );
 
         foreach ($tags as $tag => $value) {
-            $message = str_replace("<$tag>", $value, $message);
+            $message = str_replace("{".$tag."}", $value, $message);
         }
 
         return $message;
@@ -227,10 +226,10 @@ class Campaign extends Model
 
         //$body = $this->transformTags($this->html, $subscriber);
         //$body = $this->appendOpenTrackingUrl($body, $subscriber);
-        $message->setBody($body, 'text/html');
+        $message->setBody($this->html, 'text/html');
 
-        $plain = $this->transformTags($this->plain);
-        $message->addPart($plain, 'text/plain');
+        //$plain = $this->transformTags($this->plain);
+        $message->addPart($this->plain, 'text/plain');
 
         // attachment
         //$message->attach(Swift_Attachment::fromPath('/tmp/gaugau.csv'));
