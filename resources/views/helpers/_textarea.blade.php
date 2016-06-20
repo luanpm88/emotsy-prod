@@ -1,1 +1,1 @@
-<textarea id="{{ $name }}" type="text" name="{{ $name }}" class="form-control{{ $classes }}">{{ isset($value) ? $value : "" }}</textarea>
+<textarea id="{{ $name }}" type="text" name="{{ $name }}" class="form-control{{ $classes }} {{ isset($class) ? $class : "" }}">{{ isset($value) ? $value : "" }}</textarea>

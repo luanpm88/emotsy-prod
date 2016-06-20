@@ -42,9 +42,14 @@ class Page extends Model
      *
      * @var object | collect
      */ 
-    public function mail_list()
+    public function mailList()
     {
         return $this->belongsTo('Mailixa\Model\MailList');
+    }
+    
+    public function layout()
+    {
+        return $this->belongsTo('Mailixa\Model\Layout');
     }
     
     /**
@@ -71,26 +76,26 @@ class Page extends Model
      *
      * @var html
      */
-    public function renderContent()
+    public function renderContent($values=null, $subsriber=null)
     {
         // BAISC INFO
-        $this->content = str_replace('//LIST_NAME//', $this->mail_list->name, $this->content);
-        $this->content = str_replace('//CONTACT_NAME//', $this->mail_list->contact->company, $this->content);
-        $this->content = str_replace('//CONTACT_STATE//', $this->mail_list->contact->state, $this->content);
-        $this->content = str_replace('//CONTACT_ADDRESS_1//', $this->mail_list->contact->address_1, $this->content);
-        $this->content = str_replace('//CONTACT_ADDRESS_2//', $this->mail_list->contact->address_2, $this->content);
-        $this->content = str_replace('//CONTACT_CITY//', $this->mail_list->contact->city, $this->content);
-        $this->content = str_replace('//CONTACT_ZIP//', $this->mail_list->contact->zip, $this->content);
-        $this->content = str_replace('//CONTACT_COUNTRY//', $this->mail_list->contact->country->name, $this->content);
-        $this->content = str_replace('//CONTACT_PHONE//', $this->mail_list->contact->phone, $this->content);
-        $this->content = str_replace('//CONTACT_EMAIL//', $this->mail_list->contact->email, $this->content);
-        $this->content = str_replace('//CONTACT_URL//', $this->mail_list->contact->url, $this->content);
+        $this->content = str_replace('//LIST_NAME//', $this->mailList->name, $this->content);
+        $this->content = str_replace('//CONTACT_NAME//', $this->mailList->contact->company, $this->content);
+        $this->content = str_replace('//CONTACT_STATE//', $this->mailList->contact->state, $this->content);
+        $this->content = str_replace('//CONTACT_ADDRESS_1//', $this->mailList->contact->address_1, $this->content);
+        $this->content = str_replace('//CONTACT_ADDRESS_2//', $this->mailList->contact->address_2, $this->content);
+        $this->content = str_replace('//CONTACT_CITY//', $this->mailList->contact->city, $this->content);
+        $this->content = str_replace('//CONTACT_ZIP//', $this->mailList->contact->zip, $this->content);
+        $this->content = str_replace('//CONTACT_COUNTRY//', $this->mailList->contact->country->name, $this->content);
+        $this->content = str_replace('//CONTACT_PHONE//', $this->mailList->contact->phone, $this->content);
+        $this->content = str_replace('//CONTACT_EMAIL//', $this->mailList->contact->email, $this->content);
+        $this->content = str_replace('//CONTACT_URL//', $this->mailList->contact->url, $this->content);
         
         // FIELDS
-        $fields = view('subscribers._form', array("list" => $this->mail_list, 'is_page' => true))->render();
+        $fields = view('subscribers._form', array("list" => $this->mailList, 'is_page' => true, 'col' => "12", 'values' => $values))->render();
         $this->content = str_replace('//FIELDS//', $fields, $this->content);        
         $this->content = str_replace('//SUBSCRIBE_BUTTON//', '<button class="btn btn-info bg-teal-800" type="submit">' . trans('messages.subscribe') . ' <i class="icon-arrow-right14 position-right"></i></button>', $this->content);
-        $this->content = str_replace('//EMAIL_FIELD//', view('helpers.form_control', ['type' => 'text', 'name' => 'EMAIL', 'label' => trans('messages.email_address'), 'value' => '', 'rules' => $this->mail_list->getFieldRules()])->render(), $this->content);
+        $this->content = str_replace('//EMAIL_FIELD//', view('helpers.form_control', ['type' => 'text', 'name' => 'EMAIL', 'label' => trans('messages.email_address'), 'value' => '', 'rules' => $this->mailList->getFieldRules()])->render(), $this->content);
         $this->content = str_replace('//UNSUBSCRIBE_BUTTON//', '<button class="btn btn-info bg-teal-800" type="submit">' . trans('messages.unsubscribe') . ' <i class="icon-arrow-right14 position-right"></i></button>', $this->content);
         $this->content = str_replace('//UPDATE_PROFILE_BUTTON//', '<button class="btn btn-info bg-teal-800" type="submit">' . trans('messages.update_profile') . ' <i class="icon-arrow-right14 position-right"></i></button>', $this->content);
         
@@ -109,7 +114,7 @@ class Page extends Model
         //
         //// LIST FIELDS
         //$list_fields = array();
-        //foreach($this->mail_list->list_fields()->where("visibility", "visible")->get() as $lf) {
+        //foreach($this->mailList->list_fields()->where("visibility", "visible")->get() as $lf) {
         //    $row = array();
         //    $row["item"] = $lf;
         //    $row["value"] = $lf->default_value;
@@ -135,22 +140,39 @@ class Page extends Model
         //
         //if(isset($subsriber)) {
         //    // [UNSUBSCRIBE_CONFIRM_URL]
-        //    $this->content = str_replace('[UNSUBSCRIBE_CONFIRM_URL]', action('ListPageController@unsubscribe_confirm', array("list_id" => $this->mail_list->list_id, "email" => $subsriber->email, "code" => $subsriber->get_code("unsubscribe-confirm"))), $this->content);
+        //    $this->content = str_replace('[UNSUBSCRIBE_CONFIRM_URL]', action('ListPageController@unsubscribe_confirm', array("list_id" => $this->mailList->list_id, "email" => $subsriber->email, "code" => $subsriber->get_code("unsubscribe-confirm"))), $this->content);
         //    
         //    // [SUBSCRIBE_CONFIRM_URL]
-        //    $this->content = str_replace('[SUBSCRIBE_CONFIRM_URL]', action('ListPageController@subscribe_confirm', array("list_id" => $this->mail_list->list_id, "email" => $subsriber->email, "code" => $subsriber->get_code("subscribe-confirm"))), $this->content);
+        //    $this->content = str_replace('[SUBSCRIBE_CONFIRM_URL]', action('ListPageController@subscribe_confirm', array("list_id" => $this->mailList->list_id, "email" => $subsriber->email, "code" => $subsriber->get_code("subscribe-confirm"))), $this->content);
         //    
         //    // [UPDATE_PROFILE_URL]
-        //    $this->content = str_replace('[UPDATE_PROFILE_URL]', action('ListPageController@update_profile', array("list_id" => $this->mail_list->list_id, "email" => $subsriber->email, "code" => $subsriber->get_code("update-profile"))), $this->content);
+        //    $this->content = str_replace('[UPDATE_PROFILE_URL]', action('ListPageController@update_profile', array("list_id" => $this->mailList->list_id, "email" => $subsriber->email, "code" => $subsriber->get_code("update-profile"))), $this->content);
         //}        
         //
         //// [SUBSCRIBE_URL]
-        //$this->content = str_replace('[SUBSCRIBE_URL]', action('ListPageController@subscribe', array("list_id" => $this->mail_list->list_id)), $this->content);
+        //$this->content = str_replace('[SUBSCRIBE_URL]', action('ListPageController@subscribe', array("list_id" => $this->mailList->list_id)), $this->content);
         //
         //// [COMPANY_NAME]
-        //$this->content = str_replace('[COMPANY_NAME]', $this->mail_list->company->name, $this->content);
+        //$this->content = str_replace('[COMPANY_NAME]', $this->mailList->company->name, $this->content);
         //
         //// [CURRENT_YEAR]
         //$this->content = str_replace('[CURRENT_YEAR]', date("Y"), $this->content);
+    }
+    
+    /**
+     * Send list page with email page type.
+     *
+     * @param Subscriber  $subscriber
+     * @param string  $title
+     * @var void
+     */ 
+    public function sendMail($subscriber, $title)
+    {
+        $page = $this;
+        \Mail::send('pages._email_content', ['page' => $page], function ($m) use ($subscriber, $title) {
+            $m->from('service@mailixa.net', 'Mailixa');
+
+            $m->to($subscriber->email, "Subscriber")->subject($title);
+        });
     }
 }

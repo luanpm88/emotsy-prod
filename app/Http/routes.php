@@ -79,3 +79,6 @@ Route::get('lists/{list_uid}/segments/sample_condition', 'SegmentController@samp
 Route::get('lists/{list_uid}/pages/{alias}/update', 'PageController@update');
 Route::post('lists/{list_uid}/pages/{alias}/update', 'PageController@update');
 Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
+Route::get('lists/{list_uid}/sign-up', 'PageController@sign_up_form');
+Route::post('lists/{list_uid}/sign-up', 'PageController@sign_up_form');
+Route::get('lists/{list_uid}/sign-up/thank-you', 'PageController@sign_up_thankyou_page');

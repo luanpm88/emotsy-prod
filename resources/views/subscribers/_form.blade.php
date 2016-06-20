@@ -1,6 +1,6 @@
                     <div class="sub_sectionz">						
 						<div class="row">
-							<div class="col-md-6">									
+							<div class="col-md-{{ isset($col) ? $col : "6" }}">									
 								@foreach ($list->getFields as $field)
 									@if ($field->visible || !isset($is_page))
 										@if ($field->type == "text")

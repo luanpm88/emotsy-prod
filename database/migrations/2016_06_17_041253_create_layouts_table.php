@@ -17,6 +17,7 @@ class CreateLayoutsTable extends Migration
             $table->uuid('uid');
             $table->string('alias');
             $table->longtext('content');
+            $table->string('type');
 
             $table->timestamps();
         });

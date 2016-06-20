@@ -19,6 +19,8 @@ class CreateSubscribersTable extends Migration
             $table->integer('mail_list_id')->unsigned();
             $table->string('email');
             $table->string('status');
+            $table->string('from');
+            $table->string('ip');
             
             $table->timestamps();
             

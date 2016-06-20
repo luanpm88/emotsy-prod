@@ -23,7 +23,7 @@
                 <h3>{{ trans('messages.' . $layout->alias) }}</h3>
                 
                 @if ($layout->alias == 'sign_up_form')
-                    <p class="alert alert-info mt-20 mb-20">{{ trans('messages.sign_up_form_url') }}<br /> <a href="" class="text-semibold">{{ action('PageController@update', ['list' => $list->uid, 'alias' => $layout->alias]) }}</a></p>
+                    <p class="alert alert-info mt-20 mb-20">{{ trans('messages.sign_up_form_url') }}<br /> <a href="{{ action('PageController@' . $layout->alias, ['list_uid' => $list->uid]) }}" class="text-semibold">{{ action('PageController@' . $layout->alias, ['list_uid' => $list->uid]) }}</a></p>
                 @endif
                     
                 <form id="update-page" action="{{ action('PageController@update', ['list' => $list->uid, 'alias' => $layout->alias]) }}" method="POST" class="form-validate-jqueryz">
@@ -32,7 +32,7 @@
 					
                     
 					<br />
-                    @include('helpers.form_control', ['type' => 'textarea', 'name' => 'content', 'value' => $page->content, 'rules' => $list->getFieldRules()])
+                    @include('helpers.form_control', ['class' => ($layout->type == 'page' ? 'full-editor' : 'email-editor'), 'type' => 'textarea', 'name' => 'content', 'value' => $page->content, 'rules' => $list->getFieldRules()])
                     
 					@if (count($layout->tags()) > 0)
                                 
