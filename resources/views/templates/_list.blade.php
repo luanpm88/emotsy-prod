@@ -21,13 +21,19 @@
 											</div>
 										</td>
 										<td width="1%">
-											<img width="100" height="120" src="{{ action('TemplateController@image', $item->uid) }}" />
+											<a href="#"  onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)">
+												<img width="100" height="120" src="{{ action('TemplateController@image', $item->uid) }}?v={{ rand(0,10) }}" />
+											</a>
 										</td>
 										<td>
 											<h5 class="no-margin text-bold">
-												<a class="kq_search" href="{{ action('MailListController@edit', ['uid' => $item->uid]) }}">{{ $item->name }}</a>
+												<a class="kq_search" href="#" onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)">
+													{{ $item->name }}
+												</a>
 											</h5>
-											<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
+											<span class="text-muted">{{ trans('messages.upload_by') }}: {{ $item->user->displayName() }}</span>
+											<br />
+											<span class="text-muted">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
 										
 										<td class="text-right">
@@ -38,6 +44,9 @@
 											<div class="btn-group">										
 												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 												<ul class="dropdown-menu dropdown-menu-right">
+													@if (\Gate::allows('preview', $item))
+														<li><a href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a></li>
+													@endif
 													@if (\Gate::allows('delete', $item))
 														<li><a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('TemplateController@delete', ["uids" => $item->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
 													@endif

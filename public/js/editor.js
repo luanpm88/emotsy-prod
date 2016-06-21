@@ -37,8 +37,7 @@ $(document).ready(function() {
           'insertdatetime media table contextmenu paste code'
         ],
         toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
-        //content_css: [
-        //  APP_URL+'/css/email.css',
-        //]
+        valid_elements : '*[*]',
+        valid_children : "+body[style]"
     }); 
 });

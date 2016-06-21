@@ -37,4 +37,14 @@ class TemplatePolicy
     {
         return $item->user_id == $user->id;
     }
+    
+    public function preview(\Mailixa\Model\User $user, \Mailixa\Model\Template $item)
+    {
+        return $item->user_id == $user->id;
+    }
+    
+    public function saveImage(\Mailixa\Model\User $user, \Mailixa\Model\Template $item)
+    {
+        return $item->user_id == $user->id;
+    }
 }

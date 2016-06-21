@@ -96,7 +96,18 @@ Route::get('templates/listing/{page?}', 'TemplateController@listing');
 Route::get('templates/upload', 'TemplateController@upload');
 Route::post('templates/upload', 'TemplateController@upload');
 Route::get('templates/{uid}/image', 'TemplateController@image');
+Route::post('templates/{uid}/saveImage', 'TemplateController@saveImage');
+Route::get('templates/{uid}/preview', 'TemplateController@preview');
 Route::get('templates/delete', 'TemplateController@delete');
 Route::resource('templates', 'TemplateController');
 Route::get('templates/{uid}/edit', 'TemplateController@edit');
 Route::patch('templates/{uid}/update', 'TemplateController@update');
+
+// Campaign
+Route::get('campaigns/sort', 'CampaignController@sort');
+Route::get('campaigns/listing/{page?}', 'CampaignController@listing');
+Route::get('campaigns/{uid}/recipients', 'CampaignController@recipients');
+Route::post('campaigns/{uid}/recipients', 'CampaignController@recipients');
+Route::resource('campaigns', 'CampaignController');
+Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
+Route::patch('campaigns/{uid}/update', 'CampaignController@update');

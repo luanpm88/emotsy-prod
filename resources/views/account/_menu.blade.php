@@ -11,7 +11,6 @@
 														<i class="icon-office position-left"></i> {{ trans('messages.contact_information') }}
 													</a>
 												</li>
-												
 											</ul>
 										</div>
 									</div>

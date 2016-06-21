@@ -503,7 +503,8 @@ h3 {
 }
 .filter-box .select2 {
     max-width: 180px !important;
-    width: 135px !important;
+    min-width: 150px !important;
+    width: auto !important;
 }
 .filter-box .select2-selection--single {
     height: 33px;

@@ -54,6 +54,16 @@ class Template extends Model
     }
     
     /**
+     * Associations.
+     *
+     * @var object | collect
+     */ 
+    public function user()
+    {
+        return $this->belongsTo('Mailixa\Model\User');
+    }
+    
+    /**
      * Get all items.
      *
      * @return collect

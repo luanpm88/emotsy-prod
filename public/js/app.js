@@ -43,6 +43,12 @@ function readURL(input, img) {
     }
 }
 
+function popupwindow(url, title, w, h) {
+  var left = (screen.width/2)-(w/2);
+  var top = 0;
+  return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+screen.height+', top='+top+', left='+left);
+} 
+
 $(function() {
     // Default tooltip
     $('[data-popup=tooltip]').tooltip({

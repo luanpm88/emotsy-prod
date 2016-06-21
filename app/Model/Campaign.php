@@ -20,6 +20,14 @@ class Campaign extends Model
     {
         return $this->belongsTo('Mailixa\Model\MailList');
     }
+    
+    /**
+     * Get the segment of the campaign.
+     */
+    public function segment()
+    {
+        return $this->belongsTo('Mailixa\Model\Segment');
+    }
 
     /**
      * Get the user that owns the phone.
@@ -235,6 +243,78 @@ class Campaign extends Model
         //$message->attach(Swift_Attachment::fromPath('/tmp/gaugau.csv'));
 
         return $message;
+    }
+    
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'mail_list_id', 'segment_id'
+    ];
+    
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public static $rules = array(
+        'name' => 'required',
+        'mail_list_id' => 'required',        
+    );
+    
+    /**
+     * Items per page.
+     *
+     * @var array
+     */
+    public static $itemsPerPage = 25;
+    
+    /**
+     * Get all items.
+     *
+     * @return collect
+     */
+    public static function getAll()
+    {
+        return Campaign::select("*");
+    }
+    
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();        
+        
+        // Create uid when creating list.
+        static::creating(function($item)
+        {
+            // Create new uid
+            $uid = uniqid();
+            while(Campaign::where('uid','=',$uid)->count() > 0)
+            {
+                $uid = uniqid();
+            }
+            $item->uid = $uid;
+            
+            // Update custom order
+            Campaign::getAll()->increment('custom_order', 1);
+            $item->custom_order = 0;
+        });
+    }
+    
+    /**
+     * Find item by uid.
+     *
+     * @return object
+     */
+    public static function findByUid($uid)
+    {
+        return Campaign::where("uid", "=", $uid)->first();
     }
 }
 

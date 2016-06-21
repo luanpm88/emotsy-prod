@@ -374,8 +374,8 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
         
-        if (!empty($template->screenshot)) {
-            $img = \Image::make($template->image.".thumb.jpg");
+        if (!empty($template->image)) {
+            $img = \Image::make(storage_path($template->image) . ".thumb.jpg");
         } else {
             $img = \Image::make(public_path("assets/images/placeholder.jpg"));
         }
@@ -406,5 +406,62 @@ class TemplateController extends Controller
 
         // Redirect to my lists page
         echo(trans('messages.templates.deleted'));
+    }
+    
+    /**
+     * Preview template.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function preview($id)
+    {
+        $template = \Mailixa\Model\Template::findByUid($id);
+        
+        // authorize
+        if (\Gate::denies('preview', $template)) {
+            return $this->not_authorized();
+        }
+        
+        return view('templates.preview', [
+            'template' => $template,
+        ]);
+    }
+    
+    /**
+     * Save template screenshot.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function saveImage(Request $request, $id) {
+        $template = \Mailixa\Model\Template::findByUid($id);
+        
+        // authorize
+        if (\Gate::denies('saveImage', $template)) {
+            return $this->not_authorized();
+        }
+        
+        $upload_loca = 'upload/email_template/image/';
+        $upload_path = storage_path($upload_loca);
+        if (!file_exists($upload_path)) {
+            mkdir($upload_path, 0755, true);
+        }
+        $filename = "screenshot-" . $id . ".png";
+    
+        // remove "data:image/png;base64,"
+        $uri = substr($request->data,strpos($request->data,",")+1);
+ 
+        // save to file
+        file_put_contents($upload_path.$filename, base64_decode($uri));
+        
+        // create thumbnails
+        $img = \Image::make($upload_path . $filename);
+        $img->fit(178, 200)->save($upload_path . $filename . '.thumb.jpg');
+        
+        // save        
+        $template->image = $upload_loca . $filename;
+        $template->save();
     }
 }

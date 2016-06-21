@@ -14,9 +14,10 @@ class CreateCampaignsTable extends Migration
     {
         Schema::create('campaigns', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id');
-            $table->integer('mail_list_id');
-            $table->integer('segment_id');
+            $table->uuid('uid');
+            $table->integer('user_id')->unsigned();
+            $table->integer('mail_list_id')->unsigned()->nullable();
+            $table->integer('segment_id')->unsigned()->nullable();
             $table->text('type');
             $table->text('name');
             $table->text('subject');
@@ -32,11 +33,11 @@ class CreateCampaignsTable extends Migration
             $table->boolean('track_fbl');
             $table->boolean('track_click');
             $table->integer('resend');
+            $table->integer('custom_order');
             $table->timestamps();
 
-            // $table->foreign('user_id')->references('id')->on('users');
-            // $table->foreign('list_id')->references('id')->on('lists');
-            // $table->foreign('segment_id')->references('id')->on('segments');
+            $table->foreign('user_id')->references('id')->on('users');
+            $table->foreign('mail_list_id')->references('id')->on('mail_lists');
         });
     }
 

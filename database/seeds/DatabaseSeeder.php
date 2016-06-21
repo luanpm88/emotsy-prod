@@ -81,6 +81,18 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
+        
+        // Create list and default fields
+        DB::table('mail_lists')->insert([
+            'id' => 1,
+            'uid' => uniqid(),
+            'contact_id' => 1,
+            'user_id' => 1,
+            'name' => 'My List',
+            'status' => 'active',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
 
         DB::table('campaigns')->insert([
             'id' => 1,
@@ -94,18 +106,6 @@ class DatabaseSeeder extends Seeder
             'html' => '<b>Those</b> were the <span style="color:green">days</span>',
             'plain' => 'Those were the <i>days</i>',
             'status' => 'pending',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at
-        ]);
-
-        // Create list and default fields
-        DB::table('mail_lists')->insert([
-            'id' => 1,
-            'uid' => uniqid(),
-            'contact_id' => 1,
-            'user_id' => 1,
-            'name' => 'My List',
-            'status' => 'active',
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);

@@ -76,8 +76,10 @@
 
 		<div class="navbar-collapse collapse" id="navbar-mobile">
 			<ul class="nav navbar-nav">
-				<li class="">
-					<a href="#"><i class="icon-paperplane"></i> {{ trans('messages.campaigns') }}</a>
+				<li rel0="CampaignController" class="">
+					<a href="{{ action('CampaignController@index') }}">
+						<i class="icon-paperplane"></i> {{ trans('messages.campaigns') }}
+					</a>
 				</li>
                 <li rel0="TemplateController">
 					<a href="{{ action('TemplateController@index') }}">
