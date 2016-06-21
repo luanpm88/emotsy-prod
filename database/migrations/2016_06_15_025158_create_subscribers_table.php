@@ -21,7 +21,6 @@ class CreateSubscribersTable extends Migration
             $table->string('status');
             $table->string('from');
             $table->string('ip');
-            $table->boolean('confirmed');
 
             $table->timestamps();
 

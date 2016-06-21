@@ -151,7 +151,7 @@ class PageController extends Controller
             return redirect()->action('PageController@sign_up_thankyou_page', $list->uid);
         }       
         
-        return view('pages.sign_up_form', [
+        return view('pages.form', [
             'list' => $list,
             'page' => $page,
             'values' => $values,
@@ -195,7 +195,7 @@ class PageController extends Controller
         $page = \Mailixa\Model\Page::findPage($list, $layout);
         $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
         
-        $page->renderContent();
+        $page->renderContent(null, $subscriber);
         
         if($subscriber->getSecurityToken("subscribe-confirm") == $request->code && $subscriber->status == "unconfirmed") {
             $subscriber->status = "subscribed";
@@ -208,14 +208,12 @@ class PageController extends Controller
             $send_page->renderContent(null, $subscriber);    
             $send_page->sendMail($subscriber, trans('messages.' . $layout->alias . '.real'));
             
-            
-            return view('pages.default', [
-                'list' => $list,
-                'page' => $page,
-            ]);
-        } else {
-            return redirect()->action('PageController@sign_up_form', $list->uid);
         }
+        
+        return view('pages.default', [
+            'list' => $list,
+            'page' => $page,
+        ]);
     }
     
     /**
@@ -253,7 +251,7 @@ class PageController extends Controller
             }     
         }
         
-        return view('pages.unsubscribe_form', [
+        return view('pages.form', [
             'list' => $list,
             'page' => $page,
         ]);
@@ -274,6 +272,107 @@ class PageController extends Controller
         $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
         
         $page->renderContent(null, $subscriber);        
+        
+        return view('pages.default', [
+            'list' => $list,
+            'page' => $page,
+            'subscriber' => $subscriber
+        ]);
+    }
+    
+    /**
+     * Update profile form.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function profile_update_form(Request $request)
+    {
+        $user = $request->user();
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $layout = \Mailixa\Model\Layout::where("alias", "profile_update_form")->first();
+        $page = \Mailixa\Model\Page::findPage($list, $layout);
+        $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
+        
+        // Get old post values
+        $values = [];
+        if(null !== $request->old()) {
+            foreach($request->old() as $key => $value) {
+                if (is_array($value)) {
+                    $values[str_replace("[]", "", $key)] = implode(",", $value);
+                } else {
+                    $values[$key] = $value;
+                }                
+            }
+        }
+
+        $page->renderContent($values, $subscriber);        
+        
+        if ($request->isMethod('post')) {
+            if($subscriber->getSecurityToken("update-profile") == $request->code) {
+                $rules = $subscriber->getRules();
+                $rules['EMAIL'] .= '|in:' . $subscriber->email;
+                // Validation
+                $this->validate($request, $rules);
+                
+                // Update field
+                $subscriber->updateFields($request->all());
+                
+                return redirect()->action('PageController@profile_update_success_page', ['list_uid' => $list->uid, "uid" => $subscriber->uid]);
+            }     
+        }
+        
+        return view('pages.form', [
+            'list' => $list,
+            'page' => $page,
+            'subscriber' => $subscriber
+        ]);
+    }
+    
+    /**
+     * Update profile success.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function profile_update_success_page(Request $request)
+    {
+        $user = $request->user();
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $layout = \Mailixa\Model\Layout::where("alias", "profile_update_success_page")->first();
+        $page = \Mailixa\Model\Page::findPage($list, $layout);
+        $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
+        
+        $page->renderContent(null, $subscriber);
+        
+        return view('pages.default', [
+            'list' => $list,
+            'page' => $page,
+            'subscriber' => $subscriber
+        ]);
+    }
+    
+    /**
+     * Send update profile request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function profile_update_email_sent(Request $request)
+    {
+        $user = $request->user();
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $layout = \Mailixa\Model\Layout::where("alias", "profile_update_email_sent")->first();
+        $page = \Mailixa\Model\Page::findPage($list, $layout);
+        $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
+        
+        $page->renderContent(null, $subscriber);
+        
+        // SEND EMAIL
+        $layout = \Mailixa\Model\Layout::where("alias", "profile_update_email")->first();
+        $send_page = \Mailixa\Model\Page::findPage($list, $layout);
+        $send_page->renderContent(null, $subscriber);    
+        $send_page->sendMail($subscriber, trans('messages.' . $layout->alias . '.real'));
         
         return view('pages.default', [
             'list' => $list,

@@ -85,4 +85,7 @@ Route::get('lists/{list_uid}/sign-up/thank-you', 'PageController@sign_up_thankyo
 Route::get('lists/{list_uid}/subscribe-confirm/{uid}/{code}', 'PageController@sign_up_confirmation_thankyou');
 Route::get('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribe_form');
 Route::post('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribe_form');
-Route::get('lists/{list_uid}/unsubscribe-success/{uid}', 'PageController@unsubscribe_success_page');
+Route::get('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profile_update_form');
+Route::post('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profile_update_form');
+Route::get('lists/{list_uid}/update-profile-success/{uid}', 'PageController@profile_update_success_page');
+Route::get('lists/{list_uid}/profile-update-email-sent/{uid}', 'PageController@profile_update_email_sent');

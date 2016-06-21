@@ -111,6 +111,8 @@ class Page extends Model
             
             // UBSUBSCRIBE URL
             $this->content = str_replace('//UNSUBSCRIBE_URL//', action('PageController@unsubscribe_form', array("list_uid" => $this->mailList->uid, "uid" => $subscriber->uid, "code" => $subscriber->getSecurityToken("unsubscribe"))), $this->content);
+            
+            $this->content = str_replace('//UPDATE_PROFILE_URL//', action('PageController@profile_update_form', array("list_uid" => $this->mailList->uid, "uid" => $subscriber->uid, "code" => $subscriber->getSecurityToken("update-profile"))), $this->content);
         } else {
             $this->content = str_replace('//SUBSCRIBE_CONFIRM_URL//', "<a href='http://domain.example/secure_token'>http://domain.example/secure_token</a>", $this->content);
             $this->content = str_replace('//UPDATE_PROFILE_URL//', "http://domain.example/secure_token", $this->content);

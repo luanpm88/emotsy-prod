@@ -103,7 +103,7 @@ class Subscriber extends Model
      */
     public static function filter($query, $request)
     {        
-        $query = $query->join('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id');
+        $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id');
         
         // Keyword
         if(!empty(trim($request->keyword))) {
