@@ -27,6 +27,7 @@ class CreateMailListsTable extends Migration
             $table->text('email_daily')->nullable();
             $table->boolean('send_welcome_email')->default(false);
             $table->boolean('unsubscribe_notification')->default(false);
+            $table->string('status');
             
             $table->timestamps();
         });

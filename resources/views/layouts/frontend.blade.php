@@ -79,7 +79,11 @@
 				<li class="">
 					<a href="#"><i class="icon-paperplane"></i> {{ trans('messages.campaigns') }}</a>
 				</li>
-                <li><a href="#"><i class="icon-magazine"></i> {{ trans('messages.templates') }}</a></li>
+                <li rel0="TemplateController">
+					<a href="{{ action('TemplateController@index') }}">
+						<i class="icon-magazine"></i> {{ trans('messages.templates') }}
+					</a>
+				</li>
                 <li
 					rel0="MailListController"
 					rel1="FieldController"

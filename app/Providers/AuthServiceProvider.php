@@ -20,6 +20,7 @@ class AuthServiceProvider extends ServiceProvider
         \Mailixa\Model\Subscriber::class => \Mailixa\Policies\SubscriberPolicy::class,
         \Mailixa\Model\Segment::class => \Mailixa\Policies\SegmentPolicy::class,
         \Mailixa\Model\Layout::class => \Mailixa\Policies\LayoutPolicy::class,
+        \Mailixa\Model\Template::class => \Mailixa\Policies\TemplatePolicy::class,
     ];
 
     /**

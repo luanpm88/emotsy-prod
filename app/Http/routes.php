@@ -89,3 +89,14 @@ Route::get('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profi
 Route::post('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profile_update_form');
 Route::get('lists/{list_uid}/update-profile-success/{uid}', 'PageController@profile_update_success_page');
 Route::get('lists/{list_uid}/profile-update-email-sent/{uid}', 'PageController@profile_update_email_sent');
+
+// Template
+Route::get('templates/sort', 'TemplateController@sort');
+Route::get('templates/listing/{page?}', 'TemplateController@listing');
+Route::get('templates/upload', 'TemplateController@upload');
+Route::post('templates/upload', 'TemplateController@upload');
+Route::get('templates/{uid}/image', 'TemplateController@image');
+Route::get('templates/delete', 'TemplateController@delete');
+Route::resource('templates', 'TemplateController');
+Route::get('templates/{uid}/edit', 'TemplateController@edit');
+Route::patch('templates/{uid}/update', 'TemplateController@update');

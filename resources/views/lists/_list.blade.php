@@ -46,20 +46,20 @@
 										</td>
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
-												<span class="label label-flat label-{{ $item->status }}">active</span>
+												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>
 											<a href="{{ action('SubscriberController@create', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.create_subscriber') }}" type="button" class="btn bg-teal btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></a>
-											<button data-popup="tooltip" title="Overview" type="button" class="btn bg-grey btn-icon"><i class="icon-stats-growth"></i> <i class="icon-search4"></i></button>
+											<button data-popup="tooltip" title="{{ trans('messages.overview') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-stats-growth"></i> <i class="icon-search4"></i></button>
 											<div class="btn-group">										
 												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 												<ul class="dropdown-menu dropdown-menu-right">
 													<li><a href="{{ action('SubscriberController@index', $item->uid) }}"><i class="icon-users4"></i> {{ trans("messages.subscribers") }}</a></li>
-													<li><a href="#"><i class="icon-make-group"></i> {{ trans('messages.segments') }}</a></li>
-													<li><a href="#"><i class="icon-certificate"></i> {{ trans('messages.custom_forms_and_emails') }}</a></li>
-													<li><a href="#"><i class="icon-pencil7"></i> {{ trans("messages.edit_list") }}</a></li>
+													<li><a href="{{ action('SegmentController@index', $item->uid) }}"><i class="icon-make-group"></i> {{ trans('messages.segments') }}</a></li>
+													<li><a href="{{ action('PageController@update', ['list_uid' => $item->uid, 'alias' => 'sign_up_form']) }}"><i class="icon-certificate"></i> {{ trans('messages.custom_forms_and_emails') }}</a></li>
+													<li><a href="{{ action('MailListController@edit', $item->uid) }}"><i class="icon-pencil7"></i> {{ trans("messages.edit_list") }}</a></li>
 													<li><a href="#"><i class="icon-copy3"></i> {{ trans('messages.duplicate_list') }}</a></a></li>
-													<li><a href="#"><i class="icon-download4"></i> {{ trans('messages.import') }}</a></li>
-													<li><a href="#"><i class="icon-upload4"></i> {{ trans('messages.export') }}</a></li>
+													<li><a href="{{ action('SubscriberController@import', $item->uid) }}"><i class="icon-download4"></i> {{ trans('messages.import') }}</a></li>
+													<li><a href="{{ action('SubscriberController@export', $item->uid) }}"><i class="icon-upload4"></i> {{ trans('messages.export') }}</a></li>
 												</ul>
 											</div>
 										</td>

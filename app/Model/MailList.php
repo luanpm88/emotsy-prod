@@ -148,7 +148,7 @@ class MailList extends Model
     }
     
     /**
-     * Get all languages.
+     * Search items.
      *
      * @return collect
      */
