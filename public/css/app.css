@@ -304,7 +304,7 @@ h3 {
     font-weight: 600;
 }
 .stat-num {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
 }
 .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
@@ -676,6 +676,11 @@ input.error {
     border-color: #777;
     color: #fff;
 }
+.bg-new {
+    background-color: #D84315;
+    border-color: #D84315;
+    color: #fff;
+}
 .modal-body h6 {
     font-size: 16px;
     font-weight: 600;
@@ -735,4 +740,48 @@ hl {
     z-index: 10;
     width: 100%;
     height: 500px;
+}
+.page-title h1, .page-title h2, .page-title h3, .page-title h4, .page-title h5, .page-title h6 {
+    margin-bottom: 20px;
+}
+.campaign-steps a {
+    font-size: 16px;
+}
+ul.campaign-steps > li.active > a, ul.campaign-steps > li.active > a:hover, ul.campaign-steps > li.active > a:focus, ul.campaign-steps > li > a:hover {
+    background-color: #fff;
+    border-bottom: solid 2px #009688;
+    border-radius: 0;
+    color: #333;
+    margin-bottom: -2px;
+}
+ul.campaign-steps > li.disabled > a:hover {
+    border-bottom: none;
+}
+ul.campaign-steps {
+    text-align: left;
+    border-bottom: dashed 2px #aaa;
+    margin-top: 30px;
+}
+ul.campaign-steps li:after {
+    display: block;
+    content: "\edc5";
+    font-family: 'icomoon';
+    position: absolute;
+    top: 8px;
+    left: -35px;
+    font-size: 20px;
+    color: #333;
+}
+ul.campaign-steps li.disabled:after {
+    color: #aaa;
+}
+.campaign-steps > li {
+    margin-right: 50px;
+}
+.campaign-steps > li > a {
+    padding-right: 0;
+    padding-left: 0;
+}
+ul.campaign-steps li:first-child:after {
+    display: none;
 }

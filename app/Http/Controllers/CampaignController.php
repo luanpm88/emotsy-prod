@@ -38,7 +38,7 @@ class CampaignController extends Controller
      */
     public function listing(Request $request)
     {
-        $lists = \Mailixa\Model\Campaign::search($request)->paginate($request->per_page);
+        $campaigns = \Mailixa\Model\Campaign::search($request)->paginate($request->per_page);
         
         return view('campaigns._list', [
             'campaigns' => $campaigns
@@ -55,6 +55,8 @@ class CampaignController extends Controller
         $campaign = new \Mailixa\Model\Campaign();
         $campaign->name = trans('messages.untitled');
         $campaign->user_id = $request->user()->id;
+        $campaign->status = \Mailixa\Model\Campaign::STATUS_NEW;
+        $campaign->type = \Mailixa\Model\Campaign::TYPE_REGULAR;
         $campaign->save();
         
         return redirect()->action('CampaignController@recipients', ['uid' => $campaign->uid]);
@@ -143,8 +145,28 @@ class CampaignController extends Controller
     {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
         
+        $rules = array(
+            'mail_list_uid' => 'required',
+        );
+            
+        // validate and save posted data
+        if ($request->isMethod('post'))
+        {
+            
+            // Check validation
+            $this->validate($request, \Mailixa\Model\Campaign::$rules);
+            
+            // Save campaign
+            $campaign->mail_list_id = \Mailixa\Model\MailList::findByUid($request->mail_list_uid)->id;
+            if($request->segment_uid) {
+                $campaign->segment_id = \Mailixa\Model\Segment::findByUid($request->segment_uid)->id;
+            }
+            $campaign->save();
+        }
+        
         return view('campaigns.recipients', [
             'campaign' => $campaign,
+            'rules' => $rules,
         ]);
     }
 }

@@ -14,11 +14,12 @@
 				<ul class="breadcrumb breadcrumb-caret position-right">
 					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 					<li><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
-                    <li class="active">{{ $campaign->name }}</li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-users4"></i> {{ trans('messages.recipients') }}</span>
+					<span class="text-semibold"><i class="icon-paperplane"></i> {{ $campaign->name }}</span>
 				</h1>
+
+				@include('campaigns._steps', ['current' => 1])
 			</div>
 
 @endsection
@@ -27,7 +28,16 @@
                 <form action="{{ action('CampaignController@recipients', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
 					{{ csrf_field() }}
 					
-		
+					<div class="row">
+						<div class="col-md-6 list_select_box" target-box="segments-select-box" segments-url="{{ action('SegmentController@selectBox') }}">
+							@include('helpers.form_control', ['include_blank' => trans('messages.choose'), 'type' => 'select', 'name' => 'mail_list_uid', 'label' => trans('messages.which_list_send'), 'value' => (is_object($campaign->mailList) ? $campaign->mailList->uid : ""), 'options' => Mailixa\Model\MailList::getSelectOptions(), 'rules' => $rules])
+						</div>
+						<div class="col-md-6 segments-select-box">
+							@if (is_object($campaign->mailList) && $campaign->mailList->segments()->count())
+								@include('helpers.form_control', ['value' => (is_object($campaign->segment) ? $campaign->segment->uid : ""), 'include_blank' => trans('messages.choose'), 'type' => 'select', 'name' => 'segment_uid', 'label' => trans('messages.which_segment_send'), 'options' => $campaign->mailList->getSegmentSelectOptions()])
+							@endif
+						</div>
+					</div>
 					
 					<div class="text-right">
 						<button class="btn bg-teal mr-10">{{ trans('messages.next') }} <i class="icon-arrow-right7"></i> </button>

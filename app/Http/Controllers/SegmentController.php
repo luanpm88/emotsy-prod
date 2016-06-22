@@ -343,4 +343,19 @@ class SegmentController extends Controller
             'list' => $list,
         ]);
     }
+    
+    /**
+     * Select box with list.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function selectBox(Request $request)
+    {
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        
+        return view('segments._select_box', [
+            'options' => $list->getSegmentSelectOptions(),
+        ]);
+    }
 }

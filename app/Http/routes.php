@@ -64,6 +64,7 @@ Route::get('lists/{list_uid}/subscribers/export/download', 'SubscriberController
 Route::get('delivery/notify', 'DeliveryController@notify');
 
 // Segment
+Route::get('segments/select_box', 'SegmentController@selectBox');
 Route::get('lists/{list_uid}/segments', 'SegmentController@index');
 Route::get('lists/{list_uid}/segments/{uid}/subscribers', 'SegmentController@subscribers');
 Route::get('lists/{list_uid}/segments/{uid}/listing_subscribers', 'SegmentController@listing_subscribers');

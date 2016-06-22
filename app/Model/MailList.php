@@ -276,4 +276,31 @@ class MailList extends Model
         $valid = !filter_var($email, FILTER_VALIDATE_EMAIL) === false && !empty($email) && $this->subscribers()->where("email", "=", $email)->count() == 0;
         return $valid;
     }
+    
+    /**
+     * Get select options.
+     *
+     * @return array
+     */
+    public static function getSelectOptions()
+    {
+        $options = MailList::getAll()->orderBy("name")->get()->map(function ($item) {
+            return ['value' => $item->uid, 'text' => $item->name . " (" . $item->subscribers()->count() . " " . strtolower(trans('messages.subscribers')) . ")"];
+        });
+        return $options;
+    }
+    
+    /**
+     * Get segments select options.
+     *
+     * @return array
+     */
+    public function getSegmentSelectOptions()
+    {
+        $options = $this->segments->map(function ($item) {
+            return ['value' => $item->uid, 'text' => $item->name . " (" . $item->subscribers()->count() . " " . strtolower(trans('messages.subscribers')) . ")"];
+        });
+        
+        return $options;
+    }
 }

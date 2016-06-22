@@ -12,6 +12,7 @@ class Campaign extends Model
     const STATUS_SENDING = 'sending';
     const STATUS_PAUSED  = 'paused';
     const STATUS_DONE    = 'done';
+    const TYPE_REGULAR    = 'regular';
 
     /**
      * Get the user that owns the phone.
@@ -260,8 +261,7 @@ class Campaign extends Model
      * @var array
      */
     public static $rules = array(
-        'name' => 'required',
-        'mail_list_id' => 'required',        
+        'mail_list_uid' => 'required',
     );
     
     /**
@@ -315,6 +315,73 @@ class Campaign extends Model
     public static function findByUid($uid)
     {
         return Campaign::where("uid", "=", $uid)->first();
+    }
+    
+    /**
+     * Get max step.
+     *
+     * @return object
+     */
+    public function step()
+    {
+        $step = 0;
+        
+        // Step 1
+        if (is_object($this->mailList)) {
+            $step = 1;
+        } else {
+            return $step;
+        }
+        
+        return $step;
+    }
+    
+    /**
+     * Filter items.
+     *
+     * @return collect
+     */
+    public static function filter($request)
+    {
+        $user = $request->user();
+        $query = Campaign::where("user_id", "=", $user->id);
+        
+        // Keyword
+        if(!empty(trim($request->keyword))) {
+            $query = $query->where('name', 'like', '%' . $request->keyword . '%');
+        }
+        
+        return $query;
+    }
+    
+    /**
+     * Search items.
+     *
+     * @return collect
+     */
+    public static function search($request)
+    {
+        $query = Campaign::filter($request);
+        
+        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        
+        return $query;
+    }
+    
+    /**
+     * Subscribers.
+     *
+     * @return collect
+     */
+    public function subscribers()
+    {
+        if (is_object($this->segment)) {
+            return $this->segment->subscribers();
+        } else if (is_object($this->mailList)) {
+            return $this->mailList->subscribers();
+        }
+        
+        return collect([]);
     }
 }
 

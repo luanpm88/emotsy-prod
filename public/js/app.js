@@ -334,4 +334,29 @@ $(function() {
         
         tinymce.activeEditor.execCommand('mceInsertContent', false, tag);
     });
+    
+    // Segments select box by list
+    $(document).on("change", ".list_select_box select", function(e) {
+        var url = $(this).parents('.list_select_box').attr("segments-url");
+        var box = $("."+$(this).parents('.list_select_box').attr("target-box"));
+        var id = $(this).val();
+        
+        if(id != '') {
+            $.ajax({
+                method: "GET",
+                url: url,
+                data: {
+                    list_uid: id
+                }
+            })
+            .done(function( msg ) {
+                box.html(msg);
+                
+                // Select with search
+                $('.select-search').select2();
+            });
+        } else {
+            box.html('');
+        }
+    });
 });
