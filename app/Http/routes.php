@@ -94,6 +94,7 @@ Route::get('lists/{list_uid}/profile-update-email-sent/{uid}', 'PageController@p
 // Template
 Route::get('templates/sort', 'TemplateController@sort');
 Route::get('templates/listing/{page?}', 'TemplateController@listing');
+Route::get('templates/listing-{view}/{page?}', 'TemplateController@listing');
 Route::get('templates/upload', 'TemplateController@upload');
 Route::post('templates/upload', 'TemplateController@upload');
 Route::get('templates/{uid}/image', 'TemplateController@image');
@@ -109,6 +110,10 @@ Route::get('campaigns/sort', 'CampaignController@sort');
 Route::get('campaigns/listing/{page?}', 'CampaignController@listing');
 Route::get('campaigns/{uid}/recipients', 'CampaignController@recipients');
 Route::post('campaigns/{uid}/recipients', 'CampaignController@recipients');
+Route::get('campaigns/{uid}/setup', 'CampaignController@setup');
+Route::post('campaigns/{uid}/setup', 'CampaignController@setup');
+Route::get('campaigns/{uid}/template', 'CampaignController@template');
+Route::post('campaigns/{uid}/template', 'CampaignController@template');
 Route::resource('campaigns', 'CampaignController');
 Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
 Route::patch('campaigns/{uid}/update', 'CampaignController@update');

@@ -24,10 +24,10 @@ class Layout extends Model
     {
         parent::boot();        
         
-        // Create uid when creating list.
+        | Create uid when creating list.
         static::creating(function($item)
         {
-            // Create new uid
+            | Create new uid
             $uid = uniqid();
             while(Layout::where('uid','=',$uid)->count() > 0)
             {
@@ -44,10 +44,10 @@ class Layout extends Model
      */
     public static function createDefaultLayouts()
     {
-        //foreach(Layout::all() as $layout) {
-        //    $layout->delete();
-        //}
-        // Sign-up form layout
+        |foreach(Layout::all() as $layout) {
+        |    $layout->delete();
+        |}
+        | Sign-up form layout
         $layout = new Layout();
         $layout->name = "Unsubscribe form";
         $layout->alias = "profile_update_email_sent";
@@ -60,8 +60,8 @@ class Layout extends Model
         switch ($this->alias) {
             case "sign_up_form":
                 $tags = array(
-                            array("name" => "//FIELDS//", "required" => true),
-                            array("name" => "//SUBSCRIBE_BUTTON//", "required" => true),
+                            array("name" => "{FIELDS}", "required" => true),
+                            array("name" => "{SUBSCRIBE_BUTTON}", "required" => true),
                         );
                 break;
             case "sign_up_thankyou_page":
@@ -70,7 +70,7 @@ class Layout extends Model
                 break;
             case "sign_up_confirmation_email":
                 $tags = array(
-                            array("name" => "//SUBSCRIBE_CONFIRM_URL//", "required" => true),
+                            array("name" => "{SUBSCRIBE_CONFIRM_URL}", "required" => true),
                         );
                 break;
             case "sign_up_confirmation_thankyou":
@@ -79,13 +79,13 @@ class Layout extends Model
                 break;
             case "sign_up_welcome_email":
                 $tags = array(
-                            array("name" => "//UNSUBSCRIBE_URL//", "required" => true),
+                            array("name" => "{UNSUBSCRIBE_URL}", "required" => true),
                         );
                 break;
             case "unsubscribe_form":
                 $tags = array(
-                            array("name" => "//EMAIL_FIELD//", "required" => true),
-                            array("name" => "//UNSUBSCRIBE_BUTTON//", "required" => true),
+                            array("name" => "{EMAIL_FIELD}", "required" => true),
+                            array("name" => "{UNSUBSCRIBE_BUTTON}", "required" => true),
                         );
                 break;
             case "sign_up_confirmation_thankyou":
@@ -106,14 +106,14 @@ class Layout extends Model
                 break;
             case "profile_update_email":
                 $tags = array(
-                            array("name" => "//UPDATE_PROFILE_URL//", "required" => true),
+                            array("name" => "{UPDATE_PROFILE_URL}", "required" => true),
                         );
                 break;
             case "profile_update_form":
                 $tags = array(
-                            array("name" => "//FIELDS//", "required" => true),
-                            array("name" => "//UPDATE_PROFILE_BUTTON//", "required" => true),
-                            array("name" => "//UNSUBSCRIBE_URL//", "required" => true),
+                            array("name" => "{FIELDS}", "required" => true),
+                            array("name" => "{UPDATE_PROFILE_BUTTON}", "required" => true),
+                            array("name" => "{UNSUBSCRIBE_URL}", "required" => true),
                         );
                 break;
             case "profile_update_success_page":

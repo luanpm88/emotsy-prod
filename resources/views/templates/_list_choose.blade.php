@@ -1,0 +1,64 @@
+                        @if ($templates->count() > 0)
+							<table class="table table-box pml-table"
+                                current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
+                            >
+								@foreach ($templates as $key => $item)
+									<tr>
+										<td width="1%">
+											<div class="text-nowrap">
+												<div class="checkbox inline">
+													<label>
+														<input type="checkbox" class="node styled"
+															custom-order="{{ $item->custom_order }}"
+															name="ids[]"
+															value="{{ $item->uid }}"
+														/>
+													</label>
+												</div>
+												@if (request()->sort_order == 'custom_order' && empty(request()->keyword))
+													<i data-action="move" class="icon icon-more2 list-drag-button"></i>
+												@endif
+											</div>
+										</td>
+										<td width="1%">
+											<a href="#"  onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)">
+												<img width="100" height="120" src="{{ action('TemplateController@image', $item->uid) }}?v={{ rand(0,10) }}" />
+											</a>
+										</td>
+										<td>
+											<h5 class="no-margin text-bold">
+												<a class="kq_search" href="#" onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)">
+													{{ $item->name }}
+												</a>
+											</h5>
+											<span class="text-muted">{{ trans('messages.upload_by') }}: {{ $item->user->displayName() }}</span>
+											<br />
+											<span class="text-muted">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
+										</td>
+										
+										<td class="text-right">
+											<span class="text-muted2 list-status pull-left">
+												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
+											</span>											
+											<a item-id="{{ $item->id }}" href="#choose" type="button" class="btn bg-warning-600 btn-icon choose-template-button"> <i class="icon-checkmark4"></i> {{ trans('messages.choose') }}</a>											
+										</td>
+									</tr>
+								@endforeach
+							</table>
+                            @include('elements/_per_page_select')
+							{{ $templates->links() }}
+						@elseif (!empty(request()->keyword))
+							<div class="empty-list">
+								<i class="icon-magazine"></i>
+								<span class="line-1">
+									{{ trans('messages.no_search_result') }}
+								</span>
+							</div>
+						@else					
+							<div class="empty-list">
+								<i class="icon-magazine"></i>
+								<span class="line-1">
+									{{ trans('messages.template_empty_line_1') }}
+								</span>
+							</div>
+						@endif

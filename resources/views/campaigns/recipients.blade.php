@@ -39,8 +39,9 @@
 						</div>
 					</div>
 					
+					<hr>
 					<div class="text-right">
-						<button class="btn bg-teal mr-10">{{ trans('messages.next') }} <i class="icon-arrow-right7"></i> </button>
+						<button class="btn bg-teal-800">{{ trans('messages.next') }} <i class="icon-arrow-right7"></i> </button>
 					</div>
 					
 				<form>

@@ -13,6 +13,10 @@ class Campaign extends Model
     const STATUS_PAUSED  = 'paused';
     const STATUS_DONE    = 'done';
     const TYPE_REGULAR    = 'regular';
+    
+    public static $template_tags = array(
+                            array("name" => "{UNSUBSCRIBE_URL}", "required" => true),
+                        );
 
     /**
      * Get the user that owns the phone.
@@ -252,7 +256,11 @@ class Campaign extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'mail_list_id', 'segment_id'
+        'name', 'mail_list_id', 'segment_id',
+        'subject', 'from_name', 'from_email',
+        'reply_to', 'track_open',
+        'track_click', 'sign_dkim', 'track_fbl',
+        'html', 'plain'
     ];
     
     /**
@@ -329,6 +337,13 @@ class Campaign extends Model
         // Step 1
         if (is_object($this->mailList)) {
             $step = 1;
+        } else {
+            return $step;
+        }
+        
+        // Step 2
+        if (!empty($this->reply_to)) {
+            $step = 2;
         } else {
             return $step;
         }

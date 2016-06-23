@@ -52,7 +52,12 @@ class CampaignController extends Controller
      */
     public function create(Request $request)
     {
-        $campaign = new \Mailixa\Model\Campaign();
+        $campaign = new \Mailixa\Model\Campaign([
+                                            'track_open' => true,
+                                            'track_click' => true,
+                                            'track_fbl' => true,
+                                            'sign_dkim' => true,
+                                        ]);
         $campaign->name = trans('messages.untitled');
         $campaign->user_id = $request->user()->id;
         $campaign->status = \Mailixa\Model\Campaign::STATUS_NEW;
@@ -92,7 +97,16 @@ class CampaignController extends Controller
      */
     public function edit($id)
     {
-        //
+        $campaign = \Mailixa\Model\Campaign::findByUid($id);
+
+        // Check step and redirect
+        if($campaign->step() == 0) {
+            return redirect()->action('CampaignController@recipients', ['uid' => $campaign->uid]);
+        } else if ($campaign->step() == 1) {
+            return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
+        } else if ($campaign->step() == 2) {
+            return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
+        }
     }
 
     /**
@@ -139,6 +153,7 @@ class CampaignController extends Controller
     /**
      * Recipients.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function recipients(Request $request)
@@ -162,9 +177,103 @@ class CampaignController extends Controller
                 $campaign->segment_id = \Mailixa\Model\Segment::findByUid($request->segment_uid)->id;
             }
             $campaign->save();
+            
+            return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
         }
         
         return view('campaigns.recipients', [
+            'campaign' => $campaign,
+            'rules' => $rules,
+        ]);
+    }
+    
+    /**
+     * Campaign setup.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function setup(Request $request)
+    {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign->from_name = !empty($campaign->from_name) ? $campaign->from_name : $campaign->mailList->from_name;
+        $campaign->from_email = !empty($campaign->from_email) ? $campaign->from_email : $campaign->mailList->from_email;
+        $campaign->subject = !empty($campaign->subject) ? $campaign->subject : $campaign->mailList->default_subject;
+        
+        $rules = array(
+            'name' => 'required',
+            'subject' => 'required',
+            'from_email' => 'required|email',
+            'from_name' => 'required',
+            'reply_to' => 'required|email',
+        );
+        
+        // Get old post values
+        if(null !== $request->old()) {
+            $campaign->fill($request->old());
+        }
+            
+        // validate and save posted data
+        if ($request->isMethod('post'))
+        {            
+            // Check validation
+            $this->validate($request, $rules);
+            
+            // Save campaign
+            $campaign->fill($request->all());
+            $campaign->save();
+            
+            return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
+        }
+        
+        return view('campaigns.setup', [
+            'campaign' => $campaign,
+            'rules' => $rules,
+        ]);
+    }
+    
+    /**
+     * Template.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function template(Request $request)
+    {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // Required tags
+        $validate = "required";
+        foreach(\Mailixa\Model\Campaign::$template_tags as $tag) {            
+            if($tag['required']) {
+                $validate .= '|substring:"'.$tag["name"].'"';
+            }
+        }
+        
+        $rules = array(
+            'html' => $validate,
+            'plain' => 'required',
+        );
+        
+        // Get old post values
+        if(null !== $request->old()) {
+            $campaign->fill($request->old());
+        }
+            
+        // validate and save posted data
+        if ($request->isMethod('post'))
+        {            
+            // Check validation
+            $this->validate($request, $rules);
+            
+            // Save campaign
+            $campaign->fill($request->all());
+            $campaign->save();
+            
+            return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
+        }
+        
+        return view('campaigns.template', [
             'campaign' => $campaign,
             'rules' => $rules,
         ]);

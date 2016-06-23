@@ -40,7 +40,9 @@ class TemplateController extends Controller
     {
         $templates = \Mailixa\Model\Template::search($request)->paginate($request->per_page);
         
-        return view('templates._list', [
+        $view = isset($request->view) ? $request->view : "list";
+        
+        return view('templates._' . $view, [
             'templates' => $templates
         ]);
     }

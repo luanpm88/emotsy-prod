@@ -53,7 +53,6 @@
 								@include('helpers.form_control', ['type' => 'text', 'name' => 'contact[url]', 'label' => trans('messages.url'), 'label' => trans('messages.home_page'), 'value' => $list->contact->url, 'help_class' => 'list', 'rules' => Mailixa\Model\MailList::$rules])
 								
 							</div>
-							
 						</div>
 					</div>		
 						

@@ -359,4 +359,10 @@ $(function() {
             box.html('');
         }
     });
+    
+    // tab error
+    $('.form-group.has-error').each(function() {
+        var id = $(this).parents('.tab-pane').attr("id");
+        $('a[href="#'+id+'"]').addClass('error');
+    });
 });

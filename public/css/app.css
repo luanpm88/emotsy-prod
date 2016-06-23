@@ -747,12 +747,19 @@ hl {
 .campaign-steps a {
     font-size: 16px;
 }
-ul.campaign-steps > li.active > a, ul.campaign-steps > li.active > a:hover, ul.campaign-steps > li.active > a:focus, ul.campaign-steps > li > a:hover {
+ul.campaign-steps > li.active > a:hover, ul.campaign-steps > li.active > a:focus, ul.campaign-steps > li > a:hover {
     background-color: #fff;
-    border-bottom: solid 2px #009688;
-    border-radius: 0;
-    color: #333;
+    color: #00695B;
+}
+ul.campaign-steps > li.active > a, ul.campaign-steps > li.active > a:hover {
+    background-color: #fff;
+    border-bottom: solid 2px #00695B;
+    border-radius: 5px 5px 0 0;
+    font-weight: 600;
+    background: #00695C;
+    padding: 10px 15px;
     margin-bottom: -2px;
+    color: #fff;
 }
 ul.campaign-steps > li.disabled > a:hover {
     border-bottom: none;
@@ -764,12 +771,12 @@ ul.campaign-steps {
 }
 ul.campaign-steps li:after {
     display: block;
-    content: "\edc5";
+    content: "\ee31";
     font-family: 'icomoon';
     position: absolute;
-    top: 8px;
+    top: 9px;
     left: -35px;
-    font-size: 20px;
+    font-size: 16px;
     color: #333;
 }
 ul.campaign-steps li.disabled:after {
@@ -777,6 +784,7 @@ ul.campaign-steps li.disabled:after {
 }
 .campaign-steps > li {
     margin-right: 50px;
+    font-weight: 600;
 }
 .campaign-steps > li > a {
     padding-right: 0;
@@ -784,4 +792,16 @@ ul.campaign-steps li.disabled:after {
 }
 ul.campaign-steps li:first-child:after {
     display: none;
+}
+.nav-tabs > li {
+    font-size: 15px;
+}
+textarea.plain_text_content {
+    height: 350px;
+}
+.nav-tabs > li > a.error {
+    color: #9c1f1f !important;
+}
+.help-block {
+    font-size: 14px;
 }

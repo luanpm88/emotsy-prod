@@ -25,12 +25,10 @@ class CreateCampaignsTable extends Migration
             $table->text('plain');
             $table->text('from_email');
             $table->text('from_name');
-            $table->text('to_name');
             $table->text('reply_to');
             $table->text('status');
             $table->boolean('sign_dkim');
             $table->boolean('track_open');
-            $table->boolean('track_fbl');
             $table->boolean('track_click');
             $table->integer('resend');
             $table->integer('custom_order');

@@ -204,7 +204,7 @@
 	</div>
 	<!-- /basic modal -->
 	
-	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#link_confirm_model">aa</a>
+	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#link_confirm_model">Open modal</a>
 	<!-- Basic modal -->
 	<div id="link_confirm_model" class="modal fade">
 		<div class="modal-dialog">
