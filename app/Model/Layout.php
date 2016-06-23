@@ -24,10 +24,10 @@ class Layout extends Model
     {
         parent::boot();        
         
-        | Create uid when creating list.
+        // Create uid when creating list.
         static::creating(function($item)
         {
-            | Create new uid
+            // Create new uid
             $uid = uniqid();
             while(Layout::where('uid','=',$uid)->count() > 0)
             {
@@ -44,10 +44,10 @@ class Layout extends Model
      */
     public static function createDefaultLayouts()
     {
-        |foreach(Layout::all() as $layout) {
-        |    $layout->delete();
-        |}
-        | Sign-up form layout
+        //foreach(Layout::all() as $layout) {
+        //    $layout->delete();
+        //}
+        // Sign-up form layout
         $layout = new Layout();
         $layout->name = "Unsubscribe form";
         $layout->alias = "profile_update_email_sent";

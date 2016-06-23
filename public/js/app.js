@@ -365,4 +365,23 @@ $(function() {
         var id = $(this).parents('.tab-pane').attr("id");
         $('a[href="#'+id+'"]').addClass('error');
     });
+    
+    // choose template
+    $(document).on("click", ".choose-template-button", function() {
+        var url = $(this).attr("data-url");
+        
+        $.ajax({
+            method: "GET",
+            url: url,
+        })
+        .done(function( msg ) {
+            tinymce.activeEditor.execCommand('mceInsertContent', false, msg);
+            $(".modal").modal('hide');
+        });
+    });
+    
+    // Time picker
+    $(".pickatime").AnyTime_picker({
+        format: "%H:%i"
+    });
 });

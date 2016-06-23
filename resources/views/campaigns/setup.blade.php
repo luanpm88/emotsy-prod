@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', trans('messages.campaigns') . " - " . trans('messages.recipients'))
+@section('title', trans('messages.campaigns') . " - " . trans('messages.setup'))
 	
 @section('page_script')
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>

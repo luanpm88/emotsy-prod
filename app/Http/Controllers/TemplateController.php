@@ -42,9 +42,36 @@ class TemplateController extends Controller
         
         $view = isset($request->view) ? $request->view : "list";
         
-        return view('templates._' . $view, [
+        return view('templates._list', [
             'templates' => $templates
         ]);
+    }
+    
+    /**
+     * Display a listing of the resource for choose one.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function choosing(Request $request)
+    {
+        $templates = \Mailixa\Model\Template::search($request)->paginate($request->per_page);
+        
+        return view('templates._list_choose', [
+            'templates' => $templates
+        ]);
+    }
+    
+    
+    /**
+     * Content of template.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function content(Request $request)
+    {
+        $template = \Mailixa\Model\Template::findByUid($request->uid);
+        
+        echo $template->content;
     }
 
     /**
@@ -212,6 +239,12 @@ class TemplateController extends Controller
         $sort = json_decode($request->sort);
         foreach($sort as $row) {
             $item = \Mailixa\Model\Template::findByUid($row[0]);
+            
+            // authorize
+            if (\Gate::denies('update', $item)) {
+                return $this->notAuthorized();
+            }
+            
             $item->custom_order = $row[1];
             $item->save();            
         }

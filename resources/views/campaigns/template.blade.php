@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', trans('messages.campaigns') . " - " . trans('messages.recipients'))
+@section('title', trans('messages.campaigns') . " - " . trans('messages.template'))
 	
 @section('page_script')
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>        
@@ -47,30 +47,13 @@
 								
 								<form class="listing-form"
 									sort-url="{{ action('TemplateController@sort') }}"
-									data-url="{{ action('TemplateController@listing', ['view' => 'list_choose']) }}"
+									data-url="{{ action('TemplateController@choosing') }}"
 									per-page="{{ Mailixa\Model\Template::$itemsPerPage }}"					
 								>				
 									<div class="row top-list-controls">
 										<div class="col-md-9">
 											@if (Mailixa\Model\Template::getAll()->count() >= 0)					
-												<div class="filter-box">
-													<div class="btn-group list_actions hide">
-														<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
-															{{ trans('messages.actions') }} <span class="caret"></span>
-														</button>
-														<ul class="dropdown-menu dropdown-menu-right">
-															<li>
-																<a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('TemplateController@delete') }}">
-																	<i class="icon-trash"></i> {{ trans('messages.delete') }}
-																</a>
-															</li>
-														</ul>
-													</div>
-													<div class="checkbox inline check_all_list">
-														<label>
-															<input type="checkbox" class="styled check_all">
-														</label>
-													</div>
+												<div class="filter-box">													
 													<span class="filter-group">
 														<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
 														<select class="select" name="sort-order">

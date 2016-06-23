@@ -15,8 +15,13 @@
 						</a>
 					</li>
 					<li class="{{ $current == 4 ? "active" : "" }} {{ $campaign->step() > 2 ? "" : "disabled" }}">
-						<a href="{{ action('CampaignController@template', $campaign->uid) }}">
-							<i class="icon-checkmark4"></i> {{ trans('messages.finish') }}
+						<a href="{{ action('CampaignController@schedule', $campaign->uid) }}">
+							<i class="icon-alarm-check"></i> {{ trans('messages.schedule') }}
+						</a>
+					</li>
+					<li class="{{ $current == 5 ? "active" : "" }} {{ $campaign->step() > 3 ? "" : "disabled" }}">
+						<a href="{{ action('CampaignController@confirm', $campaign->uid) }}">
+							<i class="icon-checkmark4"></i> {{ trans('messages.confirm') }}
 						</a>
 					</li>
 				</ul>

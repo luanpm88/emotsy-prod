@@ -211,6 +211,12 @@ class MailListController extends Controller
         $sort = json_decode($request->sort);
         foreach($sort as $row) {
             $list = \Mailixa\Model\MailList::findByUid($row[0]);
+            
+            // authorize
+            if (\Gate::denies('update', $list)) {
+                return $this->notAuthorized();
+            }
+            
             $list->custom_order = $row[1];
             $list->save();            
         }

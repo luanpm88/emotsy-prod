@@ -114,13 +114,22 @@ class Tool
       * @var string
       */
     public static function formatDateTime($datetime) {
+        $result = Tool::dateTime($datetime)->format(trans('messages.datetime_format'));
+        
+        return $result;
+    }
+    
+    /**
+      * Format display datetime.
+      *
+      * @var string
+      */
+    public static function dateTime($datetime) {
         $timezone = \Auth::user()->timezone;
         $result = $datetime;
         if (!empty($timezone)) {
             $result = $result->timezone($timezone);
-        }
-        $result = $result->format(trans('messages.datetime_format'));
-        
+        }       
         return $result;
    }
 }

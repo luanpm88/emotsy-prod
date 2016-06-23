@@ -55,9 +55,15 @@ class CampaignController extends Controller
         $campaign = new \Mailixa\Model\Campaign([
                                             'track_open' => true,
                                             'track_click' => true,
-                                            'track_fbl' => true,
                                             'sign_dkim' => true,
                                         ]);
+        
+        
+        // authorize
+        if (\Gate::denies('create', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         $campaign->name = trans('messages.untitled');
         $campaign->user_id = $request->user()->id;
         $campaign->status = \Mailixa\Model\Campaign::STATUS_NEW;
@@ -98,7 +104,12 @@ class CampaignController extends Controller
     public function edit($id)
     {
         $campaign = \Mailixa\Model\Campaign::findByUid($id);
-
+        
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         // Check step and redirect
         if($campaign->step() == 0) {
             return redirect()->action('CampaignController@recipients', ['uid' => $campaign->uid]);
@@ -106,7 +117,12 @@ class CampaignController extends Controller
             return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
         } else if ($campaign->step() == 2) {
             return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
+        } else if ($campaign->step() == 3) {
+            return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
+        } else if ($campaign->step() == 4) {
+            return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
+        
     }
 
     /**
@@ -143,6 +159,12 @@ class CampaignController extends Controller
         $sort = json_decode($request->sort);
         foreach($sort as $row) {
             $item = \Mailixa\Model\Campaign::findByUid($row[0]);
+            
+            // authorize
+            if (\Gate::denies('update', $item)) {
+                return $this->notAuthorized();
+            }
+            
             $item->custom_order = $row[1];
             $item->save();            
         }
@@ -159,6 +181,11 @@ class CampaignController extends Controller
     public function recipients(Request $request)
     {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
         
         $rules = array(
             'mail_list_uid' => 'required',
@@ -196,6 +223,12 @@ class CampaignController extends Controller
     public function setup(Request $request)
     {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         $campaign->from_name = !empty($campaign->from_name) ? $campaign->from_name : $campaign->mailList->from_name;
         $campaign->from_email = !empty($campaign->from_email) ? $campaign->from_email : $campaign->mailList->from_email;
         $campaign->subject = !empty($campaign->subject) ? $campaign->subject : $campaign->mailList->default_subject;
@@ -242,6 +275,11 @@ class CampaignController extends Controller
     {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
         
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         // Required tags
         $validate = "required";
         foreach(\Mailixa\Model\Campaign::$template_tags as $tag) {            
@@ -270,12 +308,91 @@ class CampaignController extends Controller
             $campaign->fill($request->all());
             $campaign->save();
             
-            return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
+            return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
         }
         
         return view('campaigns.template', [
             'campaign' => $campaign,
             'rules' => $rules,
+        ]);
+    }
+    
+    /**
+     * Schedule.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function schedule(Request $request)
+    {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
+        $delivery_date = isset($campaign->delivery_at) && $campaign->delivery_at != '0000-00-00 00:00:00' ? \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->delivery_at))->format("Y-m-d") : \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::now())->format("Y-m-d");
+        $delivery_time = isset($campaign->delivery_at) && $campaign->delivery_at != '0000-00-00 00:00:00' ? \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->delivery_at))->format("H:i") : \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::now())->format("H:i");
+        
+        $rules = array(
+            'delivery_date' => 'required',
+            'delivery_time' => 'required',
+        );
+        
+        // Get old post values
+        if(null !== $request->old()) {
+            $campaign->fill($request->old());
+        }
+            
+        // validate and save posted data
+        if ($request->isMethod('post'))
+        {            
+            // Check validation
+            // $this->validate($request, $rules);
+            
+            // Save campaign
+            $campaign->delivery_at = \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date . ' ' . $request->delivery_time))->toDateTimeString();
+            $campaign->save();
+            
+            return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
+        }
+        
+        return view('campaigns.schedule', [
+            'campaign' => $campaign,
+            'rules' => $rules,
+            'delivery_date' => $delivery_date,
+            'delivery_time' => $delivery_time,
+        ]);
+    }
+    
+    /**
+     * Cofirm.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function confirm(Request $request)
+    {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
+        // validate and save posted data
+        if ($request->isMethod('post'))
+        {            
+            // Save campaign
+            $campaign->status = \Mailixa\Model\Campaign::STATUS_SENDING;
+            $campaign->save();
+            
+            return redirect()->action('CampaignController@index');
+        }
+        
+        return view('campaigns.confirm', [
+            'campaign' => $campaign,
         ]);
     }
 }

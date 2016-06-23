@@ -5,22 +5,6 @@
 								@foreach ($templates as $key => $item)
 									<tr>
 										<td width="1%">
-											<div class="text-nowrap">
-												<div class="checkbox inline">
-													<label>
-														<input type="checkbox" class="node styled"
-															custom-order="{{ $item->custom_order }}"
-															name="ids[]"
-															value="{{ $item->uid }}"
-														/>
-													</label>
-												</div>
-												@if (request()->sort_order == 'custom_order' && empty(request()->keyword))
-													<i data-action="move" class="icon icon-more2 list-drag-button"></i>
-												@endif
-											</div>
-										</td>
-										<td width="1%">
 											<a href="#"  onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)">
 												<img width="100" height="120" src="{{ action('TemplateController@image', $item->uid) }}?v={{ rand(0,10) }}" />
 											</a>
@@ -40,7 +24,7 @@
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>											
-											<a item-id="{{ $item->id }}" href="#choose" type="button" class="btn bg-warning-600 btn-icon choose-template-button"> <i class="icon-checkmark4"></i> {{ trans('messages.choose') }}</a>											
+											<a data-url="{{ action('TemplateController@content', $item->uid) }}" href="#choose" type="button" class="btn bg-warning-600 btn-icon choose-template-button"> <i class="icon-checkmark4"></i> {{ trans('messages.choose') }}</a>											
 										</td>
 									</tr>
 								@endforeach

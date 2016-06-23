@@ -32,6 +32,7 @@ class CreateCampaignsTable extends Migration
             $table->boolean('track_click');
             $table->integer('resend');
             $table->integer('custom_order');
+            $table->datetime('delivery_at');
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

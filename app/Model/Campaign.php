@@ -342,8 +342,23 @@ class Campaign extends Model
         }
         
         // Step 2
-        if (!empty($this->reply_to)) {
+        if (!empty($this->name) && !empty($this->subject) && !empty($this->from_name)
+                && !empty($this->from_email) && !empty($this->reply_to)) {
             $step = 2;
+        } else {
+            return $step;
+        }
+        
+        // Step 3
+        if (!empty($this->html) && !empty($this->plain)) {
+            $step = 3;
+        } else {
+            return $step;
+        }
+        
+        // Step 4
+        if (isset($this->delivery_at) && $this->delivery_at != '0000-00-00 00:00:00') {
+            $step = 4;
         } else {
             return $step;
         }
