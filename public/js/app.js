@@ -124,6 +124,7 @@ $(function() {
         }).get();
         
         $(this).attr("href", $(this).attr("href") + "?uids=" + vals.join(","));
+        $(this).attr("items-count", vals.length);
     });
     
     
@@ -132,8 +133,14 @@ $(function() {
     $(document).on("click", "a[delete-confirm]", function(e) {
         var mgs = $(this).attr("delete-confirm");
         
+        // count items
+        var count = 1;
+        if (typeof($(this).attr("items-count")) != 'undefined') {
+            count = $(this).attr("items-count");
+        }
+        
         $('a[data-target="#delete_confirm_model"]').trigger("click");        
-        $("#delete_confirm_model h6").html(mgs);
+        $("#delete_confirm_model h6").html(mgs.replace(":number", "<span class='text-bold text-danger'>" + count + "</span>"));
         $(".delete-confirm-button").attr("href", $(this).attr("href"));
         
         e.stopImmediatePropagation();
@@ -146,12 +153,55 @@ $(function() {
             e.preventDefault();
         }        
     });
+    // List delete confirm event
+    // ------------------------------
+    $(document).on("click", "a[list-delete-confirm]", function(e) {
+        var url = $(this).attr("list-delete-confirm");
+        
+        if($(this).parents(".list_actions").length) {
+            var form = $(this).parents(".listing-form");
+            var vals = form.find("input[name='ids[]']:checked").map(function () {
+                return this.value;
+            }).get();
+            
+            url = url + "?uids=" + vals.join(",");
+        }
+    
+        $('a[data-target="#list_delete_confirm_model"]').trigger("click");
+        $(".list-delete-confirm-button").attr("href", $(this).attr("href"));
+        
+        // Get message
+        // ajax update custom sort
+        $.ajax({
+            method: "GET",
+            url: url,
+        })
+        .done(function( msg ) {
+            $("#list_delete_confirm_model .content").html(msg);
+        });
+        
+        e.stopImmediatePropagation();
+        e.preventDefault();
+    });
+    $(document).on("click", ".list-delete-confirm-button", function(e) {
+        if($('.list-confirm-delete-form').valid()) {
+            
+        } else {
+            e.preventDefault();
+        }        
+    });
     // Link confirm
     $(document).on("click", "a[link-confirm]", function(e) {
         var mgs = $(this).attr("link-confirm");
         
+        // count items
+        var count = 1;
+        if (typeof($(this).attr("items-count")) != 'undefined') {
+            count = $(this).attr("items-count");
+        }
+        
         $('a[data-target="#link_confirm_model"]').trigger("click");        
-        $("#link_confirm_model h6").html(mgs);
+        $("#link_confirm_model h6").html(mgs.replace(":number", "<span class='text-bold text-teal-800'>" + count + "</span>"));
         $(".link-confirm-button").attr("href", $(this).attr("href"));
         
         e.stopImmediatePropagation();
@@ -381,7 +431,9 @@ $(function() {
     });
     
     // Time picker
-    $(".pickatime").AnyTime_picker({
-        format: "%H:%i"
-    });
+    if ($(".pickatime").length) {
+        $(".pickatime").AnyTime_picker({
+            format: "%H:%i"
+        });
+    }
 });

@@ -22,7 +22,7 @@
 										</td>										
 										<td>
 											<h5 class="no-margin text-bold">
-												<a class="kq_search" href="#" onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)">
+												<a class="kq_search" href="{{ action('CampaignController@show', $item->uid) }}">
 													{{ $item->name }}
 												</a>
 											</h5>
@@ -40,7 +40,13 @@
 												<br>
 												<span class="text-muted">{{ $item->subscribers()->count() }} {{ strtolower(trans('messages.subscribers')) }}</span>
 											@endif
-											
+										</td>
+										<td>
+											@if (isset($item->delivery_at) && $item->delivery_at != "0000-00-00 00:00:00")
+												<span class="no-margin stat-num"><i class="icon-alarm"></i> {{ Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $item->delivery_at)) }}</span>
+												<br>
+												<span class="text-muted">{{ trans('messages.delivery_at') }}</span>
+											@endif
 										</td>
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
@@ -50,11 +56,11 @@
 											<div class="btn-group">										
 												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 												<ul class="dropdown-menu dropdown-menu-right">
-													@if (\Gate::allows('preview', $item))
-														<li><a href="#preview" onclick="popupwindow('{{ action('CampaignController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a></li>
+													@if (\Gate::allows('overview', $item))
+														<li><a href="#preview" onclick="popupwindow('{{ action('CampaignController@overview', $item->uid) }}', '{{ $item->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a></li>
 													@endif
 													@if (\Gate::allows('delete', $item))
-														<li><a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('TemplateController@delete', ["uids" => $item->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
+														<li><a delete-confirm="{{ trans('messages.delete_campaigns_confirm') }}" href="{{ action('CampaignController@delete', ["uids" => $item->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
 													@endif
 												</ul>
 											</div>

@@ -37,7 +37,7 @@
 											{{ trans('messages.actions') }} <span class="caret"></span>
 										</button>
 										<ul class="dropdown-menu dropdown-menu-right">
-											<li><a href="#"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
+											<li><a delete-confirm="{{ trans('messages.delete_campaigns_confirm') }}" href="{{ action('CampaignController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
 										</ul>
 									</div>
 									<div class="checkbox inline check_all_list">

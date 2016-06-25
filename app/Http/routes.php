@@ -31,6 +31,8 @@ Route::get('assets/images/avatar/user-{id}.jpg', 'UserController@avatar');
 // Mail list
 Route::get('lists/sort', 'MailListController@sort');
 Route::get('lists/listing/{page?}', 'MailListController@listing');
+Route::get('lists/delete', 'MailListController@delete');
+Route::get('lists/delete/confirm', 'MailListController@deleteConfirm');
 Route::resource('lists', 'MailListController');
 Route::get('lists/{uid}/edit', 'MailListController@edit');
 Route::patch('lists/{uid}/update', 'MailListController@update');
@@ -107,6 +109,7 @@ Route::get('templates/{uid}/edit', 'TemplateController@edit');
 Route::patch('templates/{uid}/update', 'TemplateController@update');
 
 // Campaign
+Route::get('campaigns/{uid}/overview', 'CampaignController@overview');
 Route::get('campaigns/sort', 'CampaignController@sort');
 Route::get('campaigns/listing/{page?}', 'CampaignController@listing');
 Route::get('campaigns/{uid}/recipients', 'CampaignController@recipients');
@@ -119,6 +122,7 @@ Route::get('campaigns/{uid}/schedule', 'CampaignController@schedule');
 Route::post('campaigns/{uid}/schedule', 'CampaignController@schedule');
 Route::get('campaigns/{uid}/confirm', 'CampaignController@confirm');
 Route::post('campaigns/{uid}/confirm', 'CampaignController@confirm');
+Route::get('templates/delete', 'CampaignController@delete');
 Route::resource('campaigns', 'CampaignController');
 Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
 Route::patch('campaigns/{uid}/update', 'CampaignController@update');

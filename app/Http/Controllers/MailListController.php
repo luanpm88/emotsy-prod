@@ -223,4 +223,44 @@ class MailListController extends Controller
         
         echo trans('messages.lists.custom_order.updated');
     }
+    
+    /**
+     * Delete confirm message.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteConfirm(Request $request)
+    {
+        $lists = \Mailixa\Model\MailList::whereIn("uid", explode(",", $request->uids));        
+
+        return view('lists.delete_confirm', [
+            'lists' => $lists,
+        ]);
+    }
+    
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {        
+        $lists = \Mailixa\Model\MailList::whereIn("uid", explode(",", $request->uids));
+        
+        foreach ($lists->get() as $item) {
+            // authorize
+            if (\Gate::denies('delete', $item)) {
+                return;
+            }
+        }
+        
+        foreach ($lists->get() as $item) {
+            $item->delete();
+        }
+
+        // Redirect to my lists page
+        echo(trans('messages.lists.deleted'));
+    }
 }

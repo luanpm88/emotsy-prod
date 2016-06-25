@@ -76,7 +76,7 @@
 
 		<div class="navbar-collapse collapse" id="navbar-mobile">
 			<ul class="nav navbar-nav">
-				<li rel0="CampaignController" class="">
+				<li rel0="CampaignController">
 					<a href="{{ action('CampaignController@index') }}">
 						<i class="icon-paperplane"></i> {{ trans('messages.campaigns') }}
 					</a>
@@ -224,6 +224,40 @@
 					<div class="modal-footer">
 						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
 						<a class="btn bg-info-800 link-confirm-button ajax_link">{{ trans('messages.confirm') }}</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- /basic modal -->
+	
+	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#list_delete_confirm_model">aa</a>
+	<!-- Basic modal -->
+	<div id="list_delete_confirm_model" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form class="list-confirm-delete-form" onkeypress="return event.keyCode != 13;">
+					<div class="modal-header bg-danger">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+					</div>
+	
+					<div class="modal-body">
+						
+							<div class="content">
+								
+							</div>
+							
+							<div class="form-group">
+								<label>{!! trans('messages.type_delete_to_confirm') !!}</label>
+								<input class="form-control" name="delete" />
+							</div>
+						
+					</div>
+	
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+						<a class="btn btn-danger list-delete-confirm-button ajax_link">{{ trans('messages.delete') }}</a>
 					</div>
 				</form>
 			</div>

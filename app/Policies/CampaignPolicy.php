@@ -27,4 +27,9 @@ class CampaignPolicy
     {
         return $item->user_id == $user->id;
     }
+    
+    public function delete(\Mailixa\Model\User $user, \Mailixa\Model\Campaign $item)
+    {
+        return $item->user_id == $user->id;
+    }
 }

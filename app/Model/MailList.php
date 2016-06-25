@@ -71,6 +71,21 @@ class MailList extends Model
         return $this->pages()->where("layout_id", $layout->id)->first();
     }
     
+    public function contact()
+    {
+        return $this->belongsTo('Mailixa\Model\Contact');
+    }
+    
+    public function subscribers()
+    {
+        return $this->hasMany('Mailixa\Model\Subscriber');
+    }
+    
+    public function campaigns()
+    {
+        return $this->hasMany('Mailixa\Model\Campaign');
+    }
+    
     /**
      * Bootstrap any application services.
      *
@@ -102,21 +117,6 @@ class MailList extends Model
             //  Create list default fields
             $item->createDefaultFieds();
         });
-    }
-    
-    /**
-     * Associations.
-     *
-     * @var object | collect
-     */ 
-    public function contact()
-    {
-        return $this->belongsTo('Mailixa\Model\Contact');
-    }
-    
-    public function subscribers()
-    {
-        return $this->hasMany('Mailixa\Model\Subscriber');
     }
     
     /**

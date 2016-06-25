@@ -122,7 +122,7 @@ textarea.form-control {
     font-weight: 600;
 }
 h3 {
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 .select2-selection--single .select2-selection__arrow:after {
     font-size: 20px;
@@ -227,6 +227,9 @@ h3 {
 .navbar-nav > li > a {
     padding-top: 15px;
     padding-bottom: 15px;
+    padding-left: 20px;
+    padding-right: 20px;
+    font-size: 14px;
 }
 .page-header-content {
     margin: auto;
@@ -400,7 +403,7 @@ h3 {
     border-radius: 0;
 }
 .page-second-nav {
-    margin: 30px 0 20px 0;    
+    margin: 0 0 20px 0;    
 }
 .page-second-nav li a.level-1 {
     font-weight: 600;
@@ -850,4 +853,32 @@ ul.modern-listing li .btn {
 }
 .confirm-campaign-box .head {
     text-align: center;
+}
+.campaigns-summary {
+    font-size: 15px;
+}
+.progress-right-info {
+    font-size: 24px;
+}
+[class^="icon-"], [class*=" icon-"] {
+    margin-right: 7px;
+}
+.stat-table {
+    
+}
+.stat-table .stat-row {
+    margin: 20px 0;
+    border-bottom: dotted 1px #ddd;
+    margin-bottom: 25px;
+}
+.stat-table .stat-row p {
+    font-weight: 600;
+    margin: 5px 0;
+    margin-bottom: 5px;
+}
+.stat-table .stat-row .num {
+    padding-left: 10px;
+    font-size: 18px;
+    margin-top: -5px;
+    font-weight: 600;
 }

@@ -92,7 +92,13 @@ class CampaignController extends Controller
      */
     public function show($id)
     {
-        //
+        $campaign = \Mailixa\Model\Campaign::findByUid($id);
+        
+        if ($campaign->status == 'new') {
+            return redirect()->action('CampaignController@edit', ['uid' => $campaign->uid]);
+        } else {
+            return redirect()->action('CampaignController@overview', ['uid' => $campaign->uid]);
+        }
     }
 
     /**
@@ -393,6 +399,46 @@ class CampaignController extends Controller
         
         return view('campaigns.confirm', [
             'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {        
+        $items = \Mailixa\Model\Campaign::whereIn("uid", explode(",", $request->uids));
+        
+        foreach ($items->get() as $item) {
+            // authorize
+            if (\Gate::denies('delete', $item)) {
+                return;
+            }
+        }
+        
+        foreach ($items->get() as $item) {
+            $item->delete();
+        }
+
+        // Redirect to my lists page
+        echo(trans('messages.campaigns.deleted'));
+    }
+    
+    /**
+     * Campaign overview.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function overview(Request $request)
+    {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        return view('campaigns.overview', [
+            'campaign' => $campaign
         ]);
     }
 }
