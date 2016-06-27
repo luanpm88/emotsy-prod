@@ -41,7 +41,7 @@ class SendingServer extends Model
         $sendingDomain = $this->findSendingDomain($params['from_email']);
         
         if (empty($sendingDomain)) {
-          return $message;
+            return $message;
         }
 
         $privateKey = $sendingDomain->dkim_private_key;
@@ -101,7 +101,7 @@ class SendingServer extends Model
 
     public static function mapServerType($server)
     {
-        $class_name = '\Mailixa\Sender\\' . self::$serverMapping[$server->type];
+        $class_name = '\Mailixa\Model\\' . self::$serverMapping[$server->type];
         return $class_name::find($server->server_id);
     }
 }

@@ -104,9 +104,10 @@ class Campaign extends Model
                 Log::info("Sending to subscriber `{$subscriber->email}` ({$i}/" . sizeof($subscribers) . ")");
 
                 $message = $this->prepareEmail($subscriber);
+                
+                $server = $this->pickServer($this);
+                
                 /*
-                $server = $this->pickServer();
-          
                 if ($this->customer->isOverQuota()) {
                     throw new \Exception("Customer (ID: {$this->customer->customer_id}) has reached sending quota");
                 }
@@ -150,9 +151,9 @@ class Campaign extends Model
         $log->save();
     }
 
-    public function pickServer()
+    public function pickServer($campaign)
     {
-        return DeliveryServer::pickServer();
+        return SendingServer::pickServer($campaign);
     }
   
     /**
