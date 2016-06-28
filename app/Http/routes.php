@@ -110,6 +110,7 @@ Route::patch('templates/{uid}/update', 'TemplateController@update');
 
 // Campaign
 Route::get('campaigns/{uid}/overview', 'CampaignController@overview');
+Route::get('campaigns/{uid}/links', 'CampaignController@links');
 Route::get('campaigns/sort', 'CampaignController@sort');
 Route::get('campaigns/listing/{page?}', 'CampaignController@listing');
 Route::get('campaigns/{uid}/recipients', 'CampaignController@recipients');
@@ -126,3 +127,16 @@ Route::get('templates/delete', 'CampaignController@delete');
 Route::resource('campaigns', 'CampaignController');
 Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
 Route::patch('campaigns/{uid}/update', 'CampaignController@update');
+
+
+// ADMIN AREA
+Route::group(['namespace' => 'Admin'], function () {
+    
+    Route::get('admin', 'HomeController@index');
+    
+    // User Group
+    Route::get('admin/user_groups/listing/{page?}', 'UserGroupController@listing');
+    Route::get('admin/user_groups/sort', 'UserGroupController@sort');
+    Route::resource('admin/user_groups', 'UserGroupController');
+    
+});

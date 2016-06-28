@@ -81,12 +81,7 @@
 						<i class="icon-paperplane"></i> {{ trans('messages.campaigns') }}
 					</a>
 				</li>
-                <li rel0="TemplateController">
-					<a href="{{ action('TemplateController@index') }}">
-						<i class="icon-magazine"></i> {{ trans('messages.templates') }}
-					</a>
-				</li>
-                <li
+				<li
 					rel0="MailListController"
 					rel1="FieldController"
 					rel2="SubscriberController"
@@ -94,8 +89,13 @@
 				>
 					<a href="{{ action('MailListController@index') }}"><i class="icon-address-book2"></i> {{ trans('messages.lists') }}</a>
 				</li>
-                <li><a href="#"><i class="icon-pie-chart5"></i> {{ trans('messages.reports') }}</a></li>
-                <li><a href="#"><i class="icon-server"></i> {{ trans('messages.servers') }}</a></li>
+                <li rel0="TemplateController">
+					<a href="{{ action('TemplateController@index') }}">
+						<i class="icon-magazine"></i> {{ trans('messages.templates') }}
+					</a>
+				</li>
+                
+                
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right">

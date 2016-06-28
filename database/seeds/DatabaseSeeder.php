@@ -50,7 +50,8 @@ class DatabaseSeeder extends Seeder
         // Create default user group
         DB::table('user_groups')->insert([
             'id' => 1,
-            'name' => 'Việt Nam',
+            'name' => 'Default',
+            'user_id' => null,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);

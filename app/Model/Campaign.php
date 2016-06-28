@@ -316,6 +316,28 @@ class Campaign extends Model
     }
     
     /**
+     * Update campaign links.
+     *
+     * @return void
+     */
+    public function updateLinks()
+    {
+        // Find all links in campaign content
+        preg_match_all('/(?<=href=)(\'|")?(?<url>.*?)(?=\1|\))/i', $this->html, $matches);
+        $hrefs = array_unique($matches['url']);
+        
+        $urls = [];
+        foreach ($hrefs as $href) {
+            if (preg_match('/^http/i', $href)) {
+                $urls[] = strtolower(trim($href));
+            }
+        }
+        
+        // check if exist
+        return $urls;
+    }
+    
+    /**
      * Find item by uid.
      *
      * @return object

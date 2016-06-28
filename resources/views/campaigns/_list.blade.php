@@ -26,7 +26,7 @@
 													{{ $item->name }}
 												</a>
 											</h5>
-											<span class="text-muted">{{ $item->type }}</span>
+											<span class="text-muted">{{ trans('messages.' . $item->type) }}</span>
 											<br />
 											<span class="text-muted2">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>

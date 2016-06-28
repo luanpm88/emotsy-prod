@@ -136,5 +136,102 @@
                 </div>
             </div>
             <br />
+			
+			<h3 class="text-semibold"><i class="icon-link"></i> {{ trans('messages.top_links_clicked') }}</h3>
             
+			<div class="stat-table">
+				<div class="stat-row">
+					<div class="pull-right num">
+						0%
+					</div>
+					<p class="text-muted">{{ trans('messages.click_per_unique_opens') }}</p>
+				</div>
+				<div class="stat-row">
+					<div class="pull-right num">
+						0%
+					</div>
+					<p class="text-muted">{{ trans('messages.total_clicks') }}</p>
+				</div>
+				<div class="stat-row">
+					<div class="pull-right num">
+						0%
+					</div>
+					<p class="text-muted">{{ trans('messages.last_clicked') }}</p>
+				</div>
+				<div class="stat-row">
+					<div class="pull-right num">
+						0%
+					</div>
+					<p class="text-muted">{{ trans('messages.abuse_reports') }}</p>
+				</div>
+			</div>
+				
+			<br />
+			
+
+			<div class="row">
+                <div class="col-md-6">
+                    <div class="content-group-sm">
+                        <h4 class="text-semibold"><i class="icon-users4"></i> {{ trans('messages.subscribers_most_open') }}</h4>                        
+                    </div>
+                    <div class="stat-table">
+                        <div class="stat-row">
+                            <div class="pull-right num">
+                                0%
+                            </div>
+                            <p class="text-muted">{{ trans('messages.successful_deliveries') }}</p>
+                        </div>
+                        <div class="stat-row">
+                            <div class="pull-right num">
+                                0%
+                            </div>
+                            <p class="text-muted">{{ trans('messages.total_opens') }}</p>
+                        </div>
+                        <div class="stat-row">
+                            <div class="pull-right num">
+                                0%
+                            </div>
+                            <p class="text-muted">{{ trans('messages.last_opened') }}</p>
+                        </div>
+                        <div class="stat-row">
+                            <div class="pull-right num">
+                                0%
+                            </div>
+                            <p class="text-muted">{{ trans('messages.forwarded') }}</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="content-group-sm">
+                        <h4 class="text-semibold"><i class="icon-location4"></i> {{ trans('messages.top_location_by_opens') }}</h4>
+                    </div>
+                    <div class="stat-table">
+                        <div class="stat-row">
+                            <div class="pull-right num">
+                                0%
+                            </div>
+                            <p class="text-muted">{{ trans('messages.click_per_unique_opens') }}</p>
+                        </div>
+                        <div class="stat-row">
+                            <div class="pull-right num">
+                                0%
+                            </div>
+                            <p class="text-muted">{{ trans('messages.total_clicks') }}</p>
+                        </div>
+                        <div class="stat-row">
+                            <div class="pull-right num">
+                                0%
+                            </div>
+                            <p class="text-muted">{{ trans('messages.last_clicked') }}</p>
+                        </div>
+                        <div class="stat-row">
+                            <div class="pull-right num">
+                                0%
+                            </div>
+                            <p class="text-muted">{{ trans('messages.abuse_reports') }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br />
 @endsection

@@ -24,6 +24,7 @@ class HomeController extends Controller
      */
     public function index()
     {
+        return redirect()->action('MailListController@index');    
         return view('welcome');
     }
 }

@@ -15,11 +15,15 @@ class CreatePagesTable extends Migration
         Schema::create('pages', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uid');
-            $table->integer('layout_id');
-            $table->integer('mail_list_id');
+            $table->integer('layout_id')->unsigned();
+            $table->integer('mail_list_id')->unsigned();
             $table->longtext('content');
             
             $table->timestamps();
+            
+            // foreign
+            $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
+            $table->foreign('layout_id')->references('id')->on('layouts')->onDelete('cascade');
         });
     }
 

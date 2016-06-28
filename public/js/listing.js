@@ -154,7 +154,6 @@ function updateCustomOrder(form) {
         row.push($(this).val());
         row.push(num);
         sort.push(row);
-        
         // if row has custom order input
         if ($(this).parents('tr').find('input.custom_order').length) {
             $(this).parents('tr').find('input.custom_order').val(num);

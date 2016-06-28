@@ -225,11 +225,12 @@ h3 {
     font-size: 14px;
 }
 .navbar-nav > li > a {
-    padding-top: 15px;
-    padding-bottom: 15px;
-    padding-left: 20px;
-    padding-right: 20px;
-    font-size: 14px;
+    padding-top: 16px;
+    padding-bottom: 16px;
+    padding-left: 15px;
+    padding-right: 15px;
+    font-weight: 600;
+    font-size: 13px;
 }
 .page-header-content {
     margin: auto;
@@ -241,7 +242,7 @@ h3 {
 }
 .navbar-nav > .dropdown-user > a, .navbar-nav > .dropdown-user > a > span {
     padding-top: 7px;
-    padding-bottom: 8px;
+    padding-bottom: 9px;
 }
 .table-box {
     font-size: 15px;
@@ -881,4 +882,18 @@ ul.modern-listing li .btn {
     font-size: 18px;
     margin-top: -5px;
     font-weight: 600;
+}
+.table-head tbody tr th {
+    background: #ddd;
+    font-weight: 600;
+    padding: 10px 20px;
+}
+.table-head tbody tr td {
+    padding: 10px 20px;
+}
+.table-head tbody tr td:first-child {
+    padding: 10px 20px;
+}
+#navbar-mobile i {
+    margin-right: 5px;
 }

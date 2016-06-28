@@ -381,7 +381,7 @@ class CampaignController extends Controller
     public function confirm(Request $request)
     {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
-        
+        var_dump($campaign->updateLinks());
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
@@ -438,6 +438,22 @@ class CampaignController extends Controller
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
         
         return view('campaigns.overview', [
+            'campaign' => $campaign
+        ]);
+    }
+    
+    
+    /**
+     * Campaign links.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function links(Request $request)
+    {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        return view('campaigns.links', [
             'campaign' => $campaign
         ]);
     }

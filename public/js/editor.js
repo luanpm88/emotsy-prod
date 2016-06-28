@@ -2,6 +2,8 @@ $(document).ready(function() {
     tinymce.init({
         selector: '.full-editor',
         height: 500,
+        relative_urls: false,
+        remove_script_host: false,
         plugins: [
           'advlist autolink lists link image charmap print preview anchor',
           'searchreplace visualblocks code fullscreen',
@@ -17,6 +19,8 @@ $(document).ready(function() {
     tinymce.init({
         selector: '.email-editor',
         height: 500,
+        relative_urls: false,
+        remove_script_host: false,
         plugins: [
           'advlist autolink lists link image charmap print preview anchor',
           'searchreplace visualblocks code fullscreen',
@@ -31,6 +35,8 @@ $(document).ready(function() {
     tinymce.init({
         selector: '.clean-editor',
         height: 500,
+        relative_urls: false,
+        remove_script_host: false,
         plugins: [
           'advlist autolink lists link image charmap print preview anchor',
           'searchreplace visualblocks code fullscreen',
