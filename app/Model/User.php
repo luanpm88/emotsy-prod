@@ -30,6 +30,7 @@ class User extends Authenticatable
      * @var array
      */
     public static $rules = array(
+        'user_group_id' => 'required',
         'email' => 'required|email',
         'first_name' => 'required',
         'last_name' => 'required',
@@ -39,6 +40,49 @@ class User extends Authenticatable
     );
     
     /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function rules() {
+        return array(
+            'email' => "required|email|unique:users,email," . $this->id . ",id",
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+            'password' => 'confirmed|min:5',
+        );
+    }
+    
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function newRules() {
+        return array(
+            'user_group_id' => 'required',
+            'email' => "required|email|unique:users,email," . $this->id . ",id",
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+            'password' => 'required|confirmed|min:5',
+        );
+    }
+    
+    /**
+     * Find item by uid.
+     *
+     * @return object
+     */
+    public static function findByUid($uid)
+    {
+        return User::where("uid", "=", $uid)->first();
+    }
+    
+    /**
      * Associations.
      *
      * @var object | collect
@@ -46,6 +90,11 @@ class User extends Authenticatable
     public function contact()
     {
         return $this->belongsTo('Mailixa\Model\Contact');
+    }
+    
+    public function userGroup()
+    {
+        return $this->belongsTo('Mailixa\Model\UserGroup');
     }
     
     /**
@@ -153,5 +202,70 @@ class User extends Authenticatable
         }
         
         return ['email' => '', 'password' => ''];
+    }
+    
+    /**
+     * Get all items.
+     *
+     * @return collect
+     */
+    public static function getAll()
+    {
+        return MailList::select("*");
+    }
+    
+    /**
+     * Items per page.
+     *
+     * @var array
+     */
+    public static $itemsPerPage = 25;
+    
+    /**
+     * Filter items.
+     *
+     * @return collect
+     */
+    public static function filter($request)
+    {
+        $user = $request->user();
+        $query = User::select("*")
+                        ->leftJoin('user_groups', 'user_groups.id', '=', 'users.user_group_id');;
+        
+        // Keyword
+        if(!empty(trim($request->keyword))) {
+            foreach(explode(" ",trim($request->keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('users.first_name', 'like', '%' . $keyword . '%')
+                        ->orWhere('users.email', 'like', '%' . $keyword . '%')
+                        ->orWhere('user_groups.name', 'like', '%' . $keyword . '%')
+                        ->orWhere('users.last_name', 'like', '%' . $keyword . '%');
+                });
+            }                
+        }
+        
+        // filters
+        $filters = $request->filters;
+        if(!empty($filters)) {
+            if(!empty($filters["user_group_id"])) {
+                $query = $query->where("users.user_group_id", "=", $filters["user_group_id"]);     
+            }
+        }
+        
+        return $query;
+    }
+    
+    /**
+     * Search items.
+     *
+     * @return collect
+     */
+    public static function search($request)
+    {
+        $query = User::filter($request);
+        
+        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        
+        return $query;
     }
 }

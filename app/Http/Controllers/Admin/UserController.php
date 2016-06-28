@@ -26,12 +26,24 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->format == "json") {
-            $data = \Mailixa\Web\User::datatable($request);
-            return response()->json($data);
-        } else {
-            return view('admin.users.index');
-        }
+        $users = \Mailixa\Model\User::getAll();
+        return view('admin.users.index', [
+            'users' => $users,
+        ]);
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listing(Request $request)
+    {
+        $users = \Mailixa\Model\User::search($request)->paginate($request->per_page);
+        
+        return view('admin.users._list', [
+            'users' => $users,
+        ]);
     }
 
     /**
@@ -41,12 +53,12 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-        $user = new \Mailixa\Web\User(['backend_access' => 'no']);
+        $user = new \Mailixa\Model\User();
         $user->status = "active";
+        $user->uid = "0";
         $user->fill($request->old());
        
         return view('admin.users.create', [
-            'timezone_options' => \Mailixa\Web\User::allTimeZones(),
             'user' => $user,
         ]);
     }
@@ -61,38 +73,42 @@ class UserController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $user = new \Mailixa\Web\User();
+        $user = new \Mailixa\Model\User();
+        $contact = new \Mailixa\Model\Contact();
         
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, $user->new_rules);
+            $this->validate($request, $user->newRules());
             
             // Save current user info
             $user->fill($request->all());
-            $user->status = $request->status;
-            $user->group_id = $request->group_id;
-            $user->backend_access = 'yes';
+            $user->user_group_id = $request->user_group_id;
+            $user->status = 'active';
             
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
             }
             
-            // create user
-            $user->save();
-            
-            // Upload and save avatar
-            if ($request->hasFile('avatar')) {
-                if ($request->file('avatar')->isValid()) {
-                    $user->avatar = $user->uploadAvatar($request->file('avatar'));
+            // Upload and save image
+            if ($request->hasFile('image')) {
+                if ($request->file('image')->isValid()) {
+                    // Remove old images
+                    $user->removeImage();                    
+                    $user->image = $user->uploadImage($request->file('image'));
                 }
             }
             
-            // create user
-            $user->save();
+            // Remove image
+            if ($request->_remove_image == 'true') {
+                $user->removeImage();
+                $user->image = "";
+            }
             
-            $request->session()->flash('alert-success', 'User was successfully created!');
-            return redirect()->action('Admin\UserController@edit', $user->id);
+            if ($user->save()) {
+                $request->session()->flash('alert-success', trans('messages.user.created'));
+                return redirect()->action('Admin\UserController@index');
+            }
         }
     }
 
@@ -115,12 +131,11 @@ class UserController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $user = \Mailixa\Web\User::find($id);
-        $user->fill($request->old());
-       
+        $user = \Mailixa\Model\User::findByUid($id);
+        
+        $user->fill($request->old());       
         
         return view('admin.users.edit', [
-            'timezone_options' => \Mailixa\Web\User::allTimeZones(),
             'user' => $user,
         ]);
     }
@@ -136,34 +151,39 @@ class UserController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $user = \Mailixa\Web\User::find($id);
+        $user = \Mailixa\Model\User::findByUid($id);
         
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, $user->rules);
+            $this->validate($request, $user->rules());
             
             // Save current user info
             $user->fill($request->all());
-            $user->status = $request->status;
-            $user->group_id = $request->group_id;
             
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
             }
             
-            // Upload and save avatar
-            if ($request->hasFile('avatar')) {
-                if ($request->file('avatar')->isValid()) {
-                    $user->avatar = $user->uploadAvatar($request->file('avatar'));
+            // Upload and save image
+            if ($request->hasFile('image')) {
+                if ($request->file('image')->isValid()) {
+                    // Remove old images
+                    $user->removeImage();                    
+                    $user->image = $user->uploadImage($request->file('image'));
                 }
             }
             
-            // create user
-            $user->save();
+            // Remove image
+            if ($request->_remove_image == 'true') {
+                $user->removeImage();
+                $user->image = "";
+            }
             
-            $request->session()->flash('alert-success', 'User was successfully updated!');
-            return redirect()->action('Admin\UserController@edit', $user->id);
+            if ($user->save()) {
+                $request->session()->flash('alert-success', trans('messages.user.updated'));
+                return redirect()->action('Admin\UserController@index');
+            }
         }
     }
 

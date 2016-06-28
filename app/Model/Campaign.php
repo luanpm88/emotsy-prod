@@ -33,6 +33,14 @@ class Campaign extends Model
     {
         return $this->belongsTo('Mailixa\Model\Segment');
     }
+    
+    /**
+     * Get the links for campaign.
+     */
+    public function links()
+    {
+        return $this->hasMany('Mailixa\Model\Link');
+    }
 
     /**
      * Get the user that owns the phone.
@@ -312,15 +320,34 @@ class Campaign extends Model
             // Update custom order
             Campaign::getAll()->increment('custom_order', 1);
             $item->custom_order = 0;
+            
+            // Update links
+            $item->updateLinks();
+        });
+        
+        static::updating(function($item)
+        {
+            // Update links
+            $item->updateLinks();
         });
     }
     
     /**
-     * Update campaign links.
+     * Get current links of campaign.
      *
      * @return void
      */
-    public function updateLinks()
+    public function getLinks()
+    {
+        return $this->links()->whereIn("url", $this->getUrls())->get();
+    }
+    
+    /**
+     * Get urls from campaign html.
+     *
+     * @return void
+     */
+    public function getUrls()
     {
         // Find all links in campaign content
         preg_match_all('/(?<=href=)(\'|")?(?<url>.*?)(?=\1|\))/i', $this->html, $matches);
@@ -332,9 +359,26 @@ class Campaign extends Model
                 $urls[] = strtolower(trim($href));
             }
         }
-        
-        // check if exist
+
         return $urls;
+    }
+    
+    /**
+     * Update campaign links.
+     *
+     * @return void
+     */
+    public function updateLinks()
+    {
+        foreach ($this->getUrls() as $url) {
+            if ($this->links()->where("url", "=", $url)->count() == 0) {
+                $link = new Link();
+                $link->campaign_id = $this->id;
+                $link->url = $url;
+                $link->save();
+            }
+        }
+
     }
     
     /**

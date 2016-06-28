@@ -55,8 +55,14 @@ class MailListController extends Controller
         // Generate info
         $user = $request->user();
         $list = new \Mailixa\Model\MailList();
-        $list->contact = new \Mailixa\Model\Contact($user->contact->toArray());
-        $list->send_to = $user->contact->email;
+        $list->contact = new \Mailixa\Model\Contact();
+        if (is_object($user->contact)) {
+            $list->contact->fill($user->contact->toArray());
+            $list->send_to = $user->contact->email;
+        } else {
+            $list->send_to = $user->email;
+        }
+        
         
         // authorize
         if (\Gate::denies('create', $list)) {

@@ -30,6 +30,7 @@ class AddColumnsToUserGroupsTable extends Migration
     {
         Schema::table('user_groups', function (Blueprint $table) {
             $table->dropColumn('custom_order');
+            $table->dropForeign('user_groups_user_id_foreign');
             $table->dropColumn('user_id');
         });
     }

@@ -87,7 +87,7 @@
 					</a>
                     <ul class="dropdown-menu">
                         <li rel0="UserController">
-                            <a href="">
+                            <a href="{{ action('Admin\UserController@index') }}">
                                 <i class="icon-users"></i> {{ trans('messages.users') }}
                             </a>
                         </li>
@@ -197,7 +197,7 @@
 
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
-						<img src="{{ action('UserController@avatar', Auth::user()->id) }}" alt="">
+						<img src="{{ action('UserController@avatar', Auth::user()->uid) }}" alt="">
 						<span>{{ Auth::user()->displayName() }}</span>
 						<i class="caret"></i>
 					</a>

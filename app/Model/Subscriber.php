@@ -114,6 +114,7 @@ class Subscriber extends Model
                 });
             }                
         }
+        
         // filters
         $filters = $request->filters;
         if(!empty($filters)) {

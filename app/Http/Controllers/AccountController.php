@@ -37,7 +37,7 @@ class AccountController extends Controller
         // Save posted data
         if ($request->isMethod('post')) {
             
-            $this->validate($request, \Mailixa\Model\User::$rules);
+            $this->validate($request, $user->rules());
             
             // Save current user info
             $user->fill($request->all());
@@ -82,7 +82,16 @@ class AccountController extends Controller
     {
         // Get current user
         $user = $request->user();
-        $contact = $user->contact;
+        if (is_object($user->contact)) {
+            $contact = $user->contact;
+        } else {
+            $contact = new \Mailixa\Model\Contact([
+                                        'first_name' => $user->first_name,
+                                        'last_name' => $user->last_name,
+                                        'email' => $user->email,
+                                    ]);
+        }
+        // var_dump((array) $user->attributes);
         
         // Create new company if null
         if(!is_object($contact)) {
@@ -105,6 +114,10 @@ class AccountController extends Controller
             // Save current user info
             if($contact->save())
             {
+                if(!is_object($contact)) {
+                    $user->contact_id = $contact->id;
+                    $user->save();
+                }
                 $request->session()->flash('alert-success', 'Contact information was successfully updated!');
             }
         }

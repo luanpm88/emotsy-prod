@@ -59,6 +59,7 @@ class DatabaseSeeder extends Seeder
         // Create default admin user
         DB::table('users')->insert([
             'id' => 1,
+            'uid' => uniqid(),
             'contact_id' => 1,
             'user_group_id' => 1,
             'language_id' => 1,

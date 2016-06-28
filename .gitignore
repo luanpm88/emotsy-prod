@@ -6,3 +6,4 @@ Homestead.json
 .env
 .authenticate
 /public/upload
+/storage/upload

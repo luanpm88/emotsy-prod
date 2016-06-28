@@ -15,13 +15,13 @@ class UserController extends Controller
      */
     public function avatar(Request $request) {
         // Get current user        
-        if($request->id != "0")
+        if($request->uid != "0")
         {
-            $user = \Mailixa\Model\User::find($request->id);
+            $user = \Mailixa\Model\User::findByUid($request->uid);
         }
         else
         {
-            $user = new User();
+            $user = new \Mailixa\Model\User();
         }
         if(!empty($user->imagePath())) {
             $img = \Image::make($user->imagePath());

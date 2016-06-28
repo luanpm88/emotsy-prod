@@ -22,7 +22,7 @@ class UserGroup extends Model
      */
     public static function getAll()
     {
-        return MailList::select("*");
+        return UserGroup::select("*");
     }
     
     /**
@@ -81,5 +81,36 @@ class UserGroup extends Model
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
         
         return $query;
+    }
+    
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();        
+        
+        // Create uid when creating list.
+        static::creating(function($item)
+        {
+            // Update custom order
+            UserGroup::getAll()->increment('custom_order', 1);
+            $item->custom_order = 0;
+        });
+    }
+    
+    /**
+     * Get select options.
+     *
+     * @return array
+     */
+    public static function getSelectOptions()
+    {
+        $options = UserGroup::getAll()->get()->map(function ($item) {
+            return ['value' => $item->id, 'text' => $item->name];
+        });
+        return $options;
     }
 }

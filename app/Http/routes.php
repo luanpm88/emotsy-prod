@@ -26,7 +26,7 @@ Route::get('/datatable_locale', 'Controller@datatable_locale');
 Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
 
 // User avatar
-Route::get('assets/images/avatar/user-{id}.jpg', 'UserController@avatar');
+Route::get('assets/images/avatar/user-{uid?}.jpg', 'UserController@avatar');
 
 // Mail list
 Route::get('lists/sort', 'MailListController@sort');
@@ -138,5 +138,10 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::get('admin/user_groups/listing/{page?}', 'UserGroupController@listing');
     Route::get('admin/user_groups/sort', 'UserGroupController@sort');
     Route::resource('admin/user_groups', 'UserGroupController');
+    
+    // User
+    Route::get('admin/users/listing/{page?}', 'UserController@listing');
+    Route::get('admin/users/sort', 'UserController@sort');
+    Route::resource('admin/users', 'UserController');
     
 });
