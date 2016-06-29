@@ -30,15 +30,13 @@
                             {{ csrf_field() }}
                             <input type="hidden" name="_method" value="PATCH">
                             
-							@include('helpers.form_control', ['required' => true, 'type' => 'text', 'label' => trans('messages.template_name'), 'name' => 'name', 'value' => $template->name, 'rules' => ['name' => 'required']])
-							
-							@include('helpers.form_control', ['class' => 'clean-editor','required' => true, 'type' => 'textarea', 'name' => 'content', 'value' => $template->content, 'rules' => ['content' => 'required']])
-							
+							@include('templates._form')
+                            
 							<div class="text-right">
                                 <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
                                 <a href="{{ action('TemplateController@index') }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
                             </div>
-                            
+							
                         </form>  
                         
                     </div>

@@ -77,7 +77,9 @@
                         </li>
                     </ul>
 				</li>				
-				<li rel0="TemplateController" class="dropdown language-switch">
+				<li class="dropdown language-switch"
+					rel0="TemplateController"
+					rel1="LayoutController">
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						<i class="icon-gear"></i> {{ trans('messages.setting') }}
                         <span class="caret"></span>
@@ -88,8 +90,8 @@
                                 <i class="icon-magazine"></i> {{ trans('messages.template_gallery') }}
                             </a>
                         </li>
-						<li>
-                            <a href="">
+						<li rel0="LayoutController">
+                            <a href="{{ action('Admin\LayoutController@index') }}">
                                 <i class="glyphicon glyphicon-file"></i> {{ trans('messages.page_form_layout') }}
                             </a>
                         </li>

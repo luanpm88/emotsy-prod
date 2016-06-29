@@ -84,7 +84,23 @@ class TemplateController extends Controller
      */
     public function create(Request $request)
     {
-        //
+        // Generate info
+        $user = $request->user();
+        $template = new \Mailixa\Model\Template();
+        
+        // authorize
+        if (\Gate::denies('create', $template)) {
+            return $this->notAuthorized();
+        }
+        
+        // Get old post values
+        if(null !== $request->old()) {
+            $template->fill($request->old());
+        }
+        
+        return view('templates.create', [
+            'template' => $template,
+        ]);
     }
 
     /**
@@ -95,7 +111,35 @@ class TemplateController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // Generate info
+        $user = $request->user();        
+        $template = new \Mailixa\Model\Template();
+        $template->user_id = $request->user()->id;
+        $template->shared = false;
+        
+        // authorize
+        if (\Gate::denies('update', $template)) {
+            return $this->notAuthorized();
+        }
+        
+        // validate and save posted data
+        if ($request->isMethod('post'))
+        {
+            $rules = array(
+                "name" => "required",
+                "content" => "required",
+            );
+            
+            $this->validate($request, $rules);
+            
+            // Save template
+            $template->fill($request->all());
+            $template->save();
+            
+            // Redirect to my lists page
+            $request->session()->flash('alert-success', trans('messages.template.created'));
+            return redirect()->action('TemplateController@index');
+        }
     }
 
     /**
@@ -117,7 +161,23 @@ class TemplateController extends Controller
      */
     public function edit(Request $request, $uid)
     {
-        //
+        // Generate info
+        $user = $request->user();
+        $template = \Mailixa\Model\Template::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $template)) {
+            return $this->notAuthorized();
+        }
+        
+        // Get old post values
+        if(null !== $request->old()) {
+            $template->fill($request->old());
+        }
+        
+        return view('templates.edit', [
+            'template' => $template,
+        ]);
     }
 
     /**
@@ -380,7 +440,7 @@ class TemplateController extends Controller
         foreach ($items->get() as $item) {
             $item->delete();
         }
-
+        
         // Redirect to my lists page
         echo(trans('messages.templates.deleted'));
     }

@@ -29,7 +29,7 @@
 					per-page="{{ Mailixa\Model\Template::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
-						<div class="col-md-10">
+						<div class="col-md-9">
 							@if ($templates->count() >= 0)					
 								<div class="filter-box">
 									<div class="btn-group list_actions hide">
@@ -67,9 +67,12 @@
 								</div>
 							@endif
 						</div>
-						<div class="col-md-2 text-right">
+						<div class="col-md-3 text-right">
 							<a href="{{ action('Admin\TemplateController@upload') }}" type="button" class="btn bg-info-800">
-								<i class="icon icon-upload"></i> {{ trans('messages.upload_template') }}
+								<i class="icon icon-upload"></i> {{ trans('messages.upload') }}
+							</a>
+							<a href="{{ action('Admin\TemplateController@create') }}" type="button" class="btn bg-info-800">
+								<i class="icon icon-plus2"></i> {{ trans('messages.new') }}
 							</a>
 						</div>
 					</div>

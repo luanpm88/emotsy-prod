@@ -922,4 +922,7 @@ ul.modern-listing li .btn {
 .nav-tabs {
     border-bottom: 1px solid #26A69A;
 }
-
+.table-icon-big {
+    font-size: 40px;
+    margin-top: 5px;
+}

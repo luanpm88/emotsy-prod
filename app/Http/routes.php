@@ -123,7 +123,7 @@ Route::get('campaigns/{uid}/schedule', 'CampaignController@schedule');
 Route::post('campaigns/{uid}/schedule', 'CampaignController@schedule');
 Route::get('campaigns/{uid}/confirm', 'CampaignController@confirm');
 Route::post('campaigns/{uid}/confirm', 'CampaignController@confirm');
-Route::get('templates/delete', 'CampaignController@delete');
+Route::get('templates/delete', 'TemplateController@delete');
 Route::resource('campaigns', 'CampaignController');
 Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
 Route::patch('campaigns/{uid}/update', 'CampaignController@update');
@@ -151,5 +151,10 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::resource('admin/templates', 'TemplateController');
     Route::get('admin/templates/{uid}/edit', 'TemplateController@edit');
     Route::patch('admin/templates/{uid}/update', 'TemplateController@update');
+    
+    // Layout
+    Route::get('admin/layouts/listing/{page?}', 'LayoutController@listing');
+    Route::get('admin/layouts/sort', 'LayoutController@sort');
+    Route::resource('admin/layouts', 'LayoutController');
     
 });

@@ -16,6 +16,33 @@ class Layout extends Model
     ];
     
     /**
+     * Items per page.
+     *
+     * @var array
+     */
+    public static $itemsPerPage = 25;
+    
+    /**
+     * Find item by uid.
+     *
+     * @return object
+     */
+    public static function findByUid($uid)
+    {
+        return Layout::where("uid", "=", $uid)->first();
+    }
+    
+    /**
+     * Associations.
+     *
+     * @var object | collect
+     */ 
+    public function pages()
+    {
+        return $this->hasMany('Mailixa\Model\Page');
+    }
+    
+    /**
      * Bootstrap any application services.
      *
      * @return void
@@ -36,25 +63,7 @@ class Layout extends Model
             $item->uid = $uid;
         });
     }
-    
-    /**
-     * Create default layouts.
-     *
-     * @var array
-     */
-    public static function createDefaultLayouts()
-    {
-        //foreach(Layout::all() as $layout) {
-        //    $layout->delete();
-        //}
-        // Sign-up form layout
-        $layout = new Layout();
-        $layout->name = "Unsubscribe form";
-        $layout->alias = "profile_update_email_sent";
-        $layout->content = "...";
-        $layout->save();
-    }
-    
+
     public function tags()
     {
         switch ($this->alias) {
@@ -125,5 +134,42 @@ class Layout extends Model
         }
         
         return $tags;
+    }
+    
+    /**
+     * Get all items.
+     *
+     * @return collect
+     */
+    public static function getAll()
+    {
+        return Layout::select("*");
+    }
+    
+    /**
+     * Filter items.
+     *
+     * @return collect
+     */
+    public static function filter($request)
+    {
+        $user = $request->user();
+        $query = Layout::select("layouts.*");
+        
+        return $query;
+    }
+    
+    /**
+     * Search items.
+     *
+     * @return collect
+     */
+    public static function search($request)
+    {
+        $query = Layout::filter($request);
+        
+        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        
+        return $query;
     }
 }

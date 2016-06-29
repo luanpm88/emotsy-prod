@@ -47,6 +47,71 @@ class TemplateController extends Controller
     }
     
     /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+        // Generate info
+        $user = $request->user();
+        $template = new \Mailixa\Model\Template();
+        
+        // authorize
+        if (\Gate::denies('create', $template)) {
+            return $this->notAuthorized();
+        }
+        
+        // Get old post values
+        if(null !== $request->old()) {
+            $template->fill($request->old());
+        }
+        
+        return view('admin.templates.create', [
+            'template' => $template,
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        // Generate info
+        $user = $request->user();        
+        $template = new \Mailixa\Model\Template();
+        $template->user_id = $request->user()->id;
+        $template->shared = true;
+        
+        // authorize
+        if (\Gate::denies('update', $template)) {
+            return $this->notAuthorized();
+        }
+        
+        // validate and save posted data
+        if ($request->isMethod('post'))
+        {
+            $rules = array(
+                "name" => "required",
+                "content" => "required",
+            );
+            
+            $this->validate($request, $rules);
+            
+            // Save template
+            $template->fill($request->all());
+            $template->save();
+            
+            // Redirect to my lists page
+            $request->session()->flash('alert-success', trans('messages.template.created'));
+            return redirect()->action('Admin\TemplateController@index');
+        }
+    }
+    
+    /**
      * Show the form for editing the specified resource.
      *
      * @param  int  $id

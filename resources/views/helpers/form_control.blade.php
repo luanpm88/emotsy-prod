@@ -12,13 +12,7 @@
 									@include('helpers._' . $type)
 								@else
 									<div class="form-group{{ $errors->has($var_name) ? ' has-error' : '' }}">									
-										@if ($type == 'textarea')
-											@if ($errors->has($var_name))
-												<span class="help-block">
-													<strong>{{ $errors->first($var_name) }}</strong>
-												</span>
-											@endif
-										@endif
+										
 									
 										@if (!empty($label))
 											<label>
@@ -27,6 +21,14 @@
 													<span class="text-danger">*</span>
 												@endif
 											</label>
+										@endif
+										
+										@if ($type == 'textarea')
+											@if ($errors->has($var_name))
+												<span class="help-block">
+													<strong>{{ $errors->first($var_name) }}</strong>
+												</span>
+											@endif
 										@endif
 										
 										@if (!empty($prefix))
