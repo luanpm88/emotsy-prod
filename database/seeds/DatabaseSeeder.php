@@ -186,5 +186,13 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
+
+        DB::table('user_group_settings')->insert([
+            'id' => 1,
+            'name' => 'use_all_sending_servers',
+            'value' => '1',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
     }
 }
