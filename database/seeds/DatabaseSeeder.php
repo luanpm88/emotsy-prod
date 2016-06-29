@@ -68,6 +68,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'luanpm88@gmail.com',
             'password' => bcrypt('123456'),
             'status' => 'active',
+            'backend_access' => true,
+            'frontend_access' => true,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
@@ -98,6 +100,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('campaigns')->insert([
             'id' => 1,
+            'uid' => uniqid(),
             'mail_list_id' => 1,
             'user_id' => 1,
             'name' => 'My Campaign',

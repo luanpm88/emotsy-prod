@@ -5,23 +5,7 @@
 								@foreach ($users as $key => $item)
 									<tr>
 										<td width="1%">
-											<div class="text-nowrap">
-												<div class="checkbox inline">
-													<label>
-														<input type="checkbox" class="node styled"
-															custom-order="{{ $item->custom_order }}"
-															name="ids[]"
-															value="{{ $item->id }}"
-														/>
-													</label>
-												</div>
-												@if (request()->sort_order == 'custom_order' && empty(request()->keyword))
-													<i data-action="move" class="icon icon-more2 list-drag-button"></i>
-												@endif
-											</div>
-										</td>
-										<td width="1%">
-											<img width="80" class="img-circle" src="{{ action('UserController@avatar', $item->uid) }}" alt="">
+											<img width="80" class="img-circle mr-10" src="{{ action('UserController@avatar', $item->uid) }}" alt="">
 										</td>
 										<td>
 											<h5 class="no-margin text-bold">

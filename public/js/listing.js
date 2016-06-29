@@ -13,6 +13,11 @@ function hiliterList(form, keyword) {
     }
 }
 
+function tableFilterAll() {
+    $(".listing-form").each(function() {
+        tableFilter($(this));
+    });
+}
 
 function tableFilter(form, custom_url) {
     var url = form.attr("data-url");

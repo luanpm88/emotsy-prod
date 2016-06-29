@@ -26,10 +26,6 @@
 
 								@include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $user->email, 'help_class' => 'profile', 'rules' => Mailixa\Model\User::$rules])
 								
-								@include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => (isset($user->id) ? $user->rules() : $user->newRules())])
-								
-								@include('helpers.form_control', ['type' => 'password', 'name' => 'password_confirmation', 'rules' => Mailixa\Model\User::$rules])
-								
 								@include('helpers.form_control', ['type' => 'select',
 																'name' => 'user_group_id',
 																'label' => trans('messages.group'),
@@ -38,6 +34,10 @@
 																'include_blank' => trans('messages.choose'),
 																'rules' => Mailixa\Model\User::$rules
 															])
+								
+								@include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => (isset($user->id) ? $user->rules() : $user->newRules())])
+								
+								@include('helpers.form_control', ['type' => 'password', 'name' => 'password_confirmation', 'rules' => Mailixa\Model\User::$rules])
 								
 							</div>
 						</div>	

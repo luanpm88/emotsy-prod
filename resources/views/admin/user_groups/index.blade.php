@@ -32,20 +32,7 @@
 					<div class="row top-list-controls">
 						<div class="col-md-10">
 							@if ($groups->count() >= 0)					
-								<div class="filter-box">
-									<div class="btn-group list_actions hide mr-10">
-										<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
-											{{ trans('messages.actions') }} <span class="caret"></span>
-										</button>
-										<ul class="dropdown-menu dropdown-menu-right">											
-											
-										</ul>
-									</div>
-									<div class="checkbox inline check_all_list">
-										<label>
-											<input type="checkbox" class="styled check_all">
-										</label>
-									</div>				
+								<div class="filter-box">											
 									<span class="filter-group">
 										<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
 										<select class="select" name="sort-order">

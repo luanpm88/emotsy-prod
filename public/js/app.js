@@ -24,6 +24,12 @@ function updateCheckAccess() {
         $('.frontend-box').addClass('hide');
         $('li.backend-box a').trigger('click');
     }
+    
+    if(!$('#backend_access').is(":checked") && !$('#frontend_access').is(":checked")) {
+        $('.options-container').hide();
+    } else {
+        $('.options-container').show();
+    }
 }
 
 // Preview upload image

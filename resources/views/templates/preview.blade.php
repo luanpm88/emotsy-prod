@@ -12,7 +12,7 @@
                 $(".saving").show();
                 $.post('{{ action('TemplateController@saveImage', $template->uid) }}', {data: img, '_token': '{!! csrf_token() !!}'}, function (file) {
                     $(".saving").hide();
-                    opener.tableFilter($(".listing-form", window.opener.document));
+                    opener.tableFilterAll();
                 });
             }
         });

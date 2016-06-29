@@ -6,15 +6,6 @@
 									<tr>
 										<td width="1%">
 											<div class="text-nowrap">
-												<div class="checkbox inline">
-													<label>
-														<input type="checkbox" class="node styled"
-															custom-order="{{ $item->custom_order }}"
-															name="ids[]"
-															value="{{ $item->id }}"
-														/>
-													</label>
-												</div>
 												@if (request()->sort_order == 'custom_order' && empty(request()->keyword))
 													<i data-action="move" class="icon icon-more2 list-drag-button"></i>
 												@endif
@@ -32,6 +23,8 @@
 												<br />
 												<span class="text-muted">{{ trans("messages.users") }}</span>
 											</div>
+										</td>
+										<td class="text-center">
 											<div class="single-stat-box pull-left">
 												<i class="table-checkmark-{{ $item->backend_access }}"></i>
 												<br />

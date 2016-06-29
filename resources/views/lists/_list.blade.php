@@ -28,7 +28,9 @@
 										</td>
 										<td>
 											<div class="single-stat-box pull-left">
-												<span class="no-margin stat-num">{{ $item->subscribers()->count() }}</span>
+												<a href="{{ action('SubscriberController@index', $item->uid) }}">
+													<span class="no-margin stat-num">{{ $item->subscribers()->count() }}</span>
+												</a>
 												<br />
 												<span class="text-muted">{{ trans("messages.subscribers") }}</span>
 											</div>

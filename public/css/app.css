@@ -304,6 +304,7 @@ h3 {
 .filter-group {
     display: inline-block;
     margin-left: 10px;
+    margin-top: 10px;
 }
 h2 [class^="icon-"] {
     font-size: 22px;
@@ -529,7 +530,7 @@ h2 [class^="icon-"] {
     padding-right: 32px;
 }
 .filter-box .checkbox.inline {
-    margin-top: 5px;
+    margin-top: 12px;
     display: block;
     float: left;
 }
@@ -918,3 +919,7 @@ ul.modern-listing li .btn {
 .table-checkmark-1:after {
     content: "\ed6c";
 }
+.nav-tabs {
+    border-bottom: 1px solid #26A69A;
+}
+
