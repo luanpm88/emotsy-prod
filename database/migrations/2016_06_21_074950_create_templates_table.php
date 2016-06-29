@@ -20,6 +20,7 @@ class CreateTemplatesTable extends Migration
             $table->longtext('content');
             $table->string('image');
             $table->integer('custom_order');
+            $table->boolean('shared');
             
             $table->timestamps();
             

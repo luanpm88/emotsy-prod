@@ -144,4 +144,12 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::get('admin/users/sort', 'UserController@sort');
     Route::resource('admin/users', 'UserController');
     
+    // Template
+    Route::get('admin/templates/listing/{page?}', 'TemplateController@listing');
+    Route::get('admin/templates/upload', 'TemplateController@upload');
+    Route::post('admin/templates/upload', 'TemplateController@upload');
+    Route::resource('admin/templates', 'TemplateController');
+    Route::get('admin/templates/{uid}/edit', 'TemplateController@edit');
+    Route::patch('admin/templates/{uid}/update', 'TemplateController@update');
+    
 });

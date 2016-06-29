@@ -9,6 +9,23 @@
 *
 * ---------------------------------------------------------------------------- */
 
+// Update checking backend / frontend access
+function updateCheckAccess() {
+    if($('#backend_access').is(":checked")) {
+        $('.backend-box').removeClass('hide');
+    } else {
+        $('.backend-box').addClass('hide');
+        $('li.frontend-box a').trigger('click');
+    }
+    
+    if($('#frontend_access').is(":checked")) {
+        $('.frontend-box').removeClass('hide');
+    } else {
+        $('.frontend-box').addClass('hide');
+        $('li.backend-box a').trigger('click');
+    }
+}
+
 // Preview upload image
 function readURL(input, img) {
     if (input.files && input.files[0]) {
@@ -436,4 +453,13 @@ $(function() {
             format: "%H:%i"
         });
     }
+    
+    // Backend / Frontend
+    updateCheckAccess();
+    $(document).on('change', '#frontend_access', function() {
+        updateCheckAccess();
+    });
+    $(document).on('change', '#backend_access', function() {
+        updateCheckAccess();
+    });
 });

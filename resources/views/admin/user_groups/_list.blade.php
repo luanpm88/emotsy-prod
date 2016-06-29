@@ -32,6 +32,16 @@
 												<br />
 												<span class="text-muted">{{ trans("messages.users") }}</span>
 											</div>
+											<div class="single-stat-box pull-left">
+												<i class="table-checkmark-{{ $item->backend_access }}"></i>
+												<br />
+												<span class="text-muted">{{ trans("messages.backend") }}</span>
+											</div>
+											<div class="single-stat-box pull-left">
+												<i class="table-checkmark-{{ $item->frontend_access }}"></i>
+												<br />
+												<span class="text-muted">{{ trans("messages.frontend") }}</span>
+											</div>
 										</td>
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">

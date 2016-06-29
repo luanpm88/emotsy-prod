@@ -81,7 +81,53 @@ class Template extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = Template::where("user_id", "=", $user->id);
+        $query = Template::select("templates.*");
+        
+        // Keyword
+        if(!empty(trim($request->keyword))) {
+            $query = $query->where('name', 'like', '%' . $request->keyword . '%');
+        }
+        
+        // filters
+        $filters = $request->filters;
+        if (!empty($filters)) {
+            if (!empty($filters["from"])) {
+                if ($filters["from"] == 'mine') {
+                    $query = $query->where("user_id", "=", $user->id);
+                } else if ($filters["from"] == 'gallery') {
+                    $query = $query->where("shared", "=", true)->where("user_id", "!=", $user->id);
+                } else {
+                    $query = $query->where("shared", "=", true)->orWhere("user_id", "=", $user->id);
+                }
+            }
+        }
+        
+        return $query;
+    }
+    
+    /**
+     * Search items.
+     *
+     * @return collect
+     */
+    public static function search($request)
+    {
+        $query = Template::filter($request);
+        
+        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        
+        return $query;
+    }
+    
+    /**
+     * Filter items.
+     *
+     * @return collect
+     */
+    public static function adminFilter($request)
+    {
+        $user = $request->user();
+        $query = Template::where("shared", "=", true);
         
         // Keyword
         if(!empty(trim($request->keyword))) {
@@ -96,9 +142,9 @@ class Template extends Model
      *
      * @return collect
      */
-    public static function search($request)
+    public static function adminSearch($request)
     {
-        $query = Template::filter($request);
+        $query = Template::adminFilter($request);
         
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
         

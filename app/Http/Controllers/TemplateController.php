@@ -39,9 +39,7 @@ class TemplateController extends Controller
     public function listing(Request $request)
     {
         $templates = \Mailixa\Model\Template::search($request)->paginate($request->per_page);
-        
-        $view = isset($request->view) ? $request->view : "list";
-        
+
         return view('templates._list', [
             'templates' => $templates
         ]);
@@ -71,6 +69,11 @@ class TemplateController extends Controller
     {
         $template = \Mailixa\Model\Template::findByUid($request->uid);
         
+        // authorize
+        if (\Gate::denies('view', $template)) {
+            return $this->notAuthorized();
+        }
+        
         echo $template->content;
     }
 
@@ -81,28 +84,7 @@ class TemplateController extends Controller
      */
     public function create(Request $request)
     {
-        // Generate info
-        $user = $request->user();
-        $list = new \Mailixa\Model\MailList();
-        $list->contact = new \Mailixa\Model\Contact($user->contact->toArray());
-        $list->send_to = $user->contact->email;
-        
-        // authorize
-        if (\Gate::denies('create', $list)) {
-            return $this->notAuthorized();
-        }
-        
-        // Get old post values
-        if(null !== $request->old()) {
-            $list->fill($request->old());
-        }
-        if(isset($request->old()["contact"])) {
-            $list->contact->fill($request->old()["contact"]);
-        }
-        
-        return view('lists.create', [
-            'list' => $list,
-        ]);
+        //
     }
 
     /**
@@ -113,32 +95,7 @@ class TemplateController extends Controller
      */
     public function store(Request $request)
     {
-        // Generate info
-        $user = $request->user();        
-        $list = new \Mailixa\Model\MailList();
-        
-        // authorize
-        if (\Gate::denies('create', $list)) {
-            return $this->notAuthorized();
-        }
-        
-        // validate and save posted data
-        if ($request->isMethod('post'))
-        {
-            $this->validate($request, \Mailixa\Model\MailList::$rules);
-            
-            // Save contact
-            $contact = \Mailixa\Model\Contact::create($request->all()["contact"]);
-            $list->fill($request->all());
-            $list->user_id = $user->id;
-            $list->contact_id = $contact->id;
-            $list->save();
-            
-            // Redirect to my lists page
-            $request->session()->flash('alert-success', trans('messages.list.created'));
-            return redirect()->action('MailListController@index');
-
-        }
+        //
     }
 
     /**
@@ -160,23 +117,7 @@ class TemplateController extends Controller
      */
     public function edit(Request $request, $uid)
     {
-        // Generate info
-        $user = $request->user();
-        $template = \Mailixa\Model\Template::findByUid($uid);
-        
-        // authorize
-        if (\Gate::denies('update', $template)) {
-            return $this->notAuthorized();
-        }
-        
-        // Get old post values
-        if(null !== $request->old()) {
-            $template->fill($request->old());
-        }
-        
-        return view('templates.edit', [
-            'template' => $template,
-        ]);
+        //
     }
 
     /**
@@ -265,6 +206,7 @@ class TemplateController extends Controller
         // Create template
         $template = new \Mailixa\Model\Template();
         $template->user_id = $user->id;
+        $template->shared = false;
         
         // authorize
         if (\Gate::denies('update', $template)) {

@@ -60,6 +60,14 @@
 											<i class="icon-sort-amount-asc"></i>
 										</button>
 									</span>
+									<span class="filter-group">
+										<span class="title text-semibold text-muted">{{ trans('messages.from') }}</span>
+										<select class="select" name="from">
+											<option value="all">{{ trans('messages.all') }}</option>
+											<option value="mine" selected='selected'>{{ trans('messages.my_templates') }}</option>
+											<option value="gallery">{{ trans('messages.gallery') }}</option>
+										</select>										
+									</span>
 									<span class="text-nowrap">
 										<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 										<i class="icon-search4 keyword_search_button"></i>

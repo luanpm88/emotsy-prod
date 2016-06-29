@@ -15,7 +15,7 @@
 														/>
 													</label>
 												</div>
-												@if (request()->sort_order == 'custom_order' && empty(request()->keyword))
+												@if (request()->sort_order == 'custom_order' && request()->from == 'mine' && empty(request()->keyword))
 													<i data-action="move" class="icon icon-more2 list-drag-button"></i>
 												@endif
 											</div>
@@ -31,8 +31,6 @@
 													{{ $item->name }}
 												</a>
 											</h5>
-											<span class="text-muted">{{ trans('messages.upload_by') }}: {{ $item->user->displayName() }}</span>
-											<br />
 											<span class="text-muted">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
 										
@@ -40,7 +38,9 @@
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>											
-											<a href="{{ action('TemplateController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+											@can('update', $item)
+												<a href="{{ action('TemplateController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+											@endcan
 											<div class="btn-group">										
 												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 												<ul class="dropdown-menu dropdown-menu-right">

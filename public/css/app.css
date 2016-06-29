@@ -305,6 +305,9 @@ h3 {
     display: inline-block;
     margin-left: 10px;
 }
+h2 [class^="icon-"] {
+    font-size: 22px;
+}
 .filter-group .title {
     margin-right: 10px;
     font-size: 13px;
@@ -896,4 +899,22 @@ ul.modern-listing li .btn {
 }
 #navbar-mobile i {
     margin-right: 5px;
+}
+.table-checkmark-0 {
+    font-family: 'icomoon';
+    font-size: 18px;
+    line-height: 25px;
+    color: #EF5350;
+}
+.table-checkmark-0:after {
+    content: "\ed6a";
+}
+.table-checkmark-1 {
+    font-family: 'icomoon';
+    font-size: 18px;
+    line-height: 25px;
+    color: #00838F;
+}
+.table-checkmark-1:after {
+    content: "\ed6c";
 }

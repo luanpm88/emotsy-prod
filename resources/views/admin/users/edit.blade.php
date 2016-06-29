@@ -1,6 +1,6 @@
-@extends('layouts.frontend')
+@extends('layouts.backend')
 
-@section('title', trans('messages.my_profile'))
+@section('title', $user->displayName())
 	
 @section('page_script')
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>

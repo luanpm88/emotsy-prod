@@ -120,21 +120,16 @@
                             </a>
                         </li>
                     </ul>
-				</li>
-				<li rel0="">
-                    <a href="">
-                        <i class="icon-earth"></i> {{ trans('messages.sending_domains') }}
-                    </a>
-                </li>
-				<li class="dropdown language-switch" rel0="">
+				</li>				
+				<li rel0="TemplateController" class="dropdown language-switch">
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						<i class="icon-gear"></i> {{ trans('messages.setting') }}
                         <span class="caret"></span>
 					</a>
                     <ul class="dropdown-menu">
-                        <li>
-                            <a href="">
-                                <i class="icon-magazine"></i> {{ trans('messages.template') }}
+                        <li rel0="TemplateController">
+                            <a href="{{ action('Admin\TemplateController@index') }}">
+                                <i class="icon-magazine"></i> {{ trans('messages.template_gallery') }}
                             </a>
                         </li>
 						<li>
@@ -142,6 +137,11 @@
                                 <i class="glyphicon glyphicon-file"></i> {{ trans('messages.page_form_layout') }}
                             </a>
                         </li>
+						<li rel0="">
+							<a href="">
+								<i class="icon-earth"></i> {{ trans('messages.sending_domains') }}
+							</a>
+						</li>
                         <li>
                             <a href="">
                                 <i class="glyphicon glyphicon-flag"></i> {{ trans('messages.language') }}

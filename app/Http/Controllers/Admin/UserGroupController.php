@@ -56,22 +56,26 @@ class UserGroupController extends Controller
         // Generate info
         $user = $request->user();
         
-        $group = new \Mailixa\Model\UserGroup();
+        $group = new \Mailixa\Model\UserGroup([
+                                'backend_access' => false,
+                                'frontend_access' => true,
+                            ]);
         $group->fill($request->old());
-        
+
         // authorize
         if (\Gate::denies('create', $group)) {
             return $this->notAuthorized();
         }
         
-        //// For options
-        //$options = $this->get_options($group, $request);
-        //
-        //// For delivery server
-        //$group->getDeliveryServerToCustomerGroups($request->old());
+        // For options
+        if(isset($request->old()["options"])) {
+            $group->options = json_encode($request->old()["options"]);
+        }
+        $options = $group->getOptions();
        
         return view('admin.user_groups.create', [
             'group' => $group,
+            'options' => $options,
         ]);
     }
 
@@ -94,18 +98,14 @@ class UserGroupController extends Controller
         
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Mailixa\Model\UserGroup::$rules);
+            $this->validate($request, \Mailixa\Model\UserGroup::rules());
             
             $group->fill($request->all());
-            // $group->user_id = $user->id;
+            $group->options = json_encode($request->options);
             $group->save();
-            
-            //// Save options
-            //$options = $this->save_options($group, $request);
-            //
+
             //// update delivery server to customer groups
-            //$group->updateDeliveryServerToCustomerGroups($request->all());
-            
+            //$group->updateDeliveryServerToCustomerGroups($request->all());            
             
             $request->session()->flash('alert-success', trans('messages.user_group.created'));
             return redirect()->action('Admin\UserGroupController@index');
@@ -141,9 +141,12 @@ class UserGroupController extends Controller
             return $this->notAuthorized();
         }
         
-        //// For options
-        //$options = $this->get_options($group, $request);
-        //
+        // For options
+        if(isset($request->old()["options"])) {
+            $group->options = json_encode($request->old()["options"]);
+        }
+        $options = $group->getOptions();
+        
         //// For delivery server
         //if (!empty($request->old())) {
         //    $group->getDeliveryServerToCustomerGroups($request->old());
@@ -151,6 +154,7 @@ class UserGroupController extends Controller
         
         return view('admin.user_groups.edit', [
             'group' => $group,
+            'options' => $options,
         ]);
     }
 
@@ -175,17 +179,15 @@ class UserGroupController extends Controller
         
         // validate and save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, \Mailixa\Model\UserGroup::$rules);
+            $this->validate($request, \Mailixa\Model\UserGroup::rules());
             
             $group->fill($request->all());
+            $group->options = json_encode($request->options);
             $group->save();
             
-            //// Save options
-            //$options = $this->save_options($group, $request);
+            ////// update delivery server to customer groups
+            ////$group->updateDeliveryServerToCustomerGroups($request->all());
             //
-            //// update delivery server to customer groups
-            //$group->updateDeliveryServerToCustomerGroups($request->all());
-            
             $request->session()->flash('alert-success', trans('messages.user_group.updated'));
             return redirect()->action('Admin\UserGroupController@index');
         }
