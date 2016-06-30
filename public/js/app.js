@@ -468,4 +468,9 @@ $(function() {
     $(document).on('change', '#backend_access', function() {
         updateCheckAccess();
     });
+    
+    // Setup chart
+    $('.chart').each(function() {
+        updateChart($(this));
+    });
 });

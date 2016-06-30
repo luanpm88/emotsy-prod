@@ -1,8 +1,8 @@
                                     <div class="row">
 										<div class="col-md-12">
 											<ul class="nav nav-tabs nav-tabs-top page-second-nav">
-                                                <li class="dropdown">
-													<a href="" class="level-1">
+                                                <li rel0="MailListController/overview" class="dropdown">
+													<a href="{{ action('MailListController@overview', $list->uid) }}" class="level-1">
 														<i class="icon-stats-bars3"></i> {{ trans('messages.overview') }}
 													</a>
 												</li>

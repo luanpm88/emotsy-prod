@@ -29,10 +29,12 @@ Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
 Route::get('assets/images/avatar/user-{uid?}.jpg', 'UserController@avatar');
 
 // Mail list
+Route::get('lists/{uid}/list-growth', 'MailListController@listGrowthChart');
 Route::get('lists/sort', 'MailListController@sort');
 Route::get('lists/listing/{page?}', 'MailListController@listing');
 Route::get('lists/delete', 'MailListController@delete');
 Route::get('lists/delete/confirm', 'MailListController@deleteConfirm');
+Route::get('lists/{uid}/overview', 'MailListController@overview');
 Route::resource('lists', 'MailListController');
 Route::get('lists/{uid}/edit', 'MailListController@edit');
 Route::patch('lists/{uid}/update', 'MailListController@update');
@@ -123,11 +125,10 @@ Route::get('campaigns/{uid}/schedule', 'CampaignController@schedule');
 Route::post('campaigns/{uid}/schedule', 'CampaignController@schedule');
 Route::get('campaigns/{uid}/confirm', 'CampaignController@confirm');
 Route::post('campaigns/{uid}/confirm', 'CampaignController@confirm');
-Route::get('templates/delete', 'TemplateController@delete');
+Route::get('campaigns/delete', 'CampaignController@delete');
 Route::resource('campaigns', 'CampaignController');
 Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
 Route::patch('campaigns/{uid}/update', 'CampaignController@update');
-
 
 // ADMIN AREA
 Route::group(['namespace' => 'Admin'], function () {

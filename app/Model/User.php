@@ -268,4 +268,27 @@ class User extends Authenticatable
         
         return $query;
     }
+    
+    /**
+     * Subscribers count by time.
+     *
+     * @return number
+     */
+    public static function subscribersCountByTime($begin, $end, $user_id = null, $list_id = null)
+    {
+        $query = \Mailixa\Model\Subscriber::leftJoin('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
+                                ->leftJoin('users', 'users.id', '=', 'mail_lists.user_id');
+                                
+        if (isset($list_id)) {
+            $query = $query->where('subscribers.mail_list_id', '=', $list_id);
+        }
+        if (isset($user_id)) {
+            $query = $query->where('users.id', '=', $user_id);
+        }
+        
+        $query = $query->where('subscribers.created_at', '>=', $begin)
+                        ->where('subscribers.created_at', '<=', $end);
+                        
+        return $query->count();
+    }
 }

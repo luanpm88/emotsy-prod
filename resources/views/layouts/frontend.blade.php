@@ -12,10 +12,10 @@
 	
 </head>
 
-<body>
+<body class="navbar-top">
 
 	<!-- Main navbar -->
-	<div class="navbar navbar-inverse">
+	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-header">
 			<a class="navbar-brand" href="{{ action('HomeController@index') }}">
 				<img src="{{ URL::asset('assets/images/logo_light.png') }}" alt="">
@@ -56,7 +56,7 @@
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right">
-				<li class="dropdown language-switch">
+				<!--<li class="dropdown language-switch">
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						{{ Mailixa\Model\Language::getByCode(Config::get('app.locale'))->name }}
 						<span class="caret"></span>
@@ -69,7 +69,7 @@
 							</li>
 						@endforeach
 					</ul>
-                </li>
+                </li>-->
 
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">

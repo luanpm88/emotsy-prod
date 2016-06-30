@@ -303,4 +303,55 @@ class MailList extends Model
         
         return $options;
     }
+    
+    /**
+     * Count unsubscribe.
+     *
+     * @return array
+     */
+    public function unsubscribeCount()
+    {
+        return $this->subscribers()->where("status", "=", "unsubscribed")->count();
+    }
+    
+    /**
+     * Unsubscribe rate.
+     *
+     * @return array
+     */
+    public function unsubscribeRate()
+    {
+        return round(($this->unsubscribeCount()/$this->subscribers()->count())*100, 1);
+    }
+    
+    /**
+     * Count unsubscribe.
+     *
+     * @return array
+     */
+    public function subscribeCount()
+    {
+        return $this->subscribers()->where("status", "=", "subscribed")->count();
+    }
+    
+    /**
+     * Unsubscribe rate.
+     *
+     * @return array
+     */
+    public function subscribeRate()
+    {
+        return round(($this->subscribeCount()/$this->subscribers()->count())*100, 1);
+    }
+    
+    /**
+     * Count unsubscribe.
+     *
+     * @return array
+     */
+    public function unconfirmedCount()
+    {
+        return $this->subscribers()->where("status", "=", "unconfirmed")->count();
+    }
+
 }

@@ -16,6 +16,7 @@ class CreateLayoutsTable extends Migration
             $table->increments('id');
             $table->uuid('uid');
             $table->string('alias');
+            $table->string('group_name');
             $table->longtext('content');
             $table->string('type');
 
