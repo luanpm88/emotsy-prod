@@ -52,6 +52,8 @@ class DatabaseSeeder extends Seeder
             'id' => 1,
             'name' => 'Default',
             'user_id' => null,
+            'backend_access' => true,
+            'frontend_access' => true,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
@@ -67,9 +69,7 @@ class DatabaseSeeder extends Seeder
             'last_name' => 'Pham',
             'email' => 'luanpm88@gmail.com',
             'password' => bcrypt('123456'),
-            'status' => 'active',
-            'backend_access' => true,
-            'frontend_access' => true,
+            'status' => 'active',            
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
