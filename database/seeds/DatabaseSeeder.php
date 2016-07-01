@@ -194,5 +194,16 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
+
+        DB::table('sending_servers')->insert([
+            'id' => 1,
+            'host' => 'email-smtp.us-east-1.amazonaws.com',
+            'username' => 'AKIAIWEPV5HTR2NOPTDQ',
+            'password' => 'Al5DNO3GhaFQ3mxLT81FDqyGOKMwvHKtraisvh//EG3Z',
+            'port' => 25,
+            'protocol' => 'tls',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
     }
 }
