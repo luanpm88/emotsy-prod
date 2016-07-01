@@ -9,6 +9,26 @@
 *
 * ---------------------------------------------------------------------------- */
 
+function dashboardQuickview(item, box) {
+    var id = item.val();
+    var url = box.attr("data-url");
+    
+    $.ajax({
+        method: "GET",
+        url: url,
+        data: {
+            uid: id
+        }
+    })
+    .done(function( msg ) {
+        box.html(msg);
+        // Setup chart
+        $('.chart').each(function() {
+            updateChart($(this));
+        });
+    });
+}
+
 // Update checking backend / frontend access
 function updateCheckAccess() {
     if($('#backend_access').is(":checked")) {
@@ -473,4 +493,16 @@ $(function() {
     $('.chart').each(function() {
         updateChart($(this));
     });
+    
+    // Campaign quickview dashboard
+    $(document).on('change', '.dashboard-campaign-select', function() {
+        dashboardQuickview($(this), $('.campaign-quickview-container'));
+    });
+    $('.dashboard-campaign-select').trigger("change");
+    
+    // List quickview dashboard
+    $(document).on('change', '.dashboard-list-select', function() {
+        dashboardQuickview($(this), $('.list-quickview-container'));
+    });
+    $('.dashboard-list-select').trigger("change");
 });

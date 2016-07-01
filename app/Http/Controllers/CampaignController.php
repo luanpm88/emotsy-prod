@@ -457,4 +457,65 @@ class CampaignController extends Controller
             'campaign' => $campaign
         ]);
     }
+    
+    /**
+     * 24-hour chart.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function chart24h(Request $request)
+    {
+        $campaign = \Mailixa\Model\MailList::findByUid($request->uid);
+        $result = [
+            "columns" => [],
+            "data" => [],
+            "bar_names" => [trans('messages.opened'), trans('messages.clicked')],
+        ];
+        
+        // columns
+        for($i = 23; $i >= 0; $i--) {
+            $result["columns"][] = \Carbon\Carbon::now()->subHours($i)->format('h:A');
+        }
+        
+        // datas
+        foreach($result["bar_names"] as $key => $bar) {
+            $data = [];
+            for($i = 23; $i >= 0; $i--) {
+                $data[] = $i+rand(0,100);
+            }
+            
+            $result["data"][] = [
+                "name" => $bar,
+                "type" => 'line',
+                "smooth" => true,
+                "data" => $data,
+                "itemStyle" => [
+                    "normal" => [
+                        "areaStyle" => [
+                            "type" => 'default',
+                        ]
+                    ]
+                ]
+            ];
+        }
+        
+        
+        return json_encode($result);
+    }
+    
+    /**
+     * 24-hour chart.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function quickView(Request $request)
+    {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        return view('campaigns._quick_view', [
+            'campaign' => $campaign
+        ]);
+    }
 }

@@ -51,7 +51,7 @@
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>
 											<a href="{{ action('SubscriberController@create', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.create_subscriber') }}" type="button" class="btn bg-teal btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></a>
-											<button data-popup="tooltip" title="{{ trans('messages.overview') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-stats-growth"></i> <i class="icon-search4"></i></button>
+											<a href="{{ action('MailListController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-stats-growth"></i> <i class="icon-search4"></i></a>
 											<div class="btn-group">										
 												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 												<ul class="dropdown-menu dropdown-menu-right">

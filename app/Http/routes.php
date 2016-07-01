@@ -29,6 +29,7 @@ Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
 Route::get('assets/images/avatar/user-{uid?}.jpg', 'UserController@avatar');
 
 // Mail list
+Route::get('lists/quick-view', 'MailListController@quickView');
 Route::get('lists/{uid}/list-growth', 'MailListController@listGrowthChart');
 Route::get('lists/sort', 'MailListController@sort');
 Route::get('lists/listing/{page?}', 'MailListController@listing');
@@ -111,6 +112,8 @@ Route::get('templates/{uid}/edit', 'TemplateController@edit');
 Route::patch('templates/{uid}/update', 'TemplateController@update');
 
 // Campaign
+Route::get('campaigns/quick-view', 'CampaignController@quickView');
+Route::get('campaigns/{uid}/chart24h', 'CampaignController@chart24h');
 Route::get('campaigns/{uid}/overview', 'CampaignController@overview');
 Route::get('campaigns/{uid}/links', 'CampaignController@links');
 Route::get('campaigns/sort', 'CampaignController@sort');

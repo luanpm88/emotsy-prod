@@ -97,6 +97,16 @@ class User extends Authenticatable
         return $this->belongsTo('Mailixa\Model\UserGroup');
     }
     
+    public function lists()
+    {
+        return $this->hasMany('Mailixa\Model\MailList')->orderBy("created_at", "desc");
+    }
+    
+    public function campaigns()
+    {
+        return $this->hasMany('Mailixa\Model\Campaign')->orderBy("created_at", "desc");
+    }
+    
     /**
      * Bootstrap any application services.
      *

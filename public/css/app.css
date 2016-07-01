@@ -22,7 +22,7 @@ h4, .h4, h5, .h5, h6, .h6 {
     margin-bottom: 15px;
 }
 h2, .h2 {
-    font-size: 30px;
+    font-size: 25px;
 }
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
     background-color: rgba(0, 0, 0, 0.5);
@@ -926,4 +926,12 @@ ul.modern-listing li .btn {
 .table-icon-big {
     font-size: 40px;
     margin-top: 5px;
+}
+.navbar-top {
+    padding-top: 0px;
+}
+@media (min-width: 769px) {
+    .navbar-top {
+        padding-top: 80px;
+    }
 }

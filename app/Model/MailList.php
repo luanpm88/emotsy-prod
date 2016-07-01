@@ -282,9 +282,13 @@ class MailList extends Model
      *
      * @return array
      */
-    public static function getSelectOptions()
+    public static function getSelectOptions($user = null)
     {
-        $options = MailList::getAll()->orderBy("name")->get()->map(function ($item) {
+        $query = MailList::getAll();
+        if(is_object($user)) {
+            $query = $query->where("user_id", "=", $user->id);
+        }
+        $options = $query->orderBy("name")->get()->map(function ($item) {
             return ['value' => $item->uid, 'text' => $item->name . " (" . $item->subscribers()->count() . " " . strtolower(trans('messages.subscribers')) . ")"];
         });
         return $options;

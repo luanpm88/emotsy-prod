@@ -1,4 +1,4 @@
-<select name="{{ $name }}" class="select-search{{ $classes }}" {{ isset($multiple) && $multiple == true ? "multiple='multiple'" : "" }}>
+<select name="{{ $name }}" class="select-search{{ $classes }} {{ isset($class) ? $class : "" }}" {{ isset($multiple) && $multiple == true ? "multiple='multiple'" : "" }}>
 	@if (isset($include_blank))
 		<option value="">{{ $include_blank }}</option>
 	@endif

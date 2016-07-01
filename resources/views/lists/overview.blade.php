@@ -83,13 +83,5 @@
                 
                 <h3 class="text-semibold text-teal-800">{{ trans('messages.list_growth') }}</h3>
 				
-                <!-- Basic column chart -->
-                <div class="panel panel-flat">
-                    <div class="panel-body">
-                        <div class="chart-container">
-                            <div class="chart has-fixed-height" id="basic_columns" data-url="{{ action('MailListController@listGrowthChart', $list->uid) }}"></div>
-                        </div>
-                    </div>
-                </div>
-                <!-- /basic column chart -->
+                @include("lists._growth_chart")
 @endsection

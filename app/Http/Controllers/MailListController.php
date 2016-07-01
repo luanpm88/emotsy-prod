@@ -294,6 +294,13 @@ class MailListController extends Controller
     public function listGrowthChart(Request $request)
     {
         $list = \Mailixa\Model\MailList::findByUid($request->uid);
+        
+        if(is_object($list)) {
+            $list_id = $list->id;
+        } else {
+            $list_id = null;
+        }
+        
         $result = [
             "columns" => [],
             "data" => [],
@@ -313,7 +320,7 @@ class MailListController extends Controller
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->startOfMonth(),
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->endOfMonth(),
                     $request->user()->id,
-                    $list->id
+                    $list_id
                 );
             }
             
@@ -336,5 +343,25 @@ class MailListController extends Controller
         
         
         return json_encode($result);
+    }
+    
+    /**
+     * 24-hour chart.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function quickView(Request $request)
+    {
+        $list = \Mailixa\Model\MailList::findByUid($request->uid);
+        
+        if(!is_object($list)) {
+            $list = new \Mailixa\Model\MailList();
+            $list->uid = "000";
+        }
+        
+        return view('lists._quick_view', [
+            'list' => $list
+        ]);
     }
 }

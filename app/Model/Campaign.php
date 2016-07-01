@@ -298,6 +298,23 @@ class Campaign extends Model
     }
     
     /**
+     * Get select options.
+     *
+     * @return array
+     */
+    public static function getSelectOptions($user = null)
+    {
+        $query = Campaign::getAll();
+        if(is_object($user)) {
+            $query = $query->where("user_id", "=", $user->id);
+        }
+        $options = $query->orderBy("created_at", "DESC")->get()->map(function ($item) {
+            return ['value' => $item->uid, 'text' => $item->name];
+        });
+        return $options;
+    }
+    
+    /**
      * Bootstrap any application services.
      *
      * @return void
