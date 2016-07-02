@@ -54,8 +54,8 @@
                         </li>
                     </ul>
 				</li>
-                <li rel0="">
-                    <a href="">
+                <li rel0="SendingServerController">
+                    <a href="{{ action('Admin\SendingServerController@index') }}">
                         <i class="icon-server"></i> {{ trans('messages.sending_severs') }}
                     </a>
                 </li>                

@@ -197,6 +197,9 @@ class DatabaseSeeder extends Seeder
 
         DB::table('sending_servers')->insert([
             'id' => 1,
+            'uid' => uniqid(),
+            'name' => 'Server 1',
+            'user_id' => 1,
             'host' => 'email-smtp.us-east-1.amazonaws.com',
             'username' => 'AKIAIWEPV5HTR2NOPTDQ',
             'password' => 'Al5DNO3GhaFQ3mxLT81FDqyGOKMwvHKtraisvh//EG3Z',

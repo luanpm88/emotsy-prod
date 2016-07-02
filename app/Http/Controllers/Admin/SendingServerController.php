@@ -1,0 +1,200 @@
+<?php
+
+namespace Mailixa\Http\Controllers\Admin;
+
+use Illuminate\Http\Request;
+
+use Mailixa\Http\Requests;
+use Mailixa\Http\Controllers\Controller;
+
+class SendingServerController extends Controller
+{
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        $items = \Mailixa\Model\SendingServer::getAll();
+        return view('admin.sending_servers.index', [
+            'items' => $items,
+        ]);
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listing(Request $request)
+    {
+        $items = \Mailixa\Model\SendingServer::search($request)->paginate($request->per_page);
+        
+        return view('admin.sending_servers._list', [
+            'items' => $items,
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+        $server = new \Mailixa\Model\SendingServer();
+        $server->status = "active";
+        $server->uid = "0";
+        $server->fill($request->old());
+       
+        return view('admin.sending_server.create', [
+            'server' => $server,
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        // Get current user
+        $current_user = $request->user();
+        $user = new \Mailixa\Model\User();
+        $contact = new \Mailixa\Model\Contact();
+        
+        // save posted data
+        if ($request->isMethod('post')) {
+            $this->validate($request, $user->newRules());
+            
+            // Save current user info
+            $user->fill($request->all());
+            $user->user_group_id = $request->user_group_id;
+            $user->status = 'active';
+            
+            // Update password
+            if (!empty($request->password)) {
+                $user->password = bcrypt($request->password);
+            }
+            
+            // Upload and save image
+            if ($request->hasFile('image')) {
+                if ($request->file('image')->isValid()) {
+                    // Remove old images
+                    $user->removeImage();                    
+                    $user->image = $user->uploadImage($request->file('image'));
+                }
+            }
+            
+            // Remove image
+            if ($request->_remove_image == 'true') {
+                $user->removeImage();
+                $user->image = "";
+            }
+            
+            if ($user->save()) {
+                $request->session()->flash('alert-success', trans('messages.user.created'));
+                return redirect()->action('Admin\UserController@index');
+            }
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+        //
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Request $request, $id)
+    {
+        $user = \Mailixa\Model\User::findByUid($id);
+        
+        $user->fill($request->old());       
+        
+        return view('admin.users.edit', [
+            'user' => $user,
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        // Get current user
+        $current_user = $request->user();
+        $user = \Mailixa\Model\User::findByUid($id);
+        
+        // save posted data
+        if ($request->isMethod('patch')) {
+            $this->validate($request, $user->rules());
+            
+            // Save current user info
+            $user->fill($request->all());
+            
+            // Update password
+            if (!empty($request->password)) {
+                $user->password = bcrypt($request->password);
+            }
+            
+            // Upload and save image
+            if ($request->hasFile('image')) {
+                if ($request->file('image')->isValid()) {
+                    // Remove old images
+                    $user->removeImage();                    
+                    $user->image = $user->uploadImage($request->file('image'));
+                }
+            }
+            
+            // Remove image
+            if ($request->_remove_image == 'true') {
+                $user->removeImage();
+                $user->image = "";
+            }
+            
+            if ($user->save()) {
+                $request->session()->flash('alert-success', trans('messages.user.updated'));
+                return redirect()->action('Admin\UserController@index');
+            }
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+        //
+    }
+}

@@ -161,4 +161,10 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::get('admin/layouts/sort', 'LayoutController@sort');
     Route::resource('admin/layouts', 'LayoutController');
     
+    // User
+    Route::get('admin/sending_servers/listing/{page?}', 'SendingServerController@listing');
+    Route::get('admin/sending_servers/sort', 'SendingServerController@sort');
+    Route::get('admin/sending_servers/delete', 'SendingServerController@delete');
+    Route::resource('admin/sending_servers', 'SendingServerController');
+    
 });

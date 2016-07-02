@@ -14,6 +14,9 @@ class CreateSendingServersTable extends Migration
     {
         Schema::create('sending_servers', function (Blueprint $table) {
             $table->increments('id');
+            $table->uuid('uid');
+            $table->integer('user_id')->unsigned();
+            $table->string('name');
             $table->string('type');
             $table->string('host');
             $table->string('username');
@@ -21,8 +24,12 @@ class CreateSendingServersTable extends Migration
             $table->integer('port');
             $table->string('sendmail_path');
             $table->string('protocol');
+            $table->integer('custom_order');
             
             $table->timestamps();
+            
+            // foreign
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
