@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', trans('messages.create_user_group'))
+@section('title', trans('messages.create_sending_server'))
 	
 @section('page_script')
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
@@ -12,22 +12,20 @@
 	
 			<div class="page-title">
 				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li><a href="{{ action("Admin\UserGroupController@index") }}">{{ trans('messages.user_groups') }}</a></li>
+					<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-plus-circle2"></i> {{ trans('messages.create_user_group') }}</span>
+					<span class="text-semibold"><i class="icon-plus-circle2"></i> {{ trans('messages.create_sending_server') }}</span>
 				</h1>
 			</div>
 
 @endsection
 
 @section('content')
-                <form action="{{ action('Admin\UserController@store') }}" method="POST" class="form-validate-jquery">
+                <form action="{{ action('Admin\SendingServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jqueryz">
 					{{ csrf_field() }}
 					
-					@include('admin.users._form')			
-					
+					@include('admin.sending_servers._form')
 				<form>
 				
 @endsection

@@ -147,11 +147,6 @@ class UserGroupController extends Controller
         }
         $options = $group->getOptions();
         
-        //// For delivery server
-        //if (!empty($request->old())) {
-        //    $group->getDeliveryServerToCustomerGroups($request->old());
-        //}
-        
         return view('admin.user_groups.edit', [
             'group' => $group,
             'options' => $options,
@@ -185,9 +180,6 @@ class UserGroupController extends Controller
             $group->options = json_encode($request->options);
             $group->save();
             
-            ////// update delivery server to customer groups
-            ////$group->updateDeliveryServerToCustomerGroups($request->all());
-            //
             $request->session()->flash('alert-success', trans('messages.user_group.updated'));
             return redirect()->action('Admin\UserGroupController@index');
         }
@@ -202,24 +194,6 @@ class UserGroupController extends Controller
     public function destroy($id)
     {
         //
-    }
-    
-    public function delete(Request $request)
-    {
-        $group = \Mailixa\Web\UserGroup::find($request->id);
-        $group->delete();
-        
-        echo('<p class="alert alert-success">User group was successfully deleted!<p>');
-    }
-    
-    public function copy(Request $request)
-    {
-        $group = \Mailixa\Web\UserGroup::find($request->id);
-        
-        $group = $group->copy();
-
-        
-        echo('<p class="alert alert-success">User group was successfully copied!<p>');
     }
     
     /**

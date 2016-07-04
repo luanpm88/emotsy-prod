@@ -161,10 +161,32 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::get('admin/layouts/sort', 'LayoutController@sort');
     Route::resource('admin/layouts', 'LayoutController');
     
-    // User
+    // Sending servers
     Route::get('admin/sending_servers/listing/{page?}', 'SendingServerController@listing');
     Route::get('admin/sending_servers/sort', 'SendingServerController@sort');
     Route::get('admin/sending_servers/delete', 'SendingServerController@delete');
     Route::resource('admin/sending_servers', 'SendingServerController');
+    Route::get('admin/sending_servers/create/{type}', 'SendingServerController@create');
+    Route::post('admin/sending_servers/create/{type}', 'SendingServerController@store');
+    Route::get('admin/sending_servers/{id}/edit/{type}', 'SendingServerController@edit');
+    Route::get('admin/sending_servers/{id}/update/{type}', 'SendingServerController@update');
+    
+    // Bounce handlers
+    Route::get('admin/bounce_handlers/listing/{page?}', 'BounceHandlerController@listing');
+    Route::get('admin/bounce_handlers/sort', 'BounceHandlerController@sort');
+    Route::get('admin/bounce_handlers/delete', 'BounceHandlerController@delete');
+    Route::resource('admin/bounce_handlers', 'BounceHandlerController');
+    
+    // Feedback Loop handlers
+    Route::get('admin/feedback_loop_handlers/listing/{page?}', 'FeedbackLoopHandlerController@listing');
+    Route::get('admin/feedback_loop_handlers/sort', 'FeedbackLoopHandlerController@sort');
+    Route::get('admin/feedback_loop_handlers/delete', 'FeedbackLoopHandlerController@delete');
+    Route::resource('admin/feedback_loop_handlers', 'FeedbackLoopHandlerController');
+    
+    // Sending domain
+    Route::get('admin/sending_domains/listing/{page?}', 'SendingDomainController@listing');
+    Route::get('admin/sending_domains/sort', 'SendingDomainController@sort');
+    Route::get('admin/sending_domains/delete', 'SendingDomainController@delete');
+    Route::resource('admin/sending_domains', 'SendingDomainController');
     
 });

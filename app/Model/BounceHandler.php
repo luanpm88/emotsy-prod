@@ -4,10 +4,8 @@ namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BounceHandler extends DeliveryHandler
+class BounceHandler extends Model
 {
-    protected $table = 'delivery_handlers';
-
     public function processMessage($mbox, $message) {
        $header = imap_headerinfo($mbox, $message);
                 
@@ -26,5 +24,130 @@ class BounceHandler extends DeliveryHandler
        } else {
            return $matched[0];
        }
+    }
+    
+    /**
+     * Get all items.
+     *
+     * @return collect
+     */
+    public static function getAll()
+    {
+        return BounceHandler::select("*");
+    }
+    
+    /**
+     * Filter items.
+     *
+     * @return collect
+     */
+    public static function filter($request)
+    {
+        $user = $request->user();
+        $query = BounceHandler::where("user_id", "=", $user->id);
+        
+        // Keyword
+        if(!empty(trim($request->keyword))) {
+            foreach(explode(" ",trim($request->keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('bounce_handlers.name', 'like', '%' . $keyword . '%')
+                        ->orWhere('bounce_handlers.type', 'like', '%' . $keyword . '%')
+                        ->orWhere('bounce_handlers.host', 'like', '%' . $keyword . '%');
+                });
+            }                
+        }
+        
+        // filters
+        $filters = $request->filters;
+        if(!empty($filters)) {
+            if(!empty($filters["type"])) {
+                $query = $query->where("bounce_handlers.type", "=", $filters["type"]);     
+            }
+        }
+        
+        return $query;
+    }
+    
+    /**
+     * Search items.
+     *
+     * @return collect
+     */
+    public static function search($request)
+    {
+        $query = BounceHandler::filter($request);
+        
+        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        
+        return $query;
+    }
+    
+    /**
+     * Find item by uid.
+     *
+     * @return object
+     */
+    public static function findByUid($uid)
+    {
+        return BounceHandler::where("uid", "=", $uid)->first();
+    }
+    
+    /**
+     * Items per page.
+     *
+     * @var array
+     */
+    public static $itemsPerPage = 25;
+    
+    /**
+     * Bootstrap any application services.
+     *
+     * @return void
+     */
+    public static function boot()
+    {
+        parent::boot();        
+        
+        // Create uid when creating list.
+        static::creating(function($item)
+        {
+            // Create new uid
+            $uid = uniqid();
+            while(BounceHandler::where('uid','=',$uid)->count() > 0)
+            {
+                $uid = uniqid();
+            }
+            $item->uid = $uid;
+            
+            // BounceHandler custom order
+            BounceHandler::getAll()->increment('custom_order', 1);
+            $item->custom_order = 0;
+        });
+    }
+    
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'host', 'port', 'username', 'password', 'protocol'
+    ];
+    
+    /**
+     * Get validation rules.
+     *
+     * @return object
+     */
+    public static function rules()
+    {
+        return [
+            'name' => 'required',
+            'host' => 'required',
+            'port' => 'required',
+            'username' => 'required',
+            'password' => 'required',
+            'protocol' => 'required',
+        ];
     }
 }

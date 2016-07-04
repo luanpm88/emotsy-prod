@@ -23,18 +23,21 @@ function tableFilter(form, custom_url) {
     var url = form.attr("data-url");
     var per_page = form.attr("per-page")
     var sort_order = form.find("select[name='sort-order']").val();
+    
+    // Remove sort direction when sort order == custom_order
+    if(sort_order == 'custom_order') {
+        form.find(".sort-direction").attr("rel", "asc");
+        form.find(".sort-direction").find("i").attr("class", "icon-sort-amount-asc");
+        form.find(".sort-direction").hide();
+    } else {
+        form.find(".sort-direction").show();
+    }
+    
     var sort_direction = form.find(".sort-direction").attr("rel");
     var keyword = form.find("input[name='search_keyword']").val();
     // Default page
     if(typeof(custom_url) != 'undefined') {
         url = custom_url;
-    }
-    
-    // Remove sort direction when sort order == custom_order
-    if(sort_order == 'custom_order') {
-        $(".sort-direction").hide();
-    } else {
-        $(".sort-direction").show();
     }
     
     // showed columns
@@ -79,11 +82,11 @@ function tableFilter(form, custom_url) {
         
         // Pagination class
         // ------------------------------
-        $(".pagination").addClass('pagination-separated');
+        form.find(".pagination").addClass('pagination-separated');
         
         // Select2
         // ------------------------------
-        $(".select").select2({minimumResultsForSearch: -1});
+        form.find(".select").select2({minimumResultsForSearch: -1});
         
         // Hightlight
         if (keyword != 'undefined' && keyword.trim() != '') {

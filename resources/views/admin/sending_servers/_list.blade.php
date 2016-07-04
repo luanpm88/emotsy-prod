@@ -40,12 +40,12 @@
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>
-											<a href="{{ action('Admin\SendingServerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+											<a href="{{ action('Admin\SendingServerController@edit', ["uid" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 											<div class="btn-group">										
 												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 												<ul class="dropdown-menu dropdown-menu-right">													
 													<li>														
-														<a delete-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete', ['uids' => $item->uid]) }}">
+														<a delete-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete', ["uid" => $item->uid, "type" => $item->type]) }}">
 															<i class="icon-trash"></i> {{ trans('messages.delete') }}
 														</a>
 													</li>
@@ -57,7 +57,7 @@
 							</table>
                             @include('elements/_per_page_select')
 							{{ $items->links() }}
-						@elseif (!empty(request()->keyword))
+						@elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
 							<div class="empty-list">
 								<i class="icon-server"></i>
 								<span class="line-1">

@@ -57,8 +57,13 @@ class SendingServerController extends Controller
         $server->status = "active";
         $server->uid = "0";
         $server->fill($request->old());
+        
+        // authorize
+        if (\Gate::denies('create', $server)) {
+            return $this->notAuthorized();
+        }
        
-        return view('admin.sending_server.create', [
+        return view('admin.sending_servers.create', [
             'server' => $server,
         ]);
     }
@@ -73,41 +78,26 @@ class SendingServerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $user = new \Mailixa\Model\User();
-        $contact = new \Mailixa\Model\Contact();
+        $server = new \Mailixa\Model\SendingServer();
+        
+        // authorize
+        if (\Gate::denies('create', $server)) {
+            return $this->notAuthorized();
+        }
         
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, $user->newRules());
+            $this->validate($request, \Mailixa\Model\SendingServer::types()[$request->type]["cols"]);
             
             // Save current user info
-            $user->fill($request->all());
-            $user->user_group_id = $request->user_group_id;
-            $user->status = 'active';
+            $server->fill($request->all());
+            $server->user_id = $request->user()->id;
+            $server->type = $request->type;
+            $server->status = 'active';
             
-            // Update password
-            if (!empty($request->password)) {
-                $user->password = bcrypt($request->password);
-            }
-            
-            // Upload and save image
-            if ($request->hasFile('image')) {
-                if ($request->file('image')->isValid()) {
-                    // Remove old images
-                    $user->removeImage();                    
-                    $user->image = $user->uploadImage($request->file('image'));
-                }
-            }
-            
-            // Remove image
-            if ($request->_remove_image == 'true') {
-                $user->removeImage();
-                $user->image = "";
-            }
-            
-            if ($user->save()) {
-                $request->session()->flash('alert-success', trans('messages.user.created'));
-                return redirect()->action('Admin\UserController@index');
+            if ($server->save()) {
+                $request->session()->flash('alert-success', trans('messages.sending_server.created'));
+                return redirect()->action('Admin\SendingServerController@index');
             }
         }
     }
@@ -131,12 +121,17 @@ class SendingServerController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $user = \Mailixa\Model\User::findByUid($id);
+        $server = \Mailixa\Model\SendingServer::findByUid($id);
         
-        $user->fill($request->old());       
-        
-        return view('admin.users.edit', [
-            'user' => $user,
+        // authorize
+        if (\Gate::denies('update', $server)) {
+            return $this->notAuthorized();
+        }
+
+        $server->fill($request->old());
+       
+        return view('admin.sending_servers.edit', [
+            'server' => $server,
         ]);
     }
 
@@ -151,38 +146,23 @@ class SendingServerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $user = \Mailixa\Model\User::findByUid($id);
+        $server = \Mailixa\Model\SendingServer::findByUid($id);
+        
+        // authorize
+        if (\Gate::denies('update', $server)) {
+            return $this->notAuthorized();
+        }
         
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, $user->rules());
+            $this->validate($request, \Mailixa\Model\SendingServer::rules());
             
             // Save current user info
-            $user->fill($request->all());
+            $server->fill($request->all());
             
-            // Update password
-            if (!empty($request->password)) {
-                $user->password = bcrypt($request->password);
-            }
-            
-            // Upload and save image
-            if ($request->hasFile('image')) {
-                if ($request->file('image')->isValid()) {
-                    // Remove old images
-                    $user->removeImage();                    
-                    $user->image = $user->uploadImage($request->file('image'));
-                }
-            }
-            
-            // Remove image
-            if ($request->_remove_image == 'true') {
-                $user->removeImage();
-                $user->image = "";
-            }
-            
-            if ($user->save()) {
-                $request->session()->flash('alert-success', trans('messages.user.updated'));
-                return redirect()->action('Admin\UserController@index');
+            if ($server->save()) {
+                $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
+                return redirect()->action('Admin\SendingServerController@index');
             }
         }
     }
@@ -196,5 +176,29 @@ class SendingServerController extends Controller
     public function destroy($id)
     {
         //
+    }
+    
+    /**
+     * Custom sort items.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function sort(Request $request)
+    {
+        $sort = json_decode($request->sort);
+        foreach($sort as $row) {
+            $item = \Mailixa\Model\SendingServer::findByUid($row[0]);
+            
+            // authorize
+            if (\Gate::denies('update', $item)) {
+                return $this->notAuthorized();
+            }
+            
+            $item->custom_order = $row[1];
+            $item->save();            
+        }
+        
+        echo trans('messages.sending_server.custom_order.updated');
     }
 }

@@ -136,6 +136,14 @@ class SendingServer extends Model
             }                
         }
         
+        // filters
+        $filters = $request->filters;
+        if(!empty($filters)) {
+            if(!empty($filters["type"])) {
+                $query = $query->where("sending_servers.type", "=", $filters["type"]);     
+            }
+        }
+        
         return $query;
     }
     
@@ -194,5 +202,67 @@ class SendingServer extends Model
             SendingServer::getAll()->increment('custom_order', 1);
             $item->custom_order = 0;
         });
+    }
+    
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'host', 'port', 'username', 'password', 'sendmail_path', 'protocol'
+    ];
+    
+    /**
+     * Type of server.
+     *
+     * @return object
+     */
+    public static function types()
+    {
+        return [
+            "aws-ses-api" => [
+                "cols" => [
+                    'name' => 'required',
+                    'host' => 'required',
+                    'port' => 'required',
+                    'username' => 'required',
+                    'password' => 'required',
+                    'protocol' => 'required',
+                ],
+            ],
+            "aws-ses-smtp" => [
+                "cols" => [
+                    'name' => 'required',
+                    'host' => 'required',
+                    'port' => 'required',
+                    'username' => 'required',
+                    'password' => 'required',
+                    'protocol' => 'required',
+                ],
+            ],
+            "smtp" => [
+                "cols" => [
+                    'name' => 'required',
+                    'host' => 'required',
+                    'port' => 'required',
+                    'username' => 'required',
+                    'password' => 'required',
+                    'protocol' => 'required',
+                ],
+            ],
+            "sendmail" => [
+                "cols" => [
+                    'name' => 'required',
+                    'sendmail_path' => 'required',
+                    'protocol' => 'required',
+                ],
+            ],
+            "php-mail" => [
+                "cols" => [
+                    'name' => 'required',
+                ],
+            ],
+        ];
     }
 }

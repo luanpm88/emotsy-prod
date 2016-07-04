@@ -24,6 +24,7 @@ class CreateSendingServersTable extends Migration
             $table->integer('port');
             $table->string('sendmail_path');
             $table->string('protocol');
+            $table->string('status');
             $table->integer('custom_order');
             
             $table->timestamps();

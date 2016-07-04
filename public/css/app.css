@@ -935,3 +935,10 @@ ul.modern-listing li .btn {
         padding-top: 80px;
     }
 }
+.btn-server-type {
+    margin: 10px 10px 0 0;
+    font-weight: 600;
+    padding: 15px 20px;
+    width: calc(33.3% - 15px);
+    text-align: left;
+}

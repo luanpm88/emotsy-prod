@@ -59,20 +59,22 @@
                         <i class="icon-server"></i> {{ trans('messages.sending_severs') }}
                     </a>
                 </li>                
-                <li class="dropdown language-switch" rel0="">
+                <li
+					rel0="BounceHandlerController"
+					class="dropdown language-switch">
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						<i class="glyphicon glyphicon-transfer"></i> {{ trans('messages.handler') }}
                         <span class="caret"></span>
 					</a>
                     <ul class="dropdown-menu">
-                        <li>
-                            <a href="">
+                        <li rel0="BounceHandlerController">
+                            <a href="{{ action('Admin\BounceHandlerController@index') }}">
                                 <i class="glyphicon glyphicon-share"></i> {{ trans('messages.bounce_handler') }}
                             </a>
                         </li>
-                        <li>
-                            <a href="">
-                                <i class="glyphicon glyphicon-retweet"></i> {{ trans('messages.feedbackloop_handler') }}
+                        <li rel0="FeedbackLoopHandlerController">
+                            <a href="{{ action('Admin\FeedbackLoopHandlerController@index') }}">
+                                <i class="glyphicon glyphicon-retweet"></i> {{ trans('messages.feedback_loop_handler') }}
                             </a>
                         </li>
                     </ul>
@@ -95,8 +97,8 @@
                                 <i class="glyphicon glyphicon-file"></i> {{ trans('messages.page_form_layout') }}
                             </a>
                         </li>
-						<li rel0="">
-							<a href="">
+						<li rel0="SendingDomainController">
+							<a href="{{ action('Admin\SendingDomainController@index') }}">
 								<i class="icon-earth"></i> {{ trans('messages.sending_domains') }}
 							</a>
 						</li>

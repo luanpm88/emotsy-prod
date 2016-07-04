@@ -23,6 +23,10 @@ class AuthServiceProvider extends ServiceProvider
         \Mailixa\Model\Template::class => \Mailixa\Policies\TemplatePolicy::class,
         \Mailixa\Model\Campaign::class => \Mailixa\Policies\CampaignPolicy::class,
         \Mailixa\Model\UserGroup::class => \Mailixa\Policies\UserGroupPolicy::class,
+        \Mailixa\Model\SendingServer::class => \Mailixa\Policies\SendingServerPolicy::class,
+        \Mailixa\Model\BounceHandler::class => \Mailixa\Policies\BounceHandlerPolicy::class,
+        \Mailixa\Model\FeedbackLoopHandler::class => \Mailixa\Policies\FeedbackLoopHandlerPolicy::class,
+        \Mailixa\Model\SendingDomain::class => \Mailixa\Policies\SendingDomainPolicy::class,
     ];
 
     /**

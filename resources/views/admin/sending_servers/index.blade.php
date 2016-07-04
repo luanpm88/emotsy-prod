@@ -49,20 +49,21 @@
 									<span class="filter-group">
 										<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
 										<select class="select" name="sort-order">
-											<option value="custom_order">{{ trans('messages.name') }}</option>
+											<option value="custom_order">{{ trans('messages.custom_order') }}</option>
+											<option value="sending_servers.name">{{ trans('messages.name') }}</option>
                                             <option value="sending_servers.created_at">{{ trans('messages.created_at') }}</option>
 											<option value="sending_servers.updated_at">{{ trans('messages.updated_at') }}</option>
 										</select>										
-										<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-											<i class="icon-sort-amount-desc"></i>
+										<button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
+											<i class="icon-sort-amount-asc"></i>
 										</button>
 									</span>
 									<span class="filter-group">
 										<span class="title text-semibold text-muted">{{ trans('messages.type') }}</span>
-										<select class="select" name="user_group_id">
+										<select class="select" name="type">
 											<option value="">{{ trans('messages.all') }}</option>
-											@foreach (Mailixa\Model\UserGroup::getAll()->get() as $group)
-												<option value="{{ $group->id }}">{{ $group->name }}</option>
+											@foreach (Mailixa\Model\SendingServer::types() as $key => $type)
+												<option value="{{ $key }}">{{ trans('messages.' . $key) }}</option>
 											@endforeach
 										</select>										
 									</span>	
@@ -74,7 +75,7 @@
 							@endif
 						</div>
 						<div class="col-md-2 text-right">
-							<a href="{{ action("Admin\SendingServerController@create") }}" type="button" class="btn bg-info-800">
+							<a href="#" type="button" class="btn bg-info-800" data-toggle="modal" data-target="#server_types">
 								<i class="icon icon-plus2"></i> {{ trans('messages.create_sending_server') }}
 							</a>
 						</div>
@@ -86,4 +87,34 @@
 						
 					</div>
 				</form>
+					
+					
+				<!-- Basic modal -->
+				<div id="server_types" class="modal fade">
+					<div class="modal-dialog">
+						<div class="modal-content">							
+								<div class="modal-header bg-teal">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h2 class="modal-title">{{ trans('messages.select_server_type') }}</h2>
+								</div>
+				
+								<div class="modal-body">
+									
+									@foreach (Mailixa\Model\SendingServer::types() as $key => $type)
+										
+										<a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-info btn-lg bg-teal-800 btn-server-type">
+											<i class="icon-server"></i> {{ trans('messages.' . $key) }}
+										</a>
+										
+									@endforeach
+									
+								</div>
+				
+								<div class="modal-footer">
+									<button type="button" class="btn btn-white" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+								</div>
+						</div>
+					</div>
+				</div>
+				<!-- /basic modal -->
 @endsection

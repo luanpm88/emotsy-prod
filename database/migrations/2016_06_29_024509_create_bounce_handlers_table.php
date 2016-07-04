@@ -23,6 +23,8 @@ class CreateBounceHandlersTable extends Migration
             $table->string('password');
             $table->string('port');
             $table->string('protocol');
+            $table->string('status');
+            $table->string('custom_order');
             
             $table->timestamps();
             
