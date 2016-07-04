@@ -53,7 +53,9 @@ class SendingDomainController extends Controller
      */
     public function create(Request $request)
     {
-        $server = new \Mailixa\Model\SendingDomain();
+        $server = new \Mailixa\Model\SendingDomain([
+            'signing_enabled' => true
+        ]);
         $server->status = "active";
         $server->uid = "0";
         $server->fill($request->old());

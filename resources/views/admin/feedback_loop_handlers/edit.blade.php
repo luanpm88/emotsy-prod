@@ -15,7 +15,7 @@
 					<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-profile"></i> {{ $server->name }}</span>
+					<span class="text-semibold"><i class="icon-pencil"></i> {{ $server->name }}</span>
 				</h1>
 			</div>
 				

@@ -221,8 +221,9 @@ h3 {
     padding: 15px 10px;
 }
 .dropdown-menu > li > a {
-    padding: 12px 15px;
-    font-size: 14px;
+    padding: 15px 20px;
+    font-size: 13px;
+    font-weight: 600;
 }
 .navbar-nav > li > a {
     padding-top: 16px;
@@ -830,13 +831,16 @@ ul.modern-listing li:first-child {
     border-top: solid 1px #ddd;
     padding-top: 20px;
 }
-ul.modern-listing li i {
+ul.modern-listing li i, .table-row-icon {
     float: left;
     font-size: 30px;
     height: 70px;
     margin-right: 20px;
     color: #00838F;
     margin-top: 5px;
+}
+.table-row-icon {
+    color: #333;
 }
 ul.modern-listing li h4 {
     margin: 0;
@@ -941,4 +945,9 @@ ul.modern-listing li .btn {
     padding: 15px 20px;
     width: calc(33.3% - 15px);
     text-align: left;
+}
+textarea.dkim_box {
+    height: 200px;
+    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
+    font-size: 14px;
 }

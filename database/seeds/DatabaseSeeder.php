@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
         // Create default languages
         DB::table('languages')->insert([
             'id' => 1,
+            'uid' => uniqid(),
             'name' => 'English',
             'code' => 'en',
             'region_code' => 'us',

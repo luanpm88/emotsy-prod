@@ -38,7 +38,7 @@
 											{{ trans('messages.actions') }} <span class="caret"></span>
 										</button>
 										<ul class="dropdown-menu dropdown-menu-right">
-											<li><a list-delete-confirm="{{ action('MailListController@deleteConfirm') }}" href="{{ action('MailListController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
+											<li><a delete-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
 										</ul>
 									</div>
 									<div class="checkbox inline check_all_list">

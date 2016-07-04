@@ -201,4 +201,29 @@ class SendingServerController extends Controller
         
         echo trans('messages.sending_server.custom_order.updated');
     }
+    
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {        
+        $items = \Mailixa\Model\SendingServer::whereIn("uid", explode(",", $request->uids));
+        
+        foreach ($items->get() as $item) {
+            // authorize
+            if (\Gate::denies('delete', $item)) {
+                return;
+            }
+        }
+        
+        foreach ($items->get() as $item) {
+            $item->delete();
+        }
+
+        // Redirect to my lists page
+        echo(trans('messages.sending_servers.deleted'));
+    }
 }

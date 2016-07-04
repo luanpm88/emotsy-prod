@@ -22,19 +22,16 @@
 										</td>
 										<td>
 											<h5 class="no-margin text-bold">
-												<a class="kq_search" href="">{{ $item->name }}</a>
+												<a class="kq_search" href="{{ action('Admin\SendingDomainController@edit', $item->uid) }}">{{ $item->name }}</a>
 											</h5>
 											<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
-										<td>
-											<span class="no-margin stat-num kq_search">{{ $item->type }}</span>
-											<br />
-											<span class="text-muted">{{ trans('messages.type') }}</span>
-										</td>
-										<td>
-											<span class="no-margin stat-num kq_search">{{ $item->host }}</span>
-											<br />
-											<span class="text-muted">{{ trans('messages.host') }}</span>
+										<td class="text-center">
+											<div class="single-stat-box pull-left">
+												<i class="table-checkmark-{{ $item->signing_enabled }}"></i>
+												<br />
+												<span class="text-muted">{{ trans("messages.signing_enabled") }}</span>
+											</div>
 										</td>
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
@@ -57,7 +54,7 @@
 							</table>
                             @include('elements/_per_page_select')
 							{{ $items->links() }}
-						@elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
+						@elseif (!empty(request()->keyword))
 							<div class="empty-list">
 								<i class="icon-earth"></i>
 								<span class="line-1">

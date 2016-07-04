@@ -72,10 +72,17 @@ class UserGroupController extends Controller
             $group->options = json_encode($request->old()["options"]);
         }
         $options = $group->getOptions();
+        
+        // For sending servers
+        $sending_server_ids = "";
+        if(isset($request->old()["sending_server_ids"])) {
+            $sending_server_ids = implode(",", $request->old()["sending_server_ids"]);
+        }
        
         return view('admin.user_groups.create', [
             'group' => $group,
             'options' => $options,
+            'sending_server_ids' => $sending_server_ids,
         ]);
     }
 
@@ -104,8 +111,10 @@ class UserGroupController extends Controller
             $group->options = json_encode($request->options);
             $group->save();
 
-            //// update delivery server to customer groups
-            //$group->updateDeliveryServerToCustomerGroups($request->all());            
+            // For sending servers
+            if (isset($request->sending_server_ids)) {
+                $group->updateSendingServers($request->sending_server_ids);
+            }         
             
             $request->session()->flash('alert-success', trans('messages.user_group.created'));
             return redirect()->action('Admin\UserGroupController@index');
@@ -147,9 +156,16 @@ class UserGroupController extends Controller
         }
         $options = $group->getOptions();
         
+        // For sending servers
+        $sending_server_ids = $group->getSendingServerIds();
+        if(isset($request->old()["sending_server_ids"])) {
+            $sending_server_ids = implode(",", $request->old()["sending_server_ids"]);
+        }
+        
         return view('admin.user_groups.edit', [
             'group' => $group,
             'options' => $options,
+            'sending_server_ids' => $sending_server_ids,
         ]);
     }
 
@@ -179,6 +195,12 @@ class UserGroupController extends Controller
             $group->fill($request->all());
             $group->options = json_encode($request->options);
             $group->save();
+            
+            // For sending servers
+            if (isset($request->sending_server_ids)) {
+                $group->updateSendingServers($request->sending_server_ids);
+            }
+            
             
             $request->session()->flash('alert-success', trans('messages.user_group.updated'));
             return redirect()->action('Admin\UserGroupController@index');

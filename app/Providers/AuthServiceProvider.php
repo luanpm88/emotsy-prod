@@ -27,6 +27,7 @@ class AuthServiceProvider extends ServiceProvider
         \Mailixa\Model\BounceHandler::class => \Mailixa\Policies\BounceHandlerPolicy::class,
         \Mailixa\Model\FeedbackLoopHandler::class => \Mailixa\Policies\FeedbackLoopHandlerPolicy::class,
         \Mailixa\Model\SendingDomain::class => \Mailixa\Policies\SendingDomainPolicy::class,
+        \Mailixa\Model\Language::class => \Mailixa\Policies\LanguagePolicy::class,
     ];
 
     /**

@@ -27,4 +27,9 @@ class SendingServerPolicy
     {
         return $item->user_id == $user->id;
     }
+    
+    public function delete(\Mailixa\Model\User $user, \Mailixa\Model\SendingServer $item)
+    {
+        return $item->user_id == $user->id;
+    }
 }

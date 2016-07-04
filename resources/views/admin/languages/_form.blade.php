@@ -1,0 +1,39 @@
+					<h4 class="mt-0 text-semibold">{{ trans('messages.' . request()->type) }}</h4>
+					
+					<div class="row">
+						<div class="col-md-4">							
+							@include('helpers.form_control', [
+								'type' => 'text',
+								'class' => '',
+								'name' => 'name',
+								'value' => $language->name,
+								'help_class' => 'language',
+								'rules' => Mailixa\Model\Language::rules()
+							])
+						</div>
+						<div class="col-md-4">							
+							@include('helpers.form_control', [
+								'type' => 'text',
+								'class' => '',
+								'name' => 'code',
+								'value' => $language->code,
+								'help_class' => 'language',
+								'rules' => Mailixa\Model\Language::rules()
+							])
+						</div>
+						<div class="col-md-4">							
+							@include('helpers.form_control', [
+								'type' => 'text',
+								'class' => '',
+								'name' => 'region_code',
+								'value' => $language->region_code,
+								'help_class' => 'language',
+								'rules' => Mailixa\Model\Language::rules()
+							])
+						</div>
+					</div>
+					
+					<hr >
+					<div class="text-left">
+						<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+					</div>

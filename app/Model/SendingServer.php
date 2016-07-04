@@ -265,4 +265,18 @@ class SendingServer extends Model
             ],
         ];
     }
+    
+    /**
+     * Get select options.
+     *
+     * @return array
+     */
+    public static function getSelectOptions()
+    {
+        $query = SendingServer::getAll();
+        $options = $query->orderBy("name")->get()->map(function ($item) {
+            return ['value' => $item->uid, 'text' => $item->name];
+        });
+        return $options;
+    }
 }

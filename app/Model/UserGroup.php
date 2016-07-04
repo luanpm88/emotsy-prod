@@ -72,6 +72,16 @@ class UserGroup extends Model
         return $this->hasMany('Mailixa\Model\User');
     }
     
+    public function user_group_sending_servers()
+    {
+        return $this->hasMany('Mailixa\Model\UserGroupSendingServer');
+    }
+    
+    public function sending_servers()
+    {
+        return $this->belongsToMany('Mailixa\Model\SendingServer', 'user_group_sending_servers');
+    }
+    
     /**
      * Filter items.
      *
@@ -208,5 +218,37 @@ class UserGroup extends Model
             ['value' => 'month', 'text' => 'Month'],
             ['value' => 'year', 'text' => 'Month']
         ];
+    }
+    
+    /**
+     * Get sending servers ids.
+     *
+     * @return array
+     */
+    public function getSendingServerIds()
+    {
+        $arr = [];
+        foreach($this->sending_servers as $server) {
+            $arr[] = $server->uid;
+        }
+        var_dump($this->sending_servers()->count());
+        return implode(",", $arr);
+    }
+    
+    /**
+     * Update sending servers.
+     *
+     * @return array
+     */
+    public function updateSendingServers($ids)
+    {
+        $this->user_group_sending_servers()->delete();
+        foreach($ids as $id) {
+            $server = SendingServer::findByUid($id);
+            $row = new UserGroupSendingServer();
+            $row->user_group_id = $this->id;
+            $row->sending_server_id = $server->id;
+            $row->save();
+        }
     }
 }

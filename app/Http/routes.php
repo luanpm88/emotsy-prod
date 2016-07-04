@@ -189,4 +189,9 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::get('admin/sending_domains/delete', 'SendingDomainController@delete');
     Route::resource('admin/sending_domains', 'SendingDomainController');
     
+    // Language
+    Route::get('admin/languages/listing/{page?}', 'LanguageController@listing');
+    Route::get('admin/languages/delete', 'LanguageController@delete');
+    Route::resource('admin/languages', 'LanguageController');
+    
 });

@@ -22,7 +22,7 @@
 										</td>
 										<td>
 											<h5 class="no-margin text-bold">
-												<a class="kq_search" href="">{{ $item->name }}</a>
+												<a class="kq_search" href="{{ action('Admin\SendingServerController@edit', ["uid" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
 											</h5>
 											<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
@@ -45,7 +45,7 @@
 												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 												<ul class="dropdown-menu dropdown-menu-right">													
 													<li>														
-														<a delete-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete', ["uid" => $item->uid, "type" => $item->type]) }}">
+														<a delete-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete', ["uids" => $item->uid]) }}">
 															<i class="icon-trash"></i> {{ trans('messages.delete') }}
 														</a>
 													</li>

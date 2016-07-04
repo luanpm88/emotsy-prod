@@ -54,7 +54,7 @@
 																			'value' => $options['frontend']['list_max'],
 																			'label' => trans('messages.max_lists'),
 																			'help_class' => 'user_group',
-																			'options' => [true, false],
+																			'options' => ['true', 'false'],
 																			'rules' => Mailixa\Model\UserGroup::rules()
 																		])
 										</div>
@@ -65,7 +65,7 @@
 																			'value' => $options['frontend']['subscriber_max'],
 																			'label' => trans('messages.max_subscribers'),
 																			'help_class' => 'user_group',
-																			'options' => [true, false],
+																			'options' => ['true', 'false'],
 																			'rules' => Mailixa\Model\UserGroup::rules()
 																		])
 										</div>
@@ -192,6 +192,17 @@
 																		])
 										</div>
 									</div>
+										
+									<h3 class="text-teal-800">{{ trans('messages.sending_servers') }}</h3>
+										
+									@include('helpers.form_control', ['type' => 'checkboxes',
+																			'name' => 'sending_server_ids[]',
+																			'value' => $sending_server_ids,
+																			'label' => trans('messages.select_sending_servers_for_group'),
+																			'options' => Mailixa\Model\SendingServer::getSelectOptions(),
+																			'help_class' => 'user_group',
+																			'rules' => Mailixa\Model\UserGroup::rules()
+																		])
 								</div>
 								
 								<div class="tab-pane backend-box" id="top-tab2">

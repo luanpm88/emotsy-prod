@@ -54,19 +54,23 @@
                         </li>
                     </ul>
 				</li>
-                <li rel0="SendingServerController">
-                    <a href="{{ action('Admin\SendingServerController@index') }}">
-                        <i class="icon-server"></i> {{ trans('messages.sending_severs') }}
-                    </a>
-                </li>                
-                <li
+                             
+                <li class="dropdown language-switch"
 					rel0="BounceHandlerController"
-					class="dropdown language-switch">
+					rel1="FeedbackLoopHandlerController"
+					rel2="SendingServerController"
+					rel3="SendingDomainController"
+				>
 					<a class="dropdown-toggle" data-toggle="dropdown">
-						<i class="glyphicon glyphicon-transfer"></i> {{ trans('messages.handler') }}
+						<i class="glyphicon glyphicon-transfer"></i> {{ trans('messages.sending') }}
                         <span class="caret"></span>
 					</a>
                     <ul class="dropdown-menu">
+						<li rel0="SendingServerController">
+							<a href="{{ action('Admin\SendingServerController@index') }}">
+								<i class="icon-server"></i> {{ trans('messages.sending_severs') }}
+							</a>
+						</li>
                         <li rel0="BounceHandlerController">
                             <a href="{{ action('Admin\BounceHandlerController@index') }}">
                                 <i class="glyphicon glyphicon-share"></i> {{ trans('messages.bounce_handler') }}
@@ -77,16 +81,28 @@
                                 <i class="glyphicon glyphicon-retweet"></i> {{ trans('messages.feedback_loop_handler') }}
                             </a>
                         </li>
+						<li rel0="SendingDomainController">
+							<a href="{{ action('Admin\SendingDomainController@index') }}">
+								<i class="icon-earth"></i> {{ trans('messages.sending_domains') }}
+							</a>
+						</li>
                     </ul>
 				</li>				
 				<li class="dropdown language-switch"
 					rel0="TemplateController"
-					rel1="LayoutController">
+					rel1="LayoutController"
+					rel2="LanguageController"
+				>
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						<i class="icon-gear"></i> {{ trans('messages.setting') }}
                         <span class="caret"></span>
 					</a>
                     <ul class="dropdown-menu">
+						<li rel0="SettingsController">
+                            <a href="{{ action('Admin\TemplateController@index') }}">
+                                <i class="icon-puzzle4"></i> {{ trans('messages.general') }}
+                            </a>
+                        </li>
                         <li rel0="TemplateController">
                             <a href="{{ action('Admin\TemplateController@index') }}">
                                 <i class="icon-magazine"></i> {{ trans('messages.template_gallery') }}
@@ -96,14 +112,9 @@
                             <a href="{{ action('Admin\LayoutController@index') }}">
                                 <i class="glyphicon glyphicon-file"></i> {{ trans('messages.page_form_layout') }}
                             </a>
-                        </li>
-						<li rel0="SendingDomainController">
-							<a href="{{ action('Admin\SendingDomainController@index') }}">
-								<i class="icon-earth"></i> {{ trans('messages.sending_domains') }}
-							</a>
-						</li>
-                        <li>
-                            <a href="">
+                        </li>						
+                        <li rel0="LanguageController">
+                            <a href="{{ action('Admin\LanguageController@index') }}">
                                 <i class="glyphicon glyphicon-flag"></i> {{ trans('messages.language') }}
                             </a>
                         </li>

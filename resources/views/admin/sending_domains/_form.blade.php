@@ -19,35 +19,39 @@
 									'name' => 'signing_enabled',
 									'value' => $server->signing_enabled,
 									'help_class' => 'sending_domain',
-									'options' => [false, true],
+									'options' => [0, 1],
 									'rules' => Mailixa\Model\SendingDomain::rules()
 								])
 							</div>
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-sm-6 col-md-6">
-							@include('helpers.form_control', [
-								'type' => 'textarea',
-								'readonly' => 'readonly',
-								'name' => 'dkim_private',
-								'value' => $server->dkim_private,
-								'help_class' => 'sending_domain',
-								'rules' => Mailixa\Model\SendingDomain::rules()
-							])
+					@if (isset($server->id))
+						<div class="row">
+							<div class="col-sm-6 col-md-6">
+								@include('helpers.form_control', [
+									'type' => 'textarea',
+									'class' => 'dkim_box code',
+									'readonly' => 'readonly',
+									'name' => 'dkim_private',
+									'value' => $server->dkim_private,
+									'help_class' => 'sending_domain',
+									'rules' => Mailixa\Model\SendingDomain::rules()
+								])
+							</div>
+							<div class="col-sm-6 col-md-6">
+								@include('helpers.form_control', [
+									'type' => 'textarea',
+									'class' => 'dkim_box code',
+									'readonly' => 'readonly',
+									'name' => 'dkim_public',
+									'value' => $server->dkim_public,
+									'help_class' => 'sending_domain',
+									'rules' => Mailixa\Model\SendingDomain::rules()
+								])
+							</div>						
 						</div>
-						<div class="col-sm-6 col-md-6">
-							@include('helpers.form_control', [
-								'type' => 'textarea',
-								'readonly' => 'readonly',
-								'name' => 'dkim_public',
-								'value' => $server->dkim_public,
-								'help_class' => 'sending_domain',
-								'rules' => Mailixa\Model\SendingDomain::rules()
-							])
-						</div>						
-					</div>
-					
-					<div class="text-right">
+					@endif
+					<hr >
+					<div class="text-left">
 						<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 					</div>
