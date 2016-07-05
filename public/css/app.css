@@ -590,6 +590,7 @@ h2 [class^="icon-"] {
 @media (min-width: 769px) {
     .nav-tabs.nav-tabs-top > li > a, .nav-tabs.nav-tabs-top > li > a:hover, .nav-tabs.nav-tabs-top > li > a:focus {
         border-width: 0 0 4px 0;
+        margin-bottom: -1px;
         cursor: pointer;
     }
     .nav-tabs.nav-tabs-top > li > a {
@@ -925,7 +926,7 @@ ul.modern-listing li .btn {
     content: "\ed6c";
 }
 .nav-tabs {
-    border-bottom: 1px solid #26A69A;
+    border-bottom: 1px dashed #26A69A;
 }
 .table-icon-big {
     font-size: 40px;
@@ -966,4 +967,14 @@ input.numeric {
 .modern-listing.top-border-none li:first-child {
     border-top: 0;
     padding-top: 0;
+}
+.modern-listing .number {
+    width: 50px;
+    height: 50px;
+    color: #fff;
+    text-align: center;
+    background: #00838F;
+    margin-top: -3px;
+    border-radius: 50px;
+    opacity: 0.8;
 }

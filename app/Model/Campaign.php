@@ -39,7 +39,7 @@ class Campaign extends Model
      */
     public function links()
     {
-        return $this->hasMany('Mailixa\Model\Link');
+        return $this->belongsToMany('Mailixa\Model\Link', 'campaign_links');
     }
 
     /**
@@ -389,11 +389,19 @@ class Campaign extends Model
     public function updateLinks()
     {
         foreach ($this->getUrls() as $url) {
-            if ($this->links()->where("url", "=", $url)->count() == 0) {
+            $link = Link::where("url", "=", $url)->first();
+            if (!is_object($link)) {
                 $link = new Link();
-                $link->campaign_id = $this->id;
                 $link->url = $url;
                 $link->save();
+            }
+            
+            // Campaign link
+            if($this->links()->where("url", "=", $url)->count() == 0) {
+                $cl = new CampaignLink();
+                $cl->campaign_id = $this->id;
+                $cl->link_id = $link->id;
+                $cl->save();
             }
         }
 

@@ -14,13 +14,9 @@ class CreateLinksTable extends Migration
     {
         Schema::create('links', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('campaign_id')->unsigned();
             $table->string('url');
             
             $table->timestamps();
-            
-            // foreign
-            $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
         });
     }
 
