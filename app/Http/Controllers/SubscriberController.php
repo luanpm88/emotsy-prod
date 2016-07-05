@@ -53,11 +53,12 @@ class SubscriberController extends Controller
     public function create(Request $request)
     {
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $subscriber = new \Mailixa\Model\Subscriber;        
+        $subscriber = new \Mailixa\Model\Subscriber;
+        $subscriber->mail_list_id = $list->id;
         
         // authorize
         if (\Gate::denies('create', $subscriber)) {
-            return $this->notAuthorized();
+            return $this->noMoreItem();
         }
         
         // Get old post values
@@ -96,7 +97,7 @@ class SubscriberController extends Controller
         
         // authorize
         if (\Gate::denies('create', $subscriber)) {
-            return $this->notAuthorized();
+            return $this->noMoreItem();
         }
         
         // validate and save posted data

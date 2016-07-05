@@ -20,7 +20,8 @@ class MailListPolicy
     
     public function create(\Mailixa\Model\User $user, \Mailixa\Model\MailList $item)
     {
-        return true;
+        $max = $user->getOption("frontend", "list_max");
+        return ($max > $user->lists()->count() || $max == -1);
     }
     
     public function update(\Mailixa\Model\User $user, \Mailixa\Model\MailList $item)

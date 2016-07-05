@@ -66,7 +66,7 @@ class MailListController extends Controller
         
         // authorize
         if (\Gate::denies('create', $list)) {
-            return $this->notAuthorized();
+            return $this->noMoreItem();
         }
         
         // Get old post values
@@ -96,7 +96,7 @@ class MailListController extends Controller
         
         // authorize
         if (\Gate::denies('create', $list)) {
-            return $this->notAuthorized();
+            return $this->noMoreItem();
         }
         
         // validate and save posted data

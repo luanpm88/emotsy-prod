@@ -25,7 +25,7 @@ class UserGroupController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {
+    {        
         $groups = \Mailixa\Model\UserGroup::getAll();
         return view('admin.user_groups.index', [
             'groups' => $groups,

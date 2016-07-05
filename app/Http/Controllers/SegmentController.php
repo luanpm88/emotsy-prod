@@ -57,11 +57,12 @@ class SegmentController extends Controller
     public function create(Request $request)
     {
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $segment = new \Mailixa\Model\Segment;        
+        $segment = new \Mailixa\Model\Segment;
+        $segment->mail_list_id = $list->id;
         
         // authorize
         if (\Gate::denies('create', $segment)) {
-            return $this->notAuthorized();
+            return $this->noMoreItem();
         }
         
         // Get old post values
@@ -98,7 +99,7 @@ class SegmentController extends Controller
         
         // authorize
         if (\Gate::denies('create', $segment)) {
-            return $this->notAuthorized();
+            return $this->noMoreItem();
         }
         
         // validate and save posted data

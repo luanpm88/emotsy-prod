@@ -61,7 +61,7 @@ class CampaignController extends Controller
         
         // authorize
         if (\Gate::denies('create', $campaign)) {
-            return $this->notAuthorized();
+            return $this->noMoreItem();
         }
         
         $campaign->name = trans('messages.untitled');

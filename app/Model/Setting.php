@@ -40,12 +40,12 @@ class Setting extends Model
      */
     public static function set($name, $val)
     {
-        $option = Option::where("name", $name)->first();
+        $option = Setting::where("name", $name)->first();
 
         if (is_object($option)) {
             $option->value = $val;
         } else {
-            $option = new Option();
+            $option = new Setting();
             $option->name = $name;
             $option->value = $val;
         }
@@ -65,7 +65,9 @@ class Setting extends Model
         $settings = Setting::getAll();
         
         foreach($settings as $name => $setting) {
-            $rules[$name] = 'required';
+            if (!isset($setting['not_required'])) {
+                $rules[$name] = 'required';
+            }            
         }
         
         return $rules;
@@ -147,16 +149,19 @@ class Setting extends Model
                 'cat' => 'url',
                 'value' => action('HomeController@index'),
                 'type' => 'text',
+                'not_required' => true,
             ],            
             'url_open_track' => [
                 'cat' => 'url',
                 'value' => action('HomeController@index'),
                 'type' => 'text',
+                'not_required' => true,
             ],
             'url_campaign_notification' => [
                 'cat' => 'url',
                 'value' => action('HomeController@index'),
                 'type' => 'text',
+                'not_required' => true,
             ],
         ];
     }

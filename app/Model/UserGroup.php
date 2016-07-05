@@ -157,7 +157,7 @@ class UserGroup extends Model
                 'list_max' => '-1',
                 'subscriber_max' => '-1',
                 'subscriber_per_list_max' => '-1',
-                'segment_conditions_max' => '3',
+                'segment_per_list_max' => '3',
                 'campaign_max' => '-1',
                 'campaign_subscribers_at_once' => '100',
                 'campaign_send_at_once' => '50',
@@ -175,7 +175,270 @@ class UserGroup extends Model
                 'user_create' => 'yes',
                 'user_update' => 'own',
                 'user_delete' => 'own',
+                'sending_server_create' => 'yes',
+                'sending_server_update' => 'own',
+                'sending_server_delete' => 'own',
+                'bounce_handler_create' => 'yes',
+                'bounce_handler_update' => 'own',
+                'bounce_handler_delete' => 'own',
+                'fbl_handler_create' => 'yes',
+                'fbl_handler_update' => 'own',
+                'fbl_handler_delete' => 'own',
+                'sending_domain_create' => 'yes',
+                'sending_domain_update' => 'own',
+                'sending_domain_delete' => 'own',
+                'template_create' => 'yes',
+                'template_update' => 'own',
+                'template_delete' => 'own',
+                'setting_general' => 'yes',
+                'setting_sending' => 'yes',
+                'setting_system_urls' => 'yes',
+                'setting_layout_update' => 'yes',
+                'language_create' => 'yes',
+                'language_update' => 'yes',
+                'language_delete' => 'yes',
+                'report_blacklist' => 'yes',
+                'report_sending_log' => 'yes',
+                'report_bounce_log' => 'yes',
+                'report_feedback_log' => 'yes',
             ]
+        ];
+    }
+    
+    /**
+     * Backend roles.
+     *
+     * @return array
+     */
+    public static function backendPermissions()
+    {
+        return [
+            "user_group" => [
+                "create" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "update" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "delete" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+            ],
+            "user" => [
+                "create" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "update" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "delete" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+            ],
+            "sending_server" => [
+                "create" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "update" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "delete" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+            ],
+            "bounce_handler" => [
+                "create" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "update" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "delete" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+            ],
+            "fbl_handler" => [
+                "create" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "update" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "delete" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+            ],
+            "sending_domain" => [
+                "create" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "update" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "delete" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+            ],
+            "template" => [
+                "create" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "update" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "delete" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+            ],
+            "setting" => [
+                "general" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "sending" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "system_urls" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "layout_update" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+            ],
+            "language" => [
+                "create" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "update" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "delete" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+            ],
+            "report" => [
+                "blacklist" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "sending_log" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "bounce_log" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "feedback_log" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+            ],
         ];
     }
     
@@ -190,6 +453,20 @@ class UserGroup extends Model
             return UserGroup::defaultOptions();
         } else {
             return json_decode($this->options, true);
+        }
+    }
+    
+    /**
+     * Get option.
+     *
+     * @return string
+     */
+    public function getOption($cat, $name)
+    {
+        if (empty($this->options)) {
+            return UserGroup::defaultOptions()[$cat][$name];
+        } else {
+            return json_decode($this->options, true)[$cat][$name];
         }
     }
     

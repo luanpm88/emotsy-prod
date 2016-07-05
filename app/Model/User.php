@@ -107,6 +107,11 @@ class User extends Authenticatable
         return $this->hasMany('Mailixa\Model\Campaign')->orderBy("created_at", "desc");
     }
     
+    public function subscribers()
+    {
+        return $this->hasMany('Mailixa\Model\Subscriber');
+    }
+    
     /**
      * Bootstrap any application services.
      *
@@ -300,5 +305,15 @@ class User extends Authenticatable
                         ->where('subscribers.created_at', '<=', $end);
                         
         return $query->count();
+    }
+    
+    /**
+     * Get user setting.
+     *
+     * @return string
+     */
+    public function getOption($cat, $name)
+    {
+        return $this->userGroup->getOption($cat, $name);
     }
 }

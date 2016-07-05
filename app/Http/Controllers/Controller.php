@@ -23,6 +23,16 @@ class Controller extends BaseController
     }
     
     /**
+     * Check if the user cannot create more item.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function noMoreItem()
+    {
+        return view('noMoreItem');
+    }
+    
+    /**
      * Translate datatable.
      *
      * @return text

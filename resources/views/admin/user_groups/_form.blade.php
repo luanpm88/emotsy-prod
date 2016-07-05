@@ -82,9 +82,9 @@
 										<div class="col-md-3">
 											@include('helpers.form_control', ['type' => 'text',
 																			'class' => 'numeric',
-																			'name' => 'options[frontend][segment_conditions_max]',
-																			'value' => $options['frontend']['segment_conditions_max'],
-																			'label' => trans('messages.conditions_max'),
+																			'name' => 'options[frontend][segment_per_list_max]',
+																			'value' => $options['frontend']['segment_per_list_max'],
+																			'label' => trans('messages.segment_per_list_max'),
 																			'help_class' => 'user_group',
 																			'rules' => Mailixa\Model\UserGroup::rules()
 																		])
@@ -206,97 +206,26 @@
 								</div>
 								
 								<div class="tab-pane backend-box" id="top-tab2">
-									<h3 class="text-teal-800">{{ trans('messages.user_group') }}</h3>
-									<div class="row">
-										<div class="col-md-3">
-											@include('helpers.form_control', ['type' => 'select',
+									
+									@foreach (Mailixa\Model\UserGroup::backendPermissions() as $key => $items)
+										<h3 class="text-teal-800">{{ trans('messages.' . $key) }}</h3>
+										<div class="row">
+											@foreach ($items as $act => $ops)
+												<div class="col-md-3">
+													@include('helpers.form_control', ['type' => 'select',
 																			'class' => 'numeric',
-																			'name' => 'options[backend][user_group_create]',
-																			'value' => $options['backend']['user_group_create'],
-																			'label' => trans('messages.create'),
-																			'options' => [
-																				['value' => 'no', 'text' => trans('messages.no')],
-																				['value' => 'yes', 'text' => trans('messages.yes')],
-																			],
+																			'name' => 'options[backend][' . $key . "_" . $act .']',
+																			'value' => $options['backend'][$key . "_" . $act],
+																			'label' => trans('messages.' . $act),
+																			'options' => $ops["options"],
 																			'help_class' => 'user_group',
 																			'rules' => Mailixa\Model\UserGroup::rules()
 																		])
+												</div>
+											@endforeach
 										</div>
-										<div class="col-md-3">
-											@include('helpers.form_control', ['type' => 'select',
-																			'class' => 'numeric',
-																			'name' => 'options[backend][user_group_update]',
-																			'value' => $options['backend']['user_group_update'],
-																			'label' => trans('messages.update'),
-																			'options' => [
-																				['value' => 'no', 'text' => trans('messages.no')],
-																				['value' => 'own', 'text' => trans('messages.own')],
-																			],
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
-										</div>
-										<div class="col-md-3">
-											@include('helpers.form_control', ['type' => 'select',
-																			'name' => 'options[backend][user_group_delete]',
-																			'value' => $options['backend']['user_group_delete'],
-																			'label' => trans('messages.delete'),
-																			'options' => [
-																				['value' => 'no', 'text' => trans('messages.no')],
-																				['value' => 'own', 'text' => trans('messages.own')],
-																			],
-																			'include_blank' => trans('messages.choose'),
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
-										</div>
-									</div>
-										
-									<h3 class="text-teal-800">{{ trans('messages.user') }}</h3>
-									<div class="row">
-										<div class="col-md-3">
-											@include('helpers.form_control', ['type' => 'select',
-																			'class' => 'numeric',
-																			'name' => 'options[backend][user_create]',
-																			'value' => $options['backend']['user_create'],
-																			'label' => trans('messages.create'),
-																			'options' => [
-																				['value' => 'no', 'text' => trans('messages.no')],
-																				['value' => 'yes', 'text' => trans('messages.yes')],
-																			],
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
-										</div>
-										<div class="col-md-3">
-											@include('helpers.form_control', ['type' => 'select',
-																			'class' => 'numeric',
-																			'name' => 'options[backend][user_update]',
-																			'value' => $options['backend']['user_update'],
-																			'label' => trans('messages.update'),
-																			'options' => [
-																				['value' => 'no', 'text' => trans('messages.no')],
-																				['value' => 'own', 'text' => trans('messages.own')],
-																			],
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
-										</div>
-										<div class="col-md-3">
-											@include('helpers.form_control', ['type' => 'select',
-																			'name' => 'options[backend][user_delete]',
-																			'value' => $options['backend']['user_delete'],
-																			'label' => trans('messages.delete'),
-																			'options' => [
-																				['value' => 'no', 'text' => trans('messages.no')],
-																				['value' => 'own', 'text' => trans('messages.own')],
-																			],
-																			'include_blank' => trans('messages.choose'),
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
-										</div>
-									</div>
+									@endforeach
+									
 								</div>
 	
 							</div>

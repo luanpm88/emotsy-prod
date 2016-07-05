@@ -20,7 +20,8 @@ class CampaignPolicy
     
     public function create(\Mailixa\Model\User $user, \Mailixa\Model\Campaign $item)
     {
-        return true;
+        $max = $user->getOption("frontend", "campaign_max");
+        return ($max > $user->campaigns()->count() || $max == -1);
     }
     
     public function update(\Mailixa\Model\User $user, \Mailixa\Model\Campaign $item)
