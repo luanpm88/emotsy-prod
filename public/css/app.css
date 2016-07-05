@@ -447,7 +447,7 @@ h2 [class^="icon-"] {
 }
 .checkbox-right-switch .switchery, .checkbox-right-switch .bootstrap-switch  {
     float: right;
-    margin-top: 5px;
+    margin-top: 30px;
 }
 .switchery  {
     margin-top: 5px;
@@ -950,4 +950,20 @@ textarea.dkim_box {
     height: 200px;
     font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
     font-size: 14px;
+}
+.nav-tabs:before {
+    display: none;
+}
+input.numeric {
+    text-align: right;
+}
+.mb-0 {
+    margin-bottom: 0;
+}
+.nav-tabs > li {
+    margin-right: 20px;
+}
+.modern-listing.top-border-none li:first-child {
+    border-top: 0;
+    padding-top: 0;
 }

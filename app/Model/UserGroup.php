@@ -231,7 +231,7 @@ class UserGroup extends Model
         foreach($this->sending_servers as $server) {
             $arr[] = $server->uid;
         }
-        var_dump($this->sending_servers()->count());
+
         return implode(",", $arr);
     }
     

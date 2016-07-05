@@ -98,9 +98,9 @@
                         <span class="caret"></span>
 					</a>
                     <ul class="dropdown-menu">
-						<li rel0="SettingsController">
-                            <a href="{{ action('Admin\TemplateController@index') }}">
-                                <i class="icon-puzzle4"></i> {{ trans('messages.general') }}
+						<li rel0="SettingController">
+                            <a href="{{ action('Admin\SettingController@index') }}">
+                                <i class="icon-equalizer2"></i> {{ trans('messages.all_settings') }}
                             </a>
                         </li>
                         <li rel0="TemplateController">

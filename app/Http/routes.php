@@ -194,4 +194,8 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::get('admin/languages/delete', 'LanguageController@delete');
     Route::resource('admin/languages', 'LanguageController');
     
+    // Language
+    Route::get('admin/settings', 'SettingController@index');
+    Route::post('admin/settings', 'SettingController@index');
+    
 });
