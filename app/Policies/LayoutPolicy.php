@@ -20,6 +20,8 @@ class LayoutPolicy
     
     public function update(\Mailixa\Model\User $user, \Mailixa\Model\Layout $item)
     {
-        return true;
+        $ability = $user->getOption("backend", "layout_update");
+        $can = $ability == 'yes';
+        return $can;
     }
 }

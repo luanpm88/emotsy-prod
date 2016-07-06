@@ -26,6 +26,10 @@ class SendingServerController extends Controller
      */
     public function index(Request $request)
     {
+        if ($request->user()->getOption("backend", "sending_server_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\SendingServer::getAll();
         return view('admin.sending_servers.index', [
             'items' => $items,
@@ -39,6 +43,10 @@ class SendingServerController extends Controller
      */
     public function listing(Request $request)
     {
+        if ($request->user()->getOption("backend", "sending_server_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\SendingServer::search($request)->paginate($request->per_page);
         
         return view('admin.sending_servers._list', [

@@ -43,7 +43,11 @@ class FeedbackLoopHandler extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = FeedbackLoopHandler::where("user_id", "=", $user->id);
+        $query = FeedbackLoopHandler::select("feedback_loop_handlers.*");
+        
+        if ($request->user()->getOption("backend", "fbl_handler_read") == 'own') {
+            $query = $query->where("feedback_loop_handlers.user_id", "=", $request->user()->id);
+        }
         
         // Keyword
         if(!empty(trim($request->keyword))) {

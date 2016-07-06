@@ -141,17 +141,20 @@ Route::group(['namespace' => 'Admin'], function () {
     // User Group
     Route::get('admin/user_groups/listing/{page?}', 'UserGroupController@listing');
     Route::get('admin/user_groups/sort', 'UserGroupController@sort');
+    Route::get('admin/user_groups/delete', 'UserGroupController@delete');
     Route::resource('admin/user_groups', 'UserGroupController');
     
     // User
     Route::get('admin/users/listing/{page?}', 'UserController@listing');
     Route::get('admin/users/sort', 'UserController@sort');
+    Route::get('admin/users/delete', 'UserController@delete');
     Route::resource('admin/users', 'UserController');
     
     // Template
     Route::get('admin/templates/listing/{page?}', 'TemplateController@listing');
     Route::get('admin/templates/upload', 'TemplateController@upload');
     Route::post('admin/templates/upload', 'TemplateController@upload');
+    Route::get('admin/templates/delete', 'TemplateController@delete');
     Route::resource('admin/templates', 'TemplateController');
     Route::get('admin/templates/{uid}/edit', 'TemplateController@edit');
     Route::patch('admin/templates/{uid}/update', 'TemplateController@update');
@@ -194,7 +197,7 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::get('admin/languages/delete', 'LanguageController@delete');
     Route::resource('admin/languages', 'LanguageController');
     
-    // Language
+    // Setting
     Route::get('admin/settings', 'SettingController@index');
     Route::post('admin/settings', 'SettingController@index');
     

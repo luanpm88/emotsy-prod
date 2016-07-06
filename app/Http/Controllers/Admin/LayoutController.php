@@ -24,8 +24,12 @@ class LayoutController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->user()->getOption("backend", "layout_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\Layout::getAll();
         return view('admin.layouts.index', [
             'items' => $items
@@ -39,6 +43,10 @@ class LayoutController extends Controller
      */
     public function listing(Request $request)
     {
+        if ($request->user()->getOption("backend", "layout_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\Layout::search($request)->paginate($request->per_page);
 
         return view('admin.layouts._list', [

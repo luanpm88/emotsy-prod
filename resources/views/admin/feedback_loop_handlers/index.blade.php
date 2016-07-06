@@ -49,7 +49,6 @@
 									<span class="filter-group">
 										<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
 										<select class="select" name="sort-order">
-											<option value="custom_order">{{ trans('messages.custom_order') }}</option>
 											<option value="feedback_loop_handlers.name">{{ trans('messages.name') }}</option>
                                             <option value="feedback_loop_handlers.created_at">{{ trans('messages.created_at') }}</option>
 											<option value="feedback_loop_handlers.updated_at">{{ trans('messages.updated_at') }}</option>
@@ -65,11 +64,13 @@
 								</div>
 							@endif
 						</div>
-						<div class="col-md-3 text-right">
-							<a href="{{ action('Admin\FeedbackLoopHandlerController@create') }}" type="button" class="btn bg-info-800">
-								<i class="icon icon-plus2"></i> {{ trans('messages.create_feedback_loop_handler') }}
-							</a>
-						</div>
+						@can('create', new Mailixa\Model\FeedbackLoopHandler())
+							<div class="col-md-3 text-right">
+								<a href="{{ action('Admin\FeedbackLoopHandlerController@create') }}" type="button" class="btn bg-info-800">
+									<i class="icon icon-plus2"></i> {{ trans('messages.create_feedback_loop_handler') }}
+								</a>
+							</div>
+						@endcan
 					</div>
 					
 					<div class="pml-table-container">

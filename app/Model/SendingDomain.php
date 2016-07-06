@@ -26,7 +26,11 @@ class SendingDomain extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = SendingDomain::where("user_id", "=", $user->id);
+        $query = SendingDomain::select("sending_domains.*");
+        
+        if ($request->user()->getOption("backend", "sending_domain_read") == 'own') {
+            $query = $query->where("sending_domains.user_id", "=", $request->user()->id);
+        }
         
         // Keyword
         if(!empty(trim($request->keyword))) {

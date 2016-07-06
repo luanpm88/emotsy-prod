@@ -26,6 +26,10 @@ class LanguageController extends Controller
      */
     public function index(Request $request)
     {
+        if ($request->user()->getOption("backend", "language_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\Language::getAll();
         return view('admin.languages.index', [
             'items' => $items,
@@ -39,6 +43,10 @@ class LanguageController extends Controller
      */
     public function listing(Request $request)
     {
+        if ($request->user()->getOption("backend", "language_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\Language::search($request)->paginate($request->per_page);
         
         return view('admin.languages._list', [

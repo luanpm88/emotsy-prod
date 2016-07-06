@@ -52,11 +52,13 @@
 								</div>
 							@endif
 						</div>
-						<div class="col-md-3 text-right">
-							<a href="{{ action('Admin\LanguageController@create') }}" type="button" class="btn bg-info-800">
-								<i class="icon icon-plus2"></i> {{ trans('messages.create_language') }}
-							</a>
-						</div>
+						@can("create", new Mailixa\Model\Language())
+							<div class="col-md-3 text-right">
+								<a href="{{ action('Admin\LanguageController@create') }}" type="button" class="btn bg-info-800">
+									<i class="icon icon-plus2"></i> {{ trans('messages.create_language') }}
+								</a>
+							</div>
+						@endcan
 					</div>
 					
 					<div class="pml-table-container">

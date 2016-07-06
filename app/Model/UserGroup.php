@@ -90,7 +90,11 @@ class UserGroup extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = UserGroup::select("*");
+        $query = UserGroup::select("user_groups.*");
+        
+        if ($request->user()->getOption("backend", "user_group_read") == 'own') {
+            $query = $query->where("user_id", "=", $request->user()->id);
+        }
         
         // Keyword
         if(!empty(trim($request->keyword))) {
@@ -169,31 +173,40 @@ class UserGroup extends Model
                 'sending_quota_time_unit' => 'month',
             ],
             "backend" => [
+                'user_group_read' => 'all',
                 'user_group_create' => 'yes',
-                'user_group_update' => 'own',
+                'user_group_update' => 'all',
                 'user_group_delete' => 'own',
+                'user_read' => 'own',
                 'user_create' => 'yes',
                 'user_update' => 'own',
                 'user_delete' => 'own',
+                'sending_server_read' => 'all',
                 'sending_server_create' => 'yes',
                 'sending_server_update' => 'own',
                 'sending_server_delete' => 'own',
+                'bounce_handler_read' => 'own',
                 'bounce_handler_create' => 'yes',
                 'bounce_handler_update' => 'own',
                 'bounce_handler_delete' => 'own',
+                'fbl_handler_read' => 'own',
                 'fbl_handler_create' => 'yes',
                 'fbl_handler_update' => 'own',
                 'fbl_handler_delete' => 'own',
-                'sending_domain_create' => 'yes',
+                'sending_domain_read' => 'own',
+                'sending_domain_create' => 'no',
                 'sending_domain_update' => 'own',
                 'sending_domain_delete' => 'own',
+                'template_read' => 'own',
                 'template_create' => 'yes',
                 'template_update' => 'own',
                 'template_delete' => 'own',
+                'layout_read' => 'yes',
+                'layout_update' => 'yes',
                 'setting_general' => 'yes',
                 'setting_sending' => 'yes',
                 'setting_system_urls' => 'yes',
-                'setting_layout_update' => 'yes',
+                'language_read' => 'yes',
                 'language_create' => 'yes',
                 'language_update' => 'yes',
                 'language_delete' => 'yes',
@@ -214,6 +227,13 @@ class UserGroup extends Model
     {
         return [
             "user_group" => [
+                "read" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
                 "create" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
@@ -224,18 +244,25 @@ class UserGroup extends Model
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
-						['value' => 'yes', 'text' => trans('messages.yes')],
+						['value' => 'all', 'text' => trans('messages.all')],
                     ],
                 ],
                 "delete" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
-						['value' => 'yes', 'text' => trans('messages.yes')],
+						['value' => 'all', 'text' => trans('messages.all')],
                     ],
                 ],
             ],
             "user" => [
+                "read" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
                 "create" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
@@ -246,18 +273,25 @@ class UserGroup extends Model
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
-						['value' => 'yes', 'text' => trans('messages.yes')],
+						['value' => 'all', 'text' => trans('messages.all')],
                     ],
                 ],
                 "delete" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
-						['value' => 'yes', 'text' => trans('messages.yes')],
+						['value' => 'all', 'text' => trans('messages.all')],
                     ],
                 ],
             ],
             "sending_server" => [
+                "read" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
                 "create" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
@@ -268,18 +302,25 @@ class UserGroup extends Model
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
-						['value' => 'yes', 'text' => trans('messages.yes')],
+						['value' => 'all', 'text' => trans('messages.all')],
                     ],
                 ],
                 "delete" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
-						['value' => 'yes', 'text' => trans('messages.yes')],
+						['value' => 'all', 'text' => trans('messages.all')],
                     ],
                 ],
             ],
             "bounce_handler" => [
+                "read" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
                 "create" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
@@ -290,18 +331,25 @@ class UserGroup extends Model
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
-						['value' => 'yes', 'text' => trans('messages.yes')],
+						['value' => 'all', 'text' => trans('messages.all')],
                     ],
                 ],
                 "delete" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
-						['value' => 'yes', 'text' => trans('messages.yes')],
+						['value' => 'all', 'text' => trans('messages.all')],
                     ],
                 ],
             ],
             "fbl_handler" => [
+                "read" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
                 "create" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
@@ -312,18 +360,25 @@ class UserGroup extends Model
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
-						['value' => 'yes', 'text' => trans('messages.yes')],
+						['value' => 'all', 'text' => trans('messages.all')],
                     ],
                 ],
                 "delete" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
-						['value' => 'yes', 'text' => trans('messages.yes')],
+						['value' => 'all', 'text' => trans('messages.all')],
                     ],
                 ],
             ],
             "sending_domain" => [
+                "read" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
                 "create" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
@@ -334,18 +389,25 @@ class UserGroup extends Model
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
-						['value' => 'yes', 'text' => trans('messages.yes')],
+						['value' => 'all', 'text' => trans('messages.all')],
                     ],
                 ],
                 "delete" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
-						['value' => 'yes', 'text' => trans('messages.yes')],
+						['value' => 'all', 'text' => trans('messages.all')],
                     ],
                 ],
             ],
             "template" => [
+                "read" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
                 "create" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
@@ -356,14 +418,28 @@ class UserGroup extends Model
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
-						['value' => 'yes', 'text' => trans('messages.yes')],
+						['value' => 'all', 'text' => trans('messages.all')],
                     ],
                 ],
                 "delete" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
-						['value' => 'yes', 'text' => trans('messages.yes')],
+						['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+            ],
+            "layout" => [
+                "read" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "update" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'yes', 'text' => trans('messages.yes')],
                     ],
                 ],
             ],
@@ -386,14 +462,14 @@ class UserGroup extends Model
 						['value' => 'yes', 'text' => trans('messages.yes')],
                     ],
                 ],
-                "layout_update" => [
-                    "options" => [
-                        ['value' => 'no', 'text' => trans('messages.no')],
-						['value' => 'yes', 'text' => trans('messages.yes')],
-                    ],
-                ],
             ],
             "language" => [
+                "read" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
                 "create" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],

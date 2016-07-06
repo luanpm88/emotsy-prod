@@ -92,6 +92,11 @@ class User extends Authenticatable
         return $this->belongsTo('Mailixa\Model\Contact');
     }
     
+    public function user()
+    {
+        return $this->hasOne('Mailixa\Model\User');
+    }
+    
     public function userGroup()
     {
         return $this->belongsTo('Mailixa\Model\UserGroup');
@@ -244,8 +249,12 @@ class User extends Authenticatable
     public static function filter($request)
     {
         $user = $request->user();
-        $query = User::select("*")
+        $query = User::select("users.*")
                         ->leftJoin('user_groups', 'user_groups.id', '=', 'users.user_group_id');;
+        
+        if ($request->user()->getOption("backend", "user_read") == 'own') {
+            $query = $query->where("users.user_id", "=", $request->user()->id);
+        }
         
         // Keyword
         if(!empty(trim($request->keyword))) {

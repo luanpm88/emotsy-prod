@@ -103,11 +103,13 @@ $(function() {
 
     // Default initialization
     $('.select').select2({
-        minimumResultsForSearch: Infinity
+        minimumResultsForSearch: 10
     });
 
     // Select with search
-    $('.select-search').select2();
+    $('.select-search').select2({
+        minimumResultsForSearch: 10
+    });
     
     
     // Checkboxes/radios (Uniform)

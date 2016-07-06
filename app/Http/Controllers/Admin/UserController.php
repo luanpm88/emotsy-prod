@@ -26,6 +26,10 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
+        if ($request->user()->getOption("backend", "user_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $users = \Mailixa\Model\User::getAll();
         return view('admin.users.index', [
             'users' => $users,
@@ -39,6 +43,10 @@ class UserController extends Controller
      */
     public function listing(Request $request)
     {
+        if ($request->user()->getOption("backend", "user_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $users = \Mailixa\Model\User::search($request)->paginate($request->per_page);
         
         return view('admin.users._list', [
@@ -57,6 +65,11 @@ class UserController extends Controller
         $user->status = "active";
         $user->uid = "0";
         $user->fill($request->old());
+        
+        // authorize
+        if (\Gate::denies('create', $user)) {
+            return $this->notAuthorized();
+        }
        
         return view('admin.users.create', [
             'user' => $user,
@@ -76,6 +89,11 @@ class UserController extends Controller
         $user = new \Mailixa\Model\User();
         $contact = new \Mailixa\Model\Contact();
         
+        // authorize
+        if (\Gate::denies('create', $user)) {
+            return $this->notAuthorized();
+        }
+        
         // save posted data
         if ($request->isMethod('post')) {
             $this->validate($request, $user->newRules());
@@ -83,6 +101,7 @@ class UserController extends Controller
             // Save current user info
             $user->fill($request->all());
             $user->user_group_id = $request->user_group_id;
+            $user->user_id = $request->user()->id;
             $user->status = 'active';
             
             // Update password
@@ -133,6 +152,11 @@ class UserController extends Controller
     {
         $user = \Mailixa\Model\User::findByUid($id);
         
+        // authorize
+        if (\Gate::denies('update', $user)) {
+            return $this->notAuthorized();
+        }
+        
         $user->fill($request->old());       
         
         return view('admin.users.edit', [
@@ -152,6 +176,11 @@ class UserController extends Controller
         // Get current user
         $current_user = $request->user();
         $user = \Mailixa\Model\User::findByUid($id);
+        
+        // authorize
+        if (\Gate::denies('update', $user)) {
+            return $this->notAuthorized();
+        }
         
         // save posted data
         if ($request->isMethod('patch')) {
@@ -196,14 +225,6 @@ class UserController extends Controller
     public function destroy($id)
     {
         //
-    }
-    
-    public function delete(Request $request)
-    {
-        $user = \Mailixa\Web\User::find($request->id);
-        $user->delete();
-        
-        echo('<p class="alert alert-success">User was successfully deleted!<p>');
     }
     
     public function select2(Request $request)
@@ -253,5 +274,30 @@ class UserController extends Controller
         $user->save();
         
         echo('<p class="alert alert-success">'.trans('messages.user.disabled').'<p>');
+    }
+    
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {        
+        $items = \Mailixa\Model\User::whereIn("uid", explode(",", $request->uids));
+        
+        foreach ($items->get() as $item) {
+            // authorize
+            if (\Gate::denies('delete', $item)) {
+                return;
+            }
+        }
+        
+        foreach ($items->get() as $item) {
+            $item->delete();
+        }
+
+        // Redirect to my lists page
+        echo(trans('messages.users.deleted'));
     }
 }

@@ -25,7 +25,11 @@ class UserGroupController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {        
+    {
+        if ($request->user()->getOption("backend", "user_group_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $groups = \Mailixa\Model\UserGroup::getAll();
         return view('admin.user_groups.index', [
             'groups' => $groups,
@@ -39,6 +43,10 @@ class UserGroupController extends Controller
      */
     public function listing(Request $request)
     {
+        if ($request->user()->getOption("backend", "user_group_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $groups = \Mailixa\Model\UserGroup::search($request)->paginate($request->per_page);
         
         return view('admin.user_groups._list', [
@@ -109,6 +117,7 @@ class UserGroupController extends Controller
             
             $group->fill($request->all());
             $group->options = json_encode($request->options);
+            $group->user_id = $user->id;
             $group->save();
 
             // For sending servers
@@ -240,5 +249,30 @@ class UserGroupController extends Controller
         }
         
         echo trans('messages.user_groups.custom_order.updated');
+    }
+    
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {        
+        $lists = \Mailixa\Model\UserGroup::whereIn("id", explode(",", $request->ids));
+        
+        foreach ($lists->get() as $item) {
+            // authorize
+            if (\Gate::denies('delete', $item)) {
+                return;
+            }
+        }
+        
+        foreach ($lists->get() as $item) {
+            $item->delete();
+        }
+
+        // Redirect to my lists page
+        echo(trans('messages.user_groups.deleted'));
     }
 }

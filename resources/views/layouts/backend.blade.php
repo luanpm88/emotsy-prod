@@ -33,61 +33,82 @@
 						<i class="icon-home"></i> {{ trans('messages.dashboard') }}
 					</a>
 				</li>
-                <li class="dropdown language-switch"
-					rel0="UserGroupController"
-					rel1="UserController"
-				>
-					<a class="dropdown-toggle" data-toggle="dropdown">
-						<i class="icon-user"></i> {{ trans('messages.user') }}
-                        <span class="caret"></span>
-					</a>
-                    <ul class="dropdown-menu">
-                        <li rel0="UserController">
-                            <a href="{{ action('Admin\UserController@index') }}">
-                                <i class="icon-users"></i> {{ trans('messages.users') }}
-                            </a>
-                        </li>
-                        <li rel0="UserGroupController">
-                            <a href="{{ action('Admin\UserGroupController@index') }}">
-                                <i class="icon-users4"></i> {{ trans('messages.groups') }}
-                            </a>
-                        </li>
-                    </ul>
-				</li>
-                             
-                <li class="dropdown language-switch"
-					rel0="BounceHandlerController"
-					rel1="FeedbackLoopHandlerController"
-					rel2="SendingServerController"
-					rel3="SendingDomainController"
-				>
-					<a class="dropdown-toggle" data-toggle="dropdown">
-						<i class="glyphicon glyphicon-transfer"></i> {{ trans('messages.sending') }}
-                        <span class="caret"></span>
-					</a>
-                    <ul class="dropdown-menu">
-						<li rel0="SendingServerController">
-							<a href="{{ action('Admin\SendingServerController@index') }}">
-								<i class="icon-server"></i> {{ trans('messages.sending_severs') }}
-							</a>
-						</li>
-                        <li rel0="BounceHandlerController">
-                            <a href="{{ action('Admin\BounceHandlerController@index') }}">
-                                <i class="glyphicon glyphicon-share"></i> {{ trans('messages.bounce_handler') }}
-                            </a>
-                        </li>
-                        <li rel0="FeedbackLoopHandlerController">
-                            <a href="{{ action('Admin\FeedbackLoopHandlerController@index') }}">
-                                <i class="glyphicon glyphicon-retweet"></i> {{ trans('messages.feedback_loop_handler') }}
-                            </a>
-                        </li>
-						<li rel0="SendingDomainController">
-							<a href="{{ action('Admin\SendingDomainController@index') }}">
-								<i class="icon-earth"></i> {{ trans('messages.sending_domains') }}
-							</a>
-						</li>
-                    </ul>
-				</li>				
+				@if (Auth::user()->getOption("backend", "user_read") != 'no' || Auth::user()->getOption("backend", "user_group_read") != 'no')
+					<li class="dropdown language-switch"
+						rel0="UserGroupController"
+						rel1="UserController"
+					>
+						<a class="dropdown-toggle" data-toggle="dropdown">
+							<i class="icon-user"></i> {{ trans('messages.user') }}
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							@if (Auth::user()->getOption("backend", "user_read") != 'no')
+								<li rel0="UserController">
+									<a href="{{ action('Admin\UserController@index') }}">
+										<i class="icon-users"></i> {{ trans('messages.users') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->getOption("backend", "user_group_read") != 'no')
+								<li rel0="UserGroupController">
+									<a href="{{ action('Admin\UserGroupController@index') }}">
+										<i class="icon-users4"></i> {{ trans('messages.groups') }}
+									</a>
+								</li>
+							@endif
+						</ul>
+					</li>
+                @endif
+				
+				@if (
+					Auth::user()->getOption("backend", "sending_domain_read") != 'no'
+					|| Auth::user()->getOption("backend", "sending_server_read") != 'no'
+					|| Auth::user()->getOption("backend", "bounce_handler_read") != 'no'
+					|| Auth::user()->getOption("backend", "fbl_handler_read") != 'no'
+				)
+					<li class="dropdown language-switch"
+						rel0="BounceHandlerController"
+						rel1="FeedbackLoopHandlerController"
+						rel2="SendingServerController"
+						rel3="SendingDomainController"
+					>
+						<a class="dropdown-toggle" data-toggle="dropdown">
+							<i class="glyphicon glyphicon-transfer"></i> {{ trans('messages.sending') }}
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							@if (Auth::user()->getOption("backend", "sending_server_read") != 'no')
+								<li rel0="SendingServerController">
+									<a href="{{ action('Admin\SendingServerController@index') }}">
+										<i class="icon-server"></i> {{ trans('messages.sending_severs') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->getOption("backend", "bounce_handler_read") != 'no')
+								<li rel0="BounceHandlerController">
+									<a href="{{ action('Admin\BounceHandlerController@index') }}">
+										<i class="glyphicon glyphicon-share"></i> {{ trans('messages.bounce_handler') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->getOption("backend", "fbl_handler_read") != 'no')
+								<li rel0="FeedbackLoopHandlerController">
+									<a href="{{ action('Admin\FeedbackLoopHandlerController@index') }}">
+										<i class="glyphicon glyphicon-retweet"></i> {{ trans('messages.feedback_loop_handler') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->getOption("backend", "sending_domain_read") != 'no')
+								<li rel0="SendingDomainController">
+									<a href="{{ action('Admin\SendingDomainController@index') }}">
+										<i class="icon-earth"></i> {{ trans('messages.sending_domains') }}
+									</a>
+								</li>
+							@endif
+						</ul>
+					</li>
+				@endif
 				<li class="dropdown language-switch"
 					rel0="TemplateController"
 					rel1="LayoutController"
@@ -103,21 +124,27 @@
                                 <i class="icon-equalizer2"></i> {{ trans('messages.all_settings') }}
                             </a>
                         </li>
-                        <li rel0="TemplateController">
-                            <a href="{{ action('Admin\TemplateController@index') }}">
-                                <i class="icon-magazine"></i> {{ trans('messages.template_gallery') }}
-                            </a>
-                        </li>
-						<li rel0="LayoutController">
-                            <a href="{{ action('Admin\LayoutController@index') }}">
-                                <i class="glyphicon glyphicon-file"></i> {{ trans('messages.page_form_layout') }}
-                            </a>
-                        </li>						
-                        <li rel0="LanguageController">
-                            <a href="{{ action('Admin\LanguageController@index') }}">
-                                <i class="glyphicon glyphicon-flag"></i> {{ trans('messages.language') }}
-                            </a>
-                        </li>
+						@if (Auth::user()->getOption("backend", "template_read") != 'no')
+							<li rel0="TemplateController">
+								<a href="{{ action('Admin\TemplateController@index') }}">
+									<i class="icon-magazine"></i> {{ trans('messages.template_gallery') }}
+								</a>
+							</li>
+						@endif
+						@if (Auth::user()->getOption("backend", "layout_read") != 'no')
+							<li rel0="LayoutController">
+								<a href="{{ action('Admin\LayoutController@index') }}">
+									<i class="glyphicon glyphicon-file"></i> {{ trans('messages.page_form_layout') }}
+								</a>
+							</li>
+						@endif
+						@if (Auth::user()->getOption("backend", "language_read") != 'no')
+							<li rel0="LanguageController">
+								<a href="{{ action('Admin\LanguageController@index') }}">
+									<i class="glyphicon glyphicon-flag"></i> {{ trans('messages.language') }}
+								</a>
+							</li>
+						@endif
                     </ul>
 				</li>
 				<li class="dropdown language-switch" rel0="">

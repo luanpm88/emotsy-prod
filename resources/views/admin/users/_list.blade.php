@@ -26,17 +26,21 @@
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>
-											<a href="{{ action('Admin\UserController@edit', $item->uid) }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil"></i> {{ trans('messages.edit') }}</a>
-											<div class="btn-group">										
-												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-												<ul class="dropdown-menu dropdown-menu-right">													
-													<li>														
-														<a list-delete-confirm="{{ action('MailListController@deleteConfirm', ['uids' => $item->uid]) }}" href="{{ action('MailListController@delete', ['uids' => $item->uid]) }}">
-															<i class="icon-trash"></i> {{ trans('messages.delete') }}
-														</a>
-													</li>
-												</ul>
-											</div>
+											@can('update', $item)
+												<a href="{{ action('Admin\UserController@edit', $item->uid) }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil"></i> {{ trans('messages.edit') }}</a>
+											@endcan
+											@can('delete', $item)
+												<div class="btn-group">										
+													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+													<ul class="dropdown-menu dropdown-menu-right">													
+														<li>														
+															<a delete-confirm="{{ trans('messages.delete_users_confirm') }}" href="{{ action('Admin\UserController@delete', ['uids' => $item->uid]) }}">
+																<i class="icon-trash"></i> {{ trans('messages.delete') }}
+															</a>
+														</li>
+													</ul>
+												</div>
+											@endcan
 										</td>
 									</tr>
 								@endforeach

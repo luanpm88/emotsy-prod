@@ -24,8 +24,12 @@ class TemplateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        if ($request->user()->getOption("backend", "template_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $templates = \Mailixa\Model\Template::getAll();
         return view('admin.templates.index', [
             'templates' => $templates
@@ -39,6 +43,10 @@ class TemplateController extends Controller
      */
     public function listing(Request $request)
     {
+        if ($request->user()->getOption("backend", "template_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $templates = \Mailixa\Model\Template::adminSearch($request)->paginate($request->per_page);
 
         return view('admin.templates._list', [
@@ -58,7 +66,7 @@ class TemplateController extends Controller
         $template = new \Mailixa\Model\Template();
         
         // authorize
-        if (\Gate::denies('create', $template)) {
+        if ($request->user()->getOption("backend", "template_create") == 'no') {
             return $this->notAuthorized();
         }
         
@@ -87,7 +95,7 @@ class TemplateController extends Controller
         $template->shared = true;
         
         // authorize
-        if (\Gate::denies('update', $template)) {
+        if ($request->user()->getOption("backend", "template_create") == 'no') {
             return $this->notAuthorized();
         }
         
@@ -124,7 +132,9 @@ class TemplateController extends Controller
         $template = \Mailixa\Model\Template::findByUid($uid);
         
         // authorize
-        if (\Gate::denies('update', $template)) {
+        if ($request->user()->getOption("backend", "template_update") == 'no'
+            || ($request->user()->getOption("backend", "template_update") == 'own' && $template->user_id != $user->id)
+        ) {
             return $this->notAuthorized();
         }
         
@@ -152,7 +162,9 @@ class TemplateController extends Controller
         $template = \Mailixa\Model\Template::findByUid($request->uid);
         
         // authorize
-        if (\Gate::denies('update', $template)) {
+        if ($request->user()->getOption("backend", "template_update") == 'no'
+            || ($request->user()->getOption("backend", "template_update") == 'own' && $template->user_id != $user->id)
+        ) {
             return $this->notAuthorized();
         }
         
@@ -192,7 +204,7 @@ class TemplateController extends Controller
         $template->shared = true;
         
         // authorize
-        if (\Gate::denies('update', $template)) {
+        if ($request->user()->getOption("backend", "template_create") == 'no') {
             return $this->notAuthorized();
         }
             
@@ -316,5 +328,33 @@ class TemplateController extends Controller
         return view('admin.templates.upload', [
             'template' => $template
         ]);
+    }
+    
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {        
+        $items = \Mailixa\Model\Template::whereIn("uid", explode(",", $request->uids));
+        
+        foreach ($items->get() as $item) {
+            // authorize
+            if (
+                $request->user()->getOption("backend", "template_delete") == 'no'
+                || ($request->user()->getOption("backend", "template_delete") == 'own' && $item->user_id != $request->user()->id)
+            ) {
+                return;
+            }
+        }
+        
+        foreach ($items->get() as $item) {
+            $item->delete();
+        }
+        
+        // Redirect to my lists page
+        echo(trans('messages.templates.deleted'));
     }
 }

@@ -123,7 +123,11 @@ class SendingServer extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = SendingServer::where("user_id", "=", $user->id);
+        $query = SendingServer::select("sending_servers.*");
+        
+        if ($request->user()->getOption("backend", "sending_server_read") == 'own') {
+            $query = $query->where("sending_servers.user_id", "=", $request->user()->id);
+        }
         
         // Keyword
         if(!empty(trim($request->keyword))) {

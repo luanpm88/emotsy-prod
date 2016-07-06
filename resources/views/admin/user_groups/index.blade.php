@@ -52,11 +52,13 @@
 								</div>
 							@endif
 						</div>
-						<div class="col-md-2 text-right">
-							<a href="{{ action("Admin\UserGroupController@create") }}" type="button" class="btn bg-info-800">
-								<i class="icon icon-plus2"></i> {{ trans('messages.create_user_group') }}
-							</a>
-						</div>
+						@can('create', new Mailixa\Model\UserGroup())
+							<div class="col-md-2 text-right">
+								<a href="{{ action("Admin\UserGroupController@create") }}" type="button" class="btn bg-info-800">
+									<i class="icon icon-plus2"></i> {{ trans('messages.create_user_group') }}
+								</a>
+							</div>
+						@endcan
 					</div>
 					
 					<div class="pml-table-container">

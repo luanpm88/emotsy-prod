@@ -26,6 +26,10 @@ class BounceHandlerController extends Controller
      */
     public function index(Request $request)
     {
+        if ($request->user()->getOption("backend", "bounce_handler_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\BounceHandler::getAll();
         return view('admin.bounce_handlers.index', [
             'items' => $items,
@@ -39,6 +43,10 @@ class BounceHandlerController extends Controller
      */
     public function listing(Request $request)
     {
+        if ($request->user()->getOption("backend", "bounce_handler_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\BounceHandler::search($request)->paginate($request->per_page);
         
         return view('admin.bounce_handlers._list', [

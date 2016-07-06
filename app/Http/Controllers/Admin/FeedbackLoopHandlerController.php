@@ -26,6 +26,10 @@ class FeedbackLoopHandlerController extends Controller
      */
     public function index(Request $request)
     {
+        if ($request->user()->getOption("backend", "fbl_handler_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\FeedbackLoopHandler::getAll();
         return view('admin.feedback_loop_handlers.index', [
             'items' => $items,
@@ -39,6 +43,10 @@ class FeedbackLoopHandlerController extends Controller
      */
     public function listing(Request $request)
     {
+        if ($request->user()->getOption("backend", "fbl_handler_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\FeedbackLoopHandler::search($request)->paginate($request->per_page);
         
         return view('admin.feedback_loop_handlers._list', [

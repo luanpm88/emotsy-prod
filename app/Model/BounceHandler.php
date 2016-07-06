@@ -44,7 +44,11 @@ class BounceHandler extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = BounceHandler::where("user_id", "=", $user->id);
+        $query = BounceHandler::select("bounce_handlers.*");
+        
+        if ($request->user()->getOption("backend", "bounce_handler_read") == 'own') {
+            $query = $query->where("bounce_handlers.user_id", "=", $request->user()->id);
+        }
         
         // Keyword
         if(!empty(trim($request->keyword))) {

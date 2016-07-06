@@ -48,8 +48,7 @@
 									</div>
 									<span class="filter-group">
 										<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
-										<select class="select" name="sort-order">
-											<option value="custom_order">{{ trans('messages.custom_order') }}</option>
+										<select class="select" name="sort-order">											
 											<option value="sending_servers.name">{{ trans('messages.name') }}</option>
                                             <option value="sending_servers.created_at">{{ trans('messages.created_at') }}</option>
 											<option value="sending_servers.updated_at">{{ trans('messages.updated_at') }}</option>
@@ -74,11 +73,13 @@
 								</div>
 							@endif
 						</div>
-						<div class="col-md-2 text-right">
-							<a href="#" type="button" class="btn bg-info-800" data-toggle="modal" data-target="#server_types">
-								<i class="icon icon-plus2"></i> {{ trans('messages.create_sending_server') }}
-							</a>
-						</div>
+						@can('create', new Mailixa\Model\SendingServer())
+							<div class="col-md-2 text-right">
+								<a href="#" type="button" class="btn bg-info-800" data-toggle="modal" data-target="#server_types">
+									<i class="icon icon-plus2"></i> {{ trans('messages.create_sending_server') }}
+								</a>
+							</div>
+						@endcan
 					</div>
 					
 					<div class="pml-table-container">

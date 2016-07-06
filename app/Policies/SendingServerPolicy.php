@@ -20,16 +20,23 @@ class SendingServerPolicy
     
     public function create(\Mailixa\Model\User $user, \Mailixa\Model\SendingServer $item)
     {
-        return true;
+        $can = $user->getOption("backend", "sending_server_create") == 'yes';
+        return $can;
     }
     
     public function update(\Mailixa\Model\User $user, \Mailixa\Model\SendingServer $item)
     {
-        return $item->user_id == $user->id;
+        $ability = $user->getOption("backend", "sending_server_update");
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->id == $item->user_id);
+        return $can;
     }
     
     public function delete(\Mailixa\Model\User $user, \Mailixa\Model\SendingServer $item)
     {
-        return $item->user_id == $user->id;
+        $ability = $user->getOption("backend", "sending_server_delete");
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->id == $item->user_id);
+        return $can;
     }
 }

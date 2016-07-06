@@ -27,17 +27,21 @@
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>
-											<a href="{{ action('Admin\LanguageController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
-											<div class="btn-group">										
-												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-												<ul class="dropdown-menu dropdown-menu-right">													
-													<li>														
-														<a delete-confirm="{{ trans('messages.delete_languages_confirm') }}" href="{{ action('Admin\LanguageController@delete', ["uids" => $item->uid]) }}">
-															<i class="icon-trash"></i> {{ trans('messages.delete') }}
-														</a>
-													</li>
-												</ul>
-											</div>
+											@can("update", $item)
+												<a href="{{ action('Admin\LanguageController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+											@endcan
+											@can("delete", $item)
+												<div class="btn-group">										
+													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+													<ul class="dropdown-menu dropdown-menu-right">													
+														<li>														
+															<a delete-confirm="{{ trans('messages.delete_languages_confirm') }}" href="{{ action('Admin\LanguageController@delete', ["uids" => $item->uid]) }}">
+																<i class="icon-trash"></i> {{ trans('messages.delete') }}
+															</a>
+														</li>
+													</ul>
+												</div>
+											@endcan
 										</td>
 									</tr>
 								@endforeach

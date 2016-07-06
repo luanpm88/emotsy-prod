@@ -20,16 +20,21 @@ class LanguagePolicy
     
     public function create(\Mailixa\Model\User $user, \Mailixa\Model\Language $item)
     {
-        return true;
+        $can = $user->getOption("backend", "language_create") == 'yes';
+        return $can;
     }
     
     public function update(\Mailixa\Model\User $user, \Mailixa\Model\Language $item)
     {
-        return true;
+        $ability = $user->getOption("backend", "language_update");
+        $can = $ability == 'yes';
+        return $can;
     }
     
     public function delete(\Mailixa\Model\User $user, \Mailixa\Model\Language $item)
     {
-        return true;
+        $ability = $user->getOption("backend", "language_delete");
+        $can = $ability == 'yes';
+        return $can;
     }
 }

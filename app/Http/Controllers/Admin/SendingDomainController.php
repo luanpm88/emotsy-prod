@@ -26,6 +26,10 @@ class SendingDomainController extends Controller
      */
     public function index(Request $request)
     {
+        if ($request->user()->getOption("backend", "sending_domain_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\SendingDomain::getAll();
         return view('admin.sending_domains.index', [
             'items' => $items,
@@ -39,6 +43,10 @@ class SendingDomainController extends Controller
      */
     public function listing(Request $request)
     {
+        if ($request->user()->getOption("backend", "sending_domain_read") == 'no') {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\SendingDomain::search($request)->paginate($request->per_page);
         
         return view('admin.sending_domains._list', [
