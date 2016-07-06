@@ -507,4 +507,7 @@ $(function() {
         dashboardQuickview($(this), $('.list-quickview-container'));
     });
     $('.dashboard-list-select').trigger("change");
+    
+    // scrollbar
+    $('.scrollbar-box').mCustomScrollbar({theme:"minimal"});
 });

@@ -1,4 +1,4 @@
-			<h3 class="mt-10">{{ trans('messages.sent_to') }} <span class="text-teal text-bold">2</span> {{ trans('messages.recipients') }}</h3>
+			<h4 class="mt-10 text-semibold">{{ trans('messages.sent_to') }} <span class="text-teal text-bold">2</span> {{ trans('messages.recipients') }}</h4>
             
             <div class="row">
                 <div class="col-md-6 campaigns-summary">
@@ -22,8 +22,6 @@
                     </div>
                 </div>
             </div>         
-                
-            <hr />
             
 			@include("campaigns._open_click_rate")
             

@@ -9,10 +9,11 @@
 @section('content')
     <h1>{{ trans('messages.dashboard') }}</h1>
     
+	
     <h2 class="text-teal-800">{{ trans('messages.recently_sent_campaigns') }}</h2>
     
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-6">
             @include('helpers.form_control', [
                 'type' => 'select',
                 'class' => 'dashboard-campaign-select',
@@ -31,7 +32,7 @@
     <h2 class="text-teal-800">{{ trans('messages.list_growth') }}</h2>
     
     <div class="row">
-        <div class="col-md-3">
+        <div class="col-md-6">
             @include('helpers.form_control', [
                 'type' => 'select',
                 'class' => 'dashboard-list-select',
@@ -98,4 +99,41 @@
 					
 				</div>
 			</div>
+				
+	<br />
+    <br />
+    <h2 class="text-teal-800">{{ trans('messages.action_log') }}</h2>
+	<div class="scrollbar-box action-log-box">
+		<!-- Timeline -->
+		<div class="timeline timeline-left content-group">
+			<div class="timeline-container">				
+					@foreach (Auth::user()->logs as $log)
+						<!-- Sales stats -->
+						<div class="timeline-row">
+							<div class="timeline-icon">
+								<a href="#"><img src="{{ action('UserController@avatar', $log->user->uid) }}" alt=""></a>
+							</div>
+
+							<div class="panel panel-flat timeline-content">
+								<div class="panel-heading">
+									<h6 class="panel-title text-semibold">{{ $log->user->displayName() }}</h6>
+									<div class="heading-elements">
+										<span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at->diffForHumans() }}</span>
+									</div>
+								</div>
+
+								<div class="panel-body">
+									{!! $log->message() !!}
+								</div>
+							</div>
+						</div>
+						<!-- /sales stats -->
+					@endforeach								
+			</div>
+		</div>
+	</div>
+	
+	<br>
+	<br>
+    
 @endsection
