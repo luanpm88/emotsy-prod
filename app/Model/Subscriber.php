@@ -223,6 +223,9 @@ class Subscriber extends Model
                 $str .= "\n".$count;
                 $bytes_written = \File::put($directory.$list->id."-process.log", $str);
                 
+                // Action Log
+                $list->log('import_max_error', $user, ["count" => $count]);
+                
                 return;
             }
             
@@ -280,6 +283,9 @@ class Subscriber extends Model
                                         ]);
         $str = "finished\n".$content_cache."\n100";
         $bytes_written = \File::put($directory.$list->id."-process.log", $str);
+        
+        // Action Log
+        $list->log('import_success', $user, ["count" => $success, "error" => $error]);
     }
     
      /**
@@ -340,7 +346,9 @@ class Subscriber extends Model
                                         ]);
         $str = "finished\n" . $content_cache . "\n100";
         $bytes_written = \File::put($directory.$list->id."-process.log", $str);
-    
+        
+        // Action Log
+        $list->log('export_success', $user, ["count" => $success, "error" => $error]);
     }
     
     /**
@@ -352,5 +360,32 @@ class Subscriber extends Model
     public function getSecurityToken($action) {
         $string = $this->email + $action + env("APP_SECRET");
         return md5($string);
+    }
+    
+    /**
+     * Create customer action log
+     *
+     * @param string $cat
+     * @param User $user
+     * @param array $add_datas
+     * @return void
+     */
+    public function log($name, $user, $add_datas=[])
+    {
+        $data = [
+                'id' => $this->id,
+                'email' => $this->email,
+                'list_id' => $this->mail_list_id,
+                'list_name' => $this->mailList->name,
+        ];
+        
+        $data = array_merge($data, $add_datas);
+
+        \Mailixa\Model\Log::create([
+                                'user_id' => $user->id,
+                                'type' => 'subscriber',
+                                'name' => $name,
+                                'data' => json_encode($data),
+                            ]);
     }
 }

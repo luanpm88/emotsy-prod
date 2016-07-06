@@ -505,6 +505,41 @@ class Campaign extends Model
         
         return collect([]);
     }
+    
+    /**
+     * Create customer action log
+     *
+     * @param string $cat
+     * @param User $user
+     * @param array $add_datas
+     * @return void
+     */
+    public function log($name, $user, $add_datas=[])
+    {
+        $data = [
+                'id' => $this->id,
+                'name' => $this->name,
+        ];
+        
+        if (is_object($this->mailList)) {
+            $data['list_id'] = $this->mail_list_id;
+            $data['list_name'] = $this->mailList->name;
+        }
+        
+        if (is_object($this->segment)) {
+            $data['segment_id'] = $this->segment_id;
+            $data['segment_name'] = $this->segment->name;
+        }
+        
+        $data = array_merge($data, $add_datas);
+
+        \Mailixa\Model\Log::create([
+                                'user_id' => $user->id,
+                                'type' => 'campaign',
+                                'name' => $name,
+                                'data' => json_encode($data),
+                            ]);
+    }
 }
 
 

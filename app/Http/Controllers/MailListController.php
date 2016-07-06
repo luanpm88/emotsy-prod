@@ -111,6 +111,9 @@ class MailListController extends Controller
             $list->contact_id = $contact->id;
             $list->save();
             
+            // Log
+            $list->log('created', $request->user());
+            
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.list.created'));
             return redirect()->action('MailListController@index');
@@ -188,6 +191,9 @@ class MailListController extends Controller
             $list->fill($request->all());
             $list->save();
             
+            // Log
+            $list->log('updated', $request->user());
+            
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.list.updated'));
             return redirect()->action('MailListController@index');
@@ -264,6 +270,9 @@ class MailListController extends Controller
         
         foreach ($lists->get() as $item) {
             $item->delete();
+            
+            // Log
+            $item->log('deleted', $request->user());
         }
 
         // Redirect to my lists page

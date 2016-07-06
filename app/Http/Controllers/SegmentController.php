@@ -138,6 +138,9 @@ class SegmentController extends Controller
                 $condition->save();
             }
             
+            // Log
+            $segment->log('created', $request->user());
+            
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.segment.created'));
             return redirect()->action('SegmentController@index', $list->uid);
@@ -287,6 +290,9 @@ class SegmentController extends Controller
                 $condition->save();
             }
             
+            // Log
+            $segment->log('updated', $request->user());
+            
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.segment.updated'));
             return redirect()->action('SegmentController@index', $list->uid);
@@ -323,6 +329,9 @@ class SegmentController extends Controller
         
         foreach ($items->get() as $item) {
             $item->delete();
+            
+            // Log
+            $item->log('deleted', $request->user());
         }
 
         // Redirect to my lists page

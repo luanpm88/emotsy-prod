@@ -12,6 +12,19 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, AuthorizesResources, DispatchesJobs, ValidatesRequests;
     
+    public function __construct()
+    {
+        // Generate info
+        try {
+            $user = \Auth::user();
+            if (is_object($user->language)) {
+                \App::setLocale($user->language->code);
+                \Carbon\Carbon::setLocale($user->language->code);
+            }
+        } catch (\Exception $e) {
+        }
+    }
+    
     /**
      * Check if the user is not authorized.
      *

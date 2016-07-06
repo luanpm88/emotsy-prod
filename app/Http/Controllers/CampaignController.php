@@ -15,6 +15,8 @@ class CampaignController extends Controller
      */
     public function __construct()
     {
+        parent::__construct();
+        
         $this->middleware('auth');
     }
     
@@ -262,6 +264,9 @@ class CampaignController extends Controller
             $campaign->fill($request->all());
             $campaign->save();
             
+            // Log
+            $campaign->log('created', $request->user());
+            
             return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
         }
         
@@ -381,7 +386,7 @@ class CampaignController extends Controller
     public function confirm(Request $request)
     {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
-        var_dump($campaign->updateLinks());
+
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
@@ -393,6 +398,9 @@ class CampaignController extends Controller
             // Save campaign
             $campaign->status = \Mailixa\Model\Campaign::STATUS_SENDING;
             $campaign->save();
+            
+            // Log
+            $campaign->log('started', $request->user());
             
             return redirect()->action('CampaignController@index');
         }
@@ -421,6 +429,9 @@ class CampaignController extends Controller
         
         foreach ($items->get() as $item) {
             $item->delete();
+            
+            // Log
+            $item->log('deleted', $request->user());
         }
 
         // Redirect to my lists page

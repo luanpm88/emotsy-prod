@@ -111,6 +111,9 @@ class SubscriberController extends Controller
             // Update field
             $subscriber->updateFields($request->all());
             
+            // Log
+            $subscriber->log('created', $request->user());
+            
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.subscriber.created'));
             return redirect()->action('SubscriberController@index', $list->uid);
@@ -191,6 +194,9 @@ class SubscriberController extends Controller
             // Update field
             $subscriber->updateFields($request->all());
             
+            // Log
+            $subscriber->log('updated', $request->user());
+            
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.subscriber.updated'));
             return redirect()->action('SubscriberController@index', $list->uid);
@@ -227,6 +233,9 @@ class SubscriberController extends Controller
         
         foreach ($subscribers->get() as $subscriber) {
             $subscriber->delete();
+            
+            // Log
+            $subscriber->log('deleted', $request->user());
         }
 
         // Redirect to my lists page
@@ -253,6 +262,9 @@ class SubscriberController extends Controller
         foreach ($subscribers->get() as $subscriber) {
             $subscriber->status = "subscribed";
             $subscriber->save();
+            
+            // Log
+            $subscriber->log('subscribed', $request->user());
         }
 
         // Redirect to my lists page
@@ -279,6 +291,9 @@ class SubscriberController extends Controller
         foreach ($subscribers->get() as $subscriber) {
             $subscriber->status = "unsubscribed";
             $subscriber->save();
+            
+            // Log
+            $subscriber->log('unsubscribed', $request->user());
         }
 
         // Redirect to my lists page
@@ -310,6 +325,9 @@ class SubscriberController extends Controller
             // Upload csv
             $filename = $list->id."-data.csv";
             $request->file('file')->move($upload_path, $filename);
+            
+            // Action Log
+            $list->log('import_started', $request->user());
             
             sleep(1);
             //run import job
@@ -348,9 +366,9 @@ class SubscriberController extends Controller
     {
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
         
-        \Mailixa\Model\Subscriber::export($request->user(), $list);
+        // \Mailixa\Model\Subscriber::export($request->user(), $list);
         
-        if ($request->hasFile('file'))
+        if ($request->isMethod('post'))
         {
             $upload_path = storage_path('export/');
             
@@ -360,7 +378,10 @@ class SubscriberController extends Controller
             }
             
             $str = "start\n\n0";
-            $bytes_written = \File::put($upload_path.$list->id."-process.log", $str);            
+            $bytes_written = \File::put($upload_path.$list->id."-process.log", $str);
+            
+            // Action Log
+            $list->log('export_started', $request->user());
             
             sleep(1);
             //run import job

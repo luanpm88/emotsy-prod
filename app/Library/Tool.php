@@ -131,5 +131,15 @@ class Tool
             $result = $result->timezone($timezone);
         }       
         return $result;
-   }
+    }
+    
+    /**
+     * For mat human time
+     * @param       DateTime
+     * @return      string
+     */
+    public static function formatHumanTime($time)
+    {        
+        return $time->diffForHumans();
+    }
 }

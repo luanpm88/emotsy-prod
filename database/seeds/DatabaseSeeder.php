@@ -74,18 +74,6 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
-
-        DB::table('delivery_handlers')->insert([
-            'id' => 1,
-            'host' => 'mail.elarion.com',
-            'username' => 'nghipm@elarion.com',
-            'password' => 'bí mật',
-            'protocol' => 'imap',
-            'port' => 993,
-            'encryption' => 'ssl',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at
-        ]);
         
         // Create list and default fields
         DB::table('mail_lists')->insert([

@@ -34,7 +34,12 @@ class SettingController extends Controller
             // Save settings
             foreach ($request->all() as $name => $value) {
                 if ($name != "_token") {
-                    \Mailixa\Model\Setting::set($name, $value);
+                    if ($settings[$name]['cat'] == 'general' && $request->user()->getOption('backend', 'setting_general') == 'yes') {
+                        \Mailixa\Model\Setting::set($name, $value);
+                    }
+                    if ($settings[$name]['cat'] == 'sending' && $request->user()->getOption('backend', 'setting_sending') == 'yes') {
+                        \Mailixa\Model\Setting::set($name, $value);
+                    }
                 }
             }
             

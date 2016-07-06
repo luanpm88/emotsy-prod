@@ -186,4 +186,28 @@ class Page extends Model
             $m->to($subscriber->email, "Subscriber")->subject($title);
         });
     }
+    
+    /**
+     * Add customer action log.
+     *
+     * @return void
+     */
+    public function log($name, $user, $add_datas=[])
+    {
+        $data = [
+            'id' => $this->id,
+            'alias' => $this->layout->alias,
+            'list_id' => $this->mail_list_id,
+            'list_name' => $this->mailList->name,
+        ];
+        
+        $data = array_merge($data, $add_datas);
+
+        Log::create([
+            'user_id' => $user->id,
+            'type' => 'page',
+            'name' => $name,
+            'data' => json_encode($data),
+        ]);
+    }
 }

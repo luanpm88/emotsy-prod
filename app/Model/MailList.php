@@ -325,6 +325,9 @@ class MailList extends Model
      */
     public function unsubscribeRate()
     {
+        if($this->subscribers()->count() == 0) {
+            return "#";
+        }
         return round(($this->unsubscribeCount()/$this->subscribers()->count())*100, 1);
     }
     
@@ -345,6 +348,9 @@ class MailList extends Model
      */
     public function subscribeRate()
     {
+        if($this->subscribers()->count() == 0) {
+            return "#";
+        }
         return round(($this->subscribeCount()/$this->subscribers()->count())*100, 1);
     }
     
@@ -356,6 +362,28 @@ class MailList extends Model
     public function unconfirmedCount()
     {
         return $this->subscribers()->where("status", "=", "unconfirmed")->count();
+    }
+    
+    /**
+     * Add customer action log.
+     *
+     * @return void
+     */
+    public function log($name, $user, $add_datas=[])
+    {
+        $data = [
+            'id' => $this->id,
+            'name' => $this->name,
+        ];
+        
+        $data = array_merge($data, $add_datas);
+
+        Log::create([
+            'user_id' => $user->id,
+            'type' => 'list',
+            'name' => $name,
+            'data' => json_encode($data),
+        ]);
     }
 
 }

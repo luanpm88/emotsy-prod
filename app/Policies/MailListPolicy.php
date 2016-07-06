@@ -28,4 +28,9 @@ class MailListPolicy
     {
         return $item->user_id == $user->id;
     }
+    
+    public function delete(\Mailixa\Model\User $user, \Mailixa\Model\MailList $item)
+    {
+        return $item->user_id == $user->id;
+    }
 }

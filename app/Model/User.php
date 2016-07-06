@@ -107,6 +107,11 @@ class User extends Authenticatable
         return $this->hasMany('Mailixa\Model\MailList')->orderBy("created_at", "desc");
     }
     
+    public function language()
+    {
+        return $this->belongsTo('Mailixa\Model\Language');
+    }
+    
     public function campaigns()
     {
         return $this->hasMany('Mailixa\Model\Campaign')->orderBy("created_at", "desc");
@@ -115,6 +120,11 @@ class User extends Authenticatable
     public function subscribers()
     {
         return $this->hasMany('Mailixa\Model\Subscriber');
+    }
+    
+    public function logs()
+    {
+        return $this->hasMany('Mailixa\Model\Log')->orderBy("created_at", "desc");
     }
     
     /**

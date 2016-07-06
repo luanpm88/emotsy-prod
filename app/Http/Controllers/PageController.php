@@ -55,6 +55,9 @@ class PageController extends Controller
             $page->fill($request->all());
             $page->save();
             
+            // Log
+            $page->log('updated', $request->user());
+            
             $request->session()->flash('alert-success', trans('messages.page.updated'));
             return redirect()->action('PageController@update', array("list_uid" => $list->uid, "alias" => $layout->alias ));
         }
