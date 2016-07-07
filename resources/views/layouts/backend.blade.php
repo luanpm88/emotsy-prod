@@ -168,11 +168,11 @@
                                 <i class="icon-file-text2"></i> {{ trans('messages.tracking_log') }}
                             </a>
                         </li>
-						<!--<li>
-                            <a href="">
+						<li rel0="BounceLogController">
+                            <a href="{{ action('Admin\BounceLogController@index') }}">
                                 <i class="icon-file-text2"></i> {{ trans('messages.bounce_log') }}
                             </a>
-                        </li>-->
+                        </li>
 						<li rel0="FeedbackLogController">
                             <a href="{{ action('Admin\FeedbackLogController@index') }}">
                                 <i class="icon-file-text2"></i> {{ trans('messages.feedback_log') }}

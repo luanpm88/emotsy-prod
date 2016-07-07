@@ -28,7 +28,7 @@ class FeedbackLogController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption("backend", "report_open_log") == 'no') {
+        if ($request->user()->getOption("backend", "report_feedback_log") == 'no') {
             return $this->notAuthorized();
         }
         
@@ -45,7 +45,7 @@ class FeedbackLogController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption("backend", "report_open_log") == 'no') {
+        if ($request->user()->getOption("backend", "report_feedback_log") == 'no') {
             return $this->notAuthorized();
         }
         

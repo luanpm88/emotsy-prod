@@ -206,6 +206,10 @@ Route::group(['namespace' => 'Admin'], function () {
     Route::get('admin/tracking_log', 'TrackingLogController@index');
     Route::get('admin/tracking_log/listing', 'TrackingLogController@listing');
     
+    // Feedback log
+    Route::get('admin/bounce_log', 'BounceLogController@index');
+    Route::get('admin/bounce_log/listing', 'BounceLogController@listing');
+    
     // Open log
     Route::get('admin/open_log', 'OpenLogController@index');
     Route::get('admin/open_log/listing', 'OpenLogController@listing');
