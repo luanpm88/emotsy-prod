@@ -17,7 +17,11 @@ class CreateBounceLogsTable extends Migration
             $table->integer('message_id');
             $table->string('bounce_type');
             $table->string('raw');
+            
             $table->timestamps();
+            
+            // foreign
+            $table->foreign('message_id')->references('message_id')->on('tracking_logs')->onDelete('cascade');
         });
     }
 
