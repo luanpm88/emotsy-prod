@@ -295,7 +295,7 @@ class Campaign extends Model
      */
     public static function getAll()
     {
-        return Campaign::select("*");
+        return Campaign::select("campaigns.*");
     }
     
     /**

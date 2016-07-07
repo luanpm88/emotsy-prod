@@ -15,10 +15,14 @@ class CreateClickLogsTable extends Migration
         Schema::create('click_logs', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('message_id');
-            $table->integer('url');
+            $table->string('url');
             $table->string('ip_address');
-            $table->string('user_agent');
+            $table->text('user_agent');
+            
             $table->timestamps();
+            
+            // foreign
+            $table->foreign('message_id')->references('message_id')->on('tracking_logs')->onDelete('cascade');
         });
     }
 

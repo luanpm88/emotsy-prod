@@ -211,9 +211,11 @@ class UserGroup extends Model
                 'language_update' => 'yes',
                 'language_delete' => 'yes',
                 'report_blacklist' => 'yes',
-                'report_sending_log' => 'yes',
+                'report_tracking_log' => 'yes',
                 'report_bounce_log' => 'yes',
                 'report_feedback_log' => 'yes',
+                'report_click_log' => 'yes',
+                'report_open_log' => 'yes',
             ]
         ];
     }
@@ -496,7 +498,7 @@ class UserGroup extends Model
 						['value' => 'yes', 'text' => trans('messages.yes')],
                     ],
                 ],
-                "sending_log" => [
+                "tracking_log" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
 						['value' => 'yes', 'text' => trans('messages.yes')],
@@ -509,6 +511,18 @@ class UserGroup extends Model
                     ],
                 ],
                 "feedback_log" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "open_log" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "click_log" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
 						['value' => 'yes', 'text' => trans('messages.yes')],

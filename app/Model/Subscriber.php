@@ -34,6 +34,11 @@ class Subscriber extends Model
         return $this->belongsTo('Mailixa\Model\MailList');
     }
     
+    public function campaign()
+    {
+        return $this->belongsTo('Mailixa\Model\Campaign');
+    }
+    
     /**
      * Bootstrap any application services.
      * 

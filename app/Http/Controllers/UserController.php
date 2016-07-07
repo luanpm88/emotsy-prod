@@ -9,6 +9,18 @@ use Mailixa\Http\Requests;
 class UserController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        
+        $this->middleware('auth');
+    }
+    
+    /**
      * Render user image.
      *
      * @return void

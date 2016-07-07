@@ -529,4 +529,22 @@ class CampaignController extends Controller
             'campaign' => $campaign
         ]);
     }
+    
+    /**
+     * Select2 campaign.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function select2(Request $request)
+    {
+        $data = ["items" => [], "more" => true];
+        
+        $data["items"][] = [ "id" => 0, "text" => trans('messages.all') ];
+        foreach (\Mailixa\Model\Campaign::getAll()->get() as $campaign) {
+            $data["items"][] = [ "id" => $campaign->uid, "text" => $campaign->name ];
+        }
+        
+        echo json_encode($data);
+    }
 }

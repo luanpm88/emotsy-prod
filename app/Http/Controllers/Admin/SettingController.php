@@ -10,6 +10,18 @@ use Mailixa\Http\Controllers\Controller;
 class SettingController extends Controller
 {
     /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        
+        $this->middleware('auth');
+    }
+    
+    /**
      * Display and update all settings.
      *
      * @return \Illuminate\Http\Response

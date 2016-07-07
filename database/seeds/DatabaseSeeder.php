@@ -164,26 +164,7 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
-
-        DB::table('tracking_logs')->insert([
-            'id' => 1,
-            'message_id' => 1,
-            'sending_server_id' => 1,
-            'user_id' => 1,
-            'campaign_id' => 1,
-            'status' => 'sent',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at
-        ]);
-
-        DB::table('user_group_settings')->insert([
-            'id' => 1,
-            'name' => 'use_all_sending_servers',
-            'value' => '1',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at
-        ]);
-
+        
         DB::table('sending_servers')->insert([
             'id' => 1,
             'uid' => uniqid(),
@@ -198,5 +179,52 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
+
+        DB::table('tracking_logs')->insert([
+            'id' => 1,
+            'message_id' => 1,
+            'sending_server_id' => 1,
+            'user_id' => 1,
+            'campaign_id' => 1,
+            'subscriber_id' => 1,
+            'status' => 'sent',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+        
+        DB::table('open_logs')->insert([
+            'id' => 1,
+            'message_id' => 1,
+            'ip_address' => '111.111.00.11',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+        
+        DB::table('click_logs')->insert([
+            'id' => 1,
+            'message_id' => 1,
+            'url' => 'http://google.com',
+            'ip_address' => '111.111.00.11',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+        
+        DB::table('feedback_logs')->insert([
+            'id' => 1,
+            'message_id' => 1,
+            'feedback_type' => '0',
+            'raw_feedback_content' => '0',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
+        DB::table('user_group_settings')->insert([
+            'id' => 1,
+            'name' => 'use_all_sending_servers',
+            'value' => '1',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
     }
 }

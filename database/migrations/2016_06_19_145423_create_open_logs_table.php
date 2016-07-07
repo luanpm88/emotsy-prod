@@ -17,7 +17,11 @@ class CreateOpenLogsTable extends Migration
             $table->integer('message_id');
             $table->string('ip_address');
             $table->string('user_agent');
+            
             $table->timestamps();
+            
+            // foreign
+            $table->foreign('message_id')->references('message_id')->on('tracking_logs')->onDelete('cascade');
         });
     }
 

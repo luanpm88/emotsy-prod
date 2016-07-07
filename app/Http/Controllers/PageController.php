@@ -15,7 +15,20 @@ class PageController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+        parent::__construct();
+        
+        $this->middleware('auth', [
+            'except' => [
+                'signUpForm',
+                'signUpThankyouPage',
+                'signUpConfirmationThankyou',
+                'unsubscribeForm',
+                'unsubscribeSuccessPage',
+                'profileUpdateForm',
+                'profileUpdateSuccessPage',
+                'profileUpdateEmailSent',
+            ]
+        ]);
     }
     
     /**
@@ -106,7 +119,7 @@ class PageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function sign_up_form(Request $request)
+    public function signUpForm(Request $request)
     {
         $user = $request->user();
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
@@ -151,7 +164,7 @@ class PageController extends Controller
             $send_page->renderContent(null, $subscriber);    
             $send_page->sendMail($subscriber, trans('messages.' . $layout->alias . '.real'));
             
-            return redirect()->action('PageController@sign_up_thankyou_page', $list->uid);
+            return redirect()->action('PageController@signUpThankyouPage', $list->uid);
         }       
         
         return view('pages.form', [
@@ -167,7 +180,7 @@ class PageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function sign_up_thankyou_page(Request $request)
+    public function signUpThankyouPage(Request $request)
     {
         $user = $request->user();
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
@@ -190,7 +203,7 @@ class PageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function sign_up_confirmation_thankyou(Request $request)
+    public function signUpConfirmationThankyou(Request $request)
     {
         $user = $request->user();
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
@@ -225,7 +238,7 @@ class PageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function unsubscribe_form(Request $request)
+    public function unsubscribeForm(Request $request)
     {
         $user = $request->user();
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
@@ -250,7 +263,7 @@ class PageController extends Controller
                 $send_page->renderContent(null, $subscriber);    
                 $send_page->sendMail($subscriber, trans('messages.' . $layout->alias . '.real'));
                 
-                return redirect()->action('PageController@unsubscribe_success_page', ['list_uid' => $list->uid, "uid" => $subscriber->uid]);
+                return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, "uid" => $subscriber->uid]);
             }     
         }
         
@@ -266,7 +279,7 @@ class PageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function unsubscribe_success_page(Request $request)
+    public function unsubscribeSuccessPage(Request $request)
     {
         $user = $request->user();
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
@@ -289,7 +302,7 @@ class PageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function profile_update_form(Request $request)
+    public function profileUpdateForm(Request $request)
     {
         $user = $request->user();
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
@@ -321,7 +334,7 @@ class PageController extends Controller
                 // Update field
                 $subscriber->updateFields($request->all());
                 
-                return redirect()->action('PageController@profile_update_success_page', ['list_uid' => $list->uid, "uid" => $subscriber->uid]);
+                return redirect()->action('PageController@profileUpdateSuccessPage', ['list_uid' => $list->uid, "uid" => $subscriber->uid]);
             }     
         }
         
@@ -338,7 +351,7 @@ class PageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function profile_update_success_page(Request $request)
+    public function profileUpdateSuccessPage(Request $request)
     {
         $user = $request->user();
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
@@ -361,7 +374,7 @@ class PageController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function profile_update_email_sent(Request $request)
+    public function profileUpdateEmailSent(Request $request)
     {
         $user = $request->user();
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);

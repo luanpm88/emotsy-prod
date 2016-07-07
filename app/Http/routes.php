@@ -85,16 +85,16 @@ Route::get('lists/{list_uid}/segments/sample_condition', 'SegmentController@samp
 Route::get('lists/{list_uid}/pages/{alias}/update', 'PageController@update');
 Route::post('lists/{list_uid}/pages/{alias}/update', 'PageController@update');
 Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
-Route::get('lists/{list_uid}/sign-up', 'PageController@sign_up_form');
-Route::post('lists/{list_uid}/sign-up', 'PageController@sign_up_form');
-Route::get('lists/{list_uid}/sign-up/thank-you', 'PageController@sign_up_thankyou_page');
-Route::get('lists/{list_uid}/subscribe-confirm/{uid}/{code}', 'PageController@sign_up_confirmation_thankyou');
-Route::get('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribe_form');
-Route::post('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribe_form');
-Route::get('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profile_update_form');
-Route::post('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profile_update_form');
-Route::get('lists/{list_uid}/update-profile-success/{uid}', 'PageController@profile_update_success_page');
-Route::get('lists/{list_uid}/profile-update-email-sent/{uid}', 'PageController@profile_update_email_sent');
+Route::get('lists/{list_uid}/sign-up', 'PageController@signUpForm');
+Route::post('lists/{list_uid}/sign-up', 'PageController@signUpForm');
+Route::get('lists/{list_uid}/sign-up/thank-you', 'PageController@signUpThankyouPage');
+Route::get('lists/{list_uid}/subscribe-confirm/{uid}/{code}', 'PageController@signUpConfirmationThankyou');
+Route::get('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribeForm');
+Route::post('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribeForm');
+Route::get('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profileUpdateForm');
+Route::post('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profileUpdateForm');
+Route::get('lists/{list_uid}/update-profile-success/{uid}', 'PageController@profileUpdateSuccessPage');
+Route::get('lists/{list_uid}/profile-update-email-sent/{uid}', 'PageController@profileUpdateEmailSent');
 
 // Template
 Route::get('templates/{uid}/content', 'TemplateController@content');
@@ -129,6 +129,7 @@ Route::post('campaigns/{uid}/schedule', 'CampaignController@schedule');
 Route::get('campaigns/{uid}/confirm', 'CampaignController@confirm');
 Route::post('campaigns/{uid}/confirm', 'CampaignController@confirm');
 Route::get('campaigns/delete', 'CampaignController@delete');
+Route::get('campaigns/select2', 'CampaignController@select2');
 Route::resource('campaigns', 'CampaignController');
 Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
 Route::patch('campaigns/{uid}/update', 'CampaignController@update');
@@ -200,5 +201,21 @@ Route::group(['namespace' => 'Admin'], function () {
     // Setting
     Route::get('admin/settings', 'SettingController@index');
     Route::post('admin/settings', 'SettingController@index');
+    
+    // Tracking log
+    Route::get('admin/tracking_log', 'TrackingLogController@index');
+    Route::get('admin/tracking_log/listing', 'TrackingLogController@listing');
+    
+    // Open log
+    Route::get('admin/open_log', 'OpenLogController@index');
+    Route::get('admin/open_log/listing', 'OpenLogController@listing');
+    
+    // Click log
+    Route::get('admin/click_log', 'ClickLogController@index');
+    Route::get('admin/click_log/listing', 'ClickLogController@listing');
+    
+    // Feedback log
+    Route::get('admin/feedback_log', 'FeedbackLogController@index');
+    Route::get('admin/feedback_log/listing', 'FeedbackLogController@listing');
     
 });

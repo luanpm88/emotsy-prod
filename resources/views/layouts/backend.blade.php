@@ -147,7 +147,12 @@
 						@endif
                     </ul>
 				</li>
-				<li class="dropdown language-switch" rel0="">
+				<li class="dropdown language-switch"
+					 rel0="TrackingLogController"
+					 rel1="OpenLogController"
+					 rel2="ClickLogController"
+					 rel3="FeedbackLogController"
+				>
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						<i class="icon-file-text2"></i> {{ trans('messages.report') }}
                         <span class="caret"></span>
@@ -158,21 +163,32 @@
                                 <i class="glyphicon glyphicon-minus-sign"></i> {{ trans('messages.blacklist') }}
                             </a>
                         </li>
-						<li>
-                            <a href="">
-                                <i class="icon-file-text2"></i> {{ trans('messages.sending_log') }}
+						<li rel0="TrackingLogController">
+                            <a href="{{ action('Admin\TrackingLogController@index') }}">
+                                <i class="icon-file-text2"></i> {{ trans('messages.tracking_log') }}
                             </a>
                         </li>
-						<li>
+						<!--<li>
                             <a href="">
                                 <i class="icon-file-text2"></i> {{ trans('messages.bounce_log') }}
                             </a>
-                        </li>
-						<li>
-                            <a href="">
+                        </li>-->
+						<li rel0="FeedbackLogController">
+                            <a href="{{ action('Admin\FeedbackLogController@index') }}">
                                 <i class="icon-file-text2"></i> {{ trans('messages.feedback_log') }}
                             </a>
                         </li>
+						<li rel0="OpenLogController">
+                            <a href="{{ action('Admin\OpenLogController@index') }}">
+                                <i class="icon-file-text2"></i> {{ trans('messages.open_log') }}
+                            </a>
+                        </li>
+						<li rel0="ClickLogController">
+                            <a href="{{ action('Admin\ClickLogController@index') }}">
+                                <i class="icon-file-text2"></i> {{ trans('messages.click_log') }}
+                            </a>
+                        </li>
+						
                     </ul>
 				</li>
 			</ul>

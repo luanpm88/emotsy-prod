@@ -14,14 +14,15 @@ class CreateTrackingLogsTable extends Migration
     {
         Schema::create('tracking_logs', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('message_id');
-            $table->integer('user_id'); // deliberate redundant for quick retrieving
-            $table->integer('sending_server_id');
-            $table->integer('campaign_id'); // deliberate redundant for quick retrieving
-            $table->integer('subscriber_id'); // deliberate redundant for quick retrieving
+            $table->integer('message_id')->unique();
+            $table->integer('user_id')->unsigned(); // deliberate redundant for quick retrieving
+            $table->integer('sending_server_id')->unsigned();
+            $table->integer('campaign_id')->unsigned(); // deliberate redundant for quick retrieving
+            $table->integer('subscriber_id')->unsigned(); // deliberate redundant for quick retrieving
             $table->string('status');
             $table->string('note');
-            $table->timestamps();
+            
+            $table->timestamps();            
         });
     }
 

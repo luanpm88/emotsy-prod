@@ -17,7 +17,11 @@ class CreateFeedbackLogsTable extends Migration
             $table->integer('message_id');
             $table->integer('feedback_type');
             $table->integer('raw_feedback_content');
+            
             $table->timestamps();
+            
+            // foreign
+            $table->foreign('message_id')->references('message_id')->on('tracking_logs')->onDelete('cascade');
         });
     }
 

@@ -993,3 +993,21 @@ input.numeric {
 .mCS-minimal.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
     background: #00695C !important;
 }
+.second-line-mobile {
+    display: none;
+}
+table.table-log {
+    margin-top: 20px;
+}
+table.table-log tr th {
+    padding: 5px 10px;
+    background: #ddd;
+    color: #333;
+    font-weight: 600;
+}
+table.table-log tr td {
+    padding: 10px 10px;
+}
+table.table-log tr td:first-child {
+    padding-left: 10px;
+}
