@@ -12,7 +12,7 @@ class DatabaseSeeder extends Seeder
     public function run()
     {
         $created_at = Carbon\Carbon::now();
-        $updated_at = Carbon\Carbon::now();
+        $updated_at = $created_at;
         
         // Create default countries
         DB::table('countries')->insert([
