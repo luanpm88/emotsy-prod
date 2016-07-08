@@ -477,7 +477,7 @@ class CampaignController extends Controller
      */
     public function chart24h(Request $request)
     {
-        $campaign = \Mailixa\Model\MailList::findByUid($request->uid);
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
         $result = [
             "columns" => [],
             "data" => [],
@@ -492,8 +492,20 @@ class CampaignController extends Controller
         // datas
         foreach($result["bar_names"] as $key => $bar) {
             $data = [];
-            for($i = 23; $i >= 0; $i--) {
-                $data[] = $i+rand(0,100);
+            if($key == 0) {
+                for($i = 23; $i >= 0; $i--) {
+                    $data[] = $campaign->openUniqCount(
+                        \Carbon\Carbon::now()->subHours($i+1),
+                        \Carbon\Carbon::now()->subHours($i)
+                    );
+                }
+            } else {
+                for($i = 23; $i >= 0; $i--) {
+                    $data[] = $campaign->clickCount(
+                        \Carbon\Carbon::now()->subHours($i+1),
+                        \Carbon\Carbon::now()->subHours($i)
+                    );
+                }
             }
             
             $result["data"][] = [

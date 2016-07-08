@@ -62,41 +62,115 @@
 
 				<div class="tab-content">
 					<div class="tab-pane active" id="top-tab1">
-						
-					</div>
-					<div class="tab-pane" id="top-tab2">
-						
-					</div>
-					<div class="tab-pane" id="top-tab3">
 						<ul class="modern-listing mt-0 top-border-none">
-                            @foreach (Mailixa\Model\Link::all() as $num => $link)
-                                <li>
+							@foreach (Mailixa\Model\Campaign::topOpens()->get() as $num => $item)
+								<li>
                                     <div class="row">
-                                        <div class="col-md-8">
+                                        <div class="col-md-6">
                                             <i class="number">{{ $num+1 }}</i>
                                             <h6 class="mt-0 mb-0 text-semibold">
                                                 <a href="">
-                                                    {{ $link->url }}
+                                                    {{ $item->name }}
                                                 </a>
                                             </h6>
                                             <p>
-                                                {{ $link->campaigns()->count() }} {{ trans('messages.campaigns') }}
+												@if (is_object($item->segment))
+													{{ $item->mailList->name }} . {{ $item->segment->name }}													
+												@elseif (is_object($item->mailList))
+													{{ $item->mailList->name }}
+												@endif                                                
                                             </p>
                                         </div>
-                                        <div class="col-md-4 text-center">
+										<div class="col-md-2 text-left">
 											<h5 class="no-margin text-bold">
-												2
+												{{ $item->aggregate }}
 											</h5>
-											<span class="text-muted">Clicks</span>
+											<span class="text-muted">{{ trans('messages.opens') }}</span>
+                                                <br /><br />
+                                        </div>
+                                        <div class="col-md-2 text-left">
+											<h5 class="no-margin text-bold">
+												{{ $item->openUniqCount() }}
+											</h5>
+											<span class="text-muted">{{ trans('messages.uniq_opens') }}</span>
                                                 <br /><br />
                                         </div>
                                     </div>
 
                                 </li>
-                            @endforeach
-                        </ul>
-					</div>	
-					
+							@endforeach
+						</ul>
+					</div>
+					<div class="tab-pane" id="top-tab2">
+						<ul class="modern-listing mt-0 top-border-none">
+							@foreach (Mailixa\Model\Campaign::topClicks()->get() as $num => $item)
+								<li>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <i class="number">{{ $num+1 }}</i>
+                                            <h6 class="mt-0 mb-0 text-semibold">
+                                                <a href="">
+                                                    {{ $item->name }}
+                                                </a>
+                                            </h6>
+                                            <p>
+												@if (is_object($item->segment))
+													{{ $item->mailList->name }} . {{ $item->segment->name }}													
+												@elseif (is_object($item->mailList))
+													{{ $item->mailList->name }}
+												@endif                                                
+                                            </p>
+                                        </div>
+                                        <div class="col-md-2 text-left">
+											<h5 class="no-margin text-bold">
+												{{ $item->aggregate }}
+											</h5>
+											<span class="text-muted">{{ trans('messages.clicks') }}</span>
+                                                <br /><br />
+                                        </div>
+										<div class="col-md-2 text-left">
+											<h5 class="no-margin text-bold">
+												{{ $item->openCount() }}
+											</h5>
+											<span class="text-muted">{{ trans('messages.opens') }}</span>
+                                                <br /><br />
+                                        </div>
+                                    </div>
+
+                                </li>
+							@endforeach
+						</ul>
+					</div>
+					<div class="tab-pane" id="top-tab3">
+						
+						<ul class="modern-listing mt-0 top-border-none">
+							@foreach (Mailixa\Model\Campaign::topLinks()->get() as $num => $item)
+								<li>
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <i class="number">{{ $num+1 }}</i>
+                                            <h6 class="mt-0 mb-0 text-semibold">
+                                                <a href="">
+                                                    {{ $item->url }}
+                                                </a>
+                                            </h6>
+                                            <p>
+												{{ $item->campaigns()->count() }} {{ trans('messages.campaigns') }}                                              
+                                            </p>
+                                        </div>
+                                        <div class="col-md-4 text-left">
+											<h5 class="no-margin text-bold">
+												{{ $item->aggregate }}
+											</h5>
+											<span class="text-muted">{{ trans('messages.clicks') }}</span>
+                                                <br /><br />
+                                        </div>
+                                    </div>
+
+                                </li>
+							@endforeach
+						</ul>
+					</div>					
 				</div>
 			</div>
 				

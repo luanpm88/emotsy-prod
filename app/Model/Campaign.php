@@ -581,6 +581,16 @@ class Campaign extends Model
     }
     
     /**
+     * Count delivery processed
+     *
+     * @return number
+     */
+    public function deliveredCount()
+    {
+        return $this->trackingLogs()->where("status", "=", "sent")->count();
+    }
+    
+    /**
      * Count delivery success rate
      *
      * @return number
@@ -590,7 +600,7 @@ class Campaign extends Model
         if ($this->trackingCount() == 0) {
             return 0;
         }
-        return round(($this->delivery_success_count() / $this->trackingCount())*100, 0);
+        return round(($this->deliveredCount() / $this->trackingCount())*100, 0);
     }
     
     /**
@@ -616,6 +626,46 @@ class Campaign extends Model
         return round(($this->deliveryErrorCount() / $this->deliveryProcessedCount())*100, 0);
     }
     
+    /**
+     * Count click
+     *
+     * @return number
+     */
+    public function clickCount($start=null, $end=null)
+    {
+        $query = $this->clickLogs();
+        if (isset($start)) {
+            $query = $query->where('click_logs.created_at', '>=', $start);
+        }
+        if (isset($end)) {
+            $query = $query->where('click_logs.created_at', '<=', $end);
+        }
+        
+        return $query->count();
+    }
+    
+    /**
+     * Count click
+     *
+     * @return number
+     */
+    public function clickPerUniqOpen()
+    {
+        if ($this->openCount() == 0) {
+            return 0;
+        }
+        return round(($this->clickCount() / $this->openCount())*100, 0);
+    }
+    
+    /**
+     * Count abuse feedback
+     *
+     * @return number
+     */
+    public function abuseFeedbackCount()
+    {
+        return $this->feedbackLogs()->where("feedback_type", "=", "abuse")->count();
+    }
     
     /**
      * Count open
@@ -632,9 +682,17 @@ class Campaign extends Model
      *
      * @return number
      */
-    public function openUniqCount()
+    public function openUniqCount($start=null, $end=null)
     {
-        return $this->openLogs()->distinct('subscriber_id')->count('subscriber_id');
+        $query = $this->openLogs();
+        if (isset($start)) {
+            $query = $query->where('open_logs.created_at', '>=', $start);
+        }
+        if (isset($end)) {
+            $query = $query->where('open_logs.created_at', '<=', $end);
+        }
+        
+        return $query->distinct('subscriber_id')->count('subscriber_id');
     }
     
     /**
@@ -758,7 +816,18 @@ class Campaign extends Model
     }
     
     /**
-     * Get last open list
+     * Get last click
+     *
+     * @param number $number
+     * @return collect
+     */
+    public function lastClick()
+    {
+        return $this->clickLogs()->orderBy('created_at', 'desc')->first();
+    }
+    
+    /**
+     * Get last open
      *
      * @param number $number
      * @return collect
@@ -804,6 +873,53 @@ class Campaign extends Model
     {
         $last = $this->campaign_track_opens()->orderBy('created_at', 'desc')->first();
         return (is_object($last) ? $last->created_at->timezone(\Auth::user()->timezone) : null);
+    }
+    
+    /**
+     * Campaign top 5 opens
+     *
+     * @return datetime
+     */
+    public static function topOpens($number=5)
+    {
+        $records = Campaign::select(\DB::raw(\DB::getTablePrefix() . 'campaigns.*, count(*) as `aggregate`'))
+            ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
+            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+            ->groupBy('tracking_logs.message_id')
+            ->orderBy('aggregate', 'desc');
+            
+        return $records;
+    }
+    
+    /**
+     * Campaign top 5 clicks
+     *
+     * @return datetime
+     */
+    public static function topClicks($number=5)
+    {
+        $records = Campaign::select(\DB::raw(\DB::getTablePrefix() . 'campaigns.*, count(*) as `aggregate`'))
+            ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
+            ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
+            ->groupBy('tracking_logs.message_id')
+            ->orderBy('aggregate', 'desc');
+            
+        return $records;
+    }
+    
+    /**
+     * Campaign top 5 clicks
+     *
+     * @return datetime
+     */
+    public static function topLinks($number=5)
+    {
+        $records = Link::select(\DB::raw(\DB::getTablePrefix() . 'links.*, count(*) as `aggregate`'))
+            ->join('campaign_links', 'campaign_links.link_id', '=', 'links.id')
+            ->groupBy('campaign_links.link_id')
+            ->orderBy('aggregate', 'desc');
+            
+        return $records;
     }
 }
 
