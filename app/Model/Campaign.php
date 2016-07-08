@@ -49,12 +49,41 @@ class Campaign extends Model
     {
         return $this->belongsTo('Mailixa\Model\User');
     }
-
+    
+    public function trackingLogs()
+    {
+        return $this->hasMany('Mailixa\Model\TrackingLog');
+    }
+    
+    public function bounceLogs()
+    {
+        return $this->hasManyThrough('Mailixa\Model\BounceLog', 'Mailixa\Model\TrackingLog', 'campaign_id', 'message_id', 'id');
+    }
+    
+    public function openLogs()
+    {
+        return $this->hasManyThrough('Mailixa\Model\OpenLog', 'Mailixa\Model\TrackingLog', 'campaign_id', 'message_id', 'id');
+    }
+    
+    public function clickLogs()
+    {
+        return $this->hasManyThrough('Mailixa\Model\ClickLog', 'Mailixa\Model\TrackingLog', 'campaign_id', 'message_id', 'id');
+    }
+    
+    public function feedbackLogs()
+    {
+        return $this->hasManyThrough('Mailixa\Model\FeedbackLog', 'Mailixa\Model\TrackingLog', 'campaign_id', 'message_id', 'id');
+    }
+    
+    /**
+     * get pending campaigns
+     *
+     */
     public static function getPendingCampaigns()
     {
         return self::where('status', self::STATUS_PENDING)->get();
     }
-
+    
     /**
      * Mark the campaign as 'done' or 'sent'
      *
@@ -539,6 +568,242 @@ class Campaign extends Model
                                 'name' => $name,
                                 'data' => json_encode($data),
                             ]);
+    }
+    
+    /**
+     * Count delivery processed
+     *
+     * @return number
+     */
+    public function trackingCount()
+    {
+        return $this->trackingLogs()->count();
+    }
+    
+    /**
+     * Count delivery success rate
+     *
+     * @return number
+     */
+    public function deliveredRate()
+    {
+        if ($this->trackingCount() == 0) {
+            return 0;
+        }
+        return round(($this->delivery_success_count() / $this->trackingCount())*100, 0);
+    }
+    
+    /**
+     * Count delivery error
+     *
+     * @return number
+     */
+    public function deliveryErrorCount()
+    {
+        return $this->deliveryProcessedCount() - $this->delivery_success_count();
+    }
+    
+    /**
+     * Count delivery error rate
+     *
+     * @return number
+     */
+    public function deliveryErrorRate()
+    {
+        if ($this->deliveryProcessedCount() == 0) {
+            return 0;
+        }
+        return round(($this->deliveryErrorCount() / $this->deliveryProcessedCount())*100, 0);
+    }
+    
+    
+    /**
+     * Count open
+     *
+     * @return number
+     */
+    public function openCount()
+    {
+        return $this->openLogs()->count();
+    }
+    
+    /**
+     * Count unique open
+     *
+     * @return number
+     */
+    public function openUniqCount()
+    {
+        return $this->openLogs()->distinct('subscriber_id')->count('subscriber_id');
+    }
+    
+    /**
+     * Count open rate
+     *
+     * @return number
+     */
+    public function openRate()
+    {
+        if ($this->trackingCount() == 0) {
+            return 0;
+        }
+        return round(($this->openCount() / $this->trackingCount())*100, 0);
+    }
+    
+    /**
+     * Count unique open rate
+     *
+     * @return number
+     */
+    public function openUniqRate()
+    {
+        if ($this->trackingCount() == 0) {
+            return 0;
+        }
+        return round(($this->openUniqCount() / $this->trackingCount())*100, 0);
+    }
+    
+    
+    /**
+     * Count bounce back
+     *
+     * @return number
+     */
+    public function bounceCount()
+    {
+        return $this->campaign_bounce_logs()->count();
+    }
+    
+    /**
+     * Count bounce rate
+     *
+     * @return number
+     */
+    public function bounceRate()
+    {
+        if ($this->deliveryProcessedCount() == 0) {
+            return 0;
+        }
+        return round(($this->bounceCount() / $this->deliveryProcessedCount())*100, 0);
+    }
+    
+    /**
+     * Count hard bounce
+     *
+     * @return number
+     */
+    public function hardBounceCount()
+    {
+        return $this->campaign_bounce_logs()->where("bounce_type", "=", "hard")->count();
+    }
+    
+    /**
+     * Count hard bounce rate
+     *
+     * @return number
+     */
+    public function hardBounceRate()
+    {
+        if ($this->deliveryProcessedCount() == 0) {
+            return 0;
+        }
+        return round(($this->hardBounceCount() / $this->deliveryProcessedCount())*100, 0);
+    }
+    
+    /**
+     * Count soft bounce
+     *
+     * @return number
+     */
+    public function softBounceCount()
+    {
+        return $this->campaign_bounce_logs()->where("bounce_type", "=", "soft")->count();
+    }
+    
+    /**
+     * Count soft bounce rate
+     *
+     * @return number
+     */
+    public function softBounceRate()
+    {
+        if ($this->deliveryProcessedCount() == 0) {
+            return 0;
+        }
+        return round(($this->softBounceCount() / $this->deliveryProcessedCount())*100, 0);
+    }
+    
+    
+    /**
+     * Count unsubscibe
+     *
+     * @return number
+     */
+    public function unsubscribeCount()
+    {
+        return $this->campaign_track_unsubscribes()->count();
+    }
+    
+    /**
+     * Count unsubscibe rate
+     *
+     * @return number
+     */
+    public function unsubscribeRate()
+    {
+        if ($this->deliveryProcessedCount() == 0) {
+            return 0;
+        }
+        return round(($this->unsubscribeCount() / $this->deliveryProcessedCount())*100, 0);
+    }
+    
+    /**
+     * Get last open list
+     *
+     * @param number $number
+     * @return collect
+     */
+    public function lastOpen()
+    {
+        return $this->openLogs()->orderBy('created_at', 'desc')->first();
+    }
+    
+    /**
+     * Get last open list
+     *
+     * @param number $number
+     * @return collect
+     */
+    public function lastOpens($number)
+    {
+        return $this->openLogs()->orderBy('created_at', 'desc')->limit($number);
+    }
+    
+    /**
+     * Get most open subscribers
+     *
+     * @param number $number
+     * @return collect
+     */
+    public function mostOpenSubscribers($number)
+    {
+        return \Mailixa\Web\Subscriber::selectRaw(\DB::getTablePrefix()."list_subscriber.*, COUNT(".\DB::getTablePrefix()."campaign_track_unsubscribe.id) AS openCount")
+                            ->leftJoin('campaign_track_unsubscribe', 'campaign_track_unsubscribe.subscriber_id', '=', 'list_subscriber.subscriber_id')
+                            ->where('campaign_track_unsubscribe.campaign_id', '=', $this->campaign_id)
+                            ->groupBy('list_subscriber.subscriber_id')
+                            ->orderBy('openCount', 'desc')
+                            ->limit($number);
+    }
+    
+    /**
+     * Get last opened time
+     *
+     * @return datetime
+     */
+    public function getLastOpen()
+    {
+        $last = $this->campaign_track_opens()->orderBy('created_at', 'desc')->first();
+        return (is_object($last) ? $last->created_at->timezone(\Auth::user()->timezone) : null);
     }
 }
 
