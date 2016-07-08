@@ -24,13 +24,18 @@ class CampaignPolicy
         return ($max > $user->campaigns()->count() || $max == -1);
     }
     
+    public function overview(\Mailixa\Model\User $user, \Mailixa\Model\Campaign $item)
+    {
+        return $item->user_id == $user->id && $item->status != "new";
+    }
+    
     public function update(\Mailixa\Model\User $user, \Mailixa\Model\Campaign $item)
     {
-        return $item->user_id == $user->id;
+        return $item->user_id == $user->id && $item->status == "new";
     }
     
     public function delete(\Mailixa\Model\User $user, \Mailixa\Model\Campaign $item)
     {
-        return $item->user_id == $user->id;
+        return $item->user_id == $user->id && $item->status == "new";
     }
 }

@@ -547,4 +547,22 @@ class CampaignController extends Controller
         
         echo json_encode($data);
     }
+    
+    // url + message_id
+    // content: {tracking_url}
+    // http://mailixa.skj/campaigns/asdadadasdassda/open/7877565657698987
+    public function open()
+    {
+        // @todo dang assume la thong tin co du heet        
+        // $message_id = params[];
+
+    }
+    
+    // http://mailixa.skj/campaigns/asdadadasdassda/redirect/7877565657698987/hkasdfh73kdhs7362863287jsdhf7223
+    public function click()
+    {        
+        // redirect base64_decode($url);
+    }
+    
+    //
 }
