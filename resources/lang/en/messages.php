@@ -613,7 +613,7 @@ return [
     'total_items_count' => 'Total <span class="text-teal-600">:count</span> records',
     'clicked_at' => 'Clicked at',
     'sending_logs' => 'Sending logs',
-    '' => '',
+    'used_quota' => 'Used quota',
     '' => '',
     '' => '',
     '' => '',

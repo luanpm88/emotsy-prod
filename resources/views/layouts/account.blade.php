@@ -57,11 +57,20 @@
 
 					<ul class="dropdown-menu dropdown-menu-right">
 						@if (Auth::user()->userGroup->frontend_access)
-							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter"></i> {{ trans('messages.backend') }}</a></li>
+							<li><a href="{{ action("HomeController@index") }}"><i class="icon-exit2"></i> {{ trans('messages.frontend') }}</a></li>
 							<li class="divider"></li>
 						@endif
-						
-						<li><a href="{{ action("AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.profile') }}</a></li>
+						@if (Auth::user()->userGroup->backend_access)
+							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter2"></i> {{ trans('messages.backend') }}</a></li>
+							<li class="divider"></li>
+						@endif
+						<li class="dropdown">
+							<a href="#" class="top-quota-button" data-url="{{ action("AccountController@quotaLog") }}">
+								<i class="icon-stats-bars4"></i>
+								<span class="">{{ trans('messages.used_quota') }}</span>
+							</a>
+						</li>
+						<li><a href="{{ action("AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.account') }}</a></li>
 						<li><a href="{{ url("/logout") }}"><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a></li>
 					</ul>
 				</li>
@@ -109,7 +118,9 @@
 		<!-- /footer -->
 
 	</div>
-	<!-- /page container -->	
+	<!-- /page container -->
+	
+	@include("layouts._modals")
 	
 </body>
 </html>

@@ -5,7 +5,7 @@
 								@foreach ($logs as $key => $item)
 									<tr>
                                         <td width="1%">
-											<img width="40" class="img-circle mr-10" src="{{ action('UserController@avatar', $item->user->uid) }}" alt="">
+											<img width="50" class="img-circle mr-10" src="{{ action('UserController@avatar', $item->user->uid) }}" alt="">
 										</td>
 										<td>                                            
 											<p class="mb-0">                                                
@@ -14,7 +14,7 @@
                                             <div class="text-muted2 mt-5">{{ trans('messages.' . $item->type) }}</div>
 										</td>
 										<td>
-											<div class="single-stat-box pull-left">
+											<div class="pull-right">
 												<span class="text-muted2">{{ trans("messages.created_at") }}: {{ Mailixa\Library\Tool::formatDateTime($item->created_at) }}</span>
 											</div>
 										</td>										

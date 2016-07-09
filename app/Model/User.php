@@ -340,4 +340,197 @@ class User extends Authenticatable
     {
         return $this->userGroup->getOption($cat, $name);
     }
+    
+    /**
+     * Get max list quota.
+     *
+     * @return number
+     */
+    public function maxLists()
+    {
+        $count = $this->getOption("frontend", "list_max");
+        if ($count == -1) {
+            return "∞";
+        } else {
+            return $count;
+        }
+    }
+    
+    /**
+     * Count user lists.
+     *
+     * @return number
+     */
+    public function listsCount()
+    {
+        return $this->lists()->count();
+    }
+    
+    /**
+     * Calculate list usage.
+     *
+     * @return number
+     */
+    public function listsUsage()
+    {
+        if ($this->maxLists() == "∞") {
+            return 0;
+        }
+        if ($this->maxLists() == 0) {
+            return 100;
+        }
+        return round((($this->listsCount()/$this->maxLists())*100), 2);
+    }
+    
+    /**
+     * Get campaigns quota.
+     *
+     * @return number
+     */
+    public function maxCampaigns()
+    {
+        $count = $this->getOption("frontend", "campaign_max");
+        if ($count == -1) {
+            return "∞";
+        } else {
+            return $count;
+        }
+    }
+    
+    /**
+     * Count user's campaigns.
+     *
+     * @return number
+     */
+    public function campaignsCount()
+    {
+        return $this->campaigns()->count();
+    }
+    
+    /**
+     * Calculate campaign usage.
+     *
+     * @return number
+     */
+    public function campaignsUsage()
+    {
+        if ($this->maxCampaigns() == "∞") {
+            return 0;
+        }
+        if ($this->maxCampaigns() == 0) {
+            return 100;
+        }
+        return round((($this->campaignsCount()/$this->maxCampaigns())*100), 2);
+    }
+    
+    /**
+     * Get subscriber quota.
+     *
+     * @return number
+     */
+    public function maxSubscribers()
+    {
+        $count = $this->getOption("frontend", "subscriber_max");
+        if ($count == -1) {
+            return "∞";
+        } else {
+            return $count;
+        }
+    }
+    
+    /**
+     * Count user's subscribers.
+     *
+     * @return number
+     */
+    public function subscribersCount()
+    {
+        return $this->subscribers()->count();
+    }
+    
+    /**
+     * Calculate subscibers usage.
+     *
+     * @return number
+     */
+    public function subscribersUsage()
+    {
+        if ($this->maxSubscribers() == "∞") {
+            return 0;
+        }
+        if ($this->maxSubscribers() == 0 || $this->subscribersCount() > $this->maxSubscribers()) {
+            return 100;
+        }
+        return round((($this->subscribersCount()/$this->maxSubscribers())*100), 2);
+    }
+    
+    /**
+     * Get user's quota.
+     *
+     * @return string
+     */
+    public function maxQuota()
+    {
+        $quota = $this->getOption("frontend", "sending_quota");
+        if ($quota == "-1") {
+            return "∞";
+        } else {
+            return $quota;
+        }
+    }
+    
+    /**
+     * Get user's sending quota.
+     *
+     * @return string
+     */
+    public function sendingQuota()
+    {
+        $time_value = $this->getOption("frontend", "sending_quota_time");
+        $time_unit = $this->getOption("frontend", "sending_quota_time_unit");
+        $timezone = \Auth::user()->timezone;
+        
+        if ($time_value == "-1") {
+            $begin = null;
+        } else {
+            if ($time_unit == 'year') {
+                $begin = \Carbon\Carbon::now()->timezone($timezone)->subYear($time_value)->startOfYear();
+            } elseif ($time_unit == 'month') {
+                $begin = \Carbon\Carbon::now()->timezone($timezone)->subMonth($time_value)->startOfMonth();
+            } elseif ($time_unit == 'week') {
+                $begin = \Carbon\Carbon::now()->timezone($timezone)->subWeek($time_value)->startOfWeek();
+            } elseif ($time_unit == 'day') {
+                $begin = \Carbon\Carbon::now()->timezone($timezone)->subDay($time_value)->startOfDay();
+            } elseif ($time_unit == 'hour') {
+                $begin = \Carbon\Carbon::now()->timezone($timezone)->subHour($time_value);
+            } elseif ($time_unit == 'minute') {
+                $begin = \Carbon\Carbon::now()->timezone($timezone)->subMinute($time_value);
+            }
+        }
+        
+        $query = \Mailixa\Model\TrackingLog::leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
+        $query = $query->where("campaigns.user_id", "=", $this->id);
+        if (isset($begin)) {
+            $query = $query->where("tracking_logs.created_at", ">=", $begin);
+        }
+        
+        $count = $query->count();
+        return $count;
+    }
+    
+    /**
+     * Get user's sending quota rate.
+     *
+     * @return string
+     */
+    public function sendingQuotaUsage()
+    {
+        if ($this->maxQuota() == "∞") {
+            return "0";
+        } elseif ($this->maxQuota() == "0" || $this->sendingQuota() > $this->maxQuota()) {
+            return "100";
+        }
+
+        return round((($this->sendingQuota()/$this->maxQuota())*100), 2);
+    }
 }
