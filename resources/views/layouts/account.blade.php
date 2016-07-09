@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>@yield('title')</title>
+	
+	@include('layouts._css')
+	
+	@include('layouts._js')
+	
+</head>
+
+<body class="navbar-top">
+
+	<!-- Main navbar -->
+	<div class="navbar navbar-inverse navbar-fixed-top">
+		<div class="navbar-header">
+			<a class="navbar-brand" href="{{ action('HomeController@index') }}">
+				<img src="{{ URL::asset('assets/images/logo_light.png') }}" alt="">
+			</a>
+
+			<ul class="nav navbar-nav pull-right visible-xs-block">
+				<li><a class="mobile-menu-button" data-toggle="collapse" data-target="#navbar-mobile"><i class="icon-menu7"></i></a></li>
+			</ul>
+		</div>
+
+		<div class="navbar-collapse collapse" id="navbar-mobile">
+			<ul class="nav navbar-nav">
+                @if (Auth::user()->userGroup->frontend_access)
+                    <li rel0="HomeController">
+                        <a href="{{ action('HomeController@index') }}">
+                            <i class="icon-exit2"></i> {{ trans('messages.frontend') }}
+                        </a>
+                    </li>
+                @endif
+                @if (Auth::user()->userGroup->backend_access)
+                    <li rel0="HomeController">
+                        <a href="{{ action('Admin\HomeController@index') }}">
+                            <i class="icon-enter2"></i> {{ trans('messages.backend') }}
+                        </a>
+                    </li>
+                @endif
+			</ul>
+
+			<ul class="nav navbar-nav navbar-right">
+				
+				@include('layouts._top_log')
+
+				<li class="dropdown dropdown-user">
+					<a class="dropdown-toggle" data-toggle="dropdown">
+						<img src="{{ action('UserController@avatar', Auth::user()->uid) }}" alt="">
+						<span>{{ Auth::user()->displayName() }}</span>
+						<i class="caret"></i>
+					</a>
+
+					<ul class="dropdown-menu dropdown-menu-right">
+						@if (Auth::user()->userGroup->frontend_access)
+							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter"></i> {{ trans('messages.backend') }}</a></li>
+							<li class="divider"></li>
+						@endif
+						
+						<li><a href="{{ action("AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.profile') }}</a></li>
+						<li><a href="{{ url("/logout") }}"><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<!-- /main navbar -->
+	
+	<!-- Page header -->
+	<div class="page-header">
+		<div class="page-header-content">
+			
+			@yield('page_header')
+			
+		</div>
+	</div>
+	<!-- /page header -->
+
+	<!-- Page container -->
+	<div class="page-container">
+
+		<!-- Page content -->
+		<div class="page-content">
+
+			<!-- Main content -->
+			<div class="content-wrapper">
+			
+				<!-- display flash message -->
+				@include('common.errors')
+				
+				<!-- main inner content -->
+				@yield('content')
+                
+			</div>
+			<!-- /main content -->
+
+		</div>
+		<!-- /page content -->
+
+
+		<!-- Footer -->
+		<div class="footer text-muted">
+			{!! trans('messages.copy_right') !!}
+		</div>
+		<!-- /footer -->
+
+	</div>
+	<!-- /page container -->	
+	
+</body>
+</html>

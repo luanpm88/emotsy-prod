@@ -1,4 +1,4 @@
-@extends('layouts.frontend')
+@extends('layouts.account')
 
 @section('title', trans('messages.contact_information'))
 	

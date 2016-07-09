@@ -545,5 +545,19 @@ $(function() {
             minimumInputLength: 0,
         });
     });
+    
+    // Campaign quickview dashboard
+    $(document).on('click', '.top-quota-button', function() {
+        var url = $(this).attr("data-url");
+        $.ajax({
+            method: "GET",
+            url: url,
+        })
+        .done(function( msg ) {
+            $('#quota_modal .modal-body').html(msg);
+            $('a[data-target="#quota_modal"]').trigger("click");
+        });        
+    });
+    
         
 });

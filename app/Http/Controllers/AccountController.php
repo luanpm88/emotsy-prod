@@ -131,7 +131,7 @@ class AccountController extends Controller
     }
     
     /**
-     * Render user image.
+     * User logs.
      *
      * @return void
      */
@@ -143,7 +143,7 @@ class AccountController extends Controller
     }
     
     /**
-     * Render user image.
+     * Logs list.
      *
      * @return void
      */
@@ -153,5 +153,14 @@ class AccountController extends Controller
         return view('account.logs_listing', [
             'logs' => $logs
         ]);
+    }
+    
+    /**
+     * Quo ta logs
+     *
+     * @return void
+     */
+    public function quotaLog(Request $request) {
+        return view('account.quota_log');
     }
 }

@@ -22,6 +22,7 @@ Route::get('account/contact', 'AccountController@contact');
 Route::post('account/contact', 'AccountController@contact');
 Route::get('account/logs', 'AccountController@logs');
 Route::get('account/logs/listing', 'AccountController@logsListing');
+Route::get('account/quota_log', 'AccountController@quotaLog');
 
 // Translation data
 Route::get('/datatable_locale', 'Controller@datatable_locale');
