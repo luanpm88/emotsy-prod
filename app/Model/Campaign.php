@@ -724,6 +724,15 @@ class Campaign extends Model
         return round(($this->openUniqCount() / $this->trackingCount())*100, 0);
     }
     
+    /**
+     * Count bounce back
+     *
+     * @return number
+     */
+    public function feedbackCount()
+    {
+        return $this->feedbackLogs()->count();
+    }
     
     /**
      * Count bounce back
@@ -732,7 +741,7 @@ class Campaign extends Model
      */
     public function bounceCount()
     {
-        return $this->campaign_bounce_logs()->count();
+        return $this->bounceLogs()->count();
     }
     
     /**
@@ -936,6 +945,41 @@ class Campaign extends Model
         }
         
         $records = $records->groupBy('campaign_links.link_id')
+            ->orderBy('aggregate', 'desc');
+            
+        return $records;
+    }
+    
+    /**
+     * Campaign top 5 clicks
+     *
+     * @return datetime
+     */
+    public function getTopLinks($number=5)
+    {
+        $records = Link::select(\DB::raw(\DB::getTablePrefix() . 'links.*, count(*) as `aggregate`'))
+            ->join('campaign_links', 'campaign_links.link_id', '=', 'links.id')          
+            ->where("campaign_id", "=", $this->id);
+        
+        $records = $records->groupBy('campaign_links.link_id')
+            ->orderBy('aggregate', 'desc');
+            
+        return $records;
+    }
+    
+    /**
+     * Campaign top 5 clicks
+     *
+     * @return datetime
+     */
+    public function getTopOpenSubscribers($number=5)
+    {
+        $records = Subscriber::select(\DB::raw(\DB::getTablePrefix() . 'subscribers.*, count(*) as `aggregate`'))
+            ->join('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id')
+            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+            ->where("campaign_id", "=", $this->id);
+        
+        $records = $records->groupBy('tracking_logs.message_id')
             ->orderBy('aggregate', 'desc');
             
         return $records;

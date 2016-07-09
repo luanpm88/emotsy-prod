@@ -147,7 +147,7 @@ class AccountController extends Controller
      *
      * @return void
      */
-    public function logs_listing(Request $request) {
+    public function logsListing(Request $request) {
         $logs = \Mailixa\Model\Log::search($request)->paginate($request->per_page);
         
         return view('account.logs_listing', [

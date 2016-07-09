@@ -28,7 +28,7 @@
 				@include("account._menu")	
 	
 				<form class="listing-form"
-					data-url="{{ action('AccountController@logs_listing') }}"
+					data-url="{{ action('AccountController@logsListing') }}"
 					per-page="{{ Mailixa\Model\Log::$itemsPerPage }}"				
 				>				
 					<div class="row top-list-controls">
@@ -61,11 +61,6 @@
 									</span>-->
 								</div>
 							@endif
-						</div>
-						<div class="col-md-2 text-right">
-							<a href="{{ action("MailListController@create") }}" type="button" class="btn bg-info-800">
-								<i class="icon icon-plus2"></i> {{ trans('messages.create_list') }}
-							</a>
 						</div>
 					</div>
 					

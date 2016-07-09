@@ -70,9 +70,13 @@ class OpenLog extends Model
      *
      * @return collect
      */
-    public static function search($request)
+    public static function search($request, $campaign=null)
     {
         $query = OpenLog::filter($request);
+        
+        if (isset($campaign)) {
+            $query = $query->where("tracking_logs.campaign_id", "=", $campaign->id);
+        }
         
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
         

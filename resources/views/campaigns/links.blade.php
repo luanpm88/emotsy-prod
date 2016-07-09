@@ -22,7 +22,7 @@
                 <tr>
                     <th>{{ trans('messages.url') }}</th>
                     <th class="text-right">{{ trans('messages.total_clicks') }}</th>
-                    <th class="text-right">{{ trans('messages.unique_clicks') }}</th>
+                    <th class="text-right">{{ trans('messages.last_clicked') }}</th>
                 </tr>
 				@foreach ($campaign->getLinks() as $link)
 					<tr>
@@ -32,12 +32,16 @@
 							</a>
 						</td>
 						<td class="text-right">
-							1 (100%)
+							{{ $link->clicks(null, $campaign)->count() }}
 						</td>
 						<td class="text-right">
-							1 (100%)
+							{{ Mailixa\Library\Tool::formatDateTime($link->lastClick(null, $campaign)->created_at) }}
 						</td>
 					</tr>
 				@endforeach
             </table>
+			<br />
+			<div class="text-right">
+				<a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <i class="icon-arrow-right8"></i></a>
+			</div>
 @endsection

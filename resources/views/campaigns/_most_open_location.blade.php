@@ -4,30 +4,14 @@
                         <h4 class="text-semibold"><i class="icon-users4"></i> {{ trans('messages.subscribers_most_open') }}</h4>                        
                     </div>
                     <div class="stat-table">
-                        <div class="stat-row">
-                            <div class="pull-right num">
-                                0%
+                        @foreach ($campaign->getTopOpenSubscribers()->get() as $subscriber)
+                            <div class="stat-row">
+                                <div class="pull-right num">
+                                    {{ $subscriber->aggregate }}
+                                </div>
+                                <p class="text-muted">{{ $subscriber->email }}</p>
                             </div>
-                            <p class="text-muted">{{ trans('messages.successful_deliveries') }}</p>
-                        </div>
-                        <div class="stat-row">
-                            <div class="pull-right num">
-                                0%
-                            </div>
-                            <p class="text-muted">{{ trans('messages.total_opens') }}</p>
-                        </div>
-                        <div class="stat-row">
-                            <div class="pull-right num">
-                                0%
-                            </div>
-                            <p class="text-muted">{{ trans('messages.last_opened') }}</p>
-                        </div>
-                        <div class="stat-row">
-                            <div class="pull-right num">
-                                0%
-                            </div>
-                            <p class="text-muted">{{ trans('messages.forwarded') }}</p>
-                        </div>
+                        @endforeach                        
                     </div>
                 </div>
                 <div class="col-md-6">

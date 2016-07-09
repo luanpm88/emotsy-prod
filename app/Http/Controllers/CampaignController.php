@@ -576,5 +576,148 @@ class CampaignController extends Controller
         // redirect base64_decode($url);
     }
     
-    //
+    /**
+     * Render user image.
+     *
+     * @return void
+     */
+    public function trackingLog(Request $request) {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $items = $campaign->trackingLogs;
+        return view('campaigns.tracking_log', [
+            'items' => $items,
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Render user image.
+     *
+     * @return void
+     */
+    public function trackingLogListing(Request $request) {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $items = \Mailixa\Model\TrackingLog::search($request, $campaign)->paginate($request->per_page);
+        
+        return view('admin.tracking_logs._list', [
+            'items' => $items,
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Render user image.
+     *
+     * @return void
+     */
+    public function bounceLog(Request $request) {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $items = $campaign->bounceLogs;
+        return view('campaigns.bounce_log', [
+            'items' => $items,
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Render user image.
+     *
+     * @return void
+     */
+    public function bounceLogListing(Request $request) {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $items = \Mailixa\Model\BounceLog::search($request, $campaign)->paginate($request->per_page);
+        
+        return view('admin.bounce_logs._list', [
+            'items' => $items,
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Render user image.
+     *
+     * @return void
+     */
+    public function feedbackLog(Request $request) {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $items = $campaign->openLogs;
+        return view('campaigns.feedback_log', [
+            'items' => $items,
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Render user image.
+     *
+     * @return void
+     */
+    public function feedbackLogListing(Request $request) {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $items = \Mailixa\Model\FeedbackLog::search($request, $campaign)->paginate($request->per_page);
+        
+        return view('admin.feedback_logs._list', [
+            'items' => $items,
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Render user image.
+     *
+     * @return void
+     */
+    public function openLog(Request $request) {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $items = $campaign->openLogs;
+        return view('campaigns.open_log', [
+            'items' => $items,
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Render user image.
+     *
+     * @return void
+     */
+    public function openLogListing(Request $request) {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $items = \Mailixa\Model\OpenLog::search($request, $campaign)->paginate($request->per_page);
+        
+        return view('admin.open_logs._list', [
+            'items' => $items,
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Render user image.
+     *
+     * @return void
+     */
+    public function clickLog(Request $request) {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $items = $campaign->clickLogs;
+        return view('campaigns.click_log', [
+            'items' => $items,
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Render user image.
+     *
+     * @return void
+     */
+    public function clickLogListing(Request $request) {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $items = \Mailixa\Model\ClickLog::search($request, $campaign)->paginate($request->per_page);
+        
+        return view('admin.click_logs._list', [
+            'items' => $items,
+            'campaign' => $campaign,
+        ]);
+    }
 }

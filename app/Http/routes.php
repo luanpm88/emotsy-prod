@@ -21,7 +21,7 @@ Route::post('account/profile', 'AccountController@profile');
 Route::get('account/contact', 'AccountController@contact');
 Route::post('account/contact', 'AccountController@contact');
 Route::get('account/logs', 'AccountController@logs');
-Route::get('account/logs/listing', 'AccountController@logs_listing');
+Route::get('account/logs/listing', 'AccountController@logsListing');
 
 // Translation data
 Route::get('/datatable_locale', 'Controller@datatable_locale');
@@ -114,6 +114,17 @@ Route::get('templates/{uid}/edit', 'TemplateController@edit');
 Route::patch('templates/{uid}/update', 'TemplateController@update');
 
 // Campaign
+Route::get('campaigns/{uid}/tracking-log', 'CampaignController@trackingLog');
+Route::get('campaigns/{uid}/tracking-log/listing', 'CampaignController@trackingLogListing');
+Route::get('campaigns/{uid}/bounce-log', 'CampaignController@bounceLog');
+Route::get('campaigns/{uid}/bounce-log/listing', 'CampaignController@bounceLogListing');
+Route::get('campaigns/{uid}/feedback-log', 'CampaignController@feedbackLog');
+Route::get('campaigns/{uid}/feedback-log/listing', 'CampaignController@feedbackLogListing');
+Route::get('campaigns/{uid}/open-log', 'CampaignController@openLog');
+Route::get('campaigns/{uid}/open-log/listing', 'CampaignController@openLogListing');
+Route::get('campaigns/{uid}/click-log', 'CampaignController@clickLog');
+Route::get('campaigns/{uid}/click-log/listing', 'CampaignController@clickLogListing');
+
 Route::get('campaigns/quick-view', 'CampaignController@quickView');
 Route::get('campaigns/{uid}/chart24h', 'CampaignController@chart24h');
 Route::get('campaigns/{uid}/overview', 'CampaignController@overview');
