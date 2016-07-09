@@ -7,4 +7,7 @@
         <option{{ request()->per_page == "100" ? " selected" : "" }} value="100">100</option>
     </select>
     <label>{{ trans('messages.num_per_page') }}</label>
+    @if (isset($items))
+        <label>| {!! trans('messages.total_items_count', ["count" => $item->count()]) !!}</label>
+    @endif
 </div>

@@ -16,6 +16,13 @@ class Log extends Model
     ];
     
     /**
+     * Items per page.
+     *
+     * @var array
+     */
+    public static $itemsPerPage = 25;
+    
+    /**
      * Associations.
      *
      * @var object | collect
@@ -87,5 +94,45 @@ class Log extends Model
         
         $message = trans('messages.log.' . $this->type . "." . $this->name, $data);
         return $message;
+    }
+    
+    /**
+     * Filter items.
+     *
+     * @return collect
+     */
+    public static function filter($request)
+    {
+        $user = $request->user();
+        $query = Log::where("user_id", "=", $user->id);
+        
+        // Keyword
+        if(!empty(trim($request->keyword))) {
+            $query = $query->where('name', 'like', '%' . $request->keyword . '%');
+        }
+        
+        // filters
+        $filters = $request->filters;
+        if(!empty($filters)) {
+            if(!empty($filters["type"])) {
+                $query = $query->where("logs.type", "=", $filters["type"]);     
+            }
+        }
+        
+        return $query;
+    }
+    
+    /**
+     * Search items.
+     *
+     * @return collect
+     */
+    public static function search($request)
+    {
+        $query = Log::filter($request);
+        
+        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        
+        return $query;
     }
 }

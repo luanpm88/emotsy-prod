@@ -70,7 +70,7 @@
 									</tr>
 								@endforeach
 							</table>
-                            @include('elements/_per_page_select')
+                            @include('elements/_per_page_select', ["items" => $campaigns])
 							{{ $campaigns->links() }}
 						@elseif (!empty(request()->keyword))
 							<div class="empty-list">

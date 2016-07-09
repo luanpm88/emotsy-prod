@@ -43,4 +43,5 @@ class UserController extends Controller
         
         return $img->response();
     }
+    
 }

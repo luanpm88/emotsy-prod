@@ -332,11 +332,14 @@ class Campaign extends Model
      *
      * @return array
      */
-    public static function getSelectOptions($user = null)
+    public static function getSelectOptions($user = null, $status=null)
     {
         $query = Campaign::getAll();
         if(is_object($user)) {
             $query = $query->where("user_id", "=", $user->id);
+        }
+        if(isset($status)) {
+            $query = $query->where("status", "=", $status);
         }
         $options = $query->orderBy("created_at", "DESC")->get()->map(function ($item) {
             return ['value' => $item->uid, 'text' => $item->name];
@@ -880,12 +883,17 @@ class Campaign extends Model
      *
      * @return datetime
      */
-    public static function topOpens($number=5)
+    public static function topOpens($number=5, $user=null)
     {
         $records = Campaign::select(\DB::raw(\DB::getTablePrefix() . 'campaigns.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
-            ->groupBy('tracking_logs.message_id')
+            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id');
+        
+        if(isset($user)) {
+            $records = $records->where('campaigns.user_id', "=", $user->id);
+        }    
+        
+        $records = $records->groupBy('tracking_logs.message_id')
             ->orderBy('aggregate', 'desc');
             
         return $records;
@@ -896,13 +904,18 @@ class Campaign extends Model
      *
      * @return datetime
      */
-    public static function topClicks($number=5)
+    public static function topClicks($number=5, $user=null)
     {
         $records = Campaign::select(\DB::raw(\DB::getTablePrefix() . 'campaigns.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-            ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
-            ->groupBy('tracking_logs.message_id')
-            ->orderBy('aggregate', 'desc');
+            ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id');
+        
+        if(isset($user)) {
+            $records = $records->where('campaigns.user_id', "=", $user->id);
+        }
+        
+        $records = $records->groupBy('tracking_logs.message_id')
+                    ->orderBy('aggregate', 'desc');
             
         return $records;
     }
@@ -912,11 +925,17 @@ class Campaign extends Model
      *
      * @return datetime
      */
-    public static function topLinks($number=5)
+    public static function topLinks($number=5, $user=null)
     {
         $records = Link::select(\DB::raw(\DB::getTablePrefix() . 'links.*, count(*) as `aggregate`'))
-            ->join('campaign_links', 'campaign_links.link_id', '=', 'links.id')
-            ->groupBy('campaign_links.link_id')
+            ->join('campaign_links', 'campaign_links.link_id', '=', 'links.id');            
+        
+        if(isset($user)) {
+            $records = $records->join('campaigns', 'campaign_links.campaign_id', '=', 'campaigns.id')
+                ->where('campaigns.user_id', "=", $user->id);
+        }
+        
+        $records = $records->groupBy('campaign_links.link_id')
             ->orderBy('aggregate', 'desc');
             
         return $records;

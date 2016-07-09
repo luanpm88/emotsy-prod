@@ -20,6 +20,8 @@ Route::get('account/profile', 'AccountController@profile');
 Route::post('account/profile', 'AccountController@profile');
 Route::get('account/contact', 'AccountController@contact');
 Route::post('account/contact', 'AccountController@contact');
+Route::get('account/logs', 'AccountController@logs');
+Route::get('account/logs/listing', 'AccountController@logs_listing');
 
 // Translation data
 Route::get('/datatable_locale', 'Controller@datatable_locale');

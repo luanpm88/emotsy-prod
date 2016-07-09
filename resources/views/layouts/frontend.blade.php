@@ -84,7 +84,7 @@
 
 						<ul class="media-list dropdown-content-body">
 							
-							@foreach (Auth::user()->logs as $log)
+							@foreach (Auth::user()->logs()->take(20)->get() as $log)
 								<li class="media">
 									<div class="media-left">
 										<img src="{{ action('UserController@avatar', $log->user->uid) }}" class="img-circle img-sm" alt="">
@@ -104,7 +104,7 @@
 						</ul>
 						
 						<div class="dropdown-content-footer">
-							<a href="#" data-popup="tooltip" title="All messages"><i class="icon-menu display-block"></i></a>
+							<a href="{{ action("AccountController@logs") }}" data-popup="tooltip" title="{{ trans('messages.all_logs') }}"><i class="icon-menu display-block"></i></a>
 						</div>
 					</div>
 				</li>

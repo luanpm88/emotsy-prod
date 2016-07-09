@@ -10,46 +10,64 @@
     <h1>{{ trans('messages.dashboard') }}</h1>
     
 	
-    <h2 class="text-teal-800">{{ trans('messages.recently_sent_campaigns') }}</h2>
-    
-    <div class="row">
-        <div class="col-md-6">
-            @include('helpers.form_control', [
-                'type' => 'select',
-                'class' => 'dashboard-campaign-select',
-                'name' => 'campaign_id',
-                'label' => '',
-                'value' => '',
-                'options' => Mailixa\Model\Campaign::getSelectOptions(Auth::user()),
-            ])
-        </div>
-    </div>
-    <div class="campaign-quickview-container" data-url="{{ action("CampaignController@quickView") }}"></div>
-    
-    <br />
-    <br />
-    
-    <h2 class="text-teal-800">{{ trans('messages.list_growth') }}</h2>
-    
-    <div class="row">
-        <div class="col-md-6">
-            @include('helpers.form_control', [
-                'type' => 'select',
-                'class' => 'dashboard-list-select',
-                'name' => 'list_id',
-                'label' => '',
-                'value' => '',
-                'include_blank' => trans('messages.all'),
-                'options' => Mailixa\Model\MailList::getSelectOptions(Auth::user()),
-            ])
-        </div>
-    </div>
-    <div class="list-quickview-container" data-url="{{ action("MailListController@quickView") }}"></div>
+    <h2 class="text-teal-800"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h2>
+		
+	@if (Auth::user()->sentCampaigns()->count() == 0)
+		<div class="empty-list">
+			<i class="icon-paperplane"></i>
+			<span class="line-1">
+				{{ trans('messages.no_sent_campaigns') }}
+			</span>
+		</div>
+    @else
+		<div class="row">
+			<div class="col-md-6">
+				@include('helpers.form_control', [
+					'type' => 'select',
+					'class' => 'dashboard-campaign-select',
+					'name' => 'campaign_id',
+					'label' => '',
+					'value' => '',
+					'options' => Mailixa\Model\Campaign::getSelectOptions(Auth::user(), "sent"),
+				])
+			</div>
+		</div>
+		<div class="campaign-quickview-container" data-url="{{ action("CampaignController@quickView") }}"></div>
+	@endif
     
     <br />
     <br />
     
-    <h2 class="text-teal-800">{{ trans('messages.top_5') }}</h2>
+    <h2 class="text-teal-800"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h2>
+    
+	@if (Auth::user()->lists()->count() == 0)
+		<div class="empty-list">
+			<i class="icon-address-book2"></i>
+			<span class="line-1">
+				{{ trans('messages.no_saved_lists') }}
+			</span>
+		</div>
+    @else
+		<div class="row">
+			<div class="col-md-6">
+				@include('helpers.form_control', [
+					'type' => 'select',
+					'class' => 'dashboard-list-select',
+					'name' => 'list_id',
+					'label' => '',
+					'value' => '',
+					'include_blank' => trans('messages.all'),
+					'options' => Mailixa\Model\MailList::getSelectOptions(Auth::user()),
+				])
+			</div>
+		</div>
+		<div class="list-quickview-container" data-url="{{ action("MailListController@quickView") }}"></div>
+	@endif
+    
+    <br />
+    <br />
+    
+    <h2 class="text-teal-800"><i class="icon-podium"></i> {{ trans('messages.top_5') }}</h2>
     <div class="tabbable">
 				<ul class="nav nav-tabs nav-tabs-top">
 					<li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
@@ -63,10 +81,10 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="top-tab1">
 						<ul class="modern-listing mt-0 top-border-none">
-							@foreach (Mailixa\Model\Campaign::topOpens()->get() as $num => $item)
+							@foreach (Mailixa\Model\Campaign::topOpens(5, Auth::user())->get() as $num => $item)
 								<li>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-5">
                                             <i class="number">{{ $num+1 }}</i>
                                             <h6 class="mt-0 mb-0 text-semibold">
                                                 <a href="">
@@ -95,6 +113,13 @@
 											<span class="text-muted">{{ trans('messages.uniq_opens') }}</span>
                                                 <br /><br />
                                         </div>
+										<div class="col-md-2 text-left">
+											<h5 class="no-margin text-bold">
+												{{ Mailixa\Library\Tool::formatDateTime($item->lastOpen()->created_at) }}
+											</h5>
+											<span class="text-muted">{{ trans('messages.last_open') }}</span>
+                                                <br /><br />
+                                        </div>	
                                     </div>
 
                                 </li>
@@ -103,10 +128,10 @@
 					</div>
 					<div class="tab-pane" id="top-tab2">
 						<ul class="modern-listing mt-0 top-border-none">
-							@foreach (Mailixa\Model\Campaign::topClicks()->get() as $num => $item)
+							@foreach (Mailixa\Model\Campaign::topClicks(5, Auth::user())->get() as $num => $item)
 								<li>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-5">
                                             <i class="number">{{ $num+1 }}</i>
                                             <h6 class="mt-0 mb-0 text-semibold">
                                                 <a href="">
@@ -135,6 +160,13 @@
 											<span class="text-muted">{{ trans('messages.opens') }}</span>
                                                 <br /><br />
                                         </div>
+										<div class="col-md-2 text-left">
+											<h5 class="no-margin text-bold">
+												{{ Mailixa\Library\Tool::formatDateTime($item->lastClick()->created_at) }}
+											</h5>
+											<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
+                                                <br /><br />
+                                        </div>										
                                     </div>
 
                                 </li>
@@ -144,7 +176,7 @@
 					<div class="tab-pane" id="top-tab3">
 						
 						<ul class="modern-listing mt-0 top-border-none">
-							@foreach (Mailixa\Model\Campaign::topLinks()->get() as $num => $item)
+							@foreach (Mailixa\Model\Campaign::topLinks(5, Auth::user())->get() as $num => $item)
 								<li>
                                     <div class="row">
                                         <div class="col-md-6">
@@ -158,11 +190,18 @@
 												{{ $item->campaigns()->count() }} {{ trans('messages.campaigns') }}                                              
                                             </p>
                                         </div>
-                                        <div class="col-md-4 text-left">
+                                        <div class="col-md-2 text-left">
 											<h5 class="no-margin text-bold">
 												{{ $item->aggregate }}
 											</h5>
 											<span class="text-muted">{{ trans('messages.clicks') }}</span>
+                                                <br /><br />
+                                        </div>
+										<div class="col-md-2 text-left">
+											<h5 class="no-margin text-bold">
+												{{ Mailixa\Library\Tool::formatDateTime($item->lastClick(Auth::user())->created_at) }}          
+											</h5>
+											<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
                                                 <br /><br />
                                         </div>
                                     </div>
@@ -176,36 +215,46 @@
 				
 	<br />
     <br />
-    <h2 class="text-teal-800">{{ trans('messages.action_log') }}</h2>
-	<div class="scrollbar-box action-log-box">
-		<!-- Timeline -->
-		<div class="timeline timeline-left content-group">
-			<div class="timeline-container">				
-					@foreach (Auth::user()->logs as $log)
-						<!-- Sales stats -->
-						<div class="timeline-row">
-							<div class="timeline-icon">
-								<a href="#"><img src="{{ action('UserController@avatar', $log->user->uid) }}" alt=""></a>
-							</div>
-
-							<div class="panel panel-flat timeline-content">
-								<div class="panel-heading">
-									<h6 class="panel-title text-semibold">{{ $log->user->displayName() }}</h6>
-									<div class="heading-elements">
-										<span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at->diffForHumans() }}</span>
+    <h2 class="text-teal-800"><i class="icon-history"></i> {{ trans('messages.action_log') }}</h2>
+	
+	@if (Auth::user()->logs()->count() == 0)
+		<div class="empty-list">
+			<i class="icon-history"></i>
+			<span class="line-1">
+				{{ trans('messages.no_action_logs') }}
+			</span>
+		</div>
+    @else
+		<div class="scrollbar-box action-log-box">
+			<!-- Timeline -->
+			<div class="timeline timeline-left content-group">
+				<div class="timeline-container">				
+						@foreach (Auth::user()->logs()->take(20)->get() as $log)
+							<!-- Sales stats -->
+							<div class="timeline-row">
+								<div class="timeline-icon">
+									<a href="#"><img src="{{ action('UserController@avatar', $log->user->uid) }}" alt=""></a>
+								</div>
+	
+								<div class="panel panel-flat timeline-content">
+									<div class="panel-heading">
+										<h6 class="panel-title text-semibold">{{ $log->user->displayName() }}</h6>
+										<div class="heading-elements">
+											<span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at->diffForHumans() }}</span>
+										</div>
+									</div>
+	
+									<div class="panel-body">
+										{!! $log->message() !!}
 									</div>
 								</div>
-
-								<div class="panel-body">
-									{!! $log->message() !!}
-								</div>
 							</div>
-						</div>
-						<!-- /sales stats -->
-					@endforeach								
+							<!-- /sales stats -->
+						@endforeach								
+				</div>
 			</div>
 		</div>
-	</div>
+	@endif
 	
 	<br>
 	<br>

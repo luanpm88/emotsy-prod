@@ -66,7 +66,7 @@
                         </div>
                         <div class="stat-row">
                             <div class="pull-right num">
-                                {{ Mailixa\Library\Tool::formatDateTime($campaign->lastOpen()->created_at) }}
+                                {{ Mailixa\Library\Tool::formatDateTime($campaign->lastClick()->created_at) }}
                             </div>
                             <p class="text-muted">{{ trans('messages.last_clicked') }}</p>
                         </div>

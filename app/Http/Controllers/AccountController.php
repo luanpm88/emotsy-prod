@@ -32,7 +32,7 @@ class AccountController extends Controller
         $user = $request->user();
         
         // Authorize
-        if (\Gate::denies('update', $user)) {
+        if (\Gate::denies('profile', $user)) {
             return $this->notAuthorized();
         }
         
@@ -127,6 +127,31 @@ class AccountController extends Controller
         return view('account.contact', [
             'user' => $user,
             'contact' => $contact->fill($request->old()),
+        ]);
+    }
+    
+    /**
+     * Render user image.
+     *
+     * @return void
+     */
+    public function logs(Request $request) {
+        $logs = $request->user()->logs;
+        return view('account.logs', [
+            'logs' => $logs
+        ]);
+    }
+    
+    /**
+     * Render user image.
+     *
+     * @return void
+     */
+    public function logs_listing(Request $request) {
+        $logs = \Mailixa\Model\Log::search($request)->paginate($request->per_page);
+        
+        return view('account.logs_listing', [
+            'logs' => $logs
         ]);
     }
 }

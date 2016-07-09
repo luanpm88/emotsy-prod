@@ -24,6 +24,11 @@ class UserPolicy
         return $can;
     }
     
+    public function profile(\Mailixa\Model\User $user, \Mailixa\Model\User $item)
+    {
+        return $user->id == $item->id;
+    }
+    
     public function update(\Mailixa\Model\User $user, \Mailixa\Model\User $item)
     {
         $ability = $user->getOption("backend", "user_update");
