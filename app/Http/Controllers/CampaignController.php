@@ -560,20 +560,84 @@ class CampaignController extends Controller
         echo json_encode($data);
     }
     
-    // url + message_id
-    // content: {tracking_url}
-    // http://mailixa.skj/campaigns/asdadadasdassda/open/7877565657698987
-    public function open()
+    /**
+     * Tracking when open.
+     *
+     * @return void
+     */
+    public function open(Request $request)
     {
-        // @todo dang assume la thong tin co du heet        
-        // $message_id = params[];
-
+        $log = new \Mailixa\Model\OpenLog();
+        $log->message_id = $request->message_id;
+        $location = \Mailixa\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
+        $log->ip_address = $location->ip_address;
+        $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
+        $log->save();
     }
     
-    // http://mailixa.skj/campaigns/asdadadasdassda/redirect/7877565657698987/hkasdfh73kdhs7362863287jsdhf7223
-    public function click()
+    /**
+     * Tracking when click link.
+     *
+     * @return void
+     */
+    public function click(Request $request)
     {        
         // redirect base64_decode($url);
+        $log = new \Mailixa\Model\ClickLog();
+        $log->message_id = $request->message_id;
+        $location = \Mailixa\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
+        $log->ip_address = $location->ip_address;
+        $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
+        $log->url = base64_decode($request->url);
+        $log->save();
+    }
+    
+    /**
+     * Unsubscribe url.
+     *
+     * @return void
+     */
+    public function unsubscribe(Request $request)
+    {        
+        $tracking_log = \Mailixa\Model\TrackingLog::where("message_id", "=", $request->message_id)->first();
+        $subscriber = $tracking_log->subscriber;
+        
+        if ($subscriber->status != 'unsubscribed') {
+            // Unsubcribe
+            $subscriber->status = 'unsubscribed';
+            $subscriber->save();
+            
+            // Page content
+            $user = $request->user();
+            $list = $subscriber->mailList;
+            $layout = \Mailixa\Model\Layout::where("alias", "unsubscribe_success_page")->first();
+            $page = \Mailixa\Model\Page::findPage($list, $layout);
+            
+            $page->renderContent(null, $subscriber);
+            
+            // Unsubscribe log
+            $log = new \Mailixa\Model\UnsubscribeLog();
+            $log->message_id = $request->message_id;
+            $location = \Mailixa\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
+            $log->ip_address = $location->ip_address;
+            $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
+            $log->save();
+            
+            try {
+                // Send goodbye email
+                $layout = \Mailixa\Model\Layout::where("alias", "unsubscribe_goodbye_email")->first();
+                $send_page = \Mailixa\Model\Page::findPage($list, $layout);
+                $send_page->renderContent(null, $subscriber);    
+                $send_page->sendMail($subscriber, trans('messages.' . $layout->alias . '.real'));
+            } catch (\Exception $e) {
+            }
+            
+            return view('pages.default', [
+                'list' => $list,
+                'page' => $page,
+                'subscriber' => $subscriber
+            ]);
+        }
     }
     
     /**
@@ -717,6 +781,48 @@ class CampaignController extends Controller
         
         return view('admin.click_logs._list', [
             'items' => $items,
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Render user image.
+     *
+     * @return void
+     */
+    public function unsubscribeLog(Request $request) {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $items = $campaign->unsubscribeLogs;
+        return view('campaigns.unsubscribe_log', [
+            'items' => $items,
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Render user image.
+     *
+     * @return void
+     */
+    public function unsubscribeLogListing(Request $request) {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $items = \Mailixa\Model\UnsubscribeLog::search($request, $campaign)->paginate($request->per_page);
+        
+        return view('admin.unsubscribe_logs._list', [
+            'items' => $items,
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Open map.
+     *
+     * @return void
+     */
+    public function openMap(Request $request) {
+        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        return view('campaigns.open_map', [
             'campaign' => $campaign,
         ]);
     }

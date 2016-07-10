@@ -11,12 +11,18 @@
 					<i class="icon-link"></i> {{ trans('messages.links') }}
 				</a>
 			</li>
+			<li rel0="CampaignController/openMap" class="dropdown">
+				<a href="{{ action('CampaignController@openMap', $campaign->uid) }}" class="level-1">
+					<i class="icon-map4"></i> {{ trans('messages.open_map') }}
+				</a>
+			</li>
 			<li class="dropdown"
 				rel0="CampaignController/trackingLog"
 				rel1="CampaignController/bounceLog"
 				rel2="CampaignController/feedbackLog"
 				rel3="CampaignController/openLog"
 				rel4="CampaignController/clickLog"
+				rel5="CampaignController/unsubscribeLog"
 			>
 				<a href="{{ action("AccountController@contact") }}" class="level-1" data-toggle="dropdown">
 					<i class="icon-file-text2 position-left"></i> {{ trans('messages.sending_logs') }}
@@ -46,6 +52,11 @@
 					<li rel0="CampaignController/clickLog" class="dropdown">
 						<a href="{{ action('CampaignController@clickLog', $campaign->uid) }}">
 							<i class="icon-file-text2"></i> {{ trans('messages.click_log') }}
+						</a>
+					</li>
+					<li rel0="CampaignController/unsubscribeLog" class="dropdown">
+						<a href="{{ action('CampaignController@unsubscribeLog', $campaign->uid) }}">
+							<i class="icon-file-text2"></i> {{ trans('messages.unsubscribe_log') }}
 						</a>
 					</li>
 				</ul>

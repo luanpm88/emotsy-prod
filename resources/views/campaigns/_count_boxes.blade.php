@@ -26,7 +26,7 @@
                     <div class="col-md-3">
                         <div class="panel panel-white bg-teal-400">
                             <div class="panel-body text-center">
-                                <h2 class="text-semibold mb-10 mt-0">1</h2>
+                                <h2 class="text-semibold mb-10 mt-0">{{ $campaign->unsubscribeCount() }}</h2>
                                 <div class="text-muted">{{ trans('messages.unsubscribed') }}</div>
                             </div>
                         </div>

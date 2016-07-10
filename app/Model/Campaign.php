@@ -75,6 +75,11 @@ class Campaign extends Model
         return $this->hasManyThrough('Mailixa\Model\FeedbackLog', 'Mailixa\Model\TrackingLog', 'campaign_id', 'message_id', 'id');
     }
     
+    public function unsubscribeLogs()
+    {
+        return $this->hasManyThrough('Mailixa\Model\UnsubscribeLog', 'Mailixa\Model\TrackingLog', 'campaign_id', 'message_id', 'id');
+    }
+    
     /**
      * get pending campaigns
      *
@@ -811,7 +816,7 @@ class Campaign extends Model
      */
     public function unsubscribeCount()
     {
-        return $this->campaign_track_unsubscribes()->count();
+        return $this->unsubscribeLogs()->count();
     }
     
     /**
@@ -824,7 +829,7 @@ class Campaign extends Model
         if ($this->deliveryProcessedCount() == 0) {
             return 0;
         }
-        return round(($this->unsubscribeCount() / $this->deliveryProcessedCount())*100, 0);
+        return round(($this->unsubscribeCount() / $this->trackingCount())*100, 0);
     }
     
     /**
@@ -905,7 +910,7 @@ class Campaign extends Model
         $records = $records->groupBy('tracking_logs.message_id')
             ->orderBy('aggregate', 'desc');
             
-        return $records;
+        return $records->take($number);
     }
     
     /**
@@ -926,7 +931,7 @@ class Campaign extends Model
         $records = $records->groupBy('tracking_logs.message_id')
                     ->orderBy('aggregate', 'desc');
             
-        return $records;
+        return $records->take($number);
     }
     
     /**
@@ -947,7 +952,7 @@ class Campaign extends Model
         $records = $records->groupBy('campaign_links.link_id')
             ->orderBy('aggregate', 'desc');
             
-        return $records;
+        return $records->take($number);
     }
     
     /**
@@ -964,7 +969,7 @@ class Campaign extends Model
         $records = $records->groupBy('campaign_links.link_id')
             ->orderBy('aggregate', 'desc');
             
-        return $records;
+        return $records->take($number);
     }
     
     /**
@@ -982,6 +987,44 @@ class Campaign extends Model
         $records = $records->groupBy('tracking_logs.message_id')
             ->orderBy('aggregate', 'desc');
             
+        return $records->take($number);
+    }
+    
+    /**
+     * Campaign top 5 open location
+     *
+     * @return datetime
+     */
+    public function topLocations($number=5, $user=null)
+    {
+        $records = IpLocation::select(\DB::raw(\DB::getTablePrefix() . 'ip_locations.*, count(*) as `aggregate`'))
+            ->join('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
+            ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+            ->where('tracking_logs.campaign_id', "=", $this->id);
+        
+        if(isset($user)) {
+            $records = $records->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
+                ->where('campaigns.user_id', "=", $user->id);
+        }
+        
+        $records = $records->groupBy('open_logs.ip_address')
+            ->orderBy('aggregate', 'desc');
+            
+        return $records->take($number);
+    }
+    
+    /**
+     * Campaign locations
+     *
+     * @return datetime
+     */
+    public function locations()
+    {
+        $records = IpLocation::select('ip_locations.*')
+            ->leftJoin('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
+            ->leftJoin('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+            ->where('tracking_logs.campaign_id', "=", $this->id);
+        
         return $records;
     }
 }

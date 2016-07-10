@@ -16,7 +16,8 @@ class CreateOpenLogsTable extends Migration
             $table->increments('id');
             $table->integer('message_id');
             $table->string('ip_address');
-            $table->string('user_agent');
+            
+            $table->text('user_agent');
             
             $table->timestamps();
             

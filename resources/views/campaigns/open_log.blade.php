@@ -19,6 +19,8 @@
                 
             @include("campaigns._menu")
 			
+			<h2 class="text-semibold text-teal-800">{{ trans('messages.open_log') }}<h2 cla>
+			
 			<form class="listing-form"
 					data-url="{{ action('CampaignController@openLogListing', $campaign->uid) }}"
 					per-page="{{ Mailixa\Model\OpenLog::$itemsPerPage }}"				
@@ -51,4 +53,5 @@
 						
 					</div>
 				</form>
+
 @endsection

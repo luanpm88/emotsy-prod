@@ -19,6 +19,8 @@
                 
             @include("campaigns._menu")
 			
+			<h2 class="text-semibold text-teal-800">{{ trans('messages.bounce_log') }}<h2 cla>
+			
 			<form class="listing-form"
 					data-url="{{ action('CampaignController@bounceLogListing', $campaign->uid) }}"
 					per-page="{{ Mailixa\Model\BounceLog::$itemsPerPage }}"				

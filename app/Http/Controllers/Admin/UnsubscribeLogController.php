@@ -1,0 +1,58 @@
+<?php
+
+namespace Mailixa\Http\Controllers\Admin;
+
+use Illuminate\Http\Request;
+
+use Mailixa\Http\Requests;
+use Mailixa\Http\Controllers\Controller;
+
+class UnsubscribeLogController extends Controller
+{
+    /**
+     * Create a new controller instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+        
+        $this->middleware('auth');
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        if ($request->user()->getOption("backend", "report_unsubscribe_log") == 'no') {
+            return $this->notAuthorized();
+        }
+        
+        $items = \Mailixa\Model\UnsubscribeLog::getAll();
+        return view('admin.unsubscribe_logs.index', [
+            'items' => $items,
+        ]);
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listing(Request $request)
+    {
+        if ($request->user()->getOption("backend", "report_unsubscribe_log") == 'no') {
+            return $this->notAuthorized();
+        }
+        
+        $items = \Mailixa\Model\UnsubscribeLog::search($request)->paginate($request->per_page);
+        
+        return view('admin.unsubscribe_logs._list', [
+            'items' => $items,
+        ]);
+    }
+}

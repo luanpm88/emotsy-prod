@@ -115,6 +115,11 @@ Route::get('templates/{uid}/edit', 'TemplateController@edit');
 Route::patch('templates/{uid}/update', 'TemplateController@update');
 
 // Campaign
+Route::get('campaigns/{message_id}/open', 'CampaignController@open');
+Route::get('campaigns/{message_id}/click/{url}', 'CampaignController@click');
+Route::get('campaigns/{message_id}/unsubscribe', 'CampaignController@unsubscribe');
+
+Route::get('campaigns/{uid}/open-map', 'CampaignController@openMap');
 Route::get('campaigns/{uid}/tracking-log', 'CampaignController@trackingLog');
 Route::get('campaigns/{uid}/tracking-log/listing', 'CampaignController@trackingLogListing');
 Route::get('campaigns/{uid}/bounce-log', 'CampaignController@bounceLog');
@@ -125,6 +130,8 @@ Route::get('campaigns/{uid}/open-log', 'CampaignController@openLog');
 Route::get('campaigns/{uid}/open-log/listing', 'CampaignController@openLogListing');
 Route::get('campaigns/{uid}/click-log', 'CampaignController@clickLog');
 Route::get('campaigns/{uid}/click-log/listing', 'CampaignController@clickLogListing');
+Route::get('campaigns/{uid}/unsubscribe-log', 'CampaignController@unsubscribeLog');
+Route::get('campaigns/{uid}/unsubscribe-log/listing', 'CampaignController@unsubscribeLogListing');
 
 Route::get('campaigns/quick-view', 'CampaignController@quickView');
 Route::get('campaigns/{uid}/chart24h', 'CampaignController@chart24h');
@@ -235,5 +242,9 @@ Route::group(['namespace' => 'Admin'], function () {
     // Feedback log
     Route::get('admin/feedback_log', 'FeedbackLogController@index');
     Route::get('admin/feedback_log/listing', 'FeedbackLogController@listing');
+    
+    // Feedback log
+    Route::get('admin/unsubscribe_log', 'UnsubscribeLogController@index');
+    Route::get('admin/unsubscribe_log/listing', 'UnsubscribeLogController@listing');
     
 });

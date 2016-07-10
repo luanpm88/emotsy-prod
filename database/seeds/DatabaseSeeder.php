@@ -217,6 +217,15 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
+        
+        DB::table('unsubscribe_logs')->insert([
+            'id' => 1,
+            'message_id' => 1,
+            'user_agent' => '0',
+            'ip_address' => '111.111.00.11',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
 
         DB::table('user_group_settings')->insert([
             'id' => 1,

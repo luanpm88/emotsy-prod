@@ -1,10 +1,10 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="content-group-sm">
-                        <div class="pull-right progress-right-info text-teal-800">{{ $campaign->openRate() }}%</div>
+                        <div class="pull-right progress-right-info text-teal-800">{{ $campaign->openUniqRate() }}%</div>
                         <h4 class="text-semibold">{{ trans('messages.open_rate') }}</h4>
                         <div class="progress progress-sm">
-                            <div class="progress-bar bg-teal" style="width: {{ $campaign->openRate() }}%">
+                            <div class="progress-bar bg-teal" style="width: {{ $campaign->openUniqRate() }}%">
                             </div>
                         </div>
                     </div>

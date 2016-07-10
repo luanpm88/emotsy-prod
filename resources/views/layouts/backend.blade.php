@@ -188,7 +188,11 @@
                                 <i class="icon-file-text2"></i> {{ trans('messages.click_log') }}
                             </a>
                         </li>
-						
+						<li rel0="UnsubscribeLogController">
+                            <a href="{{ action('Admin\UnsubscribeLogController@index') }}">
+                                <i class="icon-file-text2"></i> {{ trans('messages.unsubscribe_log') }}
+                            </a>
+                        </li>
                     </ul>
 				</li>
 			</ul>

@@ -20,7 +20,7 @@
 				@include("lists._menu")
 				
 				<h2 class="text-bold text-teal-800 mb-10"><i class="icon-users4"></i> {{ trans('messages.subscribers') }}</h2>
-				<br />
+
 				<form class="listing-form"
 					data-url="{{ action('SubscriberController@listing', $list->uid) }}"
 					per-page="{{ Mailixa\Model\Subscriber::$itemsPerPage }}"					
@@ -67,7 +67,7 @@
 											<i class="icon-sort-amount-desc"></i>
 										</button>
 									</span>
-									<span class="ml-10">										
+									<span class="">										
 										<select class="select" name="status">
 											<option value="">{{ trans('messages.all_subscribers') }}</option>
 											<option value="subscribed">{{ trans('messages.subscribed') }}</option>

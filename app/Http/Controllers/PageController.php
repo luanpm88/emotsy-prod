@@ -256,7 +256,7 @@ class PageController extends Controller
                 $subscriber->status = "unsubscribed";
                 $subscriber->save();
                 
-                // Send welcome email
+                // Send goodbye email
                 // SEND EMAIL
                 $layout = \Mailixa\Model\Layout::where("alias", "unsubscribe_goodbye_email")->first();
                 $send_page = \Mailixa\Model\Page::findPage($list, $layout);

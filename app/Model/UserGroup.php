@@ -216,6 +216,7 @@ class UserGroup extends Model
                 'report_feedback_log' => 'yes',
                 'report_click_log' => 'yes',
                 'report_open_log' => 'yes',
+                'report_unsubscribe_log' => 'yes',
             ]
         ];
     }
@@ -523,6 +524,12 @@ class UserGroup extends Model
                     ],
                 ],
                 "click_log" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "unsubscribe_log" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
 						['value' => 'yes', 'text' => trans('messages.yes')],

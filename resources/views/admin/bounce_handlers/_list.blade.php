@@ -56,7 +56,7 @@
 									</tr>
 								@endforeach
 							</table>
-                            @include('elements/_per_page_select', ["items" => $templates])
+                            @include('elements/_per_page_select', ["items" => $items])
 							{{ $items->links() }}
 						@elseif (!empty(request()->keyword) || !empty(request()->filters["type"]))
 							<div class="empty-list">

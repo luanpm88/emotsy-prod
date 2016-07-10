@@ -19,6 +19,8 @@
                 
             @include("campaigns._menu")
 			
+			<h2 class="text-semibold text-teal-800">{{ trans('messages.click_log') }}<h2 cla>
+			
 			<form class="listing-form"
 					data-url="{{ action('CampaignController@clickLogListing', $campaign->uid) }}"
 					per-page="{{ Mailixa\Model\ClickLog::$itemsPerPage }}"				
