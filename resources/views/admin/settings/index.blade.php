@@ -117,7 +117,9 @@
 											@if ($setting['cat'] == 'url')
 												<li>
 													<i class="icon-cancel-circle2 text-danger"></i>
-													<h5 class="mt-0 mb-0 text-semibold">{{ $setting['value'] }}</h5>
+													<h5 class="mt-0 mb-0 text-semibold">
+														{!! str_replace(trans("messages.MESSAGE_ID"), "<span class='text-info-600'>" . trans("messages.MESSAGE_ID") . "</span>", str_replace(trans("messages.URL"), "<span class='text-info-600'>" . trans("messages.URL") . "</span>", $setting['value'])) !!}
+													</h5>
 													<p>
 														{{ trans('messages.' . $name) }}
 													</p>
@@ -132,7 +134,7 @@
 					</div>
 				</div>
 					
-				<hr >
+				<br />
 				<div class="text-left">
 					<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 				</div>

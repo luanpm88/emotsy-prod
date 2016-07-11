@@ -152,13 +152,19 @@ class Setting extends Model
             ],
             'url_unsubscribe' => [
                 'cat' => 'url',
-                'value' => action('HomeController@index'),
+                'value' => action('CampaignController@unsubscribe', ["message_id" => trans("messages.MESSAGE_ID")]),
                 'type' => 'text',
                 'not_required' => true,
             ],            
             'url_open_track' => [
                 'cat' => 'url',
-                'value' => action('HomeController@index'),
+                'value' => action('CampaignController@open', ["message_id" => trans("messages.MESSAGE_ID")]),
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'url_click_track' => [
+                'cat' => 'url',
+                'value' => action('CampaignController@click', ["message_id" => trans("messages.MESSAGE_ID"), "url" => trans("messages.URL")]),
                 'type' => 'text',
                 'not_required' => true,
             ],
