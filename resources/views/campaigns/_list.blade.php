@@ -28,26 +28,45 @@
 											</h5>
 											<span class="text-muted">{{ trans('messages.' . $item->type) }}</span>
 											<br />
-											<span class="text-muted2">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
-										</td>
-										<td>
-											@if (is_object($item->segment))
-												<span class="no-margin stat-num">{{ $item->mailList->name }} . {{ $item->segment->name }}</span>
-												<br>
-												<span class="text-muted">{{ $item->subscribers()->count() }} {{ strtolower(trans('messages.subscribers')) }}</span>
-											@elseif (is_object($item->mailList))
-												<span class="no-margin stat-num">{{ $item->mailList->name }}</span>
-												<br>
-												<span class="text-muted">{{ $item->subscribers()->count() }} {{ strtolower(trans('messages.subscribers')) }}</span>
+											@if ($item->status != 'new')
+												<span class="text-muted2">{{ trans('messages.delivery_at') }}: <i class="icon-alarm"></i> {{ Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $item->delivery_at)) }}</span>
+											@else
+												<span class="text-muted2">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 											@endif
 										</td>
 										<td>
-											@if (isset($item->delivery_at) && $item->delivery_at != "0000-00-00 00:00:00")
-												<span class="no-margin stat-num"><i class="icon-alarm"></i> {{ Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $item->delivery_at)) }}</span>
-												<br>
-												<span class="text-muted">{{ trans('messages.delivery_at') }}</span>
-											@endif
+											<div class="single-stat-box pull-left">
+												@if (is_object($item->segment))
+													<span class="no-margin stat-num">{{ $item->mailList->name }} . {{ $item->segment->name }}</span>
+													<br>
+													<span class="text-muted text-nowrap">{{ $item->subscribers()->count() }} {{ strtolower(trans('messages.subscribers')) }}</span>
+												@elseif (is_object($item->mailList))
+													<span class="no-margin stat-num">{{ $item->mailList->name }}</span>
+													<br>
+													<span class="text-muted text-nowrap">{{ $item->subscribers()->count() }} {{ strtolower(trans('messages.subscribers')) }}</span>
+												@endif
+											</div>
 										</td>
+										<td class="stat-fix-size-sm">
+											@if ($item->status != 'new')
+												<div class="single-stat-box pull-left ml-20">
+													<span class="no-margin text-teal-800 stat-num">{{ $item->openUniqRate() }}%</span>
+													<div class="progress progress-xxs">
+														<div class="progress-bar progress-bar-info" style="width: {{ $item->openUniqRate() }}%">
+														</div>
+													</div>
+													<span class="text-muted">{{ trans('messages.open_rate') }}</span>
+												</div>
+												<div class="single-stat-box pull-left ml-20">
+													<span class="no-margin text-teal-800 stat-num">{{ $item->clickRate() }}%</span>
+													<div class="progress progress-xxs">
+														<div class="progress-bar progress-bar-info" style="width: {{ $item->clickRate() }}%">
+														</div>
+													</div>
+													<span class="text-muted">{{ trans('messages.click_rate') }}</span>
+												</div>
+											@endif
+										</td>										
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
@@ -56,7 +75,7 @@
 												<a href="{{ action('CampaignController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 											@endif
 											@if (\Gate::allows('overview', $item))
-												<a href="{{ action('CampaignController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-stats-growth"></i> <i class="icon-search4"></i></a>
+												<a href="{{ action('CampaignController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="icon-stats-growth"></i> {{ trans('messages.overview') }}</a>
 											@endif
 											@if (\Gate::allows('delete', $item))
 												<div class="btn-group">										

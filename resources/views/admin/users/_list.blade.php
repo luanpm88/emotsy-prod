@@ -13,21 +13,65 @@
 											</h5>
 											<span class="text-muted kq_search">{{ $item->email }}</span>
 											<br />
+											{{ $item->userGroup->name }}
+											<br />
 											<span class="text-muted2">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
-										<td>
+										<td class="stat-fix-size">
+											<div class="single-stat-box pull-left ml-20">
+												<span class="no-margin text-teal-800 stat-num">{{ $item->subscribersUsage() }}%</span>
+												<div class="progress progress-xxs">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->subscribersUsage() }}%">
+													</div>
+												</div>
+												<span class="text-muted"><strong>{{ $item->sendingQuota() }}/{{ $item->maxQuota() }}</strong> {{ trans('messages.sending_quota') }}</span>
+											</div>
+											<!--<div class="single-stat-box pull-left ml-20">
+												<span class="no-margin text-teal-800 stat-num">{{ $item->subscribersUsage() }}%</span>
+												<div class="progress progress-xxs">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->subscribersUsage() }}%">
+													</div>
+												</div>
+												<span class="text-muted">{{ $item->subscribers()->count() }}/{{ $item->maxSubscribers() }} {{ trans('messages.subscribers') }}</span>
+											</div>
+											<div class="single-stat-box pull-left ml-20">
+												<span class="no-margin text-teal-800 stat-num">{{ $item->listsUsage() }}%</span>
+												<div class="progress progress-xxs">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->listsUsage() }}%">
+													</div>
+												</div>
+												<span class="text-muted"><strong>{{ $item->lists()->count() }}/{{ $item->maxLists() }}</strong> {{ trans('messages.lists') }}</span>
+											</div>
+											<div class="single-stat-box pull-left ml-20">
+												<span class="no-margin text-teal-800 stat-num">{{ $item->campaignsUsage() }}%</span>
+												<div class="progress progress-xxs">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->campaignsUsage() }}%">
+													</div>
+												</div>
+												<span class="text-muted"><strong>{{ $item->campaigns()->count() }}/{{ $item->maxCampaigns() }}</strong> {{ trans('messages.campaigns') }}</span>
+											</div>-->
+										</td>
+										<td class="text-center">
 											<div class="single-stat-box pull-left">
-												<span class="no-margin stat-num kq_search">{{ $item->userGroup->name }}</span>
+												<i class="table-checkmark-{{ $item->userGroup->backend_access }}"></i>
 												<br />
-												<span class="text-muted">{{ trans("messages.group") }}</span>
+												<span class="text-muted">{{ trans("messages.backend") }}</span>
+											</div>
+											<div class="single-stat-box pull-left">
+												<i class="table-checkmark-{{ $item->userGroup->frontend_access }}"></i>
+												<br />
+												<span class="text-muted">{{ trans("messages.frontend") }}</span>
 											</div>
 										</td>
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>
+											@can('switch', $item)
+												<a href="{{ action('Admin\UserController@switch', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_user') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="glyphicon glyphicon-random pr-5"></i></a>
+											@endcan
 											@can('update', $item)
-												<a href="{{ action('Admin\UserController@edit', $item->uid) }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil"></i> {{ trans('messages.edit') }}</a>
+												<a href="{{ action('Admin\UserController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
 											@endcan
 											@can('delete', $item)
 												<div class="btn-group">										

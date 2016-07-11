@@ -1,12 +1,12 @@
                 <li class="dropdown">
 					<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 						<i class="icon-history"></i>
-						<span class="visible-xs-inline-block position-right">{{ trans('messages.action_log') }}</span>
+						<span class="visible-xs-inline-block position-right">{{ trans('messages.activity_log') }}</span>
 					</a>
 					
 					<div class="dropdown-menu dropdown-content width-350">
 						<div class="dropdown-content-heading">
-							{{ trans('messages.action_log') }}						
+							{{ trans('messages.activity_log') }}						
 						</div>
 
 						<ul class="media-list dropdown-content-body">

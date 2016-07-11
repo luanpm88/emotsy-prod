@@ -212,7 +212,9 @@
 						@endforeach
 					</ul>
                 </li>-->
-
+				
+				@include('layouts._top_activity_log')
+				
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						<img src="{{ action('UserController@avatar', Auth::user()->uid) }}" alt="">

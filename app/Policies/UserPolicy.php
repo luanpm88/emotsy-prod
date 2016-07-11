@@ -45,4 +45,12 @@ class UserPolicy
         $can = $can && $item->lists()->count() == 0 && $item->user_id != null;
         return $can;
     }
+    
+    public function switch(\Mailixa\Model\User $user, \Mailixa\Model\User $item)
+    {
+        $ability = $user->getOption("backend", "user_switch");
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->id == $item->user_id);
+        return $can;
+    }
 }

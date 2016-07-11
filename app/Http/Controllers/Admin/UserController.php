@@ -302,4 +302,42 @@ class UserController extends Controller
         // Redirect to my lists page
         echo(trans('messages.users.deleted'));
     }
+    
+    /**
+     * Switch user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function switch(Request $request)
+    {
+        $user = \Mailixa\Model\User::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('switch', $user)) {
+            return;
+        }
+        
+        $orig_id = $request->user()->uid;
+        \Auth::login($user);
+        \Session::put('orig_user_id', $orig_id);
+        
+        return redirect()->action('HomeController@index');
+    }
+    
+    /**
+     * Log in back user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function loginBack(Request $request)
+    {
+        $id = \Session::pull('orig_user_id');
+        $orig_user = \Mailixa\Model\User::findByUid($id);
+        
+        \Auth::login($orig_user);
+        
+        return redirect()->action('Admin\UserController@index');
+    }
 }

@@ -93,6 +93,7 @@ class DatabaseSeeder extends Seeder
             'mail_list_id' => 1,
             'user_id' => 1,
             'name' => 'My Campaign',
+            'type' => 'regular',
             'subject' => 'Newsletter of June, 13',
             'from_email' => 'gaugau@from.com',
             'reply_to' => 'gaugau@from.com',

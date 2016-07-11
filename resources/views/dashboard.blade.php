@@ -155,9 +155,9 @@
                                         </div>
 										<div class="col-md-2 text-left">
 											<h5 class="no-margin text-bold">
-												{{ $item->openCount() }}
+												{{ $item->urlCount() }}
 											</h5>
-											<span class="text-muted">{{ trans('messages.opens') }}</span>
+											<span class="text-muted">{{ trans('messages.urls') }}</span>
                                                 <br /><br />
                                         </div>
 										<div class="col-md-2 text-left">
@@ -182,7 +182,7 @@
                                         <div class="col-md-6">
                                             <i class="number">{{ $num+1 }}</i>
                                             <h6 class="mt-0 mb-0 text-semibold">
-                                                <a href="">
+                                                <a href="{{ $item->url }}" target="_blank">
                                                     {{ $item->url }}
                                                 </a>
                                             </h6>
@@ -202,10 +202,9 @@
 												{{ Mailixa\Library\Tool::formatDateTime($item->lastClick(Auth::user())->created_at) }}          
 											</h5>
 											<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
-                                                <br /><br />
+                                            <br /><br />
                                         </div>
                                     </div>
-
                                 </li>
 							@endforeach
 						</ul>
@@ -215,13 +214,13 @@
 				
 	<br />
     <br />
-    <h2 class="text-teal-800"><i class="icon-history"></i> {{ trans('messages.action_log') }}</h2>
+    <h2 class="text-teal-800"><i class="icon-history"></i> {{ trans('messages.activity_log') }}</h2>
 	
 	@if (Auth::user()->logs()->count() == 0)
 		<div class="empty-list">
 			<i class="icon-history"></i>
 			<span class="line-1">
-				{{ trans('messages.no_action_logs') }}
+				{{ trans('messages.no_activity_logs') }}
 			</span>
 		</div>
     @else

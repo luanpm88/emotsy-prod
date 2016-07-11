@@ -42,7 +42,7 @@
                 </div>
                 <div class="col-md-6">
                     <div class="content-group-sm">
-                        <div class="pull-right progress-right-info text-teal-800">{{ $campaign->clickPerUniqOpen() }}%</div>
+                        <div class="pull-right progress-right-info text-teal-800">{{ $campaign->clickRate() }}%</div>
                         <h4 class="text-semibold">{{ trans('messages.click_rate') }}</h4>
                         <div class="progress progress-sm">
                             <div class="progress-bar bg-teal" style="width: {{ $campaign->clickPerUniqOpen() }}%">

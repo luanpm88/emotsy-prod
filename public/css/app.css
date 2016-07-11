@@ -22,7 +22,7 @@ h4, .h4, h5, .h5, h6, .h6 {
     margin-bottom: 15px;
 }
 h2, .h2 {
-    font-size: 25px;
+    font-size: 22px;
 }
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
     background-color: rgba(0, 0, 0, 0.5);
@@ -277,6 +277,16 @@ h3 {
 }
 .single-stat-box {
     margin-right: 30px;
+    margin-bottom: 20px;
+}
+.stat-fix-size .single-stat-box {
+    width: 135px;
+}
+.stat-fix-size-sm .single-stat-box {
+    width: 90px;
+}
+.single-stat-box .progress {
+    margin: 5px 0 5px 0;
 }
 .list-drag-button {
     color: #999;
@@ -310,6 +320,9 @@ h3 {
 h2 [class^="icon-"] {
     font-size: 22px;
 }
+.mr-0 {
+    margin-right: 0 !important;
+}
 .filter-group .title {
     margin-right: 10px;
     font-size: 13px;
@@ -318,6 +331,7 @@ h2 [class^="icon-"] {
 .stat-num {
     font-size: 17px;
     font-weight: 600;
+    margin-bottom: 0px;
 }
 .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
     background-color: #26A69A;

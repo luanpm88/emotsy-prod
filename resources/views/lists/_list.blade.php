@@ -26,7 +26,7 @@
 											</h5>
 											<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
-										<td>
+										<td class="stat-fix-size-sm">
 											<div class="single-stat-box pull-left">
 												<a href="{{ action('SubscriberController@index', $item->uid) }}">
 													<span class="no-margin stat-num">{{ $item->subscribers()->count() }}</span>
@@ -34,15 +34,21 @@
 												<br />
 												<span class="text-muted">{{ trans("messages.subscribers") }}</span>
 											</div>
-											<div class="single-stat-box pull-left">
-												<span class="no-margin stat-num">{{ rand(0, 100) }}.0%</span>
-												<br />
-												<span class="text-muted">Opens</span>
+											<div class="single-stat-box pull-left ml-20">
+												<span class="no-margin text-teal-800 stat-num">{{ $item->openUniqRate() }}%</span>
+												<div class="progress progress-xxs">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->openUniqRate() }}%">
+													</div>
+												</div>
+												<span class="text-muted">{{ trans('messages.open_rate') }}</span>
 											</div>
-											<div class="single-stat-box pull-left">
-												<span class="no-margin stat-num">{{ rand(0, 100) }}.0%</span>
-												<br />
-												<span class="text-muted">Clicks</span>
+											<div class="single-stat-box pull-left ml-20">
+												<span class="no-margin text-teal-800 stat-num">{{ $item->clickRate() }}%</span>
+												<div class="progress progress-xxs">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->clickRate() }}%">
+													</div>
+												</div>
+												<span class="text-muted">{{ trans('messages.click_rate') }}</span>
 											</div>
 											<br style="clear:both" />
 										</td>
@@ -50,8 +56,8 @@
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>
-											<a href="{{ action('SubscriberController@create', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.create_subscriber') }}" type="button" class="btn bg-teal btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></a>
-											<a href="{{ action('MailListController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-stats-growth"></i> <i class="icon-search4"></i></a>
+											<a href="{{ action('SubscriberController@create', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.create_subscriber') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></a>
+											<a href="{{ action('MailListController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="icon-stats-growth mr-0 pr-0"></i></a>
 											<div class="btn-group">										
 												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 												<ul class="dropdown-menu dropdown-menu-right">

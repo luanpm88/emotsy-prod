@@ -181,6 +181,7 @@ class UserGroup extends Model
                 'user_create' => 'yes',
                 'user_update' => 'own',
                 'user_delete' => 'own',
+                'user_switch' => 'own',
                 'sending_server_read' => 'all',
                 'sending_server_create' => 'yes',
                 'sending_server_update' => 'own',
@@ -280,6 +281,13 @@ class UserGroup extends Model
                     ],
                 ],
                 "delete" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+						['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                "switch" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],

@@ -385,5 +385,128 @@ class MailList extends Model
             'data' => json_encode($data),
         ]);
     }
+    
+    /**
+     * url count
+     *
+     * @return void
+     */
+    public function urlCount()
+    {
+        $query = CampaignLink::join('campaigns', 'campaigns.id', '=', 'campaign_links.campaign_id')
+            ->where('campaigns.mail_list_id', "=", $this->id);
+        
+        return $query->count();
+    }
+    
+    /**
+     * Open count
+     *
+     * @return void
+     */
+    public function openCount()
+    {
+        $query = OpenLog::join('tracking_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
+            ->whereIn('tracking_logs.subscriber_id', function($query)
+            {
+                $query->select("subscribers.id")
+                    ->from('subscribers')
+                    ->where('subscribers.mail_list_id', '=', $this->id);
+            });
+        
+        return $query->count();
+    }
+    
+    /**
+     * Open count
+     *
+     * @return void
+     */
+    public function clickCount()
+    {
+        $query = ClickLog::join('tracking_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
+            ->whereIn('tracking_logs.subscriber_id', function($query)
+            {
+                $query->select("subscribers.id")
+                    ->from('subscribers')
+                    ->where('subscribers.mail_list_id', '=', $this->id);
+            });
+        
+        return $query->distinct('url')->count('url');
+    }
+    
+    /**
+     * Open count
+     *
+     * @return void
+     */
+    public function openUniqCount()
+    {
+        $query = OpenLog::join('tracking_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
+            ->whereIn('tracking_logs.subscriber_id', function($query)
+            {
+                $query->select("subscribers.id")
+                    ->from('subscribers')
+                    ->where('subscribers.mail_list_id', '=', $this->id);
+            });
+        
+        return $query->distinct('subscriber_id')->count('subscriber_id');
+    }
+    
+    /**
+     * Tracking count
+     *
+     * @return void
+     */
+    public function trackingCount()
+    {
+        $query = TrackingLog::whereIn('tracking_logs.subscriber_id', function($query)
+            {
+                $query->select("subscribers.id")
+                    ->from('subscribers')
+                    ->where('subscribers.mail_list_id', '=', $this->id);
+            });
+        
+        return $query->count();
+    }
+    
+    /**
+     * Count open rate
+     *
+     * @return number
+     */
+    public function openRate()
+    {
+        if ($this->trackingCount() == 0) {
+            return 0;
+        }
+        return round(($this->openCount() / $this->trackingCount())*100, 0);
+    }
+    
+    /**
+     * Count open uniq rate
+     *
+     * @return number
+     */
+    public function openUniqRate()
+    {
+        if ($this->trackingCount() == 0) {
+            return 0;
+        }
+        return round(($this->openUniqCount() / $this->trackingCount())*100, 0);
+    }
+    
+    /**
+     * Count click rate
+     *
+     * @return number
+     */
+    public function clickRate()
+    {
+        if ($this->urlCount() == 0) {
+            return 0;
+        }
+        return round(($this->clickCount() / $this->urlCount())*100, 0);
+    }
 
 }

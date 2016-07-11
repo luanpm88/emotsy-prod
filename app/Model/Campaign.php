@@ -653,6 +653,29 @@ class Campaign extends Model
     }
     
     /**
+     * Url count
+     *
+     * @return number
+     */
+    public function urlCount()
+    {
+        return $this->links()->count();
+    }
+    
+    /**
+     * Click rate
+     *
+     * @return number
+     */
+    public function clickRate()
+    {
+        if ($this->urlCount() == 0) {
+            return 0;
+        }
+        return round(($this->clickCount() / $this->urlCount())*100, 0);
+    }
+    
+    /**
      * Count click
      *
      * @return number
@@ -942,14 +965,20 @@ class Campaign extends Model
     public static function topLinks($number=5, $user=null)
     {
         $records = Link::select(\DB::raw(\DB::getTablePrefix() . 'links.*, count(*) as `aggregate`'))
-            ->join('campaign_links', 'campaign_links.link_id', '=', 'links.id');            
+            ->join('campaign_links', 'campaign_links.link_id', '=', 'links.id')
+            ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaign_links.campaign_id')
+            ->join('click_logs', function($join)
+            {
+                $join->on('click_logs.message_id', '=', 'tracking_logs.message_id')
+                ->on("click_logs.url", "=", "links.url");
+            });
         
         if(isset($user)) {
             $records = $records->join('campaigns', 'campaign_links.campaign_id', '=', 'campaigns.id')
                 ->where('campaigns.user_id', "=", $user->id);
         }
         
-        $records = $records->groupBy('campaign_links.link_id')
+        $records = $records->groupBy('links.id')
             ->orderBy('aggregate', 'desc');
             
         return $records->take($number);
