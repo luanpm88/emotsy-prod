@@ -61,7 +61,7 @@ class TestCampaign extends Command
         $c->save();
 
         echo \Mailixa\Model\SendingServer::where('id', '>=', function($query){
-            $query->select(DB::raw('count(*)'))->from('tracking_logs')->whereRaw('sending_server_id = 1 AND `create_at` BETWEEN NOW() - INTERVAL 1 HOUR AND NOW()');
+            $query->select(DB::raw('count(*)'))->from('tracking_logs')->whereRaw('sending_server_id = 1 AND `create_at` > NOW() - INTERVAL 1 HOUR');
         })->toSql() . "\n";
     }
 }

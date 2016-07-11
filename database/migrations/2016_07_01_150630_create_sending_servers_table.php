@@ -19,6 +19,7 @@ class CreateSendingServersTable extends Migration
             $table->string('name');
             $table->string('type');
             $table->string('host');
+            $table->string('aws_region');
             $table->string('username');
             $table->string('password');
             $table->integer('port');

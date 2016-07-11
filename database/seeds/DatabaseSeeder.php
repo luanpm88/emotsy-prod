@@ -181,6 +181,20 @@ class DatabaseSeeder extends Seeder
             'updated_at' => $updated_at
         ]);
 
+        DB::table('sending_servers')->insert([
+            'id' => 2,
+            'uid' => uniqid(),
+            'name' => 'Server 2',
+            'user_id' => 1,
+            'type' => 'aws-ses-api',
+            'host' => 'email.us-west-2.amazonaws.com',
+            'aws_region' => 'US West (Oregon)',
+            'username' => 'AKIAJCLUP4FFFKZSQHGQ',
+            'password' => 'HGDiDb5WL8cdnToNp27yR/7VPOXCTmHGvD71PWp0',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
         DB::table('tracking_logs')->insert([
             'id' => 1,
             'message_id' => 1,
@@ -236,5 +250,12 @@ class DatabaseSeeder extends Seeder
             'updated_at' => $updated_at
         ]);
 
+        DB::table('user_group_sending_servers')->insert([
+            'id' => 1,
+            'sending_server_id' => 2,
+            'user_group_id' => 1,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
     }
 }
