@@ -1,5 +1,7 @@
 @extends('layouts.backend')
 
+@section('title', trans('messages.dashboard'))
+
 @section('page_script')    
     <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/visualization/echarts/echarts.js') }}"></script>
     
@@ -11,7 +13,7 @@
 	
     <h2 class="text-teal-800"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h2>
 		
-	@if (Mailixa\Model\Campaign::count() == 0)
+	@if (Mailixa\Model\Campaign::where("status", "=", "sent")->count() == 0)
 		<div class="empty-list">
 			<i class="icon-paperplane"></i>
 			<span class="line-1">
@@ -126,7 +128,7 @@
 						</ul>
 					</div>
 					<div class="tab-pane" id="top-tab2">
-						<ul class="modern-listing mt-0 top-border-none">
+						<ul class="modern-listing mt-0 top-border-none">							
 							@foreach (Mailixa\Model\Campaign::topClicks(5, null)->get() as $num => $item)
 								<li>
                                     <div class="row">
@@ -198,7 +200,7 @@
                                         </div>
 										<div class="col-md-2 text-left">
 											<h5 class="no-margin text-bold">
-												{{ Mailixa\Library\Tool::formatDateTime($item->lastClick(Auth::user())->created_at) }}          
+												{{ Mailixa\Library\Tool::formatDateTime($item->lastClick()->created_at) }}          
 											</h5>
 											<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
                                             <br /><br />
@@ -227,7 +229,7 @@
 			<!-- Timeline -->
 			<div class="timeline timeline-left content-group">
 				<div class="timeline-container">				
-						@foreach (Auth::user()->logs()->take(20)->get() as $log)
+						@foreach (Mailixa\Model\Log::take(20)->get() as $log)
 							<!-- Sales stats -->
 							<div class="timeline-row">
 								<div class="timeline-icon">

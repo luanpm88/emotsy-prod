@@ -46,6 +46,16 @@ class Controller extends BaseController
     }
     
     /**
+     * When site status is offline.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function offline()
+    {
+        return view('offline');
+    }
+    
+    /**
      * Translate datatable.
      *
      * @return text

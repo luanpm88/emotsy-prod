@@ -1,10 +1,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>@yield('title')</title>
+	<title>@yield('title') - {{ \Mailixa\Model\Setting::get("site_name") }}</title>
+		
+	@include('layouts._head')
 	
 	@include('layouts._css')
 	
@@ -46,7 +45,7 @@
 
 			<ul class="nav navbar-nav navbar-right">
 				
-				@include('layouts._top_log')
+				@include('layouts._top_activity_log')
 
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">

@@ -49,5 +49,7 @@ class Kernel extends HttpKernel
         'can' => \Illuminate\Foundation\Http\Middleware\Authorize::class,
         'guest' => \Mailixa\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
+        'frontend' => \Mailixa\Http\Middleware\Frontend::class,
+        'backend' => \Mailixa\Http\Middleware\Backend::class,
     ];
 }

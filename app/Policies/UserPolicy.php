@@ -51,6 +51,7 @@ class UserPolicy
         $ability = $user->getOption("backend", "user_switch");
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
+        $can = $can && $item->id != $user->id;
         return $can;
     }
 }

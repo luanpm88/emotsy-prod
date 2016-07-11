@@ -207,6 +207,7 @@ class UserGroup extends Model
                 'setting_general' => 'yes',
                 'setting_sending' => 'yes',
                 'setting_system_urls' => 'yes',
+                'setting_access_when_offline' => 'yes',
                 'language_read' => 'yes',
                 'language_create' => 'yes',
                 'language_update' => 'yes',
@@ -468,6 +469,12 @@ class UserGroup extends Model
                     ],
                 ],
                 "system_urls" => [
+                    "options" => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+						['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                "access_when_offline" => [
                     "options" => [
                         ['value' => 'no', 'text' => trans('messages.no')],
 						['value' => 'yes', 'text' => trans('messages.yes')],

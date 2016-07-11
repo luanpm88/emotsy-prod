@@ -30,7 +30,12 @@ class Setting extends Model
      */
     public static function get($name)
     {
-        return Option::where("name", $name)->first()->value;
+        $setting = Setting::where("name", $name)->first();
+        if(is_object($setting)) {
+            return $setting->value;
+        } else {
+            return Setting::defaultSettings()[$name]["value"];
+        }
     }
     
     /**

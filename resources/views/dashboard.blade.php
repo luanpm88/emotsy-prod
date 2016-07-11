@@ -1,5 +1,7 @@
 @extends('layouts.frontend')
 
+@section('title', trans('messages.dashboard'))
+
 @section('page_script')    
     <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/visualization/echarts/echarts.js') }}"></script>
     
