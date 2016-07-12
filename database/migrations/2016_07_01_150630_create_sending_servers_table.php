@@ -26,6 +26,9 @@ class CreateSendingServersTable extends Migration
             $table->string('sendmail_path');
             $table->string('protocol');
             $table->string('status');
+            $table->integer('quota_value');
+            $table->integer('quota_base');
+            $table->string('quota_unit');
             $table->integer('custom_order');
             
             $table->timestamps();
