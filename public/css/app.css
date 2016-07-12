@@ -1071,7 +1071,7 @@ ul.install-steps {
     margin-bottom: 0;
 }
 ul.install-steps li:after {
-    color: #fff;
+    color: #888;
     right: -25px;
     left: auto;
 }
@@ -1079,11 +1079,31 @@ ul.install-steps li {
     margin-right: 20px;
 }
 ul.install-steps li a {
-    color: #aaa;
+    color: #888;
     padding-left: 15px;
     padding-right: 0;
+    cursor: default;
+}
+ul.install-steps li.enabled:after {
+    color: #fff;
 }
 ul.install-steps li a:hover, ul.install-steps li a:focus {
     background: none;
+    color: #888;
+}
+ul.install-steps li.enabled a:hover, ul.install-steps li.enabled a:focus {
     color: #fff;
+}
+ul.install-steps li.enabled a {
+    color: #ddd;
+    cursor: pointer;
+}
+ul.install-steps li.active a {
+    color: #fff;
+}
+ul.install-steps li.enabled a:hover {
+    color: #fff !important;
+}
+.sweet-alert h2 {
+    color: #333;
 }

@@ -51,5 +51,7 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'frontend' => \Mailixa\Http\Middleware\Frontend::class,
         'backend' => \Mailixa\Http\Middleware\Backend::class,
+        'installed' => \Mailixa\Http\Middleware\Installed::class,
+        'not_installed' => \Mailixa\Http\Middleware\NotInstalled::class,
     ];
 }

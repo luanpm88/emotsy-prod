@@ -13,16 +13,9 @@ class InstallController extends Controller
     {
         $step = 0;
         
-        $data = $request->session()->get('requirements');
+        $data = $request->session()->get('compatibilities');
         if (isset($data)) {
             $step = 1;
-        } else {
-            return $step;
-        }
-        
-        $data = $request->session()->get('permissions');
-        if (isset($data)) {
-            $step = 2;
         } else {
             return $step;
         }
@@ -48,6 +41,13 @@ class InstallController extends Controller
             return $step;
         }
         
+        $data = $request->session()->get('cron_jobs');
+        if (isset($data)) {
+            $step = 6;
+        } else {
+            return $step;
+        }
+        
         return $step;
     }
     
@@ -55,66 +55,37 @@ class InstallController extends Controller
     public function starting(Request $request)
     {
         exec('php '.base_path().'/artisan config:cache');
-        return redirect()->action('InstallController@requirements');
+        return redirect()->action('InstallController@systemCompatibility');
     }
     
-    public function requirements(Request $request)
+    public function systemCompatibility(Request $request)
     {
         // Begin check
-        $request->session()->forget('requirements');
+        $request->session()->forget('compatibilities');
         
-        $requirements = $this->checkRequirements();
+        $compatibilities = $this->checkSystemCompatibility();
         $result = true;        
-        foreach ($requirements as $requirement) {
-            if (!$requirement["check"]) {
+        foreach ($compatibilities as $compatibility) {
+            if (!$compatibility["check"]) {
                 $result = false;
             }
         }
         
         if ($result) {
-            $request->session()->set('requirements', $requirements);
+            $request->session()->set('compatibilities', $compatibilities);
         }
         
-        return view('install.requirements', [
-            'requirements' => $requirements,
+        return view('install.compatibilities', [
+            'compatibilities' => $compatibilities,
             'result' => $result,
             'step' => $this->step($request),
             'current' => 1,
         ]);
     }
     
-    public function permissions(Request $request)
-    {
-        if ($this->step($request) < 1) {
-            return redirect()->action('InstallController@requirements');
-        }
-        
-        // Begin check
-        $request->session()->forget('permissions');
-        
-        $permissions = $this->checkPermissions();
-        $result = true;        
-        foreach ($permissions as $permission) {
-            if (!$permission["check"]) {
-                $result = false;
-            }
-        }
-        
-        if ($result != 0) {
-            $request->session()->set('permissions', $permissions);
-        }
-       
-        return view('install.permissions', [
-            'permissions' => $permissions,
-            'result' => $result,
-            'step' => $this->step($request),
-            'current' => 2,
-        ]);
-    }
-    
     public function siteInfo(Request $request)
     {
-        if ($this->step($request) < 2) {
+        if ($this->step($request) < 1) {
             return redirect()->action('InstallController@permissions');
         }
         
@@ -128,11 +99,33 @@ class InstallController extends Controller
             "email" => "required|email",
             "password" => "required",
             "timezone" => "required",
+            "smtp_hostname" => "required",
+            "smtp_port" => "required",
+            "smtp_username" => "required",
+            "smtp_password" => "required",
+            "smtp_from_email" => "required|email",
+            "smtp_from_name" => "required",
+            "smtp_encryption" => "required",
         ];
         // validate and save posted data
         if ($request->isMethod('post')) {
             $request->session()->forget('site_info');
              
+            $this->validate($request, $rules);
+            
+            // Check SMTP connection
+            $rules = [];
+            try {
+                $transport = \Swift_SmtpTransport::newInstance($request->smtp_hostname, $request->smtp_port, $request->smtp_encryption);
+                $transport->setUsername($request->smtp_username);
+                $transport->setPassword($request->smtp_password);
+                $mailer = \Swift_Mailer::newInstance($transport);
+                $mailer->getTransport()->start();
+            } catch (\Swift_TransportException $e) {
+                $rules['smtp_valid'] = 'required';
+            } catch (Exception $e) {
+                $rules['smtp_valid'] = 'required';
+            }
             $this->validate($request, $rules);
             
             $site_info = $request->all();
@@ -150,14 +143,14 @@ class InstallController extends Controller
             'site_info' => $site_info,
             'rules' => $rules,
             'step' => $this->step($request),
-            'current' => 3,
+            'current' => 2,
         ]);
     }
     
     // Database configuration
     public function database(Request $request)
     {
-        if ($this->step($request) < 3) {
+        if ($this->step($request) < 2) {
             return redirect()->action('InstallController@siteInfo');
         }
         
@@ -194,9 +187,9 @@ class InstallController extends Controller
             
             // IMPORT DATABASE
             // write config file
-            $this->write_env($request);
+            $this->writeEnv($request);
             
-            return redirect()->action('InstallController@databaseImport', ["action" => "import"]);
+            return redirect()->action('InstallController@databaseImport');
         }
         
         $database = $request->session()->get('database');
@@ -208,18 +201,19 @@ class InstallController extends Controller
             'database' => $database,
             'rules' => $rules,
             'step' => $this->step($request),
-            'current' => 4,
+            'current' => 3,
         ]);
     }
     
     // Import Database
     public function databaseImport(Request $request)
     {
-        if ($this->step($request) < 4) {
+        if ($this->step($request) < 3) {
             return redirect()->action('InstallController@database');
         }
         
         $database = $request->session()->get('database');
+        $site_info = $request->session()->get('site_info');
         
         // 
         if ($request->action == 'import') {
@@ -228,26 +222,26 @@ class InstallController extends Controller
             // connect mysql
             $mysqli = new \mysqli($database["hostname"], $database["username"], $database["password"], $database["database_name"], $database["port"]);
             
-            // Drop all old table
-            $done = true;
-            while ($done) {
-                try {
-                    $delete_all_tables_query = "SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' ) 
-                                                AS statement FROM information_schema.tables 
-                                                WHERE table_schema = '".$database["database_name"]."' AND table_name LIKE '".$database["tables_prefix"]."%' limit 1;";
-                    $result = $mysqli->query($delete_all_tables_query);
-                    $result = $result->fetch_object();
-                    
-                    if (isset($result->statement)) {
-                        $mysqli->query($result->statement);
-                        continue;
-                    }
-                } catch (\Exception $e) {
-                    $rules["mysql_connection"] = "required";
-                }
-                
-                $done = false;
-            }
+            //// Drop all old table
+            //$done = true;
+            //while ($done) {
+            //    try {
+            //        $delete_all_tables_query = "SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' ) 
+            //                                    AS statement FROM information_schema.tables 
+            //                                    WHERE table_schema = '".$database["database_name"]."' AND table_name LIKE '".$database["tables_prefix"]."%' limit 1;";
+            //        $result = $mysqli->query($delete_all_tables_query);
+            //        $result = $result->fetch_object();
+            //        
+            //        if (isset($result->statement)) {
+            //            $mysqli->query($result->statement);
+            //            continue;
+            //        }
+            //    } catch (\Exception $e) {
+            //        $rules["mysql_connection"] = "required";
+            //    }
+            //    
+            //    $done = false;
+            //}
             
             // Check if database is not empty
             $rules = [];
@@ -258,42 +252,11 @@ class InstallController extends Controller
             }
             $this->validate($request, $rules);
             
+            // Run migrate
+            exec('php '.base_path().'/artisan migrate');
+            
             // import database with prefix
             $this->importDatabase($database);
-            
-            $request->session()->set('database_imported', true);
-            
-            return redirect()->action('InstallController@adminAccount');
-        }
-        
-        return view('install.database_import', [
-            'database' => $database,
-            'step' => $this->check_step($request),
-        ]);
-    }
-    
-    
-    // Admin account
-    public function adminAccount(Request $request)
-    {
-        if ($this->step($request) < 5) {
-            return redirect()->action('InstallController@database');
-        }
-        
-        // Check required fields
-        $rules = array(
-            "first_name" => "required",
-            "last_name" => "required",
-            "email" => "required|email",
-            "password" => "required",
-            "timezone" => "required",
-        );
-        
-        // validate and save posted data
-        if ($request->isMethod('post')) {
-            $request->session()->forget('admin_account');
-            
-            $this->validate($request, $rules);
             
             // get database connection
             $database = $request->session()->get('database');
@@ -304,168 +267,137 @@ class InstallController extends Controller
             
             // Insert default superuser
             $mysqli->query("DELETE FROM `".$database["tables_prefix"]."users` WHERE 1");
-            $mysqli->query("INSERT INTO `".$database["tables_prefix"]."users` (`id`, `name`, `email`, `password`, `remember_token`, `created_at`, `updated_at`, `group_id`, `language_id`, `first_name`, `last_name`, `timezone`, `avatar`, `removable`, `status`, `hourly_quota`, `confirmation_key`, `oauth_uid`, `oauth_provider`, `backend_access`) VALUES
-(1, '".$request->first_name." ".$request->last_name."', '".$request->email."', '".bcrypt($request->password)."', '', '".$date."', '".$date."', 1, 1, '".$request->first_name."', '".$request->last_name."', '".$request->timezone."', NULL, 'no', 'active', NULL, NULL, NULL, NULL, 'yes');");
-
-            
-            // Insert default customer
-            $mysqli->query("DELETE FROM `".$database["tables_prefix"]."customer` WHERE 1");
-            $mysqli->query("INSERT INTO `".$database["tables_prefix"]."customer` (`customer_id`, `email`, `password`, `created_at`, `updated_at`, `group_id`, `language_id`, `first_name`, `last_name`, `timezone`, `avatar`, `removable`, `status`, `confirmation_key`, `oauth_uid`, `oauth_provider`) VALUES
-(1, '".$request->email."', '".bcrypt($request->password)."', '".$date."', '".$date."', 1, 1, '".$request->first_name."', '".$request->last_name."', '".$request->timezone."', NULL, 'no', 'active', NULL, NULL, NULL);");
+            $aaa = $mysqli->query("INSERT INTO `".$database["tables_prefix"]."users`
+                (`id`, `uid`, `contact_id`, `user_group_id`, `language_id`, `name`, `email`, `password`, `remember_token`, `image`, `timezone`, `status`, `created_at`, `updated_at`, `first_name`, `last_name`) VALUES
+(1, '" . uniqid() . "', NULL, 1, 1, '" . $site_info["first_name"] . " ".$site_info["last_name"]."', '".$site_info["email"]."', '".bcrypt($site_info["password"])."', '', '', '" . $site_info["timezone"] . "', 'active', '".$date."', '".$date."', '".$site_info["first_name"]."', '".$site_info["last_name"]."');");
             
             // Insert system urls
-            $mysqli->query("DELETE FROM `".$database["tables_prefix"]."option` WHERE category='system.urls' AND key='unsubscribe_url'");
-            $mysqli->query("INSERT INTO `".$database["tables_prefix"]."option` (`category`, `key`, `value`, `is_serialized`, `created_at`) VALUES
-                            ('system.urls', 'unsubscribe_url', '".action('CampaignController@unsubscribe', ['campaign_uid' => 'CAMPAIGN_UID', 'subscriber_uid' => 'SUBSCRIBER_UID'])."', '".$date."', '".$date."');");
-            $mysqli->query("DELETE FROM `".$database["tables_prefix"]."option` WHERE category='system.urls' AND key='open_track_url'");
-            $mysqli->query("INSERT INTO `".$database["tables_prefix"]."option` (`category`, `key`, `value`, `is_serialized`, `created_at`) VALUES
-                            ('system.urls', 'open_track_url', '".action('CampaignController@open_track', ['campaign_uid' => 'CAMPAIGN_UID', 'subscriber_uid' => 'SUBSCRIBER_UID'])."', '".$date."', '".$date."');");
-            $mysqli->query("DELETE FROM `".$database["tables_prefix"]."option` WHERE category='system.urls' AND key='campaign_notification_url'");
-            $mysqli->query("INSERT INTO `".$database["tables_prefix"]."option` (`category`, `key`, `value`, `is_serialized`, `created_at`) VALUES
-                            ('system.urls', 'campaign_notification_url', '".action('CampaignController@notification')."', '".$date."', '".$date."');");
+            $mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='url_nsubscribe'");
+            $mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                            ('url_nsubscribe', '".action('CampaignController@unsubscribe', ["message_id" => trans("messages.MESSAGE_ID")])."', '".$date."', '".$date."');");
+            $mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='url_open_track'");
+            $mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                            ('url_open_track', '".action('CampaignController@open', ["message_id" => trans("messages.MESSAGE_ID")])."', '".$date."', '".$date."');");
+            $mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='url_click_track'");
+            $mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                            ('url_click_track', '".action('CampaignController@click', ["message_id" => trans("messages.MESSAGE_ID"), "url" => trans("messages.URL")])."', '".$date."', '".$date."');");
+            $mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='url_campaign_notification'");
+            $mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                            ('url_campaign_notification', '".action('HomeController@index')."', '".$date."', '".$date."');");
+            $mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='site_name'");
+            $mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                            ('site_name', '".$site_info["site_name"]."', '".$date."', '".$date."');");
+            $mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='site_keyword'");
+            $mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                            ('site_keyword', '".$site_info["site_keyword"]."', '".$date."', '".$date."');");
+            $mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='site_description'");
+            $mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                            ('site_description', '".$site_info["site_description"]."', '".$date."', '".$date."');");
             
+            $request->session()->set('database_imported', true);
             
-            // Insert defaut tags
-            $mysqli->query("DELETE FROM `".$database["tables_prefix"]."tag_registry` WHERE 1");
-            $mysqli->query("INSERT INTO `".$database["tables_prefix"]."tag_registry` (`tag`, `description`, `created_at`, `updated_at`) VALUES
-                            ('SUBSCRIBER_EMAIL', '', '".$date."', '".$date."'),
-                            ('CAMPAIGN_NAME', '', '".$date."', '".$date."'),
-                            ('CAMPAIGN_UID', '', '".$date."', '".$date."'),
-                            ('CAMPAIGN_SUBJECT', '', '".$date."', '".$date."'),
-                            ('CAMPAIGN_FROM_EMAIL', '', '".$date."', '".$date."'),
-                            ('CAMPAIGN_FROM_NAME', '', '".$date."', '".$date."'),
-                            ('CAMPAIGN_REPLY_TO', '', '".$date."', '".$date."'),
-                            ('SUBSCRIBER_UID', '', '".$date."', '".$date."'),
-                            ('CURRENT_YEAR', '', '".$date."', '".$date."'),
-                            ('CURRENT_MONTH', '', '".$date."', '".$date."'),
-                            ('CURRENT_DAY', '', '".$date."', '".$date."'),
-                            ('UNSUBSCRIBE_URL', '', '".$date."', '".$date."'),
-                            ('COMPANY_NAME', '', '".$date."', '".$date."'),
-                            ('COMPANY_COUNTRY', '', '".$date."', '".$date."'),
-                            ('COMPANY_ZONE', '', '".$date."', '".$date."'),
-                            ('COMPANY_CITY', '', '".$date."', '".$date."'),
-                            ('COMPANY_ADDRESS_1', '', '".$date."', '".$date."'),
-                            ('COMPANY_ADDRESS_2', '', '".$date."', '".$date."'),
-                            ('COMPANY_PHONE', '', '".$date."', '".$date."'),
-                            ('LIST_NAME', '', '".$date."', '".$date."'),
-                            ('LIST_DESCRIPTION', '', '".$date."', '".$date."'),
-                            ('LIST_SUBJECT', '', '".$date."', '".$date."'),
-                            ('LIST_FROM_NAME', '', '".$date."', '".$date."'),
-                            ('LIST_FROM_EMAIL', '', '".$date."', '".$date."');
-                    ");
-            
-            $admin_account = $request->all();
-            $request->session()->set('admin_account', $admin_account);
-            
-            return redirect()->action('InstallController@smtpAccount');
-        }
-        
-        $admin_account = $request->session()->get('admin_account');
-        if (!empty($request->old())) {
-            $admin_account = $request->old();
-        }
-        
-        return view('install.admin_account', [
-            'admin_account' => $admin_account,
-            'rules' => $rules,
-            'step' => $this->step($request),
-            'current' => 5,
-        ]);
-    }
-    
-    // Admin account
-    public function smtpAccount(Request $request)
-    {
-        if ($this->check_step($request) < 7) {
-            return redirect()->action('InstallController@adminAccount');
-        }
-        
-        // validate and save posted data
-        if ($request->isMethod('post')) {
-            $request->session()->forget('smtp_account');
-            
-            // Check required fields
-            $rules = array(
-                        "hostname" => "required",
-                        "port" => "required",
-                        "username" => "required",
-                        "password" => "required",
-                        "from_email" => "required|email",
-                        "from_name" => "required",
-                        "encryption" => "required",
-                    );
-            $this->validate($request, $rules);
-            
-            // Check SMTP connection
-            $rules = [];
-            try {
-                $transport = \Swift_SmtpTransport::newInstance($request->hostname, $request->port, $request->encryption);
-                $transport->setUsername($request->username);
-                $transport->setPassword($request->password);
-                $mailer = \Swift_Mailer::newInstance($transport);
-                $mailer->getTransport()->start();
-            } catch (\Swift_TransportException $e) {
-                $rules['smtp_valid'] = 'required';
-            } catch (Exception $e) {
-                $rules['smtp_valid'] = 'required';
-            }
-            $this->validate($request, $rules);
-            
-            // save smtp config to session
-            $smtp_account = $request->all();
-            $request->session()->set('smtp_account', $smtp_account);
-            
-            // Write env
-            $this->write_env($request);
-            
+            $request->session()->flash('alert-success', trans('messages.install.database_import.success'));
             return redirect()->action('InstallController@cronJobs');
         }
         
-        $smtp_account = $request->session()->get('smtp_account');
-        if (!empty($request->old())) {
-            $smtp_account = $request->old();
-        }
-        
-        return view('install.smtp_account', [
-            'smtp_account' => $smtp_account,
-            'step' => $this->check_step($request),
+        return view('install.database_import', [
+            'database' => $database,
+            'step' => $this->step($request),
+            'current' => 3,
         ]);
-    }
+    }    
     
     public function cronJobs(Request $request)
     {
-        if ($this->check_step($request) < 8) {
-            return redirect()->action('InstallController@adminAccount');
+        if ($this->step($request) < 5) {
+            return redirect()->action('InstallController@database');
         }
         
         $request->session()->set('cron_jobs', true);
         
         return view('install.cron_jobs', [
-            'step' => $this->check_step($request),
+            'step' => $this->step($request),
+            'current' => 5,
         ]);
     }
     
     public function finish(Request $request)
     {
-        if ($this->check_step($request) < 9) {
-            return redirect()->action('InstallController@cronJobs');
+        if ($this->step($request) < 6) {
+            return redirect()->action('InstallController@database');
         }
         
         $request->session()->set('install_finish', true);
         
         return view('install.finish', [
-            'step' => $this->check_step($request),
+            'step' => $this->step($request),
+            'current' => 6,
         ]);
     }
     
     // Check for requirement when install app
-    public function checkRequirements()
+    public function checkSystemCompatibility()
     {
         return [
             [
+                "type" => 'requirement',
                 "name" => "PHP version",
                 "check" => version_compare(PHP_VERSION, "5.5.9", ">="),
-                "note" => 'PHP 5.5 or higher is required.'
+                "note" => 'PHP 5.5.9 or higher is required.'
+            ],
+            [
+                "type" => 'requirement',
+                "name" => "OpenSSL Extension",
+                "check" => extension_loaded('openssl'),
+                "note" => 'OpenSSL PHP Extension is required.'
+            ],
+            [
+                "type" => 'requirement',
+                "name" => "Mbstring PHP Extension",
+                "check" => extension_loaded('mbstring'),
+                "note" => 'Mbstring PHP Extension is required.'
+            ],
+            [
+                "type" => 'requirement',
+                "name" => "PDO PHP extension",
+                "check" => extension_loaded('pdo'),
+                "note" => 'PDO PHP extension is required.'
+            ],
+            [
+                "type" => 'requirement',
+                "name" => "Tokenizer PHP Extension",
+                "check" => extension_loaded('tokenizer'),
+                "note" => 'Tokenizer PHP Extension is required.'
+            ],
+            [
+                "type" => 'requirement',
+                "name" => "PHP Zip Archive",
+                "check" => class_exists('ZipArchive', false),
+                "note" => 'PHP Zip Archive is required.'
+            ],            
+            [
+                "type" => 'permission',
+                "name" => 'Storage/app/',
+                "check" => file_exists(base_path('/storage/app')) && is_dir(base_path('/storage/app')) && (is_writable(base_path('/storage/app'))),
+                "note" => 'The directory must be writable by the web server (0775).'
+            ],
+            [
+                "type" => 'permission',
+                "name" => 'Storage/framework/',
+                "check" => file_exists(base_path('/storage/framework')) && is_dir(base_path('/storage/framework')) && (is_writable(base_path('/storage/framework'))),
+                "note" => 'The directory must be writable by the web server (0775).'
+            ],
+            [
+                "type" => 'permission',
+                "name" => 'Storage/logs/',
+                "check" => file_exists(base_path('/storage/logs')) && is_dir(base_path('/storage/logs')) && (is_writable(base_path('/storage/logs'))),
+                "note" => 'The directory must be writable by the web server (0775).'
+            ],
+            [
+                "type" => 'permission',
+                "name" => 'bootstrap/cache/',
+                "check" => file_exists(base_path('/bootstrap/cache')) && is_dir(base_path('/bootstrap/cache')) && (is_writable(base_path('/bootstrap/cache'))),
+                "note" => 'The directory must be writable by the web server (0775).'
             ],            
         ];
     }
@@ -521,19 +453,8 @@ class InstallController extends Controller
         return 'GD or ImageMagick not installed';
     }
     
-    // Check filesystem permissions
-    public function checkPermissions()
-    {
-        return [
-            [
-                "name" => 'Storage/app/',
-                "check" => file_exists(base_path('/storage/app')) && is_dir(base_path('/storage/app')) && (is_writable(base_path('/storage/app'))),
-                "note" => 'The directory must be writable by the web server (chmod 0775).'
-            ],            
-        ];
-    }
-    
-    public function write_env($request)
+    // Write configuration values to file
+    public function writeEnv($request)
     {
         // read app key from file
         $file_path = base_path(".env");
@@ -548,7 +469,7 @@ class InstallController extends Controller
         $database = !empty($database) ? $database : [];
 
         // get smtp config
-        $smtp = $request->session()->get('smtp_account');
+        $smtp = $request->session()->get('site_info');
         $smtp = !empty($smtp) ? $smtp : [];
         
         $env_file = fopen(base_path(".env"), "w") or die("Unable to open file!");
@@ -561,7 +482,7 @@ DB_DATABASE='.(isset($database["database_name"]) ? $database["database_name"] : 
 DB_USERNAME='.(isset($database["username"]) ? $database["username"] : "").'
 DB_PASSWORD='.(isset($database["password"]) ? $database["password"] : "").'
 DB_PORT='.(isset($database["port"]) ? $database["port"] : "").'
-DB_PREFIX='.(isset($database["tables_prefix"]) ? $database["tables_prefix"] : "").'
+DB_TABLES_PREFIX='.(isset($database["tables_prefix"]) ? $database["tables_prefix"] : "").'
 
 CACHE_DRIVER=file
 SESSION_DRIVER=file
@@ -572,13 +493,13 @@ REDIS_PASSWORD=null
 REDIS_PORT=6379
 
 MAIL_DRIVER=smtp
-MAIL_HOST='.(isset($smtp["hostname"]) ? $smtp["hostname"] : "").'
-MAIL_PORT='.(isset($smtp["port"]) ? $smtp["port"] : "").'
-MAIL_USERNAME='.(isset($smtp["username"]) ? $smtp["username"] : "").'
-MAIL_PASSWORD='.(isset($smtp["password"]) ? $smtp["password"] : "").'
-MAIL_ENCRYPTION='.(isset($smtp["encryption"]) ? $smtp["encryption"] : "").'
-MAIL_FROM='.(isset($smtp["from_email"]) ? $smtp["from_email"] : "").'
-MAIL_NAME="'.(isset($smtp["from_name"]) ? $smtp["from_name"] : "").'"
+MAIL_HOST='.(isset($smtp["smtp_hostname"]) ? $smtp["smtp_hostname"] : "").'
+MAIL_PORT='.(isset($smtp["smtp_port"]) ? $smtp["smtp_port"] : "").'
+MAIL_USERNAME='.(isset($smtp["smtp_username"]) ? $smtp["smtp_username"] : "").'
+MAIL_PASSWORD='.(isset($smtp["smtp_password"]) ? $smtp["smtp_password"] : "").'
+MAIL_ENCRYPTION='.(isset($smtp["smtp_encryption"]) ? $smtp["smtp_encryption"] : "").'
+MAIL_FROM='.(isset($smtp["smtp_from_email"]) ? $smtp["smtp_from_email"] : "").'
+MAIL_NAME="'.(isset($smtp["smtp_from_name"]) ? $smtp["smtp_from_name"] : "").'"
 ';
         $config_string;
         fwrite($env_file, $config_string);
@@ -639,52 +560,21 @@ MAIL_NAME="'.(isset($smtp["from_name"]) ? $smtp["from_name"] : "").'"
         // Loop through each line
         foreach ($lines as $line) {
             // Skip it if it's a comment
-        if (substr($line, 0, 2) == '--' || $line == '') {
-            continue;
-        }
-        
-        // Add this line to the current segment
-        $templine .= $line;
-        // If it has a semicolon at the end, it's the end of the query
-        if (substr(trim($line), -1, 1) == ';') {
-            // Perform the query
-            $mysqli->query($templine) or print('Error performing query \'<strong>' . $templine . '\': ' . $mysqli->connect_error . '<br /><br />');
-            // Reset temp variable to empty
-            $templine = '';
-        }
+            if (substr($line, 0, 2) == '--' || $line == '') {
+                continue;
+            }
+            
+            // Add this line to the current segment
+            $templine .= $line;
+            // If it has a semicolon at the end, it's the end of the query
+            if (substr(trim($line), -1, 1) == ';') {
+                // Perform the query
+                $mysqli->query($templine) or print('Error performing query \'<strong>' . $templine . '\': ' . $mysqli->connect_error . '<br /><br />');
+                // Reset temp variable to empty
+                $templine = '';
+            }
         }
         
         return true;
-    }
-    
-    public function write_config($name, $data)
-    {
-        $objData = serialize($data);
-        $filePath = storage_path()."/".$name.".tmp";
-        $fp = fopen($filePath, "w") or die("Unable to open file!");
-        fwrite($fp, $objData);
-        fclose($fp);
-        
-        return true;
-    }
-    
-    public function read_config($name)
-    {
-        $filePath = storage_path()."/".$name.".tmp";
-        if (file_exists($filePath)) {
-            $objData = file_get_contents($filePath);
-            $obj = unserialize($objData);
-            return $obj;
-        } else {
-            return false;
-        }
-    }
-    
-    public function remove_config($name)
-    {
-        $filePath = storage_path()."/".$name.".tmp";
-        if (file_exists($filePath)) {
-            unlink($filePath);
-        }
     }
 }

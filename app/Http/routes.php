@@ -16,16 +16,11 @@ Route::group([], function () {
     Route::get('install', 'InstallController@starting');
     Route::get('install/site-info', 'InstallController@siteInfo');
     Route::post('install/site-info', 'InstallController@siteInfo');
-    Route::get('install/requirements', 'InstallController@requirements');
-    Route::get('install/permissions', 'InstallController@permissions');
+    Route::get('install/system-compatibility', 'InstallController@systemCompatibility');
     Route::get('install/database', 'InstallController@database');
     Route::post('install/database', 'InstallController@database');
     Route::get('install/database_import', 'InstallController@databaseImport');
-    Route::get('install/admin_account', 'InstallController@adminAccount');
-    Route::post('install/admin_account', 'InstallController@adminAccount');
-    Route::get('install/smtp_account', 'InstallController@smtpAccount');
-    Route::post('install/smtp_account', 'InstallController@smtpAccount');
-    Route::get('install/cron_jobs', 'InstallController@cronJobs');
+    Route::get('install/cron-jobs', 'InstallController@cronJobs');
     Route::get('install/finish', 'InstallController@finish');
 });
 
@@ -34,7 +29,7 @@ Route::auth();
 Route::get('/offline', "Controller@offline");
 Route::get('/not-authorized', "Controller@notAuthorized");
 
-Route::group(['middleware' => 'frontend'], function () {
+Route::group(['middleware' => ['not_installed', 'frontend']], function () {
 
     Route::get('/', "HomeController@index");
     
@@ -181,7 +176,7 @@ Route::group(['middleware' => 'frontend'], function () {
 });
 
 // ADMIN AREA
-Route::group(['namespace' => 'Admin', 'middleware' => 'backend'], function () {
+Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend']], function () {
     
     Route::get('admin', 'HomeController@index');
     

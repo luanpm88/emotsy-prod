@@ -102,6 +102,18 @@ return [
         'segment_conditions_empty' => [
             'required' => 'Conditions list cannot be empty',
         ],
+        'mysql_connection' => [
+            'required' => 'Can\'t connect to MySQL server',
+        ],
+        'database_not_empty' => [
+            'required' => 'The database is not empty',
+        ],
+        'promo_code_not_valid' => [
+            'required' => 'The promo code is not valid',
+        ],
+        'smtp_valid' => [
+            'required' => 'Can\'t connect to SMTP server',
+        ]
     ],
 
     /*

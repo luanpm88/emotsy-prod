@@ -1,6 +1,6 @@
 @extends('layouts.install')
 
-@section('title', trans('messages.site_info'))
+@section('title', trans('messages.configuration'))
 
 @section('page_script')    
     <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
@@ -11,9 +11,9 @@
 @section('content')
 
 <form action="{{ action('InstallController@siteInfo') }}" method="POST" class="form-validate-jqueryz">
-	<h3 class="text-teal-800">{{ trans('messages.general') }}</h3>
+	<h3 class="text-teal-800"><i class="icon-office"></i> {{ trans('messages.general') }}</h3>
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-md-6">
             @include('helpers.form_control', [
                 'type' => 'text',
                 'name' => 'site_name',
@@ -21,6 +21,8 @@
                 'help_class' => 'install',
                 'rules' => ["site_name" => "required"]
             ])
+		</div>
+		<div class="col-md-6">
             @include('helpers.form_control', [
                 'type' => 'text',
                 'name' => 'site_keyword',
@@ -28,6 +30,10 @@
                 'help_class' => 'install',
                 'rules' => ["site_keyword" => "required"]
             ])
+		</div>
+	</div>
+	<div class="row">
+        <div class="col-md-12">
             @include('helpers.form_control', [
                 'type' => 'textarea',
                 'name' => 'site_description',
@@ -39,7 +45,7 @@
         </div>
     </div>
 	<hr />
-	<h3 class="text-teal-800">{{ trans('messages.admin_info') }}</h3>
+	<h3 class="text-teal-800"><i class="icon-user-tie"></i> {{ trans('messages.admin_info') }}</h3>
 	<div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
@@ -77,6 +83,77 @@
                 'help_class' => 'install',
                 'rules' => $rules
             ])            
+        </div>
+    </div>
+	
+	<hr />
+	<h3 class="text-teal-800"><i class="icon-envelop5"></i> {{ trans('messages.smtp_account_for_noti_email') }}</h3>
+	<div class="row">
+        <div class="col-md-6">
+            @include('helpers.form_control', [
+                'type' => 'text',
+                'name' => 'smtp_hostname',
+				'label' => trans('messages.hostname'),
+                'value' => (isset($site_info["smtp_hostname"]) ? $site_info["smtp_hostname"] : ""),
+                'help_class' => 'install',
+                'rules' => $rules
+            ])
+			
+			@include('helpers.form_control', [
+                'type' => 'text',
+                'name' => 'smtp_username',
+				'label' => trans('messages.username'),
+                'value' => (isset($site_info["smtp_username"]) ? $site_info["smtp_username"] : ""),
+                'help_class' => 'install',
+                'rules' => $rules
+            ])
+			
+			@include('helpers.form_control', [
+                'type' => 'text',
+                'name' => 'smtp_from_email',
+				'label' => trans('messages.from_email'),
+                'value' => (isset($site_info["smtp_from_email"]) ? $site_info["smtp_from_email"] : ""),
+                'help_class' => 'install',
+                'rules' => $rules
+            ])
+			
+			@include('helpers.form_control', [
+                'type' => 'text',
+                'name' => 'smtp_encryption',
+				'label' => trans('messages.encryption'),
+                'value' => (isset($site_info["smtp_encryption"]) ? $site_info["smtp_encryption"] : ""),
+                'help_class' => 'install',
+                'rules' => $rules
+            ])
+			            
+        </div>
+		<div class="col-md-6">
+            @include('helpers.form_control', [
+                'type' => 'text',
+                'name' => 'smtp_port',
+				'label' => trans('messages.port'),
+                'value' => (isset($site_info["smtp_port"]) ? $site_info["smtp_port"] : ""),
+                'help_class' => 'install',
+                'rules' => $rules
+            ])
+			
+			@include('helpers.form_control', [
+                'type' => 'text',
+                'name' => 'smtp_password',
+				'label' => trans('messages.password'),
+                'value' => (isset($site_info["smtp_password"]) ? $site_info["smtp_password"] : ""),
+                'help_class' => 'install',
+                'rules' => $rules
+            ])
+			
+			@include('helpers.form_control', [
+                'type' => 'text',
+                'name' => 'smtp_from_name',
+				'label' => trans('messages.from_name'),
+                'value' => (isset($site_info["smtp_from_name"]) ? $site_info["smtp_from_name"] : ""),
+                'help_class' => 'install',
+                'rules' => $rules
+            ])  
         </div>
     </div>
 	

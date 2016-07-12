@@ -574,5 +574,9 @@ $(function() {
         }
     });
     $('.unlimited-check input').trigger("change");
-        
+    
+    // unlimited check
+    $(document).on('click', 'ul.install-steps li:not(.enabled) a', function(e) {
+        e.preventDefault();
+    });
 });

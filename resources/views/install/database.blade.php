@@ -10,7 +10,7 @@
 
 @section('content')
 
-<h3 class="text-teal-800">{{ trans('messages.database_configuration') }}</h3>
+<h3 class="text-teal-800"><i class="icon-database"></i> {{ trans('messages.database_configuration') }}</h3>
 
 <form action="{{ action('InstallController@database') }}" method="POST" class="form-validate-jqueryz">
     <div class="row">
@@ -69,7 +69,7 @@
     </div>
     <hr >
     <div class="text-right">                                    
-        <button type="submit" class="btn btn-primary bg-teal">{!! trans('messages.next') !!} <i class="icon-arrow-right14 position-right"></i></button>
+        <button type="submit" class="btn btn-primary bg-teal">{!! trans('messages.import_database') !!} <i class="icon-arrow-right14 position-right"></i></button>
     </div>
 </form>
 @endsection
