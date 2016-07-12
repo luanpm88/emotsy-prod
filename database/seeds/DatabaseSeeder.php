@@ -259,7 +259,7 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('user_group_sending_servers')->insert([
-            'id' => 1,
+            'id' => 2,
             'sending_server_id' => 2,
             'user_group_id' => 1,
             'created_at' => $created_at,
