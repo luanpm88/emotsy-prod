@@ -383,6 +383,20 @@ class User extends Authenticatable
     }
     
     /**
+     * Display calculate list usage.
+     *
+     * @return number
+     */
+    public function displayListsUsage()
+    {
+        if ($this->maxLists() == "∞") {
+            return trans('messages.unlimited');
+        }
+
+        return $this->listsUsage() . "%";
+    }
+    
+    /**
      * Get campaigns quota.
      *
      * @return number
@@ -424,6 +438,19 @@ class User extends Authenticatable
     }
     
     /**
+     * Calculate campaign usage.
+     *
+     * @return number
+     */
+    public function displayCampaignsUsage()
+    {
+        if ($this->maxCampaigns() == "∞") {
+            return trans('messages.unlimited');
+        }
+        return $this->campaignsUsage() . "%";
+    }
+    
+    /**
      * Get subscriber quota.
      *
      * @return number
@@ -462,6 +489,20 @@ class User extends Authenticatable
             return 100;
         }
         return round((($this->subscribersCount()/$this->maxSubscribers())*100), 2);
+    }
+    
+    /**
+     * Calculate subscibers usage.
+     *
+     * @return number
+     */
+    public function displaySubscribersUsage()
+    {
+        if ($this->maxSubscribers() == "∞") {
+            return trans('messages.unlimited');
+        }
+
+        return $this->subscribersUsage() . "%";
     }
     
     /**
@@ -532,5 +573,19 @@ class User extends Authenticatable
         }
 
         return round((($this->sendingQuota()/$this->maxQuota())*100), 2);
+    }
+    
+    /**
+     * Get user's sending quota rate.
+     *
+     * @return string
+     */
+    public function displaySendingQuotaUsage()
+    {
+        if ($this->maxQuota() == "∞") {
+            return trans('messages.unlimited');
+        }
+        
+        return $this->sendingQuotaUsage() . "%";
     }
 }

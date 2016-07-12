@@ -727,7 +727,7 @@ class Campaign extends Model
     }
     
     /**
-     * Count open rate
+     * Open rate
      *
      * @return number
      */
@@ -737,7 +737,7 @@ class Campaign extends Model
             return 0;
         }
         return round(($this->openCount() / $this->trackingCount())*100, 0);
-    }
+    }    
     
     /**
      * Count unique open rate

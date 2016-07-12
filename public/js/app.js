@@ -559,5 +559,20 @@ $(function() {
         });        
     });
     
+    // unlimited check
+    $(document).on('change', '.unlimited-check input[type=checkbox]', function() {
+        var box = $(this).parents(".boxing");
+        
+        if($(this).is(":checked")) {
+            box.find("input[type=text]").val(-1);
+            box.find("input[type=text]").addClass("text-trans");
+            box.find("input[type=text]").attr("readonly", "readonly");
+        } else {
+            box.find("input[type=text]").val(0);
+            box.find("input[type=text]").removeClass("text-trans");
+            box.find("input[type=text]").removeAttr("readonly", "readonly");
+        }
+    });
+    $('.unlimited-check input').trigger("change");
         
 });

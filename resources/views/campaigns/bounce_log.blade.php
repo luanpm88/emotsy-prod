@@ -19,7 +19,7 @@
                 
             @include("campaigns._menu")
 			
-			<h2 class="text-semibold text-teal-800">{{ trans('messages.bounce_log') }}<h2 cla>
+			<h2 class="text-semibold text-teal-800">{{ trans('messages.bounce_log') }}</h2>
 			
 			<form class="listing-form"
 					data-url="{{ action('CampaignController@bounceLogListing', $campaign->uid) }}"

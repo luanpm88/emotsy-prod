@@ -42,7 +42,7 @@
 											</td>
 										@endif
 										
-										@if (in_array("created_at", explode(",", request()->columns)))
+										@if (in_array("updated_at", explode(",", request()->columns)))
 											<td>
 												<span class="no-margin stat-num">{{ Tool::formatDateTime($item->updated_at) }}</span>
 												<br>

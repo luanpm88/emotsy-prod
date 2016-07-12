@@ -305,7 +305,7 @@ h3 {
     width: 250px;
     display: inline-block;
     height: 33px;
-    margin-left: 10px;
+    margin-left: 0;
 }
 .filter-box .btn {
     font-size: 13px;
@@ -1028,4 +1028,62 @@ table.table-log tr td:first-child {
 }
 .caret {
     margin-left: 5px;
+}
+.checkbox.unlimited-check {
+    display: block;
+    margin-top: -10px;
+    margin-bottom: 20px;
+}
+.checkbox.unlimited-check label {
+    font-weight: 600;
+}
+.text-trans {
+    color: rgba(0,0,0,0);
+}
+.checkbox-box-group {
+    height: 60px;
+    margin-bottom: 20px;
+}
+.checkbox-box-group label {
+    display: block;
+    font-weight: 600;
+}
+.checkbox-box-group .switchery {
+    position: absolute;
+    top: 24px;
+}
+ul.install-steps li:first-child:after {
+    display: block;
+}
+ul.install-steps li:last-child:after {
+    display: none;
+}
+ul.install-steps > li.active > a, ul.install-steps > li.active > a:hover {
+    background: #009688;
+    border-bottom: 0;
+    margin-left: 20px;
+}
+ul.install-steps > li.active:first-child > a {
+    margin-left: 0 !important;
+}
+ul.install-steps {
+    border-bottom: solid 2px #009688;
+    margin-bottom: 0;
+}
+ul.install-steps li:after {
+    color: #fff;
+    right: -25px;
+    left: auto;
+}
+ul.install-steps li {
+    margin-right: 20px;
+}
+ul.install-steps li a {
+    color: #aaa;
+    padding-left: 15px;
+    padding-right: 0;
+}
+ul.install-steps li a:hover, ul.install-steps li a:focus {
+    background: none;
+    color: #fff;
 }

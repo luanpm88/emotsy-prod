@@ -146,54 +146,82 @@
 						@endif
                     </ul>
 				</li>
-				<li class="dropdown language-switch"
-					 rel0="TrackingLogController"
-					 rel1="OpenLogController"
-					 rel2="ClickLogController"
-					 rel3="FeedbackLogController"
-				>
-					<a class="dropdown-toggle" data-toggle="dropdown">
-						<i class="icon-file-text2"></i> {{ trans('messages.report') }}
-                        <span class="caret"></span>
-					</a>
-                    <ul class="dropdown-menu">
-                        <li>
-                            <a href="">
-                                <i class="glyphicon glyphicon-minus-sign"></i> {{ trans('messages.blacklist') }}
-                            </a>
-                        </li>
-						<li rel0="TrackingLogController">
-                            <a href="{{ action('Admin\TrackingLogController@index') }}">
-                                <i class="icon-file-text2"></i> {{ trans('messages.tracking_log') }}
-                            </a>
-                        </li>
-						<li rel0="BounceLogController">
-                            <a href="{{ action('Admin\BounceLogController@index') }}">
-                                <i class="icon-file-text2"></i> {{ trans('messages.bounce_log') }}
-                            </a>
-                        </li>
-						<li rel0="FeedbackLogController">
-                            <a href="{{ action('Admin\FeedbackLogController@index') }}">
-                                <i class="icon-file-text2"></i> {{ trans('messages.feedback_log') }}
-                            </a>
-                        </li>
-						<li rel0="OpenLogController">
-                            <a href="{{ action('Admin\OpenLogController@index') }}">
-                                <i class="icon-file-text2"></i> {{ trans('messages.open_log') }}
-                            </a>
-                        </li>
-						<li rel0="ClickLogController">
-                            <a href="{{ action('Admin\ClickLogController@index') }}">
-                                <i class="icon-file-text2"></i> {{ trans('messages.click_log') }}
-                            </a>
-                        </li>
-						<li rel0="UnsubscribeLogController">
-                            <a href="{{ action('Admin\UnsubscribeLogController@index') }}">
-                                <i class="icon-file-text2"></i> {{ trans('messages.unsubscribe_log') }}
-                            </a>
-                        </li>
-                    </ul>
-				</li>
+				
+				@if (
+					Auth::user()->getOption("backend", "report_blacklist") != 'no'
+					|| Auth::user()->getOption("backend", "report_tracking_log") != 'no'
+					|| Auth::user()->getOption("backend", "report_bounce_log") != 'no'
+					|| Auth::user()->getOption("backend", "report_feedback_log") != 'no'
+					|| Auth::user()->getOption("backend", "report_open_log") != 'no'
+					|| Auth::user()->getOption("backend", "report_click_log") != 'no'
+					|| Auth::user()->getOption("backend", "report_unsubscribe_log") != 'no'
+				)
+					<li class="dropdown language-switch"
+						 rel0="TrackingLogController"
+						 rel1="OpenLogController"
+						 rel2="ClickLogController"
+						 rel3="FeedbackLogController"
+						 rel4="BlacklistController"
+						 rel5="UnsubscribeLogController"
+						 rel6="BounceLogController"
+					>
+						<a class="dropdown-toggle" data-toggle="dropdown">
+							<i class="icon-file-text2"></i> {{ trans('messages.report') }}
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							@if (Auth::user()->getOption("backend", "report_blacklist") != 'no')
+								<li rel0="BlacklistController">
+									<a href="{{ action('Admin\BlacklistController@index') }}">
+										<i class="glyphicon glyphicon-minus-sign"></i> {{ trans('messages.blacklist') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->getOption("backend", "report_tracking_log") != 'no')
+								<li rel0="TrackingLogController">
+									<a href="{{ action('Admin\TrackingLogController@index') }}">
+										<i class="icon-file-text2"></i> {{ trans('messages.tracking_log') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->getOption("backend", "report_bounce_log") != 'no')
+								<li rel0="BounceLogController">
+									<a href="{{ action('Admin\BounceLogController@index') }}">
+										<i class="icon-file-text2"></i> {{ trans('messages.bounce_log') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->getOption("backend", "report_feedback_log") != 'no')
+								<li rel0="FeedbackLogController">
+									<a href="{{ action('Admin\FeedbackLogController@index') }}">
+										<i class="icon-file-text2"></i> {{ trans('messages.feedback_log') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->getOption("backend", "report_open_log") != 'no')
+								<li rel0="OpenLogController">
+									<a href="{{ action('Admin\OpenLogController@index') }}">
+										<i class="icon-file-text2"></i> {{ trans('messages.open_log') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->getOption("backend", "report_click_log") != 'no')
+								<li rel0="ClickLogController">
+									<a href="{{ action('Admin\ClickLogController@index') }}">
+										<i class="icon-file-text2"></i> {{ trans('messages.click_log') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->getOption("backend", "report_unsubscribe_log") != 'no')
+								<li rel0="UnsubscribeLogController">
+									<a href="{{ action('Admin\UnsubscribeLogController@index') }}">
+										<i class="icon-file-text2"></i> {{ trans('messages.unsubscribe_log') }}
+									</a>
+								</li>
+							@endif
+						</ul>
+					</li>
+				@endif
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right">

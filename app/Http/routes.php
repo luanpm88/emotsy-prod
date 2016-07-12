@@ -11,6 +11,24 @@
 |
 */
 
+Route::group([], function () {
+    // Installation
+    Route::get('install', 'InstallController@starting');
+    Route::get('install/site-info', 'InstallController@siteInfo');
+    Route::post('install/site-info', 'InstallController@siteInfo');
+    Route::get('install/requirements', 'InstallController@requirements');
+    Route::get('install/permissions', 'InstallController@permissions');
+    Route::get('install/database', 'InstallController@database');
+    Route::post('install/database', 'InstallController@database');
+    Route::get('install/database_import', 'InstallController@databaseImport');
+    Route::get('install/admin_account', 'InstallController@adminAccount');
+    Route::post('install/admin_account', 'InstallController@adminAccount');
+    Route::get('install/smtp_account', 'InstallController@smtpAccount');
+    Route::post('install/smtp_account', 'InstallController@smtpAccount');
+    Route::get('install/cron_jobs', 'InstallController@cronJobs');
+    Route::get('install/finish', 'InstallController@finish');
+});
+
 Route::auth();
 
 Route::get('/offline', "Controller@offline");
@@ -252,8 +270,13 @@ Route::group(['namespace' => 'Admin', 'middleware' => 'backend'], function () {
     Route::get('admin/feedback_log', 'FeedbackLogController@index');
     Route::get('admin/feedback_log/listing', 'FeedbackLogController@listing');
     
-    // Feedback log
+    // Unsubscribe log
     Route::get('admin/unsubscribe_log', 'UnsubscribeLogController@index');
     Route::get('admin/unsubscribe_log/listing', 'UnsubscribeLogController@listing');
+    
+    // Sending domain
+    Route::get('admin/blacklist', 'BlacklistController@index');
+    Route::get('admin/blacklist/listing', 'BlacklistController@listing');
+    Route::get('admin/blacklist/delete', 'BlacklistController@delete');
     
 });
