@@ -5,6 +5,7 @@ namespace Mailixa\Console\Commands;
 use Illuminate\Console\Command;
 use Mailixa\Library\Log;
 use Mailixa\Model\Campaign;
+use DB;
 
 class TestCampaign extends Command
 {
@@ -56,10 +57,11 @@ class TestCampaign extends Command
         */
 
         $c = Campaign::first();
-        var_dump($c);
         $c->status = 'pending';
         $c->save();
 
-        var_dump($c->user);
+        echo \Mailixa\Model\SendingServer::where('id', '>=', function($query){
+            $query->select(DB::raw('count(*)'))->from('tracking_logs')->whereRaw('sending_server_id = 1 AND `create_at` > NOW() - INTERVAL 1 HOUR');
+        })->toSql() . "\n";
     }
 }
