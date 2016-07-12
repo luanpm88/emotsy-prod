@@ -26,6 +26,9 @@ class CreateSendingServersTable extends Migration
             $table->string('sendmail_path');
             $table->string('protocol');
             $table->string('status');
+            $table->integer('limit_per_hour');
+            $table->integer('limit_per_minute');
+            $table->integer('limit_per_day');
             $table->integer('custom_order');
             
             $table->timestamps();
