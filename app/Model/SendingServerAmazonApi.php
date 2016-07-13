@@ -4,7 +4,7 @@ namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class SendingServerAws extends Model
+class SendingServerAmazonApi extends SendingServerAmazon
 {
     //
 }

@@ -3,14 +3,17 @@
 namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Mailixa\Library\RouletteWheel;
+use Mailixa\Library\Log;
+use DB;
 
 class SendingServer extends Model
 {
     const DKIM_SELECTOR = 'mailer';
 
     public static $serverMapping = array(
-        'aws-ses-api'        => 'SendingServerAwsSesApi',
-        'aws-ses-smtp'       => 'SendingServerAwsSesSmtp',
+        'amazon-api'         => 'SendingServerAmazonApi',
+        'amazon-smtp'        => 'SendingServerAmazonSmtp',
         'smtp'               => 'SendingServerSmtp',
         'sendmail'           => 'SendingServerSendmail',
         'php-mail'           => 'SendingServerPhpMail'
@@ -67,34 +70,27 @@ class SendingServer extends Model
         return $message;
     }
   
-    public static function pickServer()
+    public static function pickServer($campaign)
     {
-        $sql = 'SELECT * FROM &delivery_server t WHERE `t`.`hourly_quota` = 0 OR `t`.`hourly_quota` > ( SELECT COUNT(*) FROM &delivery_server_usage_log WHERE server_id = `t`.`server_id` AND `created_at` BETWEEN DATE_FORMAT(NOW(), "%Y-%m-%d %H:00:00") AND DATE_FORMAT(NOW() + INTERVAL 1 HOUR, "%Y-%m-%d %H:00:00") )';
+        $servers = self::select('sending_servers.*', 'user_group_sending_servers.fitness')->join('user_group_sending_servers', 'user_group_sending_servers.sending_server_id', '=', 'sending_servers.id')->where('user_group_id', $campaign->user->user_group_id)->get();
 
-        $sql = MyHelper::buildSql($sql, array(
-            "delivery_server" => self::$table_name,
-            "delivery_server_usage_log" => DeliveryServerUsageLog::$table_name
-        ));
-
-        $servers = self::find_by_sql($sql);
-    
         if (empty($servers)) {
             throw new \Exception('No delivery servers available');
         }
 
         $serverSelection = array();
         foreach ($servers as $server) {
-            $serverSelection[$server->server_id] = (float)$server->probability;
+            $serverSelection[$server->id] = (float)$server->fitness;
         }
 
         $id = (int)RouletteWheel::generate($serverSelection);
-        $selectedServer = DeliveryServer::find($id);
+        $selectedServer = self::find($id);
     
         if (!empty(self::$serverPools[$id])) {
-            MyLogger::$logger->info('Reuse delivery server `' . self::$serverPools[$id]->name . "` (ID: " . $id . ")");
+            Log::info('Reuse sending server `' . self::$serverPools[$id]->name . "` (ID: " . $id . ")");
             return self::$serverPools[$id];
         } else {
-            MyLogger::$logger->info('Initialize delivery server `' . $selectedServer->name . "` (ID: " . $id . ")");
+            Log::info('Initialize delivery server `' . $selectedServer->name . "` (ID: " . $id . ")");
             return self::$serverPools[$id] = self::mapServerType($selectedServer);
         }
     }
@@ -214,7 +210,7 @@ class SendingServer extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'password', 'sendmail_path', 'protocol', 'quota_value', 'quota_base', 'quota_unit'
+        'name', 'host', 'port', 'username', 'password', 'sendmail_path', 'protocol'
     ];
     
     /**
@@ -271,21 +267,6 @@ class SendingServer extends Model
     }
     
     /**
-     * Type of server.
-     *
-     * @return object
-     */
-    public static function rules($type)
-    {
-        $rules = SendingServer::types()[$type]["cols"];
-        $rules["quota_value"] = "required|numeric";
-        $rules["quota_base"] = "required|numeric";
-        $rules["quota_unit"] = "required";
-        
-        return $rules;
-    }
-    
-    /**
      * Get select options.
      *
      * @return array
@@ -297,15 +278,5 @@ class SendingServer extends Model
             return ['value' => $item->uid, 'text' => $item->name];
         });
         return $options;
-    }
-    
-    /**
-     * Quota display.
-     *
-     * @return string
-     */
-    public function displayQuota()
-    {
-        return $this->quota_value. "/" . $this->quota_base . " " . trans("messages." . \Mailixa\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
     }
 }
