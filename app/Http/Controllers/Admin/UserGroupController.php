@@ -84,15 +84,23 @@ class UserGroupController extends Controller
         $options = $group->getOptions();
         
         // For sending servers
-        $sending_server_ids = "";
-        if(isset($request->old()["sending_server_ids"])) {
-            $sending_server_ids = implode(",", $request->old()["sending_server_ids"]);
+        if(isset($request->old()["sending_servers"])) {
+            $group->user_group_sending_servers = collect([]);
+            foreach($request->old()["sending_servers"] as $key => $param) {                
+                if($param["check"]) {
+                    $server = \Mailixa\Model\SendingServer::findByUid($key);
+                    $row = new \Mailixa\Model\UserGroupSendingServer();
+                    $row->user_group_id = $group->id;
+                    $row->sending_server_id = $server->id;
+                    $row->fitness = $param["fitness"];
+                    $group->user_group_sending_servers->push($row);
+                }
+            }
         }
        
         return view('admin.user_groups.create', [
             'group' => $group,
             'options' => $options,
-            'sending_server_ids' => $sending_server_ids,
         ]);
     }
 
@@ -117,14 +125,24 @@ class UserGroupController extends Controller
         if ($request->isMethod('post')) {
             $this->validate($request, \Mailixa\Model\UserGroup::rules());
             
+            $rules = [];
+            if (isset($request->sending_servers)) {
+                foreach($request->sending_servers as $key => $param) {                
+                    if($param["check"]) {
+                        $rules["sending_servers." . $key . ".fitness"] = 'required';
+                    }
+                }
+            }
+            $this->validate($request, $rules);
+            
             $group->fill($request->all());
             $group->options = json_encode($request->options);
             $group->user_id = $user->id;
             $group->save();
 
             // For sending servers
-            if (isset($request->sending_server_ids)) {
-                $group->updateSendingServers($request->sending_server_ids);
+            if (isset($request->sending_servers)) {
+                $group->updateSendingServers($request->sending_servers);
             }         
             
             $request->session()->flash('alert-success', trans('messages.user_group.created'));
@@ -168,15 +186,23 @@ class UserGroupController extends Controller
         $options = $group->getOptions();
         
         // For sending servers
-        $sending_server_ids = $group->getSendingServerIds();
-        if(isset($request->old()["sending_server_ids"])) {
-            $sending_server_ids = implode(",", $request->old()["sending_server_ids"]);
+        if(isset($request->old()["sending_servers"])) {
+            $group->user_group_sending_servers = collect([]);
+            foreach($request->old()["sending_servers"] as $key => $param) {                
+                if($param["check"]) {
+                    $server = \Mailixa\Model\SendingServer::findByUid($key);
+                    $row = new \Mailixa\Model\UserGroupSendingServer();
+                    $row->user_group_id = $group->id;
+                    $row->sending_server_id = $server->id;
+                    $row->fitness = $param["fitness"];
+                    $group->user_group_sending_servers->push($row);
+                }
+            }
         }
         
         return view('admin.user_groups.edit', [
             'group' => $group,
             'options' => $options,
-            'sending_server_ids' => $sending_server_ids,
         ]);
     }
 
@@ -203,13 +229,23 @@ class UserGroupController extends Controller
         if ($request->isMethod('patch')) {
             $this->validate($request, \Mailixa\Model\UserGroup::rules());
             
+            $rules = [];
+            if (isset($request->sending_servers)) {
+                foreach($request->sending_servers as $key => $param) {                
+                    if($param["check"]) {
+                        $rules["sending_servers." . $key . ".fitness"] = 'required';
+                    }
+                }
+            }
+            $this->validate($request, $rules);
+            
             $group->fill($request->all());
             $group->options = json_encode($request->options);
             $group->save();
             
             // For sending servers
-            if (isset($request->sending_server_ids)) {
-                $group->updateSendingServers($request->sending_server_ids);
+            if (isset($request->sending_servers)) {
+                $group->updateSendingServers($request->sending_servers);
             }
             
             

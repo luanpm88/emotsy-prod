@@ -1,5 +1,3 @@
-INSERT INTO `main_countries` (`id`, `name`, `code`, `status`, `created_at`, `updated_at`) VALUES
-(1, 'Việt Nam', 'vn', '', '2016-07-10 09:44:17', '2016-07-10 09:44:17');
 INSERT INTO `main_languages` (`id`, `uid`, `name`, `code`, `region_code`, `status`, `created_at`, `updated_at`) VALUES
 (1, '5781b681c1b34', 'English', 'en', 'us', '', '2016-07-10 09:44:17', '2016-07-10 09:44:17');
 INSERT INTO `main_layouts` (`id`, `uid`, `alias`, `group_name`, `content`, `type`, `created_at`, `updated_at`) VALUES

@@ -9,24 +9,26 @@
 						<div class="row">
 							<div class="col-md-6">									
 								<div class="form-group checkbox-right-switch">
-									@include('helpers.form_control', ['type' => 'checkbox',
-																		'name' => 'frontend_access',
-																		'value' => $group->frontend_access,
-																		'help_class' => 'user_group',
-																		'options' => [false, true],
-																		'rules' => Mailixa\Model\UserGroup::rules()
-																	])
+									@include('helpers.form_control', [
+										'type' => 'checkbox',
+										'name' => 'frontend_access',
+										'value' => $group->frontend_access,
+										'help_class' => 'user_group',
+										'options' => [false, true],
+										'rules' => Mailixa\Model\UserGroup::rules()
+									])
 								</div>
 							</div>
 							<div class="col-md-6">									
 								<div class="form-group checkbox-right-switch">
-									@include('helpers.form_control', ['type' => 'checkbox',
-																		'name' => 'backend_access',
-																		'value' => $group->backend_access,
-																		'help_class' => 'user_group',
-																		'options' => [false, true],
-																		'rules' => Mailixa\Model\UserGroup::rules()
-																	])
+									@include('helpers.form_control', [
+										'type' => 'checkbox',
+										'name' => 'backend_access',
+										'value' => $group->backend_access,
+										'help_class' => 'user_group',
+										'options' => [false, true],
+										'rules' => Mailixa\Model\UserGroup::rules()
+									])
 								</div>
 							</div>
 						</div>
@@ -237,15 +239,44 @@
 									</div>
 										
 									<h3 class="text-teal-800">{{ trans('messages.sending_servers') }}</h3>
+									<div class="row">
+										@foreach (Mailixa\Model\SendingServer::getAll()->orderBy("name")->get() as $server)
+																					
+											<div class="col-md-6">
+												<h5 class="mt-0 mb-5 text-semibold text-teal-600">{{ $server->name }}</h5>
+												<div class="row">											
+													<div class="col-md-2">
+														<div class="form-group">
+															<label class="mt-0 mb-5 text-semibold">{{ trans('messages.choose') }}</label>
+															@include('helpers.form_control', [
+																'type' => 'checkbox',
+																'name' => 'sending_servers[' . $server->uid . '][check]',
+																'value' => $group->user_group_sending_servers->contains('sending_server_id', $server->id),
+																'label' => '',
+																'options' => [false, true],
+																'help_class' => 'user_group',
+																'rules' => Mailixa\Model\UserGroup::rules()
+															])
+														</div>
+														<br><br>
+													</div>
+													<div class="col-md-9">
+														@include('helpers.form_control', [
+															'type' => 'text',
+															'class' => 'numeric',
+															'name' => 'sending_servers[' . $server->uid . '][fitness]',
+															'label' => trans('messages.fitness'),
+															'value' => (is_object($group->user_group_sending_servers->where('sending_server_id', $server->id)->first()) ? $group->user_group_sending_servers->where('sending_server_id', $server->id)->first()->fitness : "100"),
+															'help_class' => 'user_group',
+															'rules' => Mailixa\Model\UserGroup::rules()
+														])
+													</div>
+												</div>
+											</div>
+												
+										@endforeach
+									</div>
 										
-									@include('helpers.form_control', ['type' => 'checkboxes',
-																			'name' => 'sending_server_ids[]',
-																			'value' => $sending_server_ids,
-																			'label' => trans('messages.select_sending_servers_for_group'),
-																			'options' => Mailixa\Model\SendingServer::getSelectOptions(),
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
 								</div>
 								
 								<div class="tab-pane backend-box" id="top-tab2">

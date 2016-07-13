@@ -687,7 +687,7 @@ return [
     'white' => 'White',
     'system_default' => 'System default',
     'back' => 'Back',
-    '' => '',
+    'fitness' => 'Fitness',
     '' => '',
     '' => '',
     '' => '',

@@ -39,6 +39,8 @@ class NotInstalled
             $file = fopen($file_path, "w") or die("Unable to open file!");
             fwrite($file, "");
             fclose($file);
+            
+            $request->session()->forget('install_finish');
         }
         return file_exists(storage_path('installed'));
     }

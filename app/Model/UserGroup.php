@@ -175,7 +175,7 @@ class UserGroup extends Model
             "backend" => [
                 'user_group_read' => 'all',
                 'user_group_create' => 'yes',
-                'user_group_update' => 'own',
+                'user_group_update' => 'all',
                 'user_group_delete' => 'own',
                 'user_read' => 'own',
                 'user_create' => 'yes',
@@ -621,7 +621,7 @@ class UserGroup extends Model
             $arr[] = $server->uid;
         }
 
-        return implode(",", $arr);
+        return $arr;
     }
     
     /**
@@ -629,15 +629,18 @@ class UserGroup extends Model
      *
      * @return array
      */
-    public function updateSendingServers($ids)
+    public function updateSendingServers($servers)
     {
         $this->user_group_sending_servers()->delete();
-        foreach($ids as $id) {
-            $server = SendingServer::findByUid($id);
-            $row = new UserGroupSendingServer();
-            $row->user_group_id = $this->id;
-            $row->sending_server_id = $server->id;
-            $row->save();
+        foreach($servers as $key => $param) {
+            if($param["check"]) {
+                $server = SendingServer::findByUid($key);
+                $row = new UserGroupSendingServer();
+                $row->user_group_id = $this->id;
+                $row->sending_server_id = $server->id;
+                $row->fitness = $param["fitness"];
+                $row->save();
+            }
         }
     }
     
