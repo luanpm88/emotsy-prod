@@ -625,13 +625,13 @@ class User extends Authenticatable
     public static function colors($default)
     {
         return [
-            ['value' => '', 'text'=> trans('messages.system_default')],
-            ['value' => 'blue', 'text'=> trans('messages.blue')],
-            ['value' => 'green', 'text'=> trans('messages.green')],
-            ['value' => 'brown', 'text'=> trans('messages.brown')],
-            ['value' => 'pink', 'text'=> trans('messages.pink')],
-            ['value' => 'grey', 'text'=> trans('messages.grey')],
-            ['value' => 'white', 'text'=> trans('messages.white')]
+            ['value' => '', 'text' => trans('messages.system_default')],
+            ['value' => 'blue', 'text' => trans('messages.blue')],
+            ['value' => 'green', 'text' => trans('messages.green')],
+            ['value' => 'brown', 'text' => trans('messages.brown')],
+            ['value' => 'pink', 'text' => trans('messages.pink')],
+            ['value' => 'grey', 'text' => trans('messages.grey')],
+            ['value' => 'white', 'text' => trans('messages.white')]
         ];
     }
 }
