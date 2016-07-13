@@ -574,6 +574,16 @@ class User extends Authenticatable
 
         return round((($this->sendingQuota()/$this->maxQuota())*100), 2);
     }
+
+    /**
+     * Get user's sending quota rate.
+     *
+     * @return string
+     */
+    public function overQuota()
+    {
+        return (int)$this->sendingQuotaUsage() == 100;
+    }
     
     /**
      * Get user's sending quota rate.

@@ -85,7 +85,7 @@ class SendingServer extends Model
 
         $id = (int)RouletteWheel::generate($serverSelection);
         $selectedServer = self::find($id);
-    
+        
         if (!empty(self::$serverPools[$id])) {
             Log::info('Reuse sending server `' . self::$serverPools[$id]->name . "` (ID: " . $id . ")");
             return self::$serverPools[$id];
@@ -98,7 +98,7 @@ class SendingServer extends Model
     public static function mapServerType($server)
     {
         $class_name = '\Mailixa\Model\\' . self::$serverMapping[$server->type];
-        return $class_name::find($server->server_id);
+        return $class_name::find($server->id);
     }
     
     /**
