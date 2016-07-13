@@ -16,6 +16,7 @@ class CreateUserGroupSendingServersTable extends Migration
             $table->increments('id');
             $table->integer('sending_server_id');
             $table->string('user_group_id');
+            $table->integer('fitness');
             
             $table->timestamps();
         });

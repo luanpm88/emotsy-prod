@@ -177,6 +177,9 @@ class DatabaseSeeder extends Seeder
             'password' => 'Al5DNO3GhaFQ3mxLT81FDqyGOKMwvHKtraisvh//EG3Z',
             'port' => 25,
             'protocol' => 'tls',
+            'quota_value' => 1000,
+            'quota_base' => 5,
+            'quota_unit' => 'minute',
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
@@ -191,6 +194,9 @@ class DatabaseSeeder extends Seeder
             'aws_region' => 'US West (Oregon)',
             'username' => 'AKIAJCLUP4FFFKZSQHGQ',
             'password' => 'HGDiDb5WL8cdnToNp27yR/7VPOXCTmHGvD71PWp0',
+            'quota_value' => 1000,
+            'quota_base' => 5,
+            'quota_unit' => 'minute',
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
@@ -202,6 +208,18 @@ class DatabaseSeeder extends Seeder
             'user_id' => 1,
             'campaign_id' => 1,
             'subscriber_id' => 1,
+            'status' => 'sent',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
+        DB::table('tracking_logs')->insert([
+            'id' => 2,
+            'message_id' => 2,
+            'sending_server_id' => 1,
+            'user_id' => 1,
+            'campaign_id' => 1,
+            'subscriber_id' => 2,
             'status' => 'sent',
             'created_at' => $created_at,
             'updated_at' => $updated_at
@@ -246,6 +264,7 @@ class DatabaseSeeder extends Seeder
             'id' => 1,
             'sending_server_id' => 1,
             'user_group_id' => 1,
+            'fitness' => 100,
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
@@ -254,6 +273,7 @@ class DatabaseSeeder extends Seeder
             'id' => 2,
             'sending_server_id' => 2,
             'user_group_id' => 1,
+            'fitness' => 50,
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
