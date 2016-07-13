@@ -151,7 +151,7 @@ $(function() {
     // Initialize multiple switches
     $('.switchery').each(function() {
         if($(this).attr("data-switchery") != "true") {
-            var switchery = new Switchery(this);
+            var switchery = new Switchery(this, {color: $(".navbar-inverse").css("background-color")});
         }
     }); 
     
@@ -284,7 +284,7 @@ $(function() {
             // Initialize multiple switches
             $('.switchery').each(function() {
                 if($(this).attr("data-switchery") != "true") {
-                    var switchery = new Switchery(this);
+                    var switchery = new Switchery(this, {color: $(".navbar-inverse").css("background-color")});
                 }
             });                
         });

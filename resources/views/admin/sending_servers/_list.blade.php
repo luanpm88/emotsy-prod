@@ -24,14 +24,23 @@
 											<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
 										<td>
-											<span class="no-margin stat-num kq_search">{{ $item->type }}</span>
-											<br />
-											<span class="text-muted">{{ trans('messages.type') }}</span>
-										</td>
-										<td>
-											<span class="no-margin stat-num kq_search">{{ $item->host }}</span>
-											<br />
-											<span class="text-muted">{{ trans('messages.host') }}</span>
+											<div class="single-stat-box pull-left ml-20">
+												<span class="no-margin stat-num kq_search">{{ trans('messages.' . $item->type) }}</span>
+												<br />
+												<span class="text-muted">{{ trans('messages.type') }}</span>
+											</div>
+											@if (!empty($item->host))
+												<div class="single-stat-box pull-left ml-20">
+													<span class="no-margin stat-num kq_search">{{ $item->host }}</span>
+													<br />
+													<span class="text-muted">{{ trans('messages.host') }}</span>
+												</div>
+											@endif
+											<div class="single-stat-box pull-left ml-20">
+												<span class="no-margin stat-num kq_search">{{ $item->displayQuota() }}</span>
+												<br />
+												<span class="text-muted">{{ trans('messages.quota') }}</span>
+											</div>
 										</td>
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">

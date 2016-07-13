@@ -168,24 +168,24 @@
 									<div class="row">									
 										<div class="col-md-3">
 											@include('helpers.form_control', ['type' => 'text',
-																			'class' => 'numeric',
-																			'name' => 'options[frontend][campaign_change_server_time]',
-																			'value' => $options['frontend']['campaign_change_server_time'],
-																			'label' => trans('messages.change_server_time'),
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
+												'class' => 'numeric',
+												'name' => 'options[frontend][campaign_change_server_time]',
+												'value' => $options['frontend']['campaign_change_server_time'],
+												'label' => trans('messages.change_server_time'),
+												'help_class' => 'user_group',
+												'rules' => Mailixa\Model\UserGroup::rules()
+											])
 										</div>
 										
 										<div class="col-md-3">
 											@include('helpers.form_control', ['type' => 'text',
-																			'class' => 'numeric',
-																			'name' => 'options[frontend][campaign_send_at_once]',
-																			'value' => $options['frontend']['campaign_send_at_once'],
-																			'label' => trans('messages.send_at_once'),
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
+												'class' => 'numeric',
+												'name' => 'options[frontend][campaign_send_at_once]',
+												'value' => $options['frontend']['campaign_send_at_once'],
+												'label' => trans('messages.send_at_once'),
+												'help_class' => 'user_group',
+												'rules' => Mailixa\Model\UserGroup::rules()
+											])
 										</div>
 									</div>
 										
@@ -225,14 +225,14 @@
 										</div>
 										<div class="col-md-3">
 											@include('helpers.form_control', ['type' => 'select',
-																			'name' => 'options[frontend][sending_quota_time_unit]',
-																			'value' => $options['frontend']['sending_quota_time_unit'],
-																			'label' => trans('messages.quota_time_unit'),
-																			'options' => Mailixa\Model\UserGroup::timeUnitOptions(),
-																			'include_blank' => trans('messages.choose'),
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
+												'name' => 'options[frontend][sending_quota_time_unit]',
+												'value' => $options['frontend']['sending_quota_time_unit'],
+												'label' => trans('messages.quota_time_unit'),
+												'options' => Mailixa\Model\UserGroup::timeUnitOptions(),
+												'include_blank' => trans('messages.choose'),
+												'help_class' => 'user_group',
+												'rules' => Mailixa\Model\UserGroup::rules()
+											])
 										</div>
 									</div>
 										
@@ -257,25 +257,25 @@
 												<div class="col-md-3">
 													@if (count($ops["options"]) > 2)
 														@include('helpers.form_control', ['type' => 'select',
-																			'class' => 'numeric',
-																			'name' => 'options[backend][' . $key . "_" . $act .']',
-																			'value' => $options['backend'][$key . "_" . $act],
-																			'label' => trans('messages.' . $act),
-																			'options' => $ops["options"],
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
+															'class' => 'numeric',
+															'name' => 'options[backend][' . $key . "_" . $act .']',
+															'value' => $options['backend'][$key . "_" . $act],
+															'label' => trans('messages.' . $act),
+															'options' => $ops["options"],
+															'help_class' => 'user_group',
+															'rules' => Mailixa\Model\UserGroup::rules()
+														])
 													@else
 														<div class="checkbox-box-group">
 															@include('helpers.form_control', ['type' => 'checkbox',
-																			'class' => 'numeric',
-																			'name' => 'options[backend][' . $key . "_" . $act .']',
-																			'value' => $options['backend'][$key . "_" . $act],
-																			'label' => trans('messages.' . $act),
-																			'options' => ['no','yes'],
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
+																'class' => 'numeric',
+																'name' => 'options[backend][' . $key . "_" . $act .']',
+																'value' => $options['backend'][$key . "_" . $act],
+																'label' => trans('messages.' . $act),
+																'options' => ['no','yes'],
+																'help_class' => 'user_group',
+																'rules' => Mailixa\Model\UserGroup::rules()
+															])
 														</div>
 													@endif
 												</div>
@@ -288,4 +288,6 @@
 							</div>
 						</div>
 					</div>
+					
+					
 					

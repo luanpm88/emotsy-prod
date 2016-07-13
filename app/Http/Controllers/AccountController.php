@@ -30,6 +30,8 @@ class AccountController extends Controller
     {
         // Get current user
         $user = $request->user();
+        $user->getFrontendScheme();
+        $user->getBackendScheme();
         
         // Authorize
         if (\Gate::denies('profile', $user)) {

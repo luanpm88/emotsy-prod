@@ -7,6 +7,11 @@
 										<td width="1%">
 											<div class="text-nowrap">
 												@if (request()->sort_order == 'custom_order' && empty(request()->keyword))
+													<input type="hidden" class="node styled"
+															custom-order="{{ $item->custom_order }}"
+															name="ids[]"
+															value="{{ $item->id }}"
+														/>
 													<i data-action="move" class="icon icon-more2 list-drag-button"></i>
 												@endif
 											</div>
@@ -24,16 +29,16 @@
 												<span class="text-muted">{{ trans("messages.users") }}</span>
 											</div>
 										</td>
-										<td class="text-center">
-											<div class="single-stat-box pull-left">
-												<i class="table-checkmark-{{ $item->backend_access }}"></i>
-												<br />
-												<span class="text-muted">{{ trans("messages.backend") }}</span>
-											</div>
+										<td class="text-center">											
 											<div class="single-stat-box pull-left">
 												<i class="table-checkmark-{{ $item->frontend_access }}"></i>
 												<br />
 												<span class="text-muted">{{ trans("messages.frontend") }}</span>
+											</div>
+											<div class="single-stat-box pull-left">
+												<i class="table-checkmark-{{ $item->backend_access }}"></i>
+												<br />
+												<span class="text-muted">{{ trans("messages.backend") }}</span>
 											</div>
 										</td>
 										<td class="text-right">

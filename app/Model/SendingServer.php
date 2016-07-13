@@ -214,7 +214,7 @@ class SendingServer extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'password', 'sendmail_path', 'protocol'
+        'name', 'host', 'port', 'username', 'password', 'sendmail_path', 'protocol', 'quota_value', 'quota_base', 'quota_unit'
     ];
     
     /**
@@ -271,6 +271,21 @@ class SendingServer extends Model
     }
     
     /**
+     * Type of server.
+     *
+     * @return object
+     */
+    public static function rules($type)
+    {
+        $rules = SendingServer::types()[$type]["cols"];
+        $rules["quota_value"] = "required|numeric";
+        $rules["quota_base"] = "required|numeric";
+        $rules["quota_unit"] = "required";
+        
+        return $rules;
+    }
+    
+    /**
      * Get select options.
      *
      * @return array
@@ -282,5 +297,15 @@ class SendingServer extends Model
             return ['value' => $item->uid, 'text' => $item->name];
         });
         return $options;
+    }
+    
+    /**
+     * Quota display.
+     *
+     * @return string
+     */
+    public function displayQuota()
+    {
+        return $this->quota_value. "/" . $this->quota_base . " " . trans("messages." . \Mailixa\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
     }
 }

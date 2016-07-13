@@ -11,13 +11,13 @@
 	
 </head>
 
-<body class="navbar-top">
+<body class="navbar-top color-scheme-{{ Auth::user()->getFrontendScheme() }}">
 
 	<!-- Main navbar -->
-	<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar navbar-{{ Auth::user()->getFrontendScheme() == "white" ? "default" : "inverse" }} navbar-fixed-top">
 		<div class="navbar-header">
 			<a class="navbar-brand" href="{{ action('HomeController@index') }}">
-				<img src="{{ URL::asset('assets/images/logo_light.png') }}" alt="">
+				<img src="{{ URL::asset('assets/images/logo_' . (Auth::user()->getFrontendScheme() == "white" ? "dark" : "light") . '.png') }}" alt="">
 			</a>
 
 			<ul class="nav navbar-nav pull-right visible-xs-block">

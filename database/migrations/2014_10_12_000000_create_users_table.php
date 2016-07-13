@@ -26,6 +26,8 @@ class CreateUsersTable extends Migration
             $table->string('image')->nullable();
             $table->string('timezone');
             $table->string('status')->nullable();
+            $table->string('frontend_scheme');
+            $table->string('backend_scheme');
             
             $table->timestamps();
         });

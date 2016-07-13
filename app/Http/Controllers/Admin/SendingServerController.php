@@ -97,7 +97,7 @@ class SendingServerController extends Controller
         
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Mailixa\Model\SendingServer::types()[$request->type]["cols"]);
+            $this->validate($request, \Mailixa\Model\SendingServer::rules($request->type));
             
             // Save current user info
             $server->fill($request->all());
@@ -165,7 +165,7 @@ class SendingServerController extends Controller
         
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, \Mailixa\Model\SendingServer::rules());
+            $this->validate($request, \Mailixa\Model\SendingServer::rules($request->type));
             
             // Save current user info
             $server->fill($request->all());

@@ -11,13 +11,13 @@
 	
 </head>
 
-<body class="navbar-top">
+<body class="navbar-top  color-scheme-{{ Auth::user()->getBackendScheme() }}">
 
 	<!-- Main navbar -->
-	<div class="navbar navbar-inverse navbar-fixed-top">
+	<div class="navbar navbar-{{ Auth::user()->getBackendScheme() == "white" ? "default" : "inverse" }} navbar-fixed-top">
 		<div class="navbar-header">
 			<a class="navbar-brand" href="{{ action('HomeController@index') }}">
-				<img src="{{ URL::asset('assets/images/logo_light.png') }}" alt="">
+				<img src="{{ URL::asset('assets/images/logo_' . (Auth::user()->getBackendScheme() == "white" ? "dark" : "light") . '.png') }}" alt="">
 			</a>
 
 			<ul class="nav navbar-nav pull-right visible-xs-block">
@@ -112,6 +112,7 @@
 					rel0="TemplateController"
 					rel1="LayoutController"
 					rel2="LanguageController"
+					rel3="SettingController"
 				>
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						<i class="icon-gear"></i> {{ trans('messages.setting') }}

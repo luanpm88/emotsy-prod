@@ -216,7 +216,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/sending_servers/create/{type}', 'SendingServerController@create');
     Route::post('admin/sending_servers/create/{type}', 'SendingServerController@store');
     Route::get('admin/sending_servers/{id}/edit/{type}', 'SendingServerController@edit');
-    Route::get('admin/sending_servers/{id}/update/{type}', 'SendingServerController@update');
+    Route::patch('admin/sending_servers/{id}/update/{type}', 'SendingServerController@update');
     
     // Bounce handlers
     Route::get('admin/bounce_handlers/listing/{page?}', 'BounceHandlerController@listing');

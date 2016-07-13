@@ -68,6 +68,31 @@
 								
 								@include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $user->language_id, 'options' => Mailixa\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Mailixa\Model\User::$rules])
 								
+								<div class="row">
+									<div class="col-md-6 color-box">
+										@include('helpers.form_control', [
+											'type' => 'select',
+											'class' => '',
+											'name' => 'frontend_scheme',
+											'value' => $user->frontend_scheme,
+											'help_class' => 'user',
+											'options' => Mailixa\Model\User::colors("frontend_scheme"),
+											'rules' => '',
+										])
+									</div>
+									<div class="col-md-6 color-box">
+										@include('helpers.form_control', [
+											'type' => 'select',
+											'class' => '',
+											'name' => 'backend_scheme',
+											'value' => $user->backend_scheme,
+											'help_class' => 'user',
+											'options' => Mailixa\Model\User::colors("backend_scheme"),
+											'rules' => '',
+										])
+									</div>
+								</div>
+									
 							</div>
 						</div>
 						<div class="col-md-4">
@@ -89,5 +114,52 @@
 					</div>
 					
 				<form>
+				
+			<script>
+				function changeSelectColor() {
+					$('.select2 .select2-selection__rendered, .select2-results__option').each(function() {							
+						var text = $(this).html();
+						if (text == '{{ trans('messages.default') }}') {
+							if($(this).find("i").length == 0) {
+								$(this).prepend("<i class='icon-square text-teal-600'></i>");
+							}
+						}
+						if (text == '{{ trans('messages.blue') }}') {
+							if($(this).find("i").length == 0) {
+								$(this).prepend("<i class='icon-square text-blue'></i>");
+							}
+						}
+						if (text == '{{ trans('messages.green') }}') {
+							if($(this).find("i").length == 0) {
+								$(this).prepend("<i class='icon-square text-green'></i>");
+							}
+						}
+						if (text == '{{ trans('messages.brown') }}') {
+							if($(this).find("i").length == 0) {
+								$(this).prepend("<i class='icon-square text-brown'></i>");
+							}
+						}
+						if (text == '{{ trans('messages.pink') }}') {
+							if($(this).find("i").length == 0) {
+								$(this).prepend("<i class='icon-square text-pink'></i>");
+							}
+						}
+						if (text == '{{ trans('messages.grey') }}') {
+							if($(this).find("i").length == 0) {
+								$(this).prepend("<i class='icon-square text-grey'></i>");
+							}
+						}
+						if (text == '{{ trans('messages.white') }}') {
+							if($(this).find("i").length == 0) {
+								$(this).prepend("<i class='icon-square text-white'></i>");
+							}
+						}
+					});
+				}
+				
+				$(document).ready(function() {
+					setInterval("changeSelectColor()", 100);
+				});
+			</script>
 	
 @endsection

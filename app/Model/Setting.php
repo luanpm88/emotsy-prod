@@ -88,7 +88,7 @@ class Setting extends Model
         return [
             'site_name' => [
                 'cat' => 'general',
-                'value' => 'Mailixa',
+                'value' => 'Email Marketing Application',
                 'type' => 'text',
             ],
             'site_keyword' => [
@@ -103,16 +103,36 @@ class Setting extends Model
                 'options' => [
                     'false', 'true'
                 ],
-            ], 
+            ],            
+            'site_online' => [
+                'cat' => 'general',
+                'value' => true,
+                'type' => 'checkbox',
+                'options' => [
+                    'false', 'true'
+                ],
+            ],
             'site_offline_message' => [
                 'cat' => 'general',
-                'value' => 'Mailixa application currently offline. We will come back soon!',
+                'value' => 'Application currently offline. We will come back soon!',
                 'type' => 'textarea',
             ],
             'site_description' => [
                 'cat' => 'general',
-                'value' => 'Mailixa makes it easy for you to create, send, and optimize your email marketing campaigns.',
+                'value' => 'Makes it easy for you to create, send, and optimize your email marketing campaigns.',
                 'type' => 'textarea',
+            ],
+            'frontend_scheme' => [
+                'cat' => 'general',
+                'value' => 'default',
+                'type' => 'select',
+                'options' => Setting::colors(),
+            ],
+            'backend_scheme' => [
+                'cat' => 'general',
+                'value' => 'default',
+                'type' => 'select',
+                'options' => Setting::colors(),
             ],
             'sending_campaigns_at_once' => [
                 'cat' => 'sending',
@@ -174,6 +194,24 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+        ];
+    }
+    
+    /**
+     * Color array.
+     *
+     * @return array
+     */
+    public static function colors()
+    {
+        return [
+            ['value' => 'default', 'text'=> trans('messages.default')],
+            ['value' => 'blue', 'text'=> trans('messages.blue')],
+            ['value' => 'green', 'text'=> trans('messages.green')],
+            ['value' => 'brown', 'text'=> trans('messages.brown')],
+            ['value' => 'pink', 'text'=> trans('messages.pink')],
+            ['value' => 'grey', 'text'=> trans('messages.grey')],
+            ['value' => 'white', 'text'=> trans('messages.white')]
         ];
     }
 }

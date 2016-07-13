@@ -142,4 +142,24 @@ class Tool
     {        
         return $time->diffForHumans();
     }
+    
+    /**
+     * Change singular to plural
+     * @param       string
+     * @return      string
+     */
+    public static function getPluralPrase($phrase,$value){
+        $plural='';
+        if($value>1){
+            for($i=0;$i<strlen($phrase);$i++){
+                if($i==strlen($phrase)-1){
+                    $plural.=($phrase[$i]=='y')? 'ies':(($phrase[$i]=='s'|| $phrase[$i]=='x' || $phrase[$i]=='z' || $phrase[$i]=='ch' || $phrase[$i]=='sh')? $phrase[$i].'es' :$phrase[$i].'s');
+                }else{
+                    $plural.=$phrase[$i];
+                }
+            }
+            return $plural;
+        }
+        return $phrase;
+    }
 }

@@ -175,7 +175,7 @@ class UserGroup extends Model
             "backend" => [
                 'user_group_read' => 'all',
                 'user_group_create' => 'yes',
-                'user_group_update' => 'all',
+                'user_group_update' => 'own',
                 'user_group_delete' => 'own',
                 'user_read' => 'own',
                 'user_create' => 'yes',
@@ -195,7 +195,7 @@ class UserGroup extends Model
                 'fbl_handler_update' => 'own',
                 'fbl_handler_delete' => 'own',
                 'sending_domain_read' => 'own',
-                'sending_domain_create' => 'no',
+                'sending_domain_create' => 'yes',
                 'sending_domain_update' => 'own',
                 'sending_domain_delete' => 'own',
                 'template_read' => 'own',
@@ -600,12 +600,12 @@ class UserGroup extends Model
     public static function timeUnitOptions()
     {
         return [
-            ['value' => 'minute', 'text' => 'Minute'],
-            ['value' => 'hour', 'text' => 'Hour'],
-            ['value' => 'day', 'text' => 'Day'],
-            ['value' => 'week', 'text' => 'Week'],
-            ['value' => 'month', 'text' => 'Month'],
-            ['value' => 'year', 'text' => 'Month']
+            ['value' => 'minute', 'text' => trans('messages.minute')],
+            ['value' => 'hour', 'text' => trans('messages.hour')],
+            ['value' => 'day', 'text' => trans('messages.day')],
+            ['value' => 'week', 'text' => trans('messages.week')],
+            ['value' => 'month', 'text' => trans('messages.month')],
+            ['value' => 'year', 'text' => trans('messages.year')]
         ];
     }
     
@@ -640,4 +640,5 @@ class UserGroup extends Model
             $row->save();
         }
     }
+    
 }

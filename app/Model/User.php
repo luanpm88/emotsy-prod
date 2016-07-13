@@ -12,7 +12,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'first_name', 'last_name', 'email', 'timezone', 'language_id'
+        'name', 'email', 'first_name', 'last_name', 'email', 'timezone', 'language_id', 'frontend_scheme', 'backend_scheme'
     ];
     
     /**
@@ -587,5 +587,51 @@ class User extends Authenticatable
         }
         
         return $this->sendingQuotaUsage() . "%";
+    }
+    
+    /**
+     * Get user's frontend scheme.
+     *
+     * @return string
+     */
+    public function getFrontendScheme()
+    {
+        if (!empty($this->frontend_scheme)) {
+            return $this->frontend_scheme;
+        } else {
+            return \Mailixa\Model\Setting::get("frontend_scheme");
+        }
+    }
+    
+    /**
+     * Get user's frontend scheme.
+     *
+     * @return string
+     */
+    public function getBackendScheme()
+    {
+        if (!empty($this->backend_scheme)) {
+            return $this->backend_scheme;
+        } else {
+            return \Mailixa\Model\Setting::get("backend_scheme");
+        }
+    }
+    
+    /**
+     * Color array.
+     *
+     * @return array
+     */
+    public static function colors($default)
+    {
+        return [
+            ['value' => '', 'text'=> trans('messages.system_default')],
+            ['value' => 'blue', 'text'=> trans('messages.blue')],
+            ['value' => 'green', 'text'=> trans('messages.green')],
+            ['value' => 'brown', 'text'=> trans('messages.brown')],
+            ['value' => 'pink', 'text'=> trans('messages.pink')],
+            ['value' => 'grey', 'text'=> trans('messages.grey')],
+            ['value' => 'white', 'text'=> trans('messages.white')]
+        ];
     }
 }
