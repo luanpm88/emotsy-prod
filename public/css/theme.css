@@ -28,7 +28,8 @@
 .color-scheme-blue .bg-teal-600,
 .color-scheme-blue .bg-info-800,
 .color-scheme-blue .bg-teal-800,
-.color-scheme-blue .progress-bar-info
+.color-scheme-blue .progress-bar-info,
+.color-scheme-blue .modern-listing .number
 {
     background: rgb(20,130,160);
     border-color: rgb(20,130,160);
@@ -71,7 +72,8 @@
 .color-scheme-green .bg-teal-600,
 .color-scheme-green .bg-info-800,
 .color-scheme-green .bg-teal-800,
-.color-scheme-green .progress-bar-info
+.color-scheme-green .progress-bar-info,
+.color-scheme-green .modern-listing .number
 {
     background: rgb(0,140,110);
     border-color: rgb(0,140,110);
@@ -114,7 +116,8 @@
 .color-scheme-brown .bg-teal-600,
 .color-scheme-brown .bg-info-800,
 .color-scheme-brown .bg-teal-800,
-.color-scheme-brown .progress-bar-info
+.color-scheme-brown .progress-bar-info,
+.color-scheme-brown .modern-listing .number
 {
     background: rgb(145,115,25);
     border-color: rgb(145,115,25);
@@ -156,7 +159,8 @@
 .color-scheme-pink .bg-teal-600,
 .color-scheme-pink .bg-info-800,
 .color-scheme-pink .bg-teal-800,
-.color-scheme-pink .progress-bar-info
+.color-scheme-pink .progress-bar-info,
+.color-scheme-pink .modern-listing .number
 {
     background: rgb(170,80,100);
     border-color: rgb(170,80,100);
@@ -199,7 +203,8 @@
 .color-scheme-grey .bg-teal-600,
 .color-scheme-grey .bg-info-800,
 .color-scheme-grey .bg-teal-800,
-.color-scheme-grey .progress-bar-info
+.color-scheme-grey .progress-bar-info,
+.color-scheme-grey .modern-listing .number
 {
     background: #666;
     border-color: #666;

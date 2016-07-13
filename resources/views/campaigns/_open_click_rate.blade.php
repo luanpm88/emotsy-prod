@@ -4,7 +4,7 @@
                         <div class="pull-right progress-right-info text-teal-800">{{ $campaign->openUniqRate() }}%</div>
                         <h4 class="text-semibold">{{ trans('messages.open_rate') }}</h4>
                         <div class="progress progress-sm">
-                            <div class="progress-bar bg-teal" style="width: {{ $campaign->openUniqRate() }}%">
+                            <div class="progress-bar bg-teal-400" style="width: {{ $campaign->openUniqRate() }}%">
                             </div>
                         </div>
                     </div>
@@ -45,7 +45,7 @@
                         <div class="pull-right progress-right-info text-teal-800">{{ $campaign->clickRate() }}%</div>
                         <h4 class="text-semibold">{{ trans('messages.click_rate') }}</h4>
                         <div class="progress progress-sm">
-                            <div class="progress-bar bg-teal" style="width: {{ $campaign->clickPerUniqOpen() }}%">
+                            <div class="progress-bar bg-teal-400" style="width: {{ $campaign->clickPerUniqOpen() }}%">
                             </div>
                         </div>
                     </div>

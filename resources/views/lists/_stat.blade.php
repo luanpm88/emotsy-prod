@@ -4,7 +4,7 @@
                             <div class="pull-right progress-right-info text-teal-800">{{ $list->openUniqRate() }}%</div>
                             <h5 class="text-semibold">{{ trans('messages.average_open_rate') }}</h5>
                             <div class="progress progress-sm">
-                                <div class="progress-bar bg-teal" style="width: {{ $list->openUniqRate() }}%">
+                                <div class="progress-bar bg-teal-600" style="width: {{ $list->openUniqRate() }}%">
                                 </div>
                             </div>
                         </div>                        
@@ -14,7 +14,7 @@
                             <div class="pull-right progress-right-info text-teal-800">{{ $list->clickRate() }}%</div>
                             <h5 class="text-semibold">{{ trans('messages.average_click_rate') }}</h5>
                             <div class="progress progress-sm">
-                                <div class="progress-bar bg-teal" style="width: {{ $list->clickRate() }}%">
+                                <div class="progress-bar bg-teal-600" style="width: {{ $list->clickRate() }}%">
                                 </div>
                             </div>
                         </div>                        
