@@ -69,7 +69,7 @@
     </div>
     <hr >
     <div class="text-right">                                    
-        <button type="submit" class="btn btn-primary bg-teal">{!! trans('messages.import_database') !!} <i class="icon-arrow-right14 position-right"></i></button>
+        <button type="submit" class="btn btn-primary bg-teal">{!! trans('messages.save') !!} <i class="icon-arrow-right14 position-right"></i></button>
     </div>
 </form>
 @endsection

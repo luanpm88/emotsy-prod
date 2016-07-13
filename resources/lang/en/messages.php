@@ -686,7 +686,7 @@ return [
     'grey' => 'Grey',
     'white' => 'White',
     'system_default' => 'System default',
-    '' => '',
+    'back' => 'Back',
     '' => '',
     '' => '',
     '' => '',
