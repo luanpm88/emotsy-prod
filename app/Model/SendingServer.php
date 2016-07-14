@@ -24,7 +24,7 @@ class SendingServer extends Model
     public function logMessage($message, $params)
     {
         $log = new TrackingLog();
-        $log->sending_server_id = (int)$this->server_id;
+        $log->sending_server_id = (int)$this->id;
         $log->user_id = $params['user_id'];
         $log->message_id = $params['message_id'];
         $log->status = TrackingLog::STATUS_SENT;

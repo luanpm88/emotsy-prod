@@ -125,7 +125,7 @@ class Campaign extends Model
      */
     public function start()
     {
-        try {
+        //try {
             $this->sending();
             Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
 
@@ -141,29 +141,27 @@ class Campaign extends Model
                 
                 $server = $this->pickServer($this);
                 
-                /*
-                if ($this->customer->isOverQuota()) {
-                    throw new \Exception("Customer (ID: {$this->customer->customer_id}) has reached sending quota");
-                }
+                
+                //if ($this->user->overQuota()) {
+                //    throw new \Exception("Customer (ID: {$this->customer->customer_id}) has reached sending quota");
+                //}
 
-                $sent = $server->sendEmail($message, array(
-                    'delivery_for' => DeliveryServer::DELIVERY_FOR_CAMPAIGN,
-                    'customer_id' => (int)$this->customer_id,
-                    'customer_countable' => true,
+                $sent = $server->send($message, array(
+                    'user_id' => (int)$this->user_id,
                     'from_email' => $this->from_email
                 ));
 
-                $this->logDelivery($sent, $subscriber);
-                */
+                //$this->logDelivery($sent, $subscriber);
+                
             }
 
             $this->done();
             Log::info("Campaign sent!");
-        } catch (\Exception $e) {
-            $this->pending();
-            Log::error($e->getMessage());
-            Log::error("Campaign `{$this->name}` (ID: {$this->campaign_id}) deferred!");
-        }
+        //} catch (\Exception $e) {
+        //    $this->pending();
+        //    Log::error($e->getMessage());
+        //    Log::error("Campaign `{$this->name}` (ID: {$this->campaign_id}) deferred!");
+        //}
         
         // reset server pools: just in case DeliveryServerAmazonSesWebApi
         // --> setup SNS requires using from_email of the corresponding campaign
@@ -194,7 +192,7 @@ class Campaign extends Model
      * Transform Tags
      * Transform tags to actual values before sending
      */
-    public function transformTags($message, $subscriber)
+    public function tagMessage($message, $subscriber)
     {
         $tags = array(
             'FIRST_NAME' => $subscriber->getTagValue('FNAME'),
@@ -280,7 +278,7 @@ class Campaign extends Model
         $message->setReplyTo($this->reply_to);
         //$message->setEncoder(Swift_Encoding::get8bitEncoding());
 
-        //$body = $this->transformTags($this->html, $subscriber);
+        //$body = $this->tagMessage($this->html, $subscriber);
         //$body = $this->appendOpenTrackingUrl($body, $subscriber);
         $message->setBody($this->html, 'text/html');
 
