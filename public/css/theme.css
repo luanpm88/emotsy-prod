@@ -16,7 +16,8 @@
 .color-scheme-blue .select2-dropdown,
 .color-scheme-blue .checker span.checked,
 .color-scheme-blue .form-control:focus,
-.color-scheme-blue ul.campaign-steps
+.color-scheme-blue ul.campaign-steps,
+.color-scheme-blue .dropdown-menu li ul
 {
     border-color: rgb(20,130,160);
 }
@@ -63,7 +64,8 @@
 .color-scheme-green .select2-dropdown,
 .color-scheme-green .checker span.checked,
 .color-scheme-green .form-control:focus,
-.color-scheme-green ul.campaign-steps
+.color-scheme-green ul.campaign-steps,
+.color-scheme-green .dropdown-menu li ul
 {
     border-color: rgb(0,140,110);
 }
@@ -111,7 +113,8 @@
 .color-scheme-brown .select2-dropdown,
 .color-scheme-brown .checker span.checked,
 .color-scheme-brown .form-control:focus,
-.color-scheme-brown ul.campaign-steps
+.color-scheme-brown ul.campaign-steps,
+.color-scheme-brown .dropdown-menu li ul
 {
     border-color: rgb(145,115,25);
 }
@@ -157,7 +160,8 @@
 .color-scheme-pink .select2-dropdown,
 .color-scheme-pink .checker span.checked,
 .color-scheme-pink .form-control:focus,
-.color-scheme-pink ul.campaign-steps
+.color-scheme-pink ul.campaign-steps,
+.color-scheme-pink .dropdown-menu li ul
 {
     border-color: rgb(170,80,100);
 }
@@ -204,7 +208,8 @@
 .color-scheme-grey .select2-dropdown,
 .color-scheme-grey .checker span.checked,
 .color-scheme-grey .form-control:focus,
-.color-scheme-grey ul.campaign-steps
+.color-scheme-grey ul.campaign-steps,
+.color-scheme-grey .dropdown-menu li ul
 {
     border-color: #666;
 }

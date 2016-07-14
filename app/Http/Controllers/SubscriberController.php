@@ -434,4 +434,76 @@ class SubscriberController extends Controller
         
         return response()->download(storage_path('export/'.$list->id.'-data.csv'));
     }
+    
+    /**
+     * Copy subscribers to lists
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function copy(Request $request)
+    {
+        $subscribers = \Mailixa\Model\Subscriber::whereIn("uid", explode(",", $request->uids));
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $from_list = $subscribers->first()->mailList;
+        
+        foreach ($subscribers->get() as $subscriber) {
+            // authorize
+            if (\Gate::denies('update', $subscriber)) {
+                return;
+            }
+        }
+
+        foreach (\Mailixa\Model\Subscriber::whereIn("uid", explode(",", $request->uids))->get() as $subscriber) {
+            $subscriber->copy($list, $request->type);
+        }
+        
+        // Log
+        $list->log('copied', $request->user(), [
+            'count' => $subscribers->count(),
+            'from_uid' => $from_list->uid,
+            'to_uid' => $list->uid,
+            'from_name' => $from_list->name,
+            'to_name' => $list->name,
+        ]);
+
+        // Redirect to my lists page
+        echo(trans('messages.subscribers.copied'));
+    }
+    
+    /**
+     * Move subscribers to lists
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function move(Request $request)
+    {
+        $subscribers = \Mailixa\Model\Subscriber::whereIn("uid", explode(",", $request->uids));
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $from_list = $subscribers->first()->mailList;
+        
+        foreach ($subscribers->get() as $subscriber) {
+            // authorize
+            if (\Gate::denies('update', $subscriber)) {
+                return;
+            }
+        }
+
+        foreach (\Mailixa\Model\Subscriber::whereIn("uid", explode(",", $request->uids))->get() as $subscriber) {
+            $subscriber->move($list, $request->type);
+        }
+        
+        // Log
+        $list->log('moved', $request->user(), [
+            'count' => $subscribers->count(),
+            'from_uid' => $from_list->uid,
+            'to_uid' => $list->uid,
+            'from_name' => $from_list->name,
+            'to_name' => $list->name,
+        ]);
+
+        // Redirect to my lists page
+        echo(trans('messages.subscribers.moved'));
+    }
 }

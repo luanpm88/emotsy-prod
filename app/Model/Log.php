@@ -90,6 +90,17 @@ class Log extends Model
             $item = MailList::find($data["id"]);
             $link = is_object($item) ? action('MailListController@overview', $item->uid) : "#deleted";
             $data["link"] = $link;
+            
+            if(isset($data["from_uid"])) {
+                $from = MailList::findByUid($data["from_uid"]);
+                $from_link = is_object($from) ? action('MailListController@overview', $data["from_uid"]) : "#deleted";
+                $data["from_link"] = $from_link;
+            }
+            if(isset($data["to_uid"])) {
+                $to = MailList::findByUid($data["to_uid"]);
+                $to_link = is_object($to) ? action('MailListController@overview', $data["to_uid"]) : "#deleted";
+                $data["to_link"] = $to_link;
+            }
         }
         
         $message = trans('messages.log.' . $this->type . "." . $this->name, $data);

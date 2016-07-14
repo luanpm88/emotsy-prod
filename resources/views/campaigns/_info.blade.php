@@ -1,4 +1,4 @@
-            <h3 class="mt-10"><span class="text-teal text-bold">2</span> {{ trans('messages.recipients') }}</h3>
+            <h3 class="mt-10"><span class="text-teal text-bold">{{ $campaign->subscribers()->count() }}</span> {{ trans('messages.' . \Mailixa\Library\Tool::getPluralPrase('recipient', $campaign->subscribers()->count())) }}</h3>
             
             <div class="row">
                 <div class="col-md-6 campaigns-summary">

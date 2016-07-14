@@ -32,7 +32,7 @@
 													<span class="no-margin stat-num">{{ $item->subscribers()->count() }}</span>
 												</a>
 												<br />
-												<span class="text-muted">{{ trans("messages.subscribers") }}</span>
+												<span class="text-muted">{{ trans("messages." . Mailixa\Library\Tool::getPluralPrase('subscriber', $item->subscribers()->count())) }}</span>
 											</div>
 											<div class="single-stat-box pull-left ml-20">
 												<span class="no-margin text-teal-800 stat-num">{{ $item->openUniqRate() }}%</span>

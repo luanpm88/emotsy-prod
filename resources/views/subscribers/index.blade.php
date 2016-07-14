@@ -45,6 +45,78 @@
 												</a>
 											</li>
 											<li>
+												<a href="#">
+													<i class="icon-copy4"></i> {{ trans('messages.copy_to') }}
+													<i class="icon-arrow-right13 pull-right"></i>
+												</a>
+												<ul>
+													<li>
+														<a>{{ trans('messages.replace_if_exist') }} <i class="icon-arrow-right13 pull-right"></i></a>
+														<ul>
+															@forelse ($list->otherLists() as $l)
+																<li>
+																	<a link-confirm="{{ trans('messages.subscribers_copy_confirm.replace') }}" href="{{ action('SubscriberController@copy', ['list_uid' => $l->uid, 'type' => 'update']) }}">
+																		<i class="icon-address-book2"></i> {{ $l->name }}
+																	</a>
+																</li>
+															@empty
+																<li><a href="#">({{ trans('messages.empty') }})</a></li>
+															@endforelse
+														</ul>
+													</li>
+													<li>
+														<a>{{ trans('messages.keep_if_exist') }} <i class="icon-arrow-right13 pull-right"></i></a>
+														<ul>
+															@forelse ($list->otherLists() as $l)
+																<li>
+																	<a link-confirm="{{ trans('messages.subscribers_copy_confirm.keep') }}" href="{{ action('SubscriberController@copy', ['list_uid' => $l->uid, 'type' => 'keep']) }}">
+																		<i class="icon-address-book2"></i> {{ $l->name }}
+																	</a>
+																</li>
+															@empty
+																<li><a href="#">({{ trans('messages.empty') }})</a></li>
+															@endforelse
+														</ul>
+													</li>
+												</ul>												
+											</li>
+											<li>
+												<a href="#">
+													<i class="icon-move-right"></i> {{ trans('messages.move_to') }}
+													<i class="icon-arrow-right13 pull-right"></i>
+												</a>
+												<ul>
+													<li>
+														<a>{{ trans('messages.replace_if_exist') }} <i class="icon-arrow-right13 pull-right"></i></a>
+														<ul>
+															@forelse ($list->otherLists() as $l)
+																<li>
+																	<a link-confirm="{{ trans('messages.subscribers_move_confirm.replace') }}" href="{{ action('SubscriberController@move', ['list_uid' => $l->uid, 'type' => 'update']) }}">
+																		<i class="icon-address-book2"></i> {{ $l->name }}
+																	</a>
+																</li>
+															@empty
+																<li><a href="#">({{ trans('messages.empty') }})</a></li>
+															@endforelse
+														</ul>
+													</li>
+													<li>
+														<a>{{ trans('messages.keep_if_exist') }} <i class="icon-arrow-right13 pull-right"></i></a>
+														<ul>
+															@forelse ($list->otherLists() as $l)
+																<li>
+																	<a link-confirm="{{ trans('messages.subscribers_move_confirm.keep') }}" href="{{ action('SubscriberController@move', ['list_uid' => $l->uid, 'type' => 'keep']) }}">
+																		<i class="icon-address-book2"></i> {{ $l->name }}
+																	</a>
+																</li>
+															@empty
+																<li><a href="#">({{ trans('messages.empty') }})</a></li>
+															@endforelse
+														</ul>
+													</li>
+												</ul>												
+											</li>
+											<li>
 												<a delete-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', $list->uid) }}">
 													<i class="icon-trash"></i> {{ trans('messages.delete') }}
 												</a>

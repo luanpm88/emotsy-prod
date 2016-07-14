@@ -1110,3 +1110,47 @@ ul.install-steps li.enabled a:hover {
 .sweet-alert h2 {
     color: #333;
 }
+.list_actions .dropdown-menu {
+    overflow: inherit;
+}
+.list_actions .dropdown-menu li ul {
+    position: absolute;
+    right: -160px;
+    background: #fff;
+    margin-top: -52px;
+    border: solid 2px #ddd;
+    padding: 0;
+    display: none;
+    box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+}
+.dropdown-menu li:hover > ul {
+    display: block;
+}
+.dropdown-menu ul > li:hover > a {
+    background: #c8e9e6;
+}
+.dropdown-menu li:hover > a {
+    background: #c8e9e6;
+}
+.dropdown-menu li ul li {
+    list-style: none;
+}
+.dropdown-menu li ul li a {
+    width: auto;
+    display: block;
+    padding: 15px 15px;
+    white-space: nowrap;
+    color: #333;
+    width: 170px;
+    font-weight: 600;
+}
+.dropdown-menu li ul li a i {
+    line-height: 24px;
+}
+.other-lists .btn {
+    padding: 0;
+    display: inline-block;
+    font-size: 14px;
+    line-height: 9px;
+    font-weight: 600;
+}

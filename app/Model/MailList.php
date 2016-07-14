@@ -508,5 +508,25 @@ class MailList extends Model
         }
         return round(($this->clickCount() / $this->urlCount())*100, 0);
     }
+    
+    /**
+     * Get other lists
+     *
+     * @return number
+     */
+    public function otherLists()
+    {
+        return \Auth::user()->lists()->where("id", "!=", $this->id)->get();
+    }
+    
+    /**
+     * Get name with subscrbers count
+     *
+     * @return number
+     */
+    public function longName()
+    {
+        return $this->name . " - " . $this->subscribers()->count() . " " . trans('messages.' . \Mailixa\Library\Tool::getPluralPrase('subscriber', $this->subscribers()->count())) . "";
+    }
 
 }

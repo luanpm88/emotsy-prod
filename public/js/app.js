@@ -168,7 +168,7 @@ $(function() {
             return this.value;
         }).get();
         
-        $(this).attr("href", $(this).attr("href") + "?uids=" + vals.join(","));
+        $(this).attr("new-href", $(this).attr("href") + "?uids=" + vals.join(","));
         $(this).attr("items-count", vals.length);
     });
     
@@ -186,7 +186,7 @@ $(function() {
         
         $('a[data-target="#delete_confirm_model"]').trigger("click");        
         $("#delete_confirm_model h6").html(mgs.replace(":number", "<span class='text-bold text-danger'>" + count + "</span>"));
-        $(".delete-confirm-button").attr("href", $(this).attr("href"));
+        $(".delete-confirm-button").attr("href", $(this).attr("new-href"));
         
         e.stopImmediatePropagation();
         e.preventDefault();
@@ -213,7 +213,7 @@ $(function() {
         }
     
         $('a[data-target="#list_delete_confirm_model"]').trigger("click");
-        $(".list-delete-confirm-button").attr("href", $(this).attr("href"));
+        $(".list-delete-confirm-button").attr("href", $(this).attr("new-href"));
         
         // Get message
         // ajax update custom sort
@@ -245,9 +245,12 @@ $(function() {
             count = $(this).attr("items-count");
         }
         
-        $('a[data-target="#link_confirm_model"]').trigger("click");        
-        $("#link_confirm_model h6").html(mgs.replace(":number", "<span class='text-bold text-teal-800'>" + count + "</span>"));
-        $(".link-confirm-button").attr("href", $(this).attr("href"));
+        $('a[data-target="#link_confirm_model"]').trigger("click");
+        mgs = mgs.replace(":number", "<span class='text-bold text-teal-800'>" + count + "</span>");
+        mgs = mgs.replace(":name", "<span class='text-bold text-teal-800'>" + $(this).html() + "</span>");
+        
+        $("#link_confirm_model h6").html(mgs);
+        $(".link-confirm-button").attr("href", $(this).attr("new-href"));
         
         e.stopImmediatePropagation();
         e.preventDefault();

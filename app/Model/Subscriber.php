@@ -39,6 +39,11 @@ class Subscriber extends Model
         return $this->belongsTo('Mailixa\Model\Campaign');
     }
     
+    public function subscriberFields()
+    {
+        return $this->hasMany('Mailixa\Model\SubscriberField');
+    }
+    
     /**
      * Bootstrap any application services.
      * 
@@ -161,6 +166,23 @@ class Subscriber extends Model
         } else {
             return "";
         }
+    }
+    
+    /**
+     * Set field.
+     *
+     * @return value
+     */
+    public function setField($field, $value) {
+        $fv = SubscriberField::where("subscriber_id", "=", $this->id)->where("field_id", "=", $field->id)->first();
+        if(!is_object($fv)) {
+            $fv = new SubscriberField();
+            $fv->field_id = $field->id;
+            $fv->subscriber_id = $this->id;
+        }
+        
+        $fv->value = $value;
+        $fv->save();
     }
     
     /**
@@ -392,5 +414,52 @@ class Subscriber extends Model
                                 'name' => $name,
                                 'data' => json_encode($data),
                             ]);
+    }
+    
+    /**
+     * Copy to list
+     *
+     * @param MailList $list
+     * @return void
+     */
+    public function copy($list, $type = "keep")
+    {
+        // find exists
+        $copy = $list->subscribers()->where("email", "=", $this->email)->first();
+        
+        if (!is_object($copy)) {
+            $copy = $this->replicate();
+            $copy->mail_list_id = $list->id;
+            $copy->save();
+        } else {
+            // return if keep
+            if($type == "keep") {
+                return false;
+            }
+        }
+        
+        // update fields
+        foreach ($this->subscriberFields as $item) {
+            foreach($copy->mailList->fields as $field) {
+                if ($item->field->tag == $field->tag) {
+                    $copy->setField($field, $item->value);                    
+                }
+            }
+        }
+        
+        return $copy;
+    }
+    
+    /**
+     * Move to list
+     *
+     * @param MailList $list
+     * @return void
+     */
+    public function move($list, $type = "keep")
+    {
+        $this->copy($list, $type);
+        
+        $this->delete();
     }
 }
