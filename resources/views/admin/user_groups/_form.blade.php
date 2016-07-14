@@ -50,15 +50,16 @@
 									<h3 class="text-teal-800">{{ trans('messages.list_or_subscriber_or_segment') }}</h3>
 									<div class="row">
 										<div class="boxing col-md-3">
-											@include('helpers.form_control', ['type' => 'text',
-																			'class' => 'numeric',
-																			'name' => 'options[frontend][list_max]',
-																			'value' => $options['frontend']['list_max'],
-																			'label' => trans('messages.max_lists'),
-																			'help_class' => 'user_group',
-																			'options' => ['true', 'false'],
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
+											@include('helpers.form_control', [
+												'type' => 'text',
+												'class' => 'numeric',
+												'name' => 'options[frontend][list_max]',
+												'value' => $options['frontend']['list_max'],
+												'label' => trans('messages.max_lists'),
+												'help_class' => 'user_group',
+												'options' => ['true', 'false'],
+												'rules' => Mailixa\Model\UserGroup::rules()
+											])
 											<div class="checkbox inline unlimited-check text-semibold">
 												<label>
 													<input{{ $options['frontend']['list_max']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
@@ -67,15 +68,16 @@
 											</div>
 										</div>
 										<div class="boxing col-md-3">
-											@include('helpers.form_control', ['type' => 'text',
-																			'class' => 'numeric',
-																			'name' => 'options[frontend][subscriber_max]',
-																			'value' => $options['frontend']['subscriber_max'],
-																			'label' => trans('messages.max_subscribers'),
-																			'help_class' => 'user_group',
-																			'options' => ['true', 'false'],
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
+											@include('helpers.form_control', [
+												'type' => 'text',
+												'class' => 'numeric',
+												'name' => 'options[frontend][subscriber_max]',
+												'value' => $options['frontend']['subscriber_max'],
+												'label' => trans('messages.max_subscribers'),
+												'help_class' => 'user_group',
+												'options' => ['true', 'false'],
+												'rules' => Mailixa\Model\UserGroup::rules()
+											])
 											<div class="checkbox inline unlimited-check text-semibold">
 												<label>
 													<input{{ $options['frontend']['subscriber_max']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
@@ -84,14 +86,15 @@
 											</div>
 										</div>
 										<div class="boxing col-md-3">
-											@include('helpers.form_control', ['type' => 'text',
-																			'class' => 'numeric',
-																			'name' => 'options[frontend][subscriber_per_list_max]',
-																			'value' => $options['frontend']['subscriber_per_list_max'],
-																			'label' => trans('messages.max_subscribers_per_list'),
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
+											@include('helpers.form_control', [
+												'type' => 'text',
+												'class' => 'numeric',
+												'name' => 'options[frontend][subscriber_per_list_max]',
+												'value' => $options['frontend']['subscriber_per_list_max'],
+												'label' => trans('messages.max_subscribers_per_list'),
+												'help_class' => 'user_group',
+												'rules' => Mailixa\Model\UserGroup::rules()
+											])
 											<div class="checkbox inline unlimited-check text-semibold">
 												<label>
 													<input{{ $options['frontend']['subscriber_per_list_max']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
@@ -100,14 +103,15 @@
 											</div>
 										</div>
 										<div class="boxing col-md-3">
-											@include('helpers.form_control', ['type' => 'text',
-																			'class' => 'numeric',
-																			'name' => 'options[frontend][segment_per_list_max]',
-																			'value' => $options['frontend']['segment_per_list_max'],
-																			'label' => trans('messages.segment_per_list_max'),
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
+											@include('helpers.form_control', [
+												'type' => 'text',
+												'class' => 'numeric',
+												'name' => 'options[frontend][segment_per_list_max]',
+												'value' => $options['frontend']['segment_per_list_max'],
+												'label' => trans('messages.segment_per_list_max'),
+												'help_class' => 'user_group',
+												'rules' => Mailixa\Model\UserGroup::rules()
+											])
 											<div class="checkbox inline unlimited-check text-semibold">
 												<label>
 													<input{{ $options['frontend']['segment_per_list_max']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
@@ -121,13 +125,13 @@
 									<div class="row">
 										<div class="boxing col-md-3">
 											@include('helpers.form_control', ['type' => 'text',
-																			'class' => 'numeric',
-																			'name' => 'options[frontend][campaign_max]',
-																			'value' => $options['frontend']['campaign_max'],
-																			'label' => trans('messages.max_campaigns'),
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
+												'class' => 'numeric',
+												'name' => 'options[frontend][campaign_max]',
+												'value' => $options['frontend']['campaign_max'],
+												'label' => trans('messages.max_campaigns'),
+												'help_class' => 'user_group',
+												'rules' => Mailixa\Model\UserGroup::rules()
+											])
 											<div class="checkbox inline unlimited-check text-semibold">
 												<label>
 													<input{{ $options['frontend']['campaign_max']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
@@ -138,33 +142,33 @@
 										</div>
 										<div class="col-md-3">
 											@include('helpers.form_control', ['type' => 'text',
-																			'class' => 'numeric',
-																			'name' => 'options[frontend][campaign_subscribers_at_once]',
-																			'value' => $options['frontend']['campaign_subscribers_at_once'],
-																			'label' => trans('messages.subscribers_at_once'),
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
+												'class' => 'numeric',
+												'name' => 'options[frontend][campaign_subscribers_at_once]',
+												'value' => $options['frontend']['campaign_subscribers_at_once'],
+												'label' => trans('messages.subscribers_at_once'),
+												'help_class' => 'user_group',
+												'rules' => Mailixa\Model\UserGroup::rules()
+											])
 										</div>
 										<div class="col-md-3">
 											@include('helpers.form_control', ['type' => 'text',
-																			'class' => 'numeric',
-																			'name' => 'options[frontend][campaign_pause]',
-																			'value' => $options['frontend']['campaign_pause'],
-																			'label' => trans('messages.campaign_pause_time'),
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
+												'class' => 'numeric',
+												'name' => 'options[frontend][campaign_pause]',
+												'value' => $options['frontend']['campaign_pause'],
+												'label' => trans('messages.campaign_pause_time'),
+												'help_class' => 'user_group',
+												'rules' => Mailixa\Model\UserGroup::rules()
+											])
 										</div>
 										<div class="col-md-3">
 											@include('helpers.form_control', ['type' => 'text',
-																			'class' => 'numeric',
-																			'name' => 'options[frontend][campaign_emails_per_minute]',
-																			'value' => $options['frontend']['campaign_emails_per_minute'],
-																			'label' => trans('messages.emails_per_minute'),
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
+												'class' => 'numeric',
+												'name' => 'options[frontend][campaign_emails_per_minute]',
+												'value' => $options['frontend']['campaign_emails_per_minute'],
+												'label' => trans('messages.emails_per_minute'),
+												'help_class' => 'user_group',
+												'rules' => Mailixa\Model\UserGroup::rules()
+											])
 										</div>
 									</div>
 									<div class="row">									
@@ -180,7 +184,8 @@
 										</div>
 										
 										<div class="col-md-3">
-											@include('helpers.form_control', ['type' => 'text',
+											@include('helpers.form_control', [
+												'type' => 'text',
 												'class' => 'numeric',
 												'name' => 'options[frontend][campaign_send_at_once]',
 												'value' => $options['frontend']['campaign_send_at_once'],
@@ -194,14 +199,15 @@
 									<h3 class="text-teal-800">{{ trans('messages.sending_quota') }}</h3>
 									<div class="row">
 										<div class="boxing col-md-3">
-											@include('helpers.form_control', ['type' => 'text',
-																			'class' => 'numeric',
-																			'name' => 'options[frontend][sending_quota]',
-																			'value' => $options['frontend']['sending_quota'],
-																			'label' => trans('messages.sending_quota'),
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
+											@include('helpers.form_control', [
+												'type' => 'text',
+												'class' => 'numeric',
+												'name' => 'options[frontend][sending_quota]',
+												'value' => $options['frontend']['sending_quota'],
+												'label' => trans('messages.sending_quota'),
+												'help_class' => 'user_group',
+												'rules' => Mailixa\Model\UserGroup::rules()
+											])
 											<div class="checkbox inline unlimited-check text-semibold">
 												<label>
 													<input{{ $options['frontend']['sending_quota']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
@@ -210,14 +216,15 @@
 											</div>
 										</div>
 										<div class="boxing col-md-3">
-											@include('helpers.form_control', ['type' => 'text',
-																			'class' => 'numeric',
-																			'name' => 'options[frontend][sending_quota_time]',
-																			'value' => $options['frontend']['sending_quota_time'],
-																			'label' => trans('messages.quota_time'),
-																			'help_class' => 'user_group',
-																			'rules' => Mailixa\Model\UserGroup::rules()
-																		])
+											@include('helpers.form_control', [
+												'type' => 'text',
+												'class' => 'numeric',
+												'name' => 'options[frontend][sending_quota_time]',
+												'value' => $options['frontend']['sending_quota_time'],
+												'label' => trans('messages.quota_time'),
+												'help_class' => 'user_group',
+												'rules' => Mailixa\Model\UserGroup::rules()
+											])
 											<div class="checkbox inline unlimited-check text-semibold">
 												<label>
 													<input{{ $options['frontend']['sending_quota_time']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
@@ -287,7 +294,8 @@
 											@foreach ($items as $act => $ops)
 												<div class="col-md-3">
 													@if (count($ops["options"]) > 2)
-														@include('helpers.form_control', ['type' => 'select',
+														@include('helpers.form_control', [
+															'type' => 'select',
 															'class' => 'numeric',
 															'name' => 'options[backend][' . $key . "_" . $act .']',
 															'value' => $options['backend'][$key . "_" . $act],
@@ -320,7 +328,7 @@
 						</div>
 					</div>
 					
-					@if ($group->users()->count())						
+					@if ($group->users()->count() && false)						
 						<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#group_check_confirm_model">aa</a>
 						<!-- Basic modal -->
 						<div id="group_check_confirm_model" class="modal fade">
