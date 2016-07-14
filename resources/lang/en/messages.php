@@ -688,7 +688,7 @@ return [
     'system_default' => 'System default',
     'back' => 'Back',
     'fitness' => 'Fitness',
-    '' => '',
+    'uncheck_frontend_confirm' => 'Are you sure you want to revoke frontent access from this group? Then it\'s users campaigns/lists... and all related informations will be deleted',
     '' => '',
     '' => '',
     '' => '',

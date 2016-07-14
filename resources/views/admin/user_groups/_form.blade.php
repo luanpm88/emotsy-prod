@@ -320,5 +320,69 @@
 						</div>
 					</div>
 					
-					
+					@if ($group->users()->count())						
+						<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#group_check_confirm_model">aa</a>
+						<!-- Basic modal -->
+						<div id="group_check_confirm_model" class="modal fade">
+							<div class="modal-dialog">
+								<div class="modal-content">
+									<form class="" onkeypress="return event.keyCode != 13;">
+										<div class="modal-header bg-danger">
+											<button type="button" class="close" data-dismiss="modal">&times;</button>
+											<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+										</div>
+						
+										<div class="modal-body">
+											
+											<div class="alert alert-danger text-semibold">
+												{{ trans('messages.uncheck_frontend_confirm') }}
+											</div>
+											
+											<div class="content">
+												<ul class="modern-listing">
+													@foreach ($group->users as $user)
+														<li>
+															<i class="icon-cancel-circle2 text-danger"></i>
+															<h4 class="text-danger">{{ $user->displayName() }}</h4>
+															<p>
+																@if ($user->subscribers()->count())
+																	<span class="text-bold text-danger">{{ $user->subscribers()->count() }}</span> {{ trans('messages.subscribers') }}<pp>,</pp>
+																@endif
+																@if ($user->campaigns()->count())
+																	<span class="text-bold text-danger">{{ $user->campaigns()->count() }}</span> {{ trans('messages.campaigns') }}<pp>,</pp>
+																@endif
+																@if ($user->lists()->count())
+																	<span class="text-bold text-danger">{{ $user->lists()->count() }}</span> {{ trans('messages.lists') }}<pp>,</pp>
+																@endif
+															</p>                        
+														</li>
+													@endforeach
+												</ul>
+											</div>
+												
+										</div>
+						
+										<div class="modal-footer">
+											<button type="button" class="btn btn-link cancel-frontend-uncheck" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+											<a class="btn btn-danger" data-dismiss="modal">{{ trans('messages.confirm') }}</a>
+										</div>
+									</form>
+								</div>
+							</div>
+						</div>
+						<!-- /basic modal -->
+						
+						<script>
+							// add segment condition
+							$(document).on("change", "input[name=frontend_access]", function(e) {
+								if(!$(this).is(":checked")) {
+									$('a[data-target="#group_check_confirm_model"]').trigger("click");
+								}
+							});
+							
+							$(document).on("click", ".cancel-frontend-uncheck", function(e) {
+								$("input[name=frontend_access]").last().next().click();
+							});
+						</script>
+					@endif
 					

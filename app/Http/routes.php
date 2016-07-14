@@ -133,6 +133,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::patch('templates/{uid}/update', 'TemplateController@update');
     
     // Campaign
+    Route::get('campaigns/delete/confirm', 'CampaignController@deleteConfirm');
     Route::get('campaigns/{message_id}/open', 'CampaignController@open');
     Route::get('campaigns/{message_id}/click/{url}', 'CampaignController@click');
     Route::get('campaigns/{message_id}/unsubscribe', 'CampaignController@unsubscribe');
