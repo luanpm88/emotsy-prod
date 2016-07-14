@@ -1110,10 +1110,10 @@ ul.install-steps li.enabled a:hover {
 .sweet-alert h2 {
     color: #333;
 }
-.list_actions .dropdown-menu {
+.dropdown-menu {
     overflow: inherit;
 }
-.list_actions .dropdown-menu li ul {
+.dropdown-menu li ul {
     position: absolute;
     right: -160px;
     background: #fff;
@@ -1122,6 +1122,10 @@ ul.install-steps li.enabled a:hover {
     padding: 0;
     display: none;
     box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+}
+.dropdown-menu.dropdown-menu-right li ul {
+    right: auto;
+    left: -160px;
 }
 .dropdown-menu li:hover > ul {
     display: block;
