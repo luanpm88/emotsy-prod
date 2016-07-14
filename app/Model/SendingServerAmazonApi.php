@@ -25,7 +25,6 @@ class SendingServerAmazonApi extends SendingServerAmazon
               )
             ));
 
-            //$this->logUsage($message, $params);
             Log::info('Sent!');
       
             return $sent;

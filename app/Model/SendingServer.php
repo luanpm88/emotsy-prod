@@ -31,7 +31,7 @@ class SendingServer extends Model
         $log->save();
     }
 
-    public function resetServerPools() {
+    public static function resetServerPools() {
         self::$serverPools = array();
     }
 

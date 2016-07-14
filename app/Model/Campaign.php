@@ -125,7 +125,7 @@ class Campaign extends Model
      */
     public function start()
     {
-        //try {
+        try {
             $this->sending();
             Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
 
@@ -147,39 +147,35 @@ class Campaign extends Model
                 //}
 
                 $sent = $server->send($message, array(
-                    'user_id' => (int)$this->user_id,
                     'from_email' => $this->from_email
                 ));
-
-                //$this->logDelivery($sent, $subscriber);
-                
             }
 
             $this->done();
             Log::info("Campaign sent!");
-        //} catch (\Exception $e) {
-        //    $this->pending();
-        //    Log::error($e->getMessage());
-        //    Log::error("Campaign `{$this->name}` (ID: {$this->campaign_id}) deferred!");
-        //}
+        } catch (\Exception $e) {
+            $this->pending();
+            Log::error($e->getMessage());
+            Log::error("Campaign `{$this->name}` (ID: {$this->campaign_id}) deferred!");
+        }
         
         // reset server pools: just in case DeliveryServerAmazonSesWebApi
         // --> setup SNS requires using from_email of the corresponding campaign
         // but SNS is only made once when the server is initiated
-        //DeliveryServer::resetServerPools();
+        SendingServer::resetServerPools();
     }
 
     /**
      * Log Delivery
      * Log delivery message, used for later tracking
      */
-    public function logDelivery($response, $subscriber)
+    public function trackMessage($response, $subscriber)
     {
-        $log = new CampaignDeliveryLog();
-        $log->campaign_id = $this->campaign_id;
-        $log->email_message_id = $response['MessageId'];
-        $log->subscriber_id = $subscriber->subscriber_id;
-        $log->status = CampaignDeliveryLog::STATUS_SUCCESS;
+        $log = new TrackingLog();
+        $log->campaign_id = $this->id;
+        $log->message_id = $response['MessageId'];
+        $log->subscriber_id = $subscriber->id;
+        $log->status = TrackingLog::STATUS_SENT;
         $log->save();
     }
 
