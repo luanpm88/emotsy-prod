@@ -14,7 +14,7 @@ class CreateBounceLogsTable extends Migration
     {
         Schema::create('bounce_logs', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('message_id');
+            $table->string('message_id');
             $table->string('bounce_type');
             $table->string('raw');
             

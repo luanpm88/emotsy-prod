@@ -10,6 +10,8 @@ use DB;
 class SendingServer extends Model
 {
     const DKIM_SELECTOR = 'mailer';
+    const DELIVERY_STATUS_SENT = 'sent';
+    const DELIVERY_STATUS_FAILED = 'failed';
 
     public static $serverMapping = array(
         'amazon-api'         => 'SendingServerAmazonApi',
@@ -28,6 +30,7 @@ class SendingServer extends Model
         $log->user_id = $params['user_id'];
         $log->message_id = $params['message_id'];
         $log->status = TrackingLog::STATUS_SENT;
+        $log->error = $params['error'];
         $log->save();
     }
 

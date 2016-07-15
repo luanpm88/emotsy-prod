@@ -14,7 +14,7 @@ class CreateFeedbackLogsTable extends Migration
     {
         Schema::create('feedback_logs', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('message_id');
+            $table->string('message_id');
             $table->string('feedback_type');
             $table->text('raw_feedback_content');
             
