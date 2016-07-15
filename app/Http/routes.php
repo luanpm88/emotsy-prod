@@ -50,6 +50,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('assets/images/avatar/user-{uid?}.jpg', 'UserController@avatar');
     
     // Mail list
+    Route::post('lists/copy', 'MailListController@copy');
     Route::get('lists/quick-view', 'MailListController@quickView');
     Route::get('lists/{uid}/list-growth', 'MailListController@listGrowthChart');
     Route::get('lists/sort', 'MailListController@sort');

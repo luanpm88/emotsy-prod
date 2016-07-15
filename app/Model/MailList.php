@@ -117,6 +117,13 @@ class MailList extends Model
             //  Create list default fields
             $item->createDefaultFieds();
         });
+        
+        // detele
+        static::deleted(function($item)
+        {
+            //  Delete contact when list deleted
+            $item->contact()->delete();
+        });
     }
     
     /**
@@ -527,6 +534,37 @@ class MailList extends Model
     public function longName()
     {
         return $this->name . " - " . $this->subscribers()->count() . " " . trans('messages.' . \Mailixa\Library\Tool::getPluralPrase('subscriber', $this->subscribers()->count())) . "";
+    }
+    
+    /**
+     * Copy new list
+     *
+     * @return void
+     */
+    public function copy($name)
+    {
+        $copy = $this->replicate();
+        $copy->name = $name;
+        $copy->save();
+        
+        // Contact
+        if(is_object($this->contact)) {
+            $new_contact = $this->contact->replicate();
+            $new_contact->save();
+            
+            // update contact
+            $copy->contact_id = $new_contact->id;
+            $copy->save();            
+        }
+        
+        // Remove default fields
+        $copy->fields()->delete();        
+        // Fields
+        foreach($this->fields as $field) {
+            $new_field = $field->replicate();
+            $new_field->mail_list_id = $copy->id;
+            $new_field->save();
+        }
     }
 
 }

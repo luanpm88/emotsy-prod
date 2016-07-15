@@ -69,10 +69,15 @@
 													<li><a href="{{ action('SubscriberController@import', $item->uid) }}"><i class="icon-download4"></i> {{ trans('messages.import') }}</a></li>
 													<li><a href="{{ action('SubscriberController@export', $item->uid) }}"><i class="icon-upload4"></i> {{ trans('messages.export') }}</a></li>
 													<li>														
+														<a data-uid="{{ $item->uid }}" data-name="{{ trans("messages.copy_of_list", ['name' => $item->name]) }}" class="copy-list-link">
+															<i class="icon-copy4"></i> {{ trans('messages.copy') }}
+														</a>
+													</li>
+													<li>														
 														<a list-delete-confirm="{{ action('MailListController@deleteConfirm', ['uids' => $item->uid]) }}" href="{{ action('MailListController@delete', ['uids' => $item->uid]) }}">
 															<i class="icon-trash"></i> {{ trans('messages.delete') }}
 														</a>
-													</li>
+													</li>													
 												</ul>
 											</div>
 										</td>

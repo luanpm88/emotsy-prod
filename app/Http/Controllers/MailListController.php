@@ -375,4 +375,24 @@ class MailListController extends Controller
             'list' => $list
         ]);
     }
+    
+    /**
+     * Copy list.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function copy(Request $request)
+    {
+        $list = \Mailixa\Model\MailList::findByUid($request->copy_list_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $list)) {
+            return;
+        }
+        
+        $list->copy($request->copy_list_name);
+        
+        echo trans('messages.list.copied');
+    }
 }

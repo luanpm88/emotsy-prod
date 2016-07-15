@@ -3,7 +3,7 @@
 	<div id="delete_confirm_model" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<form class="confirm-delete-form" onkeypress="return event.keyCode != 13;">
+				<form class="confirm-delete-form form-validate-jquery" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header bg-danger">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
@@ -15,7 +15,7 @@
 							
 							<div class="form-group">
 								<label>{!! trans('messages.type_delete_to_confirm') !!}</label>
-								<input class="form-control" name="delete" />
+								<input class="form-control required" name="delete" />
 							</div>
 						
 					</div>
@@ -62,7 +62,7 @@
 	<div id="list_delete_confirm_model" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
-				<form class="list-confirm-delete-form" onkeypress="return event.keyCode != 13;">
+				<form class="list-confirm-delete-form form-validate-jquery" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header bg-danger">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
@@ -76,7 +76,7 @@
 							
 							<div class="form-group">
 								<label>{!! trans('messages.type_delete_to_confirm') !!}</label>
-								<input class="form-control" name="delete" />
+								<input class="form-control required" name="delete" />
 							</div>
 						
 					</div>
@@ -96,6 +96,7 @@
 	<div id="quota_modal" class="modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
+				
 				<div class="modal-body">
 						
 					
@@ -104,6 +105,46 @@
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
 				</div>
+			</div>
+		</div>
+	</div>
+	<!-- /basic modal -->
+	
+	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#copy_list"></a>
+	<!-- Basic modal -->
+	<div id="copy_list" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-header bg-teal">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h2 class="modal-title">{{ trans('messages.name_new_list') }}</h2>
+			</div>
+			<div class="modal-content">
+				<form action="{{ action('MailListController@copy') }}" method="POST" class="ajax_copy_list_form form-validate-jqueryz">
+					{{ csrf_field() }}
+					<input type="hidden" name="copy_list_uid" />
+					
+					<div class="modal-body">
+						
+						@include('helpers.form_control', [
+							'type' => 'text',
+							'name' => 'copy_list_name',
+							'value' => '',
+							'label' => trans('messages.what_would_you_like_to_name_your_list'),
+							'options' => Mailixa\Model\UserGroup::timeUnitOptions(),
+							'include_blank' => trans('messages.choose'),
+							'help_class' => 'sending_server',
+							'rules' => ['name' => 'required']
+						])	
+						
+						
+						<div class="text-right">
+							<button type="submit" class="btn btn-info bg-teal-600 mr-5">{{ trans('messages.copy') }}</button>
+							<button type="button" class="btn btn-default ml-0 copy-list-close" data-dismiss="modal">{{ trans('messages.close') }}</button>
+						</div>
+						
+					</div>
+
+				</form>
 			</div>
 		</div>
 	</div>

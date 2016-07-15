@@ -177,7 +177,7 @@ $(function() {
     // ------------------------------
     $(document).on("click", "a[delete-confirm]", function(e) {
         var mgs = $(this).attr("delete-confirm");
-        
+        $(this).attr("new-href", $(this).attr("href"));
         // count items
         var count = 1;
         if (typeof($(this).attr("items-count")) != 'undefined') {
@@ -195,6 +195,7 @@ $(function() {
         if($('.confirm-delete-form').valid()) {
             
         } else {
+            e.stopImmediatePropagation();
             e.preventDefault();
         }        
     });
@@ -202,6 +203,7 @@ $(function() {
     // ------------------------------
     $(document).on("click", "a[list-delete-confirm]", function(e) {
         var url = $(this).attr("list-delete-confirm");
+        $(this).attr("new-href", $(this).attr("href"));
         
         if($(this).parents(".list_actions").length) {
             var form = $(this).parents(".listing-form");
@@ -232,8 +234,9 @@ $(function() {
         if($('.list-confirm-delete-form').valid()) {
             
         } else {
+            e.stopImmediatePropagation();
             e.preventDefault();
-        }        
+        }
     });
     // Link confirm
     $(document).on("click", "a[link-confirm]", function(e) {
@@ -571,7 +574,9 @@ $(function() {
             box.find("input[type=text]").addClass("text-trans");
             box.find("input[type=text]").attr("readonly", "readonly");
         } else {
-            box.find("input[type=text]").val(0);
+            if(box.find("input[type=text]").val() == "-1") {
+                box.find("input[type=text]").val(0);
+            }
             box.find("input[type=text]").removeClass("text-trans");
             box.find("input[type=text]").removeAttr("readonly", "readonly");
         }
@@ -581,5 +586,44 @@ $(function() {
     // unlimited check
     $(document).on('click', 'ul.install-steps li:not(.enabled) a', function(e) {
         e.preventDefault();
+    });
+    
+    // unlimited check
+    $(document).on('click', '.copy-list-link', function(e) {
+        var uid = $(this).attr("data-uid");
+        var name = $(this).attr("data-name");
+        
+        $('input[name=copy_list_uid]').val(uid);
+        $('input[name=copy_list_name]').val(name);
+        $('a[data-target="#copy_list"]').trigger("click");
+    });
+    
+    // Ajax copy list
+    $(".ajax_copy_list_form").submit(function(e) {
+        var url = $(this).attr("action");
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: $(".ajax_copy_list_form").serialize(), // serializes the form's elements.
+            success: function(msg)
+            {
+                tableFilter($(".listing-form"));
+                if(msg != '') {
+                    swal({
+                        title: msg,
+                        text: "",
+                        confirmButtonColor: "#00695C",
+                        type: "success",
+                        allowOutsideClick: true,
+                        confirmButtonText: LANG_OK,
+                        customClass: "swl-success"
+                    });
+                }                
+            }
+        });
+        
+        $(".copy-list-close").trigger("click");
+        e.preventDefault(); // avoid to execute the actual submit of the form.
     });
 });

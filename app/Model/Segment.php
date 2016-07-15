@@ -202,7 +202,7 @@ class Segment extends Model
                     
             }
             
-            $conditions[] = "subscribers.id IN  (SELECT subscriber_fields.subscriber_id FROM subscriber_fields WHERE (".\DB::getTablePrefix()."subscriber_fields.field_id = ".$condition->field_id." AND ".$cond."))";
+            $conditions[] = \DB::getTablePrefix()."subscribers.id IN  (SELECT ".\DB::getTablePrefix()."subscriber_fields.subscriber_id FROM ".\DB::getTablePrefix()."subscriber_fields WHERE (".\DB::getTablePrefix()."subscriber_fields.field_id = ".$condition->field_id." AND ".$cond."))";
         }
         
         //return $conditions;
