@@ -529,7 +529,7 @@ class User extends Authenticatable
     {
         $time_value = $this->getOption("frontend", "sending_quota_time");
         $time_unit = $this->getOption("frontend", "sending_quota_time_unit");
-        $timezone = \Auth::user()->timezone;
+        $timezone = $this->timezone;
         
         if ($time_value == "-1") {
             $begin = null;
