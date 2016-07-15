@@ -36,7 +36,7 @@
 										<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
 											{{ trans('messages.actions') }} <span class="caret"></span>
 										</button>
-										<ul class="dropdown-menu dropdown-menu-right">
+										<ul class="dropdown-menu">
 											<li><a delete-confirm="{{ trans('messages.delete_campaigns_confirm') }}" href="{{ action('CampaignController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
 										</ul>
 									</div>

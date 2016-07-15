@@ -141,20 +141,14 @@ class Campaign extends Model
                 
                 $server = $this->pickServer($this);
                 
-                /*
-                if ($this->customer->isOverQuota()) {
-                    throw new \Exception("Customer (ID: {$this->customer->customer_id}) has reached sending quota");
-                }
+                
+                //if ($this->user->overQuota()) {
+                //    throw new \Exception("Customer (ID: {$this->customer->customer_id}) has reached sending quota");
+                //}
 
-                $sent = $server->sendEmail($message, array(
-                    'delivery_for' => DeliveryServer::DELIVERY_FOR_CAMPAIGN,
-                    'customer_id' => (int)$this->customer_id,
-                    'customer_countable' => true,
+                $sent = $server->send($message, array(
                     'from_email' => $this->from_email
                 ));
-
-                $this->logDelivery($sent, $subscriber);
-                */
             }
 
             $this->done();
@@ -168,20 +162,20 @@ class Campaign extends Model
         // reset server pools: just in case DeliveryServerAmazonSesWebApi
         // --> setup SNS requires using from_email of the corresponding campaign
         // but SNS is only made once when the server is initiated
-        //DeliveryServer::resetServerPools();
+        SendingServer::resetServerPools();
     }
 
     /**
      * Log Delivery
      * Log delivery message, used for later tracking
      */
-    public function logDelivery($response, $subscriber)
+    public function trackMessage($response, $subscriber)
     {
-        $log = new CampaignDeliveryLog();
-        $log->campaign_id = $this->campaign_id;
-        $log->email_message_id = $response['MessageId'];
-        $log->subscriber_id = $subscriber->subscriber_id;
-        $log->status = CampaignDeliveryLog::STATUS_SUCCESS;
+        $log = new TrackingLog();
+        $log->campaign_id = $this->id;
+        $log->message_id = $response['MessageId'];
+        $log->subscriber_id = $subscriber->id;
+        $log->status = TrackingLog::STATUS_SENT;
         $log->save();
     }
 
@@ -194,7 +188,7 @@ class Campaign extends Model
      * Transform Tags
      * Transform tags to actual values before sending
      */
-    public function transformTags($message, $subscriber)
+    public function tagMessage($message, $subscriber)
     {
         $tags = array(
             'FIRST_NAME' => $subscriber->getTagValue('FNAME'),
@@ -280,7 +274,7 @@ class Campaign extends Model
         $message->setReplyTo($this->reply_to);
         //$message->setEncoder(Swift_Encoding::get8bitEncoding());
 
-        //$body = $this->transformTags($this->html, $subscriber);
+        //$body = $this->tagMessage($this->html, $subscriber);
         //$body = $this->appendOpenTrackingUrl($body, $subscriber);
         $message->setBody($this->html, 'text/html');
 

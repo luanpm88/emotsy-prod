@@ -568,7 +568,7 @@ class User extends Authenticatable
     {
         if ($this->maxQuota() == "∞") {
             return "0";
-        } elseif ($this->maxQuota() == "0" || $this->sendingQuota() > $this->maxQuota()) {
+        } elseif ($this->maxQuota() == "0" || $this->sendingQuota() >= $this->maxQuota()) {
             return "100";
         }
 
@@ -582,7 +582,7 @@ class User extends Authenticatable
      */
     public function overQuota()
     {
-        return (int)$this->sendingQuotaUsage() == 100;
+        return $this->sendingQuota() >= $this->maxQuota();
     }
     
     /**
