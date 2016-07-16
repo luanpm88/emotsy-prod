@@ -20,7 +20,7 @@ class CreateTrackingLogsTable extends Migration
             $table->integer('campaign_id')->unsigned(); // deliberate redundant for quick retrieving
             $table->integer('subscriber_id')->unsigned(); // deliberate redundant for quick retrieving
             $table->string('status');
-            $table->string('error');
+            $table->string('error')->nullable();
             
             $table->timestamps();            
         });
