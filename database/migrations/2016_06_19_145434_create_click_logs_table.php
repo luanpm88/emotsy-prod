@@ -14,7 +14,7 @@ class CreateClickLogsTable extends Migration
     {
         Schema::create('click_logs', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('message_id');
+            $table->string('message_id');
             $table->string('url');
             $table->string('ip_address');
             $table->text('user_agent');

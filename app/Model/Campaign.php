@@ -125,7 +125,7 @@ class Campaign extends Model
      */
     public function start()
     {
-        try {
+        //try {
             $this->sending();
             Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
 
@@ -149,15 +149,17 @@ class Campaign extends Model
                 $sent = $server->send($message, array(
                     'from_email' => $this->from_email
                 ));
+
+                $this->trackMessage($sent, $subscriber, $server);
             }
 
             $this->done();
             Log::info("Campaign sent!");
-        } catch (\Exception $e) {
-            $this->pending();
-            Log::error($e->getMessage());
-            Log::error("Campaign `{$this->name}` (ID: {$this->campaign_id}) deferred!");
-        }
+        //} catch (\Exception $e) {
+        //    $this->pending();
+        //    Log::error($e->getMessage());
+        //    Log::error("Campaign `{$this->name}` (ID: {$this->campaign_id}) deferred!");
+        //}
         
         // reset server pools: just in case DeliveryServerAmazonSesWebApi
         // --> setup SNS requires using from_email of the corresponding campaign
@@ -169,13 +171,16 @@ class Campaign extends Model
      * Log Delivery
      * Log delivery message, used for later tracking
      */
-    public function trackMessage($response, $subscriber)
+    public function trackMessage($response, $subscriber, $server)
     {
         $log = new TrackingLog();
         $log->campaign_id = $this->id;
-        $log->message_id = $response['MessageId'];
+        $log->message_id = $response['message_id'];
         $log->subscriber_id = $subscriber->id;
-        $log->status = TrackingLog::STATUS_SENT;
+        $log->sending_server_id = $server->id;
+        $log->status = $response['status'];
+        $log->error = $response['error'];
+        $log->user_id = $this->user->id;
         $log->save();
     }
 

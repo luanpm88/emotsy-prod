@@ -14,7 +14,7 @@ class CreateUnsubscribeLogsTable extends Migration
     {
         Schema::create('unsubscribe_logs', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('message_id');
+            $table->string('message_id');
             $table->string('ip_address');
             $table->text('user_agent');
             

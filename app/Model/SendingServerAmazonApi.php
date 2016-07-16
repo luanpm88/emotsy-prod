@@ -14,11 +14,11 @@ class SendingServerAmazonApi extends SendingServerAmazon
 
     public function send($message, $params = array())
     {
-        if (!$this->_snsInitiated) {
-            $this->setupSns($params);
-        }
-    
         try {
+            if (!$this->_snsInitiated) {
+                $this->setupSns($params);
+            }
+
             $sent = $this->getSesClient()->sendRawEmail(array(
               'RawMessage' => array(
                 'Data' => base64_encode($message->toString())
@@ -27,9 +27,19 @@ class SendingServerAmazonApi extends SendingServerAmazon
 
             Log::info('Sent!');
       
-            return $sent;
+            return array(
+                'message_id' => $sent['MessageId'],
+                'status' => self::DELIVERY_STATUS_SENT,
+                'error' => NULL
+            );
+        
         } catch (\Exception $e) {
-            throw $e;
+            Log::warning('Sending failed');
+            return array(
+                'status' => self::DELIVERY_STATUS_FAILED,
+                'error' => $e->getMessage(),
+                'message_id' => NULL
+            );
         }
     }
 
@@ -73,7 +83,7 @@ class SendingServerAmazonApi extends SendingServerAmazon
                 'ForwardingEnabled' => true
             ));
         } catch (\Exception $e) {
-            Log::info("From Email address {$params['from_email']} not verified by Amazon SES, using domain instead");
+            Log::warning("From Email address {$params['from_email']} not verified by Amazon SES, using domain instead");
         }
         
         // Use domain name as Aws Identity

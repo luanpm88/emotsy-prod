@@ -265,7 +265,7 @@ class DatabaseSeeder extends Seeder
             'id' => 1,
             'sending_server_id' => 1,
             'user_group_id' => 1,
-            'fitness' => 100,
+            'fitness' => 0,
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
@@ -274,7 +274,7 @@ class DatabaseSeeder extends Seeder
             'id' => 2,
             'sending_server_id' => 2,
             'user_group_id' => 1,
-            'fitness' => 50,
+            'fitness' => 100,
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
