@@ -122,7 +122,7 @@ class MailList extends Model
         static::deleted(function($item)
         {
             //  Delete contact when list deleted
-            $item->contact()->delete();
+            $item->contact->delete();
         });
     }
     
