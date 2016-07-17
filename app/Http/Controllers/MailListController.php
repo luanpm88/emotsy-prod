@@ -27,13 +27,6 @@ class MailListController extends Controller
      */
     public function index()
     {
-        $client = new \GuzzleHttp\Client();
-        $res = $client->get('http://local:8000/api/v1/lists', [
-            'api_token' => '',
-            "headers" => ["Accept" => "application/json"]
-        ]);
-        echo $res->getStatusCode(); // 200
-        
         $lists = \Mailixa\Model\MailList::getAll();
         return view('lists.index', [
             'lists' => $lists

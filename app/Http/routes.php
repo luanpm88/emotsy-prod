@@ -24,8 +24,13 @@ Route::group([], function () {
     Route::get('install/finish', 'InstallController@finish');
 });
 
-Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:api'], function () {
+# Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:api'], function () {
+Route::group(['namespace' => 'Api', 'prefix' => 'api/v1'], function () {
+    Route::get('', 'HomeController@index');
+    
     Route::resource('lists', 'MailListController');
+    Route::resource('campaigns', 'CampaignController');
+    Route::resource('subscribers', 'SubscriberController');
 });
 
 Route::auth();
@@ -38,6 +43,8 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('/', "HomeController@index");
     
     // Update current user profile
+    Route::get('account/api/renew', 'AccountController@renewToken');
+    Route::get('account/api', 'AccountController@api');
     Route::get('account/profile', 'AccountController@profile');
     Route::post('account/profile', 'AccountController@profile');
     Route::get('account/contact', 'AccountController@contact');

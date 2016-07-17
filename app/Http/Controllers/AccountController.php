@@ -158,11 +158,36 @@ class AccountController extends Controller
     }
     
     /**
-     * Quo ta logs
+     * Quta logs
      *
      * @return void
      */
     public function quotaLog(Request $request) {
         return view('account.quota_log');
+    }
+    
+    /**
+     * Api token
+     *
+     * @return void
+     */
+    public function api(Request $request) {
+        return view('account.api');
+    }
+    
+    /**
+     * Renew api token
+     *
+     * @return void
+     */
+    public function renewToken(Request $request) {
+        $user = $request->user();
+        
+        $user->api_token = str_random(60);
+        $user->save();
+        
+        // Redirect to my lists page
+        $request->session()->flash('alert-success', trans('messages.user_api.renewed'));
+        return redirect()->action('AccountController@api');
     }
 }

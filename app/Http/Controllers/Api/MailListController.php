@@ -16,10 +16,11 @@ class MailListController extends Controller
      */
     public function index()
     {
-        return \Response::json(\Mailixa\Model\MailList::getAll()
+        $lists = \Mailixa\Model\MailList::getAll()
             ->select("uid", "name", "default_subject", "from_email", "from_name", "status", "created_at", "updated_at")
-            ->get()
-        , 200);
+            ->get();
+        
+        return \Response::json($lists, 200);
     }
 
     /**
@@ -51,17 +52,57 @@ class MailListController extends Controller
      */
     public function show($id)
     {
-        $list = \Mailixa\Model\MailList::
-            select("uid", "name", "default_subject", "from_email", "from_name", "status", "created_at", "updated_at")
-            ->where("uid", "=", $id)
+        $item = \Mailixa\Model\MailList::
+            where("uid", "=", $id)
             ->first();
         
         // check if item exists
-        if (!is_object($list)) {
-            return \Response::json(array("message"=>"Request Ok"), 404);
+        if (!is_object($item)) {
+            return \Response::json(array("message"=>"Item not found"), 404);
         }
         
-        return \Response::json($list, 200);
+        // statistics
+        $list = [
+            'uid' => $item->uid,
+            'name' => $item->name,
+            'default_subject' => $item->default_subject,
+            'from_email' => $item->from_email,
+            'from_name' => $item->from_name,
+            'remind_message' => $item->remind_message,
+            'status' => $item->status,
+            'created_at' => $item->created_at,
+            'updated_at' => $item->updated_at,
+        ];
+        
+        // Contact information
+        $contact = null;
+        if(isset($item->contact)) {
+            // contact information
+            $contact = [
+                'company' => $item->contact->company,
+                'address_1' => $item->contact->address_1,
+                'address_2' => $item->contact->address_2,
+                'country' => $item->contact->country->name,
+                'state' => $item->contact->state,
+                'zip' => $item->contact->zip,
+                'phone' => $item->contact->phone,
+                'url' => $item->contact->url,
+                'email' => $item->contact->email,
+                'city' => $item->contact->city,
+            ];
+        }
+        
+        // statistics
+        $statistics = [
+            'open_uniq_rate' => $item->openUniqRate(),
+            'click_rate' => $item->clickRate(),
+            'subscribe_rate' => $item->subscribeRate(),
+            'unsubscribe_rate' => $item->unsubscribeRate(),
+            'unsubscribe_count' => $item->unsubscribeCount(),
+            'unconfirmed_count' => $item->unconfirmedCount(),
+        ];
+        
+        return \Response::json(['list' => $list, 'contact' => $contact, 'statistics' => $statistics], 200);
     }
 
     /**
