@@ -63,7 +63,6 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             'id' => 1,
             'uid' => uniqid(),
-            'api_token' => str_random(60),
             'contact_id' => 1,
             'user_group_id' => 1,
             'language_id' => 1,
@@ -205,6 +204,24 @@ class DatabaseSeeder extends Seeder
             'updated_at' => $updated_at
         ]);
 
+        DB::table('sending_servers')->insert([
+            'id' => 3,
+            'uid' => uniqid(),
+            'name' => 'Server 3',
+            'user_id' => 1,
+            'type' => 'smtp',
+            'host' => 'email-smtp.us-west-2.amazonaws.com',
+            'smtp_username' => 'AKIAJFKZ6W6BKSV2EZ2Q',
+            'smtp_password' => 'AhIei5ACkhVIC0p2QKRb6T5YzZBmCoOdQFdnyk5QyMQf',
+            'smtp_port' => 25,
+            'smtp_protocol' => 'tls',
+            'quota_value' => 1000,
+            'quota_base' => 5,
+            'quota_unit' => 'minute',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
         DB::table('tracking_logs')->insert([
             'id' => 1,
             'message_id' => 1,
@@ -268,7 +285,7 @@ class DatabaseSeeder extends Seeder
             'id' => 1,
             'sending_server_id' => 1,
             'user_group_id' => 1,
-            'fitness' => 0,
+            'fitness' => 100,
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
@@ -276,6 +293,15 @@ class DatabaseSeeder extends Seeder
         DB::table('user_group_sending_servers')->insert([
             'id' => 2,
             'sending_server_id' => 2,
+            'user_group_id' => 1,
+            'fitness' => 100,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
+        DB::table('user_group_sending_servers')->insert([
+            'id' => 3,
+            'sending_server_id' => 3,
             'user_group_id' => 1,
             'fitness' => 100,
             'created_at' => $created_at,
