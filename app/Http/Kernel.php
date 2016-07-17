@@ -53,5 +53,6 @@ class Kernel extends HttpKernel
         'backend' => \Mailixa\Http\Middleware\Backend::class,
         'installed' => \Mailixa\Http\Middleware\Installed::class,
         'not_installed' => \Mailixa\Http\Middleware\NotInstalled::class,
+        'api_auth' => \Mailixa\Http\Middleware\ApiAuth::class,
     ];
 }

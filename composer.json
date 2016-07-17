@@ -13,7 +13,8 @@
 	"aws/aws-sdk-php": "2.*",
 	"swiftmailer/swiftmailer": "^5.4",
         "barryvdh/laravel-async-queue": "0.4.x",
-        "tijsverkoyen/css-to-inline-styles": "^2.0"
+        "tijsverkoyen/css-to-inline-styles": "^2.0",
+        "guzzlehttp/guzzle": "^6.2"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

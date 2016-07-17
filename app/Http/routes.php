@@ -24,6 +24,10 @@ Route::group([], function () {
     Route::get('install/finish', 'InstallController@finish');
 });
 
+Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:api'], function () {
+    Route::resource('lists', 'MailListController');
+});
+
 Route::auth();
 
 Route::get('/offline', "Controller@offline");

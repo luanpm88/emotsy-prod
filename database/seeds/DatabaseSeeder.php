@@ -63,6 +63,7 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             'id' => 1,
             'uid' => uniqid(),
+            'api_token' => str_random(60),
             'contact_id' => 1,
             'user_group_id' => 1,
             'language_id' => 1,

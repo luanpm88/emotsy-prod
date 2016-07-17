@@ -151,6 +151,9 @@ class User extends Authenticatable
                 $uid = uniqid();
             }
             $item->uid = $uid;
+            
+            // Add api token
+            $item->api_token = str_random(60);
         });
     }
     

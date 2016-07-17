@@ -15,6 +15,7 @@ class CreateUsersTable extends Migration
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uid');
+            $table->string('api_token', 60)->unique();
             $table->integer('user_id')->unsigned()->nullable();
             $table->integer('contact_id')->unsigned()->nullable();
             $table->integer('user_group_id')->unsigned();
