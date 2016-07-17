@@ -141,7 +141,6 @@ class Campaign extends Model
                 
                 $server = $this->pickServer($this);
                 
-                
                 //if ($this->user->overQuota()) {
                 //    throw new \Exception("Customer (ID: {$this->customer->customer_id}) has reached sending quota");
                 //}

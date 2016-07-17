@@ -4,6 +4,7 @@ namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Mailixa\Library\Log;
+use Mailixa\Library\AmazonSmtpTransport;
 
 class SendingServerAmazonSmtp extends SendingServerAmazon
 {
@@ -16,7 +17,7 @@ class SendingServerAmazonSmtp extends SendingServerAmazon
             
             $this->setupSns($params);
 
-            $transport = \Swift_SmtpTransport::newInstance($this->host, (int)$this->smtp_port, $this->smtp_protocol)
+            $transport = AmazonSmtpTransport::newInstance($this->host, (int)$this->smtp_port, $this->smtp_protocol)
               ->setUsername($this->smtp_username)
               ->setPassword($this->smtp_password)
             ;
@@ -34,7 +35,7 @@ class SendingServerAmazonSmtp extends SendingServerAmazon
                 Log::info('Sent!');
       
                 return array(
-                    'message_id' => $sent['MessageId'],
+                    'message_id' => $transport->getMessageId(),
                     'status' => self::DELIVERY_STATUS_SENT,
                     'error' => NULL
                 );
