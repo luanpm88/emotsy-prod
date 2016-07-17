@@ -19,17 +19,18 @@ class CreateSendingServersTable extends Migration
             $table->string('name');
             $table->string('type');
             $table->string('host');
-            $table->string('aws_region');
-            $table->string('username');
-            $table->string('password');
-            $table->integer('port');
-            $table->string('sendmail_path');
-            $table->string('protocol');
-            $table->string('status');
+            $table->string('aws_access_key_id')->nullable();
+            $table->string('aws_secret_access_key')->nullable();
+            $table->string('aws_region')->nullable();
+            $table->string('smtp_username')->nullable();
+            $table->string('smtp_password')->nullable();
+            $table->integer('smtp_port')->nullable();
+            $table->string('smtp_protocol')->nullable();
+            $table->string('sendmail_path')->nullable();
             $table->integer('quota_value');
             $table->integer('quota_base');
             $table->string('quota_unit');
-            $table->integer('custom_order');
+            $table->string('status');
             
             $table->timestamps();
             

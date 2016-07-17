@@ -20,8 +20,8 @@ class SendingServerAmazon extends SendingServer
     {
         if (!self::$snsClient) {
             self::$snsClient = \Aws\Sns\SnsClient::factory(array(
-                'key'    => trim($this->username),
-                'secret' => trim($this->password),
+                'key'    => trim($this->aws_access_key_id),
+                'secret' => trim($this->aws_secret_access_key),
                 'region' => $this->aws_region
             ));
         }
@@ -33,8 +33,8 @@ class SendingServerAmazon extends SendingServer
     {
         if (!self::$sesClient) {
             self::$sesClient = \Aws\Ses\SesClient::factory(array(
-                'key'    => trim($this->username),
-                'secret' => trim($this->password),
+                'key'    => trim($this->aws_access_key_id),
+                'secret' => trim($this->aws_secret_access_key),
                 'region' => $this->aws_region
             ));
         }
