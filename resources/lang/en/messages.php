@@ -715,7 +715,7 @@ return [
     'copy' => 'Copy',
     'list.copied' => 'List was successfully copied',
     'api_token' => 'API token',
-    'api_url' => 'API URL',
+    'api_url' => 'API url',
     'your_api_token' => 'Your API token',
     'user_api.renewed' => 'Your API token was successfully renewed',
     'renew_token' => 'Renew token',

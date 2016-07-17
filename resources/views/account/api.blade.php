@@ -33,7 +33,7 @@
                     {{ action("Api\HomeController@index") }}
                 </code>
                     
-                <br /><br />
+                <br />
 				<h4 class="text-semibold text-teal mt-20">{{ trans('messages.your_api_token') }}</h4>
                     
                 <code style="font-size: 20px;">
