@@ -169,7 +169,7 @@ class DatabaseSeeder extends Seeder
         DB::table('sending_servers')->insert([
             'id' => 1,
             'uid' => uniqid(),
-            'name' => 'Server 1',
+            'name' => 'Server Amazon SMTP',
             'user_id' => 1,
             'type' => 'amazon-smtp',
             'host' => 'email-smtp.us-west-2.amazonaws.com',
@@ -190,7 +190,7 @@ class DatabaseSeeder extends Seeder
         DB::table('sending_servers')->insert([
             'id' => 2,
             'uid' => uniqid(),
-            'name' => 'Server 2',
+            'name' => 'Server Amazon API',
             'user_id' => 1,
             'type' => 'amazon-api',
             'host' => 'email.us-west-2.amazonaws.com',
@@ -207,7 +207,7 @@ class DatabaseSeeder extends Seeder
         DB::table('sending_servers')->insert([
             'id' => 3,
             'uid' => uniqid(),
-            'name' => 'Server 3',
+            'name' => 'Server SMTP',
             'user_id' => 1,
             'type' => 'smtp',
             'host' => 'email-smtp.us-west-2.amazonaws.com',
@@ -215,6 +215,33 @@ class DatabaseSeeder extends Seeder
             'smtp_password' => 'AhIei5ACkhVIC0p2QKRb6T5YzZBmCoOdQFdnyk5QyMQf',
             'smtp_port' => 25,
             'smtp_protocol' => 'tls',
+            'quota_value' => 1000,
+            'quota_base' => 5,
+            'quota_unit' => 'minute',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
+        DB::table('sending_servers')->insert([
+            'id' => 4,
+            'uid' => uniqid(),
+            'name' => 'Server PHP Mail()',
+            'user_id' => 1,
+            'type' => 'php-mail',
+            'quota_value' => 1000,
+            'quota_base' => 5,
+            'quota_unit' => 'minute',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
+        DB::table('sending_servers')->insert([
+            'id' => 5,
+            'uid' => uniqid(),
+            'name' => 'Server Sendmail',
+            'user_id' => 1,
+            'type' => 'sendmail',
+            'sendmail_path' => '/usr/sbin/sendmail',
             'quota_value' => 1000,
             'quota_base' => 5,
             'quota_unit' => 'minute',
@@ -285,7 +312,7 @@ class DatabaseSeeder extends Seeder
             'id' => 1,
             'sending_server_id' => 1,
             'user_group_id' => 1,
-            'fitness' => 100,
+            'fitness' => 0,
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
@@ -294,7 +321,7 @@ class DatabaseSeeder extends Seeder
             'id' => 2,
             'sending_server_id' => 2,
             'user_group_id' => 1,
-            'fitness' => 100,
+            'fitness' => 0,
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
@@ -302,6 +329,24 @@ class DatabaseSeeder extends Seeder
         DB::table('user_group_sending_servers')->insert([
             'id' => 3,
             'sending_server_id' => 3,
+            'user_group_id' => 1,
+            'fitness' => 0,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
+        DB::table('user_group_sending_servers')->insert([
+            'id' => 4,
+            'sending_server_id' => 4,
+            'user_group_id' => 1,
+            'fitness' => 0,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
+        DB::table('user_group_sending_servers')->insert([
+            'id' => 5,
+            'sending_server_id' => 5,
             'user_group_id' => 1,
             'fitness' => 100,
             'created_at' => $created_at,

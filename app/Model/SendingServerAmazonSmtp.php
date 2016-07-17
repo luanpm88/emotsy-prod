@@ -12,6 +12,8 @@ class SendingServerAmazonSmtp extends SendingServerAmazon
     public function send($message, $params = array())
     {
         try {
+            $this->addMtaHeaders($message);
+            
             $this->setupSns($params);
 
             $transport = \Swift_SmtpTransport::newInstance($this->host, (int)$this->smtp_port, $this->smtp_protocol)

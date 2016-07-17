@@ -47,6 +47,11 @@ class SendingServer extends Model
         $message->attachSigner($signer);
         return $message;
     }
+
+    public function addMtaHeaders($message) {
+        $message->getHeaders()->addTextHeader('X-Mailspeed-Sending-Server-Id', $this->uid);
+        return $message;
+    }
   
     public static function pickServer($campaign)
     {

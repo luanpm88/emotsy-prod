@@ -31,6 +31,7 @@ class CreateSendingServersTable extends Migration
             $table->integer('quota_base');
             $table->string('quota_unit');
             $table->string('status');
+            $table->integer('custom_order');
             
             $table->timestamps();
             

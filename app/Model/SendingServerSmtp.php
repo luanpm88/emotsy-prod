@@ -12,6 +12,8 @@ class SendingServerSmtp extends SendingServer
     public function send($message, $params = array())
     {
         try {
+            $this->addMtaHeaders($message);
+            
             $transport = \Swift_SmtpTransport::newInstance($this->host, (int)$this->smtp_port, $this->smtp_protocol)
               ->setUsername($this->smtp_username)
               ->setPassword($this->smtp_password)
