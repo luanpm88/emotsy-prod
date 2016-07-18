@@ -5,7 +5,9 @@ namespace Mailixa\Console\Commands;
 use Illuminate\Console\Command;
 use Mailixa\Model\Campaign;
 use Mailixa\Model\User;
+use Mailixa\Model\SendingServer;
 use Mailixa\Library\Log;
+use DB;
 
 class SendCampaign extends Command
 {
@@ -40,7 +42,14 @@ class SendCampaign extends Command
      */
     public function handle()
     {
-        $u = User::first();
-        $u->overQuota();
+        //$u = User::first();
+        //$u->overQuota(); 
+        DB::enableQueryLog();
+
+        $s = SendingServer::find(3);
+        echo $s->sendingQuota();
+
+        dd(DB::getQueryLog());
+
     }
 }

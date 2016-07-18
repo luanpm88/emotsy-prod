@@ -295,6 +295,7 @@ class SendingServer extends Model
      */
     public function sendingQuota()
     {
+        /*
         $time_value = $this->quota_base;
         $time_unit = $this->quota_unit;
         $timezone = $this->user->timezone;
@@ -324,6 +325,11 @@ class SendingServer extends Model
         
         $count = $query->count();
         return $count;
+        */
+
+        $query = \Mailixa\Model\TrackingLog::where('sending_server_id', $this->id)->whereRaw("created_at >= NOW() - INTERVAL {$this->quota_base} {$this->quota_unit}");
+
+        return $query->count();
     }
     
     /**
