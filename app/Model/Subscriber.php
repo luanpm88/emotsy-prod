@@ -149,7 +149,9 @@ class Subscriber extends Model
         
         $query = Subscriber::filter($query, $request);
         
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        if (isset($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
         
         return $query;
     }

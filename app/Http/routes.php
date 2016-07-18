@@ -29,8 +29,12 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1'], function () {
     Route::get('', 'HomeController@index');
     
     Route::resource('lists', 'MailListController');
-    Route::resource('campaigns', 'CampaignController');
-    Route::resource('subscribers', 'SubscriberController');
+    Route::resource('campaigns', 'CampaignController');    
+    Route::get('lists/{list_uid}/subscribers', 'SubscriberController@index');
+    Route::get('lists/{list_uid}/subscribers/{uid}', 'SubscriberController@show');
+    Route::get('lists/{list_uid}/subscribers/{uid}/subscribe', 'SubscriberController@subscribe');
+    Route::get('lists/{list_uid}/subscribers/{uid}/unsubscribe', 'SubscriberController@unsubscribe');
+    # Route::get('lists/{list_uid}/subscribers/{uid}/delete', 'SubscriberController@delete');
 });
 
 Route::auth();

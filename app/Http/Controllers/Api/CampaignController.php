@@ -10,7 +10,9 @@ use Mailixa\Http\Controllers\Controller;
 class CampaignController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display all user's campaigns.
+     *
+     * GET /api/v1/campaigns
      *
      * @return \Illuminate\Http\Response
      */
@@ -24,30 +26,11 @@ class CampaignController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
+     * Display the specified campaign information.
      *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * GET /api/v1/campaigns/{id}
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
+     * @param  int  $id     Campaign's id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -106,39 +89,5 @@ class CampaignController extends Controller
         var_dump($item->getTopOpenSubscribers()->get());
         
         return \Response::json(['campaign' => $campaign, 'statistics' => $statistics], 200);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }

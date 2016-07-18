@@ -10,7 +10,9 @@ use Mailixa\Http\Controllers\Controller;
 class MailListController extends Controller
 {
     /**
-     * Display a listing of the resource.
+     * Display all user's lists.
+     *
+     * GET /api/v1/lists
      *
      * @return \Illuminate\Http\Response
      */
@@ -22,32 +24,13 @@ class MailListController extends Controller
         
         return \Response::json($lists, 200);
     }
-
+    
     /**
-     * Show the form for creating a new resource.
+     * Display the specified list information.
      *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
+     * GET /api/v1/lists/{id}
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
-    {
-        //
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
+     * @param  int  $id     List's id
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -61,7 +44,7 @@ class MailListController extends Controller
             return \Response::json(array("message"=>"Item not found"), 404);
         }
         
-        // statistics
+        // list info
         $list = [
             'uid' => $item->uid,
             'name' => $item->name,
@@ -103,39 +86,5 @@ class MailListController extends Controller
         ];
         
         return \Response::json(['list' => $list, 'contact' => $contact, 'statistics' => $statistics], 200);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
     }
 }
