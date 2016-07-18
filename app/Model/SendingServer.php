@@ -343,6 +343,20 @@ class SendingServer extends Model
     }
     
     /**
+     * Get user's sending quota rate.
+     *
+     * @return string
+     */
+    public function displaySendingQuotaUsage()
+    {
+        if ($this->maxQuota() == "∞") {
+            return trans('messages.unlimited');
+        }
+        
+        return $this->sendingQuotaUsage() . "%";
+    }
+    
+    /**
      * Get rules.
      *
      * @return string

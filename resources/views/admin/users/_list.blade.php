@@ -19,9 +19,9 @@
 										</td>
 										<td class="stat-fix-size">
 											<div class="single-stat-box pull-left ml-20">
-												<span class="no-margin text-teal-800 stat-num">{{ $item->displaySubscribersUsage() }}</span>
+												<span class="no-margin text-teal-800 stat-num">{{ $item->displaySendingQuotaUsage() }}</span>
 												<div class="progress progress-xxs">
-													<div class="progress-bar progress-bar-info" style="width: {{ $item->subscribersUsage() }}%">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->sendingQuotaUsage() }}%">
 													</div>
 												</div>
 												<span class="text-muted"><strong>{{ $item->sendingQuota() }}/{{ $item->maxQuota() }}</strong> {{ trans('messages.sending_quota') }}</span>
