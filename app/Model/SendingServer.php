@@ -23,17 +23,6 @@ class SendingServer extends Model
 
     public static $serverPools = array();
 
-    public function logMessage($message, $params)
-    {
-        $log = new TrackingLog();
-        $log->sending_server_id = (int)$this->id;
-        $log->user_id = $params['user_id'];
-        $log->message_id = $params['message_id'];
-        $log->status = TrackingLog::STATUS_SENT;
-        $log->error = $params['error'];
-        $log->save();
-    }
-
     public static function resetServerPools() {
         self::$serverPools = array();
     }
@@ -59,17 +48,8 @@ class SendingServer extends Model
         return $message;
     }
 
-    public function addCustomHeaders($message)
-    {
-        $additional_headers = unserialize($this->meta_data)["additional_headers"];
-        if (!empty($additional_headers)) {
-            foreach ($additional_headers as $header => $value) {
-                $message->getHeaders()->addTextHeader($header, $value);
-            }
-        }
-
-        $message->getHeaders()->addTextHeader('X-Ems-Delivery-Server-Uid', $this->server_id); // @TODO UID, not ID
-
+    public function addMtaHeaders($message) {
+        $message->getHeaders()->addTextHeader('X-Mailspeed-Sending-Server-Id', $this->uid);
         return $message;
     }
   

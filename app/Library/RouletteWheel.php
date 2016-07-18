@@ -31,7 +31,7 @@ class RouletteWheel
 
         // just in case
         if ($r == $sum) { // in other words, r == 0
-          return array_keys($a)[0];
+            return array_keys($a)[0];
         }
       
         foreach ($a as $key => $percentage) {
