@@ -5,7 +5,6 @@
 								@foreach ($items as $key => $item)
 									<tr>
 										<td width="1%">
-										{{ $item->sendingQuotaUsage()  }}
 											<div class="text-nowrap">
 												<div class="checkbox inline">
 													<label>
