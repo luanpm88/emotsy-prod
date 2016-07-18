@@ -37,7 +37,7 @@
 												</div>
 											@endif
 											<div class="single-stat-box pull-left ml-20">
-												<span class="no-margin stat-num kq_search"></span>
+												<span class="no-margin stat-num kq_search">{{ $item->displayQuota() }}</span>
 												<br />
 												<span class="text-muted">{{ trans('messages.quota') }}</span>
 											</div>

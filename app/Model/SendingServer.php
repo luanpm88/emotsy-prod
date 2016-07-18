@@ -214,7 +214,7 @@ class SendingServer extends Model
     public static function types()
     {
         return [
-            "aws-ses-api" => [
+            "amazon-api" => [
                 "cols" => [
                     'name' => 'required',
                     'host' => 'required',
@@ -224,7 +224,7 @@ class SendingServer extends Model
                     'protocol' => 'required',
                 ],
             ],
-            "aws-ses-smtp" => [
+            "amazon-smtp" => [
                 "cols" => [
                     'name' => 'required',
                     'host' => 'required',
@@ -355,5 +355,15 @@ class SendingServer extends Model
         $rules["quota_unit"] = 'required';
         
         return $rules;
+    }
+    
+    /**
+     * Quota display.
+     *
+     * @return string
+     */
+    public function displayQuota()
+    {
+        return $this->quota_value. "/" . $this->quota_base . " " . trans("messages." . \Mailixa\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
     }
 }
