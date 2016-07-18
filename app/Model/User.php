@@ -579,13 +579,13 @@ class User extends Authenticatable
     }
 
     /**
-     * Get user's sending quota rate.
+     * Check if user has used up all quota allocated
      *
      * @return string
      */
     public function overQuota()
     {
-        return $this->sendingQuota() >= $this->maxQuota();
+        return (int)$this->sendingQuotaUsage() >= 100;
     }
     
     /**

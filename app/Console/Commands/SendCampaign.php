@@ -4,6 +4,7 @@ namespace Mailixa\Console\Commands;
 
 use Illuminate\Console\Command;
 use Mailixa\Model\Campaign;
+use Mailixa\Model\User;
 use Mailixa\Library\Log;
 
 class SendCampaign extends Command
@@ -39,18 +40,7 @@ class SendCampaign extends Command
      */
     public function handle()
     {
-        // configure the logger
-        Log::configure(storage_path() . '/logs/mail.log');
-        
-        // get campaigns to run
-        $campaigns = Campaign::getPendingCampaigns();
-        Log::info(sizeof($campaigns) . " pending campaign(s) found");
-
-        $i = 0;
-        foreach ($campaigns as $campaign) {
-            $i += 1;
-            Log::info("Start sending campaign {$i}/" . sizeof($campaigns));
-            $campaign->start();
-        }
+        $u = User::first();
+        $u->overQuota();
     }
 }
