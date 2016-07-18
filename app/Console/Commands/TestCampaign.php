@@ -59,8 +59,9 @@ class TestCampaign extends Command
 
         $c = Campaign::first();
         $c->status = 'pending';
-        $c->start();
         $c->save();
+        $c->start();
+        
 
         //var_dump(SendingServer::pickServer($c));
     }

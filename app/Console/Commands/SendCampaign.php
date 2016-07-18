@@ -49,6 +49,8 @@ class SendCampaign extends Command
         $s = SendingServer::find(3);
         echo $s->sendingQuota();
 
+        var_dump(Campaign::getPendingCampaigns());
+
         dd(DB::getQueryLog());
 
     }
