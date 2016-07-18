@@ -341,4 +341,19 @@ class SendingServer extends Model
 
         return round((($this->sendingQuota()/$this->maxQuota())*100), 2);
     }
+    
+    /**
+     * Get rules.
+     *
+     * @return string
+     */
+    public static function rules($type)
+    {
+        $rules = SendingServer::types()[$type]["cols"];
+        $rules["quota_value"] = 'required|numeric';
+        $rules["quota_base"] = 'required|numeric';
+        $rules["quota_unit"] = 'required';
+        
+        return $rules;
+    }
 }
