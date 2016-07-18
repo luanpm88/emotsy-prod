@@ -7,6 +7,10 @@ use Illuminate\Http\Request;
 use Mailixa\Http\Requests;
 use Mailixa\Http\Controllers\Controller;
 
+/**
+* /api/v1/campaigns - API controller for managing campaigns.
+* 
+*/
 class CampaignController extends Controller
 {
     /**

@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 use Mailixa\Http\Requests;
 use Mailixa\Http\Controllers\Controller;
 
+/**
+* /api/v1/lists/{list_id}/subscribers - API controller for managing list's subscribers.
+* 
+*/
+
 class SubscriberController extends Controller
 {
     /**

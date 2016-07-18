@@ -719,7 +719,7 @@ return [
     'your_api_token' => 'Your API token',
     'user_api.renewed' => 'Your API token was successfully renewed',
     'renew_token' => 'Renew token',
-    '' => '',
+    'api_docs' => 'API docs',
     '' => '',
     '' => '',
     '' => '',

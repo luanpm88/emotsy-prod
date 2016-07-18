@@ -95,6 +95,9 @@
 	<h1>Class SubscriberController</h1>
 
 
+	<div class="description">
+	<p>/api/v1/lists/{list_id}/subscribers - API controller for managing list's subscribers.</p>
+	</div>
 
 	<dl class="tree">
 		<dd style="padding-left:0px">
@@ -123,7 +126,7 @@ Mailixa\Http\Controllers\Controller
 		<b>Namespace:</b> <a href="namespace-Mailixa.html">Mailixa</a>\<a href="namespace-Mailixa.Http.html">Http</a>\<a href="namespace-Mailixa.Http.Controllers.html">Controllers</a>\<a href="namespace-Mailixa.Http.Controllers.Api.html">Api</a><br>
 		
 
-			<b>Located at</b> <a href="source-class-Mailixa.Http.Controllers.Api.SubscriberController.html#10-170" title="Go to source code">SubscriberController.php</a>
+			<b>Located at</b> <a href="source-class-Mailixa.Http.Controllers.Api.SubscriberController.html#11-185" title="Go to source code">SubscriberController.php</a>
 		<br>
 	</div>
 
@@ -143,7 +146,7 @@ Mailixa\Http\Controllers\Controller
 
 		<td class="name"><div>
 		<a class="anchor" href="#_index">#</a>
-		<code><a href="source-class-Mailixa.Http.Controllers.Api.SubscriberController.html#12-52" title="Go to source code">index</a>( <span>Illuminate\Http\Request <var>$request</var></span>, <span>string <var>$list_id</var></span> )</code>
+		<code><a href="source-class-Mailixa.Http.Controllers.Api.SubscriberController.html#17-59" title="Go to source code">index</a>( <span>Illuminate\Http\Request <var>$request</var></span>, <span>string <var>$list_id</var></span> )</code>
 
 		<div class="description short">
 			<p>Display all list's subscribers.</p>
@@ -151,6 +154,8 @@ Mailixa\Http\Controllers\Controller
 
 		<div class="description detailed hidden">
 			<p>Display all list's subscribers.</p>
+
+<p>GET /api/v1/lists/{list_id}/subscribers</p>
 
 
 				<h4>Parameters</h4>
@@ -184,7 +189,7 @@ Mailixa\Http\Controllers\Controller
 
 		<td class="name"><div>
 		<a class="anchor" href="#_show">#</a>
-		<code><a href="source-class-Mailixa.Http.Controllers.Api.SubscriberController.html#54-86" title="Go to source code">show</a>( <span>string <var>$list_id</var></span>, <span>string <var>$id</var></span> )</code>
+		<code><a href="source-class-Mailixa.Http.Controllers.Api.SubscriberController.html#61-95" title="Go to source code">show</a>( <span>string <var>$list_id</var></span>, <span>string <var>$id</var></span> )</code>
 
 		<div class="description short">
 			<p>Display the specified subscriber information.</p>
@@ -192,6 +197,8 @@ Mailixa\Http\Controllers\Controller
 
 		<div class="description detailed hidden">
 			<p>Display the specified subscriber information.</p>
+
+<p>GET /api/v1/lists/{list_id}/subscribers/{id}</p>
 
 
 				<h4>Parameters</h4>
@@ -225,7 +232,7 @@ Mailixa\Http\Controllers\Controller
 
 		<td class="name"><div>
 		<a class="anchor" href="#_subscribe">#</a>
-		<code><a href="source-class-Mailixa.Http.Controllers.Api.SubscriberController.html#88-114" title="Go to source code">subscribe</a>( <span>string <var>$list_id</var></span>, <span>string <var>$id</var></span> )</code>
+		<code><a href="source-class-Mailixa.Http.Controllers.Api.SubscriberController.html#97-125" title="Go to source code">subscribe</a>( <span>string <var>$list_id</var></span>, <span>string <var>$id</var></span> )</code>
 
 		<div class="description short">
 			<p>Subscribe a subscriber.</p>
@@ -233,6 +240,8 @@ Mailixa\Http\Controllers\Controller
 
 		<div class="description detailed hidden">
 			<p>Subscribe a subscriber.</p>
+
+<p>GET /api/v1/lists/{list_id}/subscribers/{id}/subscribe</p>
 
 
 				<h4>Parameters</h4>
@@ -266,7 +275,7 @@ Mailixa\Http\Controllers\Controller
 
 		<td class="name"><div>
 		<a class="anchor" href="#_unsubscribe">#</a>
-		<code><a href="source-class-Mailixa.Http.Controllers.Api.SubscriberController.html#116-142" title="Go to source code">unsubscribe</a>( <span>string <var>$list_id</var></span>, <span>string <var>$id</var></span> )</code>
+		<code><a href="source-class-Mailixa.Http.Controllers.Api.SubscriberController.html#127-155" title="Go to source code">unsubscribe</a>( <span>string <var>$list_id</var></span>, <span>string <var>$id</var></span> )</code>
 
 		<div class="description short">
 			<p>Unsubscribe a subscriber.</p>
@@ -274,6 +283,8 @@ Mailixa\Http\Controllers\Controller
 
 		<div class="description detailed hidden">
 			<p>Unsubscribe a subscriber.</p>
+
+<p>GET /api/v1/lists/{list_id}/subscribers/{id}/unsubscribe</p>
 
 
 				<h4>Parameters</h4>
@@ -307,7 +318,7 @@ Mailixa\Http\Controllers\Controller
 
 		<td class="name"><div>
 		<a class="anchor" href="#_delete">#</a>
-		<code><a href="source-class-Mailixa.Http.Controllers.Api.SubscriberController.html#144-169" title="Go to source code">delete</a>( <span>string <var>$list_id</var></span>, <span>string <var>$id</var></span> )</code>
+		<code><a href="source-class-Mailixa.Http.Controllers.Api.SubscriberController.html#157-184" title="Go to source code">delete</a>( <span>string <var>$list_id</var></span>, <span>string <var>$id</var></span> )</code>
 
 		<div class="description short">
 			<p>Delete a subscriber.</p>
@@ -315,6 +326,8 @@ Mailixa\Http\Controllers\Controller
 
 		<div class="description detailed hidden">
 			<p>Delete a subscriber.</p>
+
+<p>GET /api/v1/lists/{list_id}/subscribers/{id}/delete</p>
 
 
 				<h4>Parameters</h4>

@@ -5,6 +5,7 @@
 								@foreach ($items as $key => $item)
 									<tr>
 										<td width="1%">
+										{{ $item->sendingQuotaUsage()  }}
 											<div class="text-nowrap">
 												<div class="checkbox inline">
 													<label>
@@ -37,7 +38,7 @@
 												</div>
 											@endif
 											<div class="single-stat-box pull-left ml-20">
-												<span class="no-margin stat-num kq_search">{{ $item->displayQuota() }}</span>
+												<span class="no-margin stat-num kq_search"></span>
 												<br />
 												<span class="text-muted">{{ trans('messages.quota') }}</span>
 											</div>

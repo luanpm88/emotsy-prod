@@ -30,7 +30,7 @@
                 <h4 class="text-semibold text-teal">{{ trans('messages.api_url') }}</h4>
                     
                 <code style="font-size: 20px;">
-                    {{ action("Api\HomeController@index") }}
+                    {{ action("Api\HomeController@index") }}/
                 </code>
                     
                 <br />
@@ -38,6 +38,13 @@
                     
                 <code style="font-size: 20px;">
                     {{ Auth::user()->api_token }}
+                </code>
+				
+				<br />	
+				<h4 class="text-semibold text-teal">{{ trans('messages.api_docs') }}</h4>
+                    
+                <code style="font-size: 20px;">
+                    {{ action("Api\HomeController@index") }}/doc/
                 </code>
                 
                 <br /><br />

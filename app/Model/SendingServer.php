@@ -95,6 +95,16 @@ class SendingServer extends Model
     }
     
     /**
+     * Associations.
+     *
+     * @var object | collect
+     */ 
+    public function user()
+    {
+        return $this->belongsTo('Mailixa\Model\User');
+    }
+    
+    /**
      * Filter items.
      *
      * @return collect
@@ -261,5 +271,74 @@ class SendingServer extends Model
             return ['value' => $item->uid, 'text' => $item->name];
         });
         return $options;
+    }
+    
+    /**
+     * Get sending server's quota.
+     *
+     * @return string
+     */
+    public function maxQuota()
+    {
+        $quota = $this->quota_value;
+        if ($quota == "-1") {
+            return "∞";
+        } else {
+            return $quota;
+        }
+    }
+    
+    /**
+     * Get sending server's sending quota.
+     *
+     * @return string
+     */
+    public function sendingQuota()
+    {
+        $time_value = $this->quota_base;
+        $time_unit = $this->quota_unit;
+        $timezone = $this->user->timezone;
+        
+        if ($time_value == "-1") {
+            $begin = null;
+        } else {
+            if ($time_unit == 'year') {
+                $begin = \Carbon\Carbon::now()->timezone($timezone)->subYear($time_value)->startOfYear();
+            } elseif ($time_unit == 'month') {
+                $begin = \Carbon\Carbon::now()->timezone($timezone)->subMonth($time_value)->startOfMonth();
+            } elseif ($time_unit == 'week') {
+                $begin = \Carbon\Carbon::now()->timezone($timezone)->subWeek($time_value)->startOfWeek();
+            } elseif ($time_unit == 'day') {
+                $begin = \Carbon\Carbon::now()->timezone($timezone)->subDay($time_value)->startOfDay();
+            } elseif ($time_unit == 'hour') {
+                $begin = \Carbon\Carbon::now()->timezone($timezone)->subHour($time_value);
+            } elseif ($time_unit == 'minute') {
+                $begin = \Carbon\Carbon::now()->timezone($timezone)->subMinute($time_value);
+            }
+        }
+        
+        $query = \Mailixa\Model\TrackingLog::leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
+        if (isset($begin)) {
+            $query = $query->where("tracking_logs.created_at", ">=", $begin);
+        }
+        
+        $count = $query->count();
+        return $count;
+    }
+    
+    /**
+     * Get sending server's sending quota rate.
+     *
+     * @return string
+     */
+    public function sendingQuotaUsage()
+    {
+        if ($this->maxQuota() == "∞") {
+            return "0";
+        } elseif ($this->maxQuota() == "0" || $this->sendingQuota() >= $this->maxQuota()) {
+            return "100";
+        }
+
+        return round((($this->sendingQuota()/$this->maxQuota())*100), 2);
     }
 }
