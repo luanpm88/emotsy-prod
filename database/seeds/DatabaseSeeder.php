@@ -70,7 +70,8 @@ class DatabaseSeeder extends Seeder
             'last_name' => 'Pham',
             'email' => 'luanpm88@gmail.com',
             'password' => bcrypt('123456'),
-            'status' => 'active',            
+            'status' => 'active',
+            'timezone' => 'Asia/Ho_Chi_Minh',
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
