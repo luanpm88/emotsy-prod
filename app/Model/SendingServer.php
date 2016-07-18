@@ -203,7 +203,8 @@ class SendingServer extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'password', 'sendmail_path', 'protocol', 'quota_value', 'quota_base', 'quota_unit'
+        'name', 'host', 'aws_access_key_id', 'aws_secret_access_key', 'aws_region', 'smtp_username',
+        'smtp_password', 'smtp_port', 'smtp_protocol', 'quota_value', 'quota_base', 'quota_unit'
     ];
     
     /**
@@ -214,41 +215,42 @@ class SendingServer extends Model
     public static function types()
     {
         return [
-            "amazon-api" => [
-                "cols" => [
-                    'name' => 'required',
-                    'host' => 'required',
-                    'port' => 'required',
-                    'username' => 'required',
-                    'password' => 'required',
-                    'protocol' => 'required',
-                ],
-            ],
             "amazon-smtp" => [
                 "cols" => [
                     'name' => 'required',
                     'host' => 'required',
-                    'port' => 'required',
-                    'username' => 'required',
-                    'password' => 'required',
-                    'protocol' => 'required',
+                    'aws_access_key_id' => 'required',
+                    'aws_secret_access_key' => 'required',
+                    'aws_region' => 'required',
+                    'smtp_username' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_port' => 'required',
+                    'smtp_protocol' => 'required',
+                ],
+            ],
+            "amazon-api" => [
+                "cols" => [
+                    'name' => 'required',
+                    'host' => 'required',
+                    'aws_access_key_id' => 'required',
+                    'aws_secret_access_key' => 'required',
+                    'aws_region' => 'required',
                 ],
             ],
             "smtp" => [
                 "cols" => [
                     'name' => 'required',
                     'host' => 'required',
-                    'port' => 'required',
-                    'username' => 'required',
-                    'password' => 'required',
-                    'protocol' => 'required',
+                    'smtp_username' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_port' => 'required',
+                    'smtp_protocol' => 'required',
                 ],
             ],
             "sendmail" => [
                 "cols" => [
                     'name' => 'required',
                     'sendmail_path' => 'required',
-                    'protocol' => 'required',
                 ],
             ],
             "php-mail" => [
@@ -294,8 +296,7 @@ class SendingServer extends Model
      * @return string
      */
     public function sendingQuota()
-    {
-        /*
+    {        
         $time_value = $this->quota_base;
         $time_unit = $this->quota_unit;
         
@@ -303,13 +304,13 @@ class SendingServer extends Model
             $begin = null;
         } else {
             if ($time_unit == 'year') {
-                $begin = \Carbon\Carbon::now()->subYear($time_value)->startOfYear();
+                $begin = \Carbon\Carbon::now()->subYear($time_value-1)->startOfYear();
             } elseif ($time_unit == 'month') {
-                $begin = \Carbon\Carbon::now()->subMonth($time_value)->startOfMonth();
+                $begin = \Carbon\Carbon::now()->subMonth($time_value-1)->startOfMonth();
             } elseif ($time_unit == 'week') {
-                $begin = \Carbon\Carbon::now()->subWeek($time_value)->startOfWeek();
+                $begin = \Carbon\Carbon::now()->subWeek($time_value-1)->startOfWeek();
             } elseif ($time_unit == 'day') {
-                $begin = \Carbon\Carbon::now()->subDay($time_value)->startOfDay();
+                $begin = \Carbon\Carbon::now()->subDay($time_value-1)->startOfDay();
             } elseif ($time_unit == 'hour') {
                 $begin = \Carbon\Carbon::now()->subHour($time_value);
             } elseif ($time_unit == 'minute') {
@@ -324,11 +325,11 @@ class SendingServer extends Model
         
         $count = $query->count();
         return $count;
-        */
+        
 
-        $query = \Mailixa\Model\TrackingLog::where('sending_server_id', $this->id)->whereRaw("created_at >= NOW() - INTERVAL {$this->quota_base} {$this->quota_unit}");
-
-        return $query->count();
+        //$query = \Mailixa\Model\TrackingLog::where('sending_server_id', $this->id)->whereRaw("created_at >= NOW() - INTERVAL {$this->quota_base} {$this->quota_unit}");
+        //
+        //return $query->count();
     }
     
     /**
@@ -383,6 +384,6 @@ class SendingServer extends Model
      */
     public function displayQuota()
     {
-        return $this->quota_value. "/" . $this->quota_base . " " . trans("messages." . \Mailixa\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
+        return $this->quota_value. " / " . $this->quota_base . " " . trans("messages." . \Mailixa\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
     }
 }

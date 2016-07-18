@@ -347,8 +347,8 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
         
-        $delivery_date = isset($campaign->delivery_at) && $campaign->delivery_at != '0000-00-00 00:00:00' ? \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->delivery_at))->format("Y-m-d") : \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::now())->format("Y-m-d");
-        $delivery_time = isset($campaign->delivery_at) && $campaign->delivery_at != '0000-00-00 00:00:00' ? \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->delivery_at))->format("H:i") : \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::now())->format("H:i");
+        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->run_at))->format("Y-m-d") : \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::now())->format("Y-m-d");
+        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->run_at))->format("H:i") : \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::now())->format("H:i");
         
         $rules = array(
             'delivery_date' => 'required',
@@ -367,7 +367,7 @@ class CampaignController extends Controller
             // $this->validate($request, $rules);
             
             // Save campaign
-            $campaign->delivery_at = \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date . ' ' . $request->delivery_time))->toDateTimeString();
+            $campaign->run_at = \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date . ' ' . $request->delivery_time))->toDateTimeString();
             $campaign->save();
             
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);

@@ -532,23 +532,22 @@ class User extends Authenticatable
     {
         $time_value = $this->getOption("frontend", "sending_quota_time");
         $time_unit = $this->getOption("frontend", "sending_quota_time_unit");
-        $timezone = $this->timezone;
         
         if ($time_value == "-1") {
             $begin = null;
         } else {
             if ($time_unit == 'year') {
-                $begin = \Carbon\Carbon::now()->timezone($timezone)->subYear($time_value)->startOfYear();
+                $begin = \Carbon\Carbon::now()->subYear($time_value-1)->startOfYear();
             } elseif ($time_unit == 'month') {
-                $begin = \Carbon\Carbon::now()->timezone($timezone)->subMonth($time_value)->startOfMonth();
+                $begin = \Carbon\Carbon::now()->subMonth($time_value-1)->startOfMonth();
             } elseif ($time_unit == 'week') {
-                $begin = \Carbon\Carbon::now()->timezone($timezone)->subWeek($time_value)->startOfWeek();
+                $begin = \Carbon\Carbon::now()->subWeek($time_value-1)->startOfWeek();
             } elseif ($time_unit == 'day') {
-                $begin = \Carbon\Carbon::now()->timezone($timezone)->subDay($time_value)->startOfDay();
+                $begin = \Carbon\Carbon::now()->subDay($time_value-1)->startOfDay();
             } elseif ($time_unit == 'hour') {
-                $begin = \Carbon\Carbon::now()->timezone($timezone)->subHour($time_value);
+                $begin = \Carbon\Carbon::now()->subHour($time_value);
             } elseif ($time_unit == 'minute') {
-                $begin = \Carbon\Carbon::now()->timezone($timezone)->subMinute($time_value);
+                $begin = \Carbon\Carbon::now()->subMinute($time_value);
             }
         }
         

@@ -16,7 +16,7 @@ class Installed
     public function handle($request, Closure $next)
     {
         if ($this->alreadyInstalled()) {
-            return redirect()->action('Admin\HomeController@index');
+            return redirect()->action('HomeController@index');
         }
         
         return $next($request);

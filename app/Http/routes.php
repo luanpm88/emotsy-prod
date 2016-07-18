@@ -11,7 +11,7 @@
 |
 */
 
-Route::group([], function () {
+Route::group(['middleware' => ['installed']], function () {
     // Installation
     Route::get('install', 'InstallController@starting');
     Route::get('install/site-info', 'InstallController@siteInfo');

@@ -25,49 +25,85 @@
 								])
 							</div>
 						@endif
-						@if (array_key_exists("port", Mailixa\Model\SendingServer::types()[request()->type]["cols"]))
+						@if (array_key_exists("aws_access_key_id", Mailixa\Model\SendingServer::types()[request()->type]["cols"]))
 							<div class="col-sm-6 col-md-4">
 								@include('helpers.form_control', [
 									'type' => 'text',
 									'class' => '',
-									'name' => 'port',
-									'value' => $server->port,
+									'name' => 'aws_access_key_id',
+									'value' => $server->aws_access_key_id,
 									'help_class' => 'sending_server',
 									'rules' => Mailixa\Model\SendingServer::rules(request()->type)
 								])
 							</div>
 						@endif
-						@if (array_key_exists("username", Mailixa\Model\SendingServer::types()[request()->type]["cols"]))
+						@if (array_key_exists("aws_secret_access_key", Mailixa\Model\SendingServer::types()[request()->type]["cols"]))
 							<div class="col-sm-6 col-md-4">
 								@include('helpers.form_control', [
 									'type' => 'text',
 									'class' => '',
-									'name' => 'username',
-									'value' => $server->username,
+									'name' => 'aws_secret_access_key',
+									'value' => $server->aws_secret_access_key,
 									'help_class' => 'sending_server',
 									'rules' => Mailixa\Model\SendingServer::rules(request()->type)
 								])
 							</div>
 						@endif
-						@if (array_key_exists("password", Mailixa\Model\SendingServer::types()[request()->type]["cols"]))
+						@if (array_key_exists("aws_region", Mailixa\Model\SendingServer::types()[request()->type]["cols"]))
 							<div class="col-sm-6 col-md-4">
 								@include('helpers.form_control', [
 									'type' => 'text',
 									'class' => '',
-									'name' => 'password',
-									'value' => $server->password,
+									'name' => 'aws_region',
+									'value' => $server->aws_region,
 									'help_class' => 'sending_server',
 									'rules' => Mailixa\Model\SendingServer::rules(request()->type)
 								])
 							</div>
 						@endif
-						@if (array_key_exists("protocol", Mailixa\Model\SendingServer::types()[request()->type]["cols"]))
+						@if (array_key_exists("smtp_username", Mailixa\Model\SendingServer::types()[request()->type]["cols"]))
 							<div class="col-sm-6 col-md-4">
 								@include('helpers.form_control', [
 									'type' => 'text',
 									'class' => '',
-									'name' => 'protocol',
-									'value' => $server->protocol,
+									'name' => 'smtp_username',
+									'value' => $server->smtp_username,
+									'help_class' => 'sending_server',
+									'rules' => Mailixa\Model\SendingServer::rules(request()->type)
+								])
+							</div>
+						@endif
+						@if (array_key_exists("smtp_password", Mailixa\Model\SendingServer::types()[request()->type]["cols"]))
+							<div class="col-sm-6 col-md-4">
+								@include('helpers.form_control', [
+									'type' => 'text',
+									'class' => '',
+									'name' => 'smtp_password',
+									'value' => $server->smtp_password,
+									'help_class' => 'sending_server',
+									'rules' => Mailixa\Model\SendingServer::rules(request()->type)
+								])
+							</div>
+						@endif
+						@if (array_key_exists("smtp_port", Mailixa\Model\SendingServer::types()[request()->type]["cols"]))
+							<div class="col-sm-6 col-md-4">
+								@include('helpers.form_control', [
+									'type' => 'text',
+									'class' => '',
+									'name' => 'smtp_port',
+									'value' => $server->smtp_port,
+									'help_class' => 'sending_server',
+									'rules' => Mailixa\Model\SendingServer::rules(request()->type)
+								])
+							</div>
+						@endif
+						@if (array_key_exists("smtp_protocol", Mailixa\Model\SendingServer::types()[request()->type]["cols"]))
+							<div class="col-sm-6 col-md-4">
+								@include('helpers.form_control', [
+									'type' => 'text',
+									'class' => '',
+									'name' => 'smtp_protocol',
+									'value' => $server->smtp_protocol,
 									'help_class' => 'sending_server',
 									'rules' => Mailixa\Model\SendingServer::rules(request()->type)
 								])

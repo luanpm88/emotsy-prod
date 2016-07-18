@@ -29,7 +29,7 @@
 											<span class="text-muted">{{ trans('messages.' . $item->type) }}</span>
 											<br />
 											@if ($item->status != 'new')
-												<span class="text-muted2">{{ trans('messages.delivery_at') }}: <i class="icon-alarm"></i> {{ Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $item->delivery_at)) }}</span>
+												<span class="text-muted2">{{ trans('messages.run_at') }}: &nbsp;&nbsp;<i class="icon-alarm mr-0"></i> {{ isset($item->run_at) ? Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $item->run_at)) : "" }}</span>
 											@else
 												<span class="text-muted2">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 											@endif

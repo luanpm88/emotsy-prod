@@ -33,7 +33,7 @@ class CreateCampaignsTable extends Migration
             $table->integer('resend');
             $table->integer('custom_order');
             $table->datetime('run_at')->nullable();
-            $table->datetime('delivery_at');
+            $table->datetime('delivery_at')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users');

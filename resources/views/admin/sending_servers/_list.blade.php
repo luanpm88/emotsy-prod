@@ -29,14 +29,15 @@
 												<br />
 												<span class="text-muted">{{ trans('messages.type') }}</span>
 											</div>
-										@if (!empty($item->host))
-										</td><td>
-											<div class="single-stat-box pull-left ml-20">
-												<span class="no-margin stat-num kq_search">{{ $item->host }}</span>
-												<br />
-												<span class="text-muted">{{ trans('messages.host') }}</span>
-											</div>
-										@endif
+										</td>
+										<td>
+											@if (!empty($item->host))										
+												<div class="single-stat-box pull-left ml-20">
+													<span class="no-margin stat-num kq_search">{{ $item->host }}</span>
+													<br />
+													<span class="text-muted">{{ trans('messages.host') }}</span>
+												</div>
+											@endif
 										</td>
 										<td>
 											<div class="single-stat-box pull-left ml-20">
@@ -45,7 +46,9 @@
 													<div class="progress-bar progress-bar-info" style="width: {{ $item->sendingQuotaUsage() }}%">
 													</div>
 												</div>
-												<span class="text-muted"><strong>{{ $item->sendingQuota() }}/{{ $item->maxQuota() }}</strong> {{ trans('messages.sending_quota') }}</span>
+												<span class="text-muted"><strong>{{ $item->sendingQuota() }}</strong> {{ trans('messages.' . Mailixa\Library\Tool::getPluralPrase('email', $item->sendingQuota()) . '_quota') }}</span>
+												<br />
+												<span class="text-muted2">/ {{ $item->displayQuota() }}</span>
 											</div>
 										</td>
 										<td class="text-right">
