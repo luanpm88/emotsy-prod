@@ -162,4 +162,14 @@ class Tool
         }
         return $phrase;
     }
+    
+    /**
+     * Get file/folder permissions
+     * 
+     * @param       string
+     * @return      string
+     */
+    public static function getPerms($path){
+        return substr(sprintf('%o', fileperms($path)), -4);
+    }
 }
