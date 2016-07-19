@@ -297,39 +297,40 @@ class SendingServer extends Model
      */
     public function sendingQuota()
     {        
-        //$time_value = $this->quota_base;
-        //$time_unit = $this->quota_unit;
-        //
-        //if ($time_value == "-1") {
-        //    $begin = null;
-        //} else {
-        //    if ($time_unit == 'year') {
-        //        $begin = \Carbon\Carbon::now()->subYear($time_value-1)->startOfYear();
-        //    } elseif ($time_unit == 'month') {
-        //        $begin = \Carbon\Carbon::now()->subMonth($time_value-1)->startOfMonth();
-        //    } elseif ($time_unit == 'week') {
-        //        $begin = \Carbon\Carbon::now()->subWeek($time_value-1)->startOfWeek();
-        //    } elseif ($time_unit == 'day') {
-        //        $begin = \Carbon\Carbon::now()->subDay($time_value-1)->startOfDay();
-        //    } elseif ($time_unit == 'hour') {
-        //        $begin = \Carbon\Carbon::now()->subHour($time_value);
-        //    } elseif ($time_unit == 'minute') {
-        //        $begin = \Carbon\Carbon::now()->subMinute($time_value);
-        //    }
-        //}
-        //
-        //$query = \Mailixa\Model\TrackingLog::leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
-        //if (isset($begin)) {
-        //    $query = $query->where("tracking_logs.created_at", ">=", $begin);
-        //}
-        //
-        //$count = $query->count();
-        //return $count;
+        $time_value = $this->quota_base;
+        $time_unit = $this->quota_unit;
+        
+        if ($time_value == "-1") {
+            $begin = null;
+        } else {
+            if ($time_unit == 'year') {
+                $begin = \Carbon\Carbon::now()->subYear($time_value);
+            } elseif ($time_unit == 'month') {
+                $begin = \Carbon\Carbon::now()->subMonth($time_value);
+            } elseif ($time_unit == 'week') {
+                $begin = \Carbon\Carbon::now()->subWeek($time_value);
+            } elseif ($time_unit == 'day') {
+                $begin = \Carbon\Carbon::now()->subDay($time_value);
+            } elseif ($time_unit == 'hour') {
+                $begin = \Carbon\Carbon::now()->subHour($time_value);
+            } elseif ($time_unit == 'minute') {
+                $begin = \Carbon\Carbon::now()->subMinute($time_value);
+            }
+        }
+        
+        $query = \Mailixa\Model\TrackingLog::leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
+        if (isset($begin)) {
+            $query = $query->where("tracking_logs.created_at", ">=", $begin);
+        }
+        
+        $count = $query->count();
+        return $count;
         
 
-        $query = \Mailixa\Model\TrackingLog::where('sending_server_id', $this->id)->whereRaw("created_at >= NOW() - INTERVAL {$this->quota_base} {$this->quota_unit}");
-        
-        return $query->count();
+        //$query = \Mailixa\Model\TrackingLog::where('sending_server_id', $this->id)
+        //    ->whereRaw("created_at >= NOW() - INTERVAL {$this->quota_base} {$this->quota_unit}");
+        //    
+        //return $query->count();
     }
     
     /**

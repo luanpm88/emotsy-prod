@@ -13,7 +13,7 @@
 <h3 class="text-teal-800"><i class="icon-database"></i> {{ trans('messages.database_configuration') }}</h3>
 
     <h5 class="">
-        The settings was successfully configured! Click import button to start importing data to database '{{ $database["database_name"] }}'.
+        The settings was successfully configured! Click <span class="text-semibold">{!! trans('messages.setup_database') !!}</span> button to start importing data to database '{{ $database["database_name"] }}'.
     </h5>
     
     <div class="text-right">                                    

@@ -67,8 +67,8 @@
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>
-											@can('switch', $item)
-												<a href="{{ action('Admin\UserController@switch', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_user') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="glyphicon glyphicon-random pr-5"></i></a>
+											@can('switch_user', $item)
+												<a href="{{ action('Admin\UserController@switch_user', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_user') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="glyphicon glyphicon-random pr-5"></i></a>
 											@endcan
 											@can('update', $item)
 												<a href="{{ action('Admin\UserController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>

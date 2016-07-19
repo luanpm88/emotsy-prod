@@ -207,7 +207,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     
     // User
     Route::get('admin/users/login-back', 'UserController@loginBack');
-    Route::get('admin/users/switch/{uid}', 'UserController@switch');
+    Route::get('admin/users/switch/{uid}', 'UserController@switch_user');
     Route::get('admin/users/listing/{page?}', 'UserController@listing');
     Route::get('admin/users/sort', 'UserController@sort');
     Route::get('admin/users/delete', 'UserController@delete');
