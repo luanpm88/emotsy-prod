@@ -702,7 +702,7 @@ return [
     'replace_if_exist' => 'Update if exists',
     'keep_if_exist' => 'Keep if exists',
     'log.list.copied' => '<span class="text-success-600 text-bold">:count</span> subscriber(s) were copied from "<a href=":from_link">:from_name</a>" to "<a href=":to_link">:to_name</a>"',
-    '' => '',
+    'setup_database' => 'Setup Database',
     'move_to' => 'Move to',
     'subscribers_move_confirm.replace' => 'You\'re about to move :number subscriber(s) to :name. Update subscriber if email exists',
     'subscribers_move_confirm.keep' => 'You\'re about to move :number subscriber(s) to :name. Keep subscriber if email exists',

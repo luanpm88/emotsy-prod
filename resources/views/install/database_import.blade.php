@@ -17,7 +17,7 @@
     </h5>
     
     <div class="text-right">                                    
-        <a href="{{ action('InstallController@databaseImport', ['action' => 'import']) }}" class="btn btn-info bg-info-800">{!! trans('messages.import_database') !!} <i class="icon-arrow-right14 position-right"></i></a>
+        <a href="{{ action('InstallController@databaseImport', ['action' => 'import']) }}" class="btn btn-info bg-info-800">{!! trans('messages.setup_database') !!} <i class="icon-arrow-right14 position-right"></i></a>
 		<a href="{{ action('InstallController@database') }}" class="btn btn-info bg-grey-600"><i class="icon-undo2"></i> {!! trans('messages.back') !!}</a>
     </div>
 

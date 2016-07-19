@@ -161,7 +161,6 @@ class InstallController extends Controller
             "username" => "required",
             "password" => "required",
             "database_name" => "required",
-            "tables_prefix" => "required",
         );
         
         // validate and save posted data
@@ -245,7 +244,8 @@ class InstallController extends Controller
             
             // Check if database is not empty
             $rules = [];
-            $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database["database_name"]."' AND table_name LIKE '".$database["tables_prefix"]."%'");
+            
+            $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database["database_name"]."'");
             $result = $result->fetch_object();
             if ($result->count > 0) {
                 $rules["database_not_empty"] = "required";
