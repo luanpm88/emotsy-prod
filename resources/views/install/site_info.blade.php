@@ -11,6 +11,8 @@
 @section('content')
 
 <form action="{{ action('InstallController@siteInfo') }}" method="POST" class="form-validate-jqueryz">
+	{!! csrf_field() !!}
+	
 	<h3 class="text-teal-800"><i class="icon-office"></i> {{ trans('messages.general') }}</h3>
     <div class="row">
         <div class="col-md-6">

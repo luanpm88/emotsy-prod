@@ -46,7 +46,7 @@ class UserPolicy
         return $can;
     }
     
-    public function switch(\Mailixa\Model\User $user, \Mailixa\Model\User $item)
+    public function switch_user(\Mailixa\Model\User $user, \Mailixa\Model\User $item)
     {
         $ability = $user->getOption("backend", "user_switch");
         $can = $ability == 'all'

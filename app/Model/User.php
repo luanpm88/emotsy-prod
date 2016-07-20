@@ -537,13 +537,13 @@ class User extends Authenticatable
             $begin = null;
         } else {
             if ($time_unit == 'year') {
-                $begin = \Carbon\Carbon::now()->subYear($time_value-1)->startOfYear();
+                $begin = \Carbon\Carbon::now()->subYear($time_value);
             } elseif ($time_unit == 'month') {
-                $begin = \Carbon\Carbon::now()->subMonth($time_value-1)->startOfMonth();
+                $begin = \Carbon\Carbon::now()->subMonth($time_value);
             } elseif ($time_unit == 'week') {
-                $begin = \Carbon\Carbon::now()->subWeek($time_value-1)->startOfWeek();
+                $begin = \Carbon\Carbon::now()->subWeek($time_value);
             } elseif ($time_unit == 'day') {
-                $begin = \Carbon\Carbon::now()->subDay($time_value-1)->startOfDay();
+                $begin = \Carbon\Carbon::now()->subDay($time_value);
             } elseif ($time_unit == 'hour') {
                 $begin = \Carbon\Carbon::now()->subHour($time_value);
             } elseif ($time_unit == 'minute') {

@@ -236,16 +236,6 @@ class UserController extends Controller
         return response()->json($result);
     }
     
-    public function switch_user(Request $request)
-    {
-        $user = \Mailixa\Web\User::find($request->customer_id);
-        $orig_id = $request->user()->id;
-        \Auth::login($user);
-        \Session::put('orig_user_id', $orig_id);
-        
-        return redirect()->action('HomeController@index');
-    }
-    
     /**
      * Enable item.
      *
@@ -309,12 +299,12 @@ class UserController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function switch(Request $request)
+    public function switch_user(Request $request)
     {
         $user = \Mailixa\Model\User::findByUid($request->uid);
         
         // authorize
-        if (\Gate::denies('switch', $user)) {
+        if (\Gate::denies('switch_user', $user)) {
             return;
         }
         

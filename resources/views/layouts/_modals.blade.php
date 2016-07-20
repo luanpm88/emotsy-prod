@@ -101,7 +101,6 @@
 						
 					
 				</div>
-				<hr>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
 				</div>

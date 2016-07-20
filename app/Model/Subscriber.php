@@ -171,6 +171,21 @@ class Subscriber extends Model
     }
     
     /**
+     * Get field value by list field.
+     *
+     * @return value
+     */
+    public function getValueByTag($tag) {
+        $fv = SubscriberField::leftJoin('fields', 'fields.id', '=', 'subscriber_fields.field_id')
+            ->where("subscriber_id", "=", $this->id)->where("fields.tag", "=", $tag)->first();
+        if(is_object($fv)) {
+            return $fv->value;
+        } else {
+            return "";
+        }
+    }
+    
+    /**
      * Set field.
      *
      * @return value

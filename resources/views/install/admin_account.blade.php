@@ -13,6 +13,8 @@
 <h3 class="">{{ trans('messages.database_configuration') }}</h3>
 
 <form action="{{ action('InstallController@database') }}" method="POST" class="form-validate-jqueryz">
+	{!! csrf_field() !!}
+	
     <div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
