@@ -1158,3 +1158,7 @@ ul.install-steps li.enabled a:hover {
     line-height: 9px;
     font-weight: 600;
 }
+.tags_list .btn {
+    margin-bottom: 10px;
+    width: 200px;
+}

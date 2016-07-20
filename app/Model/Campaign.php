@@ -14,9 +14,9 @@ class Campaign extends Model
     const STATUS_DONE    = 'done';
     const TYPE_REGULAR    = 'regular';
     
-    public static $template_tags = array(
-                            array("name" => "{UNSUBSCRIBE_URL}", "required" => true),
-                        );
+    public static $required_tags = array(
+        array("name" => "{UNSUBSCRIBE_URL}", "required" => true),
+    );
 
     /**
      * Get the user that owns the phone.
@@ -187,6 +187,51 @@ class Campaign extends Model
     {
         return SendingServer::pickServer($campaign);
     }
+    
+    /**
+     * Template tags
+     * 
+     * All availabel template tags
+     */
+    public function tags()
+    {
+        $tags = [];
+        
+        // List field tags
+        foreach ($this->mailList->fields as $field) {
+            $tags[] = ["name" => "SUBSCRIBER_" . $field->tag, "required" => false];
+        }
+        
+        $tags = array_merge($tags, [
+            ["name" => "UNSUBSCRIBE_URL", "required" => true],
+            ["name" => 'SUBSCRIBER_UID', "required" => false],
+            ["name" => 'CAMPAIGN_NAME', "required" => false],
+            ["name" => 'CAMPAIGN_UID', "required" => false],
+            ["name" => 'CAMPAIGN_SUBJECT', "required" => false],
+            ["name" => 'CAMPAIGN_FROM_EMAIL', "required" => false],
+            ["name" => 'CAMPAIGN_FROM_NAME', "required" => false],
+            ["name" => 'CAMPAIGN_REPLY_TO', "required" => false],            
+            ["name" => 'CURRENT_YEAR', "required" => false],
+            ["name" => 'CURRENT_MONTH', "required" => false],
+            ["name" => 'CURRENT_DAY', "required" => false],
+            ["name" => 'CONTACT_NAME', "required" => false],
+            ["name" => 'CONTACT_COUNTRY', "required" => false],
+            ["name" => 'CONTACT_STATE', "required" => false],
+            ["name" => 'CONTACT_CITY', "required" => false],
+            ["name" => 'CONTACT_ADDRESS_1', "required" => false],
+            ["name" => 'CONTACT_ADDRESS_2', "required" => false],
+            ["name" => 'CONTACT_PHONE', "required" => false],
+            ["name" => 'CONTACT_URL', "required" => false],
+            ["name" => 'CONTACT_EMAIL', "required" => false],
+            ["name" => 'LIST_NAME', "required" => false],
+            ["name" => 'LIST_SUBJECT', "required" => false],
+            ["name" => 'LIST_FROM_NAME', "required" => false],
+            ["name" => 'LIST_FROM_EMAIL', "required" => false],
+        ]);
+        
+        return $tags;
+    }
+    
   
     /**
      * Transform Tags
@@ -195,36 +240,40 @@ class Campaign extends Model
     public function tagMessage($message, $subscriber)
     {
         $tags = array(
-            'FIRST_NAME' => $subscriber->getTagValue('FNAME'),
-            'LAST_NAME' => $subscriber->getTagValue('LNAME'),
             'SUBSCRIBER_EMAIL' => $subscriber->email,
             'CAMPAIGN_NAME' => $this->name,
-            'CAMPAIGN_UID' => $this->campaign_uid,
+            'CAMPAIGN_UID' => $this->uid,
             'CAMPAIGN_SUBJECT' => $this->subject,
             'CAMPAIGN_FROM_EMAIL' => $this->from_email,
             'CAMPAIGN_FROM_NAME' => $this->from_name,
             'CAMPAIGN_REPLY_TO' => $this->reply_to,
-            'SUBSCRIBER_UID' => $subscriber->subscriber_uid,
+            'SUBSCRIBER_UID' => $subscriber->uid,
             'CURRENT_YEAR' => date("Y"),
             'CURRENT_MONTH' => date("m"),
             'CURRENT_DAY' => date("d"),
-            'UNSUBSCRIBE_URL' => str_replace('SUBSCRIBER_UID', $subscriber->subscriber_uid, str_replace('CAMPAIGN_UID', $this->campaign_uid, Option::get('unsubscribe_url'))),
-            'COMPANY_NAME' => $this->list_company->name,
-            'COMPANY_COUNTRY' => $this->list_company->country->name,
-            'COMPANY_ZONE' => $this->list_company->zone->name,
-            'COMPANY_CITY' => $this->list_company->city,
-            'COMPANY_ADDRESS_1' => $this->list_company->address_1,
-            'COMPANY_ADDRESS_2' => $this->list_company->address_2,
-            'COMPANY_PHONE' => $this->list_company->phone,
-            'LIST_NAME' => $this->subscriber_list->name,
-            'LIST_DESCRIPTION' => $this->subscriber_list->description,
-            'LIST_SUBJECT' => $this->list_default->subject,
-            'LIST_FROM_NAME' => $this->list_default->from_name,
-            'LIST_FROM_EMAIL' => $this->list_default->from_email
+            'UNSUBSCRIBE_URL' => str_replace('SUBSCRIBER_UID', $subscriber->uid, str_replace('CAMPAIGN_UID', $this->uid, Setting::get('url_unsubscribe'))),
+            'CONTACT_NAME' => $this->mailList->contact->company,
+            'CONTACT_COUNTRY' => $this->mailList->contact->country->name,
+            'CONTACT_STATE' => $this->mailList->contact->state,
+            'CONTACT_CITY' => $this->mailList->contact->city,
+            'CONTACT_ADDRESS_1' => $this->mailList->contact->address_1,
+            'CONTACT_ADDRESS_2' => $this->mailList->contact->address_2,
+            'CONTACT_PHONE' => $this->mailList->contact->phone,
+            'CONTACT_URL' => $this->mailList->contact->url,
+            'CONTACT_EMAIL' => $this->mailList->contact->email,
+            'LIST_NAME' => $this->mailList->name,
+            'LIST_SUBJECT' => $this->mailList->default_subject,
+            'LIST_FROM_NAME' => $this->mailList->from_name,
+            'LIST_FROM_EMAIL' => $this->mailList->from_email
         );
 
         foreach ($tags as $tag => $value) {
             $message = str_replace("{".$tag."}", $value, $message);
+        }
+        
+        // List field tags
+        foreach ($this->mailList->fields as $field) {
+            $message = str_replace("{SUBSCRIBER_".$field->tag."}", $subscriber->getValueByField($field), $message);
         }
 
         return $message;

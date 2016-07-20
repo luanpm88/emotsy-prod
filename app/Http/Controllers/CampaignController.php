@@ -297,7 +297,7 @@ class CampaignController extends Controller
         
         // Required tags
         $validate = "required";
-        foreach(\Mailixa\Model\Campaign::$template_tags as $tag) {            
+        foreach(\Mailixa\Model\Campaign::$required_tags as $tag) {            
             if($tag['required']) {
                 $validate .= '|substring:"'.$tag["name"].'"';
             }
