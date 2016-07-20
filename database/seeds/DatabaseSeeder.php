@@ -87,7 +87,7 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
-
+        
         DB::table('campaigns')->insert([
             'id' => 1,
             'uid' => uniqid(),
@@ -155,6 +155,15 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
+        
+        DB::table('subscriber_fields')->insert([
+            'id' => 1,
+            'subscriber_id' => 1,
+            'field_id' => 1,
+            'value' => 'minhnghivn@gmail.com',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
 
         DB::table('subscribers')->insert([
             'id' => 2,
@@ -163,6 +172,38 @@ class DatabaseSeeder extends Seeder
             'mail_list_id' => 1,
             'email' => 'minhnghivn@yahoo.com',
             'status' => 'active',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+        
+        DB::table('subscriber_fields')->insert([
+            'id' => 2,
+            'subscriber_id' => 2,
+            'field_id' => 1,
+            'value' => 'minhnghivn@yahoo.com',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+        
+        // Create segment for list
+        DB::table('segments')->insert([
+            'id' => 1,
+            'uid' => uniqid(),
+            'mail_list_id' => 1,
+            'name' => 'Gmail!',
+            'matching' => 'all',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+        
+        // Create conditions for segment
+        DB::table('segment_conditions')->insert([
+            'id' => 1,
+            'uid' => uniqid(),
+            'segment_id' => 1,
+            'field_id' => 1,
+            'operator' => 'ends',
+            'value' => 'gmail.com',
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
