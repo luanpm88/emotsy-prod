@@ -24,6 +24,20 @@ class Setting extends Model
     }
     
     /**
+     * Get all items.
+     *
+     * @return collect
+     */
+    public static function updateAll()
+    {
+        $settings = Setting::getAll();
+        
+        foreach($settings as $key => $setting) {
+            Setting::set($key, $setting["value"]);
+        }
+    }
+    
+    /**
      * Get setting.
      *
      * @return object
