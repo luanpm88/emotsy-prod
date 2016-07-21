@@ -46,12 +46,15 @@ class SendCampaign extends Command
         //$u->overQuota(); 
         DB::enableQueryLog();
 
-        $s = SendingServer::find(3);
-        echo $s->sendingQuota();
+        //$s = SendingServer::find(3);
+        //echo $s->sendingQuota();
 
-        var_dump(Campaign::getPendingCampaigns());
+        //var_dump(Campaign::getPendingCampaigns());
 
-        dd(DB::getQueryLog());
+        $c = Campaign::find(1);
+        echo sizeof($c->getPendingSubscribers());
+
+        //dd(DB::getQueryLog());
 
     }
 }

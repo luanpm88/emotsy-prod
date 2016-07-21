@@ -4,6 +4,7 @@ namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Mailixa\Library\Log;
+use DB;
 
 class Campaign extends Model
 {
@@ -285,11 +286,23 @@ class Campaign extends Model
      */
     public function getPendingSubscribers()
     {
-        return \DB::table('subscribers')
-            ->leftJoin(\DB::raw('(SELECT * FROM tracking_logs WHERE campaign_id = :campaign_id) log', ['campaign_id' => $this->id]), 'subscribers.id', '=', 'log.subscriber_id')
-            ->where('log.id', NULL)
-            ->select('subscribers.*')
-            ->get();
+        if (is_object($this->segment)) {
+            // @TODO table hard-coded here
+            return $this->segment->subscribers()
+                ->leftJoin(DB::raw('(SELECT * FROM ' . DB::getTablePrefix() . 'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'log.subscriber_id')
+                ->where('log.id', NULL)
+                ->addBinding($this->id)
+                ->select('subscribers.*')
+                ->get();
+        } else {
+            // @TODO table hard-coded here
+            return $this->mailList->subscribers()
+                ->leftJoin(DB::raw('(SELECT * FROM ' . DB::getTablePrefix() . 'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'log.subscriber_id')
+                ->where('log.id', NULL)
+                ->addBinding($this->id)
+                ->select('subscribers.*')
+                ->get();
+        }
     }
 
     /**
