@@ -116,7 +116,7 @@
 										@foreach ($settings as $name => $setting)
 											@if ($setting['cat'] == 'url')
 												<li>
-													<i class="icon-cancel-circle2 text-danger"></i>
+													<i class="icon-link text-grey"></i>
 													<h5 class="mt-0 mb-0 text-semibold">
 														{!! str_replace(trans("messages.MESSAGE_ID"), "<span class='text-info-600'>" . trans("messages.MESSAGE_ID") . "</span>", str_replace(trans("messages.URL"), "<span class='text-info-600'>" . trans("messages.URL") . "</span>", $setting['value'])) !!}
 													</h5>

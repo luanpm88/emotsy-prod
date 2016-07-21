@@ -272,9 +272,9 @@ class InstallController extends Controller
 (1, '" . uniqid() . "', NULL, 1, 1, '" . $site_info["first_name"] . " ".$site_info["last_name"]."', '".$site_info["email"]."', '".bcrypt($site_info["password"])."', '', '', '" . $site_info["timezone"] . "', 'active', '".$date."', '".$date."', '".$site_info["first_name"]."', '".$site_info["last_name"]."', '', '');");
             
             // Insert system urls
-            $mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='url_nsubscribe'");
+            $mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='url_unsubscribe'");
             $mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                            ('url_nsubscribe', '".action('CampaignController@unsubscribe', ["message_id" => trans("messages.MESSAGE_ID")])."', '".$date."', '".$date."');");
+                            ('url_unsubscribe', '".action('CampaignController@unsubscribe', ["message_id" => trans("messages.MESSAGE_ID")])."', '".$date."', '".$date."');");
             $mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='url_open_track'");
             $mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
                             ('url_open_track', '".action('CampaignController@open', ["message_id" => trans("messages.MESSAGE_ID")])."', '".$date."', '".$date."');");
