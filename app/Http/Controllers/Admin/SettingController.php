@@ -28,7 +28,7 @@ class SettingController extends Controller
      */
     public function index(Request $request)
     {
-        \Mailixa\Model\Setting::updateAll();
+        // \Mailixa\Model\Setting::updateAll();
         $settings = \Mailixa\Model\Setting::getAll();        
         
         if (null !== $request->old()) {
