@@ -733,7 +733,7 @@ return [
     'emails_quota' => 'emails sent',
     'email_quota' => 'email sent',
     'available_tags' => 'Available tags',
-    '' => '',
+    'update_urls' => 'Update URLs',
     '' => '',
     '' => '',
     '' => '',

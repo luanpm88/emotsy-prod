@@ -74,6 +74,10 @@
 										@endif
 									@endforeach							
 								</div>
+								<br />
+								<div class="text-left">
+									<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+								</div>
 							</div>
 						@endif
 						@if (Auth::user()->getOption("backend", "setting_sending") == 'yes')
@@ -107,10 +111,18 @@
 										@endif
 									@endforeach							
 								</div>
+								<br />
+								<div class="text-left">
+									<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+								</div>
 							</div>
 						@endif
 						@if (Auth::user()->getOption("backend", "setting_system_urls") == 'yes')
 							<div class="tab-pane" id="top-tab3">
+								<div class="text-left">
+									<a href="{{ action("Admin\SettingController@updateUrls") }}" class="btn bg-teal">{{ trans('messages.update_urls') }}</a>
+								</div>
+								<br />
 								<div class="">
 									<ul class="modern-listing mt-0 top-border-none">
 										@foreach ($settings as $name => $setting)
@@ -134,10 +146,7 @@
 					</div>
 				</div>
 					
-				<br />
-				<div class="text-left">
-					<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-				</div>
+				
 			</form>
 				
 			<script>
@@ -184,6 +193,10 @@
 				
 				$(document).ready(function() {
 					setInterval("changeSelectColor()", 100);
+					
+					@if (isset(request()->tab) && request()->tab == "3")			
+                        $('a[href="#top-tab3"]').trigger("click");
+                    @endif
 				});
 			</script>
 @endsection

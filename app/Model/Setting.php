@@ -202,12 +202,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
-            'url_campaign_notification' => [
-                'cat' => 'url',
-                'value' => "", // action('HomeController@index'),
-                'type' => 'text',
-                'not_required' => true,
-            ],
+            //'url_campaign_notification' => [
+            //    'cat' => 'url',
+            //    'value' => "", // action('HomeController@index'),
+            //    'type' => 'text',
+            //    'not_required' => true,
+            //],
         ];
     }
     
