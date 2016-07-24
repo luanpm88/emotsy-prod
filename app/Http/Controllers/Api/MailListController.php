@@ -22,7 +22,8 @@ class MailListController extends Controller
      */
     public function index(Request $request)
     {
-        $user = $request->user();
+        $user = \Auth::guard('api')->user();
+        
         $lists = \Mailixa\Model\MailList::getAll()
             ->select("uid", "name", "default_subject", "from_email", "from_name", "status", "created_at", "updated_at")
             ->where("user_id", "=", $user->id)
@@ -41,13 +42,15 @@ class MailListController extends Controller
      */
     public function show($id)
     {
+        $user = \Auth::guard('api')->user();
+        
         $item = \Mailixa\Model\MailList::
             where("uid", "=", $id)
             ->first();
-            
+
         // authorize
-        if (\Gate::denies('read', $item)) {
-            return $this->notAuthorized();
+        if (!$user->can('read', $item)) {
+            return \Response::json(array("message"=>"Unauthorized"), 401);
         }
         
         // check if item exists

@@ -141,9 +141,11 @@ class Subscriber extends Model
      *
      * @return collect
      */
-    public static function search($request)
+    public static function search($request, $user=nil)
     {
-        $user = $request->user();
+        if(!isset($user)) {
+            $user = $request->user();
+        }
         $query = Subscriber::select("subscribers.*");
         $query = $query->where("user_id", "=", $user->id);
         

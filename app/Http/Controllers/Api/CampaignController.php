@@ -22,6 +22,8 @@ class CampaignController extends Controller
      */
     public function index(Request $request)
     {
+        $user = \Auth::guard('api')->user();
+        
         $lists = \Mailixa\Model\Campaign::getAll()
             ->select("uid", "name", "type", "subject", "html", "plain", "from_email", "from_name", "reply_to", "status", "delivery_at", "created_at", "updated_at")
             ->where("user_id", "=", $user->id)
@@ -40,13 +42,15 @@ class CampaignController extends Controller
      */
     public function show($id)
     {
+        $user = \Auth::guard('api')->user();
+        
         $item = \Mailixa\Model\Campaign::
             where("uid", "=", $id)
             ->first();
         
         // authorize
-        if (\Gate::denies('read', $item)) {
-            return $this->notAuthorized();
+        if (!$user->can('read', $item)) {
+            return \Response::json(array("message"=>"Unauthorized"), 401);
         }
         
         // check if item exists

@@ -25,11 +25,12 @@ class SubscriberController extends Controller
      */
     public function index(Request $request, $list_id)
     {
+        $user = \Auth::guard('api')->user();
         $list = \Mailixa\Model\MailList::findByUid($list_id);
         
         // authorize
-        if (\Gate::denies('read', $list)) {
-            return $this->notAuthorized();
+        if (!$user->can('read', $list)) {
+            return \Response::json(array("message"=>"Unauthorized"), 401);
         }
         
         if(isset($request->per_page)) {
@@ -38,7 +39,7 @@ class SubscriberController extends Controller
             $per_page = \Mailixa\Model\Subscriber::$itemsPerPage;
         }
         
-        $items = \Mailixa\Model\Subscriber::search($request)
+        $items = \Mailixa\Model\Subscriber::search($request, $user)
             ->where("mail_list_id", "=", $list->id)
             ->groupBy('subscribers.id')
             ->paginate($per_page);
@@ -74,14 +75,16 @@ class SubscriberController extends Controller
      */
     public function show($list_id, $id)
     {
+        $user = \Auth::guard('api')->user();
+        
         $list = \Mailixa\Model\MailList::findByUid($list_id);
         $item = \Mailixa\Model\Subscriber::
             where("uid", "=", $id)
             ->first();
         
         // authorize
-        if (\Gate::denies('read', $item)) {
-            return $this->notAuthorized();
+        if (!$user->can('read', $item)) {
+            return \Response::json(array("message"=>"Unauthorized"), 401);
         }
         
         // check if item exists
@@ -114,7 +117,8 @@ class SubscriberController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function subscribe($list_id, $id)
-    {        
+    {
+        $user = \Auth::guard('api')->user();
         $subscriber = \Mailixa\Model\Subscriber::findByUid($id);
         
         // check if item exists
@@ -123,7 +127,7 @@ class SubscriberController extends Controller
         }
         
         // authorize
-        if (\Gate::denies('subscribe', $subscriber)) {
+        if (!$user->can('subscribe', $subscriber)) {
             return \Response::json(array("message"=>"Unauthorized"), 401);
         }
         
@@ -144,7 +148,8 @@ class SubscriberController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function unsubscribe($list_id, $id)
-    {        
+    {
+        $user = \Auth::guard('api')->user();
         $subscriber = \Mailixa\Model\Subscriber::findByUid($id);
         
         // check if item exists
@@ -153,7 +158,7 @@ class SubscriberController extends Controller
         }
         
         // authorize
-        if (\Gate::denies('unsubscribe', $subscriber)) {
+        if (!$user->can('unsubscribe', $subscriber)) {
             return \Response::json(array("message"=>"Unauthorized"), 401);
         }
         
@@ -174,7 +179,8 @@ class SubscriberController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function delete($list_id, $id)
-    {        
+    {
+        $user = \Auth::guard('api')->user();
         $subscriber = \Mailixa\Model\Subscriber::findByUid($id);
         
         // check if item exists
@@ -183,7 +189,7 @@ class SubscriberController extends Controller
         }
         
         // authorize
-        if (\Gate::denies('delete', $subscriber)) {
+        if (!$user->can('delete', $subscriber)) {
             return \Response::json(array("message"=>"Unauthorized"), 401);
         }
         
