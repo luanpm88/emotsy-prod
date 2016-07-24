@@ -32,6 +32,13 @@
                 <code style="font-size: 20px;">
                     {{ action("Api\HomeController@index") }}/
                 </code>
+					
+				<br />	
+				<h4 class="text-semibold text-teal">{{ trans('messages.api_docs') }}</h4>
+                    
+                <code style="font-size: 20px;">
+                    <a target="_blank" href="{{ action("Api\HomeController@index") }}/doc/">{{ action("Api\HomeController@index") }}/doc/ <i class="icon-link"></i></a>
+                </code>
                     
                 <br />
 				<h4 class="text-semibold text-teal mt-20">{{ trans('messages.your_api_token') }}</h4>
@@ -40,12 +47,7 @@
                     {{ Auth::user()->api_token }}
                 </code>
 				
-				<br />	
-				<h4 class="text-semibold text-teal">{{ trans('messages.api_docs') }}</h4>
-                    
-                <code style="font-size: 20px;">
-                    {{ action("Api\HomeController@index") }}/doc/
-                </code>
+				
                 
                 <br /><br />
                 <a class="btn btn-info bg-teal-600" href="{{ action("AccountController@renewToken") }}">{{ trans('messages.renew_token')}}</a>
