@@ -42,7 +42,12 @@ class SubscriberController extends Controller
      */
     public function listing(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);       
+        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        
+        // authorize
+        if (\Gate::denies('read', $list)) {
+            return;
+        }
         
         $subscribers = \Mailixa\Model\Subscriber::search($request)
                                         ->where("mail_list_id", "=", $list->id)

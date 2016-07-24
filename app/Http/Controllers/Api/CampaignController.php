@@ -20,10 +20,11 @@ class CampaignController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         $lists = \Mailixa\Model\Campaign::getAll()
             ->select("uid", "name", "type", "subject", "html", "plain", "from_email", "from_name", "reply_to", "status", "delivery_at", "created_at", "updated_at")
+            ->where("user_id", "=", $user->id)
             ->get();
         
         return \Response::json($lists, 200);
@@ -42,6 +43,11 @@ class CampaignController extends Controller
         $item = \Mailixa\Model\Campaign::
             where("uid", "=", $id)
             ->first();
+        
+        // authorize
+        if (\Gate::denies('read', $item)) {
+            return $this->notAuthorized();
+        }
         
         // check if item exists
         if (!is_object($item)) {

@@ -18,6 +18,11 @@ class CampaignPolicy
         //
     }
     
+    public function read(\Mailixa\Model\User $user, \Mailixa\Model\Campaign $item)
+    {
+        return $item->user_id == $user->id || $user->userGroup->backend_access;
+    }
+    
     public function create(\Mailixa\Model\User $user, \Mailixa\Model\Campaign $item)
     {
         $max = $user->getOption("frontend", "campaign_max");

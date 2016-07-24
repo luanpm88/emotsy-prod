@@ -25,9 +25,10 @@ class MailListController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $lists = \Mailixa\Model\MailList::getAll();
+        $user = $request->user();
+        $lists = $user->lists;
         return view('lists.index', [
             'lists' => $lists
         ]);
@@ -289,7 +290,12 @@ class MailListController extends Controller
      */
     public function overview(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->uid); 
+        $list = \Mailixa\Model\MailList::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $list)) {
+            return $this->notAuthorized();
+        }
 
         return view('lists.overview', [
             'list' => $list,
@@ -305,6 +311,11 @@ class MailListController extends Controller
     public function listGrowthChart(Request $request)
     {
         $list = \Mailixa\Model\MailList::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $list)) {
+            return $this->notAuthorized();
+        }
         
         if(is_object($list)) {
             $list_id = $list->id;
@@ -371,6 +382,11 @@ class MailListController extends Controller
             $list->uid = "000";
         }
         
+        // authorize
+        if (\Gate::denies('read', $list)) {
+            return $this->notAuthorized();
+        }
+        
         return view('lists._quick_view', [
             'list' => $list
         ]);
@@ -388,7 +404,7 @@ class MailListController extends Controller
         
         // authorize
         if (\Gate::denies('update', $list)) {
-            return;
+            return $this->notAuthorized();
         }
         
         $list->copy($request->copy_list_name);

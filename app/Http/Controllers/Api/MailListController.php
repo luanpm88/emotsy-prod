@@ -20,10 +20,12 @@ class MailListController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
+        $user = $request->user();
         $lists = \Mailixa\Model\MailList::getAll()
             ->select("uid", "name", "default_subject", "from_email", "from_name", "status", "created_at", "updated_at")
+            ->where("user_id", "=", $user->id)
             ->get();
         
         return \Response::json($lists, 200);
@@ -42,6 +44,11 @@ class MailListController extends Controller
         $item = \Mailixa\Model\MailList::
             where("uid", "=", $id)
             ->first();
+            
+        // authorize
+        if (\Gate::denies('read', $item)) {
+            return $this->notAuthorized();
+        }
         
         // check if item exists
         if (!is_object($item)) {

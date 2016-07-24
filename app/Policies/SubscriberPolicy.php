@@ -18,6 +18,11 @@ class SubscriberPolicy
         //
     }
     
+    public function read(\Mailixa\Model\User $user, \Mailixa\Model\Subscriber $item)
+    {
+        return $item->user_id == $user->id || $user->userGroup->backend_access;
+    }
+    
     public function create(\Mailixa\Model\User $user, \Mailixa\Model\Subscriber $item)
     {
         $max = $user->getOption("frontend", "subscriber_max");

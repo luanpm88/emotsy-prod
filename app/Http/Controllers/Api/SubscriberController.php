@@ -27,6 +27,11 @@ class SubscriberController extends Controller
     {
         $list = \Mailixa\Model\MailList::findByUid($list_id);
         
+        // authorize
+        if (\Gate::denies('read', $list)) {
+            return $this->notAuthorized();
+        }
+        
         if(isset($request->per_page)) {
             $per_page = $request->per_page;
         } else {
@@ -73,6 +78,11 @@ class SubscriberController extends Controller
         $item = \Mailixa\Model\Subscriber::
             where("uid", "=", $id)
             ->first();
+        
+        // authorize
+        if (\Gate::denies('read', $item)) {
+            return $this->notAuthorized();
+        }
         
         // check if item exists
         if (!is_object($item)) {
@@ -178,7 +188,7 @@ class SubscriberController extends Controller
         }
         
         // Unsubscribe
-        $subscriber->delete();
+        // $subscriber->delete();
         
         return \Response::json(array("message"=>"Deleted"), 200);
     }

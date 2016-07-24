@@ -29,9 +29,10 @@ class CampaignController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
-        $campaigns = \Mailixa\Model\Campaign::getAll();
+        $user = $request->user();
+        $campaigns = $user->campaigns;
         return view('campaigns.index', [
             'campaigns' => $campaigns
         ]);
@@ -99,6 +100,11 @@ class CampaignController extends Controller
     public function show($id)
     {
         $campaign = \Mailixa\Model\Campaign::findByUid($id);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
         
         if ($campaign->status == 'new') {
             return redirect()->action('CampaignController@edit', ['uid' => $campaign->uid]);
@@ -452,6 +458,11 @@ class CampaignController extends Controller
     {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
         
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         return view('campaigns.overview', [
             'campaign' => $campaign
         ]);
@@ -468,6 +479,11 @@ class CampaignController extends Controller
     {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
         
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         return view('campaigns.links', [
             'campaign' => $campaign
         ]);
@@ -482,6 +498,12 @@ class CampaignController extends Controller
     public function chart24h(Request $request)
     {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         $result = [
             "columns" => [],
             "data" => [],
@@ -540,6 +562,11 @@ class CampaignController extends Controller
     public function quickView(Request $request)
     {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
         
         return view('campaigns._quick_view', [
             'campaign' => $campaign
@@ -651,6 +678,12 @@ class CampaignController extends Controller
      */
     public function trackingLog(Request $request) {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         $items = $campaign->trackingLogs;
         return view('campaigns.tracking_log', [
             'items' => $items,
@@ -665,6 +698,12 @@ class CampaignController extends Controller
      */
     public function trackingLogListing(Request $request) {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\TrackingLog::search($request, $campaign)->paginate($request->per_page);
         
         return view('admin.tracking_logs._list', [
@@ -680,6 +719,12 @@ class CampaignController extends Controller
      */
     public function bounceLog(Request $request) {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         $items = $campaign->bounceLogs;
         return view('campaigns.bounce_log', [
             'items' => $items,
@@ -694,6 +739,12 @@ class CampaignController extends Controller
      */
     public function bounceLogListing(Request $request) {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\BounceLog::search($request, $campaign)->paginate($request->per_page);
         
         return view('admin.bounce_logs._list', [
@@ -709,6 +760,12 @@ class CampaignController extends Controller
      */
     public function feedbackLog(Request $request) {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         $items = $campaign->openLogs;
         return view('campaigns.feedback_log', [
             'items' => $items,
@@ -723,6 +780,12 @@ class CampaignController extends Controller
      */
     public function feedbackLogListing(Request $request) {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\FeedbackLog::search($request, $campaign)->paginate($request->per_page);
         
         return view('admin.feedback_logs._list', [
@@ -738,6 +801,12 @@ class CampaignController extends Controller
      */
     public function openLog(Request $request) {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         $items = $campaign->openLogs;
         return view('campaigns.open_log', [
             'items' => $items,
@@ -752,6 +821,12 @@ class CampaignController extends Controller
      */
     public function openLogListing(Request $request) {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\OpenLog::search($request, $campaign)->paginate($request->per_page);
         
         return view('admin.open_logs._list', [
@@ -767,6 +842,12 @@ class CampaignController extends Controller
      */
     public function clickLog(Request $request) {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         $items = $campaign->clickLogs;
         return view('campaigns.click_log', [
             'items' => $items,
@@ -781,6 +862,12 @@ class CampaignController extends Controller
      */
     public function clickLogListing(Request $request) {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\ClickLog::search($request, $campaign)->paginate($request->per_page);
         
         return view('admin.click_logs._list', [
@@ -796,6 +883,12 @@ class CampaignController extends Controller
      */
     public function unsubscribeLog(Request $request) {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         $items = $campaign->unsubscribeLogs;
         return view('campaigns.unsubscribe_log', [
             'items' => $items,
@@ -810,6 +903,12 @@ class CampaignController extends Controller
      */
     public function unsubscribeLogListing(Request $request) {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
         $items = \Mailixa\Model\UnsubscribeLog::search($request, $campaign)->paginate($request->per_page);
         
         return view('admin.unsubscribe_logs._list', [
@@ -825,6 +924,11 @@ class CampaignController extends Controller
      */
     public function openMap(Request $request) {
         $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
         
         return view('campaigns.open_map', [
             'campaign' => $campaign,
