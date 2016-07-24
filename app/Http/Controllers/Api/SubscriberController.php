@@ -194,7 +194,7 @@ class SubscriberController extends Controller
         }
         
         // Unsubscribe
-        // $subscriber->delete();
+        $subscriber->delete();
         
         return \Response::json(array("message"=>"Deleted"), 200);
     }
