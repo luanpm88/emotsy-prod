@@ -734,7 +734,7 @@ return [
     'email_quota' => 'email sent',
     'available_tags' => 'Available tags',
     'update_urls' => 'Update URLs',
-    '' => '',
+    'label_multi_process' => 'Enable multi-processing email delivery',
     '' => '',
     '' => '',
     '' => '',

@@ -243,6 +243,19 @@
 												'rules' => Mailixa\Model\UserGroup::rules()
 											])
 										</div>
+										<div class="col-md-3">
+											<div class="form-group">
+												<label class="mt-0 mb-5 text-semibold">{{ trans('messages.label_multi_process') }}</label>
+												@include('helpers.form_control', ['type' => 'checkbox',
+													'name' => 'options[frontend][multi_process]',
+													'value' => $options['frontend']['multi_process'],
+													'label' => '',
+													'options' => [false, true],
+													'help_class' => 'user_group',
+													'rules' => Mailixa\Model\UserGroup::rules()
+												])
+											</div>
+										</div>
 									</div>
 										
 									<h3 class="text-teal-800">{{ trans('messages.sending_servers') }}</h3>

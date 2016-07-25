@@ -171,6 +171,7 @@ class UserGroup extends Model
                 'sending_quota' => '-1',
                 'sending_quota_time' => '-1',
                 'sending_quota_time_unit' => 'month',
+                'multi_process' => false,
             ],
             "backend" => [
                 'user_group_read' => 'all',
