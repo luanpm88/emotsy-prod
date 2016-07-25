@@ -172,7 +172,7 @@ class SubscriberController extends Controller
     /**
      * Delete a subscriber.
      *
-     * GET /api/v1/lists/{list_id}/subscribers/{id}/delete
+     * DELETE /api/v1/lists/{list_id}/subscribers/{id}/delete
      * 
      * @param  string  $list_id    List's id
      * @param  string  $id         Subsciber's id
