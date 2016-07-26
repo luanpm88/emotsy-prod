@@ -14,6 +14,8 @@ class Campaign extends Model
     const STATUS_PAUSED  = 'paused';
     const STATUS_DONE    = 'done';
     const TYPE_REGULAR    = 'regular';
+
+    const WORKER_DELAY = 2;
     
     public static $required_tags = array(
         array("name" => "{UNSUBSCRIBE_URL}", "required" => true),
@@ -120,19 +122,77 @@ class Campaign extends Model
         $this->save();
     }
 
+    public function getChunks($collection, $count) {
+        $result = [];
+        if (sizeof($collection) == 0) {
+            return $result;
+        }
+        $chunks = array_chunk(range(0, sizeof($collection) - 1), ceil(sizeof($collection) / (float)$count), true);
+        foreach($chunks as $key => $chunk) {
+            $list = [];
+            foreach(array_values($chunk) as $i) {
+                $list[] = $collection[$i];
+            }
+            $result[] = $list;
+        }
+
+        return $result;
+    }
+
+    /**
+     * Mark the campaign as 'done' or 'sent'
+     *
+     */
+    public function startMultiProcesses()
+    {
+        $this->sending();
+
+        Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
+        $count = 3; // @TODO setting here
+        $subscribers = $this->getPendingSubscribers();
+        Log::info(sizeof($subscribers) . " subscriber(s) selected");
+        $chunks = $this->getChunks($subscribers, $count);
+        
+        Log::info("Start multi-process session" );
+        for ($i = 0; $i < sizeof($chunks); $i++) { 
+            $pid = pcntl_fork(); 
+
+            if (!$pid) { 
+                sleep(self::WORKER_DELAY); 
+                Log::info("Start child process " . ($i + 1) . " of  {$count} (PID " . getmypid() . ")" ); 
+                $this->start($chunks[$i]); 
+                exit($i);
+            } else {
+                while (pcntl_waitpid(0, $status) != -1) { 
+                    $status = pcntl_wexitstatus($status); 
+                    echo "Child $status completed\n";
+                }
+            }
+        }
+
+        if ($this->status == self::STATUS_SENDING) {
+            $this->done();
+            Log::info("Campaign sent!");
+        } else {
+            Log::warning("Campaign sent, but some errors occurred!");
+        }
+        
+    }
+
     /**
      * Send Campaign
      * Iterate through all subscribers and send email
      */
-    public function start()
+    public function start($subscribers = NULL, $multi = false)
     {
-        //try {
-            $this->sending();
-            Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
-
-            $subscribers = $this->getPendingSubscribers();
-            Log::info(sizeof($subscribers) . " subscriber(s) selected");
-
+        try {
+            if (!$multi) {
+                $this->sending();
+                Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
+                $subscribers = $this->getPendingSubscribers();
+                Log::info(sizeof($subscribers) . " subscriber(s) selected");
+            }
+            
             $i = 0;
             foreach ($subscribers as $subscriber) {
                 $i += 1;
@@ -153,18 +213,20 @@ class Campaign extends Model
                 $this->trackMessage($sent, $subscriber, $server);
             }
 
-            $this->done();
-            Log::info("Campaign sent!");
-        //} catch (\Exception $e) {
-        //    $this->pending();
-        //    Log::error($e->getMessage());
-        //    Log::error("Campaign `{$this->name}` (ID: {$this->campaign_id}) deferred!");
-        //}
-        
-        // reset server pools: just in case DeliveryServerAmazonSesWebApi
-        // --> setup SNS requires using from_email of the corresponding campaign
-        // but SNS is only made once when the server is initiated
-        SendingServer::resetServerPools();
+            if (!$multi) {
+                $this->done();
+                Log::info("Campaign sent!");
+            }
+        } catch (\Exception $e) {
+            $this->pending();
+            Log::error($e->getMessage());
+            Log::error("Campaign `{$this->name}` (ID: {$this->campaign_id}) deferred!");
+        } finally {        
+            // reset server pools: just in case DeliveryServerAmazonSesWebApi
+            // --> setup SNS requires using from_email of the corresponding campaign
+            // but SNS is only made once when the server is initiated
+            SendingServer::resetServerPools();
+        }
     }
 
     /**
