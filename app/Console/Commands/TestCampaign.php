@@ -60,7 +60,7 @@ class TestCampaign extends Command
         $c = Campaign::first();
         $c->status = 'pending';
         $c->save();
-        $c->start();
+        $c->startMultiProcesses();
         
 
         //var_dump(SendingServer::pickServer($c));
