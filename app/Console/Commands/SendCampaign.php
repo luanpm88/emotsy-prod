@@ -4,9 +4,12 @@ namespace Mailixa\Console\Commands;
 
 use Illuminate\Console\Command;
 use Mailixa\Model\Campaign;
+use Mailixa\Model\TrackingLog;
 use Mailixa\Model\User;
 use Mailixa\Model\SendingServer;
 use Mailixa\Library\Log;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\DatabaseManager;
 use DB;
 
 class Gaugau {
@@ -58,11 +61,30 @@ class SendCampaign extends Command
         //echo $s->sendingQuota();
 
         //var_dump(Campaign::getPendingCampaigns());
+        $c = Campaign::first();
+        for ($i = 1; $i <= 5; ++$i) { 
+            $pid = pcntl_fork(); 
 
-        $c = Campaign::find(1);
-        $subscribers = $c->getPendingSubscribers();
-        
-        array_slice($subscribers, 0, 1);
+            if (!$pid) { 
+                
+                print "In child $i\n"; 
+                try {
+                    DB::reconnect('mysql');
+                    Campaign::first();
+                } catch(\Exception $ex) {
+                    echo $ex->getMessage() . "\n";
+                } finally {
+                    echo "Final\n";
+                }
+                sleep(1); 
+                exit($i); 
+            } 
+        } 
+
+        while (pcntl_waitpid(0, $status) != -1) { 
+            $status = pcntl_wexitstatus($status); 
+            echo "Child $status completed\n"; 
+        } 
         
 
         // Creating the pool of threads(stored as array)
