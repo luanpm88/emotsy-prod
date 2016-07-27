@@ -5,6 +5,7 @@ namespace Mailixa\Console\Commands;
 use Illuminate\Console\Command;
 use Mailixa\Library\Log;
 use Mailixa\Model\Campaign;
+use Mailixa\Model\TrackingLog;
 use Mailixa\Model\SendingServer;
 use DB;
 
@@ -58,7 +59,8 @@ class TestCampaign extends Command
         */
 
         $c = Campaign::first();
-        $c->status = 'pending';
+        TrackingLog::where('campaign_id', $c->id)->delete();
+        $c->status = Campaign::STATUS_READY;
         $c->save();
         $c->startMultiProcesses();
         
