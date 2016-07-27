@@ -312,15 +312,16 @@ class MailListController extends Controller
     {
         $list = \Mailixa\Model\MailList::findByUid($request->uid);
         
-        // authorize
-        if (\Gate::denies('read', $list)) {
-            return $this->notAuthorized();
-        }
-        
         if(is_object($list)) {
             $list_id = $list->id;
         } else {
             $list_id = null;
+            $list = new \Mailixa\Model\MailList();
+        }
+        
+        // authorize
+        if (\Gate::denies('read', $list)) {
+            return $this->notAuthorized();
         }
         
         $result = [

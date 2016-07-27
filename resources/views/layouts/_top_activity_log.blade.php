@@ -10,7 +10,13 @@
 						</div>
 
 						<ul class="media-list dropdown-content-body">
-							
+							@if (Auth::user()->logs()->count() == 0)
+								<li class="text-center text-muted2">
+									<span href="#">
+										<i class="icon-history"></i> {{ trans('messages.no_activity_logs') }}
+									</span>
+								</li>
+							@endif
 							@foreach (Auth::user()->logs()->take(20)->get() as $log)
 								<li class="media">
 									<div class="media-left">
