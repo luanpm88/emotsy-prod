@@ -405,6 +405,7 @@ class Campaign extends Model
         $message->getHeaders()->addTextHeader('X-Mailspeed-Campaign-Id', $this->uid);
         $message->getHeaders()->addTextHeader('X-Mailspeed-Subscriber-Id', $subscriber->uid);
         $message->getHeaders()->addTextHeader('X-Mailspeed-User-Id', $this->user->uid);
+        $message->getHeaders()->addTextHeader('X-Mailspeed-Msg-Id', uniqid());
 
         $message->setSubject($this->subject);
         $message->setFrom(array($this->from_email => $this->from_name));
@@ -412,7 +413,7 @@ class Campaign extends Model
         $message->setReplyTo($this->reply_to);
         //$message->setEncoder(Swift_Encoding::get8bitEncoding());
 
-        //$body = $this->tagMessage($this->html, $subscriber);
+        $body = $this->tagMessage($this->html, $subscriber);
         //$body = $this->appendOpenTrackingUrl($body, $subscriber);
         $message->setBody($this->html, 'text/html');
 
