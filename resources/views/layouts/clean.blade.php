@@ -2,7 +2,9 @@
 <html lang="en">
 <head>
 	<title>@yield('title') - {{ \Mailixa\Model\Setting::get("site_name") }}</title>
-		
+	
+	@include('layouts._favicon')
+	
 	@include('layouts._head')
 
 	<!-- Global stylesheets -->

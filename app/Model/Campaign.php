@@ -9,13 +9,14 @@ use DB;
 class Campaign extends Model
 {
     const STATUS_NEW     = 'new';
+    const STATUS_READY   = 'ready';
     const STATUS_PENDING = 'pending';
     const STATUS_SENDING = 'sending';
     const STATUS_PAUSED  = 'paused';
     const STATUS_DONE    = 'done';
-    const TYPE_REGULAR    = 'regular';
+    const TYPE_REGULAR   = 'regular';
 
-    const WORKER_DELAY = 2;
+    const WORKER_DELAY = 5;
     
     public static $required_tags = array(
         array("name" => "{UNSUBSCRIBE_URL}", "required" => true),
@@ -122,6 +123,12 @@ class Campaign extends Model
         $this->save();
     }
 
+    public function ready()
+    {
+        $this->status = self::STATUS_READY;
+        $this->save();
+    }
+
     public function getChunks($collection, $count) {
         $result = [];
         if (sizeof($collection) == 0) {
@@ -158,16 +165,16 @@ class Campaign extends Model
             $pid = pcntl_fork(); 
 
             if (!$pid) { 
+                Log::info("Start child process " . ($i + 1) . " of  " . sizeof($chunks) . " (PID " . getmypid() . ")" ); 
                 sleep(self::WORKER_DELAY); 
-                Log::info("Start child process " . ($i + 1) . " of  {$count} (PID " . getmypid() . ")" ); 
-                $this->start($chunks[$i]); 
+                $this->start($chunks[$i], true); 
                 exit($i);
-            } else {
-                while (pcntl_waitpid(0, $status) != -1) { 
-                    $status = pcntl_wexitstatus($status); 
-                    echo "Child $status completed\n";
-                }
             }
+        }
+
+        while (pcntl_waitpid(0, $status) != -1) { 
+            $status = pcntl_wexitstatus($status); 
+            Log::info("Child $status completed " . getmypid() . "\n");
         }
 
         if ($this->status == self::STATUS_SENDING) {
@@ -176,7 +183,6 @@ class Campaign extends Model
         } else {
             Log::warning("Campaign sent, but some errors occurred!");
         }
-        
     }
 
     /**
@@ -218,9 +224,9 @@ class Campaign extends Model
                 Log::info("Campaign sent!");
             }
         } catch (\Exception $e) {
-            $this->pending();
             Log::error($e->getMessage());
             Log::error("Campaign `{$this->name}` (ID: {$this->campaign_id}) deferred!");
+            $this->pending();
         } finally {        
             // reset server pools: just in case DeliveryServerAmazonSesWebApi
             // --> setup SNS requires using from_email of the corresponding campaign
@@ -396,7 +402,6 @@ class Campaign extends Model
         $message->getHeaders()->addTextHeader('X-Mailspeed-User-Id', $this->user->uid);
 
         $message->setSubject($this->subject);
-        var_dump(array($this->from_email => $this->from_name));
         $message->setFrom(array($this->from_email => $this->from_name));
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
