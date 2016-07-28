@@ -31,6 +31,7 @@ use Monolog\Formatter\LineFormatter;
 class Log
 {
     public static $logger;
+    public static $path;
 
     public static function debug($message)
     {
@@ -72,6 +73,19 @@ class Log
         self::$logger->emergency($message);
     }
 
+    // reconfigure log format for the forked process
+    public static function fork() {
+        $pid = getmypid();
+        $output = "[%datetime%] #" . $pid . " %level_name%: %message%\n";
+        $formatter = new LineFormatter($output);
+
+        $stream = new StreamHandler(self::$path, Logger::INFO);
+        $stream->setFormatter($formatter);
+        
+        self::$logger = new Logger('mailer');
+        self::$logger->pushHandler($stream);
+    }
+
     public static function configure($path)
     {
         $pid = getmypid();
@@ -83,5 +97,6 @@ class Log
     
         self::$logger = new Logger('mailer');
         self::$logger->pushHandler($stream);
+        self::$path = $path;
     }
 }

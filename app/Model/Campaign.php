@@ -161,20 +161,25 @@ class Campaign extends Model
         $chunks = $this->getChunks($subscribers, $count);
         
         Log::info("Start multi-process session" );
+        $parentPid = getmypid();
         for ($i = 0; $i < sizeof($chunks); $i++) { 
             $pid = pcntl_fork(); 
 
             if (!$pid) { 
-                Log::info("Start child process " . ($i + 1) . " of  " . sizeof($chunks) . " (PID " . getmypid() . ")" ); 
+                // to prevent connection closed issue when using fork
+                DB::reconnect('mysql');
+                Log::fork();
+
+                Log::info("Start child process " . ($i + 1) . " of " . sizeof($chunks) . " (forked from " . $parentPid . ")" ); 
                 sleep(self::WORKER_DELAY); 
                 $this->start($chunks[$i], true); 
-                exit($i);
+                exit($i + 1);
             }
         }
 
         while (pcntl_waitpid(0, $status) != -1) { 
             $status = pcntl_wexitstatus($status); 
-            Log::info("Child $status completed " . getmypid() . "\n");
+            Log::info("Child $status completed\n");
         }
 
         if ($this->status == self::STATUS_SENDING) {
