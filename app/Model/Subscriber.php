@@ -141,7 +141,7 @@ class Subscriber extends Model
      *
      * @return collect
      */
-    public static function search($request, $user=nil)
+    public static function search($request, $user=null)
     {
         if(!isset($user)) {
             $user = $request->user();
