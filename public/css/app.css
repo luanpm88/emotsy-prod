@@ -892,7 +892,7 @@ ul.modern-listing li .btn {
     font-weight: 600;
 }
 [class^="icon-"], [class*=" icon-"] {
-    margin-right: 7px;
+    /*margin-right: 7px;*/
 }
 .stat-table {
     

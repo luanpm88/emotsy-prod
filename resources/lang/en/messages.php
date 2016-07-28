@@ -735,7 +735,9 @@ return [
     'available_tags' => 'Available tags',
     'update_urls' => 'Update URLs',
     'label_multi_process' => 'Enable multi-processing email delivery',
-    '' => '',
+    'api_token_guide' => 'You need to add parameter <span class="text-semibold">api_token=YOUR_API_TOKEN</span> to each request to the API system
+        <br />Example: :link
+    ',
     '' => '',
     '' => '',
     '' => '',

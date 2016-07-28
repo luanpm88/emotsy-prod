@@ -17,7 +17,7 @@
 					<li class="active">{{ trans('messages.settings') }}</li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-address-book3"></i> {{ Auth::user()->displayName() }}</span>
+					<span class="text-semibold"><i class="icon-profile"></i> {{ Auth::user()->displayName() }}</span>
 				</h1>
 			</div>
 
@@ -27,29 +27,26 @@
 	
 				@include("account._menu")
                 
-                <h4 class="text-semibold text-teal">{{ trans('messages.api_url') }}</h4>
+                <h4 class="text-semibold">{{ trans('messages.api_url') }}</h4>
                     
-                <code style="font-size: 20px;">
-                    {{ action("Api\HomeController@index") }}/
-                </code>
+                <code style="font-size: 18px;">
+                    {{ action("Api\HomeController@index") }}/</code>
 					
-				<br />	
-				<h4 class="text-semibold text-teal">{{ trans('messages.api_docs') }}</h4>
+				<br /><br />	
+				<h4 class="text-semibold">{{ trans('messages.api_docs') }}</h4>
                     
-                <code style="font-size: 20px;">
-                    <a target="_blank" href="{{ action("Api\HomeController@index") }}/doc/">{{ action("Api\HomeController@index") }}/doc/ <i class="icon-link"></i></a>
-                </code>
+                <code style="font-size: 18px;">
+                    <a target="_blank" href="{{ action("Api\HomeController@index") }}/doc/">{{ action("Api\HomeController@index") }}/doc/ <i class="icon-link"></i></a></code>
                     
-                <br />
-				<h4 class="text-semibold text-teal mt-20">{{ trans('messages.your_api_token') }}</h4>
-                    
-                <code style="font-size: 20px;">
-                    {{ Auth::user()->api_token }}
-                </code>
-				
-				
-                
                 <br /><br />
+				<h4 class="text-semibold mt-20">{{ trans('messages.your_api_token') }}</h4>
+                    
+                <code style="font-size: 18px;">
+                    {{ Auth::user()->api_token }}</code>
+				<br />
+				<br />
+				<p class="alert alert-info">{!! trans('messages.api_token_guide', ["link" => action("Api\MailListController@index", ["api_token" => "YOUR_API_TOKEN"])]) !!}</p>
+
                 <a class="btn btn-info bg-teal-600" href="{{ action("AccountController@renewToken") }}">{{ trans('messages.renew_token')}}</a>
                     
                 
