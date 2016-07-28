@@ -99,7 +99,7 @@ class DatabaseSeeder extends Seeder
             'from_email' => 'noreply@anphabeta.com',
             'reply_to' => 'noreply@anphabeta.com',
             'from_name' => 'Those were the days',
-            'html' => '<b>Those</b> were the <span style="color:green">days</span>',
+            'html' => 'Hello [CAMPAIGN_NAME], <br><b>Those</b> were the <span style="color:green">days</span>',
             'plain' => 'Those were the <i>days</i>',
             'status' => 'pending',
             'created_at' => $created_at,
