@@ -178,9 +178,9 @@
 							@include('helpers.form_control', [
 								'type' => 'select',
 								'class' => '',
-								'name' => 'feedback_loop_handler',
+								'name' => 'feedback_loop_handler_id',
 								'label' => trans("messages.feedback_loop_handler"),
-								'value' => $server->feedback_loop_handler,
+								'value' => $server->feedback_loop_handler_id,
 								'help_class' => 'sending_server',
 								'include_blank' => trans('messages.choose'),
 								'options' => Mailixa\Model\FeedbackLoopHandler::getSelectOptions(),
