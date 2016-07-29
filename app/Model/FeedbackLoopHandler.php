@@ -153,4 +153,19 @@ class FeedbackLoopHandler extends Model
             'protocol' => 'required',
         ];
     }
+    
+    /**
+     * Get select options.
+     *
+     * @return array
+     */
+    public static function getSelectOptions()
+    {
+        $query = FeedbackLoopHandler::getAll();
+        
+        $options = $query->orderBy("name", "asc")->get()->map(function ($item) {
+            return ['value' => $item->id, 'text' => $item->name];
+        });
+        return $options;
+    }
 }

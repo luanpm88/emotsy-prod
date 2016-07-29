@@ -158,6 +158,37 @@
 							])
 						</div>
 					</div>
+						
+					<h4 class="text-semibold text-teal-800">{{ trans('messages.handlers') }}</h4>
+					<div class="row">
+						<div class="col-md-4">
+							@include('helpers.form_control', [
+								'type' => 'select',
+								'class' => '',
+								'name' => 'bounce_handler_id',
+								'label' => trans("messages.bounce_handler"),
+								'value' => $server->bounce_handler_id,
+								'help_class' => 'sending_server',
+								'include_blank' => trans('messages.choose'),
+								'options' => Mailixa\Model\BounceHandler::getSelectOptions(),
+								'rules' => Mailixa\Model\SendingServer::rules(request()->type)
+							])
+						</div>
+						<div class="col-md-4">
+							@include('helpers.form_control', [
+								'type' => 'select',
+								'class' => '',
+								'name' => 'feedback_loop_handler',
+								'label' => trans("messages.feedback_loop_handler"),
+								'value' => $server->feedback_loop_handler,
+								'help_class' => 'sending_server',
+								'include_blank' => trans('messages.choose'),
+								'options' => Mailixa\Model\FeedbackLoopHandler::getSelectOptions(),
+								'rules' => Mailixa\Model\SendingServer::rules(request()->type)
+							])
+						</div>
+					</div>
+					
 					<br >
 					<div class="text-right">
 						<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>

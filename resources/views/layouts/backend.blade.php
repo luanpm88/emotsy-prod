@@ -89,14 +89,14 @@
 							@if (Auth::user()->getOption("backend", "bounce_handler_read") != 'no')
 								<li rel0="BounceHandlerController">
 									<a href="{{ action('Admin\BounceHandlerController@index') }}">
-										<i class="glyphicon glyphicon-share"></i> {{ trans('messages.bounce_handler') }}
+										<i class="glyphicon glyphicon-share"></i> {{ trans('messages.bounce_handlers') }}
 									</a>
 								</li>
 							@endif
 							@if (Auth::user()->getOption("backend", "fbl_handler_read") != 'no')
 								<li rel0="FeedbackLoopHandlerController">
 									<a href="{{ action('Admin\FeedbackLoopHandlerController@index') }}">
-										<i class="glyphicon glyphicon-retweet"></i> {{ trans('messages.feedback_loop_handler') }}
+										<i class="glyphicon glyphicon-retweet"></i> {{ trans('messages.feedback_loop_handlers') }}
 									</a>
 								</li>
 							@endif

@@ -204,7 +204,8 @@ class SendingServer extends Model
      */
     protected $fillable = [
         'name', 'host', 'aws_access_key_id', 'aws_secret_access_key', 'aws_region', 'smtp_username',
-        'smtp_password', 'smtp_port', 'smtp_protocol', 'quota_value', 'quota_base', 'quota_unit'
+        'smtp_password', 'smtp_port', 'smtp_protocol', 'quota_value', 'quota_base', 'quota_unit',
+        'bounce_handler_id', 'feedback_loop_handler_id'
     ];
     
     /**

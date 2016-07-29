@@ -16,6 +16,8 @@ class CreateSendingServersTable extends Migration
             $table->increments('id');
             $table->uuid('uid');
             $table->integer('user_id')->unsigned();
+            $table->integer('bounce_handler_id')->unsigned()->nullable();
+            $table->integer('feedback_loop_handler_id')->unsigned()->nullable();
             $table->string('name');
             $table->string('type');
             $table->string('host');
@@ -37,6 +39,8 @@ class CreateSendingServersTable extends Migration
             
             // foreign
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('bounce_handler_id')->references('id')->on('bounce_handlers')->onDelete('cascade');
+            $table->foreign('feedback_loop_handler_id')->references('id')->on('feedback_loop_handlers')->onDelete('cascade');
         });
     }
 

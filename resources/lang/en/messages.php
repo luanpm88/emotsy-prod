@@ -400,7 +400,8 @@ return [
     'sending_severs' => 'Sending servers',
     'sending_domains' => 'Sending domains',
     'handler' => 'Handler',
-    'feedback_loop_handler' => 'Feedback Loop handlers',
+    'feedback_loop_handler' => 'Feedback loop handler',
+    'feedback_loop_handlers' => 'Feedback loop handlers',
     'bounce_handlers' => 'Bounce handlers',
     'bounce_handler' => 'Bounce handler',
     'reports' => 'Reports',
@@ -738,7 +739,7 @@ return [
     'api_token_guide' => 'You need to add parameter <span class="text-semibold">api_token=YOUR_API_TOKEN</span> to each request to the API system
         <br />Example: :link
     ',
-    '' => '',
+    'handlers' => 'Handlers',
     '' => '',
     '' => '',
     '' => '',
