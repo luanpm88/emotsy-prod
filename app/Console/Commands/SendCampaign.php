@@ -5,6 +5,7 @@ namespace Mailixa\Console\Commands;
 use Illuminate\Console\Command;
 use Mailixa\Model\Campaign;
 use Mailixa\Model\TrackingLog;
+use Mailixa\Model\BounceHandler;
 use Mailixa\Model\User;
 use Mailixa\Model\SendingServer;
 use Mailixa\Library\Log;
@@ -61,6 +62,8 @@ class SendCampaign extends Command
         //echo $s->sendingQuota();
 
         //var_dump(Campaign::getPendingCampaigns());
+        
+        /**********
         $c = Campaign::first();
         for ($i = 1; $i <= 5; ++$i) { 
             $pid = pcntl_fork(); 
@@ -85,6 +88,7 @@ class SendCampaign extends Command
             $status = pcntl_wexitstatus($status); 
             echo "Child $status completed\n"; 
         } 
+        ***********/
         
 
         // Creating the pool of threads(stored as array)
@@ -125,6 +129,10 @@ class SendCampaign extends Command
         */
 
         //dd(DB::getQueryLog());
+
+
+        $c = SendingServer::find(5);
+        print_r($c->getVerp('nghipm@emgasdf.com'));
 
     }
 }

@@ -207,6 +207,21 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
+
+        DB::table('bounce_handlers')->insert([
+            'id' => 1,
+            'uid' => uniqid(),
+            'user_id' => 1,
+            'name' => 'My Bounce Handler',
+            'username' => 'nghipm@elarion.com',
+            'password' => 'dummy!!!',
+            'host' => 'mail.elarion.com',
+            'port' => 143,
+            'protocol' => 'imap',
+            'encryption' => 'notls',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
         
         DB::table('sending_servers')->insert([
             'id' => 1,
@@ -260,6 +275,7 @@ class DatabaseSeeder extends Seeder
             'quota_value' => 1000,
             'quota_base' => 5,
             'quota_unit' => 'minute',
+            'bounce_handler_id' => 1,
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
@@ -273,6 +289,7 @@ class DatabaseSeeder extends Seeder
             'quota_value' => 1000,
             'quota_base' => 5,
             'quota_unit' => 'minute',
+            'bounce_handler_id' => 1,
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
@@ -287,6 +304,7 @@ class DatabaseSeeder extends Seeder
             'quota_value' => 1000,
             'quota_base' => 5,
             'quota_unit' => 'minute',
+            'bounce_handler_id' => 1,
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);

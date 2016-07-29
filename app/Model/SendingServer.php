@@ -52,6 +52,14 @@ class SendingServer extends Model
         $message->getHeaders()->addTextHeader('X-Mailspeed-Sending-Server-Id', $this->uid);
         return $message;
     }
+
+    /**
+     * Get the segment of the campaign.
+     */
+    public function bounceHandler()
+    {
+        return $this->belongsTo('Mailixa\Model\BounceHandler');
+    }
   
     public static function pickServer($campaign)
     {
@@ -82,6 +90,20 @@ class SendingServer extends Model
     {
         $class_name = '\Mailixa\Model\\' . self::$serverMapping[$server->type];
         return $class_name::find($server->id);
+    }
+
+    /**
+     * Get all items.
+     *
+     * @return collect
+     */
+    public function getVerp($recipient)
+    {
+        if (empty($this->bounceHandler)) {
+            return $recipient;
+        } else {
+            return str_replace('@', "+" . str_replace("@", "=", $recipient) . "@", $this->bounceHandler->username);
+        }
     }
     
     /**

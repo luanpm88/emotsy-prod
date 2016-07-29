@@ -4,8 +4,10 @@ namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
-class BounceHandler extends Model
+class BounceHandler extends DeliveryHandler
 {
+    protected $table = 'bounce_handlers';
+
     public function processMessage($mbox, $message) {
        $header = imap_headerinfo($mbox, $message);
                 
@@ -14,7 +16,7 @@ class BounceHandler extends Model
        $output .= $header->Msgno." : ";
        echo $output . "\n...............................\n";
 
-       imap_delete($mbox, $header->Msgno);
+       //imap_delete($mbox, $header->Msgno);
     }
 
     public function getBouncedAddress($to) {

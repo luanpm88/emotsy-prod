@@ -166,8 +166,9 @@ class Campaign extends Model
             $pid = pcntl_fork(); 
 
             if (!$pid) { 
-                // to prevent connection closed issue when using fork
+                // Reconnect to the DB to prevent connection closed issue when using fork
                 DB::reconnect('mysql');
+                // Re-initialize logging to capture the child process' PID
                 Log::fork();
 
                 Log::info("Start child process " . ($i + 1) . " of " . sizeof($chunks) . " (forked from " . $parentPid . ")" ); 
@@ -206,16 +207,15 @@ class Campaign extends Model
             
             $i = 0;
             foreach ($subscribers as $subscriber) {
-                $i += 1;
-                Log::info("Sending to subscriber `{$subscriber->email}` ({$i}/" . sizeof($subscribers) . ")");
-
-                $message = $this->prepareEmail($subscriber);
-                
-                $server = $this->pickServer($this);
-                
                 if ($this->user->overQuota()) {
                     throw new \Exception("Customer (ID: {$this->user->id}) has reached sending quota");
                 }
+
+                $i += 1;
+                Log::info("Sending to subscriber `{$subscriber->email}` ({$i}/" . sizeof($subscribers) . ")");
+                
+                $server = $this->pickServer($this);
+                $message = $this->prepareEmail($subscriber, $server);
 
                 $sent = $server->send($message, array(
                     'from_email' => $this->from_email
@@ -395,7 +395,7 @@ class Campaign extends Model
      * @input Raw email content
      * @return MIME text message
      */
-    public function prepareEmail($subscriber)
+    public function prepareEmail($subscriber, $server)
     {
         // build the message
         $message = \Swift_Message::newInstance();
@@ -406,7 +406,8 @@ class Campaign extends Model
         $message->getHeaders()->addTextHeader('X-Mailspeed-Subscriber-Id', $subscriber->uid);
         $message->getHeaders()->addTextHeader('X-Mailspeed-User-Id', $this->user->uid);
         $message->getHeaders()->addTextHeader('X-Mailspeed-Msg-Id', uniqid());
-
+        
+        $message->setReturnPath($server->getVerp($subscriber->email));
         $message->setSubject($this->subject);
         $message->setFrom(array($this->from_email => $this->from_name));
         $message->setTo($subscriber->email);
@@ -422,7 +423,6 @@ class Campaign extends Model
 
         // attachment
         //$message->attach(Swift_Attachment::fromPath('/tmp/gaugau.csv'));
-
         return $message;
     }
     

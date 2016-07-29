@@ -34,6 +34,7 @@ class CreateSendingServersTable extends Migration
             $table->string('quota_unit');
             $table->string('status');
             $table->integer('custom_order');
+            $table->integer('bounce_handler_id')->nullable();
             
             $table->timestamps();
             
