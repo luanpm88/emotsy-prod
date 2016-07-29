@@ -111,22 +111,22 @@ class UserController extends Controller
                 $user->password = bcrypt($request->password);
             }
             
-            // Upload and save image
-            if ($request->hasFile('image')) {
-                if ($request->file('image')->isValid()) {
-                    // Remove old images
-                    $user->removeImage();                    
-                    $user->image = $user->uploadImage($request->file('image'));
-                }
-            }
-            
-            // Remove image
-            if ($request->_remove_image == 'true') {
-                $user->removeImage();
-                $user->image = "";
-            }
-            
             if ($user->save()) {
+                // Upload and save image
+                if ($request->hasFile('image')) {
+                    if ($request->file('image')->isValid()) {
+                        // Remove old images
+                        $user->removeImage();                    
+                        $user->image = $user->uploadImage($request->file('image'));
+                    }
+                }
+                
+                // Remove image
+                if ($request->_remove_image == 'true') {
+                    $user->removeImage();
+                    $user->image = "";
+                }
+                
                 $request->session()->flash('alert-success', trans('messages.user.created'));
                 return redirect()->action('Admin\UserController@index');
             }

@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', $list->name . ": " . trans('messages.subscribers'))
+@section('title', $list->name . ": " . trans('messages.segments'))
 
 @section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>

@@ -83,7 +83,7 @@
                             <i class="icon-checkmark4"></i>
                             <h4>{{ trans('messages.delivery_at') }}</h4>
                             <p>
-                                {{ Mailixa\Library\Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->delivery_at)) }}
+                                {{ isset($campaign->delivery_at) ? Mailixa\Library\Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->delivery_at)) : "" }}
                             </p>                        
                         </li>
                     </ul>
