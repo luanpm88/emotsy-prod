@@ -374,7 +374,13 @@ class InstallController extends Controller
                 "name" => "PHP Zip Archive",
                 "check" => class_exists('ZipArchive', false),
                 "note" => 'PHP Zip Archive is required.'
-            ],            
+            ],
+            [
+                "type" => 'requirement',
+                "name" => "IMAP Extension",
+                "check" => extension_loaded('imap'),
+                "note" => 'PHP IMAP Extension is required.'
+            ],        
             [
                 "type" => 'permission',
                 "name" => 'Storage/app/',
