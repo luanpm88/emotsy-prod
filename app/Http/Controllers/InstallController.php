@@ -267,9 +267,10 @@ class InstallController extends Controller
             
             // Insert default superuser
             $mysqli->query("DELETE FROM `".$database["tables_prefix"]."users` WHERE 1");
+            
             $aaa = $mysqli->query("INSERT INTO `".$database["tables_prefix"]."users`
-                (`id`, `uid`, `contact_id`, `user_group_id`, `language_id`, `name`, `email`, `password`, `remember_token`, `image`, `timezone`, `status`, `created_at`, `updated_at`, `first_name`, `last_name`, `frontend_scheme`, `backend_scheme`) VALUES
-(1, '" . uniqid() . "', NULL, 1, 1, '" . $site_info["first_name"] . " ".$site_info["last_name"]."', '".$site_info["email"]."', '".bcrypt($site_info["password"])."', '', '', '" . $site_info["timezone"] . "', 'active', '".$date."', '".$date."', '".$site_info["first_name"]."', '".$site_info["last_name"]."', '', '');");
+                (`id`, `uid`, `api_token`, `contact_id`, `user_group_id`, `language_id`, `name`, `email`, `password`, `remember_token`, `image`, `timezone`, `status`, `created_at`, `updated_at`, `first_name`, `last_name`, `frontend_scheme`, `backend_scheme`) VALUES
+(1, '" . uniqid() . "', '" . str_random(60) . "', NULL, 1, 1, '" . $site_info["first_name"] . " ".$site_info["last_name"]."', '".$site_info["email"]."', '".bcrypt($site_info["password"])."', '', '', '" . $site_info["timezone"] . "', 'active', '".$date."', '".$date."', '".$site_info["first_name"]."', '".$site_info["last_name"]."', '', '');");
             
             // Insert system urls
             $mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='url_unsubscribe'");
