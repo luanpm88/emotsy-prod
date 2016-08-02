@@ -16,7 +16,7 @@ class Campaign extends Model
     const STATUS_DONE    = 'done';
     const TYPE_REGULAR   = 'regular';
 
-    const WORKER_DELAY = 5;
+    const WORKER_DELAY = 1;
     
     public static $required_tags = array(
         array("name" => "{UNSUBSCRIBE_URL}", "required" => true),
@@ -398,15 +398,17 @@ class Campaign extends Model
     public function prepareEmail($subscriber, $server)
     {
         // build the message
+        $msgId = time() . '.' . uniqid() . '@' . substr(strrchr($this->from_email, "@"), 1);
+
         $message = \Swift_Message::newInstance();
 
         $message->setContentType("text/plain; charset=utf-8");
-      
-        $message->getHeaders()->addTextHeader('X-Mailspeed-Campaign-Id', $this->uid);
-        $message->getHeaders()->addTextHeader('X-Mailspeed-Subscriber-Id', $subscriber->uid);
-        $message->getHeaders()->addTextHeader('X-Mailspeed-User-Id', $this->user->uid);
-        $message->getHeaders()->addTextHeader('X-Mailspeed-Msg-Id', uniqid());
+        $message->getHeaders()->addTextHeader('X-Mailixa-Campaign-Id', $this->uid);
+        $message->getHeaders()->addTextHeader('X-Mailixa-Subscriber-Id', $subscriber->uid);
+        $message->getHeaders()->addTextHeader('X-Mailixa-User-Id', $this->user->uid);
+        $message->getHeaders()->addTextHeader('X-Mailixa-Message-Id', $msgId);
         
+        $message->setId($msgId);
         $message->setReturnPath($server->getVerp($subscriber->email));
         $message->setSubject($this->subject);
         $message->setFrom(array($this->from_email => $this->from_name));

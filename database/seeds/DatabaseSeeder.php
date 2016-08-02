@@ -222,6 +222,21 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
+
+        DB::table('bounce_handlers')->insert([
+            'id' => 2,
+            'uid' => uniqid(),
+            'user_id' => 1,
+            'name' => 'Outlook Bounce Handler',
+            'username' => 'minhnghivn@gmx.com',
+            'password' => 'dummy!!!',
+            'host' => 'imap.gmx.com',
+            'port' => 993,
+            'protocol' => 'imap',
+            'encryption' => 'ssl',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
         
         DB::table('sending_servers')->insert([
             'id' => 1,
@@ -311,7 +326,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('tracking_logs')->insert([
             'id' => 1,
-            'message_id' => 1,
+            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
             'sending_server_id' => 1,
             'user_id' => 1,
             'campaign_id' => 1,

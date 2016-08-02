@@ -3,20 +3,53 @@
 namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Mailixa\Library\Log;
 
 class BounceHandler extends DeliveryHandler
 {
     protected $table = 'bounce_handlers';
 
-    public function processMessage($mbox, $message) {
-       $header = imap_headerinfo($mbox, $message);
-                
-       $output = $header->subject." : ";
-       $output .= $header->toaddress." : ";
-       $output .= $header->Msgno." : ";
-       echo $output . "\n...............................\n";
+    public function processMessage($mbox, $msgNo) {
+        
+        try {
+            $header = imap_headerinfo($mbox, $msgNo);
+            Log::info('Processing bounce notification for message ' . $header->message_id);
 
-       //imap_delete($mbox, $header->Msgno);
+            $body = imap_body ($mbox, $msgNo, FT_PEEK);
+
+            //$bouncedAddress = $this->getBouncedAddress($header->toaddress);
+            //print_r($bouncedAddress . "\n");
+            //if (empty($bouncedAddress)) {
+            //    throw new \Exception("not a bounce message");
+            //}
+
+            $msgId = $this->getMessageId($body);
+            
+            if (empty($msgId)) {
+                throw new \Exception("cannot find Message-ID");
+            }
+                
+            $trackingLog = TrackingLog::where('message_id', $msgId)->first();
+            if (empty($trackingLog)) {
+                throw new \Exception("not a bounce message");
+            }
+            
+            // record a bounce log, one message may have more than one
+            $bounceLog = new BounceLog();
+            $bounceLog->message_id = $msgId;
+            $bounceLog->bounce_type = '?';
+            $bounceLog->raw = imap_fetchheader($mbox, $msgNo) . PHP_EOL . $body;
+            $bounceLog->save();
+            
+            // just delete the bounce notification email
+            imap_delete($mbox, $msgNo);
+
+            Log::info("Bounce recorded for message " . $header->message_id);
+        } catch(\Exception $ex) {
+            Log::error($ex->getMessage());
+        } finally {
+            //
+        }
     }
 
     public function getBouncedAddress($to) {
@@ -24,8 +57,17 @@ class BounceHandler extends DeliveryHandler
        if (sizeof($matched) == 0) {
            return;
        } else {
-           return $matched[0];
+           return str_replace('=', '@', $matched[0]);
        }
+    }
+
+    public function getMessageId($message) {
+        preg_match('/(?<=X-Mailixa-Message-Id: )[^\s]*/', $message, $matched);
+        if (sizeof($matched) == 0) {
+            return;
+        } else {
+            return $matched[0];
+        }
     }
     
     /**

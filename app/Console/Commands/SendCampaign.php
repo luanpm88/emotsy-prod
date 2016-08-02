@@ -54,6 +54,8 @@ class SendCampaign extends Command
      */
     public function handle()
     {
+        Log::configure(storage_path() . '/logs/mail.log');
+
         //$u = User::first();
         //$u->overQuota(); 
         //DB::enableQueryLog();
@@ -131,8 +133,7 @@ class SendCampaign extends Command
         //dd(DB::getQueryLog());
 
 
-        $c = SendingServer::find(5);
-        print_r($c->getVerp('nghipm@emgasdf.com'));
-
+        $b = BounceHandler::find(2);
+        $b->start();
     }
 }

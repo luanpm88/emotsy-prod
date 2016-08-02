@@ -3,15 +3,16 @@
 namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Mailixa\Library\Log;
 
 class DeliveryHandler extends Model
 {
     public function start() { 
         // Connect to IMAP server
-        $imapPath = "{{$this->host}:{$this->port}/{$this->protocol}/notls}INBOX";
-         
+        $imapPath = "{{$this->host}:{$this->port}/{$this->protocol}/{$this->encryption}}INBOX";
+        
         // try to connect 
-        $inbox = imap_open($imapPath, $this->username, 'lario1104M') or die('Cannot connect to Gmail: ' . imap_last_error());
+        $inbox = imap_open($imapPath, $this->username, $this->password) or die('Cannot connect to server: ' . imap_last_error());
          
         // search and get unseen emails, function will return email ids
         $emails = imap_search($inbox, 'UNSEEN');

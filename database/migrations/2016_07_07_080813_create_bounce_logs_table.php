@@ -16,7 +16,7 @@ class CreateBounceLogsTable extends Migration
             $table->increments('id');
             $table->string('message_id');
             $table->string('bounce_type');
-            $table->string('raw');
+            $table->text('raw');
             
             $table->timestamps();
             
