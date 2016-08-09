@@ -409,7 +409,8 @@ class Campaign extends Model
         $message->getHeaders()->addTextHeader('X-Mailixa-Message-Id', $msgId);
         
         $message->setId($msgId);
-        $message->setReturnPath($server->getVerp($subscriber->email));
+        // @TODO for AWS, setting returnPath requires verified domain or email address
+        //$message->setReturnPath($server->getVerp($subscriber->email));
         $message->setSubject($this->subject);
         $message->setFrom(array($this->from_email => $this->from_name));
         $message->setTo($subscriber->email);
