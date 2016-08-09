@@ -15,7 +15,8 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         // Commands\Inspire::class,
         Commands\SendCampaign::class,
-        Commands\TestCampaign::class
+        Commands\TestCampaign::class,
+        Commands\RunHandler::class
     ];
 
     /**
