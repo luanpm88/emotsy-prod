@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Mailixa\Model\Campaign;
 use Mailixa\Model\TrackingLog;
 use Mailixa\Model\BounceHandler;
+use Mailixa\Model\FeedbackLoopHandler;
 use Mailixa\Model\User;
 use Mailixa\Model\SendingServer;
 use Mailixa\Library\Log;
@@ -64,6 +65,7 @@ class RunHandler extends Command
             Log::info('Started!');
         }
         
+        // bounce
         $handlers = BounceHandler::get();
         Log::info(sizeof($handlers) . ' bounce handlers found');
         $count = 1;
@@ -73,5 +75,19 @@ class RunHandler extends Command
             Log::info('Finish processing handler ' . $handler->name );
             $count += 1;
         }
+
+        // abuse
+        $handlers = FeedbackLoopHandler::get();
+        Log::info(sizeof($handlers) . ' feedback loop handlers found');
+        $count = 1;
+        foreach($handlers as $handler) {
+            Log::info('Starting handler ' . $handler->name . " ($count/" . sizeof($handlers) . ')' );
+            $handler->start();
+            Log::info('Finish processing handler ' . $handler->name );
+            $count += 1;
+        }
+
+
+        Log::info('Handlers finished!');
     }
 }

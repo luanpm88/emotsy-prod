@@ -13,14 +13,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\DatabaseManager;
 use DB;
 
-class Gaugau {
-    public static $gaugau = [];
-
-    public static function add($s) {
-        self::$gaugau[] = $s;
-    }
-}
-
 class SendCampaign extends Command
 {
     /**
@@ -131,9 +123,27 @@ class SendCampaign extends Command
         */
 
         //dd(DB::getQueryLog());
+        
+        $transport = \Swift_MailTransport::newInstance();
 
+        // Create the Mailer using your created Transport
+        $mailer = \Swift_Mailer::newInstance($transport);
 
-        $b = BounceHandler::find(2);
-        $b->start();
+        $message = \Swift_Message::newInstance();
+
+        $message->setContentType("text/plain; charset=utf-8");
+        $message->getHeaders()->addTextHeader('Feedback-Type', 'abuse');
+        $message->setSubject('Test Abuse report');
+        $message->setFrom('minhnghivn@gmail.com');
+        $message->setTo('nghipm@elarion.com');
+        $message->setEncoder(\Swift_Encoding::get8bitEncoding());
+        
+        //$message->setBody('Hi Nghị');
+        $message->setBody(file_get_contents('/tmp/abuse'));
+
+        // Actually send
+        $sent = $mailer->send($message);
+
+        var_dump($sent);
     }
 }

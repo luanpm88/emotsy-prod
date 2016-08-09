@@ -13,8 +13,6 @@ class BounceHandler extends DeliveryHandler
         
         try {
             $header = imap_headerinfo($mbox, $msgNo);
-            Log::info('Processing bounce notification for message ' . $header->message_id);
-
             $body = imap_body ($mbox, $msgNo, FT_PEEK);
 
             //$bouncedAddress = $this->getBouncedAddress($header->toaddress);
@@ -26,29 +24,30 @@ class BounceHandler extends DeliveryHandler
             $msgId = $this->getMessageId($body);
             
             if (empty($msgId)) {
-                throw new \Exception("cannot find Message-ID");
+                imap_setflag_full($mbox, $msgNo, "\\Seen \\Flagged");
+                throw new \Exception("cannot find Message-ID, skipped");
             }
+
+            Log::info('Processing bounce notification for message ' . $msgId);
                 
             $trackingLog = TrackingLog::where('message_id', $msgId)->first();
             if (empty($trackingLog)) {
-                throw new \Exception("not a bounce message");
+                throw new \Exception("not a bounce message, skipped");
             }
             
             // record a bounce log, one message may have more than one
             $bounceLog = new BounceLog();
             $bounceLog->message_id = $msgId;
-            $bounceLog->bounce_type = '?';
+            $bounceLog->bounce_type = 'unknown'; // @TODO fill in the NULL value here
             $bounceLog->raw = imap_fetchheader($mbox, $msgNo) . PHP_EOL . $body;
             $bounceLog->save();
             
             // just delete the bounce notification email
             imap_delete($mbox, $msgNo);
 
-            Log::info("Bounce recorded for message " . $header->message_id);
+            Log::info("Bounce recorded for message " . $msgId);
         } catch(\Exception $ex) {
-            Log::error($ex->getMessage());
-        } finally {
-            //
+            Log::warning($ex->getMessage());
         }
     }
 
@@ -59,15 +58,6 @@ class BounceHandler extends DeliveryHandler
        } else {
            return str_replace('=', '@', $matched[0]);
        }
-    }
-
-    public function getMessageId($message) {
-        preg_match('/(?<=X-Mailixa-Message-Id: )[^\s]*/', $message, $matched);
-        if (sizeof($matched) == 0) {
-            return;
-        } else {
-            return $matched[0];
-        }
     }
     
     /**
