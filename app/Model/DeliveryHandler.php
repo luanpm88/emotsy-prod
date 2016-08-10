@@ -13,7 +13,7 @@ class DeliveryHandler extends Model
             $imapPath = "{{$this->host}:{$this->port}/{$this->protocol}/{$this->encryption}}INBOX";
             
             // try to connect 
-            $inbox = imap_open($imapPath, $this->username, $this->password) or die('Cannot connect to server: ' . imap_last_error());
+            $inbox = imap_open($imapPath, $this->username, $this->password);
              
             // search and get unseen emails, function will return email ids
             $emails = imap_search($inbox, 'UNSEEN');

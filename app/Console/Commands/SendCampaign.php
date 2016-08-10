@@ -122,6 +122,7 @@ class SendCampaign extends Command
         }
         */
 
+        /*
         //dd(DB::getQueryLog());
         
         $transport = \Swift_MailTransport::newInstance();
@@ -135,7 +136,7 @@ class SendCampaign extends Command
         $message->getHeaders()->addTextHeader('Feedback-Type', 'abuse');
         $message->setSubject('Test Abuse report');
         $message->setFrom('minhnghivn@gmail.com');
-        $message->setTo('nghipm@elarion.com');
+        $message->setTo('bounce@simulator.amazonses.com');
         $message->setEncoder(\Swift_Encoding::get8bitEncoding());
         
         //$message->setBody('Hi Nghị');
@@ -145,5 +146,14 @@ class SendCampaign extends Command
         $sent = $mailer->send($message);
 
         var_dump($sent);
+        */
+
+        $t = TrackingLog::where('message_id', '010101567021f595-c65aece3-53e6-4352-b00c-e7340d2a02fb-000000')->first();
+        //print_r($t);
+        if (empty($t)) {
+            echo 1;
+        } else {
+            echo 2;
+        }
     }
 }

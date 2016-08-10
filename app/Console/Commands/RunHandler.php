@@ -47,9 +47,21 @@ class RunHandler extends Command
      */
     public function handle()
     {
+        // setup the logging engine
         Log::configure(storage_path() . '/logs/handler.log');
-        Log::info('Try to start handling process...');
+        try {
+            $this->execRunHandler();
+            Log::info('Handlers finished!');
+        } catch (\Exception $e) {
+            Log::error('Something went wrong: ' . $e->getMessage());
+        }
+        
+    }
 
+    private function execRunHandler() {
+        // guarantee that only one process can be run at one time
+        // use socket as lock
+        Log::info('Try to start handling process...');
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         if (false === $socket) {
             throw new Exception("can't create socket: " . socket_last_error($socket));
@@ -64,17 +76,6 @@ class RunHandler extends Command
             // just go ahead
             Log::info('Started!');
         }
-        
-        // bounce
-        $handlers = BounceHandler::get();
-        Log::info(sizeof($handlers) . ' bounce handlers found');
-        $count = 1;
-        foreach($handlers as $handler) {
-            Log::info('Starting handler ' . $handler->name . " ($count/" . sizeof($handlers) . ')' );
-            $handler->start();
-            Log::info('Finish processing handler ' . $handler->name );
-            $count += 1;
-        }
 
         // abuse
         $handlers = FeedbackLoopHandler::get();
@@ -86,8 +87,16 @@ class RunHandler extends Command
             Log::info('Finish processing handler ' . $handler->name );
             $count += 1;
         }
-
-
-        Log::info('Handlers finished!');
+        
+        // bounce
+        $handlers = BounceHandler::get();
+        Log::info(sizeof($handlers) . ' bounce handlers found');
+        $count = 1;
+        foreach($handlers as $handler) {
+            Log::info('Starting handler ' . $handler->name . " ($count/" . sizeof($handlers) . ')' );
+            $handler->start();
+            Log::info('Finish processing handler ' . $handler->name );
+            $count += 1;
+        }
     }
 }
