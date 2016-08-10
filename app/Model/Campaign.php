@@ -1189,6 +1189,24 @@ class Campaign extends Model
         
         return $records;
     }
+    
+    /**
+     * Replace link in text by click tracking url
+     *
+     * @return text
+     */
+    public static function addTrackingUrl($email_html_content)
+    {
+        if(preg_match_all("|<a.*(?=href=\"([^\"]*)\")[^>]*>([^<]*)</a>|i", $email_html_content, $matches))
+        {            
+            foreach($matches[1] as $href) {
+                $new_src = str_replace("URL", base64_encode($href), Setting::get("url_click_track"));
+                $email_html_content = str_replace($href, $new_src, $email_html_content);
+            }
+        }
+        
+        return $email_html_content;
+    }
 }
 
 

@@ -621,6 +621,8 @@ class CampaignController extends Controller
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
         $log->url = base64_decode($request->url);
         $log->save();
+        
+        return redirect()->away(base64_decode($request->url));
     }
     
     /**
