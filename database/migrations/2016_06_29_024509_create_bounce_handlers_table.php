@@ -17,12 +17,12 @@ class CreateBounceHandlersTable extends Migration
             $table->uuid('uid');
             $table->integer('user_id')->unsigned();
             $table->string('name');
-            $table->string('type');
             $table->string('host');
             $table->string('username');
             $table->string('password');
             $table->string('port');
             $table->string('protocol');
+            $table->string('encryption');
             $table->string('status');
             $table->string('custom_order');
             

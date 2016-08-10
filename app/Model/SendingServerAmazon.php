@@ -70,7 +70,7 @@ class SendingServerAmazon extends SendingServer
         $topicResponse = $this->snsClient()->createTopic(array('Name' => self::SNS_TOPIC));
         //$subscribeUrl  = Option::get('campaign_notification_url');
         // @TODO sửa hard-coded here
-        $subscribeUrl  = 'http://www.gmail.com';
+        $subscribeUrl  = 'http://52.76.202.5:8888/delivery/notify';
 
         $subscribeResponse = $this->snsClient()->subscribe(array(
             'TopicArn' => $topicResponse->get('TopicArn'),

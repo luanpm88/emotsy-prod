@@ -16,12 +16,12 @@ class CreateBounceLogsTable extends Migration
             $table->increments('id');
             $table->string('message_id');
             $table->string('bounce_type');
-            $table->string('raw');
+            $table->text('raw');
             
             $table->timestamps();
             
-            // foreign
-            $table->foreign('message_id')->references('message_id')->on('tracking_logs')->onDelete('cascade');
+            // không cần ràng buộc này, vì thậm chí khi gửi bằng AWS thì SNS bounce gần như ngay lập tức, trước khi ghi xuống tracking_logs
+            // $table->foreign('message_id')->references('message_id')->on('tracking_logs')->onDelete('cascade');
         });
     }
 

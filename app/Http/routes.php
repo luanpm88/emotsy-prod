@@ -105,6 +105,8 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('lists/{list_uid}/subscribers/export/download', 'SubscriberController@downloadExportedCsv');
     
     // Notification handler
+    
+    Route::post('delivery/notify', 'DeliveryController@notify');
     Route::get('delivery/notify', 'DeliveryController@notify');
     
     // Segment

@@ -23,6 +23,7 @@ class CreateFeedbackLoopHandlersTable extends Migration
             $table->string('password');
             $table->string('port');
             $table->string('protocol');
+            $table->string('encryption');
             $table->string('status');
             $table->integer('custom_order');
             

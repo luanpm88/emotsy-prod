@@ -3,26 +3,58 @@
 namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Mailixa\Library\Log;
 
-class FeedbackLoopHandler extends Model
+class FeedbackLoopHandler extends DeliveryHandler
 {
-    public function processMessage($mbox, $message) {
-        $header = imap_headerinfo($mbox, $message);
-                
-        $output = $header->subject." : ";
-        $output .= $header->toaddress." : ";
-        $output .= $header->Msgno." : ";
-        $headers = imap_fetchheader($mbox, $header->Msgno);
-        preg_match('/Received\s*:\s*[^\n]*/im', $headers, $matched);
+    public function processMessage($mbox, $msgNo) {
         
-        if (!empty($matched)) {
-            $type = preg_replace('/Received\s*:\s*/im', '', $matched[0]);
-            echo "\n".$type."\n";
-        } else {
-            // not an ARF email
+        try {
+            $header = imap_fetchheader($mbox, $msgNo);
+            $body = imap_body($mbox, $msgNo, FT_PEEK);
+            $feedbackType = $this->getFeedbackType($header);;
+            if (empty($feedbackType)) {
+                imap_setflag_full($mbox, $msgNo, "\\Seen \\Flagged");
+                throw new \Exception("not an ARF message. Skipped");
+            }
+
+            $msgId = $this->getMessageId($body);
+            if (empty($msgId)) {
+                imap_setflag_full($mbox, $msgNo, "\\Seen \\Flagged");
+                throw new \Exception("cannot find Message-ID, skipped");
+            }
+
+            Log::info('Processing abuse notification for message ' . $msgId);
+            
+            $trackingLog = TrackingLog::where('message_id', $msgId)->first();
+            if (empty($trackingLog)) {
+                imap_setflag_full($mbox, $msgNo, "\\Seen \\Flagged");
+                throw new \Exception("message-id not found in tracking_logs, skipped");
+            }
+            
+            // record a bounce log, one message may have more than one
+            $feedbackLog = new FeedbackLog();
+            $feedbackLog->message_id = $msgId;
+            $feedbackLog->feedback_type = $feedbackType; // @TODO fill in the NULL value here
+            $feedbackLog->raw_feedback_content = $header . PHP_EOL . $body;
+            $feedbackLog->save();
+            
+            // just delete the bounce notification email
+            imap_delete($mbox, $msgNo);
+
+            Log::info("Feedback recorded for message " . $msgId);
+        } catch(\Exception $ex) {
+            Log::warning($ex->getMessage());
         }
-        
-        echo "\n...............................\n";
+    }
+
+    public function getFeedbackType($header) {
+        preg_match('/(?<=Feedback-Type:)\s*[^\s]*/', $header, $matched);
+        if (sizeof($matched) == 0) {
+            return;
+        } else {
+            return trim($matched[0]);
+        }
     }
     
     /**

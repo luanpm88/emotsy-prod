@@ -5,20 +5,13 @@ namespace Mailixa\Console\Commands;
 use Illuminate\Console\Command;
 use Mailixa\Model\Campaign;
 use Mailixa\Model\TrackingLog;
+use Mailixa\Model\BounceHandler;
 use Mailixa\Model\User;
 use Mailixa\Model\SendingServer;
 use Mailixa\Library\Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\DatabaseManager;
 use DB;
-
-class Gaugau {
-    public static $gaugau = [];
-
-    public static function add($s) {
-        self::$gaugau[] = $s;
-    }
-}
 
 class SendCampaign extends Command
 {
@@ -53,6 +46,8 @@ class SendCampaign extends Command
      */
     public function handle()
     {
+        Log::configure(storage_path() . '/logs/mail.log');
+
         //$u = User::first();
         //$u->overQuota(); 
         //DB::enableQueryLog();
@@ -61,6 +56,8 @@ class SendCampaign extends Command
         //echo $s->sendingQuota();
 
         //var_dump(Campaign::getPendingCampaigns());
+        
+        /**********
         $c = Campaign::first();
         for ($i = 1; $i <= 5; ++$i) { 
             $pid = pcntl_fork(); 
@@ -85,6 +82,7 @@ class SendCampaign extends Command
             $status = pcntl_wexitstatus($status); 
             echo "Child $status completed\n"; 
         } 
+        ***********/
         
 
         // Creating the pool of threads(stored as array)
@@ -124,7 +122,38 @@ class SendCampaign extends Command
         }
         */
 
+        /*
         //dd(DB::getQueryLog());
+        
+        $transport = \Swift_MailTransport::newInstance();
 
+        // Create the Mailer using your created Transport
+        $mailer = \Swift_Mailer::newInstance($transport);
+
+        $message = \Swift_Message::newInstance();
+
+        $message->setContentType("text/plain; charset=utf-8");
+        $message->getHeaders()->addTextHeader('Feedback-Type', 'abuse');
+        $message->setSubject('Test Abuse report');
+        $message->setFrom('minhnghivn@gmail.com');
+        $message->setTo('bounce@simulator.amazonses.com');
+        $message->setEncoder(\Swift_Encoding::get8bitEncoding());
+        
+        //$message->setBody('Hi Nghị');
+        $message->setBody(file_get_contents('/tmp/abuse'));
+
+        // Actually send
+        $sent = $mailer->send($message);
+
+        var_dump($sent);
+        */
+
+        $t = TrackingLog::where('message_id', '010101567021f595-c65aece3-53e6-4352-b00c-e7340d2a02fb-000000')->first();
+        //print_r($t);
+        if (empty($t)) {
+            echo 1;
+        } else {
+            echo 2;
+        }
     }
 }

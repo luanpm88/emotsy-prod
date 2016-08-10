@@ -101,7 +101,7 @@ class DatabaseSeeder extends Seeder
             'from_name' => 'Those were the days',
             'html' => 'Hello [CAMPAIGN_NAME], <br><b>Those</b> were the <span style="color:green">days</span>',
             'plain' => 'Those were the <i>days</i>',
-            'status' => 'new',
+            'status' => 'ready',
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
@@ -207,6 +207,51 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
+
+        DB::table('bounce_handlers')->insert([
+            'id' => 1,
+            'uid' => uniqid(),
+            'user_id' => 1,
+            'name' => 'My Bounce Handler',
+            'username' => 'nghipm@elarion.com',
+            'password' => 'dummy!!!',
+            'host' => 'mail.elarion.com',
+            'port' => 143,
+            'protocol' => 'imap',
+            'encryption' => 'notls',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
+        DB::table('bounce_handlers')->insert([
+            'id' => 2,
+            'uid' => uniqid(),
+            'user_id' => 1,
+            'name' => 'GMX Bounce Handler',
+            'username' => 'minhnghivn@gmx.com',
+            'password' => 'dummy!!!',
+            'host' => 'imap.gmx.com',
+            'port' => 993,
+            'protocol' => 'imap',
+            'encryption' => 'ssl',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
+        DB::table('feedback_loop_handlers')->insert([
+            'id' => 1,
+            'uid' => uniqid(),
+            'user_id' => 1,
+            'name' => 'GMX Feedback Loop Handler',
+            'username' => 'minhnghivn@gmx.com',
+            'password' => 'dummy!!!',
+            'host' => 'imap.gmx.com',
+            'port' => 993,
+            'protocol' => 'imap',
+            'encryption' => 'ssl',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
         
         DB::table('sending_servers')->insert([
             'id' => 1,
@@ -260,6 +305,7 @@ class DatabaseSeeder extends Seeder
             'quota_value' => 1000,
             'quota_base' => 5,
             'quota_unit' => 'minute',
+            'bounce_handler_id' => 1,
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
@@ -273,6 +319,7 @@ class DatabaseSeeder extends Seeder
             'quota_value' => 1000,
             'quota_base' => 5,
             'quota_unit' => 'minute',
+            'bounce_handler_id' => 1,
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
@@ -287,13 +334,14 @@ class DatabaseSeeder extends Seeder
             'quota_value' => 1000,
             'quota_base' => 5,
             'quota_unit' => 'minute',
+            'bounce_handler_id' => 1,
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);
 
         DB::table('tracking_logs')->insert([
             'id' => 1,
-            'message_id' => 1,
+            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
             'sending_server_id' => 1,
             'user_id' => 1,
             'campaign_id' => 1,
@@ -305,7 +353,7 @@ class DatabaseSeeder extends Seeder
 
         DB::table('tracking_logs')->insert([
             'id' => 2,
-            'message_id' => 2,
+            'message_id' => '5069900013.fece1089d17ee@anphabeta.com',
             'sending_server_id' => 1,
             'user_id' => 1,
             'campaign_id' => 1,
@@ -317,7 +365,7 @@ class DatabaseSeeder extends Seeder
         
         DB::table('open_logs')->insert([
             'id' => 1,
-            'message_id' => 1,
+            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
             'ip_address' => '111.111.00.11',
             'created_at' => $created_at,
             'updated_at' => $updated_at
@@ -325,7 +373,7 @@ class DatabaseSeeder extends Seeder
         
         DB::table('click_logs')->insert([
             'id' => 1,
-            'message_id' => 1,
+            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
             'url' => 'http://google.com',
             'ip_address' => '111.111.00.11',
             'created_at' => $created_at,
@@ -334,8 +382,8 @@ class DatabaseSeeder extends Seeder
         
         DB::table('feedback_logs')->insert([
             'id' => 1,
-            'message_id' => 1,
-            'feedback_type' => '0',
+            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
+            'feedback_type' => 'abuse',
             'raw_feedback_content' => '0',
             'created_at' => $created_at,
             'updated_at' => $updated_at
@@ -343,7 +391,7 @@ class DatabaseSeeder extends Seeder
         
         DB::table('unsubscribe_logs')->insert([
             'id' => 1,
-            'message_id' => 1,
+            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
             'user_agent' => '0',
             'ip_address' => '111.111.00.11',
             'created_at' => $created_at,
