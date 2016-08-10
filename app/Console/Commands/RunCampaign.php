@@ -72,6 +72,12 @@ class RunCampaign extends Command
             // just go ahead
             Log::info('Started!');
         }
+        
+        // @TODO debug only
+        $c = Campaign::first();
+        TrackingLog::where('campaign_id', $c->id)->delete();
+        $c->status = Campaign::STATUS_READY;
+        $c->save();
 
         $campaigns = Campaign::getWaitingCampaigns();
         Log::info(sizeof($campaigns) . ' campaigns found');

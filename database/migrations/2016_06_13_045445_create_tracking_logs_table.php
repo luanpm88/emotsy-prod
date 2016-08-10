@@ -14,6 +14,7 @@ class CreateTrackingLogsTable extends Migration
     {
         Schema::create('tracking_logs', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('runtime_message_id')->unique()->nullable();
             $table->string('message_id')->unique()->nullable();
             $table->integer('user_id')->unsigned(); // deliberate redundant for quick retrieving
             $table->integer('sending_server_id')->unsigned();

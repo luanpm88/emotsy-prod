@@ -35,24 +35,21 @@ class SendingServerAmazonSmtp extends SendingServerAmazon
                 Log::info('Sent!');
       
                 return array(
-                    'message_id' => $transport->getMessageId(),
-                    'status' => self::DELIVERY_STATUS_SENT,
-                    'error' => NULL
+                    'runtime_message_id' => $transport->getMessageId(),
+                    'status' => self::DELIVERY_STATUS_SENT
                 );
             } else {
                 Log::warning('Sending failed');
                 return array(
                     'status' => self::DELIVERY_STATUS_FAILED,
-                    'error' => 'Unknown SMTP error',
-                    'message_id' => NULL
+                    'error' => 'Unknown SMTP error'
                 );
             }
         } catch (\Exception $e) {
             Log::warning('Sending failed');
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,
-                'error' => $e->getMessage(),
-                'message_id' => NULL
+                'error' => $e->getMessage()
             );
         }
     }

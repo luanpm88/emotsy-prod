@@ -25,17 +25,15 @@ class SendingServerAmazonApi extends SendingServerAmazon
             Log::info('Sent!');
       
             return array(
-                'message_id' => $sent['MessageId'],
-                'status' => self::DELIVERY_STATUS_SENT,
-                'error' => NULL
+                'runtime_message_id' => $sent['MessageId'],
+                'status' => self::DELIVERY_STATUS_SENT
             );
         
         } catch (\Exception $e) {
             Log::warning($e->getMessage());
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,
-                'error' => $e->getMessage(),
-                'message_id' => NULL
+                'error' => $e->getMessage()
             );
         }
     }

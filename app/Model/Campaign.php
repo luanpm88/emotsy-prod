@@ -4,6 +4,7 @@ namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Mailixa\Library\Log;
+use Mailixa\Library\StringHelper;
 use DB;
 
 class Campaign extends Model
@@ -216,13 +217,13 @@ class Campaign extends Model
                 Log::info("Sending to subscriber `{$subscriber->email}` ({$i}/" . sizeof($subscribers) . ")");
                 
                 $server = $this->pickServer($this);
-                $message = $this->prepareEmail($subscriber, $server);
+                list($message, $msgId) = $this->prepareEmail($subscriber, $server);
 
                 $sent = $server->send($message, array(
                     'from_email' => $this->from_email
                 ));
 
-                $this->trackMessage($sent, $subscriber, $server);
+                $this->trackMessage($sent, $subscriber, $server, $msgId);
             }
 
             if (!$multi) {
@@ -231,7 +232,7 @@ class Campaign extends Model
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            Log::error("Campaign `{$this->name}` (ID: {$this->campaign_id}) deferred!");
+            Log::error("Campaign `{$this->name}` (ID: " . $this->id . ") deferred!");
             $this->pending();
         } finally {        
             // reset server pools: just in case DeliveryServerAmazonSesWebApi
@@ -245,17 +246,16 @@ class Campaign extends Model
      * Log Delivery
      * Log delivery message, used for later tracking
      */
-    public function trackMessage($response, $subscriber, $server)
+    public function trackMessage($response, $subscriber, $server, $msgId)
     {
-        $log = new TrackingLog();
-        $log->campaign_id = $this->id;
-        $log->message_id = $response['message_id'];
-        $log->subscriber_id = $subscriber->id;
-        $log->sending_server_id = $server->id;
-        $log->status = $response['status'];
-        $log->error = $response['error'];
-        $log->user_id = $this->user->id;
-        $log->save();
+        $params = array_merge(array(
+                'campaign_id' => $this->id,
+                'message_id' => $msgId,
+                'subscriber_id' => $subscriber->id,
+                'sending_server_id' => $server->id,
+                'user_id' => $this->user->id
+            ), $response);
+        return TrackingLog::create($params);
     }
 
     public function pickServer($campaign)
@@ -385,9 +385,11 @@ class Campaign extends Model
      */
     public function appendOpenTrackingUrl($body, $subscriber)
     {
-        $tracking_url = str_replace('CAMPAIGN_UID', $this->campaign_uid, Option::get('open_track_url'));
-        $tracking_url = str_replace('SUBSCRIBER_UID', $subscriber->subscriber_uid, $tracking_url);
-        return $body . '<img src="' . $tracking_url . '" width="0" height="0" />';
+        // @TODO 
+        $openTrackingBaseURL = 'http://gaugau.com/track/CAMPAIGN_UID/SUBSCRIBER_UID';
+        $tracking_url = str_replace('CAMPAIGN_UID', StringHelper::base64UrlEncode($this->uid), $openTrackingBaseURL);
+        $tracking_url = str_replace('SUBSCRIBER_UID', StringHelper::base64UrlEncode($subscriber->uid), $openTrackingBaseURL);
+        return $body . '<img src="' . $tracking_url . '" width="0" height="0" style="visibility:hidden" />';
     }
     
     /**
@@ -416,18 +418,19 @@ class Campaign extends Model
         $message->setFrom(array($this->from_email => $this->from_name));
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
-        //$message->setEncoder(Swift_Encoding::get8bitEncoding());
+        $message->setEncoder(\Swift_Encoding::get8bitEncoding());
 
         $body = $this->tagMessage($this->html, $subscriber);
-        //$body = $this->appendOpenTrackingUrl($body, $subscriber);
-        $message->setBody($this->html, 'text/html');
+        $body = $this->appendOpenTrackingUrl($body, $subscriber);
+        //$body = $this->addTrackingUrl($body, $subscriber);
+        $message->setBody($body, 'text/html');
 
         //$plain = $this->transformTags($this->plain);
         $message->addPart($this->plain, 'text/plain');
 
         // attachment
         //$message->attach(Swift_Attachment::fromPath('/tmp/gaugau.csv'));
-        return $message;
+        return array($message, $msgId);
     }
     
     /**
