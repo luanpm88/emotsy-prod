@@ -13,8 +13,8 @@ class DeliveryHandler extends Model
             $imapPath = "{{$this->host}:{$this->port}/{$this->protocol}/{$this->encryption}}INBOX";
             
             // try to connect 
-            $inbox = imap_open($imapPath, $this->username, $this->password);
-             
+            $inbox = @imap_open($imapPath, $this->username, $this->password);
+
             // search and get unseen emails, function will return email ids
             $emails = imap_search($inbox, 'UNSEEN');
             
@@ -28,6 +28,10 @@ class DeliveryHandler extends Model
             imap_expunge($inbox);
             imap_close($inbox);
         } catch (\Exception $e) {
+            // suppress the IMAP error 
+            // see http://stackoverflow.com/questions/5422405/cant-silence-imap-open-error-notices-in-php
+            imap_errors();
+            imap_alerts();
             Log::error('Cannot connect to handler ' . $e->getMessage());
         }
     }
