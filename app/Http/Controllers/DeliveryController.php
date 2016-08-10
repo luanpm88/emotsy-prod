@@ -99,7 +99,7 @@ class DeliveryController extends Controller
             $bounce = $responseMessage['bounce'];
 
             $bounceLog = new BounceLog();
-            $bounceLog->message_id = $responseMessage['mail']['messageId'];
+            $bounceLog->runtime_message_id = $responseMessage['mail']['messageId'];
             $bounceLog->bounce_type = $bounce['bounceType'] !== 'Permanent' ? BounceLog::SOFT : BounceLog::HARD;
             $bounceLog->raw = $message->get('Message');
             $bounceLog->save();
