@@ -49,13 +49,13 @@ class RunHandler extends Command
     {
         // setup the logging engine
         Log::configure(storage_path() . '/logs/handler.log');
+        
         try {
             $this->execRunHandler();
             Log::info('Handlers finished!');
         } catch (\Exception $e) {
             Log::error('Something went wrong: ' . $e->getMessage());
         }
-        
     }
 
     private function execRunHandler() {
@@ -71,7 +71,7 @@ class RunHandler extends Command
         if (false === @socket_bind($socket, '127.0.0.1', 60204)) {
             // some other process is already running
             Log::warning('Another handling process is already running. Terminated!');
-            return false;
+            exit;
         } else {
             // just go ahead
             Log::info('Started!');

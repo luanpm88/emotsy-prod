@@ -88,9 +88,9 @@ class Campaign extends Model
      * get pending campaigns
      *
      */
-    public static function getPendingCampaigns()
+    public static function getWaitingCampaigns()
     {
-        return self::where('status', self::STATUS_PENDING)->whereRaw('run_at IS NULL OR run_at <= NOW()')->get();
+        return self::where('status', self::STATUS_READY)->whereRaw('run_at IS NULL OR run_at <= NOW()')->get();
     }
     
     /**

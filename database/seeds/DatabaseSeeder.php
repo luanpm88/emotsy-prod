@@ -101,7 +101,7 @@ class DatabaseSeeder extends Seeder
             'from_name' => 'Those were the days',
             'html' => 'Hello [CAMPAIGN_NAME], <br><b>Those</b> were the <span style="color:green">days</span>',
             'plain' => 'Those were the <i>days</i>',
-            'status' => 'new',
+            'status' => 'ready',
             'created_at' => $created_at,
             'updated_at' => $updated_at
         ]);

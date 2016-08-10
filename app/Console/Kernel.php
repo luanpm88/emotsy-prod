@@ -16,7 +16,8 @@ class Kernel extends ConsoleKernel
         // Commands\Inspire::class,
         Commands\SendCampaign::class,
         Commands\TestCampaign::class,
-        Commands\RunHandler::class
+        Commands\RunHandler::class,
+        Commands\RunCampaign::class
     ];
 
     /**
