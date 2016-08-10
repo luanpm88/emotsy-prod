@@ -74,7 +74,7 @@ class CampaignController extends Controller
         $campaign->name = trans('messages.untitled');
         $campaign->user_id = $request->user()->id;
         $campaign->status = \Mailixa\Model\Campaign::STATUS_NEW;
-        $campaign->type = \Mailixa\Model\Campaign::TYPE_REGULAR;
+        $campaign->type = $request->type;
         $campaign->save();
         
         return redirect()->action('CampaignController@recipients', ['uid' => $campaign->uid]);
@@ -309,10 +309,14 @@ class CampaignController extends Controller
             }
         }
         
-        $rules = array(
-            'html' => $validate,
+        $rules = array(            
             'plain' => 'required',
         );
+        
+        // if campaign type is not plain text
+        if($campaign->type != 'plain-text') {
+            $rules['html'] = $validate;
+        }
         
         // Get old post values
         if(null !== $request->old()) {

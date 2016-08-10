@@ -15,6 +15,7 @@ class Campaign extends Model
     const STATUS_PAUSED  = 'paused';
     const STATUS_DONE    = 'done';
     const TYPE_REGULAR   = 'regular';
+    const TYPE_PLAIN_TEXT   = 'plain-text';
 
     const WORKER_DELAY = 1;
     
@@ -1209,6 +1210,19 @@ class Campaign extends Model
         }
         
         return $email_html_content;
+    }
+    
+    /**
+     * Type of campaigns.
+     *
+     * @return object
+     */
+    public static function types()
+    {
+        return [
+            "regular" => [],
+            "plain-text" => [],
+        ];
     }
 }
 

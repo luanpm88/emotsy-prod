@@ -433,7 +433,11 @@ $(function() {
     $(document).on("click", ".insert_tag_button", function(e) {
         var tag = $(this).attr("data-tag-name");
         
-        tinymce.activeEditor.execCommand('mceInsertContent', false, tag);
+        if(!$(".plain_text_li").hasClass("active")) {
+            tinymce.activeEditor.execCommand('mceInsertContent', false, tag);
+        } else {
+            $('textarea[name="plain"]').html($('textarea[name="plain"]').val()+tag);
+        }
     });
     
     // Segments select box by list
@@ -626,4 +630,5 @@ $(function() {
         $(".copy-list-close").trigger("click");
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
+
 });

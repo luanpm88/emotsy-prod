@@ -64,7 +64,7 @@
 							@endif
 						</div>
 						<div class="col-md-2 text-right">
-							<a href="{{ action("CampaignController@create") }}" type="button" class="btn bg-info-800">
+							<a href="#" type="button" class="btn bg-info-800" data-toggle="modal" data-target="#campaign_types">
 								<i class="icon icon-plus2"></i> {{ trans('messages.create_campaign') }}
 							</a>
 						</div>
@@ -76,4 +76,34 @@
 						
 					</div>
 				</form>
+					
+					
+				<!-- Basic modal -->
+				<div id="campaign_types" class="modal fade">
+					<div class="modal-dialog">
+						<div class="modal-content">							
+								<div class="modal-header bg-teal">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h2 class="modal-title">{{ trans('messages.select_campaign_type') }}</h2>
+								</div>
+				
+								<div class="modal-body">
+									
+									@foreach (Mailixa\Model\Campaign::types() as $key => $type)
+										
+										<a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-info btn-lg bg-teal-800">
+											<i class="icon-paperplane"></i> {{ trans('messages.' . $key) }}
+										</a>
+										
+									@endforeach
+									
+								</div>
+				
+								<div class="modal-footer">
+									<button type="button" class="btn btn-white" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+								</div>
+						</div>
+					</div>
+				</div>
+				<!-- /basic modal -->
 @endsection

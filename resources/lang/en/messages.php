@@ -740,8 +740,8 @@ return [
         <br />Example: :link
     ',
     'handlers' => 'Handlers',
-    '' => '',
-    '' => '',
+    'plain-text' => 'Plain text',
+    'select_campaign_type' => 'Select campaign type',
     '' => '',
     '' => '',
     '' => '',
