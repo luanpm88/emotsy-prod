@@ -616,7 +616,7 @@ class Campaign extends Model
         }
         
         // Step 3
-        if (!empty($this->html) && !empty($this->plain)) {
+        if ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain)) {
             $step = 3;
         } else {
             return $step;

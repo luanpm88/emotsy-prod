@@ -81,9 +81,9 @@
                         <li>
                             <a href="{{ action('CampaignController@schedule', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
                             <i class="icon-checkmark4"></i>
-                            <h4>{{ trans('messages.delivery_at') }}</h4>
+                            <h4>{{ trans('messages.run_at') }}</h4>
                             <p>
-                                {{ isset($campaign->delivery_at) ? Mailixa\Library\Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->delivery_at)) : "" }}
+                                {{ isset($campaign->run_at) ? Mailixa\Library\Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->run_at)) : "" }}
                             </p>                        
                         </li>
                     </ul>

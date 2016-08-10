@@ -436,7 +436,7 @@ $(function() {
         if(!$(".plain_text_li").hasClass("active")) {
             tinymce.activeEditor.execCommand('mceInsertContent', false, tag);
         } else {
-            $('textarea[name="plain"]').html($('textarea[name="plain"]').val()+tag);
+            $('textarea[name="plain"]').val($('textarea[name="plain"]').val()+tag);
         }
     });
     
@@ -630,5 +630,9 @@ $(function() {
         $(".copy-list-close").trigger("click");
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
-
+    
+    // disble campaign step link
+    $(document).on("click", ".campaign-steps li.disabled a", function(e) {
+        e.preventDefault();
+    });
 });
