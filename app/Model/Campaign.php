@@ -328,7 +328,7 @@ class Campaign extends Model
             'CURRENT_YEAR' => date("Y"),
             'CURRENT_MONTH' => date("m"),
             'CURRENT_DAY' => date("d"),
-            'UNSUBSCRIBE_URL' => str_replace('MESSAGE_ID', $msgId, Setting::get('url_unsubscribe')),
+            'UNSUBSCRIBE_URL' => str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), Setting::get('url_unsubscribe')),
             'CONTACT_NAME' => $this->mailList->contact->company,
             'CONTACT_COUNTRY' => $this->mailList->contact->country->name,
             'CONTACT_STATE' => $this->mailList->contact->state,
