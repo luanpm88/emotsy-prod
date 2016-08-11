@@ -43,7 +43,7 @@ class DeliveryController extends Controller
      */
     public function notify(Request $request)
     {
-        Log::configure(storage_path() . '/logs/delivery.log');
+        Log::configure(storage_path() . '/logs/handler.log');
 
         // Make sure the request is POST
         if (!$request->isMethod('post')) {
@@ -100,7 +100,7 @@ class DeliveryController extends Controller
 
             $bounceLog = new BounceLog();
             $bounceLog->runtime_message_id = $responseMessage['mail']['messageId'];
-            $bounceLog->bounce_type = $bounce['bounceType'] !== 'Permanent' ? BounceLog::SOFT : BounceLog::HARD;
+            $bounceLog->bounce_type = $bounce['bounceType']; // !== 'Permanent' ? BounceLog::SOFT : BounceLog::HARD;
             $bounceLog->raw = $message->get('Message');
             $bounceLog->save();
             Log::info('Bounce recorded for message ' . $bounceLog->message_id);
@@ -116,7 +116,7 @@ class DeliveryController extends Controller
             $feedback = $responseMessage['complaint'];
 
             $feedbackLog = new FeedbackLog();
-            $feedbackLog->message_id = $responseMessage['mail']['messageId'];
+            $feedbackLog->runtime_message_id = $responseMessage['mail']['messageId'];
             $feedbackLog->feedback_type = $feedback['complaintFeedbackType'];
             $feedbackLog->raw_feedback_content = $message->get('Message');
             $feedbackLog->save();

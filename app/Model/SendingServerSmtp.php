@@ -21,9 +21,6 @@ class SendingServerSmtp extends SendingServer
 
             // Create the Mailer using your created Transport
             $mailer = \Swift_Mailer::newInstance($transport);
-            
-            // Sign with DKIM
-            $this->sign($message, $params);
 
             // Actually send
             $sent = $mailer->send($message);

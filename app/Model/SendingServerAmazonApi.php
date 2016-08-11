@@ -17,9 +17,9 @@ class SendingServerAmazonApi extends SendingServerAmazon
             $this->setupSns($params);
 
             $sent = $this->sesClient()->sendRawEmail(array(
-              'RawMessage' => array(
-                'Data' => base64_encode($message->toString())
-              )
+                'RawMessage' => array(
+                    'Data' => base64_encode($message->toString())
+                )
             ));
 
             Log::info('Sent!');
@@ -30,6 +30,7 @@ class SendingServerAmazonApi extends SendingServerAmazon
             );
         
         } catch (\Exception $e) {
+            Log::warning('Sending failed');
             Log::warning($e->getMessage());
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,

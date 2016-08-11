@@ -9,7 +9,6 @@ use DB;
 
 class SendingServer extends Model
 {
-    const DKIM_SELECTOR = 'mailer';
     const DELIVERY_STATUS_SENT = 'sent';
     const DELIVERY_STATUS_FAILED = 'failed';
 
@@ -25,27 +24,6 @@ class SendingServer extends Model
 
     public static function resetServerPools() {
         self::$serverPools = array();
-    }
-
-    private function findSendingDomain($email) {
-        $domain = substr(strrchr($email, "@"), 1);
-        return SendingDomain::where('name', $domain)->first();
-    }
-
-    public function sign($message, $params) {
-        $sendingDomain = $this->findSendingDomain($params['from_email']);
-        
-        if (empty($sendingDomain)) {
-            return $message;
-        }
-
-        $privateKey = $sendingDomain->dkim_private_key;
-        $domainName = $sendingDomain->name;
-        $selector = self::DKIM_SELECTOR;
-        $signer = new \Swift_Signers_DKIMSigner($privateKey, $domainName, $selector);
-        $signer->ignoreHeader('Return-Path');
-        $message->attachSigner($signer);
-        return $message;
     }
 
     public function addMtaHeaders($message) {

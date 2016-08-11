@@ -19,6 +19,8 @@ class Campaign extends Model
     const TYPE_PLAIN_TEXT   = 'plain-text';
 
     const WORKER_DELAY = 1;
+
+    const DKIM_SELECTOR = 'mailer';
     
     public static $required_tags = array(
         array("name" => "{UNSUBSCRIBE_URL}", "required" => true),
@@ -312,7 +314,7 @@ class Campaign extends Model
      * Transform Tags
      * Transform tags to actual values before sending
      */
-    public function tagMessage($message, $subscriber)
+    public function tagMessage($message, $subscriber, $msgId)
     {
         $tags = array(
             'SUBSCRIBER_EMAIL' => $subscriber->email,
@@ -326,7 +328,7 @@ class Campaign extends Model
             'CURRENT_YEAR' => date("Y"),
             'CURRENT_MONTH' => date("m"),
             'CURRENT_DAY' => date("d"),
-            'UNSUBSCRIBE_URL' => str_replace('SUBSCRIBER_UID', $subscriber->uid, str_replace('CAMPAIGN_UID', $this->uid, Setting::get('url_unsubscribe'))),
+            'UNSUBSCRIBE_URL' => str_replace('MESSAGE_ID', $msgId, Setting::get('url_unsubscribe')),
             'CONTACT_NAME' => $this->mailList->contact->company,
             'CONTACT_COUNTRY' => $this->mailList->contact->country->name,
             'CONTACT_STATE' => $this->mailList->contact->state,
@@ -383,12 +385,11 @@ class Campaign extends Model
      * Append Open Tracking URL
      * Append open-tracking URL to every email message
      */
-    public function appendOpenTrackingUrl($body, $subscriber)
+    private function appendOpenTrackingUrl($body, $msgId)
     {
         // @TODO 
-        $openTrackingBaseURL = 'http://gaugau.com/track/CAMPAIGN_UID/SUBSCRIBER_UID';
-        $tracking_url = str_replace('CAMPAIGN_UID', StringHelper::base64UrlEncode($this->uid), $openTrackingBaseURL);
-        $tracking_url = str_replace('SUBSCRIBER_UID', StringHelper::base64UrlEncode($subscriber->uid), $openTrackingBaseURL);
+        $openTrackingBaseURL = 'http://52.76.202.5:8888/delivery/notify/MESSAGE_ID'; // Setting::get("url_open_track")
+        $tracking_url = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $openTrackingBaseURL);
         return $body . '<img src="' . $tracking_url . '" width="0" height="0" style="visibility:hidden" />';
     }
     
@@ -404,14 +405,13 @@ class Campaign extends Model
         $msgId = time() . '.' . uniqid() . '@' . substr(strrchr($this->from_email, "@"), 1);
 
         $message = \Swift_Message::newInstance();
-
+        $message->setId($msgId);
         $message->setContentType("text/plain; charset=utf-8");
         $message->getHeaders()->addTextHeader('X-Mailixa-Campaign-Id', $this->uid);
         $message->getHeaders()->addTextHeader('X-Mailixa-Subscriber-Id', $subscriber->uid);
         $message->getHeaders()->addTextHeader('X-Mailixa-User-Id', $this->user->uid);
         $message->getHeaders()->addTextHeader('X-Mailixa-Message-Id', $msgId);
         
-        $message->setId($msgId);
         // @TODO for AWS, setting returnPath requires verified domain or email address
         //$message->setReturnPath($server->getVerp($subscriber->email));
         $message->setSubject($this->subject);
@@ -420,17 +420,47 @@ class Campaign extends Model
         $message->setReplyTo($this->reply_to);
         $message->setEncoder(\Swift_Encoding::get8bitEncoding());
 
-        $body = $this->tagMessage($this->html, $subscriber);
-        $body = $this->appendOpenTrackingUrl($body, $subscriber);
-        //$body = $this->addTrackingUrl($body, $subscriber);
-        $message->setBody($body, 'text/html');
+        $body = $this->tagMessage($this->html, $subscriber, $msgId);
 
-        //$plain = $this->transformTags($this->plain);
+        if ($this->track_open) {
+            $body = $this->appendOpenTrackingUrl($body, $msgId);
+        }
+
+        if ($this->track_click) {
+            $body = $this->addTrackingUrl($body, $subscriber);
+        }
+
+        $message->setBody($body, 'text/html');
         $message->addPart($this->plain, 'text/plain');
+
+        if ($this->sign_dkim) {
+            $message = $this->sign($message);
+        }
 
         // attachment
         //$message->attach(Swift_Attachment::fromPath('/tmp/gaugau.csv'));
         return array($message, $msgId);
+    }
+
+    private function findSendingDomain($email) {
+        $domain = substr(strrchr($email, "@"), 1);
+        return SendingDomain::where('name', $domain)->first();
+    }
+
+    private function sign($message) {
+        $sendingDomain = $this->findSendingDomain($this->from_email);
+        
+        if (empty($sendingDomain)) {
+            return $message;
+        }
+
+        $privateKey = $sendingDomain->dkim_private;
+        $domainName = $sendingDomain->name;
+        $selector = self::DKIM_SELECTOR;
+        $signer = new \Swift_Signers_DKIMSigner($privateKey, $domainName, $selector);
+        $signer->ignoreHeader('Return-Path');
+        $message->attachSigner($signer);
+        return $message;
     }
     
     /**
@@ -1202,12 +1232,12 @@ class Campaign extends Model
      *
      * @return text
      */
-    public static function addTrackingUrl($email_html_content)
+    private function addTrackingUrl($email_html_content)
     {
         if(preg_match_all("|<a.*(?=href=\"([^\"]*)\")[^>]*>([^<]*)</a>|i", $email_html_content, $matches))
         {            
             foreach($matches[1] as $href) {
-                $new_src = str_replace("URL", base64_encode($href), Setting::get("url_click_track"));
+                $new_src = str_replace("URL", StringHelper::base64UrlEncode($href), Setting::get("url_click_track"));
                 $email_html_content = str_replace($href, $new_src, $email_html_content);
             }
         }

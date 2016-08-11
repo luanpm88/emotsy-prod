@@ -36,9 +36,6 @@ class SendingServerSendmail extends SendingServer
 
             // Create the Mailer using your created Transport
             $mailer = \Swift_Mailer::newInstance($transport);
-            
-            // Sign with DKIM
-            $this->sign($message, $params);
 
             // Actually send
             $sent = $mailer->send($message);
@@ -59,6 +56,7 @@ class SendingServerSendmail extends SendingServer
             }
         } catch (\Exception $e) {
             Log::warning('Sending failed');
+            Log::warning($e->getMessage());
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,
                 'error' => $e->getMessage()
