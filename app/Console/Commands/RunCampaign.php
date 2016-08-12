@@ -84,7 +84,7 @@ class RunCampaign extends Command
         $count = 1;
         foreach($campaigns as $campaign) {
             Log::info('Starting campaign ' . $campaign->name . " ($count/" . sizeof($campaigns) . ')' );
-            $campaign->start();
+            $campaign->startMultiProcesses();
             Log::info('Finish campaign ' . $campaign->name );
             $count += 1;
         }

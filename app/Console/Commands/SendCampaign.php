@@ -7,6 +7,7 @@ use Mailixa\Model\Campaign;
 use Mailixa\Model\TrackingLog;
 use Mailixa\Model\BounceHandler;
 use Mailixa\Model\User;
+use Mailixa\Model\Setting;
 use Mailixa\Model\SendingServer;
 use Mailixa\Library\Log;
 use Illuminate\Database\Eloquent\Model;
@@ -148,12 +149,6 @@ class SendCampaign extends Command
         var_dump($sent);
         */
 
-        $t = TrackingLog::where('message_id', '010101567021f595-c65aece3-53e6-4352-b00c-e7340d2a02fb-000000')->first();
-        //print_r($t);
-        if (empty($t)) {
-            echo 1;
-        } else {
-            echo 2;
-        }
+        print_r(Setting::get("url_delivery_handler"));
     }
 }

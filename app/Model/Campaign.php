@@ -4,6 +4,7 @@ namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Mailixa\Library\Log;
+use Mailixa\Model\Setting;
 use Mailixa\Library\StringHelper;
 use DB;
 
@@ -159,12 +160,12 @@ class Campaign extends Model
         $this->sending();
 
         Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
-        $count = 3; // @TODO setting here
+        $count = (int)$this->user->getOption("frontend", "max_process");
         $subscribers = $this->getPendingSubscribers();
         Log::info(sizeof($subscribers) . " subscriber(s) selected");
         $chunks = $this->getChunks($subscribers, $count);
         
-        Log::info("Start multi-process session" );
+        Log::info("Start multi-process (" . sizeof($chunks) . ") session" );
         $parentPid = getmypid();
         for ($i = 0; $i < sizeof($chunks); $i++) { 
             $pid = pcntl_fork(); 
@@ -248,7 +249,7 @@ class Campaign extends Model
      * Log Delivery
      * Log delivery message, used for later tracking
      */
-    public function trackMessage($response, $subscriber, $server, $msgId)
+    private function trackMessage($response, $subscriber, $server, $msgId)
     {
         $params = array_merge(array(
                 'campaign_id' => $this->id,
@@ -314,7 +315,7 @@ class Campaign extends Model
      * Transform Tags
      * Transform tags to actual values before sending
      */
-    public function tagMessage($message, $subscriber, $msgId)
+    private function tagMessage($message, $subscriber, $msgId)
     {
         $tags = array(
             'SUBSCRIBER_EMAIL' => $subscriber->email,
@@ -360,7 +361,7 @@ class Campaign extends Model
      * Get Pending Subscribers
      * Select only subscribers that are ready for sending. Those whose status is `blacklisted`, `pending` or `unconfirmed` are not included
      */
-    public function getPendingSubscribers()
+    private function getPendingSubscribers()
     {
         if (is_object($this->segment)) {
             // @TODO table hard-coded here
@@ -399,7 +400,7 @@ class Campaign extends Model
      * @input Raw email content
      * @return MIME text message
      */
-    public function prepareEmail($subscriber, $server)
+    private function prepareEmail($subscriber, $server)
     {
         // build the message
         $msgId = time() . '.' . uniqid() . '@' . substr(strrchr($this->from_email, "@"), 1);
@@ -407,6 +408,7 @@ class Campaign extends Model
         $message = \Swift_Message::newInstance();
         $message->setId($msgId);
         $message->setContentType("text/plain; charset=utf-8");
+        // @TODO replace Mailixa
         $message->getHeaders()->addTextHeader('X-Mailixa-Campaign-Id', $this->uid);
         $message->getHeaders()->addTextHeader('X-Mailixa-Subscriber-Id', $subscriber->uid);
         $message->getHeaders()->addTextHeader('X-Mailixa-User-Id', $this->user->uid);
