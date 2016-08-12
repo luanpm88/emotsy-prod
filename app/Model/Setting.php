@@ -204,7 +204,7 @@ class Setting extends Model
             ],
             'url_delivery_handler' => [
                 'cat' => 'url',
-                'value' => "", // action('HomeController@index'),
+                'value' => "", // action('DeliveryController@notify'),
                 'type' => 'text',
                 'not_required' => true,
             ],
