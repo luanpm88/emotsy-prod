@@ -103,12 +103,12 @@ $(function() {
 
     // Default initialization
     $('.select').select2({
-        minimumResultsForSearch: 10
+        minimumResultsForSearch: 101
     });
 
     // Select with search
     $('.select-search').select2({
-        minimumResultsForSearch: 10
+        minimumResultsForSearch: 101
     });
     
     

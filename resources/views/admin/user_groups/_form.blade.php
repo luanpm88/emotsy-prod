@@ -245,12 +245,12 @@
 										</div>
 										<div class="col-md-3">
 											<div class="form-group">
-												<label class="mt-0 mb-5 text-semibold">{{ trans('messages.label_multi_process') }}</label>
-												@include('helpers.form_control', ['type' => 'checkbox',
+												<label class="mt-0 mb-5 text-semibold">{{ trans('messages.max_number_of_processes') }}</label>
+												@include('helpers.form_control', ['type' => 'select',
 													'name' => 'options[frontend][multi_process]',
 													'value' => $options['frontend']['multi_process'],
 													'label' => '',
-													'options' => [false, true],
+													'options' => Mailixa\Model\UserGroup::multiProcessSelectOptions(),
 													'help_class' => 'user_group',
 													'rules' => Mailixa\Model\UserGroup::rules()
 												])

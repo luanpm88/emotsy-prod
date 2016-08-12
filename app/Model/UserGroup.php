@@ -171,7 +171,7 @@ class UserGroup extends Model
                 'sending_quota' => '-1',
                 'sending_quota_time' => '-1',
                 'sending_quota_time_unit' => 'month',
-                'multi_process' => false,
+                'multi_process' => '1',
             ],
             "backend" => [
                 'user_group_read' => 'all',
@@ -643,6 +643,20 @@ class UserGroup extends Model
                 $row->save();
             }
         }
+    }
+    
+    /**
+     * Multi process select options.
+     *
+     * @return array
+     */
+    public static function multiProcessSelectOptions()
+    {
+        $options = [['value' => 1, 'text' => trans('messages.one_single_process')]];
+        for($i=2; $i < 101; $i++) {
+            $options[] = ['value' => $i, 'text' => $i];
+        }
+        return $options;
     }
     
 }
