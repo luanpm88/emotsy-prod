@@ -616,17 +616,18 @@ class CampaignController extends Controller
      * @return void
      */
     public function click(Request $request)
-    {        
+    {
+        $decoded_url = \Mailixa\Library\StringHelper::base64UrlDecode($request->url);
         // redirect base64_decode($url);
         $log = new \Mailixa\Model\ClickLog();
         $log->message_id = $request->message_id;
         $location = \Mailixa\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
-        $log->url = base64_decode($request->url);
+        $log->url = $decoded_url;
         $log->save();
         
-        return redirect()->away(base64_decode($request->url));
+        return redirect()->away($decoded_url);
     }
     
     /**

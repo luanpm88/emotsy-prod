@@ -247,8 +247,8 @@
 											<div class="form-group">
 												<label class="mt-0 mb-5 text-semibold">{{ trans('messages.max_number_of_processes') }}</label>
 												@include('helpers.form_control', ['type' => 'select',
-													'name' => 'options[frontend][multi_process]',
-													'value' => $options['frontend']['multi_process'],
+													'name' => 'options[frontend][max_process]',
+													'value' => $options['frontend']['max_process'],
 													'label' => '',
 													'options' => Mailixa\Model\UserGroup::multiProcessSelectOptions(),
 													'help_class' => 'user_group',
