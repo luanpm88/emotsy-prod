@@ -30,7 +30,6 @@ class SettingController extends Controller
     {
         // \Mailixa\Model\Setting::updateAll();
         $settings = \Mailixa\Model\Setting::getAll();        
-        
         if (null !== $request->old()) {
             foreach ($request->old() as $name => $value) {
                 if(isset($settings[$name])) {

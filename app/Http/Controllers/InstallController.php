@@ -285,9 +285,9 @@ class InstallController extends Controller
             $mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='url_click_track'");
             $mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
                             ('url_click_track', '".action('CampaignController@click', ["message_id" => trans("messages.MESSAGE_ID"), "url" => trans("messages.URL")])."', '".$date."', '".$date."');");
-            $mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='url_campaign_notification'");
-            $mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                            ('url_campaign_notification', '".action('HomeController@index')."', '".$date."', '".$date."');");
+            //$mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='url_campaign_notification'");
+            //$mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+            //                ('url_campaign_notification', '".action('HomeController@index')."', '".$date."', '".$date."');");
             $mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='site_name'");
             $mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
                             ('site_name', '".$site_info["site_name"]."', '".$date."', '".$date."');");
