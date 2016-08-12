@@ -46,7 +46,8 @@
             @include('helpers.form_control', [
                 'type' => 'text',
                 'name' => 'port',
-                'value' => (isset($database["port"]) ? $database["port"] : ""),
+                'value' => (isset($database["port"]) ? $database["port"] : "3306"),
+				'placeholder' => '3306',
                 'help_class' => 'install',
                 'rules' => $rules
             ])
