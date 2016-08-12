@@ -738,7 +738,7 @@ return [
     'select_campaign_type' => 'Select campaign type',
     'max_number_of_processes' => 'Max number of processes',
     'one_single_process' => '1 (Single process)',
-    '' => '',
+    'url_delivery_handler' => 'Delivery handler',
     '' => '',
     '' => '',
     '' => '',

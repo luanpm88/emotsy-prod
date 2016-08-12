@@ -76,6 +76,7 @@ class SettingController extends Controller
         \Mailixa\Model\Setting::set("url_unsubscribe", action('CampaignController@unsubscribe', ["message_id" => trans("messages.MESSAGE_ID")]));
         \Mailixa\Model\Setting::set("url_open_track", action('CampaignController@open', ["message_id" => trans("messages.MESSAGE_ID")]));
         \Mailixa\Model\Setting::set("url_click_track", action('CampaignController@click', ["message_id" => trans("messages.MESSAGE_ID"), "url" => trans("messages.URL")]));
+        \Mailixa\Model\Setting::set("url_delivery_handler", action('DeliveryController@notify'));
         
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.setting.updated'));

@@ -85,7 +85,7 @@
 							@foreach (Mailixa\Model\Campaign::topOpens(5, null)->get() as $num => $item)
 								<li>
                                     <div class="row">
-                                        <div class="col-md-5">
+                                        <div class="col-sm-5 col-md-5">
                                             <i class="number">{{ $num+1 }}</i>
                                             <h6 class="mt-0 mb-0 text-semibold">
                                                 <a href="">
@@ -100,21 +100,21 @@
 												@endif                                                
                                             </p>
                                         </div>
-										<div class="col-md-2 text-left">
+										<div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
 												{{ $item->aggregate }}
 											</h5>
 											<span class="text-muted">{{ trans('messages.opens') }}</span>
                                                 <br /><br />
                                         </div>
-                                        <div class="col-md-2 text-left">
+                                        <div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
 												{{ $item->openUniqCount() }}
 											</h5>
 											<span class="text-muted">{{ trans('messages.uniq_opens') }}</span>
                                                 <br /><br />
                                         </div>
-										<div class="col-md-2 text-left">
+										<div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
 												{{ Mailixa\Library\Tool::formatDateTime($item->lastOpen()->created_at) }}
 											</h5>
@@ -132,7 +132,7 @@
 							@foreach (Mailixa\Model\Campaign::topClicks(5, null)->get() as $num => $item)
 								<li>
                                     <div class="row">
-                                        <div class="col-md-5">
+                                        <div class="col-sm-5 col-md-5">
                                             <i class="number">{{ $num+1 }}</i>
                                             <h6 class="mt-0 mb-0 text-semibold">
                                                 <a href="">
@@ -147,21 +147,21 @@
 												@endif                                                
                                             </p>
                                         </div>
-                                        <div class="col-md-2 text-left">
+                                        <div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
 												{{ $item->aggregate }}
 											</h5>
 											<span class="text-muted">{{ trans('messages.clicks') }}</span>
                                                 <br /><br />
                                         </div>
-										<div class="col-md-2 text-left">
+										<div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
 												{{ $item->urlCount() }}
 											</h5>
 											<span class="text-muted">{{ trans('messages.urls') }}</span>
                                                 <br /><br />
                                         </div>
-										<div class="col-md-2 text-left">
+										<div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
 												{{ Mailixa\Library\Tool::formatDateTime($item->lastClick()->created_at) }}
 											</h5>
@@ -180,7 +180,7 @@
 							@foreach (Mailixa\Model\Campaign::topLinks(5, null)->get() as $num => $item)
 								<li>
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-sm-6 col-md-6">
                                             <i class="number">{{ $num+1 }}</i>
                                             <h6 class="mt-0 mb-0 text-semibold">
                                                 <a href="{{ $item->url }}" target="_blank">
@@ -191,14 +191,14 @@
 												{{ $item->campaigns()->count() }} {{ trans('messages.campaigns') }}                                              
                                             </p>
                                         </div>
-                                        <div class="col-md-2 text-left">
+                                        <div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
 												{{ $item->aggregate }}
 											</h5>
 											<span class="text-muted">{{ trans('messages.clicks') }}</span>
                                                 <br /><br />
                                         </div>
-										<div class="col-md-2 text-left">
+										<div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
 												{{ Mailixa\Library\Tool::formatDateTime($item->lastClick()->created_at) }}          
 											</h5>
