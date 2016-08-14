@@ -275,6 +275,20 @@ class DatabaseSeeder extends Seeder
         ]);
 
         DB::table('sending_servers')->insert([
+            'id' => 6,
+            'uid' => uniqid(),
+            'name' => 'Mailgun API',
+            'user_id' => 1,
+            'type' => 'mailgun-api',
+            'api_key' => 'key-04dbf1c76df28775e4c3d9215d5ca548',
+            'quota_value' => 1000,
+            'quota_base' => 5,
+            'quota_unit' => 'minute',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
+        DB::table('sending_servers')->insert([
             'id' => 2,
             'uid' => uniqid(),
             'name' => 'Server Amazon API',
@@ -437,6 +451,15 @@ class DatabaseSeeder extends Seeder
         DB::table('user_group_sending_servers')->insert([
             'id' => 5,
             'sending_server_id' => 5,
+            'user_group_id' => 1,
+            'fitness' => 0,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
+        DB::table('user_group_sending_servers')->insert([
+            'id' => 6,
+            'sending_server_id' => 6,
             'user_group_id' => 1,
             'fitness' => 100,
             'created_at' => $created_at,

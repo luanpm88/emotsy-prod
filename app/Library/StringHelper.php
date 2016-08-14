@@ -44,4 +44,28 @@ class StringHelper
     {
         return base64_decode(strtr($val, '-_,', '+/='));
     }
+
+    /**
+     * Custom base64 decode. Replace custom url safe values with normal
+     * base64 characters before decoding.
+     *
+     * @param string $val
+     * @return string
+     */
+    public static function cleanupMessageId($msgId)
+    {
+        return preg_replace('/[<>\s]*/', '', $msgId);
+    }
+
+    /**
+     * Custom base64 decode. Replace custom url safe values with normal
+     * base64 characters before decoding.
+     *
+     * @param string $val
+     * @return string
+     */
+    public static function getDomainFromEmail($email)
+    {
+        return substr(strrchr($email, "@"), 1);
+    }
 }

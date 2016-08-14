@@ -4,6 +4,7 @@ namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Mailixa\Library\Log;
+use Mailixa\Library\StringHelper;
 
 class DeliveryHandler extends Model
 {
@@ -41,7 +42,7 @@ class DeliveryHandler extends Model
         if (sizeof($matched) == 0) {
             return;
         } else {
-            return $matched[0];
+            return StringHelper::cleanupMessageId($matched[0]);
         }
     }
 

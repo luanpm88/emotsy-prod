@@ -12,6 +12,7 @@ use Mailixa\Model\SendingServer;
 use Mailixa\Library\Log;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\DatabaseManager;
+use Mailgun\Mailgun;
 use DB;
 
 class SendCampaign extends Command
@@ -149,6 +150,38 @@ class SendCampaign extends Command
         var_dump($sent);
         */
 
-        print_r(Setting::get("url_delivery_handler"));
+        $message = \Swift_Message::newInstance();
+        $message->setContentType("text/plain; charset=utf-8");
+        $message->setSubject('Test me from Mailgun');
+        $message->setFrom('any@gaugau.com');
+        $message->setTo('minhnghivn@gmail.com');
+        $message->setReplyTo('any@gaugau.com');
+        $message->setEncoder(\Swift_Encoding::get8bitEncoding());
+        $message->setBody('<b>Hello world</b>', 'text/html');
+
+        $mg = new Mailgun("key-04dbf1c76df28775e4c3d9215d5ca548");
+        $domain = "sandboxe80f3790d6784dcea27cbf61831dc094.mailgun.org";
+
+        $result = $mg->sendMessage(
+            $domain, array(
+                'to'   => 'minhnghivn@gmail.com'
+            ),
+            $message->toString()
+        );
+        var_dump(get_class($result));
+        var_dump($result->http_response_body->id);
+        
+        /*
+        //Customise the email - self explanatory
+        $mg->sendMessage($domain, array(
+                'from'=>'nghi@sandboxe80f3790d6784dcea27cbf61831dc094.mailgun.org',
+                'to'=> 'minhnghivn@gmail.com',
+                'subject' => 'The PHP SDK is awesome!',
+                'text' => 'It is so simple to send a message.'
+            )
+        );
+        */
+
+
     }
 }

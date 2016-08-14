@@ -223,7 +223,8 @@ class Campaign extends Model
                 list($message, $msgId) = $this->prepareEmail($subscriber, $server);
 
                 $sent = $server->send($message, array(
-                    'from_email' => $this->from_email
+                    'from_email' => $this->from_email,
+                    'to' => $subscriber->email // workaround: some sending engine requires the TO explicitly (not in MIME message)
                 ));
 
                 $this->trackMessage($sent, $subscriber, $server, $msgId);
@@ -366,16 +367,16 @@ class Campaign extends Model
         if (is_object($this->segment)) {
             // @TODO table hard-coded here
             return $this->segment->subscribers()
-                ->leftJoin(DB::raw('(SELECT * FROM ' . DB::getTablePrefix() . 'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'log.subscriber_id')
-                ->where('log.id', NULL)
+                ->leftJoin(DB::raw('(SELECT * FROM ' . DB::getTablePrefix() . 'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
+                ->whereRaw('log.id IS NULL')
                 ->addBinding($this->id)
                 ->select('subscribers.*')
                 ->get();
         } else {
             // @TODO table hard-coded here
             return $this->mailList->subscribers()
-                ->leftJoin(DB::raw('(SELECT * FROM ' . DB::getTablePrefix() . 'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'log.subscriber_id')
-                ->where('log.id', NULL)
+                ->leftJoin(DB::raw('(SELECT * FROM ' . DB::getTablePrefix() . 'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
+                ->whereRaw('log.id IS NULL')
                 ->addBinding($this->id)
                 ->select('subscribers.*')
                 ->get();
@@ -403,7 +404,7 @@ class Campaign extends Model
     private function prepareEmail($subscriber, $server)
     {
         // build the message
-        $msgId = time() . '.' . uniqid() . '@' . substr(strrchr($this->from_email, "@"), 1);
+        $msgId = time() . '.' . uniqid() . '@' . StringHelper::getDomainFromEmail($this->from_email);
 
         $message = \Swift_Message::newInstance();
         $message->setId($msgId);

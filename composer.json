@@ -14,7 +14,11 @@
 	"swiftmailer/swiftmailer": "^5.4",
         "barryvdh/laravel-async-queue": "0.4.x",
         "tijsverkoyen/css-to-inline-styles": "^2.0",
-        "guzzlehttp/guzzle": "^6.2"
+        "guzzlehttp/guzzle": "^6.2",
+        "mailgun/mailgun-php": "^2.1",
+        "php-http/curl-client": "^1.5",
+        "guzzlehttp/psr7": "^1.3",
+        "php-http/message": "^1.3"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

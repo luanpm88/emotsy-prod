@@ -17,7 +17,8 @@ class SendingServer extends Model
         'amazon-smtp'        => 'SendingServerAmazonSmtp',
         'smtp'               => 'SendingServerSmtp',
         'sendmail'           => 'SendingServerSendmail',
-        'php-mail'           => 'SendingServerPhpMail'
+        'php-mail'           => 'SendingServerPhpMail',
+        'mailgun-api'        => 'SendingServerMailgunApi'
     );
 
     public static $serverPools = array();

@@ -20,10 +20,11 @@ class CreateSendingServersTable extends Migration
             $table->integer('feedback_loop_handler_id')->unsigned()->nullable();
             $table->string('name');
             $table->string('type');
-            $table->string('host');
+            $table->string('host')->nullable();
             $table->string('aws_access_key_id')->nullable();
             $table->string('aws_secret_access_key')->nullable();
             $table->string('aws_region')->nullable();
+            $table->string('api_key')->nullable();
             $table->string('smtp_username')->nullable();
             $table->string('smtp_password')->nullable();
             $table->integer('smtp_port')->nullable();
