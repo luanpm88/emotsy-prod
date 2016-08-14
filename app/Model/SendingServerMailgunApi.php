@@ -10,18 +10,19 @@ use Mailgun\Mailgun;
 class SendingServerMailgunApi extends SendingServer
 {
     protected $table = 'sending_servers';
+    private static $client = NULL;
+    private static $isWebhookSetup = false;
     
     public function send($message, $params = array())
     {
-        try {
-            $client = new Mailgun($this->api_key);
             $domain = StringHelper::getDomainFromEmail($params["from_email"]);
             //$domain = 'sandboxe80f3790d6784dcea27cbf61831dc094.mailgun.org';
-
-            $result = $client->sendMessage(
+            $this->setupWebhooks($domain);
+            $result = $this->client()->sendMessage(
                 $domain, array(
                     'from' => $params["from_email"],
                     'to' => $params["to"]
+                    //'to' => 'xfake03940384304893@gmail.com'
                 ),
                 $message->toString()
             );
@@ -33,13 +34,53 @@ class SendingServerMailgunApi extends SendingServer
                 'status' => self::DELIVERY_STATUS_SENT
             );
         
-        } catch (\Exception $e) {
-            Log::warning('Sending failed');
-            Log::warning($e->getMessage());
-            return array(
-                'status' => self::DELIVERY_STATUS_FAILED,
-                'error' => $e->getMessage()
-            );
+        
+    }
+
+    public function client()
+    {
+        if (!self::$client) {
+            self::$client = new Mailgun($this->api_key);
         }
+
+        return self::$client;
+    }
+
+    private function setupWebhooks($domain) {
+        if (self::$isWebhookSetup) {
+            return true;
+        }
+
+        Log::info('setting up webhooks for bounce/complaints');
+        
+        // @TODO 
+        $subscribeUrl  = StringHelper::joinUrl( Setting::get("url_delivery_handler"), $this->uid);
+        $subscribeUrl  = StringHelper::joinUrl( 'http://52.76.202.5:8888/delivery/notify', $this->uid);
+        
+        try {
+            $result = $this->client()->delete("domains/$domain/webhooks/bounce");
+        } catch (\Exception $e) {
+            // just ignore
+        }
+
+        try {
+            $result = $this->client()->delete("domains/$domain/webhooks/spam");
+        } catch (\Exception $e) {
+            // just ignore
+        }
+        
+        $result = $this->client()->post("domains/$domain/webhooks", array(
+            'id'  => 'bounce',
+            'url' => $subscribeUrl
+        ));
+        Log::info('bounce webhook created');
+
+        $result = $this->client()->post("domains/$domain/webhooks", array(
+            'id'  => 'spam',
+            'url' => $subscribeUrl
+        ));
+        Log::info('complaint webhook created');
+
+        self::$isWebhookSetup = true;
     }
 }

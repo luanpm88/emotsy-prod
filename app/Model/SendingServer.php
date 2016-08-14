@@ -12,10 +12,6 @@ class SendingServer extends Model
     const DELIVERY_STATUS_SENT = 'sent';
     const DELIVERY_STATUS_FAILED = 'failed';
 
-    const HANDLER_TYPE_AWS = 'aws';
-    const HANDLER_TYPE_MAILGUN = 'mailgun';
-    const HANDLER_TYPE_OTHERS = 'others';
-
     public static $serverMapping = array(
         'amazon-api'         => 'SendingServerAmazonApi',
         'amazon-smtp'        => 'SendingServerAmazonSmtp',
