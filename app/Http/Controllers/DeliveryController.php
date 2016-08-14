@@ -11,6 +11,8 @@ use Guzzle\Http\Client;
 use Mailixa\Model\TrackingLog;
 use Mailixa\Model\BounceLog;
 use Mailixa\Model\FeedbackLog;
+use Mailixa\Model\SendingServer;
+use DB;
 
 class DeliveryController extends Controller
 {
@@ -43,13 +45,22 @@ class DeliveryController extends Controller
      */
     public function notify(Request $request)
     {
-        Log::configure(storage_path() . '/logs/handler.log');
-
         // Make sure the request is POST
         if (!$request->isMethod('post')) {
             return;
         }
-      
+
+        if ($request->type == SendingServer::HANDLER_TYPE_AWS) {
+            $this->handleAws();
+        } else {
+            return;
+        }
+    }
+
+    private function handleAws()
+    {
+        Log::configure(storage_path() . '/logs/handler-aws.log');
+
         try {
             Log::info('validating message...');
             // Create a message from the post data and validate its signature
@@ -68,7 +79,7 @@ class DeliveryController extends Controller
             // Send a request to the SubscribeURL to complete subscription
             (new Client)->get($message->get('SubscribeURL'))->send();
             
-            Log::info('sent back to AWS');
+            Log::info('subscription confirmed');
             return;
         }
 
@@ -78,8 +89,6 @@ class DeliveryController extends Controller
         }
 
         $responseMessage = json_decode($message->get('Message'), true);
-
-        
 
         if ($responseMessage['notificationType'] == 'AmazonSnsSubscriptionSucceeded') {
             Log::info('subscription confirmed by AWS');

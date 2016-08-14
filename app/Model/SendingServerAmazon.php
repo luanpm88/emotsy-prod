@@ -4,6 +4,7 @@ namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Mailixa\Library\Log;
+use Mailixa\Library\StringHelper;
 use Mailixa\Model\Setting;
 
 class SendingServerAmazon extends SendingServer
@@ -74,8 +75,8 @@ class SendingServerAmazon extends SendingServer
         $topicResponse = $this->snsClient()->createTopic(array('Name' => self::SNS_TOPIC));
         //$subscribeUrl  = Option::get('campaign_notification_url');
         // @TODO sửa hard-coded here
-        $subscribeUrl  = Setting::get("url_delivery_handler");
-        $subscribeUrl  = 'http://52.76.202.5:8888/delivery/notify';
+        $subscribeUrl  = StringHelper::joinUrl( Setting::get("url_delivery_handler"), self::HANDLER_TYPE_AWS);
+        $subscribeUrl  = StringHelper::joinUrl( 'http://52.76.202.5:8888/delivery/notify', self::HANDLER_TYPE_AWS);
 
         $subscribeResponse = $this->snsClient()->subscribe(array(
             'TopicArn' => $topicResponse->get('TopicArn'),
