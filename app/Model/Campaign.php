@@ -259,6 +259,11 @@ class Campaign extends Model
                 'sending_server_id' => $server->id,
                 'user_id' => $this->user->id
             ), $response);
+        
+        if (!isset($params['runtime_message_id'])) {
+            $params['runtime_message_id'] = $msgId;
+        }
+
         return TrackingLog::create($params);
     }
 
