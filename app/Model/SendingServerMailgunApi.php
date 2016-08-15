@@ -20,8 +20,8 @@ class SendingServerMailgunApi extends SendingServerMailgun
             $result = $this->client()->sendMessage(
                 $this->domain, array(
                     'from' => $params["from_email"],
-                    //'to' => $params["to"]
-                    'to' => 'em3ng0384304893@gmail.com'
+                    'to' => $params["to"]
+                    //'to' => 'em3ng0384304893@gmail.com'
                 ),
                 $message->toString()
             );
