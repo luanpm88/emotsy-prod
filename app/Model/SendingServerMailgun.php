@@ -10,8 +10,8 @@ use Mailgun\Mailgun;
 class SendingServerMailgun extends SendingServer
 {
     protected $table = 'sending_servers';
-    private static $client = NULL;
-    private static $isWebhookSetup = false;
+    public static $client = NULL;
+    public static $isWebhookSetup = false;
     
     public function send($message, $params = array())
     {
