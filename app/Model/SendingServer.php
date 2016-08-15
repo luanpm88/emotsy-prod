@@ -18,7 +18,8 @@ class SendingServer extends Model
         'smtp'               => 'SendingServerSmtp',
         'sendmail'           => 'SendingServerSendmail',
         'php-mail'           => 'SendingServerPhpMail',
-        'mailgun-api'        => 'SendingServerMailgunApi'
+        'mailgun-api'        => 'SendingServerMailgunApi',
+        'mailgun-smtp'        => 'SendingServerMailgunSmtp'
     );
 
     public static $serverPools = array();

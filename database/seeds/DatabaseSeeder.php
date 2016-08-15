@@ -280,7 +280,28 @@ class DatabaseSeeder extends Seeder
             'name' => 'Mailgun API',
             'user_id' => 1,
             'type' => 'mailgun-api',
+            'domain' => 'sandboxe80f3790d6784dcea27cbf61831dc094.mailgun.org',
             'api_key' => 'key-04dbf1c76df28775e4c3d9215d5ca548',
+            'quota_value' => 1000,
+            'quota_base' => 5,
+            'quota_unit' => 'minute',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
+        DB::table('sending_servers')->insert([
+            'id' => 7,
+            'uid' => uniqid(),
+            'name' => 'Mailgun SMTP',
+            'user_id' => 1,
+            'type' => 'mailgun-smtp',
+            'domain' => 'sandboxe80f3790d6784dcea27cbf61831dc094.mailgun.org',
+            'api_key' => 'key-04dbf1c76df28775e4c3d9215d5ca548',
+            'host' => 'smtp.mailgun.org',
+            'smtp_username' => 'postmaster@sandboxe80f3790d6784dcea27cbf61831dc094.mailgun.org',
+            'smtp_password' => 'fc4ab8e20d3dd5354f8cc4a3fb8ba148',
+            'smtp_port' => 25,
+            'smtp_protocol' => 'tls',
             'quota_value' => 1000,
             'quota_base' => 5,
             'quota_unit' => 'minute',
@@ -460,6 +481,15 @@ class DatabaseSeeder extends Seeder
         DB::table('user_group_sending_servers')->insert([
             'id' => 6,
             'sending_server_id' => 6,
+            'user_group_id' => 1,
+            'fitness' => 0,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at
+        ]);
+
+        DB::table('user_group_sending_servers')->insert([
+            'id' => 7,
+            'sending_server_id' => 7,
             'user_group_id' => 1,
             'fitness' => 100,
             'created_at' => $created_at,

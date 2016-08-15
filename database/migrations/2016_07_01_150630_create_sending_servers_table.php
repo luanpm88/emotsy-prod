@@ -24,6 +24,7 @@ class CreateSendingServersTable extends Migration
             $table->string('aws_access_key_id')->nullable();
             $table->string('aws_secret_access_key')->nullable();
             $table->string('aws_region')->nullable();
+            $table->string('domain')->nullable(); // for Mailgun
             $table->string('api_key')->nullable();
             $table->string('smtp_username')->nullable();
             $table->string('smtp_password')->nullable();
