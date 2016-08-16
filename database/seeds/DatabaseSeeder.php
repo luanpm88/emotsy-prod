@@ -315,7 +315,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'Server Amazon API',
             'user_id' => 1,
             'type' => 'amazon-api',
-            'host' => 'email.us-west-2.amazonaws.com',
+            //'host' => 'email.us-west-2.amazonaws.com',
             'aws_region' => 'us-west-2',
             'aws_access_key_id' => 'AKIAJCLUP4FFFKZSQHGQ',
             'aws_secret_access_key' => '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',
