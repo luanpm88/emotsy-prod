@@ -36,7 +36,9 @@
 										<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
 											{{ trans('messages.actions') }} <span class="caret"></span>
 										</button>
-										<ul class="dropdown-menu">
+										<ul class="dropdown-menu">											
+											<li><a link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart') }}"><i class="icon-history"></i> {{ trans("messages.restart") }}</a></li>
+											<li><a link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause') }}"><i class="icon-pause"></i> {{ trans("messages.pause") }}</a></li>
 											<li><a delete-confirm="{{ trans('messages.delete_campaigns_confirm') }}" href="{{ action('CampaignController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
 										</ul>
 									</div>

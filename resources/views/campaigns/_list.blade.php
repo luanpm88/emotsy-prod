@@ -77,11 +77,19 @@
 											@if (\Gate::allows('overview', $item))
 												<a href="{{ action('CampaignController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="icon-stats-growth"></i> {{ trans('messages.overview') }}</a>
 											@endif
-											@if (\Gate::allows('delete', $item))
+											@if (\Gate::allows('delete', $item) || \Gate::allows('pause', $item) || \Gate::allows('restart', $item))
 												<div class="btn-group">										
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 													<ul class="dropdown-menu dropdown-menu-right">
-														<li><a delete-confirm="{{ trans('messages.delete_campaigns_confirm') }}" href="{{ action('CampaignController@delete', ["uids" => $item->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
+														@if (\Gate::allows('pause', $item))
+															<li><a link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause', ["uids" => $item->uid]) }}"><i class="icon-pause"></i> {{ trans("messages.pause") }}</a></li>
+														@endif
+														@if (\Gate::allows('restart', $item))
+															<li><a link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart', ["uids" => $item->uid]) }}"><i class="icon-history"></i> {{ trans("messages.restart") }}</a></li>
+														@endif
+														@if (\Gate::allows('delete', $item))
+															<li><a delete-confirm="{{ trans('messages.delete_campaigns_confirm') }}" href="{{ action('CampaignController@delete', ["uids" => $item->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
+														@endif
 													</ul>
 												</div>
 											@endif

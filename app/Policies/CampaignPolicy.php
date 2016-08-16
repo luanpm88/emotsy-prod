@@ -40,6 +40,14 @@ class CampaignPolicy
 
     public function delete(\Mailixa\Model\User $user, \Mailixa\Model\Campaign $item)
     {
-        return $item->user_id == $user->id && $item->status == 'new';
+        return $item->user_id == $user->id && in_array($item->status, ["new","ready","paused","done"]);
+    }
+    public function pause(\Mailixa\Model\User $user, \Mailixa\Model\Campaign $item)
+    {
+        return $item->user_id == $user->id && in_array($item->status, ["sending","ready"]);
+    }
+    public function restart(\Mailixa\Model\User $user, \Mailixa\Model\Campaign $item)
+    {
+        return $item->user_id == $user->id && in_array($item->status, ["done","paused"]);
     }
 }

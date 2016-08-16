@@ -709,7 +709,7 @@ input.error {
     border-color: #4CAF50;
     color: #fff;
 }
-.bg-canceled, .bg-disabled, .bg-inactive, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted {
+.bg-canceled, .bg-disabled, .bg-inactive, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-paused {
     background-color: #777;
     border-color: #777;
     color: #fff;

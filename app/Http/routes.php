@@ -190,9 +190,12 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('campaigns/{uid}/confirm', 'CampaignController@confirm');
     Route::get('campaigns/delete', 'CampaignController@delete');
     Route::get('campaigns/select2', 'CampaignController@select2');
+    Route::get('campaigns/pause', 'CampaignController@pause');
+    Route::get('campaigns/restart', 'CampaignController@restart');
     Route::resource('campaigns', 'CampaignController');
     Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
     Route::patch('campaigns/{uid}/update', 'CampaignController@update');
+    
 
 });
 

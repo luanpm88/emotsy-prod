@@ -438,16 +438,11 @@ class CampaignController extends Controller
 
         foreach ($items->get() as $item) {
             // authorize
-            if (\Gate::denies('delete', $item)) {
-                return;
+            if (\Gate::allows('delete', $item)) {
+                $item->delete();
+                // Log
+                $item->log('deleted', $request->user());
             }
-        }
-
-        foreach ($items->get() as $item) {
-            $item->delete();
-
-            // Log
-            $item->log('deleted', $request->user());
         }
 
         // Redirect to my lists page
@@ -948,5 +943,53 @@ class CampaignController extends Controller
         return view('campaigns.delete_confirm', [
             'lists' => $lists,
         ]);
+    }
+    
+    /**
+     * Pause the specified campaign.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function pause(Request $request)
+    {        
+        $items = \Mailixa\Model\Campaign::whereIn("uid", explode(",", $request->uids));
+        
+        foreach ($items->get() as $item) {
+            if (\Gate::allows('pause', $item)) {
+                $item->status = 'paused';
+                $item->save();
+                
+                // Log
+                $item->log('paused', $request->user());
+            }            
+        }
+
+        // Redirect to my lists page
+        echo(trans('messages.campaigns.paused'));
+    }
+    
+    /**
+     * Pause the specified campaign.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function restart(Request $request)
+    {        
+        $items = \Mailixa\Model\Campaign::whereIn("uid", explode(",", $request->uids));
+        
+        foreach ($items->get() as $item) {
+            if (\Gate::allows('restart', $item)) {
+                $item->status = 'ready';
+                $item->save();
+                
+                // Log
+                $item->log('restarted', $request->user());
+            }            
+        }
+
+        // Redirect to my lists page
+        echo(trans('messages.campaigns.restarted'));
     }
 }

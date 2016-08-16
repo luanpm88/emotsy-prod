@@ -252,6 +252,17 @@ $(function() {
     // Link confirm
     $(document).on("click", "a[link-confirm]", function(e) {
         var mgs = $(this).attr("link-confirm");
+        var url = $(this).attr("href");
+        $(this).attr("new-href", $(this).attr("href"));
+        
+        if($(this).parents(".list_actions").length) {
+            var form = $(this).parents(".listing-form");
+            var vals = form.find("input[name='ids[]']:checked").map(function () {
+                return this.value;
+            }).get();
+            
+            url = url + "?uids=" + vals.join(",");
+        }
         
         // count items
         var count = 1;
@@ -264,7 +275,7 @@ $(function() {
         mgs = mgs.replace(":name", "<span class='text-bold text-teal-800'>" + $(this).html() + "</span>");
         
         $("#link_confirm_model h6").html(mgs);
-        $(".link-confirm-button").attr("href", $(this).attr("new-href"));
+        $(".link-confirm-button").attr("href", url);
         
         e.stopImmediatePropagation();
         e.preventDefault();
