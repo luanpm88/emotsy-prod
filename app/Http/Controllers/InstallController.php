@@ -86,7 +86,7 @@ class InstallController extends Controller
     public function siteInfo(Request $request)
     {
         if ($this->step($request) < 1) {
-            return redirect()->action('InstallController@permissions');
+            return redirect()->action('InstallController@systemCompatibility');
         }
         
         // make sure session is working
