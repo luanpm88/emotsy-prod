@@ -47,7 +47,7 @@ class SendingServer extends Model
     {
         $servers = self::select('sending_servers.*', 'user_group_sending_servers.fitness')->join('user_group_sending_servers', 'user_group_sending_servers.sending_server_id', '=', 'sending_servers.id')->where('user_group_id', $campaign->user->user_group_id)->get();
 
-        if (empty($servers)) {
+        if (sizeof($servers) == 0) {
             throw new \Exception('No delivery servers available');
         }
 

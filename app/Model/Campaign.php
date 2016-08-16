@@ -366,14 +366,14 @@ class Campaign extends Model
      * Get Pending Subscribers
      * Select only subscribers that are ready for sending. Those whose status is `blacklisted`, `pending` or `unconfirmed` are not included.
      */
-    private function getPendingSubscribers()
+    public function getPendingSubscribers()
     {
         if (is_object($this->segment)) {
             // @TODO table hard-coded here
             return $this->segment->subscribers()
                 ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
-                ->addBinding($this->id)
+                ->addBinding($this->mailList->id)
                 ->select('subscribers.*')
                 ->get();
         } else {
@@ -381,7 +381,7 @@ class Campaign extends Model
             return $this->mailList->subscribers()
                 ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
-                ->addBinding($this->id)
+                ->addBinding($this->mailList->id)
                 ->select('subscribers.*')
                 ->get();
         }
