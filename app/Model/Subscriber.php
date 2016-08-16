@@ -113,7 +113,8 @@ class Subscriber extends Model
      */
     public static function filter($query, $request)
     {        
-        $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id');
+        $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
+                        ->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
         
         // Keyword
         if(!empty(trim($request->keyword))) {
@@ -147,7 +148,7 @@ class Subscriber extends Model
             $user = $request->user();
         }
         $query = Subscriber::select("subscribers.*");
-        $query = $query->where("user_id", "=", $user->id);
+        $query = $query->where("mail_lists.user_id", "=", $user->id);
         
         $query = Subscriber::filter($query, $request);
         
