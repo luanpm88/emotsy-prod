@@ -117,7 +117,7 @@
                                         </div>
 										<div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
-												{{ Mailixa\Library\Tool::formatDateTime($item->lastOpen()->created_at) }}
+												{{ (null !== $item->lastOpen()) ? Mailixa\Library\Tool::formatDateTime($item->lastOpen()->created_at) : "" }}
 											</h5>
 											<span class="text-muted">{{ trans('messages.last_open') }}</span>
                                                 <br /><br />
@@ -164,7 +164,7 @@
                                         </div>
 										<div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
-												{{ Mailixa\Library\Tool::formatDateTime($item->lastClick()->created_at) }}
+												{{ (null !== $item->lastClick()) ? Mailixa\Library\Tool::formatDateTime($item->lastClick()->created_at) : "" }}
 											</h5>
 											<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
                                                 <br /><br />
@@ -201,7 +201,7 @@
                                         </div>
 										<div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
-												{{ Mailixa\Library\Tool::formatDateTime($item->lastClick(Auth::user())->created_at) }}          
+												{{ (null !== $item->lastClick(Auth::user())) ? Mailixa\Library\Tool::formatDateTime($item->lastClick(Auth::user())->created_at) : "" }}          
 											</h5>
 											<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
                                             <br /><br />

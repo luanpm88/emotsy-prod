@@ -66,27 +66,32 @@ class Campaign extends Model
     
     public function bounceLogs()
     {
-        return $this->hasManyThrough('Mailixa\Model\BounceLog', 'Mailixa\Model\TrackingLog', 'campaign_id', 'message_id', 'id');
+        return BounceLog::select("bounce_logs.*")->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'bounce_logs.message_id')
+            ->where('tracking_logs.campaign_id', '=', $this->id);
     }
     
     public function openLogs()
     {
-        return $this->hasManyThrough('Mailixa\Model\OpenLog', 'Mailixa\Model\TrackingLog', 'campaign_id', 'message_id', 'id');
+        return OpenLog::select("open_logs.*")->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
+            ->where('tracking_logs.campaign_id', '=', $this->id);
     }
     
     public function clickLogs()
     {
-        return $this->hasManyThrough('Mailixa\Model\ClickLog', 'Mailixa\Model\TrackingLog', 'campaign_id', 'message_id', 'id');
+        return ClickLog::select("click_logs.*")->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
+            ->where('tracking_logs.campaign_id', '=', $this->id);
     }
     
     public function feedbackLogs()
     {
-        return $this->hasManyThrough('Mailixa\Model\FeedbackLog', 'Mailixa\Model\TrackingLog', 'campaign_id', 'message_id', 'id');
+        return FeedbackLog::select("feedback_logs.*")->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'feedback_logs.message_id')
+            ->where('tracking_logs.campaign_id', '=', $this->id);
     }
     
     public function unsubscribeLogs()
     {
-        return $this->hasManyThrough('Mailixa\Model\UnsubscribeLog', 'Mailixa\Model\TrackingLog', 'campaign_id', 'message_id', 'id');
+        return UnsubscribeLog::select("unsubscribe_logs.*")->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'unsubscribe_logs.message_id')
+            ->where('tracking_logs.campaign_id', '=', $this->id);
     }
     
     /**
