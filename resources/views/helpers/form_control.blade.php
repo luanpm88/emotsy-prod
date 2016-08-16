@@ -1,11 +1,11 @@
                                 <?php
-                                    $label = isset($label) ? $label : (Lang::has('messages.' . $name) ? trans('messages.' . $name) : "");
-									$var_name = str_replace("[]", "", $name);
-                                    $var_name = str_replace("][", ".", $var_name);
-                                    $var_name = str_replace("[", ".", $var_name);
-                                    $var_name = str_replace("]", "", $var_name);
-									$classes = (isset($rules) && isset($rules[$var_name])) ? " " . str_replace("|", " ", $rules[$var_name]) : "";
-									$required = (isset($rules) && isset($rules[$var_name]) && in_array("required", explode("|", $rules[$var_name]))) ? true : "";
+                                    $label = isset($label) ? $label : (Lang::has('messages.'.$name) ? trans('messages.'.$name) : '');
+                                    $var_name = str_replace('[]', '', $name);
+                                    $var_name = str_replace('][', '.', $var_name);
+                                    $var_name = str_replace('[', '.', $var_name);
+                                    $var_name = str_replace(']', '', $var_name);
+                                    $classes = (isset($rules) && isset($rules[$var_name])) ? ' '.str_replace('|', ' ', $rules[$var_name]) : '';
+                                    $required = (isset($rules) && isset($rules[$var_name]) && in_array('required', explode('|', $rules[$var_name]))) ? true : '';
                                 ?>
                                 
 								@if ($type == 'checkbox')

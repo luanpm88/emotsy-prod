@@ -70,7 +70,7 @@
 											@if ($count%3 == 2)
 								</div><div class="row">
 											@endif
-											<?php $count++; ?>
+											<?php ++$count; ?>
 										@endif
 									@endforeach							
 								</div>
@@ -107,7 +107,7 @@
 											@if ($count%3 == 2)
 								</div><div class="row">
 											@endif
-											<?php $count++; ?>
+											<?php ++$count; ?>
 										@endif
 									@endforeach							
 								</div>

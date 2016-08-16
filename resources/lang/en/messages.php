@@ -29,7 +29,7 @@ return [
     'profile' => 'Profile',
     'logout' => 'Log Out',
     'not_authorized' => 'Not Authorized',
-    'not_authorized_message' => "You are not authorized for this action.",
+    'not_authorized_message' => 'You are not authorized for this action.',
     'go_back' => 'Go back',
     'home' => 'Home',
     'my_profile' => 'My profile',
