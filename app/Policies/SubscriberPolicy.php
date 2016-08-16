@@ -20,7 +20,7 @@ class SubscriberPolicy
     
     public function read(\Mailixa\Model\User $user, \Mailixa\Model\Subscriber $item)
     {
-        return $item->user_id == $user->id || $user->userGroup->backend_access;
+        return $item->mailList->user_id == $user->id || $user->userGroup->backend_access;
     }
     
     public function create(\Mailixa\Model\User $user, \Mailixa\Model\Subscriber $item)
@@ -32,21 +32,21 @@ class SubscriberPolicy
     
     public function update(\Mailixa\Model\User $user, \Mailixa\Model\Subscriber $item)
     {
-        return $item->user_id == $user->id;
+        return $item->mailList->user_id == $user->id;
     }
     
     public function delete(\Mailixa\Model\User $user, \Mailixa\Model\Subscriber $item)
     {
-        return $item->user_id == $user->id;
+        return $item->mailList->user_id == $user->id;
     }
     
     public function subscribe(\Mailixa\Model\User $user, \Mailixa\Model\Subscriber $item)
     {
-        return $item->user_id == $user->id && $item->status == 'unsubscribed';
+        return $item->mailList->user_id == $user->id && $item->status == 'unsubscribed';
     }
     
     public function unsubscribe(\Mailixa\Model\User $user, \Mailixa\Model\Subscriber $item)
     {
-        return $item->user_id == $user->id && $item->status == 'subscribed';
+        return $item->mailList->user_id == $user->id && $item->status == 'subscribed';
     }
 }
