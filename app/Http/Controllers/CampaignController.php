@@ -410,7 +410,7 @@ class CampaignController extends Controller
         if ($request->isMethod('post'))
         {            
             // Save campaign
-            $campaign->status = \Mailixa\Model\Campaign::STATUS_SENDING;
+            $campaign->status = \Mailixa\Model\Campaign::STATUS_READY;
             $campaign->save();
             
             // Log
