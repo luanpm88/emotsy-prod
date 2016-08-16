@@ -98,35 +98,42 @@ class InstallController extends Controller
             "last_name" => "required",
             "email" => "required|email",
             "password" => "required",
-            "timezone" => "required",
+            "timezone" => "required",            
+        ];
+        $smtp_rules = [
             "smtp_hostname" => "required",
             "smtp_port" => "required",
             "smtp_username" => "required",
             "smtp_password" => "required",
             "smtp_from_email" => "required|email",
             "smtp_from_name" => "required",
-            "smtp_encryption" => "required",
+            "smtp_encryption" => "required"
         ];
         // validate and save posted data
         if ($request->isMethod('post')) {
             $request->session()->forget('site_info');
-             
+            
+            if($request->mail_driver == 'smtp') {
+                $rules = array_merge($rules, $smtp_rules);
+            }
             $this->validate($request, $rules);
             
             // Check SMTP connection
-            $rules = [];
-            try {
-                $transport = \Swift_SmtpTransport::newInstance($request->smtp_hostname, $request->smtp_port, $request->smtp_encryption);
-                $transport->setUsername($request->smtp_username);
-                $transport->setPassword($request->smtp_password);
-                $mailer = \Swift_Mailer::newInstance($transport);
-                $mailer->getTransport()->start();
-            } catch (\Swift_TransportException $e) {
-                $rules['smtp_valid'] = 'required';
-            } catch (Exception $e) {
-                $rules['smtp_valid'] = 'required';
+            if($request->mail_driver == 'smtp') {
+                $rules = [];
+                try {
+                    $transport = \Swift_SmtpTransport::newInstance($request->smtp_hostname, $request->smtp_port, $request->smtp_encryption);
+                    $transport->setUsername($request->smtp_username);
+                    $transport->setPassword($request->smtp_password);
+                    $mailer = \Swift_Mailer::newInstance($transport);
+                    $mailer->getTransport()->start();
+                } catch (\Swift_TransportException $e) {
+                    $rules['smtp_valid'] = 'required';
+                } catch (Exception $e) {
+                    $rules['smtp_valid'] = 'required';
+                }
+                $this->validate($request, $rules);
             }
-            $this->validate($request, $rules);
             
             $site_info = $request->all();
             
@@ -142,6 +149,7 @@ class InstallController extends Controller
         return view('install.site_info', [
             'site_info' => $site_info,
             'rules' => $rules,
+            'smtp_rules' => $smtp_rules,
             'step' => $this->step($request),
             'current' => 2,
         ]);
@@ -508,7 +516,7 @@ REDIS_HOST=localhost
 REDIS_PASSWORD=null
 REDIS_PORT=6379
 
-MAIL_DRIVER=smtp
+MAIL_DRIVER='.(isset($smtp["mail_driver"]) ? $smtp["mail_driver"] : "mail").'
 MAIL_HOST='.(isset($smtp["smtp_hostname"]) ? $smtp["smtp_hostname"] : "").'
 MAIL_PORT='.(isset($smtp["smtp_port"]) ? $smtp["smtp_port"] : "").'
 MAIL_USERNAME='.(isset($smtp["smtp_username"]) ? $smtp["smtp_username"] : "").'

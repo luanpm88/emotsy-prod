@@ -23,7 +23,7 @@
                 <h3>{{ trans('messages.' . $layout->alias) }}</h3>
                 
                 @if ($layout->alias == 'sign_up_form')
-                    <p class="alert alert-info mt-20 mb-20">{{ trans('messages.sign_up_form_url') }}<br /> <a href="{{ action('PageController@signUpForm', ['list_uid' => $list->uid]) }}" class="text-semibold">{{ action('PageController@signUpForm', ['list_uid' => $list->uid]) }}</a></p>
+                    <p class="alert alert-info mt-20 mb-20">{{ trans('messages.sign_up_form_url') }}<br /> <a target="_blank" href="{{ action('PageController@signUpForm', ['list_uid' => $list->uid]) }}" class="text-semibold">{{ action('PageController@signUpForm', ['list_uid' => $list->uid]) }}</a></p>
                 @endif
                     
                 <form id="update-page" action="{{ action('PageController@update', ['list' => $list->uid, 'alias' => $layout->alias]) }}" method="POST" class="form-validate-jqueryz">

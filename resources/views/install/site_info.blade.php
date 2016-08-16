@@ -93,12 +93,25 @@
 	<div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
+                'type' => 'select',
+                'name' => 'mail_driver',
+								'label' => trans('messages.mail_driver'),
+                'value' => (isset($site_info["mail_driver"]) ? $site_info["mail_driver"] : ""),
+								'options' => [["value" => "mail", "text" => trans('messages.php_mail')],["value" => "smtp", "text" => trans('messages.smtp')]],
+                'help_class' => 'install',
+                'rules' => $rules
+            ])
+				</div>
+	</div>
+	<div class="row smtp_box">
+        <div class="col-md-6">
+            @include('helpers.form_control', [
                 'type' => 'text',
                 'name' => 'smtp_hostname',
 				'label' => trans('messages.hostname'),
                 'value' => (isset($site_info["smtp_hostname"]) ? $site_info["smtp_hostname"] : ""),
                 'help_class' => 'install',
-                'rules' => $rules
+                'rules' => $smtp_rules
             ])
 			
 			@include('helpers.form_control', [
@@ -107,7 +120,7 @@
 				'label' => trans('messages.username'),
                 'value' => (isset($site_info["smtp_username"]) ? $site_info["smtp_username"] : ""),
                 'help_class' => 'install',
-                'rules' => $rules
+                'rules' => $smtp_rules
             ])
 			
 			@include('helpers.form_control', [
@@ -116,7 +129,7 @@
 				'label' => trans('messages.from_email'),
                 'value' => (isset($site_info["smtp_from_email"]) ? $site_info["smtp_from_email"] : ""),
                 'help_class' => 'install',
-                'rules' => $rules
+                'rules' => $smtp_rules
             ])
 			
 			@include('helpers.form_control', [
@@ -125,7 +138,7 @@
 				'label' => trans('messages.encryption'),
                 'value' => (isset($site_info["smtp_encryption"]) ? $site_info["smtp_encryption"] : ""),
                 'help_class' => 'install',
-                'rules' => $rules
+                'rules' => $smtp_rules
             ])
 			            
         </div>
@@ -136,7 +149,7 @@
 				'label' => trans('messages.port'),
                 'value' => (isset($site_info["smtp_port"]) ? $site_info["smtp_port"] : ""),
                 'help_class' => 'install',
-                'rules' => $rules
+                'rules' => $smtp_rules
             ])
 			
 			@include('helpers.form_control', [
@@ -145,7 +158,7 @@
 				'label' => trans('messages.password'),
                 'value' => (isset($site_info["smtp_password"]) ? $site_info["smtp_password"] : ""),
                 'help_class' => 'install',
-                'rules' => $rules
+                'rules' => $smtp_rules
             ])
 			
 			@include('helpers.form_control', [
@@ -154,7 +167,7 @@
 				'label' => trans('messages.from_name'),
                 'value' => (isset($site_info["smtp_from_name"]) ? $site_info["smtp_from_name"] : ""),
                 'help_class' => 'install',
-                'rules' => $rules
+                'rules' => $smtp_rules
             ])  
         </div>
     </div>
@@ -165,4 +178,21 @@
 	</div>
 	
 </form>
+<script>
+	function toogleMailer() {
+		var value = $("select[name='mail_driver']").val();
+		if(value == 'mail') {
+			$('.smtp_box').hide();
+		} else {
+			$('.smtp_box').show();
+		}
+	}
+	$(document).ready(function() {	
+		toogleMailer();
+		$("select[name='mail_driver']").change(function() {
+			toogleMailer();
+		});
+	});
+</script>
+	
 @endsection

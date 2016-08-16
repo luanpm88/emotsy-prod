@@ -188,6 +188,17 @@ $(function() {
         $("#delete_confirm_model h6").html(mgs.replace(":number", "<span class='text-bold text-danger'>" + count + "</span>"));
         $(".delete-confirm-button").attr("href", $(this).attr("new-href"));
         
+        if($(this).parents(".list_actions").length) {
+            var url = $(this).attr("new-href");
+            var form = $(this).parents(".listing-form");
+            var vals = form.find("input[name='ids[]']:checked").map(function () {
+                return this.value;
+            }).get();
+            
+            url = url + "?uids=" + vals.join(",");
+             $(".delete-confirm-button").attr("href", url);
+        }
+        
         e.stopImmediatePropagation();
         e.preventDefault();
     });
@@ -215,7 +226,7 @@ $(function() {
         }
     
         $('a[data-target="#list_delete_confirm_model"]').trigger("click");
-        $(".list-delete-confirm-button").attr("href", $(this).attr("new-href"));
+        $(".list-delete-confirm-button").attr("href", url);
         
         // Get message
         // ajax update custom sort
