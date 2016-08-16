@@ -4,27 +4,26 @@ namespace Mailixa\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Mailixa\Library\Log;
-use Mailixa\Model\Setting;
 use Mailixa\Library\StringHelper;
 use DB;
 
 class Campaign extends Model
 {
-    const STATUS_NEW     = 'new';
-    const STATUS_READY   = 'ready';
+    const STATUS_NEW = 'new';
+    const STATUS_READY = 'ready';
     const STATUS_PENDING = 'pending';
     const STATUS_SENDING = 'sending';
-    const STATUS_PAUSED  = 'paused';
-    const STATUS_DONE    = 'done';
-    const TYPE_REGULAR   = 'regular';
-    const TYPE_PLAIN_TEXT   = 'plain-text';
+    const STATUS_PAUSED = 'paused';
+    const STATUS_DONE = 'done';
+    const TYPE_REGULAR = 'regular';
+    const TYPE_PLAIN_TEXT = 'plain-text';
 
     const WORKER_DELAY = 1;
 
     const DKIM_SELECTOR = 'mailer';
-    
+
     public static $required_tags = array(
-        array("name" => "{UNSUBSCRIBE_URL}", "required" => true),
+        array('name' => '{UNSUBSCRIBE_URL}', 'required' => true),
     );
 
     /**
@@ -34,7 +33,7 @@ class Campaign extends Model
     {
         return $this->belongsTo('Mailixa\Model\MailList');
     }
-    
+
     /**
      * Get the segment of the campaign.
      */
@@ -42,7 +41,7 @@ class Campaign extends Model
     {
         return $this->belongsTo('Mailixa\Model\Segment');
     }
-    
+
     /**
      * Get the links for campaign.
      */
@@ -58,54 +57,52 @@ class Campaign extends Model
     {
         return $this->belongsTo('Mailixa\Model\User');
     }
-    
+
     public function trackingLogs()
     {
         return $this->hasMany('Mailixa\Model\TrackingLog');
     }
-    
+
     public function bounceLogs()
     {
-        return BounceLog::select("bounce_logs.*")->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'bounce_logs.message_id')
+        return BounceLog::select('bounce_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'bounce_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
     }
-    
+
     public function openLogs()
     {
-        return OpenLog::select("open_logs.*")->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
+        return OpenLog::select('open_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
     }
-    
+
     public function clickLogs()
     {
-        return ClickLog::select("click_logs.*")->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
+        return ClickLog::select('click_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
     }
-    
+
     public function feedbackLogs()
     {
-        return FeedbackLog::select("feedback_logs.*")->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'feedback_logs.message_id')
+        return FeedbackLog::select('feedback_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'feedback_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
     }
-    
+
     public function unsubscribeLogs()
     {
-        return UnsubscribeLog::select("unsubscribe_logs.*")->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'unsubscribe_logs.message_id')
+        return UnsubscribeLog::select('unsubscribe_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'unsubscribe_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
     }
-    
+
     /**
-     * get pending campaigns
-     *
+     * get pending campaigns.
      */
     public static function getWaitingCampaigns()
     {
         return self::where('status', self::STATUS_READY)->whereRaw('run_at IS NULL OR run_at <= NOW()')->get();
     }
-    
+
     /**
-     * Mark the campaign as 'done' or 'sent'
-     *
+     * Mark the campaign as 'done' or 'sent'.
      */
     public function done()
     {
@@ -114,8 +111,7 @@ class Campaign extends Model
     }
 
     /**
-     * Mark the campaign as 'sending'
-     *
+     * Mark the campaign as 'sending'.
      */
     public function sending()
     {
@@ -124,8 +120,7 @@ class Campaign extends Model
     }
 
     /**
-     * Mark the campaign as 'done' or 'sent'
-     *
+     * Mark the campaign as 'done' or 'sent'.
      */
     public function pending()
     {
@@ -139,15 +134,16 @@ class Campaign extends Model
         $this->save();
     }
 
-    public function getChunks($collection, $count) {
+    public function getChunks($collection, $count)
+    {
         $result = [];
         if (sizeof($collection) == 0) {
             return $result;
         }
-        $chunks = array_chunk(range(0, sizeof($collection) - 1), ceil(sizeof($collection) / (float)$count), true);
-        foreach($chunks as $key => $chunk) {
+        $chunks = array_chunk(range(0, sizeof($collection) - 1), ceil(sizeof($collection) / (float) $count), true);
+        foreach ($chunks as $key => $chunk) {
             $list = [];
-            foreach(array_values($chunk) as $i) {
+            foreach (array_values($chunk) as $i) {
                 $list[] = $collection[$i];
             }
             $result[] = $list;
@@ -157,64 +153,63 @@ class Campaign extends Model
     }
 
     /**
-     * Mark the campaign as 'done' or 'sent'
-     *
+     * Mark the campaign as 'done' or 'sent'.
      */
     public function startMultiProcesses()
     {
         $this->sending();
 
         Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
-        $count = (int)$this->user->getOption("frontend", "max_process");
+        $count = (int) $this->user->getOption('frontend', 'max_process');
         $subscribers = $this->getPendingSubscribers();
-        Log::info(sizeof($subscribers) . " subscriber(s) selected");
+        Log::info(sizeof($subscribers).' subscriber(s) selected');
         $chunks = $this->getChunks($subscribers, $count);
-        
-        Log::info("Start multi-process (" . sizeof($chunks) . ") session" );
-        $parentPid = getmypid();
-        for ($i = 0; $i < sizeof($chunks); $i++) { 
-            $pid = pcntl_fork(); 
 
-            if (!$pid) { 
+        Log::info('Start multi-process ('.sizeof($chunks).') session');
+        $parentPid = getmypid();
+        for ($i = 0; $i < sizeof($chunks); ++$i) {
+            $pid = pcntl_fork();
+
+            if (!$pid) {
                 // Reconnect to the DB to prevent connection closed issue when using fork
                 DB::reconnect('mysql');
                 // Re-initialize logging to capture the child process' PID
                 Log::fork();
 
-                Log::info("Start child process " . ($i + 1) . " of " . sizeof($chunks) . " (forked from " . $parentPid . ")" ); 
-                sleep(self::WORKER_DELAY); 
-                $this->start($chunks[$i], true); 
+                Log::info('Start child process '.($i + 1).' of '.sizeof($chunks).' (forked from '.$parentPid.')');
+                sleep(self::WORKER_DELAY);
+                $this->start($chunks[$i], true);
                 exit($i + 1);
             }
         }
 
-        while (pcntl_waitpid(0, $status) != -1) { 
-            $status = pcntl_wexitstatus($status); 
+        while (pcntl_waitpid(0, $status) != -1) {
+            $status = pcntl_wexitstatus($status);
             Log::info("Child $status completed\n");
         }
 
         if ($this->status == self::STATUS_SENDING) {
             $this->done();
-            Log::info("Campaign sent!");
+            Log::info('Campaign sent!');
         } else {
-            Log::warning("Campaign sent, but some errors occurred!");
+            Log::warning('Campaign sent, but some errors occurred!');
         }
     }
 
     /**
      * Send Campaign
-     * Iterate through all subscribers and send email
+     * Iterate through all subscribers and send email.
      */
-    public function start($subscribers = NULL, $multi = false)
+    public function start($subscribers = null, $multi = false)
     {
         try {
             if (!$multi) {
                 $this->sending();
                 Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
                 $subscribers = $this->getPendingSubscribers();
-                Log::info(sizeof($subscribers) . " subscriber(s) selected");
+                Log::info(sizeof($subscribers).' subscriber(s) selected');
             }
-            
+
             $i = 0;
             foreach ($subscribers as $subscriber) {
                 if ($this->user->overQuota()) {
@@ -222,14 +217,14 @@ class Campaign extends Model
                 }
 
                 $i += 1;
-                Log::info("Sending to subscriber `{$subscriber->email}` ({$i}/" . sizeof($subscribers) . ")");
-                
+                Log::info("Sending to subscriber `{$subscriber->email}` ({$i}/".sizeof($subscribers).')');
+
                 $server = $this->pickServer($this);
                 list($message, $msgId) = $this->prepareEmail($subscriber, $server);
 
                 $sent = $server->send($message, array(
                     'from_email' => $this->from_email,
-                    'to' => $subscriber->email // workaround: some sending engine requires the TO explicitly (not in MIME message)
+                    'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly (not in MIME message)
                 ));
 
                 $this->trackMessage($sent, $subscriber, $server, $msgId);
@@ -237,13 +232,13 @@ class Campaign extends Model
 
             if (!$multi) {
                 $this->done();
-                Log::info("Campaign sent!");
+                Log::info('Campaign sent!');
             }
         } catch (\Exception $e) {
             Log::error($e->getMessage());
-            Log::error("Campaign `{$this->name}` (ID: " . $this->id . ") deferred!");
+            Log::error("Campaign `{$this->name}` (ID: ".$this->id.') deferred!');
             $this->pending();
-        } finally {        
+        } finally {
             // reset server pools: just in case DeliveryServerAmazonSesWebApi
             // --> setup SNS requires using from_email of the corresponding campaign
             // but SNS is only made once when the server is initiated
@@ -253,7 +248,7 @@ class Campaign extends Model
 
     /**
      * Log Delivery
-     * Log delivery message, used for later tracking
+     * Log delivery message, used for later tracking.
      */
     private function trackMessage($response, $subscriber, $server, $msgId)
     {
@@ -262,9 +257,9 @@ class Campaign extends Model
                 'message_id' => $msgId,
                 'subscriber_id' => $subscriber->id,
                 'sending_server_id' => $server->id,
-                'user_id' => $this->user->id
+                'user_id' => $this->user->id,
             ), $response);
-        
+
         if (!isset($params['runtime_message_id'])) {
             $params['runtime_message_id'] = $msgId;
         }
@@ -276,55 +271,54 @@ class Campaign extends Model
     {
         return SendingServer::pickServer($campaign);
     }
-    
+
     /**
-     * Template tags
+     * Template tags.
      * 
      * All availabel template tags
      */
     public function tags()
     {
         $tags = [];
-        
+
         // List field tags
         foreach ($this->mailList->fields as $field) {
-            $tags[] = ["name" => "SUBSCRIBER_" . $field->tag, "required" => false];
+            $tags[] = ['name' => 'SUBSCRIBER_'.$field->tag, 'required' => false];
         }
-        
+
         $tags = array_merge($tags, [
-            ["name" => "UNSUBSCRIBE_URL", "required" => true],
-            ["name" => 'SUBSCRIBER_UID', "required" => false],
-            ["name" => 'CAMPAIGN_NAME', "required" => false],
-            ["name" => 'CAMPAIGN_UID', "required" => false],
-            ["name" => 'CAMPAIGN_SUBJECT', "required" => false],
-            ["name" => 'CAMPAIGN_FROM_EMAIL', "required" => false],
-            ["name" => 'CAMPAIGN_FROM_NAME', "required" => false],
-            ["name" => 'CAMPAIGN_REPLY_TO', "required" => false],            
-            ["name" => 'CURRENT_YEAR', "required" => false],
-            ["name" => 'CURRENT_MONTH', "required" => false],
-            ["name" => 'CURRENT_DAY', "required" => false],
-            ["name" => 'CONTACT_NAME', "required" => false],
-            ["name" => 'CONTACT_COUNTRY', "required" => false],
-            ["name" => 'CONTACT_STATE', "required" => false],
-            ["name" => 'CONTACT_CITY', "required" => false],
-            ["name" => 'CONTACT_ADDRESS_1', "required" => false],
-            ["name" => 'CONTACT_ADDRESS_2', "required" => false],
-            ["name" => 'CONTACT_PHONE', "required" => false],
-            ["name" => 'CONTACT_URL', "required" => false],
-            ["name" => 'CONTACT_EMAIL', "required" => false],
-            ["name" => 'LIST_NAME', "required" => false],
-            ["name" => 'LIST_SUBJECT', "required" => false],
-            ["name" => 'LIST_FROM_NAME', "required" => false],
-            ["name" => 'LIST_FROM_EMAIL', "required" => false],
+            ['name' => 'UNSUBSCRIBE_URL', 'required' => true],
+            ['name' => 'SUBSCRIBER_UID', 'required' => false],
+            ['name' => 'CAMPAIGN_NAME', 'required' => false],
+            ['name' => 'CAMPAIGN_UID', 'required' => false],
+            ['name' => 'CAMPAIGN_SUBJECT', 'required' => false],
+            ['name' => 'CAMPAIGN_FROM_EMAIL', 'required' => false],
+            ['name' => 'CAMPAIGN_FROM_NAME', 'required' => false],
+            ['name' => 'CAMPAIGN_REPLY_TO', 'required' => false],
+            ['name' => 'CURRENT_YEAR', 'required' => false],
+            ['name' => 'CURRENT_MONTH', 'required' => false],
+            ['name' => 'CURRENT_DAY', 'required' => false],
+            ['name' => 'CONTACT_NAME', 'required' => false],
+            ['name' => 'CONTACT_COUNTRY', 'required' => false],
+            ['name' => 'CONTACT_STATE', 'required' => false],
+            ['name' => 'CONTACT_CITY', 'required' => false],
+            ['name' => 'CONTACT_ADDRESS_1', 'required' => false],
+            ['name' => 'CONTACT_ADDRESS_2', 'required' => false],
+            ['name' => 'CONTACT_PHONE', 'required' => false],
+            ['name' => 'CONTACT_URL', 'required' => false],
+            ['name' => 'CONTACT_EMAIL', 'required' => false],
+            ['name' => 'LIST_NAME', 'required' => false],
+            ['name' => 'LIST_SUBJECT', 'required' => false],
+            ['name' => 'LIST_FROM_NAME', 'required' => false],
+            ['name' => 'LIST_FROM_EMAIL', 'required' => false],
         ]);
-        
+
         return $tags;
     }
-    
-  
+
     /**
      * Transform Tags
-     * Transform tags to actual values before sending
+     * Transform tags to actual values before sending.
      */
     private function tagMessage($message, $subscriber, $msgId)
     {
@@ -337,9 +331,9 @@ class Campaign extends Model
             'CAMPAIGN_FROM_NAME' => $this->from_name,
             'CAMPAIGN_REPLY_TO' => $this->reply_to,
             'SUBSCRIBER_UID' => $subscriber->uid,
-            'CURRENT_YEAR' => date("Y"),
-            'CURRENT_MONTH' => date("m"),
-            'CURRENT_DAY' => date("d"),
+            'CURRENT_YEAR' => date('Y'),
+            'CURRENT_MONTH' => date('m'),
+            'CURRENT_DAY' => date('d'),
             'UNSUBSCRIBE_URL' => str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), Setting::get('url_unsubscribe')),
             'CONTACT_NAME' => $this->mailList->contact->company,
             'CONTACT_COUNTRY' => $this->mailList->contact->country->name,
@@ -353,31 +347,31 @@ class Campaign extends Model
             'LIST_NAME' => $this->mailList->name,
             'LIST_SUBJECT' => $this->mailList->default_subject,
             'LIST_FROM_NAME' => $this->mailList->from_name,
-            'LIST_FROM_EMAIL' => $this->mailList->from_email
+            'LIST_FROM_EMAIL' => $this->mailList->from_email,
         );
 
         foreach ($tags as $tag => $value) {
-            $message = str_replace("{".$tag."}", $value, $message);
+            $message = str_replace('{'.$tag.'}', $value, $message);
         }
-        
+
         // List field tags
         foreach ($this->mailList->fields as $field) {
-            $message = str_replace("{SUBSCRIBER_".$field->tag."}", $subscriber->getValueByField($field), $message);
+            $message = str_replace('{SUBSCRIBER_'.$field->tag.'}', $subscriber->getValueByField($field), $message);
         }
 
         return $message;
     }
-  
+
     /**
      * Get Pending Subscribers
-     * Select only subscribers that are ready for sending. Those whose status is `blacklisted`, `pending` or `unconfirmed` are not included
+     * Select only subscribers that are ready for sending. Those whose status is `blacklisted`, `pending` or `unconfirmed` are not included.
      */
     private function getPendingSubscribers()
     {
         if (is_object($this->segment)) {
             // @TODO table hard-coded here
             return $this->segment->subscribers()
-                ->leftJoin(DB::raw('(SELECT * FROM ' . DB::getTablePrefix() . 'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
+                ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
                 ->addBinding($this->id)
                 ->select('subscribers.*')
@@ -385,7 +379,7 @@ class Campaign extends Model
         } else {
             // @TODO table hard-coded here
             return $this->mailList->subscribers()
-                ->leftJoin(DB::raw('(SELECT * FROM ' . DB::getTablePrefix() . 'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
+                ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
                 ->addBinding($this->id)
                 ->select('subscribers.*')
@@ -395,36 +389,39 @@ class Campaign extends Model
 
     /**
      * Append Open Tracking URL
-     * Append open-tracking URL to every email message
+     * Append open-tracking URL to every email message.
      */
     private function appendOpenTrackingUrl($body, $msgId)
     {
         // @TODO 
         $openTrackingBaseURL = 'http://52.76.202.5:8888/delivery/notify/MESSAGE_ID'; // Setting::get("url_open_track")
         $tracking_url = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $openTrackingBaseURL);
-        return $body . '<img src="' . $tracking_url . '" width="0" height="0" style="visibility:hidden" />';
+
+        return $body.'<img src="'.$tracking_url.'" width="0" height="0" style="visibility:hidden" />';
     }
-    
+
     /**
      * Prepare Email
-     * Prepare the email content using Swift Mailer
+     * Prepare the email content using Swift Mailer.
+     *
      * @input Raw email content
+     *
      * @return MIME text message
      */
     private function prepareEmail($subscriber, $server)
     {
         // build the message
-        $msgId = time() . '.' . uniqid() . '@' . StringHelper::getDomainFromEmail($this->from_email);
+        $msgId = time().'.'.uniqid().'@'.StringHelper::getDomainFromEmail($this->from_email);
 
         $message = \Swift_Message::newInstance();
         $message->setId($msgId);
-        $message->setContentType("text/plain; charset=utf-8");
+        $message->setContentType('text/plain; charset=utf-8');
         // @TODO replace Mailixa
         $message->getHeaders()->addTextHeader('X-Mailixa-Campaign-Id', $this->uid);
         $message->getHeaders()->addTextHeader('X-Mailixa-Subscriber-Id', $subscriber->uid);
         $message->getHeaders()->addTextHeader('X-Mailixa-User-Id', $this->user->uid);
         $message->getHeaders()->addTextHeader('X-Mailixa-Message-Id', $msgId);
-        
+
         // @TODO for AWS, setting returnPath requires verified domain or email address
         //$message->setReturnPath($server->getVerp($subscriber->email));
         $message->setSubject($this->subject);
@@ -455,14 +452,17 @@ class Campaign extends Model
         return array($message, $msgId);
     }
 
-    private function findSendingDomain($email) {
-        $domain = substr(strrchr($email, "@"), 1);
+    private function findSendingDomain($email)
+    {
+        $domain = substr(strrchr($email, '@'), 1);
+
         return SendingDomain::where('name', $domain)->first();
     }
 
-    private function sign($message) {
+    private function sign($message)
+    {
         $sendingDomain = $this->findSendingDomain($this->from_email);
-        
+
         if (empty($sendingDomain)) {
             return $message;
         }
@@ -473,9 +473,10 @@ class Campaign extends Model
         $signer = new \Swift_Signers_DKIMSigner($privateKey, $domainName, $selector);
         $signer->ignoreHeader('Return-Path');
         $message->attachSigner($signer);
+
         return $message;
     }
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -486,9 +487,9 @@ class Campaign extends Model
         'subject', 'from_name', 'from_email',
         'reply_to', 'track_open',
         'track_click', 'sign_dkim', 'track_fbl',
-        'html', 'plain'
+        'html', 'plain',
     ];
-    
+
     /**
      * The rules for validation.
      *
@@ -497,14 +498,14 @@ class Campaign extends Model
     public static $rules = array(
         'mail_list_uid' => 'required',
     );
-    
+
     /**
      * Items per page.
      *
      * @var array
      */
     public static $itemsPerPage = 25;
-    
+
     /**
      * Get all items.
      *
@@ -512,85 +513,77 @@ class Campaign extends Model
      */
     public static function getAll()
     {
-        return Campaign::select("campaigns.*");
+        return self::select('campaigns.*');
     }
-    
+
     /**
      * Get select options.
      *
      * @return array
      */
-    public static function getSelectOptions($user = null, $status=null)
+    public static function getSelectOptions($user = null, $status = null)
     {
-        $query = Campaign::getAll();
-        if(is_object($user)) {
-            $query = $query->where("user_id", "=", $user->id);
+        $query = self::getAll();
+        if (is_object($user)) {
+            $query = $query->where('user_id', '=', $user->id);
         }
-        if(isset($status)) {
-            $query = $query->where("status", "=", $status);
+        if (isset($status)) {
+            $query = $query->where('status', '=', $status);
         }
-        $options = $query->orderBy("created_at", "DESC")->get()->map(function ($item) {
+        $options = $query->orderBy('created_at', 'DESC')->get()->map(function ($item) {
             return ['value' => $item->uid, 'text' => $item->name];
         });
+
         return $options;
     }
-    
+
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public static function boot()
     {
-        parent::boot();        
-        
+        parent::boot();
+
         // Create uid when creating list.
-        static::creating(function($item)
-        {
+        static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while(Campaign::where('uid','=',$uid)->count() > 0)
-            {
+            while (Campaign::where('uid', '=', $uid)->count() > 0) {
                 $uid = uniqid();
             }
             $item->uid = $uid;
-            
+
             // Update custom order
             Campaign::getAll()->increment('custom_order', 1);
             $item->custom_order = 0;
-            
+
             // Update links
             $item->updateLinks();
         });
-        
-        static::updating(function($item)
-        {
+
+        static::updating(function ($item) {
             // Update links
             $item->updateLinks();
         });
     }
-    
+
     /**
      * Get current links of campaign.
-     *
-     * @return void
      */
     public function getLinks()
     {
-        return $this->links()->whereIn("url", $this->getUrls())->get();
+        return $this->links()->whereIn('url', $this->getUrls())->get();
     }
-    
+
     /**
      * Get urls from campaign html.
-     *
-     * @return void
      */
     public function getUrls()
     {
         // Find all links in campaign content
         preg_match_all('/(?<=href=)(\'|")?(?<url>.*?)(?=\1|\))/i', $this->html, $matches);
         $hrefs = array_unique($matches['url']);
-        
+
         $urls = [];
         foreach ($hrefs as $href) {
             if (preg_match('/^http/i', $href)) {
@@ -600,33 +593,30 @@ class Campaign extends Model
 
         return $urls;
     }
-    
+
     /**
      * Update campaign links.
-     *
-     * @return void
      */
     public function updateLinks()
     {
         foreach ($this->getUrls() as $url) {
-            $link = Link::where("url", "=", $url)->first();
+            $link = Link::where('url', '=', $url)->first();
             if (!is_object($link)) {
                 $link = new Link();
                 $link->url = $url;
                 $link->save();
             }
-            
+
             // Campaign link
-            if($this->links()->where("url", "=", $url)->count() == 0) {
+            if ($this->links()->where('url', '=', $url)->count() == 0) {
                 $cl = new CampaignLink();
                 $cl->campaign_id = $this->id;
                 $cl->link_id = $link->id;
                 $cl->save();
             }
         }
-
     }
-    
+
     /**
      * Find item by uid.
      *
@@ -634,9 +624,9 @@ class Campaign extends Model
      */
     public static function findByUid($uid)
     {
-        return Campaign::where("uid", "=", $uid)->first();
+        return self::where('uid', '=', $uid)->first();
     }
-    
+
     /**
      * Get max step.
      *
@@ -645,14 +635,14 @@ class Campaign extends Model
     public function step()
     {
         $step = 0;
-        
+
         // Step 1
         if (is_object($this->mailList)) {
             $step = 1;
         } else {
             return $step;
         }
-        
+
         // Step 2
         if (!empty($this->name) && !empty($this->subject) && !empty($this->from_name)
                 && !empty($this->from_email) && !empty($this->reply_to)) {
@@ -660,24 +650,24 @@ class Campaign extends Model
         } else {
             return $step;
         }
-        
+
         // Step 3
         if ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain)) {
             $step = 3;
         } else {
             return $step;
         }
-        
+
         // Step 4
         if (isset($this->delivery_at) && $this->delivery_at != '0000-00-00 00:00:00') {
             $step = 4;
         } else {
             return $step;
         }
-        
+
         return $step;
     }
-    
+
     /**
      * Filter items.
      *
@@ -686,16 +676,16 @@ class Campaign extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = Campaign::where("user_id", "=", $user->id);
-        
+        $query = self::where('user_id', '=', $user->id);
+
         // Keyword
-        if(!empty(trim($request->keyword))) {
-            $query = $query->where('name', 'like', '%' . $request->keyword . '%');
+        if (!empty(trim($request->keyword))) {
+            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
         }
-        
+
         return $query;
     }
-    
+
     /**
      * Search items.
      *
@@ -703,13 +693,13 @@ class Campaign extends Model
      */
     public static function search($request)
     {
-        $query = Campaign::filter($request);
-        
+        $query = self::filter($request);
+
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        
+
         return $query;
     }
-    
+
     /**
      * Subscribers.
      *
@@ -719,38 +709,37 @@ class Campaign extends Model
     {
         if (is_object($this->segment)) {
             return $this->segment->subscribers();
-        } else if (is_object($this->mailList)) {
+        } elseif (is_object($this->mailList)) {
             return $this->mailList->subscribers();
         }
-        
+
         return collect([]);
     }
-    
+
     /**
-     * Create customer action log
+     * Create customer action log.
      *
      * @param string $cat
-     * @param User $user
-     * @param array $add_datas
-     * @return void
+     * @param User   $user
+     * @param array  $add_datas
      */
-    public function log($name, $user, $add_datas=[])
+    public function log($name, $user, $add_datas = [])
     {
         $data = [
                 'id' => $this->id,
                 'name' => $this->name,
         ];
-        
+
         if (is_object($this->mailList)) {
             $data['list_id'] = $this->mail_list_id;
             $data['list_name'] = $this->mailList->name;
         }
-        
+
         if (is_object($this->segment)) {
             $data['segment_id'] = $this->segment_id;
             $data['segment_name'] = $this->segment->name;
         }
-        
+
         $data = array_merge($data, $add_datas);
 
         \Mailixa\Model\Log::create([
@@ -760,9 +749,9 @@ class Campaign extends Model
                                 'data' => json_encode($data),
                             ]);
     }
-    
+
     /**
-     * Count delivery processed
+     * Count delivery processed.
      *
      * @return number
      */
@@ -770,19 +759,19 @@ class Campaign extends Model
     {
         return $this->trackingLogs()->count();
     }
-    
+
     /**
-     * Count delivery processed
+     * Count delivery processed.
      *
      * @return number
      */
     public function deliveredCount()
     {
-        return $this->trackingLogs()->where("status", "=", "sent")->count();
+        return $this->trackingLogs()->where('status', '=', 'sent')->count();
     }
-    
+
     /**
-     * Count delivery success rate
+     * Count delivery success rate.
      *
      * @return number
      */
@@ -791,11 +780,12 @@ class Campaign extends Model
         if ($this->trackingCount() == 0) {
             return 0;
         }
-        return round(($this->deliveredCount() / $this->trackingCount())*100, 0);
+
+        return round(($this->deliveredCount() / $this->trackingCount()) * 100, 0);
     }
-    
+
     /**
-     * Count delivery error
+     * Count delivery error.
      *
      * @return number
      */
@@ -803,9 +793,9 @@ class Campaign extends Model
     {
         return $this->deliveryProcessedCount() - $this->delivery_success_count();
     }
-    
+
     /**
-     * Count delivery error rate
+     * Count delivery error rate.
      *
      * @return number
      */
@@ -814,15 +804,16 @@ class Campaign extends Model
         if ($this->deliveryProcessedCount() == 0) {
             return 0;
         }
-        return round(($this->deliveryErrorCount() / $this->deliveryProcessedCount())*100, 0);
+
+        return round(($this->deliveryErrorCount() / $this->deliveryProcessedCount()) * 100, 0);
     }
-    
+
     /**
-     * Count click
+     * Count click.
      *
      * @return number
      */
-    public function clickCount($start=null, $end=null)
+    public function clickCount($start = null, $end = null)
     {
         $query = $this->clickLogs();
         if (isset($start)) {
@@ -831,12 +822,12 @@ class Campaign extends Model
         if (isset($end)) {
             $query = $query->where('click_logs.created_at', '<=', $end);
         }
-        
+
         return $query->count();
     }
-    
+
     /**
-     * Url count
+     * Url count.
      *
      * @return number
      */
@@ -844,9 +835,9 @@ class Campaign extends Model
     {
         return $this->links()->count();
     }
-    
+
     /**
-     * Click rate
+     * Click rate.
      *
      * @return number
      */
@@ -855,11 +846,12 @@ class Campaign extends Model
         if ($this->urlCount() == 0) {
             return 0;
         }
-        return round(($this->clickCount() / $this->urlCount())*100, 0);
+
+        return round(($this->clickCount() / $this->urlCount()) * 100, 0);
     }
-    
+
     /**
-     * Count click
+     * Count click.
      *
      * @return number
      */
@@ -868,21 +860,22 @@ class Campaign extends Model
         if ($this->openCount() == 0) {
             return 0;
         }
-        return round(($this->clickCount() / $this->openCount())*100, 0);
+
+        return round(($this->clickCount() / $this->openCount()) * 100, 0);
     }
-    
+
     /**
-     * Count abuse feedback
+     * Count abuse feedback.
      *
      * @return number
      */
     public function abuseFeedbackCount()
     {
-        return $this->feedbackLogs()->where("feedback_type", "=", "abuse")->count();
+        return $this->feedbackLogs()->where('feedback_type', '=', 'abuse')->count();
     }
-    
+
     /**
-     * Count open
+     * Count open.
      *
      * @return number
      */
@@ -890,13 +883,13 @@ class Campaign extends Model
     {
         return $this->openLogs()->count();
     }
-    
+
     /**
-     * Count unique open
+     * Count unique open.
      *
      * @return number
      */
-    public function openUniqCount($start=null, $end=null)
+    public function openUniqCount($start = null, $end = null)
     {
         $query = $this->openLogs();
         if (isset($start)) {
@@ -905,12 +898,12 @@ class Campaign extends Model
         if (isset($end)) {
             $query = $query->where('open_logs.created_at', '<=', $end);
         }
-        
+
         return $query->distinct('subscriber_id')->count('subscriber_id');
     }
-    
+
     /**
-     * Open rate
+     * Open rate.
      *
      * @return number
      */
@@ -919,11 +912,12 @@ class Campaign extends Model
         if ($this->trackingCount() == 0) {
             return 0;
         }
-        return round(($this->openCount() / $this->trackingCount())*100, 0);
-    }    
-    
+
+        return round(($this->openCount() / $this->trackingCount()) * 100, 0);
+    }
+
     /**
-     * Count unique open rate
+     * Count unique open rate.
      *
      * @return number
      */
@@ -932,11 +926,12 @@ class Campaign extends Model
         if ($this->trackingCount() == 0) {
             return 0;
         }
-        return round(($this->openUniqCount() / $this->trackingCount())*100, 0);
+
+        return round(($this->openUniqCount() / $this->trackingCount()) * 100, 0);
     }
-    
+
     /**
-     * Count bounce back
+     * Count bounce back.
      *
      * @return number
      */
@@ -944,9 +939,9 @@ class Campaign extends Model
     {
         return $this->feedbackLogs()->count();
     }
-    
+
     /**
-     * Count bounce back
+     * Count bounce back.
      *
      * @return number
      */
@@ -954,9 +949,9 @@ class Campaign extends Model
     {
         return $this->bounceLogs()->count();
     }
-    
+
     /**
-     * Count bounce rate
+     * Count bounce rate.
      *
      * @return number
      */
@@ -965,21 +960,22 @@ class Campaign extends Model
         if ($this->deliveryProcessedCount() == 0) {
             return 0;
         }
-        return round(($this->bounceCount() / $this->deliveryProcessedCount())*100, 0);
+
+        return round(($this->bounceCount() / $this->deliveryProcessedCount()) * 100, 0);
     }
-    
+
     /**
-     * Count hard bounce
+     * Count hard bounce.
      *
      * @return number
      */
     public function hardBounceCount()
     {
-        return $this->campaign_bounce_logs()->where("bounce_type", "=", "hard")->count();
+        return $this->campaign_bounce_logs()->where('bounce_type', '=', 'hard')->count();
     }
-    
+
     /**
-     * Count hard bounce rate
+     * Count hard bounce rate.
      *
      * @return number
      */
@@ -988,21 +984,22 @@ class Campaign extends Model
         if ($this->deliveryProcessedCount() == 0) {
             return 0;
         }
-        return round(($this->hardBounceCount() / $this->deliveryProcessedCount())*100, 0);
+
+        return round(($this->hardBounceCount() / $this->deliveryProcessedCount()) * 100, 0);
     }
-    
+
     /**
-     * Count soft bounce
+     * Count soft bounce.
      *
      * @return number
      */
     public function softBounceCount()
     {
-        return $this->campaign_bounce_logs()->where("bounce_type", "=", "soft")->count();
+        return $this->campaign_bounce_logs()->where('bounce_type', '=', 'soft')->count();
     }
-    
+
     /**
-     * Count soft bounce rate
+     * Count soft bounce rate.
      *
      * @return number
      */
@@ -1011,12 +1008,12 @@ class Campaign extends Model
         if ($this->deliveryProcessedCount() == 0) {
             return 0;
         }
-        return round(($this->softBounceCount() / $this->deliveryProcessedCount())*100, 0);
+
+        return round(($this->softBounceCount() / $this->deliveryProcessedCount()) * 100, 0);
     }
-    
-    
+
     /**
-     * Count unsubscibe
+     * Count unsubscibe.
      *
      * @return number
      */
@@ -1024,9 +1021,9 @@ class Campaign extends Model
     {
         return $this->unsubscribeLogs()->count();
     }
-    
+
     /**
-     * Count unsubscibe rate
+     * Count unsubscibe rate.
      *
      * @return number
      */
@@ -1035,198 +1032,203 @@ class Campaign extends Model
         if ($this->deliveryProcessedCount() == 0) {
             return 0;
         }
-        return round(($this->unsubscribeCount() / $this->trackingCount())*100, 0);
+
+        return round(($this->unsubscribeCount() / $this->trackingCount()) * 100, 0);
     }
-    
+
     /**
-     * Get last click
+     * Get last click.
      *
      * @param number $number
+     *
      * @return collect
      */
     public function lastClick()
     {
         return $this->clickLogs()->orderBy('created_at', 'desc')->first();
     }
-    
+
     /**
-     * Get last open
+     * Get last open.
      *
      * @param number $number
+     *
      * @return collect
      */
     public function lastOpen()
     {
         return $this->openLogs()->orderBy('created_at', 'desc')->first();
     }
-    
+
     /**
-     * Get last open list
+     * Get last open list.
      *
      * @param number $number
+     *
      * @return collect
      */
     public function lastOpens($number)
     {
         return $this->openLogs()->orderBy('created_at', 'desc')->limit($number);
     }
-    
+
     /**
-     * Get most open subscribers
+     * Get most open subscribers.
      *
      * @param number $number
+     *
      * @return collect
      */
     public function mostOpenSubscribers($number)
     {
-        return \Mailixa\Web\Subscriber::selectRaw(\DB::getTablePrefix()."list_subscriber.*, COUNT(".\DB::getTablePrefix()."campaign_track_unsubscribe.id) AS openCount")
+        return \Mailixa\Web\Subscriber::selectRaw(\DB::getTablePrefix().'list_subscriber.*, COUNT('.\DB::getTablePrefix().'campaign_track_unsubscribe.id) AS openCount')
                             ->leftJoin('campaign_track_unsubscribe', 'campaign_track_unsubscribe.subscriber_id', '=', 'list_subscriber.subscriber_id')
                             ->where('campaign_track_unsubscribe.campaign_id', '=', $this->campaign_id)
                             ->groupBy('list_subscriber.subscriber_id')
                             ->orderBy('openCount', 'desc')
                             ->limit($number);
     }
-    
+
     /**
-     * Get last opened time
+     * Get last opened time.
      *
      * @return datetime
      */
     public function getLastOpen()
     {
         $last = $this->campaign_track_opens()->orderBy('created_at', 'desc')->first();
-        return (is_object($last) ? $last->created_at->timezone(\Auth::user()->timezone) : null);
+
+        return is_object($last) ? $last->created_at->timezone(\Auth::user()->timezone) : null;
     }
-    
+
     /**
-     * Campaign top 5 opens
+     * Campaign top 5 opens.
      *
      * @return datetime
      */
-    public static function topOpens($number=5, $user=null)
+    public static function topOpens($number = 5, $user = null)
     {
-        $records = Campaign::select(\DB::raw(\DB::getTablePrefix() . 'campaigns.*, count(*) as `aggregate`'))
+        $records = self::select(\DB::raw(\DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
             ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id');
-        
-        if(isset($user)) {
-            $records = $records->where('campaigns.user_id', "=", $user->id);
-        }    
-        
+
+        if (isset($user)) {
+            $records = $records->where('campaigns.user_id', '=', $user->id);
+        }
+
         $records = $records->groupBy('tracking_logs.message_id')
             ->orderBy('aggregate', 'desc');
-            
+
         return $records->take($number);
     }
-    
+
     /**
-     * Campaign top 5 clicks
+     * Campaign top 5 clicks.
      *
      * @return datetime
      */
-    public static function topClicks($number=5, $user=null)
+    public static function topClicks($number = 5, $user = null)
     {
-        $records = Campaign::select(\DB::raw(\DB::getTablePrefix() . 'campaigns.*, count(*) as `aggregate`'))
+        $records = self::select(\DB::raw(\DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
             ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id');
-        
-        if(isset($user)) {
-            $records = $records->where('campaigns.user_id', "=", $user->id);
+
+        if (isset($user)) {
+            $records = $records->where('campaigns.user_id', '=', $user->id);
         }
-        
+
         $records = $records->groupBy('tracking_logs.message_id')
                     ->orderBy('aggregate', 'desc');
-            
+
         return $records->take($number);
     }
-    
+
     /**
-     * Campaign top 5 clicks
+     * Campaign top 5 clicks.
      *
      * @return datetime
      */
-    public static function topLinks($number=5, $user=null)
+    public static function topLinks($number = 5, $user = null)
     {
-        $records = Link::select(\DB::raw(\DB::getTablePrefix() . 'links.*, count(*) as `aggregate`'))
+        $records = Link::select(\DB::raw(\DB::getTablePrefix().'links.*, count(*) as `aggregate`'))
             ->join('campaign_links', 'campaign_links.link_id', '=', 'links.id')
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaign_links.campaign_id')
-            ->join('click_logs', function($join)
-            {
+            ->join('click_logs', function ($join) {
                 $join->on('click_logs.message_id', '=', 'tracking_logs.message_id')
-                ->on("click_logs.url", "=", "links.url");
+                ->on('click_logs.url', '=', 'links.url');
             });
-        
-        if(isset($user)) {
+
+        if (isset($user)) {
             $records = $records->join('campaigns', 'campaign_links.campaign_id', '=', 'campaigns.id')
-                ->where('campaigns.user_id', "=", $user->id);
+                ->where('campaigns.user_id', '=', $user->id);
         }
-        
+
         $records = $records->groupBy('links.id')
             ->orderBy('aggregate', 'desc');
-            
+
         return $records->take($number);
     }
-    
+
     /**
-     * Campaign top 5 clicks
+     * Campaign top 5 clicks.
      *
      * @return datetime
      */
-    public function getTopLinks($number=5)
+    public function getTopLinks($number = 5)
     {
-        $records = Link::select(\DB::raw(\DB::getTablePrefix() . 'links.*, count(*) as `aggregate`'))
-            ->join('campaign_links', 'campaign_links.link_id', '=', 'links.id')          
-            ->where("campaign_id", "=", $this->id);
-        
+        $records = Link::select(\DB::raw(\DB::getTablePrefix().'links.*, count(*) as `aggregate`'))
+            ->join('campaign_links', 'campaign_links.link_id', '=', 'links.id')
+            ->where('campaign_id', '=', $this->id);
+
         $records = $records->groupBy('campaign_links.link_id')
             ->orderBy('aggregate', 'desc');
-            
+
         return $records->take($number);
     }
-    
+
     /**
-     * Campaign top 5 clicks
+     * Campaign top 5 clicks.
      *
      * @return datetime
      */
-    public function getTopOpenSubscribers($number=5)
+    public function getTopOpenSubscribers($number = 5)
     {
-        $records = Subscriber::select(\DB::raw(\DB::getTablePrefix() . 'subscribers.*, count(*) as `aggregate`'))
+        $records = Subscriber::select(\DB::raw(\DB::getTablePrefix().'subscribers.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id')
             ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
-            ->where("campaign_id", "=", $this->id);
-        
+            ->where('campaign_id', '=', $this->id);
+
         $records = $records->groupBy('tracking_logs.message_id')
             ->orderBy('aggregate', 'desc');
-            
+
         return $records->take($number);
     }
-    
+
     /**
-     * Campaign top 5 open location
+     * Campaign top 5 open location.
      *
      * @return datetime
      */
-    public function topLocations($number=5, $user=null)
+    public function topLocations($number = 5, $user = null)
     {
-        $records = IpLocation::select(\DB::raw(\DB::getTablePrefix() . 'ip_locations.*, count(*) as `aggregate`'))
+        $records = IpLocation::select(\DB::raw(\DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
             ->join('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
             ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
-            ->where('tracking_logs.campaign_id', "=", $this->id);
-        
-        if(isset($user)) {
+            ->where('tracking_logs.campaign_id', '=', $this->id);
+
+        if (isset($user)) {
             $records = $records->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-                ->where('campaigns.user_id', "=", $user->id);
+                ->where('campaigns.user_id', '=', $user->id);
         }
-        
+
         $records = $records->groupBy('open_logs.ip_address')
             ->orderBy('aggregate', 'desc');
-            
+
         return $records->take($number);
     }
-    
+
     /**
-     * Campaign locations
+     * Campaign locations.
      *
      * @return datetime
      */
@@ -1235,29 +1237,28 @@ class Campaign extends Model
         $records = IpLocation::select('ip_locations.*')
             ->leftJoin('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
             ->leftJoin('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
-            ->where('tracking_logs.campaign_id', "=", $this->id);
-        
+            ->where('tracking_logs.campaign_id', '=', $this->id);
+
         return $records;
     }
-    
+
     /**
-     * Replace link in text by click tracking url
+     * Replace link in text by click tracking url.
      *
      * @return text
      */
     private function addTrackingUrl($email_html_content)
     {
-        if(preg_match_all("|<a.*(?=href=\"([^\"]*)\")[^>]*>([^<]*)</a>|i", $email_html_content, $matches))
-        {            
-            foreach($matches[1] as $href) {
-                $new_src = str_replace("URL", StringHelper::base64UrlEncode($href), Setting::get("url_click_track"));
+        if (preg_match_all('|<a.*(?=href="([^"]*)")[^>]*>([^<]*)</a>|i', $email_html_content, $matches)) {
+            foreach ($matches[1] as $href) {
+                $new_src = str_replace('URL', StringHelper::base64UrlEncode($href), Setting::get('url_click_track'));
                 $email_html_content = str_replace($href, $new_src, $email_html_content);
             }
         }
-        
+
         return $email_html_content;
     }
-    
+
     /**
      * Type of campaigns.
      *
@@ -1266,10 +1267,8 @@ class Campaign extends Model
     public static function types()
     {
         return [
-            "regular" => [],
-            "plain-text" => [],
+            'regular' => [],
+            'plain-text' => [],
         ];
     }
 }
-
-

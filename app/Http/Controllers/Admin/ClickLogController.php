@@ -3,24 +3,20 @@
 namespace Mailixa\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-
-use Mailixa\Http\Requests;
 use Mailixa\Http\Controllers\Controller;
 
 class ClickLogController extends Controller
 {
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -28,16 +24,17 @@ class ClickLogController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption("backend", "report_click_log") == 'no') {
+        if ($request->user()->getOption('backend', 'report_click_log') == 'no') {
             return $this->notAuthorized();
         }
-        
+
         $items = \Mailixa\Model\ClickLog::getAll();
+
         return view('admin.click_logs.index', [
             'items' => $items,
         ]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -45,12 +42,12 @@ class ClickLogController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption("backend", "report_click_log") == 'no') {
+        if ($request->user()->getOption('backend', 'report_click_log') == 'no') {
             return $this->notAuthorized();
         }
-        
+
         $items = \Mailixa\Model\ClickLog::search($request)->paginate($request->per_page);
-        
+
         return view('admin.click_logs._list', [
             'items' => $items,
         ]);

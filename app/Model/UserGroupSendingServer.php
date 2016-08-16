@@ -15,7 +15,7 @@ class UserGroupSendingServer extends Model
     {
         return $this->belongsTo('Mailixa\Model\UserGroup');
     }
-    
+
     public function sending_server()
     {
         return $this->belongsTo('Mailixa\Model\SendingServer');

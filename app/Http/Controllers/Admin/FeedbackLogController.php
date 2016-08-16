@@ -3,24 +3,20 @@
 namespace Mailixa\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-
-use Mailixa\Http\Requests;
 use Mailixa\Http\Controllers\Controller;
 
 class FeedbackLogController extends Controller
 {
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -28,16 +24,17 @@ class FeedbackLogController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption("backend", "report_feedback_log") == 'no') {
+        if ($request->user()->getOption('backend', 'report_feedback_log') == 'no') {
             return $this->notAuthorized();
         }
-        
+
         $items = \Mailixa\Model\FeedbackLog::getAll();
+
         return view('admin.feedback_logs.index', [
             'items' => $items,
         ]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -45,12 +42,12 @@ class FeedbackLogController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption("backend", "report_feedback_log") == 'no') {
+        if ($request->user()->getOption('backend', 'report_feedback_log') == 'no') {
             return $this->notAuthorized();
         }
-        
+
         $items = \Mailixa\Model\FeedbackLog::search($request)->paginate($request->per_page);
-        
+
         return view('admin.feedback_logs._list', [
             'items' => $items,
         ]);

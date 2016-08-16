@@ -3,24 +3,20 @@
 namespace Mailixa\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-
-use Mailixa\Http\Requests;
 use Mailixa\Http\Controllers\Controller;
 
 class LayoutController extends Controller
 {
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -28,16 +24,17 @@ class LayoutController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption("backend", "layout_read") == 'no') {
+        if ($request->user()->getOption('backend', 'layout_read') == 'no') {
             return $this->notAuthorized();
         }
-        
+
         $items = \Mailixa\Model\Layout::getAll();
+
         return view('admin.layouts.index', [
-            'items' => $items
+            'items' => $items,
         ]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -45,14 +42,14 @@ class LayoutController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption("backend", "layout_read") == 'no') {
+        if ($request->user()->getOption('backend', 'layout_read') == 'no') {
             return $this->notAuthorized();
         }
-        
+
         $items = \Mailixa\Model\Layout::search($request)->paginate($request->per_page);
 
         return view('admin.layouts._list', [
-            'items' => $items
+            'items' => $items,
         ]);
     }
 
@@ -69,7 +66,8 @@ class LayoutController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -80,7 +78,8 @@ class LayoutController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -91,7 +90,8 @@ class LayoutController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request, $id)
@@ -99,17 +99,17 @@ class LayoutController extends Controller
         // Generate info
         $user = $request->user();
         $layout = \Mailixa\Model\Layout::findByUid($id);
-        
+
         // authorize
         if (\Gate::denies('update', $layout)) {
             return $this->notAuthorized();
         }
-        
+
         // Get old post values
-        if(null !== $request->old()) {
+        if (null !== $request->old()) {
             $layout->fill($request->old());
         }
-        
+
         return view('admin.layouts.edit', [
             'layout' => $layout,
         ]);
@@ -118,36 +118,37 @@ class LayoutController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         // Generate info
-        $user = $request->user();        
+        $user = $request->user();
         $layout = \Mailixa\Model\Layout::findByUid($id);
-        
+
         // authorize
         if (\Gate::denies('update', $layout)) {
             return $this->notAuthorized();
         }
-        
+
         // validate and save posted data
-        if ($request->isMethod('patch'))
-        {
+        if ($request->isMethod('patch')) {
             $rules = array(
-                "content" => "required",
+                'content' => 'required',
             );
-            
+
             $this->validate($request, $rules);
-            
+
             // Save template
             $layout->fill($request->all());
             $layout->save();
-            
+
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.layout.updated'));
+
             return redirect()->action('Admin\LayoutController@edit', $layout->uid);
         }
     }
@@ -155,7 +156,8 @@ class LayoutController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)

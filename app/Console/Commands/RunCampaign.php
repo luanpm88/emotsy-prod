@@ -6,8 +6,6 @@ use Illuminate\Console\Command;
 use Mailixa\Library\Log;
 use Mailixa\Model\Campaign;
 use Mailixa\Model\TrackingLog;
-use Mailixa\Model\SendingServer;
-use DB;
 
 class RunCampaign extends Command
 {
@@ -27,8 +25,6 @@ class RunCampaign extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -43,13 +39,13 @@ class RunCampaign extends Command
     public function handle()
     {
         // initialize the logging engine
-        Log::configure(storage_path() . '/logs/mail.log');
+        Log::configure(storage_path().'/logs/mail.log');
 
         try {
             $this->execRunCampaign();
             Log::info('Campaigns finished!');
         } catch (\Exception $e) {
-            Log::error('Something went wrong: ' . $e->getMessage());
+            Log::error('Something went wrong: '.$e->getMessage());
         }
     }
 
@@ -60,7 +56,7 @@ class RunCampaign extends Command
         Log::info('Try to start campaigns...');
         $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
         if (false === $socket) {
-            throw new Exception("can't create socket: " . socket_last_error($socket));
+            throw new Exception("can't create socket: ".socket_last_error($socket));
         }
 
         // hide warning, because error will be checked manually
@@ -72,7 +68,7 @@ class RunCampaign extends Command
             // just go ahead
             Log::info('Started!');
         }
-        
+
         // @TODO debug only
         $c = Campaign::first();
         TrackingLog::where('campaign_id', $c->id)->delete();
@@ -80,12 +76,12 @@ class RunCampaign extends Command
         $c->save();
 
         $campaigns = Campaign::getWaitingCampaigns();
-        Log::info(sizeof($campaigns) . ' campaigns found');
+        Log::info(sizeof($campaigns).' campaigns found');
         $count = 1;
-        foreach($campaigns as $campaign) {
-            Log::info('Starting campaign ' . $campaign->name . " ($count/" . sizeof($campaigns) . ')' );
+        foreach ($campaigns as $campaign) {
+            Log::info('Starting campaign '.$campaign->name." ($count/".sizeof($campaigns).')');
             $campaign->startMultiProcesses();
-            Log::info('Finish campaign ' . $campaign->name );
+            Log::info('Finish campaign '.$campaign->name);
             $count += 1;
         }
     }

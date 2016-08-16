@@ -4,14 +4,9 @@ namespace Mailixa\Console\Commands;
 
 use Illuminate\Console\Command;
 use Mailixa\Model\Campaign;
-use Mailixa\Model\TrackingLog;
-use Mailixa\Model\BounceHandler;
 use Mailixa\Model\User;
-use Mailixa\Model\Setting;
 use Mailixa\Model\SendingServer;
 use Mailixa\Library\Log;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\DatabaseManager;
 use Mailgun\Mailgun;
 use DB;
 
@@ -33,8 +28,6 @@ class SendCampaign extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -48,7 +41,7 @@ class SendCampaign extends Command
      */
     public function handle()
     {
-        Log::configure(storage_path() . '/logs/mail.log');
+        Log::configure(storage_path().'/logs/mail.log');
 
         //$u = User::first();
         //$u->overQuota(); 
@@ -58,7 +51,7 @@ class SendCampaign extends Command
         //echo $s->sendingQuota();
 
         //var_dump(Campaign::getPendingCampaigns());
-        
+
         /**********
         $c = Campaign::first();
         for ($i = 1; $i <= 5; ++$i) { 
@@ -85,7 +78,6 @@ class SendCampaign extends Command
             echo "Child $status completed\n"; 
         } 
         ***********/
-        
 
         // Creating the pool of threads(stored as array)
 
@@ -151,7 +143,7 @@ class SendCampaign extends Command
         */
 
         $message = \Swift_Message::newInstance();
-        $message->setContentType("text/plain; charset=utf-8");
+        $message->setContentType('text/plain; charset=utf-8');
         $message->setSubject('Test me from Mailgun');
         $message->setFrom('any@gaugau.com');
         $message->setTo('minhnghivn@gmail.com');
@@ -159,18 +151,18 @@ class SendCampaign extends Command
         $message->setEncoder(\Swift_Encoding::get8bitEncoding());
         $message->setBody('<b>Hello world</b>', 'text/html');
 
-        $mg = new Mailgun("key-04dbf1c76df28775e4c3d9215d5ca548");
-        $domain = "sandboxe80f3790d6784dcea27cbf61831dc094.mailgun.org";
+        $mg = new Mailgun('key-04dbf1c76df28775e4c3d9215d5ca548');
+        $domain = 'sandboxe80f3790d6784dcea27cbf61831dc094.mailgun.org';
 
         $result = $mg->sendMessage(
             $domain, array(
-                'to'   => 'minhnghivn@gmail.com'
+                'to' => 'minhnghivn@gmail.com',
             ),
             $message->toString()
         );
         var_dump(get_class($result));
         var_dump($result->http_response_body->id);
-        
+
         /*
         //Customise the email - self explanatory
         $mg->sendMessage($domain, array(
@@ -181,7 +173,5 @@ class SendCampaign extends Command
             )
         );
         */
-
-
     }
 }

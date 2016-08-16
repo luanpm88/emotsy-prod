@@ -3,15 +3,11 @@
 namespace Mailixa\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-
-use Mailixa\Http\Requests;
 use Mailixa\Http\Controllers\Controller;
 
 /**
-* /api/v1/lists/{list_id}/subscribers - API controller for managing list's subscribers.
-* 
-*/
-
+ * /api/v1/lists/{list_id}/subscribers - API controller for managing list's subscribers.
+ */
 class SubscriberController extends Controller
 {
     /**
@@ -19,48 +15,49 @@ class SubscriberController extends Controller
      *
      * GET /api/v1/lists/{list_id}/subscribers
      *
-     * @param  \Illuminate\Http\Request     $request
-     * @param  string  $list_id             List's id
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $list_id List's id
+     *
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request, $list_id)
     {
         $user = \Auth::guard('api')->user();
         $list = \Mailixa\Model\MailList::findByUid($list_id);
-        
+
         // authorize
         if (!$user->can('read', $list)) {
-            return \Response::json(array("message"=>"Unauthorized"), 401);
+            return \Response::json(array('message' => 'Unauthorized'), 401);
         }
-        
-        if(isset($request->per_page)) {
+
+        if (isset($request->per_page)) {
             $per_page = $request->per_page;
         } else {
             $per_page = \Mailixa\Model\Subscriber::$itemsPerPage;
         }
-        
+
         $items = \Mailixa\Model\Subscriber::search($request, $user)
-            ->where("mail_list_id", "=", $list->id)
+            ->where('mail_list_id', '=', $list->id)
             ->groupBy('subscribers.id')
             ->paginate($per_page);
-        
+
         $subscribers = [];
         foreach ($items as $item) {
             $row = [
-                "uid" => $item->uid,
-                "email" => $item->email,
-                "status" => $item->status,
+                'uid' => $item->uid,
+                'email' => $item->email,
+                'status' => $item->status,
             ];
-            
+
             foreach ($list->fields as $field) {
-                if($field->tag != 'EMAIL') {
+                if ($field->tag != 'EMAIL') {
                     $row[$field->tag] = $item->getValueByField($field);
                 }
             }
-            
+
             $subscribers[] = $row;
         }
-        
+
         return \Response::json($subscribers, 200);
     }
 
@@ -69,133 +66,137 @@ class SubscriberController extends Controller
      *
      * GET /api/v1/lists/{list_id}/subscribers/{id}
      *
-     * @param  string  $list_id    List's id
-     * @param  string  $id         Subsciber's id
+     * @param string $list_id List's id
+     * @param string $id      Subsciber's id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($list_id, $id)
     {
         $user = \Auth::guard('api')->user();
-        
+
         $list = \Mailixa\Model\MailList::findByUid($list_id);
         $item = \Mailixa\Model\Subscriber::
-            where("uid", "=", $id)
+            where('uid', '=', $id)
             ->first();
-        
+
         // authorize
         if (!$user->can('read', $item)) {
-            return \Response::json(array("message"=>"Unauthorized"), 401);
+            return \Response::json(array('message' => 'Unauthorized'), 401);
         }
-        
+
         // check if item exists
         if (!is_object($item)) {
-            return \Response::json(array("message"=>"Item not found"), 404);
+            return \Response::json(array('message' => 'Item not found'), 404);
         }
-        
+
         // subscriber
         $subscriber = [
             'uid' => $item->uid,
             'email' => $item->email,
         ];
-        
+
         foreach ($list->fields as $field) {
-            if($field->tag != 'EMAIL') {
+            if ($field->tag != 'EMAIL') {
                 $subscriber[$field->tag] = $item->getValueByField($field);
             }
         }
-        
+
         return \Response::json(['subscriber' => $subscriber], 200);
     }
-    
+
     /**
      * Subscribe a subscriber.
      *
      * GET /api/v1/lists/{list_id}/subscribers/{id}/subscribe
      *
-     * @param  string  $list_id    List's id
-     * @param  string  $id         Subsciber's id
+     * @param string $list_id List's id
+     * @param string $id      Subsciber's id
+     *
      * @return \Illuminate\Http\Response
      */
     public function subscribe($list_id, $id)
     {
         $user = \Auth::guard('api')->user();
         $subscriber = \Mailixa\Model\Subscriber::findByUid($id);
-        
+
         // check if item exists
         if (!is_object($subscriber)) {
-            return \Response::json(array("message"=>"Item not found"), 404);
+            return \Response::json(array('message' => 'Item not found'), 404);
         }
-        
+
         // authorize
         if (!$user->can('subscribe', $subscriber)) {
-            return \Response::json(array("message"=>"Unauthorized"), 401);
+            return \Response::json(array('message' => 'Unauthorized'), 401);
         }
-        
+
         // Unsubscribe
-        $subscriber->status = "subscribed";
+        $subscriber->status = 'subscribed';
         $subscriber->save();
-        
-        return \Response::json(array("message"=>"Subscribed"), 200);
+
+        return \Response::json(array('message' => 'Subscribed'), 200);
     }
-    
+
     /**
      * Unsubscribe a subscriber.
      *
      * GET /api/v1/lists/{list_id}/subscribers/{id}/unsubscribe
      *
-     * @param  string  $list_id    List's id
-     * @param  string  $id         Subsciber's id
+     * @param string $list_id List's id
+     * @param string $id      Subsciber's id
+     *
      * @return \Illuminate\Http\Response
      */
     public function unsubscribe($list_id, $id)
     {
         $user = \Auth::guard('api')->user();
         $subscriber = \Mailixa\Model\Subscriber::findByUid($id);
-        
+
         // check if item exists
         if (!is_object($subscriber)) {
-            return \Response::json(array("message"=>"Item not found"), 404);
+            return \Response::json(array('message' => 'Item not found'), 404);
         }
-        
+
         // authorize
         if (!$user->can('unsubscribe', $subscriber)) {
-            return \Response::json(array("message"=>"Unauthorized"), 401);
+            return \Response::json(array('message' => 'Unauthorized'), 401);
         }
-        
+
         // Unsubscribe
-        $subscriber->status = "unsubscribed";
+        $subscriber->status = 'unsubscribed';
         $subscriber->save();
-        
-        return \Response::json(array("message"=>"Unsubscribed"), 200);
+
+        return \Response::json(array('message' => 'Unsubscribed'), 200);
     }
-    
+
     /**
      * Delete a subscriber.
      *
      * DELETE /api/v1/lists/{list_id}/subscribers/{id}/delete
      * 
-     * @param  string  $list_id    List's id
-     * @param  string  $id         Subsciber's id
+     * @param string $list_id List's id
+     * @param string $id      Subsciber's id
+     *
      * @return \Illuminate\Http\Response
      */
     public function delete($list_id, $id)
     {
         $user = \Auth::guard('api')->user();
         $subscriber = \Mailixa\Model\Subscriber::findByUid($id);
-        
+
         // check if item exists
         if (!is_object($subscriber)) {
-            return \Response::json(array("message"=>"Item not found"), 404);
+            return \Response::json(array('message' => 'Item not found'), 404);
         }
-        
+
         // authorize
         if (!$user->can('delete', $subscriber)) {
-            return \Response::json(array("message"=>"Unauthorized"), 401);
+            return \Response::json(array('message' => 'Unauthorized'), 401);
         }
-        
+
         // Unsubscribe
         $subscriber->delete();
-        
-        return \Response::json(array("message"=>"Deleted"), 200);
+
+        return \Response::json(array('message' => 'Deleted'), 200);
     }
 }

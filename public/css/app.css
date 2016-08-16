@@ -699,7 +699,12 @@ input.error {
 }
 .table-sub .label {
 }
-.bg-cron-running, .bg-pending, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sent, .bg-sending, .bg-subscribed {
+.bg-ready, .bg-sent {
+    background-color: #2196F3;
+    border-color: #2196F3;
+    color: #fff;
+}
+.bg-cron-running, .bg-pending, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
     background-color: #4CAF50;
     border-color: #4CAF50;
     color: #fff;

@@ -27,9 +27,9 @@ Route::group(['middleware' => ['installed']], function () {
 Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:api'], function () {
 # Route::group(['namespace' => 'Api', 'prefix' => 'api/v1'], function () {
     Route::get('', 'HomeController@index');
-    
+
     Route::resource('lists', 'MailListController');
-    Route::resource('campaigns', 'CampaignController');    
+    Route::resource('campaigns', 'CampaignController');
     Route::get('lists/{list_uid}/subscribers', 'SubscriberController@index');
     Route::get('lists/{list_uid}/subscribers/{uid}', 'SubscriberController@show');
     Route::get('lists/{list_uid}/subscribers/{uid}/subscribe', 'SubscriberController@subscribe');
@@ -39,13 +39,13 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
 
 Route::auth();
 
-Route::get('/offline', "Controller@offline");
-Route::get('/not-authorized', "Controller@notAuthorized");
+Route::get('/offline', 'Controller@offline');
+Route::get('/not-authorized', 'Controller@notAuthorized');
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
 
-    Route::get('/', "HomeController@index");
-    
+    Route::get('/', 'HomeController@index');
+
     // Update current user profile
     Route::get('account/api/renew', 'AccountController@renewToken');
     Route::get('account/api', 'AccountController@api');
@@ -56,14 +56,14 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('account/logs', 'AccountController@logs');
     Route::get('account/logs/listing', 'AccountController@logsListing');
     Route::get('account/quota_log', 'AccountController@quotaLog');
-    
+
     // Translation data
     Route::get('/datatable_locale', 'Controller@datatable_locale');
     Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
-    
+
     // User avatar
     Route::get('assets/images/avatar/user-{uid?}.jpg', 'UserController@avatar');
-    
+
     // Mail list
     Route::post('lists/copy', 'MailListController@copy');
     Route::get('lists/quick-view', 'MailListController@quickView');
@@ -76,14 +76,14 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('lists', 'MailListController');
     Route::get('lists/{uid}/edit', 'MailListController@edit');
     Route::patch('lists/{uid}/update', 'MailListController@update');
-    
+
     // Field
     Route::get('lists/{list_uid}/fields', 'FieldController@index');
     Route::get('lists/{list_uid}/fields/sort', 'FieldController@sort');
     Route::post('lists/{list_uid}/fields/store', 'FieldController@store');
     Route::get('lists/{list_uid}/fields/sample/{type}', 'FieldController@sample');
     Route::get('lists/{list_uid}/fields/{uid}/delete', 'FieldController@delete');
-    
+
     // Subscriber
     Route::get('subscribers/move/{list_uid}/{type}', 'SubscriberController@move');
     Route::get('subscribers/copy/{list_uid}/{type}', 'SubscriberController@copy');
@@ -103,12 +103,12 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('lists/{list_uid}/subscribers/export', 'SubscriberController@export');
     Route::get('lists/{list_uid}/subscribers/export/proccess', 'SubscriberController@exportProccess');
     Route::get('lists/{list_uid}/subscribers/export/download', 'SubscriberController@downloadExportedCsv');
-    
+
     // Notification handler
-    
+
     Route::post('delivery/notify/{suid}', 'DeliveryController@notify');
     Route::get('delivery/notify/{suid}', 'DeliveryController@notify');
-    
+
     // Segment
     Route::get('segments/select_box', 'SegmentController@selectBox');
     Route::get('lists/{list_uid}/segments', 'SegmentController@index');
@@ -121,7 +121,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::patch('lists/{list_uid}/segments/{uid}/update', 'SegmentController@update');
     Route::get('lists/{list_uid}/segments/delete', 'SegmentController@delete');
     Route::get('lists/{list_uid}/segments/sample_condition', 'SegmentController@sample_condition');
-    
+
     // Page
     Route::get('lists/{list_uid}/pages/{alias}/update', 'PageController@update');
     Route::post('lists/{list_uid}/pages/{alias}/update', 'PageController@update');
@@ -136,7 +136,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profileUpdateForm');
     Route::get('lists/{list_uid}/update-profile-success/{uid}', 'PageController@profileUpdateSuccessPage');
     Route::get('lists/{list_uid}/profile-update-email-sent/{uid}', 'PageController@profileUpdateEmailSent');
-    
+
     // Template
     Route::get('templates/{uid}/content', 'TemplateController@content');
     Route::get('templates/sort', 'TemplateController@sort');
@@ -151,13 +151,13 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('templates', 'TemplateController');
     Route::get('templates/{uid}/edit', 'TemplateController@edit');
     Route::patch('templates/{uid}/update', 'TemplateController@update');
-    
+
     // Campaign
     Route::get('campaigns/delete/confirm', 'CampaignController@deleteConfirm');
     Route::get('campaigns/{message_id}/open', 'CampaignController@open');
     Route::get('campaigns/{message_id}/click/{url}', 'CampaignController@click');
     Route::get('campaigns/{message_id}/unsubscribe', 'CampaignController@unsubscribe');
-    
+
     Route::get('campaigns/{uid}/open-map', 'CampaignController@openMap');
     Route::get('campaigns/{uid}/tracking-log', 'CampaignController@trackingLog');
     Route::get('campaigns/{uid}/tracking-log/listing', 'CampaignController@trackingLogListing');
@@ -171,7 +171,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('campaigns/{uid}/click-log/listing', 'CampaignController@clickLogListing');
     Route::get('campaigns/{uid}/unsubscribe-log', 'CampaignController@unsubscribeLog');
     Route::get('campaigns/{uid}/unsubscribe-log/listing', 'CampaignController@unsubscribeLogListing');
-    
+
     Route::get('campaigns/quick-view', 'CampaignController@quickView');
     Route::get('campaigns/{uid}/chart24h', 'CampaignController@chart24h');
     Route::get('campaigns/{uid}/overview', 'CampaignController@overview');
@@ -198,15 +198,15 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
 
 // ADMIN AREA
 Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend']], function () {
-    
+
     Route::get('admin', 'HomeController@index');
-    
+
     // User Group
     Route::get('admin/user_groups/listing/{page?}', 'UserGroupController@listing');
     Route::get('admin/user_groups/sort', 'UserGroupController@sort');
     Route::get('admin/user_groups/delete', 'UserGroupController@delete');
     Route::resource('admin/user_groups', 'UserGroupController');
-    
+
     // User
     Route::get('admin/users/login-back', 'UserController@loginBack');
     Route::get('admin/users/switch/{uid}', 'UserController@switch_user');
@@ -214,7 +214,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/users/sort', 'UserController@sort');
     Route::get('admin/users/delete', 'UserController@delete');
     Route::resource('admin/users', 'UserController');
-    
+
     // Template
     Route::get('admin/templates/listing/{page?}', 'TemplateController@listing');
     Route::get('admin/templates/upload', 'TemplateController@upload');
@@ -223,12 +223,12 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/templates', 'TemplateController');
     Route::get('admin/templates/{uid}/edit', 'TemplateController@edit');
     Route::patch('admin/templates/{uid}/update', 'TemplateController@update');
-    
+
     // Layout
     Route::get('admin/layouts/listing/{page?}', 'LayoutController@listing');
     Route::get('admin/layouts/sort', 'LayoutController@sort');
     Route::resource('admin/layouts', 'LayoutController');
-    
+
     // Sending servers
     Route::get('admin/sending_servers/listing/{page?}', 'SendingServerController@listing');
     Route::get('admin/sending_servers/sort', 'SendingServerController@sort');
@@ -238,62 +238,62 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::post('admin/sending_servers/create/{type}', 'SendingServerController@store');
     Route::get('admin/sending_servers/{id}/edit/{type}', 'SendingServerController@edit');
     Route::patch('admin/sending_servers/{id}/update/{type}', 'SendingServerController@update');
-    
+
     // Bounce handlers
     Route::get('admin/bounce_handlers/listing/{page?}', 'BounceHandlerController@listing');
     Route::get('admin/bounce_handlers/sort', 'BounceHandlerController@sort');
     Route::get('admin/bounce_handlers/delete', 'BounceHandlerController@delete');
     Route::resource('admin/bounce_handlers', 'BounceHandlerController');
-    
+
     // Feedback Loop handlers
     Route::get('admin/feedback_loop_handlers/listing/{page?}', 'FeedbackLoopHandlerController@listing');
     Route::get('admin/feedback_loop_handlers/sort', 'FeedbackLoopHandlerController@sort');
     Route::get('admin/feedback_loop_handlers/delete', 'FeedbackLoopHandlerController@delete');
     Route::resource('admin/feedback_loop_handlers', 'FeedbackLoopHandlerController');
-    
+
     // Sending domain
     Route::get('admin/sending_domains/listing/{page?}', 'SendingDomainController@listing');
     Route::get('admin/sending_domains/sort', 'SendingDomainController@sort');
     Route::get('admin/sending_domains/delete', 'SendingDomainController@delete');
     Route::resource('admin/sending_domains', 'SendingDomainController');
-    
+
     // Language
     Route::get('admin/languages/listing/{page?}', 'LanguageController@listing');
     Route::get('admin/languages/delete', 'LanguageController@delete');
     Route::resource('admin/languages', 'LanguageController');
-    
+
     // Setting
     Route::get('admin/settings/{tab?}', 'SettingController@index');
     Route::post('admin/settings', 'SettingController@index');
     Route::get('admin/update-urls', 'SettingController@updateUrls');
-    
+
     // Tracking log
     Route::get('admin/tracking_log', 'TrackingLogController@index');
     Route::get('admin/tracking_log/listing', 'TrackingLogController@listing');
-    
+
     // Feedback log
     Route::get('admin/bounce_log', 'BounceLogController@index');
     Route::get('admin/bounce_log/listing', 'BounceLogController@listing');
-    
+
     // Open log
     Route::get('admin/open_log', 'OpenLogController@index');
     Route::get('admin/open_log/listing', 'OpenLogController@listing');
-    
+
     // Click log
     Route::get('admin/click_log', 'ClickLogController@index');
     Route::get('admin/click_log/listing', 'ClickLogController@listing');
-    
+
     // Feedback log
     Route::get('admin/feedback_log', 'FeedbackLogController@index');
     Route::get('admin/feedback_log/listing', 'FeedbackLogController@listing');
-    
+
     // Unsubscribe log
     Route::get('admin/unsubscribe_log', 'UnsubscribeLogController@index');
     Route::get('admin/unsubscribe_log/listing', 'UnsubscribeLogController@listing');
-    
+
     // Sending domain
     Route::get('admin/blacklist', 'BlacklistController@index');
     Route::get('admin/blacklist/listing', 'BlacklistController@listing');
     Route::get('admin/blacklist/delete', 'BlacklistController@delete');
-    
+
 });

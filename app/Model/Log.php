@@ -12,101 +12,102 @@ class Log extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'type', 'name', 'data'
+        'user_id', 'type', 'name', 'data',
     ];
-    
+
     /**
      * Items per page.
      *
      * @var array
      */
     public static $itemsPerPage = 25;
-    
+
     /**
      * Associations.
      *
      * @var object | collect
-     */        
+     */
     public function user()
     {
         return $this->belongsTo('Mailixa\Model\User');
     }
-    
+
     /**
      * Display log content.
      *
      * @var string
-     */    
+     */
     public function message()
     {
         $data = (array) json_decode($this->data);
-        
+
         // Campaign
-        if ($this->type == 'campaign') {            
-            if(isset($data["list_id"])) {
-                $list = MailList::find($data["list_id"]);
-                $list_link = is_object($list) ? action('MailListController@show', $list->uid) : "#deleted";
-                $data["list_link"] = $list_link;
+        if ($this->type == 'campaign') {
+            if (isset($data['list_id'])) {
+                $list = MailList::find($data['list_id']);
+                $list_link = is_object($list) ? action('MailListController@show', $list->uid) : '#deleted';
+                $data['list_link'] = $list_link;
             }
-            
-            $item = Campaign::find($data["id"]);
-            $link = is_object($item) ? action('CampaignController@overview', $item->uid) : "#deleted";
-            
-            $data["link"] = $link;
+
+            $item = Campaign::find($data['id']);
+            $link = is_object($item) ? action('CampaignController@overview', $item->uid) : '#deleted';
+
+            $data['link'] = $link;
         }
         // Subscriber
         elseif ($this->type == 'subscriber') {
-            $list = MailList::find($data["list_id"]);
-            $list_link = is_object($list) ? action('MailListController@overview', $list->uid) : "#deleted";
-            $data["list_link"] = $list_link;
-            
-            $item = Subscriber::find($data["id"]);
-            $link = is_object($item) ? action('SubscriberController@edit', ['uid' => $item->uid, 'list_uid' => $list->uid]) : "#deleted";
-            $data["link"] = $link;
+            $list = MailList::find($data['list_id']);
+            $list_link = is_object($list) ? action('MailListController@overview', $list->uid) : '#deleted';
+            $data['list_link'] = $list_link;
+
+            $item = Subscriber::find($data['id']);
+            $link = is_object($item) ? action('SubscriberController@edit', ['uid' => $item->uid, 'list_uid' => $list->uid]) : '#deleted';
+            $data['link'] = $link;
         }
         // Segment
         elseif ($this->type == 'segment') {
-            $list = MailList::find($data["list_id"]);
-            $list_link = is_object($list) ? action('MailListController@overview', $list->uid) : "#deleted";
-            $data["list_link"] = $list_link;
-            
-            $item = Segment::find($data["id"]);
-            $link = is_object($item) ? action('SegmentController@edit', ['uid' => $item->uid, 'list_uid' => $list->uid]) : "#deleted";
-            $data["link"] = $link;
+            $list = MailList::find($data['list_id']);
+            $list_link = is_object($list) ? action('MailListController@overview', $list->uid) : '#deleted';
+            $data['list_link'] = $list_link;
+
+            $item = Segment::find($data['id']);
+            $link = is_object($item) ? action('SegmentController@edit', ['uid' => $item->uid, 'list_uid' => $list->uid]) : '#deleted';
+            $data['link'] = $link;
         }
         // Page
         elseif ($this->type == 'page') {
-            $list = MailList::find($data["list_id"]);
-            $list_link = is_object($list) ? action('MailListController@overview', $list->uid) : "#deleted";
-            $data["list_link"] = $list_link;
-            
-            $item = Page::find($data["id"]);
-            $link = is_object($item) ? action('PageController@update', ['list_uid' => $list->uid, 'alias' => $data["alias"]]) : "#deleted";
-            $data["link"] = $link;
-            $data["name"] = trans('messages.' . $data["alias"]);
+            $list = MailList::find($data['list_id']);
+            $list_link = is_object($list) ? action('MailListController@overview', $list->uid) : '#deleted';
+            $data['list_link'] = $list_link;
+
+            $item = Page::find($data['id']);
+            $link = is_object($item) ? action('PageController@update', ['list_uid' => $list->uid, 'alias' => $data['alias']]) : '#deleted';
+            $data['link'] = $link;
+            $data['name'] = trans('messages.'.$data['alias']);
         }
         // List
         elseif ($this->type == 'list') {
-            $item = MailList::find($data["id"]);
-            $link = is_object($item) ? action('MailListController@overview', $item->uid) : "#deleted";
-            $data["link"] = $link;
-            
-            if(isset($data["from_uid"])) {
-                $from = MailList::findByUid($data["from_uid"]);
-                $from_link = is_object($from) ? action('MailListController@overview', $data["from_uid"]) : "#deleted";
-                $data["from_link"] = $from_link;
+            $item = MailList::find($data['id']);
+            $link = is_object($item) ? action('MailListController@overview', $item->uid) : '#deleted';
+            $data['link'] = $link;
+
+            if (isset($data['from_uid'])) {
+                $from = MailList::findByUid($data['from_uid']);
+                $from_link = is_object($from) ? action('MailListController@overview', $data['from_uid']) : '#deleted';
+                $data['from_link'] = $from_link;
             }
-            if(isset($data["to_uid"])) {
-                $to = MailList::findByUid($data["to_uid"]);
-                $to_link = is_object($to) ? action('MailListController@overview', $data["to_uid"]) : "#deleted";
-                $data["to_link"] = $to_link;
+            if (isset($data['to_uid'])) {
+                $to = MailList::findByUid($data['to_uid']);
+                $to_link = is_object($to) ? action('MailListController@overview', $data['to_uid']) : '#deleted';
+                $data['to_link'] = $to_link;
             }
         }
-        
-        $message = trans('messages.log.' . $this->type . "." . $this->name, $data);
+
+        $message = trans('messages.log.'.$this->type.'.'.$this->name, $data);
+
         return $message;
     }
-    
+
     /**
      * Filter items.
      *
@@ -115,24 +116,24 @@ class Log extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = Log::where("user_id", "=", $user->id);
-        
+        $query = self::where('user_id', '=', $user->id);
+
         // Keyword
-        if(!empty(trim($request->keyword))) {
-            $query = $query->where('name', 'like', '%' . $request->keyword . '%');
+        if (!empty(trim($request->keyword))) {
+            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
         }
-        
+
         // filters
         $filters = $request->filters;
-        if(!empty($filters)) {
-            if(!empty($filters["type"])) {
-                $query = $query->where("logs.type", "=", $filters["type"]);     
+        if (!empty($filters)) {
+            if (!empty($filters['type'])) {
+                $query = $query->where('logs.type', '=', $filters['type']);
             }
         }
-        
+
         return $query;
     }
-    
+
     /**
      * Search items.
      *
@@ -140,10 +141,10 @@ class Log extends Model
      */
     public static function search($request)
     {
-        $query = Log::filter($request);
-        
+        $query = self::filter($request);
+
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        
+
         return $query;
     }
 }

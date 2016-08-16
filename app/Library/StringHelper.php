@@ -1,7 +1,7 @@
 <?php
 
 /**
- * StringHelper class
+ * StringHelper class.
  *
  * Provide string helper methods
  *
@@ -9,12 +9,14 @@
  * the Mailixa Co., Ltd. (http://mailixa.net/).
  *
  * @category   MVC Model
- * @package    Mailer
+ *
  * @author     N. Pham <n.pham@mailixa.net>
  * @author     L. Pham <l.pham@mailixa.net>
  * @copyright  Mailixa Co., Ltd.
  * @license    Mailixa Co., Ltd.
+ *
  * @version    1.0
+ *
  * @link       http://mailixa.net
  */
 
@@ -23,9 +25,10 @@ namespace Mailixa\Library;
 class StringHelper
 {
     /**
-     * Custom base64 encoding. Replace unsafe url chars
+     * Custom base64 encoding. Replace unsafe url chars.
      *
      * @param string $val
+     *
      * @return string
      */
     public static function base64UrlEncode($val)
@@ -38,6 +41,7 @@ class StringHelper
      * base64 characters before decoding.
      *
      * @param string $val
+     *
      * @return string
      */
     public static function base64UrlDecode($val)
@@ -50,6 +54,7 @@ class StringHelper
      * base64 characters before decoding.
      *
      * @param string $val
+     *
      * @return string
      */
     public static function cleanupMessageId($msgId)
@@ -62,11 +67,12 @@ class StringHelper
      * base64 characters before decoding.
      *
      * @param string $val
+     *
      * @return string
      */
     public static function getDomainFromEmail($email)
     {
-        return substr(strrchr($email, "@"), 1);
+        return substr(strrchr($email, '@'), 1);
     }
 
     /**
@@ -74,11 +80,12 @@ class StringHelper
      * base64 characters before decoding.
      *
      * @param string $val
+     *
      * @return string
      */
     public static function joinUrl()
     {
-        $array = array_map(function($e) { 
+        $array = array_map(function ($e) {
             return preg_replace('/(^\/+|\/+$)/', '', $e);
         }, func_get_args());
 

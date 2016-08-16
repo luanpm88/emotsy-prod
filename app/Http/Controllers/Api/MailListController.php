@@ -2,15 +2,11 @@
 
 namespace Mailixa\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-
-use Mailixa\Http\Requests;
 use Mailixa\Http\Controllers\Controller;
 
 /**
-* /api/v1/lists - API controller for managing lists.
-* 
-*/
+ * /api/v1/lists - API controller for managing lists.
+ */
 class MailListController extends Controller
 {
     /**
@@ -23,41 +19,42 @@ class MailListController extends Controller
     public function index()
     {
         $user = \Auth::guard('api')->user();
-        
+
         $lists = \Mailixa\Model\MailList::getAll()
-            ->select("uid", "name", "default_subject", "from_email", "from_name", "status", "created_at", "updated_at")
-            ->where("user_id", "=", $user->id)
+            ->select('uid', 'name', 'default_subject', 'from_email', 'from_name', 'status', 'created_at', 'updated_at')
+            ->where('user_id', '=', $user->id)
             ->get();
-        
+
         return \Response::json($lists, 200);
     }
-    
+
     /**
      * Display the specified list information.
      *
      * GET /api/v1/lists/{id}
      *
-     * @param  int  $id     List's id
+     * @param int $id List's id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
         $user = \Auth::guard('api')->user();
-        
+
         $item = \Mailixa\Model\MailList::
-            where("uid", "=", $id)
+            where('uid', '=', $id)
             ->first();
 
         // authorize
         if (!$user->can('read', $item)) {
-            return \Response::json(array("message"=>"Unauthorized"), 401);
+            return \Response::json(array('message' => 'Unauthorized'), 401);
         }
-        
+
         // check if item exists
         if (!is_object($item)) {
-            return \Response::json(array("message"=>"Item not found"), 404);
+            return \Response::json(array('message' => 'Item not found'), 404);
         }
-        
+
         // list info
         $list = [
             'uid' => $item->uid,
@@ -70,10 +67,10 @@ class MailListController extends Controller
             'created_at' => $item->created_at,
             'updated_at' => $item->updated_at,
         ];
-        
+
         // Contact information
         $contact = null;
-        if(isset($item->contact)) {
+        if (isset($item->contact)) {
             // contact information
             $contact = [
                 'company' => $item->contact->company,
@@ -88,7 +85,7 @@ class MailListController extends Controller
                 'city' => $item->contact->city,
             ];
         }
-        
+
         // statistics
         $statistics = [
             'open_uniq_rate' => $item->openUniqRate(),
@@ -98,7 +95,7 @@ class MailListController extends Controller
             'unsubscribe_count' => $item->unsubscribeCount(),
             'unconfirmed_count' => $item->unconfirmedCount(),
         ];
-        
+
         return \Response::json(['list' => $list, 'contact' => $contact, 'statistics' => $statistics], 200);
     }
 }

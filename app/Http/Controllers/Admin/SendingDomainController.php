@@ -3,24 +3,20 @@
 namespace Mailixa\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-
-use Mailixa\Http\Requests;
 use Mailixa\Http\Controllers\Controller;
 
 class SendingDomainController extends Controller
 {
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -28,16 +24,17 @@ class SendingDomainController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption("backend", "sending_domain_read") == 'no') {
+        if ($request->user()->getOption('backend', 'sending_domain_read') == 'no') {
             return $this->notAuthorized();
         }
-        
+
         $items = \Mailixa\Model\SendingDomain::getAll();
+
         return view('admin.sending_domains.index', [
             'items' => $items,
         ]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -45,12 +42,12 @@ class SendingDomainController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption("backend", "sending_domain_read") == 'no') {
+        if ($request->user()->getOption('backend', 'sending_domain_read') == 'no') {
             return $this->notAuthorized();
         }
-        
+
         $items = \Mailixa\Model\SendingDomain::search($request)->paginate($request->per_page);
-        
+
         return view('admin.sending_domains._list', [
             'items' => $items,
         ]);
@@ -64,17 +61,17 @@ class SendingDomainController extends Controller
     public function create(Request $request)
     {
         $server = new \Mailixa\Model\SendingDomain([
-            'signing_enabled' => true
+            'signing_enabled' => true,
         ]);
-        $server->status = "active";
-        $server->uid = "0";
+        $server->status = 'active';
+        $server->uid = '0';
         $server->fill($request->old());
-        
+
         // authorize
         if (\Gate::denies('create', $server)) {
             return $this->notAuthorized();
         }
-       
+
         return view('admin.sending_domains.create', [
             'server' => $server,
         ]);
@@ -83,7 +80,8 @@ class SendingDomainController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -91,23 +89,24 @@ class SendingDomainController extends Controller
         // Get current user
         $current_user = $request->user();
         $server = new \Mailixa\Model\SendingDomain();
-        
+
         // authorize
         if (\Gate::denies('create', $server)) {
             return $this->notAuthorized();
         }
-        
+
         // save posted data
         if ($request->isMethod('post')) {
             $this->validate($request, \Mailixa\Model\SendingDomain::rules());
-            
+
             // Save current user info
             $server->fill($request->all());
             $server->user_id = $request->user()->id;
             $server->status = 'active';
-            
+
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.sending_domain.created'));
+
                 return redirect()->action('Admin\SendingDomainController@index');
             }
         }
@@ -116,7 +115,8 @@ class SendingDomainController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -127,20 +127,21 @@ class SendingDomainController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request, $id)
     {
         $server = \Mailixa\Model\SendingDomain::findByUid($id);
-        
+
         // authorize
         if (\Gate::denies('update', $server)) {
             return $this->notAuthorized();
         }
 
         $server->fill($request->old());
-       
+
         return view('admin.sending_domains.edit', [
             'server' => $server,
         ]);
@@ -149,8 +150,9 @@ class SendingDomainController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -158,21 +160,22 @@ class SendingDomainController extends Controller
         // Get current user
         $current_user = $request->user();
         $server = \Mailixa\Model\SendingDomain::findByUid($id);
-        
+
         // authorize
         if (\Gate::denies('update', $server)) {
             return $this->notAuthorized();
         }
-        
+
         // save posted data
         if ($request->isMethod('patch')) {
             $this->validate($request, \Mailixa\Model\SendingDomain::rules());
-            
+
             // Save current user info
             $server->fill($request->all());
-            
+
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.sending_domain.updated'));
+
                 return redirect()->action('Admin\SendingDomainController@index');
             }
         }
@@ -181,60 +184,63 @@ class SendingDomainController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
     }
-    
+
     /**
      * Custom sort items.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function sort(Request $request)
     {
         $sort = json_decode($request->sort);
-        foreach($sort as $row) {
+        foreach ($sort as $row) {
             $item = \Mailixa\Model\SendingDomain::findByUid($row[0]);
-            
+
             // authorize
             if (\Gate::denies('update', $item)) {
                 return $this->notAuthorized();
             }
-            
+
             $item->custom_order = $row[1];
-            $item->save();            
+            $item->save();
         }
-        
+
         echo trans('messages.sending_domain.custom_order.updated');
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function delete(Request $request)
-    {        
-        $items = \Mailixa\Model\SendingDomain::whereIn("uid", explode(",", $request->uids));
-        
+    {
+        $items = \Mailixa\Model\SendingDomain::whereIn('uid', explode(',', $request->uids));
+
         foreach ($items->get() as $item) {
             // authorize
             if (\Gate::denies('delete', $item)) {
                 return;
             }
         }
-        
+
         foreach ($items->get() as $item) {
             $item->delete();
         }
 
         // Redirect to my lists page
-        echo(trans('messages.sending_domains.deleted'));
+        echo trans('messages.sending_domains.deleted');
     }
 }

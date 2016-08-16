@@ -10,18 +10,17 @@ class LayoutPolicy
 
     /**
      * Create a new policy instance.
-     *
-     * @return void
      */
     public function __construct()
     {
         //
     }
-    
+
     public function update(\Mailixa\Model\User $user, \Mailixa\Model\Layout $item)
     {
-        $ability = $user->getOption("backend", "layout_update");
+        $ability = $user->getOption('backend', 'layout_update');
         $can = $ability == 'yes';
+
         return $can;
     }
 }

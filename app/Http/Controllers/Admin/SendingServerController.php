@@ -3,24 +3,20 @@
 namespace Mailixa\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-
-use Mailixa\Http\Requests;
 use Mailixa\Http\Controllers\Controller;
 
 class SendingServerController extends Controller
 {
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -28,16 +24,17 @@ class SendingServerController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption("backend", "sending_server_read") == 'no') {
+        if ($request->user()->getOption('backend', 'sending_server_read') == 'no') {
             return $this->notAuthorized();
         }
-        
+
         $items = \Mailixa\Model\SendingServer::getAll();
+
         return view('admin.sending_servers.index', [
             'items' => $items,
         ]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -45,12 +42,12 @@ class SendingServerController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption("backend", "sending_server_read") == 'no') {
+        if ($request->user()->getOption('backend', 'sending_server_read') == 'no') {
             return $this->notAuthorized();
         }
-        
+
         $items = \Mailixa\Model\SendingServer::search($request)->paginate($request->per_page);
-        
+
         return view('admin.sending_servers._list', [
             'items' => $items,
         ]);
@@ -64,15 +61,15 @@ class SendingServerController extends Controller
     public function create(Request $request)
     {
         $server = new \Mailixa\Model\SendingServer();
-        $server->status = "active";
-        $server->uid = "0";
+        $server->status = 'active';
+        $server->uid = '0';
         $server->fill($request->old());
-        
+
         // authorize
         if (\Gate::denies('create', $server)) {
             return $this->notAuthorized();
         }
-       
+
         return view('admin.sending_servers.create', [
             'server' => $server,
         ]);
@@ -81,7 +78,8 @@ class SendingServerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -89,24 +87,25 @@ class SendingServerController extends Controller
         // Get current user
         $current_user = $request->user();
         $server = new \Mailixa\Model\SendingServer();
-        
+
         // authorize
         if (\Gate::denies('create', $server)) {
             return $this->notAuthorized();
         }
-        
+
         // save posted data
         if ($request->isMethod('post')) {
             $this->validate($request, \Mailixa\Model\SendingServer::rules($request->type));
-            
+
             // Save current user info
             $server->fill($request->all());
             $server->user_id = $request->user()->id;
             $server->type = $request->type;
             $server->status = 'active';
-            
+
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.sending_server.created'));
+
                 return redirect()->action('Admin\SendingServerController@index');
             }
         }
@@ -115,7 +114,8 @@ class SendingServerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -126,20 +126,21 @@ class SendingServerController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request, $id)
     {
         $server = \Mailixa\Model\SendingServer::findByUid($id);
-        
+
         // authorize
         if (\Gate::denies('update', $server)) {
             return $this->notAuthorized();
         }
 
         $server->fill($request->old());
-       
+
         return view('admin.sending_servers.edit', [
             'server' => $server,
         ]);
@@ -148,8 +149,9 @@ class SendingServerController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -157,21 +159,22 @@ class SendingServerController extends Controller
         // Get current user
         $current_user = $request->user();
         $server = \Mailixa\Model\SendingServer::findByUid($id);
-        
+
         // authorize
         if (\Gate::denies('update', $server)) {
             return $this->notAuthorized();
         }
-        
+
         // save posted data
         if ($request->isMethod('patch')) {
             $this->validate($request, \Mailixa\Model\SendingServer::rules($request->type));
-            
+
             // Save current user info
             $server->fill($request->all());
-            
+
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
+
                 return redirect()->action('Admin\SendingServerController@index');
             }
         }
@@ -180,60 +183,63 @@ class SendingServerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
     }
-    
+
     /**
      * Custom sort items.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function sort(Request $request)
     {
         $sort = json_decode($request->sort);
-        foreach($sort as $row) {
+        foreach ($sort as $row) {
             $item = \Mailixa\Model\SendingServer::findByUid($row[0]);
-            
+
             // authorize
             if (\Gate::denies('update', $item)) {
                 return $this->notAuthorized();
             }
-            
+
             $item->custom_order = $row[1];
-            $item->save();            
+            $item->save();
         }
-        
+
         echo trans('messages.sending_server.custom_order.updated');
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function delete(Request $request)
-    {        
-        $items = \Mailixa\Model\SendingServer::whereIn("uid", explode(",", $request->uids));
-        
+    {
+        $items = \Mailixa\Model\SendingServer::whereIn('uid', explode(',', $request->uids));
+
         foreach ($items->get() as $item) {
             // authorize
             if (\Gate::denies('delete', $item)) {
                 return;
             }
         }
-        
+
         foreach ($items->get() as $item) {
             $item->delete();
         }
 
         // Redirect to my lists page
-        echo(trans('messages.sending_servers.deleted'));
+        echo trans('messages.sending_servers.deleted');
     }
 }

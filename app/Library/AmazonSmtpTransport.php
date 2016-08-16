@@ -10,6 +10,7 @@ class AmazonSmtpTransport extends \Swift_SmtpTransport
     {
         $response = parent::executeCommand($command, $codes, $failures);
         $this->rawResponses[] = $response;
+
         return $response;
     }
 
@@ -18,16 +19,16 @@ class AmazonSmtpTransport extends \Swift_SmtpTransport
         return new self($host, $port, $security);
     }
 
-    public function getMessageId() 
+    public function getMessageId()
     {
-        $messageId = NULL;
-        foreach($this->rawResponses as $e) {
+        $messageId = null;
+        foreach ($this->rawResponses as $e) {
             preg_match('/(?<=250 ok\s).*/i', $e, $matched);
-            if (sizeof($matched) > 0)
+            if (sizeof($matched) > 0) {
                 $messageId = $matched[0];
+            }
         }
 
         return $messageId;
-
     }
 }

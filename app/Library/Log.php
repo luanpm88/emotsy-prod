@@ -1,7 +1,7 @@
 <?php
 
 /**
- * MyLogger Class
+ * MyLogger Class.
  *
  * Main class for Sender logging
  *
@@ -9,12 +9,14 @@
  * the Mailixa Co., Ltd. (http://mailixa.net/).
  *
  * @category   MVC Model
- * @package    Mailer
+ *
  * @author     N. Pham <n.pham@mailixa.net>
  * @author     L. Pham <l.pham@mailixa.net>
  * @copyright  Mailixa Co., Ltd.
  * @license    Mailixa Co., Ltd.
+ *
  * @version    1.0
+ *
  * @link       http://mailixa.net
  */
 
@@ -26,7 +28,7 @@ use Monolog\Formatter\LineFormatter;
 
 /**
  * Read configuration settings
- * Setup init CONSTANTS
+ * Setup init CONSTANTS.
  */
 class Log
 {
@@ -74,14 +76,15 @@ class Log
     }
 
     // reconfigure log format for the forked process
-    public static function fork() {
+    public static function fork()
+    {
         $pid = getmypid();
-        $output = "[%datetime%] #" . $pid . " %level_name%: %message%\n";
+        $output = '[%datetime%] #'.$pid." %level_name%: %message%\n";
         $formatter = new LineFormatter($output);
 
         $stream = new StreamHandler(self::$path, Logger::INFO);
         $stream->setFormatter($formatter);
-        
+
         self::$logger = new Logger('mailer');
         self::$logger->pushHandler($stream);
     }
@@ -89,12 +92,12 @@ class Log
     public static function configure($path)
     {
         $pid = getmypid();
-        $output = "[%datetime%] #" . $pid . " %level_name%: %message%\n";
+        $output = '[%datetime%] #'.$pid." %level_name%: %message%\n";
         $formatter = new LineFormatter($output);
 
         $stream = new StreamHandler($path, Logger::INFO);
         $stream->setFormatter($formatter);
-    
+
         self::$logger = new Logger('mailer');
         self::$logger->pushHandler($stream);
         self::$path = $path;

@@ -3,24 +3,20 @@
 namespace Mailixa\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-
-use Mailixa\Http\Requests;
 use Mailixa\Http\Controllers\Controller;
 
 class FeedbackLoopHandlerController extends Controller
 {
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -28,16 +24,17 @@ class FeedbackLoopHandlerController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption("backend", "fbl_handler_read") == 'no') {
+        if ($request->user()->getOption('backend', 'fbl_handler_read') == 'no') {
             return $this->notAuthorized();
         }
-        
+
         $items = \Mailixa\Model\FeedbackLoopHandler::getAll();
+
         return view('admin.feedback_loop_handlers.index', [
             'items' => $items,
         ]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -45,12 +42,12 @@ class FeedbackLoopHandlerController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption("backend", "fbl_handler_read") == 'no') {
+        if ($request->user()->getOption('backend', 'fbl_handler_read') == 'no') {
             return $this->notAuthorized();
         }
-        
+
         $items = \Mailixa\Model\FeedbackLoopHandler::search($request)->paginate($request->per_page);
-        
+
         return view('admin.feedback_loop_handlers._list', [
             'items' => $items,
         ]);
@@ -64,15 +61,15 @@ class FeedbackLoopHandlerController extends Controller
     public function create(Request $request)
     {
         $server = new \Mailixa\Model\FeedbackLoopHandler();
-        $server->status = "active";
-        $server->uid = "0";
+        $server->status = 'active';
+        $server->uid = '0';
         $server->fill($request->old());
-        
+
         // authorize
         if (\Gate::denies('create', $server)) {
             return $this->notAuthorized();
         }
-       
+
         return view('admin.feedback_loop_handlers.create', [
             'server' => $server,
         ]);
@@ -81,7 +78,8 @@ class FeedbackLoopHandlerController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -89,23 +87,24 @@ class FeedbackLoopHandlerController extends Controller
         // Get current user
         $current_user = $request->user();
         $server = new \Mailixa\Model\FeedbackLoopHandler();
-        
+
         // authorize
         if (\Gate::denies('create', $server)) {
             return $this->notAuthorized();
         }
-        
+
         // save posted data
         if ($request->isMethod('post')) {
             $this->validate($request, \Mailixa\Model\FeedbackLoopHandler::rules());
-            
+
             // Save current user info
             $server->fill($request->all());
             $server->user_id = $request->user()->id;
             $server->status = 'active';
-            
+
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.feedback_loop_handler.created'));
+
                 return redirect()->action('Admin\FeedbackLoopHandlerController@index');
             }
         }
@@ -114,7 +113,8 @@ class FeedbackLoopHandlerController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -125,20 +125,21 @@ class FeedbackLoopHandlerController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request, $id)
     {
         $server = \Mailixa\Model\FeedbackLoopHandler::findByUid($id);
-        
+
         // authorize
         if (\Gate::denies('update', $server)) {
             return $this->notAuthorized();
         }
 
         $server->fill($request->old());
-       
+
         return view('admin.feedback_loop_handlers.edit', [
             'server' => $server,
         ]);
@@ -147,8 +148,9 @@ class FeedbackLoopHandlerController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -156,21 +158,22 @@ class FeedbackLoopHandlerController extends Controller
         // Get current user
         $current_user = $request->user();
         $server = \Mailixa\Model\FeedbackLoopHandler::findByUid($id);
-        
+
         // authorize
         if (\Gate::denies('update', $server)) {
             return $this->notAuthorized();
         }
-        
+
         // save posted data
         if ($request->isMethod('patch')) {
             $this->validate($request, \Mailixa\Model\FeedbackLoopHandler::rules());
-            
+
             // Save current user info
             $server->fill($request->all());
-            
+
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.feedback_loop_handler.updated'));
+
                 return redirect()->action('Admin\FeedbackLoopHandlerController@index');
             }
         }
@@ -179,60 +182,63 @@ class FeedbackLoopHandlerController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
     }
-    
+
     /**
      * Custom sort items.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function sort(Request $request)
     {
         $sort = json_decode($request->sort);
-        foreach($sort as $row) {
+        foreach ($sort as $row) {
             $item = \Mailixa\Model\FeedbackLoopHandler::findByUid($row[0]);
-            
+
             // authorize
             if (\Gate::denies('update', $item)) {
                 return $this->notAuthorized();
             }
-            
+
             $item->custom_order = $row[1];
-            $item->save();            
+            $item->save();
         }
-        
+
         echo trans('messages.feedback_loop_handler.custom_order.updated');
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function delete(Request $request)
-    {        
-        $items = \Mailixa\Model\FeedbackLoopHandler::whereIn("uid", explode(",", $request->uids));
-        
+    {
+        $items = \Mailixa\Model\FeedbackLoopHandler::whereIn('uid', explode(',', $request->uids));
+
         foreach ($items->get() as $item) {
             // authorize
             if (\Gate::denies('delete', $item)) {
                 return;
             }
         }
-        
+
         foreach ($items->get() as $item) {
             $item->delete();
         }
 
         // Redirect to my lists page
-        echo(trans('messages.feedback_loop_handlers.deleted'));
+        echo trans('messages.feedback_loop_handlers.deleted');
     }
 }

@@ -12,14 +12,14 @@ class SubscriberField extends Model
      * @var array
      */
     protected $fillable = [
-        'field_id', 'subscriber_id', 'value'
+        'field_id', 'subscriber_id', 'value',
     ];
-    
+
     /**
      * Associations.
      *
      * @var object | collect
-     */ 
+     */
     public function field()
     {
         return $this->belongsTo('Mailixa\Model\Field');

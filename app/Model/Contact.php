@@ -12,9 +12,9 @@ class Contact extends Model
      * @var array
      */
     protected $fillable = [
-        'email', 'first_name', 'last_name', 'address_1', 'address_2', 'city', 'zip', 'url', 'company', 'phone', 'state', 'country_id'
+        'email', 'first_name', 'last_name', 'address_1', 'address_2', 'city', 'zip', 'url', 'company', 'phone', 'state', 'country_id',
     ];
-    
+
     /**
      * The rules for validation.
      *
@@ -33,39 +33,35 @@ class Contact extends Model
         'state' => 'required',
         'country_id' => 'required',
     );
-    
+
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public static function boot()
     {
-        parent::boot();        
-        
+        parent::boot();
+
         // Create uid when creating list.
-        static::creating(function($item)
-        {
+        static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while(Contact::where('uid','=',$uid)->count() > 0)
-            {
+            while (Contact::where('uid', '=', $uid)->count() > 0) {
                 $uid = uniqid();
             }
             $item->uid = $uid;
         });
     }
-    
+
     /**
      * Associations.
      *
      * @var object | collect
-     */ 
+     */
     public function country()
     {
         return $this->belongsTo('Mailixa\Model\Country');
     }
-    
+
     /**
      * Display contact name.
      *
@@ -73,6 +69,6 @@ class Contact extends Model
      */
     public function name()
     {
-        return $this->first_name . " " . $this->last_name;
+        return $this->first_name.' '.$this->last_name;
     }
 }

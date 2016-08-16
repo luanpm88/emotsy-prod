@@ -12,23 +12,23 @@ class Field extends Model
      * @var array
      */
     protected $fillable = [
-        'mail_list_id', 'type', 'label', 'tag', 'default_value', 'visible', 'required', 'custom_order'
+        'mail_list_id', 'type', 'label', 'tag', 'default_value', 'visible', 'required', 'custom_order',
     ];
-    
+
     /**
      * The rules for validation.
      *
      * @var array
      */
     public static $fields_rules = array(
-        
+
     );
-    
+
     /**
      * Associations.
      *
      * @var object | collect
-     */ 
+     */
     public function mailList()
     {
         return $this->belongsTo('Mailixa\Model\MailList');
@@ -38,39 +38,35 @@ class Field extends Model
     {
         return $this->hasMany('Mailixa\Model\FieldOption');
     }
-    
+
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public static function boot()
     {
-        parent::boot();        
-        
+        parent::boot();
+
         // Create uid when creating list.
-        static::creating(function($item)
-        {
+        static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while(Field::where('uid','=',$uid)->count() > 0)
-            {
+            while (Field::where('uid', '=', $uid)->count() > 0) {
                 $uid = uniqid();
             }
             $item->uid = $uid;
         });
     }
-    
+
     /**
      * Format string to field tag.
      *
      * @var string
-     */ 
+     */
     public static function formatTag($string)
     {
-        return strtoupper(preg_replace("/[^0-9a-zA-Z_]/m", "", $string));
+        return strtoupper(preg_replace('/[^0-9a-zA-Z_]/m', '', $string));
     }
-    
+
     /**
      * Find item by uid.
      *
@@ -78,9 +74,9 @@ class Field extends Model
      */
     public static function findByUid($uid)
     {
-        return Field::where("uid", "=", $uid)->first();
+        return self::where('uid', '=', $uid)->first();
     }
-    
+
     /**
      * Get select options.
      *
@@ -91,6 +87,7 @@ class Field extends Model
         $options = $this->fieldOptions->map(function ($item) {
             return ['value' => $item->value, 'text' => $item->label];
         });
+
         return $options;
     }
 }

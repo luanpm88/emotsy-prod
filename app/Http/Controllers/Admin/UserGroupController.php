@@ -3,24 +3,20 @@
 namespace Mailixa\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-
-use Mailixa\Http\Requests;
 use Mailixa\Http\Controllers\Controller;
 
 class UserGroupController extends Controller
 {
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -28,16 +24,17 @@ class UserGroupController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption("backend", "user_group_read") == 'no') {
+        if ($request->user()->getOption('backend', 'user_group_read') == 'no') {
             return $this->notAuthorized();
         }
-        
+
         $groups = \Mailixa\Model\UserGroup::getAll();
+
         return view('admin.user_groups.index', [
             'groups' => $groups,
         ]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -45,12 +42,12 @@ class UserGroupController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption("backend", "user_group_read") == 'no') {
+        if ($request->user()->getOption('backend', 'user_group_read') == 'no') {
             return $this->notAuthorized();
         }
-        
+
         $groups = \Mailixa\Model\UserGroup::search($request)->paginate($request->per_page);
-        
+
         return view('admin.user_groups._list', [
             'groups' => $groups,
         ]);
@@ -65,7 +62,7 @@ class UserGroupController extends Controller
     {
         // Generate info
         $user = $request->user();
-        
+
         $group = new \Mailixa\Model\UserGroup([
                                 'backend_access' => false,
                                 'frontend_access' => true,
@@ -76,28 +73,28 @@ class UserGroupController extends Controller
         if (\Gate::denies('create', $group)) {
             return $this->notAuthorized();
         }
-        
+
         // For options
-        if(isset($request->old()["options"])) {
-            $group->options = json_encode($request->old()["options"]);
+        if (isset($request->old()['options'])) {
+            $group->options = json_encode($request->old()['options']);
         }
         $options = $group->getOptions();
-        
+
         // For sending servers
-        if(isset($request->old()["sending_servers"])) {
+        if (isset($request->old()['sending_servers'])) {
             $group->user_group_sending_servers = collect([]);
-            foreach($request->old()["sending_servers"] as $key => $param) {                
-                if($param["check"]) {
+            foreach ($request->old()['sending_servers'] as $key => $param) {
+                if ($param['check']) {
                     $server = \Mailixa\Model\SendingServer::findByUid($key);
                     $row = new \Mailixa\Model\UserGroupSendingServer();
                     $row->user_group_id = $group->id;
                     $row->sending_server_id = $server->id;
-                    $row->fitness = $param["fitness"];
+                    $row->fitness = $param['fitness'];
                     $group->user_group_sending_servers->push($row);
                 }
             }
         }
-       
+
         return view('admin.user_groups.create', [
             'group' => $group,
             'options' => $options,
@@ -107,34 +104,35 @@ class UserGroupController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
     {
         // Generate info
-        $user = $request->user();        
+        $user = $request->user();
         $group = new \Mailixa\Model\UserGroup(array());
-        
+
         // authorize
         if (\Gate::denies('create', $group)) {
             return $this->notAuthorized();
         }
-        
+
         // validate and save posted data
         if ($request->isMethod('post')) {
             $this->validate($request, \Mailixa\Model\UserGroup::rules());
-            
+
             $rules = [];
             if (isset($request->sending_servers)) {
-                foreach($request->sending_servers as $key => $param) {                
-                    if($param["check"]) {
-                        $rules["sending_servers." . $key . ".fitness"] = 'required';
+                foreach ($request->sending_servers as $key => $param) {
+                    if ($param['check']) {
+                        $rules['sending_servers.'.$key.'.fitness'] = 'required';
                     }
                 }
             }
             $this->validate($request, $rules);
-            
+
             $group->fill($request->all());
             $group->options = json_encode($request->options);
             $group->user_id = $user->id;
@@ -143,9 +141,10 @@ class UserGroupController extends Controller
             // For sending servers
             if (isset($request->sending_servers)) {
                 $group->updateSendingServers($request->sending_servers);
-            }         
-            
+            }
+
             $request->session()->flash('alert-success', trans('messages.user_group.created'));
+
             return redirect()->action('Admin\UserGroupController@index');
         }
     }
@@ -153,7 +152,8 @@ class UserGroupController extends Controller
     /**
      * Display the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
@@ -164,42 +164,43 @@ class UserGroupController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function edit(Request $request, $id)
     {
         // Generate info
-        $user = $request->user();        
+        $user = $request->user();
         $group = \Mailixa\Model\UserGroup::find($id);
         $group->fill($request->old());
-        
+
         // authorize
         if (\Gate::denies('update', $group)) {
             return $this->notAuthorized();
         }
-        
+
         // For options
-        if(isset($request->old()["options"])) {
-            $group->options = json_encode($request->old()["options"]);
+        if (isset($request->old()['options'])) {
+            $group->options = json_encode($request->old()['options']);
         }
         $options = $group->getOptions();
-        
+
         // For sending servers
-        if(isset($request->old()["sending_servers"])) {
+        if (isset($request->old()['sending_servers'])) {
             $group->user_group_sending_servers = collect([]);
-            foreach($request->old()["sending_servers"] as $key => $param) {                
-                if($param["check"]) {
+            foreach ($request->old()['sending_servers'] as $key => $param) {
+                if ($param['check']) {
                     $server = \Mailixa\Model\SendingServer::findByUid($key);
                     $row = new \Mailixa\Model\UserGroupSendingServer();
                     $row->user_group_id = $group->id;
                     $row->sending_server_id = $server->id;
-                    $row->fitness = $param["fitness"];
+                    $row->fitness = $param['fitness'];
                     $group->user_group_sending_servers->push($row);
                 }
             }
         }
-        
+
         return view('admin.user_groups.edit', [
             'group' => $group,
             'options' => $options,
@@ -209,47 +210,48 @@ class UserGroupController extends Controller
     /**
      * Update the specified resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
     {
         // Generate info
         $user = $request->user();
-        
+
         $group = \Mailixa\Model\UserGroup::find($id);
-        
+
         // authorize
         if (\Gate::denies('update', $group)) {
             return $this->notAuthorized();
         }
-        
+
         // validate and save posted data
         if ($request->isMethod('patch')) {
             $this->validate($request, \Mailixa\Model\UserGroup::rules());
-            
+
             $rules = [];
             if (isset($request->sending_servers)) {
-                foreach($request->sending_servers as $key => $param) {                
-                    if($param["check"]) {
-                        $rules["sending_servers." . $key . ".fitness"] = 'required';
+                foreach ($request->sending_servers as $key => $param) {
+                    if ($param['check']) {
+                        $rules['sending_servers.'.$key.'.fitness'] = 'required';
                     }
                 }
             }
             $this->validate($request, $rules);
-            
+
             $group->fill($request->all());
             $group->options = json_encode($request->options);
             $group->save();
-            
+
             // For sending servers
             if (isset($request->sending_servers)) {
                 $group->updateSendingServers($request->sending_servers);
             }
-            
-            
+
             $request->session()->flash('alert-success', trans('messages.user_group.updated'));
+
             return redirect()->action('Admin\UserGroupController@index');
         }
     }
@@ -257,26 +259,28 @@ class UserGroupController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  int  $id
+     * @param int $id
+     *
      * @return \Illuminate\Http\Response
      */
     public function destroy($id)
     {
         //
     }
-    
+
     /**
      * Custom sort items.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function sort(Request $request)
     {
-        $sort = json_decode($request->sort);        
-        foreach($sort as $row) {
+        $sort = json_decode($request->sort);
+        foreach ($sort as $row) {
             $item = \Mailixa\Model\UserGroup::find($row[0]);
-            
+
             // authorize
             if (\Gate::denies('sort', $item)) {
                 return $this->notAuthorized();
@@ -285,32 +289,33 @@ class UserGroupController extends Controller
             $item->custom_order = $row[1];
             $item->save();
         }
-        
+
         echo trans('messages.user_groups.custom_order.updated');
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function delete(Request $request)
-    {        
-        $lists = \Mailixa\Model\UserGroup::whereIn("id", explode(",", $request->ids));
-        
+    {
+        $lists = \Mailixa\Model\UserGroup::whereIn('id', explode(',', $request->ids));
+
         foreach ($lists->get() as $item) {
             // authorize
             if (\Gate::denies('delete', $item)) {
                 return;
             }
         }
-        
+
         foreach ($lists->get() as $item) {
             $item->delete();
         }
 
         // Redirect to my lists page
-        echo(trans('messages.user_groups.deleted'));
+        echo trans('messages.user_groups.deleted');
     }
 }

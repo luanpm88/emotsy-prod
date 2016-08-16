@@ -12,16 +12,16 @@ class Segment extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'matching'
+        'name', 'matching',
     ];
-    
+
     /**
      * Items per page.
      *
      * @var array
      */
     public static $itemsPerPage = 25;
-    
+
     /**
      * The rules for validation.
      *
@@ -31,44 +31,40 @@ class Segment extends Model
         'name' => 'required',
         'matching' => 'required',
     );
-    
+
     /**
      * Associations.
      *
      * @var object | collect
-     */ 
+     */
     public function mailList()
     {
         return $this->belongsTo('Mailixa\Model\MailList');
     }
-    
+
     public function segmentConditions()
     {
         return $this->hasMany('Mailixa\Model\SegmentCondition');
     }
-    
+
     /**
      * Bootstrap any application services.
-     * 
-     * @return void
      */
     public static function boot()
     {
-        parent::boot();        
-        
+        parent::boot();
+
         // Create uid when creating list.
-        static::creating(function($item)
-        {
+        static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while(Segment::where('uid','=',$uid)->count() > 0)
-            {
+            while (Segment::where('uid', '=', $uid)->count() > 0) {
                 $uid = uniqid();
             }
             $item->uid = $uid;
         });
     }
-    
+
     /**
      * Find item by uid.
      *
@@ -76,9 +72,9 @@ class Segment extends Model
      */
     public static function findByUid($uid)
     {
-        return Segment::where("uid", "=", $uid)->first();
+        return self::where('uid', '=', $uid)->first();
     }
-    
+
     /**
      * Filter items.
      *
@@ -87,11 +83,11 @@ class Segment extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = Segment::select("segments.*");
-        
+        $query = self::select('segments.*');
+
         return $query->distinct();
     }
-    
+
     /**
      * Get all languages.
      *
@@ -99,13 +95,13 @@ class Segment extends Model
      */
     public static function search($request)
     {
-        $query = Segment::filter($request);
-        
+        $query = self::filter($request);
+
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        
+
         return $query;
     }
-    
+
     /**
      * Get type options.
      *
@@ -118,7 +114,7 @@ class Segment extends Model
             ['text' => trans('messages.any'), 'value' => 'Any'],
         ];
     }
-    
+
     /**
      * Get operators.
      *
@@ -141,96 +137,94 @@ class Segment extends Model
             ['text' => trans('messages.not_blank'), 'value' => 'not_blank'],
         ];
     }
-    
+
     /**
      * Get all subscribers belongs to the segment.
      *
      * @return collect
      */
-    public function subscribers($request=null)
+    public function subscribers($request = null)
     {
-        $query = \Mailixa\Model\Subscriber::select("subscribers.*")
-                    ->where("subscribers.mail_list_id", $this->mail_list_id);
+        $query = \Mailixa\Model\Subscriber::select('subscribers.*')
+                    ->where('subscribers.mail_list_id', $this->mail_list_id);
         // $query = $query->leftJoin('subscriber_fields', 'subscriber_fields.subscriber_id', '=', 'subscribers.id');
-        
+
         $conditions = array();
         foreach ($this->segmentConditions as $condition) {
             $keyword = $condition->value;
-            $keyword = str_replace("[EMPTY]", "", $keyword);
-            $keyword = str_replace("[DATETIME]", date("Y-m-d H:i:s"), $keyword);
-            $keyword = str_replace("[DATE]", date("Y-m-d"), $keyword);
-            
+            $keyword = str_replace('[EMPTY]', '', $keyword);
+            $keyword = str_replace('[DATETIME]', date('Y-m-d H:i:s'), $keyword);
+            $keyword = str_replace('[DATE]', date('Y-m-d'), $keyword);
+
             $keyword = trim(strtolower($keyword));
             switch ($condition->operator) {
-                case "equal":
-                    $cond = "LOWER(".\DB::getTablePrefix()."subscriber_fields.value) = '".$keyword."'";
+                case 'equal':
+                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) = '".$keyword."'";
                     break;
-                case "not_equal":
-                    $cond = "LOWER(".\DB::getTablePrefix()."subscriber_fields.value) != '".$keyword."'";
+                case 'not_equal':
+                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) != '".$keyword."'";
                     break;
-                case "contains":
-                    $cond = "LOWER(".\DB::getTablePrefix()."subscriber_fields.value) LIKE '%".$keyword."%'";
+                case 'contains':
+                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) LIKE '%".$keyword."%'";
                     break;
-                case "not_contains":
-                    $cond = "LOWER(".\DB::getTablePrefix()."subscriber_fields.value) NOT LIKE '%".$keyword."%'";
+                case 'not_contains':
+                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) NOT LIKE '%".$keyword."%'";
                     break;
-                case "starts":
-                    $cond = "LOWER(".\DB::getTablePrefix()."subscriber_fields.value) LIKE '".$keyword."%'";
+                case 'starts':
+                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) LIKE '".$keyword."%'";
                     break;
-                case "ends":
-                    $cond = "LOWER(".\DB::getTablePrefix()."subscriber_fields.value) LIKE '%".$keyword."'";
+                case 'ends':
+                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) LIKE '%".$keyword."'";
                     break;
-                case "greater":
+                case 'greater':
                     $cond = \DB::getTablePrefix()."subscriber_fields.value > '".$keyword."'";
                     break;
-                case "less":
+                case 'less':
                     $cond = \DB::getTablePrefix()."subscriber_fields.value < '".$keyword."'";
                     break;
-                case "not_starts":
-                    $cond = "LOWER(".\DB::getTablePrefix()."subscriber_fields.value) NOT LIKE '".$keyword."%'";
+                case 'not_starts':
+                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) NOT LIKE '".$keyword."%'";
                     break;
-                case "not_ends":
-                    $cond = "LOWER(".\DB::getTablePrefix()."subscriber_fields.value) NOT LIKE '%".$keyword."'";
+                case 'not_ends':
+                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) NOT LIKE '%".$keyword."'";
                     break;
-                case "not_blank":
-                    $cond = "(LOWER(".\DB::getTablePrefix()."subscriber_fields.value) != '' AND LOWER(".\DB::getTablePrefix()."subscriber_fields.value) IS NOT NULL)";
+                case 'not_blank':
+                    $cond = '(LOWER('.\DB::getTablePrefix()."subscriber_fields.value) != '' AND LOWER(".\DB::getTablePrefix().'subscriber_fields.value) IS NOT NULL)';
                     break;
-                case "blank":
-                    $cond = "(LOWER(".\DB::getTablePrefix()."subscriber_fields.value) = '' OR LOWER(".\DB::getTablePrefix()."subscriber_fields.value) IS NULL)";
+                case 'blank':
+                    $cond = '(LOWER('.\DB::getTablePrefix()."subscriber_fields.value) = '' OR LOWER(".\DB::getTablePrefix().'subscriber_fields.value) IS NULL)';
                     break;
                 default:
-                    
+
             }
-            
-            $conditions[] = \DB::getTablePrefix()."subscribers.id IN  (SELECT ".\DB::getTablePrefix()."subscriber_fields.subscriber_id FROM ".\DB::getTablePrefix()."subscriber_fields WHERE (".\DB::getTablePrefix()."subscriber_fields.field_id = ".$condition->field_id." AND ".$cond."))";
+
+            $conditions[] = \DB::getTablePrefix().'subscribers.id IN  (SELECT '.\DB::getTablePrefix().'subscriber_fields.subscriber_id FROM '.\DB::getTablePrefix().'subscriber_fields WHERE ('.\DB::getTablePrefix().'subscriber_fields.field_id = '.$condition->field_id.' AND '.$cond.'))';
         }
-        
+
         //return $conditions;
-        if ($this->matching == "any") {
-            $conditions = implode(" OR ", $conditions);
+        if ($this->matching == 'any') {
+            $conditions = implode(' OR ', $conditions);
         } else {
-            $conditions = implode(" AND ", $conditions);
+            $conditions = implode(' AND ', $conditions);
         }
-        
+
         if (!empty($conditions)) {
             $query = $query->whereRaw($conditions);
         }
-        
+
         // filters
-        if(isset($request)) {
+        if (isset($request)) {
             $query = Subscriber::filter($query, $request);
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
-        
+
         return $query;
     }
-    
+
     /**
      * Add customer action log.
-     *
-     * @return void
      */
-    public function log($name, $user, $add_datas=[])
+    public function log($name, $user, $add_datas = [])
     {
         $data = [
             'id' => $this->id,
@@ -238,7 +232,7 @@ class Segment extends Model
             'list_id' => $this->mail_list_id,
             'list_name' => $this->mailList->name,
         ];
-        
+
         $data = array_merge($data, $add_datas);
 
         Log::create([

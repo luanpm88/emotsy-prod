@@ -2,53 +2,53 @@
 
 namespace Mailixa\Model;
 
-use Illuminate\Database\Eloquent\Model;
 use Mailixa\Library\Log;
 
 class FeedbackLoopHandler extends DeliveryHandler
 {
-    public function processMessage($mbox, $msgNo) {
-        
+    public function processMessage($mbox, $msgNo)
+    {
         try {
             $header = imap_fetchheader($mbox, $msgNo);
             $body = imap_body($mbox, $msgNo, FT_PEEK);
-            $feedbackType = $this->getFeedbackType($header);;
+            $feedbackType = $this->getFeedbackType($header);
             if (empty($feedbackType)) {
-                imap_setflag_full($mbox, $msgNo, "\\Seen \\Flagged");
-                throw new \Exception("not an ARF message. Skipped");
+                imap_setflag_full($mbox, $msgNo, '\\Seen \\Flagged');
+                throw new \Exception('not an ARF message. Skipped');
             }
 
             $msgId = $this->getMessageId($body);
             if (empty($msgId)) {
-                imap_setflag_full($mbox, $msgNo, "\\Seen \\Flagged");
-                throw new \Exception("cannot find Message-ID, skipped");
+                imap_setflag_full($mbox, $msgNo, '\\Seen \\Flagged');
+                throw new \Exception('cannot find Message-ID, skipped');
             }
 
-            Log::info('Processing abuse notification for message ' . $msgId);
-            
+            Log::info('Processing abuse notification for message '.$msgId);
+
             $trackingLog = TrackingLog::where('message_id', $msgId)->first();
             if (empty($trackingLog)) {
-                imap_setflag_full($mbox, $msgNo, "\\Seen \\Flagged");
-                throw new \Exception("message-id not found in tracking_logs, skipped");
+                imap_setflag_full($mbox, $msgNo, '\\Seen \\Flagged');
+                throw new \Exception('message-id not found in tracking_logs, skipped');
             }
-            
+
             // record a bounce log, one message may have more than one
             $feedbackLog = new FeedbackLog();
             $feedbackLog->message_id = $msgId;
             $feedbackLog->feedback_type = $feedbackType; // @TODO fill in the NULL value here
-            $feedbackLog->raw_feedback_content = $header . PHP_EOL . $body;
+            $feedbackLog->raw_feedback_content = $header.PHP_EOL.$body;
             $feedbackLog->save();
-            
+
             // just delete the bounce notification email
             imap_delete($mbox, $msgNo);
 
-            Log::info("Feedback recorded for message " . $msgId);
-        } catch(\Exception $ex) {
+            Log::info('Feedback recorded for message '.$msgId);
+        } catch (\Exception $ex) {
             Log::warning($ex->getMessage());
         }
     }
 
-    public function getFeedbackType($header) {
+    public function getFeedbackType($header)
+    {
         preg_match('/(?<=Feedback-Type:)\s*[^\s]*/', $header, $matched);
         if (sizeof($matched) == 0) {
             return;
@@ -56,7 +56,7 @@ class FeedbackLoopHandler extends DeliveryHandler
             return trim($matched[0]);
         }
     }
-    
+
     /**
      * Get all items.
      *
@@ -64,9 +64,9 @@ class FeedbackLoopHandler extends DeliveryHandler
      */
     public static function getAll()
     {
-        return FeedbackLoopHandler::select("*");
+        return self::select('*');
     }
-    
+
     /**
      * Filter items.
      *
@@ -75,34 +75,34 @@ class FeedbackLoopHandler extends DeliveryHandler
     public static function filter($request)
     {
         $user = $request->user();
-        $query = FeedbackLoopHandler::select("feedback_loop_handlers.*");
-        
-        if ($request->user()->getOption("backend", "fbl_handler_read") == 'own') {
-            $query = $query->where("feedback_loop_handlers.user_id", "=", $request->user()->id);
+        $query = self::select('feedback_loop_handlers.*');
+
+        if ($request->user()->getOption('backend', 'fbl_handler_read') == 'own') {
+            $query = $query->where('feedback_loop_handlers.user_id', '=', $request->user()->id);
         }
-        
+
         // Keyword
-        if(!empty(trim($request->keyword))) {
-            foreach(explode(" ",trim($request->keyword)) as $keyword) {
+        if (!empty(trim($request->keyword))) {
+            foreach (explode(' ', trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('feedback_loop_handlers.name', 'like', '%' . $keyword . '%')
-                        ->orWhere('feedback_loop_handlers.type', 'like', '%' . $keyword . '%')
-                        ->orWhere('feedback_loop_handlers.host', 'like', '%' . $keyword . '%');
+                    $q->orwhere('feedback_loop_handlers.name', 'like', '%'.$keyword.'%')
+                        ->orWhere('feedback_loop_handlers.type', 'like', '%'.$keyword.'%')
+                        ->orWhere('feedback_loop_handlers.host', 'like', '%'.$keyword.'%');
                 });
-            }                
-        }
-        
-        // filters
-        $filters = $request->filters;
-        if(!empty($filters)) {
-            if(!empty($filters["type"])) {
-                $query = $query->where("feedback_loop_handlers.type", "=", $filters["type"]);     
             }
         }
-        
+
+        // filters
+        $filters = $request->filters;
+        if (!empty($filters)) {
+            if (!empty($filters['type'])) {
+                $query = $query->where('feedback_loop_handlers.type', '=', $filters['type']);
+            }
+        }
+
         return $query;
     }
-    
+
     /**
      * Search items.
      *
@@ -110,13 +110,13 @@ class FeedbackLoopHandler extends DeliveryHandler
      */
     public static function search($request)
     {
-        $query = FeedbackLoopHandler::filter($request);
-        
+        $query = self::filter($request);
+
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        
+
         return $query;
     }
-    
+
     /**
      * Find item by uid.
      *
@@ -124,51 +124,47 @@ class FeedbackLoopHandler extends DeliveryHandler
      */
     public static function findByUid($uid)
     {
-        return FeedbackLoopHandler::where("uid", "=", $uid)->first();
+        return self::where('uid', '=', $uid)->first();
     }
-    
+
     /**
      * Items per page.
      *
      * @var array
      */
     public static $itemsPerPage = 25;
-    
+
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public static function boot()
     {
-        parent::boot();        
-        
+        parent::boot();
+
         // Create uid when creating list.
-        static::creating(function($item)
-        {
+        static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while(FeedbackLoopHandler::where('uid','=',$uid)->count() > 0)
-            {
+            while (FeedbackLoopHandler::where('uid', '=', $uid)->count() > 0) {
                 $uid = uniqid();
             }
             $item->uid = $uid;
-            
+
             // FeedbackLoopHandler custom order
             FeedbackLoopHandler::getAll()->increment('custom_order', 1);
             $item->custom_order = 0;
         });
     }
-    
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'password', 'protocol'
+        'name', 'host', 'port', 'username', 'password', 'protocol',
     ];
-    
+
     /**
      * Get validation rules.
      *
@@ -185,7 +181,7 @@ class FeedbackLoopHandler extends DeliveryHandler
             'protocol' => 'required',
         ];
     }
-    
+
     /**
      * Get select options.
      *
@@ -193,11 +189,12 @@ class FeedbackLoopHandler extends DeliveryHandler
      */
     public static function getSelectOptions()
     {
-        $query = FeedbackLoopHandler::getAll();
-        
-        $options = $query->orderBy("name", "asc")->get()->map(function ($item) {
+        $query = self::getAll();
+
+        $options = $query->orderBy('name', 'asc')->get()->map(function ($item) {
             return ['value' => $item->id, 'text' => $item->name];
         });
+
         return $options;
     }
 }

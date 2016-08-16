@@ -22,14 +22,12 @@ class PasswordController extends Controller
 
     /**
      * Create a new password controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
         $this->middleware('guest');
     }
-    
+
     /**
      * Get the e-mail subject line to be used for the reset link email.
      *

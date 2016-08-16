@@ -2,20 +2,15 @@
 
 namespace Mailixa\Http\Controllers;
 
-use Mailixa\Http\Requests;
-use Illuminate\Http\Request;
-
 class HomeController extends Controller
 {
     /**
      * Create a new controller instance.
-     *
-     * @return void
      */
     public function __construct()
     {
         parent::__construct();
-        
+
         $this->middleware('auth');
     }
 
@@ -27,6 +22,5 @@ class HomeController extends Controller
     public function index()
     {
         return view('dashboard');
-    }    
-    
+    }
 }

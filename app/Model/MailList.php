@@ -12,9 +12,9 @@ class MailList extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'default_subject', 'from_email', 'from_name', 'remind_message', 'send_to', 'email_daily', 'email_subscribe', 'email_unsubscribe', 'send_welcome_email', 'unsubscribe_notification'
+        'name', 'default_subject', 'from_email', 'from_name', 'remind_message', 'send_to', 'email_daily', 'email_subscribe', 'email_unsubscribe', 'send_welcome_email', 'unsubscribe_notification',
     ];
-    
+
     /**
      * The rules for validation.
      *
@@ -38,94 +38,88 @@ class MailList extends Model
         'email_unsubscribe' => 'regex:"^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$"',
         'email_daily' => 'regex:"^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$"',
     );
-    
+
     /**
      * Items per page.
      *
      * @var array
      */
     public static $itemsPerPage = 25;
-    
+
     /**
      * Associations.
      *
      * @var object | collect
-     */ 
+     */
     public function fields()
     {
         return $this->hasMany('Mailixa\Model\Field');
     }
-    
+
     public function segments()
     {
         return $this->hasMany('Mailixa\Model\Segment');
     }
-    
+
     public function pages()
     {
         return $this->hasMany('Mailixa\Model\Page');
     }
-    
+
     public function page($layout)
     {
-        return $this->pages()->where("layout_id", $layout->id)->first();
+        return $this->pages()->where('layout_id', $layout->id)->first();
     }
-    
+
     public function contact()
     {
         return $this->belongsTo('Mailixa\Model\Contact');
     }
-    
+
     public function subscribers()
     {
         return $this->hasMany('Mailixa\Model\Subscriber');
     }
-    
+
     public function campaigns()
     {
         return $this->hasMany('Mailixa\Model\Campaign');
     }
-    
+
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public static function boot()
     {
-        parent::boot();        
-        
+        parent::boot();
+
         // Create uid when creating list.
-        static::creating(function($item)
-        {
+        static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while(MailList::where('uid','=',$uid)->count() > 0)
-            {
+            while (MailList::where('uid', '=', $uid)->count() > 0) {
                 $uid = uniqid();
             }
             $item->uid = $uid;
-            
+
             // Update custom order
             MailList::getAll()->increment('custom_order', 1);
             $item->custom_order = 0;
         });
-        
+
         // Create uid when list created.
-        static::created(function($item)
-        {
+        static::created(function ($item) {
             //  Create list default fields
             $item->createDefaultFieds();
         });
-        
+
         // detele
-        static::deleted(function($item)
-        {
+        static::deleted(function ($item) {
             //  Delete contact when list deleted
             $item->contact->delete();
         });
     }
-    
+
     /**
      * Get all items.
      *
@@ -133,9 +127,9 @@ class MailList extends Model
      */
     public static function getAll()
     {
-        return MailList::select("*");
+        return self::select('*');
     }
-    
+
     /**
      * Filter items.
      *
@@ -144,16 +138,16 @@ class MailList extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = MailList::where("user_id", "=", $user->id);
-        
+        $query = self::where('user_id', '=', $user->id);
+
         // Keyword
-        if(!empty(trim($request->keyword))) {
-            $query = $query->where('name', 'like', '%' . $request->keyword . '%');
+        if (!empty(trim($request->keyword))) {
+            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
         }
-        
+
         return $query;
     }
-    
+
     /**
      * Search items.
      *
@@ -161,13 +155,13 @@ class MailList extends Model
      */
     public static function search($request)
     {
-        $query = MailList::filter($request);
-        
+        $query = self::filter($request);
+
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        
+
         return $query;
     }
-    
+
     /**
      * Find item by uid.
      *
@@ -175,9 +169,9 @@ class MailList extends Model
      */
     public static function findByUid($uid)
     {
-        return MailList::where("uid", "=", $uid)->first();
+        return self::where('uid', '=', $uid)->first();
     }
-    
+
     /**
      * Get all fields.
      *
@@ -185,13 +179,11 @@ class MailList extends Model
      */
     public function getFields()
     {
-        return $this->fields()->orderBy("custom_order");
+        return $this->fields()->orderBy('custom_order');
     }
-    
+
     /**
      * Create default fields for list.
-     *
-     * @return void
      */
     public function createDefaultFieds()
     {
@@ -199,11 +191,11 @@ class MailList extends Model
                             'mail_list_id' => $this->id,
                             'type' => 'text',
                             'label' => trans('messages.email'),
-                            'tag' => "EMAIL",
+                            'tag' => 'EMAIL',
                             'required' => true,
                             'visible' => true,
                         ]);
-        
+
         $this->fields()->create([
                             'mail_list_id' => $this->id,
                             'type' => 'text',
@@ -212,7 +204,7 @@ class MailList extends Model
                             'required' => false,
                             'visible' => true,
                         ]);
-        
+
         $this->fields()->create([
                             'mail_list_id' => $this->id,
                             'type' => 'text',
@@ -222,25 +214,15 @@ class MailList extends Model
                             'visible' => true,
                         ]);
     }
-    
+
     /**
      * Get email field.
      *
      * @return object
      */
-    function getEmailField()
+    public function getEmailField()
     {
-        return $this->getFieldByTag("EMAIL");
-    }
-    
-    /**
-     * Get field by tag.
-     *
-     * @return object
-     */
-    function getFieldByTag($tag)
-    {
-        return $this->fields()->where("tag", "=", $tag)->first();
+        return $this->getFieldByTag('EMAIL');
     }
 
     /**
@@ -248,42 +230,54 @@ class MailList extends Model
      *
      * @return object
      */
-    function getActiveSubscribers()
+    public function getFieldByTag($tag)
     {
-        return $this->subscribers()->where("status", 'active')->get();
+        return $this->fields()->where('tag', '=', $tag)->first();
     }
-    
+
+    /**
+     * Get field by tag.
+     *
+     * @return object
+     */
+    public function getActiveSubscribers()
+    {
+        return $this->subscribers()->where('status', 'active')->get();
+    }
+
     /**
      * Get field rules.
      *
      * @return object
      */
-    function getFieldRules()
+    public function getFieldRules()
     {
         $rules = [];
-        foreach($this->getFields as $field) {
-            if($field->tag == 'EMAIL') {
+        foreach ($this->getFields as $field) {
+            if ($field->tag == 'EMAIL') {
                 $rules[$field->tag] = 'required|email';
             } elseif ($field->required) {
                 $rules[$field->tag] = 'required';
-            }            
+            }
         }
+
         return $rules;
     }
-    
+
     /**
      * Check if a email is exsit.
      *
      * @param string the email.
      *
-     * @return boolean
+     * @return bool
      */
     public function checkExsitEmail($email)
     {
-        $valid = !filter_var($email, FILTER_VALIDATE_EMAIL) === false && !empty($email) && $this->subscribers()->where("email", "=", $email)->count() == 0;
+        $valid = !filter_var($email, FILTER_VALIDATE_EMAIL) === false && !empty($email) && $this->subscribers()->where('email', '=', $email)->count() == 0;
+
         return $valid;
     }
-    
+
     /**
      * Get select options.
      *
@@ -291,16 +285,17 @@ class MailList extends Model
      */
     public static function getSelectOptions($user = null)
     {
-        $query = MailList::getAll();
-        if(is_object($user)) {
-            $query = $query->where("user_id", "=", $user->id);
+        $query = self::getAll();
+        if (is_object($user)) {
+            $query = $query->where('user_id', '=', $user->id);
         }
-        $options = $query->orderBy("name")->get()->map(function ($item) {
-            return ['value' => $item->uid, 'text' => $item->name . " (" . $item->subscribers()->count() . " " . strtolower(trans('messages.subscribers')) . ")"];
+        $options = $query->orderBy('name')->get()->map(function ($item) {
+            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribers()->count().' '.strtolower(trans('messages.subscribers')).')'];
         });
+
         return $options;
     }
-    
+
     /**
      * Get segments select options.
      *
@@ -309,12 +304,12 @@ class MailList extends Model
     public function getSegmentSelectOptions()
     {
         $options = $this->segments->map(function ($item) {
-            return ['value' => $item->uid, 'text' => $item->name . " (" . $item->subscribers()->count() . " " . strtolower(trans('messages.subscribers')) . ")"];
+            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribers()->count().' '.strtolower(trans('messages.subscribers')).')'];
         });
-        
+
         return $options;
     }
-    
+
     /**
      * Count unsubscribe.
      *
@@ -322,9 +317,9 @@ class MailList extends Model
      */
     public function unsubscribeCount()
     {
-        return $this->subscribers()->where("status", "=", "unsubscribed")->count();
+        return $this->subscribers()->where('status', '=', 'unsubscribed')->count();
     }
-    
+
     /**
      * Unsubscribe rate.
      *
@@ -332,12 +327,13 @@ class MailList extends Model
      */
     public function unsubscribeRate()
     {
-        if($this->subscribers()->count() == 0) {
-            return "#";
+        if ($this->subscribers()->count() == 0) {
+            return '#';
         }
-        return round(($this->unsubscribeCount()/$this->subscribers()->count())*100, 1);
+
+        return round(($this->unsubscribeCount() / $this->subscribers()->count()) * 100, 1);
     }
-    
+
     /**
      * Count unsubscribe.
      *
@@ -345,9 +341,9 @@ class MailList extends Model
      */
     public function subscribeCount()
     {
-        return $this->subscribers()->where("status", "=", "subscribed")->count();
+        return $this->subscribers()->where('status', '=', 'subscribed')->count();
     }
-    
+
     /**
      * Unsubscribe rate.
      *
@@ -355,12 +351,13 @@ class MailList extends Model
      */
     public function subscribeRate()
     {
-        if($this->subscribers()->count() == 0) {
-            return "#";
+        if ($this->subscribers()->count() == 0) {
+            return '#';
         }
-        return round(($this->subscribeCount()/$this->subscribers()->count())*100, 1);
+
+        return round(($this->subscribeCount() / $this->subscribers()->count()) * 100, 1);
     }
-    
+
     /**
      * Count unsubscribe.
      *
@@ -368,21 +365,19 @@ class MailList extends Model
      */
     public function unconfirmedCount()
     {
-        return $this->subscribers()->where("status", "=", "unconfirmed")->count();
+        return $this->subscribers()->where('status', '=', 'unconfirmed')->count();
     }
-    
+
     /**
      * Add customer action log.
-     *
-     * @return void
      */
-    public function log($name, $user, $add_datas=[])
+    public function log($name, $user, $add_datas = [])
     {
         $data = [
             'id' => $this->id,
             'name' => $this->name,
         ];
-        
+
         $data = array_merge($data, $add_datas);
 
         Log::create([
@@ -392,93 +387,79 @@ class MailList extends Model
             'data' => json_encode($data),
         ]);
     }
-    
+
     /**
-     * url count
-     *
-     * @return void
+     * url count.
      */
     public function urlCount()
     {
         $query = CampaignLink::join('campaigns', 'campaigns.id', '=', 'campaign_links.campaign_id')
-            ->where('campaigns.mail_list_id', "=", $this->id);
-        
+            ->where('campaigns.mail_list_id', '=', $this->id);
+
         return $query->count();
     }
-    
+
     /**
-     * Open count
-     *
-     * @return void
+     * Open count.
      */
     public function openCount()
     {
         $query = OpenLog::join('tracking_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
-            ->whereIn('tracking_logs.subscriber_id', function($query)
-            {
-                $query->select("subscribers.id")
+            ->whereIn('tracking_logs.subscriber_id', function ($query) {
+                $query->select('subscribers.id')
                     ->from('subscribers')
                     ->where('subscribers.mail_list_id', '=', $this->id);
             });
-        
+
         return $query->count();
     }
-    
+
     /**
-     * Open count
-     *
-     * @return void
+     * Open count.
      */
     public function clickCount()
     {
         $query = ClickLog::join('tracking_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
-            ->whereIn('tracking_logs.subscriber_id', function($query)
-            {
-                $query->select("subscribers.id")
+            ->whereIn('tracking_logs.subscriber_id', function ($query) {
+                $query->select('subscribers.id')
                     ->from('subscribers')
                     ->where('subscribers.mail_list_id', '=', $this->id);
             });
-        
+
         return $query->distinct('url')->count('url');
     }
-    
+
     /**
-     * Open count
-     *
-     * @return void
+     * Open count.
      */
     public function openUniqCount()
     {
         $query = OpenLog::join('tracking_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
-            ->whereIn('tracking_logs.subscriber_id', function($query)
-            {
-                $query->select("subscribers.id")
+            ->whereIn('tracking_logs.subscriber_id', function ($query) {
+                $query->select('subscribers.id')
                     ->from('subscribers')
                     ->where('subscribers.mail_list_id', '=', $this->id);
             });
-        
+
         return $query->distinct('subscriber_id')->count('subscriber_id');
     }
-    
+
     /**
-     * Tracking count
-     *
-     * @return void
+     * Tracking count.
      */
     public function trackingCount()
     {
-        $query = TrackingLog::whereIn('tracking_logs.subscriber_id', function($query)
-            {
-                $query->select("subscribers.id")
+        $query = TrackingLog::whereIn('tracking_logs.subscriber_id', function ($query) {
+                $query->select('subscribers.id')
                     ->from('subscribers')
                     ->where('subscribers.mail_list_id', '=', $this->id);
             });
-        
+
         return $query->count();
     }
-    
+
     /**
-     * Count open rate
+     * Count open rate.
      *
      * @return number
      */
@@ -487,11 +468,12 @@ class MailList extends Model
         if ($this->trackingCount() == 0) {
             return 0;
         }
-        return round(($this->openCount() / $this->trackingCount())*100, 0);
+
+        return round(($this->openCount() / $this->trackingCount()) * 100, 0);
     }
-    
+
     /**
-     * Count open uniq rate
+     * Count open uniq rate.
      *
      * @return number
      */
@@ -500,11 +482,12 @@ class MailList extends Model
         if ($this->trackingCount() == 0) {
             return 0;
         }
-        return round(($this->openUniqCount() / $this->trackingCount())*100, 0);
+
+        return round(($this->openUniqCount() / $this->trackingCount()) * 100, 0);
     }
-    
+
     /**
-     * Count click rate
+     * Count click rate.
      *
      * @return number
      */
@@ -513,58 +496,56 @@ class MailList extends Model
         if ($this->urlCount() == 0) {
             return 0;
         }
-        return round(($this->clickCount() / $this->urlCount())*100, 0);
+
+        return round(($this->clickCount() / $this->urlCount()) * 100, 0);
     }
-    
+
     /**
-     * Get other lists
+     * Get other lists.
      *
      * @return number
      */
     public function otherLists()
     {
-        return \Auth::user()->lists()->where("id", "!=", $this->id)->get();
+        return \Auth::user()->lists()->where('id', '!=', $this->id)->get();
     }
-    
+
     /**
-     * Get name with subscrbers count
+     * Get name with subscrbers count.
      *
      * @return number
      */
     public function longName()
     {
-        return $this->name . " - " . $this->subscribers()->count() . " " . trans('messages.' . \Mailixa\Library\Tool::getPluralPrase('subscriber', $this->subscribers()->count())) . "";
+        return $this->name.' - '.$this->subscribers()->count().' '.trans('messages.'.\Mailixa\Library\Tool::getPluralPrase('subscriber', $this->subscribers()->count())).'';
     }
-    
+
     /**
-     * Copy new list
-     *
-     * @return void
+     * Copy new list.
      */
     public function copy($name)
     {
         $copy = $this->replicate();
         $copy->name = $name;
         $copy->save();
-        
+
         // Contact
-        if(is_object($this->contact)) {
+        if (is_object($this->contact)) {
             $new_contact = $this->contact->replicate();
             $new_contact->save();
-            
+
             // update contact
             $copy->contact_id = $new_contact->id;
-            $copy->save();            
+            $copy->save();
         }
-        
+
         // Remove default fields
-        $copy->fields()->delete();        
+        $copy->fields()->delete();
         // Fields
-        foreach($this->fields as $field) {
+        foreach ($this->fields as $field) {
             $new_field = $field->replicate();
             $new_field->mail_list_id = $copy->id;
             $new_field->save();
         }
     }
-
 }

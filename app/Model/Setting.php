@@ -13,16 +13,16 @@ class Setting extends Model
      */
     public static function getAll()
     {
-        $settings = Setting::select("*")->get();
-        $result = Setting::defaultSettings();
-        
-        foreach($settings as $setting) {
+        $settings = self::select('*')->get();
+        $result = self::defaultSettings();
+
+        foreach ($settings as $setting) {
             $result[$setting->name]['value'] = $setting->value;
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Get all items.
      *
@@ -30,13 +30,13 @@ class Setting extends Model
      */
     public static function updateAll()
     {
-        $settings = Setting::getAll();
-        
-        foreach($settings as $key => $setting) {
-            Setting::set($key, $setting["value"]);
+        $settings = self::getAll();
+
+        foreach ($settings as $key => $setting) {
+            self::set($key, $setting['value']);
         }
     }
-    
+
     /**
      * Get setting.
      *
@@ -44,14 +44,14 @@ class Setting extends Model
      */
     public static function get($name)
     {
-        $setting = Setting::where("name", $name)->first();
-        if(is_object($setting)) {
+        $setting = self::where('name', $name)->first();
+        if (is_object($setting)) {
             return $setting->value;
         } else {
-            return Setting::defaultSettings()[$name]["value"];
+            return self::defaultSettings()[$name]['value'];
         }
     }
-    
+
     /**
      * Set setting value.
      *
@@ -59,12 +59,12 @@ class Setting extends Model
      */
     public static function set($name, $val)
     {
-        $option = Setting::where("name", $name)->first();
+        $option = self::where('name', $name)->first();
 
         if (is_object($option)) {
             $option->value = $val;
         } else {
-            $option = new Setting();
+            $option = new self();
             $option->name = $name;
             $option->value = $val;
         }
@@ -72,7 +72,7 @@ class Setting extends Model
 
         return $option;
     }
-    
+
     /**
      * Get setting rules.
      *
@@ -81,17 +81,17 @@ class Setting extends Model
     public static function rules()
     {
         $rules = [];
-        $settings = Setting::getAll();
-        
-        foreach($settings as $name => $setting) {
+        $settings = self::getAll();
+
+        foreach ($settings as $name => $setting) {
             if (!isset($setting['not_required'])) {
                 $rules[$name] = 'required';
-            }            
+            }
         }
-        
+
         return $rules;
     }
-    
+
     /**
      * Default setting.
      *
@@ -109,21 +109,21 @@ class Setting extends Model
                 'cat' => 'general',
                 'value' => 'Email Marketing, Campaigns, Lists',
                 'type' => 'text',
-            ],            
+            ],
             'site_online' => [
                 'cat' => 'general',
                 'value' => true,
                 'type' => 'checkbox',
                 'options' => [
-                    'false', 'true'
+                    'false', 'true',
                 ],
-            ],            
+            ],
             'site_online' => [
                 'cat' => 'general',
                 'value' => true,
                 'type' => 'checkbox',
                 'options' => [
-                    'false', 'true'
+                    'false', 'true',
                 ],
             ],
             'site_offline_message' => [
@@ -140,77 +140,77 @@ class Setting extends Model
                 'cat' => 'general',
                 'value' => 'default',
                 'type' => 'select',
-                'options' => Setting::colors(),
+                'options' => self::colors(),
             ],
             'backend_scheme' => [
                 'cat' => 'general',
                 'value' => 'default',
                 'type' => 'select',
-                'options' => Setting::colors(),
+                'options' => self::colors(),
             ],
             'sending_campaigns_at_once' => [
                 'cat' => 'sending',
-                'value' => "10",
+                'value' => '10',
                 'type' => 'text',
                 'class' => 'numeric',
             ],
             'sending_change_server_time' => [
                 'cat' => 'sending',
-                'value' => "300",
+                'value' => '300',
                 'type' => 'text',
                 'class' => 'numeric',
             ],
             'sending_emails_per_minute' => [
                 'cat' => 'sending',
-                'value' => "150",
+                'value' => '150',
                 'type' => 'text',
                 'class' => 'numeric',
             ],
             'sending_pause' => [
                 'cat' => 'sending',
-                'value' => "10",
+                'value' => '10',
                 'type' => 'text',
                 'class' => 'numeric',
             ],
             'sending_at_once' => [
                 'cat' => 'sending',
-                'value' => "50",
+                'value' => '50',
                 'type' => 'text',
                 'class' => 'numeric',
             ],
             'sending_subscribers_at_once' => [
                 'cat' => 'sending',
-                'value' => "100",
+                'value' => '100',
                 'type' => 'text',
                 'class' => 'numeric',
             ],
             'url_unsubscribe' => [
                 'cat' => 'url',
-                'value' => "", // action('CampaignController@unsubscribe', ["message_id" => trans("messages.MESSAGE_ID")]),
+                'value' => '', // action('CampaignController@unsubscribe', ["message_id" => trans("messages.MESSAGE_ID")]),
                 'type' => 'text',
                 'not_required' => true,
-            ],            
+            ],
             'url_open_track' => [
                 'cat' => 'url',
-                'value' => "", // action('CampaignController@open', ["message_id" => trans("messages.MESSAGE_ID")]),
+                'value' => '', // action('CampaignController@open', ["message_id" => trans("messages.MESSAGE_ID")]),
                 'type' => 'text',
                 'not_required' => true,
             ],
             'url_click_track' => [
                 'cat' => 'url',
-                'value' => "", // action('CampaignController@click', ["message_id" => trans("messages.MESSAGE_ID"), "url" => trans("messages.URL")]),
+                'value' => '', // action('CampaignController@click', ["message_id" => trans("messages.MESSAGE_ID"), "url" => trans("messages.URL")]),
                 'type' => 'text',
                 'not_required' => true,
             ],
             'url_delivery_handler' => [
                 'cat' => 'url',
-                'value' => "", // action('DeliveryController@notify'),
+                'value' => '', // action('DeliveryController@notify'),
                 'type' => 'text',
                 'not_required' => true,
             ],
         ];
     }
-    
+
     /**
      * Color array.
      *
@@ -219,13 +219,13 @@ class Setting extends Model
     public static function colors()
     {
         return [
-            ['value' => 'default', 'text'=> trans('messages.default')],
-            ['value' => 'blue', 'text'=> trans('messages.blue')],
-            ['value' => 'green', 'text'=> trans('messages.green')],
-            ['value' => 'brown', 'text'=> trans('messages.brown')],
-            ['value' => 'pink', 'text'=> trans('messages.pink')],
-            ['value' => 'grey', 'text'=> trans('messages.grey')],
-            ['value' => 'white', 'text'=> trans('messages.white')]
+            ['value' => 'default', 'text' => trans('messages.default')],
+            ['value' => 'blue', 'text' => trans('messages.blue')],
+            ['value' => 'green', 'text' => trans('messages.green')],
+            ['value' => 'brown', 'text' => trans('messages.brown')],
+            ['value' => 'pink', 'text' => trans('messages.pink')],
+            ['value' => 'grey', 'text' => trans('messages.grey')],
+            ['value' => 'white', 'text' => trans('messages.white')],
         ];
     }
 }

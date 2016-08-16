@@ -12,57 +12,53 @@ class Template extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'content'
+        'name', 'content',
     ];
-    
+
     /**
      * Items per page.
      *
      * @var array
      */
     public static $itemsPerPage = 25;
-    
+
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public static function boot()
     {
-        parent::boot();        
-        
+        parent::boot();
+
         // Create uid when creating item.
-        static::creating(function($item)
-        {
+        static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while(Template::where('uid','=',$uid)->count() > 0)
-            {
+            while (Template::where('uid', '=', $uid)->count() > 0) {
                 $uid = uniqid();
             }
             $item->uid = $uid;
-            
+
             // Update custom order
             Template::getAll()->increment('custom_order', 1);
             $item->custom_order = 0;
         });
-        
+
         static::deleted(function ($item) {
-            $uploaded_dir = "upload/templates/template_".$item->uid;
+            $uploaded_dir = 'upload/templates/template_'.$item->uid;
             \Mailixa\Library\Tool::xdelete($uploaded_dir);
         });
     }
-    
+
     /**
      * Associations.
      *
      * @var object | collect
-     */ 
+     */
     public function user()
     {
         return $this->belongsTo('Mailixa\Model\User');
     }
-    
+
     /**
      * Get all items.
      *
@@ -70,9 +66,9 @@ class Template extends Model
      */
     public static function getAll()
     {
-        return Template::select("*");
+        return self::select('*');
     }
-    
+
     /**
      * Filter items.
      *
@@ -81,30 +77,30 @@ class Template extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = Template::select("templates.*");
-        
+        $query = self::select('templates.*');
+
         // Keyword
-        if(!empty(trim($request->keyword))) {
-            $query = $query->where('name', 'like', '%' . $request->keyword . '%');
+        if (!empty(trim($request->keyword))) {
+            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
         }
-        
+
         // filters
         $filters = $request->filters;
         if (!empty($filters)) {
-            if (!empty($filters["from"])) {
-                if ($filters["from"] == 'mine') {
-                    $query = $query->where("user_id", "=", $user->id);
-                } else if ($filters["from"] == 'gallery') {
-                    $query = $query->where("shared", "=", true)->where("user_id", "!=", $user->id);
+            if (!empty($filters['from'])) {
+                if ($filters['from'] == 'mine') {
+                    $query = $query->where('user_id', '=', $user->id);
+                } elseif ($filters['from'] == 'gallery') {
+                    $query = $query->where('shared', '=', true)->where('user_id', '!=', $user->id);
                 } else {
-                    $query = $query->where("shared", "=", true)->orWhere("user_id", "=", $user->id);
+                    $query = $query->where('shared', '=', true)->orWhere('user_id', '=', $user->id);
                 }
             }
         }
-        
+
         return $query;
     }
-    
+
     /**
      * Search items.
      *
@@ -112,13 +108,13 @@ class Template extends Model
      */
     public static function search($request)
     {
-        $query = Template::filter($request);
-        
+        $query = self::filter($request);
+
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        
+
         return $query;
     }
-    
+
     /**
      * Filter items.
      *
@@ -127,16 +123,16 @@ class Template extends Model
     public static function adminFilter($request)
     {
         $user = $request->user();
-        $query = Template::where("shared", "=", true);
-        
+        $query = self::where('shared', '=', true);
+
         // Keyword
-        if(!empty(trim($request->keyword))) {
-            $query = $query->where('name', 'like', '%' . $request->keyword . '%');
+        if (!empty(trim($request->keyword))) {
+            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
         }
-        
+
         return $query;
     }
-    
+
     /**
      * Search items.
      *
@@ -144,13 +140,13 @@ class Template extends Model
      */
     public static function adminSearch($request)
     {
-        $query = Template::adminFilter($request);
-        
+        $query = self::adminFilter($request);
+
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        
+
         return $query;
     }
-    
+
     /**
      * Find item by uid.
      *
@@ -158,6 +154,6 @@ class Template extends Model
      */
     public static function findByUid($uid)
     {
-        return Template::where("uid", "=", $uid)->first();
+        return self::where('uid', '=', $uid)->first();
     }
 }

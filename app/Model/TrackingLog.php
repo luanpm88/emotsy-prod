@@ -12,32 +12,32 @@ class TrackingLog extends Model
     const STATUS_FEEDBACK_SPAM = 'feedback-spam';
 
     protected $fillable = ['campaign_id', 'message_id', 'runtime_message_id', 'subscriber_id', 'sending_server_id', 'user_id', 'status'];
-    
+
     /**
      * Associations.
      *
      * @var object | collect
-     */ 
+     */
     public function user()
     {
         return $this->belongsTo('Mailixa\Model\User');
     }
-    
+
     public function campaign()
     {
         return $this->belongsTo('Mailixa\Model\Campaign');
     }
-    
+
     public function sendingServer()
     {
         return $this->belongsTo('Mailixa\Model\SendingServer');
     }
-    
+
     public function subscriber()
     {
         return $this->belongsTo('Mailixa\Model\Subscriber');
     }
-    
+
     /**
      * Get all items.
      *
@@ -45,9 +45,9 @@ class TrackingLog extends Model
      */
     public static function getAll()
     {
-        return TrackingLog::select("tracking_logs.*");
+        return self::select('tracking_logs.*');
     }
-    
+
     /**
      * Filter items.
      *
@@ -56,54 +56,54 @@ class TrackingLog extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = TrackingLog::select("tracking_logs.*");
+        $query = self::select('tracking_logs.*');
         $query = $query->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id');
         $query = $query->leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
         $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
         $query = $query->leftJoin('users', 'users.id', '=', 'tracking_logs.user_id');
-        
+
         // Keyword
-        if(!empty(trim($request->keyword))) {
-            foreach(explode(" ",trim($request->keyword)) as $keyword) {
+        if (!empty(trim($request->keyword))) {
+            foreach (explode(' ', trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('campaigns.name', 'like', '%' . $keyword . '%')
-                        ->orwhere('tracking_logs.status', 'like', '%' . $keyword . '%')
-                        ->orwhere('sending_servers.name', 'like', '%' . $keyword . '%')
-                        ->orwhere(\DB::raw('CONCAT(first_name, last_name)'), 'like', '%' . $keyword . '%')
-                        ->orwhere('subscribers.email', 'like', '%' . $keyword . '%');
+                    $q->orwhere('campaigns.name', 'like', '%'.$keyword.'%')
+                        ->orwhere('tracking_logs.status', 'like', '%'.$keyword.'%')
+                        ->orwhere('sending_servers.name', 'like', '%'.$keyword.'%')
+                        ->orwhere(\DB::raw('CONCAT(first_name, last_name)'), 'like', '%'.$keyword.'%')
+                        ->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
                 });
-            }                
-        }
-        
-        // filters
-        $filters = $request->filters;
-        if(!empty($filters)) {
-            if(!empty($filters["campaign_uid"])) {
-                $query = $query->where('campaigns.uid', '=', $filters["campaign_uid"]);
             }
         }
-        
+
+        // filters
+        $filters = $request->filters;
+        if (!empty($filters)) {
+            if (!empty($filters['campaign_uid'])) {
+                $query = $query->where('campaigns.uid', '=', $filters['campaign_uid']);
+            }
+        }
+
         return $query;
     }
-    
+
     /**
      * Search items.
      *
      * @return collect
      */
-    public static function search($request, $campaign=null)
+    public static function search($request, $campaign = null)
     {
-        $query = TrackingLog::filter($request);
-        
+        $query = self::filter($request);
+
         if (isset($campaign)) {
-            $query = $query->where("tracking_logs.campaign_id", "=", $campaign->id);
+            $query = $query->where('tracking_logs.campaign_id', '=', $campaign->id);
         }
-        
+
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        
+
         return $query;
     }
-    
+
     /**
      * Items per page.
      *

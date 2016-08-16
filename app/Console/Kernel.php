@@ -17,14 +17,13 @@ class Kernel extends ConsoleKernel
         Commands\SendCampaign::class,
         Commands\TestCampaign::class,
         Commands\RunHandler::class,
-        Commands\RunCampaign::class
+        Commands\RunCampaign::class,
     ];
 
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
-     * @return void
+     * @param \Illuminate\Console\Scheduling\Schedule $schedule
      */
     protected function schedule(Schedule $schedule)
     {

@@ -13,9 +13,9 @@ class Blacklist extends Model
      */
     public static function getAll()
     {
-        return Blacklist::select("blacklists.*");
+        return self::select('blacklists.*');
     }
-    
+
     /**
      * Filter items.
      *
@@ -24,20 +24,20 @@ class Blacklist extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = Blacklist::select("blacklists.*");
-        
+        $query = self::select('blacklists.*');
+
         // Keyword
-        if(!empty(trim($request->keyword))) {
-            foreach(explode(" ",trim($request->keyword)) as $keyword) {
+        if (!empty(trim($request->keyword))) {
+            foreach (explode(' ', trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('blacklists.email', 'like', '%' . $keyword . '%');
+                    $q->orwhere('blacklists.email', 'like', '%'.$keyword.'%');
                 });
-            }                
+            }
         }
-        
+
         return $query;
     }
-    
+
     /**
      * Search items.
      *
@@ -45,13 +45,13 @@ class Blacklist extends Model
      */
     public static function search($request)
     {
-        $query = Blacklist::filter($request);
-        
+        $query = self::filter($request);
+
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        
+
         return $query;
     }
-    
+
     /**
      * Items per page.
      *

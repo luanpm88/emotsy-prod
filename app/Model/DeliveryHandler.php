@@ -8,23 +8,24 @@ use Mailixa\Library\StringHelper;
 
 class DeliveryHandler extends Model
 {
-    public function start() { 
+    public function start()
+    {
         try {
             // Connect to IMAP server
             $imapPath = "{{$this->host}:{$this->port}/{$this->protocol}/{$this->encryption}}INBOX";
-            
+
             // try to connect 
             $inbox = @imap_open($imapPath, $this->username, $this->password);
 
             // search and get unseen emails, function will return email ids
             $emails = imap_search($inbox, 'UNSEEN');
-            
+
             if (!empty($emails)) {
-                foreach($emails as $message) {
+                foreach ($emails as $message) {
                     $this->processMessage($inbox, $message);
                 }
             }
-             
+
             // colse the connection
             imap_expunge($inbox);
             imap_close($inbox);
@@ -33,11 +34,12 @@ class DeliveryHandler extends Model
             // see http://stackoverflow.com/questions/5422405/cant-silence-imap-open-error-notices-in-php
             imap_errors();
             imap_alerts();
-            Log::error('Cannot connect to handler ' . $e->getMessage());
+            Log::error('Cannot connect to handler '.$e->getMessage());
         }
     }
 
-    public function getMessageId($message) {
+    public function getMessageId($message)
+    {
         preg_match('/(?<=X-Mailixa-Message-Id: )[^\s]*/', $message, $matched);
         if (sizeof($matched) == 0) {
             return;
@@ -46,7 +48,8 @@ class DeliveryHandler extends Model
         }
     }
 
-    public function processMessage($mbox, $message) {
+    public function processMessage($mbox, $message)
+    {
         // for overwriting
     }
 }

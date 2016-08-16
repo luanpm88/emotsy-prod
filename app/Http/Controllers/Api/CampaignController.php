@@ -2,15 +2,11 @@
 
 namespace Mailixa\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-
-use Mailixa\Http\Requests;
 use Mailixa\Http\Controllers\Controller;
 
 /**
-* /api/v1/campaigns - API controller for managing campaigns.
-* 
-*/
+ * /api/v1/campaigns - API controller for managing campaigns.
+ */
 class CampaignController extends Controller
 {
     /**
@@ -23,12 +19,12 @@ class CampaignController extends Controller
     public function index()
     {
         $user = \Auth::guard('api')->user();
-        
+
         $lists = \Mailixa\Model\Campaign::getAll()
-            ->select("uid", "name", "type", "subject", "html", "plain", "from_email", "from_name", "reply_to", "status", "delivery_at", "created_at", "updated_at")
-            ->where("user_id", "=", $user->id)
+            ->select('uid', 'name', 'type', 'subject', 'html', 'plain', 'from_email', 'from_name', 'reply_to', 'status', 'delivery_at', 'created_at', 'updated_at')
+            ->where('user_id', '=', $user->id)
             ->get();
-        
+
         return \Response::json($lists, 200);
     }
 
@@ -37,33 +33,34 @@ class CampaignController extends Controller
      *
      * GET /api/v1/campaigns/{id}
      *
-     * @param  int  $id     Campaign's id
+     * @param int $id Campaign's id
+     *
      * @return \Illuminate\Http\Response
      */
     public function show($id)
     {
         $user = \Auth::guard('api')->user();
-        
+
         $item = \Mailixa\Model\Campaign::
-            where("uid", "=", $id)
+            where('uid', '=', $id)
             ->first();
-        
+
         // authorize
         if (!$user->can('read', $item)) {
-            return \Response::json(array("message"=>"Unauthorized"), 401);
+            return \Response::json(array('message' => 'Unauthorized'), 401);
         }
-        
+
         // check if item exists
         if (!is_object($item)) {
-            return \Response::json(array("message"=>"Item not found"), 404);
+            return \Response::json(array('message' => 'Item not found'), 404);
         }
-        
+
         // statistics
         $campaign = [
             'uid' => $item->uid,
             'name' => $item->name,
-            'list' => (is_object($item->mailList) ? $item->mailList->name : ""),
-            'segment' => (is_object($item->segment) ? $item->segment->name : ""),
+            'list' => (is_object($item->mailList) ? $item->mailList->name : ''),
+            'segment' => (is_object($item->segment) ? $item->segment->name : ''),
             'default_subject' => $item->default_subject,
             'from_email' => $item->from_email,
             'from_name' => $item->from_name,
@@ -72,7 +69,7 @@ class CampaignController extends Controller
             'created_at' => $item->created_at,
             'updated_at' => $item->updated_at,
         ];
-        
+
         // statistics
         $statistics = [
             'subscribers_count' => $item->subscribers()->count(),
@@ -80,12 +77,12 @@ class CampaignController extends Controller
             'delivered_rate' => $item->deliveredRate(),
             'open_count' => $item->openCount(),
             'uniq_open_count' => $item->openUniqCount(),
-            'last_open' => (is_object($item->lastOpen()) ? $item->lastOpen()->created_at : ""),
+            'last_open' => (is_object($item->lastOpen()) ? $item->lastOpen()->created_at : ''),
             'click_rate' => $item->clickRate(),
             'click_per_uniq_open' => $item->clickPerUniqOpen(),
             'click_count' => $item->clickCount(),
             'abuse_feedback_count' => $item->abuseFeedbackCount(),
-            'last_click' => (is_object($item->lastClick()) ? $item->lastClick()->created_at : ""),
+            'last_click' => (is_object($item->lastClick()) ? $item->lastClick()->created_at : ''),
             'open_count' => $item->openCount(),
             'click_count' => $item->clickCount(),
             'bounce_count' => $item->bounceCount(),
@@ -97,11 +94,11 @@ class CampaignController extends Controller
                     'uid' => $i->uid,
                     'email' => $i->email,
                 ];
-            })
+            }),
         ];
-        
+
         var_dump($item->getTopOpenSubscribers()->get());
-        
+
         return \Response::json(['campaign' => $campaign, 'statistics' => $statistics], 200);
     }
 }

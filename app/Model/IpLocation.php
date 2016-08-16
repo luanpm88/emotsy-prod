@@ -14,9 +14,9 @@ class IpLocation extends Model
     protected $fillable = [
         'country_code', 'country_name', 'region_code',
         'region_name', 'city', 'zipcode',
-        'latitude', 'longitude', 'metro_code', 'areacode'
+        'latitude', 'longitude', 'metro_code', 'areacode',
     ];
-    
+
     /**
      * Add new IP.
      *
@@ -24,28 +24,27 @@ class IpLocation extends Model
      */
     public static function add($ip)
     {
-        $location = IpLocation::where("ip_address", "=", $ip)->first();
+        $location = self::where('ip_address', '=', $ip)->first();
         if (!is_object($location)) {
-            $location = new IpLocation();
+            $location = new self();
         }
         $location->ip_address = $ip;
-        
+
         // Get info
         try {
-            $result = file_get_contents('http://freegeoip.net/json/' . $ip);
+            $result = file_get_contents('http://freegeoip.net/json/'.$ip);
             $values = json_decode($result, true);
-            
+
             $location->fill($values);
-            
         } catch (\Exception $e) {
             return false;
         }
-        
+
         $location->save();
-        
+
         return $location;
     }
-    
+
     /**
      * Location name.
      *
@@ -63,7 +62,7 @@ class IpLocation extends Model
         if (!empty($this->country_name)) {
             $str[] = $this->country_name;
         }
-        
-        return implode(", ", $str);
+
+        return implode(', ', $str);
     }
 }

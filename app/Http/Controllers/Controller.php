@@ -11,7 +11,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesResources;
 class Controller extends BaseController
 {
     use AuthorizesRequests, AuthorizesResources, DispatchesJobs, ValidatesRequests;
-    
+
     public function __construct()
     {
         // Generate info
@@ -24,7 +24,7 @@ class Controller extends BaseController
         } catch (\Exception $e) {
         }
     }
-    
+
     /**
      * Check if the user is not authorized.
      *
@@ -34,7 +34,7 @@ class Controller extends BaseController
     {
         return view('notAuthorized');
     }
-    
+
     /**
      * Check if the user cannot create more item.
      *
@@ -44,7 +44,7 @@ class Controller extends BaseController
     {
         return view('noMoreItem');
     }
-    
+
     /**
      * When site status is offline.
      *
@@ -54,13 +54,14 @@ class Controller extends BaseController
     {
         return view('offline');
     }
-    
+
     /**
      * Translate datatable.
      *
      * @return text
      */
-    public function datatable_locale() {
+    public function datatable_locale()
+    {
         echo '{
             "sEmptyTable":     "'.trans('messages.datatable_sEmptyTable').'",
             "sProcessing":   "'.trans('messages.datatable_sProcessing').'",
@@ -84,13 +85,14 @@ class Controller extends BaseController
             }
         }';
     }
-    
+
     /**
      * Translate jqery validate.
      *
      * @return text
      */
-    public function jquery_validate_locale() {
+    public function jquery_validate_locale()
+    {
         echo 'jQuery.extend(jQuery.validator.messages, {
                 required: "'.trans('messages.jvalidate_required').'",
                 remote: "'.trans('messages.jvalidate_remote').'",

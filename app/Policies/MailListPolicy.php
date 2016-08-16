@@ -10,30 +10,29 @@ class MailListPolicy
 
     /**
      * Create a new policy instance.
-     *
-     * @return void
      */
     public function __construct()
     {
         //
     }
-    
+
     public function read(\Mailixa\Model\User $user, \Mailixa\Model\MailList $item)
     {
         return $item->user_id == $user->id || $user->userGroup->backend_access;
     }
-    
+
     public function create(\Mailixa\Model\User $user, \Mailixa\Model\MailList $item)
     {
-        $max = $user->getOption("frontend", "list_max");
-        return ($max > $user->lists()->count() || $max == -1);
+        $max = $user->getOption('frontend', 'list_max');
+
+        return $max > $user->lists()->count() || $max == -1;
     }
-    
+
     public function update(\Mailixa\Model\User $user, \Mailixa\Model\MailList $item)
     {
         return $item->user_id == $user->id;
     }
-    
+
     public function delete(\Mailixa\Model\User $user, \Mailixa\Model\MailList $item)
     {
         return $item->user_id == $user->id;

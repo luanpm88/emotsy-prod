@@ -7,7 +7,6 @@ use Mailixa\Library\Log;
 use Mailixa\Model\Campaign;
 use Mailixa\Model\TrackingLog;
 use Mailixa\Model\SendingServer;
-use DB;
 
 class TestCampaign extends Command
 {
@@ -27,8 +26,6 @@ class TestCampaign extends Command
 
     /**
      * Create a new command instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -45,8 +42,7 @@ class TestCampaign extends Command
         //$handler = \Mailixa\Model\FeedbackLoopHandler::first();
         //$handler->start();
 
-
-        Log::configure(storage_path() . '/logs/mail.log');
+        Log::configure(storage_path().'/logs/mail.log');
         /*
         Log::info('hello');
         Log::error('hello');
@@ -63,7 +59,6 @@ class TestCampaign extends Command
         $c->status = Campaign::STATUS_READY;
         $c->save();
         $c->startMultiProcesses();
-        
 
         //var_dump(SendingServer::pickServer($c));
     }

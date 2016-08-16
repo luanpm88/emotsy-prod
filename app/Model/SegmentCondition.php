@@ -12,25 +12,21 @@ class SegmentCondition extends Model
      * @var array
      */
     protected $fillable = [
-        'field_id', 'operator', 'value'
+        'field_id', 'operator', 'value',
     ];
-    
+
     /**
      * Bootstrap any application services.
-     *
-     * @return void
      */
     public static function boot()
     {
-        parent::boot();        
-        
+        parent::boot();
+
         // Create uid when creating list.
-        static::creating(function($item)
-        {
+        static::creating(function ($item) {
             // Create new uid
             $uid = uniqid();
-            while(SegmentCondition::where('uid','=',$uid)->count() > 0)
-            {
+            while (SegmentCondition::where('uid', '=', $uid)->count() > 0) {
                 $uid = uniqid();
             }
             $item->uid = $uid;
