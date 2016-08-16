@@ -121,7 +121,6 @@ class PageController extends Controller
      */
     public function signUpForm(Request $request)
     {
-        $user = $request->user();
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
         $layout = \Mailixa\Model\Layout::where("alias", "sign_up_form")->first();
         $page = \Mailixa\Model\Page::findPage($list, $layout);
@@ -145,7 +144,6 @@ class PageController extends Controller
         {
             $subscriber = new \Mailixa\Model\Subscriber($request->all());
             $subscriber->mail_list_id = $list->id;
-            $subscriber->user_id = $user->id;
             $subscriber->status = 'unconfirmed';
             $subscriber->from = 'web';
             
@@ -182,7 +180,6 @@ class PageController extends Controller
      */
     public function signUpThankyouPage(Request $request)
     {
-        $user = $request->user();
         $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
         $layout = \Mailixa\Model\Layout::where("alias", "sign_up_thankyou_page")->first();
         $page = \Mailixa\Model\Page::findPage($list, $layout);
