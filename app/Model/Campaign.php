@@ -393,8 +393,7 @@ class Campaign extends Model
      */
     private function appendOpenTrackingUrl($body, $msgId)
     {
-        // @TODO 
-        $openTrackingBaseURL = 'http://52.76.202.5:8888/delivery/notify/MESSAGE_ID'; // Setting::get("url_open_track")
+        $openTrackingBaseURL = Setting::get("url_open_track");
         $tracking_url = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $openTrackingBaseURL);
 
         return $body.'<img src="'.$tracking_url.'" width="0" height="0" style="visibility:hidden" />';
@@ -431,6 +430,7 @@ class Campaign extends Model
         $message->setEncoder(\Swift_Encoding::get8bitEncoding());
 
         $body = $this->tagMessage($this->html, $subscriber, $msgId);
+        $plain = $this->tagMessage($this->plain, $subscriber, $msgId);
 
         if ($this->track_open) {
             $body = $this->appendOpenTrackingUrl($body, $msgId);
@@ -441,7 +441,7 @@ class Campaign extends Model
         }
 
         $message->setBody($body, 'text/html');
-        $message->addPart($this->plain, 'text/plain');
+        $message->addPart($plain, 'text/plain');
 
         if ($this->sign_dkim) {
             $message = $this->sign($message);
