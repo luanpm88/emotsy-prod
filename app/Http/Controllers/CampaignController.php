@@ -724,7 +724,7 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->bounceLogs;
+        $items = $campaign->bounceLogs();
 
         return view('campaigns.bounce_log', [
             'items' => $items,

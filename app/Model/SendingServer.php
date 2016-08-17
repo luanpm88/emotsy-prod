@@ -208,7 +208,7 @@ class SendingServer extends Model
     protected $fillable = [
         'name', 'host', 'aws_access_key_id', 'aws_secret_access_key', 'aws_region', 'smtp_username',
         'smtp_password', 'smtp_port', 'smtp_protocol', 'quota_value', 'quota_base', 'quota_unit',
-        'bounce_handler_id', 'feedback_loop_handler_id',
+        'bounce_handler_id', 'feedback_loop_handler_id', 'sendmail_path'
     ];
 
     /**
@@ -235,7 +235,6 @@ class SendingServer extends Model
             'amazon-api' => [
                 'cols' => [
                     'name' => 'required',
-                    'host' => 'required',
                     'aws_access_key_id' => 'required',
                     'aws_secret_access_key' => 'required',
                     'aws_region' => 'required',
@@ -249,17 +248,23 @@ class SendingServer extends Model
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
                     'smtp_protocol' => 'required',
+                    'bounce_handler_id' => '',
+                    'feedback_loop_handler_id' => '',
                 ],
             ],
             'sendmail' => [
                 'cols' => [
                     'name' => 'required',
                     'sendmail_path' => 'required',
+                    'bounce_handler_id' => '',
+                    'feedback_loop_handler_id' => '',
                 ],
             ],
             'php-mail' => [
                 'cols' => [
                     'name' => 'required',
+                    'bounce_handler_id' => '',
+                    'feedback_loop_handler_id' => '',
                 ],
             ],
         ];
@@ -391,5 +396,24 @@ class SendingServer extends Model
     public function displayQuota()
     {
         return $this->quota_value.' / '.$this->quota_base.' '.trans('messages.'.\Mailixa\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
+    }
+    
+    /**
+     * Select options for aws region.
+     *
+     * @return array
+     */
+    public static function awsRegionSelectOptions()
+    {
+        return [
+            ["value" => "", "text" => trans('messages.choose')],
+            ["value" => "us-east-1", "text" => "US East (N. Virginia)"],
+            ["value" => "us-west-2", "text" => "US West (Oregon)"],
+            ["value" => "ap-southeast-1", "text" => "Asia Pacific (Singapore)"],
+            ["value" => "ap-southeast-2", "text" => "Asia Pacific (Sydney)"],
+            ["value" => "ap-northeast-1", "text" => "Asia Pacific (Tokyo)"],
+            ["value" => "eu-central-1", "text" => "EU (Frankfurt)"],
+            ["value" => "eu-west-1", "text" => "EU (Ireland)"],
+        ];
     }
 }

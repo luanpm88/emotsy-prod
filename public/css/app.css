@@ -537,7 +537,6 @@ h2 [class^="icon-"] {
 }
 .filter-box .select2-selection--single {
     height: 33px;
-    margin-top: -3px;
 }
 .filter-box .select2-selection--single:not([class*=bg-]) {
     padding: 3px 0;
@@ -1169,4 +1168,7 @@ ul.install-steps li.enabled a:hover {
 .tags_list .btn {
     margin-bottom: 10px;
     width: 200px;
+}
+.select2 {
+    height: 36px;
 }

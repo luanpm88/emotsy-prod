@@ -102,6 +102,14 @@ class SendingServerController extends Controller
             $server->user_id = $request->user()->id;
             $server->type = $request->type;
             $server->status = 'active';
+            
+            // bounce / feedback hanlder nullable
+            if(empty($request->bounce_handler_id)) {
+                $server->bounce_handler_id = null;
+            }
+            if(empty($request->feedback_loop_handler_id)) {
+                $server->feedback_loop_handler_id = null;
+            }
 
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.sending_server.created'));
@@ -171,6 +179,14 @@ class SendingServerController extends Controller
 
             // Save current user info
             $server->fill($request->all());
+            
+            // bounce / feedback hanlder nullable
+            if(empty($request->bounce_handler_id)) {
+                $server->bounce_handler_id = null;
+            }
+            if(empty($request->feedback_loop_handler_id)) {
+                $server->feedback_loop_handler_id = null;
+            }
 
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.sending_server.updated'));

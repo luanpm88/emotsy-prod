@@ -52,11 +52,12 @@
 						@if (array_key_exists("aws_region", Mailixa\Model\SendingServer::types()[request()->type]["cols"]))
 							<div class="col-sm-6 col-md-4">
 								@include('helpers.form_control', [
-									'type' => 'text',
+									'type' => 'select',
 									'class' => '',
 									'name' => 'aws_region',
 									'value' => $server->aws_region,
 									'help_class' => 'sending_server',
+									'options' => Mailixa\Model\SendingServer::awsRegionSelectOptions(),
 									'rules' => Mailixa\Model\SendingServer::rules(request()->type)
 								])
 							</div>
@@ -158,37 +159,43 @@
 							])
 						</div>
 					</div>
-						
-					<h4 class="text-semibold text-teal-800">{{ trans('messages.handlers') }}</h4>
-					<div class="row">
-						<div class="col-md-4">
-							@include('helpers.form_control', [
-								'type' => 'select',
-								'class' => '',
-								'name' => 'bounce_handler_id',
-								'label' => trans("messages.bounce_handler"),
-								'value' => $server->bounce_handler_id,
-								'help_class' => 'sending_server',
-								'include_blank' => trans('messages.choose'),
-								'options' => Mailixa\Model\BounceHandler::getSelectOptions(),
-								'rules' => Mailixa\Model\SendingServer::rules(request()->type)
-							])
-						</div>
-						<div class="col-md-4">
-							@include('helpers.form_control', [
-								'type' => 'select',
-								'class' => '',
-								'name' => 'feedback_loop_handler_id',
-								'label' => trans("messages.feedback_loop_handler"),
-								'value' => $server->feedback_loop_handler_id,
-								'help_class' => 'sending_server',
-								'include_blank' => trans('messages.choose'),
-								'options' => Mailixa\Model\FeedbackLoopHandler::getSelectOptions(),
-								'rules' => Mailixa\Model\SendingServer::rules(request()->type)
-							])
-						</div>
-					</div>
 					
+					@if ( array_key_exists("bounce_handler_id", Mailixa\Model\SendingServer::types()[request()->type]["cols"])
+						|| array_key_exists("feedback_loop_handler_id", Mailixa\Model\SendingServer::types()[request()->type]["cols"]))
+						<h4 class="text-semibold text-teal-800">{{ trans('messages.handlers') }}</h4>
+						<div class="row">
+							@if (array_key_exists("bounce_handler_id", Mailixa\Model\SendingServer::types()[request()->type]["cols"]))
+								<div class="col-md-4">
+									@include('helpers.form_control', [
+										'type' => 'select',
+										'class' => '',
+										'name' => 'bounce_handler_id',
+										'label' => trans("messages.bounce_handler"),
+										'value' => $server->bounce_handler_id,
+										'help_class' => 'sending_server',
+										'include_blank' => trans('messages.choose'),
+										'options' => Mailixa\Model\BounceHandler::getSelectOptions(),
+										'rules' => Mailixa\Model\SendingServer::rules(request()->type)
+									])
+								</div>
+							@endif
+							@if (array_key_exists("feedback_loop_handler_id", Mailixa\Model\SendingServer::types()[request()->type]["cols"]))
+								<div class="col-md-4">
+									@include('helpers.form_control', [
+										'type' => 'select',
+										'class' => '',
+										'name' => 'feedback_loop_handler_id',
+										'label' => trans("messages.feedback_loop_handler"),
+										'value' => $server->feedback_loop_handler_id,
+										'help_class' => 'sending_server',
+										'include_blank' => trans('messages.choose'),
+										'options' => Mailixa\Model\FeedbackLoopHandler::getSelectOptions(),
+										'rules' => Mailixa\Model\SendingServer::rules(request()->type)
+									])
+								</div>
+							@endif
+						</div>
+					@endif
 					<br >
 					<div class="text-right">
 						<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
