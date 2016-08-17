@@ -11,10 +11,10 @@ class Campaign extends Model
 {
     const STATUS_NEW = 'new';
     const STATUS_READY = 'ready';
-    const STATUS_PENDING = 'pending';
     const STATUS_SENDING = 'sending';
-    const STATUS_PAUSED = 'paused';
+    const STATUS_ERROR = 'error';
     const STATUS_DONE = 'done';
+
     const TYPE_REGULAR = 'regular';
     const TYPE_PLAIN_TEXT = 'plain-text';
 
@@ -122,9 +122,9 @@ class Campaign extends Model
     /**
      * Mark the campaign as 'done' or 'sent'.
      */
-    public function pending()
+    public function error()
     {
-        $this->status = self::STATUS_PENDING;
+        $this->status = self::STATUS_ERROR;
         $this->save();
     }
 
@@ -237,7 +237,7 @@ class Campaign extends Model
         } catch (\Exception $e) {
             Log::error($e->getMessage());
             Log::error("Campaign `{$this->name}` (ID: ".$this->id.') deferred!');
-            $this->pending();
+            $this->error();
         } finally {
             // reset server pools: just in case DeliveryServerAmazonSesWebApi
             // --> setup SNS requires using from_email of the corresponding campaign
