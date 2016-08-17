@@ -27,6 +27,9 @@ class CampaignController extends Controller
      */
     public function index(Request $request)
     {
+        echo "sssss" . \Mailixa\Library\StringHelper::base64UrlEncode("1469976713.579e1089d17d6@anphabeta.com");
+        echo "-----" . \Mailixa\Library\StringHelper::base64UrlEncode("https://www.google.com.vn");
+        
         $user = $request->user();
         $campaigns = $user->campaigns;
 
@@ -601,7 +604,7 @@ class CampaignController extends Controller
     public function open(Request $request)
     {
         $log = new \Mailixa\Model\OpenLog();
-        $log->message_id = $request->message_id;
+        $log->message_id = \Mailixa\Library\StringHelper::base64UrlDecode($request->message_id);
         $location = \Mailixa\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
@@ -616,7 +619,7 @@ class CampaignController extends Controller
         $decoded_url = \Mailixa\Library\StringHelper::base64UrlDecode($request->url);
         // redirect base64_decode($url);
         $log = new \Mailixa\Model\ClickLog();
-        $log->message_id = $request->message_id;
+        $log->message_id = \Mailixa\Library\StringHelper::base64UrlDecode($request->message_id);
         $location = \Mailixa\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
