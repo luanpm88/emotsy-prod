@@ -684,7 +684,7 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->trackingLogs;
+        $items = $campaign->trackingLogs();
 
         return view('campaigns.tracking_log', [
             'items' => $items,
@@ -764,7 +764,7 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->openLogs;
+        $items = $campaign->openLogs();
 
         return view('campaigns.feedback_log', [
             'items' => $items,
@@ -804,7 +804,7 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->openLogs;
+        $items = $campaign->openLogs();
 
         return view('campaigns.open_log', [
             'items' => $items,
@@ -844,7 +844,7 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->clickLogs;
+        $items = $campaign->clickLogs();
 
         return view('campaigns.click_log', [
             'items' => $items,
@@ -884,7 +884,7 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->unsubscribeLogs;
+        $items = $campaign->unsubscribeLogs();
 
         return view('campaigns.unsubscribe_log', [
             'items' => $items,
