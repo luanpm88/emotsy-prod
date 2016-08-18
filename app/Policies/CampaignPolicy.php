@@ -35,7 +35,7 @@ class CampaignPolicy
 
     public function update(\Mailixa\Model\User $user, \Mailixa\Model\Campaign $item)
     {
-        return $item->user_id == $user->id && $item->status == 'new';
+        return $item->user_id == $user->id && in_array($item->status, ["new","ready","error"]);
     }
 
     public function delete(\Mailixa\Model\User $user, \Mailixa\Model\Campaign $item)
