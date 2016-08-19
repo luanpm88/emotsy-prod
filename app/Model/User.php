@@ -121,7 +121,7 @@ class User extends Authenticatable
 
     public function sentCampaigns()
     {
-        return $this->hasMany('Mailixa\Model\Campaign')->where('status', '=', 'sent')->orderBy('created_at', 'desc');
+        return $this->hasMany('Mailixa\Model\Campaign')->where('status', '=', 'done')->orderBy('created_at', 'desc');
     }
 
     public function subscribers()

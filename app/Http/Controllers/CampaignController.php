@@ -27,9 +27,6 @@ class CampaignController extends Controller
      */
     public function index(Request $request)
     {
-        echo "sssss" . \Mailixa\Library\StringHelper::base64UrlEncode("1469976713.579e1089d17d6@anphabeta.com");
-        echo "-----" . \Mailixa\Library\StringHelper::base64UrlEncode("https://www.google.com.vn");
-        
         $user = $request->user();
         $campaigns = $user->campaigns;
 
@@ -634,7 +631,7 @@ class CampaignController extends Controller
      */
     public function unsubscribe(Request $request)
     {
-        $tracking_log = \Mailixa\Model\TrackingLog::where('message_id', '=', $request->message_id)->first();
+        $tracking_log = \Mailixa\Model\TrackingLog::where('message_id', '=', \Mailixa\Library\StringHelper::base64UrlDecode($request->message_id))->first();
         $subscriber = $tracking_log->subscriber;
 
         if ($subscriber->status != 'unsubscribed') {
@@ -989,7 +986,7 @@ class CampaignController extends Controller
                 
                 // Log
                 $item->log('restarted', $request->user());
-            }            
+            }
         }
 
         // Redirect to my lists page

@@ -30,7 +30,7 @@
 					'name' => 'campaign_id',
 					'label' => '',
 					'value' => '',
-					'options' => Mailixa\Model\Campaign::getSelectOptions(Auth::user(), "sent"),
+					'options' => Mailixa\Model\Campaign::getSelectOptions(Auth::user(), "done"),
 				])
 			</div>
 		</div>

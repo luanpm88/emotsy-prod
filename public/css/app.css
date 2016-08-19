@@ -708,12 +708,17 @@ input.error {
     border-color: #4CAF50;
     color: #fff;
 }
-.bg-canceled, .bg-disabled, .bg-inactive, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-paused {
+.bg-canceled, .bg-disabled, .bg-inactive, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-paused, .bg-done {
     background-color: #777;
     border-color: #777;
     color: #fff;
 }
 .bg-new {
+    background-color: #FF5722;
+    border-color: #FF5722;
+    color: #fff;
+}
+.bg-error {
     background-color: #D84315;
     border-color: #D84315;
     color: #fff;
