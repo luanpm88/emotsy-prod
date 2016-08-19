@@ -751,7 +751,7 @@ return [
     'php_mail' => 'PHP mail()',
     'pause' => 'Pause',
     'restart' => 'Restart',
-    '' => '',
+    'api' => 'API',
     '' => '',
     '' => '',
     '' => '',
