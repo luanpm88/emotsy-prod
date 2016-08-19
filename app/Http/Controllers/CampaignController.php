@@ -631,7 +631,8 @@ class CampaignController extends Controller
      */
     public function unsubscribe(Request $request)
     {
-        $tracking_log = \Mailixa\Model\TrackingLog::where('message_id', '=', \Mailixa\Library\StringHelper::base64UrlDecode($request->message_id))->first();
+        $message_id = \Mailixa\Library\StringHelper::base64UrlDecode($request->message_id);
+        $tracking_log = \Mailixa\Model\TrackingLog::where('message_id', '=', $message_id)->first();
         $subscriber = $tracking_log->subscriber;
 
         if ($subscriber->status != 'unsubscribed') {
@@ -649,7 +650,7 @@ class CampaignController extends Controller
 
             // Unsubscribe log
             $log = new \Mailixa\Model\UnsubscribeLog();
-            $log->message_id = $request->message_id;
+            $log->message_id = $message_id;
             $location = \Mailixa\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
             $log->ip_address = $location->ip_address;
             $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
