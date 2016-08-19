@@ -13,7 +13,7 @@
 	
     <h2 class="text-teal-800"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h2>
 		
-	@if (Mailixa\Model\Campaign::where("status", "=", "sent")->count() == 0)
+	@if (Mailixa\Model\Campaign::where("status", "=", "done")->count() == 0)
 		<div class="empty-list">
 			<i class="icon-paperplane"></i>
 			<span class="line-1">
