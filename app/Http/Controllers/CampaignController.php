@@ -310,7 +310,9 @@ class CampaignController extends Controller
                 $validate .= '|substring:"'.$tag['name'].'"';
             }
         }
-
+        
+        $rules = [];
+        
         // if campaign type is not plain text
         if ($campaign->type != 'plain-text') {
             $rules['html'] = $validate;
