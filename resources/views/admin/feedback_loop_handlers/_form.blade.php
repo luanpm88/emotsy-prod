@@ -8,7 +8,7 @@
 								'name' => 'name',
 								'value' => $server->name,
 								'help_class' => 'feedback_loop_handler',
-								'rules' => Mailixa\Model\FeedbackLoopHandler::rules()
+								'rules' => Acelle\Model\FeedbackLoopHandler::rules()
 							])
 						</div>
 						<div class="col-sm-6 col-md-4">
@@ -18,7 +18,7 @@
 								'name' => 'host',
 								'value' => $server->host,
 								'help_class' => 'feedback_loop_handler',
-								'rules' => Mailixa\Model\FeedbackLoopHandler::rules()
+								'rules' => Acelle\Model\FeedbackLoopHandler::rules()
 							])
 						</div>
 						<div class="col-sm-6 col-md-4">
@@ -28,7 +28,7 @@
 								'name' => 'port',
 								'value' => $server->port,
 								'help_class' => 'feedback_loop_handler',
-								'rules' => Mailixa\Model\FeedbackLoopHandler::rules()
+								'rules' => Acelle\Model\FeedbackLoopHandler::rules()
 							])
 						</div>
 						<div class="col-sm-6 col-md-4">
@@ -38,7 +38,7 @@
 								'name' => 'username',
 								'value' => $server->username,
 								'help_class' => 'feedback_loop_handler',
-								'rules' => Mailixa\Model\FeedbackLoopHandler::rules()
+								'rules' => Acelle\Model\FeedbackLoopHandler::rules()
 							])
 						</div>
 						<div class="col-sm-6 col-md-4">
@@ -48,7 +48,7 @@
 								'name' => 'password',
 								'value' => $server->password,
 								'help_class' => 'feedback_loop_handler',
-								'rules' => Mailixa\Model\FeedbackLoopHandler::rules()
+								'rules' => Acelle\Model\FeedbackLoopHandler::rules()
 							])
 						</div>
 						<div class="col-sm-6 col-md-4">
@@ -58,7 +58,7 @@
 								'name' => 'protocol',
 								'value' => $server->protocol,
 								'help_class' => 'feedback_loop_handler',
-								'rules' => Mailixa\Model\FeedbackLoopHandler::rules()
+								'rules' => Acelle\Model\FeedbackLoopHandler::rules()
 							])
 						</div>
 					</div>

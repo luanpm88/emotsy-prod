@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class OpenLogController extends Controller
 {
@@ -28,7 +28,7 @@ class OpenLogController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\OpenLog::getAll();
+        $items = \Acelle\Model\OpenLog::getAll();
 
         return view('admin.open_logs.index', [
             'items' => $items,
@@ -46,7 +46,7 @@ class OpenLogController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\OpenLog::search($request)->paginate($request->per_page);
+        $items = \Acelle\Model\OpenLog::search($request)->paginate($request->per_page);
 
         return view('admin.open_logs._list', [
             'items' => $items,

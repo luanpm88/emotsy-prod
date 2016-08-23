@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class FeedbackLoopHandlerController extends Controller
 {
@@ -28,7 +28,7 @@ class FeedbackLoopHandlerController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\FeedbackLoopHandler::getAll();
+        $items = \Acelle\Model\FeedbackLoopHandler::getAll();
 
         return view('admin.feedback_loop_handlers.index', [
             'items' => $items,
@@ -46,7 +46,7 @@ class FeedbackLoopHandlerController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\FeedbackLoopHandler::search($request)->paginate($request->per_page);
+        $items = \Acelle\Model\FeedbackLoopHandler::search($request)->paginate($request->per_page);
 
         return view('admin.feedback_loop_handlers._list', [
             'items' => $items,
@@ -60,7 +60,7 @@ class FeedbackLoopHandlerController extends Controller
      */
     public function create(Request $request)
     {
-        $server = new \Mailixa\Model\FeedbackLoopHandler();
+        $server = new \Acelle\Model\FeedbackLoopHandler();
         $server->status = 'active';
         $server->uid = '0';
         $server->fill($request->old());
@@ -86,7 +86,7 @@ class FeedbackLoopHandlerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $server = new \Mailixa\Model\FeedbackLoopHandler();
+        $server = new \Acelle\Model\FeedbackLoopHandler();
 
         // authorize
         if (\Gate::denies('create', $server)) {
@@ -95,7 +95,7 @@ class FeedbackLoopHandlerController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Mailixa\Model\FeedbackLoopHandler::rules());
+            $this->validate($request, \Acelle\Model\FeedbackLoopHandler::rules());
 
             // Save current user info
             $server->fill($request->all());
@@ -131,7 +131,7 @@ class FeedbackLoopHandlerController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $server = \Mailixa\Model\FeedbackLoopHandler::findByUid($id);
+        $server = \Acelle\Model\FeedbackLoopHandler::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $server)) {
@@ -157,7 +157,7 @@ class FeedbackLoopHandlerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $server = \Mailixa\Model\FeedbackLoopHandler::findByUid($id);
+        $server = \Acelle\Model\FeedbackLoopHandler::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $server)) {
@@ -166,7 +166,7 @@ class FeedbackLoopHandlerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, \Mailixa\Model\FeedbackLoopHandler::rules());
+            $this->validate($request, \Acelle\Model\FeedbackLoopHandler::rules());
 
             // Save current user info
             $server->fill($request->all());
@@ -202,7 +202,7 @@ class FeedbackLoopHandlerController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $item = \Mailixa\Model\FeedbackLoopHandler::findByUid($row[0]);
+            $item = \Acelle\Model\FeedbackLoopHandler::findByUid($row[0]);
 
             // authorize
             if (\Gate::denies('update', $item)) {
@@ -225,7 +225,7 @@ class FeedbackLoopHandlerController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Mailixa\Model\FeedbackLoopHandler::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\FeedbackLoopHandler::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize

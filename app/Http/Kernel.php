@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http;
+namespace Acelle\Http;
 
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 
@@ -24,11 +24,11 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
-            \Mailixa\Http\Middleware\EncryptCookies::class,
+            \Acelle\Http\Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            //\Mailixa\Http\Middleware\VerifyCsrfToken::class,
+            //\Acelle\Http\Middleware\VerifyCsrfToken::class,
         ],
 
         'api' => [
@@ -44,15 +44,15 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $routeMiddleware = [
-        'auth' => \Mailixa\Http\Middleware\Authenticate::class,
+        'auth' => \Acelle\Http\Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'can' => \Illuminate\Foundation\Http\Middleware\Authorize::class,
-        'guest' => \Mailixa\Http\Middleware\RedirectIfAuthenticated::class,
+        'guest' => \Acelle\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-        'frontend' => \Mailixa\Http\Middleware\Frontend::class,
-        'backend' => \Mailixa\Http\Middleware\Backend::class,
-        'installed' => \Mailixa\Http\Middleware\Installed::class,
-        'not_installed' => \Mailixa\Http\Middleware\NotInstalled::class,
-        'api_auth' => \Mailixa\Http\Middleware\ApiAuth::class,
+        'frontend' => \Acelle\Http\Middleware\Frontend::class,
+        'backend' => \Acelle\Http\Middleware\Backend::class,
+        'installed' => \Acelle\Http\Middleware\Installed::class,
+        'not_installed' => \Acelle\Http\Middleware\NotInstalled::class,
+        'api_auth' => \Acelle\Http\Middleware\ApiAuth::class,
     ];
 }

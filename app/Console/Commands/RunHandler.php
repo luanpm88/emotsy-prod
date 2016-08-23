@@ -1,11 +1,11 @@
 <?php
 
-namespace Mailixa\Console\Commands;
+namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
-use Mailixa\Model\BounceHandler;
-use Mailixa\Model\FeedbackLoopHandler;
-use Mailixa\Library\Log;
+use Acelle\Model\BounceHandler;
+use Acelle\Model\FeedbackLoopHandler;
+use Acelle\Library\Log;
 
 class RunHandler extends Command
 {

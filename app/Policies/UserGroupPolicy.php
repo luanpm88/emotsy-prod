@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Policies;
+namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -16,14 +16,14 @@ class UserGroupPolicy
         //
     }
 
-    public function create(\Mailixa\Model\User $user, \Mailixa\Model\UserGroup $item)
+    public function create(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
     {
         $can = $user->getOption('backend', 'user_group_create') == 'yes';
 
         return $can;
     }
 
-    public function update(\Mailixa\Model\User $user, \Mailixa\Model\UserGroup $item)
+    public function update(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
     {
         $ability = $user->getOption('backend', 'user_group_update');
         $can = $ability == 'all'
@@ -32,7 +32,7 @@ class UserGroupPolicy
         return $can;
     }
 
-    public function sort(\Mailixa\Model\User $user, \Mailixa\Model\UserGroup $item)
+    public function sort(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
     {
         $ability = $user->getOption('backend', 'user_group_update');
         $can = $ability == 'all';
@@ -40,7 +40,7 @@ class UserGroupPolicy
         return $can;
     }
 
-    public function delete(\Mailixa\Model\User $user, \Mailixa\Model\UserGroup $item)
+    public function delete(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
     {
         $ability = $user->getOption('backend', 'user_group_delete');
         $can = $ability == 'all'

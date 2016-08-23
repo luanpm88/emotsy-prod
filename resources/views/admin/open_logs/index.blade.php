@@ -26,7 +26,7 @@
 				
 				<form class="listing-form"
 					data-url="{{ action('Admin\OpenLogController@listing') }}"
-					per-page="{{ Mailixa\Model\OpenLog::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\OpenLog::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-9">

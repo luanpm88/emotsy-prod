@@ -83,7 +83,7 @@
                             <i class="icon-checkmark4"></i>
                             <h4>{{ trans('messages.run_at') }}</h4>
                             <p>
-                                {{ isset($campaign->run_at) ? Mailixa\Library\Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->run_at)) : "" }}
+                                {{ isset($campaign->run_at) ? Acelle\Library\Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->run_at)) : "" }}
                             </p>                        
                         </li>
                     </ul>

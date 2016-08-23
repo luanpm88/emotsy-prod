@@ -23,7 +23,7 @@
 
 				<form class="listing-form"
 					data-url="{{ action('SubscriberController@listing', $list->uid) }}"
-					per-page="{{ Mailixa\Model\Subscriber::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-10">

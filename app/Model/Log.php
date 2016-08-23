@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -29,7 +29,7 @@ class Log extends Model
      */
     public function user()
     {
-        return $this->belongsTo('Mailixa\Model\User');
+        return $this->belongsTo('Acelle\Model\User');
     }
 
     /**

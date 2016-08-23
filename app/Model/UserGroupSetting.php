@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa;
+namespace Acelle;
 
 use Illuminate\Database\Eloquent\Model;
 

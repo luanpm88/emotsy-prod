@@ -30,7 +30,7 @@
 					'name' => 'campaign_id',
 					'label' => '',
 					'value' => '',
-					'options' => Mailixa\Model\Campaign::getSelectOptions(Auth::user(), "done"),
+					'options' => Acelle\Model\Campaign::getSelectOptions(Auth::user(), "done"),
 				])
 			</div>
 		</div>
@@ -59,7 +59,7 @@
 					'label' => '',
 					'value' => '',
 					'include_blank' => trans('messages.all'),
-					'options' => Mailixa\Model\MailList::getSelectOptions(Auth::user()),
+					'options' => Acelle\Model\MailList::getSelectOptions(Auth::user()),
 				])
 			</div>
 		</div>
@@ -83,7 +83,7 @@
 				<div class="tab-content">
 					<div class="tab-pane active" id="top-tab1">
 						<ul class="modern-listing mt-0 top-border-none">
-							@foreach (Mailixa\Model\Campaign::topOpens(5, Auth::user())->get() as $num => $item)
+							@foreach (Acelle\Model\Campaign::topOpens(5, Auth::user())->get() as $num => $item)
 								<li>
                                     <div class="row">
                                         <div class="col-sm-5 col-md-5">
@@ -117,7 +117,7 @@
                                         </div>
 										<div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
-												{{ (null !== $item->lastOpen()) ? Mailixa\Library\Tool::formatDateTime($item->lastOpen()->created_at) : "" }}
+												{{ (null !== $item->lastOpen()) ? Acelle\Library\Tool::formatDateTime($item->lastOpen()->created_at) : "" }}
 											</h5>
 											<span class="text-muted">{{ trans('messages.last_open') }}</span>
                                                 <br /><br />
@@ -130,7 +130,7 @@
 					</div>
 					<div class="tab-pane" id="top-tab2">
 						<ul class="modern-listing mt-0 top-border-none">
-							@foreach (Mailixa\Model\Campaign::topClicks(5, Auth::user())->get() as $num => $item)
+							@foreach (Acelle\Model\Campaign::topClicks(5, Auth::user())->get() as $num => $item)
 								<li>
                                     <div class="row">
                                         <div class="col-sm-5 col-md-5">
@@ -164,7 +164,7 @@
                                         </div>
 										<div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
-												{{ (null !== $item->lastClick()) ? Mailixa\Library\Tool::formatDateTime($item->lastClick()->created_at) : "" }}
+												{{ (null !== $item->lastClick()) ? Acelle\Library\Tool::formatDateTime($item->lastClick()->created_at) : "" }}
 											</h5>
 											<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
                                                 <br /><br />
@@ -178,7 +178,7 @@
 					<div class="tab-pane" id="top-tab3">
 						
 						<ul class="modern-listing mt-0 top-border-none">
-							@foreach (Mailixa\Model\Campaign::topLinks(5, Auth::user())->get() as $num => $item)
+							@foreach (Acelle\Model\Campaign::topLinks(5, Auth::user())->get() as $num => $item)
 								<li>
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6">
@@ -201,7 +201,7 @@
                                         </div>
 										<div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
-												{{ (null !== $item->lastClick(Auth::user())) ? Mailixa\Library\Tool::formatDateTime($item->lastClick(Auth::user())->created_at) : "" }}          
+												{{ (null !== $item->lastClick(Auth::user())) ? Acelle\Library\Tool::formatDateTime($item->lastClick(Auth::user())->created_at) : "" }}          
 											</h5>
 											<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
                                             <br /><br />

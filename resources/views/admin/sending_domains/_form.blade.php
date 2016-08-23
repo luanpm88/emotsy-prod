@@ -8,7 +8,7 @@
 								'name' => 'name',
 								'value' => $server->name,
 								'help_class' => 'sending_server',
-								'rules' => Mailixa\Model\SendingDomain::rules()
+								'rules' => Acelle\Model\SendingDomain::rules()
 							])
 						</div>
 						<div class="col-sm-6 col-md-6">
@@ -20,7 +20,7 @@
 									'value' => $server->signing_enabled,
 									'help_class' => 'sending_domain',
 									'options' => [0, 1],
-									'rules' => Mailixa\Model\SendingDomain::rules()
+									'rules' => Acelle\Model\SendingDomain::rules()
 								])
 							</div>
 						</div>
@@ -35,7 +35,7 @@
 									'name' => 'dkim_private',
 									'value' => $server->dkim_private,
 									'help_class' => 'sending_domain',
-									'rules' => Mailixa\Model\SendingDomain::rules()
+									'rules' => Acelle\Model\SendingDomain::rules()
 								])
 							</div>
 							<div class="col-sm-6 col-md-6">
@@ -46,7 +46,7 @@
 									'name' => 'dkim_public',
 									'value' => $server->dkim_public,
 									'help_class' => 'sending_domain',
-									'rules' => Mailixa\Model\SendingDomain::rules()
+									'rules' => Acelle\Model\SendingDomain::rules()
 								])
 							</div>						
 						</div>

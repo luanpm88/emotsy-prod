@@ -1,10 +1,10 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Mailixa\Library\RouletteWheel;
-use Mailixa\Library\Log;
+use Acelle\Library\RouletteWheel;
+use Acelle\Library\Log;
 
 class SendingServer extends Model
 {
@@ -40,7 +40,7 @@ class SendingServer extends Model
      */
     public function bounceHandler()
     {
-        return $this->belongsTo('Mailixa\Model\BounceHandler');
+        return $this->belongsTo('Acelle\Model\BounceHandler');
     }
 
     public static function pickServer($campaign)
@@ -72,7 +72,7 @@ class SendingServer extends Model
 
     public static function mapServerType($server)
     {
-        $class_name = '\Mailixa\Model\\'.self::$serverMapping[$server->type];
+        $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
 
         return $class_name::find($server->id);
     }
@@ -108,7 +108,7 @@ class SendingServer extends Model
      */
     public function user()
     {
-        return $this->belongsTo('Mailixa\Model\User');
+        return $this->belongsTo('Acelle\Model\User');
     }
 
     /**
@@ -328,7 +328,7 @@ class SendingServer extends Model
             }
         }
 
-        $query = \Mailixa\Model\TrackingLog::leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
+        $query = \Acelle\Model\TrackingLog::leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
         if (isset($begin)) {
             $query = $query->where('tracking_logs.created_at', '>=', $begin);
         }
@@ -337,7 +337,7 @@ class SendingServer extends Model
 
         return $count;
 
-        //$query = \Mailixa\Model\TrackingLog::where('sending_server_id', $this->id)
+        //$query = \Acelle\Model\TrackingLog::where('sending_server_id', $this->id)
         //    ->whereRaw("created_at >= NOW() - INTERVAL {$this->quota_base} {$this->quota_unit}");
         //    
         //return $query->count();
@@ -395,7 +395,7 @@ class SendingServer extends Model
      */
     public function displayQuota()
     {
-        return $this->quota_value.' / '.$this->quota_base.' '.trans('messages.'.\Mailixa\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
+        return $this->quota_value.' / '.$this->quota_base.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
     }
     
     /**

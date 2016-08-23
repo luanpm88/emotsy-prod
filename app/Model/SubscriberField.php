@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -22,6 +22,6 @@ class SubscriberField extends Model
      */
     public function field()
     {
-        return $this->belongsTo('Mailixa\Model\Field');
+        return $this->belongsTo('Acelle\Model\Field');
     }
 }

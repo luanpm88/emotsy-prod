@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Policies;
+namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -16,37 +16,37 @@ class TemplatePolicy
         //
     }
 
-    public function create(\Mailixa\Model\User $user, \Mailixa\Model\Template $item)
+    public function create(\Acelle\Model\User $user, \Acelle\Model\Template $item)
     {
         return true;
     }
 
-    public function view(\Mailixa\Model\User $user, \Mailixa\Model\Template $item)
+    public function view(\Acelle\Model\User $user, \Acelle\Model\Template $item)
     {
         return $item->user_id == $user->id || $item->shared == true;
     }
 
-    public function update(\Mailixa\Model\User $user, \Mailixa\Model\Template $item)
+    public function update(\Acelle\Model\User $user, \Acelle\Model\Template $item)
     {
         return $item->user_id == $user->id;
     }
 
-    public function image(\Mailixa\Model\User $user, \Mailixa\Model\Template $item)
+    public function image(\Acelle\Model\User $user, \Acelle\Model\Template $item)
     {
         return $item->user_id == $user->id || $item->shared == true;
     }
 
-    public function delete(\Mailixa\Model\User $user, \Mailixa\Model\Template $item)
+    public function delete(\Acelle\Model\User $user, \Acelle\Model\Template $item)
     {
         return $item->user_id == $user->id;
     }
 
-    public function preview(\Mailixa\Model\User $user, \Mailixa\Model\Template $item)
+    public function preview(\Acelle\Model\User $user, \Acelle\Model\Template $item)
     {
         return $item->user_id == $user->id || $item->shared == true;
     }
 
-    public function saveImage(\Mailixa\Model\User $user, \Mailixa\Model\Template $item)
+    public function saveImage(\Acelle\Model\User $user, \Acelle\Model\Template $item)
     {
         return $item->user_id == $user->id || $item->shared == true;
     }

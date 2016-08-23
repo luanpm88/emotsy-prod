@@ -129,7 +129,7 @@
 							'name' => 'copy_list_name',
 							'value' => '',
 							'label' => trans('messages.what_would_you_like_to_name_your_list'),
-							'options' => Mailixa\Model\UserGroup::timeUnitOptions(),
+							'options' => Acelle\Model\UserGroup::timeUnitOptions(),
 							'include_blank' => trans('messages.choose'),
 							'help_class' => 'sending_server',
 							'rules' => ['name' => 'required']
@@ -159,7 +159,7 @@
 				<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
 			</div>
 		@endif
-		@if (Mailixa\Model\Setting::get("site_online") == false)
+		@if (Acelle\Model\Setting::get("site_online") == false)
 			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 				<h4 class="ui-pnotify-title text-nowrap">{!! trans('messages.site_is_offline') !!}</h4>
 				<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -45,7 +45,7 @@ class Template extends Model
 
         static::deleted(function ($item) {
             $uploaded_dir = 'upload/templates/template_'.$item->uid;
-            \Mailixa\Library\Tool::xdelete($uploaded_dir);
+            \Acelle\Library\Tool::xdelete($uploaded_dir);
         });
     }
 
@@ -56,7 +56,7 @@ class Template extends Model
      */
     public function user()
     {
-        return $this->belongsTo('Mailixa\Model\User');
+        return $this->belongsTo('Acelle\Model\User');
     }
 
     /**

@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
@@ -28,7 +28,7 @@ class UserController extends Controller
             return $this->notAuthorized();
         }
 
-        $users = \Mailixa\Model\User::getAll();
+        $users = \Acelle\Model\User::getAll();
 
         return view('admin.users.index', [
             'users' => $users,
@@ -46,7 +46,7 @@ class UserController extends Controller
             return $this->notAuthorized();
         }
 
-        $users = \Mailixa\Model\User::search($request)->paginate($request->per_page);
+        $users = \Acelle\Model\User::search($request)->paginate($request->per_page);
 
         return view('admin.users._list', [
             'users' => $users,
@@ -60,7 +60,7 @@ class UserController extends Controller
      */
     public function create(Request $request)
     {
-        $user = new \Mailixa\Model\User();
+        $user = new \Acelle\Model\User();
         $user->status = 'active';
         $user->uid = '0';
         $user->fill($request->old());
@@ -86,8 +86,8 @@ class UserController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $user = new \Mailixa\Model\User();
-        $contact = new \Mailixa\Model\Contact();
+        $user = new \Acelle\Model\User();
+        $contact = new \Acelle\Model\Contact();
 
         // authorize
         if (\Gate::denies('create', $user)) {
@@ -153,7 +153,7 @@ class UserController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $user = \Mailixa\Model\User::findByUid($id);
+        $user = \Acelle\Model\User::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $user)) {
@@ -179,7 +179,7 @@ class UserController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $user = \Mailixa\Model\User::findByUid($id);
+        $user = \Acelle\Model\User::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $user)) {
@@ -249,7 +249,7 @@ class UserController extends Controller
      */
     public function enable(Request $request)
     {
-        $user = \Mailixa\Web\User::find($request->id);
+        $user = \Acelle\Web\User::find($request->id);
 
         $user->status = 'active';
         $user->save();
@@ -266,7 +266,7 @@ class UserController extends Controller
      */
     public function disable(Request $request)
     {
-        $user = \Mailixa\Web\User::find($request->id);
+        $user = \Acelle\Web\User::find($request->id);
 
         $user->status = 'inactive';
         $user->save();
@@ -283,7 +283,7 @@ class UserController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Mailixa\Model\User::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\User::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize
@@ -309,7 +309,7 @@ class UserController extends Controller
      */
     public function switch_user(Request $request)
     {
-        $user = \Mailixa\Model\User::findByUid($request->uid);
+        $user = \Acelle\Model\User::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('switch_user', $user)) {
@@ -333,7 +333,7 @@ class UserController extends Controller
     public function loginBack(Request $request)
     {
         $id = \Session::pull('orig_user_id');
-        $orig_user = \Mailixa\Model\User::findByUid($id);
+        $orig_user = \Acelle\Model\User::findByUid($id);
 
         \Auth::login($orig_user);
 
@@ -347,9 +347,9 @@ class UserController extends Controller
     {
         // Get current user        
         if ($request->uid != '0') {
-            $user = \Mailixa\Model\User::findByUid($request->uid);
+            $user = \Acelle\Model\User::findByUid($request->uid);
         } else {
-            $user = new \Mailixa\Model\User();
+            $user = new \Acelle\Model\User();
         }
         if (!empty($user->imagePath())) {
             $img = \Image::make($user->imagePath());

@@ -27,7 +27,7 @@
 				<form class="listing-form"
 					sort-url="{{ action('Admin\UserController@sort') }}"
 					data-url="{{ action('Admin\UserController@listing') }}"
-					per-page="{{ Mailixa\Model\User::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\User::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-10">
@@ -49,7 +49,7 @@
 										<span class="title text-semibold text-muted">{{ trans('messages.group') }}</span>
 										<select class="select" name="user_group_id">
 											<option value="">{{ trans('messages.all') }}</option>
-											@foreach (Mailixa\Model\UserGroup::getAll()->get() as $group)
+											@foreach (Acelle\Model\UserGroup::getAll()->get() as $group)
 												<option value="{{ $group->id }}">{{ $group->name }}</option>
 											@endforeach
 										</select>										
@@ -61,7 +61,7 @@
 								</div>
 							@endif
 						</div>
-						@can('create', new Mailixa\Model\User())
+						@can('create', new Acelle\Model\User())
 							<div class="col-md-2 text-right">
 								<a href="{{ action("Admin\UserController@create") }}" type="button" class="btn bg-info-800">
 									<i class="icon icon-plus2"></i> {{ trans('messages.create_user') }}

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http\Middleware;
+namespace Acelle\Http\Middleware;
 
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as BaseVerifier;
 

@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
-use Mailixa\Library\Log;
-use Mailixa\Library\AmazonSmtpTransport;
+use Acelle\Library\Log;
+use Acelle\Library\AmazonSmtpTransport;
 
 class SendingServerAmazonSmtp extends SendingServerAmazon
 {

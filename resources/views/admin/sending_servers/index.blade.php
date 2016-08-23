@@ -27,7 +27,7 @@
 				<form class="listing-form"
 					sort-url="{{ action('Admin\SendingServerController@sort') }}"
 					data-url="{{ action('Admin\SendingServerController@listing') }}"
-					per-page="{{ Mailixa\Model\SendingServer::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\SendingServer::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-10">
@@ -61,7 +61,7 @@
 										<span class="title text-semibold text-muted">{{ trans('messages.type') }}</span>
 										<select class="select" name="type">
 											<option value="">{{ trans('messages.all') }}</option>
-											@foreach (Mailixa\Model\SendingServer::types() as $key => $type)
+											@foreach (Acelle\Model\SendingServer::types() as $key => $type)
 												<option value="{{ $key }}">{{ trans('messages.' . $key) }}</option>
 											@endforeach
 										</select>										
@@ -73,7 +73,7 @@
 								</div>
 							@endif
 						</div>
-						@can('create', new Mailixa\Model\SendingServer())
+						@can('create', new Acelle\Model\SendingServer())
 							<div class="col-md-2 text-right">
 								<a href="#" type="button" class="btn bg-info-800" data-toggle="modal" data-target="#server_types">
 									<i class="icon icon-plus2"></i> {{ trans('messages.create_sending_server') }}
@@ -101,7 +101,7 @@
 				
 								<div class="modal-body">
 									
-									@foreach (Mailixa\Model\SendingServer::types() as $key => $type)
+									@foreach (Acelle\Model\SendingServer::types() as $key => $type)
 										
 										<a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-info btn-lg bg-teal-800 btn-server-type">
 											<i class="icon-server"></i> {{ trans('messages.' . $key) }}

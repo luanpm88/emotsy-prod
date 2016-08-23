@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class LanguageController extends Controller
 {
@@ -28,7 +28,7 @@ class LanguageController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\Language::getAll();
+        $items = \Acelle\Model\Language::getAll();
 
         return view('admin.languages.index', [
             'items' => $items,
@@ -46,7 +46,7 @@ class LanguageController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\Language::search($request)->paginate($request->per_page);
+        $items = \Acelle\Model\Language::search($request)->paginate($request->per_page);
 
         return view('admin.languages._list', [
             'items' => $items,
@@ -60,7 +60,7 @@ class LanguageController extends Controller
      */
     public function create(Request $request)
     {
-        $language = new \Mailixa\Model\Language([
+        $language = new \Acelle\Model\Language([
             'signing_enabled' => true,
         ]);
         $language->status = 'active';
@@ -88,7 +88,7 @@ class LanguageController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $language = new \Mailixa\Model\Language();
+        $language = new \Acelle\Model\Language();
 
         // authorize
         if (\Gate::denies('create', $language)) {
@@ -97,7 +97,7 @@ class LanguageController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Mailixa\Model\Language::rules());
+            $this->validate($request, \Acelle\Model\Language::rules());
 
             // Save current user info
             $language->fill($request->all());
@@ -132,7 +132,7 @@ class LanguageController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $language = \Mailixa\Model\Language::findByUid($id);
+        $language = \Acelle\Model\Language::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $language)) {
@@ -158,7 +158,7 @@ class LanguageController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $language = \Mailixa\Model\Language::findByUid($id);
+        $language = \Acelle\Model\Language::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $language)) {
@@ -167,7 +167,7 @@ class LanguageController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, \Mailixa\Model\Language::rules());
+            $this->validate($request, \Acelle\Model\Language::rules());
 
             // Save current user info
             $language->fill($request->all());
@@ -201,7 +201,7 @@ class LanguageController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Mailixa\Model\Language::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\Language::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize

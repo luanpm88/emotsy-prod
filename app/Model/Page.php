@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -40,12 +40,12 @@ class Page extends Model
      */
     public function mailList()
     {
-        return $this->belongsTo('Mailixa\Model\MailList');
+        return $this->belongsTo('Acelle\Model\MailList');
     }
 
     public function layout()
     {
-        return $this->belongsTo('Mailixa\Model\Layout');
+        return $this->belongsTo('Acelle\Model\Layout');
     }
 
     /**
@@ -60,7 +60,7 @@ class Page extends Model
     {
         $page = $list->page($layout);
         if (!isset($page)) {
-            $page = new \Mailixa\Model\Page();
+            $page = new \Acelle\Model\Page();
             $page->layout_id = $layout->id;
             $page->mail_list_id = $list->id;
             $page->content = $layout->content;
@@ -180,7 +180,7 @@ class Page extends Model
     {
         $page = $this;
         \Mail::send('pages._email_content', ['page' => $page], function ($m) use ($subscriber, $title) {
-            $m->from('service@mailixa.net', 'Mailixa');
+            $m->from('service@mailixa.net', 'Acelle');
 
             $m->to($subscriber->email, 'Subscriber')->subject($title);
         });

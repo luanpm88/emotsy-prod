@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class ClickLogController extends Controller
 {
@@ -28,7 +28,7 @@ class ClickLogController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\ClickLog::getAll();
+        $items = \Acelle\Model\ClickLog::getAll();
 
         return view('admin.click_logs.index', [
             'items' => $items,
@@ -46,7 +46,7 @@ class ClickLogController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\ClickLog::search($request)->paginate($request->per_page);
+        $items = \Acelle\Model\ClickLog::search($request)->paginate($request->per_page);
 
         return view('admin.click_logs._list', [
             'items' => $items,

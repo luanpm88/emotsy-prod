@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class TrackingLogController extends Controller
 {
@@ -28,7 +28,7 @@ class TrackingLogController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\TrackingLog::getAll();
+        $items = \Acelle\Model\TrackingLog::getAll();
 
         return view('admin.tracking_logs.index', [
             'items' => $items,
@@ -46,7 +46,7 @@ class TrackingLogController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\TrackingLog::search($request)->paginate($request->per_page);
+        $items = \Acelle\Model\TrackingLog::search($request)->paginate($request->per_page);
 
         return view('admin.tracking_logs._list', [
             'items' => $items,

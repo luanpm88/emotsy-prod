@@ -67,7 +67,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => Mailixa\Model\User::class,
+            'model' => Acelle\Model\User::class,
         ],
 
         // 'users' => [

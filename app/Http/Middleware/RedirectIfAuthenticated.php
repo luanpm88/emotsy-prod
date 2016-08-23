@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http\Middleware;
+namespace Acelle\Http\Middleware;
 
 use Closure;
 use Illuminate\Support\Facades\Auth;

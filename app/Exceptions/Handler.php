@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Exceptions;
+namespace Acelle\Exceptions;
 
 use Exception;
 use Illuminate\Validation\ValidationException;

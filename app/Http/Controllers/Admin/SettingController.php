@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class SettingController extends Controller
 {
@@ -24,8 +24,8 @@ class SettingController extends Controller
      */
     public function index(Request $request)
     {
-        // \Mailixa\Model\Setting::updateAll();
-        $settings = \Mailixa\Model\Setting::getAll();
+        // \Acelle\Model\Setting::updateAll();
+        $settings = \Acelle\Model\Setting::getAll();
         if (null !== $request->old()) {
             foreach ($request->old() as $name => $value) {
                 if (isset($settings[$name])) {
@@ -36,16 +36,16 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Mailixa\Model\Setting::rules());
+            $this->validate($request, \Acelle\Model\Setting::rules());
 
             // Save settings
             foreach ($request->all() as $name => $value) {
                 if ($name != '_token') {
                     if ($settings[$name]['cat'] == 'general' && $request->user()->getOption('backend', 'setting_general') == 'yes') {
-                        \Mailixa\Model\Setting::set($name, $value);
+                        \Acelle\Model\Setting::set($name, $value);
                     }
                     if ($settings[$name]['cat'] == 'sending' && $request->user()->getOption('backend', 'setting_sending') == 'yes') {
-                        \Mailixa\Model\Setting::set($name, $value);
+                        \Acelle\Model\Setting::set($name, $value);
                     }
                 }
             }
@@ -68,10 +68,10 @@ class SettingController extends Controller
      */
     public function updateUrls(Request $request)
     {
-        \Mailixa\Model\Setting::set('url_unsubscribe', action('CampaignController@unsubscribe', ['message_id' => trans('messages.MESSAGE_ID')]));
-        \Mailixa\Model\Setting::set('url_open_track', action('CampaignController@open', ['message_id' => trans('messages.MESSAGE_ID')]));
-        \Mailixa\Model\Setting::set('url_click_track', action('CampaignController@click', ['message_id' => trans('messages.MESSAGE_ID'), 'url' => trans('messages.URL')]));
-        \Mailixa\Model\Setting::set('url_delivery_handler', action('DeliveryController@notify', ['suid' => trans('messages.SUID')]));
+        \Acelle\Model\Setting::set('url_unsubscribe', action('CampaignController@unsubscribe', ['message_id' => trans('messages.MESSAGE_ID')]));
+        \Acelle\Model\Setting::set('url_open_track', action('CampaignController@open', ['message_id' => trans('messages.MESSAGE_ID')]));
+        \Acelle\Model\Setting::set('url_click_track', action('CampaignController@click', ['message_id' => trans('messages.MESSAGE_ID'), 'url' => trans('messages.URL')]));
+        \Acelle\Model\Setting::set('url_delivery_handler', action('DeliveryController@notify', ['suid' => trans('messages.SUID')]));
 
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.setting.updated'));

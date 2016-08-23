@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class BlacklistController extends Controller
 {
@@ -28,7 +28,7 @@ class BlacklistController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\Blacklist::getAll();
+        $items = \Acelle\Model\Blacklist::getAll();
 
         return view('admin.blacklist.index', [
             'items' => $items,
@@ -46,7 +46,7 @@ class BlacklistController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\Blacklist::search($request)->paginate($request->per_page);
+        $items = \Acelle\Model\Blacklist::search($request)->paginate($request->per_page);
 
         return view('admin.blacklist._list', [
             'items' => $items,
@@ -62,7 +62,7 @@ class BlacklistController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Mailixa\Model\Blacklist::whereIn('email', explode(',', $request->emails));
+        $items = \Acelle\Model\Blacklist::whereIn('email', explode(',', $request->emails));
 
         foreach ($items->get() as $item) {
             // authorize

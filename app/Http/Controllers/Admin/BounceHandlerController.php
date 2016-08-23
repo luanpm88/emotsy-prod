@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class BounceHandlerController extends Controller
 {
@@ -28,7 +28,7 @@ class BounceHandlerController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\BounceHandler::getAll();
+        $items = \Acelle\Model\BounceHandler::getAll();
 
         return view('admin.bounce_handlers.index', [
             'items' => $items,
@@ -46,7 +46,7 @@ class BounceHandlerController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\BounceHandler::search($request)->paginate($request->per_page);
+        $items = \Acelle\Model\BounceHandler::search($request)->paginate($request->per_page);
 
         return view('admin.bounce_handlers._list', [
             'items' => $items,
@@ -60,7 +60,7 @@ class BounceHandlerController extends Controller
      */
     public function create(Request $request)
     {
-        $server = new \Mailixa\Model\BounceHandler();
+        $server = new \Acelle\Model\BounceHandler();
         $server->status = 'active';
         $server->uid = '0';
         $server->fill($request->old());
@@ -86,7 +86,7 @@ class BounceHandlerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $server = new \Mailixa\Model\BounceHandler();
+        $server = new \Acelle\Model\BounceHandler();
 
         // authorize
         if (\Gate::denies('create', $server)) {
@@ -95,7 +95,7 @@ class BounceHandlerController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Mailixa\Model\BounceHandler::rules());
+            $this->validate($request, \Acelle\Model\BounceHandler::rules());
 
             // Save current user info
             $server->fill($request->all());
@@ -131,7 +131,7 @@ class BounceHandlerController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $server = \Mailixa\Model\BounceHandler::findByUid($id);
+        $server = \Acelle\Model\BounceHandler::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $server)) {
@@ -157,7 +157,7 @@ class BounceHandlerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $server = \Mailixa\Model\BounceHandler::findByUid($id);
+        $server = \Acelle\Model\BounceHandler::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $server)) {
@@ -166,7 +166,7 @@ class BounceHandlerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, \Mailixa\Model\BounceHandler::rules());
+            $this->validate($request, \Acelle\Model\BounceHandler::rules());
 
             // Save current user info
             $server->fill($request->all());
@@ -202,7 +202,7 @@ class BounceHandlerController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $item = \Mailixa\Model\BounceHandler::findByUid($row[0]);
+            $item = \Acelle\Model\BounceHandler::findByUid($row[0]);
 
             // authorize
             if (\Gate::denies('update', $item)) {
@@ -225,7 +225,7 @@ class BounceHandlerController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Mailixa\Model\BounceHandler::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\BounceHandler::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize

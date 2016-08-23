@@ -30,7 +30,7 @@ return [
     ],
 
     'stripe' => [
-        'model' => Mailixa\User::class,
+        'model' => Acelle\User::class,
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],

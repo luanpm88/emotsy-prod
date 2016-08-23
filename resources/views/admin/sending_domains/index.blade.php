@@ -27,7 +27,7 @@
 				<form class="listing-form"
 					sort-url="{{ action('Admin\SendingDomainController@sort') }}"
 					data-url="{{ action('Admin\SendingDomainController@listing') }}"
-					per-page="{{ Mailixa\Model\SendingDomain::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\SendingDomain::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-9">
@@ -64,7 +64,7 @@
 								</div>
 							@endif
 						</div>
-						@can('create', new Mailixa\Model\SendingDomain())
+						@can('create', new Acelle\Model\SendingDomain())
 							<div class="col-md-3 text-right">
 								<a href="{{ action('Admin\SendingDomainController@create') }}" type="button" class="btn bg-info-800">
 									<i class="icon icon-plus2"></i> {{ trans('messages.create_sending_domain') }}

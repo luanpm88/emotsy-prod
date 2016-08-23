@@ -29,7 +29,7 @@
 	
 				<form class="listing-form"
 					data-url="{{ action('AccountController@logsListing') }}"
-					per-page="{{ Mailixa\Model\Log::$itemsPerPage }}"				
+					per-page="{{ Acelle\Model\Log::$itemsPerPage }}"				
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-10">

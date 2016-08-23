@@ -35,7 +35,7 @@
 							{{ $link->clicks(null, $campaign)->count() }}
 						</td>
 						<td class="text-right">
-							{{ isset($link->lastClick(null, $campaign)->created_at) ? Mailixa\Library\Tool::formatDateTime($link->lastClick(null, $campaign)->created_at) : "" }}
+							{{ isset($link->lastClick(null, $campaign)->created_at) ? Acelle\Library\Tool::formatDateTime($link->lastClick(null, $campaign)->created_at) : "" }}
 						</td>
 					</tr>
 				@endforeach

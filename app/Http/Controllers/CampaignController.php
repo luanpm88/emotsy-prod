@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http\Controllers;
+namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 
@@ -42,7 +42,7 @@ class CampaignController extends Controller
      */
     public function listing(Request $request)
     {
-        $campaigns = \Mailixa\Model\Campaign::search($request)->paginate($request->per_page);
+        $campaigns = \Acelle\Model\Campaign::search($request)->paginate($request->per_page);
 
         return view('campaigns._list', [
             'campaigns' => $campaigns,
@@ -56,7 +56,7 @@ class CampaignController extends Controller
      */
     public function create(Request $request)
     {
-        $campaign = new \Mailixa\Model\Campaign([
+        $campaign = new \Acelle\Model\Campaign([
                                             'track_open' => true,
                                             'track_click' => true,
                                             'sign_dkim' => true,
@@ -69,7 +69,7 @@ class CampaignController extends Controller
 
         $campaign->name = trans('messages.untitled');
         $campaign->user_id = $request->user()->id;
-        $campaign->status = \Mailixa\Model\Campaign::STATUS_NEW;
+        $campaign->status = \Acelle\Model\Campaign::STATUS_NEW;
         $campaign->type = $request->type;
         $campaign->save();
 
@@ -97,7 +97,7 @@ class CampaignController extends Controller
      */
     public function show($id)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($id);
+        $campaign = \Acelle\Model\Campaign::findByUid($id);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -120,7 +120,7 @@ class CampaignController extends Controller
      */
     public function edit($id)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($id);
+        $campaign = \Acelle\Model\Campaign::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -177,7 +177,7 @@ class CampaignController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $item = \Mailixa\Model\Campaign::findByUid($row[0]);
+            $item = \Acelle\Model\Campaign::findByUid($row[0]);
 
             // authorize
             if (\Gate::denies('update', $item)) {
@@ -200,7 +200,7 @@ class CampaignController extends Controller
      */
     public function recipients(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -215,12 +215,12 @@ class CampaignController extends Controller
         if ($request->isMethod('post')) {
 
             // Check validation
-            $this->validate($request, \Mailixa\Model\Campaign::$rules);
+            $this->validate($request, \Acelle\Model\Campaign::$rules);
 
             // Save campaign
-            $campaign->mail_list_id = \Mailixa\Model\MailList::findByUid($request->mail_list_uid)->id;
+            $campaign->mail_list_id = \Acelle\Model\MailList::findByUid($request->mail_list_uid)->id;
             if ($request->segment_uid) {
-                $campaign->segment_id = \Mailixa\Model\Segment::findByUid($request->segment_uid)->id;
+                $campaign->segment_id = \Acelle\Model\Segment::findByUid($request->segment_uid)->id;
             }
             $campaign->save();
 
@@ -242,7 +242,7 @@ class CampaignController extends Controller
      */
     public function setup(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -296,7 +296,7 @@ class CampaignController extends Controller
      */
     public function template(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -305,7 +305,7 @@ class CampaignController extends Controller
 
         // Required tags
         $validate = 'required';
-        foreach (\Mailixa\Model\Campaign::$required_tags as $tag) {
+        foreach (\Acelle\Model\Campaign::$required_tags as $tag) {
             if ($tag['required']) {
                 $validate .= '|substring:"'.$tag['name'].'"';
             }
@@ -354,15 +354,15 @@ class CampaignController extends Controller
      */
     public function schedule(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
 
-        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->run_at))->format('Y-m-d') : \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
-        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->run_at))->format('H:i') : \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
+        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->run_at))->format('Y-m-d') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
+        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->run_at))->format('H:i') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
 
         $rules = array(
             'delivery_date' => 'required',
@@ -380,7 +380,7 @@ class CampaignController extends Controller
             // $this->validate($request, $rules);
 
             // Save campaign
-            $campaign->run_at = \Mailixa\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date.' '.$request->delivery_time))->toDateTimeString();
+            $campaign->run_at = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date.' '.$request->delivery_time))->toDateTimeString();
             $campaign->save();
 
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
@@ -403,7 +403,7 @@ class CampaignController extends Controller
      */
     public function confirm(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -413,7 +413,7 @@ class CampaignController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Save campaign
-            $campaign->status = \Mailixa\Model\Campaign::STATUS_READY;
+            $campaign->status = \Acelle\Model\Campaign::STATUS_READY;
             $campaign->save();
 
             // Log
@@ -436,7 +436,7 @@ class CampaignController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Mailixa\Model\Campaign::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\Campaign::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize
@@ -460,7 +460,7 @@ class CampaignController extends Controller
      */
     public function overview(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -481,7 +481,7 @@ class CampaignController extends Controller
      */
     public function links(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -502,7 +502,7 @@ class CampaignController extends Controller
      */
     public function chart24h(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -566,7 +566,7 @@ class CampaignController extends Controller
      */
     public function quickView(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -590,7 +590,7 @@ class CampaignController extends Controller
         $data = ['items' => [], 'more' => true];
 
         $data['items'][] = ['id' => 0, 'text' => trans('messages.all')];
-        foreach (\Mailixa\Model\Campaign::getAll()->get() as $campaign) {
+        foreach (\Acelle\Model\Campaign::getAll()->get() as $campaign) {
             $data['items'][] = ['id' => $campaign->uid, 'text' => $campaign->name];
         }
 
@@ -602,9 +602,9 @@ class CampaignController extends Controller
      */
     public function open(Request $request)
     {
-        $log = new \Mailixa\Model\OpenLog();
-        $log->message_id = \Mailixa\Library\StringHelper::base64UrlDecode($request->message_id);
-        $location = \Mailixa\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
+        $log = new \Acelle\Model\OpenLog();
+        $log->message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
+        $location = \Acelle\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
         $log->save();
@@ -615,11 +615,11 @@ class CampaignController extends Controller
      */
     public function click(Request $request)
     {
-        $decoded_url = \Mailixa\Library\StringHelper::base64UrlDecode($request->url);
+        $decoded_url = \Acelle\Library\StringHelper::base64UrlDecode($request->url);
         // redirect base64_decode($url);
-        $log = new \Mailixa\Model\ClickLog();
-        $log->message_id = \Mailixa\Library\StringHelper::base64UrlDecode($request->message_id);
-        $location = \Mailixa\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
+        $log = new \Acelle\Model\ClickLog();
+        $log->message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
+        $location = \Acelle\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
         $log->url = $decoded_url;
@@ -633,8 +633,8 @@ class CampaignController extends Controller
      */
     public function unsubscribe(Request $request)
     {
-        $message_id = \Mailixa\Library\StringHelper::base64UrlDecode($request->message_id);
-        $tracking_log = \Mailixa\Model\TrackingLog::where('message_id', '=', $message_id)->first();
+        $message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
+        $tracking_log = \Acelle\Model\TrackingLog::where('message_id', '=', $message_id)->first();
         $subscriber = $tracking_log->subscriber;
 
         if ($subscriber->status != 'unsubscribed') {
@@ -645,23 +645,23 @@ class CampaignController extends Controller
             // Page content
             $user = $request->user();
             $list = $subscriber->mailList;
-            $layout = \Mailixa\Model\Layout::where('alias', 'unsubscribe_success_page')->first();
-            $page = \Mailixa\Model\Page::findPage($list, $layout);
+            $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_success_page')->first();
+            $page = \Acelle\Model\Page::findPage($list, $layout);
 
             $page->renderContent(null, $subscriber);
 
             // Unsubscribe log
-            $log = new \Mailixa\Model\UnsubscribeLog();
+            $log = new \Acelle\Model\UnsubscribeLog();
             $log->message_id = $message_id;
-            $location = \Mailixa\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
+            $location = \Acelle\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
             $log->ip_address = $location->ip_address;
             $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
             $log->save();
 
             try {
                 // Send goodbye email
-                $layout = \Mailixa\Model\Layout::where('alias', 'unsubscribe_goodbye_email')->first();
-                $send_page = \Mailixa\Model\Page::findPage($list, $layout);
+                $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_goodbye_email')->first();
+                $send_page = \Acelle\Model\Page::findPage($list, $layout);
                 $send_page->renderContent(null, $subscriber);
                 $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
             } catch (\Exception $e) {
@@ -680,7 +680,7 @@ class CampaignController extends Controller
      */
     public function trackingLog(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -700,14 +700,14 @@ class CampaignController extends Controller
      */
     public function trackingLogListing(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\TrackingLog::search($request, $campaign)->paginate($request->per_page);
+        $items = \Acelle\Model\TrackingLog::search($request, $campaign)->paginate($request->per_page);
 
         return view('admin.tracking_logs._list', [
             'items' => $items,
@@ -720,7 +720,7 @@ class CampaignController extends Controller
      */
     public function bounceLog(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -740,14 +740,14 @@ class CampaignController extends Controller
      */
     public function bounceLogListing(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\BounceLog::search($request, $campaign)->paginate($request->per_page);
+        $items = \Acelle\Model\BounceLog::search($request, $campaign)->paginate($request->per_page);
 
         return view('admin.bounce_logs._list', [
             'items' => $items,
@@ -760,7 +760,7 @@ class CampaignController extends Controller
      */
     public function feedbackLog(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -780,14 +780,14 @@ class CampaignController extends Controller
      */
     public function feedbackLogListing(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\FeedbackLog::search($request, $campaign)->paginate($request->per_page);
+        $items = \Acelle\Model\FeedbackLog::search($request, $campaign)->paginate($request->per_page);
 
         return view('admin.feedback_logs._list', [
             'items' => $items,
@@ -800,7 +800,7 @@ class CampaignController extends Controller
      */
     public function openLog(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -820,14 +820,14 @@ class CampaignController extends Controller
      */
     public function openLogListing(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\OpenLog::search($request, $campaign)->paginate($request->per_page);
+        $items = \Acelle\Model\OpenLog::search($request, $campaign)->paginate($request->per_page);
 
         return view('admin.open_logs._list', [
             'items' => $items,
@@ -840,7 +840,7 @@ class CampaignController extends Controller
      */
     public function clickLog(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -860,14 +860,14 @@ class CampaignController extends Controller
      */
     public function clickLogListing(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\ClickLog::search($request, $campaign)->paginate($request->per_page);
+        $items = \Acelle\Model\ClickLog::search($request, $campaign)->paginate($request->per_page);
 
         return view('admin.click_logs._list', [
             'items' => $items,
@@ -880,7 +880,7 @@ class CampaignController extends Controller
      */
     public function unsubscribeLog(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -900,14 +900,14 @@ class CampaignController extends Controller
      */
     public function unsubscribeLogListing(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\UnsubscribeLog::search($request, $campaign)->paginate($request->per_page);
+        $items = \Acelle\Model\UnsubscribeLog::search($request, $campaign)->paginate($request->per_page);
 
         return view('admin.unsubscribe_logs._list', [
             'items' => $items,
@@ -920,7 +920,7 @@ class CampaignController extends Controller
      */
     public function openMap(Request $request)
     {
-        $campaign = \Mailixa\Model\Campaign::findByUid($request->uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -941,7 +941,7 @@ class CampaignController extends Controller
      */
     public function deleteConfirm(Request $request)
     {
-        $lists = \Mailixa\Model\Campaign::whereIn('uid', explode(',', $request->uids));
+        $lists = \Acelle\Model\Campaign::whereIn('uid', explode(',', $request->uids));
 
         return view('campaigns.delete_confirm', [
             'lists' => $lists,
@@ -956,7 +956,7 @@ class CampaignController extends Controller
      */
     public function pause(Request $request)
     {        
-        $items = \Mailixa\Model\Campaign::whereIn("uid", explode(",", $request->uids));
+        $items = \Acelle\Model\Campaign::whereIn("uid", explode(",", $request->uids));
         
         foreach ($items->get() as $item) {
             if (\Gate::allows('pause', $item)) {
@@ -980,7 +980,7 @@ class CampaignController extends Controller
      */
     public function restart(Request $request)
     {        
-        $items = \Mailixa\Model\Campaign::whereIn("uid", explode(",", $request->uids));
+        $items = \Acelle\Model\Campaign::whereIn("uid", explode(",", $request->uids));
         
         foreach ($items->get() as $item) {
             if (\Gate::allows('restart', $item)) {

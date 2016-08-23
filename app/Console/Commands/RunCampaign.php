@@ -1,11 +1,11 @@
 <?php
 
-namespace Mailixa\Console\Commands;
+namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
-use Mailixa\Library\Log;
-use Mailixa\Model\Campaign;
-use Mailixa\Model\TrackingLog;
+use Acelle\Library\Log;
+use Acelle\Model\Campaign;
+use Acelle\Model\TrackingLog;
 
 class RunCampaign extends Command
 {

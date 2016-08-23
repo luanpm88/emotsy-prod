@@ -1,10 +1,10 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Mailixa\Library\Log;
-use Mailixa\Library\StringHelper;
+use Acelle\Library\Log;
+use Acelle\Library\StringHelper;
 use DB;
 
 class Campaign extends Model
@@ -31,7 +31,7 @@ class Campaign extends Model
      */
     public function mailList()
     {
-        return $this->belongsTo('Mailixa\Model\MailList');
+        return $this->belongsTo('Acelle\Model\MailList');
     }
 
     /**
@@ -39,7 +39,7 @@ class Campaign extends Model
      */
     public function segment()
     {
-        return $this->belongsTo('Mailixa\Model\Segment');
+        return $this->belongsTo('Acelle\Model\Segment');
     }
 
     /**
@@ -47,7 +47,7 @@ class Campaign extends Model
      */
     public function links()
     {
-        return $this->belongsToMany('Mailixa\Model\Link', 'campaign_links');
+        return $this->belongsToMany('Acelle\Model\Link', 'campaign_links');
     }
 
     /**
@@ -55,12 +55,12 @@ class Campaign extends Model
      */
     public function user()
     {
-        return $this->belongsTo('Mailixa\Model\User');
+        return $this->belongsTo('Acelle\Model\User');
     }
 
     public function trackingLogs()
     {
-        return $this->hasMany('Mailixa\Model\TrackingLog');
+        return $this->hasMany('Acelle\Model\TrackingLog');
     }
 
     public function bounceLogs()
@@ -415,11 +415,11 @@ class Campaign extends Model
         $message = \Swift_Message::newInstance();
         $message->setId($msgId);
         $message->setContentType('text/plain; charset=utf-8');
-        // @TODO replace Mailixa
-        $message->getHeaders()->addTextHeader('X-Mailixa-Campaign-Id', $this->uid);
-        $message->getHeaders()->addTextHeader('X-Mailixa-Subscriber-Id', $subscriber->uid);
-        $message->getHeaders()->addTextHeader('X-Mailixa-User-Id', $this->user->uid);
-        $message->getHeaders()->addTextHeader('X-Mailixa-Message-Id', $msgId);
+        // @TODO replace Acelle
+        $message->getHeaders()->addTextHeader('X-Acelle-Campaign-Id', $this->uid);
+        $message->getHeaders()->addTextHeader('X-Acelle-Subscriber-Id', $subscriber->uid);
+        $message->getHeaders()->addTextHeader('X-Acelle-User-Id', $this->user->uid);
+        $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', $msgId);
 
         // @TODO for AWS, setting returnPath requires verified domain or email address
         //$message->setReturnPath($server->getVerp($subscriber->email));
@@ -742,7 +742,7 @@ class Campaign extends Model
 
         $data = array_merge($data, $add_datas);
 
-        \Mailixa\Model\Log::create([
+        \Acelle\Model\Log::create([
                                 'user_id' => $user->id,
                                 'type' => 'campaign',
                                 'name' => $name,
@@ -1081,7 +1081,7 @@ class Campaign extends Model
      */
     public function mostOpenSubscribers($number)
     {
-        return \Mailixa\Web\Subscriber::selectRaw(\DB::getTablePrefix().'list_subscriber.*, COUNT('.\DB::getTablePrefix().'campaign_track_unsubscribe.id) AS openCount')
+        return \Acelle\Web\Subscriber::selectRaw(\DB::getTablePrefix().'list_subscriber.*, COUNT('.\DB::getTablePrefix().'campaign_track_unsubscribe.id) AS openCount')
                             ->leftJoin('campaign_track_unsubscribe', 'campaign_track_unsubscribe.subscriber_id', '=', 'list_subscriber.subscriber_id')
                             ->where('campaign_track_unsubscribe.campaign_id', '=', $this->campaign_id)
                             ->groupBy('list_subscriber.subscriber_id')

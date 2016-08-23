@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -59,7 +59,7 @@ class Contact extends Model
      */
     public function country()
     {
-        return $this->belongsTo('Mailixa\Model\Country');
+        return $this->belongsTo('Acelle\Model\Country');
     }
 
     /**

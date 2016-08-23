@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,17 +31,17 @@ class Subscriber extends Model
      */
     public function mailList()
     {
-        return $this->belongsTo('Mailixa\Model\MailList');
+        return $this->belongsTo('Acelle\Model\MailList');
     }
 
     public function campaign()
     {
-        return $this->belongsTo('Mailixa\Model\Campaign');
+        return $this->belongsTo('Acelle\Model\Campaign');
     }
 
     public function subscriberFields()
     {
-        return $this->hasMany('Mailixa\Model\SubscriberField');
+        return $this->hasMany('Acelle\Model\SubscriberField');
     }
 
     /**
@@ -262,7 +262,7 @@ class Subscriber extends Model
         foreach ($lines as $key => $line) {
 
             // authorize
-            if ($user->cannot('create', new \Mailixa\Model\Subscriber(['mail_list_id' => $list->id]))) {
+            if ($user->cannot('create', new \Acelle\Model\Subscriber(['mail_list_id' => $list->id]))) {
                 $str = "error\n<span style='color:red'>".trans('messages.error_add_max_quota').'</span><br />'.$content_cache;
                 $str .= "\n".$count;
                 $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
@@ -280,7 +280,7 @@ class Subscriber extends Model
                 $valid = $list->checkExsitEmail($email);
                 if ($valid) {
                     //// save subscribers
-                    $subscriber = new \Mailixa\Model\Subscriber();
+                    $subscriber = new \Acelle\Model\Subscriber();
                     $subscriber->mail_list_id = $list->id;
                     $subscriber->email = $email;
                     $subscriber->status = 'subscribed';
@@ -291,7 +291,7 @@ class Subscriber extends Model
                         $lf = $list->fields()->where('tag', '=', $headers[$key])->first();
                         if (is_object($lf)) {
                             //// save fields
-                            $lfv = new \Mailixa\Model\SubscriberField(array(
+                            $lfv = new \Acelle\Model\SubscriberField(array(
                                             'field_id' => $lf->id,
                                             'subscriber_id' => $subscriber->id,
                                             'value' => $value,
@@ -425,7 +425,7 @@ class Subscriber extends Model
 
         $data = array_merge($data, $add_datas);
 
-        \Mailixa\Model\Log::create([
+        \Acelle\Model\Log::create([
                                 'user_id' => $user->id,
                                 'type' => 'subscriber',
                                 'name' => $name,

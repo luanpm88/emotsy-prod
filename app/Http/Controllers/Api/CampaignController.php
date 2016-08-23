@@ -1,8 +1,8 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Api;
+namespace Acelle\Http\Controllers\Api;
 
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 /**
  * /api/v1/campaigns - API controller for managing campaigns.
@@ -20,7 +20,7 @@ class CampaignController extends Controller
     {
         $user = \Auth::guard('api')->user();
 
-        $lists = \Mailixa\Model\Campaign::getAll()
+        $lists = \Acelle\Model\Campaign::getAll()
             ->select('uid', 'name', 'type', 'subject', 'html', 'plain', 'from_email', 'from_name', 'reply_to', 'status', 'delivery_at', 'created_at', 'updated_at')
             ->where('user_id', '=', $user->id)
             ->get();
@@ -41,7 +41,7 @@ class CampaignController extends Controller
     {
         $user = \Auth::guard('api')->user();
 
-        $item = \Mailixa\Model\Campaign::
+        $item = \Acelle\Model\Campaign::
             where('uid', '=', $id)
             ->first();
 

@@ -15,7 +15,7 @@
 										</td>
 										<td>
 											<div class="pull-right">
-												<span class="text-muted2">{{ trans("messages.created_at") }}: {{ Mailixa\Library\Tool::formatDateTime($item->created_at) }}</span>
+												<span class="text-muted2">{{ trans("messages.created_at") }}: {{ Acelle\Library\Tool::formatDateTime($item->created_at) }}</span>
 											</div>
 										</td>										
 									</tr>

@@ -1,8 +1,8 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
-use Mailixa\Library\Log;
+use Acelle\Library\Log;
 
 class SendingServerMailgunSmtp extends SendingServerMailgun
 {

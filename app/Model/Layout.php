@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,7 +39,7 @@ class Layout extends Model
      */
     public function pages()
     {
-        return $this->hasMany('Mailixa\Model\Page');
+        return $this->hasMany('Acelle\Model\Page');
     }
 
     /**

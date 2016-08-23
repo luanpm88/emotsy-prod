@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Policies;
+namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -16,14 +16,14 @@ class SendingServerPolicy
         //
     }
 
-    public function create(\Mailixa\Model\User $user, \Mailixa\Model\SendingServer $item)
+    public function create(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
     {
         $can = $user->getOption('backend', 'sending_server_create') == 'yes';
 
         return $can;
     }
 
-    public function update(\Mailixa\Model\User $user, \Mailixa\Model\SendingServer $item)
+    public function update(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
     {
         $ability = $user->getOption('backend', 'sending_server_update');
         $can = $ability == 'all'
@@ -32,7 +32,7 @@ class SendingServerPolicy
         return $can;
     }
 
-    public function delete(\Mailixa\Model\User $user, \Mailixa\Model\SendingServer $item)
+    public function delete(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
     {
         $ability = $user->getOption('backend', 'sending_server_delete');
         $can = $ability == 'all'

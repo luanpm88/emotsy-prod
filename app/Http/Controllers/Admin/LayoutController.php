@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class LayoutController extends Controller
 {
@@ -28,7 +28,7 @@ class LayoutController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\Layout::getAll();
+        $items = \Acelle\Model\Layout::getAll();
 
         return view('admin.layouts.index', [
             'items' => $items,
@@ -46,7 +46,7 @@ class LayoutController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\Layout::search($request)->paginate($request->per_page);
+        $items = \Acelle\Model\Layout::search($request)->paginate($request->per_page);
 
         return view('admin.layouts._list', [
             'items' => $items,
@@ -98,7 +98,7 @@ class LayoutController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $layout = \Mailixa\Model\Layout::findByUid($id);
+        $layout = \Acelle\Model\Layout::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $layout)) {
@@ -127,7 +127,7 @@ class LayoutController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $layout = \Mailixa\Model\Layout::findByUid($id);
+        $layout = \Acelle\Model\Layout::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $layout)) {

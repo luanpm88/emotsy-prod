@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -20,22 +20,22 @@ class TrackingLog extends Model
      */
     public function user()
     {
-        return $this->belongsTo('Mailixa\Model\User');
+        return $this->belongsTo('Acelle\Model\User');
     }
 
     public function campaign()
     {
-        return $this->belongsTo('Mailixa\Model\Campaign');
+        return $this->belongsTo('Acelle\Model\Campaign');
     }
 
     public function sendingServer()
     {
-        return $this->belongsTo('Mailixa\Model\SendingServer');
+        return $this->belongsTo('Acelle\Model\SendingServer');
     }
 
     public function subscriber()
     {
-        return $this->belongsTo('Mailixa\Model\Subscriber');
+        return $this->belongsTo('Acelle\Model\Subscriber');
     }
 
     /**

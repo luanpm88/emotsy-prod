@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class SendingServerController extends Controller
 {
@@ -28,7 +28,7 @@ class SendingServerController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\SendingServer::getAll();
+        $items = \Acelle\Model\SendingServer::getAll();
 
         return view('admin.sending_servers.index', [
             'items' => $items,
@@ -46,7 +46,7 @@ class SendingServerController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\SendingServer::search($request)->paginate($request->per_page);
+        $items = \Acelle\Model\SendingServer::search($request)->paginate($request->per_page);
 
         return view('admin.sending_servers._list', [
             'items' => $items,
@@ -60,7 +60,7 @@ class SendingServerController extends Controller
      */
     public function create(Request $request)
     {
-        $server = new \Mailixa\Model\SendingServer();
+        $server = new \Acelle\Model\SendingServer();
         $server->status = 'active';
         $server->uid = '0';
         $server->fill($request->old());
@@ -86,7 +86,7 @@ class SendingServerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $server = new \Mailixa\Model\SendingServer();
+        $server = new \Acelle\Model\SendingServer();
 
         // authorize
         if (\Gate::denies('create', $server)) {
@@ -95,7 +95,7 @@ class SendingServerController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Mailixa\Model\SendingServer::rules($request->type));
+            $this->validate($request, \Acelle\Model\SendingServer::rules($request->type));
 
             // Save current user info
             $server->fill($request->all());
@@ -140,7 +140,7 @@ class SendingServerController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $server = \Mailixa\Model\SendingServer::findByUid($id);
+        $server = \Acelle\Model\SendingServer::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $server)) {
@@ -166,7 +166,7 @@ class SendingServerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $server = \Mailixa\Model\SendingServer::findByUid($id);
+        $server = \Acelle\Model\SendingServer::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $server)) {
@@ -175,7 +175,7 @@ class SendingServerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, \Mailixa\Model\SendingServer::rules($request->type));
+            $this->validate($request, \Acelle\Model\SendingServer::rules($request->type));
 
             // Save current user info
             $server->fill($request->all());
@@ -219,7 +219,7 @@ class SendingServerController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $item = \Mailixa\Model\SendingServer::findByUid($row[0]);
+            $item = \Acelle\Model\SendingServer::findByUid($row[0]);
 
             // authorize
             if (\Gate::denies('update', $item)) {
@@ -242,7 +242,7 @@ class SendingServerController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Mailixa\Model\SendingServer::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\SendingServer::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize

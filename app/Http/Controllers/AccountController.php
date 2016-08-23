@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http\Controllers;
+namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 
@@ -86,7 +86,7 @@ class AccountController extends Controller
         if (is_object($user->contact)) {
             $contact = $user->contact;
         } else {
-            $contact = new \Mailixa\Model\Contact([
+            $contact = new \Acelle\Model\Contact([
                                         'first_name' => $user->first_name,
                                         'last_name' => $user->last_name,
                                         'email' => $user->email,
@@ -96,7 +96,7 @@ class AccountController extends Controller
 
         // Create new company if null
         if (!is_object($contact)) {
-            $contact = new \Mailixa\Model\Contact();
+            $contact = new \Acelle\Model\Contact();
             $contact->user_id = $user->id;
         }
 
@@ -107,7 +107,7 @@ class AccountController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Mailixa\Model\Contact::$rules);
+            $this->validate($request, \Acelle\Model\Contact::$rules);
 
             $contact->fill($request->all());
 
@@ -144,7 +144,7 @@ class AccountController extends Controller
      */
     public function logsListing(Request $request)
     {
-        $logs = \Mailixa\Model\Log::search($request)->paginate($request->per_page);
+        $logs = \Acelle\Model\Log::search($request)->paginate($request->per_page);
 
         return view('account.logs_listing', [
             'logs' => $logs,

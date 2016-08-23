@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http\Controllers;
+namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 
@@ -23,7 +23,7 @@ class TemplateController extends Controller
      */
     public function index()
     {
-        $templates = \Mailixa\Model\Template::getAll();
+        $templates = \Acelle\Model\Template::getAll();
 
         return view('templates.index', [
             'templates' => $templates,
@@ -37,7 +37,7 @@ class TemplateController extends Controller
      */
     public function listing(Request $request)
     {
-        $templates = \Mailixa\Model\Template::search($request)->paginate($request->per_page);
+        $templates = \Acelle\Model\Template::search($request)->paginate($request->per_page);
 
         return view('templates._list', [
             'templates' => $templates,
@@ -51,7 +51,7 @@ class TemplateController extends Controller
      */
     public function choosing(Request $request)
     {
-        $templates = \Mailixa\Model\Template::search($request)->paginate($request->per_page);
+        $templates = \Acelle\Model\Template::search($request)->paginate($request->per_page);
 
         return view('templates._list_choose', [
             'templates' => $templates,
@@ -65,7 +65,7 @@ class TemplateController extends Controller
      */
     public function content(Request $request)
     {
-        $template = \Mailixa\Model\Template::findByUid($request->uid);
+        $template = \Acelle\Model\Template::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('view', $template)) {
@@ -84,7 +84,7 @@ class TemplateController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $template = new \Mailixa\Model\Template();
+        $template = new \Acelle\Model\Template();
 
         // authorize
         if (\Gate::denies('create', $template)) {
@@ -112,7 +112,7 @@ class TemplateController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $template = new \Mailixa\Model\Template();
+        $template = new \Acelle\Model\Template();
         $template->user_id = $request->user()->id;
         $template->shared = false;
 
@@ -164,7 +164,7 @@ class TemplateController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $template = \Mailixa\Model\Template::findByUid($uid);
+        $template = \Acelle\Model\Template::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $template)) {
@@ -193,7 +193,7 @@ class TemplateController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $template = \Mailixa\Model\Template::findByUid($request->uid);
+        $template = \Acelle\Model\Template::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $template)) {
@@ -243,7 +243,7 @@ class TemplateController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $item = \Mailixa\Model\Template::findByUid($row[0]);
+            $item = \Acelle\Model\Template::findByUid($row[0]);
 
             // authorize
             if (\Gate::denies('update', $item)) {
@@ -269,7 +269,7 @@ class TemplateController extends Controller
         $user = $request->user();
 
         // Create template
-        $template = new \Mailixa\Model\Template();
+        $template = new \Acelle\Model\Template();
         $template->user_id = $user->id;
         $template->shared = false;
 
@@ -368,7 +368,7 @@ class TemplateController extends Controller
                 mkdir($public_upload_path, 0777, true);
             }
             // exec("cp -r {$tmp_path}/* {$public_upload_path}/");
-            \Mailixa\Library\Tool::xcopy($tmp_path, $public_upload_path);
+            \Acelle\Library\Tool::xcopy($tmp_path, $public_upload_path);
 
             // find all link in html content
             preg_match_all('/(?<=src=|background=|href=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $template->content, $matches);
@@ -388,7 +388,7 @@ class TemplateController extends Controller
 
             // remove tmp folder
             //exec("rm -r {$tmp_path}");
-            \Mailixa\Library\Tool::xdelete($tmp_path);
+            \Acelle\Library\Tool::xdelete($tmp_path);
 
             $request->session()->flash('alert-success', trans('messages.template.uploaded'));
 
@@ -410,7 +410,7 @@ class TemplateController extends Controller
     public function image(Request $request)
     {
         // Get current user
-        $template = \Mailixa\Model\Template::findByUid($request->uid);
+        $template = \Acelle\Model\Template::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('image', $template)) {
@@ -435,7 +435,7 @@ class TemplateController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Mailixa\Model\Template::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\Template::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize
@@ -461,7 +461,7 @@ class TemplateController extends Controller
      */
     public function preview($id)
     {
-        $template = \Mailixa\Model\Template::findByUid($id);
+        $template = \Acelle\Model\Template::findByUid($id);
 
         // authorize
         if (\Gate::denies('preview', $template)) {
@@ -483,7 +483,7 @@ class TemplateController extends Controller
      */
     public function saveImage(Request $request, $id)
     {
-        $template = \Mailixa\Model\Template::findByUid($id);
+        $template = \Acelle\Model\Template::findByUid($id);
 
         // authorize
         if (\Gate::denies('saveImage', $template)) {

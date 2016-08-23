@@ -39,7 +39,7 @@ class DatabaseSeeder extends Seeder
             'id' => 1,
             'first_name' => 'Luan',
             'last_name' => 'Pham',
-            'company' => 'Mailixa Co,. Ldt.',
+            'company' => 'Acelle Co,. Ldt.',
             'address_1' => '1202 Nguyen Van Qua, Tan Thoi Hiep, Dist. 12',
             'country_id' => 1,
             'state' => 'Ho Chi Minh City',

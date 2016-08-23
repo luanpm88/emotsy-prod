@@ -26,7 +26,7 @@
 				
 				<form class="listing-form"
 					data-url="{{ action('Admin\LanguageController@listing') }}"
-					per-page="{{ Mailixa\Model\SendingDomain::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\SendingDomain::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-9">
@@ -52,7 +52,7 @@
 								</div>
 							@endif
 						</div>
-						@can("create", new Mailixa\Model\Language())
+						@can("create", new Acelle\Model\Language())
 							<div class="col-md-3 text-right">
 								<a href="{{ action('Admin\LanguageController@create') }}" type="button" class="btn bg-info-800">
 									<i class="icon icon-plus2"></i> {{ trans('messages.create_language') }}

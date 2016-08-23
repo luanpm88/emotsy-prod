@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -53,17 +53,17 @@ class MailList extends Model
      */
     public function fields()
     {
-        return $this->hasMany('Mailixa\Model\Field');
+        return $this->hasMany('Acelle\Model\Field');
     }
 
     public function segments()
     {
-        return $this->hasMany('Mailixa\Model\Segment');
+        return $this->hasMany('Acelle\Model\Segment');
     }
 
     public function pages()
     {
-        return $this->hasMany('Mailixa\Model\Page');
+        return $this->hasMany('Acelle\Model\Page');
     }
 
     public function page($layout)
@@ -73,17 +73,17 @@ class MailList extends Model
 
     public function contact()
     {
-        return $this->belongsTo('Mailixa\Model\Contact');
+        return $this->belongsTo('Acelle\Model\Contact');
     }
 
     public function subscribers()
     {
-        return $this->hasMany('Mailixa\Model\Subscriber');
+        return $this->hasMany('Acelle\Model\Subscriber');
     }
 
     public function campaigns()
     {
-        return $this->hasMany('Mailixa\Model\Campaign');
+        return $this->hasMany('Acelle\Model\Campaign');
     }
 
     /**
@@ -200,7 +200,7 @@ class MailList extends Model
                             'mail_list_id' => $this->id,
                             'type' => 'text',
                             'label' => trans('messages.first_name'),
-                            'tag' => \Mailixa\Model\Field::formatTag(trans('messages.first_name_tag')),
+                            'tag' => \Acelle\Model\Field::formatTag(trans('messages.first_name_tag')),
                             'required' => false,
                             'visible' => true,
                         ]);
@@ -209,7 +209,7 @@ class MailList extends Model
                             'mail_list_id' => $this->id,
                             'type' => 'text',
                             'label' => trans('messages.last_name'),
-                            'tag' => \Mailixa\Model\Field::formatTag(trans('messages.last_name_tag')),
+                            'tag' => \Acelle\Model\Field::formatTag(trans('messages.last_name_tag')),
                             'required' => false,
                             'visible' => true,
                         ]);
@@ -517,7 +517,7 @@ class MailList extends Model
      */
     public function longName()
     {
-        return $this->name.' - '.$this->subscribers()->count().' '.trans('messages.'.\Mailixa\Library\Tool::getPluralPrase('subscriber', $this->subscribers()->count())).'';
+        return $this->name.' - '.$this->subscribers()->count().' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('subscriber', $this->subscribers()->count())).'';
     }
 
     /**

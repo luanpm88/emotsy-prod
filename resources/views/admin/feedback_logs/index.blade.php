@@ -26,7 +26,7 @@
 				
 				<form class="listing-form"
 					data-url="{{ action('Admin\FeedbackLogController@listing') }}"
-					per-page="{{ Mailixa\Model\FeedbackLog::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\FeedbackLog::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-9">

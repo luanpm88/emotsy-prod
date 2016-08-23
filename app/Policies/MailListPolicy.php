@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Policies;
+namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -16,24 +16,24 @@ class MailListPolicy
         //
     }
 
-    public function read(\Mailixa\Model\User $user, \Mailixa\Model\MailList $item)
+    public function read(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
     {
         return $item->user_id == $user->id || $user->userGroup->backend_access;
     }
 
-    public function create(\Mailixa\Model\User $user, \Mailixa\Model\MailList $item)
+    public function create(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
     {
         $max = $user->getOption('frontend', 'list_max');
 
         return $max > $user->lists()->count() || $max == -1;
     }
 
-    public function update(\Mailixa\Model\User $user, \Mailixa\Model\MailList $item)
+    public function update(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
     {
         return $item->user_id == $user->id;
     }
 
-    public function delete(\Mailixa\Model\User $user, \Mailixa\Model\MailList $item)
+    public function delete(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
     {
         return $item->user_id == $user->id;
     }

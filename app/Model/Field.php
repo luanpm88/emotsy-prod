@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -31,12 +31,12 @@ class Field extends Model
      */
     public function mailList()
     {
-        return $this->belongsTo('Mailixa\Model\MailList');
+        return $this->belongsTo('Acelle\Model\MailList');
     }
 
     public function fieldOptions()
     {
-        return $this->hasMany('Mailixa\Model\FieldOption');
+        return $this->hasMany('Acelle\Model\FieldOption');
     }
 
     /**

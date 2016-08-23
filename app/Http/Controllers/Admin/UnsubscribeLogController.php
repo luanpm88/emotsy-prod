@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class UnsubscribeLogController extends Controller
 {
@@ -28,7 +28,7 @@ class UnsubscribeLogController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\UnsubscribeLog::getAll();
+        $items = \Acelle\Model\UnsubscribeLog::getAll();
 
         return view('admin.unsubscribe_logs.index', [
             'items' => $items,
@@ -46,7 +46,7 @@ class UnsubscribeLogController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\UnsubscribeLog::search($request)->paginate($request->per_page);
+        $items = \Acelle\Model\UnsubscribeLog::search($request)->paginate($request->per_page);
 
         return view('admin.unsubscribe_logs._list', [
             'items' => $items,

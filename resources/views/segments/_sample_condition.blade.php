@@ -11,7 +11,7 @@
 										</div>
 									</div>
 									<div class="col-md-3 operator-col">
-										@include('helpers.form_control', ['type' => 'select', 'name' => 'conditions[__index__][operator]', 'label' => '', 'value' => '', 'options' => Mailixa\Model\Segment::operators()])
+										@include('helpers.form_control', ['type' => 'select', 'name' => 'conditions[__index__][operator]', 'label' => '', 'value' => '', 'options' => Acelle\Model\Segment::operators()])
 									</div>
 									<div class="col-md-4 value-col">
 										@include('helpers.form_control', ['type' => 'text', 'name' => 'conditions[__index__][value]', 'label' => '', 'value' => ''])

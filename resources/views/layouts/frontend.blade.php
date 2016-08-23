@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>@yield('title') - {{ \Mailixa\Model\Setting::get("site_name") }}</title>
+	<title>@yield('title') - {{ \Acelle\Model\Setting::get("site_name") }}</title>
 	
 	@include('layouts._favicon')
 	
@@ -62,13 +62,13 @@
 			<ul class="nav navbar-nav navbar-right">
 				<!--<li class="dropdown language-switch">
 					<a class="dropdown-toggle" data-toggle="dropdown">
-						{{ Mailixa\Model\Language::getByCode(Config::get('app.locale'))->name }}
+						{{ Acelle\Model\Language::getByCode(Config::get('app.locale'))->name }}
 						<span class="caret"></span>
 					</a>
 
 					<ul class="dropdown-menu">
-						@foreach(Mailixa\Model\Language::getAll() as $language)
-							<li class="{{ Mailixa\Model\Language::getByCode(Config::get('app.locale'))->code == $language->code ? "active" : "" }}">
+						@foreach(Acelle\Model\Language::getAll() as $language)
+							<li class="{{ Acelle\Model\Language::getByCode(Config::get('app.locale'))->code == $language->code ? "active" : "" }}">
 								<a>{{ $language->name }}</a>
 							</li>
 						@endforeach

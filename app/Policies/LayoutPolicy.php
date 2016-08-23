@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Policies;
+namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -16,7 +16,7 @@ class LayoutPolicy
         //
     }
 
-    public function update(\Mailixa\Model\User $user, \Mailixa\Model\Layout $item)
+    public function update(\Acelle\Model\User $user, \Acelle\Model\Layout $item)
     {
         $ability = $user->getOption('backend', 'layout_update');
         $can = $ability == 'yes';

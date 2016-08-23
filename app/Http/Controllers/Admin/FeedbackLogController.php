@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class FeedbackLogController extends Controller
 {
@@ -28,7 +28,7 @@ class FeedbackLogController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\FeedbackLog::getAll();
+        $items = \Acelle\Model\FeedbackLog::getAll();
 
         return view('admin.feedback_logs.index', [
             'items' => $items,
@@ -46,7 +46,7 @@ class FeedbackLogController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\FeedbackLog::search($request)->paginate($request->per_page);
+        $items = \Acelle\Model\FeedbackLog::search($request)->paginate($request->per_page);
 
         return view('admin.feedback_logs._list', [
             'items' => $items,

@@ -27,7 +27,7 @@
 				<form class="listing-form"
 					sort-url="{{ action('Admin\FeedbackLoopHandlerController@sort') }}"
 					data-url="{{ action('Admin\FeedbackLoopHandlerController@listing') }}"
-					per-page="{{ Mailixa\Model\FeedbackLoopHandler::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\FeedbackLoopHandler::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-9">
@@ -64,7 +64,7 @@
 								</div>
 							@endif
 						</div>
-						@can('create', new Mailixa\Model\FeedbackLoopHandler())
+						@can('create', new Acelle\Model\FeedbackLoopHandler())
 							<div class="col-md-3 text-right">
 								<a href="{{ action('Admin\FeedbackLoopHandlerController@create') }}" type="button" class="btn bg-info-800">
 									<i class="icon icon-plus2"></i> {{ trans('messages.create_feedback_loop_handler') }}
