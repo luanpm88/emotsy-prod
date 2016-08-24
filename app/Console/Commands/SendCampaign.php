@@ -1,12 +1,12 @@
 <?php
 
-namespace Mailixa\Console\Commands;
+namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
-use Mailixa\Model\Campaign;
-use Mailixa\Model\User;
-use Mailixa\Model\SendingServer;
-use Mailixa\Library\Log;
+use Acelle\Model\Campaign;
+use Acelle\Model\User;
+use Acelle\Model\SendingServer;
+use Acelle\Library\Log;
 use Mailgun\Mailgun;
 use DB;
 

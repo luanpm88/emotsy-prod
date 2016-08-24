@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class BounceLogController extends Controller
 {
@@ -28,7 +28,7 @@ class BounceLogController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\BounceLog::getAll();
+        $items = \Acelle\Model\BounceLog::getAll();
 
         return view('admin.bounce_logs.index', [
             'items' => $items,
@@ -46,7 +46,7 @@ class BounceLogController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\BounceLog::search($request)->paginate($request->per_page);
+        $items = \Acelle\Model\BounceLog::search($request)->paginate($request->per_page);
 
         return view('admin.bounce_logs._list', [
             'items' => $items,

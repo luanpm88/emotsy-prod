@@ -1,8 +1,8 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Auth;
+namespace Acelle\Http\Controllers\Auth;
 
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 
 class PasswordController extends Controller

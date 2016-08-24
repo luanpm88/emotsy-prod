@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http\Requests;
+namespace Acelle\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 

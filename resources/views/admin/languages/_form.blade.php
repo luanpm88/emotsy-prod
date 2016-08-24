@@ -8,7 +8,7 @@
 								'name' => 'name',
 								'value' => $language->name,
 								'help_class' => 'language',
-								'rules' => Mailixa\Model\Language::rules()
+								'rules' => Acelle\Model\Language::rules()
 							])
 						</div>
 						<div class="col-md-4">							
@@ -18,7 +18,7 @@
 								'name' => 'code',
 								'value' => $language->code,
 								'help_class' => 'language',
-								'rules' => Mailixa\Model\Language::rules()
+								'rules' => Acelle\Model\Language::rules()
 							])
 						</div>
 						<div class="col-md-4">							
@@ -28,7 +28,7 @@
 								'name' => 'region_code',
 								'value' => $language->region_code,
 								'help_class' => 'language',
-								'rules' => Mailixa\Model\Language::rules()
+								'rules' => Acelle\Model\Language::rules()
 							])
 						</div>
 					</div>

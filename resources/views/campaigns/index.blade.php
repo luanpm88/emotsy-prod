@@ -26,7 +26,7 @@
 				<form class="listing-form"
 					sort-url="{{ action('CampaignController@sort') }}"
 					data-url="{{ action('CampaignController@listing') }}"
-					per-page="{{ Mailixa\Model\MailList::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\MailList::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-10">
@@ -91,7 +91,7 @@
 				
 								<div class="modal-body">
 									
-									@foreach (Mailixa\Model\Campaign::types() as $key => $type)
+									@foreach (Acelle\Model\Campaign::types() as $key => $type)
 										
 										<a href="{{ action("CampaignController@create", ["type" => $key]) }}" class="btn btn-info btn-lg bg-teal-800">
 											<i class="icon-paperplane"></i> {{ trans('messages.' . $key) }}

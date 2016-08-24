@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http\Controllers;
+namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 
@@ -23,7 +23,7 @@ class FieldController extends Controller
      */
     public function index(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $fields = $list->getFields;
 
         // authorize
@@ -35,9 +35,9 @@ class FieldController extends Controller
         if (isset($request->old()['fields'])) {
             $fields = collect();
             foreach ($request->old()['fields'] as $key => $item) {
-                $field = \Mailixa\Model\Field::findByUid($item['uid']);
+                $field = \Acelle\Model\Field::findByUid($item['uid']);
                 if (!is_object($field)) {
-                    $field = new \Mailixa\Model\Field();
+                    $field = new \Acelle\Model\Field();
                     $field->uid = $key;
                 }
                 $field->fill($item);
@@ -53,7 +53,7 @@ class FieldController extends Controller
                 if (isset($item['options'])) {
                     $field->fieldOptions = collect();
                     foreach ($item['options'] as $key2 => $item2) {
-                        $option = new \Mailixa\Model\FieldOption($item2);
+                        $option = new \Acelle\Model\FieldOption($item2);
                         $option->uid = $key2;
                         $field->fieldOptions->push($option);
                     }
@@ -88,7 +88,7 @@ class FieldController extends Controller
      */
     public function store(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         // validate and save posted data
         if ($request->isMethod('post')) {
@@ -113,7 +113,7 @@ class FieldController extends Controller
                     }
 
                     // Check tag exsit
-                    $tag = \Mailixa\Model\Field::formatTag($item['tag']);
+                    $tag = \Acelle\Model\Field::formatTag($item['tag']);
                     if (in_array($tag, $tags)) {
                         $conflict_tag = true;
                     }
@@ -128,16 +128,16 @@ class FieldController extends Controller
             // Save fields
             $saved_ids = [];
             foreach ($request->fields as $uid => $item) {
-                $field = \Mailixa\Model\Field::findByUid($item['uid']);
+                $field = \Acelle\Model\Field::findByUid($item['uid']);
                 if (!is_object($field)) {
-                    $field = new \Mailixa\Model\Field();
+                    $field = new \Acelle\Model\Field();
                     $field->mail_list_id = $list->id;
                 }
 
                 // If email field
                 if ($list->getEmailField()->uid != $field->uid) {
                     // save exsit field
-                    $item['tag'] = \Mailixa\Model\Field::formatTag($item['tag']);
+                    $item['tag'] = \Acelle\Model\Field::formatTag($item['tag']);
                     $field->fill($item);
                     $field->save();
 
@@ -145,7 +145,7 @@ class FieldController extends Controller
                     $field->fieldOptions()->delete();
                     if (isset($item['options'])) {
                         foreach ($item['options'] as $key2 => $item2) {
-                            $option = new \Mailixa\Model\FieldOption($item2);
+                            $option = new \Acelle\Model\FieldOption($item2);
                             $option->field_id = $field->id;
                             $option->save();
                         }
@@ -234,7 +234,7 @@ class FieldController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $list = \Mailixa\Model\Field::findByUid($row[0]);
+            $list = \Acelle\Model\Field::findByUid($row[0]);
             $list->custom_order = $row[1];
             $list->save();
         }
@@ -251,7 +251,7 @@ class FieldController extends Controller
      */
     public function sample(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         return view('fields._form_samples', [
             'list' => $list,
@@ -268,7 +268,7 @@ class FieldController extends Controller
      */
     public function delete(Request $request)
     {
-        $field = \Mailixa\Model\Field::findByUid($request->uid);
+        $field = \Acelle\Model\Field::findByUid($request->uid);
 
         $field->delete();
 

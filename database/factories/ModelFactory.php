@@ -11,7 +11,7 @@
 |
 */
 
-$factory->define(Mailixa\User::class, function (Faker\Generator $faker) {
+$factory->define(Acelle\User::class, function (Faker\Generator $faker) {
     return [
         'name' => $faker->name,
         'email' => $faker->safeEmail,

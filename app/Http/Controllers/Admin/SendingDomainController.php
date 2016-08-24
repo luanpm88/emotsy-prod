@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class SendingDomainController extends Controller
 {
@@ -28,7 +28,7 @@ class SendingDomainController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\SendingDomain::getAll();
+        $items = \Acelle\Model\SendingDomain::getAll();
 
         return view('admin.sending_domains.index', [
             'items' => $items,
@@ -46,7 +46,7 @@ class SendingDomainController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = \Mailixa\Model\SendingDomain::search($request)->paginate($request->per_page);
+        $items = \Acelle\Model\SendingDomain::search($request)->paginate($request->per_page);
 
         return view('admin.sending_domains._list', [
             'items' => $items,
@@ -60,7 +60,7 @@ class SendingDomainController extends Controller
      */
     public function create(Request $request)
     {
-        $server = new \Mailixa\Model\SendingDomain([
+        $server = new \Acelle\Model\SendingDomain([
             'signing_enabled' => true,
         ]);
         $server->status = 'active';
@@ -88,7 +88,7 @@ class SendingDomainController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $server = new \Mailixa\Model\SendingDomain();
+        $server = new \Acelle\Model\SendingDomain();
 
         // authorize
         if (\Gate::denies('create', $server)) {
@@ -97,7 +97,7 @@ class SendingDomainController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Mailixa\Model\SendingDomain::rules());
+            $this->validate($request, \Acelle\Model\SendingDomain::rules());
 
             // Save current user info
             $server->fill($request->all());
@@ -133,7 +133,7 @@ class SendingDomainController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $server = \Mailixa\Model\SendingDomain::findByUid($id);
+        $server = \Acelle\Model\SendingDomain::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $server)) {
@@ -159,7 +159,7 @@ class SendingDomainController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $server = \Mailixa\Model\SendingDomain::findByUid($id);
+        $server = \Acelle\Model\SendingDomain::findByUid($id);
 
         // authorize
         if (\Gate::denies('update', $server)) {
@@ -168,7 +168,7 @@ class SendingDomainController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, \Mailixa\Model\SendingDomain::rules());
+            $this->validate($request, \Acelle\Model\SendingDomain::rules());
 
             // Save current user info
             $server->fill($request->all());
@@ -204,7 +204,7 @@ class SendingDomainController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $item = \Mailixa\Model\SendingDomain::findByUid($row[0]);
+            $item = \Acelle\Model\SendingDomain::findByUid($row[0]);
 
             // authorize
             if (\Gate::denies('update', $item)) {
@@ -227,7 +227,7 @@ class SendingDomainController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Mailixa\Model\SendingDomain::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\SendingDomain::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize

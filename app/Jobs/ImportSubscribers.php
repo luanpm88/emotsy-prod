@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Jobs;
+namespace Acelle\Jobs;
 
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
@@ -16,7 +16,7 @@ class ImportSubscribers extends Job implements ShouldQueue
     /**
      * Create a new job instance.
      */
-    public function __construct(\Mailixa\Model\User $user, \Mailixa\Model\MailList $mail_list)
+    public function __construct(\Acelle\Model\User $user, \Acelle\Model\MailList $mail_list)
     {
         $this->user = $user;
         $this->mail_list = $mail_list;
@@ -27,6 +27,6 @@ class ImportSubscribers extends Job implements ShouldQueue
      */
     public function handle()
     {
-        \Mailixa\Model\Subscriber::import($this->user, $this->mail_list);
+        \Acelle\Model\Subscriber::import($this->user, $this->mail_list);
     }
 }

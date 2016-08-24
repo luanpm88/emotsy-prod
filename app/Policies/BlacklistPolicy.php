@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Policies;
+namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 

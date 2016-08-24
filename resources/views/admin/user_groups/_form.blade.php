@@ -2,7 +2,7 @@
 						<div class="row">
 							<div class="col-md-12">									
 
-									@include('helpers.form_control', ['type' => 'text', 'name' => 'name', 'value' => $group->name, 'help_class' => 'user_group', 'rules' => Mailixa\Model\UserGroup::$rules])
+									@include('helpers.form_control', ['type' => 'text', 'name' => 'name', 'value' => $group->name, 'help_class' => 'user_group', 'rules' => Acelle\Model\UserGroup::$rules])
 
 							</div>
 						</div>
@@ -15,7 +15,7 @@
 										'value' => $group->frontend_access,
 										'help_class' => 'user_group',
 										'options' => [false, true],
-										'rules' => Mailixa\Model\UserGroup::rules()
+										'rules' => Acelle\Model\UserGroup::rules()
 									])
 								</div>
 							</div>
@@ -27,7 +27,7 @@
 										'value' => $group->backend_access,
 										'help_class' => 'user_group',
 										'options' => [false, true],
-										'rules' => Mailixa\Model\UserGroup::rules()
+										'rules' => Acelle\Model\UserGroup::rules()
 									])
 								</div>
 							</div>
@@ -58,7 +58,7 @@
 												'label' => trans('messages.max_lists'),
 												'help_class' => 'user_group',
 												'options' => ['true', 'false'],
-												'rules' => Mailixa\Model\UserGroup::rules()
+												'rules' => Acelle\Model\UserGroup::rules()
 											])
 											<div class="checkbox inline unlimited-check text-semibold">
 												<label>
@@ -76,7 +76,7 @@
 												'label' => trans('messages.max_subscribers'),
 												'help_class' => 'user_group',
 												'options' => ['true', 'false'],
-												'rules' => Mailixa\Model\UserGroup::rules()
+												'rules' => Acelle\Model\UserGroup::rules()
 											])
 											<div class="checkbox inline unlimited-check text-semibold">
 												<label>
@@ -93,7 +93,7 @@
 												'value' => $options['frontend']['subscriber_per_list_max'],
 												'label' => trans('messages.max_subscribers_per_list'),
 												'help_class' => 'user_group',
-												'rules' => Mailixa\Model\UserGroup::rules()
+												'rules' => Acelle\Model\UserGroup::rules()
 											])
 											<div class="checkbox inline unlimited-check text-semibold">
 												<label>
@@ -110,7 +110,7 @@
 												'value' => $options['frontend']['segment_per_list_max'],
 												'label' => trans('messages.segment_per_list_max'),
 												'help_class' => 'user_group',
-												'rules' => Mailixa\Model\UserGroup::rules()
+												'rules' => Acelle\Model\UserGroup::rules()
 											])
 											<div class="checkbox inline unlimited-check text-semibold">
 												<label>
@@ -130,7 +130,7 @@
 												'value' => $options['frontend']['campaign_max'],
 												'label' => trans('messages.max_campaigns'),
 												'help_class' => 'user_group',
-												'rules' => Mailixa\Model\UserGroup::rules()
+												'rules' => Acelle\Model\UserGroup::rules()
 											])
 											<div class="checkbox inline unlimited-check text-semibold">
 												<label>
@@ -147,7 +147,7 @@
 												'value' => $options['frontend']['campaign_subscribers_at_once'],
 												'label' => trans('messages.subscribers_at_once'),
 												'help_class' => 'user_group',
-												'rules' => Mailixa\Model\UserGroup::rules()
+												'rules' => Acelle\Model\UserGroup::rules()
 											])
 										</div>
 										<div class="col-md-3">
@@ -157,7 +157,7 @@
 												'value' => $options['frontend']['campaign_pause'],
 												'label' => trans('messages.campaign_pause_time'),
 												'help_class' => 'user_group',
-												'rules' => Mailixa\Model\UserGroup::rules()
+												'rules' => Acelle\Model\UserGroup::rules()
 											])
 										</div>
 										<div class="col-md-3">
@@ -167,7 +167,7 @@
 												'value' => $options['frontend']['campaign_emails_per_minute'],
 												'label' => trans('messages.emails_per_minute'),
 												'help_class' => 'user_group',
-												'rules' => Mailixa\Model\UserGroup::rules()
+												'rules' => Acelle\Model\UserGroup::rules()
 											])
 										</div>
 									</div>
@@ -179,7 +179,7 @@
 												'value' => $options['frontend']['campaign_change_server_time'],
 												'label' => trans('messages.change_server_time'),
 												'help_class' => 'user_group',
-												'rules' => Mailixa\Model\UserGroup::rules()
+												'rules' => Acelle\Model\UserGroup::rules()
 											])
 										</div>
 										
@@ -191,7 +191,7 @@
 												'value' => $options['frontend']['campaign_send_at_once'],
 												'label' => trans('messages.send_at_once'),
 												'help_class' => 'user_group',
-												'rules' => Mailixa\Model\UserGroup::rules()
+												'rules' => Acelle\Model\UserGroup::rules()
 											])
 										</div>
 									</div>
@@ -206,7 +206,7 @@
 												'value' => $options['frontend']['sending_quota'],
 												'label' => trans('messages.sending_quota'),
 												'help_class' => 'user_group',
-												'rules' => Mailixa\Model\UserGroup::rules()
+												'rules' => Acelle\Model\UserGroup::rules()
 											])
 											<div class="checkbox inline unlimited-check text-semibold">
 												<label>
@@ -223,7 +223,7 @@
 												'value' => $options['frontend']['sending_quota_time'],
 												'label' => trans('messages.quota_time'),
 												'help_class' => 'user_group',
-												'rules' => Mailixa\Model\UserGroup::rules()
+												'rules' => Acelle\Model\UserGroup::rules()
 											])
 											<div class="checkbox inline unlimited-check text-semibold">
 												<label>
@@ -237,10 +237,10 @@
 												'name' => 'options[frontend][sending_quota_time_unit]',
 												'value' => $options['frontend']['sending_quota_time_unit'],
 												'label' => trans('messages.quota_time_unit'),
-												'options' => Mailixa\Model\UserGroup::timeUnitOptions(),
+												'options' => Acelle\Model\UserGroup::timeUnitOptions(),
 												'include_blank' => trans('messages.choose'),
 												'help_class' => 'user_group',
-												'rules' => Mailixa\Model\UserGroup::rules()
+												'rules' => Acelle\Model\UserGroup::rules()
 											])
 										</div>
 										<div class="col-md-3">
@@ -250,9 +250,9 @@
 													'name' => 'options[frontend][max_process]',
 													'value' => $options['frontend']['max_process'],
 													'label' => '',
-													'options' => Mailixa\Model\UserGroup::multiProcessSelectOptions(),
+													'options' => Acelle\Model\UserGroup::multiProcessSelectOptions(),
 													'help_class' => 'user_group',
-													'rules' => Mailixa\Model\UserGroup::rules()
+													'rules' => Acelle\Model\UserGroup::rules()
 												])
 											</div>
 										</div>
@@ -260,7 +260,7 @@
 										
 									<h3 class="text-teal-800">{{ trans('messages.sending_servers') }}</h3>
 									<div class="row">
-										@foreach (Mailixa\Model\SendingServer::getAll()->orderBy("name")->get() as $server)
+										@foreach (Acelle\Model\SendingServer::getAll()->orderBy("name")->get() as $server)
 																					
 											<div class="col-md-6">
 												<h5 class="mt-0 mb-5 text-semibold text-teal-600">{{ $server->name }}</h5>
@@ -275,7 +275,7 @@
 																'label' => '',
 																'options' => [false, true],
 																'help_class' => 'user_group',
-																'rules' => Mailixa\Model\UserGroup::rules()
+																'rules' => Acelle\Model\UserGroup::rules()
 															])
 														</div>
 														<br><br>
@@ -288,7 +288,7 @@
 															'label' => trans('messages.fitness'),
 															'value' => (is_object($group->user_group_sending_servers->where('sending_server_id', $server->id)->first()) ? $group->user_group_sending_servers->where('sending_server_id', $server->id)->first()->fitness : "100"),
 															'help_class' => 'user_group',
-															'rules' => Mailixa\Model\UserGroup::rules()
+															'rules' => Acelle\Model\UserGroup::rules()
 														])
 													</div>
 												</div>
@@ -301,7 +301,7 @@
 								
 								<div class="tab-pane backend-box" id="top-tab2">
 									
-									@foreach (Mailixa\Model\UserGroup::backendPermissions() as $key => $items)
+									@foreach (Acelle\Model\UserGroup::backendPermissions() as $key => $items)
 										<h3 class="text-teal-800">{{ trans('messages.' . $key) }}</h3>
 										<div class="row">
 											@foreach ($items as $act => $ops)
@@ -315,7 +315,7 @@
 															'label' => trans('messages.' . $act),
 															'options' => $ops["options"],
 															'help_class' => 'user_group',
-															'rules' => Mailixa\Model\UserGroup::rules()
+															'rules' => Acelle\Model\UserGroup::rules()
 														])
 													@else
 														<div class="checkbox-box-group">
@@ -326,7 +326,7 @@
 																'label' => trans('messages.' . $act),
 																'options' => ['no','yes'],
 																'help_class' => 'user_group',
-																'rules' => Mailixa\Model\UserGroup::rules()
+																'rules' => Acelle\Model\UserGroup::rules()
 															])
 														</div>
 													@endif

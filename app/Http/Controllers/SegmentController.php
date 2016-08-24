@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http\Controllers;
+namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 
@@ -23,7 +23,7 @@ class SegmentController extends Controller
      */
     public function index(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $segments = $list->segments;
 
         return view('segments.index', [
@@ -39,8 +39,8 @@ class SegmentController extends Controller
      */
     public function listing(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $segments = \Mailixa\Model\Segment::search($request)->paginate($request->per_page);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $segments = \Acelle\Model\Segment::search($request)->paginate($request->per_page);
 
         return view('segments._list', [
             'segments' => $segments,
@@ -55,8 +55,8 @@ class SegmentController extends Controller
      */
     public function create(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $segment = new \Mailixa\Model\Segment();
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $segment = new \Acelle\Model\Segment();
         $segment->mail_list_id = $list->id;
 
         // authorize
@@ -70,7 +70,7 @@ class SegmentController extends Controller
 
             $segment->segmentConditions = collect();
             foreach ($request->old()['conditions'] as $key => $item) {
-                $condition = new \Mailixa\Model\SegmentCondition();
+                $condition = new \Acelle\Model\SegmentCondition();
                 $condition->uid = $key;
                 $condition->fill($item);
                 $segment->segmentConditions->push($condition);
@@ -93,8 +93,8 @@ class SegmentController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $segment = new \Mailixa\Model\Segment();
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $segment = new \Acelle\Model\Segment();
         $segment->mail_list_id = $list->id;
 
         // authorize
@@ -104,7 +104,7 @@ class SegmentController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $rules = \Mailixa\Model\Segment::$rules;
+            $rules = \Acelle\Model\Segment::$rules;
 
             // addtion validates
             $empty = false;
@@ -129,10 +129,10 @@ class SegmentController extends Controller
             $segment->save();
             // save conditions
             foreach ($request->conditions as $key => $param) {
-                $condition = new \Mailixa\Model\SegmentCondition();
+                $condition = new \Acelle\Model\SegmentCondition();
                 $condition->fill($param);
                 $condition->segment_id = $segment->id;
-                $condition->field_id = \Mailixa\Model\Field::findByUid($param['field_id'])->id;
+                $condition->field_id = \Acelle\Model\Field::findByUid($param['field_id'])->id;
 
                 $condition->save();
             }
@@ -168,8 +168,8 @@ class SegmentController extends Controller
      */
     public function subscribers(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $segment = \Mailixa\Model\Segment::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $segment = \Acelle\Model\Segment::findByUid($request->uid);
 
         return view('segments.subscribers', [
             'subscribers' => $segment->subscribers(),
@@ -187,8 +187,8 @@ class SegmentController extends Controller
      */
     public function listing_subscribers(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $segment = \Mailixa\Model\Segment::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $segment = \Acelle\Model\Segment::findByUid($request->uid);
 
         $subscribers = $segment->subscribers($request)->paginate($request->per_page);
         $fields = $list->getFields->whereIn('uid', explode(',', $request->columns));
@@ -210,8 +210,8 @@ class SegmentController extends Controller
      */
     public function edit(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $segment = \Mailixa\Model\Segment::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $segment = \Acelle\Model\Segment::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $segment)) {
@@ -224,7 +224,7 @@ class SegmentController extends Controller
 
             $segment->segmentConditions = collect([]);
             foreach ($request->old()['conditions'] as $key => $item) {
-                $condition = new \Mailixa\Model\SegmentCondition();
+                $condition = new \Acelle\Model\SegmentCondition();
                 $condition->uid = $key;
                 $condition->fill($item);
                 $segment->segmentConditions->push($condition);
@@ -248,8 +248,8 @@ class SegmentController extends Controller
     public function update(Request $request, $id)
     {
         $user = $request->user();
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $segment = \Mailixa\Model\Segment::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $segment = \Acelle\Model\Segment::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $segment)) {
@@ -258,7 +258,7 @@ class SegmentController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('patch')) {
-            $rules = \Mailixa\Model\Segment::$rules;
+            $rules = \Acelle\Model\Segment::$rules;
 
             // addtion validates
             $empty = false;
@@ -286,10 +286,10 @@ class SegmentController extends Controller
             // save conditions
             $segment->segmentConditions()->delete();
             foreach ($request->conditions as $key => $param) {
-                $condition = new \Mailixa\Model\SegmentCondition();
+                $condition = new \Acelle\Model\SegmentCondition();
                 $condition->fill($param);
                 $condition->segment_id = $segment->id;
-                $condition->field_id = \Mailixa\Model\Field::findByUid($param['field_id'])->id;
+                $condition->field_id = \Acelle\Model\Field::findByUid($param['field_id'])->id;
 
                 $condition->save();
             }
@@ -325,7 +325,7 @@ class SegmentController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Mailixa\Model\Segment::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\Segment::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize
@@ -355,7 +355,7 @@ class SegmentController extends Controller
      */
     public function sample_condition(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         return view('segments._sample_condition', [
             'list' => $list,
@@ -371,7 +371,7 @@ class SegmentController extends Controller
      */
     public function selectBox(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         return view('segments._select_box', [
             'options' => $list->getSegmentSelectOptions(),

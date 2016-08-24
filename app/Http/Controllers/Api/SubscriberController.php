@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Api;
+namespace Acelle\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 /**
  * /api/v1/lists/{list_id}/subscribers - API controller for managing list's subscribers.
@@ -23,7 +23,7 @@ class SubscriberController extends Controller
     public function index(Request $request, $list_id)
     {
         $user = \Auth::guard('api')->user();
-        $list = \Mailixa\Model\MailList::findByUid($list_id);
+        $list = \Acelle\Model\MailList::findByUid($list_id);
 
         // authorize
         if (!$user->can('read', $list)) {
@@ -33,10 +33,10 @@ class SubscriberController extends Controller
         if (isset($request->per_page)) {
             $per_page = $request->per_page;
         } else {
-            $per_page = \Mailixa\Model\Subscriber::$itemsPerPage;
+            $per_page = \Acelle\Model\Subscriber::$itemsPerPage;
         }
 
-        $items = \Mailixa\Model\Subscriber::search($request, $user)
+        $items = \Acelle\Model\Subscriber::search($request, $user)
             ->where('mail_list_id', '=', $list->id)
             ->groupBy('subscribers.id')
             ->paginate($per_page);
@@ -75,8 +75,8 @@ class SubscriberController extends Controller
     {
         $user = \Auth::guard('api')->user();
 
-        $list = \Mailixa\Model\MailList::findByUid($list_id);
-        $item = \Mailixa\Model\Subscriber::
+        $list = \Acelle\Model\MailList::findByUid($list_id);
+        $item = \Acelle\Model\Subscriber::
             where('uid', '=', $id)
             ->first();
 
@@ -118,7 +118,7 @@ class SubscriberController extends Controller
     public function subscribe($list_id, $id)
     {
         $user = \Auth::guard('api')->user();
-        $subscriber = \Mailixa\Model\Subscriber::findByUid($id);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($id);
 
         // check if item exists
         if (!is_object($subscriber)) {
@@ -150,7 +150,7 @@ class SubscriberController extends Controller
     public function unsubscribe($list_id, $id)
     {
         $user = \Auth::guard('api')->user();
-        $subscriber = \Mailixa\Model\Subscriber::findByUid($id);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($id);
 
         // check if item exists
         if (!is_object($subscriber)) {
@@ -182,7 +182,7 @@ class SubscriberController extends Controller
     public function delete($list_id, $id)
     {
         $user = \Auth::guard('api')->user();
-        $subscriber = \Mailixa\Model\Subscriber::findByUid($id);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($id);
 
         // check if item exists
         if (!is_object($subscriber)) {

@@ -1,8 +1,8 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Api;
+namespace Acelle\Http\Controllers\Api;
 
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 /**
  * /api/v1/lists - API controller for managing lists.
@@ -20,7 +20,7 @@ class MailListController extends Controller
     {
         $user = \Auth::guard('api')->user();
 
-        $lists = \Mailixa\Model\MailList::getAll()
+        $lists = \Acelle\Model\MailList::getAll()
             ->select('uid', 'name', 'default_subject', 'from_email', 'from_name', 'status', 'created_at', 'updated_at')
             ->where('user_id', '=', $user->id)
             ->get();
@@ -41,7 +41,7 @@ class MailListController extends Controller
     {
         $user = \Auth::guard('api')->user();
 
-        $item = \Mailixa\Model\MailList::
+        $item = \Acelle\Model\MailList::
             where('uid', '=', $id)
             ->first();
 

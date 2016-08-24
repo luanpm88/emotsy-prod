@@ -86,7 +86,7 @@
 										@include('helpers.form_control', ['type' => 'text', 'name' => 'fields[' . $item->uid . '][default_value]', 'label' => '', 'value' => $item->default_value, 'help_class' => 'field'])
 									</td>
 									<td>
-										@if (is_object(Mailixa\Model\Field::findByUid($item->uid)))
+										@if (is_object(Acelle\Model\Field::findByUid($item->uid)))
 											<a href="{{ action('FieldController@delete', ['list_uid' => $list->uid, 'uid' => $item->uid]) }}" delete-confirm="{!! trans('messages.delete_field_alert') !!}" class="btn bg-danger-400 remove-field-button">
 												<i class="icon-trash"></i>
 											</a>

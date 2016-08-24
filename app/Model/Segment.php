@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -39,12 +39,12 @@ class Segment extends Model
      */
     public function mailList()
     {
-        return $this->belongsTo('Mailixa\Model\MailList');
+        return $this->belongsTo('Acelle\Model\MailList');
     }
 
     public function segmentConditions()
     {
-        return $this->hasMany('Mailixa\Model\SegmentCondition');
+        return $this->hasMany('Acelle\Model\SegmentCondition');
     }
 
     /**
@@ -145,7 +145,7 @@ class Segment extends Model
      */
     public function subscribers($request = null)
     {
-        $query = \Mailixa\Model\Subscriber::select('subscribers.*')
+        $query = \Acelle\Model\Subscriber::select('subscribers.*')
                     ->where('subscribers.mail_list_id', $this->mail_list_id);
         // $query = $query->leftJoin('subscriber_fields', 'subscriber_fields.subscriber_id', '=', 'subscribers.id');
 

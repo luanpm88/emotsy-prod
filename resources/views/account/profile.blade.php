@@ -57,16 +57,16 @@
 									
 								<div class="row">
 									<div class="col-md-6">
-										@include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => Mailixa\Model\User::$rules])
+										@include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => Acelle\Model\User::$rules])
 									</div>
 									<div class="col-md-6">
-										@include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => Mailixa\Model\User::$rules])
+										@include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => Acelle\Model\User::$rules])
 									</div>
 								</div>
 								
-								@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $user->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Mailixa\Model\User::$rules])								
+								@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $user->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Acelle\Model\User::$rules])								
 								
-								@include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $user->language_id, 'options' => Mailixa\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Mailixa\Model\User::$rules])
+								@include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $user->language_id, 'options' => Acelle\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Acelle\Model\User::$rules])
 								
 								<div class="row">
 									<div class="col-md-6 color-box">
@@ -76,7 +76,7 @@
 											'name' => 'frontend_scheme',
 											'value' => $user->frontend_scheme,
 											'help_class' => 'user',
-											'options' => Mailixa\Model\User::colors("frontend_scheme"),
+											'options' => Acelle\Model\User::colors("frontend_scheme"),
 											'rules' => '',
 										])
 									</div>
@@ -87,7 +87,7 @@
 											'name' => 'backend_scheme',
 											'value' => $user->backend_scheme,
 											'help_class' => 'user',
-											'options' => Mailixa\Model\User::colors("backend_scheme"),
+											'options' => Acelle\Model\User::colors("backend_scheme"),
 											'rules' => '',
 										])
 									</div>
@@ -99,11 +99,11 @@
 							<div class="sub_section">
 								<h2 class="text-semibold text-teal-800">{{ trans('messages.account') }}</h2>
 
-								@include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $user->email, 'help_class' => 'profile', 'rules' => Mailixa\Model\User::$rules])
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $user->email, 'help_class' => 'profile', 'rules' => Acelle\Model\User::$rules])
 								
-								@include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => Mailixa\Model\User::$rules])
+								@include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => Acelle\Model\User::$rules])
 								
-								@include('helpers.form_control', ['type' => 'password', 'name' => 'password_confirmation', 'rules' => Mailixa\Model\User::$rules])
+								@include('helpers.form_control', ['type' => 'password', 'name' => 'password_confirmation', 'rules' => Acelle\Model\User::$rules])
 								
 							</div>
 						</div>						

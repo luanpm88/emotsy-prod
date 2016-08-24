@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http\Controllers;
+namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 
@@ -400,28 +400,28 @@ class InstallController extends Controller
                 'check' => file_exists(base_path('/storage/app')) &&
                     is_dir(base_path('/storage/app')) &&
                     (is_writable(base_path('/storage/app'))) &&
-                    \Mailixa\Library\Tool::getPerms(base_path('/storage/app')) >= 775,
+                    \Acelle\Library\Tool::getPerms(base_path('/storage/app')) >= 775,
                 'note' => 'The directory must be writable by the web server (0775).',
             ],
             [
                 'type' => 'permission',
                 'name' => 'Storage/framework/',
                 'check' => file_exists(base_path('/storage/framework')) && is_dir(base_path('/storage/framework')) && (is_writable(base_path('/storage/framework'))) &&
-                    \Mailixa\Library\Tool::getPerms(base_path('/storage/framework')) >= 775,
+                    \Acelle\Library\Tool::getPerms(base_path('/storage/framework')) >= 775,
                 'note' => 'The directory must be writable by the web server (0775).',
             ],
             [
                 'type' => 'permission',
                 'name' => 'Storage/logs/',
                 'check' => file_exists(base_path('/storage/logs')) && is_dir(base_path('/storage/logs')) && (is_writable(base_path('/storage/logs'))) &&
-                    \Mailixa\Library\Tool::getPerms(base_path('/storage/logs')) >= 775,
+                    \Acelle\Library\Tool::getPerms(base_path('/storage/logs')) >= 775,
                 'note' => 'The directory must be writable by the web server (0775).',
             ],
             [
                 'type' => 'permission',
                 'name' => 'bootstrap/cache/',
                 'check' => file_exists(base_path('/bootstrap/cache')) && is_dir(base_path('/bootstrap/cache')) && (is_writable(base_path('/bootstrap/cache'))) &&
-                    \Mailixa\Library\Tool::getPerms(base_path('/bootstrap/cache')) >= 775,
+                    \Acelle\Library\Tool::getPerms(base_path('/bootstrap/cache')) >= 775,
                 'note' => 'The directory must be writable by the web server (0775).',
             ],
         ];

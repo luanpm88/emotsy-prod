@@ -5,7 +5,7 @@
 @section('content')
                 <div class="alert bg-grey-600 alert-styled-left">
                     <span class="text-semibold">
-                        {{ Mailixa\Model\Setting::get("site_offline_message") }}
+                        {{ Acelle\Model\Setting::get("site_offline_message") }}
                     </span>
                 </div>
 @endsection

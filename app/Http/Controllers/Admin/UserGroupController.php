@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class UserGroupController extends Controller
 {
@@ -28,7 +28,7 @@ class UserGroupController extends Controller
             return $this->notAuthorized();
         }
 
-        $groups = \Mailixa\Model\UserGroup::getAll();
+        $groups = \Acelle\Model\UserGroup::getAll();
 
         return view('admin.user_groups.index', [
             'groups' => $groups,
@@ -46,7 +46,7 @@ class UserGroupController extends Controller
             return $this->notAuthorized();
         }
 
-        $groups = \Mailixa\Model\UserGroup::search($request)->paginate($request->per_page);
+        $groups = \Acelle\Model\UserGroup::search($request)->paginate($request->per_page);
 
         return view('admin.user_groups._list', [
             'groups' => $groups,
@@ -63,7 +63,7 @@ class UserGroupController extends Controller
         // Generate info
         $user = $request->user();
 
-        $group = new \Mailixa\Model\UserGroup([
+        $group = new \Acelle\Model\UserGroup([
                                 'backend_access' => false,
                                 'frontend_access' => true,
                             ]);
@@ -85,8 +85,8 @@ class UserGroupController extends Controller
             $group->user_group_sending_servers = collect([]);
             foreach ($request->old()['sending_servers'] as $key => $param) {
                 if ($param['check']) {
-                    $server = \Mailixa\Model\SendingServer::findByUid($key);
-                    $row = new \Mailixa\Model\UserGroupSendingServer();
+                    $server = \Acelle\Model\SendingServer::findByUid($key);
+                    $row = new \Acelle\Model\UserGroupSendingServer();
                     $row->user_group_id = $group->id;
                     $row->sending_server_id = $server->id;
                     $row->fitness = $param['fitness'];
@@ -112,7 +112,7 @@ class UserGroupController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $group = new \Mailixa\Model\UserGroup(array());
+        $group = new \Acelle\Model\UserGroup(array());
 
         // authorize
         if (\Gate::denies('create', $group)) {
@@ -121,7 +121,7 @@ class UserGroupController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Mailixa\Model\UserGroup::rules());
+            $this->validate($request, \Acelle\Model\UserGroup::rules());
 
             $rules = [];
             if (isset($request->sending_servers)) {
@@ -172,7 +172,7 @@ class UserGroupController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $group = \Mailixa\Model\UserGroup::find($id);
+        $group = \Acelle\Model\UserGroup::find($id);
         $group->fill($request->old());
 
         // authorize
@@ -191,8 +191,8 @@ class UserGroupController extends Controller
             $group->user_group_sending_servers = collect([]);
             foreach ($request->old()['sending_servers'] as $key => $param) {
                 if ($param['check']) {
-                    $server = \Mailixa\Model\SendingServer::findByUid($key);
-                    $row = new \Mailixa\Model\UserGroupSendingServer();
+                    $server = \Acelle\Model\SendingServer::findByUid($key);
+                    $row = new \Acelle\Model\UserGroupSendingServer();
                     $row->user_group_id = $group->id;
                     $row->sending_server_id = $server->id;
                     $row->fitness = $param['fitness'];
@@ -220,7 +220,7 @@ class UserGroupController extends Controller
         // Generate info
         $user = $request->user();
 
-        $group = \Mailixa\Model\UserGroup::find($id);
+        $group = \Acelle\Model\UserGroup::find($id);
 
         // authorize
         if (\Gate::denies('update', $group)) {
@@ -229,7 +229,7 @@ class UserGroupController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, \Mailixa\Model\UserGroup::rules());
+            $this->validate($request, \Acelle\Model\UserGroup::rules());
 
             $rules = [];
             if (isset($request->sending_servers)) {
@@ -279,7 +279,7 @@ class UserGroupController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $item = \Mailixa\Model\UserGroup::find($row[0]);
+            $item = \Acelle\Model\UserGroup::find($row[0]);
 
             // authorize
             if (\Gate::denies('sort', $item)) {
@@ -302,7 +302,7 @@ class UserGroupController extends Controller
      */
     public function delete(Request $request)
     {
-        $lists = \Mailixa\Model\UserGroup::whereIn('id', explode(',', $request->ids));
+        $lists = \Acelle\Model\UserGroup::whereIn('id', explode(',', $request->ids));
 
         foreach ($lists->get() as $item) {
             // authorize

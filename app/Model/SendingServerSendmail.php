@@ -6,24 +6,24 @@
  * Manage SMTP delivery servers
  *
  * LICENSE: This product includes software developed at
- * the Mailixa Co., Ltd. (http://mailixa.net/).
+ * the Acelle Co., Ltd. (http://mailixa.net/).
  *
  * @category   MVC Model
  *
  * @author     N. Pham <n.pham@mailixa.net>
  * @author     L. Pham <l.pham@mailixa.net>
- * @copyright  Mailixa Co., Ltd.
- * @license    Mailixa Co., Ltd.
+ * @copyright  Acelle Co., Ltd.
+ * @license    Acelle Co., Ltd.
  *
  * @version    1.0
  *
  * @link       http://mailixa.net
  */
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Mailixa\Library\Log;
+use Acelle\Library\Log;
 
 class SendingServerSendmail extends SendingServer
 {

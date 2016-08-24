@@ -48,11 +48,11 @@
 								<form class="listing-form"
 									sort-url="{{ action('TemplateController@sort') }}"
 									data-url="{{ action('TemplateController@choosing') }}"
-									per-page="{{ Mailixa\Model\Template::$itemsPerPage }}"					
+									per-page="{{ Acelle\Model\Template::$itemsPerPage }}"					
 								>				
 									<div class="row top-list-controls">
 										<div class="col-md-9">
-											@if (Mailixa\Model\Template::getAll()->count() >= 0)					
+											@if (Acelle\Model\Template::getAll()->count() >= 0)					
 												<div class="filter-box">													
 													<span class="filter-group">
 														<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>

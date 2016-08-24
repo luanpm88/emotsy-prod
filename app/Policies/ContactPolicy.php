@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Policies;
+namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -16,7 +16,7 @@ class ContactPolicy
         //
     }
 
-    public function update(\Mailixa\Model\User $user, \Mailixa\Model\Contact $item)
+    public function update(\Acelle\Model\User $user, \Acelle\Model\Contact $item)
     {
         return $user->contact_id == $item->id;
     }

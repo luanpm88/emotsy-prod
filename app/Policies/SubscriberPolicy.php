@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Policies;
+namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -16,12 +16,12 @@ class SubscriberPolicy
         //
     }
 
-    public function read(\Mailixa\Model\User $user, \Mailixa\Model\Subscriber $item)
+    public function read(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)
     {
         return $item->mailList->user_id == $user->id || $user->userGroup->backend_access;
     }
 
-    public function create(\Mailixa\Model\User $user, \Mailixa\Model\Subscriber $item)
+    public function create(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)
     {
         $max = $user->getOption('frontend', 'subscriber_max');
         $max_per_list = $user->getOption('frontend', 'subscriber_per_list_max');
@@ -29,22 +29,22 @@ class SubscriberPolicy
         return $user->id == $item->mailList->user_id && ($max > $user->subscribers()->count() || $max == -1) && ($max_per_list > $item->mailList->subscribers()->count() || $max_per_list == -1);
     }
 
-    public function update(\Mailixa\Model\User $user, \Mailixa\Model\Subscriber $item)
+    public function update(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)
     {
         return $item->mailList->user_id == $user->id;
     }
 
-    public function delete(\Mailixa\Model\User $user, \Mailixa\Model\Subscriber $item)
+    public function delete(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)
     {
         return $item->mailList->user_id == $user->id;
     }
 
-    public function subscribe(\Mailixa\Model\User $user, \Mailixa\Model\Subscriber $item)
+    public function subscribe(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)
     {
         return $item->mailList->user_id == $user->id && $item->status == 'unsubscribed';
     }
 
-    public function unsubscribe(\Mailixa\Model\User $user, \Mailixa\Model\Subscriber $item)
+    public function unsubscribe(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)
     {
         return $item->mailList->user_id == $user->id && $item->status == 'subscribed';
     }

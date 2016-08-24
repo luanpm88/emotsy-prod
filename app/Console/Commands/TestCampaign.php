@@ -1,12 +1,12 @@
 <?php
 
-namespace Mailixa\Console\Commands;
+namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
-use Mailixa\Library\Log;
-use Mailixa\Model\Campaign;
-use Mailixa\Model\TrackingLog;
-use Mailixa\Model\SendingServer;
+use Acelle\Library\Log;
+use Acelle\Model\Campaign;
+use Acelle\Model\TrackingLog;
+use Acelle\Model\SendingServer;
 
 class TestCampaign extends Command
 {
@@ -39,7 +39,7 @@ class TestCampaign extends Command
      */
     public function handle()
     {
-        //$handler = \Mailixa\Model\FeedbackLoopHandler::first();
+        //$handler = \Acelle\Model\FeedbackLoopHandler::first();
         //$handler->start();
 
         Log::configure(storage_path().'/logs/mail.log');

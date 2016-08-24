@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -11,7 +11,7 @@ class Link extends Model
      */
     public function campaigns()
     {
-        return $this->belongsToMany('Mailixa\Model\Campaign', 'campaign_links');
+        return $this->belongsToMany('Acelle\Model\Campaign', 'campaign_links');
     }
 
     public function clicks($user = null, $campaign = null)

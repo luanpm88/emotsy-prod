@@ -26,7 +26,7 @@
 				
 				<form class="listing-form"
 					data-url="{{ action('Admin\BlacklistController@listing') }}"
-					per-page="{{ Mailixa\Model\Blacklist::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\Blacklist::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-9">

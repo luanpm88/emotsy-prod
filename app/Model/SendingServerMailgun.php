@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
-use Mailixa\Library\Log;
-use Mailixa\Library\StringHelper;
+use Acelle\Library\Log;
+use Acelle\Library\StringHelper;
 use Mailgun\Mailgun;
 
 class SendingServerMailgun extends SendingServer

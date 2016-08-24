@@ -25,7 +25,7 @@
 @section('content')
 				<form class="listing-form"
 					data-url="{{ action('Admin\LayoutController@listing') }}"
-					per-page="{{ Mailixa\Model\Layout::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\Layout::$itemsPerPage }}"					
 				>
 					
 					<div class="row top-list-controls hide">

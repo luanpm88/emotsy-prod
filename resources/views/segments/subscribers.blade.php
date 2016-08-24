@@ -24,7 +24,7 @@
 				<br />
 				<form class="listing-form"
 					data-url="{{ action('SegmentController@listing_subscribers', ['list_uid' => $list->uid, 'uid' => $segment->uid]) }}"
-					per-page="{{ Mailixa\Model\Subscriber::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-10">

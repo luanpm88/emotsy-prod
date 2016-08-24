@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http\Middleware;
+namespace Acelle\Http\Middleware;
 
 use Illuminate\Cookie\Middleware\EncryptCookies as BaseEncrypter;
 

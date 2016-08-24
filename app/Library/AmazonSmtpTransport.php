@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Library;
+namespace Acelle\Library;
 
 class AmazonSmtpTransport extends \Swift_SmtpTransport
 {

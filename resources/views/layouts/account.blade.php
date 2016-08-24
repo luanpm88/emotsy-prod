@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>@yield('title') - {{ \Mailixa\Model\Setting::get("site_name") }}</title>
+	<title>@yield('title') - {{ \Acelle\Model\Setting::get("site_name") }}</title>
 	
 	@include('layouts._favicon')
 	

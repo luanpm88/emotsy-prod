@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Providers;
+namespace Acelle\Providers;
 
 use Illuminate\Contracts\Auth\Access\Gate as GateContract;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
@@ -13,21 +13,21 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'Mailixa\Model' => 'Mailixa\Policies\ModelPolicy',
-        \Mailixa\Model\User::class => \Mailixa\Policies\UserPolicy::class,
-        \Mailixa\Model\Contact::class => \Mailixa\Policies\ContactPolicy::class,
-        \Mailixa\Model\MailList::class => \Mailixa\Policies\MailListPolicy::class,
-        \Mailixa\Model\Subscriber::class => \Mailixa\Policies\SubscriberPolicy::class,
-        \Mailixa\Model\Segment::class => \Mailixa\Policies\SegmentPolicy::class,
-        \Mailixa\Model\Layout::class => \Mailixa\Policies\LayoutPolicy::class,
-        \Mailixa\Model\Template::class => \Mailixa\Policies\TemplatePolicy::class,
-        \Mailixa\Model\Campaign::class => \Mailixa\Policies\CampaignPolicy::class,
-        \Mailixa\Model\UserGroup::class => \Mailixa\Policies\UserGroupPolicy::class,
-        \Mailixa\Model\SendingServer::class => \Mailixa\Policies\SendingServerPolicy::class,
-        \Mailixa\Model\BounceHandler::class => \Mailixa\Policies\BounceHandlerPolicy::class,
-        \Mailixa\Model\FeedbackLoopHandler::class => \Mailixa\Policies\FeedbackLoopHandlerPolicy::class,
-        \Mailixa\Model\SendingDomain::class => \Mailixa\Policies\SendingDomainPolicy::class,
-        \Mailixa\Model\Language::class => \Mailixa\Policies\LanguagePolicy::class,
+        'Acelle\Model' => 'Acelle\Policies\ModelPolicy',
+        \Acelle\Model\User::class => \Acelle\Policies\UserPolicy::class,
+        \Acelle\Model\Contact::class => \Acelle\Policies\ContactPolicy::class,
+        \Acelle\Model\MailList::class => \Acelle\Policies\MailListPolicy::class,
+        \Acelle\Model\Subscriber::class => \Acelle\Policies\SubscriberPolicy::class,
+        \Acelle\Model\Segment::class => \Acelle\Policies\SegmentPolicy::class,
+        \Acelle\Model\Layout::class => \Acelle\Policies\LayoutPolicy::class,
+        \Acelle\Model\Template::class => \Acelle\Policies\TemplatePolicy::class,
+        \Acelle\Model\Campaign::class => \Acelle\Policies\CampaignPolicy::class,
+        \Acelle\Model\UserGroup::class => \Acelle\Policies\UserGroupPolicy::class,
+        \Acelle\Model\SendingServer::class => \Acelle\Policies\SendingServerPolicy::class,
+        \Acelle\Model\BounceHandler::class => \Acelle\Policies\BounceHandlerPolicy::class,
+        \Acelle\Model\FeedbackLoopHandler::class => \Acelle\Policies\FeedbackLoopHandlerPolicy::class,
+        \Acelle\Model\SendingDomain::class => \Acelle\Policies\SendingDomainPolicy::class,
+        \Acelle\Model\Language::class => \Acelle\Policies\LanguagePolicy::class,
     ];
 
     /**

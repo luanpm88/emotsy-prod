@@ -61,7 +61,7 @@
 														'label' => trans('messages.' . $name),
 														'help_class' => 'setting',
 														'options' => (isset($setting['options']) ? $setting['options'] : "" ),
-														'rules' => Mailixa\Model\Setting::rules(),
+														'rules' => Acelle\Model\Setting::rules(),
 													])
 												@if ($setting['type'] == 'checkbox')
 													</div>
@@ -98,7 +98,7 @@
 														'label' => trans('messages.' . $name),
 														'help_class' => 'setting',
 														'options' => (isset($setting['options']) ? $setting['options'] : "" ),
-														'rules' => Mailixa\Model\Setting::rules(),
+														'rules' => Acelle\Model\Setting::rules(),
 													])
 												@if ($setting['type'] == 'checkbox')
 													</div>

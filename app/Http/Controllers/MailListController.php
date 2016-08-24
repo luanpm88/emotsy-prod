@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http\Controllers;
+namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 
@@ -38,7 +38,7 @@ class MailListController extends Controller
      */
     public function listing(Request $request)
     {
-        $lists = \Mailixa\Model\MailList::search($request)->paginate($request->per_page);
+        $lists = \Acelle\Model\MailList::search($request)->paginate($request->per_page);
 
         return view('lists._list', [
             'lists' => $lists,
@@ -54,8 +54,8 @@ class MailListController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $list = new \Mailixa\Model\MailList();
-        $list->contact = new \Mailixa\Model\Contact();
+        $list = new \Acelle\Model\MailList();
+        $list->contact = new \Acelle\Model\Contact();
         if (is_object($user->contact)) {
             $list->contact->fill($user->contact->toArray());
             $list->send_to = $user->contact->email;
@@ -92,7 +92,7 @@ class MailListController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $list = new \Mailixa\Model\MailList();
+        $list = new \Acelle\Model\MailList();
 
         // authorize
         if (\Gate::denies('create', $list)) {
@@ -101,10 +101,10 @@ class MailListController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Mailixa\Model\MailList::$rules);
+            $this->validate($request, \Acelle\Model\MailList::$rules);
 
             // Save contact
-            $contact = \Mailixa\Model\Contact::create($request->all()['contact']);
+            $contact = \Acelle\Model\Contact::create($request->all()['contact']);
             $list->fill($request->all());
             $list->user_id = $user->id;
             $list->contact_id = $contact->id;
@@ -143,7 +143,7 @@ class MailListController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $list = \Mailixa\Model\MailList::findByUid($uid);
+        $list = \Acelle\Model\MailList::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $list)) {
@@ -175,7 +175,7 @@ class MailListController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $list = \Mailixa\Model\MailList::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $list)) {
@@ -184,7 +184,7 @@ class MailListController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, \Mailixa\Model\MailList::$rules);
+            $this->validate($request, \Acelle\Model\MailList::$rules);
 
             // Save contact
             $list->contact->fill($request->all()['contact']);
@@ -225,7 +225,7 @@ class MailListController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $list = \Mailixa\Model\MailList::findByUid($row[0]);
+            $list = \Acelle\Model\MailList::findByUid($row[0]);
 
             // authorize
             if (\Gate::denies('update', $list)) {
@@ -248,7 +248,7 @@ class MailListController extends Controller
      */
     public function deleteConfirm(Request $request)
     {
-        $lists = \Mailixa\Model\MailList::whereIn('uid', explode(',', $request->uids));
+        $lists = \Acelle\Model\MailList::whereIn('uid', explode(',', $request->uids));
 
         return view('lists.delete_confirm', [
             'lists' => $lists,
@@ -264,7 +264,7 @@ class MailListController extends Controller
      */
     public function delete(Request $request)
     {
-        $lists = \Mailixa\Model\MailList::whereIn('uid', explode(',', $request->uids));
+        $lists = \Acelle\Model\MailList::whereIn('uid', explode(',', $request->uids));
 
         foreach ($lists->get() as $item) {
             // authorize
@@ -293,7 +293,7 @@ class MailListController extends Controller
      */
     public function overview(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('read', $list)) {
@@ -314,13 +314,13 @@ class MailListController extends Controller
      */
     public function listGrowthChart(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
 
         if (is_object($list)) {
             $list_id = $list->id;
         } else {
             $list_id = null;
-            $list = new \Mailixa\Model\MailList();
+            $list = new \Acelle\Model\MailList();
         }
 
         // authorize
@@ -343,7 +343,7 @@ class MailListController extends Controller
         foreach ($result['bar_names'] as $bar) {
             $data = [];
             for ($i = 2; $i >= 0; --$i) {
-                $data[] = \Mailixa\Model\User::subscribersCountByTime(
+                $data[] = \Acelle\Model\User::subscribersCountByTime(
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->startOfMonth(),
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->endOfMonth(),
                     $request->user()->id,
@@ -380,10 +380,10 @@ class MailListController extends Controller
      */
     public function quickView(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
 
         if (!is_object($list)) {
-            $list = new \Mailixa\Model\MailList();
+            $list = new \Acelle\Model\MailList();
             $list->uid = '000';
         }
 
@@ -406,7 +406,7 @@ class MailListController extends Controller
      */
     public function copy(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->copy_list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->copy_list_uid);
 
         // authorize
         if (\Gate::denies('update', $list)) {

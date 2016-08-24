@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Policies;
+namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -16,19 +16,19 @@ class UserPolicy
         //
     }
 
-    public function create(\Mailixa\Model\User $user, \Mailixa\Model\User $item)
+    public function create(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {
         $can = $user->getOption('backend', 'user_create') == 'yes';
 
         return $can;
     }
 
-    public function profile(\Mailixa\Model\User $user, \Mailixa\Model\User $item)
+    public function profile(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {
         return $user->id == $item->id;
     }
 
-    public function update(\Mailixa\Model\User $user, \Mailixa\Model\User $item)
+    public function update(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {
         $ability = $user->getOption('backend', 'user_update');
         $can = $ability == 'all'
@@ -37,7 +37,7 @@ class UserPolicy
         return $can;
     }
 
-    public function delete(\Mailixa\Model\User $user, \Mailixa\Model\User $item)
+    public function delete(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {
         $ability = $user->getOption('backend', 'user_delete');
         $can = $ability == 'all'
@@ -47,7 +47,7 @@ class UserPolicy
         return $can;
     }
 
-    public function switch_user(\Mailixa\Model\User $user, \Mailixa\Model\User $item)
+    public function switch_user(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {
         $ability = $user->getOption('backend', 'user_switch');
         $can = $ability == 'all'

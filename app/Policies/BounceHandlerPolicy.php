@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Policies;
+namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -16,14 +16,14 @@ class BounceHandlerPolicy
         //
     }
 
-    public function create(\Mailixa\Model\User $user, \Mailixa\Model\BounceHandler $item)
+    public function create(\Acelle\Model\User $user, \Acelle\Model\BounceHandler $item)
     {
         $can = $user->getOption('backend', 'bounce_handler_create') == 'yes';
 
         return $can;
     }
 
-    public function update(\Mailixa\Model\User $user, \Mailixa\Model\BounceHandler $item)
+    public function update(\Acelle\Model\User $user, \Acelle\Model\BounceHandler $item)
     {
         $ability = $user->getOption('backend', 'bounce_handler_update');
         $can = $ability == 'all'
@@ -32,7 +32,7 @@ class BounceHandlerPolicy
         return $can;
     }
 
-    public function delete(\Mailixa\Model\User $user, \Mailixa\Model\BounceHandler $item)
+    public function delete(\Acelle\Model\User $user, \Acelle\Model\BounceHandler $item)
     {
         $ability = $user->getOption('backend', 'bounce_handler_delete');
         $can = $ability == 'all'

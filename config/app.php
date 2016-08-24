@@ -153,10 +153,10 @@ return [
         /*
          * Application Service Providers...
          */
-        Mailixa\Providers\AppServiceProvider::class,
-        Mailixa\Providers\AuthServiceProvider::class,
-        Mailixa\Providers\EventServiceProvider::class,
-        Mailixa\Providers\RouteServiceProvider::class,
+        Acelle\Providers\AppServiceProvider::class,
+        Acelle\Providers\AuthServiceProvider::class,
+        Acelle\Providers\EventServiceProvider::class,
+        Acelle\Providers\RouteServiceProvider::class,
 
     ],
 
@@ -204,7 +204,7 @@ return [
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
         'Image' => Intervention\Image\Facades\Image::class,
-        'Tool' => Mailixa\Library\Tool::class,
+        'Tool' => Acelle\Library\Tool::class,
     ],
 
 ];

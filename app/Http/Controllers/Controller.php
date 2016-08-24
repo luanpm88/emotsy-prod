@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http\Controllers;
+namespace Acelle\Http\Controllers;
 
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;

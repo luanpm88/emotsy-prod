@@ -26,7 +26,7 @@
 				
 				<form class="listing-form"
 					data-url="{{ action('Admin\UnsubscribeLogController@listing') }}"
-					per-page="{{ Mailixa\Model\UnsubscribeLog::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\UnsubscribeLog::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-9">

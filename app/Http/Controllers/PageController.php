@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http\Controllers;
+namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 
@@ -36,15 +36,15 @@ class PageController extends Controller
      */
     public function update(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         // authorize
         if (\Gate::denies('update', $list)) {
             return $this->notAuthorized();
         }
 
-        $layout = \Mailixa\Model\Layout::where('alias', $request->alias)->first();
-        $page = \Mailixa\Model\Page::findPage($list, $layout);
+        $layout = \Acelle\Model\Layout::where('alias', $request->alias)->first();
+        $page = \Acelle\Model\Page::findPage($list, $layout);
 
         // storing
         if ($request->isMethod('post')) {
@@ -92,15 +92,15 @@ class PageController extends Controller
      */
     public function preview(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         // authorize
         if (\Gate::denies('update', $list)) {
             return $this->notAuthorized();
         }
 
-        $layout = \Mailixa\Model\Layout::where('alias', $request->alias)->first();
-        $page = \Mailixa\Model\Page::findPage($list, $layout);
+        $layout = \Acelle\Model\Layout::where('alias', $request->alias)->first();
+        $page = \Acelle\Model\Page::findPage($list, $layout);
         $page->content = $request->content;
 
         // render content
@@ -121,9 +121,9 @@ class PageController extends Controller
      */
     public function signUpForm(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $layout = \Mailixa\Model\Layout::where('alias', 'sign_up_form')->first();
-        $page = \Mailixa\Model\Page::findPage($list, $layout);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $layout = \Acelle\Model\Layout::where('alias', 'sign_up_form')->first();
+        $page = \Acelle\Model\Page::findPage($list, $layout);
 
         // Get old post values
         $values = [];
@@ -141,7 +141,7 @@ class PageController extends Controller
 
         // Create subscriber
         if ($request->isMethod('post')) {
-            $subscriber = new \Mailixa\Model\Subscriber($request->all());
+            $subscriber = new \Acelle\Model\Subscriber($request->all());
             $subscriber->mail_list_id = $list->id;
             $subscriber->status = 'unconfirmed';
             $subscriber->from = 'web';
@@ -156,8 +156,8 @@ class PageController extends Controller
             $subscriber->updateFields($request->all());
 
             // SEND EMAIL
-            $layout = \Mailixa\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
-            $send_page = \Mailixa\Model\Page::findPage($list, $layout);
+            $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
+            $send_page = \Acelle\Model\Page::findPage($list, $layout);
             $send_page->renderContent(null, $subscriber);
             $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
 
@@ -180,9 +180,9 @@ class PageController extends Controller
      */
     public function signUpThankyouPage(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $layout = \Mailixa\Model\Layout::where('alias', 'sign_up_thankyou_page')->first();
-        $page = \Mailixa\Model\Page::findPage($list, $layout);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $layout = \Acelle\Model\Layout::where('alias', 'sign_up_thankyou_page')->first();
+        $page = \Acelle\Model\Page::findPage($list, $layout);
 
         $page->renderContent();
 
@@ -202,10 +202,10 @@ class PageController extends Controller
     public function signUpConfirmationThankyou(Request $request)
     {
         $user = $request->user();
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $layout = \Mailixa\Model\Layout::where('alias', 'sign_up_confirmation_thankyou')->first();
-        $page = \Mailixa\Model\Page::findPage($list, $layout);
-        $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_thankyou')->first();
+        $page = \Acelle\Model\Page::findPage($list, $layout);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         $page->renderContent(null, $subscriber);
 
@@ -215,8 +215,8 @@ class PageController extends Controller
 
             // Send welcome email
             // SEND EMAIL
-            $layout = \Mailixa\Model\Layout::where('alias', 'sign_up_welcome_email')->first();
-            $send_page = \Mailixa\Model\Page::findPage($list, $layout);
+            $layout = \Acelle\Model\Layout::where('alias', 'sign_up_welcome_email')->first();
+            $send_page = \Acelle\Model\Page::findPage($list, $layout);
             $send_page->renderContent(null, $subscriber);
             $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
         }
@@ -237,10 +237,10 @@ class PageController extends Controller
     public function unsubscribeForm(Request $request)
     {
         $user = $request->user();
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $layout = \Mailixa\Model\Layout::where('alias', 'unsubscribe_form')->first();
-        $page = \Mailixa\Model\Page::findPage($list, $layout);
-        $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_form')->first();
+        $page = \Acelle\Model\Page::findPage($list, $layout);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         $page->renderContent(null, $subscriber);
 
@@ -254,8 +254,8 @@ class PageController extends Controller
 
                 // Send goodbye email
                 // SEND EMAIL
-                $layout = \Mailixa\Model\Layout::where('alias', 'unsubscribe_goodbye_email')->first();
-                $send_page = \Mailixa\Model\Page::findPage($list, $layout);
+                $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_goodbye_email')->first();
+                $send_page = \Acelle\Model\Page::findPage($list, $layout);
                 $send_page->renderContent(null, $subscriber);
                 $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
 
@@ -279,10 +279,10 @@ class PageController extends Controller
     public function unsubscribeSuccessPage(Request $request)
     {
         $user = $request->user();
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $layout = \Mailixa\Model\Layout::where('alias', 'unsubscribe_success_page')->first();
-        $page = \Mailixa\Model\Page::findPage($list, $layout);
-        $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_success_page')->first();
+        $page = \Acelle\Model\Page::findPage($list, $layout);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         $page->renderContent(null, $subscriber);
 
@@ -303,10 +303,10 @@ class PageController extends Controller
     public function profileUpdateForm(Request $request)
     {
         $user = $request->user();
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $layout = \Mailixa\Model\Layout::where('alias', 'profile_update_form')->first();
-        $page = \Mailixa\Model\Page::findPage($list, $layout);
-        $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $layout = \Acelle\Model\Layout::where('alias', 'profile_update_form')->first();
+        $page = \Acelle\Model\Page::findPage($list, $layout);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         // Get old post values
         $values = [];
@@ -353,10 +353,10 @@ class PageController extends Controller
     public function profileUpdateSuccessPage(Request $request)
     {
         $user = $request->user();
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $layout = \Mailixa\Model\Layout::where('alias', 'profile_update_success_page')->first();
-        $page = \Mailixa\Model\Page::findPage($list, $layout);
-        $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $layout = \Acelle\Model\Layout::where('alias', 'profile_update_success_page')->first();
+        $page = \Acelle\Model\Page::findPage($list, $layout);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         $page->renderContent(null, $subscriber);
 
@@ -377,16 +377,16 @@ class PageController extends Controller
     public function profileUpdateEmailSent(Request $request)
     {
         $user = $request->user();
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $layout = \Mailixa\Model\Layout::where('alias', 'profile_update_email_sent')->first();
-        $page = \Mailixa\Model\Page::findPage($list, $layout);
-        $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $layout = \Acelle\Model\Layout::where('alias', 'profile_update_email_sent')->first();
+        $page = \Acelle\Model\Page::findPage($list, $layout);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         $page->renderContent(null, $subscriber);
 
         // SEND EMAIL
-        $layout = \Mailixa\Model\Layout::where('alias', 'profile_update_email')->first();
-        $send_page = \Mailixa\Model\Page::findPage($list, $layout);
+        $layout = \Acelle\Model\Layout::where('alias', 'profile_update_email')->first();
+        $send_page = \Acelle\Model\Page::findPage($list, $layout);
         $send_page->renderContent(null, $subscriber);
         $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
 

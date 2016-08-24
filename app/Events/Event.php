@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Events;
+namespace Acelle\Events;
 
 abstract class Event
 {

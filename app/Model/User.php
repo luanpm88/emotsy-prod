@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -91,47 +91,47 @@ class User extends Authenticatable
      */
     public function contact()
     {
-        return $this->belongsTo('Mailixa\Model\Contact');
+        return $this->belongsTo('Acelle\Model\Contact');
     }
 
     public function user()
     {
-        return $this->hasOne('Mailixa\Model\User');
+        return $this->hasOne('Acelle\Model\User');
     }
 
     public function userGroup()
     {
-        return $this->belongsTo('Mailixa\Model\UserGroup');
+        return $this->belongsTo('Acelle\Model\UserGroup');
     }
 
     public function lists()
     {
-        return $this->hasMany('Mailixa\Model\MailList')->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\MailList')->orderBy('created_at', 'desc');
     }
 
     public function language()
     {
-        return $this->belongsTo('Mailixa\Model\Language');
+        return $this->belongsTo('Acelle\Model\Language');
     }
 
     public function campaigns()
     {
-        return $this->hasMany('Mailixa\Model\Campaign')->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\Campaign')->orderBy('created_at', 'desc');
     }
 
     public function sentCampaigns()
     {
-        return $this->hasMany('Mailixa\Model\Campaign')->where('status', '=', 'done')->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\Campaign')->where('status', '=', 'done')->orderBy('created_at', 'desc');
     }
 
     public function subscribers()
     {
-        return $this->hasMany('Mailixa\Model\Subscriber');
+        return $this->hasMany('Acelle\Model\Subscriber');
     }
 
     public function logs()
     {
-        return $this->hasMany('Mailixa\Model\Log')->orderBy('created_at', 'desc');
+        return $this->hasMany('Acelle\Model\Log')->orderBy('created_at', 'desc');
     }
 
     /**
@@ -319,7 +319,7 @@ class User extends Authenticatable
      */
     public static function subscribersCountByTime($begin, $end, $user_id = null, $list_id = null)
     {
-        $query = \Mailixa\Model\Subscriber::leftJoin('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
+        $query = \Acelle\Model\Subscriber::leftJoin('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
                                 ->leftJoin('users', 'users.id', '=', 'mail_lists.user_id');
 
         if (isset($list_id)) {
@@ -556,7 +556,7 @@ class User extends Authenticatable
             }
         }
 
-        $query = \Mailixa\Model\TrackingLog::leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
+        $query = \Acelle\Model\TrackingLog::leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
         $query = $query->where('campaigns.user_id', '=', $this->id);
         if (isset($begin)) {
             $query = $query->where('tracking_logs.created_at', '>=', $begin);
@@ -617,7 +617,7 @@ class User extends Authenticatable
         if (!empty($this->frontend_scheme)) {
             return $this->frontend_scheme;
         } else {
-            return \Mailixa\Model\Setting::get('frontend_scheme');
+            return \Acelle\Model\Setting::get('frontend_scheme');
         }
     }
 
@@ -631,7 +631,7 @@ class User extends Authenticatable
         if (!empty($this->backend_scheme)) {
             return $this->backend_scheme;
         } else {
-            return \Mailixa\Model\Setting::get('backend_scheme');
+            return \Acelle\Model\Setting::get('backend_scheme');
         }
     }
 

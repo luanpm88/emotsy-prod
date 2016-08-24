@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Providers;
+namespace Acelle\Providers;
 
 use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -13,8 +13,8 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'Mailixa\Events\SomeEvent' => [
-            'Mailixa\Listeners\EventListener',
+        'Acelle\Events\SomeEvent' => [
+            'Acelle\Listeners\EventListener',
         ],
     ];
 

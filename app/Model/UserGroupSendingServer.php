@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -13,11 +13,11 @@ class UserGroupSendingServer extends Model
      */
     public function user_group()
     {
-        return $this->belongsTo('Mailixa\Model\UserGroup');
+        return $this->belongsTo('Acelle\Model\UserGroup');
     }
 
     public function sending_server()
     {
-        return $this->belongsTo('Mailixa\Model\SendingServer');
+        return $this->belongsTo('Acelle\Model\SendingServer');
     }
 }

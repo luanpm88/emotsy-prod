@@ -1,10 +1,10 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Mailixa\Library\Log;
-use Mailixa\Library\StringHelper;
+use Acelle\Library\Log;
+use Acelle\Library\StringHelper;
 
 class DeliveryHandler extends Model
 {
@@ -40,7 +40,7 @@ class DeliveryHandler extends Model
 
     public function getMessageId($message)
     {
-        preg_match('/(?<=X-Mailixa-Message-Id: )[^\s]*/', $message, $matched);
+        preg_match('/(?<=X-Acelle-Message-Id: )[^\s]*/', $message, $matched);
         if (sizeof($matched) == 0) {
             return;
         } else {

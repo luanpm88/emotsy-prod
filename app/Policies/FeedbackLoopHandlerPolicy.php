@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Policies;
+namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -16,14 +16,14 @@ class FeedbackLoopHandlerPolicy
         //
     }
 
-    public function create(\Mailixa\Model\User $user, \Mailixa\Model\FeedbackLoopHandler $item)
+    public function create(\Acelle\Model\User $user, \Acelle\Model\FeedbackLoopHandler $item)
     {
         $can = $user->getOption('backend', 'fbl_handler_create') == 'yes';
 
         return $can;
     }
 
-    public function update(\Mailixa\Model\User $user, \Mailixa\Model\FeedbackLoopHandler $item)
+    public function update(\Acelle\Model\User $user, \Acelle\Model\FeedbackLoopHandler $item)
     {
         $ability = $user->getOption('backend', 'fbl_handler_update');
         $can = $ability == 'all'
@@ -32,7 +32,7 @@ class FeedbackLoopHandlerPolicy
         return $can;
     }
 
-    public function delete(\Mailixa\Model\User $user, \Mailixa\Model\FeedbackLoopHandler $item)
+    public function delete(\Acelle\Model\User $user, \Acelle\Model\FeedbackLoopHandler $item)
     {
         $ability = $user->getOption('backend', 'fbl_handler_delete');
         $can = $ability == 'all'

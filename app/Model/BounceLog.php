@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +15,7 @@ class BounceLog extends Model
      */
     public function trackingLog()
     {
-        return $this->belongsTo('Mailixa\Model\TrackingLog', 'message_id', 'message_id');
+        return $this->belongsTo('Acelle\Model\TrackingLog', 'message_id', 'message_id');
     }
 
     /**

@@ -26,7 +26,7 @@
 				
 				<form class="listing-form"
 					data-url="{{ action('Admin\TrackingLogController@listing') }}"
-					per-page="{{ Mailixa\Model\TrackingLog::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\TrackingLog::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-9">

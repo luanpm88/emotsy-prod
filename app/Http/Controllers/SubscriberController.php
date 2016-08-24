@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http\Controllers;
+namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 
@@ -23,7 +23,7 @@ class SubscriberController extends Controller
      */
     public function index(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $subscribers = $list->subscribers;
 
         return view('subscribers.index', [
@@ -39,14 +39,14 @@ class SubscriberController extends Controller
      */
     public function listing(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         // authorize
         if (\Gate::denies('read', $list)) {
             return;
         }
 
-        $subscribers = \Mailixa\Model\Subscriber::search($request)
+        $subscribers = \Acelle\Model\Subscriber::search($request)
                                         ->where('mail_list_id', '=', $list->id)
                                         ->groupBy('subscribers.id')
                                         ->paginate($request->per_page);
@@ -66,8 +66,8 @@ class SubscriberController extends Controller
      */
     public function create(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $subscriber = new \Mailixa\Model\Subscriber();
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $subscriber = new \Acelle\Model\Subscriber();
         $subscriber->mail_list_id = $list->id;
 
         // authorize
@@ -104,8 +104,8 @@ class SubscriberController extends Controller
     public function store(Request $request)
     {
         $user = $request->user();
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $subscriber = new \Mailixa\Model\Subscriber();
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $subscriber = new \Acelle\Model\Subscriber();
         $subscriber->mail_list_id = $list->id;
         $subscriber->user_id = $user->id;
         $subscriber->status = 'subscribed';
@@ -156,8 +156,8 @@ class SubscriberController extends Controller
      */
     public function edit(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $subscriber)) {
@@ -196,8 +196,8 @@ class SubscriberController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
-        $subscriber = $subscriber = \Mailixa\Model\Subscriber::findByUid($request->uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $subscriber = $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $subscriber)) {
@@ -242,7 +242,7 @@ class SubscriberController extends Controller
      */
     public function delete(Request $request)
     {
-        $subscribers = \Mailixa\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
 
         foreach ($subscribers->get() as $subscriber) {
             // authorize
@@ -271,7 +271,7 @@ class SubscriberController extends Controller
      */
     public function subscribe(Request $request)
     {
-        $subscribers = \Mailixa\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
 
         foreach ($subscribers->get() as $subscriber) {
             // authorize
@@ -301,7 +301,7 @@ class SubscriberController extends Controller
      */
     public function unsubscribe(Request $request)
     {
-        $subscribers = \Mailixa\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
 
         foreach ($subscribers->get() as $subscriber) {
             // authorize
@@ -331,7 +331,7 @@ class SubscriberController extends Controller
      */
     public function import(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         if ($request->hasFile('file')) {
             $upload_path = storage_path('import/');
@@ -353,7 +353,7 @@ class SubscriberController extends Controller
 
             sleep(1);
             //run import job
-            $job = (new \Mailixa\Jobs\ImportSubscribers($request->user(), $list));
+            $job = (new \Acelle\Jobs\ImportSubscribers($request->user(), $list));
             $this->dispatch($job);
         } else {
             return view('subscribers.import', [
@@ -371,7 +371,7 @@ class SubscriberController extends Controller
      */
     public function importProccess(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         $upload_path = storage_path('import/');
         $filename = $list->id.'-process.log';
@@ -389,9 +389,9 @@ class SubscriberController extends Controller
      */
     public function export(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
-        // \Mailixa\Model\Subscriber::export($request->user(), $list);
+        // \Acelle\Model\Subscriber::export($request->user(), $list);
 
         if ($request->isMethod('post')) {
             $upload_path = storage_path('export/');
@@ -409,7 +409,7 @@ class SubscriberController extends Controller
 
             sleep(1);
             //run import job
-            $job = (new \Mailixa\Jobs\ExportSubscribers($request->user(), $list));
+            $job = (new \Acelle\Jobs\ExportSubscribers($request->user(), $list));
             $this->dispatch($job);
         } else {
             return view('subscribers.export', [
@@ -427,7 +427,7 @@ class SubscriberController extends Controller
      */
     public function exportProccess(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         $upload_path = storage_path('export/');
         $filename = $list->id.'-process.log';
@@ -445,7 +445,7 @@ class SubscriberController extends Controller
      */
     public function downloadExportedCsv(Request $request)
     {
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         return response()->download(storage_path('export/'.$list->id.'-data.csv'));
     }
@@ -459,8 +459,8 @@ class SubscriberController extends Controller
      */
     public function copy(Request $request)
     {
-        $subscribers = \Mailixa\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $from_list = $subscribers->first()->mailList;
 
         foreach ($subscribers->get() as $subscriber) {
@@ -470,7 +470,7 @@ class SubscriberController extends Controller
             }
         }
 
-        foreach (\Mailixa\Model\Subscriber::whereIn('uid', explode(',', $request->uids))->get() as $subscriber) {
+        foreach (\Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids))->get() as $subscriber) {
             $subscriber->copy($list, $request->type);
         }
 
@@ -496,8 +496,8 @@ class SubscriberController extends Controller
      */
     public function move(Request $request)
     {
-        $subscribers = \Mailixa\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
-        $list = \Mailixa\Model\MailList::findByUid($request->list_uid);
+        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $from_list = $subscribers->first()->mailList;
 
         foreach ($subscribers->get() as $subscriber) {
@@ -507,7 +507,7 @@ class SubscriberController extends Controller
             }
         }
 
-        foreach (\Mailixa\Model\Subscriber::whereIn('uid', explode(',', $request->uids))->get() as $subscriber) {
+        foreach (\Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids))->get() as $subscriber) {
             $subscriber->move($list, $request->type);
         }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Console\Commands;
+namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Foundation\Inspiring;

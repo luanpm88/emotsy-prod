@@ -1,10 +1,10 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Auth;
+namespace Acelle\Http\Controllers\Auth;
 
-use Mailixa\User;
+use Acelle\User;
 use Validator;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Illuminate\Foundation\Auth\AuthenticatesAndRegistersUsers;
 

@@ -26,7 +26,7 @@
 				
 				<form class="listing-form"
 					data-url="{{ action('Admin\BounceLogController@listing') }}"
-					per-page="{{ Mailixa\Model\BounceLog::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\BounceLog::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-9">

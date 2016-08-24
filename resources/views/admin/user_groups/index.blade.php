@@ -27,7 +27,7 @@
 				<form class="listing-form"
 					sort-url="{{ action('Admin\UserGroupController@sort') }}"
 					data-url="{{ action('Admin\UserGroupController@listing') }}"
-					per-page="{{ Mailixa\Model\UserGroup::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\UserGroup::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-10">
@@ -52,7 +52,7 @@
 								</div>
 							@endif
 						</div>
-						@can('create', new Mailixa\Model\UserGroup())
+						@can('create', new Acelle\Model\UserGroup())
 							<div class="col-md-2 text-right">
 								<a href="{{ action("Admin\UserGroupController@create") }}" type="button" class="btn bg-info-800">
 									<i class="icon icon-plus2"></i> {{ trans('messages.create_user_group') }}

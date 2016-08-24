@@ -27,7 +27,7 @@
 				<form class="listing-form"
 					sort-url="{{ action('Admin\BounceHandlerController@sort') }}"
 					data-url="{{ action('Admin\BounceHandlerController@listing') }}"
-					per-page="{{ Mailixa\Model\BounceHandler::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\BounceHandler::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-9">
@@ -64,7 +64,7 @@
 								</div>
 							@endif
 						</div>
-						@can('create', new Mailixa\Model\BounceHandler())
+						@can('create', new Acelle\Model\BounceHandler())
 							<div class="col-md-3 text-right">
 								<a href="{{ action('Admin\BounceHandlerController@create') }}" type="button" class="btn bg-info-800">
 									<i class="icon icon-plus2"></i> {{ trans('messages.create_bounce_handler') }}

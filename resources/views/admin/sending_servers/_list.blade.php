@@ -46,7 +46,7 @@
 													<div class="progress-bar progress-bar-info" style="width: {{ $item->sendingQuotaUsage() }}%">
 													</div>
 												</div>
-												<span class="text-muted"><strong>{{ $item->sendingQuota() }}</strong> {{ trans('messages.' . Mailixa\Library\Tool::getPluralPrase('email', $item->sendingQuota()) . '_quota') }}</span>
+												<span class="text-muted"><strong>{{ $item->sendingQuota() }}</strong> {{ trans('messages.' . Acelle\Library\Tool::getPluralPrase('email', $item->sendingQuota()) . '_quota') }}</span>
 												<br />
 												<span class="text-muted2">/ {{ $item->displayQuota() }}</span>
 											</div>

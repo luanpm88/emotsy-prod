@@ -1,10 +1,10 @@
                     <div class="sub_section">						
 						<div class="row">
 							<div class="col-md-8">									
-								@include('helpers.form_control', ['type' => 'text', 'name' => 'name', 'value' => $segment->name, 'rules' => Mailixa\Model\Segment::$rules])
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'name', 'value' => $segment->name, 'rules' => Acelle\Model\Segment::$rules])
 							</div>
 							<div class="col-md-4">
-								@include('helpers.form_control', ['type' => 'select', 'name' => 'matching', 'label' => trans('messages.how_subscribers_matching'), 'value' => $segment->matching, 'help_class' => 'segment', 'options' => Mailixa\Model\Segment::getTypeOptions(), 'rules' => Mailixa\Model\Segment::$rules])
+								@include('helpers.form_control', ['type' => 'select', 'name' => 'matching', 'label' => trans('messages.how_subscribers_matching'), 'value' => $segment->matching, 'help_class' => 'segment', 'options' => Acelle\Model\Segment::getTypeOptions(), 'rules' => Acelle\Model\Segment::$rules])
 							</div>
 						</div>
 						<div class="row">
@@ -32,7 +32,7 @@
 												</div>
 											</div>
 											<div class="col-md-3 operator-col">
-												@include('helpers.form_control', ['type' => 'select', 'name' => 'conditions[' . $condition->uid . '][operator]', 'label' => '', 'value' => $condition->operator, 'options' => Mailixa\Model\Segment::operators()])
+												@include('helpers.form_control', ['type' => 'select', 'name' => 'conditions[' . $condition->uid . '][operator]', 'label' => '', 'value' => $condition->operator, 'options' => Acelle\Model\Segment::operators()])
 											</div>
 											<div class="col-md-4 value-col" {{ in_array($condition->operator, ['blank','not_blank']) ? 'style=visibility:hidden' : "" }}>
 												@include('helpers.form_control', ['type' => 'text', 'name' => 'conditions[' . $condition->uid . '][value]', 'label' => '', 'value' => $condition->value])

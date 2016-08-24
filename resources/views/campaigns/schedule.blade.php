@@ -63,9 +63,9 @@
                         // Pick a day from now
                         // Date limits
                         $('.pickadate_from_now').pickadate({
-                            min: [{{ Mailixa\Library\Tool::dateTime(Carbon\Carbon::now())->year }},
-                                    {{ Mailixa\Library\Tool::dateTime(Carbon\Carbon::now())->month }},
-                                    {{ Mailixa\Library\Tool::dateTime(Carbon\Carbon::now())->day }}],
+                            min: [{{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now())->year }},
+                                    {{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now())->month }},
+                                    {{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now())->day }}],
                             format: LANG_DATE_FORMAT
                         });
                     });

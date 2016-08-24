@@ -1,13 +1,13 @@
 <?php
 
-namespace Mailixa\Model;
+namespace Acelle\Model;
 
-use Mailixa\Library\Log;
-use Mailixa\Library\StringHelper;
+use Acelle\Library\Log;
+use Acelle\Library\StringHelper;
 
 class SendingServerAmazon extends SendingServer
 {
-    // @TODO change Mailixa to something else
+    // @TODO change Acelle to something else
     const SNS_TOPIC = 'MAILIXAHANDLER';
 
     public $notificationTypes = array('Bounce', 'Complaint');

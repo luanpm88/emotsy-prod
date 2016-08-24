@@ -1,17 +1,17 @@
 <?php
 
-namespace Mailixa\Http\Controllers;
+namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Mailixa\Library\Log;
-use Mailixa\Library\StringHelper;
+use Acelle\Library\Log;
+use Acelle\Library\StringHelper;
 use Aws\Sns\MessageValidator\Message;
 use Aws\Sns\MessageValidator\MessageValidator;
 use Guzzle\Http\Client;
-use Mailixa\Model\TrackingLog;
-use Mailixa\Model\BounceLog;
-use Mailixa\Model\SendingServer;
-use Mailixa\Model\FeedbackLog;
+use Acelle\Model\TrackingLog;
+use Acelle\Model\BounceLog;
+use Acelle\Model\SendingServer;
+use Acelle\Model\FeedbackLog;
 
 class DeliveryController extends Controller
 {

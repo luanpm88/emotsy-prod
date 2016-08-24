@@ -1,9 +1,9 @@
 <?php
 
-namespace Mailixa\Http\Controllers\Admin;
+namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
-use Mailixa\Http\Controllers\Controller;
+use Acelle\Http\Controllers\Controller;
 
 class TemplateController extends Controller
 {
@@ -28,7 +28,7 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
 
-        $templates = \Mailixa\Model\Template::getAll();
+        $templates = \Acelle\Model\Template::getAll();
 
         return view('admin.templates.index', [
             'templates' => $templates,
@@ -46,7 +46,7 @@ class TemplateController extends Controller
             return $this->notAuthorized();
         }
 
-        $templates = \Mailixa\Model\Template::adminSearch($request)->paginate($request->per_page);
+        $templates = \Acelle\Model\Template::adminSearch($request)->paginate($request->per_page);
 
         return view('admin.templates._list', [
             'templates' => $templates,
@@ -62,7 +62,7 @@ class TemplateController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $template = new \Mailixa\Model\Template();
+        $template = new \Acelle\Model\Template();
 
         // authorize
         if ($request->user()->getOption('backend', 'template_create') == 'no') {
@@ -90,7 +90,7 @@ class TemplateController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $template = new \Mailixa\Model\Template();
+        $template = new \Acelle\Model\Template();
         $template->user_id = $request->user()->id;
         $template->shared = true;
 
@@ -130,7 +130,7 @@ class TemplateController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $template = \Mailixa\Model\Template::findByUid($uid);
+        $template = \Acelle\Model\Template::findByUid($uid);
 
         // authorize
         if ($request->user()->getOption('backend', 'template_update') == 'no'
@@ -161,7 +161,7 @@ class TemplateController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $template = \Mailixa\Model\Template::findByUid($request->uid);
+        $template = \Acelle\Model\Template::findByUid($request->uid);
 
         // authorize
         if ($request->user()->getOption('backend', 'template_update') == 'no'
@@ -202,7 +202,7 @@ class TemplateController extends Controller
         $user = $request->user();
 
         // Create template
-        $template = new \Mailixa\Model\Template();
+        $template = new \Acelle\Model\Template();
         $template->user_id = $user->id;
         $template->shared = true;
 
@@ -301,7 +301,7 @@ class TemplateController extends Controller
                 mkdir($public_upload_path, 0777, true);
             }
             // exec("cp -r {$tmp_path}/* {$public_upload_path}/");
-            \Mailixa\Library\Tool::xcopy($tmp_path, $public_upload_path);
+            \Acelle\Library\Tool::xcopy($tmp_path, $public_upload_path);
 
             // find all link in html content
             preg_match_all('/(?<=src=|background=|href=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $template->content, $matches);
@@ -321,7 +321,7 @@ class TemplateController extends Controller
 
             // remove tmp folder
             //exec("rm -r {$tmp_path}");
-            \Mailixa\Library\Tool::xdelete($tmp_path);
+            \Acelle\Library\Tool::xdelete($tmp_path);
 
             $request->session()->flash('alert-success', trans('messages.template.uploaded'));
 
@@ -342,7 +342,7 @@ class TemplateController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Mailixa\Model\Template::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\Template::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize

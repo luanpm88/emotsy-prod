@@ -1,6 +1,6 @@
 <?php
 
-namespace Mailixa\Http\Controllers;
+namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 
@@ -23,9 +23,9 @@ class UserController extends Controller
     {
         // Get current user        
         if ($request->uid != '0') {
-            $user = \Mailixa\Model\User::findByUid($request->uid);
+            $user = \Acelle\Model\User::findByUid($request->uid);
         } else {
-            $user = new \Mailixa\Model\User();
+            $user = new \Acelle\Model\User();
         }
         if (!empty($user->imagePath())) {
             $img = \Image::make($user->imagePath());

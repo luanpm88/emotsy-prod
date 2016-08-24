@@ -26,7 +26,7 @@
 				<form class="listing-form"
 					sort-url="{{ action('TemplateController@sort') }}"
 					data-url="{{ action('TemplateController@listing') }}"
-					per-page="{{ Mailixa\Model\Template::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\Template::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-9">
