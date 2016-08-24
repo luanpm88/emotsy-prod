@@ -6,6 +6,9 @@ use Illuminate\Database\Eloquent\Model;
 
 class Subscriber extends Model
 {
+    const STATUS_SUBSCRIBED = 'subscribed';
+    const STATUS_UNSUBSCRIBED = 'unsubscribed';
+
     /**
      * The attributes that are mass assignable.
      *

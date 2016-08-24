@@ -385,6 +385,7 @@ class Campaign extends Model
             return $this->segment->subscribers()
                 ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
+                ->whereRaw(DB::getTablePrefix() . "subscribers.status = '" . Subscriber::STATUS_SUBSCRIBED . "'")
                 ->addBinding($this->mailList->id)
                 ->select('subscribers.*')
                 ->get();
@@ -393,6 +394,7 @@ class Campaign extends Model
             return $this->mailList->subscribers()
                 ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
+                ->whereRaw(DB::getTablePrefix() . "subscribers.status = '" . Subscriber::STATUS_SUBSCRIBED . "'")
                 ->addBinding($this->mailList->id)
                 ->select('subscribers.*')
                 ->get();
