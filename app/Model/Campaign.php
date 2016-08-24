@@ -98,7 +98,7 @@ class Campaign extends Model
      */
     public static function getWaitingCampaigns()
     {
-        return self::where('status', self::STATUS_READY)->whereRaw('run_at IS NULL OR run_at <= NOW()')->get();
+        return self::where('status', self::STATUS_READY)->whereRaw('(run_at IS NULL OR run_at <= NOW())')->get();
     }
 
     /**
@@ -125,6 +125,16 @@ class Campaign extends Model
     public function error()
     {
         $this->status = self::STATUS_ERROR;
+        $this->save();
+    }
+
+    /**
+     * Mark the campaign as 'done' or 'sent'.
+     */
+    public function refreshStatus()
+    {
+        $me = self::find($this->id);
+        $this->status = $me->status;
         $this->save();
     }
 
@@ -187,6 +197,8 @@ class Campaign extends Model
             $status = pcntl_wexitstatus($status);
             Log::info("Child $status completed\n");
         }
+        
+        $this->refreshStatus();
 
         if ($this->status == self::STATUS_SENDING) {
             $this->done();
