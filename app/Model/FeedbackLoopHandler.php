@@ -34,7 +34,7 @@ class FeedbackLoopHandler extends DeliveryHandler
             // record a bounce log, one message may have more than one
             $feedbackLog = new FeedbackLog();
             $feedbackLog->message_id = $msgId;
-            $feedbackLog->feedback_type = $feedbackType; // @TODO fill in the NULL value here
+            $feedbackLog->feedback_type = $feedbackType;
             $feedbackLog->raw_feedback_content = $header.PHP_EOL.$body;
             $feedbackLog->save();
 

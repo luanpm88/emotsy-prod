@@ -7,8 +7,7 @@ use Acelle\Library\StringHelper;
 
 class SendingServerAmazon extends SendingServer
 {
-    // @TODO change Acelle to something else
-    const SNS_TOPIC = 'MAILIXAHANDLER';
+    const SNS_TOPIC = 'ACELLEHANDLER';
 
     public $notificationTypes = array('Bounce', 'Complaint');
     public static $snsClient = null;
@@ -71,10 +70,7 @@ class SendingServerAmazon extends SendingServer
         }
 
         $topicResponse = $this->snsClient()->createTopic(array('Name' => self::SNS_TOPIC));
-        //$subscribeUrl  = Option::get('campaign_notification_url');
-        // @TODO sửa hard-coded here
         $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), $this->uid);
-        $subscribeUrl = StringHelper::joinUrl('http://52.76.202.5:8888/delivery/notify', $this->uid);
 
         $subscribeResponse = $this->snsClient()->subscribe(array(
             'TopicArn' => $topicResponse->get('TopicArn'),

@@ -381,7 +381,6 @@ class Campaign extends Model
     public function getPendingSubscribers()
     {
         if (is_object($this->segment)) {
-            // @TODO table hard-coded here
             return $this->segment->subscribers()
                 ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
@@ -390,7 +389,6 @@ class Campaign extends Model
                 ->select('subscribers.*')
                 ->get();
         } else {
-            // @TODO table hard-coded here
             return $this->mailList->subscribers()
                 ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
@@ -429,7 +427,6 @@ class Campaign extends Model
         $message = \Swift_Message::newInstance();
         $message->setId($msgId);
         $message->setContentType('text/plain; charset=utf-8');
-        // @TODO replace Acelle
         $message->getHeaders()->addTextHeader('X-Acelle-Campaign-Id', $this->uid);
         $message->getHeaders()->addTextHeader('X-Acelle-Subscriber-Id', $subscriber->uid);
         $message->getHeaders()->addTextHeader('X-Acelle-User-Id', $this->user->uid);

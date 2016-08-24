@@ -34,9 +34,7 @@ class SendingServerMailgun extends SendingServer
 
         Log::info('setting up webhooks for bounce/complaints');
 
-        // @TODO 
         $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), $this->uid);
-        $subscribeUrl = StringHelper::joinUrl('http://52.76.202.5:8888/delivery/notify', $this->uid);
 
         try {
             $result = $this->client()->delete("domains/$domain/webhooks/bounce");
