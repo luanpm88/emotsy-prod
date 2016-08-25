@@ -66,7 +66,7 @@ class SubscriberController extends Controller
      *
      * GET /api/v1/lists/{list_id}/subscribers/store
      *
-     * @param \Illuminate\Http\Request $request
+     * @param \Illuminate\Http\Request $request All subscriber information: EMAIL (required), FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)
      * @param string                   $list_id List's id
      *
      * @return \Illuminate\Http\Response
