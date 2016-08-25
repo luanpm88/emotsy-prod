@@ -1,7 +1,7 @@
 <?php
 
 /**
- * UserGroup class
+ * UserGroupSendingServer class
  *
  * Model class for user group
  *

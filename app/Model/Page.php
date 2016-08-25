@@ -200,7 +200,7 @@ class Page extends Model
     {
         $page = $this;
         \Mail::send('pages._email_content', ['page' => $page], function ($m) use ($subscriber, $title) {
-            $m->from('service@mailixa.net', 'Acelle');
+            $m->from('service@acellemail.com', 'Acelle');
 
             $m->to($subscriber->email, 'Subscriber')->subject($title);
         });

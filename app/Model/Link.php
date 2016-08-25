@@ -19,6 +19,7 @@
  *
  * @link       http://acellemail.com
  */
+
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
