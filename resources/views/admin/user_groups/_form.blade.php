@@ -204,6 +204,24 @@
 										
 									<h3 class="text-teal-800">{{ trans('messages.sending_servers') }}</h3>
 									<div class="row">
+										<div class="col-md-3">
+											{{ trans('messages.all_sending_servers') }}&nbsp;&nbsp;&nbsp;
+											<span class="notoping">												
+												@include('helpers.form_control', ['type' => 'checkbox',
+													'class' => '',
+													'name' => 'options[frontend][all_sending_servers]',
+													'value' => $options['frontend']['all_sending_servers'],
+													'label' => '',
+													'options' => ['no','yes'],
+													'help_class' => 'user_group',
+													'rules' => Acelle\Model\UserGroup::rules()
+												])
+											</span>
+											
+										</div>
+									</div>
+									<br />
+									<div class="row sending-servers">
 										@foreach (Acelle\Model\SendingServer::getAll()->orderBy("name")->get() as $server)
 																					
 											<div class="col-md-6">
@@ -337,17 +355,37 @@
 						</div>
 						<!-- /basic modal -->
 						
-						<script>
-							// add segment condition
-							$(document).on("change", "input[name=frontend_access]", function(e) {
-								if(!$(this).is(":checked")) {
-									$('a[data-target="#group_check_confirm_model"]').trigger("click");
+						
+					@endif
+					
+					<script>
+						$(document).ready(function() {
+							//// add segment condition
+							//$(document).on("change", "input[name=frontend_access]", function(e) {
+							//	if(!$(this).is(":checked")) {
+							//		$('a[data-target="#group_check_confirm_model"]').trigger("click");
+							//	}
+							//});
+							//
+							//$(document).on("click", ".cancel-frontend-uncheck", function(e) {
+							//	$("input[name=frontend_access]").last().next().click();
+							//});
+							
+							// all sending servers checking
+							$(document).on("change", "input[name='options[frontend][all_sending_servers]']", function(e) {
+								if($("input[name='options[frontend][all_sending_servers]']:checked").length) {									
+									$(".sending-servers").find("input[type=checkbox]").each(function() {
+										if($(this).is(":checked")) {
+											$(this).parents(".form-group").find(".switchery").eq(1).click();
+										}
+									});
+									$(".sending-servers").hide();
+								} else {
+									$(".sending-servers").show();
 								}
 							});
 							
-							$(document).on("click", ".cancel-frontend-uncheck", function(e) {
-								$("input[name=frontend_access]").last().next().click();
-							});
-						</script>
-					@endif
+							$("input[name='options[frontend][all_sending_servers]']").trigger("change");
+						});
+					</script>
 					

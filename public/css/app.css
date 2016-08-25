@@ -1177,3 +1177,6 @@ ul.install-steps li.enabled a:hover {
 .select2 {
     height: 36px;
 }
+.notoping .switchery {
+    margin-top: 0;
+}
