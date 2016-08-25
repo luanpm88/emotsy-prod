@@ -60,6 +60,49 @@ class SubscriberController extends Controller
 
         return \Response::json($subscribers, 200);
     }
+    
+    /**
+     * Create subscriber for a mail list.
+     *
+     * GET /api/v1/lists/{list_id}/subscribers/store
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string                   $list_id List's id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request, $list_id)
+    {
+        $user = \Auth::guard('api')->user();
+        $list = \Acelle\Model\MailList::findByUid($list_id);
+        $subscriber = new \Acelle\Model\Subscriber();
+        $subscriber->mail_list_id = $list->id;
+        $subscriber->user_id = $user->id;
+        $subscriber->status = 'subscribed';
+        $subscriber->from = 'api';
+
+        // authorize
+        if (!$user->can('create', $subscriber)) {
+            return \Response::json(array('message' => trans('no_more_item')), 403);
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            $this->validate($request, $subscriber->getRules());
+
+            // Save subscriber
+            $subscriber->email = $request->EMAIL;
+            $subscriber->save();
+            
+            // Update field
+            $subscriber->updateFields($request->all());
+            
+            // Log
+            $subscriber->log('created', $user);
+            
+            return \Response::json(array('message' => trans('messages.subscriber.created')), 200);
+        }
+    }
 
     /**
      * Display the specified subscriber information.
