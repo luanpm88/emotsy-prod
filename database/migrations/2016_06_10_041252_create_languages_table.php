@@ -7,8 +7,6 @@ class CreateLanguagesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -19,15 +17,13 @@ class CreateLanguagesTable extends Migration
             $table->string('code');
             $table->string('region_code');
             $table->string('status');
-            
+
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

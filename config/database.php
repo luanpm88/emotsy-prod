@@ -64,8 +64,8 @@ return [
             'prefix' => env('DB_TABLES_PREFIX', ''),
             'strict' => false,
             'engine' => null,
-            'options'   => array(
-                PDO::ATTR_EMULATE_PREPARES => true
+            'options' => array(
+                PDO::ATTR_EMULATE_PREPARES => true,
             ),
         ],
 

@@ -7,8 +7,6 @@ class CreateCampaignLinksTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -16,9 +14,9 @@ class CreateCampaignLinksTable extends Migration
             $table->increments('id');
             $table->integer('campaign_id')->unsigned();
             $table->integer('link_id')->unsigned();
-            
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
             $table->foreign('link_id')->references('id')->on('links')->onDelete('cascade');
@@ -27,8 +25,6 @@ class CreateCampaignLinksTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

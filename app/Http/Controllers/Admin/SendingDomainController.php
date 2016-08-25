@@ -121,7 +121,6 @@ class SendingDomainController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -190,7 +189,6 @@ class SendingDomainController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 
     /**

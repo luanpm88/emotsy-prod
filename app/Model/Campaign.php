@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Campaign class
+ * Campaign class.
  *
  * Model class for campaigns related functionalities.
  * This is the center of the application
@@ -13,8 +13,8 @@
  *
  * @author     N. Pham <n.pham@acellemail.com>
  * @author     L. Pham <l.pham@acellemail.com>
- * @copyright  Acelle Co., Ltd.
- * @license    Acelle Co., Ltd.
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
  *
  * @version    1.0
  *
@@ -218,7 +218,7 @@ class Campaign extends Model
             $status = pcntl_wexitstatus($status);
             Log::info("Child $status completed\n");
         }
-        
+
         $this->refreshStatus();
 
         if ($this->status == self::STATUS_SENDING) {
@@ -307,7 +307,7 @@ class Campaign extends Model
 
     /**
      * Template tags.
-     * 
+     *
      * All availabel template tags
      */
     public function tags()
@@ -405,7 +405,7 @@ class Campaign extends Model
             return $this->segment->subscribers()
                 ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
-                ->whereRaw(DB::getTablePrefix() . "subscribers.status = '" . Subscriber::STATUS_SUBSCRIBED . "'")
+                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
                 ->addBinding($this->mailList->id)
                 ->select('subscribers.*')
                 ->get();
@@ -413,7 +413,7 @@ class Campaign extends Model
             return $this->mailList->subscribers()
                 ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
-                ->whereRaw(DB::getTablePrefix() . "subscribers.status = '" . Subscriber::STATUS_SUBSCRIBED . "'")
+                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
                 ->addBinding($this->mailList->id)
                 ->select('subscribers.*')
                 ->get();
@@ -426,7 +426,7 @@ class Campaign extends Model
      */
     private function appendOpenTrackingUrl($body, $msgId)
     {
-        $openTrackingBaseURL = Setting::get("url_open_track");
+        $openTrackingBaseURL = Setting::get('url_open_track');
         $tracking_url = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $openTrackingBaseURL);
 
         return $body.'<img src="'.$tracking_url.'" width="0" height="0" style="visibility:hidden" />';

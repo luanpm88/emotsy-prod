@@ -158,7 +158,6 @@ class UserGroupController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -265,7 +264,6 @@ class UserGroupController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 
     /**

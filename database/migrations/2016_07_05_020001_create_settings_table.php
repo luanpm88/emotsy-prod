@@ -7,8 +7,6 @@ class CreateSettingsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -16,15 +14,13 @@ class CreateSettingsTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->text('value');
-            
+
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

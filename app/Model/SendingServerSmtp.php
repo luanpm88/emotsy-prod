@@ -1,7 +1,7 @@
 <?php
 
 /**
- * SendingServerSmtp class
+ * SendingServerSmtp class.
  *
  * Abstract class for standard SMTP sending server
  *
@@ -12,8 +12,8 @@
  *
  * @author     N. Pham <n.pham@acellemail.com>
  * @author     L. Pham <l.pham@acellemail.com>
- * @copyright  Acelle Co., Ltd.
- * @license    Acelle Co., Ltd.
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
  *
  * @version    1.0
  *

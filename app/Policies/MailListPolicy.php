@@ -13,7 +13,6 @@ class MailListPolicy
      */
     public function __construct()
     {
-        //
     }
 
     public function read(\Acelle\Model\User $user, \Acelle\Model\MailList $item)

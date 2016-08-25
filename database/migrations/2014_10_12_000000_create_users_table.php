@@ -7,8 +7,6 @@ class CreateUsersTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -29,15 +27,13 @@ class CreateUsersTable extends Migration
             $table->string('status')->nullable();
             $table->string('frontend_scheme');
             $table->string('backend_scheme');
-            
+
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

@@ -12,7 +12,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
         app('view')->composer('*', function ($view) {
             $action = app('request')->route()->getAction();
 
@@ -42,6 +41,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        //
     }
 }

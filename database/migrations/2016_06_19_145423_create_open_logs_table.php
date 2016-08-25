@@ -7,8 +7,6 @@ class CreateOpenLogsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -16,11 +14,11 @@ class CreateOpenLogsTable extends Migration
             $table->increments('id');
             $table->string('message_id');
             $table->string('ip_address');
-            
+
             $table->text('user_agent');
-            
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('message_id')->references('message_id')->on('tracking_logs')->onDelete('cascade');
         });
@@ -28,8 +26,6 @@ class CreateOpenLogsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

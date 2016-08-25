@@ -119,7 +119,6 @@ class BounceHandlerController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -188,7 +187,6 @@ class BounceHandlerController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 
     /**

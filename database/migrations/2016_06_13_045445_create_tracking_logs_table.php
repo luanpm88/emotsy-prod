@@ -2,13 +2,11 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-      
+
 class CreateTrackingLogsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -22,15 +20,13 @@ class CreateTrackingLogsTable extends Migration
             $table->integer('subscriber_id')->unsigned(); // deliberate redundant for quick retrieving
             $table->string('status');
             $table->string('error')->nullable();
-            
-            $table->timestamps();            
+
+            $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

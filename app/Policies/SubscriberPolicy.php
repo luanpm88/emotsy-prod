@@ -13,7 +13,6 @@ class SubscriberPolicy
      */
     public function __construct()
     {
-        //
     }
 
     public function read(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)

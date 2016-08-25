@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Field class
+ * Field class.
  *
  * Model class for List's custom fields
  *
@@ -12,8 +12,8 @@
  *
  * @author     N. Pham <n.pham@acellemail.com>
  * @author     L. Pham <l.pham@acellemail.com>
- * @copyright  Acelle Co., Ltd.
- * @license    Acelle Co., Ltd.
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
  *
  * @version    1.0
  *

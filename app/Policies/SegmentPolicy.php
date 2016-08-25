@@ -13,7 +13,6 @@ class SegmentPolicy
      */
     public function __construct()
     {
-        //
     }
 
     public function create(\Acelle\Model\User $user, \Acelle\Model\Segment $item)

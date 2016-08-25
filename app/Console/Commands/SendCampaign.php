@@ -44,7 +44,7 @@ class SendCampaign extends Command
         Log::configure(storage_path().'/logs/mail.log');
 
         //$u = User::first();
-        //$u->overQuota(); 
+        //$u->overQuota();
         DB::enableQueryLog();
 
         //$s = SendingServer::find(3);
@@ -54,12 +54,12 @@ class SendCampaign extends Command
 
         /**********
         $c = Campaign::first();
-        for ($i = 1; $i <= 5; ++$i) { 
-            $pid = pcntl_fork(); 
+        for ($i = 1; $i <= 5; ++$i) {
+            $pid = pcntl_fork();
 
-            if (!$pid) { 
-                
-                print "In child $i\n"; 
+            if (!$pid) {
+
+                print "In child $i\n";
                 try {
                     DB::reconnect('mysql');
                     Campaign::first();
@@ -68,25 +68,25 @@ class SendCampaign extends Command
                 } finally {
                     echo "Final\n";
                 }
-                sleep(1); 
-                exit($i); 
-            } 
-        } 
+                sleep(1);
+                exit($i);
+            }
+        }
 
-        while (pcntl_waitpid(0, $status) != -1) { 
-            $status = pcntl_wexitstatus($status); 
-            echo "Child $status completed\n"; 
-        } 
+        while (pcntl_waitpid(0, $status) != -1) {
+            $status = pcntl_wexitstatus($status);
+            echo "Child $status completed\n";
+        }
         ***********/
 
         // Creating the pool of threads(stored as array)
 
         /*
-        for ($i = 1; $i <= 2; ++$i) { 
-            $pid = pcntl_fork(); 
+        for ($i = 1; $i <= 2; ++$i) {
+            $pid = pcntl_fork();
 
-            if (!$pid) { 
-                sleep(1); 
+            if (!$pid) {
+                sleep(1);
                 print "In child $i " . getmypid() . "\n";
                 Gaugau::$gaugau[] = $i * 10 + $i;
                 sleep(1);
@@ -104,21 +104,21 @@ class SendCampaign extends Command
                 if ($i != 33) {
                     $x = 1/0;
                 }
-                exit($i); 
+                exit($i);
             }
         }
-        
 
-        while (pcntl_waitpid(0, $status) != -1) { 
+
+        while (pcntl_waitpid(0, $status) != -1) {
             $status = pcntl_wexitstatus ($status);
             echo "Child $status completed\n";
-            
+
         }
         */
 
         /*
         //dd(DB::getQueryLog());
-        
+
         $transport = \Swift_MailTransport::newInstance();
 
         // Create the Mailer using your created Transport
@@ -132,7 +132,7 @@ class SendCampaign extends Command
         $message->setFrom('minhnghivn@gmail.com');
         $message->setTo('bounce@simulator.amazonses.com');
         $message->setEncoder(\Swift_Encoding::get8bitEncoding());
-        
+
         //$message->setBody('Hi Nghị');
         $message->setBody(file_get_contents('/tmp/abuse'));
 
@@ -143,8 +143,8 @@ class SendCampaign extends Command
         */
 
        $campaigns = Campaign::first();
-       var_dump($campaigns->getPendingSubscribers());
-       dd(DB::getQueryLog());
+        var_dump($campaigns->getPendingSubscribers());
+        dd(DB::getQueryLog());
 
         /*
         //Customise the email - self explanatory

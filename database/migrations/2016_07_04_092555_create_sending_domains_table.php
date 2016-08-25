@@ -7,8 +7,6 @@ class CreateSendingDomainsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -22,9 +20,9 @@ class CreateSendingDomainsTable extends Migration
             $table->boolean('signing_enabled');
             $table->string('status');
             $table->integer('custom_order');
-            
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
@@ -32,8 +30,6 @@ class CreateSendingDomainsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

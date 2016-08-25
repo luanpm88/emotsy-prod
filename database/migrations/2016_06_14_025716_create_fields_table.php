@@ -7,8 +7,6 @@ class CreateFieldsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -23,9 +21,9 @@ class CreateFieldsTable extends Migration
             $table->boolean('visible');
             $table->boolean('required');
             $table->integer('custom_order');
-            
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
         });
@@ -33,8 +31,6 @@ class CreateFieldsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

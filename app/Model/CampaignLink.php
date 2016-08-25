@@ -1,7 +1,7 @@
 <?php
 
 /**
- * CampaignLink class
+ * CampaignLink class.
  *
  * Model class for campaign email's links
  *
@@ -12,8 +12,8 @@
  *
  * @author     N. Pham <n.pham@acellemail.com>
  * @author     L. Pham <l.pham@acellemail.com>
- * @copyright  Acelle Co., Ltd.
- * @license    Acelle Co., Ltd.
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
  *
  * @version    1.0
  *
@@ -26,5 +26,4 @@ use Illuminate\Database\Eloquent\Model;
 
 class CampaignLink extends Model
 {
-    //
 }

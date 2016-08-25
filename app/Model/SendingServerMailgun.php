@@ -1,7 +1,7 @@
 <?php
 
 /**
- * SendingServerMailgun class
+ * SendingServerMailgun class.
  *
  * Abstract class for Mailgun sending servers
  *
@@ -12,8 +12,8 @@
  *
  * @author     N. Pham <n.pham@acellemail.com>
  * @author     L. Pham <l.pham@acellemail.com>
- * @copyright  Acelle Co., Ltd.
- * @license    Acelle Co., Ltd.
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
  *
  * @version    1.0
  *

@@ -25,7 +25,7 @@ Route::group(['middleware' => ['installed']], function () {
 });
 
 Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:api'], function () {
-# Route::group(['namespace' => 'Api', 'prefix' => 'api/v1'], function () {
+    // Route::group(['namespace' => 'Api', 'prefix' => 'api/v1'], function () {
     Route::get('', 'HomeController@index');
 
     Route::resource('lists', 'MailListController');
@@ -44,7 +44,6 @@ Route::get('/offline', 'Controller@offline');
 Route::get('/not-authorized', 'Controller@notAuthorized');
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
-
     Route::get('/', 'HomeController@index');
 
     // Update current user profile
@@ -196,13 +195,10 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('campaigns', 'CampaignController');
     Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
     Route::patch('campaigns/{uid}/update', 'CampaignController@update');
-    
-
 });
 
 // ADMIN AREA
 Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend']], function () {
-
     Route::get('admin', 'HomeController@index');
 
     // User Group
@@ -299,5 +295,4 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/blacklist', 'BlacklistController@index');
     Route::get('admin/blacklist/listing', 'BlacklistController@listing');
     Route::get('admin/blacklist/delete', 'BlacklistController@delete');
-
 });

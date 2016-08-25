@@ -13,7 +13,6 @@ class ContactPolicy
      */
     public function __construct()
     {
-        //
     }
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Contact $item)

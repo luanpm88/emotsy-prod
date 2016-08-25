@@ -7,8 +7,6 @@ class CreateFieldOptionsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -17,10 +15,10 @@ class CreateFieldOptionsTable extends Migration
             $table->uuid('uid');
             $table->integer('field_id')->unsigned();
             $table->string('label');
-            $table->string('value');            
-            
+            $table->string('value');
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');
         });
@@ -28,8 +26,6 @@ class CreateFieldOptionsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

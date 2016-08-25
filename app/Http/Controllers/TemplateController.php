@@ -150,7 +150,6 @@ class TemplateController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -229,7 +228,6 @@ class TemplateController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 
     /**
@@ -356,7 +354,7 @@ class TemplateController extends Controller
             }
             $this->validate($request, $rules);
 
-            // Save new template            
+            // Save new template
             $template->fill($request->all());
             $template->content = $html_content;
             $template->save();
@@ -507,7 +505,7 @@ class TemplateController extends Controller
         $img = \Image::make($upload_path.$filename);
         $img->fit(178, 200)->save($upload_path.$filename.'.thumb.jpg');
 
-        // save        
+        // save
         $template->image = $upload_loca.$filename;
         $template->save();
     }

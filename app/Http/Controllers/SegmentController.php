@@ -156,7 +156,6 @@ class SegmentController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -313,7 +312,6 @@ class SegmentController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 
     /**

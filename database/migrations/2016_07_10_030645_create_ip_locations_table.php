@@ -7,8 +7,6 @@ class CreateIpLocationsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -25,15 +23,13 @@ class CreateIpLocationsTable extends Migration
             $table->string('longitude');
             $table->string('metro_code');
             $table->string('areacode');
-            
+
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

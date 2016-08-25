@@ -6,14 +6,12 @@ class DatabaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
-     *
-     * @return void
      */
     public function run()
     {
         $created_at = Carbon\Carbon::now();
         $updated_at = $created_at;
-        
+
         // Create default countries
         DB::table('countries')->insert([
             'id' => 1,
@@ -22,7 +20,7 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
-        
+
         // Create default languages
         DB::table('languages')->insert([
             'id' => 1,
@@ -33,7 +31,7 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
-        
+
         // Create default contact for admin user
         DB::table('contacts')->insert([
             'id' => 1,
@@ -47,7 +45,7 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
-        
+
         // Create default user group
         DB::table('user_groups')->insert([
             'id' => 1,
@@ -58,7 +56,7 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
-        
+
         // Create default admin user
         DB::table('users')->insert([
             'id' => 1,
@@ -75,7 +73,7 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
-        
+
         // Create list and default fields
         DB::table('mail_lists')->insert([
             'id' => 1,
@@ -85,9 +83,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'My List',
             'status' => 'active',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
-        
+
         DB::table('campaigns')->insert([
             'id' => 1,
             'uid' => uniqid(),
@@ -103,9 +101,9 @@ class DatabaseSeeder extends Seeder
             'plain' => 'Those were the <i>days</i>',
             'status' => 'ready',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
-        
+
         DB::table('fields')->insert([
             'id' => 1,
             'uid' => uniqid(),
@@ -116,9 +114,9 @@ class DatabaseSeeder extends Seeder
             'visible' => true,
             'required' => true,
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
-        
+
         DB::table('fields')->insert([
             'id' => 2,
             'uid' => uniqid(),
@@ -129,9 +127,9 @@ class DatabaseSeeder extends Seeder
             'visible' => true,
             'required' => false,
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
-        
+
         DB::table('fields')->insert([
             'id' => 3,
             'uid' => uniqid(),
@@ -142,7 +140,7 @@ class DatabaseSeeder extends Seeder
             'visible' => true,
             'required' => false,
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('subscribers')->insert([
@@ -153,16 +151,16 @@ class DatabaseSeeder extends Seeder
             'email' => 'minhnghivn@gmail.com',
             'status' => 'active',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
-        
+
         DB::table('subscriber_fields')->insert([
             'id' => 1,
             'subscriber_id' => 1,
             'field_id' => 1,
             'value' => 'minhnghivn@gmail.com',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('subscribers')->insert([
@@ -173,18 +171,18 @@ class DatabaseSeeder extends Seeder
             'email' => 'minhnghivn@yahoo.com',
             'status' => 'active',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
-        
+
         DB::table('subscriber_fields')->insert([
             'id' => 2,
             'subscriber_id' => 2,
             'field_id' => 1,
             'value' => 'minhnghivn@yahoo.com',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
-        
+
         // Create segment for list
         DB::table('segments')->insert([
             'id' => 1,
@@ -193,9 +191,9 @@ class DatabaseSeeder extends Seeder
             'name' => 'Gmail!',
             'matching' => 'all',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
-        
+
         // Create conditions for segment
         DB::table('segment_conditions')->insert([
             'id' => 1,
@@ -205,7 +203,7 @@ class DatabaseSeeder extends Seeder
             'operator' => 'ends',
             'value' => 'gmail.com',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('bounce_handlers')->insert([
@@ -220,7 +218,7 @@ class DatabaseSeeder extends Seeder
             'protocol' => 'imap',
             'encryption' => 'notls',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('bounce_handlers')->insert([
@@ -235,7 +233,7 @@ class DatabaseSeeder extends Seeder
             'protocol' => 'imap',
             'encryption' => 'ssl',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('feedback_loop_handlers')->insert([
@@ -250,9 +248,9 @@ class DatabaseSeeder extends Seeder
             'protocol' => 'imap',
             'encryption' => 'ssl',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
-        
+
         DB::table('sending_servers')->insert([
             'id' => 1,
             'uid' => uniqid(),
@@ -271,7 +269,7 @@ class DatabaseSeeder extends Seeder
             'quota_base' => 5,
             'quota_unit' => 'minute',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('sending_servers')->insert([
@@ -286,7 +284,7 @@ class DatabaseSeeder extends Seeder
             'quota_base' => 5,
             'quota_unit' => 'minute',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('sending_servers')->insert([
@@ -306,7 +304,7 @@ class DatabaseSeeder extends Seeder
             'quota_base' => 5,
             'quota_unit' => 'minute',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('sending_servers')->insert([
@@ -323,7 +321,7 @@ class DatabaseSeeder extends Seeder
             'quota_base' => 5,
             'quota_unit' => 'minute',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('sending_servers')->insert([
@@ -342,7 +340,7 @@ class DatabaseSeeder extends Seeder
             'quota_unit' => 'minute',
             'bounce_handler_id' => 1,
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('sending_servers')->insert([
@@ -356,7 +354,7 @@ class DatabaseSeeder extends Seeder
             'quota_unit' => 'minute',
             'bounce_handler_id' => 1,
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('sending_servers')->insert([
@@ -371,7 +369,7 @@ class DatabaseSeeder extends Seeder
             'quota_unit' => 'minute',
             'bounce_handler_id' => 1,
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('tracking_logs')->insert([
@@ -383,7 +381,7 @@ class DatabaseSeeder extends Seeder
             'subscriber_id' => 1,
             'status' => 'sent',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('tracking_logs')->insert([
@@ -395,42 +393,42 @@ class DatabaseSeeder extends Seeder
             'subscriber_id' => 2,
             'status' => 'sent',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
-        
+
         DB::table('open_logs')->insert([
             'id' => 1,
             'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
             'ip_address' => '111.111.00.11',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
-        
+
         DB::table('click_logs')->insert([
             'id' => 1,
             'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
             'url' => 'http://google.com',
             'ip_address' => '111.111.00.11',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
-        
+
         DB::table('feedback_logs')->insert([
             'id' => 1,
             'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
             'feedback_type' => 'abuse',
             'raw_feedback_content' => '0',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
-        
+
         DB::table('unsubscribe_logs')->insert([
             'id' => 1,
             'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
             'user_agent' => '0',
             'ip_address' => '111.111.00.11',
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('user_group_sending_servers')->insert([
@@ -439,7 +437,7 @@ class DatabaseSeeder extends Seeder
             'user_group_id' => 1,
             'fitness' => 0,
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('user_group_sending_servers')->insert([
@@ -448,7 +446,7 @@ class DatabaseSeeder extends Seeder
             'user_group_id' => 1,
             'fitness' => 0,
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('user_group_sending_servers')->insert([
@@ -457,7 +455,7 @@ class DatabaseSeeder extends Seeder
             'user_group_id' => 1,
             'fitness' => 0,
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('user_group_sending_servers')->insert([
@@ -466,7 +464,7 @@ class DatabaseSeeder extends Seeder
             'user_group_id' => 1,
             'fitness' => 0,
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('user_group_sending_servers')->insert([
@@ -475,7 +473,7 @@ class DatabaseSeeder extends Seeder
             'user_group_id' => 1,
             'fitness' => 0,
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('user_group_sending_servers')->insert([
@@ -484,7 +482,7 @@ class DatabaseSeeder extends Seeder
             'user_group_id' => 1,
             'fitness' => 0,
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
 
         DB::table('user_group_sending_servers')->insert([
@@ -493,7 +491,7 @@ class DatabaseSeeder extends Seeder
             'user_group_id' => 1,
             'fitness' => 100,
             'created_at' => $created_at,
-            'updated_at' => $updated_at
+            'updated_at' => $updated_at,
         ]);
     }
 }

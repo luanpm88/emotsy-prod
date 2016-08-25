@@ -13,7 +13,6 @@ class LayoutPolicy
      */
     public function __construct()
     {
-        //
     }
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Layout $item)

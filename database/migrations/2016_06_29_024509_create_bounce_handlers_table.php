@@ -7,8 +7,6 @@ class CreateBounceHandlersTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -25,9 +23,9 @@ class CreateBounceHandlersTable extends Migration
             $table->string('encryption');
             $table->string('status');
             $table->string('custom_order');
-            
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
@@ -35,8 +33,6 @@ class CreateBounceHandlersTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

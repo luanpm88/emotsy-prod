@@ -21,7 +21,7 @@ class UserController extends Controller
      */
     public function avatar(Request $request)
     {
-        // Get current user        
+        // Get current user
         if ($request->uid != '0') {
             $user = \Acelle\Model\User::findByUid($request->uid);
         } else {

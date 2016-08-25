@@ -85,7 +85,6 @@ class CampaignController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -151,7 +150,6 @@ class CampaignController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
     }
 
     /**
@@ -163,7 +161,6 @@ class CampaignController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 
     /**
@@ -310,9 +307,9 @@ class CampaignController extends Controller
                 $validate .= '|substring:"'.$tag['name'].'"';
             }
         }
-        
+
         $rules = [];
-        
+
         // if campaign type is not plain text
         if ($campaign->type != 'plain-text') {
             $rules['html'] = $validate;
@@ -953,52 +950,54 @@ class CampaignController extends Controller
             'lists' => $lists,
         ]);
     }
-    
+
     /**
      * Pause the specified campaign.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function pause(Request $request)
-    {        
-        $items = \Acelle\Model\Campaign::whereIn("uid", explode(",", $request->uids));
-        
+    {
+        $items = \Acelle\Model\Campaign::whereIn('uid', explode(',', $request->uids));
+
         foreach ($items->get() as $item) {
             if (\Gate::allows('pause', $item)) {
                 $item->status = 'paused';
                 $item->save();
-                
+
                 // Log
                 $item->log('paused', $request->user());
-            }            
+            }
         }
 
         // Redirect to my lists page
-        echo(trans('messages.campaigns.paused'));
+        echo trans('messages.campaigns.paused');
     }
-    
+
     /**
      * Pause the specified campaign.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param \Illuminate\Http\Request $request
+     *
      * @return \Illuminate\Http\Response
      */
     public function restart(Request $request)
-    {        
-        $items = \Acelle\Model\Campaign::whereIn("uid", explode(",", $request->uids));
-        
+    {
+        $items = \Acelle\Model\Campaign::whereIn('uid', explode(',', $request->uids));
+
         foreach ($items->get() as $item) {
             if (\Gate::allows('restart', $item)) {
                 $item->status = 'ready';
                 $item->save();
-                
+
                 // Log
                 $item->log('restarted', $request->user());
             }
         }
 
         // Redirect to my lists page
-        echo(trans('messages.campaigns.restarted'));
+        echo trans('messages.campaigns.restarted');
     }
 }

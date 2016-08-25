@@ -222,7 +222,6 @@ class InstallController extends Controller
         $database = $request->session()->get('database');
         $site_info = $request->session()->get('site_info');
 
-        // 
         if ($request->action == 'import') {
             $request->session()->forget('database_imported');
 
@@ -233,12 +232,12 @@ class InstallController extends Controller
             //$done = true;
             //while ($done) {
             //    try {
-            //        $delete_all_tables_query = "SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' ) 
-            //                                    AS statement FROM information_schema.tables 
+            //        $delete_all_tables_query = "SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' )
+            //                                    AS statement FROM information_schema.tables
             //                                    WHERE table_schema = '".$database["database_name"]."' AND table_name LIKE '".$database["tables_prefix"]."%' limit 1;";
             //        $result = $mysqli->query($delete_all_tables_query);
             //        $result = $result->fetch_object();
-            //        
+
             //        if (isset($result->statement)) {
             //            $mysqli->query($result->statement);
             //            continue;
@@ -246,7 +245,7 @@ class InstallController extends Controller
             //    } catch (\Exception $e) {
             //        $rules["mysql_connection"] = "required";
             //    }
-            //    
+
             //    $done = false;
             //}
 

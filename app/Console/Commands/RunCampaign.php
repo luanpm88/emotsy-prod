@@ -1,7 +1,7 @@
 <?php
 
 /**
- * RunCampaign class
+ * RunCampaign class.
  *
  * CLI interface for trigger email sending (by cronjob)
  *
@@ -12,8 +12,8 @@
  *
  * @author     N. Pham <n.pham@acellemail.com>
  * @author     L. Pham <l.pham@acellemail.com>
- * @copyright  Acelle Co., Ltd.
- * @license    Acelle Co., Ltd.
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
  *
  * @version    1.0
  *
@@ -25,7 +25,6 @@ namespace Acelle\Console\Commands;
 use Illuminate\Console\Command;
 use Acelle\Library\Log;
 use Acelle\Model\Campaign;
-use Acelle\Model\TrackingLog;
 
 class RunCampaign extends Command
 {

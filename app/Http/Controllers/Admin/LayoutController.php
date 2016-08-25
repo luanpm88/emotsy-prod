@@ -60,7 +60,6 @@ class LayoutController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -72,7 +71,6 @@ class LayoutController extends Controller
      */
     public function store(Request $request)
     {
-        //
     }
 
     /**
@@ -84,7 +82,6 @@ class LayoutController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -162,6 +159,5 @@ class LayoutController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 }

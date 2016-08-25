@@ -7,8 +7,6 @@ class CreateUserGroupsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -18,15 +16,13 @@ class CreateUserGroupsTable extends Migration
             $table->boolean('frontend_access');
             $table->boolean('backend_access');
             $table->text('options');
-            
+
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

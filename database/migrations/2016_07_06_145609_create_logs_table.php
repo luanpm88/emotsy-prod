@@ -7,8 +7,6 @@ class CreateLogsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -18,15 +16,13 @@ class CreateLogsTable extends Migration
             $table->string('type');
             $table->string('name');
             $table->text('data');
-            
+
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

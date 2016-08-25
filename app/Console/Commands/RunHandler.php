@@ -1,7 +1,7 @@
 <?php
 
 /**
- * RunHandler class
+ * RunHandler class.
  *
  * CLI interface for trigger email handling by cronjob (bounce, feedback)
  *
@@ -12,8 +12,8 @@
  *
  * @author     N. Pham <n.pham@acellemail.com>
  * @author     L. Pham <l.pham@acellemail.com>
- * @copyright  Acelle Co., Ltd.
- * @license    Acelle Co., Ltd.
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
  *
  * @version    1.0
  *

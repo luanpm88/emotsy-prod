@@ -1,7 +1,7 @@
 <?php
 
 /**
- * AmazonSmtpTransport class
+ * AmazonSmtpTransport class.
  *
  * This is the extended edition of the Swift_SmtpTransport
  * Extended feature supports a new method that helps record SMTP raw response
@@ -13,8 +13,8 @@
  *
  * @author     N. Pham <n.pham@acellemail.com>
  * @author     L. Pham <l.pham@acellemail.com>
- * @copyright  Acelle Co., Ltd.
- * @license    Acelle Co., Ltd.
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
  *
  * @version    1.0
  *

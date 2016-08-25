@@ -1,7 +1,7 @@
 <?php
 
 /**
- * DeliveryHandler class
+ * DeliveryHandler class.
  *
  * Abstract class for different types of delivery handlers
  *
@@ -12,8 +12,8 @@
  *
  * @author     N. Pham <n.pham@acellemail.com>
  * @author     L. Pham <l.pham@acellemail.com>
- * @copyright  Acelle Co., Ltd.
- * @license    Acelle Co., Ltd.
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
  *
  * @version    1.0
  *
@@ -34,7 +34,7 @@ class DeliveryHandler extends Model
             // Connect to IMAP server
             $imapPath = "{{$this->host}:{$this->port}/{$this->protocol}/{$this->encryption}}INBOX";
 
-            // try to connect 
+            // try to connect
             $inbox = @imap_open($imapPath, $this->username, $this->password);
 
             // search and get unseen emails, function will return email ids
@@ -50,7 +50,7 @@ class DeliveryHandler extends Model
             imap_expunge($inbox);
             imap_close($inbox);
         } catch (\Exception $e) {
-            // suppress the IMAP error 
+            // suppress the IMAP error
             // see http://stackoverflow.com/questions/5422405/cant-silence-imap-open-error-notices-in-php
             imap_errors();
             imap_alerts();

@@ -289,7 +289,7 @@ class TemplateController extends Controller
             }
             $this->validate($request, $rules);
 
-            // Save new template            
+            // Save new template
             $template->fill($request->all());
             $template->content = $html_content;
             $template->save();
