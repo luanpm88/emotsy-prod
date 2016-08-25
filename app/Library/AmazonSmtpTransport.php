@@ -25,8 +25,17 @@ namespace Acelle\Library;
 
 class AmazonSmtpTransport extends \Swift_SmtpTransport
 {
+    /**
+     * Array used to store raw SMTP responses
+     *
+     */
     private $rawResponses = array();
-
+    
+    /**
+     * Overwrite the execute method.
+     *
+     * @return mixed
+     */
     public function executeCommand($command, $codes = array(), &$failures = null)
     {
         $response = parent::executeCommand($command, $codes, $failures);
@@ -35,11 +44,21 @@ class AmazonSmtpTransport extends \Swift_SmtpTransport
         return $response;
     }
 
+    /**
+     * Overwrite the initialization method.
+     *
+     * @return mixed
+     */
     public static function newInstance($host = 'localhost', $port = 25, $security = null)
     {
         return new self($host, $port, $security);
     }
-
+    
+    /**
+     * Get Amazon message ID from the last SMTP response.
+     *
+     * @return string messageId
+     */
     public function getMessageId()
     {
         $messageId = null;

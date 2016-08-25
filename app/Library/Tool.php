@@ -8,7 +8,7 @@
  * LICENSE: This product includes software developed at
  * the Acelle Co., Ltd. (http://acellemail.com/).
  *
- * @category   Extension
+ * @category   Acelle Library
  *
  * @author     N. Pham <n.pham@acellemail.com>
  * @author     L. Pham <l.pham@acellemail.com>

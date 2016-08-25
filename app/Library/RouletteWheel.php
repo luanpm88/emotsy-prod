@@ -8,7 +8,7 @@
  * LICENSE: This product includes software developed at
  * the Acelle Co., Ltd. (http://acellemail.com/).
  *
- * @category   MVC Model
+ * @category   Acelle Library
  *
  * @author     N. Pham <n.pham@acellemail.com>
  * @author     L. Pham <l.pham@acellemail.com>
@@ -24,7 +24,11 @@ namespace Acelle\Library;
 
 class RouletteWheel
 {
-    // pick a random element from an array based on its probability
+    /**
+     * Pick a random element from an array based on its probability.
+     *
+     * @return mixed
+     */
     public static function generate($a)
     {
         $sum = 0.0;
@@ -47,7 +51,12 @@ class RouletteWheel
         // just in case
         return array_keys($a)[sizeof($a) - 1];
     }
-
+    
+    /**
+     * Generate a random float.
+     *
+     * @return float random
+     */
     public static function frandom()
     {
         return (float) rand() / (float) getrandmax();

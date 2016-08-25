@@ -68,7 +68,12 @@ class RunHandler extends Command
             Log::error('Something went wrong: '.$e->getMessage());
         }
     }
-
+    
+    /**
+     * Actually run the handler.
+     *
+     * @return mixed
+     */
     private function execRunHandler()
     {
         // guarantee that only one process can be run at one time

@@ -67,7 +67,11 @@ class RunCampaign extends Command
             Log::error('Something went wrong: '.$e->getMessage());
         }
     }
-
+    
+    /**
+     * Actually send the campaign.
+     *
+     */
     private function execRunCampaign()
     {
         // guarantee that only one process can be run at one time
