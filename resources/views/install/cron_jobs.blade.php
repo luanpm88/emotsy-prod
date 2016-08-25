@@ -18,7 +18,8 @@
     </div>
     <br/>
     <pre style="font-size: 16px"># Campaigns sender, runs each minute.
-* * * * * {{ PHP_BINDIR }}/php5 -q {{ base_path() }}/mailer/index.php 2&gt;&amp;1
+* * * * * {{ PHP_BINDIR }}/php5 -q {{ base_path() }}/artisan handler:run 2&gt;&amp;1
+* * * * * {{ PHP_BINDIR }}/php5 -q {{ base_path() }}/artisan campaign:run 2&gt;&amp;1
     </pre>
                             
     

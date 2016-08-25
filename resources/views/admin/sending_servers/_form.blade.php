@@ -13,6 +13,30 @@
 								])
 							</div>
 						@endif
+						@if (array_key_exists("domain", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+							<div class="col-sm-6 col-md-4">
+								@include('helpers.form_control', [
+									'type' => 'text',
+									'class' => '',
+									'name' => 'domain',
+									'value' => $server->domain,
+									'help_class' => 'sending_server',
+									'rules' => Acelle\Model\SendingServer::rules(request()->type)
+								])
+							</div>
+						@endif
+						@if (array_key_exists("api_key", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+							<div class="col-sm-6 col-md-4">
+								@include('helpers.form_control', [
+									'type' => 'text',
+									'class' => '',
+									'name' => 'api_key',
+									'value' => $server->api_key,
+									'help_class' => 'sending_server',
+									'rules' => Acelle\Model\SendingServer::rules(request()->type)
+								])
+							</div>
+						@endif
 						@if (array_key_exists("host", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
 							<div class="col-sm-6 col-md-4">
 								@include('helpers.form_control', [
@@ -121,7 +145,7 @@
 									'rules' => Acelle\Model\SendingServer::rules(request()->type)
 								])
 							</div>
-						@endif
+						@endif						
 					</div>
 
 					<h4 class="text-semibold text-teal-800">{{ trans('messages.sending_quota') }}</h4>

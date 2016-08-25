@@ -379,8 +379,14 @@ class CampaignController extends Controller
             // Check validation
             // $this->validate($request, $rules);
 
-            // Save campaign
-            $campaign->run_at = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date.' '.$request->delivery_time))->toDateTimeString();
+            //// Save campaign
+            $time = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date.' '.$request->delivery_time))->timezone(date_default_timezone_get());
+            $servertime = \Carbon\Carbon::parse(\Carbon\Carbon::now()->toDateTimeString());
+            $usertime = \Carbon\Carbon::parse(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->toDateTimeString());
+            $diff = $servertime->diffInHours($usertime, false);
+            echo $time->addHours(-$diff);
+
+            $campaign->run_at = $time->toDateTimeString();
             $campaign->save();
 
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);

@@ -57,19 +57,8 @@
                 'help_class' => 'install',
                 'rules' => $rules
             ])
-			
-			@include('helpers.form_control', [
-                'type' => 'text',
-                'name' => 'email',
-                'value' => (isset($site_info["email"]) ? $site_info["email"] : ""),
-                'help_class' => 'install',
-                'rules' => $rules
-            ])
-			
-			@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => (isset($site_info["timezone"]) ? $site_info["timezone"] : ""), 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $rules])
-            
         </div>
-		<div class="col-md-6">
+        <div class="col-md-6">
             @include('helpers.form_control', [
                 'type' => 'text',
                 'name' => 'last_name',
@@ -77,14 +66,33 @@
                 'help_class' => 'install',
                 'rules' => $rules
             ])
-			
-			@include('helpers.form_control', [
+        </div>
+    </div>
+        
+    <div class="row">
+        <div class="col-md-6">
+            @include('helpers.form_control', [
+                'type' => 'text',
+                'name' => 'email',
+                'value' => (isset($site_info["email"]) ? $site_info["email"] : ""),
+                'help_class' => 'install',
+                'rules' => $rules
+            ])
+        </div>
+        <div class="col-md-6">
+            @include('helpers.form_control', [
                 'type' => 'text',
                 'name' => 'password',
                 'value' => (isset($site_info["password"]) ? $site_info["password"] : ""),
                 'help_class' => 'install',
                 'rules' => $rules
-            ])            
+            ])      
+        </div>
+    </div>
+			
+    <div class="row">
+        <div class="col-md-6">
+			@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => (isset($site_info["timezone"]) ? $site_info["timezone"] : ""), 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $rules])
         </div>
     </div>
 	

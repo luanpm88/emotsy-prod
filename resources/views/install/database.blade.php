@@ -15,7 +15,7 @@
 <form action="{{ action('InstallController@database') }}" method="POST" class="form-validate-jqueryz">
 	{!! csrf_field() !!}
 	
-    <div class="row">
+		<div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
                 'type' => 'text',
@@ -24,7 +24,21 @@
                 'help_class' => 'install',
                 'rules' => $rules
             ])
-            
+        </div>
+        <div class="col-md-6">
+            @include('helpers.form_control', [
+                'type' => 'text',
+                'name' => 'port',
+                'value' => (isset($database["port"]) ? $database["port"] : "3306"),
+								'placeholder' => '3306',
+                'help_class' => 'install',
+                'rules' => $rules
+            ]) 
+        </div>
+    </div>
+			
+		<div class="row">
+        <div class="col-md-6">
             @include('helpers.form_control', [
                 'type' => 'text',
                 'name' => 'username',
@@ -32,7 +46,20 @@
                 'help_class' => 'install',
                 'rules' => $rules
             ])
-            
+        </div>
+        <div class="col-md-6">
+            @include('helpers.form_control', [
+                'type' => 'text',
+                'name' => 'password',
+                'value' => (isset($database["password"]) ? $database["password"] : ""),
+                'help_class' => 'install',
+                'rules' => $rules
+            ])
+        </div>
+    </div>
+	
+    <div class="row">
+        <div class="col-md-6">
             @include('helpers.form_control', [
                 'type' => 'text',
                 'name' => 'database_name',
@@ -43,23 +70,6 @@
                  
         </div>
         <div class="col-md-6">
-            @include('helpers.form_control', [
-                'type' => 'text',
-                'name' => 'port',
-                'value' => (isset($database["port"]) ? $database["port"] : "3306"),
-				'placeholder' => '3306',
-                'help_class' => 'install',
-                'rules' => $rules
-            ])
-            
-            @include('helpers.form_control', [
-                'type' => 'text',
-                'name' => 'password',
-                'value' => (isset($database["password"]) ? $database["password"] : ""),
-                'help_class' => 'install',
-                'rules' => $rules
-            ])
-            
             @include('helpers.form_control', [
                 'type' => 'text',
                 'name' => 'tables_prefix',

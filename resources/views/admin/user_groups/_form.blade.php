@@ -47,7 +47,7 @@
 	
 							<div class="tab-content">
 								<div class="tab-pane active frontend-box" id="top-tab1">
-									<h3 class="text-teal-800">{{ trans('messages.list_or_subscriber_or_segment') }}</h3>
+									<h3 class="text-teal-800">{{ trans('messages.list_or_subscriber_or_segment_or_campaign') }}</h3>
 									<div class="row">
 										<div class="boxing col-md-3">
 											@include('helpers.form_control', [
@@ -120,8 +120,6 @@
 											</div>
 										</div>
 									</div>
-										
-									<h3 class="text-teal-800">{{ trans('messages.campaign') }}</h3>
 									<div class="row">
 										<div class="boxing col-md-3">
 											@include('helpers.form_control', ['type' => 'text',
@@ -139,61 +137,7 @@
 												</label>
 											</div>
 																		
-										</div>
-										<div class="col-md-3">
-											@include('helpers.form_control', ['type' => 'text',
-												'class' => 'numeric',
-												'name' => 'options[frontend][campaign_subscribers_at_once]',
-												'value' => $options['frontend']['campaign_subscribers_at_once'],
-												'label' => trans('messages.subscribers_at_once'),
-												'help_class' => 'user_group',
-												'rules' => Acelle\Model\UserGroup::rules()
-											])
-										</div>
-										<div class="col-md-3">
-											@include('helpers.form_control', ['type' => 'text',
-												'class' => 'numeric',
-												'name' => 'options[frontend][campaign_pause]',
-												'value' => $options['frontend']['campaign_pause'],
-												'label' => trans('messages.campaign_pause_time'),
-												'help_class' => 'user_group',
-												'rules' => Acelle\Model\UserGroup::rules()
-											])
-										</div>
-										<div class="col-md-3">
-											@include('helpers.form_control', ['type' => 'text',
-												'class' => 'numeric',
-												'name' => 'options[frontend][campaign_emails_per_minute]',
-												'value' => $options['frontend']['campaign_emails_per_minute'],
-												'label' => trans('messages.emails_per_minute'),
-												'help_class' => 'user_group',
-												'rules' => Acelle\Model\UserGroup::rules()
-											])
-										</div>
-									</div>
-									<div class="row">									
-										<div class="col-md-3">
-											@include('helpers.form_control', ['type' => 'text',
-												'class' => 'numeric',
-												'name' => 'options[frontend][campaign_change_server_time]',
-												'value' => $options['frontend']['campaign_change_server_time'],
-												'label' => trans('messages.change_server_time'),
-												'help_class' => 'user_group',
-												'rules' => Acelle\Model\UserGroup::rules()
-											])
-										</div>
-										
-										<div class="col-md-3">
-											@include('helpers.form_control', [
-												'type' => 'text',
-												'class' => 'numeric',
-												'name' => 'options[frontend][campaign_send_at_once]',
-												'value' => $options['frontend']['campaign_send_at_once'],
-												'label' => trans('messages.send_at_once'),
-												'help_class' => 'user_group',
-												'rules' => Acelle\Model\UserGroup::rules()
-											])
-										</div>
+										</div>		
 									</div>
 										
 									<h3 class="text-teal-800">{{ trans('messages.sending_quota') }}</h3>
