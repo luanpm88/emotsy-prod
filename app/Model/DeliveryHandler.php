@@ -28,6 +28,11 @@ use Acelle\Library\StringHelper;
 
 class DeliveryHandler extends Model
 {
+    /**
+     * Start the handling processes.
+     *
+     * @return mixed
+     */
     public function start()
     {
         try {
@@ -57,7 +62,12 @@ class DeliveryHandler extends Model
             Log::error('Cannot connect to handler '.$e->getMessage());
         }
     }
-
+    
+    /**
+     * Extract message ID from email .
+     *
+     * @return string
+     */
     public function getMessageId($message)
     {
         preg_match('/(?<=X-Acelle-Message-Id: )[^\s]*/', $message, $matched);
@@ -67,7 +77,12 @@ class DeliveryHandler extends Model
             return StringHelper::cleanupMessageId($matched[0]);
         }
     }
-
+    
+    /**
+     * Process bounced / feedback loop messages.
+     *
+     * @return mixed
+     */
     public function processMessage($mbox, $message)
     {
         // for overwriting

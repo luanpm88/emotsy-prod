@@ -32,8 +32,6 @@ class SendingServerPhpMail extends SendingServer
     public function send($message, $params = array())
     {
         try {
-            $this->addMtaHeaders($message);
-
             $transport = \Swift_MailTransport::newInstance();
 
             // Create the Mailer using your created Transport

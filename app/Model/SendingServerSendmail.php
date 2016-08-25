@@ -32,8 +32,6 @@ class SendingServerSendmail extends SendingServer
     public function send($message, $params = array())
     {
         try {
-            $this->addMtaHeaders($message);
-
             $transport = \Swift_SendmailTransport::newInstance($this->sendmail_path.' -bs');
 
             // Create the Mailer using your created Transport

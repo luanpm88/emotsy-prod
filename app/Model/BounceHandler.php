@@ -27,7 +27,12 @@ use Acelle\Library\Log;
 class BounceHandler extends DeliveryHandler
 {
     protected $table = 'bounce_handlers';
-
+    
+    /**
+     * Process bounce message, extract the bounce information.
+     *
+     * @return mixed
+     */
     public function processMessage($mbox, $msgNo)
     {
         try {
@@ -69,7 +74,12 @@ class BounceHandler extends DeliveryHandler
             Log::warning($ex->getMessage());
         }
     }
-
+    
+    /**
+     * Extract bounced email address from email.
+     *
+     * @return string emailAddress
+     */
     public function getBouncedAddress($to)
     {
         preg_match('/(?<=\+)[^\+]+=[^@]+(?=@)/', $to, $matched);

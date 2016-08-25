@@ -26,6 +26,11 @@ use Acelle\Library\Log;
 
 class FeedbackLoopHandler extends DeliveryHandler
 {
+    /**
+     * Process feedback message, extract the feedback information (comply to RFC).
+     *
+     * @return mixed
+     */
     public function processMessage($mbox, $msgNo)
     {
         try {
@@ -66,7 +71,12 @@ class FeedbackLoopHandler extends DeliveryHandler
             Log::warning($ex->getMessage());
         }
     }
-
+    
+    /**
+     * Extract FeedbackType from feedback email.
+     *
+     * @return mixed
+     */
     public function getFeedbackType($header)
     {
         preg_match('/(?<=Feedback-Type:)\s*[^\s]*/', $header, $matched);

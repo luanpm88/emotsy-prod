@@ -43,16 +43,14 @@ class SendingServer extends Model
 
     public static $serverPools = array();
 
+    /**
+     * Reset the sending server pool.
+     *
+     * @return mixed
+     */
     public static function resetServerPools()
     {
         self::$serverPools = array();
-    }
-
-    public function addMtaHeaders($message)
-    {
-        $message->getHeaders()->addTextHeader('X-Mailspeed-Sending-Server-Id', $this->uid);
-
-        return $message;
     }
 
     /**
