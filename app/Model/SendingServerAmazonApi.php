@@ -27,7 +27,13 @@ use Acelle\Library\Log;
 class SendingServerAmazonApi extends SendingServerAmazon
 {
     protected $table = 'sending_servers';
-
+    
+    /**
+     * Send the provided message.
+     *
+     * @return boolean
+     * @param message
+     */
     public function send($message, $params = array())
     {
         try {

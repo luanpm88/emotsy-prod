@@ -28,7 +28,13 @@ use Acelle\Library\StringHelper;
 class SendingServerMailgunApi extends SendingServerMailgun
 {
     protected $table = 'sending_servers';
-
+    
+    /**
+     * Send the provided message.
+     *
+     * @return boolean
+     * @param message
+     */
     public function send($message, $params = array())
     {
         try {

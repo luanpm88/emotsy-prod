@@ -34,6 +34,11 @@ class SendingServerAmazon extends SendingServer
     public static $sesClient = null;
     public static $isSnsSetup = false;
 
+    /**
+     * Initiate a AWS SNS session and return the session object (snsClient).
+     *
+     * @return mixed
+     */
     public function snsClient()
     {
         if (!self::$snsClient) {
@@ -46,7 +51,12 @@ class SendingServerAmazon extends SendingServer
 
         return self::$snsClient;
     }
-
+    
+    /**
+     * Initiate a AWS SES session and return the session object (snsClient).
+     *
+     * @return mixed
+     */
     public function sesClient()
     {
         if (!self::$sesClient) {
@@ -59,7 +69,12 @@ class SendingServerAmazon extends SendingServer
 
         return self::$sesClient;
     }
-
+    
+    /**
+     * Setup AWS SNS for bounce and feedback loop.
+     *
+     * @return mixed
+     */
     public function setupSns($params)
     {
         if (self::$isSnsSetup) {

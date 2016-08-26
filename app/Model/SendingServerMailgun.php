@@ -31,12 +31,18 @@ class SendingServerMailgun extends SendingServer
     protected $table = 'sending_servers';
     public static $client = null;
     public static $isWebhookSetup = false;
-
+    
+    // Inherit class to implementation of this method
     public function send($message, $params = array())
     {
         // for overwriting
     }
-
+    
+    /**
+     * Get authenticated to Mailgun and return the session object.
+     *
+     * @return mixed
+     */
     public function client()
     {
         if (!self::$client) {
@@ -45,7 +51,12 @@ class SendingServerMailgun extends SendingServer
 
         return self::$client;
     }
-
+    
+    /**
+     * Setup webhooks for processing bounce and feedback loop.
+     *
+     * @return mixed
+     */
     public function setupWebhooks($domain)
     {
         if (self::$isWebhookSetup) {

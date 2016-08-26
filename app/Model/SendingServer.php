@@ -31,6 +31,18 @@ class SendingServer extends Model
     const DELIVERY_STATUS_SENT = 'sent';
     const DELIVERY_STATUS_FAILED = 'failed';
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'host', 'aws_access_key_id', 'aws_secret_access_key', 'aws_region', 'smtp_username',
+        'smtp_password', 'smtp_port', 'smtp_protocol', 'quota_value', 'quota_base', 'quota_unit',
+        'bounce_handler_id', 'feedback_loop_handler_id', 'sendmail_path', 'domain', 'api_key',
+    ];
+    
+    // Supported server types
     public static $serverMapping = array(
         'amazon-api' => 'SendingServerAmazonApi',
         'amazon-smtp' => 'SendingServerAmazonSmtp',
@@ -40,7 +52,8 @@ class SendingServer extends Model
         'mailgun-api' => 'SendingServerMailgunApi',
         'mailgun-smtp' => 'SendingServerMailgunSmtp',
     );
-
+    
+    // Server pools
     public static $serverPools = array();
 
     /**
@@ -60,7 +73,13 @@ class SendingServer extends Model
     {
         return $this->belongsTo('Acelle\Model\BounceHandler');
     }
-
+    
+    /**
+     * Pick up a sending server for the provided campaign.
+     *
+     * @return mixed
+     * @param campaign
+     */
     public static function pickServer($campaign)
     {
         $servers = self::select('sending_servers.*', 'user_group_sending_servers.fitness')->join('user_group_sending_servers', 'user_group_sending_servers.sending_server_id', '=', 'sending_servers.id')->where('user_group_id', $campaign->user->user_group_id)->get();
@@ -87,7 +106,13 @@ class SendingServer extends Model
             return self::$serverPools[$id] = self::mapServerType($selectedServer);
         }
     }
-
+    
+    /**
+     * Map a server to its class type and initiate an instance.
+     *
+     * @return mixed
+     * @param campaign
+     */
     public static function mapServerType($server)
     {
         $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
@@ -217,17 +242,6 @@ class SendingServer extends Model
             $item->custom_order = 0;
         });
     }
-
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'host', 'aws_access_key_id', 'aws_secret_access_key', 'aws_region', 'smtp_username',
-        'smtp_password', 'smtp_port', 'smtp_protocol', 'quota_value', 'quota_base', 'quota_unit',
-        'bounce_handler_id', 'feedback_loop_handler_id', 'sendmail_path', 'domain', 'api_key',
-    ];
 
     /**
      * Type of server.

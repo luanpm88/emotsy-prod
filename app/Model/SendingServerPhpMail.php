@@ -28,7 +28,13 @@ use Acelle\Library\Log;
 class SendingServerPhpMail extends SendingServer
 {
     protected $table = 'sending_servers';
-
+    
+    /**
+     * Send the provided message.
+     *
+     * @return boolean
+     * @param message
+     */
     public function send($message, $params = array())
     {
         try {
