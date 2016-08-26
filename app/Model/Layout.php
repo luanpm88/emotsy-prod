@@ -128,7 +128,21 @@ class Layout extends Model
             default:
                 $tags = array();
         }
-
+        
+        $tags = array_merge($tags, [
+            ['name' => '{LIST_NAME}', 'required' => false ],
+            ['name' => '{CONTACT_NAME}', 'required' => false ],
+            ['name' => '{CONTACT_STATE}', 'required' => false ],
+            ['name' => '{CONTACT_ADDRESS_1}', 'required' => false ],
+            ['name' => '{CONTACT_ADDRESS_2}', 'required' => false ],
+            ['name' => '{CONTACT_CITY}', 'required' => false ],
+            ['name' => '{CONTACT_ZIP}', 'required' => false ],
+            ['name' => '{CONTACT_COUNTRY}', 'required' => false ],
+            ['name' => '{CONTACT_PHONE}', 'required' => false ],
+            ['name' => '{CONTACT_EMAIL}', 'required' => false ],
+            ['name' => '{CONTACT_URL}', 'required' => false ]
+        ]);
+        
         return $tags;
     }
 

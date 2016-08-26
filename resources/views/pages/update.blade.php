@@ -34,20 +34,36 @@
 					<br />
                     @include('helpers.form_control', ['class' => ($layout->type == 'page' ? 'full-editor' : 'email-editor'), 'type' => 'textarea', 'name' => 'content', 'value' => $page->content, 'rules' => $list->getFieldRules()])
                     
-					@if (count($layout->tags()) > 0)
-                                
-						<div class="">
-							
-							<label>{{ trans('messages.required_tags') }}:</label>
-								@foreach($layout->tags() as $tag) 
-									<a data-popup="tooltip" title='{{ trans('messages.click_to_insert_tag') }}' href="javascript:;" class="btn btn-info bg-grey-800 btn-xs insert_tag_button" data-tag-name="{{ $tag["name"] }}">
+					@if (count($layout->tags()) > 0)                                
+						<div class="tags_list">                                    
+							<label class="text-semibold text-teal">{{ trans('messages.required_tags') }}:</label>
+							<br />
+							@foreach($layout->tags() as $tag)
+								@if ($tag["required"])
+									<a data-popup="tooltip" title='{{ trans('messages.click_to_insert_tag') }}' href="javascript:;" class="btn btn-default text-semibold btn-xs insert_tag_button" data-tag-name="{{ $tag["name"] }}">
 										{{ $tag["name"] }}
 									</a>
-								@endforeach
-								
+								@endif
+							@endforeach                                        
 						</div>
-							
 					@endif
+					
+					<br />
+					@if (count($layout->tags()) > 0)                                
+						<div class="tags_list">                                    
+							<label class="text-semibold text-teal">{{ trans('messages.available_tags') }}:</label>
+							<br />
+							@foreach($layout->tags() as $tag)
+								@if (!$tag["required"])
+									<a data-popup="tooltip" title='{{ trans('messages.click_to_insert_tag') }}' href="javascript:;" class="btn btn-default text-semibold btn-xs insert_tag_button" data-tag-name="{{ $tag["name"] }}">
+										{{ $tag["name"] }}
+									</a>
+								@endif
+							@endforeach                                        
+						</div>
+					@endif
+					
+					
 					<hr />
                     <div class="">
                         <a page-url="{{ action('PageController@preview', ['list_uid' => $list->uid, 'alias' => $layout->alias]) }}" class="btn btn-info bg-grey-800 mr-10 preview-page-button" data-toggle="modal" data-target="#preview_page"><i class="icon-eye"></i> {{ trans('messages.preview') }}</a>

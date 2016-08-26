@@ -106,7 +106,7 @@ return [
     'send_to' => 'Send to',
     'how_to_send_list_notification' => 'How to send notification',
     'unsubscribe_notification' => 'Send unsubscribe confirmations to subscribers',
-    'list.unsubscribe_notification.help' => 'Send subscribers a final “Goodbye” email to let them know they have unsubscribed. These are helpful in cases where subscribers are accidentally unsubscribed by someone they forwarded a campaign to, a spam-filter/firewall, or the like.',
+    'list.unsubscribe_notification.help' => 'Send subscribers a final “Goodbye” email to let them know they have unsubscribed.',
     'email_daily' => 'Daily summary',
     'list.email_daily.help' => 'Get an end-of-the-day summary of subscribe and unsubscribe activity.<br />Additional email addresses must be separated by a comma.',
     'one_by_one' => 'One-by-one',

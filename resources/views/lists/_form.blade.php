@@ -56,7 +56,7 @@
 						</div>
 					</div>		
 						
-					<div class="sub_section">
+					<div class="sub_section hide">
 						<h2 class="text-semibold text-teal-800">{{ trans('messages.notifications') }}</h2>
 						<div class="row">
 							<div class="col-md-6">
@@ -64,8 +64,6 @@
 								@include('helpers.form_control', ['type' => 'text', 'name' => 'email_subscribe', 'value' => $list->email_subscribe, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
 								
 								@include('helpers.form_control', ['type' => 'text', 'name' => 'email_unsubscribe', 'value' => $list->email_unsubscribe, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
-								
-								@include('helpers.form_control', ['type' => 'text', 'name' => 'email_daily', 'value' => $list->email_daily, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
 								
 								<br />									
 									
