@@ -1,5 +1,25 @@
 <?php
 
+/**
+ * Tool class.
+ *
+ * Misc helper tool
+ *
+ * LICENSE: This product includes software developed at
+ * the Acelle Co., Ltd. (http://acellemail.com/).
+ *
+ * @category   Acelle Library
+ *
+ * @author     N. Pham <n.pham@acellemail.com>
+ * @author     L. Pham <l.pham@acellemail.com>
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
+ *
+ * @version    1.0
+ *
+ * @link       http://acellemail.com
+ */
+
 namespace Acelle\Library;
 
 class Tool
@@ -166,7 +186,7 @@ class Tool
     {
         $plural = '';
         if ($value > 1) {
-            for ($i = 0;$i < strlen($phrase);++$i) {
+            for ($i = 0; $i < strlen($phrase); ++$i) {
                 if ($i == strlen($phrase) - 1) {
                     $plural .= ($phrase[$i] == 'y') ? 'ies' : (($phrase[$i] == 's' || $phrase[$i] == 'x' || $phrase[$i] == 'z' || $phrase[$i] == 'ch' || $phrase[$i] == 'sh') ? $phrase[$i].'es' : $phrase[$i].'s');
                 } else {
@@ -182,7 +202,7 @@ class Tool
 
     /**
      * Get file/folder permissions.
-     * 
+     *
      * @param       string
      *
      * @return string

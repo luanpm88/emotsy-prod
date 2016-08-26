@@ -13,6 +13,5 @@ class BlacklistPolicy
      */
     public function __construct()
     {
-        //
     }
 }

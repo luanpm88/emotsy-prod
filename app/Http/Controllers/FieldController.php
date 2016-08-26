@@ -76,7 +76,6 @@ class FieldController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
@@ -183,7 +182,6 @@ class FieldController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -195,7 +193,6 @@ class FieldController extends Controller
      */
     public function edit($id)
     {
-        //
     }
 
     /**
@@ -208,7 +205,6 @@ class FieldController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
     }
 
     /**
@@ -220,7 +216,6 @@ class FieldController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 
     /**

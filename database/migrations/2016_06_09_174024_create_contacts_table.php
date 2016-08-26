@@ -7,8 +7,6 @@ class CreateContactsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -25,15 +23,13 @@ class CreateContactsTable extends Migration
             $table->string('zip');
             $table->string('phone')->nullable();
             $table->string('url')->nullable();
-            
+
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

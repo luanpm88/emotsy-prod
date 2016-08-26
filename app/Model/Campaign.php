@@ -1,5 +1,26 @@
 <?php
 
+/**
+ * Campaign class.
+ *
+ * Model class for campaigns related functionalities.
+ * This is the center of the application
+ *
+ * LICENSE: This product includes software developed at
+ * the Acelle Co., Ltd. (http://acellemail.com/).
+ *
+ * @category   MVC Model
+ *
+ * @author     N. Pham <n.pham@acellemail.com>
+ * @author     L. Pham <l.pham@acellemail.com>
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
+ *
+ * @version    1.0
+ *
+ * @link       http://acellemail.com
+ */
+
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
@@ -9,17 +30,19 @@ use DB;
 
 class Campaign extends Model
 {
+    // Campaign status
     const STATUS_NEW = 'new';
     const STATUS_READY = 'ready';
     const STATUS_SENDING = 'sending';
     const STATUS_ERROR = 'error';
     const STATUS_DONE = 'done';
 
+    // Campaign types
     const TYPE_REGULAR = 'regular';
     const TYPE_PLAIN_TEXT = 'plain-text';
 
+    // Campaign settings
     const WORKER_DELAY = 1;
-
     const DKIM_SELECTOR = 'mailer';
 
     public static $required_tags = array(
@@ -57,36 +80,66 @@ class Campaign extends Model
     {
         return $this->belongsTo('Acelle\Model\User');
     }
-
+    
+    /**
+     * Get campaign tracking logs.
+     *
+     * @return mixed
+     */
     public function trackingLogs()
     {
         return $this->hasMany('Acelle\Model\TrackingLog');
     }
-
+    
+    /**
+     * Get campaign bounce logs.
+     *
+     * @return mixed
+     */
     public function bounceLogs()
     {
         return BounceLog::select('bounce_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'bounce_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
     }
-
+    
+    /**
+     * Get campaign open logs.
+     *
+     * @return mixed
+     */
     public function openLogs()
     {
         return OpenLog::select('open_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
     }
-
+    
+    /**
+     * Get campaign click logs.
+     *
+     * @return mixed
+     */
     public function clickLogs()
     {
         return ClickLog::select('click_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
     }
-
+    
+    /**
+     * Get campaign feedback loop logs.
+     *
+     * @return mixed
+     */
     public function feedbackLogs()
     {
         return FeedbackLog::select('feedback_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'feedback_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
     }
-
+    
+    /**
+     * Get campaign unsubscribe logs.
+     *
+     * @return mixed
+     */
     public function unsubscribeLogs()
     {
         return UnsubscribeLog::select('unsubscribe_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'unsubscribe_logs.message_id')
@@ -137,13 +190,23 @@ class Campaign extends Model
         $this->status = $me->status;
         $this->save();
     }
-
+    
+    /**
+     * Mark campaign as 'ready'.
+     *
+     * @return boolean
+     */
     public function ready()
     {
         $this->status = self::STATUS_READY;
         $this->save();
     }
-
+    
+    /**
+     * Get campaign's email chunks.
+     *
+     * @return mixed
+     */
     public function getChunks($collection, $count)
     {
         $result = [];
@@ -163,7 +226,9 @@ class Campaign extends Model
     }
 
     /**
-     * Mark the campaign as 'done' or 'sent'.
+     * Start the campaign, using PHP fork() to launch multiple processes.
+     *
+     * @return mixed
      */
     public function startMultiProcesses()
     {
@@ -197,7 +262,7 @@ class Campaign extends Model
             $status = pcntl_wexitstatus($status);
             Log::info("Child $status completed\n");
         }
-        
+
         $this->refreshStatus();
 
         if ($this->status == self::STATUS_SENDING) {
@@ -278,7 +343,12 @@ class Campaign extends Model
 
         return TrackingLog::create($params);
     }
-
+    
+    /**
+     * Pick up a delivery server for the campaign.
+     *
+     * @return mixed
+     */
     public function pickServer($campaign)
     {
         return SendingServer::pickServer($campaign);
@@ -286,7 +356,7 @@ class Campaign extends Model
 
     /**
      * Template tags.
-     * 
+     *
      * All availabel template tags
      */
     public function tags()
@@ -384,7 +454,7 @@ class Campaign extends Model
             return $this->segment->subscribers()
                 ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
-                ->whereRaw(DB::getTablePrefix() . "subscribers.status = '" . Subscriber::STATUS_SUBSCRIBED . "'")
+                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
                 ->addBinding($this->mailList->id)
                 ->select('subscribers.*')
                 ->get();
@@ -392,7 +462,7 @@ class Campaign extends Model
             return $this->mailList->subscribers()
                 ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
-                ->whereRaw(DB::getTablePrefix() . "subscribers.status = '" . Subscriber::STATUS_SUBSCRIBED . "'")
+                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
                 ->addBinding($this->mailList->id)
                 ->select('subscribers.*')
                 ->get();
@@ -405,7 +475,7 @@ class Campaign extends Model
      */
     private function appendOpenTrackingUrl($body, $msgId)
     {
-        $openTrackingBaseURL = Setting::get("url_open_track");
+        $openTrackingBaseURL = Setting::get('url_open_track');
         $tracking_url = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $openTrackingBaseURL);
 
         return $body.'<img src="'.$tracking_url.'" width="0" height="0" style="visibility:hidden" />';
@@ -431,6 +501,7 @@ class Campaign extends Model
         $message->getHeaders()->addTextHeader('X-Acelle-Subscriber-Id', $subscriber->uid);
         $message->getHeaders()->addTextHeader('X-Acelle-User-Id', $this->user->uid);
         $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', $msgId);
+        $message->getHeaders()->addTextHeader('X-Acelle-Sending-Server-Id', $server->uid);
 
         // @TODO for AWS, setting returnPath requires verified domain or email address
         //$message->setReturnPath($server->getVerp($subscriber->email));
@@ -463,13 +534,23 @@ class Campaign extends Model
         return array($message, $msgId);
     }
 
+    /**
+     * Find sending domain from email.
+     *
+     * @return mixed
+     */
     private function findSendingDomain($email)
     {
         $domain = substr(strrchr($email, '@'), 1);
 
         return SendingDomain::where('name', $domain)->first();
     }
-
+    
+    /**
+     * Sign the message with DKIM.
+     *
+     * @return mixed
+     */
     private function sign($message)
     {
         $sendingDomain = $this->findSendingDomain($this->from_email);

@@ -1,11 +1,36 @@
 <?php
 
+/**
+ * FeedbackLoopHandler class.
+ *
+ * Model class for feedback loop handler
+ *
+ * LICENSE: This product includes software developed at
+ * the Acelle Co., Ltd. (http://acellemail.com/).
+ *
+ * @category   MVC Model
+ *
+ * @author     N. Pham <n.pham@acellemail.com>
+ * @author     L. Pham <l.pham@acellemail.com>
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
+ *
+ * @version    1.0
+ *
+ * @link       http://acellemail.com
+ */
+
 namespace Acelle\Model;
 
 use Acelle\Library\Log;
 
 class FeedbackLoopHandler extends DeliveryHandler
 {
+    /**
+     * Process feedback message, extract the feedback information (comply to RFC).
+     *
+     * @return mixed
+     */
     public function processMessage($mbox, $msgNo)
     {
         try {
@@ -46,7 +71,12 @@ class FeedbackLoopHandler extends DeliveryHandler
             Log::warning($ex->getMessage());
         }
     }
-
+    
+    /**
+     * Extract FeedbackType from feedback email.
+     *
+     * @return mixed
+     */
     public function getFeedbackType($header)
     {
         preg_match('/(?<=Feedback-Type:)\s*[^\s]*/', $header, $matched);

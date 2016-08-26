@@ -3,28 +3,32 @@
 /**
  * RouletteWheel class.
  *
- * RouletteWheel: utility used to pick up a delivery server using probability
+ * Implementation of the Roulette Wheel algorithm to pick up a delivery server
  *
  * LICENSE: This product includes software developed at
- * the Acelle Co., Ltd. (http://mailixa.net/).
+ * the Acelle Co., Ltd. (http://acellemail.com/).
  *
- * @category   MVC Model
+ * @category   Acelle Library
  *
- * @author     N. Pham <n.pham@mailixa.net>
- * @author     L. Pham <l.pham@mailixa.net>
- * @copyright  Acelle Co., Ltd.
- * @license    Acelle Co., Ltd.
+ * @author     N. Pham <n.pham@acellemail.com>
+ * @author     L. Pham <l.pham@acellemail.com>
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
  *
  * @version    1.0
  *
- * @link       http://mailixa.net
+ * @link       http://acellemail.com
  */
 
 namespace Acelle\Library;
 
 class RouletteWheel
 {
-    // pick a random element from an array based on its probability
+    /**
+     * Pick a random element from an array based on its probability.
+     *
+     * @return mixed
+     */
     public static function generate($a)
     {
         $sum = 0.0;
@@ -47,7 +51,12 @@ class RouletteWheel
         // just in case
         return array_keys($a)[sizeof($a) - 1];
     }
-
+    
+    /**
+     * Generate a random float.
+     *
+     * @return float random
+     */
     public static function frandom()
     {
         return (float) rand() / (float) getrandmax();

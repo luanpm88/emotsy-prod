@@ -7,8 +7,6 @@ class CreateFeedbackLogsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -18,9 +16,9 @@ class CreateFeedbackLogsTable extends Migration
             $table->string('message_id')->nullable();
             $table->string('feedback_type');
             $table->text('raw_feedback_content');
-            
+
             $table->timestamps();
-            
+
             // không cần ràng buộc này, vì thậm chí khi gửi bằng AWS thì SNS feedback gần như ngay lập tức, trước khi ghi xuống tracking_logs
             //$table->foreign('message_id')->references('message_id')->on('tracking_logs')->onDelete('cascade');
         });
@@ -28,8 +26,6 @@ class CreateFeedbackLogsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

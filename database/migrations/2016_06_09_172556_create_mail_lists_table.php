@@ -7,8 +7,6 @@ class CreateMailListsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -28,15 +26,13 @@ class CreateMailListsTable extends Migration
             $table->boolean('send_welcome_email')->default(false);
             $table->boolean('unsubscribe_notification')->default(false);
             $table->string('status');
-            
+
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

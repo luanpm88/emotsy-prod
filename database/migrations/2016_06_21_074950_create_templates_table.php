@@ -7,8 +7,6 @@ class CreateTemplatesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -21,9 +19,9 @@ class CreateTemplatesTable extends Migration
             $table->string('image');
             $table->integer('custom_order');
             $table->boolean('shared');
-            
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
@@ -31,8 +29,6 @@ class CreateTemplatesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

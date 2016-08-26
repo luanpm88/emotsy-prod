@@ -1,5 +1,25 @@
 <?php
 
+/**
+ * RunHandler class.
+ *
+ * CLI interface for trigger email handling by cronjob (bounce, feedback)
+ *
+ * LICENSE: This product includes software developed at
+ * the Acelle Co., Ltd. (http://acellemail.com/).
+ *
+ * @category   Console App
+ *
+ * @author     N. Pham <n.pham@acellemail.com>
+ * @author     L. Pham <l.pham@acellemail.com>
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
+ *
+ * @version    1.0
+ *
+ * @link       http://acellemail.com
+ */
+
 namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
@@ -48,7 +68,12 @@ class RunHandler extends Command
             Log::error('Something went wrong: '.$e->getMessage());
         }
     }
-
+    
+    /**
+     * Actually run the handler.
+     *
+     * @return mixed
+     */
     private function execRunHandler()
     {
         // guarantee that only one process can be run at one time

@@ -7,8 +7,6 @@ class CreateSendingServersTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -36,9 +34,9 @@ class CreateSendingServersTable extends Migration
             $table->string('quota_unit');
             $table->string('status');
             $table->integer('custom_order');
-            
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('bounce_handler_id')->references('id')->on('bounce_handlers')->onDelete('cascade');
@@ -48,8 +46,6 @@ class CreateSendingServersTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

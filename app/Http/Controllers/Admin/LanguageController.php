@@ -120,7 +120,6 @@ class LanguageController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -189,7 +188,6 @@ class LanguageController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 
     /**

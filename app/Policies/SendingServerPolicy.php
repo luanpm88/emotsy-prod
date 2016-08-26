@@ -13,7 +13,6 @@ class SendingServerPolicy
      */
     public function __construct()
     {
-        //
     }
 
     public function create(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)

@@ -7,8 +7,6 @@ class CreatePagesTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -18,9 +16,9 @@ class CreatePagesTable extends Migration
             $table->integer('layout_id')->unsigned();
             $table->integer('mail_list_id')->unsigned();
             $table->longtext('content');
-            
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
             $table->foreign('layout_id')->references('id')->on('layouts')->onDelete('cascade');
@@ -29,8 +27,6 @@ class CreatePagesTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

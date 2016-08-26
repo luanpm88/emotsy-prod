@@ -144,7 +144,6 @@ class SubscriberController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -230,7 +229,6 @@ class SubscriberController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 
     /**

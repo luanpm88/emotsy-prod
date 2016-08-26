@@ -1,5 +1,25 @@
 <?php
 
+/**
+ * SendingServer class.
+ *
+ * An abstract class for different types of sending servers
+ *
+ * LICENSE: This product includes software developed at
+ * the Acelle Co., Ltd. (http://acellemail.com/).
+ *
+ * @category   MVC Model
+ *
+ * @author     N. Pham <n.pham@acellemail.com>
+ * @author     L. Pham <l.pham@acellemail.com>
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
+ *
+ * @version    1.0
+ *
+ * @link       http://acellemail.com
+ */
+
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
@@ -23,16 +43,14 @@ class SendingServer extends Model
 
     public static $serverPools = array();
 
+    /**
+     * Reset the sending server pool.
+     *
+     * @return mixed
+     */
     public static function resetServerPools()
     {
         self::$serverPools = array();
-    }
-
-    public function addMtaHeaders($message)
-    {
-        $message->getHeaders()->addTextHeader('X-Mailspeed-Sending-Server-Id', $this->uid);
-
-        return $message;
     }
 
     /**
@@ -208,7 +226,7 @@ class SendingServer extends Model
     protected $fillable = [
         'name', 'host', 'aws_access_key_id', 'aws_secret_access_key', 'aws_region', 'smtp_username',
         'smtp_password', 'smtp_port', 'smtp_protocol', 'quota_value', 'quota_base', 'quota_unit',
-        'bounce_handler_id', 'feedback_loop_handler_id', 'sendmail_path', 'domain', 'api_key'
+        'bounce_handler_id', 'feedback_loop_handler_id', 'sendmail_path', 'domain', 'api_key',
     ];
 
     /**
@@ -358,7 +376,7 @@ class SendingServer extends Model
 
         //$query = \Acelle\Model\TrackingLog::where('sending_server_id', $this->id)
         //    ->whereRaw("created_at >= NOW() - INTERVAL {$this->quota_base} {$this->quota_unit}");
-        //    
+
         //return $query->count();
     }
 
@@ -416,7 +434,7 @@ class SendingServer extends Model
     {
         return $this->quota_value.' / '.$this->quota_base.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
     }
-    
+
     /**
      * Select options for aws region.
      *
@@ -425,14 +443,14 @@ class SendingServer extends Model
     public static function awsRegionSelectOptions()
     {
         return [
-            ["value" => "", "text" => trans('messages.choose')],
-            ["value" => "us-east-1", "text" => "US East (N. Virginia)"],
-            ["value" => "us-west-2", "text" => "US West (Oregon)"],
-            ["value" => "ap-southeast-1", "text" => "Asia Pacific (Singapore)"],
-            ["value" => "ap-southeast-2", "text" => "Asia Pacific (Sydney)"],
-            ["value" => "ap-northeast-1", "text" => "Asia Pacific (Tokyo)"],
-            ["value" => "eu-central-1", "text" => "EU (Frankfurt)"],
-            ["value" => "eu-west-1", "text" => "EU (Ireland)"],
+            ['value' => '', 'text' => trans('messages.choose')],
+            ['value' => 'us-east-1', 'text' => 'US East (N. Virginia)'],
+            ['value' => 'us-west-2', 'text' => 'US West (Oregon)'],
+            ['value' => 'ap-southeast-1', 'text' => 'Asia Pacific (Singapore)'],
+            ['value' => 'ap-southeast-2', 'text' => 'Asia Pacific (Sydney)'],
+            ['value' => 'ap-northeast-1', 'text' => 'Asia Pacific (Tokyo)'],
+            ['value' => 'eu-central-1', 'text' => 'EU (Frankfurt)'],
+            ['value' => 'eu-west-1', 'text' => 'EU (Ireland)'],
         ];
     }
 }

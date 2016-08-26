@@ -13,7 +13,6 @@ class UserGroupPolicy
      */
     public function __construct()
     {
-        //
     }
 
     public function create(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)

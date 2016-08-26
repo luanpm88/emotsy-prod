@@ -1,23 +1,23 @@
 <?php
 
 /**
- * DeliveryServerPhpMail class.
+ * SendingServerPhpMail class.
  *
- * Delivery server using PHP mail() function to send emails
+ * Abstract class for PHP mail() sending server
  *
  * LICENSE: This product includes software developed at
- * the Acelle Co., Ltd. (http://mailixa.net/).
+ * the Acelle Co., Ltd. (http://acellemail.com/).
  *
  * @category   MVC Model
  *
- * @author     N. Pham <n.pham@mailixa.net>
- * @author     L. Pham <l.pham@mailixa.net>
- * @copyright  Acelle Co., Ltd.
- * @license    Acelle Co., Ltd.
+ * @author     N. Pham <n.pham@acellemail.com>
+ * @author     L. Pham <l.pham@acellemail.com>
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
  *
  * @version    1.0
  *
- * @link       http://mailixa.net
+ * @link       http://acellemail.com
  */
 
 namespace Acelle\Model;
@@ -32,8 +32,6 @@ class SendingServerPhpMail extends SendingServer
     public function send($message, $params = array())
     {
         try {
-            $this->addMtaHeaders($message);
-
             $transport = \Swift_MailTransport::newInstance();
 
             // Create the Mailer using your created Transport

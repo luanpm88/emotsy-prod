@@ -1,5 +1,25 @@
 <?php
 
+/**
+ * MailList class.
+ *
+ * Model class for log mail list
+ *
+ * LICENSE: This product includes software developed at
+ * the Acelle Co., Ltd. (http://acellemail.com/).
+ *
+ * @category   MVC Model
+ *
+ * @author     N. Pham <n.pham@acellemail.com>
+ * @author     L. Pham <l.pham@acellemail.com>
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
+ *
+ * @version    1.0
+ *
+ * @link       http://acellemail.com
+ */
+
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
@@ -267,7 +287,7 @@ class MailList extends Model
     /**
      * Check if a email is exsit.
      *
-     * @param string the email.
+     * @param string the email
      *
      * @return bool
      */
@@ -450,10 +470,10 @@ class MailList extends Model
     public function trackingCount()
     {
         $query = TrackingLog::whereIn('tracking_logs.subscriber_id', function ($query) {
-                $query->select('subscribers.id')
+            $query->select('subscribers.id')
                     ->from('subscribers')
                     ->where('subscribers.mail_list_id', '=', $this->id);
-            });
+        });
 
         return $query->count();
     }

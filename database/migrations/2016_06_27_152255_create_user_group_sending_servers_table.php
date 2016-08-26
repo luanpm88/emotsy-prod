@@ -7,8 +7,6 @@ class CreateUserGroupSendingServersTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -17,15 +15,13 @@ class CreateUserGroupSendingServersTable extends Migration
             $table->integer('sending_server_id');
             $table->string('user_group_id');
             $table->integer('fitness');
-            
+
             $table->timestamps();
         });
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

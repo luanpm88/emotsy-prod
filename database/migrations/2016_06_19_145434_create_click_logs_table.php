@@ -7,8 +7,6 @@ class CreateClickLogsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -18,9 +16,9 @@ class CreateClickLogsTable extends Migration
             $table->string('url');
             $table->string('ip_address');
             $table->text('user_agent');
-            
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('message_id')->references('message_id')->on('tracking_logs')->onDelete('cascade');
         });
@@ -28,8 +26,6 @@ class CreateClickLogsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

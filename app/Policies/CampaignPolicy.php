@@ -13,7 +13,6 @@ class CampaignPolicy
      */
     public function __construct()
     {
-        //
     }
 
     public function read(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
@@ -35,19 +34,19 @@ class CampaignPolicy
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
-        return $item->user_id == $user->id && in_array($item->status, ["new","ready","error"]);
+        return $item->user_id == $user->id && in_array($item->status, ['new', 'ready', 'error']);
     }
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
-        return $item->user_id == $user->id && in_array($item->status, ["new","ready","paused","done"]);
+        return $item->user_id == $user->id && in_array($item->status, ['new', 'ready', 'paused', 'done']);
     }
     public function pause(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
-        return false && $item->user_id == $user->id && in_array($item->status, ["sending","ready"]);
+        return false && $item->user_id == $user->id && in_array($item->status, ['sending', 'ready']);
     }
     public function restart(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
-        return $item->user_id == $user->id && in_array($item->status, ["error"]);
+        return $item->user_id == $user->id && in_array($item->status, ['error']);
     }
 }

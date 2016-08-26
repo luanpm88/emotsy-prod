@@ -7,8 +7,6 @@ class CreateSegmentConditionsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -19,9 +17,9 @@ class CreateSegmentConditionsTable extends Migration
             $table->integer('field_id')->unsigned();
             $table->string('operator');
             $table->string('value');
-            
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('segment_id')->references('id')->on('segments')->onDelete('cascade');
             $table->foreign('field_id')->references('id')->on('fields')->onDelete('cascade');
@@ -30,8 +28,6 @@ class CreateSegmentConditionsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

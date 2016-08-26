@@ -141,7 +141,6 @@ class UserController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -230,7 +229,6 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 
     public function select2(Request $request)
@@ -345,7 +343,7 @@ class UserController extends Controller
      */
     public function avatar(Request $request)
     {
-        // Get current user        
+        // Get current user
         if ($request->uid != '0') {
             $user = \Acelle\Model\User::findByUid($request->uid);
         } else {

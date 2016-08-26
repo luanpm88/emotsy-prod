@@ -7,8 +7,6 @@ class CreateFeedbackLoopHandlersTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -26,9 +24,9 @@ class CreateFeedbackLoopHandlersTable extends Migration
             $table->string('encryption');
             $table->string('status');
             $table->integer('custom_order');
-            
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
@@ -36,8 +34,6 @@ class CreateFeedbackLoopHandlersTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

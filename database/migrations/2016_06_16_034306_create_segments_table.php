@@ -7,8 +7,6 @@ class CreateSegmentsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
     public function up()
     {
@@ -18,9 +16,9 @@ class CreateSegmentsTable extends Migration
             $table->integer('mail_list_id')->unsigned();
             $table->string('name');
             $table->string('matching');
-            
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
         });
@@ -28,8 +26,6 @@ class CreateSegmentsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
     public function down()
     {

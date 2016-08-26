@@ -129,7 +129,6 @@ class MailListController extends Controller
      */
     public function show($id)
     {
-        //
     }
 
     /**
@@ -211,7 +210,6 @@ class MailListController extends Controller
      */
     public function destroy($id)
     {
-        //
     }
 
     /**

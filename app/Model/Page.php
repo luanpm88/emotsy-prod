@@ -1,5 +1,25 @@
 <?php
 
+/**
+ * Page class.
+ *
+ * Model class for Page
+ *
+ * LICENSE: This product includes software developed at
+ * the Acelle Co., Ltd. (http://acellemail.com/).
+ *
+ * @category   MVC Model
+ *
+ * @author     N. Pham <n.pham@acellemail.com>
+ * @author     L. Pham <l.pham@acellemail.com>
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
+ *
+ * @version    1.0
+ *
+ * @link       http://acellemail.com
+ */
+
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
@@ -120,7 +140,7 @@ class Page extends Model
 
         //// SUBMIT_BUTTON
         //$this->content = str_replace('[SUBMIT_BUTTON]', '<button class="btn btn-primary" type="submit">Submit <i class="icon-arrow-right14 position-right"></i></button>', $this->content);
-        //
+
         //// LIST FIELDS
         //$list_fields = array();
         //foreach($this->mailList->list_fields()->where("visibility", "visible")->get() as $lf) {
@@ -140,30 +160,30 @@ class Page extends Model
         //}
         //$fields = view('subscribers._custom_fields', array("list_fields" => $list_fields))->render();
         //$this->content = str_replace('[LIST_FIELDS]', $fields, $this->content);
-        //
+
         //// [UPDATE_PROFILE_URL]
-        //
+
         //// [UNSUBSCRIBE_EMAIL_FIELD]
         //$email_field = '<div class="row"><div class="col-md-12"><label>Email <span class="text-danger">*</span></label><input name="EMAIL" value="" type="text" class="form-control required" placeholder="Email"></div></div>';
         //$this->content = str_replace('[UNSUBSCRIBE_EMAIL_FIELD]', $email_field, $this->content);
-        //
+
         //if(isset($subsriber)) {
         //    // [UNSUBSCRIBE_CONFIRM_URL]
         //    $this->content = str_replace('[UNSUBSCRIBE_CONFIRM_URL]', action('ListPageController@unsubscribe_confirm', array("list_id" => $this->mailList->list_id, "email" => $subsriber->email, "code" => $subsriber->get_code("unsubscribe-confirm"))), $this->content);
-        //    
+
         //    // [SUBSCRIBE_CONFIRM_URL]
         //    $this->content = str_replace('[SUBSCRIBE_CONFIRM_URL]', action('ListPageController@subscribe_confirm', array("list_id" => $this->mailList->list_id, "email" => $subsriber->email, "code" => $subsriber->get_code("subscribe-confirm"))), $this->content);
-        //    
+
         //    // [UPDATE_PROFILE_URL]
         //    $this->content = str_replace('[UPDATE_PROFILE_URL]', action('ListPageController@update_profile', array("list_id" => $this->mailList->list_id, "email" => $subsriber->email, "code" => $subsriber->get_code("update-profile"))), $this->content);
-        //}        
-        //
+        //}
+
         //// [SUBSCRIBE_URL]
         //$this->content = str_replace('[SUBSCRIBE_URL]', action('ListPageController@subscribe', array("list_id" => $this->mailList->list_id)), $this->content);
-        //
+
         //// [COMPANY_NAME]
         //$this->content = str_replace('[COMPANY_NAME]', $this->mailList->company->name, $this->content);
-        //
+
         //// [CURRENT_YEAR]
         //$this->content = str_replace('[CURRENT_YEAR]', date("Y"), $this->content);
     }
@@ -180,7 +200,7 @@ class Page extends Model
     {
         $page = $this;
         \Mail::send('pages._email_content', ['page' => $page], function ($m) use ($subscriber, $title) {
-            $m->from('service@mailixa.net', 'Acelle');
+            $m->from('service@acellemail.com', 'Acelle');
 
             $m->to($subscriber->email, 'Subscriber')->subject($title);
         });
