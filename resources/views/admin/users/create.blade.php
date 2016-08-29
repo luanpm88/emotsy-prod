@@ -23,7 +23,7 @@
 @endsection
 
 @section('content')
-                <form enctype="multipart/form-data" action="{{ action('Admin\UserController@store') }}" method="POST" class="form-validate-jquery">
+          <form enctype="multipart/form-data" action="{{ action('Admin\UserController@store') }}" method="POST" class="form-validate-jquery">
 					{{ csrf_field() }}
 					
 					@include('admin.users._form')			

@@ -116,6 +116,7 @@ class UserController extends Controller
                         // Remove old images
                         $user->removeImage();
                         $user->image = $user->uploadImage($request->file('image'));
+                        $user->save();
                     }
                 }
 
