@@ -757,7 +757,7 @@ return [
     'domain' => 'Domain',
     'api_key' => 'API key',
     'all_sending_servers' => 'All sending servers',
-    '' => '',
+    'system_email_configuration' => "System's email configuration",
     '' => '',
     '' => '',
     '' => '',
