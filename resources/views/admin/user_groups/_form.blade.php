@@ -360,16 +360,16 @@
 					
 					<script>
 						$(document).ready(function() {
-							//// add segment condition
-							//$(document).on("change", "input[name=frontend_access]", function(e) {
-							//	if(!$(this).is(":checked")) {
-							//		$('a[data-target="#group_check_confirm_model"]').trigger("click");
-							//	}
-							//});
-							//
-							//$(document).on("click", ".cancel-frontend-uncheck", function(e) {
-							//	$("input[name=frontend_access]").last().next().click();
-							//});
+							////// add segment condition
+							////$(document).on("change", "input[name=frontend_access]", function(e) {
+							////	if(!$(this).is(":checked")) {
+							////		$('a[data-target="#group_check_confirm_model"]').trigger("click");
+							////	}
+							////});
+							////
+							////$(document).on("click", ".cancel-frontend-uncheck", function(e) {
+							////	$("input[name=frontend_access]").last().next().click();
+							////});
 							
 							// all sending servers checking
 							$(document).on("change", "input[name='options[frontend][all_sending_servers]']", function(e) {
