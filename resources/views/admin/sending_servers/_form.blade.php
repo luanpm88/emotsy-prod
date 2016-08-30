@@ -13,7 +13,7 @@
 								])
 							</div>
 						@endif
-						@if (true)
+						@if (array_key_exists("domain", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
 							<div class="col-sm-6 col-md-4">
 								@include('helpers.form_control', [
 									'type' => 'text',
