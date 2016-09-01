@@ -1,7 +1,6 @@
 <?php
 if (session_id() == '') session_start();
 
-
 class Uidd
 {
   static public function get() {
