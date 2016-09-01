@@ -19,16 +19,18 @@ if (strpos($_POST['path'],'/')===0
 	exit;
 }
 
-if (isset($_SESSION['RF']['language_file']) && file_exists($_SESSION['RF']['language_file']))
-{
-	//TODO Very bad practice
-	require_once $_SESSION['RF']['language_file'];
-}
-else
-{
-	response(trans('Lang_Not_Found').AddErrorLocation())->send();
-	exit;
-}
+require_once $lang_file;
+
+//if (isset($_SESSION['RF']['language_file']) && file_exists($_SESSION['RF']['language_file']))
+//{
+//	//TODO Very bad practice
+//	require_once $_SESSION['RF']['language_file'];
+//}
+//else
+//{
+//	response(trans('Lang_Not_Found').AddErrorLocation())->send();
+//	exit;
+//}
 
 $base = $current_path;
 $path = $base.$_POST['path'];

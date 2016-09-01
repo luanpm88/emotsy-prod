@@ -36,6 +36,8 @@ class Uidd
 $_SESSION["user_uid"] = Uidd::get();
 $_SESSION['RF']['language'] = "en_EN";
 $_SESSION['RF']['language_file'] = 'lang/en_EN.php';
+$lang = "vi";
+$lang_file = 'lang/' . $lang . '.php'; // TRUE or FALSE
 
 mb_internal_encoding('UTF-8');
 date_default_timezone_set('Europe/Rome');
