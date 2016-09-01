@@ -20,13 +20,36 @@ class Uidd
     $user_uid = $app['auth']->user()->uid;
     
     // Make folder if not exist
+		if (!file_exists('../source')) {
+        mkdir('../source', 0777, true);
+				$content = "";
+				$fp = fopen('../source' . "/index.html","wb");
+				fwrite($fp,$content);
+				fclose($fp);
+    }
+    if (!file_exists('../thumbs')) {
+        mkdir('../thumbs', 0777, true);
+				$content = "";
+				$fp = fopen('../thumbs' . "/index.html","wb");
+				fwrite($fp,$content);
+				fclose($fp);
+    }
+		
     $source_path = '../source/' . $user_uid;
     $thumbs_path = '../thumbs/' . $user_uid;
     if (!file_exists($source_path)) {
         mkdir($source_path, 0777, true);
+				$content = "";
+				$fp = fopen($source_path . "/index.html","wb");
+				fwrite($fp,$content);
+				fclose($fp);
     }
     if (!file_exists($thumbs_path)) {
         mkdir($thumbs_path, 0777, true);
+				$content = "";
+				$fp = fopen($thumbs_path . "/index.html","wb");
+				fwrite($fp,$content);
+				fclose($fp);
     }
     
     return $user_uid;
@@ -343,7 +366,7 @@ $config = array(
 	/*******************
 	* JAVA upload
 	*******************/
-	'java_upload'                             => true,
+	'java_upload'                             => false,
 	'JAVAMaxSizeUpload'                       => 200, //Gb
 
 
