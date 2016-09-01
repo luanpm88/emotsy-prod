@@ -1,10 +1,12 @@
 <?php
 if (session_id() == '') session_start();
 
+
 class Uidd
 {
   static public function get() {
-    require '../../bootstrap/autoload.php';
+		require '../../bootstrap/autoload.php';
+		
     $app = require_once '../../bootstrap/app.php';
 
     $kernel = $app->make('Illuminate\Contracts\Http\Kernel');
@@ -52,11 +54,16 @@ class Uidd
 				fclose($fp);
     }
     
-    return $user_uid;
+    return [
+				"user_uid" => $user_uid,
+				"max_size_upload_total" => $app['auth']->user()->getOption("frontend", "max_size_upload_total"),
+				"max_file_size_upload" => $user_uid,
+		];
   }
 }
 
-$_SESSION["user_uid"] = Uidd::get();
+$db_config = Uidd::get();
+$_SESSION["user_uid"] = $db_config["user_uid"];
 $_SESSION['RF']['language'] = "en_EN";
 $_SESSION['RF']['language_file'] = 'lang/en_EN.php';
 $lang = "vi";
@@ -186,7 +193,7 @@ $config = array(
 	| in Megabytes
 	|
 	*/
-	'MaxSizeTotal' => false,
+	'MaxSizeTotal' => $db_config["max_size_upload_total"],
 
 	/*
 	|--------------------------------------------------------------------------
@@ -196,7 +203,7 @@ $config = array(
 	| in Megabytes
 	|
 	*/
-	'MaxSizeUpload' => 1,
+	'MaxSizeUpload' => $db_config["max_file_size_upload"],
 
 
 	/*
