@@ -45,6 +45,8 @@ Route::get('/not-authorized', 'Controller@notAuthorized');
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('/', 'HomeController@index');
+    
+    Route::get('/current_user_uid', 'UserController@showUid');
 
     // Update current user profile
     Route::get('account/api/renew', 'AccountController@renewToken');
@@ -194,7 +196,9 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('campaigns/restart', 'CampaignController@restart');
     Route::resource('campaigns', 'CampaignController');
     Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
-    Route::patch('campaigns/{uid}/update', 'CampaignController@update');
+    Route::patch('campaigns/{uid}/update', 'CampaignController@update');    
+    
+    Route::get('users/login-back', 'UserController@loginBack');
 });
 
 // ADMIN AREA
@@ -207,8 +211,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/user_groups/delete', 'UserGroupController@delete');
     Route::resource('admin/user_groups', 'UserGroupController');
 
-    // User
-    Route::get('admin/users/login-back', 'UserController@loginBack');
+    // User    
     Route::get('admin/users/switch/{uid}', 'UserController@switch_user');
     Route::get('admin/users/listing/{page?}', 'UserController@listing');
     Route::get('admin/users/sort', 'UserController@sort');

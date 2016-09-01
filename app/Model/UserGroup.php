@@ -186,6 +186,8 @@ class UserGroup extends Model
                 'sending_quota_time_unit' => 'month',
                 'max_process' => '1',
                 'all_sending_servers' => 'no',
+                'max_size_upload_total' => '500',
+                'max_file_size_upload' => '5',
             ],
             'backend' => [
                 'user_group_read' => 'all',

@@ -154,7 +154,7 @@
 			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 				<h4 class="ui-pnotify-title text-nowrap">{!! trans('messages.current_login_as', ["name" => Auth::user()->displayName()]) !!}</h4>
 				<div class="ui-pnotify-text">
-					{!! trans('messages.click_to_return_to_origin_user', ["link" => action("Admin\UserController@loginBack")]) !!}
+					{!! trans('messages.click_to_return_to_origin_user', ["link" => action("UserController@loginBack")]) !!}
 				</div>
 				<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
 			</div>

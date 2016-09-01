@@ -8,3 +8,5 @@ Homestead.json
 /public/upload
 /storage/upload
 /storage/installed
+/public/source
+/public/thumbs
