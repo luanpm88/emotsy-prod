@@ -612,10 +612,10 @@ function image_check_memory_usage($img, $max_breedte, $max_hoogte)
 *
 * @return  bool
 */
-function endsWith($haystack, $needle)
-{
-	return $needle === "" || substr($haystack, -strlen($needle)) === $needle;
-}
+//function endsWith($haystack, $needle)
+//{
+//	return $needle === "" || substr($haystack, -strlen($needle)) === $needle;
+//}
 
 /**
 * TODO REFACTOR THIS!

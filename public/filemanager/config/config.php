@@ -4,6 +4,9 @@ if (session_id() == '') session_start();
 mb_internal_encoding('UTF-8');
 date_default_timezone_set('Europe/Rome');
 
+error_reporting(E_ALL);
+ini_set('display_errors', 'On');
+
 /*
 |--------------------------------------------------------------------------
 | Optional security
@@ -48,6 +51,38 @@ define('DEBUG_ERROR_MESSAGE', true); // TRUE or FALSE
 |    |   |   |   |   |- plugin.min.js
 */
 
+function getUid()
+{
+    require '../../bootstrap/autoload.php';
+    $app = require_once '../../bootstrap/app.php';
+
+    $kernel = $app->make('Illuminate\Contracts\Http\Kernel');
+
+    $response = $kernel->handle(
+      $request = Illuminate\Http\Request::capture()
+    );
+    
+    $id = $app['encrypter']->decrypt($_COOKIE[$app['config']['session.cookie']]);
+    $app['session']->driver()->setId($id);
+    $app['session']->driver()->start();
+    
+    $user_uid = $app['auth']->user()->uid;
+    
+    // Make folder if not exist
+    $source_path = '../source/' . $user_uid;
+    $thumbs_path = '../thumbs/' . $user_uid;
+    if (!file_exists($source_path)) {
+        mkdir($source_path, 0777, true);
+    }
+    if (!file_exists($thumbs_path)) {
+        mkdir($thumbs_path, 0777, true);
+    }
+    
+    return $user_uid;
+}
+
+$user_uid = getUid();
+
 $config = array(
 
 	/*
@@ -68,7 +103,7 @@ $config = array(
 	| with start and final /
 	|
 	*/
-	'upload_dir' => '/source/',
+	'upload_dir' => '/source/' . $user_uid . "/",
 
 	/*
 	|--------------------------------------------------------------------------
@@ -78,7 +113,7 @@ $config = array(
 	| with final /
 	|
 	*/
-	'current_path' => '../source/',
+	'current_path' => '../source/' . $user_uid . "/",
 
 	/*
 	|--------------------------------------------------------------------------
@@ -89,7 +124,7 @@ $config = array(
 	| DO NOT put inside upload folder
 	|
 	*/
-	'thumbs_base_path' => '../thumbs/',
+	'thumbs_base_path' => '../thumbs/' . $user_uid . "/",
 
 	/*
 	|--------------------------------------------------------------------------

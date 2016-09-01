@@ -2,23 +2,35 @@
 error_reporting(E_ALL);
 ini_set('display_errors', 'On');
 
-function getUser()
+function getUid()
 {
     require '../../bootstrap/autoload.php';
     $app = require_once '../../bootstrap/app.php';
-    $config = require_once '../../bootstrap/cache/config.php';
-    
-    echo $_COOKIE[$config["session"]["cookie"]] . "<br>";
-    echo $config["app"]["key"] . "<br>";
-    $encrypter = new Illuminate\Encryption\Encrypter($config["app"]["key"], $config["app"]["cipher"]);
-    
-    //$app = new Illuminate\Foundation\Application(
-    //    realpath(__DIR__.'/../')
-    //);
-    //
-    //$id = $app['encrypter']->decrypt($_COOKIE[$app['config']['session.cookie']]);
 
+    $kernel = $app->make('Illuminate\Contracts\Http\Kernel');
+
+    $response = $kernel->handle(
+      $request = Illuminate\Http\Request::capture()
+    );
+    
+    $id = $app['encrypter']->decrypt($_COOKIE[$app['config']['session.cookie']]);
+    $app['session']->driver()->setId($id);
+    $app['session']->driver()->start();
+    
+    $user_uid = $app['auth']->user()->uid;
+    
+    // Make folder if not exist
+    $source_path = '../source/' . $user_uid;
+    $thumbs_path = '../thumbs/' . $user_uid;
+    if (!file_exists($source_path)) {
+        mkdir($source_path, 0777, true);
+    }
+    if (!file_exists($thumbs_path)) {
+        mkdir($thumbs_path, 0777, true);
+    }
+    
+    return $user_uid;
 }
 
-getUser();
+echo getUid();
 ?>

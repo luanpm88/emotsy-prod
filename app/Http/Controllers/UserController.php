@@ -35,4 +35,13 @@ class UserController extends Controller
 
         return $img->response();
     }
+    
+    /**
+     * User uid for editor
+     */
+    public function showUid(Request $request)
+    {
+        $user = $request->user();
+        echo $user->uid;
+    }
 }

@@ -45,6 +45,8 @@ Route::get('/not-authorized', 'Controller@notAuthorized');
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('/', 'HomeController@index');
+    
+    Route::get('/current_user_uid', 'UserController@showUid');
 
     // Update current user profile
     Route::get('account/api/renew', 'AccountController@renewToken');

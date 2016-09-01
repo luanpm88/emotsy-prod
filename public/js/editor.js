@@ -4,7 +4,6 @@ $(document).ready(function() {
         height: 500,
         relative_urls: false,
         remove_script_host: false,
-        relative_urls: true,
         plugins: [
           'advlist autolink lists link image charmap print preview anchor',
           'searchreplace visualblocks code fullscreen',
@@ -26,7 +25,6 @@ $(document).ready(function() {
         height: 500,
         relative_urls: false,
         remove_script_host: false,
-        relative_urls: true,
         plugins: [
           'advlist autolink lists link image charmap print preview anchor',
           'searchreplace visualblocks code fullscreen',
@@ -43,7 +41,6 @@ $(document).ready(function() {
         height: 500,
         relative_urls: false,
         remove_script_host: false,
-        relative_urls: true,
         plugins: [
           'advlist autolink lists link image charmap print preview anchor',
           'searchreplace visualblocks code fullscreen',
