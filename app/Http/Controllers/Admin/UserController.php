@@ -314,7 +314,7 @@ class UserController extends Controller
         if (\Gate::denies('switch_user', $user)) {
             return;
         }
-
+        
         $orig_id = $request->user()->uid;
         \Auth::login($user);
         \Session::put('orig_user_id', $orig_id);
@@ -333,9 +333,9 @@ class UserController extends Controller
     {
         $id = \Session::pull('orig_user_id');
         $orig_user = \Acelle\Model\User::findByUid($id);
-
+        
         \Auth::login($orig_user);
-
+        
         return redirect()->action('Admin\UserController@index');
     }
 

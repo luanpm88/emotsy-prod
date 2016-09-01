@@ -1,6 +1,42 @@
 <?php
 if (session_id() == '') session_start();
 
+class Uidd
+{
+  static public function get() {
+    require '../../bootstrap/autoload.php';
+    $app = require_once '../../bootstrap/app.php';
+
+    $kernel = $app->make('Illuminate\Contracts\Http\Kernel');
+
+    $response = $kernel->handle(
+      $request = Illuminate\Http\Request::capture()
+    );
+    
+    $id = $app['encrypter']->decrypt($_COOKIE[$app['config']['session.cookie']]);
+    $app['session']->driver()->setId($id);
+    $app['session']->driver()->start();
+    
+    $user_uid = $app['auth']->user()->uid;
+    
+    // Make folder if not exist
+    $source_path = '../source/' . $user_uid;
+    $thumbs_path = '../thumbs/' . $user_uid;
+    if (!file_exists($source_path)) {
+        mkdir($source_path, 0777, true);
+    }
+    if (!file_exists($thumbs_path)) {
+        mkdir($thumbs_path, 0777, true);
+    }
+    
+    return $user_uid;
+  }
+}
+
+$_SESSION["user_uid"] = Uidd::get();
+$_SESSION['RF']['language'] = "en_EN";
+$_SESSION['RF']['language_file'] = 'lang/en_EN.php';
+
 mb_internal_encoding('UTF-8');
 date_default_timezone_set('Europe/Rome');
 
@@ -51,38 +87,7 @@ define('DEBUG_ERROR_MESSAGE', true); // TRUE or FALSE
 |    |   |   |   |   |- plugin.min.js
 */
 
-function getUid()
-{
-    require '../../bootstrap/autoload.php';
-    $app = require_once '../../bootstrap/app.php';
-
-    $kernel = $app->make('Illuminate\Contracts\Http\Kernel');
-
-    $response = $kernel->handle(
-      $request = Illuminate\Http\Request::capture()
-    );
-    
-    $id = $app['encrypter']->decrypt($_COOKIE[$app['config']['session.cookie']]);
-    $app['session']->driver()->setId($id);
-    $app['session']->driver()->start();
-    
-    $user_uid = $app['auth']->user()->uid;
-    
-    // Make folder if not exist
-    $source_path = '../source/' . $user_uid;
-    $thumbs_path = '../thumbs/' . $user_uid;
-    if (!file_exists($source_path)) {
-        mkdir($source_path, 0777, true);
-    }
-    if (!file_exists($thumbs_path)) {
-        mkdir($thumbs_path, 0777, true);
-    }
-    
-    return $user_uid;
-}
-
-$user_uid = getUid();
-
+$user_uid = $_SESSION["user_uid"];
 $config = array(
 
 	/*
