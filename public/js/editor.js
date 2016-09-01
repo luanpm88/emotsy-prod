@@ -28,12 +28,16 @@ $(document).ready(function() {
         plugins: [
           'advlist autolink lists link image charmap print preview anchor',
           'searchreplace visualblocks code fullscreen',
-          'insertdatetime media table contextmenu paste code'
+          'insertdatetime media table contextmenu paste responsivefilemanager code'
         ],
         toolbar: 'insertfile undo redo | styleselect | bold italic | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image',
         content_css: [
           APP_URL+'/css/email.css',
-        ]
+        ],
+        
+        external_filemanager_path:"/filemanager/",
+        filemanager_title:"Responsive Filemanager" ,
+        external_plugins: { "filemanager" : "/filemanager/plugin.min.js"}
     });
     
     tinymce.init({
