@@ -82,7 +82,11 @@ class SendingServer extends Model
      */
     public static function pickServer($campaign)
     {
-        $servers = self::select('sending_servers.*', 'user_group_sending_servers.fitness')->join('user_group_sending_servers', 'user_group_sending_servers.sending_server_id', '=', 'sending_servers.id')->where('user_group_id', $campaign->user->user_group_id)->get();
+        if ($campaign->user->allSendingServer()) {
+            $servers = self::selectRaw('*, 100 AS fitness')->get();
+        } else {
+            $servers = self::select('sending_servers.*', 'user_group_sending_servers.fitness')->join('user_group_sending_servers', 'user_group_sending_servers.sending_server_id', '=', 'sending_servers.id')->where('user_group_id', $campaign->user->user_group_id)->get();
+        }
 
         if (sizeof($servers) == 0) {
             throw new \Exception('No delivery servers available');
