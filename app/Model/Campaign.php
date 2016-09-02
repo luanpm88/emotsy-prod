@@ -160,6 +160,7 @@ class Campaign extends Model
     public function done()
     {
         $this->status = self::STATUS_DONE;
+        $this->delivery_at = \Carbon\Carbon::now();
         $this->save();
     }
 
