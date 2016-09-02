@@ -451,22 +451,17 @@ class Campaign extends Model
     public function getPendingSubscribers()
     {
         if (is_object($this->segment)) {
-            return $this->segment->subscribers()
-                ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
-                ->whereRaw('log.id IS NULL')
-                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
-                ->addBinding($this->mailList->id)
-                ->select('subscribers.*')
-                ->get();
+            $scoped = $this->segment;
         } else {
-            return $this->mailList->subscribers()
-                ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = ?) log'), 'subscribers.id', '=', 'subscriber_id')
+            $scoped = $this->mailList;
+        }
+
+        return $scoped->subscribers()
+                ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = '.$this->id.') log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
                 ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
-                ->addBinding($this->mailList->id)
                 ->select('subscribers.*')
                 ->get();
-        }
     }
 
     /**
