@@ -44,7 +44,7 @@ class MailList extends Model
         'name' => 'required',
         'from_email' => 'required',
         'from_name' => 'required',
-        'remind_message' => 'required',
+        //'remind_message' => 'required',
         'contact.company' => 'required',
         'contact.address_1' => 'required',
         'contact.country_id' => 'required',
