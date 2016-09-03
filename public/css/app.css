@@ -718,7 +718,7 @@ input.error {
     border-color: #FF5722;
     color: #fff;
 }
-.bg-error {
+.bg-error, .bg-failed {
     background-color: #D84315;
     border-color: #D84315;
     color: #fff;
