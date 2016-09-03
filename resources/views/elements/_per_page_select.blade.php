@@ -8,6 +8,6 @@
     </select>
     <label>{{ trans('messages.num_per_page') }}</label>
     @if (isset($items))
-        <label>| {!! trans('messages.total_items_count', ["count" => $item->count()]) !!}</label>
+        <label>| {!! trans('messages.total_items_count', ["count" => $items->count()]) !!}</label>
     @endif
 </div>
