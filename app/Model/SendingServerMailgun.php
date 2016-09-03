@@ -78,19 +78,23 @@ class SendingServerMailgun extends SendingServer
         } catch (\Exception $e) {
             // just ignore
         }
+        
+        try {
+            $result = $this->client()->post("domains/$domain/webhooks", array(
+                'id' => 'bounce',
+                'url' => $subscribeUrl,
+            ));
+            Log::info('bounce webhook created');
 
-        $result = $this->client()->post("domains/$domain/webhooks", array(
-            'id' => 'bounce',
-            'url' => $subscribeUrl,
-        ));
-        Log::info('bounce webhook created');
+            $result = $this->client()->post("domains/$domain/webhooks", array(
+                'id' => 'spam',
+                'url' => $subscribeUrl,
+            ));
+            Log::info('complaint webhook created');
 
-        $result = $this->client()->post("domains/$domain/webhooks", array(
-            'id' => 'spam',
-            'url' => $subscribeUrl,
-        ));
-        Log::info('complaint webhook created');
-
-        self::$isWebhookSetup = true;
+            self::$isWebhookSetup = true;
+        } catch (\Exception $e) {
+            // just ignore
+        }
     }
 }

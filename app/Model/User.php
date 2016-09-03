@@ -549,6 +549,17 @@ class User extends Authenticatable
     }
 
     /**
+     * Check if user has access to ALL sending servers.
+     *
+     * @return boolean
+     */
+    public function allSendingServer()
+    {
+        $check = $this->getOption('frontend', 'all_sending_servers');
+        return ($check == 'yes');
+    }
+
+    /**
      * Get user's sending quota.
      *
      * @return string
