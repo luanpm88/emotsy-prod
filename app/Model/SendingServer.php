@@ -384,7 +384,7 @@ class SendingServer extends Model
         }
 
         $query = \Acelle\Model\TrackingLog::leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
-        //$query = $query->where('sending_servers.id', '=', $this->id);
+        $query = $query->where('sending_servers.id', '=', $this->id);
         if (isset($begin)) {
             $query = $query->where('tracking_logs.created_at', '>=', $begin);
         }
