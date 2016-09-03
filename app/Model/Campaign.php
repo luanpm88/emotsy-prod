@@ -997,11 +997,11 @@ class Campaign extends Model
      */
     public function openRate()
     {
-        if ($this->trackingCount() == 0) {
+        if ($this->deliveredCount() == 0) {
             return 0;
         }
 
-        return round(($this->openCount() / $this->trackingCount()) * 100, 0);
+        return round(($this->openCount() / $this->deliveredCount()) * 100, 0);
     }
 
     /**
@@ -1011,11 +1011,11 @@ class Campaign extends Model
      */
     public function openUniqRate()
     {
-        if ($this->trackingCount() == 0) {
+        if ($this->deliveredCount() == 0) {
             return 0;
         }
 
-        return round(($this->openUniqCount() / $this->trackingCount()) * 100, 0);
+        return round(($this->openUniqCount() / $this->deliveredCount()) * 100, 0);
     }
 
     /**
@@ -1093,11 +1093,11 @@ class Campaign extends Model
      */
     public function softBounceRate()
     {
-        if ($this->deliveryProcessedCount() == 0) {
+        if ($this->trackingCount() == 0) {
             return 0;
         }
 
-        return round(($this->softBounceCount() / $this->deliveryProcessedCount()) * 100, 0);
+        return round(($this->softBounceCount() / $this->trackingCount()) * 100, 0);
     }
 
     /**
@@ -1117,11 +1117,11 @@ class Campaign extends Model
      */
     public function unsubscribeRate()
     {
-        if ($this->deliveryProcessedCount() == 0) {
+        if ($this->deliveredCount() == 0) {
             return 0;
         }
 
-        return round(($this->unsubscribeCount() / $this->trackingCount()) * 100, 0);
+        return round(($this->unsubscribeCount() / $this->deliveredCount()) * 100, 0);
     }
 
     /**
