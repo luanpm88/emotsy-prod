@@ -41,6 +41,7 @@
 									</tr>
 								@endforeach
 							</table>
+								{{ count($items) }}
                             @include('elements/_per_page_select')
 							{{ $items->links() }}
 						@elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
