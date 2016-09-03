@@ -11,7 +11,7 @@
                     <div class="stat-table">
                         <div class="stat-row">
                             <div class="pull-right num">
-                                {{ $campaign->trackingCount() }}
+                                {{ $campaign->deliveredCount() }}
                                 <span class="text-muted2">{{ $campaign->deliveredRate() }}%</span>
                             </div>
                             <p class="text-muted">{{ trans('messages.successful_deliveries') }}</p>
