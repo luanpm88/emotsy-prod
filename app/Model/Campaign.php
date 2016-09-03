@@ -873,30 +873,6 @@ class Campaign extends Model
     }
 
     /**
-     * Count delivery error.
-     *
-     * @return number
-     */
-    public function deliveryErrorCount()
-    {
-        return $this->deliveryProcessedCount() - $this->delivery_success_count();
-    }
-
-    /**
-     * Count delivery error rate.
-     *
-     * @return number
-     */
-    public function deliveryErrorRate()
-    {
-        if ($this->deliveryProcessedCount() == 0) {
-            return 0;
-        }
-
-        return round(($this->deliveryErrorCount() / $this->deliveryProcessedCount()) * 100, 0);
-    }
-
-    /**
      * Count click.
      *
      * @return number
