@@ -20,7 +20,7 @@
 											<span class="no-margin">
 												<span class="label label-flat bg-{{ $item->status }} kq_search">{{ $item->status }}</span>
 											</span>
-											<span class="text-muted second-line-mobile">{{ trans('messages.status') }}</span>
+											<span data-popup="tooltip" title="{{ $item->error }}" class="text-muted second-line-mobile">{{ trans('messages.status') }}</span>
 										</td>
 										<td>
 											<span class="no-margin kq_search">{{ $item->campaign->name }}</span>
