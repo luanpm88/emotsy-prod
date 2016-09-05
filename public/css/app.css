@@ -1180,3 +1180,9 @@ ul.install-steps li.enabled a:hover {
 .notoping .switchery {
     margin-top: 0;
 }
+.url-truncate {
+    max-width: 400px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
