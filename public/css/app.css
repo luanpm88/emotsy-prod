@@ -1185,4 +1185,5 @@ ul.install-steps li.enabled a:hover {
     display: inline-block;
     overflow: hidden;
     text-overflow: ellipsis;
+    white-space: nowrap;
 }

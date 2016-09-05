@@ -18,7 +18,7 @@
 										</td>
 										<td>
 											<span class="no-margin kq_search url-truncate">
-												<a data-popup="tooltip" title="{{ $item->url }}" href="{{ $item->url }}" target="_blank">
+												<a title="{{ $item->url }}" href="{{ $item->url }}" target="_blank">
 													{{ $item->url }}
 												</a>
 											</span>
