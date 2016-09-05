@@ -1180,7 +1180,7 @@ class Campaign extends Model
             $records = $records->where('campaigns.user_id', '=', $user->id);
         }
 
-        $records = $records->groupBy('tracking_logs.message_id')
+        $records = $records->groupBy('campaigns.id')
             ->orderBy('aggregate', 'desc');
 
         return $records->take($number);
@@ -1201,7 +1201,7 @@ class Campaign extends Model
             $records = $records->where('campaigns.user_id', '=', $user->id);
         }
 
-        $records = $records->groupBy('tracking_logs.message_id')
+        $records = $records->groupBy('campaigns.id')
                     ->orderBy('aggregate', 'desc');
 
         return $records->take($number);

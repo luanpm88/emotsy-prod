@@ -88,7 +88,7 @@
                                         <div class="col-sm-5 col-md-5">
                                             <i class="number">{{ $num+1 }}</i>
                                             <h6 class="mt-0 mb-0 text-semibold">
-                                                <a href="">
+                                                <a href="{{ action('CampaignController@overview', $item->uid) }}">
                                                     {{ $item->name }}
                                                 </a>
                                             </h6>
@@ -135,7 +135,7 @@
                                         <div class="col-sm-5 col-md-5">
                                             <i class="number">{{ $num+1 }}</i>
                                             <h6 class="mt-0 mb-0 text-semibold">
-                                                <a href="">
+                                                <a href="{{ action('CampaignController@overview', $item->uid) }}">
                                                     {{ $item->name }}
                                                 </a>
                                             </h6>
@@ -182,8 +182,8 @@
                                     <div class="row">
                                         <div class="col-sm-6 col-md-6">
                                             <i class="number">{{ $num+1 }}</i>
-                                            <h6 class="mt-0 mb-0 text-semibold">
-                                                <a href="{{ $item->url }}" target="_blank">
+                                            <h6 class="mt-0 mb-0 text-semibold url-truncate">
+                                                <a title="{{ $item->url }}" href="{{ $item->url }}" target="_blank">
                                                     {{ $item->url }}
                                                 </a>
                                             </h6>

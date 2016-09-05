@@ -27,7 +27,7 @@
 				@foreach ($campaign->getLinks() as $link)
 					<tr>
 						<td>
-							<a href="">
+							<a class="url-truncate" title="{{ $link->url }}" href="{{ $link->url }}" target="_blank">
 								{{ $link->url }}
 							</a>
 						</td>
