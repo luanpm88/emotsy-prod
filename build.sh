@@ -36,6 +36,8 @@ rm -fr database/seeds/DatabaseSeeder.php
 rm -fr reset
 rm -fr pull
 rm -fr run
+rm -fr public/source
+rm -ft public/thumb
 
 # run artisan
 php artisan config:cache
