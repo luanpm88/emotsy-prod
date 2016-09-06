@@ -878,7 +878,7 @@ return [
     'file_upload' => 'File upload',
     'max_size_upload_total' => 'Maximum size of all files',
     'max_file_size_upload' => 'Maximum upload size per file',
-    '' => '',
+    'demo' => 'Demo',
     '' => '',
     '' => '',
     '' => '',

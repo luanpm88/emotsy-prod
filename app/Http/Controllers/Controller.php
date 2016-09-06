@@ -54,6 +54,16 @@ class Controller extends BaseController
     {
         return view('offline');
     }
+    
+    /**
+     * Show demo home page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function demo()
+    {
+        return view('demo');
+    }
 
     /**
      * Translate datatable.

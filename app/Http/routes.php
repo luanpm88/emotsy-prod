@@ -42,6 +42,7 @@ Route::auth();
 
 Route::get('/offline', 'Controller@offline');
 Route::get('/not-authorized', 'Controller@notAuthorized');
+Route::get('/demo', 'Controller@demo');
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('/', 'HomeController@index');
