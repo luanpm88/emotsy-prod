@@ -25,13 +25,13 @@
                     </div>
                     <div class="col-md-5">
                         <h3 class="mb-0 text-center">{{ trans("messages.frontend") }}</h3>
-                        <a class="demo_pic" href="{{ action("HomeController@index") }}">
+                        <a target="_blank" class="demo_pic" href="{{ action("HomeController@index") }}">
                             <img style="max-width: 100%" src="{{ url("/images/demo_frontend.png") }}" />
                         </a>
                     </div>
                     <div class="col-md-5">
                         <h3 class="mb-0 text-center">{{ trans("messages.backend") }}</h3>
-                        <a class="demo_pic" href="{{ action("Admin\HomeController@index") }}">
+                        <a target="_blank" class="demo_pic" href="{{ action("Admin\HomeController@index") }}">
                             <img style="max-width: 100%" src="{{ url("/images/demo_backend.png") }}" />
                         </a>
                     </div>
