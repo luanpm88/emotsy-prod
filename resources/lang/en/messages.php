@@ -35,6 +35,7 @@ return [
     'my_profile' => 'My profile',
     'profile.updated' => 'Your profile was successfully updated.',
     'upload_your_photo' => 'Upload your photo…',
+    'upload_photo' => 'Upload photo…',
     'photo_at_least' => 'Photo should be at least :size',
     'upload_photo' => 'Upload photo',
     'remove_photo' => 'Remove photo',

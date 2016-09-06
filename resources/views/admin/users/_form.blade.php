@@ -11,7 +11,7 @@
 										<input type="hidden" name="_remove_image" value='' />
 									</div>
 									<div class="media-body text-center">
-										<h5 class="media-heading text-semibold">{{ trans('messages.upload_your_photo') }}</h5>
+										<h5 class="media-heading text-semibold">{{ trans('messages.upload_photo') }}</h5>
 										{{ trans('messages.photo_at_least', ["size" => "300px x 300px"]) }}
 										<br /><br />
 										<a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-xs bg-teal mr-10"><i class="icon-upload4"></i> {{ trans('messages.upload') }}</a>
