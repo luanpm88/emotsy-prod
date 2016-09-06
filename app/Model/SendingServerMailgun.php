@@ -63,7 +63,7 @@ class SendingServerMailgun extends SendingServer
             return true;
         }
 
-        Log::info('setting up webhooks for bounce/complaints');
+        Log::info('Setting up webhooks for bounce/complaints');
 
         $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), $this->uid);
 
@@ -84,13 +84,13 @@ class SendingServerMailgun extends SendingServer
                 'id' => 'bounce',
                 'url' => $subscribeUrl,
             ));
-            Log::info('bounce webhook created');
+            Log::info('Bounce webhook created');
 
             $result = $this->client()->post("domains/$domain/webhooks", array(
                 'id' => 'spam',
                 'url' => $subscribeUrl,
             ));
-            Log::info('complaint webhook created');
+            Log::info('Complaint webhook created');
 
             self::$isWebhookSetup = true;
         } catch (\Exception $e) {

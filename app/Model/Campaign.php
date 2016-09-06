@@ -515,7 +515,7 @@ class Campaign extends Model
         }
 
         if ($this->track_click) {
-            $body = $this->addTrackingUrl($body, $subscriber);
+            $body = $this->addTrackingUrl($body, $msgId);
         }
 
         $message->setBody($body, 'text/html');
@@ -1311,11 +1311,12 @@ class Campaign extends Model
      *
      * @return text
      */
-    private function addTrackingUrl($email_html_content)
+    private function addTrackingUrl($email_html_content, $msgId)
     {
         if (preg_match_all('|<a.*(?=href="([^"]*)")[^>]*>([^<]*)</a>|i', $email_html_content, $matches)) {
             foreach ($matches[1] as $href) {
                 $new_src = str_replace('URL', StringHelper::base64UrlEncode($href), Setting::get('url_click_track'));
+                $new_src = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $new_src);
                 $email_html_content = str_replace($href, $new_src, $email_html_content);
             }
         }
