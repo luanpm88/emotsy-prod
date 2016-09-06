@@ -6,7 +6,7 @@
     
                 <style>
                     .demo_pic {
-                        opacity: 0.8;
+                        opacity: 0.85;
                     }
                     .demo_pic:hover, .demo_pic:focus {
                         opacity: 1;
