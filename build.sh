@@ -38,6 +38,8 @@ rm -fr pull
 rm -fr run
 rm -fr public/source
 rm -fr public/thumb
+rm -fr build.sh
+rm -fr push.sh
 
 # run artisan
 php artisan config:cache
