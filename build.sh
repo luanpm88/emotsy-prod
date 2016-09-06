@@ -37,7 +37,7 @@ rm -fr reset
 rm -fr pull
 rm -fr run
 rm -fr public/source
-rm -ft public/thumb
+rm -fr public/thumb
 
 # run artisan
 php artisan config:cache
