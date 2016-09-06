@@ -13,10 +13,11 @@
                     }
                 </style>
     
-                <div class="text-center login-header">
+                <div class="text-center login-header" style="margin-bottom: 10px">
                     <a class="main-logo-big" href="{{ action('HomeController@index') }}">
                         <img src="{{ URL::asset('images/logo_big.png') }}" alt="">
                     </a>
+                    <h3 class="text-center text-muted2" style="color: #aaa; margin-left: -20px">{{ trans('messages.demo') }}</h3>
                 </div>
     
                 <div class="row">
