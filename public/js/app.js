@@ -502,7 +502,7 @@ $(function() {
             url: url,
         })
         .done(function( msg ) {
-            tinymce.activeEditor.execCommand('mceInsertContent', false, msg);
+            tinymce.activeEditor.execCommand('mceSetContent', false, msg);
             $(".modal").modal('hide');
         });
     });

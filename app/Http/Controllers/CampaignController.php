@@ -331,8 +331,13 @@ class CampaignController extends Controller
             if (trim($request->plain) == '') {
                 $campaign->plain = strip_tags($request->html);
             }
+            
+            // update content
+            $campaign->html = preg_replace('/href\=\'([^\']*\{)/',"href='{", $campaign->html);
+            $campaign->html = preg_replace('/href\=\"([^\"]*\{)/','href="{', $campaign->html);
+            
             $campaign->save();
-
+            
             return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
         }
 
