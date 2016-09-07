@@ -1298,9 +1298,10 @@ class Campaign extends Model
      */
     public function locations()
     {
-        $records = IpLocation::select('ip_locations.*')
+        $records = IpLocation::select('ip_locations.*', 'open_logs.created_at as open_at', 'subscribers.email as email')
             ->leftJoin('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
             ->leftJoin('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+            ->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
 
         return $records;
