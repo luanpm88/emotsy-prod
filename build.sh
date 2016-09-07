@@ -40,7 +40,6 @@ rm -fr public/source
 rm -fr public/thumb
 rm -fr build.sh
 rm -fr push.sh
-rm -fr storage/upload/email_template/image
 rm -fr public/upload/templates/*
 
 # run artisan
