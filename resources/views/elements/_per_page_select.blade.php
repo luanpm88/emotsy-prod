@@ -8,6 +8,11 @@
     </select>
     <label>{{ trans('messages.num_per_page') }}</label>
     @if (isset($items))
-        <label>| {!! trans('messages.total_items_count', ["count" => $items->count()]) !!}</label>
+        <label>|
+        {!! trans('messages.total_items_count', [
+            "from" => $items->toArray()["per_page"]*($items->toArray()["current_page"]-1),
+            "to" => ($items->toArray()["per_page"]*$items->toArray()["current_page"] > $items->toArray()["total"] ? $items->toArray()["total"] : $items->toArray()["per_page"]*$items->toArray()["current_page"]),
+            "count" => $items->toArray()["total"]]
+        ) !!}
     @endif
 </div>

@@ -616,7 +616,7 @@ return [
     'logs' => 'Logs',
     'segment' => 'Segment',
     'all_logs' => 'All logs',
-    'total_items_count' => 'Total <span class="text-teal-600">:count</span> records',
+    'total_items_count' => 'From <span class="text-teal-600">:from</span> to <span class="text-teal-600">:to</span>. Total <span class="text-teal-600">:count</span> records',
     'clicked_at' => 'Clicked at',
     'sending_logs' => 'Sending logs',
     'used_quota' => 'Used quota',
