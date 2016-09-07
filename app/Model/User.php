@@ -192,9 +192,14 @@ class User extends Authenticatable
      */
     public function uploadImage($file)
     {
-        $path = 'upload/user/image/';
+        $path = 'app/users/';
         $upload_path = storage_path($path);
-        $filename = 'user-'.$this->id.'.'.$file->getClientOriginalExtension();
+        
+        if (!file_exists($upload_path)) {
+            mkdir($upload_path, 0777, true);
+        }
+        
+        $filename = 'avatar-'.$this->id.'.'.$file->getClientOriginalExtension();
 
         // save to server
         $file->move($upload_path, $filename);
