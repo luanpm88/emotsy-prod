@@ -254,11 +254,20 @@ class TemplateController extends Controller
             // try to find the main file, index.html | index.html | file_name.html | ...
             $archive_name = str_replace(array('../', './', '..\\', '.\\', '..'), '', basename($file_name, '.zip'));
             $main_file = null;
+            $sub_path = "";
             $possible_main_file_names = array('index.html', 'index.htm', $archive_name.'.html', $archive_name.'.htm');
             foreach ($possible_main_file_names as $name) {
                 if (is_file($file = $tmp_path.'/'.$name)) {
                     $main_file = $file;
                     break;
+                }
+                $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
+                foreach($dirs as $sub) {
+                    if (is_file($file = $sub.'/'.$name)) {
+                        $main_file = $file;
+                        $sub_path = explode("/",$sub)[count(explode("/",$sub))-1]."/";
+                        break;
+                    }
                 }
             }
             // try to find first htm|html file
@@ -270,6 +279,21 @@ class TemplateController extends Controller
                             if (preg_match('/\.html?$/i', $object)) {
                                 $main_file = $tmp_path.'/'.$object;
                                 break;
+                            }
+                        }
+                    }
+                }
+                $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
+                foreach($dirs as $sub) {
+                    $objects = scandir($sub);
+                    foreach ($objects as $object) {
+                        if ($object != '.' && $object != '..') {
+                            if (!is_dir($sub.'/'.$object)) {
+                                if (preg_match('/\.html?$/i', $object)) {
+                                    $main_file = $sub.'/'.$object;
+                                    $sub_path = explode("/",$sub)[count(explode("/",$sub))-1]."/";
+                                    break;
+                                }
                             }
                         }
                     }
@@ -312,7 +336,7 @@ class TemplateController extends Controller
                     continue;
                 }
 
-                $new_src = $request->root().'/'.$public_dir.'/'.$src;
+                $new_src = $request->root().'/'.$public_dir.'/'.$sub_path.$src;
 
                 // replace image url
                 $template->content = str_replace($src, $new_src, $template->content);

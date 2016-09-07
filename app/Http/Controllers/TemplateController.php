@@ -319,11 +319,20 @@ class TemplateController extends Controller
             // try to find the main file, index.html | index.html | file_name.html | ...
             $archive_name = str_replace(array('../', './', '..\\', '.\\', '..'), '', basename($file_name, '.zip'));
             $main_file = null;
+            $sub_path = "";
             $possible_main_file_names = array('index.html', 'index.htm', $archive_name.'.html', $archive_name.'.htm');
             foreach ($possible_main_file_names as $name) {
                 if (is_file($file = $tmp_path.'/'.$name)) {
                     $main_file = $file;
                     break;
+                }
+                $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
+                foreach($dirs as $sub) {
+                    if (is_file($file = $sub.'/'.$name)) {
+                        $main_file = $file;
+                        $sub_path = explode("/",$sub)[count(explode("/",$sub))-1]."/";
+                        break;
+                    }
                 }
             }
             // try to find first htm|html file
@@ -333,8 +342,23 @@ class TemplateController extends Controller
                     if ($object != '.' && $object != '..') {
                         if (!is_dir($tmp_path.'/'.$object)) {
                             if (preg_match('/\.html?$/i', $object)) {
-                                $main_file = $tmp_path.'/'.$object;
+                                $main_file = $tmp_path.'/'.$object;                                
                                 break;
+                            }
+                        }
+                    }
+                }
+                $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
+                foreach($dirs as $sub) {
+                    $objects = scandir($sub);
+                    foreach ($objects as $object) {
+                        if ($object != '.' && $object != '..') {
+                            if (!is_dir($sub.'/'.$object)) {
+                                if (preg_match('/\.html?$/i', $object)) {
+                                    $main_file = $sub.'/'.$object;
+                                    $sub_path = explode("/",$sub)[count(explode("/",$sub))-1]."/";
+                                    break;
+                                }
                             }
                         }
                     }
@@ -346,19 +370,19 @@ class TemplateController extends Controller
                 $rules['main_file_not_found'] = 'required';
             }
             $this->validate($request, $rules);
-
+            
             // read main file content
             $html_content = trim(file_get_contents($main_file));
             if (empty($html_content)) {
                 $rules['main_file_empty'] = 'required';
             }
             $this->validate($request, $rules);
-
+            
             // Save new template
             $template->fill($request->all());
             $template->content = $html_content;
             $template->save();
-
+            
             // copy all folder to public path
             $public_dir = 'upload/templates/template_'.$template->uid;
             $public_upload_path = public_path($public_dir);
@@ -367,29 +391,29 @@ class TemplateController extends Controller
             }
             // exec("cp -r {$tmp_path}/* {$public_upload_path}/");
             \Acelle\Library\Tool::xcopy($tmp_path, $public_upload_path);
-
+            
             // find all link in html content
             preg_match_all('/(?<=src=|background=|href=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $template->content, $matches);
             $srcs = array_unique($matches['url']);
-
+            
             foreach ($srcs as $src) {
                 if (preg_match('/^https?/i', $src) || preg_match('/^#/i', $src) || strpos($src, '//') === 0) {
                     continue;
                 }
-
-                $new_src = $request->root().'/'.$public_dir.'/'.$src;
-
+            
+                $new_src = $request->root().'/'.$public_dir.'/'.$sub_path.$src;
+            
                 // replace image url
                 $template->content = str_replace($src, $new_src, $template->content);
                 $template->save();
             }
-
+            
             // remove tmp folder
             //exec("rm -r {$tmp_path}");
             \Acelle\Library\Tool::xdelete($tmp_path);
-
+            
             $request->session()->flash('alert-success', trans('messages.template.uploaded'));
-
+            
             return redirect()->action('TemplateController@index');
         }
 
