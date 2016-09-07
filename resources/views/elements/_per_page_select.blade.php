@@ -10,7 +10,7 @@
     @if (isset($items))
         <label>|
         {!! trans('messages.total_items_count', [
-            "from" => $items->toArray()["per_page"]*($items->toArray()["current_page"]-1),
+            "from" => $items->toArray()["per_page"]*($items->toArray()["current_page"]-1)+1,
             "to" => ($items->toArray()["per_page"]*$items->toArray()["current_page"] > $items->toArray()["total"] ? $items->toArray()["total"] : $items->toArray()["per_page"]*$items->toArray()["current_page"]),
             "count" => $items->toArray()["total"]]
         ) !!}
