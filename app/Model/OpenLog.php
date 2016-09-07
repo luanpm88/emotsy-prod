@@ -35,6 +35,10 @@ class OpenLog extends Model
     {
         return $this->belongsTo('Acelle\Model\TrackingLog', 'message_id', 'message_id');
     }
+    public function ipLocation()
+    {
+        return $this->belongsTo('Acelle\Model\IpLocation', 'ip_address', 'ip_address');
+    }
 
     /**
      * Get all items.
