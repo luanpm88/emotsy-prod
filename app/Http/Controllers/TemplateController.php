@@ -515,7 +515,7 @@ class TemplateController extends Controller
         $upload_loca = 'upload/email_template/image/';
         $upload_path = storage_path($upload_loca);
         if (!file_exists($upload_path)) {
-            mkdir($upload_path, 0755, true);
+            mkdir($upload_path, 0777, true);
         }
         $filename = 'screenshot-'.$id.'.png';
 
