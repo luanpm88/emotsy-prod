@@ -28,6 +28,7 @@ class Subscriber extends Model
 {
     const STATUS_SUBSCRIBED = 'subscribed';
     const STATUS_UNSUBSCRIBED = 'unsubscribed';
+    const STATUS_BLACKLISTED = 'blacklisted';
 
     /**
      * The attributes that are mass assignable.
@@ -35,7 +36,7 @@ class Subscriber extends Model
      * @var array
      */
     protected $fillable = [
-        'mail_list_id',
+        'mail_list_id', 'email'
     ];
 
     /**
@@ -97,6 +98,24 @@ class Subscriber extends Model
         $rules['EMAIL'] = $rules['EMAIL'].'|unique:subscribers,email,'.$item_id.',id,mail_list_id,'.$this->mailList->id;
 
         return $rules;
+    }
+
+    /**
+     * Blacklist a subscriber
+     *
+     * @return boolean
+     */
+    public function sendToBlacklist($reason = NULL)
+    {
+        // blacklist all email
+        self::where('email', $this->email)->update(['status' => self::STATUS_BLACKLISTED]);
+
+        // create an entry in blacklists table
+        $r = Blacklist::firstOrNew(['email' => $this->email]);
+        $r->reason = $reason;
+        $r->save();
+
+        return true;
     }
 
     /**

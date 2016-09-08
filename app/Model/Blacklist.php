@@ -27,6 +27,15 @@ use Illuminate\Database\Eloquent\Model;
 class Blacklist extends Model
 {
     /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'email', 'reason'
+    ];
+
+    /**
      * Get all items.
      *
      * @return collect
