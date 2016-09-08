@@ -46,7 +46,7 @@ class SendingServerPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
 
-        return ($can && $item->status != "unactive");
+        return ($can && $item->status != "inactive");
     }
     
     public function enable(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)

@@ -480,7 +480,7 @@ class SendingServer extends Model
      */
     public function disable()
     {
-        $this->status = "unactive";
+        $this->status = "inactive";
         $this->save();
     }
     
