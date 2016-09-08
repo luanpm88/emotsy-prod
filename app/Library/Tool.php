@@ -211,4 +211,19 @@ class Tool
     {
         return substr(sprintf('%o', fileperms($path)), -4);
     }
+    
+    /**
+     * Get system time conversion.
+     *
+     * @param       string
+     *
+     * @return string
+     */
+    public static function systemTime($time)
+    {
+        $servertime = \Carbon\Carbon::parse(\Carbon\Carbon::now()->toDateTimeString());
+        $usertime = \Carbon\Carbon::parse(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->toDateTimeString());
+        $diff = $servertime->diffInHours($usertime, false);
+        return $time->addHours(-$diff);
+    }
 }

@@ -386,7 +386,7 @@ class CampaignController extends Controller
             $servertime = \Carbon\Carbon::parse(\Carbon\Carbon::now()->toDateTimeString());
             $usertime = \Carbon\Carbon::parse(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->toDateTimeString());
             $diff = $servertime->diffInHours($usertime, false);
-            echo $time->addHours(-$diff);
+            $time->addHours(-$diff);
 
             $campaign->run_at = $time->toDateTimeString();
             $campaign->save();
@@ -525,7 +525,7 @@ class CampaignController extends Controller
 
         // columns
         for ($i = 23; $i >= 0; --$i) {
-            $result['columns'][] = \Carbon\Carbon::now()->subHours($i)->format('h:A');
+            $result['columns'][] = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i)->format('h:A');
         }
 
         // datas
@@ -534,15 +534,15 @@ class CampaignController extends Controller
             if ($key == 0) {
                 for ($i = 23; $i >= 0; --$i) {
                     $data[] = $campaign->openUniqCount(
-                        \Carbon\Carbon::now()->subHours($i + 1),
-                        \Carbon\Carbon::now()->subHours($i)
+                        \Acelle\Library\Tool::systemTime(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i + 1)),
+                        \Acelle\Library\Tool::systemTime(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i))
                     );
                 }
             } else {
                 for ($i = 23; $i >= 0; --$i) {
                     $data[] = $campaign->clickCount(
-                        \Carbon\Carbon::now()->subHours($i + 1),
-                        \Carbon\Carbon::now()->subHours($i)
+                        \Acelle\Library\Tool::systemTime(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i + 1)),
+                        \Acelle\Library\Tool::systemTime(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i))
                     );
                 }
             }
