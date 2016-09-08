@@ -888,7 +888,8 @@ return [
       <ul>
         <li>One single .html file and</li>
         <li>One directory at the same level containing asset files (JS, CSS, Images, etc.)</li>
-      </ul><br />
+      </ul>
+      <br />
       Please click <a class="text-semibold" href=":link" target="_blank">[here]</a> to download a sample email template
     ',
     '' => '',
