@@ -109,8 +109,8 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
 
     // Notification handler
 
-    Route::post('delivery/notify/{suid}', 'DeliveryController@notify');
-    Route::get('delivery/notify/{suid}', 'DeliveryController@notify');
+    Route::post('delivery/notify/{stype}', 'DeliveryController@notify');
+    //Route::get('delivery/notify/{stype}', 'DeliveryController@notify');
 
     // Segment
     Route::get('segments/select_box', 'SegmentController@selectBox');

@@ -28,6 +28,7 @@ use Acelle\Library\StringHelper;
 class SendingServerAmazon extends SendingServer
 {
     const SNS_TOPIC = 'ACELLEHANDLER';
+    const SNS_TYPE = 'amazon';
 
     public $notificationTypes = array('Bounce', 'Complaint');
     public static $snsClient = null;
@@ -105,7 +106,7 @@ class SendingServerAmazon extends SendingServer
         }
 
         $topicResponse = $this->snsClient()->createTopic(array('Name' => self::SNS_TOPIC));
-        $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), $this->uid);
+        $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::SNS_TYPE);
 
         $subscribeResponse = $this->snsClient()->subscribe(array(
             'TopicArn' => $topicResponse->get('TopicArn'),

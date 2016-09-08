@@ -48,10 +48,11 @@ class DeliveryController extends Controller
             return;
         }
 
-        $sendingServer = SendingServer::where('uid', $request->suid)->first();
-        $type = $sendingServer->type;
+        $type = $request->stype;
 
-        if ($type == 'amazon-api' || $type == 'amazon-smtp') {
+        echo $type;
+
+        if ($type == 'amazon') { // @TODO hard-coded here, seeking for a solution
             $this->handleAws();
         } elseif ($type == 'mailgun-api') {
             $this->handleMailgun($sendingServer);
@@ -146,11 +147,10 @@ class DeliveryController extends Controller
             $bounceLog->save();
             Log::info('Bounce recorded for message '.$bounceLog->runtime_message_id);
 
-            /*
             if ($bounce['bounceType'] === 'Permanent') {
-                $deliveryLog->subscriber->addToBlacklist($bounceLog->message);
+                Log::info('Adding email to blacklist');
+                $bounceLog->findSubscriberByRuntimeMessageId()->sendToBlacklist($bounceLog->raw);
             }
-            */
         }
 
         if ($responseMessage['notificationType'] == 'Complaint') {
@@ -162,12 +162,6 @@ class DeliveryController extends Controller
             $feedbackLog->raw_feedback_content = $message->get('Message');
             $feedbackLog->save();
             Log::info('Feedback recorded for message '.$feedbackLog->runtime_message_id);
-
-            /*
-            if ($bounce['bounceType'] === 'Permanent') {
-                $deliveryLog->subscriber->addToBlacklist($bounceLog->message);
-            }
-            */
         }
     }
 }

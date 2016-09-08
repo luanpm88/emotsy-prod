@@ -28,6 +28,7 @@ class BounceLog extends Model
 {
     const HARD = 'hard';
     const SOFT = 'soft';
+    
     /**
      * Associations.
      *
@@ -46,6 +47,16 @@ class BounceLog extends Model
     public static function getAll()
     {
         return self::select('bounce_logs.*');
+    }
+
+    /**
+     * Find corresponding subscriber by 'runtime_message_id'
+     *
+     * @return mix
+     */
+    public function findSubscriberByRuntimeMessageId()
+    {
+        return TrackingLog::where('runtime_message_id', $this->runtime_message_id)->first()->subscriber;
     }
 
     /**
