@@ -49,4 +49,9 @@ class CampaignPolicy
     {
         return $item->user_id == $user->id && in_array($item->status, ['error']);
     }
+    
+    public function sort(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
+    {
+        return $item->user_id == $user->id;
+    }
 }

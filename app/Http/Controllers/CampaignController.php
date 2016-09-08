@@ -177,7 +177,7 @@ class CampaignController extends Controller
             $item = \Acelle\Model\Campaign::findByUid($row[0]);
 
             // authorize
-            if (\Gate::denies('update', $item)) {
+            if (\Gate::denies('sort', $item)) {
                 return $this->notAuthorized();
             }
 
