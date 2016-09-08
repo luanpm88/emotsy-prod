@@ -57,7 +57,6 @@ class IpLocation extends Model
 
             $location->fill($values);
         } catch (\Exception $e) {
-            return false;
         }
 
         $location->save();
