@@ -25,8 +25,15 @@
 
 @section('content')
     
+								
+		
                 <div class="row">
                     <div class="col-md-8">
+										
+											<div class="alert alert-info">
+												{!! trans('messages.template_upload_guide', ["link" => 'https://dl.dropboxusercontent.com/u/47371140/newsletter_promotion_template.zip']) !!}
+											</div>
+										
                         <form enctype="multipart/form-data" action="{{ action('TemplateController@upload') }}" method="POST" class="ajax_upload_form form-validate-jquery">
                             {{ csrf_field() }}
                             

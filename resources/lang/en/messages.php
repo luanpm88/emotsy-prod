@@ -883,7 +883,14 @@ return [
     'opened_at' => 'Opened at',
     'ip' => 'IP',
     'area' => 'Area',
-    '' => '',
+    'template_upload_guide' => '
+      Please upload your HTML template bundle. Normally, it should be a .zip file containing:
+      <ul>
+        <li>One single .html file and</li>
+        <li>One directory at the same level containing asset files (JS, CSS, Images, etc.)</li>
+      </ul><br />
+      Please click <a class="text-semibold" href=":link" target="_blank">[here]</a> to download a sample email template
+    ',
     '' => '',
     '' => '',
     '' => '',
