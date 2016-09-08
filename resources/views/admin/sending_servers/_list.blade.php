@@ -22,6 +22,10 @@
 												<a class="kq_search" href="{{ action('Admin\SendingServerController@edit', ["uid" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
 											</h5>
 											<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
+											<br />
+											<span class="text-muted2 list-status pull-left">
+												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
+											</span>
 										</td>
 										<td>
 											<div class="single-stat-box pull-left ml-20">
@@ -51,22 +55,35 @@
 												<span class="text-muted2">/ {{ $item->displayQuota() }}</span>
 											</div>
 										</td>
-										<td class="text-right">
-											<span class="text-muted2 list-status pull-left">
-												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
-											</span>
+										<td class="text-right">											
 											@can('update', $item)
 												<a href="{{ action('Admin\SendingServerController@edit', ["uid" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 											@endcan
-											@can('delete', $item)
+											@if (Auth::user()->can('delete', $item) || Auth::user()->can('disable', $item))
 												<div class="btn-group">										
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-													<ul class="dropdown-menu dropdown-menu-right">													
-														<li>														
-															<a delete-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete', ["uids" => $item->uid]) }}">
-																<i class="icon-trash"></i> {{ trans('messages.delete') }}
-															</a>
-														</li>
+													<ul class="dropdown-menu dropdown-menu-right">
+														@can('enable', $item)
+															<li>														
+																<a link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@enable', ["uids" => $item->uid]) }}">
+																	<i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
+																</a>
+															</li>
+														@endcan
+														@can('disable', $item)
+															<li>														
+																<a link-confirm="{{ trans('messages.disable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@disable', ["uids" => $item->uid]) }}">
+																	<i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
+																</a>
+															</li>
+														@endcan
+														@can('delete', $item)
+															<li>														
+																<a delete-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete', ["uids" => $item->uid]) }}">
+																	<i class="icon-trash"></i> {{ trans('messages.delete') }}
+																</a>
+															</li>
+														@endcan
 													</ul>
 												</div>
 											@endcan

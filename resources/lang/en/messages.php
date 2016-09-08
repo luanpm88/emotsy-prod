@@ -238,6 +238,8 @@ return [
     'pause_campaigns_confirm' => 'You\'re about to pause :number campaign(s).',
     'restart_campaigns_confirm' => 'You\'re about to restart :number campaign(s).',
     'delete_sending_servers_confirm' => 'You\'re about to delete :number sending server(s) from the list.',
+    'disable_sending_servers_confirm' => 'You\'re about to disable :number sending server(s) from the list.',
+    'enable_sending_servers_confirm' => 'You\'re about to enable :number sending server(s) from the list.',
     'subscribe_subscribers_confirm' => 'You\'re about to subscribe :number subscriber(s) from the list.',
     'unsubscribe_subscribers_confirm' => 'You\'re about to unsubscribe :number subscriber(s) from the list.',
     'subscribed' => 'Subscribed',
@@ -251,6 +253,9 @@ return [
     'create_segment' => 'Create segment',
     'segment.created' => 'Segment was successfully created',
     'segment.updated' => 'Segment was successfully updated',
+    'sending_servers.deleted' => 'One or more sending servers were successfully deleted',
+    'sending_servers.disabled' => 'One or more sending servers were successfully disabled',
+    'sending_servers.enabled' => 'One or more sending servers were successfully enabled',
     'segments.deleted' => 'One or more segments were successfully deleted',
     'templates.deleted' => 'One or more templates were successfully deleted',
     'blacklists.deleted' => 'One or more emails were successfully removed from blacklist',
@@ -892,7 +897,8 @@ return [
       <br />
       Please click <a class="text-semibold" href=":link" target="_blank">[here]</a> to download a sample email template
     ',
-    '' => '',
+    'disable' => 'Disable',
+    'enable' => 'Enable',
     '' => '',
     '' => '',
     '' => '',

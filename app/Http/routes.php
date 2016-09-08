@@ -237,11 +237,14 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/sending_servers/listing/{page?}', 'SendingServerController@listing');
     Route::get('admin/sending_servers/sort', 'SendingServerController@sort');
     Route::get('admin/sending_servers/delete', 'SendingServerController@delete');
+    Route::get('admin/sending_servers/disable', 'SendingServerController@disable');
+    Route::get('admin/sending_servers/enable', 'SendingServerController@enable');
     Route::resource('admin/sending_servers', 'SendingServerController');
     Route::get('admin/sending_servers/create/{type}', 'SendingServerController@create');
     Route::post('admin/sending_servers/create/{type}', 'SendingServerController@store');
     Route::get('admin/sending_servers/{id}/edit/{type}', 'SendingServerController@edit');
     Route::patch('admin/sending_servers/{id}/update/{type}', 'SendingServerController@update');
+    
 
     // Bounce handlers
     Route::get('admin/bounce_handlers/listing/{page?}', 'BounceHandlerController@listing');

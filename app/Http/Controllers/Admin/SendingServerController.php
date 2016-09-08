@@ -244,16 +244,56 @@ class SendingServerController extends Controller
 
         foreach ($items->get() as $item) {
             // authorize
-            if (\Gate::denies('delete', $item)) {
-                return;
+            if (\Gate::allows('delete', $item)) {
+                $item->delete();
             }
-        }
-
-        foreach ($items->get() as $item) {
-            $item->delete();
         }
 
         // Redirect to my lists page
         echo trans('messages.sending_servers.deleted');
+    }
+    
+    /**
+     * Disable sending server.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function disable(Request $request)
+    {
+        $items = \Acelle\Model\SendingServer::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($items->get() as $item) {
+            // authorize
+            if (\Gate::allows('disable', $item)) {
+                $item->disable();
+            }
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.sending_servers.disabled');
+    }
+    
+    /**
+     * Disable sending server.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function enable(Request $request)
+    {
+        $items = \Acelle\Model\SendingServer::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($items->get() as $item) {
+            // authorize
+            if (\Gate::allows('enable', $item)) {
+                $item->enable();
+            }
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.sending_servers.enabled');
     }
 }

@@ -39,4 +39,22 @@ class SendingServerPolicy
 
         return $can;
     }
+    
+    public function disable(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
+    {
+        $ability = $user->getOption('backend', 'sending_server_update');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->id == $item->user_id);
+
+        return ($can && $item->status != "unactive");
+    }
+    
+    public function enable(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
+    {
+        $ability = $user->getOption('backend', 'sending_server_update');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->id == $item->user_id);
+
+        return ($can && $item->status != "active");
+    }
 }

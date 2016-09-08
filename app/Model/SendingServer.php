@@ -145,7 +145,7 @@ class SendingServer extends Model
      */
     public static function getAll()
     {
-        return self::select('*');
+        return self::where('status', '=', 'active');
     }
 
     /**
@@ -471,5 +471,27 @@ class SendingServer extends Model
             ['value' => 'eu-central-1', 'text' => 'EU (Frankfurt)'],
             ['value' => 'eu-west-1', 'text' => 'EU (Ireland)'],
         ];
+    }
+    
+    /**
+     * Disable sending server
+     *
+     * @return array
+     */
+    public function disable()
+    {
+        $this->status = "unactive";
+        $this->save();
+    }
+    
+    /**
+     * Enable sending server
+     *
+     * @return array
+     */
+    public function enable()
+    {
+        $this->status = "active";
+        $this->save();
     }
 }
