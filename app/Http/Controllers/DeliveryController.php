@@ -11,6 +11,7 @@ use Guzzle\Http\Client;
 use Acelle\Model\TrackingLog;
 use Acelle\Model\BounceLog;
 use Acelle\Model\SendingServer;
+use Acelle\Model\SendingServerMailgun;
 use Acelle\Model\FeedbackLog;
 
 class DeliveryController extends Controller
@@ -54,22 +55,27 @@ class DeliveryController extends Controller
 
         if ($type == 'amazon') { // @TODO hard-coded here, seeking for a solution
             $this->handleAws();
-        } elseif ($type == 'mailgun-api') {
-            $this->handleMailgun($sendingServer);
+        } elseif ($type == SendingServerMailgun::WEBHOOK) {
+            $this->handleMailgun();
         } else {
             return;
         }
     }
 
-    private function handleMailgun($sendingServer)
+    private function handleMailgun()
     {
         Log::configure(storage_path().'/logs/handler-mailgun.log');
         Log::info(print_r($_POST, true));
 
-        if (isset($_POST['timestamp']) && isset($_POST['token']) && isset($_POST['signature']) && hash_hmac('sha256', $_POST['timestamp'].$_POST['token'], $sendingServer->api_key) === $_POST['signature']) {
+        // @TODO: POST request not verified because we cannot retrive sending server information
+        // The complete check should be
+        //    if (isset($_POST['timestamp']) && isset($_POST['token']) && isset($_POST['signature']) && hash_hmac('sha256', $_POST['timestamp'].$_POST['token'], $sendingServer->api_key) === $_POST['signature']) {
+        if (isset($_POST['timestamp']) && isset($_POST['token']) && isset($_POST['signature'])) {
             if ($_POST['event'] == 'complained') {
                 $feedbackLog = new FeedbackLog();
                 $feedbackLog->runtime_message_id = StringHelper::cleanupMessageId($_POST['Message-Id']);
+                // For Mailgun, runtime_message_id EQUIV. message_id
+                $feedbackLog->message_id = $feedbackLog->runtime_message_id;
                 $feedbackLog->feedback_type = 'spam';
                 $feedbackLog->raw_feedback_content = '';
                 $feedbackLog->save();
@@ -77,10 +83,14 @@ class DeliveryController extends Controller
             } elseif ($_POST['event'] == 'bounced') {
                 $bounceLog = new BounceLog();
                 $bounceLog->runtime_message_id = StringHelper::cleanupMessageId($_POST['Message-Id']);
+                // For Mailgun, runtime_message_id EQUIV. message_id
+                $bounceLog->message_id = $bounceLog->runtime_message_id;
                 $bounceLog->bounce_type = BounceLog::HARD;
                 $bounceLog->raw = $_POST['error'];
                 $bounceLog->save();
                 Log::info('Bounce recorded for message '.$bounceLog->runtime_message_id);
+                Log::info('Adding email to blacklist');
+                $bounceLog->findSubscriberByRuntimeMessageId()->sendToBlacklist($bounceLog->raw);
             }
         }
         header('X-PHP-Response-Code: 200', true, 200);

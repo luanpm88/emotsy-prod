@@ -28,6 +28,8 @@ use Mailgun\Mailgun;
 
 class SendingServerMailgun extends SendingServer
 {
+    const WEBHOOK = 'mailgun';
+
     protected $table = 'sending_servers';
     public static $client = null;
     public static $isWebhookSetup = false;
@@ -65,7 +67,9 @@ class SendingServerMailgun extends SendingServer
 
         Log::info('Setting up webhooks for bounce/complaints');
 
-        $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), $this->uid);
+        $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
+
+        Log::info('Webhook set to: '.$subscribeUrl);
 
         try {
             $result = $this->client()->delete("domains/$domain/webhooks/bounce");

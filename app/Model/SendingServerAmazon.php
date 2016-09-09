@@ -28,7 +28,7 @@ use Acelle\Library\StringHelper;
 class SendingServerAmazon extends SendingServer
 {
     const SNS_TOPIC = 'ACELLEHANDLER';
-    const SNS_TYPE = 'amazon';
+    const SNS_TYPE = 'amazon'; // @TODO
 
     public $notificationTypes = array('Bounce', 'Complaint');
     public static $snsClient = null;
