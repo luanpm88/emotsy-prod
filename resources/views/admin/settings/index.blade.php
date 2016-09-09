@@ -130,7 +130,7 @@
 												<li>
 													<i class="icon-link text-grey"></i>
 													<h5 class="mt-0 mb-0 text-semibold">
-														{!! str_replace(trans("messages.MESSAGE_ID"), "<span class='text-info-600'>" . trans("messages.MESSAGE_ID") . "</span>", str_replace(trans("messages.URL"), "<span class='text-info-600'>" . trans("messages.URL") . "</span>", $setting['value'])) !!}
+														{!! str_replace(trans("messages.STYLE"), "<span class='text-info-600'>" . trans("messages.STYLE") . "</span>", str_replace(trans("messages.MESSAGE_ID"), "<span class='text-info-600'>" . trans("messages.MESSAGE_ID") . "</span>", str_replace(trans("messages.URL"), "<span class='text-info-600'>" . trans("messages.URL") . "</span>", $setting['value']))) !!}
 													</h5>
 													<p>
 														{{ trans('messages.' . $name) }}
