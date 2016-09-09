@@ -899,7 +899,7 @@ return [
     ',
     'disable' => 'Disable',
     'enable' => 'Enable',
-    '' => '',
+    'STYLE' => 'STYLE',
     '' => '',
     '' => '',
     '' => '',
