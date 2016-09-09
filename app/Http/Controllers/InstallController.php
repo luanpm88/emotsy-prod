@@ -545,13 +545,13 @@ MAIL_NAME="'.(isset($smtp['smtp_from_name']) ? $smtp['smtp_from_name'] : '').'"
         fclose($file);
 
         // write file
-        $file_path = storage_path('import/database_import.sql');
+        $file_path = storage_path('app/database_import.sql');
         $file = fopen($file_path, 'w') or die('Unable to open file!');
         fwrite($file, $sql);
         fclose($file);
 
         // import sql
-        $file_path = storage_path('import/database_import.sql');
+        $file_path = storage_path('app/database_import.sql');
         $command = 'mysql --host='.$database['hostname'].' --user='.$database['username'].' --password='.$database['password'].' --port='.$database['port'].' --database='.$database['database_name'].' < '.$file_path;
 
         return $this->importSql($database, $file_path);
@@ -600,7 +600,9 @@ MAIL_NAME="'.(isset($smtp['smtp_from_name']) ? $smtp['smtp_from_name'] : '').'"
                 $templine = '';
             }
         }
-
+        
+        unlink($file_path);
+        
         return true;
     }
 }
