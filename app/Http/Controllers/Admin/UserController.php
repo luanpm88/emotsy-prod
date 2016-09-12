@@ -189,9 +189,12 @@ class UserController extends Controller
         // save posted data
         if ($request->isMethod('patch')) {
             $this->validate($request, $user->rules());
-
+            
             // Save current user info
             $user->fill($request->all());
+            
+            // Change group
+            $user->user_group_id = $request->user_group_id;
 
             // Update password
             if (!empty($request->password)) {

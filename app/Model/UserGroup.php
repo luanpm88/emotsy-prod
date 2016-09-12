@@ -188,6 +188,7 @@ class UserGroup extends Model
                 'all_sending_servers' => 'yes',
                 'max_size_upload_total' => '500',
                 'max_file_size_upload' => '5',
+                'unsubscribe_url_required' => 'yes',
             ],
             'backend' => [
                 'user_group_read' => 'all',

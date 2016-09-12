@@ -900,7 +900,7 @@ return [
     'disable' => 'Disable',
     'enable' => 'Enable',
     'STYLE' => 'STYLE',
-    '' => '',
+    'unsubscribe_url_required' => 'Unsubscribe url required',
     '' => '',
     '' => '',
     '' => '',

@@ -293,6 +293,7 @@ class CampaignController extends Controller
      */
     public function template(Request $request)
     {
+        $user = $request->user();
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
@@ -311,7 +312,7 @@ class CampaignController extends Controller
         $rules = [];
 
         // if campaign type is not plain text
-        if ($campaign->type != 'plain-text') {
+        if ($campaign->type != 'plain-text' && $user->getOption('frontend', 'unsubscribe_url_required') == 'yes') {
             $rules['html'] = $validate;
         }
 

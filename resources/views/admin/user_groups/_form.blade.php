@@ -118,7 +118,7 @@
 													{{ trans('messages.unlimited') }}
 												</label>
 											</div>
-										</div>
+										</div>										
 									</div>
 									<div class="row">
 										<div class="boxing col-md-3">
@@ -137,7 +137,22 @@
 												</label>
 											</div>
 																		
-										</div>		
+										</div>
+										<div class="boxing col-md-3">
+											<label class="text-semibold">{{ trans('messages.unsubscribe_url_required') }} <span class="text-danger">*</span></label>
+											<br />
+											<span class="notoping">
+												@include('helpers.form_control', ['type' => 'checkbox',
+													'class' => '',
+													'name' => 'options[frontend][unsubscribe_url_required]',
+													'value' => $options['frontend']['unsubscribe_url_required'],
+													'label' => '',
+													'options' => ['no','yes'],
+													'help_class' => 'user_group',
+													'rules' => Acelle\Model\UserGroup::rules()
+												])
+											</span>
+										</div>
 									</div>
 										
 									<h3 class="text-teal-800">{{ trans('messages.file_upload') }}</h3>
