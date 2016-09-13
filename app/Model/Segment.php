@@ -131,7 +131,7 @@ class Segment extends Model
     {
         return [
             ['text' => trans('messages.all'), 'value' => 'all'],
-            ['text' => trans('messages.any'), 'value' => 'Any'],
+            ['text' => trans('messages.any'), 'value' => 'any'],
         ];
     }
 
@@ -218,7 +218,7 @@ class Segment extends Model
 
             }
 
-            $conditions[] = \DB::getTablePrefix().'subscribers.id IN  (SELECT '.\DB::getTablePrefix().'subscriber_fields.subscriber_id FROM '.\DB::getTablePrefix().'subscriber_fields WHERE ('.\DB::getTablePrefix().'subscriber_fields.field_id = '.$condition->field_id.' AND '.$cond.'))';
+            $conditions[] = \DB::getTablePrefix().'subscribers.id IN (SELECT '.\DB::getTablePrefix().'subscriber_fields.subscriber_id FROM '.\DB::getTablePrefix().'subscriber_fields WHERE ('.\DB::getTablePrefix().'subscriber_fields.field_id = '.$condition->field_id.' AND '.$cond.'))';
         }
 
         //return $conditions;
