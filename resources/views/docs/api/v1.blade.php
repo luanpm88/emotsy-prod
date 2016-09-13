@@ -30,7 +30,7 @@
         </tr>
         <tr style="display:none;background: #f6f6f6">
           <td></td>
-          <td colspan="2">
+          <td>
             <div>
               <div class="description detailed">                
                 <h4>Returns</h4>
@@ -40,6 +40,13 @@
               </div>
             </div>
           </td>
+            <td>
+                <h4>Example:</h4>
+                <pre class=""><code>curl -X GET -H "accept:application/json" -G \
+{{ action("Api\MailListController@index") }}? \
+-d api_token={{ Auth::user()->api_token }}
+</code></pre>
+            </td>
         </tr>
           
         <tr>
@@ -55,7 +62,7 @@
         </tr>
         <tr style="display:none;background: #f6f6f6">
           <td></td>
-          <td colspan="2">
+          <td>
             <div>
               <div class="description detailed">
                 <h4>Parameters</h4>
@@ -70,7 +77,14 @@
                 </div>
               </div>
             </div>
-          </td>
+            </td>
+            <td>
+                <h4>Example:</h4>
+                <pre class=""><code>curl -X GET -H "accept:application/json" -G \
+{!! str_replace("-ID-", "<redbold>{id}</redbold>", action("Api\MailListController@show", "-ID-")) !!}? \
+-d api_token={{ Auth::user()->api_token }}
+</code></pre>
+            </td>
         </tr>
             
         <!--<tr>
@@ -144,17 +158,24 @@
           </td>
         </tr>
         <tr style="display:none;background: #f6f6f6">
-          <td></td>
-          <td colspan="2">
-            <div>
-              <div class="description detailed">                
-                <h4>Returns</h4>
-                <div class="list">
-                  List of all user's campaigns in json
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">                
+                  <h4>Returns</h4>
+                  <div class="list">
+                    List of all user's campaigns in json
+                  </div>
                 </div>
               </div>
-            </div>
-          </td>
+            </td>
+            <td>
+                <h4>Example:</h4>
+                <pre class=""><code>curl -X GET -H "accept:application/json" -G \
+{{ action("Api\CampaignController@index") }}? \
+-d api_token={{ Auth::user()->api_token }}
+</code></pre>
+            </td>
         </tr>
           
         <tr>
@@ -169,23 +190,30 @@
           </td>
         </tr>
         <tr style="display:none;background: #f6f6f6">
-          <td></td>
-          <td colspan="2">
-            <div>
-              <div class="description detailed">
-                <h4>Parameters</h4>
-                <div class="list"><dl>
-                  <dt><var>$id</var></dt>
-                  <dd>Campaign's id</dd>
-                </dl></div>
-        
-                <h4>Returns</h4>
-                <div class="list">
-                  All campaign overview informations in json
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">
+                  <h4>Parameters</h4>
+                  <div class="list"><dl>
+                    <dt><var>$id</var></dt>
+                    <dd>Campaign's id</dd>
+                  </dl></div>
+          
+                  <h4>Returns</h4>
+                  <div class="list">
+                    All campaign overview informations in json
+                  </div>
                 </div>
               </div>
-            </div>
-          </td>
+            </td>
+            <td>
+                <h4>Example:</h4>
+                <pre class=""><code>curl -X GET -H "accept:application/json" -G \
+{!! str_replace("-ID-", "<redbold>{id}</redbold>", action("Api\CampaignController@show", "-ID-")) !!}? \
+-d api_token={{ Auth::user()->api_token }}
+</code></pre>
+            </td>
         </tr>
         
       </table>
@@ -210,23 +238,30 @@
           </td>
         </tr>
         <tr style="display:none;background: #f6f6f6">
-          <td></td>
-          <td colspan="2">
-            <div>
-              <div class="description detailed">
-                <h4>Parameters</h4>
-                <div class="list"><dl>
-                  <dt><var>$list_id</var></dt>
-                  <dd>List's id</dd>
-                </dl></div>
-        
-                <h4>Returns</h4>
-                <div class="list">
-                  List of all list's subscribers in json
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">
+                  <h4>Parameters</h4>
+                  <div class="list"><dl>
+                    <dt><var>$list_id</var></dt>
+                    <dd>List's id</dd>
+                  </dl></div>
+          
+                  <h4>Returns</h4>
+                  <div class="list">
+                    List of all list's subscribers in json
+                  </div>
                 </div>
               </div>
-            </div>
-          </td>
+            </td>
+            <td>
+                <h4>Example:</h4>
+                <pre class=""><code>curl -X GET -H "accept:application/json" -G \
+{!! str_replace("-LIST_ID-", "<redbold>{list_id}</redbold>", action("Api\SubscriberController@index", ["list_id" => "-LIST_ID-"])) !!}? \
+-d api_token={{ Auth::user()->api_token }}
+</code></pre>
+            </td>
         </tr>
           
           
@@ -242,25 +277,32 @@
           </td>
         </tr>
         <tr style="display:none;background: #f6f6f6">
-          <td></td>
-          <td colspan="2">
-            <div>
-              <div class="description detailed">
-                <h4>Parameters</h4>
-                <div class="list"><dl>
-                  <dt><var>$list_id</var></dt>
-                  <dd>List's id</dd>
-                  <dt><var>$id</var></dt>
-                  <dd>Subsciber's id</dd>
-                </dl></div>
-        
-                <h4>Returns</h4>
-                <div class="list">
-                  All subscriber information in json
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">
+                  <h4>Parameters</h4>
+                  <div class="list"><dl>
+                    <dt><var>$list_id</var></dt>
+                    <dd>List's id</dd>
+                    <dt><var>$id</var></dt>
+                    <dd>Subsciber's id</dd>
+                  </dl></div>
+          
+                  <h4>Returns</h4>
+                  <div class="list">
+                    All subscriber information in json
+                  </div>
                 </div>
               </div>
-            </div>
-          </td>
+            </td>
+            <td>
+                <h4>Example:</h4>
+                <pre class=""><code>curl -X GET -H "accept:application/json" -G \
+{!! str_replace("-ID-", "<redbold>{id}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_id}</redbold>", action("Api\SubscriberController@show", ["list_id" => "-LIST_ID-",  "id" => "-ID-"]))) !!}? \
+-d api_token={{ Auth::user()->api_token }}
+</code></pre>
+            </td>
         </tr>
           
           
@@ -276,25 +318,37 @@
           </td>
         </tr>
         <tr style="display:none;background: #f6f6f6">
-          <td></td>
-          <td colspan="2">
-            <div>
-              <div class="description detailed">
-                <h4>Parameters</h4>
-                <div class="list"><dl>
-                  <dt><var>$request</var></dt>
-                  <dd>All subscriber information: EMAIL (required), FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)</dd>
-                  <dt><var>$list_id</var></dt>
-                  <dd>List's id</dd>
-                </dl></div>
-        
-                <h4>Returns</h4>
-                <div class="list">
-                  Creation messages
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">
+                  <h4>Parameters</h4>
+                  <div class="list"><dl>
+                    <dt><var>$list_id</var></dt>
+                    <dd>List's id</dd>
+                    <dt><var>$EMAIL</var></dt></dt>
+                    <dd>Subscriber's email</dd>
+                    <dt><var>$[OTHER_FIELDS...]</var></dt></dt>
+                    <dd>All subscriber's other fields: FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)</dd>
+                  </dl></div>
+          
+                  <h4>Returns</h4>
+                  <div class="list">
+                    Creation messages in json
+                  </div>
                 </div>
               </div>
-            </div>
-          </td>
+            </td>
+            <td>
+                <h4>Example:</h4>
+                <pre class=""><code>curl -X POST -H "accept:application/json" -G \
+{!! str_replace("-LIST_ID-", "<redbold>{list_id}</redbold>", action("Api\SubscriberController@store", ["list_id" => "-LIST_ID-"])) !!}? \
+-d api_token={{ Auth::user()->api_token }} \
+-d EMAIL=test@gmail.com \
+-d FIRST_NAME=Marine \
+-d LAST_NAME=Joze
+</code></pre>
+            </td>
         </tr>
           
           
@@ -310,25 +364,32 @@
           </td>
         </tr>
         <tr style="display:none;background: #f6f6f6">
-          <td></td>
-          <td colspan="2">
-            <div>
-              <div class="description detailed">
-                <h4>Parameters</h4>
-                <div class="list"><dl>
-                  <dt><var>$list_id</var></dt>
-                  <dd>List's id</dd>
-                  <dt><var>$id</var></dt>
-                  <dd>Subsciber's id</dd>
-                </dl></div>
-        
-                <h4>Returns</h4>
-                <div class="list">
-                  Result messages
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">
+                  <h4>Parameters</h4>
+                  <div class="list"><dl>
+                    <dt><var>$list_id</var></dt>
+                    <dd>List's id</dd>
+                    <dt><var>$id</var></dt>
+                    <dd>Subsciber's id</dd>
+                  </dl></div>
+          
+                  <h4>Returns</h4>
+                  <div class="list">
+                    Result messages in json
+                  </div>
                 </div>
               </div>
-            </div>
-          </td>
+            </td>
+            <td>
+                <h4>Example:</h4>
+                <pre class=""><code>curl -X PATCH -H "accept:application/json" -G \
+{!! str_replace("-ID-", "<redbold>{id}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_id}</redbold>", action("Api\SubscriberController@subscribe", ["list_id" => "-LIST_ID-",  "id" => "-ID-"]))) !!}? \
+-d api_token={{ Auth::user()->api_token }}
+</code></pre>
+            </td>
         </tr>
           
           
@@ -344,25 +405,32 @@
           </td>
         </tr>
         <tr style="display:none;background: #f6f6f6">
-          <td></td>
-          <td colspan="2">
-            <div>
-              <div class="description detailed">
-                <h4>Parameters</h4>
-                <div class="list"><dl>
-                  <dt><var>$list_id</var></dt>
-                  <dd>List's id</dd>
-                  <dt><var>$id</var></dt>
-                  <dd>Subsciber's id</dd>
-                </dl></div>
-        
-                <h4>Returns</h4>
-                <div class="list">
-                  Result messages
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">
+                  <h4>Parameters</h4>
+                  <div class="list"><dl>
+                    <dt><var>$list_id</var></dt>
+                    <dd>List's id</dd>
+                    <dt><var>$id</var></dt>
+                    <dd>Subsciber's id</dd>
+                  </dl></div>
+          
+                  <h4>Returns</h4>
+                  <div class="list">
+                    Result messages in json
+                  </div>
                 </div>
               </div>
-            </div>
-          </td>
+            </td>
+            <td>
+                <h4>Example:</h4>
+                <pre class=""><code>curl -X PATCH -H "accept:application/json" -G \
+{!! str_replace("-ID-", "<redbold>{id}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_id}</redbold>", action("Api\SubscriberController@unsubscribe", ["list_id" => "-LIST_ID-",  "id" => "-ID-"]))) !!}? \
+-d api_token={{ Auth::user()->api_token }}
+</code></pre>
+            </td>
         </tr>
           
           
@@ -379,7 +447,7 @@
         </tr>
         <tr style="display:none;background: #f6f6f6">
           <td></td>
-          <td colspan="2">
+          <td>
             <div>
               <div class="description detailed">
                   <h4>Parameters</h4>
@@ -392,11 +460,18 @@
           
                   <h4>Returns</h4>
                   <div class="list">
-                    Result messages
+                    Result messages in json
                   </div>
               </div>
             </div>
           </td>
+            <td>
+                <h4>Example:</h4>
+                <pre class=""><code>curl -X DELETE -H "accept:application/json" -G \
+{!! str_replace("-ID-", "<redbold>{id}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_id}</redbold>", action("Api\SubscriberController@delete", ["list_id" => "-LIST_ID-",  "id" => "-ID-"]))) !!}? \
+-d api_token={{ Auth::user()->api_token }}
+</code></pre>
+            </td>
         </tr>
         
       </table>

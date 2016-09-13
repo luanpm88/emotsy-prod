@@ -1196,7 +1196,7 @@ ul.install-steps li.enabled a:hover {
 .api-page .list dt {
     font-weight: 600;    
 }
-.api-page .description h4:first-child {
+.api-page td h4:first-child {
     margin-top: 0;   
 }
 .api-required {
@@ -1205,4 +1205,15 @@ ul.install-steps li.enabled a:hover {
     display: inline-block;
     padding-left: 10px;
     color: #D84315;
+}
+.api-optional {
+    font-weight: normal;
+    font-style: italic;
+    display: inline-block;
+    padding-left: 10px;
+    color: #333;
+}
+redbold {
+    color: #D84315;
+    font-weight: 700;
 }
