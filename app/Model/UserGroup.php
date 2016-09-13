@@ -582,7 +582,16 @@ class UserGroup extends Model
         if (empty($this->options)) {
             return self::defaultOptions();
         } else {
-            return json_decode($this->options, true);
+            $defaul_options = self::defaultOptions();
+            $saved_options = json_decode($this->options, true);
+            foreach($defaul_options as $x => $group) {
+                foreach($group as $y => $option) {
+                    if(isset($saved_options[$x][$y])) {
+                        $defaul_options[$x][$y] = $saved_options[$x][$y];
+                    }
+                }
+            }
+            return $defaul_options;
         }
     }
 
@@ -593,11 +602,7 @@ class UserGroup extends Model
      */
     public function getOption($cat, $name)
     {
-        if (empty($this->options)) {
-            return self::defaultOptions()[$cat][$name];
-        } else {
-            return json_decode($this->options, true)[$cat][$name];
-        }
+        return $this->getOptions()[$cat][$name];
     }
 
     /**
