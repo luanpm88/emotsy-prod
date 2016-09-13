@@ -188,6 +188,14 @@ $(function() {
         $("#delete_confirm_model h6").html(mgs.replace(":number", "<span class='text-bold text-danger'>" + count + "</span>"));
         $(".delete-confirm-button").attr("href", $(this).attr("new-href"));
         
+        if(typeof($(this).attr("no-ajax")) != "undefined") {
+            $(".delete-confirm-button").removeClass("ajax_link");
+        } else {
+            if(!$(".delete-confirm-button").hasClass("ajax_link")) {
+                $(".delete-confirm-button").addClass("ajax_link");
+            }
+        }
+        
         if($(this).parents(".list_actions").length) {
             var url = $(this).attr("new-href");
             var form = $(this).parents(".listing-form");

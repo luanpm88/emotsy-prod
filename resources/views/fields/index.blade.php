@@ -87,7 +87,7 @@
 									</td>
 									<td>
 										@if (is_object(Acelle\Model\Field::findByUid($item->uid)))
-											<a href="{{ action('FieldController@delete', ['list_uid' => $list->uid, 'uid' => $item->uid]) }}" delete-confirm="{!! trans('messages.delete_field_alert') !!}" class="btn bg-danger-400 remove-field-button">
+											<a no-ajax="true" href="{{ action('FieldController@delete', ['list_uid' => $list->uid, 'uid' => $item->uid]) }}" delete-confirm="{!! trans('messages.delete_field_alert') !!}" class="btn bg-danger-400 remove-field-button">
 												<i class="icon-trash"></i>
 											</a>
 										@else

@@ -89,7 +89,7 @@ function tableFilter(form, custom_url) {
         form.find(".select").select2({minimumResultsForSearch: -1});
         
         // Hightlight
-        if (keyword != 'undefined' && keyword.trim() != '') {
+        if (typeof(keyword) != 'undefined' && keyword.trim() != '') {
             keywords = keyword.split(" ");
             keywords.forEach(function (v) {
                 hiliterList(form, v.trim());
