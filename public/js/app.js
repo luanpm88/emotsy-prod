@@ -213,7 +213,8 @@ $(function() {
     // List delete confirm event
     // ------------------------------
     $(document).on("click", "a[list-delete-confirm]", function(e) {
-        var url = $(this).attr("list-delete-confirm");
+        var url = $(this).attr("href");
+        var curl = $(this).attr("list-delete-confirm");
         $(this).attr("new-href", $(this).attr("href"));
         
         if($(this).parents(".list_actions").length) {
@@ -223,6 +224,7 @@ $(function() {
             }).get();
             
             url = url + "?uids=" + vals.join(",");
+            curl = curl + "?uids=" + vals.join(",");
         }
     
         $('a[data-target="#list_delete_confirm_model"]').trigger("click");
@@ -232,7 +234,7 @@ $(function() {
         // ajax update custom sort
         $.ajax({
             method: "GET",
-            url: url,
+            url: curl,
         })
         .done(function( msg ) {
             $("#list_delete_confirm_model .content").html(msg);

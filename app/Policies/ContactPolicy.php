@@ -17,6 +17,6 @@ class ContactPolicy
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Contact $item)
     {
-        return $user->contact_id == $item->id;
+        return !isset($item->id) || $user->contact_id == $item->id;
     }
 }

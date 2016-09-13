@@ -34,8 +34,8 @@ class CreateCampaignsTable extends Migration
             $table->datetime('delivery_at')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('mail_list_id')->references('id')->on('mail_lists');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
         });
     }
 

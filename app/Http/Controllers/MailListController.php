@@ -266,16 +266,11 @@ class MailListController extends Controller
 
         foreach ($lists->get() as $item) {
             // authorize
-            if (\Gate::denies('delete', $item)) {
-                return;
+            if (\Gate::allows('delete', $item)) {
+                $item->delete();
+                // Log
+                $item->log('deleted', $request->user());
             }
-        }
-
-        foreach ($lists->get() as $item) {
-            $item->delete();
-
-            // Log
-            $item->log('deleted', $request->user());
         }
 
         // Redirect to my lists page
