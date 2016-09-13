@@ -35,7 +35,7 @@
               <div class="description detailed">                
                 <h4>Returns</h4>
                 <div class="list">
-                  Illuminate\Http\Response
+                  List of all user's mail lists in json
                 </div>
               </div>
             </div>
@@ -66,12 +66,61 @@
                   
                 <h4>Returns</h4>
                 <div class="list">
-                  Illuminate\Http\Response
+                  All list informations in json
                 </div>
               </div>
             </div>
           </td>
         </tr>
+            
+        <!--<tr>
+          <td>
+            <span class="label label-flat bg-primary">{{ trans('messages.POST') }}</span>
+          </td>
+          <td>
+            <a href="#more" class="toogle-api">/api/v1/lists</a>
+          </td>
+          <td>
+            Create a new list
+          </td>
+        </tr>
+        <tr style="display:none;background: #f6f6f6">
+          <td></td>
+          <td colspan="2">
+            <div>
+              <div class="description detailed">
+                <h4>Parameters</h4>
+                <div class="list">
+                    <dl>
+                      <dt><var>$name</var> <small class="api-required">required</small></dt>
+                      <dd>List's name</dd>
+                    </dl>
+                    <dl>
+                      <dt><var>$from_email</var></dt>
+                      <dd>From email</dd>
+                    </dl>
+                    <dl>
+                      <dt><var>$from_name</var></dt>
+                      <dd>From name</dd>
+                    </dl>
+                    <dl>
+                      <dt><var>$contact[address_1]</var></dt>
+                      <dd>List contact's address 1</dd>
+                    </dl>
+                    <dl>
+                      <dt><var>$contact[address_2]</var></dt>
+                      <dd>List contact's address 2</dd>
+                    </dl>
+                </div>
+                    
+                <h4>Returns</h4>
+                <div class="list">
+                  Illuminate\Http\Response
+                </div>
+              </div>
+            </div>
+          </td>
+        </tr>-->
         
       </table>
         
@@ -101,7 +150,7 @@
               <div class="description detailed">                
                 <h4>Returns</h4>
                 <div class="list">
-                  Illuminate\Http\Response
+                  List of all user's campaigns in json
                 </div>
               </div>
             </div>
@@ -132,7 +181,7 @@
         
                 <h4>Returns</h4>
                 <div class="list">
-                  Illuminate\Http\Response
+                  All campaign overview informations in json
                 </div>
               </div>
             </div>
@@ -173,7 +222,7 @@
         
                 <h4>Returns</h4>
                 <div class="list">
-                  Illuminate\Http\Response
+                  List of all list's subscribers in json
                 </div>
               </div>
             </div>
@@ -207,7 +256,7 @@
         
                 <h4>Returns</h4>
                 <div class="list">
-                  Illuminate\Http\Response
+                  All subscriber information in json
                 </div>
               </div>
             </div>
@@ -241,7 +290,7 @@
         
                 <h4>Returns</h4>
                 <div class="list">
-                  Illuminate\Http\Response
+                  Creation messages
                 </div>
               </div>
             </div>
@@ -251,7 +300,7 @@
           
         <tr>
           <td>
-            <span class="label label-flat bg-info">{{ trans('messages.GET') }}</span>
+            <span class="label label-flat bg-success">{{ trans('messages.PATCH') }}</span>
           </td>
           <td>
             <a href="#more" class="toogle-api">/api/v1/lists/{list_id}/subscribers/{id}/subscribe</a>
@@ -275,7 +324,7 @@
         
                 <h4>Returns</h4>
                 <div class="list">
-                  Illuminate\Http\Response
+                  Result messages
                 </div>
               </div>
             </div>
@@ -285,7 +334,7 @@
           
         <tr>
           <td>
-            <span class="label label-flat bg-info">{{ trans('messages.GET') }}</span>
+            <span class="label label-flat bg-success">{{ trans('messages.PATCH') }}</span>
           </td>
           <td>
             <a href="#more" class="toogle-api">/api/v1/lists/{list_id}/subscribers/{id}/unsubscribe</a>
@@ -309,7 +358,7 @@
         
                 <h4>Returns</h4>
                 <div class="list">
-                  Illuminate\Http\Response
+                  Result messages
                 </div>
               </div>
             </div>
@@ -343,7 +392,7 @@
           
                   <h4>Returns</h4>
                   <div class="list">
-                    Illuminate\Http\Response
+                    Result messages
                   </div>
               </div>
             </div>

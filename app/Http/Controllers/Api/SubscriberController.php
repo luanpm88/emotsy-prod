@@ -151,7 +151,7 @@ class SubscriberController extends Controller
     /**
      * Subscribe a subscriber.
      *
-     * GET /api/v1/lists/{list_id}/subscribers/{id}/subscribe
+     * PATCH /api/v1/lists/{list_id}/subscribers/{id}/subscribe
      *
      * @param string $list_id List's id
      * @param string $id      Subsciber's id
@@ -166,6 +166,11 @@ class SubscriberController extends Controller
         // check if item exists
         if (!is_object($subscriber)) {
             return \Response::json(array('message' => 'Item not found'), 404);
+        }
+        
+        // check if item subscribed
+        if ($subscriber->status == 'subscribed') {
+            return \Response::json(array('message' => 'Already subscribed'), 409);
         }
 
         // authorize
@@ -183,7 +188,7 @@ class SubscriberController extends Controller
     /**
      * Unsubscribe a subscriber.
      *
-     * GET /api/v1/lists/{list_id}/subscribers/{id}/unsubscribe
+     * PATCH /api/v1/lists/{list_id}/subscribers/{id}/unsubscribe
      *
      * @param string $list_id List's id
      * @param string $id      Subsciber's id
@@ -198,6 +203,11 @@ class SubscriberController extends Controller
         // check if item exists
         if (!is_object($subscriber)) {
             return \Response::json(array('message' => 'Item not found'), 404);
+        }
+        
+        // check if item unsubscribed
+        if ($subscriber->status == 'unsubscribed') {
+            return \Response::json(array('message' => 'Already unsubscribed'), 409);
         }
 
         // authorize

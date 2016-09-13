@@ -2,6 +2,7 @@
 
 namespace Acelle\Http\Controllers\Api;
 
+use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 
 /**

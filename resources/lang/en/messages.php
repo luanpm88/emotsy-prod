@@ -911,7 +911,7 @@ return [
     'LISTS' => 'LISTS',
     'CAMPAIGNS' => 'CAMPAIGNS',
     'SUBSCRIBERS' => 'SUBSCRIBERS',
-    'API Documentation' => 'API_Documentation',
+    'API_Documentation' => 'API Documentation',
     '' => '',
     '' => '',
     '' => '',
