@@ -36,7 +36,7 @@
 				<h4 class="text-semibold">{{ trans('messages.api_docs') }}</h4>
                     
                 <code style="font-size: 18px;">
-                    <a target="_blank" href="{{ action("Api\HomeController@index") }}/doc/">{{ action("Api\HomeController@index") }}/doc/ <i class="icon-link"></i></a></code>
+                    <a target="_blank" href="{{ action("Controller@docsApiV1") }}">{{ action("Controller@docsApiV1") }} <i class="icon-link"></i></a></code>
                     
                 <br /><br />
 				<h4 class="text-semibold mt-20">{{ trans('messages.your_api_token') }}</h4>

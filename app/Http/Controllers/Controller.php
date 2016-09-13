@@ -64,6 +64,16 @@ class Controller extends BaseController
     {
         return view('demo');
     }
+    
+    /**
+     * Docs for api v1.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function docsApiV1()
+    {
+        return view('docs.api.v1');
+    }
 
     /**
      * Translate datatable.

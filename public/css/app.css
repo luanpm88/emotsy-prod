@@ -1187,3 +1187,15 @@ ul.install-steps li.enabled a:hover {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.api-page .list {
+    padding-left: 20px;
+}
+.api-page .list dd {
+    padding-left: 40px;
+}
+.api-page .list dt {
+    font-weight: 600;    
+}
+.api-page .description h4:first-child {
+    margin-top: 0;   
+}
