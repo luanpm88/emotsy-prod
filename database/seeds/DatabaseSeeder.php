@@ -45,6 +45,20 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
+        
+        // Create default contact for admin user
+        DB::table('contacts')->insert([
+            'id' => 2,
+            'first_name' => 'Luan',
+            'last_name' => 'Pham',
+            'company' => 'Acelle Co,. Ldt.',
+            'address_1' => '1202 Nguyen Van Qua, Tan Thoi Hiep, Dist. 12',
+            'country_id' => 1,
+            'state' => 'Ho Chi Minh City',
+            'zip' => '70000',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+        ]);
 
         // Create default user group
         DB::table('user_groups')->insert([
@@ -78,7 +92,7 @@ class DatabaseSeeder extends Seeder
         DB::table('mail_lists')->insert([
             'id' => 1,
             'uid' => uniqid(),
-            'contact_id' => 1,
+            'contact_id' => 2,
             'user_id' => 1,
             'name' => 'My List',
             'status' => 'active',
