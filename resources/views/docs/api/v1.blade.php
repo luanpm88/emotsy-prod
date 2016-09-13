@@ -1,6 +1,6 @@
 @extends('layouts.account')
 
-@section('title', trans('messages.demo'))
+@section('title', trans('messages.API_Documentation'))
 
 @section('content')
   <div class="api-page">
