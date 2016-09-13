@@ -4,7 +4,7 @@
 
 @section('content')
   <div class="api-page">
-      <h1>API Documentation</h1>
+      <h1>{{ trans('messages.API_Documentation') }}</h1>
         
         <p class="alert alert-info">{!! trans('messages.api_token_guide', ["link" => action("Api\MailListController@index", ["api_token" => "YOUR_API_TOKEN"])]) !!}</p>
       

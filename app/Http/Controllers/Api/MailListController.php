@@ -98,4 +98,41 @@ class MailListController extends Controller
 
         return \Response::json(['list' => $list, 'contact' => $contact, 'statistics' => $statistics], 200);
     }
+    
+    /**
+     * Create new list.
+     *
+     * POST /api/v1/lists/store
+     *
+     * @param \Illuminate\Http\Request $request All list information.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        $user = \Auth::guard('api')->user();
+        $list = new \Acelle\Model\MailList();
+
+        // authorize
+        if (!$user->can('create', $list)) {
+            return \Response::json(array('message' => trans('no_more_item')), 403);
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            $this->validate($request, \Acelle\Model\MailList::$rules);
+
+            // Save contact
+            $contact = \Acelle\Model\Contact::create($request->all()['contact']);
+            $list->fill($request->all());
+            $list->user_id = $user->id;
+            $list->contact_id = $contact->id;
+            $list->save();
+            
+            // Log
+            $list->log('created', $request->user());
+            
+            return \Response::json(array('message' => trans('messages.list.created')), 200);
+        }
+    }
 }
