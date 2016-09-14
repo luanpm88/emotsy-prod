@@ -410,4 +410,137 @@ class MailListController extends Controller
 
         echo trans('messages.list.copied');
     }
+    
+    /**
+     * Embedded Forms.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function embeddedForm(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $list)) {
+            return $this->notAuthorized();
+        }
+
+        return view('lists.embedded_form', [
+            'list' => $list,
+        ]);
+    }
+    
+    /**
+     * Embedded Forms.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function embeddedFormFrame(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $list)) {
+            return $this->notAuthorized();
+        }
+
+        return view('lists.embedded_form_frame', [
+            'list' => $list,
+        ]);
+    }
+    
+    /**
+     * reCaptcha check.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function embeddedFormCaptcha(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+
+        $request->session()->set('form_url', \URL::previous());
+        
+        return view('lists.embedded_form_captcha', [
+            'list' => $list,
+        ]);
+    }
+    
+    /**
+     * Subscribe user from embedded Forms.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function embeddedFormSubscribe(Request $request)
+    {   
+        // Check recaptch
+        $client = new \GuzzleHttp\Client();
+        $res = $client->post('https://www.google.com/recaptcha/api/siteverify', ['form_params' => [
+            'secret' => "6LfyISoTAAAAAC0hJ916unwi0m_B0p7fAvCRK4Kp",
+            'remoteip' => $request->ip(),
+            'response' => $request->all()["g-recaptcha-response"]
+        ]]);
+        $success = json_decode($res->getBody(), true)["success"];
+        
+        if (!$success) {
+            $url = $request->session()->pull('form_url');
+            if (strpos($url, '?') !== false) {
+                $url = $url . "&errors[captcha]=false";
+            } else {
+                $url = $url . "?errors[captcha]=false";
+            }
+            return redirect()->away($url);
+        }
+        
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+
+        // Create subscriber
+        if ($request->isMethod('post')) {
+            $subscriber = new \Acelle\Model\Subscriber($request->all());
+            $subscriber->mail_list_id = $list->id;
+            $subscriber->status = 'unconfirmed';
+            $subscriber->from = 'embedded-form';
+
+            // Validation
+            $validator = \Validator::make($request->all(), $subscriber->getRules());
+            
+            if ($validator->fails()) {
+                $url = $request->session()->pull('form_url');
+                // $validator->errors()
+                $errs = [];
+                foreach($validator->errors()->toArray() as $key => $error) {
+                    $errs[] = "errors[" . $key . "]=" . $error[0];
+                }
+                
+                if (strpos($url, '?') !== false) {
+                    $url = $url . "&" . implode('&', $errs);
+                } else {
+                    $url = $url . "?" . implode('&', $errs);
+                }
+
+                return redirect()->away($url);
+            }
+
+            $subscriber->email = $request->EMAIL;
+            $subscriber->ip = $request->ip();
+            $subscriber->save();
+            // Update field
+            $subscriber->updateFields($request->all());
+
+            // SEND EMAIL
+            $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
+            $send_page = \Acelle\Model\Page::findPage($list, $layout);
+            $send_page->renderContent(null, $subscriber);
+            $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
+
+            return redirect()->action('PageController@signUpThankyouPage', $list->uid);
+        }
+    }
 }

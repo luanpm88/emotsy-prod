@@ -9,6 +9,29 @@
 *
 * ---------------------------------------------------------------------------- */
 
+function updateEmbeddedForm(form, url) {
+    var data = {};
+    form.serializeArray().forEach(function(entry) {
+        if(entry.value!=="") {
+            data[entry.name] = entry.value;
+        }
+    });
+    
+    $.ajax({
+        method: "GET",
+        url: url,
+        data: data
+    })
+    .done(function( msg ) {
+        // $(".embedded-form-result").html($("<div>").html(msg).find(".embedded-form-result"));
+        var html = $("<div>").html(msg).find(".embedded-form-result").html();
+        $(".embedded-form-result").html(html);
+        
+        // Hightlight code
+        Prism.highlightAll();
+    });
+}
+
 function dashboardQuickview(item, box) {
     var id = item.val();
     var url = box.attr("data-url");
@@ -667,4 +690,20 @@ $(function() {
     $(document).on("click", ".campaign-steps li.disabled a", function(e) {
         e.preventDefault();
     });
+    
+    //embedded-options-form
+    $(document).on("change", ".embedded-options-form input[type=text], .embedded-options-form textarea, .embedded-options-form input[name='required_fields'], .embedded-options-form input[name='javascript'], .embedded-options-form input[name='stylesheet']", function() {
+        var url = $(this).parents("form").attr("action");
+        
+        updateEmbeddedForm($(this).parents("form"), url);
+    });
+    
+    //embedded-options-form
+    $(document).on("keyup", ".embedded-options-form input[type=text]", function() {
+        var url = $(this).parents("form").attr("action");
+        
+        updateEmbeddedForm($(this).parents("form"), url);
+    });
+    
+    $(".embedded-options-form input").trigger("change");
 });

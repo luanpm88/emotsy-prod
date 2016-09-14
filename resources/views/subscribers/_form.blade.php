@@ -1,4 +1,4 @@
-                    <div class="sub_sectionz">						
+          <div class="sub_sectionz">						
 						<div class="row">
 							<div class="col-md-{{ isset($col) ? $col : "6" }}">									
 								@foreach ($list->getFields as $field)

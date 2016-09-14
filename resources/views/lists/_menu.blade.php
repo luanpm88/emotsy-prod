@@ -58,12 +58,17 @@
                                                         </li>
                                                     </ul>
 												</li>
-                                                <li rel0="PageController" class="dropdown">
-													<a href="{{ action("AccountController@contact") }}" class="level-1" data-toggle="dropdown">
+                                                <li rel0="PageController" rel1="MailListController/embeddedForm" class="dropdown">
+													<a href="#menu" class="level-1" data-toggle="dropdown">
 														<i class="icon-certificate position-left"></i> {{ trans('messages.custom_forms_and_emails') }}
                                                         <span class="caret"></span>
                                                     </a>
                                                     <ul class="dropdown-menu dropdown-menu-right has-head">
+														<li>
+                                                            <a href="{{ action('MailListController@embeddedForm', $list->uid) }}">
+                                                                <i class="icon-embed2"></i> {{ trans('messages.Embedded_form') }}
+                                                            </a>
+                                                        </li>
                                                         <li class="head">
                                                             <i class="icon-enter"></i> {{ trans('messages.subscribe') }}
                                                         </li>

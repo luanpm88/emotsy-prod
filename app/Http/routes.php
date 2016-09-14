@@ -82,6 +82,10 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('lists', 'MailListController');
     Route::get('lists/{uid}/edit', 'MailListController@edit');
     Route::patch('lists/{uid}/update', 'MailListController@update');
+    Route::get('lists/{uid}/embedded-form', 'MailListController@embeddedForm');
+    Route::post('lists/{uid}/embedded-form-subscribe', 'MailListController@embeddedFormSubscribe');
+    Route::post('lists/{uid}/embedded-form-subscribe-captcha', 'MailListController@embeddedFormCaptcha');
+    Route::get('lists/{uid}/embedded-form-frame', 'MailListController@embeddedFormFrame');
 
     // Field
     Route::get('lists/{list_uid}/fields', 'FieldController@index');
