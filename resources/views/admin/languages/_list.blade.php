@@ -23,7 +23,7 @@
 											<br />
 											<span class="text-muted">{{ trans('messages.region') }}</span>
 										</td>
-										<td class="text-right">
+										<td class="text-right hide">
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>

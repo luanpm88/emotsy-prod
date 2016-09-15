@@ -52,7 +52,7 @@
 								</div>
 							@endif
 						</div>
-						@can("create", new Acelle\Model\Language())
+						@can("create", new Acelle\Model\Language() && false)
 							<div class="col-md-3 text-right">
 								<a href="{{ action('Admin\LanguageController@create') }}" type="button" class="btn bg-info-800">
 									<i class="icon icon-plus2"></i> {{ trans('messages.create_language') }}
