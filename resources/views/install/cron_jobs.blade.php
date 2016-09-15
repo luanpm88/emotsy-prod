@@ -10,17 +10,7 @@
 
 @section('content')
 
-	<h3 class="text-teal-800"><i class="icon-puzzle2"></i> {{ trans('messages.setting_up_cron_jobs') }}</h3>
-    
-    <div class="">
-        Insert the following lines to your system contab. <br />
-        Please note, below timings for running the cron jobs are the recommended, you can change it if you want.
-    </div>
-    <br/>
-    <pre style="font-size: 16px"># Campaigns sender, runs each minute.
-* * * * * {{ explode(" ", exec("whereis php"))[1]}} -q {{ base_path() }}/artisan handler:run 2&gt;&amp;1
-* * * * * {{ explode(" ", exec("whereis php"))[1]}} -q {{ base_path() }}/artisan campaign:run 2&gt;&amp;1
-    </pre>
+	@include('elements._cron_jobs')
                             
     
 	<br />

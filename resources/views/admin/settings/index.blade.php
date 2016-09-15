@@ -40,6 +40,8 @@
 							<li class="text-semibold"><a href="#top-tab3" data-toggle="tab">
 								<i class="icon-link"></i> {{ trans('messages.system_urls') }}</a></li>
 						@endif
+							<li class="text-semibold"><a href="#top-tab4" data-toggle="tab">
+								<i class="icon-alarm"></i> {{ trans('messages.cron_jobs') }}</a></li>
 					</ul>
 	
 					<div class="tab-content">
@@ -142,6 +144,12 @@
 								</div>
 							</div>
 						@endif
+						
+							<div class="tab-pane" id="top-tab4">
+							
+								@include('elements._cron_jobs')							
+								
+							</div>
 						
 					</div>
 				</div>

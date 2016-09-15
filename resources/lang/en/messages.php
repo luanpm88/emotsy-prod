@@ -923,8 +923,11 @@ return [
     'stylesheet_included' => 'Include stylesheet',
     'custom_css' => 'Custom CSS',
     'validate_script' => 'Validate script',
-    '' => '',
-    '' => '',
+    'cron_jobs_guide' => '
+        Insert the following lines to your system contab. <br />
+        Please note, below timings for running the cron jobs are the recommended, you can change it if you want.
+    ',
+    'cron_jobs_comment' => 'Campaigns sender, runs each minute.',
     '' => '',
     '' => '',
     '' => '',
