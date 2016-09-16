@@ -534,7 +534,7 @@ class Subscriber extends Model
     {
         $query = \Acelle\Model\TrackingLog::where('tracking_logs.subscriber_id', '=', $this->id);
         $query = $query->where('tracking_logs.campaign_id', '=', $campaign->id)->first();
-        
+
         return $query;
     }
     

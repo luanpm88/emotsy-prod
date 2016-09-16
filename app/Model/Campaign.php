@@ -805,25 +805,29 @@ class Campaign extends Model
             $query = $this->mailList->subscribers();
         }
         
+        $query = $query->select("subscribers.*");
+        
         // Filter
         $filters = isset($params["filters"]) ? $params["filters"] : null;
         if(isset($filters)) {
+            
+            if(isset($filters["open"]) || isset($filters["click"]) || isset($filters["tracking_status"])) {
+                $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id');
+            }
+            
             if(isset($filters["open"])) {
-                $equal = ($filters["open"] == "opened") ? "!=" : "=";
-                $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id')
-                    ->leftJoin('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
+                $equal = ($filters["open"] == "opened") ? "!=" : "=";                
+                $query = $query->leftJoin('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
                     ->where('open_logs.id', $equal, null);
             }
             if(isset($filters["click"])) {
                 $equal = ($filters["click"] == "clicked") ? "!=" : "=";
-                $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id')
-                    ->leftJoin('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
-                    ->where('open_logs.id', $equal, null);
+                $query = $query->leftJoin('click_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
+                    ->where('click_logs.id', $equal, null);
             }
             if(isset($filters["tracking_status"])) {
                 $val = ($filters["tracking_status"] == "not_sent") ? null : $filters["tracking_status"];
-                $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id')
-                    ->where('tracking_logs.status', "=", $val);
+                $query = $query->where('tracking_logs.status', "=", $val);
             }
         }
         
