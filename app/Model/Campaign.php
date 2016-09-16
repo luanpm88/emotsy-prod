@@ -842,7 +842,7 @@ class Campaign extends Model
             }
         }
 
-        return $query;
+        return $query->distinct();
     }
 
     /**
