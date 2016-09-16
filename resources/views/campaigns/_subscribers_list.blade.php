@@ -56,22 +56,22 @@
 										@endif
 										
 										<td>
-											<span class="no-margin stat-num">{{ null !== $item->lastOpenLog() ? Tool::formatDateTime($item->lastOpenLog($campaign)->created_at) : "--" }}</span>
+											<span class="no-margin stat-num">{{ null !== $item->lastOpenLog($campaign) ? Tool::formatDateTime($item->lastOpenLog($campaign)->created_at) : "--" }}</span>
 											<br>
 											<span class="text-muted2">{{ trans('messages.last_open') }}</span>
-											@if (null !== $item->lastOpenLog())
+											@if (null !== $item->lastOpenLog($campaign))
 												<a href="{{ action('CampaignController@openLog', ["uid" => $campaign->uid, "search_keyword" => $item->email]) }}">
-													{{ $item->openLogs()->count() . " " . Tool::getPluralPrase(trans("messages.time"), $item->openLogs()->count()) }}</a>
+													{{ $item->openLogs($campaign)->count() . " " . Tool::getPluralPrase(trans("messages.time"), $item->openLogs($campaign)->count()) }}</a>
 											@endif
 										</td>
 											
 										<td>
-											<span class="no-margin stat-num">{{ null !== $item->lastClickLog() ? Tool::formatDateTime($item->lastClickLog($campaign)->created_at) : "--" }}</span>
+											<span class="no-margin stat-num">{{ null !== $item->lastClickLog($campaign) ? Tool::formatDateTime($item->lastClickLog($campaign)->created_at) : "--" }}</span>
 											<br>
 											<span class="text-muted2">{{ trans('messages.last_click') }}</span>
-											@if (null !== $item->lastClickLog())
+											@if (null !== $item->lastClickLog($campaign))
 												<a href="{{ action('CampaignController@clickLog', ["uid" => $campaign->uid, "search_keyword" => $item->email]) }}">
-													{{ $item->clickLogs()->count() . " " . Tool::getPluralPrase("time", $item->clickLogs()->count()) }}
+													{{ $item->clickLogs($campaign)->count() . " " . Tool::getPluralPrase("time", $item->clickLogs($campaign)->count()) }}
 												</a>
 											@endif
 										</td>
