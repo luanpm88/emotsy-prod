@@ -177,7 +177,7 @@
 							</table>
                             @include('elements/_per_page_select', ["items" => $subscribers])
 							{{ $subscribers->links() }}
-						@elseif (!empty(request()->keyword))
+						@elseif (!empty(request()->keyword) || !empty(request()->filters))
 							<div class="empty-list">
 								<i class="icon-users4"></i>
 								<span class="line-1">
