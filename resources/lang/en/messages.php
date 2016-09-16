@@ -941,7 +941,7 @@ return [
     'who' => 'Who',
     'not_sent' => 'Not sent',
     'sent' => 'Sent',
-    '' => '',
+    'time' => 'time',
     '' => '',
     '' => '',
     '' => '',

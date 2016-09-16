@@ -61,7 +61,7 @@
 											<span class="text-muted2">{{ trans('messages.last_open') }}</span>
 											@if (null !== $item->lastOpenLog())
 												<a href="{{ action('CampaignController@openLog', ["uid" => $campaign->uid, "search_keyword" => $item->email]) }}">
-													{{ $item->openLogs()->count() . " " . Tool::getPluralPrase("time", $item->openLogs()->count()) }}</a>
+													{{ $item->openLogs()->count() . " " . Tool::getPluralPrase(trans("messages.time"), $item->openLogs()->count()) }}</a>
 											@endif
 										</td>
 											
