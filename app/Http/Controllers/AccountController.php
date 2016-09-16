@@ -38,6 +38,10 @@ class AccountController extends Controller
         // Save posted data
         if ($request->isMethod('post')) {
             $this->validate($request, $user->rules());
+            
+            if($this->isDemoMode()) {
+                return $this->notAuthorized();
+            }
 
             // Save current user info
             $user->fill($request->all());
@@ -80,7 +84,7 @@ class AccountController extends Controller
      * @return \Illuminate\Http\Response
      **/
     public function contact(Request $request)
-    {
+    {        
         // Get current user
         $user = $request->user();
         if (is_object($user->contact)) {

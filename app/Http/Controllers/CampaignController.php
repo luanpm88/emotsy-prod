@@ -685,7 +685,7 @@ class CampaignController extends Controller
     }
 
     /**
-     * Render user image.
+     * Tracking logs.
      */
     public function trackingLog(Request $request)
     {
@@ -705,7 +705,7 @@ class CampaignController extends Controller
     }
 
     /**
-     * Render user image.
+     * Tracking logs ajax listing.
      */
     public function trackingLogListing(Request $request)
     {
@@ -725,7 +725,7 @@ class CampaignController extends Controller
     }
 
     /**
-     * Render user image.
+     * Bounce logs.
      */
     public function bounceLog(Request $request)
     {
@@ -745,7 +745,7 @@ class CampaignController extends Controller
     }
 
     /**
-     * Render user image.
+     * Bounce logs listing.
      */
     public function bounceLogListing(Request $request)
     {
@@ -765,7 +765,7 @@ class CampaignController extends Controller
     }
 
     /**
-     * Render user image.
+     * FBL logs.
      */
     public function feedbackLog(Request $request)
     {
@@ -785,7 +785,7 @@ class CampaignController extends Controller
     }
 
     /**
-     * Render user image.
+     * FBL logs listing.
      */
     public function feedbackLogListing(Request $request)
     {
@@ -805,7 +805,7 @@ class CampaignController extends Controller
     }
 
     /**
-     * Render user image.
+     * Open logs.
      */
     public function openLog(Request $request)
     {
@@ -825,7 +825,7 @@ class CampaignController extends Controller
     }
 
     /**
-     * Render user image.
+     * Open logs listing.
      */
     public function openLogListing(Request $request)
     {
@@ -845,7 +845,7 @@ class CampaignController extends Controller
     }
 
     /**
-     * Render user image.
+     * Click logs.
      */
     public function clickLog(Request $request)
     {
@@ -865,7 +865,7 @@ class CampaignController extends Controller
     }
 
     /**
-     * Render user image.
+     * Click logs listing.
      */
     public function clickLogListing(Request $request)
     {
@@ -885,7 +885,7 @@ class CampaignController extends Controller
     }
 
     /**
-     * Render user image.
+     * Unscubscribe logs.
      */
     public function unsubscribeLog(Request $request)
     {
@@ -905,7 +905,7 @@ class CampaignController extends Controller
     }
 
     /**
-     * Render user image.
+     * Unscubscribe logs listing.
      */
     public function unsubscribeLogListing(Request $request)
     {
@@ -1005,5 +1005,45 @@ class CampaignController extends Controller
 
         // Redirect to my lists page
         echo trans('messages.campaigns.restarted');
+    }
+    
+    /**
+     * Subscribers list.
+     */
+    public function subscribers(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $items = $campaign->subscribers()();
+
+        return view('campaigns.unsubscribes', [
+            'items' => $items,
+            'campaign' => $campaign,
+        ]);
+    }
+
+    /**
+     * Subscribers listing.
+     */
+    public function unsubscribeLogListing(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $items = \Acelle\Model\UnsubscribeLog::search($request, $campaign)->paginate($request->per_page);
+
+        return view('admin.unsubscribe_logs._list', [
+            'items' => $items,
+            'campaign' => $campaign,
+        ]);
     }
 }

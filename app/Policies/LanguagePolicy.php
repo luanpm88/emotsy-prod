@@ -19,7 +19,7 @@ class LanguagePolicy
     {
         $can = $user->getOption('backend', 'language_create') == 'yes';
 
-        return $can;
+        return $can && false;
     }
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Language $item)
@@ -27,7 +27,7 @@ class LanguagePolicy
         $ability = $user->getOption('backend', 'language_update');
         $can = $ability == 'yes';
 
-        return $can;
+        return $can && false;
     }
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\Language $item)
@@ -35,6 +35,6 @@ class LanguagePolicy
         $ability = $user->getOption('backend', 'language_delete');
         $can = $ability == 'yes';
 
-        return $can;
+        return $can && false;
     }
 }

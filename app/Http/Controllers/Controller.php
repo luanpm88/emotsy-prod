@@ -14,15 +14,25 @@ class Controller extends BaseController
 
     public function __construct()
     {
+        $user = \Auth::user();
         // Generate info
-        try {
-            $user = \Auth::user();
+        try {            
             if (is_object($user->language)) {
                 \App::setLocale($user->language->code);
                 \Carbon\Carbon::setLocale($user->language->code);
             }
         } catch (\Exception $e) {
         }
+    }
+    
+    /**
+     * Check if the site is in demo mode.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    function isDemoMode()
+    {
+        return config('app.demo');
     }
 
     /**
