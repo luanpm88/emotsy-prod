@@ -275,7 +275,7 @@ class User extends Authenticatable
      */
     public static function getAll()
     {
-        return MailList::select('*');
+        return User::select('*');
     }
 
     /**
