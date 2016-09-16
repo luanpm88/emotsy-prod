@@ -1030,7 +1030,7 @@ class CampaignController extends Controller
     /**
      * Subscribers listing.
      */
-    public function unsubscribeLogListing(Request $request)
+    public function subscribersListing(Request $request)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
