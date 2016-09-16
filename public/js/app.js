@@ -706,13 +706,5 @@ $(function() {
     });
     
     $(".embedded-options-form input").trigger("change");
-    
-    // check group
-    $(document).on('change', 'input[check-group]', function(e) {
-        var group = $(this).attr('check-group');        
-        if($(this).is(":checked")) {
-            $('input[check-group="' + group + '"]').prop('checked', false);
-            //$(this).prop('checked', true);
-        }
-    });
+
 });

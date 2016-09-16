@@ -302,7 +302,7 @@ $(document).ready(function() {
     });
     
     // Columns filters
-    $(document).on("change", ".listing-form input[name='columns[]'], .listing-form input[type=checkbox]:not(.check_all)", function(e) {
+    $(document).on("change", ".listing-form input[name='columns[]'], .listing-form .filter-box input[type=checkbox]:not(.check_all)", function(e) {
         var form = $(this).parents(".listing-form");
         
         tableFilter(form);
