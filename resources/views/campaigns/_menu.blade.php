@@ -16,6 +16,11 @@
 					<i class="icon-map4"></i> {{ trans('messages.open_map') }}
 				</a>
 			</li>
+			<li rel0="CampaignController/subscribers" class="dropdown">
+				<a href="{{ action('CampaignController@subscribers', $campaign->uid) }}" class="level-1">
+					<i class="icon-users"></i> {{ trans('messages.subscribers') }}
+				</a>
+			</li>
 			<li class="dropdown"
 				rel0="CampaignController/trackingLog"
 				rel1="CampaignController/bounceLog"

@@ -156,7 +156,7 @@
 													<li>
 														<div class="checkbox">
 															<label>
-																<input checked="checked" type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
+																<input {{ ($field->required ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
 																{{ $field->label }}
 															</label>
 														</div>															

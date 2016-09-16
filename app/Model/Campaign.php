@@ -793,15 +793,52 @@ class Campaign extends Model
      *
      * @return collect
      */
-    public function subscribers()
+    public function subscribers($params=[])
     {
+        if(!is_object($this->segment) && !is_object($this->mailList)) {
+            return collect([]);
+        }
+        
         if (is_object($this->segment)) {
-            return $this->segment->subscribers();
+            $query = $this->segment->subscribers();
         } elseif (is_object($this->mailList)) {
-            return $this->mailList->subscribers();
+            $query = $this->mailList->subscribers();
+        }
+        
+        // Filter
+        $filters = isset($params["filters"]) ? $params["filters"] : null;
+        if(isset($filters)) {
+            if(isset($filters["open"])) {
+                $equal = ($filters["open"] == "opened") ? "!=" : "=";
+                $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id')
+                    ->leftJoin('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
+                    ->where('open_logs.id', $equal, null);
+            }
+            if(isset($filters["click"])) {
+                $equal = ($filters["click"] == "clicked") ? "!=" : "=";
+                $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id')
+                    ->leftJoin('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
+                    ->where('open_logs.id', $equal, null);
+            }
+            if(isset($filters["tracking_status"])) {
+                $val = ($filters["tracking_status"] == "not_sent") ? null : $filters["tracking_status"];
+                $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id')
+                    ->where('tracking_logs.status', "=", $val);
+            }
+        }
+        
+        // keyword
+        if (isset($params["keyword"]) && !empty(trim($params["keyword"]))) {
+            foreach (explode(' ', trim($params["keyword"])) as $keyword) {
+                $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id');
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%')
+                        ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
+                });
+            }
         }
 
-        return collect([]);
+        return $query;
     }
 
     /**

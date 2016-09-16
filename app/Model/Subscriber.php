@@ -67,6 +67,11 @@ class Subscriber extends Model
     {
         return $this->hasMany('Acelle\Model\SubscriberField');
     }
+    
+    public function trackingLogs()
+    {
+        return $this->hasMany('Acelle\Model\TrackingLog');
+    }
 
     /**
      * Bootstrap any application services.
@@ -518,5 +523,80 @@ class Subscriber extends Model
         $this->copy($list, $type);
 
         $this->delete();
+    }
+    
+    /**
+     * Get tracking log.
+     *
+     * @param MailList $list
+     */
+    public function trackingLog($campaign)
+    {
+        $query = \Acelle\Model\TrackingLog::where('tracking_logs.subscriber_id', '=', $this->id);
+        $query = $query->where('tracking_logs.campaign_id', '=', $campaign->id)->first();
+        
+        return $query;
+    }
+    
+    /**
+     * Get all subscriber's open logs.
+     *
+     * @param MailList $list
+     */
+    public function openLogs($campaign=null)
+    {
+        $query = \Acelle\Model\OpenLog::leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
+            ->where('tracking_logs.subscriber_id', '=', $this->id);
+            
+        if(isset($campaign)) {
+            $query = $query->where('tracking_logs.campaign_id', '=', $campaign->id);
+        }
+        
+        return $query;
+    }
+    
+    /**
+     * Get last open.
+     *
+     * @param MailList $list
+     */
+    public function lastOpenLog($campaign=null)
+    {
+        $query = $this->openLogs($campaign);
+        
+        $query = $query->orderBy('open_logs.created_at', 'desc')->first();
+        
+        return $query;
+    }
+    
+    /**
+     * Get all subscriber's click logs.
+     *
+     * @param MailList $list
+     */
+    public function clickLogs($campaign=null)
+    {
+        $query = \Acelle\Model\ClickLog::leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
+            ->where('tracking_logs.subscriber_id', '=', $this->id);
+            
+        if(isset($campaign)) {
+            $query = $query->where('tracking_logs.campaign_id', '=', $campaign->id);
+        }
+        
+        return $query;
+    }
+    
+    /**
+     * Get last click.
+     *
+     * @param MailList $list
+     */
+    public function lastClickLog($campaign=null)
+    {
+        $query = $this->clickLogs();
+        
+        $query = $query->orderBy('click_logs.created_at', 'desc')->first();
+        
+        return $query;
     }
 }

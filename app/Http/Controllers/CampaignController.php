@@ -1019,11 +1019,12 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $items = $campaign->subscribers()();
+        $subscribers = $campaign->subscribers();
 
-        return view('campaigns.unsubscribes', [
-            'items' => $items,
+        return view('campaigns.subscribers', [
+            'subscribers' => $subscribers,
             'campaign' => $campaign,
+            'list' => $campaign->mailList,
         ]);
     }
 
@@ -1036,14 +1037,18 @@ class CampaignController extends Controller
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
-            return $this->notAuthorized();
+            return;
         }
 
-        $items = \Acelle\Model\UnsubscribeLog::search($request, $campaign)->paginate($request->per_page);
+        $subscribers = $campaign->subscribers($request->all())
+                                ->paginate($request->per_page);
+        $fields = $campaign->mailList->getFields->whereIn('uid', explode(',', $request->columns));
 
-        return view('admin.unsubscribe_logs._list', [
-            'items' => $items,
+        return view('campaigns._subscribers_list', [
+            'subscribers' => $subscribers,
+            'list' => $campaign->mailList,
             'campaign' => $campaign,
+            'fields' => $fields,
         ]);
     }
 }

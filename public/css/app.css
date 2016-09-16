@@ -318,7 +318,7 @@ h3 {
 .filter-group {
     display: inline-block;
     margin-right: 10px;
-    margin-top: 10px;
+    margin-top: 0;
 }
 h2 [class^="icon-"] {
     font-size: 22px;
@@ -547,7 +547,7 @@ h2 [class^="icon-"] {
     padding-right: 32px;
 }
 .filter-box .checkbox.inline {
-    margin-top: 12px;
+    margin-top: 6px;
     display: block;
     float: left;
 }
@@ -708,7 +708,7 @@ input.error {
     border-color: #4CAF50;
     color: #fff;
 }
-.bg-canceled, .bg-unactive, .bg-disabled, .bg-inactive, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-paused, .bg-done {
+.bg-not_sent, .bg-canceled, .bg-unactive, .bg-disabled, .bg-inactive, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-paused, .bg-done {
     background-color: #777;
     border-color: #777;
     color: #fff;
@@ -1231,4 +1231,12 @@ textarea.height-100 {
 }
 .embedded-code {
     max-height: 400px;
+}
+.checbox-filter {
+    margin: 0 10px;
+    display: inline-block;
+}
+.filter-box .small-select2 .select2 {
+    width: 82px !important;
+    min-width: inherit !important;
 }

@@ -29,7 +29,7 @@
 											<span class="text-muted second-line-mobile">{{ trans('messages.sending_server') }}</span>
 										</td>
 										<td>
-											<span class="no-margin kq_search">{{ $item->ipLocation->name() }}</span>
+											<span class="no-margin kq_search">{{ (isset($item->ipLocation) ? $item->ipLocation->name() : "") }}</span>
 											<span class="text-muted second-line-mobile">{{ trans('messages.area') }}</span>
 										</td>
 										<td>
