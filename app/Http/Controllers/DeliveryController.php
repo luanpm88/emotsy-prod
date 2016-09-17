@@ -5,9 +5,9 @@ namespace Acelle\Http\Controllers;
 use Illuminate\Http\Request;
 use Acelle\Library\Log;
 use Acelle\Library\StringHelper;
-use Aws\Sns\MessageValidator\Message;
-use Aws\Sns\MessageValidator\MessageValidator;
-use Guzzle\Http\Client;
+use Aws\Sns\Message;
+use Aws\Sns\MessageValidator;
+use GuzzleHttp\Client;
 use Acelle\Model\TrackingLog;
 use Acelle\Model\BounceLog;
 use Acelle\Model\SendingServer;
@@ -114,23 +114,23 @@ class DeliveryController extends Controller
             return;
         }
 
-        if ($message->get('Type') === 'SubscriptionConfirmation') {
+        if ($message['Type'] === 'SubscriptionConfirmation') {
             Log::info('subscription received');
             // Send a request to the SubscribeURL to complete subscription
-            (new Client())->get($message->get('SubscribeURL'))->send();
+            (new Client())->get($message['SubscribeURL']);
 
             Log::info('subscription confirmed');
 
             return;
         }
 
-        if ($message->get('Type') != 'Notification') {
+        if ($message['Type'] != 'Notification') {
             Log::info('not notification');
 
             return;
         }
 
-        $responseMessage = json_decode($message->get('Message'), true);
+        $responseMessage = json_decode($message['Message'], true);
 
         if ($responseMessage['notificationType'] == 'AmazonSnsSubscriptionSucceeded') {
             Log::info('subscription confirmed by AWS');
@@ -153,7 +153,7 @@ class DeliveryController extends Controller
             $bounceLog = new BounceLog();
             $bounceLog->runtime_message_id = $responseMessage['mail']['messageId'];
             $bounceLog->bounce_type = $bounce['bounceType']; // !== 'Permanent' ? BounceLog::SOFT : BounceLog::HARD;
-            $bounceLog->raw = $message->get('Message');
+            $bounceLog->raw = $message['Message'];
             $bounceLog->save();
             Log::info('Bounce recorded for message '.$bounceLog->runtime_message_id);
 
@@ -169,7 +169,7 @@ class DeliveryController extends Controller
             $feedbackLog = new FeedbackLog();
             $feedbackLog->runtime_message_id = $responseMessage['mail']['messageId'];
             $feedbackLog->feedback_type = $feedback['complaintFeedbackType'];
-            $feedbackLog->raw_feedback_content = $message->get('Message');
+            $feedbackLog->raw_feedback_content = $message['Message'];
             $feedbackLog->save();
             Log::info('Feedback recorded for message '.$feedbackLog->runtime_message_id);
         }

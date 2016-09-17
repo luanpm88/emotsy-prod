@@ -41,6 +41,10 @@ class DeliveryHandler extends Model
 
             // try to connect
             $inbox = @imap_open($imapPath, $this->username, $this->password);
+            
+            if ($inbox == false) {
+                throw new \Exception("Cannot connect to the server: $imapPath");
+            }
 
             // search and get unseen emails, function will return email ids
             $emails = imap_search($inbox, 'UNSEEN');

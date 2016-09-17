@@ -76,6 +76,18 @@ class StringHelper
     }
 
     /**
+     * Generate MessageId from domain name
+     *
+     * @param string $val
+     *
+     * @return string
+     */
+    public static function generateMessageId($domain)
+    {
+        return time().'.'.uniqid().'@'.$domain;
+    }
+
+    /**
      * Custom base64 decode. Replace custom url safe values with normal
      * base64 characters before decoding.
      *

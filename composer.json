@@ -10,15 +10,16 @@
         "zendframework/zend-mail": "^2.7",
         "intervention/image": "^2.3",
         "doctrine/dbal": "~2.4",
-	"aws/aws-sdk-php": "2.*",
 	"swiftmailer/swiftmailer": "^5.4",
         "barryvdh/laravel-async-queue": "0.4.x",
         "tijsverkoyen/css-to-inline-styles": "^2.0",
-        "guzzlehttp/guzzle": "^6.2",
         "mailgun/mailgun-php": "^2.1",
         "php-http/curl-client": "^1.5",
         "guzzlehttp/psr7": "^1.3",
-        "php-http/message": "^1.3"
+        "php-http/message": "^1.3",
+        "sendgrid/sendgrid": "^5.0",
+        "aws/aws-sdk-php": "^3.19",
+        "aws/aws-php-sns-message-validator": "^1.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -303,6 +303,8 @@ class Campaign extends Model
                 $sent = $server->send($message, array(
                     'from_email' => $this->from_email,
                     'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly (not in MIME message)
+                    'campaign' => $this,
+                    'subscriber' => $subscriber,
                 ));
 
                 $this->trackMessage($sent, $subscriber, $server, $msgId);
@@ -485,10 +487,28 @@ class Campaign extends Model
      *
      * @return MIME text message
      */
+    public function buildCustomHeaders($msgId, $subscriber, $server) {
+        return array(
+            'X-Acelle-Campaign-Id' => $this->uid,
+            'X-Acelle-Subscriber-Id' => $subscriber->uid,
+            'X-Acelle-User-Id' => $this->user->uid,
+            'X-Acelle-Message-Id' => $msgId,
+            'X-Acelle-Sending-Server-Id' => $server->uid
+        );
+    }
+
+    /**
+     * Prepare Email
+     * Prepare the email content using Swift Mailer.
+     *
+     * @input Raw email content
+     *
+     * @return MIME text message
+     */
     private function prepareEmail($subscriber, $server)
     {
         // build the message
-        $msgId = time().'.'.uniqid().'@'.StringHelper::getDomainFromEmail($this->from_email);
+        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
 
         $message = \Swift_Message::newInstance();
         $message->setId($msgId);

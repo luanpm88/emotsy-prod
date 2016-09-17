@@ -163,7 +163,7 @@ class DatabaseSeeder extends Seeder
             'user_id' => 1,
             'mail_list_id' => 1,
             'email' => 'minhnghivn@gmail.com',
-            'status' => 'active',
+            'status' => 'subscribed',
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
@@ -183,7 +183,7 @@ class DatabaseSeeder extends Seeder
             'user_id' => 1,
             'mail_list_id' => 1,
             'email' => 'minhnghivn@yahoo.com',
-            'status' => 'active',
+            'status' => 'subscribed',
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
@@ -382,6 +382,21 @@ class DatabaseSeeder extends Seeder
             'quota_base' => 5,
             'quota_unit' => 'minute',
             'bounce_handler_id' => 1,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+        ]);
+
+        DB::table('sending_servers')->insert([
+            'id' => 8,
+            'uid' => uniqid(),
+            'name' => 'SendGrid API',
+            'user_id' => 1,
+            'type' => 'sendgrid-api',
+            'api_key' => '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',
+            'status' => 'active',
+            'quota_value' => 1000,
+            'quota_base' => 5,
+            'quota_unit' => 'minute',
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
