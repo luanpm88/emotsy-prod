@@ -14,9 +14,9 @@ class Controller extends BaseController
 
     public function __construct()
     {
-        $user = \Auth::user();
         // Generate info
-        try {            
+        try {
+            $user = \Auth::user();
             if (is_object($user->language)) {
                 \App::setLocale($user->language->code);
                 \Carbon\Carbon::setLocale($user->language->code);
