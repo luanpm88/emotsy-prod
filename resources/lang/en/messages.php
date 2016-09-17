@@ -942,7 +942,7 @@ return [
     'not_sent' => 'Not sent',
     'sent' => 'Sent',
     'time' => 'time',
-    '' => '',
+    'api_endpoint' => 'API Endpoint',
     '' => '',
     '' => '',
     '' => '',

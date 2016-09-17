@@ -27,7 +27,7 @@
 	
 				@include("account._menu")
                 
-                <h4 class="text-semibold">{{ trans('messages.api_url') }}</h4>
+                <h4 class="text-semibold">{{ trans('messages.api_endpoint') }}</h4>
                     
                 <code style="font-size: 18px;">
                     {{ action("Api\HomeController@index") }}/</code>
