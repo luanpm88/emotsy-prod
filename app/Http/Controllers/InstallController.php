@@ -69,17 +69,23 @@ class InstallController extends Controller
                 $result = false;
             }
         }
-
-        if ($result) {
-            $request->session()->set('compatibilities', $compatibilities);
+        
+        // retry if something not work yet
+        try {
+            if ($result) {
+                $request->session()->set('compatibilities', $compatibilities);
+            }        
+        
+            return view('install.compatibilities', [
+                'compatibilities' => $compatibilities,
+                'result' => $result,
+                'step' => $this->step($request),
+                'current' => 1,
+            ]);
+        } catch (\Exception $e) {
+            sleep(2);
+            return redirect()->action('InstallController@systemCompatibility');
         }
-
-        return view('install.compatibilities', [
-            'compatibilities' => $compatibilities,
-            'result' => $result,
-            'step' => $this->step($request),
-            'current' => 1,
-        ]);
     }
 
     public function siteInfo(Request $request)
