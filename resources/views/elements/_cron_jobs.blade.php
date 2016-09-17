@@ -7,7 +7,7 @@
 
 @if (!isset(explode(" ", exec("whereis php"))[1]))
     <div class="alert alert-danger">
-        Cannot find your PHP_BIN_PATH in your server. Please find it in your server and replace all {PHP_BIN_PATH} text below with that one.
+        Cannot find your PHP_BIN_PATH in your server. Please find it in your server and replace all {PHP_BIN_PATH} text below with that one.<br /> Ex: /usr/bin/php7.0, /usr/bin/php, /usr/lib/php.
     </div>
 @endif
 
