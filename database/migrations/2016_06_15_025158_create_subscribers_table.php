@@ -23,7 +23,6 @@ class CreateSubscribersTable extends Migration
 
             // foreign
             $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
