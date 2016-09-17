@@ -23,6 +23,10 @@ CURPATH=$(pwd)
 cp -r $CURPATH $OUTPUT
 cd $OUTPUT
 
+# create version file
+touch VERSION
+echo "$(git tag --points-at HEAD)" > VERSION
+
 # create default env file
 cp .env.example .env
 
