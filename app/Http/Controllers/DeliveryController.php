@@ -152,6 +152,8 @@ class DeliveryController extends Controller
 
             $bounceLog = new BounceLog();
             $bounceLog->runtime_message_id = $responseMessage['mail']['messageId'];
+            $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
+            $bounceLog->message_id = $trackingLog->message_id;
             $bounceLog->bounce_type = $bounce['bounceType']; // !== 'Permanent' ? BounceLog::SOFT : BounceLog::HARD;
             $bounceLog->raw = $message['Message'];
             $bounceLog->save();
