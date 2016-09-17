@@ -177,7 +177,6 @@ class DatabaseSeeder extends Seeder
         DB::table('subscribers')->insert([
             'id' => 1,
             'uid' => uniqid(),
-            'user_id' => 1,
             'mail_list_id' => 1,
             'email' => 'minhnghivn@gmail.com',
             'status' => 'subscribed',
@@ -197,7 +196,6 @@ class DatabaseSeeder extends Seeder
         DB::table('subscribers')->insert([
             'id' => 2,
             'uid' => uniqid(),
-            'user_id' => 1,
             'mail_list_id' => 1,
             'email' => 'minhnghivn@yahoo.com',
             'status' => 'subscribed',
