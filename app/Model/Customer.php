@@ -111,6 +111,11 @@ class Customer extends Model
     {
         return $this->hasMany('Acelle\Model\Campaign')->where('status', '=', 'done')->orderBy('created_at', 'desc');
     }
+    
+    public function subscribers()
+    {
+        return $this->hasManyThrough('Acelle\Model\Subscriber', 'Acelle\Model\MailList');
+    }
 
     /**
      * Bootstrap any application services.

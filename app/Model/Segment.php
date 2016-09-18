@@ -168,7 +168,6 @@ class Segment extends Model
     {
         $query = \Acelle\Model\Subscriber::select('subscribers.*')
                     ->where('subscribers.mail_list_id', $this->mail_list_id);
-        // $query = $query->leftJoin('subscriber_fields', 'subscriber_fields.subscriber_id', '=', 'subscribers.id');
 
         $conditions = array();
         foreach ($this->segmentConditions as $condition) {
