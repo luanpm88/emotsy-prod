@@ -129,7 +129,7 @@
 							'name' => 'copy_list_name',
 							'value' => '',
 							'label' => trans('messages.what_would_you_like_to_name_your_list'),
-							'options' => Acelle\Model\UserGroup::timeUnitOptions(),
+							'options' => Acelle\Model\CustomerGroup::timeUnitOptions(),
 							'include_blank' => trans('messages.choose'),
 							'help_class' => 'sending_server',
 							'rules' => ['name' => 'required']

@@ -222,12 +222,6 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
 Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend']], function () {
     Route::get('admin', 'HomeController@index');
 
-    // User Group
-    Route::get('admin/user_groups/listing/{page?}', 'UserGroupController@listing');
-    Route::get('admin/user_groups/sort', 'UserGroupController@sort');
-    Route::get('admin/user_groups/delete', 'UserGroupController@delete');
-    Route::resource('admin/user_groups', 'UserGroupController');
-
     // User    
     Route::get('admin/users/switch/{uid}', 'UserController@switch_user');
     Route::get('admin/users/listing/{page?}', 'UserController@listing');
@@ -346,8 +340,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/admins', 'AdminController');
     
     // Account
-    Route::get('account/profile', 'AccountController@profile');
-    Route::post('account/profile', 'AccountController@profile');
-    Route::get('account/contact', 'AccountController@contact');
-    Route::post('account/contact', 'AccountController@contact');
+    Route::get('admin/account/profile', 'AccountController@profile');
+    Route::post('admin/account/profile', 'AccountController@profile');
+    Route::get('admin/account/contact', 'AccountController@contact');
+    Route::post('admin/account/contact', 'AccountController@contact');
 });

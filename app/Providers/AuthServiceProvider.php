@@ -22,7 +22,6 @@ class AuthServiceProvider extends ServiceProvider
         \Acelle\Model\Layout::class => \Acelle\Policies\LayoutPolicy::class,
         \Acelle\Model\Template::class => \Acelle\Policies\TemplatePolicy::class,
         \Acelle\Model\Campaign::class => \Acelle\Policies\CampaignPolicy::class,
-        \Acelle\Model\UserGroup::class => \Acelle\Policies\UserGroupPolicy::class,
         \Acelle\Model\SendingServer::class => \Acelle\Policies\SendingServerPolicy::class,
         \Acelle\Model\BounceHandler::class => \Acelle\Policies\BounceHandlerPolicy::class,
         \Acelle\Model\FeedbackLoopHandler::class => \Acelle\Policies\FeedbackLoopHandlerPolicy::class,

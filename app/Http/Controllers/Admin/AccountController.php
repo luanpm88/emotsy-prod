@@ -3,6 +3,7 @@
 namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
+use Acelle\Http\Controllers\Controller;
 
 class AccountController extends Controller
 {
@@ -127,61 +128,5 @@ class AccountController extends Controller
             'admin' => $admin,
             'contact' => $contact->fill($request->old()),
         ]);
-    }
-
-    /**
-     * User logs.
-     */
-    public function logs(Request $request)
-    {
-        $logs = $request->user()->admin->logs;
-
-        return view('admin.account.logs', [
-            'logs' => $logs,
-        ]);
-    }
-
-    /**
-     * Logs list.
-     */
-    public function logsListing(Request $request)
-    {
-        $logs = \Acelle\Model\Log::search($request)->paginate($request->per_page);
-
-        return view('admin.account.logs_listing', [
-            'logs' => $logs,
-        ]);
-    }
-
-    /**
-     * Quta logs.
-     */
-    public function quotaLog(Request $request)
-    {
-        return view('admin.account.quota_log');
-    }
-
-    /**
-     * Api token.
-     */
-    public function api(Request $request)
-    {
-        return view('admin.account.api');
-    }
-
-    /**
-     * Renew api token.
-     */
-    public function renewToken(Request $request)
-    {
-        $user = $request->user();
-
-        $user->api_token = str_random(60);
-        $user->save();
-
-        // Redirect to my lists page
-        $request->session()->flash('alert-success', trans('messages.user_api.renewed'));
-
-        return redirect()->action('AccountController@api');
     }
 }
