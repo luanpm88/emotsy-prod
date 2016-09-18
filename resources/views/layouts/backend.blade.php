@@ -55,6 +55,27 @@
 						</li>
 					</ul>
 				</li>
+				<li class="dropdown language-switch"
+					rel0="AdminGroupController"
+					rel1="AdminController"
+				>
+					<a class="dropdown-toggle" data-toggle="dropdown">
+						<i class="icon-user-tie"></i> {{ trans('messages.admin') }}
+						<span class="caret"></span>
+					</a>
+					<ul class="dropdown-menu">
+						<li rel0="UserController">
+							<a href="{{ action('Admin\CustomerController@index') }}">
+								<i class="icon-users"></i> {{ trans('messages.admins') }}
+							</a>
+						</li>
+						<li rel0="UserGroupController">
+							<a href="{{ action('Admin\AdminGroupController@index') }}">
+								<i class="icon-users4"></i> {{ trans('messages.groups') }}
+							</a>
+						</li>
+					</ul>
+				</li>
 				@if (Auth::user()->getOption("backend", "user_read") != 'no' || Auth::user()->getOption("backend", "user_group_read") != 'no')
 					<li class="dropdown language-switch"
 						rel0="UserGroupController"

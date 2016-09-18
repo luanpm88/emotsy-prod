@@ -327,4 +327,10 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/customers/sort', 'CustomerController@sort');
     Route::get('admin/customers/delete', 'CustomerController@delete');
     Route::resource('admin/customers', 'CustomerController');
+    
+    // Admin Group
+    Route::get('admin/admin_groups/listing/{page?}', 'AdminGroupController@listing');
+    Route::get('admin/admin_groups/sort', 'AdminGroupController@sort');
+    Route::get('admin/admin_groups/delete', 'AdminGroupController@delete');
+    Route::resource('admin/admin_groups', 'AdminGroupController');
 });

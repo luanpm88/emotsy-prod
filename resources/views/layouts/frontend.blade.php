@@ -13,7 +13,7 @@
 	
 </head>
 
-<body class="navbar-top color-scheme-{{ Auth::user()->getFrontendScheme() }}">
+<body class="navbar-top color-scheme-{{ Auth::user()->customer->getColorScheme() }}">
 
 	<!-- Main navbar -->
 	<div class="navbar navbar-{{ Auth::user()->getFrontendScheme() == "white" ? "default" : "inverse" }} navbar-fixed-top">
