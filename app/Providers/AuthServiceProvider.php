@@ -28,6 +28,8 @@ class AuthServiceProvider extends ServiceProvider
         \Acelle\Model\FeedbackLoopHandler::class => \Acelle\Policies\FeedbackLoopHandlerPolicy::class,
         \Acelle\Model\SendingDomain::class => \Acelle\Policies\SendingDomainPolicy::class,
         \Acelle\Model\Language::class => \Acelle\Policies\LanguagePolicy::class,
+        \Acelle\Model\CustomerGroup::class => \Acelle\Policies\CustomerGroupPolicy::class,
+        \Acelle\Model\Customer::class => \Acelle\Policies\CustomerPolicy::class,
     ];
 
     /**

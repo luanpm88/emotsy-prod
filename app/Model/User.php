@@ -114,9 +114,9 @@ class User extends Authenticatable
         return $this->belongsTo('Acelle\Model\Contact');
     }
 
-    public function user()
+    public function customer()
     {
-        return $this->hasOne('Acelle\Model\User');
+        return $this->hasOne('Acelle\Model\Customer');
     }
 
     public function userGroup()
@@ -367,7 +367,73 @@ class User extends Authenticatable
      */
     public function getOption($cat, $name)
     {
-        return $this->userGroup->getOption($cat, $name);
+        $options = [
+            'frontend' => [
+                'list_max' => '-1',
+                'subscriber_max' => '-1',
+                'subscriber_per_list_max' => '-1',
+                'segment_per_list_max' => '3',
+                'campaign_max' => '-1',
+                'sending_quota' => '-1',
+                'sending_quota_time' => '-1',
+                'sending_quota_time_unit' => 'month',
+                'max_process' => '1',
+                'all_sending_servers' => 'yes',
+                'max_size_upload_total' => '500',
+                'max_file_size_upload' => '5',
+                'unsubscribe_url_required' => 'yes',
+            ],
+            'backend' => [
+                'user_group_read' => 'all',
+                'user_group_create' => 'yes',
+                'user_group_update' => 'all',
+                'user_group_delete' => 'own',
+                'user_read' => 'own',
+                'user_create' => 'yes',
+                'user_update' => 'own',
+                'user_delete' => 'own',
+                'user_switch' => 'own',
+                'sending_server_read' => 'all',
+                'sending_server_create' => 'yes',
+                'sending_server_update' => 'own',
+                'sending_server_delete' => 'own',
+                'bounce_handler_read' => 'own',
+                'bounce_handler_create' => 'yes',
+                'bounce_handler_update' => 'own',
+                'bounce_handler_delete' => 'own',
+                'fbl_handler_read' => 'own',
+                'fbl_handler_create' => 'yes',
+                'fbl_handler_update' => 'own',
+                'fbl_handler_delete' => 'own',
+                'sending_domain_read' => 'own',
+                'sending_domain_create' => 'yes',
+                'sending_domain_update' => 'own',
+                'sending_domain_delete' => 'own',
+                'template_read' => 'own',
+                'template_create' => 'yes',
+                'template_update' => 'own',
+                'template_delete' => 'own',
+                'layout_read' => 'yes',
+                'layout_update' => 'yes',
+                'setting_general' => 'yes',
+                'setting_sending' => 'yes',
+                'setting_system_urls' => 'yes',
+                'setting_access_when_offline' => 'yes',
+                'language_read' => 'yes',
+                'language_create' => 'yes',
+                'language_update' => 'yes',
+                'language_delete' => 'yes',
+                'report_blacklist' => 'yes',
+                'report_tracking_log' => 'yes',
+                'report_bounce_log' => 'yes',
+                'report_feedback_log' => 'yes',
+                'report_click_log' => 'yes',
+                'report_open_log' => 'yes',
+                'report_unsubscribe_log' => 'yes',
+            ],
+        ];
+        
+        return $options[$cat][$name];
     }
 
     /**

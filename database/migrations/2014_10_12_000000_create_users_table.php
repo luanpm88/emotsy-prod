@@ -14,19 +14,11 @@ class CreateUsersTable extends Migration
             $table->increments('id');
             $table->uuid('uid');
             $table->string('api_token', 60)->unique();
-            $table->integer('user_id')->unsigned()->nullable();
-            $table->integer('contact_id')->unsigned()->nullable();
-            $table->integer('user_group_id')->unsigned();
-            $table->integer('language_id')->unsigned();
-            $table->string('name');
+            $table->integer('creator_id')->unsigned()->nullable();            
             $table->string('email')->unique();
             $table->string('password');
             $table->rememberToken();
-            $table->string('image')->nullable();
-            $table->string('timezone');
             $table->string('status')->nullable();
-            $table->string('frontend_scheme');
-            $table->string('backend_scheme');
 
             $table->timestamps();
         });

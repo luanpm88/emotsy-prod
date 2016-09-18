@@ -17,41 +17,49 @@ class CampaignPolicy
 
     public function read(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
-        return $item->user_id == $user->id || $user->userGroup->backend_access;
+        $customer = $user->customer;
+        return $item->customer_id == $customer->id;
     }
 
     public function create(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
-        $max = $user->getOption('frontend', 'campaign_max');
+        $customer = $user->customer;
+        $max = $customer->getOption('campaign_max');
 
-        return $max > $user->campaigns()->count() || $max == -1;
+        return $max > $customer->campaigns()->count() || $max == -1;
     }
 
     public function overview(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
-        return $item->user_id == $user->id && $item->status != 'new';
+        $customer = $user->customer;
+        return $item->customer_id == $customer->id && $item->status != 'new';
     }
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
-        return $item->user_id == $user->id && in_array($item->status, ['new', 'ready', 'error']);
+        $customer = $user->customer;
+        return $item->customer_id == $customer->id && in_array($item->status, ['new', 'ready', 'error']);
     }
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
-        return $item->user_id == $user->id && in_array($item->status, ['new', 'ready', 'paused', 'done']);
+        $customer = $user->customer;
+        return $item->customer_id == $customer->id && in_array($item->status, ['new', 'ready', 'paused', 'done']);
     }
     public function pause(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
-        return false && $item->user_id == $user->id && in_array($item->status, ['sending', 'ready']);
+        $customer = $user->customer;
+        return false && $item->customer_id == $customer->id && in_array($item->status, ['sending', 'ready']);
     }
     public function restart(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
-        return $item->user_id == $user->id && in_array($item->status, ['error']);
+        $customer = $user->customer;
+        return $item->customer_id == $customer->id && in_array($item->status, ['error']);
     }
     
     public function sort(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
-        return $item->user_id == $user->id;
+        $customer = $user->customer;
+        return $item->customer_id == $customer->id;
     }
 }

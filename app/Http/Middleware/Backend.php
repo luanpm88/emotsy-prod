@@ -22,11 +22,12 @@ class Backend
         ) {
             return redirect()->action('Controller@offline');
         }
-
-        // check if user not authorized for backend access
-        if (null !== $request->user() && !$request->user()->userGroup->backend_access) {
-            return redirect()->action('Controller@notAuthorized');
-        }
+        
+        // CustomerTicker
+        //// check if user not authorized for backend access
+        //if (null !== $request->user() && !$request->user()->userGroup->backend_access) {
+        //    return redirect()->action('Controller@notAuthorized');
+        //}
 
         return $next($request);
     }

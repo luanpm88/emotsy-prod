@@ -1,0 +1,296 @@
+<?php
+
+/**
+ * CustomerGroup class.
+ *
+ * Model class for customer group
+ *
+ * LICENSE: This product includes software developed at
+ * the Acelle Co., Ltd. (http://acellemail.com/).
+ *
+ * @category   MVC Model
+ *
+ * @author     N. Pham <n.pham@acellemail.com>
+ * @author     L. Pham <l.pham@acellemail.com>
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
+ *
+ * @version    1.0
+ *
+ * @link       http://acellemail.com
+ */
+
+namespace Acelle\Model;
+
+use Illuminate\Database\Eloquent\Model;
+
+class CustomerGroup extends Model
+{
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name', 'options',
+    ];
+
+    /**
+     * Get all items.
+     *
+     * @return collect
+     */
+    public static function getAll()
+    {
+        return self::select('*');
+    }
+
+    /**
+     * Items per page.
+     *
+     * @var array
+     */
+    public static $itemsPerPage = 25;
+
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public static $rules = array(
+        'name' => 'required',
+    );
+
+    /**
+     * Rules.
+     *
+     * @return array
+     */
+    public static function rules()
+    {
+        $rules = [
+            'name' => 'required',
+        ];
+
+        $options = self::defaultOptions();
+        foreach ($options as $type => $option) {
+            $rules['options.' . $type] = 'required';
+        }
+
+        return $rules;
+    }
+
+    /**
+     * Associations.
+     *
+     * @var object | collect
+     */
+    public function customers()
+    {
+        return $this->hasMany('Acelle\Model\Customer');
+    }
+
+    public function customer_group_sending_servers()
+    {
+        return $this->hasMany('Acelle\Model\CustomerGroupSendingServer');
+    }
+
+    public function sending_servers()
+    {
+        return $this->belongsToMany('Acelle\Model\SendingServer', 'customer_group_sending_servers');
+    }
+
+    /**
+     * Filter items.
+     *
+     * @return collect
+     */
+    public static function filter($request)
+    {
+        $user = $request->user();
+        $query = self::select('customer_groups.*');
+
+        // Keyword
+        if (!empty(trim($request->keyword))) {
+            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
+        }
+
+        return $query;
+    }
+
+    /**
+     * Search items.
+     *
+     * @return collect
+     */
+    public static function search($request)
+    {
+        $query = self::filter($request);
+
+        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+
+        return $query;
+    }
+
+    /**
+     * Bootstrap any application services.
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        // Create uid when creating list.
+        static::creating(function ($item) {
+            // Update custom order
+            CustomerGroup::getAll()->increment('custom_order', 1);
+            $item->custom_order = 0;
+        });
+    }
+
+    /**
+     * Get select options.
+     *
+     * @return array
+     */
+    public static function getSelectOptions()
+    {
+        $options = self::getAll()->get()->map(function ($item) {
+            return ['value' => $item->id, 'text' => $item->name];
+        });
+
+        return $options;
+    }
+
+    /**
+     * Default options for new groups.
+     *
+     * @return array
+     */
+    public static function defaultOptions()
+    {
+        return [
+            'list_max' => '-1',
+            'subscriber_max' => '-1',
+            'subscriber_per_list_max' => '-1',
+            'segment_per_list_max' => '3',
+            'campaign_max' => '-1',
+            'sending_quota' => '-1',
+            'sending_quota_time' => '-1',
+            'sending_quota_time_unit' => 'month',
+            'max_process' => '1',
+            'all_sending_servers' => 'yes',
+            'max_size_upload_total' => '500',
+            'max_file_size_upload' => '5',
+            'unsubscribe_url_required' => 'yes',
+            'setting_access_when_offline' => 'yes',
+        ];
+    }
+    
+    /**
+     * Get options.
+     *
+     * @return array
+     */
+    public function getOptions()
+    {
+        if (empty($this->options)) {
+            return self::defaultOptions();
+        } else {
+            $defaul_options = self::defaultOptions();
+            $saved_options = json_decode($this->options, true);
+            foreach($defaul_options as $x => $group) {
+                if(isset($saved_options[$x])) {
+                    $defaul_options[$x] = $saved_options[$x];
+                }
+            }
+            return $defaul_options;
+        }
+    }
+
+    /**
+     * Get option.
+     *
+     * @return string
+     */
+    public function getOption($name)
+    {
+        return $this->getOptions()[$name];
+    }
+
+    /**
+     * Save options.
+     *
+     * @return array
+     */
+    public function saveOptions($options)
+    {
+        return true;
+    }
+
+    /**
+     * Quota time unit options.
+     *
+     * @return array
+     */
+    public static function timeUnitOptions()
+    {
+        return [
+            ['value' => 'minute', 'text' => trans('messages.minute')],
+            ['value' => 'hour', 'text' => trans('messages.hour')],
+            ['value' => 'day', 'text' => trans('messages.day')],
+            ['value' => 'week', 'text' => trans('messages.week')],
+            ['value' => 'month', 'text' => trans('messages.month')],
+            ['value' => 'year', 'text' => trans('messages.year')],
+        ];
+    }
+
+    /**
+     * Get sending servers ids.
+     *
+     * @return array
+     */
+    public function getSendingServerIds()
+    {
+        $arr = [];
+        foreach ($this->sending_servers as $server) {
+            $arr[] = $server->uid;
+        }
+
+        return $arr;
+    }
+
+    /**
+     * Update sending servers.
+     *
+     * @return array
+     */
+    public function updateSendingServers($servers)
+    {
+        $this->customer_group_sending_servers()->delete();
+        foreach ($servers as $key => $param) {
+            if ($param['check']) {
+                $server = SendingServer::findByUid($key);
+                $row = new CustomerGroupSendingServer();
+                $row->customer_group_id = $this->id;
+                $row->sending_server_id = $server->id;
+                $row->fitness = $param['fitness'];
+                $row->save();
+            }
+        }
+    }
+
+    /**
+     * Multi process select options.
+     *
+     * @return array
+     */
+    public static function multiProcessSelectOptions()
+    {
+        $options = [['value' => 1, 'text' => trans('messages.one_single_process')]];
+        for ($i = 2; $i < 101; ++$i) {
+            $options[] = ['value' => $i, 'text' => $i];
+        }
+
+        return $options;
+    }
+}

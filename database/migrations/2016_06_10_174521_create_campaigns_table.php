@@ -13,7 +13,7 @@ class CreateCampaignsTable extends Migration
         Schema::create('campaigns', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uid');
-            $table->integer('user_id')->unsigned();
+            $table->integer('customer_id')->unsigned();
             $table->integer('mail_list_id')->unsigned()->nullable();
             $table->integer('segment_id')->unsigned()->nullable();
             $table->text('type');
@@ -34,7 +34,7 @@ class CreateCampaignsTable extends Migration
             $table->datetime('delivery_at')->nullable();
             $table->timestamps();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('mail_list_id')->references('id')->on('mail_lists')->onDelete('cascade');
         });
     }
