@@ -14,17 +14,31 @@ class UserGroupPolicy
     public function __construct()
     {
     }
+    
+    public function read(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
+    {
+        $can = $user->admin->getPermission('user_group_read') != 'no';
+
+        return $can;
+    }
+    
+    public function read_all(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
+    {
+        $can = $user->admin->getPermission('user_group_read') == 'all';
+
+        return $can;
+    }
 
     public function create(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
     {
-        $can = $user->getOption('backend', 'user_group_create') == 'yes';
+        $can = $user->admin->getPermission('user_group_create') == 'yes';
 
         return $can;
     }
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
     {
-        $ability = $user->getOption('backend', 'user_group_update');
+        $ability = $user->admin->getPermission('user_group_update');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
 
@@ -33,7 +47,7 @@ class UserGroupPolicy
 
     public function sort(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
     {
-        $ability = $user->getOption('backend', 'user_group_update');
+        $ability = $user->admin->getPermission('user_group_update');
         $can = $ability == 'all';
 
         return $can;
@@ -41,7 +55,7 @@ class UserGroupPolicy
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
     {
-        $ability = $user->getOption('backend', 'user_group_delete');
+        $ability = $user->admin->getPermission('user_group_delete');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
         $can = $can && $item->users()->count() == 0 && $item->user_id != null;

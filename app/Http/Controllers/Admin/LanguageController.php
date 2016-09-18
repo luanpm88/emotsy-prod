@@ -24,7 +24,7 @@ class LanguageController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption('backend', 'language_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\Language())) {
             return $this->notAuthorized();
         }
 
@@ -42,7 +42,7 @@ class LanguageController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption('backend', 'language_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\Language())) {
             return $this->notAuthorized();
         }
 

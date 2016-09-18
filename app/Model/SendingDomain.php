@@ -48,7 +48,7 @@ class SendingDomain extends Model
         $user = $request->user();
         $query = self::select('sending_domains.*');
 
-        if ($request->user()->getOption('backend', 'sending_domain_read') == 'own') {
+        if (!$request->user()->can("read_all", new SendingDomain())) {
             $query = $query->where('sending_domains.user_id', '=', $request->user()->id);
         }
 

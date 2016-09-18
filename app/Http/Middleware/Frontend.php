@@ -18,8 +18,8 @@ class Frontend
     {
         $user = $request->user();
         
-        // check if user not authorized for backend access
-        if (isset($user) && !isset($user->customer)) {
+        // check if user not authorized for customer access
+        if (isset($user) && !$user->can("customer_access", $user)) {
             return redirect()->action('Controller@notAuthorized');
         }
         

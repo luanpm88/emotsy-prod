@@ -24,7 +24,7 @@ class FeedbackLoopHandlerController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption('backend', 'fbl_handler_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\FeedbackLoopHandler())) {
             return $this->notAuthorized();
         }
 
@@ -42,7 +42,7 @@ class FeedbackLoopHandlerController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption('backend', 'fbl_handler_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\FeedbackLoopHandler())) {
             return $this->notAuthorized();
         }
 

@@ -24,7 +24,7 @@ class UserGroupController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption('backend', 'user_group_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\UserGroup())) {
             return $this->notAuthorized();
         }
 
@@ -42,7 +42,7 @@ class UserGroupController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption('backend', 'user_group_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\UserGroup())) {
             return $this->notAuthorized();
         }
 

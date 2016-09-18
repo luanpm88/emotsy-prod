@@ -16,18 +16,19 @@ class Backend
      */
     public function handle($request, Closure $next)
     {
+        $user = $request->user();
+        
+        // check if user not authorized for admin access
+        if (isset($user) && !$user->can("admin_access", $user)) {
+            return redirect()->action('Controller@notAuthorized');
+        }
+        
         // Site offline
         if (\Acelle\Model\Setting::get('site_online') == 'false' &&
-            (null !== $request->user() && $request->user()->getOption('backend', 'setting_access_when_offline') != 'yes')
+            (null !== $request->user() && $request->user()->admin->getPermission('setting_access_when_offline') != 'yes')
         ) {
             return redirect()->action('Controller@offline');
         }
-        
-        // CustomerTicker
-        //// check if user not authorized for backend access
-        //if (null !== $request->user() && !$request->user()->userGroup->backend_access) {
-        //    return redirect()->action('Controller@notAuthorized');
-        //}
 
         return $next($request);
     }

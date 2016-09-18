@@ -24,7 +24,7 @@ class BlacklistController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption('backend', 'report_blacklist') == 'no') {
+        if ($request->user()->admin->getPermission('report_blacklist') == 'no') {
             return $this->notAuthorized();
         }
 
@@ -42,7 +42,7 @@ class BlacklistController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption('backend', 'report_blacklist') == 'no') {
+        if ($request->user()->admin->getPermission('report_blacklist') == 'no') {
             return $this->notAuthorized();
         }
 
@@ -66,7 +66,7 @@ class BlacklistController extends Controller
 
         foreach ($items->get() as $item) {
             // authorize
-            if ($request->user()->getOption('backend', 'report_blacklist') == 'no') {
+            if ($request->user()->admin->getPermission('report_blacklist') == 'no') {
                 return;
             }
         }

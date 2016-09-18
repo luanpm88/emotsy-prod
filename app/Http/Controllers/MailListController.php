@@ -56,11 +56,12 @@ class MailListController extends Controller
         $customer = $request->user()->customer;
         $list = new \Acelle\Model\MailList();
         $list->contact = new \Acelle\Model\Contact();
+        
         if (is_object($customer->contact)) {
             $list->contact->fill($customer->contact->toArray());
             $list->send_to = $customer->contact->email;
         } else {
-            $list->send_to = $customer->email;
+            $list->send_to = $customer->user->email;
         }
 
         // authorize

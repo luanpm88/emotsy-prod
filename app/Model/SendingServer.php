@@ -171,7 +171,7 @@ class SendingServer extends Model
         $user = $request->user();
         $query = self::select('sending_servers.*');
 
-        if ($request->user()->getOption('backend', 'sending_server_read') == 'own') {
+        if (!$request->user()->can("read_all", new SendingServer())) {
             $query = $query->where('sending_servers.user_id', '=', $request->user()->id);
         }
 

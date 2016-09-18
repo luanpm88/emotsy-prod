@@ -70,8 +70,14 @@ class AccountController extends Controller
             }
         }
         
+        if (!empty($request->old())) {
+            $customer->fill($request->old());
+            // User info
+            $customer->user->fill($request->old());
+        }
+        
         return view('account.profile', [
-            'customer' => $customer->fill($request->old()),
+            'customer' => $customer,
         ]);
     }
 

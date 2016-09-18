@@ -14,17 +14,31 @@ class SendingServerPolicy
     public function __construct()
     {
     }
+    
+    public function read(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
+    {
+        $can = $user->admin->getPermission('sending_server_read') != 'no';
+
+        return $can;
+    }
+    
+    public function read_all(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
+    {
+        $can = $user->admin->getPermission('sending_server_read') == 'all';
+
+        return $can;
+    }
 
     public function create(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
     {
-        $can = $user->getOption('backend', 'sending_server_create') == 'yes';
+        $can = $user->admin->getPermission('sending_server_create') == 'yes';
 
         return $can;
     }
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
     {
-        $ability = $user->getOption('backend', 'sending_server_update');
+        $ability = $user->admin->getPermission('sending_server_update');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
 
@@ -33,7 +47,7 @@ class SendingServerPolicy
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
     {
-        $ability = $user->getOption('backend', 'sending_server_delete');
+        $ability = $user->admin->getPermission('sending_server_delete');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
 
@@ -42,7 +56,7 @@ class SendingServerPolicy
     
     public function disable(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
     {
-        $ability = $user->getOption('backend', 'sending_server_update');
+        $ability = $user->admin->getPermission('sending_server_update');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
 
@@ -51,7 +65,7 @@ class SendingServerPolicy
     
     public function enable(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
     {
-        $ability = $user->getOption('backend', 'sending_server_update');
+        $ability = $user->admin->getPermission('sending_server_update');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
 
