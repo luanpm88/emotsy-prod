@@ -126,6 +126,21 @@
 												])
 											</span>
 										</div>
+										<div class="boxing col-md-3">
+											<label class="text-semibold">{{ trans('messages.access_when_offline') }} <span class="text-danger">*</span></label>
+											<br />
+											<span class="notoping">
+												@include('helpers.form_control', ['type' => 'checkbox',
+													'class' => '',
+													'name' => 'options[access_when_offline]',
+													'value' => $options['access_when_offline'],
+													'label' => '',
+													'options' => ['no','yes'],
+													'help_class' => 'customer_group',
+													'rules' => Acelle\Model\CustomerGroup::rules()
+												])
+											</span>
+										</div>
 									</div>
 										
 									<h3 class="text-teal-800">{{ trans('messages.file_upload') }}</h3>

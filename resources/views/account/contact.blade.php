@@ -1,4 +1,4 @@
-@extends('layouts.account')
+@extends('layouts.frontend')
 
 @section('title', trans('messages.contact_information'))
 	
@@ -44,7 +44,7 @@
 								</div>
 							</div>
 							
-							@include('helpers.form_control', ['type' => 'text', 'label' => trans('messages.email_at_work'), 'name' => 'email', 'value' => $contact->email, 'help_class' => 'user_contact', 'rules' => Acelle\Model\Contact::$rules])
+							@include('helpers.form_control', ['type' => 'text', 'label' => trans('messages.email_at_work'), 'name' => 'email', 'value' => $contact->email, 'help_class' => 'customer_contact', 'rules' => Acelle\Model\Contact::$rules])
 							
 							@include('helpers.form_control', ['type' => 'text', 'name' => 'address_1', 'value' => $contact->address_1, 'rules' => Acelle\Model\Contact::$rules])
 							

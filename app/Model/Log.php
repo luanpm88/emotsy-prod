@@ -32,7 +32,7 @@ class Log extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 'type', 'name', 'data',
+        'customer_id', 'type', 'name', 'data',
     ];
 
     /**
@@ -47,9 +47,9 @@ class Log extends Model
      *
      * @var object | collect
      */
-    public function user()
+    public function customer()
     {
-        return $this->belongsTo('Acelle\Model\User');
+        return $this->belongsTo('Acelle\Model\Customer');
     }
 
     /**
@@ -135,8 +135,8 @@ class Log extends Model
      */
     public static function filter($request)
     {
-        $user = $request->user();
-        $query = self::where('user_id', '=', $user->id);
+        $customer = $request->user()->customer;
+        $query = self::where('customer_id', '=', $customer->id);
 
         // Keyword
         if (!empty(trim($request->keyword))) {

@@ -26,44 +26,43 @@ class AccountController extends Controller
     public function profile(Request $request)
     {
         // Get current user
-        $user = $request->user();
-        $user->getFrontendScheme();
-        $user->getBackendScheme();
+        $customer = $request->user()->customer;
+        $customer->getColorScheme();
 
         // Authorize
-        if (\Gate::denies('profile', $user)) {
+        if (\Gate::denies('profile', $customer)) {
             return $this->notAuthorized();
         }
 
         // Save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, $user->rules());
+            $this->validate($request, $customer->rules());
             
-            if($this->isDemoMode()) {
-                return $this->notAuthorized();
-            }
-
-            // Save current user info
-            $user->fill($request->all());
-
+            // Update user account for customer
+            $user = $customer->user;
+            $user->email = $request->email;
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
-            }
-
+            }            
+            $user->save();
+            
+            // Save current user info
+            $customer->fill($request->all());
+            
             // Upload and save image
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
                     // Remove old images
-                    $user->removeImage();
-                    $user->image = $user->uploadImage($request->file('image'));
+                    $customer->removeImage();
+                    $customer->image = $customer->uploadImage($request->file('image'));
                 }
             }
-
+            
             // Remove image
             if ($request->_remove_image == 'true') {
-                $user->removeImage();
-                $user->image = '';
+                $customer->removeImage();
+                $customer->image = '';
             }
 
             if ($user->save()) {
@@ -72,7 +71,7 @@ class AccountController extends Controller
         }
 
         return view('account.profile', [
-            'user' => $user->fill($request->old()),
+            'customer' => $customer->fill($request->old()),
         ]);
     }
 
@@ -86,27 +85,20 @@ class AccountController extends Controller
     public function contact(Request $request)
     {        
         // Get current user
-        $user = $request->user();
-        if (is_object($user->contact)) {
-            $contact = $user->contact;
+        $customer = $request->user()->customer;
+        if (is_object($customer->contact)) {
+            $contact = $customer->contact;
         } else {
             $contact = new \Acelle\Model\Contact([
-                                        'first_name' => $user->first_name,
-                                        'last_name' => $user->last_name,
-                                        'email' => $user->email,
+                                        'first_name' => $customer->first_name,
+                                        'last_name' => $customer->last_name,
+                                        'email' => $customer->user->email,
                                     ]);
         }
-        // var_dump((array) $user->attributes);
 
         // Create new company if null
         if (!is_object($contact)) {
             $contact = new \Acelle\Model\Contact();
-            $contact->user_id = $user->id;
-        }
-
-        // authorize
-        if (\Gate::denies('update', $contact)) {
-            return $this->notAuthorized();
         }
 
         // save posted data
@@ -118,15 +110,15 @@ class AccountController extends Controller
             // Save current user info
             if ($contact->save()) {
                 if (!is_object($contact)) {
-                    $user->contact_id = $contact->id;
-                    $user->save();
+                    $customer->contact_id = $contact->id;
+                    $customer->save();
                 }
                 $request->session()->flash('alert-success', 'Contact information was successfully updated!');
             }
         }
 
         return view('account.contact', [
-            'user' => $user,
+            'customer' => $customer,
             'contact' => $contact->fill($request->old()),
         ]);
     }
@@ -136,7 +128,7 @@ class AccountController extends Controller
      */
     public function logs(Request $request)
     {
-        $logs = $request->user()->logs;
+        $logs = $request->user()->customer->logs;
 
         return view('account.logs', [
             'logs' => $logs,

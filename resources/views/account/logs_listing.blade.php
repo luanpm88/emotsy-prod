@@ -5,7 +5,7 @@
 								@foreach ($logs as $key => $item)
 									<tr>
                                         <td width="1%">
-											<img width="50" class="img-circle mr-10" src="{{ action('UserController@avatar', $item->user->uid) }}" alt="">
+											<img width="50" class="img-circle mr-10" src="{{ action('CustomerController@avatar', $item->customer->uid) }}" alt="">
 										</td>
 										<td>                                            
 											<p class="mb-0">                                                

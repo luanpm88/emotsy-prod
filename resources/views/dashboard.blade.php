@@ -14,7 +14,7 @@
 	
     <h2 class="text-teal-800"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h2>
 		
-	@if (Auth::user()->sentCampaigns()->count() == 0)
+	@if (Auth::user()->customer->sentCampaigns()->count() == 0)
 		<div class="empty-list">
 			<i class="icon-paperplane"></i>
 			<span class="line-1">
@@ -30,19 +30,19 @@
 					'name' => 'campaign_id',
 					'label' => '',
 					'value' => '',
-					'options' => Acelle\Model\Campaign::getSelectOptions(Auth::user(), "done"),
+					'options' => Acelle\Model\Campaign::getSelectOptions(Auth::user()->customer, "done"),
 				])
 			</div>
 		</div>
 		<div class="campaign-quickview-container" data-url="{{ action("CampaignController@quickView") }}"></div>
 	@endif
     
-    <br />
+	<br />
     <br />
     
     <h2 class="text-teal-800"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h2>
     
-	@if (Auth::user()->lists()->count() == 0)
+	@if (Auth::user()->customer->lists()->count() == 0)
 		<div class="empty-list">
 			<i class="icon-address-book2"></i>
 			<span class="line-1">
@@ -59,166 +59,167 @@
 					'label' => '',
 					'value' => '',
 					'include_blank' => trans('messages.all'),
-					'options' => Acelle\Model\MailList::getSelectOptions(Auth::user()),
+					'options' => Acelle\Model\MailList::getSelectOptions(Auth::user()->customer),
 				])
 			</div>
 		</div>
 		<div class="list-quickview-container" data-url="{{ action("MailListController@quickView") }}"></div>
 	@endif
-    
-    <br />
+	
+	<br />
     <br />
     
     <h2 class="text-teal-800"><i class="icon-podium"></i> {{ trans('messages.top_5') }}</h2>
     <div class="tabbable">
-				<ul class="nav nav-tabs nav-tabs-top">
-					<li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
-						<i class="icon-folder-open3"></i> {{ trans('messages.campaign_opens') }}</a></li>
-					<li class="text-semibold"><a href="#top-tab2" data-toggle="tab">
-						<i class="icon-pointer"></i> {{ trans('messages.campaign_clicks') }}</a></li>
-					<li class="text-semibold"><a href="#top-tab3" data-toggle="tab">
-						<i class="icon-link"></i> {{ trans('messages.clicked_links') }}</a></li>
+		<ul class="nav nav-tabs nav-tabs-top">
+			<li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
+				<i class="icon-folder-open3"></i> {{ trans('messages.campaign_opens') }}</a></li>
+			<li class="text-semibold"><a href="#top-tab2" data-toggle="tab">
+				<i class="icon-pointer"></i> {{ trans('messages.campaign_clicks') }}</a></li>
+			<li class="text-semibold"><a href="#top-tab3" data-toggle="tab">
+				<i class="icon-link"></i> {{ trans('messages.clicked_links') }}</a></li>
+		</ul>
+
+		<div class="tab-content">
+			<div class="tab-pane active" id="top-tab1">
+				<ul class="modern-listing mt-0 top-border-none">
+					@foreach (Acelle\Model\Campaign::topOpens(5, Auth::user()->customer)->get() as $num => $item)
+						<li>
+							<div class="row">
+								<div class="col-sm-5 col-md-5">
+									<i class="number">{{ $num+1 }}</i>
+									<h6 class="mt-0 mb-0 text-semibold">
+										<a href="{{ action('CampaignController@overview', $item->uid) }}">
+											{{ $item->name }}
+										</a>
+									</h6>
+									<p>
+										@if (is_object($item->segment))
+											{{ $item->mailList->name }} . {{ $item->segment->name }}													
+										@elseif (is_object($item->mailList))
+											{{ $item->mailList->name }}
+										@endif                                                
+									</p>
+								</div>
+								<div class="col-sm-2 col-md-2 text-left">
+									<h5 class="no-margin text-bold">
+										{{ $item->aggregate }}
+									</h5>
+									<span class="text-muted">{{ trans('messages.opens') }}</span>
+										<br /><br />
+								</div>
+								<div class="col-sm-2 col-md-2 text-left">
+									<h5 class="no-margin text-bold">
+										{{ $item->openUniqCount() }}
+									</h5>
+									<span class="text-muted">{{ trans('messages.uniq_opens') }}</span>
+										<br /><br />
+								</div>
+								<div class="col-sm-2 col-md-2 text-left">
+									<h5 class="no-margin text-bold">
+										{{ (null !== $item->lastOpen()) ? Acelle\Library\Tool::formatDateTime($item->lastOpen()->created_at) : "" }}
+									</h5>
+									<span class="text-muted">{{ trans('messages.last_open') }}</span>
+										<br /><br />
+								</div>	
+							</div>
+
+						</li>
+					@endforeach
 				</ul>
-
-				<div class="tab-content">
-					<div class="tab-pane active" id="top-tab1">
-						<ul class="modern-listing mt-0 top-border-none">
-							@foreach (Acelle\Model\Campaign::topOpens(5, Auth::user())->get() as $num => $item)
-								<li>
-                                    <div class="row">
-                                        <div class="col-sm-5 col-md-5">
-                                            <i class="number">{{ $num+1 }}</i>
-                                            <h6 class="mt-0 mb-0 text-semibold">
-                                                <a href="{{ action('CampaignController@overview', $item->uid) }}">
-                                                    {{ $item->name }}
-                                                </a>
-                                            </h6>
-                                            <p>
-												@if (is_object($item->segment))
-													{{ $item->mailList->name }} . {{ $item->segment->name }}													
-												@elseif (is_object($item->mailList))
-													{{ $item->mailList->name }}
-												@endif                                                
-                                            </p>
-                                        </div>
-										<div class="col-sm-2 col-md-2 text-left">
-											<h5 class="no-margin text-bold">
-												{{ $item->aggregate }}
-											</h5>
-											<span class="text-muted">{{ trans('messages.opens') }}</span>
-                                                <br /><br />
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 text-left">
-											<h5 class="no-margin text-bold">
-												{{ $item->openUniqCount() }}
-											</h5>
-											<span class="text-muted">{{ trans('messages.uniq_opens') }}</span>
-                                                <br /><br />
-                                        </div>
-										<div class="col-sm-2 col-md-2 text-left">
-											<h5 class="no-margin text-bold">
-												{{ (null !== $item->lastOpen()) ? Acelle\Library\Tool::formatDateTime($item->lastOpen()->created_at) : "" }}
-											</h5>
-											<span class="text-muted">{{ trans('messages.last_open') }}</span>
-                                                <br /><br />
-                                        </div>	
-                                    </div>
-
-                                </li>
-							@endforeach
-						</ul>
-					</div>
-					<div class="tab-pane" id="top-tab2">
-						<ul class="modern-listing mt-0 top-border-none">
-							@foreach (Acelle\Model\Campaign::topClicks(5, Auth::user())->get() as $num => $item)
-								<li>
-                                    <div class="row">
-                                        <div class="col-sm-5 col-md-5">
-                                            <i class="number">{{ $num+1 }}</i>
-                                            <h6 class="mt-0 mb-0 text-semibold">
-                                                <a href="{{ action('CampaignController@overview', $item->uid) }}">
-                                                    {{ $item->name }}
-                                                </a>
-                                            </h6>
-                                            <p>
-												@if (is_object($item->segment))
-													{{ $item->mailList->name }} . {{ $item->segment->name }}													
-												@elseif (is_object($item->mailList))
-													{{ $item->mailList->name }}
-												@endif                                                
-                                            </p>
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 text-left">
-											<h5 class="no-margin text-bold">
-												{{ $item->aggregate }}
-											</h5>
-											<span class="text-muted">{{ trans('messages.clicks') }}</span>
-                                                <br /><br />
-                                        </div>
-										<div class="col-sm-2 col-md-2 text-left">
-											<h5 class="no-margin text-bold">
-												{{ $item->urlCount() }}
-											</h5>
-											<span class="text-muted">{{ trans('messages.urls') }}</span>
-                                                <br /><br />
-                                        </div>
-										<div class="col-sm-2 col-md-2 text-left">
-											<h5 class="no-margin text-bold">
-												{{ (null !== $item->lastClick()) ? Acelle\Library\Tool::formatDateTime($item->lastClick()->created_at) : "" }}
-											</h5>
-											<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
-                                                <br /><br />
-                                        </div>										
-                                    </div>
-
-                                </li>
-							@endforeach
-						</ul>
-					</div>
-					<div class="tab-pane" id="top-tab3">
-						
-						<ul class="modern-listing mt-0 top-border-none">
-							@foreach (Acelle\Model\Campaign::topLinks(5, Auth::user())->get() as $num => $item)
-								<li>
-                                    <div class="row">
-                                        <div class="col-sm-6 col-md-6">
-                                            <i class="number">{{ $num+1 }}</i>
-                                            <h6 class="mt-0 mb-0 text-semibold url-truncate">
-                                                <a title="{{ $item->url }}" href="{{ $item->url }}" target="_blank">
-                                                    {{ $item->url }}
-                                                </a>
-                                            </h6>
-                                            <p>
-												{{ $item->campaigns()->count() }} {{ trans('messages.campaigns') }}                                              
-                                            </p>
-                                        </div>
-                                        <div class="col-sm-2 col-md-2 text-left">
-											<h5 class="no-margin text-bold">
-												{{ $item->aggregate }}
-											</h5>
-											<span class="text-muted">{{ trans('messages.clicks') }}</span>
-                                                <br /><br />
-                                        </div>
-										<div class="col-sm-2 col-md-2 text-left">
-											<h5 class="no-margin text-bold">
-												{{ (null !== $item->lastClick(Auth::user())) ? Acelle\Library\Tool::formatDateTime($item->lastClick(Auth::user())->created_at) : "" }}          
-											</h5>
-											<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
-                                            <br /><br />
-                                        </div>
-                                    </div>
-                                </li>
-							@endforeach
-						</ul>
-					</div>					
-				</div>
 			</div>
+			<div class="tab-pane" id="top-tab2">
+				<ul class="modern-listing mt-0 top-border-none">
+					@foreach (Acelle\Model\Campaign::topClicks(5, Auth::user()->customer)->get() as $num => $item)
+						<li>
+							<div class="row">
+								<div class="col-sm-5 col-md-5">
+									<i class="number">{{ $num+1 }}</i>
+									<h6 class="mt-0 mb-0 text-semibold">
+										<a href="{{ action('CampaignController@overview', $item->uid) }}">
+											{{ $item->name }}
+										</a>
+									</h6>
+									<p>
+										@if (is_object($item->segment))
+											{{ $item->mailList->name }} . {{ $item->segment->name }}													
+										@elseif (is_object($item->mailList))
+											{{ $item->mailList->name }}
+										@endif                                                
+									</p>
+								</div>
+								<div class="col-sm-2 col-md-2 text-left">
+									<h5 class="no-margin text-bold">
+										{{ $item->aggregate }}
+									</h5>
+									<span class="text-muted">{{ trans('messages.clicks') }}</span>
+										<br /><br />
+								</div>
+								<div class="col-sm-2 col-md-2 text-left">
+									<h5 class="no-margin text-bold">
+										{{ $item->urlCount() }}
+									</h5>
+									<span class="text-muted">{{ trans('messages.urls') }}</span>
+										<br /><br />
+								</div>
+								<div class="col-sm-2 col-md-2 text-left">
+									<h5 class="no-margin text-bold">
+										{{ (null !== $item->lastClick()) ? Acelle\Library\Tool::formatDateTime($item->lastClick()->created_at) : "" }}
+									</h5>
+									<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
+										<br /><br />
+								</div>										
+							</div>
+
+						</li>
+					@endforeach
+				</ul>
+			</div>
+			<div class="tab-pane" id="top-tab3">
 				
+				<ul class="modern-listing mt-0 top-border-none">
+					@foreach (Acelle\Model\Campaign::topLinks(5, Auth::user()->customer)->get() as $num => $item)
+						<li>
+							<div class="row">
+								<div class="col-sm-6 col-md-6">
+									<i class="number">{{ $num+1 }}</i>
+									<h6 class="mt-0 mb-0 text-semibold url-truncate">
+										<a title="{{ $item->url }}" href="{{ $item->url }}" target="_blank">
+											{{ $item->url }}
+										</a>
+									</h6>
+									<p>
+										{{ $item->campaigns()->count() }} {{ trans('messages.campaigns') }}                                              
+									</p>
+								</div>
+								<div class="col-sm-2 col-md-2 text-left">
+									<h5 class="no-margin text-bold">
+										{{ $item->aggregate }}
+									</h5>
+									<span class="text-muted">{{ trans('messages.clicks') }}</span>
+										<br /><br />
+								</div>
+								<div class="col-sm-2 col-md-2 text-left">
+									<h5 class="no-margin text-bold">
+										{{ (null !== $item->lastClick(Auth::user()->customer)) ? Acelle\Library\Tool::formatDateTime($item->lastClick(Auth::user()->customer)->created_at) : "" }}          
+									</h5>
+									<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
+									<br /><br />
+								</div>
+							</div>
+						</li>
+					@endforeach
+				</ul>
+			</div>					
+		</div>
+	</div>
+		
+	
 	<br />
     <br />
     <h2 class="text-teal-800"><i class="icon-history"></i> {{ trans('messages.activity_log') }}</h2>
 	
-	@if (Auth::user()->logs()->count() == 0)
+	@if (Auth::user()->customer->logs()->count() == 0)
 		<div class="empty-list">
 			<i class="icon-history"></i>
 			<span class="line-1">
@@ -230,18 +231,18 @@
 			<!-- Timeline -->
 			<div class="timeline timeline-left content-group">
 				<div class="timeline-container">				
-						@foreach (Auth::user()->logs()->take(20)->get() as $log)
+						@foreach (Auth::user()->customer->logs()->take(20)->get() as $log)
 							<!-- Sales stats -->
 							<div class="timeline-row">
 								<div class="timeline-icon">
-									<a href="#"><img src="{{ action('UserController@avatar', $log->user->uid) }}" alt=""></a>
+									<a href="#"><img src="{{ action('CustomerController@avatar', $log->customer->uid) }}" alt=""></a>
 								</div>
 	
 								<div class="panel panel-flat timeline-content">
 									<div class="panel-heading">
-										<h6 class="panel-title text-semibold">{{ $log->user->displayName() }}</h6>
+										<h6 class="panel-title text-semibold">{{ $log->customer->displayName() }}</h6>
 										<div class="heading-elements">
-											<span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at->diffForHumans() }}</span>
+											<span class="heading-text"><i class="icon-history position-left text-success"></i> {{ Tool::dateTime($log->created_at)->diffForHumans() }}</span>
 										</div>
 									</div>
 	
@@ -259,5 +260,6 @@
 	
 	<br>
 	<br>
+  
     
 @endsection

@@ -314,6 +314,7 @@ class MailListController extends Controller
         } else {
             $list_id = null;
             $list = new \Acelle\Model\MailList();
+            $list->customer_id = $request->user()->customer->id;
         }
 
         // authorize
@@ -365,7 +366,7 @@ class MailListController extends Controller
     }
 
     /**
-     * 24-hour chart.
+     * Quick view.
      *
      * @param \Illuminate\Http\Request $request
      *
@@ -378,6 +379,7 @@ class MailListController extends Controller
         if (!is_object($list)) {
             $list = new \Acelle\Model\MailList();
             $list->uid = '000';
+            $list->customer_id = $request->user()->customer->id;
         }
 
         // authorize

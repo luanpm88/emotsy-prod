@@ -1,4 +1,4 @@
-@extends('layouts.account')
+@extends('layouts.frontend')
 
 @section('title', trans('messages.my_profile'))
 	
@@ -16,7 +16,7 @@
 					<li class="active">{{ trans('messages.profile') }}</li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-profile"></i> {{ $user->displayName() }}</span>
+					<span class="text-semibold"><i class="icon-profile"></i> {{ $customer->displayName() }}</span>
 				</h1>
 			</div>
 				
@@ -36,7 +36,7 @@
 								<div class="media profile-image">
 									<div class="media-left">
 										<a href="#" class="upload-media-container">
-											<img preview-for="image" empty-src="{{ URL::asset('assets/images/placeholder.jpg') }}" src="{{ action('UserController@avatar', $user->uid) }}" class="img-circle" alt="">
+											<img preview-for="image" empty-src="{{ URL::asset('assets/images/placeholder.jpg') }}" src="{{ action('CustomerController@avatar', $customer->uid) }}" class="img-circle" alt="">
 										</a>
 										<input type="file" name="image" class="file-styled previewable hide">
 										<input type="hidden" name="_remove_image" value='' />
@@ -57,40 +57,29 @@
 									
 								<div class="row">
 									<div class="col-md-6">
-										@include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => Acelle\Model\User::$rules])
+										@include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $customer->first_name, 'rules' => $customer->rules()])
 									</div>
 									<div class="col-md-6">
-										@include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => Acelle\Model\User::$rules])
+										@include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $customer->last_name, 'rules' => $customer->rules()])
 									</div>
 								</div>
 								
-								@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $user->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Acelle\Model\User::$rules])								
+								@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $customer->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $customer->rules()])								
 								
-								@include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $user->language_id, 'options' => Acelle\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Acelle\Model\User::$rules])
+								@include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $customer->language_id, 'options' => Acelle\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $customer->rules()])
 								
 								<div class="row">
 									<div class="col-md-6 color-box">
 										@include('helpers.form_control', [
 											'type' => 'select',
 											'class' => '',
-											'name' => 'frontend_scheme',
-											'value' => $user->frontend_scheme,
-											'help_class' => 'user',
-											'options' => Acelle\Model\User::colors("frontend_scheme"),
+											'name' => 'color_scheme',
+											'value' => $customer->color_scheme,
+											'help_class' => 'customer',
+											'options' => Acelle\Model\User::colors("color_scheme"),
 											'rules' => '',
 										])
-									</div>
-									<div class="col-md-6 color-box">
-										@include('helpers.form_control', [
-											'type' => 'select',
-											'class' => '',
-											'name' => 'backend_scheme',
-											'value' => $user->backend_scheme,
-											'help_class' => 'user',
-											'options' => Acelle\Model\User::colors("backend_scheme"),
-											'rules' => '',
-										])
-									</div>
+									</div>									
 								</div>
 									
 							</div>
@@ -99,11 +88,11 @@
 							<div class="sub_section">
 								<h2 class="text-semibold text-teal-800">{{ trans('messages.account') }}</h2>
 
-								@include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $user->email, 'help_class' => 'profile', 'rules' => Acelle\Model\User::$rules])
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $customer->user->email, 'help_class' => 'profile', 'rules' => $customer->rules()])
 								
-								@include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => Acelle\Model\User::$rules])
+								@include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => $customer->rules()])
 								
-								@include('helpers.form_control', ['type' => 'password', 'name' => 'password_confirmation', 'rules' => Acelle\Model\User::$rules])
+								@include('helpers.form_control', ['type' => 'password', 'name' => 'password_confirmation', 'rules' => $customer->rules()])
 								
 							</div>
 						</div>						

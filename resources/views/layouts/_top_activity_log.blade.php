@@ -10,22 +10,22 @@
 						</div>
 
 						<ul class="media-list dropdown-content-body">
-							@if (Auth::user()->logs()->count() == 0)
+							@if (Auth::user()->customer->logs()->count() == 0)
 								<li class="text-center text-muted2">
 									<span href="#">
 										<i class="icon-history"></i> {{ trans('messages.no_activity_logs') }}
 									</span>
 								</li>
 							@endif
-							@foreach (Auth::user()->logs()->take(20)->get() as $log)
+							@foreach (Auth::user()->customer->logs()->take(20)->get() as $log)
 								<li class="media">
 									<div class="media-left">
-										<img src="{{ action('UserController@avatar', $log->user->uid) }}" class="img-circle img-sm" alt="">
+										<img src="{{ action('CustomerController@avatar', $log->customer->uid) }}" class="img-circle img-sm" alt="">
 									</div>
 	
 									<div class="media-body">
 										<a href="#" class="media-heading">
-											<span class="text-semibold">{{ $log->user->displayName() }}</span>
+											<span class="text-semibold">{{ $log->customer->displayName() }}</span>
 											<span class="media-annotation pull-right">{{ $log->created_at->diffForHumans() }}</span>
 										</a>
 	

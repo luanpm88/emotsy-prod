@@ -201,7 +201,7 @@ class CustomerController extends Controller
         if ($request->isMethod('patch')) {
             $this->validate($request, $customer->rules());
             
-            // Create user account for customer
+            // Update user account for customer
             $user = $customer->user;
             $user->email = $request->email;
             // Update password
