@@ -65,11 +65,11 @@ class AccountController extends Controller
                 $customer->image = '';
             }
 
-            if ($user->save()) {
+            if ($customer->save()) {
                 $request->session()->flash('alert-success', trans('messages.profile.updated'));
             }
         }
-
+        
         return view('account.profile', [
             'customer' => $customer->fill($request->old()),
         ]);

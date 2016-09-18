@@ -25,7 +25,7 @@ class CreateCustomersTable extends Migration
             $table->string('image')->nullable();
             $table->string('timezone');
             $table->string('status')->nullable();
-            $table->string('color_scheme');
+            $table->string('color_scheme')->nullable();
             
             $table->timestamps();
             

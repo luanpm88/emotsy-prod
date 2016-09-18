@@ -87,6 +87,8 @@ class DatabaseSeeder extends Seeder
             'id' => 1,
             'name' => 'Customer Group 1',
             'creator_id' => 1,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
         ]);
         
         // Create default customer for admin user
