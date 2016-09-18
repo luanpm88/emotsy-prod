@@ -587,7 +587,7 @@ class Customer extends Model
         if (!empty($this->color_scheme)) {
             return $this->color_scheme;
         } else {
-            return \Acelle\Model\Setting::get('color_scheme');
+            return \Acelle\Model\Setting::get('frontend_scheme');
         }
     }
     
