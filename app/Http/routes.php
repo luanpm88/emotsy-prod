@@ -209,6 +209,9 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::patch('campaigns/{uid}/update', 'CampaignController@update');    
     
     Route::get('users/login-back', 'UserController@loginBack');
+    
+    // Customer avatar
+    Route::get('assets/images/avatar/customer-{uid?}.jpg', 'CustomerController@avatar');
 });
 
 // ADMIN AREA
@@ -311,4 +314,17 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/blacklist', 'BlacklistController@index');
     Route::get('admin/blacklist/listing', 'BlacklistController@listing');
     Route::get('admin/blacklist/delete', 'BlacklistController@delete');
+    
+    // Customer Group
+    Route::get('admin/customer_groups/listing/{page?}', 'CustomerGroupController@listing');
+    Route::get('admin/customer_groups/sort', 'CustomerGroupController@sort');
+    Route::get('admin/customer_groups/delete', 'CustomerGroupController@delete');
+    Route::resource('admin/customer_groups', 'CustomerGroupController');
+    
+    // Customer    
+    Route::get('admin/customers/switch/{uid}', 'CustomerController@switch_customer');
+    Route::get('admin/customers/listing/{page?}', 'CustomerController@listing');
+    Route::get('admin/customers/sort', 'CustomerController@sort');
+    Route::get('admin/customers/delete', 'CustomerController@delete');
+    Route::resource('admin/customers', 'CustomerController');
 });

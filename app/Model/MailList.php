@@ -157,8 +157,8 @@ class MailList extends Model
      */
     public static function filter($request)
     {
-        $user = $request->user();
-        $query = self::where('user_id', '=', $user->id);
+        $customer = $request->user()->customer;
+        $query = self::where('customer_id', '=', $customer->id);
 
         // Keyword
         if (!empty(trim($request->keyword))) {
@@ -303,11 +303,11 @@ class MailList extends Model
      *
      * @return array
      */
-    public static function getSelectOptions($user = null)
+    public static function getSelectOptions($customer = null)
     {
         $query = self::getAll();
-        if (is_object($user)) {
-            $query = $query->where('user_id', '=', $user->id);
+        if (is_object($customer)) {
+            $query = $query->where('customer_id', '=', $customer->id);
         }
         $options = $query->orderBy('name')->get()->map(function ($item) {
             return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribers()->count().' '.strtolower(trans('messages.subscribers')).')'];
@@ -391,7 +391,7 @@ class MailList extends Model
     /**
      * Add customer action log.
      */
-    public function log($name, $user, $add_datas = [])
+    public function log($name, $customer, $add_datas = [])
     {
         $data = [
             'id' => $this->id,
@@ -401,7 +401,7 @@ class MailList extends Model
         $data = array_merge($data, $add_datas);
 
         Log::create([
-            'user_id' => $user->id,
+            'customer_id' => $customer->id,
             'type' => 'list',
             'name' => $name,
             'data' => json_encode($data),
@@ -527,7 +527,7 @@ class MailList extends Model
      */
     public function otherLists()
     {
-        return \Auth::user()->lists()->where('id', '!=', $this->id)->get();
+        return \Auth::user()->customer->lists()->where('id', '!=', $this->id)->get();
     }
 
     /**

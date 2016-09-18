@@ -23,8 +23,8 @@ class MailListController extends Controller
      */
     public function index(Request $request)
     {
-        $user = $request->user();
-        $lists = $user->lists;
+        $customer = $request->user()->customer;
+        $lists = $customer->lists;
 
         return view('lists.index', [
             'lists' => $lists,
@@ -53,14 +53,14 @@ class MailListController extends Controller
     public function create(Request $request)
     {
         // Generate info
-        $user = $request->user();
+        $customer = $request->user()->customer;
         $list = new \Acelle\Model\MailList();
         $list->contact = new \Acelle\Model\Contact();
-        if (is_object($user->contact)) {
-            $list->contact->fill($user->contact->toArray());
-            $list->send_to = $user->contact->email;
+        if (is_object($customer->contact)) {
+            $list->contact->fill($customer->contact->toArray());
+            $list->send_to = $customer->contact->email;
         } else {
-            $list->send_to = $user->email;
+            $list->send_to = $customer->email;
         }
 
         // authorize
@@ -91,7 +91,7 @@ class MailListController extends Controller
     public function store(Request $request)
     {
         // Generate info
-        $user = $request->user();
+        $customer = $request->user()->customer;
         $list = new \Acelle\Model\MailList();
 
         // authorize
@@ -106,12 +106,12 @@ class MailListController extends Controller
             // Save contact
             $contact = \Acelle\Model\Contact::create($request->all()['contact']);
             $list->fill($request->all());
-            $list->user_id = $user->id;
+            $list->customer_id = $customer->id;
             $list->contact_id = $contact->id;
             $list->save();
 
             // Log
-            $list->log('created', $request->user());
+            $list->log('created', $request->user()->customer);
 
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.list.created'));
@@ -141,7 +141,7 @@ class MailListController extends Controller
     public function edit(Request $request, $uid)
     {
         // Generate info
-        $user = $request->user();
+        $customer = $request->user()->customer;
         $list = \Acelle\Model\MailList::findByUid($uid);
 
         // authorize
@@ -173,7 +173,7 @@ class MailListController extends Controller
     public function update(Request $request, $id)
     {
         // Generate info
-        $user = $request->user();
+        $customer = $request->user()->customer;
         $list = \Acelle\Model\MailList::findByUid($request->uid);
 
         // authorize
@@ -192,7 +192,7 @@ class MailListController extends Controller
             $list->save();
 
             // Log
-            $list->log('updated', $request->user());
+            $list->log('updated', $request->user()->customer);
 
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.list.updated'));
@@ -269,7 +269,7 @@ class MailListController extends Controller
             if (\Gate::allows('delete', $item)) {
                 $item->delete();
                 // Log
-                $item->log('deleted', $request->user());
+                $item->log('deleted', $request->user()->customer);
             }
         }
 
@@ -336,10 +336,10 @@ class MailListController extends Controller
         foreach ($result['bar_names'] as $bar) {
             $data = [];
             for ($i = 2; $i >= 0; --$i) {
-                $data[] = \Acelle\Model\User::subscribersCountByTime(
+                $data[] = \Acelle\Model\Customer::subscribersCountByTime(
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->startOfMonth(),
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->endOfMonth(),
-                    $request->user()->id,
+                    $request->user()->customer->id,
                     $list_id
                 );
             }

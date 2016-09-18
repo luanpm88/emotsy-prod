@@ -17,23 +17,27 @@ class MailListPolicy
 
     public function read(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
     {
-        return $item->user_id == $user->id || $user->userGroup->backend_access;
+        $customer = $user->customer;
+        return $item->customer_id == $customer->id;
     }
 
     public function create(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
     {
-        $max = $user->getOption('frontend', 'list_max');
+        $customer = $user->customer;
+        $max = $customer->getOption('list_max');
 
-        return $max > $user->lists()->count() || $max == -1;
+        return $max > $customer->lists()->count() || $max == -1;
     }
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
     {
-        return $item->user_id == $user->id;
+        $customer = $user->customer;
+        return $item->customer_id == $customer->id;
     }
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
     {
-        return $item->user_id == $user->id;
+        $customer = $user->customer;
+        return $item->customer_id == $customer->id;
     }
 }

@@ -29,14 +29,15 @@
 
 		<div class="navbar-collapse collapse" id="navbar-mobile">
 			<ul class="nav navbar-nav">
-                @if (Auth::user()->userGroup->frontend_access)
+				<!-- CustomerTicker -->
+                @if (true)
                     <li rel0="HomeController">
                         <a href="{{ action('HomeController@index') }}">
                             <i class="icon-exit2"></i> {{ trans('messages.frontend') }}
                         </a>
                     </li>
                 @endif
-                @if (Auth::user()->userGroup->backend_access)
+                @if (true)
                     <li rel0="HomeController">
                         <a href="{{ action('Admin\HomeController@index') }}">
                             <i class="icon-enter2"></i> {{ trans('messages.backend') }}
@@ -57,11 +58,12 @@
 					</a>
 
 					<ul class="dropdown-menu dropdown-menu-right">
-						@if (Auth::user()->userGroup->frontend_access)
+						<!-- CustomerTicker -->
+						@if (true)
 							<li><a href="{{ action("HomeController@index") }}"><i class="icon-exit2"></i> {{ trans('messages.frontend') }}</a></li>
 							<li class="divider"></li>
 						@endif
-						@if (Auth::user()->userGroup->backend_access)
+						@if (true)
 							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter2"></i> {{ trans('messages.backend') }}</a></li>
 							<li class="divider"></li>
 						@endif

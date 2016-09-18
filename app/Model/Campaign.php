@@ -50,7 +50,7 @@ class Campaign extends Model
     );
 
     /**
-     * Get the user that owns the phone.
+     * Get the mail list.
      */
     public function mailList()
     {
@@ -74,11 +74,11 @@ class Campaign extends Model
     }
 
     /**
-     * Get the user that owns the phone.
+     * Get the customer.
      */
-    public function user()
+    public function customer()
     {
-        return $this->belongsTo('Acelle\Model\User');
+        return $this->belongsTo('Acelle\Model\Customer');
     }
     
     /**
@@ -236,7 +236,7 @@ class Campaign extends Model
         $this->sending();
 
         Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
-        $count = (int) $this->user->getOption('frontend', 'max_process');
+        $count = (int) $this->customer->getOption('max_process');
         $subscribers = $this->getPendingSubscribers();
         Log::info(sizeof($subscribers).' subscriber(s) selected');
         $chunks = $this->getChunks($subscribers, $count);
@@ -290,6 +290,7 @@ class Campaign extends Model
 
             $i = 0;
             foreach ($subscribers as $subscriber) {
+                // @todo: customerneedcheck
                 if ($this->user->overQuota()) {
                     throw new \Exception("Customer (ID: {$this->user->id}) has reached sending quota");
                 }
@@ -332,6 +333,7 @@ class Campaign extends Model
      */
     private function trackMessage($response, $subscriber, $server, $msgId)
     {
+        // @todo: customerneedcheck
         $params = array_merge(array(
                 'campaign_id' => $this->id,
                 'message_id' => $msgId,
@@ -372,7 +374,7 @@ class Campaign extends Model
         }
 
         $tags = array_merge($tags, [
-            ['name' => 'UNSUBSCRIBE_URL', 'required' => (\Auth::user()->getOption('frontend', 'unsubscribe_url_required') == 'yes' ? true : false)],
+            ['name' => 'UNSUBSCRIBE_URL', 'required' => (\Auth::user()->customer->getOption('unsubscribe_url_required') == 'yes' ? true : false)],
             ['name' => 'SUBSCRIBER_UID', 'required' => false],
             ['name' => 'CAMPAIGN_NAME', 'required' => false],
             ['name' => 'CAMPAIGN_UID', 'required' => false],
@@ -515,6 +517,7 @@ class Campaign extends Model
         $message->setContentType('text/plain; charset=utf-8');
         $message->getHeaders()->addTextHeader('X-Acelle-Campaign-Id', $this->uid);
         $message->getHeaders()->addTextHeader('X-Acelle-Subscriber-Id', $subscriber->uid);
+        // @todo: customerneedcheck
         $message->getHeaders()->addTextHeader('X-Acelle-User-Id', $this->user->uid);
         $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', $msgId);
         $message->getHeaders()->addTextHeader('X-Acelle-Sending-Server-Id', $server->uid);
@@ -629,11 +632,11 @@ class Campaign extends Model
      *
      * @return array
      */
-    public static function getSelectOptions($user = null, $status = null)
+    public static function getSelectOptions($customer = null, $status = null)
     {
         $query = self::getAll();
-        if (is_object($user)) {
-            $query = $query->where('user_id', '=', $user->id);
+        if (is_object($customer)) {
+            $query = $query->where('customer_id', '=', $customer->id);
         }
         if (isset($status)) {
             $query = $query->where('status', '=', $status);
@@ -783,8 +786,8 @@ class Campaign extends Model
      */
     public static function filter($request)
     {
-        $user = $request->user();
-        $query = self::where('user_id', '=', $user->id);
+        $customer = $request->user()->customer;
+        $query = self::where('customer_id', '=', $customer->id);
 
         // Keyword
         if (!empty(trim($request->keyword))) {
@@ -869,10 +872,10 @@ class Campaign extends Model
      * Create customer action log.
      *
      * @param string $cat
-     * @param User   $user
+     * @param Customer   $customer
      * @param array  $add_datas
      */
-    public function log($name, $user, $add_datas = [])
+    public function log($name, $customer, $add_datas = [])
     {
         $data = [
                 'id' => $this->id,
@@ -892,7 +895,7 @@ class Campaign extends Model
         $data = array_merge($data, $add_datas);
 
         \Acelle\Model\Log::create([
-                                'user_id' => $user->id,
+                                'customer_id' => $customer->id,
                                 'type' => 'campaign',
                                 'name' => $name,
                                 'data' => json_encode($data),
@@ -1223,7 +1226,7 @@ class Campaign extends Model
     {
         $last = $this->campaign_track_opens()->orderBy('created_at', 'desc')->first();
 
-        return is_object($last) ? $last->created_at->timezone(\Auth::user()->timezone) : null;
+        return is_object($last) ? $last->created_at : null;
     }
 
     /**
@@ -1231,14 +1234,14 @@ class Campaign extends Model
      *
      * @return datetime
      */
-    public static function topOpens($number = 5, $user = null)
+    public static function topOpens($number = 5, $customer = null)
     {
         $records = self::select(\DB::raw(\DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
             ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id');
 
-        if (isset($user)) {
-            $records = $records->where('campaigns.user_id', '=', $user->id);
+        if (isset($customer)) {
+            $records = $records->where('campaigns.customer_id', '=', $customer->id);
         }
 
         $records = $records->groupBy('campaigns.id')
@@ -1252,14 +1255,14 @@ class Campaign extends Model
      *
      * @return datetime
      */
-    public static function topClicks($number = 5, $user = null)
+    public static function topClicks($number = 5, $customer = null)
     {
         $records = self::select(\DB::raw(\DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
             ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id');
 
-        if (isset($user)) {
-            $records = $records->where('campaigns.user_id', '=', $user->id);
+        if (isset($customer)) {
+            $records = $records->where('campaigns.customer_id', '=', $customer->id);
         }
 
         $records = $records->groupBy('campaigns.id')
@@ -1273,7 +1276,7 @@ class Campaign extends Model
      *
      * @return datetime
      */
-    public static function topLinks($number = 5, $user = null)
+    public static function topLinks($number = 5, $customer = null)
     {
         $records = Link::select(\DB::raw(\DB::getTablePrefix().'links.*, count(*) as `aggregate`'))
             ->join('campaign_links', 'campaign_links.link_id', '=', 'links.id')
@@ -1283,9 +1286,9 @@ class Campaign extends Model
                 ->on('click_logs.url', '=', 'links.url');
             });
 
-        if (isset($user)) {
+        if (isset($customer)) {
             $records = $records->join('campaigns', 'campaign_links.campaign_id', '=', 'campaigns.id')
-                ->where('campaigns.user_id', '=', $user->id);
+                ->where('campaigns.customer_id', '=', $customer->id);
         }
 
         $records = $records->groupBy('links.id')
@@ -1334,16 +1337,16 @@ class Campaign extends Model
      *
      * @return datetime
      */
-    public function topLocations($number = 5, $user = null)
+    public function topLocations($number = 5, $customer = null)
     {
         $records = IpLocation::select(\DB::raw(\DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
             ->join('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
             ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
 
-        if (isset($user)) {
+        if (isset($customer)) {
             $records = $records->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-                ->where('campaigns.user_id', '=', $user->id);
+                ->where('campaigns.customer_id', '=', $customer->id);
         }
 
         $records = $records->groupBy('open_logs.ip_address')

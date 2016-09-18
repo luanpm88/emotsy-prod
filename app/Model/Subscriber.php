@@ -183,13 +183,13 @@ class Subscriber extends Model
      *
      * @return collect
      */
-    public static function search($request, $user = null)
+    public static function search($request, $customer = null)
     {
-        if (!isset($user)) {
-            $user = $request->user();
+        if (!isset($customer)) {
+            $customer = $request->user()->customer;
         }
         $query = self::select('subscribers.*');
-        $query = $query->where('mail_lists.user_id', '=', $user->id);
+        $query = $query->where('mail_lists.customer_id', '=', $customer->id);
 
         $query = self::filter($query, $request);
 
@@ -273,6 +273,7 @@ class Subscriber extends Model
      */
     public static function import($user, $list)
     {
+        $customer = $user->customer;
         $directory = storage_path('import/');
 
         // Import to database
@@ -315,7 +316,7 @@ class Subscriber extends Model
                 $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
 
                 // Action Log
-                $list->log('import_max_error', $user, ['count' => $count]);
+                $list->log('import_max_error', $customer, ['count' => $count]);
 
                 return;
             }
@@ -331,7 +332,6 @@ class Subscriber extends Model
                     $subscriber->mail_list_id = $list->id;
                     $subscriber->email = $email;
                     $subscriber->status = 'subscribed';
-                    $subscriber->user_id = $list->user_id;
                     $subscriber->save();
 
                     foreach ($parts as $key => $value) {
@@ -376,7 +376,7 @@ class Subscriber extends Model
         $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
 
         // Action Log
-        $list->log('import_success', $user, ['count' => $success, 'error' => $error]);
+        $list->log('import_success', $customer, ['count' => $success, 'error' => $error]);
     }
 
     /**
@@ -386,6 +386,7 @@ class Subscriber extends Model
      */
     public static function export($user, $list)
     {
+        $customer = $user->customer;
         $directory = storage_path('export/');
         // Import to database
         $total = $list->subscribers()->count();
@@ -439,7 +440,7 @@ class Subscriber extends Model
         $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
 
         // Action Log
-        $list->log('export_success', $user, ['count' => $success, 'error' => $error]);
+        $list->log('export_success', $customer, ['count' => $success, 'error' => $error]);
     }
 
     /**
@@ -458,10 +459,10 @@ class Subscriber extends Model
      * Create customer action log.
      *
      * @param string $cat
-     * @param User   $user
+     * @param Customer   $customer
      * @param array  $add_datas
      */
-    public function log($name, $user, $add_datas = [])
+    public function log($name, $customer, $add_datas = [])
     {
         $data = [
                 'id' => $this->id,
@@ -473,7 +474,7 @@ class Subscriber extends Model
         $data = array_merge($data, $add_datas);
 
         \Acelle\Model\Log::create([
-                                'user_id' => $user->id,
+                                'customer_id' => $customer->id,
                                 'type' => 'subscriber',
                                 'name' => $name,
                                 'data' => json_encode($data),

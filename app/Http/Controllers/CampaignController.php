@@ -27,8 +27,8 @@ class CampaignController extends Controller
      */
     public function index(Request $request)
     {
-        $user = $request->user();
-        $campaigns = $user->campaigns;
+        $customer = $request->user()->customer;
+        $campaigns = $customer->campaigns;
 
         return view('campaigns.index', [
             'campaigns' => $campaigns,
@@ -56,6 +56,7 @@ class CampaignController extends Controller
      */
     public function create(Request $request)
     {
+        $customer = $request->user()->customer;
         $campaign = new \Acelle\Model\Campaign([
                                             'track_open' => true,
                                             'track_click' => true,
@@ -68,7 +69,7 @@ class CampaignController extends Controller
         }
 
         $campaign->name = trans('messages.untitled');
-        $campaign->user_id = $request->user()->id;
+        $campaign->customer_id = $customer->id;
         $campaign->status = \Acelle\Model\Campaign::STATUS_NEW;
         $campaign->type = $request->type;
         $campaign->save();
@@ -239,6 +240,7 @@ class CampaignController extends Controller
      */
     public function setup(Request $request)
     {
+        $customer = $request->user()->customer;
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
@@ -273,7 +275,7 @@ class CampaignController extends Controller
             $campaign->save();
 
             // Log
-            $campaign->log('created', $request->user());
+            $campaign->log('created', $customer);
 
             return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
         }
@@ -293,7 +295,7 @@ class CampaignController extends Controller
      */
     public function template(Request $request)
     {
-        $user = $request->user();
+        $customer = $request->user()->customer;
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
@@ -312,7 +314,7 @@ class CampaignController extends Controller
         $rules = [];
 
         // if campaign type is not plain text
-        if ($campaign->type != 'plain-text' && $user->getOption('frontend', 'unsubscribe_url_required') == 'yes') {
+        if ($campaign->type != 'plain-text' && $customer->getOption('unsubscribe_url_required') == 'yes') {
             $rules['html'] = $validate;
         }
 
@@ -412,6 +414,7 @@ class CampaignController extends Controller
      */
     public function confirm(Request $request)
     {
+        $customer = $request->user()->customer;
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
@@ -426,7 +429,7 @@ class CampaignController extends Controller
             $campaign->save();
 
             // Log
-            $campaign->log('started', $request->user());
+            $campaign->log('started', $customer);
 
             return redirect()->action('CampaignController@index');
         }
@@ -445,6 +448,7 @@ class CampaignController extends Controller
      */
     public function delete(Request $request)
     {
+        $customer = $request->user()->customer;
         $items = \Acelle\Model\Campaign::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
@@ -452,7 +456,7 @@ class CampaignController extends Controller
             if (\Gate::allows('delete', $item)) {
                 $item->delete();
                 // Log
-                $item->log('deleted', $request->user());
+                $item->log('deleted', $customer);
             }
         }
 
@@ -652,7 +656,7 @@ class CampaignController extends Controller
             $subscriber->save();
 
             // Page content
-            $user = $request->user();
+            $customer = $request->user()->customer;
             $list = $subscriber->mailList;
             $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_success_page')->first();
             $page = \Acelle\Model\Page::findPage($list, $layout);
@@ -966,6 +970,7 @@ class CampaignController extends Controller
      */
     public function pause(Request $request)
     {
+        $customer = $request->user()->customer;
         $items = \Acelle\Model\Campaign::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
@@ -974,7 +979,7 @@ class CampaignController extends Controller
                 $item->save();
 
                 // Log
-                $item->log('paused', $request->user());
+                $item->log('paused', $customer);
             }
         }
 
@@ -991,6 +996,7 @@ class CampaignController extends Controller
      */
     public function restart(Request $request)
     {
+        $customer = $request->user()->customer;
         $items = \Acelle\Model\Campaign::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
@@ -999,7 +1005,7 @@ class CampaignController extends Controller
                 $item->save();
 
                 // Log
-                $item->log('restarted', $request->user());
+                $item->log('restarted', $customer);
             }
         }
 

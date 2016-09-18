@@ -13,7 +13,7 @@ class CreateMailListsTable extends Migration
         Schema::create('mail_lists', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uid');
-            $table->integer('user_id')->unsigned();
+            $table->integer('customer_id')->unsigned();
             $table->integer('contact_id')->unsigned();
             $table->string('name');
             $table->string('default_subject');

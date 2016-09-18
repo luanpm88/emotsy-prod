@@ -75,15 +75,32 @@ class DatabaseSeeder extends Seeder
         DB::table('users')->insert([
             'id' => 1,
             'uid' => uniqid(),
-            'contact_id' => 1,
-            'user_group_id' => 1,
-            'language_id' => 1,
-            'first_name' => 'Luan',
-            'last_name' => 'Pham',
             'email' => 'luanpm88@gmail.com',
             'password' => bcrypt('123456'),
             'status' => 'active',
-            'timezone' => 'Asia/Ho_Chi_Minh',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+        ]);
+        
+        // Create default customer group
+        DB::table('customer_groups')->insert([
+            'id' => 1,
+            'name' => 'Customer Group 1',
+            'creator_id' => 1,
+        ]);
+        
+        // Create default customer for admin user
+        DB::table('customers')->insert([
+            'id' => 1,
+            'uid' => uniqid(),
+            'user_id' => 1,
+            'creator_id' => 1,
+            'contact_id' => 1,
+            'customer_group_id' => 1,
+            'language_id' => 1,
+            'first_name' => 'Luan',
+            'last_name' => 'Pham',
+            'timezone' => 'Atlantic/Cape_Verde',
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
@@ -93,7 +110,7 @@ class DatabaseSeeder extends Seeder
             'id' => 1,
             'uid' => uniqid(),
             'contact_id' => 2,
-            'user_id' => 1,
+            'customer_id' => 1,
             'name' => 'My List',
             'status' => 'active',
             'created_at' => $created_at,
@@ -104,7 +121,7 @@ class DatabaseSeeder extends Seeder
             'id' => 1,
             'uid' => uniqid(),
             'mail_list_id' => 1,
-            'user_id' => 1,
+            'customer_id' => 1,
             'name' => 'My Campaign',
             'type' => 'regular',
             'subject' => 'Newsletter of June, 13',
