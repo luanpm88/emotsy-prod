@@ -43,12 +43,12 @@
 						<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu">
-						<li rel0="UserController">
+						<li rel0="CustomerController">
 							<a href="{{ action('Admin\CustomerController@index') }}">
 								<i class="icon-users"></i> {{ trans('messages.customers') }}
 							</a>
 						</li>
-						<li rel0="UserGroupController">
+						<li rel0="CustomerGroupController">
 							<a href="{{ action('Admin\CustomerGroupController@index') }}">
 								<i class="icon-users4"></i> {{ trans('messages.groups') }}
 							</a>
@@ -64,45 +64,18 @@
 						<span class="caret"></span>
 					</a>
 					<ul class="dropdown-menu">
-						<li rel0="UserController">
+						<li rel0="AdminController">
 							<a href="{{ action('Admin\AdminController@index') }}">
 								<i class="icon-users"></i> {{ trans('messages.admins') }}
 							</a>
 						</li>
-						<li rel0="UserGroupController">
+						<li rel0="AdminGroupController">
 							<a href="{{ action('Admin\AdminGroupController@index') }}">
 								<i class="icon-users4"></i> {{ trans('messages.groups') }}
 							</a>
 						</li>
 					</ul>
 				</li>
-				@if (Auth::user()->admin->getPermission("user_read") != 'no' || Auth::user()->admin->getPermission("user_group_read") != 'no')
-					<li class="dropdown language-switch"
-						rel0="UserGroupController"
-						rel1="UserController"
-					>
-						<a class="dropdown-toggle" data-toggle="dropdown">
-							<i class="icon-user"></i> {{ trans('messages.user') }}
-							<span class="caret"></span>
-						</a>
-						<ul class="dropdown-menu">
-							@if (Auth::user()->admin->getPermission("user_read") != 'no')
-								<li rel0="UserController">
-									<a href="{{ action('Admin\UserController@index') }}">
-										<i class="icon-users"></i> {{ trans('messages.users') }}
-									</a>
-								</li>
-							@endif
-							@if (Auth::user()->admin->getPermission("user_group_read") != 'no')
-								<li rel0="UserGroupController">
-									<a href="{{ action('Admin\UserGroupController@index') }}">
-										<i class="icon-users4"></i> {{ trans('messages.groups') }}
-									</a>
-								</li>
-							@endif
-						</ul>
-					</li>
-        @endif
 				
 				@if (
 					Auth::user()->admin->getPermission("sending_domain_read") != 'no'
@@ -298,7 +271,7 @@
 							<li><a href="{{ action("HomeController@index") }}"><i class="icon-exit2"></i> {{ trans('messages.frontend') }}</a></li>
 							<li class="divider"></li>
 						@endif
-						<li><a href="{{ action("AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.account') }}</a></li>
+						<li><a href="{{ action("Admin\AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.account') }}</a></li>
 						<li><a href="{{ url("/logout") }}"><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a></li>
 					</ul>
 				</li>
