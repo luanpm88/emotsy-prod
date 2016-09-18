@@ -103,11 +103,10 @@ class SubscriberController extends Controller
      */
     public function store(Request $request)
     {
-        $user = $request->user();
+        $customer = $request->user()->customer;
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $subscriber = new \Acelle\Model\Subscriber();
         $subscriber->mail_list_id = $list->id;
-        $subscriber->user_id = $user->id;
         $subscriber->status = 'subscribed';
 
         // authorize
@@ -126,7 +125,7 @@ class SubscriberController extends Controller
             $subscriber->updateFields($request->all());
 
             // Log
-            $subscriber->log('created', $request->user());
+            $subscriber->log('created', $customer);
 
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.subscriber.created'));
@@ -195,6 +194,7 @@ class SubscriberController extends Controller
      */
     public function update(Request $request, $id)
     {
+        $customer = $request->user()->customer;
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $subscriber = $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
@@ -211,7 +211,7 @@ class SubscriberController extends Controller
             $subscriber->updateFields($request->all());
 
             // Log
-            $subscriber->log('updated', $request->user());
+            $subscriber->log('updated', $customer);
 
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.subscriber.updated'));
@@ -240,6 +240,7 @@ class SubscriberController extends Controller
      */
     public function delete(Request $request)
     {
+        $customer = $request->user()->customer;
         $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
 
         foreach ($subscribers->get() as $subscriber) {
@@ -253,7 +254,7 @@ class SubscriberController extends Controller
             $subscriber->delete();
 
             // Log
-            $subscriber->log('deleted', $request->user());
+            $subscriber->log('deleted', $customer);
         }
 
         // Redirect to my lists page
@@ -269,6 +270,7 @@ class SubscriberController extends Controller
      */
     public function subscribe(Request $request)
     {
+        $customer = $request->user()->customer;
         $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
 
         foreach ($subscribers->get() as $subscriber) {
@@ -283,7 +285,7 @@ class SubscriberController extends Controller
             $subscriber->save();
 
             // Log
-            $subscriber->log('subscribed', $request->user());
+            $subscriber->log('subscribed', $customer);
         }
 
         // Redirect to my lists page
@@ -299,6 +301,7 @@ class SubscriberController extends Controller
      */
     public function unsubscribe(Request $request)
     {
+        $customer = $request->user()->customer;
         $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
 
         foreach ($subscribers->get() as $subscriber) {
@@ -313,7 +316,7 @@ class SubscriberController extends Controller
             $subscriber->save();
 
             // Log
-            $subscriber->log('unsubscribed', $request->user());
+            $subscriber->log('unsubscribed', $customer);
         }
 
         // Redirect to my lists page
@@ -329,6 +332,7 @@ class SubscriberController extends Controller
      */
     public function import(Request $request)
     {
+        $customer = $request->user()->customer;
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         if ($request->hasFile('file')) {
@@ -347,7 +351,7 @@ class SubscriberController extends Controller
             $request->file('file')->move($upload_path, $filename);
 
             // Action Log
-            $list->log('import_started', $request->user());
+            $list->log('import_started', $customer);
 
             sleep(1);
             //run import job
@@ -389,7 +393,7 @@ class SubscriberController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
-        // \Acelle\Model\Subscriber::export($request->user(), $list);
+        $customer = $request->user()->customer;
 
         if ($request->isMethod('post')) {
             $upload_path = storage_path('export/');
@@ -403,7 +407,7 @@ class SubscriberController extends Controller
             $bytes_written = \File::put($upload_path.$list->id.'-process.log', $str);
 
             // Action Log
-            $list->log('export_started', $request->user());
+            $list->log('export_started', $customer);
 
             sleep(1);
             //run import job

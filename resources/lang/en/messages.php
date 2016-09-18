@@ -223,6 +223,7 @@ return [
     'subscriber.updated' => 'Subscriber was successfully updated',
     'subscribers.deleted' => 'One or more subscribers were successfully deleted',
     'subscribers.copied' => 'One or more subscribers were successfully copied',
+    'subscribers.moved' => 'One or more subscribers were successfully moved',
     'lists.deleted' => 'One or more lists were successfully deleted',
     'campaigns.deleted' => 'One or more campaigns were successfully deleted',
     'campaigns.paused' => 'One or more campaigns were successfully paused',
