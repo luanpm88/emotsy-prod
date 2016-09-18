@@ -1,4 +1,4 @@
-@extends('layouts.account')
+@extends('layouts.frontend')
 
 @section('title', trans('messages.logs'))
 	
@@ -17,7 +17,7 @@
 					<li class="active">{{ trans('messages.profile') }}</li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-profile"></i> {{ Auth::user()->displayName() }}</span>
+					<span class="text-semibold"><i class="icon-profile"></i> {{ Auth::user()->customer->displayName() }}</span>
 				</h1>
 			</div>
 				

@@ -116,6 +116,11 @@ class Customer extends Model
     {
         return $this->hasManyThrough('Acelle\Model\Subscriber', 'Acelle\Model\MailList');
     }
+    
+    public function logs()
+    {
+        return $this->hasMany('Acelle\Model\Log')->orderBy('created_at', 'desc');
+    }
 
     /**
      * Bootstrap any application services.
@@ -489,7 +494,7 @@ class Customer extends Model
      */
     public function allSendingServer()
     {
-        $check = $this->getOption('frontend', 'all_sending_servers');
+        $check = $this->getOption('all_sending_servers');
         return ($check == 'yes');
     }
     
@@ -500,8 +505,8 @@ class Customer extends Model
      */
     public function sendingQuota()
     {
-        $time_value = $this->getOption('frontend', 'sending_quota_time');
-        $time_unit = $this->getOption('frontend', 'sending_quota_time_unit');
+        $time_value = $this->getOption('sending_quota_time');
+        $time_unit = $this->getOption('sending_quota_time_unit');
     
         if ($time_value == '-1') {
             $begin = null;
@@ -573,30 +578,16 @@ class Customer extends Model
     }
     
     /**
-     * Get customer's frontend scheme.
+     * Get user's color scheme.
      *
      * @return string
      */
-    public function getFrontendScheme()
+    public function getColorScheme()
     {
-        if (!empty($this->frontend_scheme)) {
-            return $this->frontend_scheme;
+        if (!empty($this->color_scheme)) {
+            return $this->color_scheme;
         } else {
-            return \Acelle\Model\Setting::get('frontend_scheme');
-        }
-    }
-    
-    /**
-     * Get customer's frontend scheme.
-     *
-     * @return string
-     */
-    public function getBackendScheme()
-    {
-        if (!empty($this->backend_scheme)) {
-            return $this->backend_scheme;
-        } else {
-            return \Acelle\Model\Setting::get('backend_scheme');
+            return \Acelle\Model\Setting::get('color_scheme');
         }
     }
     

@@ -30,7 +30,7 @@ class CustomerPolicy
 
     public function profile(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
-        return true;
+        return $user->id == $item->user_id;
     }
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Customer $item)

@@ -959,7 +959,7 @@ return [
     'customer.created' => 'Customer was successfully created',
     'customer_empty_line_1' => 'You have no saved customers',
     'login_as_this_customer' => 'Login as this customer',
-    '' => '',
+    'color_scheme' => 'Color scheme',
     '' => '',
     '' => '',
     '' => '',

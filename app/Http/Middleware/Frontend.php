@@ -25,7 +25,7 @@ class Frontend
         
         // Site offline
         if (\Acelle\Model\Setting::get('site_online') == 'false' &&
-            (isset($user) && $user->customer->getOption('setting_access_when_offline') != 'yes')
+            (isset($user) && $user->customer->getOption('access_when_offline') != 'yes')
         ) {
             return redirect()->action('Controller@offline');
         }        

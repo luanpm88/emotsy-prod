@@ -182,7 +182,7 @@ class CustomerGroup extends Model
             'max_size_upload_total' => '500',
             'max_file_size_upload' => '5',
             'unsubscribe_url_required' => 'yes',
-            'setting_access_when_offline' => 'yes',
+            'access_when_offline' => 'no',
         ];
     }
     
