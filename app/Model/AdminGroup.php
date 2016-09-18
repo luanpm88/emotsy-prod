@@ -587,6 +587,16 @@ class AdminGroup extends Model
     {
         return $this->getOptions()[$name];
     }
+    
+    /**
+     * Get permissions.
+     *
+     * @return string
+     */
+    public function getPermission($name)
+    {
+        return $this->getPermissions()[$name];
+    }
 
     /**
      * Save options.

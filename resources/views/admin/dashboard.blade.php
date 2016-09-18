@@ -233,12 +233,12 @@
 							<!-- Sales stats -->
 							<div class="timeline-row">
 								<div class="timeline-icon">
-									<a href="#"><img src="{{ action('UserController@avatar', $log->user->uid) }}" alt=""></a>
+									<a href="#"><img src="{{ action('UserController@avatar', $log->customer->uid) }}" alt=""></a>
 								</div>
 	
 								<div class="panel panel-flat timeline-content">
 									<div class="panel-heading">
-										<h6 class="panel-title text-semibold">{{ $log->user->displayName() }}</h6>
+										<h6 class="panel-title text-semibold">{{ $log->customer->displayName() }}</h6>
 										<div class="heading-elements">
 											<span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at->diffForHumans() }}</span>
 										</div>
@@ -249,7 +249,6 @@
 									</div>
 								</div>
 							</div>
-							<!-- /sales stats -->
 						@endforeach								
 				</div>
 			</div>

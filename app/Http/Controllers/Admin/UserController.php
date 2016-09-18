@@ -24,7 +24,7 @@ class UserController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption('backend', 'user_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\User())) {
             return $this->notAuthorized();
         }
 
@@ -42,7 +42,7 @@ class UserController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption('backend', 'user_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\User())) {
             return $this->notAuthorized();
         }
 

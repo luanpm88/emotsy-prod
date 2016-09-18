@@ -112,7 +112,7 @@ class UserGroup extends Model
         $user = $request->user();
         $query = self::select('user_groups.*');
 
-        if ($request->user()->getOption('backend', 'user_group_read') == 'own') {
+        if (!$request->user()->can("read_all", new UserGroup())) {
             $query = $query->where('user_id', '=', $request->user()->id);
         }
 

@@ -24,7 +24,7 @@ class OpenLogController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption('backend', 'report_open_log') == 'no') {
+        if ($request->user()->admin->getPermission('report_open_log') == 'no') {
             return $this->notAuthorized();
         }
 
@@ -42,7 +42,7 @@ class OpenLogController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption('backend', 'report_open_log') == 'no') {
+        if ($request->user()->admin->getPermission('report_open_log') == 'no') {
             return $this->notAuthorized();
         }
 

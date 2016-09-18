@@ -41,10 +41,10 @@ class SettingController extends Controller
             // Save settings
             foreach ($request->all() as $name => $value) {
                 if ($name != '_token') {
-                    if ($settings[$name]['cat'] == 'general' && $request->user()->getOption('backend', 'setting_general') == 'yes') {
+                    if ($settings[$name]['cat'] == 'general' && \Gate::allows('general', new \Acelle\Model\Setting())) {
                         \Acelle\Model\Setting::set($name, $value);
                     }
-                    if ($settings[$name]['cat'] == 'sending' && $request->user()->getOption('backend', 'setting_sending') == 'yes') {
+                    if ($settings[$name]['cat'] == 'sending' && \Gate::allows('sending', new \Acelle\Model\Setting())) {
                         \Acelle\Model\Setting::set($name, $value);
                     }
                 }
@@ -68,6 +68,10 @@ class SettingController extends Controller
      */
     public function updateUrls(Request $request)
     {
+        if ($request->user()->admin->getPermission('setting_system_urls') != 'yes') {
+            return $this->notAuthorized();
+        }
+        
         \Acelle\Model\Setting::set('url_unsubscribe', action('CampaignController@unsubscribe', ['message_id' => trans('messages.MESSAGE_ID')]));
         \Acelle\Model\Setting::set('url_open_track', action('CampaignController@open', ['message_id' => trans('messages.MESSAGE_ID')]));
         \Acelle\Model\Setting::set('url_click_track', action('CampaignController@click', ['message_id' => trans('messages.MESSAGE_ID'), 'url' => trans('messages.URL')]));

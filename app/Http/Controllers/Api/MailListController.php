@@ -23,7 +23,7 @@ class MailListController extends Controller
 
         $lists = \Acelle\Model\MailList::getAll()
             ->select('uid', 'name', 'default_subject', 'from_email', 'from_name', 'status', 'created_at', 'updated_at')
-            ->where('user_id', '=', $user->id)
+            ->where('customer_id', '=', $user->customer->id)
             ->get();
 
         return \Response::json($lists, 200);
@@ -89,8 +89,9 @@ class MailListController extends Controller
 
         // statistics
         $statistics = [
+            'subscribe_count' => $item->subscribers()->count(),
             'open_uniq_rate' => $item->openUniqRate(),
-            'click_rate' => $item->clickRate(),
+            'click_rate' => $item->clickRate(),            
             'subscribe_rate' => $item->subscribeRate(),
             'unsubscribe_rate' => $item->unsubscribeRate(),
             'unsubscribe_count' => $item->unsubscribeCount(),
@@ -126,7 +127,7 @@ class MailListController extends Controller
             // Save contact
             $contact = \Acelle\Model\Contact::create($request->all()['contact']);
             $list->fill($request->all());
-            $list->user_id = $user->id;
+            $list->customer_id = $user->customer->id;
             $list->contact_id = $contact->id;
             $list->save();
             

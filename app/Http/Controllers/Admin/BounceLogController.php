@@ -24,7 +24,7 @@ class BounceLogController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption('backend', 'report_bounce_log') == 'no') {
+        if ($request->user()->admin->getPermission('report_bounce_log') == 'no') {
             return $this->notAuthorized();
         }
 
@@ -42,7 +42,7 @@ class BounceLogController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption('backend', 'report_bounce_log') == 'no') {
+        if ($request->user()->admin->getPermission('report_bounce_log') == 'no') {
             return $this->notAuthorized();
         }
 

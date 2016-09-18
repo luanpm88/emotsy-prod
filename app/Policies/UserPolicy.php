@@ -14,10 +14,24 @@ class UserPolicy
     public function __construct()
     {
     }
+    
+    public function read(\Acelle\Model\User $user, \Acelle\Model\User $item)
+    {
+        $can = $user->admin->getPermission('user_read') != 'no';
+
+        return $can;
+    }
+    
+    public function read_all(\Acelle\Model\User $user, \Acelle\Model\User $item)
+    {
+        $can = $user->admin->getPermission('user_read') == 'all';
+
+        return $can;
+    }
 
     public function create(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {
-        $can = $user->getOption('backend', 'user_create') == 'yes';
+        $can = $user->admin->getPermission('user_create') == 'yes';
 
         return $can;
     }
@@ -29,7 +43,7 @@ class UserPolicy
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {
-        $ability = $user->getOption('backend', 'user_update');
+        $ability = $user->admin->getPermission('user_update');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
 
@@ -38,7 +52,7 @@ class UserPolicy
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {
-        $ability = $user->getOption('backend', 'user_delete');
+        $ability = $user->admin->getPermission('user_delete');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
         $can = $can && $item->lists()->count() == 0 && $item->user_id != null;
@@ -48,11 +62,21 @@ class UserPolicy
 
     public function switch_user(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {
-        $ability = $user->getOption('backend', 'user_switch');
+        $ability = $user->admin->getPermission('user_switch');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
         $can = $can && $item->id != $user->id;
 
         return $can;
+    }
+    
+    public function customer_access(\Acelle\Model\User $user, \Acelle\Model\User $item)
+    {        
+        return is_object($user->customer);
+    }
+    
+    public function admin_access(\Acelle\Model\User $user, \Acelle\Model\User $item)
+    {        
+        return is_object($user->admin);
     }
 }

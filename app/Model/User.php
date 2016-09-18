@@ -118,6 +118,11 @@ class User extends Authenticatable
     {
         return $this->hasOne('Acelle\Model\Customer');
     }
+    
+    public function admin()
+    {
+        return $this->hasOne('Acelle\Model\Admin');
+    }
 
     public function userGroup()
     {
@@ -296,7 +301,7 @@ class User extends Authenticatable
         $query = self::select('users.*')
                         ->leftJoin('user_groups', 'user_groups.id', '=', 'users.user_group_id');
 
-        if ($request->user()->getOption('backend', 'user_read') == 'own') {
+        if (!$request->user()->can("read_all", new User())) {
             $query = $query->where('users.user_id', '=', $request->user()->id);
         }
 

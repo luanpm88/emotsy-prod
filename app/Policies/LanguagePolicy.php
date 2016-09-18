@@ -14,17 +14,31 @@ class LanguagePolicy
     public function __construct()
     {
     }
+    
+    public function read(\Acelle\Model\User $user, \Acelle\Model\Language $item)
+    {
+        $can = $user->admin->getPermission('language_read') != 'no';
+
+        return $can;
+    }
+    
+    public function read_all(\Acelle\Model\User $user, \Acelle\Model\Language $item)
+    {
+        $can = $user->admin->getPermission('language_read') == 'all';
+
+        return $can;
+    }
 
     public function create(\Acelle\Model\User $user, \Acelle\Model\Language $item)
     {
-        $can = $user->getOption('backend', 'language_create') == 'yes';
+        $can = $user->admin->getPermission('language_create') == 'yes';
 
         return $can && false;
     }
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Language $item)
     {
-        $ability = $user->getOption('backend', 'language_update');
+        $ability = $user->admin->getPermission('language_update');
         $can = $ability == 'yes';
 
         return $can && false;
@@ -32,7 +46,7 @@ class LanguagePolicy
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\Language $item)
     {
-        $ability = $user->getOption('backend', 'language_delete');
+        $ability = $user->admin->getPermission('language_delete');
         $can = $ability == 'yes';
 
         return $can && false;

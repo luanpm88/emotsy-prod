@@ -14,17 +14,31 @@ class FeedbackLoopHandlerPolicy
     public function __construct()
     {
     }
+    
+    public function read(\Acelle\Model\User $user, \Acelle\Model\FeedbackLoopHandler $item)
+    {
+        $can = $user->admin->getPermission('fbl_handler_read') != 'no';
+
+        return $can;
+    }
+    
+    public function read_all(\Acelle\Model\User $user, \Acelle\Model\FeedbackLoopHandler $item)
+    {
+        $can = $user->admin->getPermission('fbl_handler_read') == 'all';
+
+        return $can;
+    }
 
     public function create(\Acelle\Model\User $user, \Acelle\Model\FeedbackLoopHandler $item)
     {
-        $can = $user->getOption('backend', 'fbl_handler_create') == 'yes';
+        $can = $user->admin->getPermission('fbl_handler_create') == 'yes';
 
         return $can;
     }
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\FeedbackLoopHandler $item)
     {
-        $ability = $user->getOption('backend', 'fbl_handler_update');
+        $ability = $user->admin->getPermission('fbl_handler_update');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
 
@@ -33,7 +47,7 @@ class FeedbackLoopHandlerPolicy
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\FeedbackLoopHandler $item)
     {
-        $ability = $user->getOption('backend', 'fbl_handler_delete');
+        $ability = $user->admin->getPermission('fbl_handler_delete');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
 

@@ -17,7 +17,7 @@ class LayoutPolicy
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Layout $item)
     {
-        $ability = $user->getOption('backend', 'layout_update');
+        $ability = $user->admin->getPermission('layout_update');
         $can = $ability == 'yes';
 
         return $can;
