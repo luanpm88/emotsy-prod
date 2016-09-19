@@ -320,10 +320,12 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/customer_groups', 'CustomerGroupController');
     
     // Customer    
-    Route::get('admin/customers/switch/{uid}', 'CustomerController@switch_customer');
+    Route::get('admin/customers/login-as/{uid}', 'CustomerController@loginAs');
     Route::get('admin/customers/listing/{page?}', 'CustomerController@listing');
     Route::get('admin/customers/sort', 'CustomerController@sort');
     Route::get('admin/customers/delete', 'CustomerController@delete');
+    Route::get('admin/customers/disable', 'CustomerController@disable');
+    Route::get('admin/customers/enable', 'CustomerController@enable');
     Route::resource('admin/customers', 'CustomerController');
     
     // Admin Group
@@ -333,10 +335,12 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/admin_groups', 'AdminGroupController');
     
     // Admin    
-    Route::get('admin/admins/switch/{uid}', 'AdminController@switch_customer');
+    Route::get('admin/admins/login-as/{uid}', 'AdminController@loginAs');
     Route::get('admin/admins/listing/{page?}', 'AdminController@listing');
     Route::get('admin/admins/sort', 'AdminController@sort');
     Route::get('admin/admins/delete', 'AdminController@delete');
+    Route::get('admin/admins/disable', 'AdminController@disable');
+    Route::get('admin/admins/enable', 'AdminController@enable');
     Route::resource('admin/admins', 'AdminController');
     
     // Account

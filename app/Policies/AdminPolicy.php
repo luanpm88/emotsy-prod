@@ -43,7 +43,7 @@ class AdminPolicy
         return true;
     }
 
-    public function switch_customer(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
+    public function loginAs(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
     {
         return true;
     }

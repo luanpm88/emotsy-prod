@@ -88,7 +88,8 @@ class SendingServer extends Model
         if ($campaign->user->allSendingServer()) {
             $servers = self::where('status', self::STATUS_ACTIVE)->selectRaw('*, 100 AS fitness')->get();
         } else {
-            $servers = self::where('status', self::STATUS_ACTIVE)->select('sending_servers.*', 'user_group_sending_servers.fitness')->join('user_group_sending_servers', 'user_group_sending_servers.sending_server_id', '=', 'sending_servers.id')->where('user_group_id', $campaign->user->user_group_id)->get();
+            // @todo: customerneedcheck
+            $servers = self::where('status', self::STATUS_ACTIVE)->select('sending_servers.*', 'customer_group_sending_servers.fitness')->join('customer_group_sending_servers', 'customer_group_sending_servers.sending_server_id', '=', 'sending_servers.id')->where('customer_group_id', $campaign->customer->customer_group_id)->get();
         }
 
         if (sizeof($servers) == 0) {
