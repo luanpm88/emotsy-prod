@@ -36,6 +36,11 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
+            
+            if($this->isDemoMode()) {
+                return $this->notAuthorized();
+            }
+            
             $this->validate($request, \Acelle\Model\Setting::rules());
 
             // Save settings
