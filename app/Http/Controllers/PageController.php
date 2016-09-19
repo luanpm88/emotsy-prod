@@ -258,9 +258,9 @@ class PageController extends Controller
                 $send_page = \Acelle\Model\Page::findPage($list, $layout);
                 $send_page->renderContent(null, $subscriber);
                 $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
-
-                return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'uid' => $subscriber->uid]);
+                
             }
+            return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'uid' => $subscriber->uid]);
         }
 
         return view('pages.form', [
