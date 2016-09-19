@@ -265,13 +265,6 @@ class CustomerController extends Controller
     {
     }
 
-    public function select2(Request $request)
-    {
-        $result = [['id' => '1', 'text' => 'One'], ['id' => '2', 'text' => 'Two']];
-
-        return response()->json($result);
-    }
-
     /**
      * Enable item.
      *
@@ -281,12 +274,17 @@ class CustomerController extends Controller
      */
     public function enable(Request $request)
     {
-        $user = \Acelle\Web\User::find($request->id);
+        $items = \Acelle\Model\Customer::whereIn('uid', explode(',', $request->uids));
 
-        $user->status = 'active';
-        $user->save();
+        foreach ($items->get() as $item) {
+            // authorize
+            if (\Gate::allows('update', $item)) {
+                $item->enable();
+            }            
+        }
 
-        echo '<p class="alert alert-success">'.trans('messages.user.enabled').'<p>';
+        // Redirect to my lists page
+        echo trans('messages.customers.disabled');
     }
 
     /**
@@ -298,12 +296,17 @@ class CustomerController extends Controller
      */
     public function disable(Request $request)
     {
-        $user = \Acelle\Web\User::find($request->id);
+        $items = \Acelle\Model\Customer::whereIn('uid', explode(',', $request->uids));
 
-        $user->status = 'inactive';
-        $user->save();
+        foreach ($items->get() as $item) {
+            // authorize
+            if (\Gate::allows('update', $item)) {
+                $item->disable();
+            }
+        }
 
-        echo '<p class="alert alert-success">'.trans('messages.user.disabled').'<p>';
+        // Redirect to my lists page
+        echo trans('messages.customers.disabled');
     }
 
     /**
@@ -339,12 +342,12 @@ class CustomerController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function switch_user(Request $request)
+    public function loginAs(Request $request)
     {
         $user = \Acelle\Model\Customer::findByUid($request->uid);
 
         // authorize
-        if (\Gate::denies('switch_user', $user)) {
+        if (\Gate::denies('laginAs', $user)) {
             return;
         }
         
@@ -370,25 +373,5 @@ class CustomerController extends Controller
         \Auth::login($orig_user);
         
         return redirect()->action('Admin\UserController@index');
-    }
-
-    /**
-     * Render user image.
-     */
-    public function avatar(Request $request)
-    {
-        // Get current user
-        if ($request->uid != '0') {
-            $user = \Acelle\Model\Customer::findByUid($request->uid);
-        } else {
-            $user = new \Acelle\Model\Customer();
-        }
-        if (!empty($user->imagePath())) {
-            $img = \Image::make($user->imagePath());
-        } else {
-            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
-        }
-
-        return $img->response();
     }
 }
