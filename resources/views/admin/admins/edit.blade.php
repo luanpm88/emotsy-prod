@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', $user->displayName())
+@section('title', $admin->displayName())
 	
 @section('page_script')
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
@@ -13,11 +13,11 @@
 			<div class="page-title">
 				<ul class="breadcrumb breadcrumb-caret position-right">
 					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li><a href="{{ action("Admin\UserController@index") }}">{{ trans('messages.users') }}</a></li>
+					<li><a href="{{ action("Admin\AdminGroupController@index") }}">{{ trans('messages.admins') }}</a></li>
 					<li class="active">{{ trans('messages.update') }}</li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-profile"></i> {{ $user->displayName() }}</span>
+					<span class="text-semibold"><i class="icon-profile"></i> {{ $admin->displayName() }}</span>
 				</h1>
 			</div>
 				
@@ -25,11 +25,11 @@
 
 @section('content')
 	
-				<form enctype="multipart/form-data" action="{{ action('Admin\UserController@update', $user->uid) }}" method="POST" class="form-validate-jquery">
+				<form enctype="multipart/form-data" action="{{ action('Admin\AdminController@update', $admin->uid) }}" method="POST" class="form-validate-jquery">
 					{{ csrf_field() }}
 					<input type="hidden" name="_method" value="PATCH">
 					
-					@include('admin.users._form')
+					@include('admin.admins._form')
 					
 				<form>
 	

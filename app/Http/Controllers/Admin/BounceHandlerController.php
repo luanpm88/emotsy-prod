@@ -24,7 +24,7 @@ class BounceHandlerController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption('backend', 'bounce_handler_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\BounceHandler())) {
             return $this->notAuthorized();
         }
 
@@ -42,7 +42,7 @@ class BounceHandlerController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption('backend', 'bounce_handler_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\BounceHandler())) {
             return $this->notAuthorized();
         }
 

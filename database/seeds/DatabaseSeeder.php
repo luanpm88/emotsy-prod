@@ -59,19 +59,37 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
-
-        // Create default user group
-        DB::table('user_groups')->insert([
-            'id' => 1,
-            'name' => 'Default',
-            'user_id' => null,
-            'backend_access' => true,
-            'frontend_access' => true,
+        
+        // Create default contact for admin user
+        DB::table('contacts')->insert([
+            'id' => 3,
+            'first_name' => 'Luan',
+            'last_name' => 'Pham',
+            'company' => 'Acelle Co,. Ldt.',
+            'address_1' => '1202 Nguyen Van Qua, Tan Thoi Hiep, Dist. 12',
+            'country_id' => 1,
+            'state' => 'Ho Chi Minh City',
+            'zip' => '70000',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+        ]);
+        
+        // Create default contact for admin user
+        DB::table('contacts')->insert([
+            'id' => 4,
+            'first_name' => 'Luan',
+            'last_name' => 'Pham',
+            'company' => 'Acelle Co,. Ldt.',
+            'address_1' => '1202 Nguyen Van Qua, Tan Thoi Hiep, Dist. 12',
+            'country_id' => 1,
+            'state' => 'Ho Chi Minh City',
+            'zip' => '70000',
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
 
-        // Create default admin user
+
+        // Create default user
         DB::table('users')->insert([
             'id' => 1,
             'uid' => uniqid(),
@@ -97,8 +115,33 @@ class DatabaseSeeder extends Seeder
             'uid' => uniqid(),
             'user_id' => 1,
             'creator_id' => 1,
-            'contact_id' => 1,
+            'contact_id' => 3,
             'customer_group_id' => 1,
+            'language_id' => 1,
+            'first_name' => 'Luan',
+            'last_name' => 'Pham',
+            'timezone' => 'Atlantic/Cape_Verde',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+        ]);
+        
+        // Create default customer group
+        DB::table('admin_groups')->insert([
+            'id' => 1,
+            'name' => 'Admin Group 1',
+            'creator_id' => 1,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+        ]);
+        
+        // Create default customer for admin user
+        DB::table('admins')->insert([
+            'id' => 1,
+            'uid' => uniqid(),
+            'user_id' => 1,
+            'creator_id' => 1,
+            'contact_id' => 4,
+            'admin_group_id' => 1,
             'language_id' => 1,
             'first_name' => 'Luan',
             'last_name' => 'Pham',
@@ -477,64 +520,64 @@ class DatabaseSeeder extends Seeder
             'updated_at' => $updated_at,
         ]);
 
-        DB::table('user_group_sending_servers')->insert([
+        DB::table('customer_group_sending_servers')->insert([
             'id' => 1,
             'sending_server_id' => 1,
-            'user_group_id' => 1,
+            'customer_group_id' => 1,
             'fitness' => 0,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
 
-        DB::table('user_group_sending_servers')->insert([
+        DB::table('customer_group_sending_servers')->insert([
             'id' => 2,
             'sending_server_id' => 2,
-            'user_group_id' => 1,
+            'customer_group_id' => 1,
             'fitness' => 0,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
 
-        DB::table('user_group_sending_servers')->insert([
+        DB::table('customer_group_sending_servers')->insert([
             'id' => 3,
             'sending_server_id' => 3,
-            'user_group_id' => 1,
+            'customer_group_id' => 1,
             'fitness' => 0,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
 
-        DB::table('user_group_sending_servers')->insert([
+        DB::table('customer_group_sending_servers')->insert([
             'id' => 4,
             'sending_server_id' => 4,
-            'user_group_id' => 1,
+            'customer_group_id' => 1,
             'fitness' => 0,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
 
-        DB::table('user_group_sending_servers')->insert([
+        DB::table('customer_group_sending_servers')->insert([
             'id' => 5,
             'sending_server_id' => 5,
-            'user_group_id' => 1,
+            'customer_group_id' => 1,
             'fitness' => 0,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
 
-        DB::table('user_group_sending_servers')->insert([
+        DB::table('customer_group_sending_servers')->insert([
             'id' => 6,
             'sending_server_id' => 6,
-            'user_group_id' => 1,
+            'customer_group_id' => 1,
             'fitness' => 0,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
 
-        DB::table('user_group_sending_servers')->insert([
+        DB::table('customer_group_sending_servers')->insert([
             'id' => 7,
             'sending_server_id' => 7,
-            'user_group_id' => 1,
+            'customer_group_id' => 1,
             'fitness' => 100,
             'created_at' => $created_at,
             'updated_at' => $updated_at,

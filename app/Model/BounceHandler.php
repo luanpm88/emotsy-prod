@@ -110,7 +110,7 @@ class BounceHandler extends DeliveryHandler
         $user = $request->user();
         $query = self::select('bounce_handlers.*');
 
-        if ($request->user()->getOption('backend', 'bounce_handler_read') == 'own') {
+        if (!$request->user()->can("read_all", new BounceHandler())) {
             $query = $query->where('bounce_handlers.user_id', '=', $request->user()->id);
         }
 

@@ -1,0 +1,395 @@
+<?php
+
+namespace Acelle\Http\Controllers\Admin;
+
+use Illuminate\Http\Request;
+use Acelle\Http\Controllers\Controller;
+
+class AdminController extends Controller
+{
+    /**
+     * Create a new controller instance.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->middleware('auth');
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        // authorize
+        if (\Gate::denies('read', new \Acelle\Model\Admin())) {
+            return $this->notAuthorized();
+        }
+
+        $admins = \Acelle\Model\Admin::getAll();
+
+        return view('admin.admins.index', [
+            'admins' => $admins,
+        ]);
+    }
+
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listing(Request $request)
+    {
+        // authorize
+        if (\Gate::denies('read', new \Acelle\Model\Admin())) {
+            return $this->notAuthorized();
+        }
+
+        $admins = \Acelle\Model\Admin::search($request)->paginate($request->per_page);
+
+        return view('admin.admins._list', [
+            'admins' => $admins,
+        ]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+        $admin = new \Acelle\Model\Admin();
+        $admin->status = 'active';
+        $admin->uid = '0';
+        
+        if (!empty($request->old())) {
+            $admin->fill($request->old());
+            $admin->admin_group_id = $request->old()["admin_group_id"];
+            // User info
+            $admin->user = new \Acelle\Model\User();
+            $admin->user->fill($request->old());
+        }
+
+        // authorize
+        if (\Gate::denies('create', $admin)) {
+            return $this->notAuthorized();
+        }
+
+        return view('admin.admins.create', [
+            'admin' => $admin,
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        // Get current user
+        $current_user = $request->user();
+        $admin = new \Acelle\Model\Admin();
+        $contact = new \Acelle\Model\Contact();
+
+        // authorize
+        if (\Gate::denies('create', $admin)) {
+            return $this->notAuthorized();
+        }
+
+        // save posted data
+        if ($request->isMethod('post')) {
+            $rules = $admin->rules();
+            $rules = array_merge($rules, [
+                'admin_group_id' => 'required',
+            ]);
+            $this->validate($request, $rules);
+            
+            // Create user account for admin
+            $user = new \Acelle\Model\User();
+            $user->email = $request->email;
+            // Update password
+            if (!empty($request->password)) {
+                $user->password = bcrypt($request->password);
+            }            
+            $user->save();
+
+            // Save current user info
+            $admin->user_id = $user->id;
+            $admin->creator_id = $request->user()->id;
+            $admin->fill($request->all());
+            $admin->admin_group_id = $request->admin_group_id;            
+            $admin->status = 'active';
+            
+            if ($admin->save()) {
+                // Upload and save image
+                if ($request->hasFile('image')) {
+                    if ($request->file('image')->isValid()) {
+                        // Remove old images
+                        $admin->removeImage();
+                        $admin->image = $admin->uploadImage($request->file('image'));
+                        $admin->save();
+                    }
+                }
+
+                // Remove image
+                if ($request->_remove_image == 'true') {
+                    $admin->removeImage();
+                    $admin->image = '';
+                }
+
+                $request->session()->flash('alert-success', trans('messages.admin.created'));
+
+                return redirect()->action('Admin\AdminController@index');
+            }
+        }
+    }
+
+    /**
+     * Display the specified resource.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function show($id)
+    {
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Request $request, $id)
+    {
+        $admin = \Acelle\Model\Admin::findByUid($id);
+
+        // authorize
+        if (\Gate::denies('update', $admin)) {
+            return $this->notAuthorized();
+        }
+
+        if (!empty($request->old())) {
+            $admin->fill($request->old());
+            $admin->admin_group_id = $request->old()["admin_group_id"];
+            // User info
+            $admin->user = new \Acelle\Model\User();
+            $admin->user->fill($request->old());
+        }
+
+        return view('admin.admins.edit', [
+            'admin' => $admin,
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        // Get current user
+        $current_user = $request->user();
+        $admin = \Acelle\Model\Admin::findByUid($id);
+
+        // authorize
+        if (\Gate::denies('update', $admin)) {
+            return $this->notAuthorized();
+        }
+
+        // save posted data
+        if ($request->isMethod('patch')) {
+            $rules = $admin->rules();
+            $rules = array_merge($rules, [
+                'admin_group_id' => 'required',
+            ]);
+            $this->validate($request, $rules);
+            
+            // Update user account for admin
+            $user = $admin->user;
+            $user->email = $request->email;
+            // Update password
+            if (!empty($request->password)) {
+                $user->password = bcrypt($request->password);
+            }            
+            $user->save();
+            
+            // Save current user info
+            $admin->fill($request->all());
+            
+            // Change group
+            $admin->admin_group_id = $request->admin_group_id;
+            
+            // Upload and save image
+            if ($request->hasFile('image')) {
+                if ($request->file('image')->isValid()) {
+                    // Remove old images
+                    $admin->removeImage();
+                    $admin->image = $admin->uploadImage($request->file('image'));
+                }
+            }
+            
+            // Remove image
+            if ($request->_remove_image == 'true') {
+                $admin->removeImage();
+                $admin->image = '';
+            }
+
+            if ($admin->save()) {
+                $request->session()->flash('alert-success', trans('messages.admin.updated'));
+                return redirect()->action('Admin\AdminController@index');
+            }
+        }
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy($id)
+    {
+    }
+
+    public function select2(Request $request)
+    {
+        $result = [['id' => '1', 'text' => 'One'], ['id' => '2', 'text' => 'Two']];
+
+        return response()->json($result);
+    }
+
+    /**
+     * Enable item.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function enable(Request $request)
+    {
+        $user = \Acelle\Web\User::find($request->id);
+
+        $user->status = 'active';
+        $user->save();
+
+        echo '<p class="alert alert-success">'.trans('messages.user.enabled').'<p>';
+    }
+
+    /**
+     * Disable item.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function disable(Request $request)
+    {
+        $user = \Acelle\Web\User::find($request->id);
+
+        $user->status = 'inactive';
+        $user->save();
+
+        echo '<p class="alert alert-success">'.trans('messages.user.disabled').'<p>';
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {
+        $items = \Acelle\Model\Admin::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($items->get() as $item) {
+            // authorize
+            if (\Gate::denies('delete', $item)) {
+                return;
+            }
+        }
+
+        foreach ($items->get() as $item) {
+            $item->delete();
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.admins.deleted');
+    }
+
+    /**
+     * Switch user.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function switch_user(Request $request)
+    {
+        $user = \Acelle\Model\Admin::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('switch_user', $user)) {
+            return;
+        }
+        
+        $orig_id = $request->user()->uid;
+        \Auth::login($user);
+        \Session::put('orig_user_id', $orig_id);
+
+        return redirect()->action('HomeController@index');
+    }
+
+    /**
+     * Log in back user.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function loginBack(Request $request)
+    {
+        $id = \Session::pull('orig_user_id');
+        $orig_user = \Acelle\Model\Admin::findByUid($id);
+        
+        \Auth::login($orig_user);
+        
+        return redirect()->action('Admin\UserController@index');
+    }
+
+    /**
+     * Render user image.
+     */
+    public function avatar(Request $request)
+    {
+        // Get current user
+        if ($request->uid != '0') {
+            $user = \Acelle\Model\Admin::findByUid($request->uid);
+        } else {
+            $user = new \Acelle\Model\Admin();
+        }
+        if (!empty($user->imagePath())) {
+            $img = \Image::make($user->imagePath());
+        } else {
+            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
+        }
+
+        return $img->response();
+    }
+}

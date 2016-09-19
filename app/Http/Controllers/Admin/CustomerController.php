@@ -65,7 +65,14 @@ class CustomerController extends Controller
         $customer = new \Acelle\Model\Customer();
         $customer->status = 'active';
         $customer->uid = '0';
-        $customer->fill($request->old());
+        
+        if (!empty($request->old())) {
+            $customer->fill($request->old());
+            $customer->customer_group_id = $request->old()["customer_group_id"];
+            // User info
+            $customer->user = new \Acelle\Model\User();
+            $customer->user->fill($request->old());
+        }
 
         // authorize
         if (\Gate::denies('create', $customer)) {
@@ -171,7 +178,12 @@ class CustomerController extends Controller
             return $this->notAuthorized();
         }
 
-        $customer->fill($request->old());
+        if (!empty($request->old())) {
+            $customer->fill($request->old());
+            $customer->customer_group_id = $request->old()["customer_group_id"];
+            // User info
+            $customer->user->fill($request->old());
+        }
 
         return view('admin.customers.edit', [
             'customer' => $customer,
@@ -199,7 +211,11 @@ class CustomerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, $customer->rules());
+            $rules = $customer->rules();
+            $rules = array_merge($rules, [
+                'customer_group_id' => 'required',
+            ]);
+            $this->validate($request, $rules);
             
             // Update user account for customer
             $user = $customer->user;

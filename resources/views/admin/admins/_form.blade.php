@@ -5,7 +5,7 @@
 								<div class="media profile-image">
 									<div class="media-left">
 										<a href="#" class="upload-media-container">
-											<img preview-for="image" empty-src="{{ URL::asset('assets/images/placeholder.jpg') }}" src="{{ action('UserController@avatar', $user->uid) }}" class="img-circle" alt="">
+											<img preview-for="image" empty-src="{{ URL::asset('assets/images/placeholder.jpg') }}" src="{{ action('AdminController@avatar', $admin->uid) }}" class="img-circle" alt="">
 										</a>
 										<input type="file" name="image" class="file-styled previewable hide">
 										<input type="hidden" name="_remove_image" value='' />
@@ -24,20 +24,20 @@
 							<div class="sub_section">
 								<h2 class="text-semibold text-teal-800">{{ trans('messages.account') }}</h2>
 
-								@include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $user->email, 'help_class' => 'profile', 'rules' => Acelle\Model\User::$rules])
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $admin->email(), 'help_class' => 'profile', 'rules' => $admin->rules()])
 								
 								@include('helpers.form_control', ['type' => 'select',
-																'name' => 'user_group_id',
+																'name' => 'admin_group_id',
 																'label' => trans('messages.group'),
-																'value' => $user->user_group_id,
-																'options' => Acelle\Model\UserGroup::getSelectOptions(),
+																'value' => $admin->admin_group_id,
+																'options' => Acelle\Model\AdminGroup::getSelectOptions(),
 																'include_blank' => trans('messages.choose'),
-																'rules' => Acelle\Model\User::$rules
+																'rules' => $admin->rules()
 															])
 								
-								@include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => (isset($user->id) ? $user->rules() : $user->newRules())])
+								@include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => $admin->rules()])
 								
-								@include('helpers.form_control', ['type' => 'password', 'name' => 'password_confirmation', 'rules' => Acelle\Model\User::$rules])
+								@include('helpers.form_control', ['type' => 'password', 'name' => 'password_confirmation', 'rules' => $admin->rules()])
 								
 							</div>
 						</div>	
@@ -47,16 +47,16 @@
 									
 								<div class="row">
 									<div class="col-md-6">
-										@include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $user->first_name, 'rules' => Acelle\Model\User::$rules])
+										@include('helpers.form_control', ['type' => 'text', 'name' => 'first_name', 'value' => $admin->first_name, 'rules' => $admin->rules()])
 									</div>
 									<div class="col-md-6">
-										@include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $user->last_name, 'rules' => Acelle\Model\User::$rules])
+										@include('helpers.form_control', ['type' => 'text', 'name' => 'last_name', 'value' => $admin->last_name, 'rules' => $admin->rules()])
 									</div>
 								</div>
 								
-								@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $user->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Acelle\Model\User::$rules])								
+								@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => $admin->timezone, 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $admin->rules()])								
 								
-								@include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $user->language_id, 'options' => Acelle\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Acelle\Model\User::$rules])
+								@include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $admin->language_id, 'options' => Acelle\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $admin->rules()])
 								
 							</div>
 						</div>

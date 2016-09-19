@@ -24,7 +24,7 @@ class LayoutController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption('backend', 'layout_read') == 'no') {
+        if ($request->user()->admin->getPermission('layout_read') == 'no') {
             return $this->notAuthorized();
         }
 
@@ -42,7 +42,7 @@ class LayoutController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption('backend', 'layout_read') == 'no') {
+        if ($request->user()->admin->getPermission('layout_read') == 'no') {
             return $this->notAuthorized();
         }
 

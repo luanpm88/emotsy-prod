@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', trans('messages.users'))
+@section('title', trans('messages.admins'))
 
 @section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
@@ -16,7 +16,7 @@
 					<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.users') }}</span>
+					<span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.admins') }}</span>
 				</h1>				
 			</div>
 
@@ -25,21 +25,21 @@
 @section('content')
 				
 				<form class="listing-form"
-					sort-url="{{ action('Admin\UserController@sort') }}"
-					data-url="{{ action('Admin\UserController@listing') }}"
-					per-page="{{ Acelle\Model\User::$itemsPerPage }}"					
+					sort-url="{{ action('Admin\AdminController@sort') }}"
+					data-url="{{ action('Admin\AdminController@listing') }}"
+					per-page="{{ Acelle\Model\Admin::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-10">
-							@if ($users->count() >= 0)					
+							@if ($admins->count() >= 0)					
 								<div class="filter-box">
 										
 									<span class="filter-group">
 										<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
 										<select class="select" name="sort-order">											
-                                            <option value="users.created_at">{{ trans('messages.created_at') }}</option>
-											<option value="users.updated_at">{{ trans('messages.updated_at') }}</option>
-											<option value="users.email">{{ trans('messages.name') }}</option>
+                                            <option value="admins.created_at">{{ trans('messages.created_at') }}</option>
+											<option value="admins.updated_at">{{ trans('messages.updated_at') }}</option>
+											<option value="admins.email">{{ trans('messages.name') }}</option>
 										</select>										
 										<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
 											<i class="icon-sort-amount-desc"></i>
@@ -47,9 +47,9 @@
 									</span>
 									<span class="filter-group">
 										<span class="title text-semibold text-muted">{{ trans('messages.group') }}</span>
-										<select class="select" name="user_group_id">
+										<select class="select" name="admin_group_id">
 											<option value="">{{ trans('messages.all') }}</option>
-											@foreach (Acelle\Model\UserGroup::getAll()->get() as $group)
+											@foreach (Acelle\Model\AdminGroup::getAll()->get() as $group)
 												<option value="{{ $group->id }}">{{ $group->name }}</option>
 											@endforeach
 										</select>										
@@ -61,10 +61,10 @@
 								</div>
 							@endif
 						</div>
-						@can('create', new Acelle\Model\User())
+						@can('create', new Acelle\Model\Admin())
 							<div class="col-md-2 text-right">
-								<a href="{{ action("Admin\UserController@create") }}" type="button" class="btn bg-info-800">
-									<i class="icon icon-plus2"></i> {{ trans('messages.create_user') }}
+								<a href="{{ action("Admin\AdminController@create") }}" type="button" class="btn bg-info-800">
+									<i class="icon icon-plus2"></i> {{ trans('messages.create_admin') }}
 								</a>
 							</div>
 						@endcan

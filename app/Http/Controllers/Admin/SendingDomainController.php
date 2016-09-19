@@ -24,7 +24,7 @@ class SendingDomainController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption('backend', 'sending_domain_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\SendingDomain())) {
             return $this->notAuthorized();
         }
 
@@ -42,7 +42,7 @@ class SendingDomainController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption('backend', 'sending_domain_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\SendingDomain())) {
             return $this->notAuthorized();
         }
 

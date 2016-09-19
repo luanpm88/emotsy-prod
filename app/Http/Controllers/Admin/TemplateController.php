@@ -24,7 +24,7 @@ class TemplateController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption('backend', 'template_read') == 'no') {
+        if ($request->user()->admin->getPermission('template_read') == 'no') {
             return $this->notAuthorized();
         }
 
@@ -42,7 +42,7 @@ class TemplateController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption('backend', 'template_read') == 'no') {
+        if ($request->user()->admin->getPermission('template_read') == 'no') {
             return $this->notAuthorized();
         }
 
@@ -65,7 +65,7 @@ class TemplateController extends Controller
         $template = new \Acelle\Model\Template();
 
         // authorize
-        if ($request->user()->getOption('backend', 'template_create') == 'no') {
+        if ($request->user()->admin->getPermission('template_create') == 'no') {
             return $this->notAuthorized();
         }
 
@@ -95,7 +95,7 @@ class TemplateController extends Controller
         $template->shared = true;
 
         // authorize
-        if ($request->user()->getOption('backend', 'template_create') == 'no') {
+        if ($request->user()->admin->getPermission('template_create') == 'no') {
             return $this->notAuthorized();
         }
 
@@ -133,8 +133,8 @@ class TemplateController extends Controller
         $template = \Acelle\Model\Template::findByUid($uid);
 
         // authorize
-        if ($request->user()->getOption('backend', 'template_update') == 'no'
-            || ($request->user()->getOption('backend', 'template_update') == 'own' && $template->user_id != $user->id)
+        if ($request->user()->admin->getPermission('template_update') == 'no'
+            || ($request->user()->admin->getPermission('template_update') == 'own' && $template->user_id != $user->id)
         ) {
             return $this->notAuthorized();
         }
@@ -164,8 +164,8 @@ class TemplateController extends Controller
         $template = \Acelle\Model\Template::findByUid($request->uid);
 
         // authorize
-        if ($request->user()->getOption('backend', 'template_update') == 'no'
-            || ($request->user()->getOption('backend', 'template_update') == 'own' && $template->user_id != $user->id)
+        if ($request->user()->admin->getPermission('template_update') == 'no'
+            || ($request->user()->admin->getPermission('template_update') == 'own' && $template->user_id != $user->id)
         ) {
             return $this->notAuthorized();
         }
@@ -207,7 +207,7 @@ class TemplateController extends Controller
         $template->shared = true;
 
         // authorize
-        if ($request->user()->getOption('backend', 'template_create') == 'no') {
+        if ($request->user()->admin->getPermission('template_create') == 'no') {
             return $this->notAuthorized();
         }
 
@@ -371,8 +371,8 @@ class TemplateController extends Controller
         foreach ($items->get() as $item) {
             // authorize
             if (
-                $request->user()->getOption('backend', 'template_delete') == 'no'
-                || ($request->user()->getOption('backend', 'template_delete') == 'own' && $item->user_id != $request->user()->id)
+                $request->user()->admin->getPermission('template_delete') == 'no'
+                || ($request->user()->admin->getPermission('template_delete') == 'own' && $item->user_id != $request->user()->id)
             ) {
                 return;
             }

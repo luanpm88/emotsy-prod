@@ -46,6 +46,13 @@ Route::get('/not-authorized', 'Controller@notAuthorized');
 Route::get('/demo', 'Controller@demo');
 
 
+// Customer avatar
+Route::get('assets/images/avatar/customer-{uid?}.jpg', 'CustomerController@avatar');
+
+// Admin avatar
+Route::get('assets/images/avatar/admin-{uid?}.jpg', 'AdminController@avatar');
+
+
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('/', 'HomeController@index');
     Route::get('/docs/api/v1', 'Controller@docsApiV1');
@@ -209,20 +216,11 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::patch('campaigns/{uid}/update', 'CampaignController@update');    
     
     Route::get('users/login-back', 'UserController@loginBack');
-    
-    // Customer avatar
-    Route::get('assets/images/avatar/customer-{uid?}.jpg', 'CustomerController@avatar');
 });
 
 // ADMIN AREA
 Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend']], function () {
     Route::get('admin', 'HomeController@index');
-
-    // User Group
-    Route::get('admin/user_groups/listing/{page?}', 'UserGroupController@listing');
-    Route::get('admin/user_groups/sort', 'UserGroupController@sort');
-    Route::get('admin/user_groups/delete', 'UserGroupController@delete');
-    Route::resource('admin/user_groups', 'UserGroupController');
 
     // User    
     Route::get('admin/users/switch/{uid}', 'UserController@switch_user');
@@ -333,4 +331,17 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/admin_groups/sort', 'AdminGroupController@sort');
     Route::get('admin/admin_groups/delete', 'AdminGroupController@delete');
     Route::resource('admin/admin_groups', 'AdminGroupController');
+    
+    // Admin    
+    Route::get('admin/admins/switch/{uid}', 'AdminController@switch_customer');
+    Route::get('admin/admins/listing/{page?}', 'AdminController@listing');
+    Route::get('admin/admins/sort', 'AdminController@sort');
+    Route::get('admin/admins/delete', 'AdminController@delete');
+    Route::resource('admin/admins', 'AdminController');
+    
+    // Account
+    Route::get('admin/account/profile', 'AccountController@profile');
+    Route::post('admin/account/profile', 'AccountController@profile');
+    Route::get('admin/account/contact', 'AccountController@contact');
+    Route::post('admin/account/contact', 'AccountController@contact');
 });

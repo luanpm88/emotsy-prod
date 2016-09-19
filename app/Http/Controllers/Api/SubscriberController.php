@@ -41,7 +41,7 @@ class SubscriberController extends Controller
             $per_page = \Acelle\Model\Subscriber::$itemsPerPage;
         }
 
-        $items = \Acelle\Model\Subscriber::search($request, $user)
+        $items = \Acelle\Model\Subscriber::search($request, $user->customer)
             ->where('mail_list_id', '=', $list->id)
             ->groupBy('subscribers.id')
             ->paginate($per_page);
@@ -88,7 +88,6 @@ class SubscriberController extends Controller
         
         $subscriber = new \Acelle\Model\Subscriber();
         $subscriber->mail_list_id = $list->id;
-        $subscriber->user_id = $user->id;
         $subscriber->status = 'subscribed';
         $subscriber->from = 'api';
 
@@ -109,7 +108,7 @@ class SubscriberController extends Controller
             $subscriber->updateFields($request->all());
             
             // Log
-            $subscriber->log('created', $user);
+            $subscriber->log('created', $user->customer);
             
             return \Response::json(array('message' => trans('messages.subscriber.created')), 200);
         }
@@ -206,6 +205,9 @@ class SubscriberController extends Controller
         // Unsubscribe
         $subscriber->status = 'subscribed';
         $subscriber->save();
+        
+        // Log
+        $subscriber->log('subscribed', $user->customer);
 
         return \Response::json(array('message' => 'Subscribed'), 200);
     }
@@ -251,6 +253,9 @@ class SubscriberController extends Controller
         // Unsubscribe
         $subscriber->status = 'unsubscribed';
         $subscriber->save();
+        
+        // Log
+        $subscriber->log('unsubscribed', $user->customer);
 
         return \Response::json(array('message' => 'Unsubscribed'), 200);
     }
@@ -287,6 +292,9 @@ class SubscriberController extends Controller
         if (!$user->can('delete', $subscriber)) {
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
+        
+        // Log
+        $subscriber->log('deleted', $user->customer);
 
         // Unsubscribe
         $subscriber->delete();

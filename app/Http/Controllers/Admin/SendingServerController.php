@@ -24,7 +24,7 @@ class SendingServerController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->getOption('backend', 'sending_server_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\SendingServer())) {
             return $this->notAuthorized();
         }
 
@@ -42,7 +42,7 @@ class SendingServerController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->getOption('backend', 'sending_server_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\SendingServer())) {
             return $this->notAuthorized();
         }
 

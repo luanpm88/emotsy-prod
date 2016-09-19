@@ -107,7 +107,7 @@ class FeedbackLoopHandler extends DeliveryHandler
         $user = $request->user();
         $query = self::select('feedback_loop_handlers.*');
 
-        if ($request->user()->getOption('backend', 'fbl_handler_read') == 'own') {
+        if (!$request->user()->can("read_all", new FeedbackLoopHandler())) {
             $query = $query->where('feedback_loop_handlers.user_id', '=', $request->user()->id);
         }
 
