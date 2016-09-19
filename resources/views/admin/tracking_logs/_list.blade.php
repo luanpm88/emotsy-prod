@@ -7,7 +7,6 @@
 									<th>{{ trans('messages.status') }}</th>
 									<th>{{ trans('messages.campaign') }}</th>
 									<th>{{ trans('messages.sending_server') }}</th>
-									<th>{{ trans('messages.user') }}</th>
 									<th>{{ trans('messages.created_at') }}</th>
 								</tr>
 								@foreach ($items as $key => $item)
@@ -29,10 +28,6 @@
 										<td>
 											<span class="no-margin kq_search">{{ $item->sendingServer->name }}</span>
 											<span class="text-muted second-line-mobile">{{ trans('messages.sending_server') }}</span>
-										</td>
-										<td>
-											<span class="no-margin kq_search">{{ $item->user->displayName() }}</span>
-											<span class="text-muted second-line-mobile">{{ trans('messages.user') }}</span>
 										</td>
 										<td>
 											<span class="no-margin kq_search">{{ Tool::formatDateTime($item->created_at) }}</span>

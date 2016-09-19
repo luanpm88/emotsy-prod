@@ -344,15 +344,15 @@ class CustomerController extends Controller
      */
     public function loginAs(Request $request)
     {
-        $user = \Acelle\Model\Customer::findByUid($request->uid);
+        $customer = \Acelle\Model\Customer::findByUid($request->uid);
 
         // authorize
-        if (\Gate::denies('laginAs', $user)) {
-            return;
+        if (\Gate::denies('loginAs', $customer)) {
+            return $this->notAuthorized();
         }
         
         $orig_id = $request->user()->uid;
-        \Auth::login($user);
+        \Auth::login($customer->user);
         \Session::put('orig_user_id', $orig_id);
 
         return redirect()->action('HomeController@index');

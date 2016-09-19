@@ -76,7 +76,7 @@
 											'name' => 'color_scheme',
 											'value' => $customer->color_scheme,
 											'help_class' => 'customer',
-											'options' => Acelle\Model\User::colors("color_scheme"),
+											'options' => Acelle\Model\Customer::colors("color_scheme"),
 											'rules' => '',
 										])
 									</div>									

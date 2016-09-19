@@ -29,6 +29,15 @@ class Backend
         ) {
             return redirect()->action('Controller@offline');
         }
+        
+        // Language
+        try {
+            if (is_object($user->admin->language)) {
+                \App::setLocale($user->admin->language->code);
+                //\Carbon\Carbon::setLocale($user->admin->language->code);
+            }
+        } catch (\Exception $e) {
+        }
 
         return $next($request);
     }

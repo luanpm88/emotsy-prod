@@ -282,12 +282,17 @@ class AdminController extends Controller
      */
     public function enable(Request $request)
     {
-        $user = \Acelle\Web\User::find($request->id);
+        $items = \Acelle\Model\Admin::whereIn('uid', explode(',', $request->uids));
 
-        $user->status = 'active';
-        $user->save();
+        foreach ($items->get() as $item) {
+            // authorize
+            if (\Gate::allows('update', $item)) {
+                $item->enable();
+            }            
+        }
 
-        echo '<p class="alert alert-success">'.trans('messages.user.enabled').'<p>';
+        // Redirect to my lists page
+        echo trans('messages.admins.disabled');
     }
 
     /**
@@ -299,12 +304,17 @@ class AdminController extends Controller
      */
     public function disable(Request $request)
     {
-        $user = \Acelle\Web\User::find($request->id);
+        $items = \Acelle\Model\Admin::whereIn('uid', explode(',', $request->uids));
 
-        $user->status = 'inactive';
-        $user->save();
+        foreach ($items->get() as $item) {
+            // authorize
+            if (\Gate::allows('update', $item)) {
+                $item->disable();
+            }
+        }
 
-        echo '<p class="alert alert-success">'.trans('messages.user.disabled').'<p>';
+        // Redirect to my lists page
+        echo trans('messages.admins.disabled');
     }
 
     /**

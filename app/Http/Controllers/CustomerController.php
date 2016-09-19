@@ -25,7 +25,7 @@ class CustomerController extends Controller
         if ($request->uid != '0') {
             $customer = \Acelle\Model\Customer::findByUid($request->uid);
         } else {
-            $customer = new \Acelle\Model\User();
+            $customer = new \Acelle\Model\Customer();
         }
         if (!empty($customer->imagePath())) {
             $img = \Image::make($customer->imagePath());
@@ -59,6 +59,6 @@ class CustomerController extends Controller
         
         \Auth::login($orig_user);
         
-        return redirect()->action('Admin\UserController@index');
+        return redirect()->action('Admin\CustomerController@index');
     }
 }

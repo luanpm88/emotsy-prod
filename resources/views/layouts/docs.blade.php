@@ -51,8 +51,8 @@
 
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
-						<img src="{{ action('UserController@avatar', Auth::user()->uid) }}" alt="">
-						<span>{{ Auth::user()->displayName() }}</span>
+						<img src="{{ action('CustomerController@avatar', Auth::user()->customer->uid) }}" alt="">
+						<span>{{ Auth::user()->customer->displayName() }}</span>
 						<i class="caret"></i>
 					</a>
 
