@@ -10,13 +10,6 @@ body {
     background-color: #fff;
     font-family: "Open Sans","Helvetica Neue",Arial,Helvetica,Verdana,sans-serif;
 }
-body * {
-    -webkit-transition: all 200ms linear;
-    -moz-transition: all 200ms linear;
-    -o-transition: all 200ms linear;
-    -ms-transition: all 200ms linear;
-    transition: all 200ms linear;
-}
 h4, .h4, h5, .h5, h6, .h6 {
     margin-top: 15px;
     margin-bottom: 15px;
