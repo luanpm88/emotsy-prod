@@ -268,7 +268,7 @@
 
 					<ul class="dropdown-menu dropdown-menu-right">
 						@can("customer_access", Auth::user())
-							<li><a href="{{ action("HomeController@index") }}"><i class="icon-exit2"></i> {{ trans('messages.frontend') }}</a></li>
+							<li><a href="{{ action("HomeController@index") }}"><i class="icon-exit2"></i> {{ trans('messages.customer_view') }}</a></li>
 							<li class="divider"></li>
 						@endif
 						<li><a href="{{ action("Admin\AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.account') }}</a></li>

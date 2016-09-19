@@ -40,7 +40,7 @@
                 @if (true)
                     <li rel0="HomeController">
                         <a href="{{ action('Admin\HomeController@index') }}">
-                            <i class="icon-enter2"></i> {{ trans('messages.backend') }}
+                            <i class="icon-enter2"></i> {{ trans('messages.admin_view') }}
                         </a>
                     </li>
                 @endif
@@ -63,7 +63,7 @@
 							<li class="divider"></li>
 						@endif
 						@can("admin_access", Auth::user())
-							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter2"></i> {{ trans('messages.backend') }}</a></li>
+							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter2"></i> {{ trans('messages.admin_view') }}</a></li>
 							<li class="divider"></li>
 						@endif
 						<li class="dropdown">
