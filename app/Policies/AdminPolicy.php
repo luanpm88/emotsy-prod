@@ -20,12 +20,16 @@ class AdminPolicy
     
     public function read(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
     {
-        return true;
+        $can = $user->admin->getPermission('admin_read') != 'no';
+
+        return $can;
     }
     
     public function create(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
     {
-        return true;
+        $can = $user->admin->getPermission('admin_create') == 'yes';
+
+        return $can;
     }
 
     public function profile(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
@@ -35,16 +39,46 @@ class AdminPolicy
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
     {
-        return true;
+        $ability = $user->admin->getPermission('admin_update');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->id == $item->creator_id);
+
+        return $can;
     }
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
     {
-        return true;
+        $ability = $user->admin->getPermission('admin_delete');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->id == $item->creator_id);
+
+        return $can;
     }
 
     public function loginAs(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
     {
-        return true;
+        $ability = $user->admin->getPermission('admin_login_as');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->id == $item->creator_id);
+
+        return $can && $user->admin->id != $item->id;
+    }
+    
+    public function disable(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
+    {
+        $ability = $user->admin->getPermission('admin_update');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->id == $item->creator_id);
+
+        return $can;
+    }
+    
+    public function enable(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
+    {
+        $ability = $user->admin->getPermission('admin_update');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->id == $item->creator_id);
+
+        return $can;
     }
 }

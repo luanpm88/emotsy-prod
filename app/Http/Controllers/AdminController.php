@@ -25,7 +25,7 @@ class AdminController extends Controller
         if ($request->uid != '0') {
             $admin = \Acelle\Model\Admin::findByUid($request->uid);
         } else {
-            $admin = new \Acelle\Model\User();
+            $admin = new \Acelle\Model\Admin();
         }
         if (!empty($admin->imagePath())) {
             $img = \Image::make($admin->imagePath());

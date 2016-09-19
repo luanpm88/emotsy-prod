@@ -121,6 +121,11 @@ class Admin extends Model
     {
         return $this->hasMany('Acelle\Model\Log')->orderBy('created_at', 'desc');
     }
+    
+    public function customers()
+    {
+        return $this->hasMany('Acelle\Model\Customer', "creator_id", "user_id");
+    }
 
     /**
      * Bootstrap any application services.
@@ -617,5 +622,27 @@ class Admin extends Model
             ['value' => 'grey', 'text' => trans('messages.grey')],
             ['value' => 'white', 'text' => trans('messages.white')],
         ];
+    }
+    
+    /**
+     * Disable customer.
+     *
+     * @return boolean
+     */
+    public function disable()
+    {
+        $this->status = 'inactive';
+        return $this->save();
+    }
+    
+    /**
+     * Enable customer.
+     *
+     * @return boolean
+     */
+    public function enable()
+    {
+        $this->status = 'active';
+        return $this->save();
     }
 }
