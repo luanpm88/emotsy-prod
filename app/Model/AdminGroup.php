@@ -156,15 +156,24 @@ class AdminGroup extends Model
     public static function defaultPermissions()
     {
         return [
-            'user_group_read' => 'all',
-            'user_group_create' => 'yes',
-            'user_group_update' => 'all',
-            'user_group_delete' => 'own',
-            'user_read' => 'own',
-            'user_create' => 'yes',
-            'user_update' => 'own',
-            'user_delete' => 'own',
-            'user_switch' => 'own',
+            'admin_group_read' => 'all',
+            'admin_group_create' => 'yes',
+            'admin_group_update' => 'all',
+            'admin_group_delete' => 'own',
+            'admin_read' => 'own',
+            'admin_create' => 'yes',
+            'admin_update' => 'own',
+            'admin_delete' => 'own',
+            'admin_login_as' => 'own',
+            'customer_group_read' => 'all',
+            'customer_group_create' => 'yes',
+            'customer_group_update' => 'all',
+            'customer_group_delete' => 'own',
+            'customer_read' => 'own',
+            'customer_create' => 'yes',
+            'customer_update' => 'own',
+            'customer_delete' => 'own',
+            'customer_login_as' => 'own',
             'sending_server_read' => 'all',
             'sending_server_create' => 'yes',
             'sending_server_update' => 'own',
@@ -213,7 +222,7 @@ class AdminGroup extends Model
     public static function allPermissions()
     {
         return [
-            'user_group' => [
+            'admin_group' => [
                 'read' => [
                     'options' => [
                         ['value' => 'no', 'text' => trans('messages.no')],
@@ -242,7 +251,7 @@ class AdminGroup extends Model
                     ],
                 ],
             ],
-            'user' => [
+            'admin' => [
                 'read' => [
                     'options' => [
                         ['value' => 'no', 'text' => trans('messages.no')],
@@ -270,7 +279,72 @@ class AdminGroup extends Model
                         ['value' => 'all', 'text' => trans('messages.all')],
                     ],
                 ],
-                'switch' => [
+                'login_as' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+            ],
+            'customer_group' => [
+                'read' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'create' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                'update' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'delete' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+            ],
+            'customer' => [
+                'read' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'create' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                'update' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'delete' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'login_as' => [
                     'options' => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],

@@ -18,14 +18,47 @@
 											<span class="text-muted2">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
 										<td class="stat-fix-size">
-											
+											<div class="single-stat-box pull-left ml-20">
+												<span class="no-margin text-teal-800 stat-num">{{ $item->displaySendingQuotaUsage() }}</span>
+												<div class="progress progress-xxs">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->sendingQuotaUsage() }}%">
+													</div>
+												</div>
+												<span class="text-muted"><strong>{{ $item->sendingQuota() }}/{{ $item->maxQuota() }}</strong><br /> {{ trans('messages.sending_quota') }}</span>
+											</div>
+											<div class="single-stat-box pull-left ml-20">
+												<span class="no-margin text-teal-800 stat-num">{{ $item->displaySubscribersUsage() }}</span>
+												<div class="progress progress-xxs">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->subscribersUsage() }}%">
+													</div>
+												</div>
+												<span class="text-muted"><strong>{{ $item->subscribers()->count() }}/{{ $item->maxSubscribers() }}</strong><br /> {{ trans('messages.subscribers') }}</span>
+											</div>
+											<div class="single-stat-box pull-left ml-20">
+												<span class="no-margin text-teal-800 stat-num">{{ $item->displayListsUsage() }}</span>
+												<div class="progress progress-xxs">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->listsUsage() }}%">
+													</div>
+												</div>
+												<span class="text-muted"><strong>{{ $item->lists()->count() }}/{{ $item->maxLists() }}</strong><br /> {{ trans('messages.lists') }}</span>
+											</div>
+											<div class="single-stat-box pull-left ml-20">
+												<span class="no-margin text-teal-800 stat-num">{{ $item->displayCampaignsUsage() }}</span>
+												<div class="progress progress-xxs">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->campaignsUsage() }}%">
+													</div>
+												</div>
+												<span class="text-muted"><strong>{{ $item->campaigns()->count() }}/{{ $item->maxCampaigns() }}</strong><br /> {{ trans('messages.campaigns') }}</span>
+											</div>
 										</td>
-										<td class="text-right">
+										<td>
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>
-											@can('switch_customer', $item)
-												<a href="{{ action('Admin\CustomerController@switch_customer', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_customer') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="glyphicon glyphicon-random pr-5"></i></a>
+										</td>
+										<td class="text-right">
+											@can('login', $item)
+												<a href="{{ action('Admin\CustomerController@login', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_customer') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="glyphicon glyphicon-random pr-5"></i></a>
 											@endcan
 											@can('update', $item)
 												<a href="{{ action('Admin\CustomerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>

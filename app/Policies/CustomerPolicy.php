@@ -42,8 +42,18 @@ class CustomerPolicy
     {
         return true;
     }
+    
+    public function disable(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
+    {
+        return true;
+    }
+    
+    public function enable(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
+    {
+        return true;
+    }
 
-    public function switch_customer(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
+    public function loginAs(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
         return true;
     }
