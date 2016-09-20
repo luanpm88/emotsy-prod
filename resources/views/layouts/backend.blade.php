@@ -18,7 +18,7 @@
 	<!-- Main navbar -->
 	<div class="navbar navbar-{{ Auth::user()->getBackendScheme() == "white" ? "default" : "inverse" }} navbar-fixed-top">
 		<div class="navbar-header">
-			<a class="navbar-brand" href="{{ action('HomeController@index') }}">
+			<a class="navbar-brand" href="{{ action('Admin\HomeController@index') }}">
 				<img src="{{ URL::asset('assets/images/logo_' . (Auth::user()->getBackendScheme() == "white" ? "dark" : "light") . '.png') }}" alt="">
 			</a>
 
