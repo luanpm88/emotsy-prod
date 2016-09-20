@@ -68,6 +68,11 @@ class User extends Authenticatable
     {
         return $this->hasOne('Acelle\Model\Admin');
     }
+    
+    public function reseller()
+    {
+        return $this->hasOne('Acelle\Model\Reseller');
+    }
 
     /**
      * Bootstrap any application services.

@@ -34,7 +34,7 @@ class Backend
         try {
             if (is_object($user->admin->language)) {
                 \App::setLocale($user->admin->language->code);
-                //\Carbon\Carbon::setLocale($user->admin->language->code);
+                \Carbon\Carbon::setLocale($user->admin->language->code);
             }
         } catch (\Exception $e) {
         }

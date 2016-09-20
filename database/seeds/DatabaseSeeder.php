@@ -87,7 +87,20 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
-
+        
+        // Create default contact for admin user
+        DB::table('contacts')->insert([
+            'id' => 5,
+            'first_name' => 'Luan',
+            'last_name' => 'Pham',
+            'company' => 'Acelle Co,. Ldt.',
+            'address_1' => '1202 Nguyen Van Qua, Tan Thoi Hiep, Dist. 12',
+            'country_id' => 1,
+            'state' => 'Ho Chi Minh City',
+            'zip' => '70000',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+        ]);
 
         // Create default user
         DB::table('users')->insert([
@@ -142,6 +155,31 @@ class DatabaseSeeder extends Seeder
             'creator_id' => 1,
             'contact_id' => 4,
             'admin_group_id' => 1,
+            'language_id' => 1,
+            'first_name' => 'Luan',
+            'last_name' => 'Pham',
+            'timezone' => 'Atlantic/Cape_Verde',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+        ]);
+        
+        // Create default reseller group
+        DB::table('reseller_groups')->insert([
+            'id' => 1,
+            'name' => 'Reseller Group 1',
+            'admin_id' => 1,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+        ]);
+        
+        // Create default reseller for admin user
+        DB::table('resellers')->insert([
+            'id' => 1,
+            'uid' => uniqid(),
+            'user_id' => 1,
+            'admin_id' => 1,
+            'contact_id' => 5,
+            'reseller_group_id' => 1,
             'language_id' => 1,
             'first_name' => 'Luan',
             'last_name' => 'Pham',

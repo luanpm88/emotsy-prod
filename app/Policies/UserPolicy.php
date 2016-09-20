@@ -79,4 +79,9 @@ class UserPolicy
     {        
         return is_object($user->admin);
     }
+    
+    public function reseller_access(\Acelle\Model\User $user, \Acelle\Model\User $item)
+    {        
+        return is_object($user->reseller);
+    }
 }

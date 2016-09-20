@@ -1286,3 +1286,16 @@ textarea.height-100 {
     top: 3px;
     font-size: 15px;
 }
+.panel-no-color {
+    border: none;
+}
+.panel-no-color .panel-heading, .panel-no-color .panel-body {
+    padding-left: 0;
+    padding-right: 0;
+}
+.h1-subtitle {
+    color: #888;
+    font-size: 18px;
+    font-weight: normal;
+    margin-bottom: 0;
+}

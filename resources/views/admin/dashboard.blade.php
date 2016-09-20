@@ -9,7 +9,8 @@
 @endsection
 
 @section('content')
-    <h1>{{ trans('messages.dashboard') }}</h1>
+	<h6 class="h1-subtitle">{{ trans('messages.admin') }}</h6>
+    <h1 class="mt-0">{{ trans('messages.dashboard') }}</h1>
 	
 	<div class="row">
 		<div class="col-md-7">
@@ -221,11 +222,12 @@
 		</div>
 		<div class="col-md-5">
 			<div class="panel-group content-group-lg" id="accordion1">
-				<div class="panel panel-white">
+				<div class="panel panel-white panel-no-color">
 					<div class="panel-heading">
-						<h6 class="panel-title text-semibold">
+						<h5 class="panel-title text-semibold">
 							<a data-toggle="collapse" data-parent="#accordion1" href="#accordion-group1">{{ trans('messages.recent_resellers') }}</a>
-						</h6>
+							<i class="icon-menu-open"></i>
+						</h5>
 					</div>
 					<div id="accordion-group1" class="panel-collapse collapse in">
 						<div class="panel-body">
@@ -266,11 +268,12 @@
 					</div>
 				</div>
 
-				<div class="panel panel-white">
+				<div class="panel panel-white panel-no-color">
 					<div class="panel-heading">
-						<h6 class="panel-title text-semibold">
+						<h5 class="panel-title text-semibold">
 							<a class="collapsed" data-toggle="collapse" data-parent="#accordion1" href="#accordion-group2">{{ trans('messages.recent_customers') }}</a>
-						</h6>
+							<i class="icon-menu-open"></i>
+						</h5>
 					</div>
 					<div id="accordion-group2" class="panel-collapse collapse">
 						<div class="panel-body">
@@ -279,11 +282,12 @@
 					</div>
 				</div>
 
-				<div class="panel panel-white">
+				<div class="panel panel-white panel-no-color">
 					<div class="panel-heading">
-						<h6 class="panel-title text-semibold">
+						<h5 class="panel-title text-semibold">
 							<a class="collapsed" data-toggle="collapse" data-parent="#accordion1" href="#accordion-group3">{{ trans('messages.activities') }}</a>
-						</h6>
+							<i class="icon-menu-open"></i>
+						</h5>
 					</div>
 					<div id="accordion-group3" class="panel-collapse collapse">
 						<div class="panel-body">

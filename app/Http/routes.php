@@ -370,3 +370,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/resellers/enable', 'ResellerController@enable');
     Route::resource('admin/resellers', 'ResellerController');
 });
+
+
+// RESELLER AREA
+Route::group(['namespace' => 'Reseller', 'middleware' => ['not_installed', 'reseller']], function () {
+    Route::get('reseller', 'HomeController@index');
+});

@@ -41,7 +41,7 @@ class ResellerPolicy
     {
         $ability = $user->admin->getPermission('reseller_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->admin->id == $item->creator_id);
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return $can;
     }
