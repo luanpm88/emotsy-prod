@@ -153,6 +153,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profileUpdateForm');
     Route::get('lists/{list_uid}/update-profile-success/{uid}', 'PageController@profileUpdateSuccessPage');
     Route::get('lists/{list_uid}/profile-update-email-sent/{uid}', 'PageController@profileUpdateEmailSent');
+    Route::get('lists/{list_uid}/unsubscribe-success/{uid}', 'PageController@unsubscribeSuccessPage');
 
     // Template
     Route::get('templates/{uid}/content', 'TemplateController@content');
