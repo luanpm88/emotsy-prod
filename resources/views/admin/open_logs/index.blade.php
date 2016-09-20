@@ -42,9 +42,10 @@
 										</button>
 									</span>
 									<span class="ml-10">										
-										<select class="select2-ajax" name="campaign_uid" data-url="{{ action('CampaignController@select2') }}">
+										<span class="title text-semibold text-muted">{{ trans('messages.campaign') }}</span>
+										<select placeholder="{{ trans('messages.all') }}" class="select2-ajax" name="campaign_uid" data-url="{{ action('CampaignController@select2') }}">
 											
-										</select>										
+										</select>									
 									</span>
 									<span class="text-nowrap">
 										<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />

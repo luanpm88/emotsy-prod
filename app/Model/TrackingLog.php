@@ -31,16 +31,16 @@ class TrackingLog extends Model
     const STATUS_FEEDBACK_ABUSE = 'feedback-abuse';
     const STATUS_FEEDBACK_SPAM = 'feedback-spam';
 
-    protected $fillable = ['campaign_id', 'message_id', 'runtime_message_id', 'subscriber_id', 'sending_server_id', 'user_id', 'status', 'error'];
+    protected $fillable = ['campaign_id', 'message_id', 'runtime_message_id', 'subscriber_id', 'sending_server_id', 'customer_id', 'status', 'error'];
 
     /**
      * Associations.
      *
      * @var object | collect
      */
-    public function user()
+    public function customer()
     {
-        return $this->belongsTo('Acelle\Model\User');
+        return $this->belongsTo('Acelle\Model\Customer');
     }
 
     public function campaign()
@@ -76,11 +76,12 @@ class TrackingLog extends Model
     public static function filter($request)
     {
         $user = $request->user();
+        $customer = $user->customer;
         $query = self::select('tracking_logs.*');
         $query = $query->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id');
         $query = $query->leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
         $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
-        $query = $query->leftJoin('users', 'users.id', '=', 'tracking_logs.user_id');
+        $query = $query->leftJoin('customers', 'customers.id', '=', 'tracking_logs.customer_id');
 
         // Keyword
         if (!empty(trim($request->keyword))) {

@@ -579,11 +579,17 @@ $(function() {
     // Select2 ajax
     $(".select2-ajax").each(function() {
         var url = $(this).attr("data-url");
+        var placeholder = $(this).attr("placeholder");
+        if(typeof(placeholder) == 'undefined') {
+            placeholder = "";
+        }
         $(this).select2({
+            placeholder: placeholder,
             ajax: {
                 url: url,
                 dataType: 'json',
                 delay: 250,
+                
                 data: function (params) {
                   return {
                     q: params.term, // search term

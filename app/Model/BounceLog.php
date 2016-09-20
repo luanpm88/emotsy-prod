@@ -67,12 +67,13 @@ class BounceLog extends Model
     public static function filter($request)
     {
         $user = $request->user();
+        $customer = $user->customer;
         $query = self::select('bounce_logs.*');
         $query = $query->leftJoin('tracking_logs', 'bounce_logs.message_id', '=', 'tracking_logs.message_id');
         $query = $query->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id');
         $query = $query->leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
         $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
-        $query = $query->leftJoin('users', 'users.id', '=', 'tracking_logs.user_id');
+        $query = $query->leftJoin('customers', 'customers.id', '=', 'tracking_logs.customer_id');
 
         // Keyword
         if (!empty(trim($request->keyword))) {

@@ -41,8 +41,9 @@
 											<i class="icon-sort-amount-desc"></i>
 										</button>
 									</span>
-									<span class="ml-10">										
-										<select class="select2-ajax" name="campaign_uid" data-url="{{ action('CampaignController@select2') }}">
+									<span class="ml-10">
+										<span class="title text-semibold text-muted">{{ trans('messages.campaign') }}</span>
+										<select placeholder="{{ trans('messages.all') }}" class="select2-ajax" name="campaign_uid" data-url="{{ action('CampaignController@select2') }}">
 											
 										</select>										
 									</span>

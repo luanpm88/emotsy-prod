@@ -12,7 +12,7 @@ class AddTrackingLogsForeignKeys extends Migration
     {
         Schema::table('tracking_logs', function (Blueprint $table) {
             // foreign
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('sending_server_id')->references('id')->on('sending_servers')->onDelete('cascade');
             $table->foreign('campaign_id')->references('id')->on('campaigns')->onDelete('cascade');
             $table->foreign('subscriber_id')->references('id')->on('subscribers')->onDelete('cascade');
@@ -25,7 +25,7 @@ class AddTrackingLogsForeignKeys extends Migration
     public function down()
     {
         Schema::table('tracking_logs', function (Blueprint $table) {
-            $table->dropForeign('tracking_logs_user_id_foreign');
+            $table->dropForeign('tracking_logs_customer_id_foreign');
             $table->dropForeign('tracking_logs_sending_server_id_foreign');
             $table->dropForeign('tracking_logs_campaign_id_foreign');
             $table->dropForeign('tracking_logs_subscriber_id_foreign');
