@@ -34,6 +34,7 @@ cp .env.example .env
 rm -fr storage/logs/*
 rm -fr storage/tmp/*
 rm -fr storage/installed
+touch storage/recache
 rm -fr .authenticate
 rm -fr .git*
 rm -fr database/seeds/DatabaseSeeder.php

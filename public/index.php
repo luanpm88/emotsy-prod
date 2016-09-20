@@ -1,5 +1,17 @@
 <?php
 
+// Refresh cache in some hosting case
+try {
+    if(file_exists ("../storage/recache")) {
+        exec("php ../artisan config:cache");
+        unlink("../storage/recache");
+    }
+} catch (\Exception $e) {
+    
+}
+
+
+
 /**
  * Laravel - A PHP Framework For Web Artisans
  *
