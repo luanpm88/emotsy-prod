@@ -1233,3 +1233,56 @@ textarea.height-100 {
     width: 82px !important;
     min-width: inherit !important;
 }
+.dashboard-box {
+    float: left;
+    width: 120px;
+    height: 120px;
+    text-align: center;
+    margin-bottom: 30px;
+    padding: 15px 5px;
+    border-radius: 5px;
+    cursor: pointer;
+    display: block;
+    color: #333;
+    margin-right: 30px;
+    border-color: #fff;
+    border-bottom: solid 2px #00695C;
+    border-top: solid 1px #fff;
+    border-left: solid 1px #fff;
+    border-right: solid 1px #fff;
+    position: relative;
+}
+.dashboard-box:hover {
+    color: #333;
+    border-top: solid 1px #00695C;
+    border-left: solid 1px #00695C;
+    border-right: solid 1px #00695C;
+    background: #f8f8f8;
+}
+.dashboard-box h4 {
+    margin-bottom: 0;
+    margin-top: 8px;
+    font-size: 14px;
+}
+.dashboard-box .dashboard-icon {
+    
+}
+.dashboard-box .dashboard-icon i {
+    font-size: 40px;
+    color: #00695C;
+}
+.modern-listing {
+    margin-bottom: 0;
+}
+@media (max-width: 768px) {
+    ul.modern-listing li {
+        padding-bottom: 20px;
+    }
+}
+.dashboard-box .badge {
+    position: absolute;
+    right: 3px;
+    z-index: 1;
+    top: 3px;
+    font-size: 15px;
+}

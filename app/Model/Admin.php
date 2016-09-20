@@ -96,6 +96,11 @@ class Admin extends Model
     {
         return $this->hasMany('Acelle\Model\Customer', "creator_id", "user_id");
     }
+    
+    public function resellers()
+    {
+        return $this->hasMany('Acelle\Model\Reseller');
+    }
 
     /**
      * Bootstrap any application services.
@@ -318,5 +323,15 @@ class Admin extends Model
     {
         $this->status = 'active';
         return $this->save();
+    }
+    
+    /**
+     * Get recent resellers.
+     *
+     * @return collect
+     */
+    public function recentResellers()
+    {
+        return $this->resellers()->orderBy("created_at", "DESC")->limit(5)->get();
     }
 }
