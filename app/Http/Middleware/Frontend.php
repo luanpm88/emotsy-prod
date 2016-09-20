@@ -28,7 +28,16 @@ class Frontend
             (isset($user) && $user->customer->getOption('access_when_offline') != 'yes')
         ) {
             return redirect()->action('Controller@offline');
-        }        
+        }
+        
+        // Language
+        try {
+            if (is_object($user->customer->language)) {
+                \App::setLocale($user->customer->language->code);
+                \Carbon\Carbon::setLocale($user->customer->language->code);
+            }
+        } catch (\Exception $e) {
+        }
 
         return $next($request);
     }

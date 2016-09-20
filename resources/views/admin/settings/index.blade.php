@@ -28,15 +28,15 @@
 				
 				<div class="tabbable">
 					<ul class="nav nav-tabs nav-tabs-top">
-						@if (Auth::user()->getOption("backend", "setting_general") == 'yes')
+						@if (Auth::user()->admin->getPermission("setting_general") == 'yes')
 							<li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
 								<i class="icon-equalizer2"></i> {{ trans('messages.general') }}</a></li>
 						@endif
-						@if (Auth::user()->getOption("backend", "setting_sending") == 'yes')
+						@if (Auth::user()->admin->getPermission("setting_sending") == 'yes')
 							<li class="text-semibold"><a href="#top-tab2" data-toggle="tab">
 								<i class="icon-paperplane"></i> {{ trans('messages.sending') }}</a></li>
 						@endif
-						@if (Auth::user()->getOption("backend", "setting_system_urls") == 'yes')
+						@if (Auth::user()->admin->getPermission("setting_system_urls") == 'yes')
 							<li class="text-semibold"><a href="#top-tab3" data-toggle="tab">
 								<i class="icon-link"></i> {{ trans('messages.system_urls') }}</a></li>
 						@endif
@@ -45,7 +45,7 @@
 					</ul>
 	
 					<div class="tab-content">
-						@if (Auth::user()->getOption("backend", "setting_general") == 'yes')
+						@if (Auth::user()->admin->getPermission("setting_general") == 'yes')
 							<div class="tab-pane active" id="top-tab1">
 								<div class="row">
 									<?php $count = 0; ?>
@@ -82,7 +82,7 @@
 								</div>
 							</div>
 						@endif
-						@if (Auth::user()->getOption("backend", "setting_sending") == 'yes')
+						@if (Auth::user()->admin->getPermission("setting_sending") == 'yes')
 							<div class="tab-pane" id="top-tab2">
 								<div class="row">
 									<?php $count = 0; ?>
@@ -119,7 +119,7 @@
 								</div>
 							</div>
 						@endif
-						@if (Auth::user()->getOption("backend", "setting_system_urls") == 'yes')
+						@if (Auth::user()->admin->getPermission("setting_system_urls") == 'yes')
 							<div class="tab-pane" id="top-tab3">
 								<div class="text-left">
 									<a href="{{ action("Admin\SettingController@updateUrls") }}" class="btn bg-teal">{{ trans('messages.update_urls') }}</a>

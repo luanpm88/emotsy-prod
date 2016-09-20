@@ -40,7 +40,7 @@
                 @if (true)
                     <li rel0="HomeController">
                         <a href="{{ action('Admin\HomeController@index') }}">
-                            <i class="icon-enter2"></i> {{ trans('messages.backend') }}
+                            <i class="icon-enter2"></i> {{ trans('messages.admin_view') }}
                         </a>
                     </li>
                 @endif
@@ -52,19 +52,18 @@
 
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
-						<img src="{{ action('UserController@avatar', Auth::user()->uid) }}" alt="">
-						<span>{{ Auth::user()->displayName() }}</span>
+						<img src="{{ action('CustomerController@avatar', Auth::user()->customer->uid) }}" alt="">
+						<span>{{ Auth::user()->customer->displayName() }}</span>
 						<i class="caret"></i>
 					</a>
 
 					<ul class="dropdown-menu dropdown-menu-right">
-						<!-- CustomerTicker -->
-						@if (true)
+						@can("customer_access", Auth::user())
 							<li><a href="{{ action("HomeController@index") }}"><i class="icon-exit2"></i> {{ trans('messages.frontend') }}</a></li>
 							<li class="divider"></li>
 						@endif
-						@if (true)
-							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter2"></i> {{ trans('messages.backend') }}</a></li>
+						@can("admin_access", Auth::user())
+							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter2"></i> {{ trans('messages.admin_view') }}</a></li>
 							<li class="divider"></li>
 						@endif
 						<li class="dropdown">

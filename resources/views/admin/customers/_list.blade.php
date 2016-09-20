@@ -57,16 +57,30 @@
 											</span>
 										</td>
 										<td class="text-right">
-											@can('login', $item)
-												<a href="{{ action('Admin\CustomerController@login', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_customer') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="glyphicon glyphicon-random pr-5"></i></a>
-											@endcan
+											@can('loginAs', $item)
+												<a href="{{ action('Admin\CustomerController@loginAs', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_customer') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="glyphicon glyphicon-random pr-5"></i></a>
+											@endcan											
 											@can('update', $item)
 												<a href="{{ action('Admin\CustomerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
 											@endcan
-											@can('delete', $item)
+											@if (Auth::user()->can('delete', $item) || Auth::user()->can('enable', $item) || Auth::user()->can('disable', $item) || Auth::user()->can('delete', $item))
 												<div class="btn-group">										
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-													<ul class="dropdown-menu dropdown-menu-right">													
+													<ul class="dropdown-menu dropdown-menu-right">
+														@can('enable', $item)
+															<li>														
+																<a link-confirm="{{ trans('messages.enable_customers_confirm') }}" href="{{ action('Admin\CustomerController@enable', ["uids" => $item->uid]) }}">
+																	<i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
+																</a>
+															</li>
+														@endcan
+														@can('disable', $item)
+															<li>														
+																<a link-confirm="{{ trans('messages.disable_customers_confirm') }}" href="{{ action('Admin\CustomerController@disable', ["uids" => $item->uid]) }}">
+																	<i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
+																</a>
+															</li>
+														@endcan
 														<li>														
 															<a delete-confirm="{{ trans('messages.delete_users_confirm') }}" href="{{ action('Admin\CustomerController@delete', ['uids' => $item->uid]) }}">
 																<i class="icon-trash"></i> {{ trans('messages.delete') }}

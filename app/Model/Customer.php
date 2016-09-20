@@ -608,4 +608,26 @@ class Customer extends Model
             ['value' => 'white', 'text' => trans('messages.white')],
         ];
     }
+    
+    /**
+     * Disable customer.
+     *
+     * @return boolean
+     */
+    public function disable()
+    {
+        $this->status = 'inactive';
+        return $this->save();
+    }
+    
+    /**
+     * Enable customer.
+     *
+     * @return boolean
+     */
+    public function enable()
+    {
+        $this->status = 'active';
+        return $this->save();
+    }
 }

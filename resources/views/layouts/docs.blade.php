@@ -29,14 +29,14 @@
 
 		<div class="navbar-collapse collapse" id="navbar-mobile">
 			<ul class="nav navbar-nav">
-                @if (Auth::user()->userGroup->frontend_access)
+                @can("customer_access", Auth::user())
                     <li rel0="HomeController">
                         <a href="{{ action('HomeController@index') }}">
                             <i class="icon-exit2"></i> {{ trans('messages.frontend') }}
                         </a>
                     </li>
                 @endif
-                @if (Auth::user()->userGroup->backend_access)
+                @can("admin_access", Auth::user())
                     <li rel0="HomeController">
                         <a href="{{ action('Admin\HomeController@index') }}">
                             <i class="icon-enter2"></i> {{ trans('messages.backend') }}
@@ -51,8 +51,8 @@
 
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
-						<img src="{{ action('UserController@avatar', Auth::user()->uid) }}" alt="">
-						<span>{{ Auth::user()->displayName() }}</span>
+						<img src="{{ action('CustomerController@avatar', Auth::user()->customer->uid) }}" alt="">
+						<span>{{ Auth::user()->customer->displayName() }}</span>
 						<i class="caret"></i>
 					</a>
 
@@ -62,7 +62,7 @@
 							<li class="divider"></li>
 						@endif
 						@if (Auth::user()->userGroup->backend_access)
-							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter2"></i> {{ trans('messages.backend') }}</a></li>
+							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter2"></i> {{ trans('messages.admin_view') }}</a></li>
 							<li class="divider"></li>
 						@endif
 						<li class="dropdown">

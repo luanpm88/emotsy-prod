@@ -92,9 +92,8 @@
 					</a>
 
 					<ul class="dropdown-menu dropdown-menu-right">
-						<!-- AdminTicker -->
-						@if (true)
-							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter2"></i> {{ trans('messages.backend') }}</a></li>
+						@can("admin_access", Auth::user())
+							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter2"></i> {{ trans('messages.admin_view') }}</a></li>
 							<li class="divider"></li>
 						@endif
 						<li class="dropdown">

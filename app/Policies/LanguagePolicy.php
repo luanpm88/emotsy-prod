@@ -33,7 +33,7 @@ class LanguagePolicy
     {
         $can = $user->admin->getPermission('language_create') == 'yes';
 
-        return $can && false;
+        return $can;
     }
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Language $item)

@@ -216,7 +216,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
     Route::patch('campaigns/{uid}/update', 'CampaignController@update');    
     
-    Route::get('users/login-back', 'UserController@loginBack');
+    Route::get('customers/login-back', 'CustomerController@loginBack');
 });
 
 // ADMIN AREA

@@ -36,7 +36,7 @@
 								<div class="media profile-image">
 									<div class="media-left">
 										<a href="#" class="upload-media-container">
-											<img preview-for="image" empty-src="{{ URL::asset('assets/images/placeholder.jpg') }}" src="{{ action('CustomerController@avatar', $admin->uid) }}" class="img-circle" alt="">
+											<img preview-for="image" empty-src="{{ URL::asset('assets/images/placeholder.jpg') }}" src="{{ action('AdminController@avatar', $admin->uid) }}" class="img-circle" alt="">
 										</a>
 										<input type="file" name="image" class="file-styled previewable hide">
 										<input type="hidden" name="_remove_image" value='' />
@@ -76,7 +76,7 @@
 											'name' => 'color_scheme',
 											'value' => $admin->color_scheme,
 											'help_class' => 'admin',
-											'options' => Acelle\Model\User::colors("color_scheme"),
+											'options' => Acelle\Model\Admin::colors("color_scheme"),
 											'rules' => '',
 										])
 									</div>									
