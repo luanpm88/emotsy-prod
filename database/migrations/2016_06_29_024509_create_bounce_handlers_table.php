@@ -13,7 +13,7 @@ class CreateBounceHandlersTable extends Migration
         Schema::create('bounce_handlers', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uid');
-            $table->integer('user_id')->unsigned();
+            $table->integer('admin_id')->unsigned();
             $table->string('name');
             $table->string('host');
             $table->string('username');
@@ -27,7 +27,7 @@ class CreateBounceHandlersTable extends Migration
             $table->timestamps();
 
             // foreign
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
         });
     }
 

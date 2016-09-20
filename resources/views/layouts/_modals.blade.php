@@ -150,11 +150,20 @@
 	<!-- /basic modal -->
 	
 	<div class="ui-pnotify bg-warning" style="background-color: rgba(255,87,34,0.5); width: auto; right: 20px; top: auto; bottom: 20px; opacity: 1; display: block; overflow: visible; cursor: auto;">
-		@if (null !== Session::get('orig_user_id'))
+		@if (null !== Session::get('orig_customer_id'))
 			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 				<h4 class="ui-pnotify-title text-nowrap">{!! trans('messages.current_login_as', ["name" => Auth::user()->customer->displayName()]) !!}</h4>
 				<div class="ui-pnotify-text">
 					{!! trans('messages.click_to_return_to_origin_user', ["link" => action("CustomerController@loginBack")]) !!}
+				</div>
+				<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
+			</div>
+		@endif
+		@if (null !== Session::get('orig_admin_id'))
+			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
+				<h4 class="ui-pnotify-title text-nowrap">{!! trans('messages.current_login_as', ["name" => Auth::user()->admin->displayName()]) !!}</h4>
+				<div class="ui-pnotify-text">
+					{!! trans('messages.click_to_return_to_origin_user', ["link" => action("Admin\AdminController@loginBack")]) !!}
 				</div>
 				<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
 			</div>

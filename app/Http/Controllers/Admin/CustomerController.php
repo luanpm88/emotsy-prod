@@ -353,7 +353,7 @@ class CustomerController extends Controller
         
         $orig_id = $request->user()->uid;
         \Auth::login($customer->user);
-        \Session::put('orig_user_id', $orig_id);
+        \Session::put('orig_customer_id', $orig_id);
 
         return redirect()->action('HomeController@index');
     }
@@ -367,7 +367,7 @@ class CustomerController extends Controller
      */
     public function loginBack(Request $request)
     {
-        $id = \Session::pull('orig_user_id');
+        $id = \Session::pull('orig_customer_id');
         $orig_user = \Acelle\Model\Customer::findByUid($id);
         
         \Auth::login($orig_user);

@@ -54,7 +54,7 @@ class CustomerController extends Controller
      */
     public function loginBack(Request $request)
     {
-        $id = \Session::pull('orig_user_id');
+        $id = \Session::pull('orig_customer_id');
         $orig_user = \Acelle\Model\User::findByUid($id);
         
         \Auth::login($orig_user);

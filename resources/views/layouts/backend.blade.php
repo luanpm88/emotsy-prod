@@ -55,27 +55,63 @@
 						</li>
 					</ul>
 				</li>
-				<li class="dropdown language-switch"
-					rel0="AdminGroupController"
-					rel1="AdminController"
-				>
-					<a class="dropdown-toggle" data-toggle="dropdown">
-						<i class="icon-user-tie"></i> {{ trans('messages.admin') }}
-						<span class="caret"></span>
-					</a>
-					<ul class="dropdown-menu">
-						<li rel0="AdminController">
-							<a href="{{ action('Admin\AdminController@index') }}">
-								<i class="icon-users"></i> {{ trans('messages.admins') }}
-							</a>
-						</li>
-						<li rel0="AdminGroupController">
-							<a href="{{ action('Admin\AdminGroupController@index') }}">
-								<i class="icon-users4"></i> {{ trans('messages.groups') }}
-							</a>
-						</li>
-					</ul>
-				</li>
+					
+					<li class="dropdown language-switch"
+						rel0="ResellerController"
+						rel1="ResellerGroupController"
+					>
+						<a class="dropdown-toggle" data-toggle="dropdown">
+							<i class="icon-users2"></i> {{ trans('messages.reseller') }}
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							
+								<li rel0="ResellerController">
+									<a href="{{ action('Admin\ResellerController@index') }}">
+										<i class="icon-users"></i> {{ trans('messages.resellers') }}
+									</a>
+								</li>
+							
+								<li rel0="ResellerGroupController">
+									<a href="{{ action('Admin\ResellerGroupController@index') }}">
+										<i class="icon-users4"></i> {{ trans('messages.groups') }}
+									</a>
+								</li>
+
+						</ul>
+					</li>
+
+				
+				@if (
+					Auth::user()->admin->getPermission("admin_read") != 'no'
+					|| Auth::user()->admin->getPermission("admin_group_read") != 'no'
+				)
+					<li class="dropdown language-switch"
+						rel0="AdminGroupController"
+						rel1="AdminController"
+					>
+						<a class="dropdown-toggle" data-toggle="dropdown">
+							<i class="icon-user-tie"></i> {{ trans('messages.admin') }}
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							@if (Auth::user()->admin->getPermission("admin_read") != 'no')
+								<li rel0="AdminController">
+									<a href="{{ action('Admin\AdminController@index') }}">
+										<i class="icon-users"></i> {{ trans('messages.admins') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->admin->getPermission("admin_group_read") != 'no')
+								<li rel0="AdminGroupController">
+									<a href="{{ action('Admin\AdminGroupController@index') }}">
+										<i class="icon-users4"></i> {{ trans('messages.groups') }}
+									</a>
+								</li>
+							@endif
+						</ul>
+					</li>
+				@endif
 				
 				@if (
 					Auth::user()->admin->getPermission("sending_domain_read") != 'no'
@@ -413,5 +449,7 @@
 		</div>
 	</div>
 	<!-- /basic modal -->
+	
+	@include("layouts._modals")
 </body>
 </html>

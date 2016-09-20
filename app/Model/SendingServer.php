@@ -157,9 +157,9 @@ class SendingServer extends Model
      *
      * @var object | collect
      */
-    public function user()
+    public function admin()
     {
-        return $this->belongsTo('Acelle\Model\User');
+        return $this->belongsTo('Acelle\Model\Admin');
     }
 
     /**
@@ -173,7 +173,7 @@ class SendingServer extends Model
         $query = self::select('sending_servers.*');
 
         if (!$request->user()->can("read_all", new SendingServer())) {
-            $query = $query->where('sending_servers.user_id', '=', $request->user()->id);
+            $query = $query->where('sending_servers.admin_id', '=', $request->user()->admin->id);
         }
 
         // Keyword

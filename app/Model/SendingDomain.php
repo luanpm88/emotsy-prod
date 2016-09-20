@@ -49,7 +49,7 @@ class SendingDomain extends Model
         $query = self::select('sending_domains.*');
 
         if (!$request->user()->can("read_all", new SendingDomain())) {
-            $query = $query->where('sending_domains.user_id', '=', $request->user()->id);
+            $query = $query->where('sending_domains.admin_id', '=', $request->user()->admin->id);
         }
 
         // Keyword

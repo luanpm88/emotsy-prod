@@ -350,20 +350,20 @@ class AdminController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function switch_user(Request $request)
+    public function loginAs(Request $request)
     {
-        $user = \Acelle\Model\Admin::findByUid($request->uid);
+        $admin = \Acelle\Model\Admin::findByUid($request->uid);
 
         // authorize
-        if (\Gate::denies('switch_user', $user)) {
+        if (\Gate::denies('loginAs', $admin)) {
             return;
         }
         
         $orig_id = $request->user()->uid;
-        \Auth::login($user);
-        \Session::put('orig_user_id', $orig_id);
+        \Auth::login($admin->user);
+        \Session::put('orig_admin_id', $orig_id);
 
-        return redirect()->action('HomeController@index');
+        return redirect()->action('Admin\HomeController@index');
     }
 
     /**
@@ -375,12 +375,13 @@ class AdminController extends Controller
      */
     public function loginBack(Request $request)
     {
-        $id = \Session::pull('orig_user_id');
-        $orig_user = \Acelle\Model\Admin::findByUid($id);
+        echo "ddd";
+        $id = \Session::pull('orig_admin_id');
+        $orig_user = \Acelle\Model\User::findByUid($id);
         
         \Auth::login($orig_user);
         
-        return redirect()->action('Admin\UserController@index');
+        return redirect()->action('Admin\AdminController@index');
     }
 
     /**

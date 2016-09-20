@@ -40,7 +40,7 @@ class SendingServerPolicy
     {
         $ability = $user->admin->getPermission('sending_server_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->user_id);
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return $can;
     }
@@ -49,7 +49,7 @@ class SendingServerPolicy
     {
         $ability = $user->admin->getPermission('sending_server_delete');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->user_id);
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return $can;
     }
@@ -58,7 +58,7 @@ class SendingServerPolicy
     {
         $ability = $user->admin->getPermission('sending_server_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->user_id);
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return ($can && $item->status != "inactive");
     }
@@ -67,7 +67,7 @@ class SendingServerPolicy
     {
         $ability = $user->admin->getPermission('sending_server_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->user_id);
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return ($can && $item->status != "active");
     }

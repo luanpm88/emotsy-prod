@@ -40,7 +40,7 @@ class SendingDomainPolicy
     {
         $ability = $user->admin->getPermission('sending_domain_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->user_id);
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return $can;
     }
@@ -49,7 +49,7 @@ class SendingDomainPolicy
     {
         $ability = $user->admin->getPermission('sending_domain_delete');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->user_id);
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return $can;
     }

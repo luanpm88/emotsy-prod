@@ -40,7 +40,7 @@ class FeedbackLoopHandlerPolicy
     {
         $ability = $user->admin->getPermission('fbl_handler_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->user_id);
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return $can;
     }
@@ -49,7 +49,7 @@ class FeedbackLoopHandlerPolicy
     {
         $ability = $user->admin->getPermission('fbl_handler_delete');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->user_id);
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return $can;
     }

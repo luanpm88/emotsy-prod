@@ -52,6 +52,9 @@ Route::get('assets/images/avatar/customer-{uid?}.jpg', 'CustomerController@avata
 // Admin avatar
 Route::get('assets/images/avatar/admin-{uid?}.jpg', 'AdminController@avatar');
 
+// Reseller avatar
+Route::get('assets/images/avatar/reseller-{uid?}.jpg', 'ResellerController@avatar');
+
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('/', 'HomeController@index');
@@ -342,11 +345,28 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/admins/delete', 'AdminController@delete');
     Route::get('admin/admins/disable', 'AdminController@disable');
     Route::get('admin/admins/enable', 'AdminController@enable');
+    Route::get('admin/admins/login-back', 'AdminController@loginBack');
     Route::resource('admin/admins', 'AdminController');
+    
     
     // Account
     Route::get('admin/account/profile', 'AccountController@profile');
     Route::post('admin/account/profile', 'AccountController@profile');
     Route::get('admin/account/contact', 'AccountController@contact');
     Route::post('admin/account/contact', 'AccountController@contact');
+    
+    // Reseller Group
+    Route::get('admin/reseller_groups/listing/{page?}', 'ResellerGroupController@listing');
+    Route::get('admin/reseller_groups/sort', 'ResellerGroupController@sort');
+    Route::get('admin/reseller_groups/delete', 'ResellerGroupController@delete');
+    Route::resource('admin/reseller_groups', 'ResellerGroupController');
+    
+    // Reseller    
+    Route::get('admin/resellers/login-as/{uid}', 'ResellerController@loginAs');
+    Route::get('admin/resellers/listing/{page?}', 'ResellerController@listing');
+    Route::get('admin/resellers/sort', 'ResellerController@sort');
+    Route::get('admin/resellers/delete', 'ResellerController@delete');
+    Route::get('admin/resellers/disable', 'ResellerController@disable');
+    Route::get('admin/resellers/enable', 'ResellerController@enable');
+    Route::resource('admin/resellers', 'ResellerController');
 });

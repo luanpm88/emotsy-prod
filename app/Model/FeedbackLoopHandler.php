@@ -108,7 +108,7 @@ class FeedbackLoopHandler extends DeliveryHandler
         $query = self::select('feedback_loop_handlers.*');
 
         if (!$request->user()->can("read_all", new FeedbackLoopHandler())) {
-            $query = $query->where('feedback_loop_handlers.user_id', '=', $request->user()->id);
+            $query = $query->where('feedback_loop_handlers.admin_id', '=', $request->user()->admin->id);
         }
 
         // Keyword

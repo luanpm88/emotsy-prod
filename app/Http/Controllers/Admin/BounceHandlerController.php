@@ -99,7 +99,7 @@ class BounceHandlerController extends Controller
 
             // Save current user info
             $server->fill($request->all());
-            $server->user_id = $request->user()->id;
+            $server->admin_id = $request->user()->admin->id;
             $server->status = 'active';
 
             if ($server->save()) {

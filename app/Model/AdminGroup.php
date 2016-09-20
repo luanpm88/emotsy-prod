@@ -165,6 +165,15 @@ class AdminGroup extends Model
             'admin_update' => 'own',
             'admin_delete' => 'own',
             'admin_login_as' => 'own',
+            'reseller_group_read' => 'all',
+            'reseller_group_create' => 'yes',
+            'reseller_group_update' => 'all',
+            'reseller_group_delete' => 'own',
+            'reseller_read' => 'own',
+            'reseller_create' => 'yes',
+            'reseller_update' => 'own',
+            'reseller_delete' => 'own',
+            'reseller_login_as' => 'own',
             'customer_group_read' => 'all',
             'customer_group_create' => 'yes',
             'customer_group_update' => 'all',
@@ -252,6 +261,71 @@ class AdminGroup extends Model
                 ],
             ],
             'admin' => [
+                'read' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'create' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                'update' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'delete' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'login_as' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+            ],
+            'reseller_group' => [
+                'read' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'create' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                'update' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'delete' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+            ],
+            'reseller' => [
                 'read' => [
                     'options' => [
                         ['value' => 'no', 'text' => trans('messages.no')],

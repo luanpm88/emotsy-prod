@@ -13,7 +13,7 @@ class CreateFeedbackLoopHandlersTable extends Migration
         Schema::create('feedback_loop_handlers', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uid');
-            $table->integer('user_id')->unsigned();
+            $table->integer('admin_id')->unsigned();
             $table->string('name');
             $table->string('type');
             $table->string('host');
@@ -28,7 +28,7 @@ class CreateFeedbackLoopHandlersTable extends Migration
             $table->timestamps();
 
             // foreign
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
         });
     }
 

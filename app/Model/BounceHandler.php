@@ -108,10 +108,11 @@ class BounceHandler extends DeliveryHandler
     public static function filter($request)
     {
         $user = $request->user();
+        $admin = $user->admin;
         $query = self::select('bounce_handlers.*');
 
         if (!$request->user()->can("read_all", new BounceHandler())) {
-            $query = $query->where('bounce_handlers.user_id', '=', $request->user()->id);
+            $query = $query->where('bounce_handlers.admin_id', '=', $admin->id);
         }
 
         // Keyword
