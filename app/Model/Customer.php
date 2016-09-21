@@ -86,6 +86,11 @@ class Customer extends Model
     {
         return $this->belongsTo('Acelle\Model\User');
     }
+    
+    public function reseller()
+    {
+        return $this->belongsTo('Acelle\Model\Reseller');
+    }
 
     public function customerGroup()
     {
@@ -320,7 +325,7 @@ class Customer extends Model
     }
     
     /**
-     * Count user lists.
+     * Count customer lists.
      *
      * @return number
      */
@@ -376,7 +381,7 @@ class Customer extends Model
     }
     
     /**
-     * Count user's campaigns.
+     * Count customer's campaigns.
      *
      * @return number
      */
@@ -432,7 +437,7 @@ class Customer extends Model
     }
     
     /**
-     * Count user's subscribers.
+     * Count customer's subscribers.
      *
      * @return number
      */
@@ -473,7 +478,7 @@ class Customer extends Model
     }
     
     /**
-     * Get user's quota.
+     * Get customer's quota.
      *
      * @return string
      */
@@ -488,7 +493,7 @@ class Customer extends Model
     }
     
     /**
-     * Check if user has access to ALL sending servers.
+     * Check if customer has access to ALL sending servers.
      *
      * @return boolean
      */
@@ -499,7 +504,7 @@ class Customer extends Model
     }
     
     /**
-     * Get user's sending quota.
+     * Get customer's sending quota.
      *
      * @return string
      */
@@ -578,7 +583,7 @@ class Customer extends Model
     }
     
     /**
-     * Get user's color scheme.
+     * Get customer's color scheme.
      *
      * @return string
      */

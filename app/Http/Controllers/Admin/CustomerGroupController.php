@@ -137,7 +137,7 @@ class CustomerGroupController extends Controller
 
             $group->fill($request->all());
             $group->options = json_encode($request->options);
-            $group->creator_id = $user->id;
+            $group->admin_id = $user->admin->id;
             $group->save();
 
             // For sending servers

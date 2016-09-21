@@ -92,6 +92,10 @@
 					</a>
 
 					<ul class="dropdown-menu dropdown-menu-right">
+						@can("reseller_access", Auth::user())
+							<li><a href="{{ action("Reseller\HomeController@index") }}"><i class="icon-exit2"></i> {{ trans('messages.reseller_view') }}</a></li>
+							<li class="divider"></li>
+						@endif
 						@can("admin_access", Auth::user())
 							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter2"></i> {{ trans('messages.admin_view') }}</a></li>
 							<li class="divider"></li>

@@ -28,7 +28,28 @@
 												<br />
 												<span class="text-muted">{{ trans("messages.customers") }}</span>
 											</div>
-										</td>										
+										</td>
+										<td>
+											<div class="single-stat-box pull-left">
+												<span class="no-margin stat-num">{{ ($item->getOption("subscriber_max") == -1 ? trans('messages.unlimited') : $item->getOption("subscriber_max")) }}</span>
+												<br />
+												<span class="text-muted">{{ trans("messages.max_subscribers") }}</span>
+											</div>
+										</td>
+										<td>
+											<div class="single-stat-box pull-left">
+												<span class="no-margin stat-num">{{ ($item->getOption("list_max") == -1 ? trans('messages.unlimited') : $item->getOption("list_max")) }}</span>
+												<br />
+												<span class="text-muted">{{ trans("messages.max_lists") }}</span>
+											</div>
+										</td>	
+										<td>
+											<div class="single-stat-box pull-left ml-20">												
+												<span class="no-margin stat-num">{{ $item->displayQuota() }}</span>
+												<br />
+												<span class="text-muted2">{{ trans("messages.quota") }}</span>
+											</div>
+										</td>
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>

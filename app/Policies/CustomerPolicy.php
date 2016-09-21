@@ -20,14 +20,14 @@ class CustomerPolicy
     
     public function read(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
-        $can = $user->admin->getPermission('customer_read') != 'no';
+        $can = $user->reseller->getPermission('customer_read') != 'no';
 
         return $can;
     }
     
     public function create(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
-        $can = $user->admin->getPermission('customer_create') == 'yes';
+        $can = $user->reseller->getPermission('customer_create') == 'yes';
 
         return $can;
     }
@@ -39,45 +39,45 @@ class CustomerPolicy
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
-        $ability = $user->admin->getPermission('customer_update');
+        $ability = $user->reseller->getPermission('customer_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->creator_id);
+                || ($ability == 'own' && $user->reseller->id == $item->reseller_id);
 
         return $can;
     }
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
-        $ability = $user->admin->getPermission('customer_delete');
+        $ability = $user->reseller->getPermission('customer_delete');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->creator_id);
+                || ($ability == 'own' && $user->reseller->id == $item->reseller_id);
 
         return $can;
     }
 
     public function loginAs(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
-        $ability = $user->admin->getPermission('customer_login_as');
+        $ability = $user->reseller->getPermission('customer_login_as');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->creator_id);
+                || ($ability == 'own' && $user->reseller->id == $item->reseller_id);
 
-        return $can && $user->customer->id != $item->id;
+        return $can && $user->reseller->id != $item->reseller_id;
     }
     
     public function disable(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
-        $ability = $user->admin->getPermission('customer_update');
+        $ability = $user->reseller->getPermission('customer_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->creator_id);
+                || ($ability == 'own' && $user->reseller->id == $item->reseller_id);
 
         return $can;
     }
     
     public function enable(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
-        $ability = $user->admin->getPermission('customer_update');
+        $ability = $user->reseller->getPermission('customer_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->creator_id);
+                || ($ability == 'own' && $user->reseller->id == $item->reseller_id);
 
         return $can;
     }

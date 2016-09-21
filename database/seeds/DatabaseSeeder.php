@@ -114,31 +114,6 @@ class DatabaseSeeder extends Seeder
         ]);
         
         // Create default customer group
-        DB::table('customer_groups')->insert([
-            'id' => 1,
-            'name' => 'Customer Group 1',
-            'creator_id' => 1,
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-        
-        // Create default customer for admin user
-        DB::table('customers')->insert([
-            'id' => 1,
-            'uid' => uniqid(),
-            'user_id' => 1,
-            'creator_id' => 1,
-            'contact_id' => 3,
-            'customer_group_id' => 1,
-            'language_id' => 1,
-            'first_name' => 'Luan',
-            'last_name' => 'Pham',
-            'timezone' => 'Atlantic/Cape_Verde',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-        
-        // Create default customer group
         DB::table('admin_groups')->insert([
             'id' => 1,
             'name' => 'Admin Group 1',
@@ -161,7 +136,7 @@ class DatabaseSeeder extends Seeder
             'timezone' => 'Atlantic/Cape_Verde',
             'created_at' => $created_at,
             'updated_at' => $updated_at,
-        ]);
+        ]);        
         
         // Create default reseller group
         DB::table('reseller_groups')->insert([
@@ -180,6 +155,32 @@ class DatabaseSeeder extends Seeder
             'admin_id' => 1,
             'contact_id' => 5,
             'reseller_group_id' => 1,
+            'language_id' => 1,
+            'first_name' => 'Luan',
+            'last_name' => 'Pham',
+            'timezone' => 'Atlantic/Cape_Verde',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+        ]);
+        
+        
+        // Create default customer group
+        DB::table('customer_groups')->insert([
+            'id' => 1,
+            'name' => 'Customer Group 1',
+            'admin_id' => 1,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+        ]);
+        
+        // Create default customer for admin user
+        DB::table('customers')->insert([
+            'id' => 1,
+            'uid' => uniqid(),
+            'user_id' => 1,
+            'reseller_id' => 1,
+            'contact_id' => 3,
+            'customer_group_id' => 1,
             'language_id' => 1,
             'first_name' => 'Luan',
             'last_name' => 'Pham',

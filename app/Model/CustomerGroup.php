@@ -109,6 +109,10 @@ class CustomerGroup extends Model
     {
         $user = $request->user();
         $query = self::select('customer_groups.*');
+        
+        if (!$user->can("read_all", new CustomerGroup())) {
+            $query = $query->where('customer_groups.admin_id', '=', $user->admin->id);
+        }
 
         // Keyword
         if (!empty(trim($request->keyword))) {
@@ -292,5 +296,21 @@ class CustomerGroup extends Model
         }
 
         return $options;
+    }
+    
+    /**
+     * Display group quota.
+     *
+     * @return array
+     */
+    public function displayQuota()
+    {
+        if ($this->getOption("sending_quota") == -1) {
+            return trans('messages.unlimited');
+        } elseif ($this->getOption("sending_quota_time") == -1) {
+            return $this->getOption("sending_quota");
+        } else {
+            return $this->getOption("sending_quota") . " " . trans('messages.' . \Acelle\Library\Tool::getPluralPrase('email', $this->getOption("sending_quota"))) . ' / '.$this->getOption("sending_quota_time").' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption("sending_quota_time_unit"), $this->getOption("sending_quota")));
+        }        
     }
 }

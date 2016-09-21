@@ -33,7 +33,7 @@
 										</td>
 										<td class="text-right">											
 											@can('loginAs', $item)
-												<a href="{{ action('Admin\ResellerController@loginAs', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_admin') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="glyphicon glyphicon-random pr-5"></i></a>
+												<a href="{{ action('Admin\ResellerController@loginAs', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_reseller') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="glyphicon glyphicon-random pr-5"></i></a>
 											@endcan
 											@can('update', $item)
 												<a href="{{ action('Admin\ResellerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>

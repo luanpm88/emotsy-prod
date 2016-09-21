@@ -43,7 +43,7 @@ class CustomerGroupPolicy
     {
         $ability = $user->admin->getPermission('customer_group_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->creator_id);
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return $can;
     }
@@ -52,7 +52,7 @@ class CustomerGroupPolicy
     {
         $ability = $user->admin->getPermission('customer_group_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->creator_id);
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return $can;
     }
@@ -61,7 +61,7 @@ class CustomerGroupPolicy
     {
         $ability = $user->admin->getPermission('customer_group_delete');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->creator_id);
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return $can;
     }

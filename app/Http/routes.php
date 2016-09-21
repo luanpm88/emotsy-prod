@@ -375,4 +375,20 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
 // RESELLER AREA
 Route::group(['namespace' => 'Reseller', 'middleware' => ['not_installed', 'reseller']], function () {
     Route::get('reseller', 'HomeController@index');
+    
+    // Account
+    Route::get('reseller/account/profile', 'AccountController@profile');
+    Route::post('reseller/account/profile', 'AccountController@profile');
+    Route::get('reseller/account/contact', 'AccountController@contact');
+    Route::post('reseller/account/contact', 'AccountController@contact');
+    
+    // Customer    
+    Route::get('reseller/customers/login-as/{uid}', 'CustomerController@loginAs');
+    Route::get('reseller/customers/listing/{page?}', 'CustomerController@listing');
+    Route::get('reseller/customers/sort', 'CustomerController@sort');
+    Route::get('reseller/customers/delete', 'CustomerController@delete');
+    Route::get('reseller/customers/disable', 'CustomerController@disable');
+    Route::get('reseller/customers/enable', 'CustomerController@enable');
+    Route::resource('reseller/customers', 'CustomerController');
+    
 });

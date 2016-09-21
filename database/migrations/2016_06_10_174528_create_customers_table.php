@@ -16,7 +16,7 @@ class CreateCustomersTable extends Migration
             $table->increments('id');
             $table->uuid('uid');
             $table->integer('user_id')->unsigned();
-            $table->integer('creator_id')->unsigned()->nullable();
+            $table->integer('reseller_id')->unsigned()->nullable();
             $table->integer('contact_id')->unsigned()->nullable();
             $table->integer('customer_group_id')->unsigned();
             $table->integer('language_id')->unsigned()->nullable();
@@ -31,7 +31,7 @@ class CreateCustomersTable extends Migration
             
             // foreign
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('creator_id')->references('id')->on('users');
+            $table->foreign('reseller_id')->references('id')->on('resellers');
             $table->foreign('contact_id')->references('id')->on('contacts');
             $table->foreign('customer_group_id')->references('id')->on('customer_groups')->onDelete('cascade');
             $table->foreign('language_id')->references('id')->on('languages');

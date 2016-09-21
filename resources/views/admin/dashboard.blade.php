@@ -14,24 +14,33 @@
 	
 	<div class="row">
 		<div class="col-md-7">
-			<div class="row">				
+			<div class="row">
+				@if (
+					Auth::user()->can("read", new Acelle\Model\Reseller())
+					|| Auth::user()->can("read", new Acelle\Model\ResellerGroup())
+				)
 					<div class="col-md-6">
 						<h2 class="text-muted">{{ trans('messages.reseller') }}</h2>
-						<a class="dashboard-box" href="{{ action('Admin\ResellerController@index') }}">
-							<span class="badge badge-info bg-teal">{{ Auth::user()->admin->resellers->count() }}</span>
-							<div class="dashboard-icon">
-								<i class="icon-user"></i>
-							</div>
-							<h4>{{ trans('messages.resellers') }}</h4>
-						</a>
-						<a class="dashboard-box" href="{{ action('Admin\ResellerGroupController@index') }}">
-							<div class="dashboard-icon">
-								<i class="icon-make-group"></i>
-							</div>
-							<h4>{{ trans('messages.groups') }}</h4>
-						</a>
+						@if (Auth::user()->can("read", new Acelle\Model\Reseller()))
+							<a class="dashboard-box" href="{{ action('Admin\ResellerController@index') }}">
+								<span class="badge badge-info bg-teal-800">{{ Auth::user()->admin->resellers->count() }}</span>
+								<div class="dashboard-icon">
+									<i class="icon-users"></i>
+								</div>
+								<h4>{{ trans('messages.resellers') }}</h4>
+							</a>
+						@endif
+						@if (Auth::user()->can("read", new Acelle\Model\ResellerGroup()))
+							<a class="dashboard-box" href="{{ action('Admin\ResellerGroupController@index') }}">
+								<div class="dashboard-icon">
+									<i class="icon-make-group"></i>
+								</div>
+								<h4>{{ trans('messages.groups') }}</h4>
+							</a>
+						@endif
 						<br style="clear:both" />
 					</div>
+				@endif
 				
 				@if (
 					Auth::user()->admin->getPermission("admin_read") != 'no'

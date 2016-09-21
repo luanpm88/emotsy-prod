@@ -34,28 +34,30 @@
 						<i class="icon-home"></i> {{ trans('messages.dashboard') }}
 					</a>
 				</li>
-				<li class="dropdown language-switch"
-					rel0="CustomerGroupController"
-					rel1="CustomerController"
-				>
-					<a class="dropdown-toggle" data-toggle="dropdown">
-						<i class="icon-user"></i> {{ trans('messages.customer') }}
-						<span class="caret"></span>
-					</a>
-					<ul class="dropdown-menu">
-						<li rel0="CustomerController">
-							<a href="{{ action('Admin\CustomerController@index') }}">
-								<i class="icon-users"></i> {{ trans('messages.customers') }}
-							</a>
-						</li>
-						<li rel0="CustomerGroupController">
-							<a href="{{ action('Admin\CustomerGroupController@index') }}">
-								<i class="icon-users4"></i> {{ trans('messages.groups') }}
-							</a>
-						</li>
-					</ul>
-				</li>
-					
+				
+				@if (Auth::user()->can("read", new Acelle\Model\CustomerGroup()))
+					<li class="dropdown language-switch"
+						rel0="CustomerGroupController"
+						rel1="CustomerController"
+					>
+						<a class="dropdown-toggle" data-toggle="dropdown">
+							<i class="icon-user"></i> {{ trans('messages.customer') }}
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							<li rel0="CustomerGroupController">
+								<a href="{{ action('Admin\CustomerGroupController@index') }}">
+									<i class="icon-users4"></i> {{ trans('messages.groups') }}
+								</a>
+							</li>
+						</ul>
+					</li>
+				@endif
+				
+				@if (
+					Auth::user()->can("read", new Acelle\Model\Reseller())
+					|| Auth::user()->can("read", new Acelle\Model\ResellerGroup())
+				)
 					<li class="dropdown language-switch"
 						rel0="ResellerController"
 						rel1="ResellerGroupController"
@@ -65,22 +67,23 @@
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
-							
+							@if (Auth::user()->can("read", new Acelle\Model\Reseller()))
 								<li rel0="ResellerController">
 									<a href="{{ action('Admin\ResellerController@index') }}">
 										<i class="icon-users"></i> {{ trans('messages.resellers') }}
 									</a>
 								</li>
-							
+							@endif
+							@if (Auth::user()->can("read", new Acelle\Model\ResellerGroup()))
 								<li rel0="ResellerGroupController">
 									<a href="{{ action('Admin\ResellerGroupController@index') }}">
 										<i class="icon-users4"></i> {{ trans('messages.groups') }}
 									</a>
 								</li>
-
+							@endif
 						</ul>
 					</li>
-
+				@endif
 				
 				@if (
 					Auth::user()->admin->getPermission("admin_read") != 'no'
@@ -279,22 +282,6 @@
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right">
-				<!--<li class="dropdown language-switch">
-					<a class="dropdown-toggle" data-toggle="dropdown">
-						{{ Acelle\Model\Language::getByCode(Config::get('app.locale'))->name }}
-						<span class="caret"></span>
-					</a>
-
-					<ul class="dropdown-menu">
-						@foreach(Acelle\Model\Language::getAll() as $language)
-							<li class="{{ Acelle\Model\Language::getByCode(Config::get('app.locale'))->code == $language->code ? "active" : "" }}">
-								<a>{{ $language->name }}</a>
-							</li>
-						@endforeach
-					</ul>
-                </li>-->
-				
-				
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						<img src="{{ action('AdminController@avatar', Auth::user()->admin->uid) }}" alt="">
@@ -305,6 +292,10 @@
 					<ul class="dropdown-menu dropdown-menu-right">
 						@can("customer_access", Auth::user())
 							<li><a href="{{ action("HomeController@index") }}"><i class="icon-exit2"></i> {{ trans('messages.customer_view') }}</a></li>
+							<li class="divider"></li>
+						@endif
+						@can("reseller_access", Auth::user())
+							<li><a href="{{ action("Reseller\HomeController@index") }}"><i class="icon-exit2"></i> {{ trans('messages.reseller_view') }}</a></li>
 							<li class="divider"></li>
 						@endif
 						<li><a href="{{ action("Admin\AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.account') }}</a></li>

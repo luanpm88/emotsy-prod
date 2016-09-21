@@ -94,7 +94,7 @@ class Reseller extends Model
     
     public function customers()
     {
-        return $this->hasMany('Acelle\Model\Customer', "creator_id", "user_id");
+        return $this->hasMany('Acelle\Model\Customer');
     }
 
     /**

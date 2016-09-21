@@ -17,10 +17,10 @@ class CreateCustomerGroupsTable extends Migration
             $table->string('name');
             $table->text('options');
             $table->integer('custom_order')->default(0);
-            $table->integer('creator_id')->unsigned()->nullable();
+            $table->integer('admin_id')->unsigned();
 
             // foreign
-            $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
             
             $table->timestamps();
         });
