@@ -27,7 +27,7 @@
     font-size: 20px;
     color: #fff;
     width: 100%;
-">{{ trans('messages.saving_screenshot') }}</div>
+    background: rgba(0,0,0,0.7);">{{ trans('messages.saving_screenshot') }}</div>
     
 {!! $template->content !!}
 
