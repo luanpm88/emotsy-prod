@@ -230,4 +230,16 @@ class BounceHandler extends DeliveryHandler
 
         return $options;
     }
+    
+    /**
+     * Protocol select options.
+     *
+     * @return array
+     */
+    public static function protocolSelectOptions()
+    {
+        return [
+            ['value' => 'imap', 'text' => 'imap']
+        ];
+    }
 }
