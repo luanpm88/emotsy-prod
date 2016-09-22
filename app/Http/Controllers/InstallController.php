@@ -52,6 +52,7 @@ class InstallController extends Controller
     // Starting installation
     public function starting(Request $request)
     {
+        \Artisan::call('cache:clear');
         exec('php '.base_path().'/artisan config:cache');
 
         return redirect()->action('InstallController@systemCompatibility');
@@ -83,7 +84,8 @@ class InstallController extends Controller
                 'current' => 1,
             ]);
         } catch (\Exception $e) {
-            sleep(2);
+            \Artisan::call('cache:clear');
+            sleep(5);
             return redirect()->action('InstallController@systemCompatibility');
         }
     }
