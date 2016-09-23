@@ -83,4 +83,37 @@ class SettingController extends Controller
 
         return redirect()->action('Admin\SettingController@index', ['tab' => '3']);
     }
+    
+    /**
+     * View system logs.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function logs(Request $request)
+    {
+        $path = base_path("artisan");
+        $lines = 300;
+        
+        $error_logs = "";
+        $file = file($path);
+        for ($i = max(0, count($file)-$lines); $i < count($file); $i++) {
+          $error_logs .= $file[$i];
+        }
+        
+        return view('admin.settings.logs', [
+            'error_logs' => $error_logs,
+        ]);
+    }
+    
+    /**
+     * View system logs.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function download_log(Request $request)
+    {
+        $path = storage_path("logs/" . $request->file);
+        
+        return response()->download($path);
+    }
 }

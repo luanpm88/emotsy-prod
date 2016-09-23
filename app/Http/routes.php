@@ -280,9 +280,12 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/languages', 'LanguageController');
 
     // Setting
+    Route::get('admin/settings/logs', 'SettingController@logs');
+    Route::get('log', 'SettingController@download_log');
     Route::get('admin/settings/{tab?}', 'SettingController@index');
     Route::post('admin/settings', 'SettingController@index');
     Route::get('admin/update-urls', 'SettingController@updateUrls');
+    
 
     // Tracking log
     Route::get('admin/tracking_log', 'TrackingLogController@index');
