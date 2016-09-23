@@ -64,7 +64,7 @@
                         // Date limits
                         $('.pickadate_from_now').pickadate({
                             min: [{{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now())->year }},
-                                    {{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now())->month }},
+                                    {{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now()->subMonth(1))->month }},
                                     {{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now())->day }}],
                             format: LANG_DATE_FORMAT
                         });
