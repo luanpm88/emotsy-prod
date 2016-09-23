@@ -188,6 +188,11 @@ class UserController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
+            
+            if($this->isDemoMode()) {
+                return $this->notAuthorized();
+            }
+            
             $this->validate($request, $user->rules());
             
             // Save current user info
