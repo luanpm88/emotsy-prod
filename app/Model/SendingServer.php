@@ -54,6 +54,8 @@ class SendingServer extends Model
         'php-mail' => 'SendingServerPhpMail',
         'mailgun-api' => 'SendingServerMailgunApi',
         'mailgun-smtp' => 'SendingServerMailgunSmtp',
+        'sendgrid-api' => 'SendingServerSendGridApi',
+        'sendgrid-smtp' => 'SendingServerSendGridSmtp',
     );
     
     // Server pools

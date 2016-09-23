@@ -488,14 +488,13 @@ class Campaign extends Model
     }
 
     /**
-     * Prepare Email
-     * Prepare the email content using Swift Mailer.
+     * Build Email Custom Headers
      *
-     * @input Raw email content
-     *
-     * @return MIME text message
+     * @return Hash list of custom headers
      */
-    public function buildCustomHeaders($msgId, $subscriber, $server) {
+    public function getCustomHeaders($subscriber, $server) {
+        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
+
         return array(
             'X-Acelle-Campaign-Id' => $this->uid,
             'X-Acelle-Subscriber-Id' => $subscriber->uid,
@@ -503,6 +502,36 @@ class Campaign extends Model
             'X-Acelle-Message-Id' => $msgId,
             'X-Acelle-Sending-Server-Id' => $server->uid
         );
+    }
+    
+    /**
+     * Build Email HTML content
+     *
+     * @return String
+     */
+    public function getHtmlContent($subscriber, $msgId) {
+        $body = $this->tagMessage($this->html, $subscriber, $msgId);
+
+        if ($this->track_open) {
+            $body = $this->appendOpenTrackingUrl($body, $msgId);
+        }
+
+        if ($this->track_click) {
+            $body = $this->addTrackingUrl($body, $msgId);
+        }
+
+        return $body;
+    }
+
+    /**
+     * Build Email HTML content
+     *
+     * @return String
+     */
+    public function getPlainContent($subscriber, $msgId) {
+        $plain = $this->tagMessage($this->plain, $subscriber, $msgId);
+
+        return $plain;
     }
 
     /**
