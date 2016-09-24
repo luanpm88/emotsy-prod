@@ -22,10 +22,6 @@
 												<a class="kq_search" href="{{ action('Admin\SendingServerController@edit', ["uid" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
 											</h5>
 											<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
-											<br />
-											<span class="text-muted2 list-status pull-left">
-												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
-											</span>
 										</td>
 										<td>
 											<div class="single-stat-box pull-left ml-20">
@@ -37,9 +33,21 @@
 										<td>
 											@if (!empty($item->host))										
 												<div class="single-stat-box pull-left ml-20">
-													<span class="no-margin stat-num kq_search">{{ $item->host }}</span>
+													<span title="{{ $item->host }}" class="no-margin stat-num kq_search domain-truncate">{{ $item->host }}</span>
 													<br />
 													<span class="text-muted">{{ trans('messages.host') }}</span>
+												</div>
+											@elseif (!empty($item->aws_region))										
+												<div class="single-stat-box pull-left ml-20">
+													<span title="{{ $item->aws_region }}" class="no-margin stat-num kq_search domain-truncate">{{ $item->aws_region }}</span>
+													<br />
+													<span class="text-muted">{{ trans('messages.aws_region') }}</span>
+												</div>
+											@elseif (!empty($item->domain))										
+												<div class="single-stat-box pull-left ml-20">
+													<span title="{{ $item->domain }}" class="no-margin stat-num kq_search domain-truncate">{{ $item->domain }}</span>
+													<br />
+													<span class="text-muted">{{ trans('messages.domain') }}</span>
 												</div>
 											@endif
 										</td>
@@ -54,6 +62,11 @@
 												<br />
 												<span class="text-muted2">/ {{ $item->displayQuota() }}</span>
 											</div>
+										</td>
+										<td>
+											<span class="text-muted2 list-status pull-left">
+												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
+											</span>
 										</td>
 										<td class="text-right">											
 											@can('update', $item)

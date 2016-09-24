@@ -1180,6 +1180,13 @@ ul.install-steps li.enabled a:hover {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.domain-truncate {
+    max-width: 200px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 .api-page .list {
     padding-left: 20px;
 }
