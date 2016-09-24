@@ -44,6 +44,14 @@ class Campaign extends Model
     // Campaign settings
     const WORKER_DELAY = 1;
     const DKIM_SELECTOR = 'mailer';
+    
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at', 'run_at'];
+    
 
     public static $required_tags = array(
         array('name' => '{UNSUBSCRIBE_URL}', 'required' => true),

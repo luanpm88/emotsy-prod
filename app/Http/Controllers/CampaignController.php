@@ -358,14 +358,14 @@ class CampaignController extends Controller
     public function schedule(Request $request)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-
+    
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
 
-        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->run_at))->format('Y-m-d') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
-        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->run_at))->format('H:i') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
+        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format('Y-m-d') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
+        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format('H:i') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
 
         $rules = array(
             'delivery_date' => 'required',
@@ -383,17 +383,12 @@ class CampaignController extends Controller
             // $this->validate($request, $rules);
 
             //// Save campaign
-            //$time = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date.' '.$request->delivery_time))->timezone(date_default_timezone_get());
-            //$servertime = \Carbon\Carbon::parse(\Carbon\Carbon::now()->toDateTimeString());
-            //$usertime = \Carbon\Carbon::parse(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->toDateTimeString());
-            //$diff = $servertime->diffInHours($usertime, false);
-            //$time->addHours(-$diff);
-            
-            $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date.' '.$request->delivery_time, $request->user()->timezone);
+            $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date.' '.$request->delivery_time, $request->user()->timezone);            
+            $time = \Acelle\Library\Tool::systemTime($time);
 
-            $campaign->run_at = $time; //->setTimezone(config('app.timezone')); //->toDateTimeString();
+            $campaign->run_at = $time;
             $campaign->save();
-
+            
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
 

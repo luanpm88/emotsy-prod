@@ -30,8 +30,8 @@ class CreateCampaignsTable extends Migration
             $table->boolean('track_click');
             $table->integer('resend');
             $table->integer('custom_order');
-            $table->datetime('run_at')->nullable();
-            $table->datetime('delivery_at')->nullable();
+            $table->timestamp('run_at')->nullable();
+            $table->timestamp('delivery_at')->nullable();
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
