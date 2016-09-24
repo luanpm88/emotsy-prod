@@ -30,7 +30,7 @@
 					
 					<div class="row">
 						<div class="col-md-6 list_select_box" target-box="segments-select-box" segments-url="{{ action('SegmentController@selectBox') }}">
-							@include('helpers.form_control', ['include_blank' => trans('messages.choose'), 'type' => 'select', 'name' => 'mail_list_uid', 'label' => trans('messages.which_list_send'), 'value' => (is_object($campaign->mailList) ? $campaign->mailList->uid : ""), 'options' => Acelle\Model\MailList::getSelectOptions(), 'rules' => $rules])
+							@include('helpers.form_control', ['include_blank' => trans('messages.choose'), 'type' => 'select', 'name' => 'mail_list_uid', 'label' => trans('messages.which_list_send'), 'value' => (is_object($campaign->mailList) ? $campaign->mailList->uid : ""), 'options' => Acelle\Model\MailList::getSelectOptions(Auth::user()), 'rules' => $rules])
 						</div>
 						<div class="col-md-6 segments-select-box">
 							@if (is_object($campaign->mailList) && $campaign->mailList->segments()->count())
