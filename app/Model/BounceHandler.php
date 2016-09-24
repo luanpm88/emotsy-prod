@@ -195,7 +195,7 @@ class BounceHandler extends DeliveryHandler
      * @var array
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'password', 'protocol',
+        'name', 'host', 'port', 'username', 'password', 'protocol', 'encryption'
     ];
 
     /**
@@ -212,6 +212,7 @@ class BounceHandler extends DeliveryHandler
             'username' => 'required',
             'password' => 'required',
             'protocol' => 'required',
+            'encryption' => 'required',
         ];
     }
 
@@ -240,6 +241,21 @@ class BounceHandler extends DeliveryHandler
     {
         return [
             ['value' => 'imap', 'text' => 'imap']
+        ];
+    }
+    
+    /**
+     * Encryption select options.
+     *
+     * @return array
+     */
+    public static function encryptionSelectOptions()
+    {
+        return [
+            ['value' => 'tls', 'text' => 'tls'],
+            ['value' => 'starttls', 'text' => 'starttls'],
+            ['value' => 'notls', 'text' => 'notls'],
+            ['value' => 'ssl', 'text' => 'ssl'],
         ];
     }
 }

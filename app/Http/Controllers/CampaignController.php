@@ -391,7 +391,7 @@ class CampaignController extends Controller
             
             $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date.' '.$request->delivery_time, $request->user()->timezone);
 
-            $campaign->run_at = $time->setTimezone(config('app.timezone')); //->toDateTimeString();
+            $campaign->run_at = $time; //->setTimezone(config('app.timezone')); //->toDateTimeString();
             $campaign->save();
 
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
