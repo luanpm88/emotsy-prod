@@ -67,6 +67,7 @@ return [
             'options' => array(
                 PDO::ATTR_EMULATE_PREPARES => true,
             ),
+            'timezone'  => '+00:00'
         ],
 
         'pgsql' => [

@@ -376,7 +376,7 @@ class CampaignController extends Controller
         if (null !== $request->old()) {
             $campaign->fill($request->old());
         }
-echo $request->user()->timezone;
+
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Check validation
