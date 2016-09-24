@@ -41,6 +41,13 @@
 												<span class="text-muted">{{ trans("messages.backend") }}</span>
 											</div>
 										</td>
+										<td>
+											<div class="single-stat-box pull-left">
+												<span class="no-margin stat-num">{{ $item->displaySendingServersCount() }}</span>
+												<br />
+												<span class="text-muted">{{ trans("messages.sending_servers") }}</span>
+											</div>
+										</td>
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
