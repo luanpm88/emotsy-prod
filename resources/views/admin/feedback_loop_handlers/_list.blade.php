@@ -24,14 +24,14 @@
 											<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
 										<td>
-											<span class="no-margin stat-num kq_search">{{ $item->type }}</span>
-											<br />
-											<span class="text-muted">{{ trans('messages.type') }}</span>
-										</td>
-										<td>
 											<span class="no-margin stat-num kq_search">{{ $item->host }}</span>
 											<br />
 											<span class="text-muted">{{ trans('messages.host') }}</span>
+										</td>
+										<td>
+											<span class="no-margin stat-num kq_search">{{ $item->username }}</span>
+											<br />
+											<span class="text-muted">{{ trans('messages.username') }}</span>
 										</td>
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
