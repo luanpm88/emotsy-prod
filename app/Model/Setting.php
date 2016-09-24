@@ -132,15 +132,7 @@ class Setting extends Model
             ],
             'site_online' => [
                 'cat' => 'general',
-                'value' => true,
-                'type' => 'checkbox',
-                'options' => [
-                    'false', 'true',
-                ],
-            ],
-            'site_online' => [
-                'cat' => 'general',
-                'value' => true,
+                'value' => 'true',
                 'type' => 'checkbox',
                 'options' => [
                     'false', 'true',

@@ -268,7 +268,7 @@ class InstallController extends Controller
             $this->validate($request, $rules);
 
             // Run migrate
-            exec('php '.base_path().'/artisan migrate');
+            exec('php '.base_path().'/artisan migrate --force');
 
             // import database with prefix
             $this->importDatabase($database);
@@ -513,8 +513,8 @@ class InstallController extends Controller
         $smtp = !empty($smtp) ? $smtp : [];
 
         $env_file = fopen(base_path('.env'), 'w') or die('Unable to open file!');
-        $config_string = 'APP_ENV=local
-APP_DEBUG=true
+        $config_string = 'APP_ENV=production
+APP_DEBUG=false
 APP_KEY='.$app_key.'
 
 DB_HOST='.(isset($database['hostname']) ? $database['hostname'] : '').'
