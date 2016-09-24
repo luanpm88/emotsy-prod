@@ -32,8 +32,7 @@
 	<script type="text/javascript" src="{{ URL::asset('assets/js/core/app.js') }}"></script>
 	
 	<!-- /theme JS files -->
-	<script>
-		
+	<script>		
 		$(function() {
 		
 			// Style checkboxes and radios
