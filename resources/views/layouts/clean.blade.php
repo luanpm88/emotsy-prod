@@ -30,8 +30,17 @@
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
 
 	<script type="text/javascript" src="{{ URL::asset('assets/js/core/app.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('assets/js/pages/login.js') }}"></script>
 	<!-- /theme JS files -->
+	
+	<!-- /theme JS files -->
+	<script>		
+		$(function() {
+		
+			// Style checkboxes and radios
+			$('.styled').uniform();
+		
+		});
+	</script>
 
 </head>
 
