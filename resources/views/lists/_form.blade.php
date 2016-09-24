@@ -107,7 +107,7 @@
 						</div>
 					</div>		
 						
-					<div class="sub_section">
+					<div class="sub_section hide">
 						<h2 class="text-semibold text-teal-800">{{ trans('messages.notifications') }}</h2>
 						<div class="row">
 							<div class="col-md-6">
