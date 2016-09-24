@@ -402,6 +402,12 @@ class InstallController extends Controller
                 'note' => 'PHP IMAP Extension is required.',
             ],
             [
+                'type' => 'requirement',
+                'name' => 'PHP GD Library',
+                'check' => (extension_loaded('gd') && function_exists('gd_info')),
+                'note' => 'PHP GD Library is required.',
+            ],            
+            [
                 'type' => 'permission',
                 'name' => 'Storage/app/',
                 'check' => file_exists(base_path('/storage/app')) &&
