@@ -83,7 +83,7 @@ class DeliveryController extends Controller
                     if (array_key_exists("runtime_message_id", $message)) {
                         $bounceLog->runtime_message_id = $message["runtime_message_id"];
                     } else {
-                        $bounceLog->runtime_message_id = StringHelper::cleanupMessageId($message["sg_message_id"]);
+                        $bounceLog->runtime_message_id = StringHelper::extractSendGridMessageId($message["smtp-id"]);
                     }
 
                     // retrieve the associated tracking log in Acelle
@@ -115,13 +115,13 @@ class DeliveryController extends Controller
                     if (array_key_exists("runtime_message_id", $message)) {
                         $feedbackLog->runtime_message_id = $message["runtime_message_id"];
                     } else {
-                        $feedbackLog->runtime_message_id = StringHelper::cleanupMessageId($message["sg_message_id"]);
+                        $feedbackLog->runtime_message_id = StringHelper::extractSendGridMessageId($message["smtp-id"]);
                     }
                     
                     // retrieve the associated tracking log in Acelle
                     $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
                     if ($trackingLog) {
-                        $bounceLog->message_id = $trackingLog->message_id;
+                        $feedbackLog->message_id = $trackingLog->message_id;
                     }
                     
                     // SendGrid only notifies in case of SPAM reported

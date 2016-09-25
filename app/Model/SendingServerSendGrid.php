@@ -113,7 +113,7 @@ class SendingServerSendGrid extends SendingServer
      *
      * @return Mixed
      */
-    private function prepareEmail($campaign, $subscriber) {
+    public function prepareEmail($campaign, $subscriber) {
         $customHeaders = $campaign->getCustomHeaders($subscriber, $this);
         // @TODO use a configurable name for Acelle Mail instead
         $msgId = $customHeaders['X-Acelle-Message-Id'];

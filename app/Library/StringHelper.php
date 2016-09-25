@@ -103,4 +103,17 @@ class StringHelper
 
         return implode('/', $array);
     }
+    
+    /**
+     * Extract SendGrid X-Message-Id from Smtp-Id
+     * For example, extract "GuUFV1znQTmkQyPXrPLyxA" from "<GuUFV1znQTmkQyPXrPLyxA@ismtpd0019p1sin1.sendgrid.net>"
+     *
+     * @param string $val
+     *
+     * @return string
+     */
+    public static function extractSendGridMessageId($smtpId) {
+        $cleaned = self::cleanupMessageId($smtpId);
+        return substr($cleaned, 0, strpos($cleaned, '@'));
+    }
 }
