@@ -701,7 +701,7 @@ input.error {
     border-color: #4CAF50;
     color: #fff;
 }
-.bg-not_sent, .bg-canceled, .bg-unactive, .bg-disabled, .bg-inactive, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-paused, .bg-done {
+.bg-spam-reported, .bg-not_sent, .bg-canceled, .bg-unactive, .bg-disabled, .bg-inactive, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-paused, .bg-done {
     background-color: #777;
     border-color: #777;
     color: #fff;
