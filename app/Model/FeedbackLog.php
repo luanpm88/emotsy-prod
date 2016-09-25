@@ -87,6 +87,21 @@ class FeedbackLog extends Model
     }
 
     /**
+     * Find corresponding subscriber by 'runtime_message_id'
+     *
+     * @return mix
+     */
+    public function findSubscriberByRuntimeMessageId()
+    {
+        $trackingLog = TrackingLog::where('runtime_message_id', $this->runtime_message_id)->first();
+        if ($trackingLog) {
+            return $trackingLog->subscriber;
+        } else {
+            return NULL;
+        }
+    }
+
+    /**
      * Search items.
      *
      * @return collect

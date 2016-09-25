@@ -29,6 +29,7 @@ class Subscriber extends Model
     const STATUS_SUBSCRIBED = 'subscribed';
     const STATUS_UNSUBSCRIBED = 'unsubscribed';
     const STATUS_BLACKLISTED = 'blacklisted';
+    const STATUS_SPAM_REPORTED = 'spam-reported';
 
     /**
      * The attributes that are mass assignable.
@@ -119,6 +120,19 @@ class Subscriber extends Model
         $r = Blacklist::firstOrNew(['email' => $this->email]);
         $r->reason = $reason;
         $r->save();
+
+        return true;
+    }
+
+    /**
+     * Mark a subscriber/list as abuse-reported
+     *
+     * @return boolean
+     */
+    public function markAsSpamReported()
+    {
+        $this->status = self::STATUS_SPAM_REPORTED;
+        $this->save();
 
         return true;
     }

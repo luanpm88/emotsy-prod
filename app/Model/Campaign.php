@@ -24,7 +24,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use DB;
 
@@ -44,14 +44,13 @@ class Campaign extends Model
     // Campaign settings
     const WORKER_DELAY = 1;
     const DKIM_SELECTOR = 'mailer';
-    
+
     /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
     protected $dates = ['created_at', 'updated_at', 'run_at'];
-    
 
     public static $required_tags = array(
         array('name' => '{UNSUBSCRIBE_URL}', 'required' => true),
@@ -243,13 +242,13 @@ class Campaign extends Model
     {
         $this->sending();
 
-        Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
+        MailLog::info("Starting campaign `{$this->name}` (ID: {$this->id})");
         $count = (int) $this->user->getOption('frontend', 'max_process');
         $subscribers = $this->getPendingSubscribers();
-        Log::info(sizeof($subscribers).' subscriber(s) selected');
+        MailLog::info(sizeof($subscribers).' subscriber(s) selected');
         $chunks = $this->getChunks($subscribers, $count);
 
-        Log::info('Start multi-process ('.sizeof($chunks).') session');
+        MailLog::info('Start multi-process ('.sizeof($chunks).') session');
         $parentPid = getmypid();
         for ($i = 0; $i < sizeof($chunks); ++$i) {
             $pid = pcntl_fork();
@@ -258,9 +257,9 @@ class Campaign extends Model
                 // Reconnect to the DB to prevent connection closed issue when using fork
                 DB::reconnect('mysql');
                 // Re-initialize logging to capture the child process' PID
-                Log::fork();
+                MailLog::fork();
 
-                Log::info('Start child process '.($i + 1).' of '.sizeof($chunks).' (forked from '.$parentPid.')');
+                MailLog::info('Start child process '.($i + 1).' of '.sizeof($chunks).' (forked from '.$parentPid.')');
                 sleep(self::WORKER_DELAY);
                 $this->start($chunks[$i], true);
                 exit($i + 1);
@@ -269,16 +268,16 @@ class Campaign extends Model
 
         while (pcntl_waitpid(0, $status) != -1) {
             $status = pcntl_wexitstatus($status);
-            Log::info("Child $status completed\n");
+            MailLog::info("Child $status completed\n");
         }
 
         $this->refreshStatus();
 
         if ($this->status == self::STATUS_SENDING) {
             $this->done();
-            Log::info('Campaign sent!');
+            MailLog::info('Campaign sent!');
         } else {
-            Log::warning('Campaign sent, but some errors occurred!');
+            MailLog::warning('Campaign sent, but some errors occurred!');
         }
     }
 
@@ -291,9 +290,9 @@ class Campaign extends Model
         try {
             if (!$multi) {
                 $this->sending();
-                Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
+                MailLog::info("Starting campaign `{$this->name}` (ID: {$this->id})");
                 $subscribers = $this->getPendingSubscribers();
-                Log::info(sizeof($subscribers).' subscriber(s) selected');
+                MailLog::info(sizeof($subscribers).' subscriber(s) selected');
             }
 
             $i = 0;
@@ -303,7 +302,7 @@ class Campaign extends Model
                 }
 
                 $i += 1;
-                Log::info("Sending to subscriber `{$subscriber->email}` ({$i}/".sizeof($subscribers).')');
+                MailLog::info("Sending to subscriber `{$subscriber->email}` ({$i}/".sizeof($subscribers).')');
 
                 $server = $this->pickServer($this);
                 list($message, $msgId) = $this->prepareEmail($subscriber, $server);
@@ -313,6 +312,7 @@ class Campaign extends Model
                     'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly (not in MIME message)
                     'campaign' => $this,
                     'subscriber' => $subscriber,
+                    'msgId' => $msgId
                 ));
 
                 $this->trackMessage($sent, $subscriber, $server, $msgId);
@@ -320,11 +320,11 @@ class Campaign extends Model
 
             if (!$multi) {
                 $this->done();
-                Log::info('Campaign sent!');
+                MailLog::info('Campaign sent!');
             }
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            Log::error("Campaign `{$this->name}` (ID: ".$this->id.') deferred!');
+            MailLog::error($e->getMessage());
+            MailLog::error("Campaign `{$this->name}` (ID: ".$this->id.') deferred!');
             $this->error();
         } finally {
             // reset server pools: just in case DeliveryServerAmazonSesWebApi
@@ -488,21 +488,52 @@ class Campaign extends Model
     }
 
     /**
-     * Prepare Email
-     * Prepare the email content using Swift Mailer.
+     * Build Email Custom Headers
      *
-     * @input Raw email content
-     *
-     * @return MIME text message
+     * @return Hash list of custom headers
      */
-    public function buildCustomHeaders($msgId, $subscriber, $server) {
+    public function getCustomHeaders($subscriber, $server) {
+        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
+
         return array(
             'X-Acelle-Campaign-Id' => $this->uid,
             'X-Acelle-Subscriber-Id' => $subscriber->uid,
             'X-Acelle-User-Id' => $this->user->uid,
             'X-Acelle-Message-Id' => $msgId,
-            'X-Acelle-Sending-Server-Id' => $server->uid
+            'X-Acelle-Sending-Server-Id' => $server->uid,
+            'List-Unsubscribe' => '<'.str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), Setting::get('url_unsubscribe')).'>',
+            'Precedence' => 'bulk'
         );
+    }
+    
+    /**
+     * Build Email HTML content
+     *
+     * @return String
+     */
+    public function getHtmlContent($subscriber, $msgId) {
+        $body = $this->tagMessage($this->html, $subscriber, $msgId);
+
+        if ($this->track_open) {
+            $body = $this->appendOpenTrackingUrl($body, $msgId);
+        }
+
+        if ($this->track_click) {
+            $body = $this->addTrackingUrl($body, $msgId);
+        }
+
+        return $body;
+    }
+
+    /**
+     * Build Email HTML content
+     *
+     * @return String
+     */
+    public function getPlainContent($subscriber, $msgId) {
+        $plain = $this->tagMessage($this->plain, $subscriber, $msgId);
+
+        return $plain;
     }
 
     /**
@@ -520,12 +551,16 @@ class Campaign extends Model
 
         $message = \Swift_Message::newInstance();
         $message->setId($msgId);
-        $message->setContentType('text/plain; charset=utf-8');
-        $message->getHeaders()->addTextHeader('X-Acelle-Campaign-Id', $this->uid);
-        $message->getHeaders()->addTextHeader('X-Acelle-Subscriber-Id', $subscriber->uid);
-        $message->getHeaders()->addTextHeader('X-Acelle-User-Id', $this->user->uid);
-        $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', $msgId);
-        $message->getHeaders()->addTextHeader('X-Acelle-Sending-Server-Id', $server->uid);
+        
+        if ($this->type == self::TYPE_REGULAR) {
+            $message->setContentType('text/html; charset=utf-8');
+        } else {
+            $message->setContentType('text/plain; charset=utf-8');
+        }
+
+        foreach($this->getCustomHeaders($subscriber, $server) as $key => $value) {
+            $message->getHeaders()->addTextHeader($key, $value);
+        }
 
         // @TODO for AWS, setting returnPath requires verified domain or email address
         //$message->setReturnPath($server->getVerp($subscriber->email));
@@ -534,21 +569,11 @@ class Campaign extends Model
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
         $message->setEncoder(\Swift_Encoding::get8bitEncoding());
-
-        $body = $this->tagMessage($this->html, $subscriber, $msgId);
-        $plain = $this->tagMessage($this->plain, $subscriber, $msgId);
-
-        if ($this->track_open) {
-            $body = $this->appendOpenTrackingUrl($body, $msgId);
+        $message->setBody($this->getPlainContent($subscriber, $msgId), 'text/plain');
+        if ($this->type == self::TYPE_REGULAR) {
+            $message->addPart($this->getHtmlContent($subscriber, $msgId), 'text/html');
         }
-
-        if ($this->track_click) {
-            $body = $this->addTrackingUrl($body, $msgId);
-        }
-
-        $message->setBody($body, 'text/html');
-        $message->addPart($plain, 'text/plain');
-
+        
         if ($this->sign_dkim) {
             $message = $this->sign($message);
         }
