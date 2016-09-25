@@ -69,22 +69,4 @@ class SendingServerSendGridApi extends SendingServerSendGrid
             );
         }
     }
-
-    private function prepareEmail($campaign, $subscriber) {
-        $customHeaders = $campaign->getCustomHeaders($subscriber, $this);
-        // @TODO use a configurable name for Acelle Mail instead
-        $msgId = $customHeaders['X-Acelle-Message-Id'];
-
-        $from = new Email($campaign->from_name, $campaign->from_email);
-        $to = new Email(null, $subscriber->email);
-        $plain = new Content("text/plain", $campaign->getPlainContent($subscriber, $msgId));
-        $html = new Content("text/html", $campaign->getHtmlContent($subscriber, $msgId));
-        
-        $mail = new Mail($from, $campaign->subject, $to, $plain);
-        foreach($customHeaders as $key => $value) {
-            $mail->addHeader($key, $value);
-        }
-        $mail->addContent($html);
-        return $mail;
-    }
 }

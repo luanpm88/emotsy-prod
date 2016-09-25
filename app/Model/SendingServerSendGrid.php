@@ -22,7 +22,7 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use SendGrid\Mail;
 use SendGrid\Email;
@@ -30,7 +30,7 @@ use SendGrid\Content;
 
 class SendingServerSendGrid extends SendingServer
 {
-    const WEBHOOK = 'mailgun';
+    const WEBHOOK = 'sendgrid';
 
     protected $table = 'sending_servers';
     public static $client = null;
@@ -61,10 +61,35 @@ class SendingServerSendGrid extends SendingServer
             return true;
         }
         try {
-            // ....
+            MailLog::info('Setting up SendGrid webhooks');
+            $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
+            $request_body = json_decode('{
+                "bounce": true,
+                "click": false,
+                "deferred": false,
+                "delivered": false,
+                "dropped": true,
+                "enabled": false,
+                "group_resubscribe": false,
+                "group_unsubscribe": false,
+                "open": false,
+                "processed": false,
+                "spam_report": true,
+                "unsubscribe": false,
+                "url": "'.$subscribeUrl.'"
+                }'
+            );
+            $response = $this->client()->client->user()->webhooks()->event()->settings()->patch($request_body);
+            
+            if($response->_status_code == '200') {
+                MailLog::info('Webhooks successfully set!');
+            } else {
+                throw new \Exception("Cannot setup SendGrid webhooks");
+            }
+
             self::$isWebhookSetup = true;
         } catch (\Exception $e) {
-            // just ignore
+            MailLog::warning($e->getMessage());
         }
     }
     
@@ -81,5 +106,28 @@ class SendingServerSendGrid extends SendingServer
         } else {
             return NULL;
         }
+    }
+    
+    /**
+     * Prepare the email object for sending
+     *
+     * @return Mixed
+     */
+    private function prepareEmail($campaign, $subscriber) {
+        $customHeaders = $campaign->getCustomHeaders($subscriber, $this);
+        // @TODO use a configurable name for Acelle Mail instead
+        $msgId = $customHeaders['X-Acelle-Message-Id'];
+
+        $from = new Email($campaign->from_name, $campaign->from_email);
+        $to = new Email(null, $subscriber->email);
+        $plain = new Content("text/plain", $campaign->getPlainContent($subscriber, $msgId));
+        $html = new Content("text/html", $campaign->getHtmlContent($subscriber, $msgId));
+        
+        $mail = new Mail($from, $campaign->subject, $to, $plain);
+        foreach($customHeaders as $key => $value) {
+            $mail->addHeader($key, $value);
+        }
+        $mail->addContent($html);
+        return $mail;
     }
 }

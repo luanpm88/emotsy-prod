@@ -38,12 +38,15 @@ class BounceHandler extends DeliveryHandler
         try {
             $header = imap_headerinfo($mbox, $msgNo);
             $body = imap_body($mbox, $msgNo, FT_PEEK);
-
-            //$bouncedAddress = $this->getBouncedAddress($header->toaddress);
-            //print_r($bouncedAddress . "\n");
-            //if (empty($bouncedAddress)) {
-            //    throw new \Exception("not a bounce message");
-            //}
+            
+            /* The following check is now deprecated
+             * and will be removed
+                 $bouncedAddress = $this->getBouncedAddress($header->toaddress);
+                 print_r($bouncedAddress . "\n");
+                 if (empty($bouncedAddress)) {
+                     throw new \Exception("not a bounce message");
+                 }
+            */
 
             $msgId = $this->getMessageId($body);
 

@@ -24,7 +24,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use DB;
 
@@ -243,13 +243,13 @@ class Campaign extends Model
     {
         $this->sending();
 
-        Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
+        MailLog::info("Starting campaign `{$this->name}` (ID: {$this->id})");
         $count = (int) $this->user->getOption('frontend', 'max_process');
         $subscribers = $this->getPendingSubscribers();
-        Log::info(sizeof($subscribers).' subscriber(s) selected');
+        MailLog::info(sizeof($subscribers).' subscriber(s) selected');
         $chunks = $this->getChunks($subscribers, $count);
 
-        Log::info('Start multi-process ('.sizeof($chunks).') session');
+        MailLog::info('Start multi-process ('.sizeof($chunks).') session');
         $parentPid = getmypid();
         for ($i = 0; $i < sizeof($chunks); ++$i) {
             $pid = pcntl_fork();
@@ -258,9 +258,9 @@ class Campaign extends Model
                 // Reconnect to the DB to prevent connection closed issue when using fork
                 DB::reconnect('mysql');
                 // Re-initialize logging to capture the child process' PID
-                Log::fork();
+                MailLog::fork();
 
-                Log::info('Start child process '.($i + 1).' of '.sizeof($chunks).' (forked from '.$parentPid.')');
+                MailLog::info('Start child process '.($i + 1).' of '.sizeof($chunks).' (forked from '.$parentPid.')');
                 sleep(self::WORKER_DELAY);
                 $this->start($chunks[$i], true);
                 exit($i + 1);
@@ -269,16 +269,16 @@ class Campaign extends Model
 
         while (pcntl_waitpid(0, $status) != -1) {
             $status = pcntl_wexitstatus($status);
-            Log::info("Child $status completed\n");
+            MailLog::info("Child $status completed\n");
         }
 
         $this->refreshStatus();
 
         if ($this->status == self::STATUS_SENDING) {
             $this->done();
-            Log::info('Campaign sent!');
+            MailLog::info('Campaign sent!');
         } else {
-            Log::warning('Campaign sent, but some errors occurred!');
+            MailLog::warning('Campaign sent, but some errors occurred!');
         }
     }
 
@@ -291,9 +291,9 @@ class Campaign extends Model
         try {
             if (!$multi) {
                 $this->sending();
-                Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
+                MailLog::info("Starting campaign `{$this->name}` (ID: {$this->id})");
                 $subscribers = $this->getPendingSubscribers();
-                Log::info(sizeof($subscribers).' subscriber(s) selected');
+                MailLog::info(sizeof($subscribers).' subscriber(s) selected');
             }
 
             $i = 0;
@@ -303,7 +303,7 @@ class Campaign extends Model
                 }
 
                 $i += 1;
-                Log::info("Sending to subscriber `{$subscriber->email}` ({$i}/".sizeof($subscribers).')');
+                MailLog::info("Sending to subscriber `{$subscriber->email}` ({$i}/".sizeof($subscribers).')');
 
                 $server = $this->pickServer($this);
                 list($message, $msgId) = $this->prepareEmail($subscriber, $server);
@@ -313,6 +313,7 @@ class Campaign extends Model
                     'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly (not in MIME message)
                     'campaign' => $this,
                     'subscriber' => $subscriber,
+                    'msgId' => $msgId
                 ));
 
                 $this->trackMessage($sent, $subscriber, $server, $msgId);
@@ -320,11 +321,11 @@ class Campaign extends Model
 
             if (!$multi) {
                 $this->done();
-                Log::info('Campaign sent!');
+                MailLog::info('Campaign sent!');
             }
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            Log::error("Campaign `{$this->name}` (ID: ".$this->id.') deferred!');
+            MailLog::error($e->getMessage());
+            MailLog::error("Campaign `{$this->name}` (ID: ".$this->id.') deferred!');
             $this->error();
         } finally {
             // reset server pools: just in case DeliveryServerAmazonSesWebApi
