@@ -80,7 +80,7 @@ class DeliveryController extends Controller
                     
                     // runtime-message_id is set by SendGrid SMTP API
                     // in case of SendGrid Web API, use sg_message_id instead
-                    if ($message["runtime_message_id"]) {
+                    if (array_key_exists("runtime_message_id", $message)) {
                         $bounceLog->runtime_message_id = $message["runtime_message_id"];
                     } else {
                         $bounceLog->runtime_message_id = StringHelper::cleanupMessageId($message["sg_message_id"]);
@@ -112,7 +112,7 @@ class DeliveryController extends Controller
 
                     // runtime-message_id is set by SendGrid SMTP API
                     // in case of SendGrid Web API, use sg_message_id instead
-                    if ($message["runtime_message_id"]) {
+                    if (array_key_exists("runtime_message_id", $message)) {
                         $feedbackLog->runtime_message_id = $message["runtime_message_id"];
                     } else {
                         $feedbackLog->runtime_message_id = StringHelper::cleanupMessageId($message["sg_message_id"]);

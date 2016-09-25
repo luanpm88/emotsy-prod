@@ -69,7 +69,7 @@ class SendingServerSendGrid extends SendingServer
                 "deferred": false,
                 "delivered": false,
                 "dropped": true,
-                "enabled": false,
+                "enabled": true,
                 "group_resubscribe": false,
                 "group_unsubscribe": false,
                 "open": false,
