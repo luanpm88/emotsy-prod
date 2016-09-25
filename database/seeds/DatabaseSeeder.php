@@ -408,10 +408,10 @@ class DatabaseSeeder extends Seeder
             'user_id' => 1,
             'type' => 'sendgrid-smtp',
             'api_key' => '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',
-            'host' => 'smtp.sendgrid.net',
+            'host' => 'smtp.sendgrid.net',  // giá trị gợi ý màu xám xám trong textbox
             'smtp_username' => 'sendgridlouis',
             'smtp_password' => 'louis123',
-            'smtp_port' => 587,
+            'smtp_port' => 587, // giá trị gợi ý màu xám xám trong textbox
             'status' => 'active',
             'quota_value' => 1000,
             'quota_base' => 5,
