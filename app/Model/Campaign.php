@@ -44,14 +44,13 @@ class Campaign extends Model
     // Campaign settings
     const WORKER_DELAY = 1;
     const DKIM_SELECTOR = 'mailer';
-    
+
     /**
      * The attributes that should be mutated to dates.
      *
      * @var array
      */
     protected $dates = ['created_at', 'updated_at', 'run_at'];
-    
 
     public static $required_tags = array(
         array('name' => '{UNSUBSCRIBE_URL}', 'required' => true),
@@ -501,7 +500,9 @@ class Campaign extends Model
             'X-Acelle-Subscriber-Id' => $subscriber->uid,
             'X-Acelle-User-Id' => $this->user->uid,
             'X-Acelle-Message-Id' => $msgId,
-            'X-Acelle-Sending-Server-Id' => $server->uid
+            'X-Acelle-Sending-Server-Id' => $server->uid,
+            'List-Unsubscribe' => '<'.str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), Setting::get('url_unsubscribe')).'>',
+            'Precedence' => 'bulk'
         );
     }
     
@@ -550,12 +551,16 @@ class Campaign extends Model
 
         $message = \Swift_Message::newInstance();
         $message->setId($msgId);
-        $message->setContentType('text/plain; charset=utf-8');
-        $message->getHeaders()->addTextHeader('X-Acelle-Campaign-Id', $this->uid);
-        $message->getHeaders()->addTextHeader('X-Acelle-Subscriber-Id', $subscriber->uid);
-        $message->getHeaders()->addTextHeader('X-Acelle-User-Id', $this->user->uid);
-        $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', $msgId);
-        $message->getHeaders()->addTextHeader('X-Acelle-Sending-Server-Id', $server->uid);
+        
+        if ($this->type == self::TYPE_REGULAR) {
+            $message->setContentType('text/html; charset=utf-8');
+        } else {
+            $message->setContentType('text/plain; charset=utf-8');
+        }
+
+        foreach($this->getCustomHeaders($subscriber, $server) as $key => $value) {
+            $message->getHeaders()->addTextHeader($key, $value);
+        }
 
         // @TODO for AWS, setting returnPath requires verified domain or email address
         //$message->setReturnPath($server->getVerp($subscriber->email));
@@ -564,21 +569,11 @@ class Campaign extends Model
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
         $message->setEncoder(\Swift_Encoding::get8bitEncoding());
-
-        $body = $this->tagMessage($this->html, $subscriber, $msgId);
-        $plain = $this->tagMessage($this->plain, $subscriber, $msgId);
-
-        if ($this->track_open) {
-            $body = $this->appendOpenTrackingUrl($body, $msgId);
+        $message->setBody($this->getPlainContent($subscriber, $msgId), 'text/plain');
+        if ($this->type == self::TYPE_REGULAR) {
+            $message->addPart($this->getHtmlContent($subscriber, $msgId), 'text/html');
         }
-
-        if ($this->track_click) {
-            $body = $this->addTrackingUrl($body, $msgId);
-        }
-
-        $message->setBody($body, 'text/html');
-        $message->addPart($plain, 'text/plain');
-
+        
         if ($this->sign_dkim) {
             $message = $this->sign($message);
         }
