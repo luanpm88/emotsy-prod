@@ -281,6 +281,21 @@ class SendingServer extends Model
                     'aws_region' => 'required',
                 ],
             ],
+            'sendgrid-smtp' => [
+                'cols' => [
+                    'name' => 'required',
+                    'host' => 'required',
+                    'smtp_username' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_port' => 'required',
+                ],
+            ],
+            'sendgrid-api' => [
+                'cols' => [
+                    'name' => 'required',
+                    'api_key' => 'required',
+                ],
+            ],
             'mailgun-api' => [
                 'cols' => [
                     'name' => 'required',
