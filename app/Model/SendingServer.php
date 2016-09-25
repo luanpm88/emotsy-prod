@@ -284,6 +284,7 @@ class SendingServer extends Model
             'sendgrid-smtp' => [
                 'cols' => [
                     'name' => 'required',
+                    'api_key' => 'required',
                     'host' => 'required',
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',

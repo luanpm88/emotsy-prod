@@ -547,7 +547,8 @@ class Campaign extends Model
     private function prepareEmail($subscriber, $server)
     {
         // build the message
-        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
+        $customHeaders = $this->getCustomHeaders($subscriber, $this);
+        $msgId = $customHeaders['X-Acelle-Message-Id'];
 
         $message = \Swift_Message::newInstance();
         $message->setId($msgId);
@@ -558,7 +559,7 @@ class Campaign extends Model
             $message->setContentType('text/plain; charset=utf-8');
         }
 
-        foreach($this->getCustomHeaders($subscriber, $server) as $key => $value) {
+        foreach($customHeaders as $key => $value) {
             $message->getHeaders()->addTextHeader($key, $value);
         }
 

@@ -43,8 +43,7 @@ class SendingServerSendGridApi extends SendingServerSendGrid
     {
         try {
             $this->setupWebhooks();
-            $mail = $this->prepareEmail($params['campaign'], $params['subscriber']);
-            
+            $mail = $this->prepareEmail($params['campaign'], $params['subscriber'], $params['msgId']);
             $response = $this->client()->client->mail()->send()->post($mail);
             $statusCode = $response->statusCode();
             
