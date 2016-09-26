@@ -1,0 +1,75 @@
+<?php
+
+namespace Acelle\Policies;
+
+use Illuminate\Auth\Access\HandlesAuthorization;
+
+class PlanPolicy
+{
+    use HandlesAuthorization;
+
+    /**
+     * Create a new policy instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        //
+    }
+    
+    public function read(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
+    {
+        $can = $user->admin->getPermission('plan_read') != 'no';
+
+        return $can;
+    }
+    
+    public function create(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
+    {
+        $can = $user->admin->getPermission('plan_create') == 'yes';
+
+        return $can;
+    }
+
+    public function profile(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
+    {
+        return $user->id == $item->user_id;
+    }
+
+    public function update(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
+    {
+        $ability = $user->admin->getPermission('plan_update');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
+
+        return $can;
+    }
+
+    public function delete(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
+    {
+        $ability = $user->admin->getPermission('plan_delete');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
+
+        return $can;
+    }
+    
+    public function disable(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
+    {
+        $ability = $user->admin->getPermission('plan_update');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
+
+        return $can && $item->status != 'inactive';
+    }
+    
+    public function enable(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
+    {
+        $ability = $user->admin->getPermission('plan_update');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
+
+        return $can && $item->status != 'active';
+    }
+}

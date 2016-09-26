@@ -70,7 +70,7 @@ class ResellerPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
-        return $can;
+        return $can && $item->status != 'inactive';
     }
     
     public function enable(\Acelle\Model\User $user, \Acelle\Model\Reseller $item)
@@ -79,6 +79,6 @@ class ResellerPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
-        return $can;
+        return $can && $item->status != 'active';
     }
 }

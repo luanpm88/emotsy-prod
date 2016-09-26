@@ -32,14 +32,13 @@
 					<div class="row top-list-controls">
 						<div class="col-md-10">
 							@if ($admins->count() >= 0)					
-								<div class="filter-box">
-										
+								<div class="filter-box">										
 									<span class="filter-group">
 										<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
 										<select class="select" name="sort-order">											
                                             <option value="admins.created_at">{{ trans('messages.created_at') }}</option>
 											<option value="admins.updated_at">{{ trans('messages.updated_at') }}</option>
-											<option value="admins.email">{{ trans('messages.name') }}</option>
+											<option value="admins.name">{{ trans('messages.name') }}</option>
 										</select>										
 										<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
 											<i class="icon-sort-amount-desc"></i>

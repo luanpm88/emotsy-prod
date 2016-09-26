@@ -239,7 +239,11 @@ class Customer extends Model
     {
         $query = self::select('customers.*')
                         ->leftJoin('customer_groups', 'customer_groups.id', '=', 'customers.customer_group_id');
-
+        
+        if ($request->user()->reseller->getPermission('customer_read') == 'own') {
+            $query = $query->where('customers.reseller_id', '=', $request->user()->reseller->id);
+        }
+        
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {

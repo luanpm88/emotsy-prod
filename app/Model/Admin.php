@@ -92,11 +92,6 @@ class Admin extends Model
         return $this->belongsTo('Acelle\Model\AdminGroup');
     }
     
-    public function customers()
-    {
-        return $this->hasMany('Acelle\Model\Customer', "creator_id", "user_id");
-    }
-    
     public function resellers()
     {
         return $this->hasMany('Acelle\Model\Reseller');
@@ -214,7 +209,11 @@ class Admin extends Model
     {
         $query = self::select('admins.*')
                         ->leftJoin('admin_groups', 'admin_groups.id', '=', 'admins.admin_group_id');
-
+        
+        //if ($request->user()->admin->getPermission('admin_read') == 'own') {
+        //    $query = $query->where('admins.admin_id', '=', $request->user()->admin->id);
+        //}
+        
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
@@ -304,7 +303,7 @@ class Admin extends Model
     }
     
     /**
-     * Disable customer.
+     * Disable admin.
      *
      * @return boolean
      */
@@ -315,7 +314,7 @@ class Admin extends Model
     }
     
     /**
-     * Enable customer.
+     * Enable admin.
      *
      * @return boolean
      */

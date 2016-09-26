@@ -183,6 +183,10 @@ class AdminGroup extends Model
             'customer_update' => 'own',
             'customer_delete' => 'own',
             'customer_login_as' => 'own',
+            'plan_read' => 'own',
+            'plan_create' => 'yes',
+            'plan_update' => 'own',
+            'plan_delete' => 'own',
             'sending_server_read' => 'all',
             'sending_server_create' => 'yes',
             'sending_server_update' => 'own',
@@ -213,6 +217,10 @@ class AdminGroup extends Model
             'language_create' => 'yes',
             'language_update' => 'yes',
             'language_delete' => 'yes',
+            'currency_read' => 'own',
+            'currency_create' => 'yes',
+            'currency_update' => 'own',
+            'currency_delete' => 'own',
             'report_blacklist' => 'yes',
             'report_tracking_log' => 'yes',
             'report_bounce_log' => 'yes',
@@ -419,6 +427,35 @@ class AdminGroup extends Model
                     ],
                 ],
                 'login_as' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+            ],
+            'plan' => [
+                'read' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'create' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                'update' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'delete' => [
                     'options' => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
@@ -634,6 +671,35 @@ class AdminGroup extends Model
                     'options' => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+            ],
+            'currency' => [
+                'read' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'create' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                'update' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'delete' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
                     ],
                 ],
             ],

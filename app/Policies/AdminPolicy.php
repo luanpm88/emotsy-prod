@@ -70,7 +70,7 @@ class AdminPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->creator_id);
 
-        return $can;
+        return $can && $item->status != 'inactive';
     }
     
     public function enable(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
@@ -79,6 +79,6 @@ class AdminPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->creator_id);
 
-        return $can;
+        return $can && $item->status != 'active';
     }
 }

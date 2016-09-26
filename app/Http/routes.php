@@ -259,7 +259,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/sending_servers/{id}/edit/{type}', 'SendingServerController@edit');
     Route::patch('admin/sending_servers/{id}/update/{type}', 'SendingServerController@update');
     
-
     // Bounce handlers
     Route::get('admin/bounce_handlers/listing/{page?}', 'BounceHandlerController@listing');
     Route::get('admin/bounce_handlers/sort', 'BounceHandlerController@sort');
@@ -369,6 +368,22 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/resellers/disable', 'ResellerController@disable');
     Route::get('admin/resellers/enable', 'ResellerController@enable');
     Route::resource('admin/resellers', 'ResellerController');
+    
+    // Plan    
+    Route::get('admin/plans/listing/{page?}', 'PlanController@listing');
+    Route::get('admin/plans/sort', 'PlanController@sort');
+    Route::get('admin/plans/delete', 'PlanController@delete');
+    Route::get('admin/plans/disable', 'PlanController@disable');
+    Route::get('admin/plans/enable', 'PlanController@enable');
+    Route::resource('admin/plans', 'PlanController');
+    
+    // Currency    
+    Route::get('admin/currencies/listing/{page?}', 'CurrencyController@listing');
+    Route::get('admin/currencies/sort', 'CurrencyController@sort');
+    Route::get('admin/currencies/delete', 'CurrencyController@delete');
+    Route::get('admin/currencies/disable', 'CurrencyController@disable');
+    Route::get('admin/currencies/enable', 'CurrencyController@enable');
+    Route::resource('admin/currencies', 'CurrencyController');
 });
 
 

@@ -16,8 +16,8 @@
 		<div class="col-md-7">
 			<div class="row">
 				@if (
-					Auth::user()->can("read", new Acelle\Model\Reseller())
-					|| Auth::user()->can("read", new Acelle\Model\ResellerGroup())
+					Auth::user()->can("read", new Acelle\Model\Reseller()) ||
+					Auth::user()->can("read", new Acelle\Model\ResellerGroup())
 				)
 					<div class="col-md-6">
 						<h2 class="text-muted">{{ trans('messages.reseller') }}</h2>
@@ -25,7 +25,7 @@
 							<a class="dashboard-box" href="{{ action('Admin\ResellerController@index') }}">
 								<span class="badge badge-info bg-teal-800">{{ Auth::user()->admin->resellers->count() }}</span>
 								<div class="dashboard-icon">
-									<i class="icon-users"></i>
+									<i class="icon-users2"></i>
 								</div>
 								<h4>{{ trans('messages.resellers') }}</h4>
 							</a>
@@ -37,18 +37,18 @@
 								</div>
 								<h4>{{ trans('messages.groups') }}</h4>
 							</a>
-						@endif
+						@endif						
 						<br style="clear:both" />
 					</div>
 				@endif
 				
 				@if (
-					Auth::user()->admin->getPermission("admin_read") != 'no'
-					|| Auth::user()->admin->getPermission("admin_group_read") != 'no'
+					Auth::user()->can("read", new Acelle\Model\Admin()) ||
+					Auth::user()->can("read", new Acelle\Model\AdminGroup())
 				)
 					<div class="col-md-6">
-						<h2 class="text-muted">{{ trans('messages.admin') }}</h2>
-						@if (Auth::user()->admin->getPermission("admin_read") != 'no')
+						<h2 class="text-muted">{{ trans('messages.admin') }}</h2>						
+						@if (Auth::user()->can("read", new Acelle\Model\Admin()))
 							<a class="dashboard-box" href="{{ action('Admin\AdminController@index') }}">
 								<div class="dashboard-icon">
 									<i class="icon-user-tie"></i>
@@ -56,12 +56,51 @@
 								<h4>{{ trans('messages.admins') }}</h4>
 							</a>
 						@endif
-						@if (Auth::user()->admin->getPermission("admin_group_read") != 'no')
+						@if (Auth::user()->can("read", new Acelle\Model\AdminGroup()))
 							<a class="dashboard-box" href="{{ action('Admin\AdminGroupController@index') }}">
 								<div class="dashboard-icon">
 									<i class="icon-make-group"></i>
 								</div>
 								<h4>{{ trans('messages.groups') }}</h4>
+							</a>
+						@endif
+						
+						<br style="clear:both" />
+					</div>
+				@endif		
+				
+			</div>
+			<br />
+			
+			<div class="row">				
+				@if (
+					Auth::user()->can("read", new Acelle\Model\Plan()) ||
+					Auth::user()->can("read", new Acelle\Model\Currency())
+				)
+					<div class="col-md-12">
+						<h2 class="text-muted">{{ trans('messages.plan') }}</h2>
+						@if (Auth::user()->can("read", new Acelle\Model\CustomerGroup()))
+							<a class="dashboard-box" href="{{ action('Admin\CustomerGroupController@index') }}">
+								<div class="dashboard-icon">
+									<i class="icon-make-group"></i>
+								</div>
+								<h4>{{ trans('messages.customer_groups') }}</h4>
+							</a>
+						@endif
+						@if (Auth::user()->can("read", new Acelle\Model\Plan()))
+							<a class="dashboard-box" href="{{ action('Admin\PlanController@index') }}">
+								<div class="dashboard-icon">
+									<i class="icon-clipboard2"></i>
+								</div>
+								<h4>{{ trans('messages.plans') }}</h4>
+							</a>
+						@endif
+						@if (Auth::user()->can("read", new Acelle\Model\Currency()))
+							<a class="dashboard-box" href="{{ action('Admin\CurrencyController@index') }}">
+								<div class="dashboard-icon">
+									<i class="icon-coins"></i>
+								</div>
+								<h4>{{ trans('messages.currencies') }}</h4>
 							</a>
 						@endif
 						<br style="clear:both" />

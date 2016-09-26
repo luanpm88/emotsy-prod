@@ -34,6 +34,8 @@ class AuthServiceProvider extends ServiceProvider
         \Acelle\Model\Setting::class => \Acelle\Policies\SettingPolicy::class,
         \Acelle\Model\ResellerGroup::class => \Acelle\Policies\ResellerGroupPolicy::class,
         \Acelle\Model\Reseller::class => \Acelle\Policies\ResellerPolicy::class,
+        \Acelle\Model\Plan::class => \Acelle\Policies\PlanPolicy::class,
+        \Acelle\Model\Currency::class => \Acelle\Policies\CurrencyPolicy::class,
     ];
 
     /**

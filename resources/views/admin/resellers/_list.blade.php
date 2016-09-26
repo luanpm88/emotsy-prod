@@ -57,7 +57,7 @@
 															</li>
 														@endcan
 														<li>														
-															<a delete-confirm="{{ trans('messages.delete_users_confirm') }}" href="{{ action('Admin\ResellerController@delete', ['uids' => $item->uid]) }}">
+															<a delete-confirm="{{ trans('messages.delete_resellers_confirm') }}" href="{{ action('Admin\ResellerController@delete', ['uids' => $item->uid]) }}">
 																<i class="icon-trash"></i> {{ trans('messages.delete') }}
 															</a>
 														</li>

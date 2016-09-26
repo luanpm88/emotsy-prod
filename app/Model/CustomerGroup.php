@@ -313,4 +313,74 @@ class CustomerGroup extends Model
             return $this->getOption("sending_quota") . " " . trans('messages.' . \Acelle\Library\Tool::getPluralPrase('email', $this->getOption("sending_quota"))) . ' / '.$this->getOption("sending_quota_time").' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption("sending_quota_time_unit"), $this->getOption("sending_quota")));
         }        
     }
+    
+    /**
+     * Display max lists.
+     *
+     * @return array
+     */
+    public function displayMaxList()
+    {
+        if ($this->getOption("list_max") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("list_max");
+        }        
+    }
+    
+    /**
+     * Display max subscribers.
+     *
+     * @return array
+     */
+    public function displayMaxSubscriber()
+    {
+        if ($this->getOption("subscriber_max") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("subscriber_max");
+        }        
+    }
+    
+    /**
+     * Display max campaign.
+     *
+     * @return array
+     */
+    public function displayMaxCampaign()
+    {
+        if ($this->getOption("campaign_max") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("campaign_max");
+        }        
+    }
+    
+    /**
+     * Display max campaign.
+     *
+     * @return array
+     */
+    public function displayMaxSizeUploadTotal()
+    {
+        if ($this->getOption("max_size_upload_total") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("max_size_upload_total");
+        }        
+    }
+    
+    /**
+     * Display max campaign.
+     *
+     * @return array
+     */
+    public function displayFileSizeUpload()
+    {
+        if ($this->getOption("max_file_size_upload") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("max_file_size_upload");
+        }        
+    }
 }
