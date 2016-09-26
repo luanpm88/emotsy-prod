@@ -538,8 +538,8 @@ MAIL_PORT='.(isset($smtp['smtp_port']) ? $smtp['smtp_port'] : '').'
 MAIL_USERNAME='.(isset($smtp['smtp_username']) ? $smtp['smtp_username'] : '').'
 MAIL_PASSWORD='.(isset($smtp['smtp_password']) ? $smtp['smtp_password'] : '').'
 MAIL_ENCRYPTION='.(isset($smtp['smtp_encryption']) ? $smtp['smtp_encryption'] : '').'
-MAIL_FROM='.(isset($smtp['smtp_from_email']) ? $smtp['smtp_from_email'] : '').'
-MAIL_NAME="'.(isset($smtp['smtp_from_name']) ? $smtp['smtp_from_name'] : '').'"
+MAIL_FROM_EMAIL='.(isset($smtp['smtp_from_email']) ? $smtp['smtp_from_email'] : '').'
+MAIL_FROM_NAME="'.(isset($smtp['smtp_from_name']) ? $smtp['smtp_from_name'] : '').'"
 ';
         $config_string;
         fwrite($env_file, $config_string);
