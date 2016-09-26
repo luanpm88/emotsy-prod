@@ -209,7 +209,6 @@ class Plan extends Model
             ['value' => 'rgb(145,115,25)', 'text' => trans('messages.brown')],
             ['value' => 'rgb(170,80,100)', 'text' => trans('messages.pink')],
             ['value' => '#555', 'text' => trans('messages.grey')],
-            ['value' => '#fff', 'text' => trans('messages.white')],
         ];
     }
 }

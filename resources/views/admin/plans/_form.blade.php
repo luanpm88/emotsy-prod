@@ -54,7 +54,7 @@
 									'name' => 'color',
 									'value' => $plan->color,
 									'help_class' => 'admin',
-									'options' => Acelle\Model\Admin::colors("color"),
+									'options' => Acelle\Model\Plan::colors("color"),
 									'rules' => '',
 								])
 								
@@ -70,11 +70,6 @@
 				function changeSelectColor() {
 					$('.select2 .select2-selection__rendered, .select2-results__option').each(function() {							
 						var text = $(this).html();
-						if (text == '{{ trans('messages.default') }}') {
-							if($(this).find("i").length == 0) {
-								$(this).prepend("<i class='icon-square text-teal-600'></i>");
-							}
-						}
 						if (text == '{{ trans('messages.blue') }}') {
 							if($(this).find("i").length == 0) {
 								$(this).prepend("<i class='icon-square text-blue'></i>");
