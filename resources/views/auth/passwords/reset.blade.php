@@ -8,6 +8,8 @@
 				<form class="" role="form" method="POST" action="{{ url('/password/reset') }}">
                     {{ csrf_field() }}
                     
+                    <input type="hidden" name="token" value="{{ $token }}">
+                    
 					<div class="panel panel-body">						
                         
                         @if (session('status'))
