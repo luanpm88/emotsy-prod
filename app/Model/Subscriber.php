@@ -349,15 +349,17 @@ class Subscriber extends Model
                     $subscriber->save();
 
                     foreach ($parts as $key => $value) {
-                        $lf = $list->fields()->where('tag', '=', $headers[$key])->first();
-                        if (is_object($lf)) {
-                            //// save fields
-                            $lfv = new \Acelle\Model\SubscriberField(array(
-                                            'field_id' => $lf->id,
-                                            'subscriber_id' => $subscriber->id,
-                                            'value' => $value,
-                                        ));
-                            $lfv->save();
+                        if(isset($headers[$key])) {
+                            $lf = $list->fields()->where('tag', '=', $headers[$key])->first();
+                            if (is_object($lf)) {
+                                //// save fields
+                                $lfv = new \Acelle\Model\SubscriberField(array(
+                                                'field_id' => $lf->id,
+                                                'subscriber_id' => $subscriber->id,
+                                                'value' => $value,
+                                            ));
+                                $lfv->save();
+                            }
                         }
                     }
 
