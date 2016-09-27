@@ -2,6 +2,7 @@
 
 return [
     'datetime_format' => 'Y-m-d, H:i',
+    'datetime_format_2' => 'Y-m-d, H:i:s',
     'time_format' => 'H:i',
     'date_format' => 'Y-m-d',
     'j_date_format' => 'yyyy-mm-dd',
@@ -949,8 +950,9 @@ return [
     'spam-reported' => 'Spam reported',
     'sendgrid-api' => 'Sendgrid API',
     'sendgrid-smtp' => 'Sendgrid SMTP',
-    '' => '',
-    '' => '',
+    'email_existed' => '[:time] ERROR: \':email\' existed',
+    'email_imported' => '[:time] SUCCESS: \':email\' is imported',
+    'download_import_log' => 'Download log',
     '' => '',
     '' => '',
     '' => '',

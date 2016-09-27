@@ -341,6 +341,9 @@ class SubscriberController extends Controller
 
             $str = "start\n\n0";
             $bytes_written = \File::put($upload_path.$list->id.'-process.log', $str);
+            
+            $str = "";
+            $bytes_written = \File::put($upload_path.$list->uid.'-detail.log', $str);
 
             // Upload csv
             $filename = $list->id.'-data.csv';
@@ -376,6 +379,20 @@ class SubscriberController extends Controller
         $content = \File::get($upload_path.$filename);
 
         return response()->json(explode("\n", $content));
+    }
+    
+    /**
+     * Download import log.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function downloadImportLog(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        return response()->download(storage_path('import/'.$list->uid.'-detail.log'));
     }
 
     /**

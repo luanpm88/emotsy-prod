@@ -330,6 +330,9 @@ class Subscriber extends Model
 
                 // Action Log
                 $list->log('import_max_error', $user, ['count' => $count]);
+                
+                $error_detail = trans('messages.error_add_max_quota');
+                $myfile = file_put_contents($directory.$list->uid.'-detail.log', $error_detail.PHP_EOL , FILE_APPEND | LOCK_EX);
 
                 return;
             }
@@ -364,8 +367,10 @@ class Subscriber extends Model
                     }
 
                     ++$success;
+                    $error_detail = trans('messages.email_imported', ['time' => \Carbon\Carbon::now()->timezone($user->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);                    
                 } else {
                     ++$error;
+                    $error_detail = trans('messages.email_existed', ['time' => \Carbon\Carbon::now()->timezone($user->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);
                 }
                 if ($key % $lines_per_second == 0) {
                     $content_cache = trans('messages.import_export_statistics_line', [
@@ -378,6 +383,9 @@ class Subscriber extends Model
                     $str = "processing\n".$content_cache;
                     $str .= "\n".$count.'';
                     $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
+                    
+                    // Details
+                    $myfile = file_put_contents($directory.$list->uid.'-detail.log', $error_detail."\r\n".PHP_EOL , FILE_APPEND | LOCK_EX);
                 }
             }
         }
