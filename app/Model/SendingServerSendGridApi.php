@@ -1,9 +1,9 @@
 <?php
 
 /**
- * SendingServerMailgunApi class.
+ * SendingServerSendGridApi class.
  *
- * Abstract class for Mailgun API sending server
+ * Abstract class for SendGrid API sending server
  *
  * LICENSE: This product includes software developed at
  * the Acelle Co., Ltd. (http://acellemail.com/).
