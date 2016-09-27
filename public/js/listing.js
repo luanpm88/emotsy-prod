@@ -156,7 +156,7 @@ function updateCustomOrder(form) {
     var page = parseInt(form.find('table').attr("current-page"));
     var sort = [];
     var sort_url = form.attr("sort-url");
-    form.find("table tr input.node").each(function(index) {
+    form.find("input.node").each(function(index) {
         var num = index + ((page-1)*per_page);
         var row = [];
         row.push($(this).val());
@@ -225,6 +225,22 @@ $(document).ready(function() {
             stop: function(event, ui) {
                 $("tr.child").fadeIn();
             }
+        });
+        
+        // sortable box
+        // Make list sortable        
+        form.sortable({
+            connectWith: '.boxes-plans',
+            items: '.col-md-3',
+            helper: 'original',
+            cursor: 'move',
+            handle: '.panel-heading',
+            revert: 100,
+            containment: '.boxes-plans',
+            forceHelperSize: true,
+            placeholder: 'sortable-placeholder',
+            forcePlaceholderSize: true,
+            tolerance: 'pointer'
         });
         
         // Render table

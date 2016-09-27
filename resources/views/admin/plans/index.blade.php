@@ -27,7 +27,7 @@
 				<form class="listing-form"
 					sort-url="{{ action('Admin\PlanController@sort') }}"
 					data-url="{{ action('Admin\PlanController@listing') }}"
-					per-page="{{ Acelle\Model\Admin::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\Plan::$itemsPerPage }}"					
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-10">
@@ -36,13 +36,14 @@
 										
 									<span class="filter-group">
 										<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
-										<select class="select" name="sort-order">											
+										<select class="select" name="sort-order">
+											<option value="custom_order" class="active">{{ trans('messages.custom_order') }}</option>
                                             <option value="plans.created_at">{{ trans('messages.created_at') }}</option>
 											<option value="plans.updated_at">{{ trans('messages.updated_at') }}</option>
 											<option value="plans.email">{{ trans('messages.name') }}</option>
 										</select>										
-										<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-											<i class="icon-sort-amount-desc"></i>
+										<button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
+											<i class="icon-sort-amount-asc"></i>
 										</button>
 									</span>
 									<span class="filter-group">

@@ -218,7 +218,7 @@ class CurrencyController extends Controller
         }
 
         // Redirect to my lists page
-        echo trans('messages.currencies.disabled');
+        echo trans('messages.currencies.enabled');
     }
 
     /**

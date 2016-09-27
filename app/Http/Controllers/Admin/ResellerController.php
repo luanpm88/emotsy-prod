@@ -292,7 +292,7 @@ class ResellerController extends Controller
         }
 
         // Redirect to my lists page
-        echo trans('messages.resellers.disabled');
+        echo trans('messages.resellers.enabled');
     }
 
     /**

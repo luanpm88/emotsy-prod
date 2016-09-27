@@ -91,6 +91,10 @@ class Plan extends Model
                 $uid = uniqid();
             }
             $item->uid = $uid;
+            
+            // Update custom order
+            Plan::getAll()->increment('custom_order', 1);
+            $item->custom_order = 0;
         });
     }
     

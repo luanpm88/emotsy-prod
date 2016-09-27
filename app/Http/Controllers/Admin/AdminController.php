@@ -292,7 +292,7 @@ class AdminController extends Controller
         }
 
         // Redirect to my lists page
-        echo trans('messages.admins.disabled');
+        echo trans('messages.admins.enabled');
     }
 
     /**

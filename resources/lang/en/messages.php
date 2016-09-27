@@ -1030,7 +1030,7 @@ return [
     'plan.updated' => 'Plan was successfully updated',
     'plan.created' => 'Plan was successfully created',
     'plans.disabled' => 'Plan was successfully disabled',
-    'plans.anabled' => 'Plan was successfully anabled',
+    'plans.enabled' => 'Plan was successfully enabled',
     'enable_plans_confirm' => 'You\'re about to enable :number plan(s).',
     'disable_plans_confirm' => 'You\'re about to disable :number plan(s).',
     'plan_empty_line_1' => 'You have no saved plans',

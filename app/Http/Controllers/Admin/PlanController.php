@@ -218,7 +218,7 @@ class PlanController extends Controller
         }
 
         // Redirect to my lists page
-        echo trans('messages.plans.disabled');
+        echo trans('messages.plans.enabled');
     }
 
     /**
@@ -267,5 +267,30 @@ class PlanController extends Controller
 
         // Redirect to my lists page
         echo trans('messages.plans.deleted');
+    }
+    
+    /**
+     * Custom sort items.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sort(Request $request)
+    {
+        $sort = json_decode($request->sort);
+        foreach ($sort as $row) {
+            $item = \Acelle\Model\Plan::findByUid($row[0]);
+
+            // authorize
+            if (\Gate::denies('update', $item)) {
+                return $this->notAuthorized();
+            }
+
+            $item->custom_order = $row[1];
+            $item->save();
+        }
+
+        echo trans('messages.lists.custom_order.updated');
     }
 }

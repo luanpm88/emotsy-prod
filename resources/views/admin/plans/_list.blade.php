@@ -4,14 +4,25 @@
                             >
 								@foreach ($plans as $key => $item)
 									<div class="col-md-3">
+									
+										<table class="table table-box pml-table hide"
+											current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
+										></table>
+										
+										<input type="hidden" class="node styled"
+											custom-order="{{ $item->custom_order }}"
+											name="ids[]"
+											value="{{ $item->uid }}"
+										/>
+									
 										<div class="panel panel-plan box-{{ $item->status }}">
 											<div class="panel-heading" style="background-color: {{ $item->color }}; color: white">
 												<div class="pull-right">
 													@can('enable', $item)
-														<a link-confirm="{{ trans('messages.enable_admins_confirm') }}" href="{{ action('Admin\PlanController@enable', ['uids' => $item->uid]) }}" title="{{ trans('messages.enable') }}" type="button" class="btn btn-white btn-icon"><i class="icon-checkbox-unchecked2"></i></a>
+														<a link-confirm="{{ trans('messages.enable_plans_confirm') }}" href="{{ action('Admin\PlanController@enable', ['uids' => $item->uid]) }}" title="{{ trans('messages.enable') }}" type="button" class="btn btn-white btn-icon"><i class="icon-checkbox-unchecked2"></i></a>
 													@endcan
 													@can('disable', $item)
-														<a link-confirm="{{ trans('messages.disable_admins_confirm') }}" href="{{ action('Admin\PlanController@disable', ['uids' => $item->uid]) }}" title="{{ trans('messages.disable') }}" type="button" class="btn btn-white btn-icon"><i class="icon-checkbox-checked2"></i></a>
+														<a link-confirm="{{ trans('messages.disable_plans_confirm') }}" href="{{ action('Admin\PlanController@disable', ['uids' => $item->uid]) }}" title="{{ trans('messages.disable') }}" type="button" class="btn btn-white btn-icon"><i class="icon-checkbox-checked2"></i></a>
 													@endcan
 												</div>
 												<h4 class="pull-left panel-title text-center">													
