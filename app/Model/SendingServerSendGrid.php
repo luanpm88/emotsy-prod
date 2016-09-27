@@ -44,7 +44,7 @@ class SendingServerSendGrid extends SendingServer
     public function client()
     {
         if (!self::$client) {
-            self::$client = new \SendGrid($this->api_key);;
+            self::$client = new \SendGrid($this->api_key);
         }
         
         return self::$client;
