@@ -323,7 +323,7 @@ class SendingServer extends Model
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
-                    'smtp_protocol' => 'required',
+                    'smtp_protocol' => '',
                     'bounce_handler_id' => '',
                     'feedback_loop_handler_id' => '',
                 ],
