@@ -302,7 +302,7 @@ class Subscriber extends Model
 
         // update header tags
         foreach ($headers as $key => $tag) {
-            $tag = trim(strtoupper(preg_replace('!\s+!', '_', preg_replace('![\'|\"]!', '', $tag))));
+            $tag = trim(strtoupper(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($tag)))));
             $headers[$key] = $tag;
             if ($tag == 'EMAIL') {
                 $main_index = $key;
