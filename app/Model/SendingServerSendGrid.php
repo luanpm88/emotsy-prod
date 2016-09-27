@@ -1,9 +1,9 @@
 <?php
 
 /**
- * SendingServerMailgun class.
+ * SendingServerSendGrid class.
  *
- * Abstract class for Mailgun sending servers
+ * Abstract class for SendGrid sending servers
  *
  * LICENSE: This product includes software developed at
  * the Acelle Co., Ltd. (http://acellemail.com/).
@@ -44,7 +44,7 @@ class SendingServerSendGrid extends SendingServer
     public function client()
     {
         if (!self::$client) {
-            self::$client = new \SendGrid($this->api_key);;
+            self::$client = new \SendGrid($this->api_key);
         }
         
         return self::$client;

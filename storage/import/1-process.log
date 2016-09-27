@@ -1,3 +1,7 @@
 finished
+<<<<<<< HEAD
 Processed: <span class="processed">5</span> / <span class="total">5</span> subscribers<br />Success: <span class="success">4</span><br /> Error: <span class="error">1</span>
+=======
+Processed: <span class="processed">2160</span> / <span class="total">2160</span> subscribers<br />Success: <span class="success">0</span><br /> Error: <span class="error">2160</span>
+>>>>>>> 3c0e489f29bf0df9eb025c847d9213b8ef962688
 100
