@@ -45,7 +45,9 @@ function showChart(id, data) {
             'echarts',
             'echarts/theme/limitless',
             'echarts/chart/bar',
-            'echarts/chart/line'
+            'echarts/chart/line',
+            'echarts/chart/pie',
+            'echarts/chart/funnel',
         ],
 
 
@@ -66,7 +68,82 @@ function showChart(id, data) {
             // Basic columns options
             //
             
-            if(data['horizontal'] == 1) {
+            if (data['pie'] == 1) {
+                basic_columns_options = {
+                    // Add title
+                    title: {
+                        text: data['title'],
+                        // subtext: 'Open source information',
+                        x: 'center'
+                    },
+    
+                    // Add tooltip
+                    tooltip: {
+                        trigger: 'item',
+                        formatter: "{a} <br/>{b}: {c} ({d}%)"
+                    },
+    
+                    // Add legend
+                    legend: {
+                        orient: 'vertical',
+                        x: 'left',
+                        data: data["bar_names"]
+                    },
+    
+                    // Display toolbox
+                    toolbox: {
+                        show: true,
+                        orient: 'vertical',
+                        feature: {
+                            mark: {
+                                show: true,
+                                title: {
+                                    mark: 'Markline switch',
+                                    markUndo: 'Undo markline',
+                                    markClear: 'Clear markline'
+                                }
+                            },
+                            dataView: {
+                                show: true,
+                                readOnly: false,
+                                title: 'View data',
+                                lang: ['View chart data', 'Close', 'Update']
+                            },
+                            magicType: {
+                                show: true,
+                                title: {
+                                    pie: 'Switch to pies',
+                                    funnel: 'Switch to funnel',
+                                },
+                                type: ['pie', 'funnel'],
+                                option: {
+                                    funnel: {
+                                        x: '25%',
+                                        y: '20%',
+                                        width: '50%',
+                                        height: '70%',
+                                        funnelAlign: 'left',
+                                        max: 1548
+                                    }
+                                }
+                            },
+                            restore: {
+                                show: true,
+                                title: 'Restore'
+                            },
+                            saveAsImage: {
+                                show: true,
+                                title: 'Same as image',
+                                lang: ['Save']
+                            }
+                        }
+                    },
+                    
+                    // Add series
+                    series: data["data"],
+                }
+            }
+            else if (data['horizontal'] == 1) {
                 basic_columns_options = {
     
                     // Setup grid
@@ -146,7 +223,7 @@ function showChart(id, data) {
     
                     // Add series
                     series: data["data"],
-    
+
                 };
             }
 

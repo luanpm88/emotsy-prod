@@ -1395,6 +1395,29 @@ class Campaign extends Model
 
         return $records->take($number);
     }
+    
+    /**
+     * Campaign top 5 open countries.
+     *
+     * @return datetime
+     */
+    public function topCountries($number = 5, $user = null)
+    {
+        $records = IpLocation::select(\DB::raw(\DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
+            ->join('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
+            ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+            ->where('tracking_logs.campaign_id', '=', $this->id);
+
+        if (isset($user)) {
+            $records = $records->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
+                ->where('campaigns.user_id', '=', $user->id);
+        }
+
+        $records = $records->groupBy('ip_locations.country_name')
+            ->orderBy('aggregate', 'desc');
+
+        return $records->take($number);
+    }
 
     /**
      * Campaign locations.

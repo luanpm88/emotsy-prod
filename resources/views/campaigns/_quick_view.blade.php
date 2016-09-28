@@ -32,3 +32,7 @@
             <br />
             
             @include("campaigns._24h_chart")
+			
+			<br />
+			
+			@include("campaigns._most_open_country")

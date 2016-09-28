@@ -38,6 +38,10 @@
             <br />
 			
 			@include("campaigns._top_link")
+            
+            <br />
+			
+			@include("campaigns._most_open_country")
 				
 			<br />
 			

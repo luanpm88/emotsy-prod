@@ -701,6 +701,61 @@ class CampaignController extends Controller
     }
 
     /**
+     * Chart Country.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function chartCountry(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $result = [
+            'title' => trans('messages.top_country_by_opens'),
+            'columns' => [],
+            'data' => [],
+            'bar_names' => [],
+        ];
+        
+        // create data
+        $datas = [];
+        $total = $campaign->openCount();
+        $count = 0;
+        foreach ($campaign->topCountries()->get() as $location) {
+            $result['bar_names'][] = $location->country_name;
+            
+            $datas[] = ['value' => $location->aggregate, 'name' => $location->country_name];
+            $count += $location->aggregate;
+        }
+        
+        // others
+        if($total > $count) {
+            $result['bar_names'][] = trans('messages.others');
+            $datas[] = ['value' => $total - $count, 'name' => trans('messages.others')];
+        }
+
+        // datas
+        $result['data'][] = [
+            'name' => trans('messages.country'),
+            'type' => 'pie',
+            'radius' => '70%',
+            'center' => ['50%', '57.5%'],
+            'data' => $datas
+        ];        
+        
+        $result['pie'] = 1;
+        
+        return json_encode($result);
+    }
+    
+    
+    /**
      * 24-hour quickView.
      *
      * @param \Illuminate\Http\Request $request

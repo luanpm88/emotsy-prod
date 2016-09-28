@@ -189,6 +189,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('campaigns/quick-view', 'CampaignController@quickView');
     Route::get('campaigns/{uid}/chart24h', 'CampaignController@chart24h');
     Route::get('campaigns/{uid}/chart', 'CampaignController@chart');
+    Route::get('campaigns/{uid}/chart/countries', 'CampaignController@chartCountry');
     Route::get('campaigns/{uid}/overview', 'CampaignController@overview');
     Route::get('campaigns/{uid}/links', 'CampaignController@links');
     Route::get('campaigns/sort', 'CampaignController@sort');
