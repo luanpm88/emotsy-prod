@@ -102,14 +102,25 @@
 								</div>
 				
 								<div class="modal-body">
+
+									<ul class="modern-listing big-icon no-top-border-list mt-0">
 									
-									@foreach (Acelle\Model\SendingServer::types() as $key => $type)
+										@foreach (Acelle\Model\SendingServer::types() as $key => $type)
+											
+											<li>
+												<a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-info bg-info-800">{{ trans('messages.choose') }}</a>
+												<span class="server-avatar server-avatar-{{ $key }}">
+													<i class="icon-server"></i>
+												</span>
+												<h4><a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
+												<p>
+													{{ trans('messages.sending_server_intro_' . $key) }}
+												</p>                        
+											</li>
+											
+										@endforeach									
 										
-										<a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-info btn-lg bg-teal-800 btn-server-type">
-											<i class="icon-server"></i> {{ trans('messages.' . $key) }}
-										</a>
-										
-									@endforeach
+									</ul>
 									
 								</div>
 				

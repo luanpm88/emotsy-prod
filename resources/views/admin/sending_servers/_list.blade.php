@@ -18,6 +18,11 @@
 											</div>
 										</td>
 										<td>
+											<span class="server-avatar server-avatar-{{ $item->type }} mr-0">
+												<i class="icon-server"></i>
+											</span>
+										</td>
+										<td>
 											<h5 class="no-margin text-bold">
 												<a class="kq_search" href="{{ action('Admin\SendingServerController@edit', ["uid" => $item->uid, "type" => $item->type]) }}">{{ $item->name }}</a>
 											</h5>

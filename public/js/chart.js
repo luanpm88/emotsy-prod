@@ -65,46 +65,90 @@ function showChart(id, data) {
             //
             // Basic columns options
             //
-
-            basic_columns_options = {
-
-                // Setup grid
-                grid: {
-                    x: 40,
-                    x2: 40,
-                    y: 35,
-                    y2: 25
-                },
-
-                // Add tooltip
-                tooltip: {
-                    trigger: 'axis'
-                },
-
-                // Add legend
-                legend: {
-                    data: data["bar_names"]
-                },
-
-                // Enable drag recalculate
-                calculable: true,
-
-                // Horizontal axis
-                xAxis: [{
-                    type: 'category',
-                    data: data["columns"]
-                }],
-
-                // Vertical axis
-                yAxis: [{
-                    type: 'value'
-                }],
-
-                // Add series
-                series: data["data"],
-
-            };
-
+            
+            if(data['horizontal'] == 1) {
+                basic_columns_options = {
+    
+                    // Setup grid
+                    grid: {
+                        x: 75,
+                        x2: 35,
+                        y: 35,
+                        y2: 25
+                    },
+    
+                    // Add tooltip
+                    tooltip: {
+                        trigger: 'axis',
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    },
+    
+                    // Add legend
+                    legend: {
+                        data: data["bar_names"]
+                    },
+    
+                    // Enable drag recalculate
+                    calculable: true,
+    
+                    // Horizontal axis
+                    yAxis: [{
+                        type: 'category',
+                        data: data["columns"]
+                    }],
+    
+                    // Vertical axis
+                    xAxis: [{
+                        type: 'value',
+                        boundaryGap: [0, 0.01]
+                    }],
+    
+                    // Add series
+                    series: data["data"],
+    
+                };
+            } else {
+                basic_columns_options = {
+    
+                    // Setup grid
+                    grid: {
+                        x: 40,
+                        x2: 40,
+                        y: 35,
+                        y2: 25
+                    },
+    
+                    // Add tooltip
+                    tooltip: {
+                        trigger: 'axis'
+                    },
+    
+                    // Add legend
+                    legend: {
+                        data: data["bar_names"]
+                    },
+    
+                    // Enable drag recalculate
+                    calculable: true,
+    
+                    // Horizontal axis
+                    xAxis: [{
+                        type: 'category',
+                        data: data["columns"]
+                    }],
+    
+                    // Vertical axis
+                    yAxis: [{
+                        type: 'value'
+                    }],
+    
+                    // Add series
+                    series: data["data"],
+    
+                };
+            }
 
             // Apply options
             // ------------------------------

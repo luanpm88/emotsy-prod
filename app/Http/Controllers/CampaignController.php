@@ -562,9 +562,146 @@ class CampaignController extends Controller
 
         return json_encode($result);
     }
+    
+    /**
+     * Chart.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function chart(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $result = [
+            'columns' => [],
+            'data' => [],
+            'bar_names' => [
+                trans('messages.recipients'),
+                trans('messages.delivered'),
+                trans('messages.failed'),
+                trans('messages.Open'),
+                trans('messages.Click'),
+                trans('messages.Bounce'),
+                trans('messages.report'),
+                trans('messages.unsubscribe'),
+            ],
+        ];
+
+        // columns
+        $result['columns'][] = trans("messages.count");
+        
+        // datas
+        $result['data'][] = [
+            'name' => trans('messages.unsubscribe'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->unsubscribeCount()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#D81B60'
+                ]
+            ],
+        ];
+        
+        $result['data'][] = [
+            'name' => trans('messages.report'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->feedbackCount()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#00897B'
+                ]
+            ],
+        ];
+        
+        $result['data'][] = [
+            'name' => trans('messages.Bounce'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->bounceCount()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#6D4C41'
+                ]
+            ],
+        ];
+        
+        $result['data'][] = [
+            'name' => trans('messages.Click'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->clickCount()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#039BE5'
+                ]
+            ],
+        ];
+        
+        $result['data'][] = [
+            'name' => trans('messages.Open'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->openCount()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#546E7A'
+                ]
+            ],
+        ];
+        
+        $result['data'][] = [
+            'name' => trans('messages.failed'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->failedCount()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#E53935'
+                ]
+            ],
+        ];
+        
+        $result['data'][] = [
+            'name' => trans('messages.delivered'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->deliveredCount()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#7CB342'
+                ]
+            ],
+        ];
+        
+        $result['data'][] = [
+            'name' => trans('messages.recipients'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->subscribers()->count()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#555'
+                ]
+            ],
+        ];
+        
+        
+        $result['horizontal'] = 1;
+        
+        return json_encode($result);
+    }
 
     /**
-     * 24-hour chart.
+     * 24-hour quickView.
      *
      * @param \Illuminate\Http\Request $request
      *

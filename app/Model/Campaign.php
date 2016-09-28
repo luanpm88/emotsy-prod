@@ -952,6 +952,16 @@ class Campaign extends Model
     {
         return $this->trackingLogs()->where('status', '=', 'sent')->count();
     }
+    
+    /**
+     * Count failed processed.
+     *
+     * @return number
+     */
+    public function failedCount()
+    {
+        return $this->trackingLogs()->where('status', '=', 'failed')->count();
+    }
 
     /**
      * Count delivery success rate.
