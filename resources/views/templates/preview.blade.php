@@ -31,5 +31,5 @@
 {!! $template->content !!}
 
 <script>
-    captureFullPage()
+    setTimeout('captureFullPage()', 1000);
 </script>
