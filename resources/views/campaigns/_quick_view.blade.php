@@ -21,10 +21,18 @@
                         {{ isset($campaign->delivery_at) ? Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->delivery_at)) : "" }}
                     </div>
                 </div>
-            </div>         
-            
+            </div>
+			
+			
+            <br />
+            @include("campaigns._chart")
+            <br />
 			@include("campaigns._open_click_rate")
             
             <br />
             
             @include("campaigns._24h_chart")
+			
+			<br />
+			
+			@include("campaigns._most_open_country")
