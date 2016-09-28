@@ -24,7 +24,7 @@
             </div>
 			
 			
-            
+            <br />
             @include("campaigns._chart")
             <br />
 			@include("campaigns._open_click_rate")
