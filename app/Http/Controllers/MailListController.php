@@ -426,29 +426,29 @@ class MailListController extends Controller
             }
         } else {
             // create data
-            if (\Acelle\Model\MailList::subscribersCountByStatus('subscribed')) {
+            if (\Acelle\Model\MailList::subscribersCountByStatus('subscribed', $request->user())) {
                 $result['bar_names'][] = trans('messages.subscribed');
-                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('subscribed'), 'name' => trans('messages.subscribed')];
+                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('subscribed', $request->user()), 'name' => trans('messages.subscribed')];
             }
             // create data
-            if (\Acelle\Model\MailList::subscribersCountByStatus('unsubscribed')) {
+            if (\Acelle\Model\MailList::subscribersCountByStatus('unsubscribed', $request->user())) {
                 $result['bar_names'][] = trans('messages.unsubscribed');
-                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('unsubscribed'), 'name' => trans('messages.unsubscribed')];
+                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('unsubscribed', $request->user()), 'name' => trans('messages.unsubscribed')];
             }
             // create data
-            if (\Acelle\Model\MailList::subscribersCountByStatus('unconfirmed')) {
+            if (\Acelle\Model\MailList::subscribersCountByStatus('unconfirmed', $request->user())) {
                 $result['bar_names'][] = trans('messages.unconfirmed');
-                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('unconfirmed'), 'name' => trans('messages.unconfirmed')];
+                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('unconfirmed', $request->user()), 'name' => trans('messages.unconfirmed')];
             }
             // create data
-            if (\Acelle\Model\MailList::subscribersCountByStatus('blacklisted')) {
+            if (\Acelle\Model\MailList::subscribersCountByStatus('blacklisted', $request->user())) {
                 $result['bar_names'][] = trans('messages.blacklisted');
-                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('blacklisted'), 'name' => trans('messages.blacklisted')];
+                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('blacklisted', $request->user()), 'name' => trans('messages.blacklisted')];
             }
             // create data
-            if (\Acelle\Model\MailList::subscribersCountByStatus('spam-reported')) {
+            if (\Acelle\Model\MailList::subscribersCountByStatus('spam-reported', $request->user())) {
                 $result['bar_names'][] = trans('messages.spam_reported');
-                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('spam-reported'), 'name' => trans('messages.spam_reported')];
+                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('spam-reported', $request->user()), 'name' => trans('messages.spam_reported')];
             }
         }
 
