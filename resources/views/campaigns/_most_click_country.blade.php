@@ -22,15 +22,20 @@
                             @endforeach 
                         </div>
                         <div class="text-right">
-                            <a href="{{ action('CampaignController@openMap', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.open_map') }} <i class="icon-arrow-right8"></i></a>
+                            <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}" class="btn btn-info bg-teal-600">{{ trans('messages.click_log') }} <i class="icon-arrow-right8"></i></a>
                         </div>
                     @endif
                 </div>
                 <div class="col-md-6">
                     @if ($campaign->clickCount())
-                        <div class="chart-container has-scroll">
-                            <div class="chart has-fixed-height has-minimum-width" id="basic_pie_4"  data-url="{{ action('CampaignController@chartClickCountry', $campaign->uid) }}"></div>
+                        <div class="panel panel-flat">
+                            <div class="panel-body">
+                                <div class="chart-container has-scroll">
+                                    <div class="chart has-fixed-height" id="basic_pie_4"  data-url="{{ action('CampaignController@chartClickCountry', $campaign->uid) }}"></div>
+                                </div>
+                            </div>
                         </div>
+                            
                     @else
                         <div class="empty-chart-pie">
                             <div class="empty-list">

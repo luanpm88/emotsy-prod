@@ -1,4 +1,4 @@
-			<h4 class="mt-10 text-semibold">{{ trans('messages.sent_to') }} <span class="text-teal text-bold">2</span> {{ trans('messages.recipients') }}</h4>
+			<h4 class="mt-10 text-semibold">{{ trans('messages.sent_to') }} <span class="text-bold badge badge-info badge-big">{{ $campaign->subscribers()->count() }}</span> {{ trans('messages.recipients') }}</h4>
             
             <div class="row">
                 <div class="col-md-6 campaigns-summary">
