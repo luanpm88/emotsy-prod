@@ -41,6 +41,10 @@
             
             <br />
 			
+			@include("campaigns._most_click_country")
+            
+            <br />
+			
 			@include("campaigns._most_open_country")
 				
 			<br />

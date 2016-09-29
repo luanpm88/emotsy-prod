@@ -1052,6 +1052,16 @@ class Campaign extends Model
     {
         return $this->openLogs()->count();
     }
+    
+    /**
+     * Not open count.
+     *
+     * @return number
+     */
+    public function notOpenCount()
+    {
+        return $this->subscribers()->count() - $this->openUniqCount();
+    }
 
     /**
      * Count unique open.
@@ -1108,6 +1118,20 @@ class Campaign extends Model
     {
         return $this->feedbackLogs()->count();
     }
+    
+    /**
+     * Count feedback rate.
+     *
+     * @return number
+     */
+    public function feedbackRate()
+    {
+        if ($this->deliveredCount() == 0) {
+            return 0;
+        }
+
+        return round(($this->feedbackCount() / $this->deliveredCount()) * 100, 0);
+    }
 
     /**
      * Count bounce back.
@@ -1126,11 +1150,11 @@ class Campaign extends Model
      */
     public function bounceRate()
     {
-        if ($this->deliveryProcessedCount() == 0) {
+        if ($this->deliveredCount() == 0) {
             return 0;
         }
 
-        return round(($this->bounceCount() / $this->deliveryProcessedCount()) * 100, 0);
+        return round(($this->bounceCount() / $this->deliveredCount()) * 100, 0);
     }
 
     /**
@@ -1372,6 +1396,24 @@ class Campaign extends Model
 
         return $records->take($number);
     }
+    
+    /**
+     * Recent subscriber opens.
+     *
+     * @return datetime
+     */
+    public function getRecentOpenSubscribers($number = 5)
+    {
+        $records = Subscriber::select(\DB::raw(\DB::getTablePrefix().'subscribers.*, count(*) as `aggregate`'))
+            ->join('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id')
+            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+            ->where('campaign_id', '=', $this->id);
+
+        $records = $records->groupBy('tracking_logs.message_id')
+            ->orderBy('aggregate', 'desc');
+
+        return $records->take($number);
+    }    
 
     /**
      * Campaign top 5 open location.
@@ -1406,6 +1448,29 @@ class Campaign extends Model
         $records = IpLocation::select(\DB::raw(\DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
             ->join('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
             ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+            ->where('tracking_logs.campaign_id', '=', $this->id);
+
+        if (isset($user)) {
+            $records = $records->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
+                ->where('campaigns.user_id', '=', $user->id);
+        }
+
+        $records = $records->groupBy('ip_locations.country_name')
+            ->orderBy('aggregate', 'desc');
+
+        return $records->take($number);
+    }
+    
+    /**
+     * Campaign top 5 click countries.
+     *
+     * @return datetime
+     */
+    public function topClickCountries($number = 5, $user = null)
+    {
+        $records = IpLocation::select(\DB::raw(\DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
+            ->join('click_logs', 'click_logs.ip_address', '=', 'ip_locations.ip_address')
+            ->join('tracking_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
 
         if (isset($user)) {

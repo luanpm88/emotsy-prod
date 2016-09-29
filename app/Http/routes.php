@@ -74,6 +74,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('lists/copy', 'MailListController@copy');
     Route::get('lists/quick-view', 'MailListController@quickView');
     Route::get('lists/{uid}/list-growth', 'MailListController@listGrowthChart');
+    Route::get('lists/{uid}/list-statistics-chart', 'MailListController@statisticsChart');
     Route::get('lists/sort', 'MailListController@sort');
     Route::get('lists/listing/{page?}', 'MailListController@listing');
     Route::get('lists/delete', 'MailListController@delete');
@@ -189,7 +190,8 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('campaigns/quick-view', 'CampaignController@quickView');
     Route::get('campaigns/{uid}/chart24h', 'CampaignController@chart24h');
     Route::get('campaigns/{uid}/chart', 'CampaignController@chart');
-    Route::get('campaigns/{uid}/chart/countries', 'CampaignController@chartCountry');
+    Route::get('campaigns/{uid}/chart/countries/open', 'CampaignController@chartCountry');
+    Route::get('campaigns/{uid}/chart/countries/click', 'CampaignController@chartClickCountry');
     Route::get('campaigns/{uid}/overview', 'CampaignController@overview');
     Route::get('campaigns/{uid}/links', 'CampaignController@links');
     Route::get('campaigns/sort', 'CampaignController@sort');

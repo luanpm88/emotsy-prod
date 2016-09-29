@@ -387,6 +387,43 @@ class MailList extends Model
     {
         return $this->subscribers()->where('status', '=', 'unconfirmed')->count();
     }
+    
+    /**
+     * Count blacklisted.
+     *
+     * @return array
+     */
+    public function blacklistedCount()
+    {
+        return $this->subscribers()->where('status', '=', 'blacklisted')->count();
+    }
+    
+    /**
+     * Count blacklisted.
+     *
+     * @return array
+     */
+    public function spamReportedCount()
+    {
+        return $this->subscribers()->where('status', '=', 'spam-reported')->count();
+    }
+    
+    /**
+     * Count by status.
+     *
+     * @return array
+     */
+    public static function subscribersCountByStatus($status, $user=null)
+    {
+        $query = \Acelle\Model\Subscriber::where('status', '=', $status);
+        
+        if(isset($user)) {
+            $query = $query->join('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
+                            ->where("mail_lists.user_id", "=", $user->id);
+        }
+        
+        return $query->count();
+    }
 
     /**
      * Add customer action log.

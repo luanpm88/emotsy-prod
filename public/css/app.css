@@ -1313,3 +1313,21 @@ ul.no-top-border-list li:first-child {
 .chart-container.has-scroll {
     overflow-x: auto;
 }
+.empty-chart-pie .empty-list {
+    padding: 159px 20px;
+    margin-top: 0;
+}
+.badge-big {
+    font-size: 18px;
+    border-radius: 20px;
+    padding: 1px 10px;
+}
+.badge-medium {
+    font-size: 14px;
+    border-radius: 20px;
+    padding: 1px 10px;
+}
+.badge-row {
+    margin-bottom: 10px;
+    margin-top: 20px;
+}

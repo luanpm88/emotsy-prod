@@ -94,38 +94,12 @@ function showChart(id, data) {
                     toolbox: {
                         show: true,
                         orient: 'vertical',
-                        feature: {
-                            mark: {
-                                show: true,
-                                title: {
-                                    mark: 'Markline switch',
-                                    markUndo: 'Undo markline',
-                                    markClear: 'Clear markline'
-                                }
-                            },
+                        feature: {                            
                             dataView: {
                                 show: true,
                                 readOnly: false,
                                 title: 'View data',
                                 lang: ['View chart data', 'Close', 'Update']
-                            },
-                            magicType: {
-                                show: true,
-                                title: {
-                                    pie: 'Switch to pies',
-                                    funnel: 'Switch to funnel',
-                                },
-                                type: ['pie', 'funnel'],
-                                option: {
-                                    funnel: {
-                                        x: '25%',
-                                        y: '20%',
-                                        width: '50%',
-                                        height: '70%',
-                                        funnelAlign: 'left',
-                                        max: 1548
-                                    }
-                                }
                             },
                             restore: {
                                 show: true,
@@ -148,9 +122,9 @@ function showChart(id, data) {
     
                     // Setup grid
                     grid: {
-                        x: 75,
+                        x: 35,
                         x2: 35,
-                        y: 35,
+                        y: 75,
                         y2: 25
                     },
     
