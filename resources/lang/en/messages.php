@@ -981,6 +981,7 @@ return [
     'view_log' => 'View log',
     'list_statistics' => 'List statistics',
     'spam_reported' => 'Spam reported',
+    'reported' => 'Reported',
     '' => '',
     '' => '',
     '' => '',
