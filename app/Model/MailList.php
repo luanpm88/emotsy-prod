@@ -413,13 +413,13 @@ class MailList extends Model
      *
      * @return array
      */
-    public static function subscribersCountByStatus($status, $user=null)
+    public static function subscribersCountByStatus($status, $customer=null)
     {
         $query = \Acelle\Model\Subscriber::where('status', '=', $status);
         
-        if(isset($user)) {
+        if(isset($customer)) {
             $query = $query->join('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
-                            ->where("mail_lists.user_id", "=", $user->id);
+                            ->where("mail_lists.customer_id", "=", $customer->id);
         }
         
         return $query->count();
