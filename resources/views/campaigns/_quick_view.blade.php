@@ -2,7 +2,7 @@
             
             <div class="row">
                 <div class="col-md-6 campaigns-summary">
-					<h5 class="mt-10 text-semibold">{{ trans('messages.sent_to') }} <span class="text-bold badge badge-info badge-big">{{ $campaign->subscribers()->count() }}</span> {{ trans('messages.recipients') }}</h5>
+					<h5 class="mt-10 text-semibold">{{ trans('messages.sent_to') }} <span class="text-bold badge badge-info bg-info-800 badge-big">{{ $campaign->subscribers()->count() }}</span> {{ trans('messages.recipients') }}</h5>
                     <div class="mb-10">
                         <span class="text-bold text-muted">{{ trans('messages.from') }}:</span>
                         @if (is_object($campaign->segment))
