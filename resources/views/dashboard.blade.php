@@ -37,8 +37,8 @@
 		<div class="campaign-quickview-container" data-url="{{ action("CampaignController@quickView") }}"></div>
 	@endif
     
-    <br />
-    <br />
+    <hr />
+    
     
     <h2 class="text-teal-800"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h2>
     
