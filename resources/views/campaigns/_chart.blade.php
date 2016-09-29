@@ -14,7 +14,7 @@
             <div class="badge-row">
                 <span class="badge badge-info bg-slate badge-big">{{ $campaign->openUniqRate() }}%</span>
                 {{ trans('messages.opened') }}
-                <span class="badge badge-info bg-grey-600 badge-medium">
+                <span class="badge badge-info bg-grey-400 badge-medium">
                     {{ trans('messages.open_uniq_per_total', [
                         'count' => $campaign->openUniqCount(),
                         'total' => $campaign->openCount(),
@@ -24,15 +24,21 @@
             </div>
                 
             <div class="badge-row">
-                <span class="badge badge-info bg-orange badge-big">{{ $campaign->notOpenCount() }}</span>
-                {{ trans('messages.not_opened') }}
+                <span class="badge badge-info bg-orange badge-big">{{ $campaign->notOpenRate() }}%</span>
+                {{ trans('messages.not_opened') }}                
+                <span class="badge badge-info bg-grey-400 badge-medium">
+                    {{ trans('messages.not_open_per_total', [
+                        'count' => $campaign->notOpenCount(),
+                        'total' => $campaign->subscribers()->count(),
+                    ]) }}
+                </span>
                 <a href="{{ action('CampaignController@openLog', $campaign->uid) }}"><i class="icon-arrow-right7"></i> {{ trans('messages.view_log') }}</a>
             </div>
                 
             <div class="badge-row">
                 <span class="badge badge-info bg-blue badge-big">{{ $campaign->clickRate() }}%</span>
                 {{ trans('messages.clicked_a_link') }}
-                <span class="badge badge-info bg-grey-600 badge-medium">
+                <span class="badge badge-info bg-grey-400 badge-medium">
                     {{ trans('messages.count_clicked', [
                         'count' => $campaign->clickCount()
                     ]) }}
@@ -43,7 +49,7 @@
             <div class="badge-row">
                 <span class="badge badge-info bg-violet badge-big">{{ $campaign->unsubscribeRate() }}%</span>
                 {{ trans('messages.unsubscribed') }}
-                <span class="badge badge-info bg-grey-600 badge-medium">
+                <span class="badge badge-info bg-grey-400 badge-medium">
                     {{ trans('messages.count_unsubscribed', [
                         'count' => $campaign->unsubscribeCount()
                     ]) }}
@@ -54,7 +60,7 @@
             <div class="badge-row">
                 <span class="badge badge-info bg-brown badge-big">{{ $campaign->bounceRate() }}%</span>
                 {{ trans('messages.bounced') }}
-                <span class="badge badge-info bg-grey-600 badge-medium">
+                <span class="badge badge-info bg-grey-400 badge-medium">
                     {{ trans('messages.count_bounced', [
                         'count' => $campaign->bounceCount()
                     ]) }}
@@ -65,7 +71,7 @@
             <div class="badge-row">
                 <span class="badge badge-info bg-teal badge-big">{{ $campaign->feedbackRate() }}%</span>
                 {{ trans('messages.reported') }}
-                <span class="badge badge-info bg-grey-600 badge-medium">
+                <span class="badge badge-info bg-grey-400 badge-medium">
                     {{ trans('messages.count_reported', [
                         'count' => $campaign->feedbackCount()
                     ]) }}

@@ -1094,6 +1094,20 @@ class Campaign extends Model
 
         return round(($this->openCount() / $this->deliveredCount()) * 100, 0);
     }
+    
+    /**
+     * Not open rate.
+     *
+     * @return number
+     */
+    public function notOpenRate()
+    {
+        if ($this->subscribers()->count() == 0) {
+            return 0;
+        }
+
+        return round(($this->notOpenCount() / $this->subscribers()->count()) * 100, 0);
+    }
 
     /**
      * Count unique open rate.
@@ -1369,11 +1383,11 @@ class Campaign extends Model
      */
     public function getTopLinks($number = 5)
     {
-        $records = Link::select(\DB::raw(\DB::getTablePrefix().'links.*, count(*) as `aggregate`'))
-            ->join('campaign_links', 'campaign_links.link_id', '=', 'links.id')
-            ->where('campaign_id', '=', $this->id);
-
-        $records = $records->groupBy('campaign_links.link_id')
+        $records = ClickLog::select(\DB::raw(\DB::getTablePrefix().'click_logs.*, count(*) as `aggregate`'))
+            ->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
+            ->where('tracking_logs.campaign_id', '=', $this->id);
+        
+        $records = $records->groupBy('click_logs.url')
             ->orderBy('aggregate', 'desc');
 
         return $records->take($number);

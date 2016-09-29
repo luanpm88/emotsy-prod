@@ -982,7 +982,7 @@ return [
     'list_statistics' => 'List statistics',
     'spam_reported' => 'Spam reported',
     'reported' => 'Reported',
-    '' => '',
+    'not_open_per_total' => ':count / :total subscribers',
     '' => '',
     '' => '',
     '' => '',
