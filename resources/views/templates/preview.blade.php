@@ -1,6 +1,5 @@
 <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery.min.js') }}"></script>
 <script type="text/javascript" src="{{ URL::asset('js/html2canvas/html2canvas.js') }}"></script>
-<link href="{{ URL::asset('ckeditor/contents.css?t=F969') }}" rel="stylesheet" type="text/css">
 
 <script>
     function captureFullPage()
@@ -32,5 +31,5 @@
 {!! $template->content !!}
 
 <script>
-    captureFullPage()
+    setTimeout('captureFullPage()', 1000);
 </script>

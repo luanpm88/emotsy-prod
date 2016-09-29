@@ -42,6 +42,11 @@ class SendingServerSmtp extends SendingServer
               ->setPassword($this->smtp_password)
             ;
 
+            // setup bounce handler: specify the Return-Path
+            if ($this->bounceHandler) {
+                $message->setReturnPath($this->bounceHandler->username);
+            }
+
             // Create the Mailer using your created Transport
             $mailer = \Swift_Mailer::newInstance($transport);
 

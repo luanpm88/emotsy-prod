@@ -84,6 +84,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('lists/copy', 'MailListController@copy');
     Route::get('lists/quick-view', 'MailListController@quickView');
     Route::get('lists/{uid}/list-growth', 'MailListController@listGrowthChart');
+    Route::get('lists/{uid}/list-statistics-chart', 'MailListController@statisticsChart');
     Route::get('lists/sort', 'MailListController@sort');
     Route::get('lists/listing/{page?}', 'MailListController@listing');
     Route::get('lists/delete', 'MailListController@delete');
@@ -118,6 +119,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('lists/{list_uid}/subscribers/unsubscribe', 'SubscriberController@unsubscribe');
     Route::get('lists/{list_uid}/subscribers/import', 'SubscriberController@import');
     Route::post('lists/{list_uid}/subscribers/import', 'SubscriberController@import');
+    Route::get('lists/{list_uid}/subscribers/import/log', 'SubscriberController@downloadImportLog');
     Route::get('lists/{list_uid}/subscribers/import/proccess', 'SubscriberController@importProccess');
     Route::get('lists/{list_uid}/subscribers/export', 'SubscriberController@export');
     Route::post('lists/{list_uid}/subscribers/export', 'SubscriberController@export');
@@ -197,6 +199,9 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
 
     Route::get('campaigns/quick-view', 'CampaignController@quickView');
     Route::get('campaigns/{uid}/chart24h', 'CampaignController@chart24h');
+    Route::get('campaigns/{uid}/chart', 'CampaignController@chart');
+    Route::get('campaigns/{uid}/chart/countries/open', 'CampaignController@chartCountry');
+    Route::get('campaigns/{uid}/chart/countries/click', 'CampaignController@chartClickCountry');
     Route::get('campaigns/{uid}/overview', 'CampaignController@overview');
     Route::get('campaigns/{uid}/links', 'CampaignController@links');
     Route::get('campaigns/sort', 'CampaignController@sort');
@@ -283,9 +288,12 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/languages', 'LanguageController');
 
     // Setting
+    Route::get('admin/settings/logs', 'SettingController@logs');
+    Route::get('log', 'SettingController@download_log');
     Route::get('admin/settings/{tab?}', 'SettingController@index');
     Route::post('admin/settings', 'SettingController@index');
     Route::get('admin/update-urls', 'SettingController@updateUrls');
+    
 
     // Tracking log
     Route::get('admin/tracking_log', 'TrackingLogController@index');

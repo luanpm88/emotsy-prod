@@ -53,10 +53,22 @@
 						</div>
 						<div class="col-sm-6 col-md-4">
 							@include('helpers.form_control', [
-								'type' => 'text',
+								'type' => 'select',
 								'class' => '',
 								'name' => 'protocol',
 								'value' => $server->protocol,
+								'options' => Acelle\Model\BounceHandler::protocolSelectOptions(),
+								'help_class' => 'bounce_handler',
+								'rules' => Acelle\Model\BounceHandler::rules()
+							])
+						</div>
+						<div class="col-sm-6 col-md-4">
+							@include('helpers.form_control', [
+								'type' => 'select',
+								'class' => '',
+								'name' => 'encryption',
+								'value' => $server->encryption,
+								'options' => Acelle\Model\BounceHandler::encryptionSelectOptions(),
 								'help_class' => 'bounce_handler',
 								'rules' => Acelle\Model\BounceHandler::rules()
 							])

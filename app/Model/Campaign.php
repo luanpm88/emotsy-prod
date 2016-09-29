@@ -24,7 +24,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use DB;
 
@@ -44,6 +44,13 @@ class Campaign extends Model
     // Campaign settings
     const WORKER_DELAY = 1;
     const DKIM_SELECTOR = 'mailer';
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = ['created_at', 'updated_at', 'run_at'];
 
     public static $required_tags = array(
         array('name' => '{UNSUBSCRIBE_URL}', 'required' => true),
@@ -234,14 +241,16 @@ class Campaign extends Model
     public function startMultiProcesses()
     {
         $this->sending();
+        
+        // @todo: customerneedcheck
+        MailLog::info("Starting campaign `{$this->name}` (ID: {$this->id})");
+        $count = (int) $this->user->customer->getOption('max_process');
 
-        Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
-        $count = (int) $this->customer->getOption('max_process');
         $subscribers = $this->getPendingSubscribers();
-        Log::info(sizeof($subscribers).' subscriber(s) selected');
+        MailLog::info(sizeof($subscribers).' subscriber(s) selected');
         $chunks = $this->getChunks($subscribers, $count);
 
-        Log::info('Start multi-process ('.sizeof($chunks).') session');
+        MailLog::info('Start multi-process ('.sizeof($chunks).') session');
         $parentPid = getmypid();
         for ($i = 0; $i < sizeof($chunks); ++$i) {
             $pid = pcntl_fork();
@@ -250,9 +259,9 @@ class Campaign extends Model
                 // Reconnect to the DB to prevent connection closed issue when using fork
                 DB::reconnect('mysql');
                 // Re-initialize logging to capture the child process' PID
-                Log::fork();
+                MailLog::fork();
 
-                Log::info('Start child process '.($i + 1).' of '.sizeof($chunks).' (forked from '.$parentPid.')');
+                MailLog::info('Start child process '.($i + 1).' of '.sizeof($chunks).' (forked from '.$parentPid.')');
                 sleep(self::WORKER_DELAY);
                 $this->start($chunks[$i], true);
                 exit($i + 1);
@@ -261,16 +270,16 @@ class Campaign extends Model
 
         while (pcntl_waitpid(0, $status) != -1) {
             $status = pcntl_wexitstatus($status);
-            Log::info("Child $status completed\n");
+            MailLog::info("Child $status completed\n");
         }
 
         $this->refreshStatus();
 
         if ($this->status == self::STATUS_SENDING) {
             $this->done();
-            Log::info('Campaign sent!');
+            MailLog::info('Campaign sent!');
         } else {
-            Log::warning('Campaign sent, but some errors occurred!');
+            MailLog::warning('Campaign sent, but some errors occurred!');
         }
     }
 
@@ -283,9 +292,9 @@ class Campaign extends Model
         try {
             if (!$multi) {
                 $this->sending();
-                Log::info("Starting campaign `{$this->name}` (ID: {$this->id})");
+                MailLog::info("Starting campaign `{$this->name}` (ID: {$this->id})");
                 $subscribers = $this->getPendingSubscribers();
-                Log::info(sizeof($subscribers).' subscriber(s) selected');
+                MailLog::info(sizeof($subscribers).' subscriber(s) selected');
             }
 
             $i = 0;
@@ -296,7 +305,7 @@ class Campaign extends Model
                 }
 
                 $i += 1;
-                Log::info("Sending to subscriber `{$subscriber->email}` ({$i}/".sizeof($subscribers).')');
+                MailLog::info("Sending to subscriber `{$subscriber->email}` ({$i}/".sizeof($subscribers).')');
 
                 $server = $this->pickServer($this);
                 list($message, $msgId) = $this->prepareEmail($subscriber, $server);
@@ -306,6 +315,7 @@ class Campaign extends Model
                     'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly (not in MIME message)
                     'campaign' => $this,
                     'subscriber' => $subscriber,
+                    'msgId' => $msgId
                 ));
 
                 $this->trackMessage($sent, $subscriber, $server, $msgId);
@@ -313,11 +323,11 @@ class Campaign extends Model
 
             if (!$multi) {
                 $this->done();
-                Log::info('Campaign sent!');
+                MailLog::info('Campaign sent!');
             }
         } catch (\Exception $e) {
-            Log::error($e->getMessage());
-            Log::error("Campaign `{$this->name}` (ID: ".$this->id.') deferred!');
+            MailLog::error($e->getMessage());
+            MailLog::error("Campaign `{$this->name}` (ID: ".$this->id.') deferred!');
             $this->error();
         } finally {
             // reset server pools: just in case DeliveryServerAmazonSesWebApi
@@ -482,21 +492,52 @@ class Campaign extends Model
     }
 
     /**
-     * Prepare Email
-     * Prepare the email content using Swift Mailer.
+     * Build Email Custom Headers
      *
-     * @input Raw email content
-     *
-     * @return MIME text message
+     * @return Hash list of custom headers
      */
-    public function buildCustomHeaders($msgId, $subscriber, $server) {
+    public function getCustomHeaders($subscriber, $server) {
+        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
+
         return array(
             'X-Acelle-Campaign-Id' => $this->uid,
             'X-Acelle-Subscriber-Id' => $subscriber->uid,
             'X-Acelle-User-Id' => $this->user->uid,
             'X-Acelle-Message-Id' => $msgId,
-            'X-Acelle-Sending-Server-Id' => $server->uid
+            'X-Acelle-Sending-Server-Id' => $server->uid,
+            'List-Unsubscribe' => '<'.str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), Setting::get('url_unsubscribe')).'>',
+            'Precedence' => 'bulk'
         );
+    }
+    
+    /**
+     * Build Email HTML content
+     *
+     * @return String
+     */
+    public function getHtmlContent($subscriber, $msgId) {
+        $body = $this->tagMessage($this->html, $subscriber, $msgId);
+
+        if ($this->track_open) {
+            $body = $this->appendOpenTrackingUrl($body, $msgId);
+        }
+
+        if ($this->track_click) {
+            $body = $this->addTrackingUrl($body, $msgId);
+        }
+
+        return $body;
+    }
+
+    /**
+     * Build Email HTML content
+     *
+     * @return String
+     */
+    public function getPlainContent($subscriber, $msgId) {
+        $plain = $this->tagMessage($this->plain, $subscriber, $msgId);
+
+        return $plain;
     }
 
     /**
@@ -510,17 +551,21 @@ class Campaign extends Model
     private function prepareEmail($subscriber, $server)
     {
         // build the message
-        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
+        $customHeaders = $this->getCustomHeaders($subscriber, $this);
+        $msgId = $customHeaders['X-Acelle-Message-Id'];
 
         $message = \Swift_Message::newInstance();
         $message->setId($msgId);
-        $message->setContentType('text/plain; charset=utf-8');
-        $message->getHeaders()->addTextHeader('X-Acelle-Campaign-Id', $this->uid);
-        $message->getHeaders()->addTextHeader('X-Acelle-Subscriber-Id', $subscriber->uid);
-        // @todo: customerneedcheck
-        $message->getHeaders()->addTextHeader('X-Acelle-User-Id', $this->user->uid);
-        $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', $msgId);
-        $message->getHeaders()->addTextHeader('X-Acelle-Sending-Server-Id', $server->uid);
+
+        if ($this->type == self::TYPE_REGULAR) {
+            $message->setContentType('text/html; charset=utf-8');
+        } else {
+            $message->setContentType('text/plain; charset=utf-8');
+        }
+
+        foreach($customHeaders as $key => $value) {
+            $message->getHeaders()->addTextHeader($key, $value);
+        }
 
         // @TODO for AWS, setting returnPath requires verified domain or email address
         //$message->setReturnPath($server->getVerp($subscriber->email));
@@ -529,21 +574,11 @@ class Campaign extends Model
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
         $message->setEncoder(\Swift_Encoding::get8bitEncoding());
-
-        $body = $this->tagMessage($this->html, $subscriber, $msgId);
-        $plain = $this->tagMessage($this->plain, $subscriber, $msgId);
-
-        if ($this->track_open) {
-            $body = $this->appendOpenTrackingUrl($body, $msgId);
+        $message->setBody($this->getPlainContent($subscriber, $msgId), 'text/plain');
+        if ($this->type == self::TYPE_REGULAR) {
+            $message->addPart($this->getHtmlContent($subscriber, $msgId), 'text/html');
         }
-
-        if ($this->track_click) {
-            $body = $this->addTrackingUrl($body, $msgId);
-        }
-
-        $message->setBody($body, 'text/html');
-        $message->addPart($plain, 'text/plain');
-
+        
         if ($this->sign_dkim) {
             $message = $this->sign($message);
         }
@@ -921,6 +956,16 @@ class Campaign extends Model
     {
         return $this->trackingLogs()->where('status', '=', 'sent')->count();
     }
+    
+    /**
+     * Count failed processed.
+     *
+     * @return number
+     */
+    public function failedCount()
+    {
+        return $this->trackingLogs()->where('status', '=', 'failed')->count();
+    }
 
     /**
      * Count delivery success rate.
@@ -1011,6 +1056,16 @@ class Campaign extends Model
     {
         return $this->openLogs()->count();
     }
+    
+    /**
+     * Not open count.
+     *
+     * @return number
+     */
+    public function notOpenCount()
+    {
+        return $this->subscribers()->count() - $this->openUniqCount();
+    }
 
     /**
      * Count unique open.
@@ -1067,6 +1122,20 @@ class Campaign extends Model
     {
         return $this->feedbackLogs()->count();
     }
+    
+    /**
+     * Count feedback rate.
+     *
+     * @return number
+     */
+    public function feedbackRate()
+    {
+        if ($this->deliveredCount() == 0) {
+            return 0;
+        }
+
+        return round(($this->feedbackCount() / $this->deliveredCount()) * 100, 0);
+    }
 
     /**
      * Count bounce back.
@@ -1085,11 +1154,11 @@ class Campaign extends Model
      */
     public function bounceRate()
     {
-        if ($this->deliveryProcessedCount() == 0) {
+        if ($this->deliveredCount() == 0) {
             return 0;
         }
 
-        return round(($this->bounceCount() / $this->deliveryProcessedCount()) * 100, 0);
+        return round(($this->bounceCount() / $this->deliveredCount()) * 100, 0);
     }
 
     /**
@@ -1331,6 +1400,24 @@ class Campaign extends Model
 
         return $records->take($number);
     }
+    
+    /**
+     * Recent subscriber opens.
+     *
+     * @return datetime
+     */
+    public function getRecentOpenSubscribers($number = 5)
+    {
+        $records = Subscriber::select(\DB::raw(\DB::getTablePrefix().'subscribers.*, count(*) as `aggregate`'))
+            ->join('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id')
+            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+            ->where('campaign_id', '=', $this->id);
+
+        $records = $records->groupBy('tracking_logs.message_id')
+            ->orderBy('aggregate', 'desc');
+
+        return $records->take($number);
+    }    
 
     /**
      * Campaign top 5 open location.
@@ -1350,6 +1437,52 @@ class Campaign extends Model
         }
 
         $records = $records->groupBy('open_logs.ip_address')
+            ->orderBy('aggregate', 'desc');
+
+        return $records->take($number);
+    }
+    
+    /**
+     * Campaign top 5 open countries.
+     *
+     * @return datetime
+     */
+    public function topCountries($number = 5, $user = null)
+    {
+        $records = IpLocation::select(\DB::raw(\DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
+            ->join('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
+            ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+            ->where('tracking_logs.campaign_id', '=', $this->id);
+
+        if (isset($user)) {
+            $records = $records->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
+                ->where('campaigns.user_id', '=', $user->id);
+        }
+
+        $records = $records->groupBy('ip_locations.country_name')
+            ->orderBy('aggregate', 'desc');
+
+        return $records->take($number);
+    }
+    
+    /**
+     * Campaign top 5 click countries.
+     *
+     * @return datetime
+     */
+    public function topClickCountries($number = 5, $user = null)
+    {
+        $records = IpLocation::select(\DB::raw(\DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
+            ->join('click_logs', 'click_logs.ip_address', '=', 'ip_locations.ip_address')
+            ->join('tracking_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
+            ->where('tracking_logs.campaign_id', '=', $this->id);
+
+        if (isset($user)) {
+            $records = $records->join('campaigns', 'tracking_logs.campaign_id', '=', 'campaigns.id')
+                ->where('campaigns.user_id', '=', $user->id);
+        }
+
+        $records = $records->groupBy('ip_locations.country_name')
             ->orderBy('aggregate', 'desc');
 
         return $records->take($number);

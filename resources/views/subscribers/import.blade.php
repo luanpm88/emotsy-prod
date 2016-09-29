@@ -62,7 +62,10 @@
 								
 							<div class="form-group finish hide">
                                 <div class="text-right">
-                                    <a href="#retry" class="btn bg-teal mr-10 import_another"><i class="icon-reload-alt"></i> {{ trans('messages.import_another') }}</a>
+									<a target="_blank" href="{{ action('SubscriberController@downloadImportLog', ["list_uid" => $list->uid]) }}" type="button" class="btn bg-teal finish hide">
+                                        <i class="icon-download"></i> {{ trans('messages.download_import_log') }}
+                                    </a>
+                                    <a href="#retry" class="btn bg-grey-800 mr-10 import_another"><i class="icon-reload-alt"></i> {{ trans('messages.import_another') }}</a>
                                 </div>
                             </div>
                             

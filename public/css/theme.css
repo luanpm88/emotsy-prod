@@ -54,6 +54,10 @@
 .color-scheme-blue .dashboard-icon i {
     color: rgb(20,130,160);
 }
+.color-scheme-blue .server-avatar:after {
+    color: rgb(20,130,160);
+    border-color: rgb(20,130,160);
+}
 
 
 .color-scheme-green a {
@@ -111,6 +115,10 @@
 }
 .color-scheme-green .dashboard-icon i {
     color: rgb(0,140,110);
+}
+.color-scheme-green .server-avatar:after {
+    color: rgb(0,140,110);
+    border-color: rgb(0,140,110);
 }
 
 
@@ -171,6 +179,10 @@
 .color-scheme-brown .dashboard-icon i {
     color: rgb(145,115,25);
 }
+.color-scheme-brown .server-avatar:after {
+    color: rgb(145,115,25);
+    border-color: rgb(145,115,25);
+}
 
 
 
@@ -230,7 +242,10 @@
 .color-scheme-pink .dashboard-icon i {
     color: rgb(170,80,100);
 }
-
+.color-scheme-pink .server-avatar:after {
+    color: rgb(170,80,100);
+    border-color: rgb(170,80,100);
+}
 
 
 .color-scheme-grey a {
@@ -288,6 +303,10 @@
 }
 .color-scheme-grey .dashboard-icon i {
     color: #666;
+}
+.color-scheme-pink .server-avatar:after {
+    color: #666;
+    border-color: #666;
 }
 
 

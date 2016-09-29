@@ -211,6 +211,11 @@ class CustomerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
+            
+            if($this->isDemoMode()) {
+                return $this->notAuthorized();
+            }
+            
             $rules = $customer->rules();
             $rules = array_merge($rules, [
                 'customer_group_id' => 'required',

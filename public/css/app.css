@@ -701,7 +701,7 @@ input.error {
     border-color: #4CAF50;
     color: #fff;
 }
-.bg-not_sent, .bg-canceled, .bg-unactive, .bg-disabled, .bg-inactive, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-paused, .bg-done {
+.bg-spam-reported, .bg-not_sent, .bg-canceled, .bg-unactive, .bg-disabled, .bg-inactive, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-paused, .bg-done {
     background-color: #777;
     border-color: #777;
     color: #fff;
@@ -1180,6 +1180,13 @@ ul.install-steps li.enabled a:hover {
     text-overflow: ellipsis;
     white-space: nowrap;
 }
+.domain-truncate {
+    max-width: 200px;
+    display: inline-block;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
 .api-page .list {
     padding-left: 20px;
 }
@@ -1338,4 +1345,95 @@ ul.plans-intro li a {
 }
 .panel-plan .panel-heading .btn {
     margin-top: -5px;
+}
+.system_logs {
+    height: 400px;
+    background: #f5f5f5;
+    overflow: auto;
+    width: 100%;
+    border: solid 2px #bbb;
+    padding: 20px;
+    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+.server-avatar i {
+    font-size: 45px !important;
+}
+.server-avatar {
+    position: relative;
+    display: inline-block;
+    margin-right: 20px;
+    float: left;
+}
+.server-avatar i {
+    color: #555 !important;
+}
+.server-avatar:after {
+    content: "SS";
+    display: block;
+    position: absolute;
+    top: -7px;
+    width: 40px;
+    right: 0;
+    height: 40px;
+    border-radius: 30px;
+    font-size: 18px;
+    background: #fff;
+    text-align: center;
+    padding: 5px;
+    font-weight: 700;
+    border: solid 2px #999;
+}
+.server-avatar i {
+    margin-right: 10px;
+}
+.server-avatar-amazon-smtp:after {
+    content: "AS";
+}
+.server-avatar-amazon-api:after {
+    content: "AA";
+}
+.server-avatar-sendgrid-smtp:after {
+    content: "SA";
+}
+.server-avatar-sendgrid-api:after {
+    content: "SA";
+}
+.server-avatar-mailgun-api:after {
+    content: "MA";
+}
+.server-avatar-mailgun-smtp:after {
+    content: "MS";
+}
+.server-avatar-smtp:after {
+    content: "ST";
+}
+.server-avatar-sendmail:after {
+    content: "SM";
+}
+.server-avatar-php-mail:after {
+    content: "PM";
+}
+ul.no-top-border-list li:first-child {
+    border-top: none;
+}
+.chart-container.has-scroll {
+    overflow-x: auto;
+}
+.empty-chart-pie .empty-list {
+    padding: 159px 20px;
+    margin-top: 0;
+}
+.badge-big {
+    font-size: 18px;
+    border-radius: 20px;
+    padding: 1px 10px;
+}
+.badge-medium {
+    font-size: 14px;
+    border-radius: 20px;
+    padding: 1px 10px;
+}
+.badge-row {
+    margin-bottom: 10px;
+    margin-top: 20px;
 }

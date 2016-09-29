@@ -221,9 +221,6 @@ class Tool
      */
     public static function systemTime($time)
     {
-        $servertime = \Carbon\Carbon::parse(\Carbon\Carbon::now()->toDateTimeString());
-        $usertime = \Carbon\Carbon::parse(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->toDateTimeString());
-        $diff = $servertime->diffInHours($usertime, false);
-        return $time->addHours(-$diff);
+        return $time->setTimezone(config('app.timezone'));
     }
 }

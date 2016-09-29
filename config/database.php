@@ -63,10 +63,11 @@ return [
             'collation' => 'utf8_unicode_ci',
             'prefix' => env('DB_TABLES_PREFIX', ''),
             'strict' => false,
-            'engine' => null,
+            'engine' => 'InnoDB',
             'options' => array(
                 PDO::ATTR_EMULATE_PREPARES => true,
             ),
+            'timezone'  => '+00:00'
         ],
 
         'pgsql' => [

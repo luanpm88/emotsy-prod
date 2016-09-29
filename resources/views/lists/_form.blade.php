@@ -1,8 +1,8 @@
-                    <div class="sub_section">
+          <div class="sub_section">
 						<h2 class="text-semibold text-teal-800">{{ trans('messages.list_details') }}</h2>
 							
 						<div class="row">
-							<div class="col-md-6">									
+							<div class="col-md-6">
 										
 									@include('helpers.form_control', ['type' => 'text', 'name' => 'name', 'value' => $list->name, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])									
 									

@@ -56,7 +56,12 @@ class BounceLog extends Model
      */
     public function findSubscriberByRuntimeMessageId()
     {
-        return TrackingLog::where('runtime_message_id', $this->runtime_message_id)->first()->subscriber;
+        $trackingLog = TrackingLog::where('runtime_message_id', $this->runtime_message_id)->first();
+        if ($trackingLog) {
+            return $trackingLog->subscriber;
+        } else {
+            return NULL;
+        }
     }
 
     /**

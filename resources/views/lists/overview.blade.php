@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', $list->name)
+@section('title', $list->name . " - " . $list->subscribers()->count() . " " . trans('messages.subscribers'))
 	
 @section('page_script')
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/visualization/echarts/echarts.js') }}"></script>

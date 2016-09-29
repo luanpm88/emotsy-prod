@@ -868,4 +868,18 @@ class AdminGroup extends Model
 
         return $options;
     }
+    
+    /**
+     * Display sending servers count
+     *
+     * @return array
+     */
+    public function displaySendingServersCount()
+    {
+        if ($this->getOption("frontend","all_sending_servers") == 'yes') {
+            return trans('messages.all');
+        } else {
+            return $this->user_group_sending_servers()->count();
+        }
+    }
 }

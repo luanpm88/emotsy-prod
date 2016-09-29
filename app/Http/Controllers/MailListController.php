@@ -365,6 +365,105 @@ class MailListController extends Controller
 
         return json_encode($result);
     }
+    
+    /**
+     * Chart statistics chart.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function statisticsChart(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+        
+        if (is_object($list)) {
+            $list_id = $list->id;
+        } else {
+            $list_id = null;
+            $list = new \Acelle\Model\MailList();
+        }
+        
+        // authorize
+        if (\Gate::denies('read', $list)) {
+            return $this->notAuthorized();
+        }
+
+        $result = [
+            'title' => '', // trans('messages.statistics') . " (" . $list->subscribers()->count() ." " . trans('messages.subscribers') .")",
+            'columns' => [],
+            'data' => [],
+            'bar_names' => [],
+        ];
+        
+        $datas = [];
+        if (isset($list->id)) {
+            // create data
+            if ($list->unsubscribeCount()) {
+                $result['bar_names'][] = trans('messages.subscribed');
+                $datas[] = ['value' => $list->unsubscribeCount(), 'name' => trans('messages.subscribed')];
+            }
+            // create data
+            if ($list->subscribeCount()) {
+                $result['bar_names'][] = trans('messages.unsubscribed');
+                $datas[] = ['value' => $list->subscribeCount(), 'name' => trans('messages.unsubscribed')];
+            }
+            // create data
+            if ($list->unconfirmedCount()) {
+                $result['bar_names'][] = trans('messages.unconfirmed');
+                $datas[] = ['value' => $list->unconfirmedCount(), 'name' => trans('messages.unconfirmed')];
+            }
+            // create data
+            if ($list->blacklistedCount()) {
+                $result['bar_names'][] = trans('messages.blacklisted');
+                $datas[] = ['value' => $list->blacklistedCount(), 'name' => trans('messages.blacklisted')];
+            }
+            // create data
+            if ($list->spamReportedCount()) {
+                $result['bar_names'][] = trans('messages.spam_reported');
+                $datas[] = ['value' => $list->spamReportedCount(), 'name' => trans('messages.spam_reported')];
+            }
+        } else {
+            // create data
+            if (\Acelle\Model\MailList::subscribersCountByStatus('subscribed')) {
+                $result['bar_names'][] = trans('messages.subscribed');
+                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('subscribed'), 'name' => trans('messages.subscribed')];
+            }
+            // create data
+            if (\Acelle\Model\MailList::subscribersCountByStatus('unsubscribed')) {
+                $result['bar_names'][] = trans('messages.unsubscribed');
+                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('unsubscribed'), 'name' => trans('messages.unsubscribed')];
+            }
+            // create data
+            if (\Acelle\Model\MailList::subscribersCountByStatus('unconfirmed')) {
+                $result['bar_names'][] = trans('messages.unconfirmed');
+                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('unconfirmed'), 'name' => trans('messages.unconfirmed')];
+            }
+            // create data
+            if (\Acelle\Model\MailList::subscribersCountByStatus('blacklisted')) {
+                $result['bar_names'][] = trans('messages.blacklisted');
+                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('blacklisted'), 'name' => trans('messages.blacklisted')];
+            }
+            // create data
+            if (\Acelle\Model\MailList::subscribersCountByStatus('spam-reported')) {
+                $result['bar_names'][] = trans('messages.spam_reported');
+                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('spam-reported'), 'name' => trans('messages.spam_reported')];
+            }
+        }
+
+        // datas
+        $result['data'][] = [
+            'name' => trans('messages.statistics'),
+            'type' => 'pie',
+            'radius' => '70%',
+            'center' => ['50%', '57.5%'],
+            'data' => $datas
+        ];        
+        
+        $result['pie'] = 1;
+        
+        return json_encode($result);
+    }
 
     /**
      * Quick view.

@@ -38,12 +38,15 @@ class BounceHandler extends DeliveryHandler
         try {
             $header = imap_headerinfo($mbox, $msgNo);
             $body = imap_body($mbox, $msgNo, FT_PEEK);
-
-            //$bouncedAddress = $this->getBouncedAddress($header->toaddress);
-            //print_r($bouncedAddress . "\n");
-            //if (empty($bouncedAddress)) {
-            //    throw new \Exception("not a bounce message");
-            //}
+            
+            /* The following check is now deprecated
+             * and will be removed
+                 $bouncedAddress = $this->getBouncedAddress($header->toaddress);
+                 print_r($bouncedAddress . "\n");
+                 if (empty($bouncedAddress)) {
+                     throw new \Exception("not a bounce message");
+                 }
+            */
 
             $msgId = $this->getMessageId($body);
 
@@ -196,7 +199,7 @@ class BounceHandler extends DeliveryHandler
      * @var array
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'password', 'protocol',
+        'name', 'host', 'port', 'username', 'password', 'protocol', 'encryption'
     ];
 
     /**
@@ -213,6 +216,7 @@ class BounceHandler extends DeliveryHandler
             'username' => 'required',
             'password' => 'required',
             'protocol' => 'required',
+            'encryption' => 'required',
         ];
     }
 
@@ -230,5 +234,32 @@ class BounceHandler extends DeliveryHandler
         });
 
         return $options;
+    }
+    
+    /**
+     * Protocol select options.
+     *
+     * @return array
+     */
+    public static function protocolSelectOptions()
+    {
+        return [
+            ['value' => 'imap', 'text' => 'imap']
+        ];
+    }
+    
+    /**
+     * Encryption select options.
+     *
+     * @return array
+     */
+    public static function encryptionSelectOptions()
+    {
+        return [
+            ['value' => 'tls', 'text' => 'tls'],
+            ['value' => 'starttls', 'text' => 'starttls'],
+            ['value' => 'notls', 'text' => 'notls'],
+            ['value' => 'ssl', 'text' => 'ssl'],
+        ];
     }
 }

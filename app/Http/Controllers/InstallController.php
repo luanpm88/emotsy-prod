@@ -52,6 +52,7 @@ class InstallController extends Controller
     // Starting installation
     public function starting(Request $request)
     {
+        \Artisan::call('cache:clear');
         exec('php '.base_path().'/artisan config:cache');
 
         return redirect()->action('InstallController@systemCompatibility');
@@ -83,7 +84,8 @@ class InstallController extends Controller
                 'current' => 1,
             ]);
         } catch (\Exception $e) {
-            sleep(2);
+            \Artisan::call('cache:clear');
+            sleep(5);
             return redirect()->action('InstallController@systemCompatibility');
         }
     }
@@ -266,7 +268,7 @@ class InstallController extends Controller
             $this->validate($request, $rules);
 
             // Run migrate
-            exec('php '.base_path().'/artisan migrate');
+            exec('php '.base_path().'/artisan migrate --force');
 
             // import database with prefix
             $this->importDatabase($database);
@@ -400,6 +402,12 @@ class InstallController extends Controller
                 'note' => 'PHP IMAP Extension is required.',
             ],
             [
+                'type' => 'requirement',
+                'name' => 'PHP GD Library',
+                'check' => (extension_loaded('gd') && function_exists('gd_info')),
+                'note' => 'PHP GD Library is required.',
+            ],            
+            [
                 'type' => 'permission',
                 'name' => 'Storage/app/',
                 'check' => file_exists(base_path('/storage/app')) &&
@@ -505,8 +513,8 @@ class InstallController extends Controller
         $smtp = !empty($smtp) ? $smtp : [];
 
         $env_file = fopen(base_path('.env'), 'w') or die('Unable to open file!');
-        $config_string = 'APP_ENV=local
-APP_DEBUG=true
+        $config_string = 'APP_ENV=production
+APP_DEBUG=false
 APP_KEY='.$app_key.'
 
 DB_HOST='.(isset($database['hostname']) ? $database['hostname'] : '').'
@@ -530,8 +538,8 @@ MAIL_PORT='.(isset($smtp['smtp_port']) ? $smtp['smtp_port'] : '').'
 MAIL_USERNAME='.(isset($smtp['smtp_username']) ? $smtp['smtp_username'] : '').'
 MAIL_PASSWORD='.(isset($smtp['smtp_password']) ? $smtp['smtp_password'] : '').'
 MAIL_ENCRYPTION='.(isset($smtp['smtp_encryption']) ? $smtp['smtp_encryption'] : '').'
-MAIL_FROM='.(isset($smtp['smtp_from_email']) ? $smtp['smtp_from_email'] : '').'
-MAIL_NAME="'.(isset($smtp['smtp_from_name']) ? $smtp['smtp_from_name'] : '').'"
+MAIL_FROM_EMAIL='.(isset($smtp['smtp_from_email']) ? $smtp['smtp_from_email'] : '').'
+MAIL_FROM_NAME="'.(isset($smtp['smtp_from_name']) ? $smtp['smtp_from_name'] : '').'"
 ';
         $config_string;
         fwrite($env_file, $config_string);

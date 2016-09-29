@@ -30,8 +30,8 @@
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
 
 	<script type="text/javascript" src="{{ URL::asset('assets/js/core/app.js') }}"></script>
-	
 	<!-- /theme JS files -->
+
 	<script>		
 		$(function() {
 		
@@ -40,6 +40,7 @@
 		
 		});
 	</script>
+
 </head>
 
 <body class="bg-slate-800">

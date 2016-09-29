@@ -360,14 +360,14 @@ class CampaignController extends Controller
     public function schedule(Request $request)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-
+    
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
 
-        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->run_at))->format('Y-m-d') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
-        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $campaign->run_at))->format('H:i') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
+        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format('Y-m-d') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
+        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format('H:i') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
 
         $rules = array(
             'delivery_date' => 'required',
@@ -385,15 +385,12 @@ class CampaignController extends Controller
             // $this->validate($request, $rules);
 
             //// Save campaign
-            $time = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date.' '.$request->delivery_time))->timezone(date_default_timezone_get());
-            $servertime = \Carbon\Carbon::parse(\Carbon\Carbon::now()->toDateTimeString());
-            $usertime = \Carbon\Carbon::parse(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->toDateTimeString());
-            $diff = $servertime->diffInHours($usertime, false);
-            $time->addHours(-$diff);
+            $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date.' '.$request->delivery_time, $request->user()->timezone);            
+            $time = \Acelle\Library\Tool::systemTime($time);
 
-            $campaign->run_at = $time->toDateTimeString();
+            $campaign->run_at = $time;
             $campaign->save();
-
+            
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
 
@@ -569,9 +566,254 @@ class CampaignController extends Controller
 
         return json_encode($result);
     }
+    
+    /**
+     * Chart.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function chart(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $result = [
+            'columns' => [],
+            'data' => [],
+            'bar_names' => [
+                trans('messages.recipients'),
+                trans('messages.delivered'),
+                trans('messages.failed'),
+                trans('messages.Open'),
+                trans('messages.Click'),
+                trans('messages.Bounce'),
+                trans('messages.report'),
+                trans('messages.unsubscribe'),
+            ],
+        ];
+
+        // columns
+        $result['columns'][] = trans("messages.count");
+        
+        // datas
+        $result['data'][] = [
+            'name' => trans('messages.unsubscribe'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->unsubscribeCount()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#D81B60'
+                ]
+            ],
+        ];
+        
+        $result['data'][] = [
+            'name' => trans('messages.report'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->feedbackCount()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#00897B'
+                ]
+            ],
+        ];
+        
+        $result['data'][] = [
+            'name' => trans('messages.Bounce'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->bounceCount()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#6D4C41'
+                ]
+            ],
+        ];
+        
+        $result['data'][] = [
+            'name' => trans('messages.Click'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->clickCount()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#039BE5'
+                ]
+            ],
+        ];
+        
+        $result['data'][] = [
+            'name' => trans('messages.Open'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->openCount()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#546E7A'
+                ]
+            ],
+        ];
+        
+        $result['data'][] = [
+            'name' => trans('messages.failed'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->failedCount()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#E53935'
+                ]
+            ],
+        ];
+        
+        $result['data'][] = [
+            'name' => trans('messages.delivered'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->deliveredCount()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#7CB342'
+                ]
+            ],
+        ];
+        
+        $result['data'][] = [
+            'name' => trans('messages.recipients'),
+            'type' => 'bar',
+            'smooth' => true,
+            'data' => [$campaign->subscribers()->count()],
+            'itemStyle' => [
+                'normal' => [
+                    'color' => '#555'
+                ]
+            ],
+        ];
+        
+        
+        $result['horizontal'] = 1;
+        
+        return json_encode($result);
+    }
 
     /**
-     * 24-hour chart.
+     * Chart Country.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function chartCountry(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $result = [
+            'title' => '',
+            'columns' => [],
+            'data' => [],
+            'bar_names' => [],
+        ];
+        
+        // create data
+        $datas = [];
+        $total = $campaign->openCount();
+        $count = 0;
+        foreach ($campaign->topCountries()->get() as $location) {
+            $result['bar_names'][] = $location->country_name;
+            
+            $datas[] = ['value' => $location->aggregate, 'name' => $location->country_name];
+            $count += $location->aggregate;
+        }
+        
+        // others
+        if($total > $count) {
+            $result['bar_names'][] = trans('messages.others');
+            $datas[] = ['value' => $total - $count, 'name' => trans('messages.others')];
+        }
+
+        // datas
+        $result['data'][] = [
+            'name' => trans('messages.country'),
+            'type' => 'pie',
+            'radius' => '70%',
+            'center' => ['50%', '57.5%'],
+            'data' => $datas
+        ];        
+        
+        $result['pie'] = 1;
+        
+        return json_encode($result);
+    }
+    
+    /**
+     * Chart Country by clicks.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function chartClickCountry(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $result = [
+            'title' => '',
+            'columns' => [],
+            'data' => [],
+            'bar_names' => [],
+        ];
+        
+        // create data
+        $datas = [];
+        $total = $campaign->clickCount();
+        $count = 0;
+        foreach ($campaign->topClickCountries()->get() as $location) {
+            $result['bar_names'][] = $location->country_name;
+            
+            $datas[] = ['value' => $location->aggregate, 'name' => $location->country_name];
+            $count += $location->aggregate;
+        }
+        
+        // others
+        if($total > $count) {
+            $result['bar_names'][] = trans('messages.others');
+            $datas[] = ['value' => $total - $count, 'name' => trans('messages.others')];
+        }
+
+        // datas
+        $result['data'][] = [
+            'name' => trans('messages.country'),
+            'type' => 'pie',
+            'radius' => '70%',
+            'center' => ['50%', '57.5%'],
+            'data' => $datas
+        ];        
+        
+        $result['pie'] = 1;
+        
+        return json_encode($result);
+    }
+    
+    /**
+     * 24-hour quickView.
      *
      * @param \Illuminate\Http\Request $request
      *

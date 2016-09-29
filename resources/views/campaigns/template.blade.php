@@ -30,9 +30,11 @@
 @endsection
 
 @section('content')
-			<div class="pull-right">
-				<a href="#" class="btn btn-info bg-teal-800" data-toggle="modal" data-target="#choose_template">{{ trans('messages.choose_template') }}</a>
-			</div>
+			@if ($campaign->type != 'plain-text')
+				<div class="pull-right">
+					<a href="#" class="btn btn-info bg-teal-800" data-toggle="modal" data-target="#choose_template">{{ trans('messages.choose_template') }}</a>
+				</div>
+			@endif
 				
 			<!-- Choose template modal -->
 			<div id="choose_template" class="modal fade">

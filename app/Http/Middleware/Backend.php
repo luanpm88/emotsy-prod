@@ -23,13 +23,6 @@ class Backend
             return redirect()->action('Controller@notAuthorized');
         }
         
-        // Site offline
-        if (\Acelle\Model\Setting::get('site_online') == 'false' &&
-            (null !== $request->user() && $request->user()->admin->getPermission('setting_access_when_offline') != 'yes')
-        ) {
-            return redirect()->action('Controller@offline');
-        }
-        
         // Language
         try {
             if (is_object($user->admin->language)) {

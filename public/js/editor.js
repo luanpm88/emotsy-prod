@@ -53,7 +53,7 @@ $(document).ready(function() {
         toolbar: 'insertfile undo redo | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media',
         valid_elements : '*[*]',
         valid_children : "+body[style]",
-        
+        content_css: [],
         external_filemanager_path:"/filemanager/",
         filemanager_title:"Responsive Filemanager" ,
         external_plugins: { "filemanager" : "/filemanager/plugin.min.js"}

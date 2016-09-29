@@ -29,6 +29,7 @@ class Subscriber extends Model
     const STATUS_SUBSCRIBED = 'subscribed';
     const STATUS_UNSUBSCRIBED = 'unsubscribed';
     const STATUS_BLACKLISTED = 'blacklisted';
+    const STATUS_SPAM_REPORTED = 'spam-reported';
 
     /**
      * The attributes that are mass assignable.
@@ -119,6 +120,19 @@ class Subscriber extends Model
         $r = Blacklist::firstOrNew(['email' => $this->email]);
         $r->reason = $reason;
         $r->save();
+
+        return true;
+    }
+
+    /**
+     * Mark a subscriber/list as abuse-reported
+     *
+     * @return boolean
+     */
+    public function markAsSpamReported()
+    {
+        $this->status = self::STATUS_SPAM_REPORTED;
+        $this->save();
 
         return true;
     }
@@ -289,7 +303,7 @@ class Subscriber extends Model
 
         // update header tags
         foreach ($headers as $key => $tag) {
-            $tag = trim(strtoupper(preg_replace('!\s+!', '_', preg_replace('![\'|\"]!', '', $tag))));
+            $tag = trim(strtoupper(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($tag)))));
             $headers[$key] = $tag;
             if ($tag == 'EMAIL') {
                 $main_index = $key;
@@ -318,6 +332,9 @@ class Subscriber extends Model
                 // Action Log
                 $list->log('import_max_error', $customer, ['count' => $count]);
 
+                $error_detail = trans('messages.error_add_max_quota');
+                $myfile = file_put_contents($directory.$list->uid.'-detail.log', $error_detail.PHP_EOL , FILE_APPEND | LOCK_EX);
+
                 return;
             }
 
@@ -335,21 +352,25 @@ class Subscriber extends Model
                     $subscriber->save();
 
                     foreach ($parts as $key => $value) {
-                        $lf = $list->fields()->where('tag', '=', $headers[$key])->first();
-                        if (is_object($lf)) {
-                            //// save fields
-                            $lfv = new \Acelle\Model\SubscriberField(array(
-                                            'field_id' => $lf->id,
-                                            'subscriber_id' => $subscriber->id,
-                                            'value' => $value,
-                                        ));
-                            $lfv->save();
+                        if(isset($headers[$key])) {
+                            $lf = $list->fields()->where('tag', '=', $headers[$key])->first();
+                            if (is_object($lf)) {
+                                //// save fields
+                                $lfv = new \Acelle\Model\SubscriberField(array(
+                                                'field_id' => $lf->id,
+                                                'subscriber_id' => $subscriber->id,
+                                                'value' => $value,
+                                            ));
+                                $lfv->save();
+                            }
                         }
                     }
 
                     ++$success;
+                    $error_detail = trans('messages.email_imported', ['time' => \Carbon\Carbon::now()->timezone($user->customer->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);                    
                 } else {
                     ++$error;
+                    $error_detail = trans('messages.email_existed', ['time' => \Carbon\Carbon::now()->timezone($user->customer->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);
                 }
                 if ($key % $lines_per_second == 0) {
                     $content_cache = trans('messages.import_export_statistics_line', [
@@ -362,6 +383,9 @@ class Subscriber extends Model
                     $str = "processing\n".$content_cache;
                     $str .= "\n".$count.'';
                     $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
+                    
+                    // Details
+                    $myfile = file_put_contents($directory.$list->uid.'-detail.log', $error_detail."\r\n".PHP_EOL , FILE_APPEND | LOCK_EX);
                 }
             }
         }

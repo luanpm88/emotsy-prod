@@ -54,6 +54,8 @@ class SendingServer extends Model
         'php-mail' => 'SendingServerPhpMail',
         'mailgun-api' => 'SendingServerMailgunApi',
         'mailgun-smtp' => 'SendingServerMailgunSmtp',
+        'sendgrid-api' => 'SendingServerSendGridApi',
+        'sendgrid-smtp' => 'SendingServerSendGridSmtp',
     );
     
     // Server pools
@@ -278,6 +280,22 @@ class SendingServer extends Model
                     'aws_access_key_id' => 'required',
                     'aws_secret_access_key' => 'required',
                     'aws_region' => 'required',
+                ],
+            ],
+            'sendgrid-smtp' => [
+                'cols' => [
+                    'name' => 'required',
+                    'api_key' => 'required',
+                    'host' => 'required',
+                    'smtp_username' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_port' => 'required',
+                ],
+            ],
+            'sendgrid-api' => [
+                'cols' => [
+                    'name' => 'required',
+                    'api_key' => 'required',
                 ],
             ],
             'mailgun-api' => [
