@@ -717,7 +717,7 @@ class CampaignController extends Controller
         }
 
         $result = [
-            'title' => trans('messages.top_country_by_opens'),
+            'title' => '',
             'columns' => [],
             'data' => [],
             'bar_names' => [],
@@ -771,7 +771,7 @@ class CampaignController extends Controller
         }
 
         $result = [
-            'title' => trans('messages.top_country_by_clicks'),
+            'title' => '',
             'columns' => [],
             'data' => [],
             'bar_names' => [],

@@ -122,9 +122,9 @@ function showChart(id, data) {
     
                     // Setup grid
                     grid: {
-                        x: 35,
-                        x2: 35,
-                        y: 75,
+                        x: 45,
+                        x2: 10,
+                        y: 85,
                         y2: 25
                     },
     
