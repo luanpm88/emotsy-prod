@@ -354,8 +354,7 @@ class User extends Authenticatable
             $query = $query->where('users.id', '=', $user_id);
         }
 
-        $query = $query->where('subscribers.created_at', '>=', $begin)
-                        ->where('subscribers.created_at', '<=', $end);
+        $query = $query->where('subscribers.created_at', '<=', $end); //->where('subscribers.created_at', '>=', $begin);
 
         return $query->count();
     }
