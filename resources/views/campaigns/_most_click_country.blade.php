@@ -12,7 +12,7 @@
                         </div>
                     @else
                         <div class="stat-table">
-                            @foreach ($campaign->topClickCountries(8)->get() as $location)
+                            @foreach ($campaign->topClickCountries(7)->get() as $location)
                                 <div class="stat-row">
                                     <div class="pull-right num">
                                         {{ $location->aggregate }}
