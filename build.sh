@@ -33,6 +33,8 @@ cp .env.example .env
 # clean up
 rm -fr storage/logs/*
 rm -fr storage/tmp/*
+rm -fr storage/import/*
+rm -fr storage/export/*
 rm -fr storage/installed
 touch storage/recache
 rm -fr .authenticate
