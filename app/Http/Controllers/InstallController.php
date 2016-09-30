@@ -552,7 +552,7 @@ MAIL_FROM_NAME="'.(isset($smtp['smtp_from_name']) ? $smtp['smtp_from_name'] : ''
     public function importDatabase($database)
     {
         // read and replace prefix
-        $file_path = storage_path('import/database_init.sql');
+        $file_path = storage_path('install/database_init.sql');
         $file = fopen($file_path, 'r') or die('Unable to open file!');
         $sql = fread($file, filesize($file_path));
         $sql = str_replace('<<prefix>>', $database['tables_prefix'], $sql);
