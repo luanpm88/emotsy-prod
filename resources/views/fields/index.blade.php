@@ -145,7 +145,6 @@
 					<hr /><br />
 					<div class="">
 						<button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
-						<a href="{{ trans('messages.cancel') }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
 					</div>
                 </form>
 @endsection
