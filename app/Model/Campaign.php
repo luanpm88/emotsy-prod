@@ -1140,7 +1140,7 @@ class Campaign extends Model
      */
     public function feedbackCount()
     {
-        return $this->feedbackLogs()->count();
+        return $this->feedbackLogs()->distinct('subscriber_id')->count('subscriber_id');
     }
     
     /**
@@ -1164,7 +1164,7 @@ class Campaign extends Model
      */
     public function bounceCount()
     {
-        return $this->bounceLogs()->count();
+        return $this->bounceLogs()->distinct('subscriber_id')->count('subscriber_id');
     }
 
     /**
@@ -1188,7 +1188,7 @@ class Campaign extends Model
      */
     public function hardBounceCount()
     {
-        return $this->campaign_bounce_logs()->where('bounce_type', '=', 'hard')->count();
+        return $this->campaign_bounce_logs()->where('bounce_type', '=', 'hard')->distinct('subscriber_id')->count('subscriber_id');
     }
 
     /**
@@ -1212,7 +1212,7 @@ class Campaign extends Model
      */
     public function softBounceCount()
     {
-        return $this->campaign_bounce_logs()->where('bounce_type', '=', 'soft')->count();
+        return $this->campaign_bounce_logs()->where('bounce_type', '=', 'soft')->distinct('subscriber_id')->count('subscriber_id');
     }
 
     /**
@@ -1236,7 +1236,7 @@ class Campaign extends Model
      */
     public function unsubscribeCount()
     {
-        return $this->unsubscribeLogs()->count();
+        return $this->unsubscribeLogs()->distinct('subscriber_id')->count('subscriber_id');
     }
 
     /**

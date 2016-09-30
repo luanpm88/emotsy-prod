@@ -650,7 +650,7 @@ class CampaignController extends Controller
             'name' => trans('messages.Open'),
             'type' => 'bar',
             'smooth' => true,
-            'data' => [$campaign->openCount()],
+            'data' => [$campaign->openUniqCount()],
             'itemStyle' => [
                 'normal' => [
                     'color' => '#546E7A'
