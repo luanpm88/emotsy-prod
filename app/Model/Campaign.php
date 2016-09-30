@@ -1028,6 +1028,20 @@ class Campaign extends Model
 
         return round(($this->clickedLinkCount() / $this->urlCount()) * 100, 0);
     }
+    
+    /**
+     * Click a link rate.
+     *
+     * @return number
+     */
+    public function clickALinkRate()
+    {
+        if ($this->openCount() == 0) {
+            return 0;
+        }
+
+        return round(($this->clickCount() / $this->openCount()) * 100, 0);
+    }
 
     /**
      * Count click.

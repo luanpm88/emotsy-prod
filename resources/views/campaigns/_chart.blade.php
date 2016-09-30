@@ -1,6 +1,7 @@
+    <h3 class="mt-10 mb-0"><i class="icon-stats-dots"></i> {{ trans('messages.statistics') }}</h3>
+    <div class="sub-h3">{{ trans('messages.campaign_table_chart_intro') }}</div>
     <div class="row">
-        <div class="col-md-6">
-            <h3 class="mt-10"><i class="icon-stats-dots"></i> {{ trans('messages.statistics') }}</h3>
+        <div class="col-md-6">            
             <div class="panel panel-flat">
                 <div class="panel-body">
                     <div class="chart-container">
@@ -10,7 +11,6 @@
             </div>
         </div>
         <div class="col-md-6">
-            <br /><br />
             <div class="badge-row">
                 <span class="badge badge-info bg-slate badge-big">{{ $campaign->openUniqRate() }}%</span>
                 {{ trans('messages.opened') }}
@@ -36,12 +36,12 @@
             </div>
                 
             <div class="badge-row">
-                <span class="badge badge-info bg-blue badge-big">{{ $campaign->clickRate() }}%</span>
+                <span class="badge badge-info bg-blue badge-big">{{ $campaign->clickALinkRate() }}%</span>
                 {{ trans('messages.clicked_a_link') }}
                 <span class="badge badge-info bg-grey-400 badge-medium">
-                    {{ trans('messages.count_clicked', [
-                        'count' => $campaign->clickedLinkCount(),
-                        'total' => $campaign->urlCount()
+                    {{ trans('messages.count_clicked_opened', [
+                        'count' => $campaign->clickCount(),
+                        'total' => $campaign->openCount()
                     ]) }}
                 </span>
                 <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}"><i class="icon-arrow-right7"></i> {{ trans('messages.view_log') }}</a>

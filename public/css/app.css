@@ -1331,3 +1331,8 @@ ul.no-top-border-list li:first-child {
     margin-bottom: 10px;
     margin-top: 20px;
 }
+.sub-h3 {
+    margin: 10px 0 20px 0;
+    font-size: 16px;
+    font-style: italic;
+}
