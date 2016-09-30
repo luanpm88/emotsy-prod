@@ -1012,11 +1012,11 @@ class Campaign extends Model
      */
     public function clickRate()
     {
-        if ($this->urlCount() == 0) {
+        if ($this->clickCount() == 0) {
             return 0;
         }
 
-        return round(($this->clickCount() / $this->urlCount()) * 100, 0);
+        return round(($this->clickCount() / $this->clickCount()) * 100, 0);
     }
 
     /**
