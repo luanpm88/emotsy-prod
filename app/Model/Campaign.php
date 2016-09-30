@@ -992,7 +992,7 @@ class Campaign extends Model
             $query = $query->where('click_logs.created_at', '<=', $end);
         }
 
-        return $query->count()->distinct('url')->count('url');
+        return $query->distinct('url')->count('url');
     }
 
     /**
