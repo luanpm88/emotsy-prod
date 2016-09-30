@@ -974,7 +974,7 @@ return [
     'sending_server_intro_php-mail' => 'Send emails through the built-in mail() function in PHP',
     'open_uniq_per_total' => ':count unique / opened :total times',
     'clicked_a_link' => 'Clicked a link',
-    'count_clicked' => ':count clicked',
+    'count_clicked' => ':count / :total links',
     'count_unsubscribed' => ':count unsubscribed',
     'count_bounced' => ':count bounced',
     'count_reported' => ':count reported',

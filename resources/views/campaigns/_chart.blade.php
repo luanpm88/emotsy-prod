@@ -40,7 +40,8 @@
                 {{ trans('messages.clicked_a_link') }}
                 <span class="badge badge-info bg-grey-400 badge-medium">
                     {{ trans('messages.count_clicked', [
-                        'count' => $campaign->clickCount()
+                        'count' => $campaign->clickedLinkCount(),
+                        'total' => $campaign->urlCount()
                     ]) }}
                 </span>
                 <a href="{{ action('CampaignController@clickLog', $campaign->uid) }}"><i class="icon-arrow-right7"></i> {{ trans('messages.view_log') }}</a>
