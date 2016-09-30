@@ -1004,6 +1004,16 @@ class Campaign extends Model
     {
         return $this->links()->count();
     }
+    
+    /**
+     * Click rate.
+     *
+     * @return number
+     */
+    public function clickedLinkCount()
+    {
+        return $this->clickLogs()->distinct('url')->count('url');
+    }
 
     /**
      * Click rate.
@@ -1012,11 +1022,11 @@ class Campaign extends Model
      */
     public function clickRate()
     {
-        if ($this->clickCount() == 0) {
+        if ($this->urlCount() == 0) {
             return 0;
         }
 
-        return round(($this->clickCount() / $this->clickCount()) * 100, 0);
+        return round(($this->clickedLinkCount() / $this->urlCount()) * 100, 0);
     }
 
     /**
