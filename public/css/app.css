@@ -1339,4 +1339,5 @@ ul.no-top-border-list li:first-child {
 .flag-icon {
     display: inline-block;
     margin-top: -9px;
+    margin-right: 10px;
 }
