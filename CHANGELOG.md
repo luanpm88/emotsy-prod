@@ -8,10 +8,9 @@
  * Added pie chart visualization for top countries by click
  * Updated text & hints on the UI
  * Changed dashboard UI now contains more information
- * Changed dashboard UI now contains more information
  * Changed click-rate is no longer computed based on specific URL
 
-2.0.4-p11 / 2016-09-20
+2.0.4-p11 / 2016-09-27
 ==================
 
  * Fixed SSL issue for bounce handler
