@@ -98,7 +98,12 @@ class RunCampaign extends Command
         $count = 1;
         foreach ($campaigns as $campaign) {
             Log::info('Starting campaign '.$campaign->name." ($count/".sizeof($campaigns).')');
-            $campaign->startMultiProcesses();
+            // Only run one process if pcntl is not enabled
+            if (extension_loaded('pcntl')) {
+                $campaign->startMultiProcesses();
+            } else {
+                $campaign->start();
+            }
             Log::info('Finish campaign '.$campaign->name);
             $count += 1;
         }
