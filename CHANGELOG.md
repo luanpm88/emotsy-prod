@@ -1,3 +1,9 @@
+2.0.4-p17 / 2016-10-02
+==================
+
+ * Fixed intermittent issues with bar chart in Safari
+ * Changed click-to-open ratio is now based on open count
+
 2.0.4-p16 / 2016-09-30
 ==================
 
