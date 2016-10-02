@@ -859,6 +859,9 @@ class CampaignController extends Controller
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
         $log->save();
+
+        # Just return a blank image
+        return response()->file(public_path('images/transparent.gif'));
     }
 
     /**
