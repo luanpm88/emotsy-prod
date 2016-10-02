@@ -1,3 +1,8 @@
+2.0.4-p18 / 2016-10-02
+==================
+
+ * Fixed: open tracking causes broken image in email content
+
 2.0.4-p17 / 2016-10-02
 ==================
 
