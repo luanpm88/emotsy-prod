@@ -479,7 +479,7 @@ class Campaign extends Model
      * Append Open Tracking URL
      * Append open-tracking URL to every email message.
      */
-    private function appendOpenTrackingUrl($body, $msgId)
+    public function appendOpenTrackingUrl($body, $msgId)
     {
         $openTrackingBaseURL = Setting::get('url_open_track');
         $tracking_url = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $openTrackingBaseURL);
@@ -512,15 +512,22 @@ class Campaign extends Model
      * @return String
      */
     public function getHtmlContent($subscriber, $msgId) {
-        $body = $this->tagMessage($this->html, $subscriber, $msgId);
+        // @note: IMPORTANT: the order must be
+        // * addTrackingURL
+        // * appendOpenTrackingUrl
+        // * tagMessage
 
-        if ($this->track_open) {
-            $body = $this->appendOpenTrackingUrl($body, $msgId);
-        }
-
+        // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
+        $body = $this->html;
         if ($this->track_click) {
             $body = $this->addTrackingUrl($body, $msgId);
         }
+        
+        if ($this->track_open) {
+            $body = $this->appendOpenTrackingUrl($body, $msgId);
+        }
+        
+        $body = $this->tagMessage($body, $subscriber, $msgId);
 
         return $body;
     }
@@ -1542,14 +1549,23 @@ class Campaign extends Model
      * Replace link in text by click tracking url.
      *
      * @return text
+     * @note addTrackingUrl() must go before appendOpenTrackingUrl()
      */
-    private function addTrackingUrl($email_html_content, $msgId)
+    public function addTrackingUrl($email_html_content, $msgId)
     {
-        if (preg_match_all('|<a.*(?=href="([^"]*)")[^>]*>([^<]*)</a>|i', $email_html_content, $matches)) {
-            foreach ($matches[1] as $href) {
-                $new_src = str_replace('URL', StringHelper::base64UrlEncode($href), Setting::get('url_click_track'));
-                $new_src = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $new_src);
-                $email_html_content = str_replace($href, $new_src, $email_html_content);
+        if (preg_match_all('|<a.*(?=href=["\']([^"\']*)["\'])[^>]*>|i', $email_html_content, $matches)) {
+            foreach ($matches[0] as $i => $tag) {
+                $href = $matches[1][$i];
+                $newHref = str_replace('URL', StringHelper::base64UrlEncode($href), Setting::get('url_click_track'));
+                $newHref = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $newHref);
+
+                // if the link contains UNSUBSCRIBE URL tag
+                if (strpos($href, '{UNSUBSCRIBE_URL}') !== false) {
+                    $newTag = preg_replace('/(?<=href=["\'])[^"\']*/', '{UNSUBSCRIBE_URL}', $tag);
+                } else {
+                    $newTag = preg_replace('/(?<=href=["\'])[^"\']*/', $newHref, $tag);
+                }
+                $email_html_content = str_replace($tag, $newTag, $email_html_content);
             }
         }
 
