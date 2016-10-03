@@ -951,6 +951,7 @@ return [
     'sendgrid-api' => 'Sendgrid API',
     'sendgrid-smtp' => 'Sendgrid SMTP',
     'email_existed' => '[:time] ERROR: \':email\' existed',
+    'email_existed_invalid' => '[:time] ERROR: \':email\' existed or invalid',
     'email_imported' => '[:time] SUCCESS: \':email\' is imported',
     'download_import_log' => 'Download log',
     'count' => 'Count',

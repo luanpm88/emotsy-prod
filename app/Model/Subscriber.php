@@ -339,7 +339,11 @@ class Subscriber extends Model
 
             if ($key > 0) {
                 $parts = explode(',', $line);
-                $email = strtolower(trim(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($parts[$main_index])))));
+                if(isset($parts[$main_index])) {
+                    $email = strtolower(trim(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($parts[$main_index])))));
+                } else {
+                    $email = "";
+                }
 
                 $valid = $list->checkExsitEmail($email);
                 if ($valid) {
@@ -371,7 +375,7 @@ class Subscriber extends Model
                     $error_detail = trans('messages.email_imported', ['time' => \Carbon\Carbon::now()->timezone($user->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);                    
                 } else {
                     ++$error;
-                    $error_detail = trans('messages.email_existed', ['time' => \Carbon\Carbon::now()->timezone($user->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);
+                    $error_detail = trans('messages.email_existed_invalid', ['time' => \Carbon\Carbon::now()->timezone($user->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);
                 }
                 if ($key % $lines_per_second == 0) {
                     $content_cache = trans('messages.import_export_statistics_line', [

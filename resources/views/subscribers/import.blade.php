@@ -22,7 +22,7 @@
 				<h2 class="text-bold text-teal-800"><i class="icon-users4"></i> {{ trans('messages.import_subscribers') }}</h2>
 				
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-12">
                         <form
                             process-url="{{ action('SubscriberController@importProccess', $list->uid) }}"
                             action="{{ action('SubscriberController@import', $list->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery">
@@ -93,7 +93,7 @@
 										var error = parseFloat($("<div>").html(data).find(".error").html());
 									
 										form.find(".processing label").html(data[1]);
-										bar.find(".number").html(parseInt(success/total*100));
+										bar.find(".number").html(Math.round(success/total*100));
 										bar.css({
 											width: (success/total*100) + '%'
 										});
@@ -103,7 +103,7 @@
 										//	width: 3 + '%'
 										//});
 										
-										bar_e.find(".number").html(parseInt(error/total*100));
+										bar_e.find(".number").html(Math.round(error/total*100));
 										bar_e.css({
 											width: (error/total*100) + '%'
 										});
