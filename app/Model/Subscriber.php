@@ -339,7 +339,7 @@ class Subscriber extends Model
 
             if ($key > 0) {
                 $parts = explode(',', $line);
-                $email = trim(strtoupper(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($parts[$main_index])))));
+                $email = strtolower(trim(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($parts[$main_index])))));
 
                 $valid = $list->checkExsitEmail($email);
                 if ($valid) {
@@ -352,6 +352,7 @@ class Subscriber extends Model
                     $subscriber->save();
 
                     foreach ($parts as $key => $value) {
+                        $value = trim(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($value))));
                         if(isset($headers[$key])) {
                             $lf = $list->fields()->where('tag', '=', $headers[$key])->first();
                             if (is_object($lf)) {
