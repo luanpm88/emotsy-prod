@@ -339,7 +339,7 @@ class Subscriber extends Model
 
             if ($key > 0) {
                 $parts = explode(',', $line);
-                $email = $parts[$main_index];
+                $email = trim(strtoupper(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($parts[$main_index])))));
 
                 $valid = $list->checkExsitEmail($email);
                 if ($valid) {
