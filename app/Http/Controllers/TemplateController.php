@@ -533,4 +533,20 @@ class TemplateController extends Controller
         $template->image = $upload_loca.$filename;
         $template->save();
     }
+    
+    /**
+     * Buiding email template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function build(Request $request)
+    {
+        $template = new \Acelle\Model\Template();
+        
+        return view('templates.build', [
+            'template' => $template,
+        ]);
+    }
 }
