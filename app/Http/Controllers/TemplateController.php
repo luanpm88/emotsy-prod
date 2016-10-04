@@ -549,4 +549,20 @@ class TemplateController extends Controller
             'template' => $template,
         ]);
     }
+    
+    /**
+     * Select template style.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function buildSelect(Request $request)
+    {
+        $template = new \Acelle\Model\Template();
+        
+        return view('templates.build_start', [
+            'template' => $template,
+        ]);
+    }
 }

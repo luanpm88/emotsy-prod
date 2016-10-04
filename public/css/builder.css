@@ -4,12 +4,14 @@ body {
     padding-top: 50px;
 }
 leftbar {
-    width: 500px;
+    width: 518px;
     display: block;
     float: left;
+    overflow: auto;
+    border-right: solid 2px #ccc;
 }
 editor {
-    width: 500px;
+    width: 518px;
     display: block;
     position: absolute;
     z-index: 10;
@@ -17,6 +19,7 @@ editor {
     background: #f5f5f5;
     padding: 10px;
     display: none;
+    border-right: solid 2px #ccc;
 }
 editor iframe {
     
@@ -26,7 +29,7 @@ leftbar .tool-box {
     box-shadow: 1px 1px 1px #f5f5f5;
 }
 content {
-    width: calc(100% - 500px);
+    width: calc(100% - 520px);
     display: block;
     float: right;
     background: #fff;
@@ -43,10 +46,12 @@ content {
     height: 100px;
     background: #fff;
     text-align: center;
-    width: 110px;
+    width: 88px;
     color: #444;
     box-shadow: 2px 2px 3px rgba(0,0,0,0.1);
-    margin-right: 15px;
+    margin-right: 10px;
+    margin-bottom: 10px;
+    cursor: pointer;
 }
 .tool-item img {
     display: inline-block;
@@ -54,8 +59,8 @@ content {
 }
 .tool-item i {
     display: block;
-    font-size: 50px;
-    margin: 10px;
+    font-size: 40px;
+    margin: 15px;
 }
 .tool-item label {
     font-size: 14px;

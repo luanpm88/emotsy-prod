@@ -45,6 +45,7 @@
     function ajustLayout() {
         $( "content" ).height( $( window ).height() - 50 );
         $( "editor" ).height( $( window ).height() - 70 );
+        $( "leftbar" ).height( $( window ).height() - 50 );
     }
     
     function updateToolbox() {
@@ -144,7 +145,7 @@
                 <table class="outer" align="center">
                     <tr>
                         <td class="full-width-image">
-                            <img src="{{ url("images/icons/image_placeholder_width.png") }}" width="600" alt="" />
+                            <img src="{{ url("images/icons/image_placeholder_wide.png") }}" width="600" alt="" />
                         </td>
                     </tr>
                 </table>
@@ -162,7 +163,7 @@
                 </table>
             </td>
         </tr>
-        <tr class="block two_cols_image_text">
+        <tr class="block two_image_text_columns">
             <td class="two-column">
                 <!--[if (gte mso 9)|(IE)]>
                 <table width="100%">
@@ -176,7 +177,7 @@
                                 <table class="contents">
                                     <tr>
                                         <td>
-                                            <img src="{{ url("images/icons/image_placeholder_square.png") }}" width="280" alt="" />
+                                            <img src="{{ url("images/icons/image_placeholder_medium.png") }}" width="280" alt="" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -199,7 +200,7 @@
                                 <table class="contents">
                                     <tr>
                                         <td>
-                                            <img src="{{ url("images/icons/image_placeholder_square.png") }}" width="280" alt="" />
+                                            <img src="{{ url("images/icons/image_placeholder_medium.png") }}" width="280" alt="" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -208,6 +209,300 @@
                                         </td>
                                     </tr>
                                 </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td>
+                </tr>
+                </table>
+                <![endif]-->
+            </td>
+        </tr>
+        <tr class="block three_image_text_columns">
+            <td class="three-column">
+                <!--[if (gte mso 9)|(IE)]>
+                <table width="100%">
+                <tr>
+                <td width="200" valign="top">
+                <![endif]-->
+                <div class="column">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner">
+                                <table class="contents">
+                                    <tr>
+                                        <td>
+                                            <img src="{{ url("images/icons/image_placeholder_square.png") }}" width="180" alt="" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text">
+                                            Scelerisque congue eros eu posuere. Praesent in felis ut velit pretium lobortis rhoncus ut erat.
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td><td width="200" valign="top">
+                <![endif]-->
+                <div class="column">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner">
+                                <table class="contents">
+                                    <tr>
+                                        <td>
+                                            <img src="{{ url("images/icons/image_placeholder_square.png") }}" width="180" alt="" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text">
+                                            Scelerisque congue eros eu posuere. Praesent in felis ut velit pretium lobortis rhoncus ut erat.
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td><td width="200" valign="top">
+                <![endif]-->
+                <div class="column">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner">
+                                <table class="contents">
+                                    <tr>
+                                        <td>
+                                            <img src="{{ url("images/icons/image_placeholder_square.png") }}" width="180" alt="" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text">
+                                            Scelerisque congue eros eu posuere. Praesent in felis ut velit pretium lobortis rhoncus ut erat.
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td>
+                </tr>
+                </table>
+                <![endif]-->
+            </td>
+        </tr>
+        <tr class="block list_image_left">
+            <td class="left-sidebar">
+                <!--[if (gte mso 9)|(IE)]>
+                <table width="100%">
+                <tr>
+                <td width="100">
+                <![endif]-->
+                <div class="column left">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner">
+                                <img src="{{ url("images/icons/image_placeholder_square.png") }}" width="80" alt="" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td><td width="500">
+                <![endif]-->
+                <div class="column right">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner contents">
+                                Praesent laoreet malesuada cursus. Maecenas scelerisque congue eros eu posuere. Praesent in felis ut velit pretium lobortis rhoncus ut erat. <a href="#">Read&nbsp;on</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td>
+                </tr>
+                </table>
+                <![endif]-->
+            </td>
+        </tr>
+        <tr class="block list_image_right">
+            <td class="right-sidebar" dir="rtl">
+                <!--[if (gte mso 9)|(IE)]>
+                <table width="100%" dir="rtl">
+                <tr>
+                <td width="100">
+                <![endif]-->
+                <div class="column left" dir="ltr">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner contents">
+                                <img src="{{ url("images/icons/image_placeholder_square.png") }}" width="80" alt="" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td><td width="500">
+                <![endif]-->
+                <div class="column right" dir="ltr">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner contents">
+                                Maecenas sed ante pellentesque, posuere leo id, eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra. <a href="#">Per&nbsp;inceptos</a>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td>
+                </tr>
+                </table>
+                <![endif]-->
+            </td>
+        </tr>
+        <tr class="block three_heading_columns">
+            <td class="three-column">
+                <!--[if (gte mso 9)|(IE)]>
+                <table width="100%">
+                <tr>
+                <td width="200" valign="top">
+                <![endif]-->
+                <div class="column">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner contents">
+                                <p class="h2">Heading</p>
+                                <p>Class eleifend aptent taciti sociosqu ad litora torquent conubia</p>
+                                <p><a href="#">Read more</a></p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td><td width="200" valign="top">
+                <![endif]-->
+                <div class="column">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner contents">
+                                <p class="h2">Heading</p>
+                                <p>Class eleifend aptent taciti sociosqu ad litora torquent conubia</p>
+                                <p><a href="#">Read more</a></p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td><td width="200" valign="top">
+                <![endif]-->
+                <div class="column">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner contents">
+                                <p class="h2">Heading</p>
+                                <p>Class eleifend aptent taciti sociosqu ad litora torquent conubia</p>
+                                <p><a href="#">Read more</a></p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td>
+                </tr>                
+                </table>
+                <![endif]-->
+            </td>
+        </tr>
+        <tr class="block footer">
+            <td class="one-column">
+                <table width="100%">
+                    <tr>
+                        <td class="inner contents">
+                            <p>
+                                <em>Copyright &copy; {CONTACT_NAME}, All rights reserved.</em><br />
+                                <br />
+                                <strong>Our mailing address is:</strong><br />
+                                <a href="mailto:{CONTACT_EMAIL}">{CONTACT_EMAIL}</a><br />
+                                <br />
+                                Want to change how you receive these emails?<br />
+                                You can <a href="{UPDATE_PROFILE_URL}">update your preferences</a> or <a href="{UNSUBSCRIBE_URL}">unsubscribe from this list</a>
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr class="block image_right">
+            <td class="right-image" dir="rtl">
+                <!--[if (gte mso 9)|(IE)]>
+                <table width="100%" dir="rtl">
+                <tr>
+                <td width="245">
+                <![endif]-->
+                <div class="column left" dir="ltr">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner contents">
+                                <img src="{{ url("images/icons/image_placeholder_medium.png") }}" width="220" alt="" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td><td width="350">
+                <![endif]-->
+                <div class="column right" dir="ltr">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner contents">
+                                <p class="h2">Heading</p>
+                                <p>Maecenas sed ante pellentesque, posuere leo id, eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra. <a href="#">Per&nbsp;inceptos</a></p>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td>
+                </tr>
+                </table>
+                <![endif]-->
+            </td>
+        </tr>
+        <tr class="block image_left">
+            <td class="left-image">
+                <!--[if (gte mso 9)|(IE)]>
+                <table width="100%">
+                <tr>
+                <td width="245">
+                <![endif]-->
+                <div class="column left">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner contents">
+                                <img src="{{ url("images/icons/image_placeholder_medium.png") }}" width="220" alt="" />
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td><td width="350">
+                <![endif]-->
+                <div class="column right">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner contents">
+                                <p class="h2">Heading</p>
+                                <p>Maecenas sed ante pellentesque, posuere leo id, eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra. <a href="#">Per&nbsp;inceptos</a></p>
                             </td>
                         </tr>
                     </table>
@@ -231,9 +526,43 @@
                 <i class="icon-paragraph-left2"></i>
                 <label>{{ trans('messages.single_text_row') }}</label>
             </div>
-            <div class="block tool-item" template="two_cols_image_text">
+            <div class="block tool-item" template="two_image_text_columns">
                 <i class="icon-newspaper2"></i>
-                <label>{{ trans('messages.two_cols_image_text') }}</label>
+                <label>{{ trans('messages.two_image_text_columns') }}</label>
+            </div>
+            <div class="block tool-item" template="three_image_text_columns">
+                <i class="icon-stack-picture"></i>
+                <label>{{ trans('messages.three_image_text_columns') }}</label>
+            </div>
+            <div class="block tool-item" template="list_image_left">
+                <i class="icon-list"></i>
+                <label>{{ trans('messages.list_image_left') }}</label>
+            </div>
+            <div class="block tool-item" template="list_image_right">
+                <i class="icon-list" style="
+                    -ms-transform: rotate(180deg); /* IE 9 */
+                    -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
+                    transform: rotate(180deg);"></i>
+                <label>{{ trans('messages.list_image_right') }}</label>
+            </div>
+            <div class="block tool-item" template="three_heading_columns">
+                <i class="icon-stack-text"></i>
+                <label>{{ trans('messages.three_heading_columns') }}</label>
+            </div>
+            <div class="block tool-item" template="footer">
+                <i class="icon-ipad"></i>
+                <label>{{ trans('messages.footer') }}</label>
+            </div>
+            <div class="block tool-item" template="image_right">
+                <i class="icon-newspaper" style="
+                    -ms-transform: rotate(180deg); /* IE 9 */
+                    -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */
+                    transform: rotate(180deg);"></i>
+                <label>{{ trans('messages.image_right') }}</label>
+            </div>
+            <div class="block tool-item" template="image_left">
+                <i class="icon-newspaper"></i>
+                <label>{{ trans('messages.image_left') }}</label>
             </div>
         </div>
     </toolbox>
@@ -270,7 +599,7 @@
                             <table class="outer" align="center">
                                 <tr>
                                     <td class="full-width-image">
-                                        <img src="{{ url("images/icons/image_placeholder_width.png") }}" width="600" alt="" />
+                                        <img src="{{ url("images/icons/image_placeholder_slim.png") }}" width="600" alt="" />
                                     </td>
                                 </tr>
                             </table>
@@ -302,7 +631,7 @@
                                             <table class="contents">
                                                 <tr>
                                                     <td>
-                                                        <img src="{{ url("images/icons/image_placeholder_width.png") }}" width="280" alt="" />
+                                                        <img src="{{ url("images/icons/image_placeholder_wide.png") }}" width="280" alt="" />
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -325,7 +654,7 @@
                                             <table class="contents">
                                                 <tr>
                                                     <td>
-                                                        <img src="{{ url("images/icons/image_placeholder_width.png") }}" width="280" alt="" />
+                                                        <img src="{{ url("images/icons/image_placeholder_wide.png") }}" width="280" alt="" />
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -359,7 +688,7 @@
                                             <table class="contents">
                                                 <tr>
                                                     <td>
-                                                        <img src="{{ url("images/icons/image_placeholder_width.png") }}" width="180" alt="" />
+                                                        <img src="{{ url("images/icons/image_placeholder_wide.png") }}" width="180" alt="" />
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -382,7 +711,7 @@
                                             <table class="contents">
                                                 <tr>
                                                     <td>
-                                                        <img src="{{ url("images/icons/image_placeholder_width.png") }}" width="180" alt="" />
+                                                        <img src="{{ url("images/icons/image_placeholder_wide.png") }}" width="180" alt="" />
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -405,7 +734,7 @@
                                             <table class="contents">
                                                 <tr>
                                                     <td>
-                                                        <img src="{{ url("images/icons/image_placeholder_width.png") }}" width="180" alt="" />
+                                                        <img src="{{ url("images/icons/image_placeholder_wide.png") }}" width="180" alt="" />
                                                     </td>
                                                 </tr>
                                                 <tr>
