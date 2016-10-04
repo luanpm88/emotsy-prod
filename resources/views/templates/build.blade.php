@@ -11,6 +11,8 @@
     <!--<![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title></title>
+    <link href="{{ URL::asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
+    
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/res_email.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/builder.css') }}" />
     <!--[if (gte mso 9)|(IE)]>
@@ -21,36 +23,236 @@
     
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    
+    <script type="text/javascript" src="{{ URL::asset('tinymce/tinymce.min.js') }}"></script>
         
+    <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
+    
+    
+    
+    @include('layouts._script_vars')
+    
     <script>
-    $( function() {
+    var current_content;
+    
+    function updateConentCol() {
+        if (typeof(current_content) != 'undefined') {
+            content = tinyMCE.activeEditor.getContent({format : 'html'});
+            current_content.html(content);
+        }
+    }
+    
+    function ajustLayout() {
+        $( "content" ).height( $( window ).height() - 50 );
+        $( "editor" ).height( $( window ).height() - 70 );
+    }
+    
+    function updateToolbox() {
+        $('.toolbox-container').html($('toolbox').html());
+        // Sortable
+        sortable();
+    }
+    
+    function updateContent() {
+        $('content .tool-item').each(function() {
+            var template = $(this).attr('template');
+            $(this).after($('.'+template).clone());
+            $('content .'+template).removeClass(template);
+            $(this).remove();
+        });
+        
+        // Find content col
+        $('content td').each(function() {
+            if(!$(this).find('table').length) {
+                $(this).addClass('content-col');
+            }
+        });
+    }
+    
+    function sortable() {
         $( ".left-box" ).sortable({
             items: '.block',
             connectWith: ".right-box",
             start: function(e, ui) {
                 console.log(ui.item);
             },
+            stop: function(event,ui){
+                // Update content
+                updateContent();
+                // Update toolbox
+                updateToolbox();
+            }
         });
+        // Content sortable
         $( ".right-box" ).sortable({
             items: '.block',
         });
+    }
+    
+    $( function() {
+        ajustLayout();
         
-        $( "content" ).height( $( window ).height() );
+        // Update content
+        updateContent();
+        // Update toolbox
+        updateToolbox();
+        // Sortable
+        sortable();
+        
+        // Click on content col
+        $(document).on("click", ".content-col", function() {
+            current_content = $(this);
+            
+            $(".content-col").removeClass('current');
+            current_content.addClass('current');
+            
+            // Set content
+            tinyMCE.activeEditor.setContent(current_content.html(), {format : 'html'});
+            
+            // Show editor
+            $('editor').fadeIn();
+        });
+        
+        // Click on content col
+        $(document).on("click", ".close-editor", function() {
+            // Show editor
+            $('editor').fadeOut();
+        });
+        
+        // Auto update content
+        setInterval("updateConentCol()", 500);
     });
     $( window ).resize(function() {
-        $( "content" ).height( $( window ).height() );
+        ajustLayout()
     });
     </script>
     
 </head>
 <body>
-    <leftbar>
+    <topbar>
+        <div class="left">
+            <button class="btn btn-primary">{{ trans('messages.save') }}</button>
+        </div>
+        <div class="right">
+            
+        </div>
+    </topbar>
+
+    <table class="hide">
+        <tr class="block full_width_banner">
+            <td>
+                <table class="outer" align="center">
+                    <tr>
+                        <td class="full-width-image">
+                            <img src="{{ url("images/icons/image_placeholder_width.png") }}" width="600" alt="" />
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr class="block single_text_row">
+            <td class="one-column">
+                <table width="100%">
+                    <tr>
+                        <td class="inner contents">
+                            <p class="h1">Lorem ipsum dolor sit amet</p>
+                            <p>Maecenas sed ante pellentesque, posuere leo id, eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Praesent laoreet malesuada cursus. Maecenas scelerisque congue eros eu posuere. Praesent in felis ut velit pretium lobortis rhoncus ut erat.</p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr class="block two_cols_image_text">
+            <td class="two-column">
+                <!--[if (gte mso 9)|(IE)]>
+                <table width="100%">
+                <tr>
+                <td width="50%" valign="top">
+                <![endif]-->
+                <div class="column">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner">
+                                <table class="contents">
+                                    <tr>
+                                        <td>
+                                            <img src="{{ url("images/icons/image_placeholder_square.png") }}" width="280" alt="" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text">
+                                            Maecenas sed ante pellentesque, posuere leo id, eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. 
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td><td width="50%" valign="top">
+                <![endif]-->
+                <div class="column">
+                    <table width="100%">
+                        <tr>
+                            <td class="inner">
+                                <table class="contents">
+                                    <tr>
+                                        <td>
+                                            <img src="{{ url("images/icons/image_placeholder_square.png") }}" width="280" alt="" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text">
+                                            Maecenas sed ante pellentesque, posuere leo id, eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. 
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <!--[if (gte mso 9)|(IE)]>
+                </td>
+                </tr>
+                </table>
+                <![endif]-->
+            </td>
+        </tr>
+    </table>
+    
+    <toolbox>
         <div class="left-box">
-            <div class="block">
-                asdasdasdasd
+            <div class="block tool-item" template="full_width_banner">
+                <i class="icon-file-picture"></i>
+                <label>{{ trans('messages.full_width_banner') }}</label>
             </div>
-            <div class="block">
-                asdasdasdasd
+            <div class="block tool-item" template="single_text_row">
+                <i class="icon-paragraph-left2"></i>
+                <label>{{ trans('messages.single_text_row') }}</label>
+            </div>
+            <div class="block tool-item" template="two_cols_image_text">
+                <i class="icon-newspaper2"></i>
+                <label>{{ trans('messages.two_cols_image_text') }}</label>
+            </div>
+        </div>
+    </toolbox>
+    
+    <editor>
+        <h1>{{ trans('messages.editor') }}</h1>
+        <textarea class="builder-editor pull-right"></textarea>
+        <br />
+        <div style="text-align: right">
+            <!--<button class="btn btn-primary save-editor">{{ trans('messages.save_and_close') }}</button>-->
+            <button class="btn bg-slate close-editor">{{ trans('messages.close') }}</button>            
+        </div>
+    </editor>
+    
+    <leftbar>
+        <div class="container">
+            <h1>{{ trans('messages.template_elements') }}</h1>
+            <div class="toolbox-container">
+                
             </div>
         </div>
     </leftbar>
@@ -68,7 +270,7 @@
                             <table class="outer" align="center">
                                 <tr>
                                     <td class="full-width-image">
-                                        <img src="http://akashinfoteck.com/images/Hp_Laptop-service%20center%20in%20dwarka.jpg" width="600" alt="" />
+                                        <img src="{{ url("images/icons/image_placeholder_width.png") }}" width="600" alt="" />
                                     </td>
                                 </tr>
                             </table>
@@ -100,7 +302,7 @@
                                             <table class="contents">
                                                 <tr>
                                                     <td>
-                                                        <img src="http://akashinfoteck.com/images/Hp_Laptop-service%20center%20in%20dwarka.jpg" width="280" alt="" />
+                                                        <img src="{{ url("images/icons/image_placeholder_width.png") }}" width="280" alt="" />
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -123,7 +325,7 @@
                                             <table class="contents">
                                                 <tr>
                                                     <td>
-                                                        <img src="http://akashinfoteck.com/images/Hp_Laptop-service%20center%20in%20dwarka.jpg" width="280" alt="" />
+                                                        <img src="{{ url("images/icons/image_placeholder_width.png") }}" width="280" alt="" />
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -157,7 +359,7 @@
                                             <table class="contents">
                                                 <tr>
                                                     <td>
-                                                        <img src="http://akashinfoteck.com/images/Hp_Laptop-service%20center%20in%20dwarka.jpg" width="180" alt="" />
+                                                        <img src="{{ url("images/icons/image_placeholder_width.png") }}" width="180" alt="" />
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -180,7 +382,7 @@
                                             <table class="contents">
                                                 <tr>
                                                     <td>
-                                                        <img src="http://akashinfoteck.com/images/Hp_Laptop-service%20center%20in%20dwarka.jpg" width="180" alt="" />
+                                                        <img src="{{ url("images/icons/image_placeholder_width.png") }}" width="180" alt="" />
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -203,7 +405,7 @@
                                             <table class="contents">
                                                 <tr>
                                                     <td>
-                                                        <img src="http://akashinfoteck.com/images/Hp_Laptop-service%20center%20in%20dwarka.jpg" width="180" alt="" />
+                                                        <img src="{{ url("images/icons/image_placeholder_width.png") }}" width="180" alt="" />
                                                     </td>
                                                 </tr>
                                                 <tr>
