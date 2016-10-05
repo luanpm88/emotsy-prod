@@ -1009,7 +1009,7 @@ return [
     'select_a_template_layout' => 'Select a template layout',
     'remove_row' => 'Remove row',
     'untitled_template' => 'Untitled template',
-    '1_3column' => '1:3 column',
+    '1_3_column' => '1:3 column',
     '1_3_1_column' => '1:3:1 column',
     '1_3_2_column' => '1:3:2 column',
     '2_column' => '2 column',

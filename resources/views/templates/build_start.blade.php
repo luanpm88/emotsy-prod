@@ -26,7 +26,7 @@
     
                 <div class="row">
 					@foreach(Acelle\Model\Template::templateStyles() as $name => $style)
-						<div class="col-xs-6 col-sm-4 col-md-3">
+						<div class="col-xxs-12 col-xs-6 col-sm-3 col-md-2">
 							<a href="{{ action('TemplateController@build', ['style' => $name]) }}">
 								<div class="panel panel-flat panel-template-style">
 									<div class="panel-body">

@@ -39,7 +39,7 @@
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>											
 											@can('update', $item)
-												@if ($item->source == 'builder')
+												@if ($item->source == 'builder' && false)
 													<a href="{{ action('TemplateController@rebuild', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 												@else
 													<a href="{{ action('TemplateController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
