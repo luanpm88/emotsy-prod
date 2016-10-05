@@ -1,7 +1,7 @@
 body {
     background: #f5f5f5;
     font-family: sans-serif;
-    padding-top: 50px;
+    padding-top: 55px !important
 }
 leftbar {
     width: 518px;
@@ -9,6 +9,7 @@ leftbar {
     float: left;
     overflow: auto;
     border-right: solid 2px #ccc;
+    background: #f0f0f0;
 }
 editor {
     width: 518px;
@@ -82,9 +83,8 @@ content .ui-sortable-placeholder {
     height: 50px;
 }
 td.content-col:hover {
-    border: solid 1px #ddd;
     cursor: pointer;
-    background: #f8f8f8;
+    background: #E0F2F1;
 }
 .content-col.current {
     border: solid 1px #00897B;
@@ -122,9 +122,9 @@ td.content-col:hover {
 
 }
 topbar {
-    height: 37px;
+    height: 36px;
     display: block;
-    padding: 5px;
+    padding: 10px;
     background: #555;
     box-shadow: 2px 2px 10px rgba(0,0,0,0.3);
     position: fixed;
@@ -148,4 +148,39 @@ topbar .right {
 }
 leftbar .container {
     padding: 10px;
+}
+tr.block:hover {
+    background: #f5f5f5;
+}
+.remove_block {
+    position: absolute;
+    z-index: 12;    
+    background: #ddd;
+    cursor: pointer;
+    display: none;
+}
+.remove_block i {    
+    padding: 5px;
+}
+table.outer {
+    min-height: 100px;
+}
+input {
+    font-size: 18px;
+    float: left;
+    padding: 5px 10px;
+    border: none;
+    width: 400px;
+    border-radius: 5px;
+    margin-right: 10px;
+    height: 26px;
+}
+.validation-error-label {
+    display: none !important;
+}
+a.btn {
+    text-decoration: none;
+}
+.mr-5 {
+    margin-right: 5px;
 }

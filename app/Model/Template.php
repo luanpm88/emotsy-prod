@@ -176,4 +176,79 @@ class Template extends Model
     {
         return self::where('uid', '=', $uid)->first();
     }
+    
+    /**
+     * Define all template styles.
+     *
+     * @return object
+     */
+    public static function templateStyles()
+    {
+        return [
+            "1_column" => [
+                "full_width_banner",
+                "single_text_row",
+                "footer"
+            ],
+            "1_2_column" => [
+                "full_width_banner",
+                "single_text_row",
+                "two_image_text_columns",
+                "footer"
+            ],
+            "1_2_1_column" => [
+                "full_width_banner",
+                "single_text_row",
+                "two_image_text_columns",
+                "single_text_row",
+                "footer"
+            ],
+            "1_3_column" => [
+                "full_width_banner",
+                "single_text_row",
+                "three_image_text_columns",
+                "single_text_row",
+                "footer"
+            ],
+            "1_3_1_column" => [
+                "full_width_banner",
+                "single_text_row",
+                "three_image_text_columns",
+                "single_text_row",
+                "footer"
+            ],
+            "1_3_2_column" => [
+                "full_width_banner",
+                "single_text_row",
+                "three_image_text_columns",
+                "two_image_text_columns",
+                "footer"
+            ],
+            "2_column" => [
+                "full_width_banner",
+                "two_image_text_columns",
+                "footer"
+            ],
+            "2_1_column" => [
+                "full_width_banner",
+                "two_image_text_columns",
+                "single_text_row",
+                "footer"
+            ],
+            "2_1_2_column" => [
+                "full_width_banner",
+                "two_image_text_columns",
+                "single_text_row",
+                "two_image_text_columns",
+                "footer"
+            ],
+            "3_1_3_column" => [
+                "full_width_banner",
+                "three_image_text_columns",
+                "single_text_row",
+                "three_image_text_columns",
+                "footer"
+            ],
+        ];
+    }
 }

@@ -132,6 +132,10 @@ class TemplateController extends Controller
 
             // Save template
             $template->fill($request->all());
+            $template->source = 'editor';
+            if(isset($request->source)) {
+                $template->source = $request->source;
+            }
             $template->save();
 
             // Redirect to my lists page
@@ -381,6 +385,7 @@ class TemplateController extends Controller
             // Save new template
             $template->fill($request->all());
             $template->content = $html_content;
+            $template->source = 'upload';
             $template->save();
             
             // copy all folder to public path
@@ -544,8 +549,43 @@ class TemplateController extends Controller
     public function build(Request $request)
     {
         $template = new \Acelle\Model\Template();
+        $template->name = trans('messages.untitled_template');
+        
+        // authorize
+        if (\Gate::denies('create', $template)) {
+            return $this->notAuthorized();
+        }
+        
+        $elements = [];
+        if(isset($request->style)) {
+            $elements = \Acelle\Model\Template::templateStyles()[$request->style];
+        }
         
         return view('templates.build', [
+            'template' => $template,
+            'elements' => $elements
+        ]);
+    }
+    
+    /**
+     * Buiding email template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function rebuild(Request $request)
+    {
+        // Generate info
+        $user = $request->user();
+        $template = \Acelle\Model\Template::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $template)) {
+            return $this->notAuthorized();
+        }
+
+        return view('templates.rebuild', [
             'template' => $template,
         ]);
     }

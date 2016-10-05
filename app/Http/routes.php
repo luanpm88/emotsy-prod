@@ -162,7 +162,8 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('templates/{uid}/preview', 'TemplateController@preview');
     Route::get('templates/delete', 'TemplateController@delete');
     Route::get('templates/build/select', 'TemplateController@buildSelect');
-    Route::get('templates/build/{style?}', 'TemplateController@build');    
+    Route::get('templates/build/{style?}', 'TemplateController@build');
+    Route::get('templates/{uid}/rebuild', 'TemplateController@rebuild');
     Route::resource('templates', 'TemplateController');
     Route::get('templates/{uid}/edit', 'TemplateController@edit');
     Route::patch('templates/{uid}/update', 'TemplateController@update');

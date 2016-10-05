@@ -122,6 +122,10 @@ text-align: center;
 .left-sidebar .left {
     max-width: 100px;
 }
+.left-sidebar .left img {
+    max-width: 80px;
+    height: auto;
+}
 .left-sidebar .right {
     max-width: 500px;
 }
@@ -206,6 +210,10 @@ p.h2 {
 .left-image .left {
     max-width: 245px;
 }
+.left-image .left img {
+    max-width: 220px;
+    height: auto;
+}
 .left-image .right {
     max-width: 350px;
 }
@@ -222,6 +230,10 @@ p.h2 {
 }
 .right-image .left {
     max-width: 245px;
+}
+.right-image .left img {
+    max-width: 220px;
+    height: auto;
 }
 .right-image .right {
     max-width: 350px;
