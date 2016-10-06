@@ -34,12 +34,20 @@
 											<span class="text-muted">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
 										
+										<td>
+											<div class="single-stat-box pull-left">
+												<span class="no-margin stat-num">{{ trans('messages.template_type_' . $item->source) }}</span>
+												<br>
+												<span class="text-muted text-nowrap">{{ trans('messages.type') }}</span>
+											</div>
+										</td>
+										
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>											
 											@can('update', $item)
-												@if ($item->source == 'builder' && false)
+												@if ($item->source == 'builder')
 													<a href="{{ action('TemplateController@rebuild', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 												@else
 													<a href="{{ action('TemplateController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>

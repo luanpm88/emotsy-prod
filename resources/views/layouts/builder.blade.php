@@ -36,7 +36,7 @@
     
     function updateTextarea() {
         var css = '';
-        $('textarea[name=content]').val(css+'<content>' + $('content').html() + '</content>');
+        $('textarea.template_content').val(css+'<content>' + $('content').html() + '</content>');
     }
     
     function insertElement(name) {
@@ -90,7 +90,7 @@
             current_block = $(this);
         });
         $(".remove_block").on("mouseover", function () {
-            $(".remove_block").show();
+            $(".remove_block").show();            
         });
         // add action button
         $("tr.block").on("mouseout", function () {
@@ -100,6 +100,8 @@
         $(".remove_block").on("click", function () {
             current_block.remove();
             $(".remove_block").hide();
+            // Hide editor
+            $('editor').fadeOut();
         });
     }
     
@@ -149,13 +151,20 @@
         
         // Click on content col
         $(document).on("click", ".close-editor", function() {
-            // Show editor
+            // Hide editor
             $('editor').fadeOut();
         });
         
         // Auto update content
         setInterval("updateConentCol()", 500);
         setInterval("updateTextarea()", 500);
+        
+        // Click to insert tag
+        $(document).on("click", ".insert_tag_button", function(e) {
+            var tag = $(this).attr("data-tag-name");
+            
+            tinymce.activeEditor.execCommand('mceInsertContent', false, tag);
+        });
         
     });
     $( window ).resize(function() {
@@ -604,13 +613,14 @@
     </toolbox>
     
     <editor>
-        <h1>{{ trans('messages.editor') }}</h1>
-        <textarea class="builder-editor pull-right"></textarea>
-        <br />
-        <div style="text-align: right">
-            <!--<button class="btn btn-primary save-editor">{{ trans('messages.save_and_close') }}</button>-->
+        <div style="float: right">
             <button class="btn bg-slate close-editor">{{ trans('messages.close') }}</button>            
         </div>
+        <h1>{{ trans('messages.editor') }}</h1>
+        <textarea class="builder-editor pull-right"></textarea>
+        <br /><br />
+        @include('elements._tags', ['tags' => Acelle\Model\Template::tags()])
+
     </editor>
     
     <leftbar>

@@ -366,50 +366,6 @@ class Campaign extends Model
     }
 
     /**
-     * Template tags.
-     *
-     * All availabel template tags
-     */
-    public function tags()
-    {
-        $tags = [];
-
-        // List field tags
-        foreach ($this->mailList->fields as $field) {
-            $tags[] = ['name' => 'SUBSCRIBER_'.$field->tag, 'required' => false];
-        }
-
-        $tags = array_merge($tags, [
-            ['name' => 'UNSUBSCRIBE_URL', 'required' => (\Auth::user()->getOption('frontend', 'unsubscribe_url_required') == 'yes' ? true : false)],
-            ['name' => 'SUBSCRIBER_UID', 'required' => false],
-            ['name' => 'CAMPAIGN_NAME', 'required' => false],
-            ['name' => 'CAMPAIGN_UID', 'required' => false],
-            ['name' => 'CAMPAIGN_SUBJECT', 'required' => false],
-            ['name' => 'CAMPAIGN_FROM_EMAIL', 'required' => false],
-            ['name' => 'CAMPAIGN_FROM_NAME', 'required' => false],
-            ['name' => 'CAMPAIGN_REPLY_TO', 'required' => false],
-            ['name' => 'CURRENT_YEAR', 'required' => false],
-            ['name' => 'CURRENT_MONTH', 'required' => false],
-            ['name' => 'CURRENT_DAY', 'required' => false],
-            ['name' => 'CONTACT_NAME', 'required' => false],
-            ['name' => 'CONTACT_COUNTRY', 'required' => false],
-            ['name' => 'CONTACT_STATE', 'required' => false],
-            ['name' => 'CONTACT_CITY', 'required' => false],
-            ['name' => 'CONTACT_ADDRESS_1', 'required' => false],
-            ['name' => 'CONTACT_ADDRESS_2', 'required' => false],
-            ['name' => 'CONTACT_PHONE', 'required' => false],
-            ['name' => 'CONTACT_URL', 'required' => false],
-            ['name' => 'CONTACT_EMAIL', 'required' => false],
-            ['name' => 'LIST_NAME', 'required' => false],
-            ['name' => 'LIST_SUBJECT', 'required' => false],
-            ['name' => 'LIST_FROM_NAME', 'required' => false],
-            ['name' => 'LIST_FROM_EMAIL', 'required' => false],
-        ]);
-
-        return $tags;
-    }
-
-    /**
      * Transform Tags
      * Transform tags to actual values before sending.
      */
@@ -636,7 +592,7 @@ class Campaign extends Model
         'subject', 'from_name', 'from_email',
         'reply_to', 'track_open',
         'track_click', 'sign_dkim', 'track_fbl',
-        'html', 'plain',
+        'html', 'plain', 'template_source',
     ];
 
     /**
@@ -647,6 +603,16 @@ class Campaign extends Model
     public static $rules = array(
         'mail_list_uid' => 'required',
     );
+    
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function rules()
+    {
+        return [];
+    }
 
     /**
      * Items per page.
@@ -775,6 +741,23 @@ class Campaign extends Model
     {
         return self::where('uid', '=', $uid)->first();
     }
+    
+    /**
+     * CHeck UNSUBSCRIBE_URL.
+     *
+     * @return object
+     */
+    public function unsubscribe_url_valid()
+    {
+        if($this->type != 'plain-text' &&
+           \Auth::user()->getOption('frontend', 'unsubscribe_url_required') == 'yes' &&
+            strpos($this->html, '{UNSUBSCRIBE_URL}') == false   
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     /**
      * Get max step.
@@ -801,15 +784,22 @@ class Campaign extends Model
         }
 
         // Step 3
-        if ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain)) {
+        if ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid()) {            
             $step = 3;
         } else {
             return $step;
         }
 
         // Step 4
-        if (isset($this->delivery_at) && $this->delivery_at != '0000-00-00 00:00:00') {
+        if (isset($this->run_at) && $this->run_at != '0000-00-00 00:00:00') {
             $step = 4;
+        } else {
+            return $step;
+        }
+        
+        // Step 5
+        if ($this->subscribers()->count()) {
+            $step = 5;
         } else {
             return $step;
         }

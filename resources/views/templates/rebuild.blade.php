@@ -10,7 +10,7 @@
                 <input type="hidden" name="_method" value="PATCH">
                 
                 <input type="text" name="name" value="{{ $template->name }}" class="required" />
-                <textarea class="hide" name="content">{{ $template->content }}</textarea>
+                <textarea class="hide template_content" name="content">{{ $template->content }}</textarea>
                 <button class="btn btn-primary mr-5">{{ trans('messages.save') }}</button>
                 <a href="{{ action('TemplateController@index') }}" class="btn bg-slate">{{ trans('messages.cancel') }}</a>
             </form>

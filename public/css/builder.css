@@ -184,3 +184,34 @@ a.btn {
 .mr-5 {
     margin-right: 5px;
 }
+.text-semibold {
+    font-weight: 600;
+}
+.text-teal, .text-teal:hover, .text-teal:focus {
+    color: #009688 !important;
+    font-size: 14px;
+}
+.tags_list .btn {
+    margin-bottom: 10px;
+    width: 200px;
+    background: #fff;
+    margin-top: 5px;
+    border: solid 1px #ddd;
+    margin-right: 5px;
+    color: #333;
+}
+.text-right {
+    text-align: right;
+}
+.pull-right {
+    float: right;
+}
+topbar h1 {
+    color: #ddd;
+    margin: 0;
+    font-size: 24px;
+    padding: 4px;
+}
+topbar .right {
+    padding-right: 20px;
+}

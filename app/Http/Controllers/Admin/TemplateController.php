@@ -385,4 +385,71 @@ class TemplateController extends Controller
         // Redirect to my lists page
         echo trans('messages.templates.deleted');
     }
+    
+    /**
+     * Buiding email template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function build(Request $request)
+    {
+        $template = new \Acelle\Model\Template();
+        $template->name = trans('messages.untitled_template');
+        
+        // authorize
+        if (\Gate::denies('create', $template)) {
+            return $this->notAuthorized();
+        }
+        
+        $elements = [];
+        if(isset($request->style)) {
+            $elements = \Acelle\Model\Template::templateStyles()[$request->style];
+        }
+        
+        return view('admin.templates.build', [
+            'template' => $template,
+            'elements' => $elements
+        ]);
+    }
+    
+    /**
+     * Buiding email template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function rebuild(Request $request)
+    {
+        // Generate info
+        $user = $request->user();
+        $template = \Acelle\Model\Template::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $template)) {
+            return $this->notAuthorized();
+        }
+
+        return view('admin.templates.rebuild', [
+            'template' => $template,
+        ]);
+    }
+    
+    /**
+     * Select template style.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function buildSelect(Request $request)
+    {
+        $template = new \Acelle\Model\Template();
+        
+        return view('admin.templates.build_start', [
+            'template' => $template,
+        ]);
+    }
 }

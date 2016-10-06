@@ -52,9 +52,11 @@ class TemplateController extends Controller
     public function choosing(Request $request)
     {
         $templates = \Acelle\Model\Template::search($request)->paginate($request->per_page);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->campaign_uid);
 
         return view('templates._list_choose', [
             'templates' => $templates,
+            'campaign' => $campaign,
         ]);
     }
 
@@ -136,6 +138,11 @@ class TemplateController extends Controller
             if(isset($request->source)) {
                 $template->source = $request->source;
             }
+            
+            // update content
+            $template->content = preg_replace('/href\=\'([^\']*\{)/',"href='{", $template->content);
+            $template->content = preg_replace('/href\=\"([^\"]*\{)/','href="{', $template->content);
+            
             $template->save();
 
             // Redirect to my lists page
@@ -214,6 +221,11 @@ class TemplateController extends Controller
 
             // Save template
             $template->fill($request->all());
+            
+            // update content
+            $template->content = preg_replace('/href\=\'([^\']*\{)/',"href='{", $template->content);
+            $template->content = preg_replace('/href\=\"([^\"]*\{)/','href="{', $template->content);
+            
             $template->save();
 
             // Redirect to my lists page

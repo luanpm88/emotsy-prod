@@ -9,7 +9,7 @@
                 {{ csrf_field() }}
                 <input type="text" name="name" value="{{ $template->name }}" class="required" />
                 <input type="hidden" name="source" value="builder" class="required" />
-                <textarea class="hide" name="content"></textarea>
+                <textarea class="hide template_content" name="content"></textarea>
                 <button class="btn btn-primary mr-5">{{ trans('messages.save') }}</button>
                 <a href="{{ action('TemplateController@index') }}" class="btn bg-slate">{{ trans('messages.cancel') }}</a>
             </form>

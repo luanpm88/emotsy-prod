@@ -154,7 +154,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('templates/{uid}/content', 'TemplateController@content');
     Route::get('templates/sort', 'TemplateController@sort');
     Route::get('templates/listing/{page?}', 'TemplateController@listing');
-    Route::get('templates/choosing/{page?}', 'TemplateController@choosing');
+    Route::get('templates/choosing/{campaign_uid}/{page?}', 'TemplateController@choosing');
     Route::get('templates/upload', 'TemplateController@upload');
     Route::post('templates/upload', 'TemplateController@upload');
     Route::get('templates/{uid}/image', 'TemplateController@image');
@@ -205,6 +205,12 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('campaigns/{uid}/setup', 'CampaignController@setup');
     Route::get('campaigns/{uid}/template', 'CampaignController@template');
     Route::post('campaigns/{uid}/template', 'CampaignController@template');
+    Route::get('campaigns/{uid}/template/select', 'CampaignController@templateSelect');
+    Route::get('campaigns/{uid}/template/choose/{template_uid}', 'CampaignController@templateChoose');
+    Route::get('campaigns/{uid}/template/preview', 'CampaignController@templatePreview');
+    Route::get('campaigns/{uid}/template/iframe', 'CampaignController@templateIframe');
+    Route::get('campaigns/{uid}/template/build/{style}', 'CampaignController@templateBuild');
+    Route::get('campaigns/{uid}/template/rebuild', 'CampaignController@templateRebuild');
     Route::get('campaigns/{uid}/schedule', 'CampaignController@schedule');
     Route::post('campaigns/{uid}/schedule', 'CampaignController@schedule');
     Route::get('campaigns/{uid}/confirm', 'CampaignController@confirm');
@@ -242,6 +248,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/templates/upload', 'TemplateController@upload');
     Route::post('admin/templates/upload', 'TemplateController@upload');
     Route::get('admin/templates/delete', 'TemplateController@delete');
+    Route::get('admin/templates/build/select', 'TemplateController@buildSelect');
+    Route::get('admin/templates/build/{style?}', 'TemplateController@build');
+    Route::get('admin/templates/{uid}/rebuild', 'TemplateController@rebuild');
     Route::resource('admin/templates', 'TemplateController');
     Route::get('admin/templates/{uid}/edit', 'TemplateController@edit');
     Route::patch('admin/templates/{uid}/update', 'TemplateController@update');

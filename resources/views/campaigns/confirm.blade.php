@@ -39,7 +39,11 @@
                     <ul class="modern-listing">
                         <li>
                             <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-                            <i class="icon-checkmark4"></i>
+							@if ($campaign->subscribers()->count())
+								<i class="icon-checkmark4"></i>
+							@else
+								<i class="icon-cross2 text-danger"></i>
+							@endif
                             <h4>{{ trans('messages.recipients') }}</h4>
                             <p>
                                 @if (is_object($campaign->segment))
@@ -87,11 +91,13 @@
                             </p>                        
                         </li>
                     </ul>
-                        
-                    <br />
-                    <div class="text-right">
-                        <button class="btn btn-lg bg-teal-800">{{ trans('messages.send') }} <i class="icon-paperplane"></i> </button>
-                    </div>
+                    
+					@if ($campaign->step() >= 5)
+						<br />
+						<div class="text-right">
+							<button class="btn btn-lg bg-teal-800">{{ trans('messages.send') }} <i class="icon-paperplane"></i> </button>
+						</div>
+					@endif
                 </form>
                     
             </div>

@@ -251,4 +251,54 @@ class Template extends Model
             ],
         ];
     }
+    
+    /**
+     * Template tags.
+     *
+     * All availabel template tags
+     */
+    public static function tags($list=null)
+    {
+        $tags = [];
+        
+        $tags[] = ['name' => 'SUBSCRIBER_EMAIL', 'required' => false];
+
+        // List field tags
+        if(isset($list)) {
+            foreach ($list->fields as $field) {
+                if($field->tag != 'EMAIL') {
+                    $tags[] = ['name' => 'SUBSCRIBER_'.$field->tag, 'required' => false];
+                }
+            }
+        }
+
+        $tags = array_merge($tags, [
+            ['name' => 'UNSUBSCRIBE_URL', 'required' => (\Auth::user()->getOption('frontend', 'unsubscribe_url_required') == 'yes' ? true : false)],
+            ['name' => 'SUBSCRIBER_UID', 'required' => false],
+            ['name' => 'CAMPAIGN_NAME', 'required' => false],
+            ['name' => 'CAMPAIGN_UID', 'required' => false],
+            ['name' => 'CAMPAIGN_SUBJECT', 'required' => false],
+            ['name' => 'CAMPAIGN_FROM_EMAIL', 'required' => false],
+            ['name' => 'CAMPAIGN_FROM_NAME', 'required' => false],
+            ['name' => 'CAMPAIGN_REPLY_TO', 'required' => false],
+            ['name' => 'CURRENT_YEAR', 'required' => false],
+            ['name' => 'CURRENT_MONTH', 'required' => false],
+            ['name' => 'CURRENT_DAY', 'required' => false],
+            ['name' => 'CONTACT_NAME', 'required' => false],
+            ['name' => 'CONTACT_COUNTRY', 'required' => false],
+            ['name' => 'CONTACT_STATE', 'required' => false],
+            ['name' => 'CONTACT_CITY', 'required' => false],
+            ['name' => 'CONTACT_ADDRESS_1', 'required' => false],
+            ['name' => 'CONTACT_ADDRESS_2', 'required' => false],
+            ['name' => 'CONTACT_PHONE', 'required' => false],
+            ['name' => 'CONTACT_URL', 'required' => false],
+            ['name' => 'CONTACT_EMAIL', 'required' => false],
+            ['name' => 'LIST_NAME', 'required' => false],
+            ['name' => 'LIST_SUBJECT', 'required' => false],
+            ['name' => 'LIST_FROM_NAME', 'required' => false],
+            ['name' => 'LIST_FROM_EMAIL', 'required' => false],
+        ]);
+
+        return $tags;
+    }
 }

@@ -32,6 +32,9 @@
                             
 							@include('templates._form')
                             
+							@include('elements._tags', ['tags' => Acelle\Model\Template::tags()])
+                            
+							<hr>
 							<div class="text-right">
                                 <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
                                 <a href="{{ action('TemplateController@index') }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
