@@ -35,7 +35,7 @@ $(document).ready(function() {
           APP_URL+'/css/email.css',
         ],
         
-        external_filemanager_path:"/filemanager/",
+        external_filemanager_path:APP_URL+"/filemanager/",
         filemanager_title:"Responsive Filemanager" ,
         external_plugins: { "filemanager" : "/filemanager/plugin.min.js"}
     });
@@ -54,7 +54,7 @@ $(document).ready(function() {
         valid_elements : '*[*]',
         valid_children : "+body[style]",
         content_css: [],
-        external_filemanager_path:"/filemanager/",
+        external_filemanager_path:APP_URL+"/filemanager/",
         filemanager_title:"Responsive Filemanager" ,
         external_plugins: { "filemanager" : "/filemanager/plugin.min.js"}
     });
@@ -76,7 +76,7 @@ $(document).ready(function() {
           APP_URL+'/css/res_email.css',
           APP_URL+'/css/editor.css',
         ],
-        external_filemanager_path:"/filemanager/",
+        external_filemanager_path:APP_URL+"/filemanager/",
         filemanager_title:"Responsive Filemanager" ,
         external_plugins: { "filemanager" : "/filemanager/plugin.min.js"}
     }); 
