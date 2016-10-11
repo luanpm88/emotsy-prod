@@ -29,212 +29,10 @@
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('js/colorpicker/css/colorpicker.css') }}" />
     
     <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('js/builder.js') }}"></script>
     
     @include('layouts._script_vars')
-    
-    <script>
-    var current_content;
-    var current_block;
-    var current_select_block;
-    
-    function updateConentDesign() {
-        if (typeof(current_select_block) != 'undefined') {
-            current_select_block.css("background-color", $('#background-color .colorpicker_new_color').css("background-color"));
-            current_select_block.find('td *').css("color", $('#text-color .colorpicker_new_color').css("background-color"));
 
-            $('#design input').each(function() {
-                var name = $(this).attr("name");
-                var val = $(this).val();
-                if(typeof(name) != 'undefined') {
-                    current_select_block.find('td').eq(0).css(name, val);
-                }
-            });
-        }
-    }
-    
-    function rgb2hex(orig){
-        var rgb = orig.replace(/\s/g,'').match(/^rgba?\((\d+),(\d+),(\d+)/i);
-        return (rgb && rgb.length === 4) ? "#" +
-        ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
-        ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
-        ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : orig;
-    }
-    
-    function updateTextarea() {
-        var css = '';
-        $('textarea.template_content').val(css+'<content>' + $('content').html() + '</content>');
-    }
-    
-    function insertElement(name) {
-        console.log($('.'+name));
-        $("content table.outer").append($('.'+name).clone());
-        $('content .'+name).removeClass(name);
-        
-        updateContent();
-    }
-    
-    function updateConentCol() {
-        if (typeof(current_content) != 'undefined') {
-            content = tinyMCE.activeEditor.getContent({format : 'html'});
-            current_content.html(content);
-        }
-    }
-    
-    function ajustLayout() {
-        $( "content" ).height( $( window ).height() - 55 );
-        $( "editor" ).height( $( window ).height() - 75 );
-        $( "leftbar" ).height( $( window ).height() - 55 );
-    }
-    
-    function updateToolbox() {
-        $('.toolbox-container').html($('toolbox').html());
-        // Sortable
-        sortable();
-    }
-    
-    function updateContent() {
-        $('content .tool-item').each(function() {
-            var template = $(this).attr('template');
-            $(this).after($('.'+template).clone());
-            $('content .'+template).removeClass(template);
-            $(this).remove();
-        });
-        
-        // Find content col
-        $('content td').each(function() {
-            if(!$(this).find('table').length) {
-                $(this).addClass('content-col');
-            }
-        });
-        
-        // add action button
-        $("tr.block").on("mouseover", function () {
-            $(".remove_block").show();
-            $(".remove_block").css('top', $(this).offset().top);
-            $(".remove_block").css('left', $(this).offset().left + $(this).width() - $(".remove_block").width());
-            
-            current_block = $(this);
-        });
-        $(".remove_block").on("mouseover", function () {
-            $(".remove_block").show();            
-        });
-        // add action button
-        $("tr.block").on("mouseout", function () {
-            $(".remove_block").hide();
-        });
-        // remove block
-        $(".remove_block").on("click", function () {
-            current_block.remove();
-            $(".remove_block").hide();
-            // Hide editor
-            $('editor').fadeOut();
-        });
-    }
-    
-    function sortable() {
-        $( ".left-box" ).sortable({
-            items: '.block',
-            connectWith: ".right-box",
-            start: function(e, ui) {
-                console.log(ui.item);
-            },
-            stop: function(event,ui){
-                // Update content
-                updateContent();
-                // Update toolbox
-                updateToolbox();
-            }
-        });
-        // Content sortable
-        $( ".right-box" ).sortable({
-            items: '.block',
-        });
-    }
-    
-    $( function() {
-        ajustLayout();
-        
-        // Update content
-        updateContent();
-        // Update toolbox
-        updateToolbox();
-        // Sortable
-        sortable();
-        
-        // Click on content col
-        $(document).on("click", ".content-col", function() {
-            current_content = $(this);
-            
-            $(".content-col").removeClass('current');
-            current_content.addClass('current');
-            
-            // Set content
-            tinyMCE.activeEditor.setContent(current_content.html(), {format : 'html'});
-            
-            // Show editor
-            $('editor').fadeIn();
-        });
-        
-        // Click on block
-        $(document).on("click", "tr.block", function() {
-            current_select_block = $(this);
-            
-            $("tr.block").removeClass('current');
-            current_block.addClass('current');
-            
-            // Set content
-            $('#background-color').ColorPickerSetColor(rgb2hex(current_select_block.css("background-color")));
-            $('#text-color').ColorPickerSetColor(rgb2hex(current_select_block.find('p').css("color")));
-            
-            $('#design input').each(function() {
-                var name = $(this).attr("name");
-                if(typeof(name) != 'undefined') {
-                    $(this).val(current_select_block.find('td').eq(0).css(name));
-                }
-            });
-            
-            // Show editor
-            $('editor').fadeIn();
-        });
-        
-        // Click on content col
-        $(document).on("click", ".close-editor", function() {
-            // Hide editor
-            $('editor').fadeOut();
-        });
-        
-        // Auto update content
-        setInterval("updateConentCol()", 500);
-        setInterval("updateConentDesign()", 500);
-        setInterval("updateTextarea()", 500);
-        
-        // Click to insert tag
-        $(document).on("click", ".insert_tag_button", function(e) {
-            var tag = $(this).attr("data-tag-name");
-            
-            tinymce.activeEditor.execCommand('mceInsertContent', false, tag);
-        });
-        
-        // Tab change
-        $(document).on("click", ".tab ul li", function(e) {
-            $(".tab ul li").removeClass("active");
-            $(this).addClass("active");
-            
-            //
-            var tab = $($(this).find("a").attr("href"));
-            $(".tab .tab-pane").removeClass("active");
-            tab.addClass("active");
-        });
-        
-        // background
-        $('.color').ColorPicker({flat: true});
-        
-    });
-    $( window ).resize(function() {
-        ajustLayout()
-    });
-    </script>
-    
 </head>
 <body>
     <topbar>
@@ -288,7 +86,7 @@
                                     </tr>
                                     <tr>
                                         <td class="text">
-                                            Maecenas sed ante pellentesque, posuere leo id, eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. 
+                                            <p>Maecenas sed ante pellentesque, posuere leo id, eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos.</p>
                                         </td>
                                     </tr>
                                 </table>
@@ -311,7 +109,7 @@
                                     </tr>
                                     <tr>
                                         <td class="text">
-                                            Maecenas sed ante pellentesque, posuere leo id, eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. 
+                                            <p>Maecenas sed ante pellentesque, posuere leo id, eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. </p>
                                         </td>
                                     </tr>
                                 </table>
@@ -345,7 +143,7 @@
                                     </tr>
                                     <tr>
                                         <td class="text">
-                                            Scelerisque congue eros eu posuere. Praesent in felis ut velit pretium lobortis rhoncus ut erat.
+                                            <p>Scelerisque congue eros eu posuere. Praesent in felis ut velit pretium lobortis rhoncus ut erat.</p>
                                         </td>
                                     </tr>
                                 </table>
@@ -368,7 +166,7 @@
                                     </tr>
                                     <tr>
                                         <td class="text">
-                                            Scelerisque congue eros eu posuere. Praesent in felis ut velit pretium lobortis rhoncus ut erat.
+                                            <p>Scelerisque congue eros eu posuere. Praesent in felis ut velit pretium lobortis rhoncus ut erat.</p>
                                         </td>
                                     </tr>
                                 </table>
@@ -391,7 +189,7 @@
                                     </tr>
                                     <tr>
                                         <td class="text">
-                                            Scelerisque congue eros eu posuere. Praesent in felis ut velit pretium lobortis rhoncus ut erat.
+                                            <p>Scelerisque congue eros eu posuere. Praesent in felis ut velit pretium lobortis rhoncus ut erat.</p>
                                         </td>
                                     </tr>
                                 </table>
@@ -429,7 +227,7 @@
                     <table width="100%">
                         <tr>
                             <td class="inner contents">
-                                Praesent laoreet malesuada cursus. Maecenas scelerisque congue eros eu posuere. Praesent in felis ut velit pretium lobortis rhoncus ut erat. <a href="#">Read&nbsp;on</a>
+                                <p>Scelerisque congue eros eu posuere. Praesent in felis ut velit pretium lobortis rhoncus ut erat.</p>Praesent laoreet malesuada cursus. Maecenas scelerisque congue eros eu posuere. Praesent in felis ut velit pretium lobortis rhoncus ut erat. <a href="#">Read&nbsp;on</a></p>
                             </td>
                         </tr>
                     </table>
@@ -464,7 +262,7 @@
                     <table width="100%">
                         <tr>
                             <td class="inner contents">
-                                Maecenas sed ante pellentesque, posuere leo id, eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra. <a href="#">Per&nbsp;inceptos</a>
+                                <p>Maecenas sed ante pellentesque, posuere leo id, eleifend dolor. Class aptent taciti sociosqu ad litora torquent per conubia nostra. <a href="#">Per&nbsp;inceptos</a></p>
                             </td>
                         </tr>
                     </table>
@@ -686,7 +484,7 @@
                     <a href="#builder"><i class="icon-pencil5"></i> {{ trans('messages.builder') }}</a>
                 </li>
                 <li>
-                    <a href="#design"><i class="icon-toggle"></i> {{ trans('messages.design') }}</a>
+                    <a href="#design"><i class="icon-toggle"></i> {{ trans('messages.row_style') }}</a>
                 </li>
             </ul>
             
@@ -698,7 +496,7 @@
                 </div>
                 <div class="tab-pane" id="design">
                     <div class="form-group">
-                        <label>{{ trans('messages.background') }}</label>
+                        <label>{{ trans('messages.row_background') }}</label>
                         <span class="color" id="background-color"></span>
                     </div>
                     <div class="form-group">
@@ -716,7 +514,7 @@
                             </tr>
                         </table>
                     </div>
-                    <!--<div class="form-group">
+                    <div class="form-group">
                         <label>{{ trans('messages.margin') }}</label>
                         <table>
                             <tr>
@@ -726,7 +524,7 @@
                                 <td><input type="text" name="margin-left" placeholder="{{ trans('messages.left') }}" /></td>
                             </tr>
                         </table>
-                    </div>-->
+                    </div>
                 </div>
             </div>
         </div>      

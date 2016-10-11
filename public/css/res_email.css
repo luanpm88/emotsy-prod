@@ -3,6 +3,7 @@ body {
     margin: 0 !important;
     padding: 0;
     background-color: #ffffff;
+    line-height: 18px;
 }
 table {
     border-spacing: 0;
@@ -38,7 +39,7 @@ div[style*="margin: 16px 0"] {
     height: auto;
 }
 .inner {
-padding: 10px;
+    padding: 10px;
 }
 p {
     Margin: 0;
@@ -190,15 +191,17 @@ text-align: center;
     }
 }
 
-p.h1 {
+p.h1, h1 {
     font-size: 21px;
     font-weight: bold;
     Margin-bottom: 18px;
+    line-height: 24px;
 }
-p.h2 {
+p.h2, h2 {
     font-size: 18px;
     font-weight: bold;
     Margin-bottom: 10px;
+    line-height: 20px;
 }
 
 .left-image .column {
@@ -241,4 +244,12 @@ p.h2 {
     width: 100%;
     max-width: 220px;
     height: auto;
+}
+hr {
+    border: solid 1px #ccc;
+    box-shadow: none;
+    border-style: solid;
+}
+tr.block {
+    display: block;
 }

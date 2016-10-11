@@ -85,6 +85,7 @@ content .ui-sortable-placeholder {
 td.content-col:hover {
     cursor: pointer;
     background: #E0F2F1;
+    color: #333 !important;
 }
 .content-col.current {
     border: solid 1px #00897B;
@@ -233,9 +234,11 @@ topbar .right {
     text-decoration: none;
     font-weight: 600;    
     color: #666;
+    border: solid 1px #ccc;
 }
 .tab ul li:first-child a {
     border-radius: 100px 0 0 100px;
+    border-right: 0;
 }
 .tab ul li:last-child a {
     border-radius: 0 100px 100px 0;
@@ -277,6 +280,7 @@ topbar .right {
 }
 tr.block {
     background: #fff;
+    display: block;
 }
 .color-box {
     width: 50px;
@@ -286,4 +290,10 @@ tr.block {
     height: 50px;
     border: solid 1px #aaa;
     border-radius: 5px;
+}
+.colorpicker input {
+    width: 30px;
+}
+tr .one-column {
+    width: 600px;
 }

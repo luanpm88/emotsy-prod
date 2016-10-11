@@ -32,7 +32,14 @@
 @section('content')
             
             <div class="pull-right">
-                <a href="{{ action('CampaignController@templateSelect', $campaign->uid) }}" class="btn btn-info bg-teal-800">{{ trans('messages.change_template') }}</a>
+				@if ($campaign->template_source == 'builder')
+					<a href="{{ action('CampaignController@templateRebuild', $campaign->uid) }}" type="button" class="btn bg-info-800 mr-10">
+						<i class="icon icon-pencil"></i> {{ trans('messages.rebuild') }}
+					</a>
+				@endif
+                <a href="{{ action('CampaignController@templateSelect', $campaign->uid) }}" class="btn btn-info bg-teal-800">
+					<i class="icon-loop"></i> {{ trans('messages.change_template') }}
+				</a>				
             </div>
     
 			<form action="{{ action('CampaignController@template', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
@@ -69,11 +76,6 @@
                             @if ($campaign->template_source == 'builder')
                                 <textarea class="hide" name="html">{{ $campaign->html }}</textarea>
                                 <iframe class="template_preview" src="{{ action('CampaignController@templateIframe', $campaign->uid) }}"></iframe>
-                                <div class="text-right" style="">
-                                    <a href="{{ action('CampaignController@templateRebuild', $campaign->uid) }}" type="button" class="btn bg-info-800">
-                                        <i class="icon icon-pencil"></i> {{ trans('messages.rebuild') }}
-                                    </a>
-                                </div>
                             @else
                                 @include('helpers.form_control', ['type' => 'textarea',
                                     'class' => 'clean-editor',
