@@ -184,7 +184,7 @@
             
             // Set content
             $('#background-color').ColorPickerSetColor(rgb2hex(current_select_block.css("background-color")));
-            $('#text-color').ColorPickerSetColor(rgb2hex(current_select_block.css("color")));
+            $('#text-color').ColorPickerSetColor(rgb2hex(current_select_block.find('p').css("color")));
             
             $('#design input').each(function() {
                 var name = $(this).attr("name");
