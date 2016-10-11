@@ -355,6 +355,15 @@ class Campaign extends Model
 
         return TrackingLog::create($params);
     }
+
+    /**
+     * Get tagged Subject
+     *
+     * @return String
+     */
+    public function getSubject($subscriber, $msgId) {
+        return $this->tagMessage($this->subject, $subscriber, $msgId);
+    }
     
     /**
      * Pick up a delivery server for the campaign.
@@ -529,7 +538,7 @@ class Campaign extends Model
 
         // @TODO for AWS, setting returnPath requires verified domain or email address
         //$message->setReturnPath($server->getVerp($subscriber->email));
-        $message->setSubject($this->subject);
+        $message->setSubject($this->getSubject($subscriber, $msgId));
         $message->setFrom(array($this->from_email => $this->from_name));
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
