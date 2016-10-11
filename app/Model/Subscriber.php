@@ -292,7 +292,7 @@ class Subscriber extends Model
         // Import to database
         $filename = $list->id.'-data.csv';
         $content = \File::get($directory.$filename);
-        $lines = explode("\n", $content);
+        $lines = preg_split('/\r\n|\r|\n/', $content); // explode("\n\r", $content);
         $total = count($lines) - 1;
         $success = 0;
         $error = 0;

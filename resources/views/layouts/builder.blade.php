@@ -24,15 +24,41 @@
     <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/validation/validate.min.js') }}"></script>
+
+    <script type="text/javascript" src="{{ URL::asset('js/colorpicker/js/colorpicker.js') }}"></script>
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('js/colorpicker/css/colorpicker.css') }}" />
+    
     <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-    
-    
     
     @include('layouts._script_vars')
     
     <script>
     var current_content;
     var current_block;
+    var current_select_block;
+    
+    function updateConentDesign() {
+        if (typeof(current_select_block) != 'undefined') {
+            current_select_block.css("background-color", $('#background-color .colorpicker_new_color').css("background-color"));
+            current_select_block.find('td *').css("color", $('#text-color .colorpicker_new_color').css("background-color"));
+
+            $('#design input').each(function() {
+                var name = $(this).attr("name");
+                var val = $(this).val();
+                if(typeof(name) != 'undefined') {
+                    current_select_block.find('td').eq(0).css(name, val);
+                }
+            });
+        }
+    }
+    
+    function rgb2hex(orig){
+        var rgb = orig.replace(/\s/g,'').match(/^rgba?\((\d+),(\d+),(\d+)/i);
+        return (rgb && rgb.length === 4) ? "#" +
+        ("0" + parseInt(rgb[1],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[2],10).toString(16)).slice(-2) +
+        ("0" + parseInt(rgb[3],10).toString(16)).slice(-2) : orig;
+    }
     
     function updateTextarea() {
         var css = '';
@@ -149,6 +175,28 @@
             $('editor').fadeIn();
         });
         
+        // Click on block
+        $(document).on("click", "tr.block", function() {
+            current_select_block = $(this);
+            
+            $("tr.block").removeClass('current');
+            current_block.addClass('current');
+            
+            // Set content
+            $('#background-color').ColorPickerSetColor(rgb2hex(current_select_block.css("background-color")));
+            $('#text-color').ColorPickerSetColor(rgb2hex(current_select_block.find('p').css("color")));
+            
+            $('#design input').each(function() {
+                var name = $(this).attr("name");
+                if(typeof(name) != 'undefined') {
+                    $(this).val(current_select_block.find('td').eq(0).css(name));
+                }
+            });
+            
+            // Show editor
+            $('editor').fadeIn();
+        });
+        
         // Click on content col
         $(document).on("click", ".close-editor", function() {
             // Hide editor
@@ -157,6 +205,7 @@
         
         // Auto update content
         setInterval("updateConentCol()", 500);
+        setInterval("updateConentDesign()", 500);
         setInterval("updateTextarea()", 500);
         
         // Click to insert tag
@@ -165,6 +214,20 @@
             
             tinymce.activeEditor.execCommand('mceInsertContent', false, tag);
         });
+        
+        // Tab change
+        $(document).on("click", ".tab ul li", function(e) {
+            $(".tab ul li").removeClass("active");
+            $(this).addClass("active");
+            
+            //
+            var tab = $($(this).find("a").attr("href"));
+            $(".tab .tab-pane").removeClass("active");
+            tab.addClass("active");
+        });
+        
+        // background
+        $('.color').ColorPicker({flat: true});
         
     });
     $( window ).resize(function() {
@@ -614,13 +677,59 @@
     
     <editor>
         <div style="float: right">
-            <button class="btn bg-slate close-editor">{{ trans('messages.close') }}</button>            
+            <button class="btn bg-slate close-editor"><i class="icon-cross2"></i></button>            
         </div>
-        <h1>{{ trans('messages.editor') }}</h1>
-        <textarea class="builder-editor pull-right"></textarea>
-        <br /><br />
-        @include('elements._tags', ['tags' => Acelle\Model\Template::tags()])
-
+        
+        <div class="tab">
+            <ul>
+                <li class="active">
+                    <a href="#builder"><i class="icon-pencil5"></i> {{ trans('messages.builder') }}</a>
+                </li>
+                <li>
+                    <a href="#design"><i class="icon-toggle"></i> {{ trans('messages.design') }}</a>
+                </li>
+            </ul>
+            
+            <div class="tab-container">
+                <div class="tab-pane active" id="builder">
+                    <textarea class="builder-editor pull-right"></textarea>
+                    <br />
+                    @include('elements._tags', ['tags' => Acelle\Model\Template::tags()])
+                </div>
+                <div class="tab-pane" id="design">
+                    <div class="form-group">
+                        <label>{{ trans('messages.background') }}</label>
+                        <span class="color" id="background-color"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>{{ trans('messages.text_color') }}</label>
+                        <span class="color" id="text-color"></span>
+                    </div>
+                    <div class="form-group">
+                        <label>{{ trans('messages.padding') }}</label>
+                        <table>
+                            <tr>
+                                <td><input type="text" name="padding-top" placeholder="{{ trans('messages.top') }}" /></td>
+                                <td><input type="text" name="padding-right" placeholder="{{ trans('messages.right') }}" /></td>
+                                <td><input type="text" name="padding-bottom" placeholder="{{ trans('messages.bottom') }}" /></td>
+                                <td><input type="text" name="padding-left" placeholder="{{ trans('messages.left') }}" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                    <!--<div class="form-group">
+                        <label>{{ trans('messages.margin') }}</label>
+                        <table>
+                            <tr>
+                                <td><input type="text" name="margin-top" placeholder="{{ trans('messages.top') }}" /></td>
+                                <td><input type="text" name="margin-right" placeholder="{{ trans('messages.right') }}" /></td>
+                                <td><input type="text" name="margin-bottom" placeholder="{{ trans('messages.bottom') }}" /></td>
+                                <td><input type="text" name="margin-left" placeholder="{{ trans('messages.left') }}" /></td>
+                            </tr>
+                        </table>
+                    </div>-->
+                </div>
+            </div>
+        </div>      
     </editor>
     
     <leftbar>

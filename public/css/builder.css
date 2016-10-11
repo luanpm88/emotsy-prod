@@ -88,7 +88,6 @@ td.content-col:hover {
 }
 .content-col.current {
     border: solid 1px #00897B;
-    background: #E0F2F1;
 }
 .btn {
     display: inline-block;
@@ -149,9 +148,9 @@ topbar .right {
 leftbar .container {
     padding: 10px;
 }
-tr.block:hover {
+/*tr.block:hover {
     background: #f5f5f5;
-}
+}*/
 .remove_block {
     position: absolute;
     z-index: 12;    
@@ -214,4 +213,77 @@ topbar h1 {
 }
 topbar .right {
     padding-right: 20px;
+}
+.tab {
+    
+}
+.tab ul {
+    padding: 0;
+    height: 40px;
+    border-bottom: solid 1px #ccc;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+.tab ul li {
+    list-style: none;
+}
+.tab ul li a {
+    float: left;
+    padding: 9px 35px 8px 35px;
+    text-decoration: none;
+    font-weight: 600;    
+    color: #666;
+}
+.tab ul li:first-child a {
+    border-radius: 100px 0 0 100px;
+}
+.tab ul li:last-child a {
+    border-radius: 0 100px 100px 0;
+}
+.tab ul li a:hover {
+    background: #f0f0f0;
+}
+.tab ul li.active a {
+    background: #00897B;
+    color: #fff;
+}
+.tab .tab-pane {
+    display: none;
+}
+.tab .tab-pane.active {
+    display: block;
+}
+.form-group {
+    margin-bottom: 20px;
+}
+.form-group label {
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    border: solid 1px #aaa;
+    border-radius: 2px;
+    display: block;
+    clear: both;
+    color: #333;
+    font-weight: 600;
+    font-size: 13px;
+    background: #dfdfdf;
+}
+.form-group table input {
+    width: 60px;
+    border: solid 1px #ddd;
+}
+.colorpicker {
+    z-index: 100;
+}
+tr.block {
+    background: #fff;
+}
+.color-box {
+    width: 50px;
+}
+.color-box div {
+    width: 50px;
+    height: 50px;
+    border: solid 1px #aaa;
+    border-radius: 5px;
 }
