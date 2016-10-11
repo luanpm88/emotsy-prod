@@ -30,6 +30,15 @@
 @endsection
 
 @section('content')
+			
+			@if (!empty($campaign->html))
+				<div class="pull-right">
+					<a href="{{ action('CampaignController@templatePreview', $campaign->uid) }}" class="btn btn-info bg-grey">
+						<i class="icon-cross2"></i> {{ trans('messages.cancel') }}
+					</a>				
+				</div>
+			@endif
+			
             <h2 class="mt-0 text-semibold">{{ trans('messages.select_temmplate_for_email_content') }}</h2>
             
             <ul class="nav nav-tabs nav-tabs-top top-divided text-semibold">

@@ -11,7 +11,7 @@
                 <textarea class="hide template_content" name="html"></textarea>
                 <div class="">
                     <button class="btn btn-primary mr-5">{{ trans('messages.save') }}</button>
-                    <a href="{{ action('CampaignController@templateSelect', $campaign->uid) }}" class="btn bg-slate">{{ trans('messages.cancel') }}</a>
+                    <a href="{{ action('CampaignController@templatePreview', $campaign->uid) }}" class="btn bg-slate">{{ trans('messages.cancel') }}</a>
                 </div>
             </form>
         </div>
