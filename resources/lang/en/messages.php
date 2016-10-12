@@ -289,7 +289,7 @@ return [
     'complete' => 'Complete',
     'error_add_max_quota' => 'Error! Could not add more, reached the maximum quota!',
     'import_export_statistics_line' => 'Processed: <span class="processed">:processed</span> / <span class="total">:total</span> subscribers<br />Success: <span class="success">:success</span><br /> Error: <span class="error">:error</span>',
-    'invalid_csv_file' => 'Error! Invalid csv file!',
+    'invalid_csv_file' => 'Error! Invalid csv file. Please check the import file again.',
     'import_another' => 'Import another',
     'import_completed' => 'Import complete',
     'export_completed' => 'Export complete',

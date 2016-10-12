@@ -52,9 +52,6 @@ class InstallController extends Controller
     // Starting installation
     public function starting(Request $request)
     {
-        \Artisan::call('cache:clear');
-        exec('php '.base_path().'/artisan config:cache');
-
         return redirect()->action('InstallController@systemCompatibility');
     }
 

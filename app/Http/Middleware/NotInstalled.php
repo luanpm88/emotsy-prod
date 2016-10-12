@@ -17,8 +17,6 @@ class NotInstalled
     public function handle($request, Closure $next)
     {
         if (!$this->alreadyInstalled($request)) {
-            exec('php '.base_path().'/artisan config:cache');
-            // exec('php '.base_path().'/artisan key:generate');
             return redirect()->action('InstallController@starting');
         }
 

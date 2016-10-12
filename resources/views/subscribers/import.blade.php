@@ -28,10 +28,12 @@
                             action="{{ action('SubscriberController@import', $list->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery">
                             {{ csrf_field() }}
                             
+							<div class="alert alert-info">
+								{!! trans('messages.import_file_help', ['csv_link' => url('files/csv_import_example.csv')]) !!}
+							</div>
+							
                             <div class="upload_file before">
-                                <div class="alert alert-info">
-                                    {!! trans('messages.import_file_help', ['csv_link' => url('files/csv_import_example.csv')]) !!}
-                                </div>
+                                
                                     
                                 @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file', 'value' => $list->name])
                                 
