@@ -313,7 +313,7 @@ class Subscriber extends Model
         if (!in_array('EMAIL', $headers)) {
             $str = "error\n<span style='color:red'>".trans('messages.invalid_csv_file').'</span>';
             $str .= "\n0";
-            $bytes_written = \File::put($directory.$mail_list->list_id.'-process.log', $str);
+            $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
 
             return;
         }
