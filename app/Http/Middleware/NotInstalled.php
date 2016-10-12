@@ -30,18 +30,6 @@ class NotInstalled
      */
     public function alreadyInstalled($request)
     {
-        $install_finish = $request->session()->get('install_finish');
-
-        if (isset($install_finish)) {
-            // write file
-            $file_path = storage_path('installed');
-            $file = fopen($file_path, 'w') or die('Unable to open file!');
-            fwrite($file, '');
-            fclose($file);
-
-            $request->session()->forget('install_finish');
-        }
-
         return file_exists(storage_path('installed'));
     }
 }

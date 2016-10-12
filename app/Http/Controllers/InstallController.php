@@ -52,7 +52,9 @@ class InstallController extends Controller
     // Starting installation
     public function starting(Request $request)
     {
-        return redirect()->action('InstallController@systemCompatibility');
+        $next = action('InstallController@systemCompatibility');
+        \Artisan::call('config:cache');
+        return redirect()->away($next);
     }
 
     public function systemCompatibility(Request $request)
@@ -81,9 +83,10 @@ class InstallController extends Controller
                 'current' => 1,
             ]);
         } catch (\Exception $e) {
-            \Artisan::call('cache:clear');
+            $next_page = action('InstallController@systemCompatibility');
+            \Artisan::call('config:cache');
             sleep(5);
-            return redirect()->action('InstallController@systemCompatibility');
+            return redirect()->away($next_page);
         }
     }
 
@@ -196,12 +199,15 @@ class InstallController extends Controller
             // Save database session
             $database = $request->all();
             $request->session()->set('database', $database);
-
+            
+            
+            $next_page = action('InstallController@databaseImport');
+            
             // IMPORT DATABASE
             // write config file
             $this->writeEnv($request);
 
-            return redirect()->action('InstallController@databaseImport');
+            return redirect()->away($next_page);
         }
 
         $database = $request->session()->get('database');
@@ -263,13 +269,15 @@ class InstallController extends Controller
                 $rules['database_not_empty'] = 'required';
             }
             $this->validate($request, $rules);
+            
+            $next_page = action('InstallController@cronJobs');
 
             // Run migrate
-            exec('php '.base_path().'/artisan migrate --force');
+            \Artisan::call('migrate', ["--force"=> true]);
 
             // import database with prefix
             $this->importDatabase($database);
-
+            
             // get database connection
             $database = $request->session()->get('database');
             $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
@@ -314,7 +322,7 @@ class InstallController extends Controller
 
             $request->session()->flash('alert-success', trans('messages.install.database_import.success'));
 
-            return redirect()->action('InstallController@cronJobs');
+            return redirect()->away($next_page);
         }
 
         return view('install.database_import', [
@@ -549,7 +557,7 @@ MAIL_FROM_NAME="'.(isset($smtp['smtp_from_name']) ? $smtp['smtp_from_name'] : ''
         fclose($env_file);
 
         // Reload .env
-        exec('php '.base_path().'/artisan config:cache');
+        \Artisan::call('config:cache');
     }
 
     public function importDatabase($database)

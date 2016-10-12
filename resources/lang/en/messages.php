@@ -283,8 +283,7 @@ return [
     'import' => 'Import',
     'import_subscribers' => 'Import subscribers',
     'upload_file' => 'Upload file',
-    'import_file_help' => 'Acceptable file types: <a target="_blank" href=":csv_link"><strong>CSV</strong></a>
-                        or <a target="_blank" href="https://en.wikipedia.org/wiki/Delimiter-separated_values"><strong>tab-delimited text files</strong></a>',
+    'import_file_help' => 'Acceptable file type is CSV, please checkout the <a target="_blank" href=":csv_link"><strong>Sample.csv</strong></a>',
     'uploading' => 'Uploading...',
     'complete' => 'Complete',
     'error_add_max_quota' => 'Error! Could not add more, reached the maximum quota!',
