@@ -353,6 +353,11 @@ class InstallController extends Controller
         }
 
         $request->session()->set('install_finish', true);
+        
+        $file_path = storage_path('installed');
+        $file = fopen($file_path, 'w') or die('Unable to open file!');
+        fwrite($file, '');
+        fclose($file);
 
         return view('install.finish', [
             'step' => $this->step($request),
