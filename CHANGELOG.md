@@ -1,3 +1,9 @@
+2.0.4-p20 / 2016-10-12
+==================
+
+ * Fixed: installation wizard compatibility issue
+ * Added: drag & drop email builder
+
 2.0.4-p19 / 2016-10-03
 ==================
 
