@@ -200,13 +200,14 @@ class InstallController extends Controller
             $database = $request->all();
             $request->session()->set('database', $database);
             
-            
             $next_page = action('InstallController@databaseImport');
             
-            // IMPORT DATABASE
             // write config file
             $this->writeEnv($request);
-
+            
+            // wait for config:cache
+            sleep(5);
+            
             return redirect()->away($next_page);
         }
 
