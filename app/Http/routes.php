@@ -51,7 +51,7 @@ Route::auth();
 Route::get('/offline', 'Controller@offline');
 Route::get('/not-authorized', 'Controller@notAuthorized');
 Route::get('/demo', 'Controller@demo');
-Route::get('/outsite/login/{api_token}', 'Controller@outsiteLogin');
+Route::get('/autologin/{api_token}', 'Controller@autoLogin');
 
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {

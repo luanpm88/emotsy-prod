@@ -117,16 +117,30 @@ class User extends Authenticatable
      *
      * @var array
      */
-    public function apiUpdateRules()
+    public function apiUpdateRules($request)
     {
-        return array(
-            'email' => 'required|email|unique:users,email,'.$this->id.',id',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'timezone' => 'required',
-            'language_id' => 'required',
-            'password' => 'min:5',
-        );
+        $arr = [];
+        
+        if(isset($request->email)) {
+            $arr['email'] = 'required|email|unique:users,email,'.$this->id.',id';
+        }
+        if(isset($request->first_name)) {
+            $arr['first_name'] = 'required';
+        }
+        if(isset($request->last_name)) {
+            $arr['last_name'] = 'required';
+        }
+        if(isset($request->timezone)) {
+            $arr['timezone'] = 'required';
+        }
+        if(isset($request->language_id)) {
+            $arr['language_id'] = 'required';
+        }
+        if(isset($request->password)) {
+            $arr['password'] = 'min:5';
+        }
+        
+        return $arr;
     }
 
     /**
