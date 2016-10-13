@@ -14,6 +14,11 @@ class UserPolicy
     public function __construct()
     {
     }
+    
+    public function read(\Acelle\Model\User $user, \Acelle\Model\User $item)
+    {
+        return $user->id == $item->id || $user->id == $item->user_id;
+    }
 
     public function create(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {

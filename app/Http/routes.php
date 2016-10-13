@@ -28,15 +28,22 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
     // Route::group(['namespace' => 'Api', 'prefix' => 'api/v1'], function () {
     Route::get('', 'HomeController@index');
     
-    
+    // List
     Route::resource('lists', 'MailListController');
+    
+    // Campaign
     Route::resource('campaigns', 'CampaignController');
+    
+    // Subscriber
     Route::get('lists/{list_uid}/subscribers', 'SubscriberController@index');
     Route::get('lists/{list_uid}/subscribers/{uid}', 'SubscriberController@show');
     Route::patch('lists/{list_uid}/subscribers/{uid}/subscribe', 'SubscriberController@subscribe');
     Route::patch('lists/{list_uid}/subscribers/{uid}/unsubscribe', 'SubscriberController@unsubscribe');
     Route::delete('lists/{list_uid}/subscribers/{uid}/delete', 'SubscriberController@delete');
     Route::post('lists/{list_uid}/subscribers/store', 'SubscriberController@store');
+    
+    // User
+    Route::resource('users', 'UserController');
 });
 
 Route::auth();
@@ -44,6 +51,7 @@ Route::auth();
 Route::get('/offline', 'Controller@offline');
 Route::get('/not-authorized', 'Controller@notAuthorized');
 Route::get('/demo', 'Controller@demo');
+Route::get('/outsite/login/{api_token}', 'Controller@outsiteLogin');
 
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {

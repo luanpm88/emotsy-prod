@@ -84,6 +84,20 @@ class Controller extends BaseController
     {
         return view('docs.api.v1');
     }
+    
+    /**
+     * Login from outsite.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function outsiteLogin($api_token)
+    {
+        $user = \Acelle\Model\User::where('api_token', $api_token)->first();
+
+        \Auth::login($user);
+        
+        return redirect()->action('HomeController@index');
+    }
 
     /**
      * Translate datatable.

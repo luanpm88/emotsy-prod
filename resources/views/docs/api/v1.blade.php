@@ -475,6 +475,132 @@
         </tr>
         
       </table>
+        
+      
+      <h2>{{ trans('messages.USERS') }}</h2>
+      <table class="table table-box pml-table table-log">
+        <tr>
+          <th width="1%" class="text-nowrap">{{ trans('messages.HTTP_method') }}</th>
+          <th width="40%">{{ trans('messages.Endpoint') }}</th>
+          <th>{{ trans('messages.Function') }}</th>
+        </tr>
+        
+        <!-- LISTS -->
+        <tr>
+          <td>
+            <span class="label label-flat bg-primary">{{ trans('messages.POST') }}</span>
+          </td>
+          <td>
+            <a href="#more" class="toogle-api">/api/v1/users</a>
+          </td>
+          <td>
+            Create a new user
+          </td>
+        </tr>
+        <tr style="display:none;background: #f6f6f6">
+          <td></td>
+          <td>
+            <h4>Parameters</h4>
+            <div class="list"><dl>
+              <dt><var>$user_group_id</var></dt>
+              <dd>User group id</dd>
+              <dt><var>$email</var></dt>
+              <dd>User's email</dd>
+              <dt><var>$first_name</var></dt>
+              <dd>User's first name</dd>
+              <dt><var>$last_name</var></dt>
+              <dd>User's last name</dd>
+              <dt><var>$timezone</var></dt>
+              <dd>User' timezone</dd>
+              <dt><var>$language_id</var></dt>
+              <dd>Language id</dd>
+              <dt><var>$image</var></dt>
+              <dd>User's avatar</dd>
+            </dl></div>
+              
+            <div>
+              <div class="description detailed">                
+                <h4>Returns</h4>
+                <div class="list">
+                  Result message and user's api token in json
+                </div>
+              </div>
+            </div>
+          </td>
+            <td>
+                <h4>Example:</h4>
+                <pre class=""><code>curl -X POST -H "accept:application/json" -G \
+{{ action("Api\UserController@store") }}? \
+-d api_token={{ Auth::user()->api_token }} \
+-d user_group_id=1 \
+-d email=user_name@gmail.com \
+-d first_name=Luan \
+-d last_name=Pham \
+-d timezone=America/Godthab \
+-d language_id=1 \
+-d password=123456
+</code></pre>
+            </td>
+        </tr>
+          
+        <tr>
+          <td>
+            <span class="label label-flat bg-success">{{ trans('messages.PATCH') }}</span>
+          </td>
+          <td>
+            <a href="#more" class="toogle-api">/api/v1/users/{id}</a>
+          </td>
+          <td>
+            Update user information
+          </td>
+        </tr>
+        <tr style="display:none;background: #f6f6f6">
+          <td></td>
+          <td>
+            <h4>Parameters</h4>
+            <div class="list"><dl>
+              <dt><var>$user_group_id</var></dt>
+              <dd>User group id</dd>
+              <dt><var>$email</var></dt>
+              <dd>User's email</dd>
+              <dt><var>$first_name</var></dt>
+              <dd>User's first name</dd>
+              <dt><var>$last_name</var></dt>
+              <dd>User's last name</dd>
+              <dt><var>$timezone</var></dt>
+              <dd>User' timezone</dd>
+              <dt><var>$language_id</var></dt>
+              <dd>Language id</dd>
+              <dt><var>$image</var></dt>
+              <dd>User's avatar</dd>
+            </dl></div>
+              
+            <div>
+              <div class="description detailed">                
+                <h4>Returns</h4>
+                <div class="list">
+                  Result message and user's api token in json
+                </div>
+              </div>
+            </div>
+          </td>
+            <td>
+                <h4>Example:</h4>
+                <pre class=""><code>curl -X PATCH -H "accept:application/json" -G \
+{!! str_replace("-ID-", "<redbold>{id}</redbold>", action("Api\UserController@update", ['id' => "-ID-"])) !!}? \
+-d api_token={{ Auth::user()->api_token }} \
+-d user_group_id=1 \
+-d email=user_name@gmail.com \
+-d first_name=Luan \
+-d last_name=Pham \
+-d timezone=America/Godthab \
+-d language_id=1 \
+-d password=123456
+</code></pre>
+            </td>
+        </tr>
+      </table>  
+      
   </div>
     
     

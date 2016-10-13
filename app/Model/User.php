@@ -93,6 +93,41 @@ class User extends Authenticatable
             'password' => 'required|confirmed|min:5',
         );
     }
+    
+    /**
+     * The rules for validation via api.
+     *
+     * @var array
+     */
+    public function apiRules()
+    {
+        return array(
+            'user_group_id' => 'required',
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+            'password' => 'required|min:5',
+        );
+    }
+    
+    /**
+     * The rules for validation via api.
+     *
+     * @var array
+     */
+    public function apiUpdateRules()
+    {
+        return array(
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+            'password' => 'min:5',
+        );
+    }
 
     /**
      * Find item by uid.
