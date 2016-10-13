@@ -34,7 +34,7 @@
             <div class="pull-right">
 				@if ($campaign->template_source == 'builder')
 					<a href="{{ action('CampaignController@templateRebuild', $campaign->uid) }}" type="button" class="btn bg-info-800 mr-10">
-						<i class="icon icon-pencil"></i> {{ trans('messages.rebuild') }}
+						<i class="icon icon-pencil"></i> {{ trans('messages.edit') }}
 					</a>
 				@endif
                 <a href="{{ action('CampaignController@templateSelect', $campaign->uid) }}" class="btn btn-info bg-teal-800">
