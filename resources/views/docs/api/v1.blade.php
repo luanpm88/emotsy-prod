@@ -54,7 +54,7 @@
             <span class="label label-flat bg-info">{{ trans('messages.GET') }}</span>
           </td>
           <td>
-            <a href="#more" class="toogle-api">/api/v1/lists/{id}</a>
+            <a href="#more" class="toogle-api">/api/v1/lists/{uid}</a>
           </td>
           <td>
             Get information about a specific list
@@ -65,12 +65,6 @@
           <td>
             <div>
               <div class="description detailed">
-                <h4>Parameters</h4>
-                <div class="list"><dl>
-                  <dt><var>$id</var></dt>
-                  <dd>Campaign's id</dd>
-                </dl></div>
-                  
                 <h4>Returns</h4>
                 <div class="list">
                   All list informations in json
@@ -81,7 +75,7 @@
             <td>
                 <h4>Example:</h4>
                 <pre class=""><code>curl -X GET -H "accept:application/json" -G \
-{!! str_replace("-ID-", "<redbold>{id}</redbold>", action("Api\MailListController@show", "-ID-")) !!}? \
+{!! str_replace("-ID-", "<redbold>{uid}</redbold>", action("Api\MailListController@show", "-ID-")) !!}? \
 -d api_token={{ Auth::user()->api_token }}
 </code></pre>
             </td>
@@ -183,7 +177,7 @@
             <span class="label label-flat bg-info">{{ trans('messages.GET') }}</span>
           </td>
           <td>
-            <a href="#more" class="toogle-api">/api/v1/campaigns/{id}</a>
+            <a href="#more" class="toogle-api">/api/v1/campaigns/{uid}</a>
           </td>
           <td>
             Get information about a specific campaign
@@ -194,12 +188,6 @@
             <td>
               <div>
                 <div class="description detailed">
-                  <h4>Parameters</h4>
-                  <div class="list"><dl>
-                    <dt><var>$id</var></dt>
-                    <dd>Campaign's id</dd>
-                  </dl></div>
-          
                   <h4>Returns</h4>
                   <div class="list">
                     All campaign overview informations in json
@@ -210,7 +198,7 @@
             <td>
                 <h4>Example:</h4>
                 <pre class=""><code>curl -X GET -H "accept:application/json" -G \
-{!! str_replace("-ID-", "<redbold>{id}</redbold>", action("Api\CampaignController@show", "-ID-")) !!}? \
+{!! str_replace("-ID-", "<redbold>{uid}</redbold>", action("Api\CampaignController@show", "-ID-")) !!}? \
 -d api_token={{ Auth::user()->api_token }}
 </code></pre>
             </td>
@@ -231,7 +219,7 @@
             <span class="label label-flat bg-info">{{ trans('messages.GET') }}</span>
           </td>
           <td>
-            <a href="#more" class="toogle-api">/api/v1/lists/{list_id}/subscribers</a>
+            <a href="#more" class="toogle-api">/api/v1/lists/{list_uid}/subscribers</a>
           </td>
           <td>
             Display all list's subscribers
@@ -242,12 +230,6 @@
             <td>
               <div>
                 <div class="description detailed">
-                  <h4>Parameters</h4>
-                  <div class="list"><dl>
-                    <dt><var>$list_id</var></dt>
-                    <dd>List's id</dd>
-                  </dl></div>
-          
                   <h4>Returns</h4>
                   <div class="list">
                     List of all list's subscribers in json
@@ -258,7 +240,7 @@
             <td>
                 <h4>Example:</h4>
                 <pre class=""><code>curl -X GET -H "accept:application/json" -G \
-{!! str_replace("-LIST_ID-", "<redbold>{list_id}</redbold>", action("Api\SubscriberController@index", ["list_id" => "-LIST_ID-"])) !!}? \
+{!! str_replace("-LIST_ID-", "<redbold>{list_uid}</redbold>", action("Api\SubscriberController@index", ["list_id" => "-LIST_ID-"])) !!}? \
 -d api_token={{ Auth::user()->api_token }}
 </code></pre>
             </td>
@@ -270,7 +252,7 @@
             <span class="label label-flat bg-info">{{ trans('messages.GET') }}</span>
           </td>
           <td>
-            <a href="#more" class="toogle-api">/api/v1/lists/{list_id}/subscribers/{id}</a>
+            <a href="#more" class="toogle-api">/api/v1/lists/{list_uid}/subscribers/{uid}</a>
           </td>
           <td>
             Get information about a specific subscriber
@@ -283,10 +265,8 @@
                 <div class="description detailed">
                   <h4>Parameters</h4>
                   <div class="list"><dl>
-                    <dt><var>$list_id</var></dt>
-                    <dd>List's id</dd>
-                    <dt><var>$id</var></dt>
-                    <dd>Subsciber's id</dd>
+                    <dt><var>$uid</var></dt>
+                    <dd>Subsciber's uid</dd>
                   </dl></div>
           
                   <h4>Returns</h4>
@@ -299,7 +279,7 @@
             <td>
                 <h4>Example:</h4>
                 <pre class=""><code>curl -X GET -H "accept:application/json" -G \
-{!! str_replace("-ID-", "<redbold>{id}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_id}</redbold>", action("Api\SubscriberController@show", ["list_id" => "-LIST_ID-",  "id" => "-ID-"]))) !!}? \
+{!! str_replace("-ID-", "<redbold>{uid}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_uid}</redbold>", action("Api\SubscriberController@show", ["list_id" => "-LIST_ID-",  "id" => "-ID-"]))) !!}? \
 -d api_token={{ Auth::user()->api_token }}
 </code></pre>
             </td>
@@ -311,7 +291,7 @@
             <span class="label label-flat bg-primary">{{ trans('messages.POST') }}</span>
           </td>
           <td>
-            <a href="#more" class="toogle-api">/api/v1/lists/{list_id}/subscribers/store</a>
+            <a href="#more" class="toogle-api">/api/v1/lists/{list_uid}/subscribers/store</a>
           </td>
           <td>
             Create subscriber for a mail list
@@ -324,8 +304,6 @@
                 <div class="description detailed">
                   <h4>Parameters</h4>
                   <div class="list"><dl>
-                    <dt><var>$list_id</var></dt>
-                    <dd>List's id</dd>
                     <dt><var>$EMAIL</var></dt></dt>
                     <dd>Subscriber's email</dd>
                     <dt><var>$[OTHER_FIELDS...]</var></dt></dt>
@@ -342,7 +320,7 @@
             <td>
                 <h4>Example:</h4>
                 <pre class=""><code>curl -X POST -H "accept:application/json" -G \
-{!! str_replace("-LIST_ID-", "<redbold>{list_id}</redbold>", action("Api\SubscriberController@store", ["list_id" => "-LIST_ID-"])) !!}? \
+{!! str_replace("-LIST_ID-", "<redbold>{list_uid}</redbold>", action("Api\SubscriberController@store", ["list_id" => "-LIST_ID-"])) !!}? \
 -d api_token={{ Auth::user()->api_token }} \
 -d EMAIL=test@gmail.com \
 -d FIRST_NAME=Marine \
@@ -357,7 +335,7 @@
             <span class="label label-flat bg-success">{{ trans('messages.PATCH') }}</span>
           </td>
           <td>
-            <a href="#more" class="toogle-api">/api/v1/lists/{list_id}/subscribers/{id}/subscribe</a>
+            <a href="#more" class="toogle-api">/api/v1/lists/{list_uid}/subscribers/{uid}/subscribe</a>
           </td>
           <td>
             Subscribe a subscriber
@@ -370,10 +348,8 @@
                 <div class="description detailed">
                   <h4>Parameters</h4>
                   <div class="list"><dl>
-                    <dt><var>$list_id</var></dt>
-                    <dd>List's id</dd>
-                    <dt><var>$id</var></dt>
-                    <dd>Subsciber's id</dd>
+                    <dt><var>$uid</var></dt>
+                    <dd>Subsciber's uid</dd>
                   </dl></div>
           
                   <h4>Returns</h4>
@@ -386,7 +362,7 @@
             <td>
                 <h4>Example:</h4>
                 <pre class=""><code>curl -X PATCH -H "accept:application/json" -G \
-{!! str_replace("-ID-", "<redbold>{id}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_id}</redbold>", action("Api\SubscriberController@subscribe", ["list_id" => "-LIST_ID-",  "id" => "-ID-"]))) !!}? \
+{!! str_replace("-ID-", "<redbold>{uid}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_uid}</redbold>", action("Api\SubscriberController@subscribe", ["list_id" => "-LIST_ID-",  "id" => "-ID-"]))) !!}? \
 -d api_token={{ Auth::user()->api_token }}
 </code></pre>
             </td>
@@ -398,7 +374,7 @@
             <span class="label label-flat bg-success">{{ trans('messages.PATCH') }}</span>
           </td>
           <td>
-            <a href="#more" class="toogle-api">/api/v1/lists/{list_id}/subscribers/{id}/unsubscribe</a>
+            <a href="#more" class="toogle-api">/api/v1/lists/{list_uid}/subscribers/{uid}/unsubscribe</a>
           </td>
           <td>
             Unsubscribe a subscriber
@@ -411,10 +387,8 @@
                 <div class="description detailed">
                   <h4>Parameters</h4>
                   <div class="list"><dl>
-                    <dt><var>$list_id</var></dt>
-                    <dd>List's id</dd>
-                    <dt><var>$id</var></dt>
-                    <dd>Subsciber's id</dd>
+                    <dt><var>$uid</var></dt>
+                    <dd>Subsciber's uid</dd>
                   </dl></div>
           
                   <h4>Returns</h4>
@@ -427,7 +401,7 @@
             <td>
                 <h4>Example:</h4>
                 <pre class=""><code>curl -X PATCH -H "accept:application/json" -G \
-{!! str_replace("-ID-", "<redbold>{id}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_id}</redbold>", action("Api\SubscriberController@unsubscribe", ["list_id" => "-LIST_ID-",  "id" => "-ID-"]))) !!}? \
+{!! str_replace("-ID-", "<redbold>{uid}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_id}</redbold>", action("Api\SubscriberController@unsubscribe", ["list_id" => "-LIST_ID-",  "id" => "-ID-"]))) !!}? \
 -d api_token={{ Auth::user()->api_token }}
 </code></pre>
             </td>
@@ -439,7 +413,7 @@
             <span class="label label-flat bg-danger">{{ trans('messages.DELETE') }}</span>
           </td>
           <td>
-            <a href="#more" class="toogle-api">/api/v1/lists/{list_id}/subscribers/{id}/delete</a>
+            <a href="#more" class="toogle-api">/api/v1/lists/{list_uid}/subscribers/{uid}/delete</a>
           </td>
           <td>
             Delete a subscriber
@@ -452,10 +426,8 @@
               <div class="description detailed">
                   <h4>Parameters</h4>
                   <div class="list"><dl>
-                    <dt><var>$list_id</var></dt>
-                    <dd>List's id</dd>
-                    <dt><var>$id</var></dt>
-                    <dd>Subsciber's id</dd>
+                    <dt><var>$uid</var></dt>
+                    <dd>Subsciber's uid</dd>
                   </dl></div>
           
                   <h4>Returns</h4>
@@ -468,7 +440,7 @@
             <td>
                 <h4>Example:</h4>
                 <pre class=""><code>curl -X DELETE -H "accept:application/json" -G \
-{!! str_replace("-ID-", "<redbold>{id}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_id}</redbold>", action("Api\SubscriberController@delete", ["list_id" => "-LIST_ID-",  "id" => "-ID-"]))) !!}? \
+{!! str_replace("-ID-", "<redbold>{uid}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_uid}</redbold>", action("Api\SubscriberController@delete", ["list_id" => "-LIST_ID-",  "id" => "-ID-"]))) !!}? \
 -d api_token={{ Auth::user()->api_token }}
 </code></pre>
             </td>
@@ -548,7 +520,7 @@
             <span class="label label-flat bg-success">{{ trans('messages.PATCH') }}</span>
           </td>
           <td>
-            <a href="#more" class="toogle-api">/api/v1/users/{id}</a>
+            <a href="#more" class="toogle-api">/api/v1/users/{uid}</a>
           </td>
           <td>
             Update user information
@@ -587,7 +559,7 @@
             <td>
                 <h4>Example:</h4>
                 <pre class=""><code>curl -X PATCH -H "accept:application/json" -G \
-{!! str_replace("-ID-", "<redbold>{id}</redbold>", action("Api\UserController@update", ['id' => "-ID-"])) !!}? \
+{!! str_replace("-ID-", "<redbold>{uid}</redbold>", action("Api\UserController@update", ['id' => "-ID-"])) !!}? \
 -d api_token={{ Auth::user()->api_token }} \
 -d user_group_id=1 \
 -d email=user_name@gmail.com \
