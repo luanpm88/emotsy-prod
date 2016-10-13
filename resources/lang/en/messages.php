@@ -1044,7 +1044,7 @@ return [
     'name_new_campaign' => 'Name your new campaign',
     'what_would_you_like_to_name_your_campaign' => 'What would you like to name your campaign?',
     'USERS' => 'USERS',
-    '' => '',
+    'optional' => 'optional',
     '' => '',
     '' => '',
     '' => '',

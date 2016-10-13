@@ -486,7 +486,7 @@
               <dd>User' timezone</dd>
               <dt><var>$language_id</var></dt>
               <dd>Language id</dd>
-              <dt><var>$image</var></dt>
+              <dt><var>$image &nbsp;&nbsp;<span class="text-muted2 text-normal">{{ trans('messages.optional') }}</span></var></dt>
               <dd>User's avatar</dd>
             </dl></div>
               
@@ -531,19 +531,19 @@
           <td>
             <h4>Parameters</h4>
             <div class="list"><dl>
-              <dt><var>$user_group_id</var></dt>
+              <dt><var>$user_group_id &nbsp;&nbsp;<span class="text-muted2 text-normal">{{ trans('messages.optional') }}</span></var></dt>
               <dd>User group id</dd>
-              <dt><var>$email</var></dt>
+              <dt><var>$email &nbsp;&nbsp;<span class="text-muted2 text-normal">{{ trans('messages.optional') }}</span></var></dt>
               <dd>User's email</dd>
-              <dt><var>$first_name</var></dt>
+              <dt><var>$first_name &nbsp;&nbsp;<span class="text-muted2 text-normal">{{ trans('messages.optional') }}</span></var></dt>
               <dd>User's first name</dd>
-              <dt><var>$last_name</var></dt>
+              <dt><var>$last_name &nbsp;&nbsp;<span class="text-muted2 text-normal">{{ trans('messages.optional') }}</span></var></dt>
               <dd>User's last name</dd>
-              <dt><var>$timezone</var></dt>
+              <dt><var>$timezone &nbsp;&nbsp;<span class="text-muted2 text-normal">{{ trans('messages.optional') }}</span></var></dt>
               <dd>User' timezone</dd>
-              <dt><var>$language_id</var></dt>
+              <dt><var>$language_id &nbsp;&nbsp;<span class="text-muted2 text-normal">{{ trans('messages.optional') }}</span></var></dt>
               <dd>Language id</dd>
-              <dt><var>$image</var></dt>
+              <dt><var>$image &nbsp;&nbsp;<span class="text-muted2 text-normal">{{ trans('messages.optional') }}</span></var></dt>
               <dd>User's avatar</dd>
             </dl></div>
               

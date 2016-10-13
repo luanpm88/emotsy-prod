@@ -1355,3 +1355,6 @@ ul.no-top-border-list li:first-child {
 .badge-text-small {
     font-size: 11px;
 }
+.text-normal {
+    font-weight: normal;
+}
