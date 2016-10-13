@@ -686,6 +686,45 @@ $(function() {
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
     
+    // copy campaign
+    $(document).on('click', '.copy-campaign-link', function(e) {
+        var uid = $(this).attr("data-uid");
+        var name = $(this).attr("data-name");
+        
+        $('input[name=copy_campaign_uid]').val(uid);
+        $('input[name=copy_campaign_name]').val(name);
+        $('a[data-target="#copy_campaign"]').trigger("click");
+    });
+    
+    // Ajax copy campaign
+    $(".ajax_copy_campaign_form").submit(function(e) {
+        var url = $(this).attr("action");
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: $(".ajax_copy_campaign_form").serialize(), // serializes the form's elements.
+            success: function(msg)
+            {
+                tableFilter($(".listing-form"));
+                if(msg != '') {
+                    swal({
+                        title: msg,
+                        text: "",
+                        confirmButtonColor: "#00695C",
+                        type: "success",
+                        allowOutsideClick: true,
+                        confirmButtonText: LANG_OK,
+                        customClass: "swl-success"
+                    });
+                }                
+            }
+        });
+        
+        $(".copy-campaign-close").trigger("click");
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+    
     // disble campaign step link
     $(document).on("click", ".campaign-steps li.disabled a", function(e) {
         e.preventDefault();

@@ -131,8 +131,8 @@
 							'label' => trans('messages.what_would_you_like_to_name_your_list'),
 							'options' => Acelle\Model\UserGroup::timeUnitOptions(),
 							'include_blank' => trans('messages.choose'),
-							'help_class' => 'sending_server',
-							'rules' => ['name' => 'required']
+							'help_class' => 'list',
+							'rules' => ['copy_list_name' => 'required']
 						])	
 						
 						
@@ -166,3 +166,43 @@
 			</div>
 		@endif		
 	</div>
+		
+	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#copy_campaign"></a>
+	<!-- Basic modal -->
+	<div id="copy_campaign" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-header bg-teal">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h2 class="modal-title">{{ trans('messages.name_new_campaign') }}</h2>
+			</div>
+			<div class="modal-content">
+				<form action="{{ action('CampaignController@copy') }}" method="POST" class="ajax_copy_campaign_form form-validate-jquery">
+					{{ csrf_field() }}
+					<input type="hidden" name="copy_campaign_uid" />
+					
+					<div class="modal-body">
+						
+						@include('helpers.form_control', [
+							'type' => 'text',
+							'name' => 'copy_campaign_name',
+							'value' => '',
+							'label' => trans('messages.what_would_you_like_to_name_your_list'),
+							'options' => Acelle\Model\UserGroup::timeUnitOptions(),
+							'include_blank' => trans('messages.choose'),
+							'help_class' => 'campaign',
+							'rules' => ['copy_campaign_name' => 'required']
+						])	
+						
+						
+						<div class="text-right">
+							<button type="submit" class="btn btn-info bg-teal-600 mr-5">{{ trans('messages.copy') }}</button>
+							<button type="button" class="btn btn-default ml-0 copy-campaign-close" data-dismiss="modal">{{ trans('messages.close') }}</button>
+						</div>
+						
+					</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- /basic modal -->

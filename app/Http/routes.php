@@ -174,6 +174,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('campaigns/{message_id}/click/{url}', 'CampaignController@click');
     Route::get('campaigns/{message_id}/unsubscribe', 'CampaignController@unsubscribe');
 
+    Route::post('campaigns/copy', 'CampaignController@copy');
     Route::get('campaigns/{uid}/subscribers', 'CampaignController@subscribers');
     Route::get('campaigns/{uid}/subscribers/listing', 'CampaignController@subscribersListing');
     Route::get('campaigns/{uid}/open-map', 'CampaignController@openMap');

@@ -41,16 +41,23 @@ class CampaignPolicy
     {
         return $item->user_id == $user->id && in_array($item->status, ['new', 'ready', 'paused', 'done', 'sending']);
     }
+    
     public function pause(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
         return $item->user_id == $user->id && in_array($item->status, ['sending', 'ready']);
     }
+    
     public function restart(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
         return $item->user_id == $user->id && in_array($item->status, ['paused', 'error']);
     }
     
     public function sort(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
+    {
+        return $item->user_id == $user->id;
+    }
+    
+    public function copy(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
         return $item->user_id == $user->id;
     }

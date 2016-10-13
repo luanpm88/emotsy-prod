@@ -1352,3 +1352,6 @@ ul.no-top-border-list li:first-child {
     border: solid 2px #ccc;
     height: 500px;
 }
+.badge-text-small {
+    font-size: 11px;
+}

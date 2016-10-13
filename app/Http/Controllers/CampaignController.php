@@ -1445,4 +1445,25 @@ class CampaignController extends Controller
             'campaign' => $campaign,
         ]);
     }
+    
+    /**
+     * Copy campaign.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function copy(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->copy_campaign_uid);
+
+        // authorize
+        if (\Gate::denies('copy', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $campaign->copy($request->copy_campaign_name);
+
+        echo trans('messages.campaign.copied');
+    }
 }

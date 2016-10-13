@@ -671,7 +671,10 @@ class Campaign extends Model
             // Update custom order
             Campaign::getAll()->increment('custom_order', 1);
             $item->custom_order = 0;
-
+        });
+        
+        // Created
+        static::created(function ($item) {
             // Update links
             $item->updateLinks();
         });
@@ -857,14 +860,11 @@ class Campaign extends Model
         }
         
         $query = $query->select("subscribers.*");
+        $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id');
         
         // Filter
         $filters = isset($params["filters"]) ? $params["filters"] : null;
         if(isset($filters)) {
-            
-            if(isset($filters["open"]) || isset($filters["click"]) || isset($filters["tracking_status"])) {
-                $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id');
-            }
             
             if(isset($filters["open"])) {
                 $equal = ($filters["open"] == "opened") ? "!=" : "=";                
@@ -891,6 +891,11 @@ class Campaign extends Model
                         ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
                 });
             }
+        }
+        
+        // when status == done
+        if($this->status == "done") {
+            $query = $query->where('tracking_logs.id', "!=", "NULL");
         }
 
         return $query->distinct();
@@ -1573,5 +1578,20 @@ class Campaign extends Model
             'regular' => [],
             'plain-text' => [],
         ];
+    }
+    
+    /**
+     * Copy new campaign.
+     */
+    public function copy($name)
+    {
+        $copy = $this->replicate();
+        $copy->name = $name;
+        $copy->created_at = \Carbon\Carbon::now();
+        $copy->updated_at = \Carbon\Carbon::now();
+        $copy->status = "new";
+        $copy->run_at = NULL;
+        $copy->custom_order = 0;
+        $copy->save();
     }
 }

@@ -584,6 +584,9 @@ class MailList extends Model
     {
         $copy = $this->replicate();
         $copy->name = $name;
+        $copy->created_at = \Carbon\Carbon::now();
+        $copy->updated_at = \Carbon\Carbon::now();
+        $copy->custom_order = 0;
         $copy->save();
 
         // Contact

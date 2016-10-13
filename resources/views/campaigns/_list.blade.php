@@ -27,14 +27,26 @@
 												</a>
 											</h5>
 											<span class="text-muted">{{ trans('messages.' . $item->type) }}</span>
+												
+											@if ($item->subscribers()->count())
+												<br />
+												@if (is_object($item->segment))
+													<span class="text-semibold">{{ $item->subscribers()->count() }}</span> <span class="text-muted">{{ strtolower(trans('messages.subscribers')) }} ({{ $item->mailList->name }} . {{ $item->segment->name }})</span>
+												@elseif (is_object($item->mailList))
+													<span class="text-semibold">{{ $item->subscribers()->count() }}</span> <span class="text-muted">{{ strtolower(trans('messages.subscribers')) }} ({{ $item->mailList->name }})</span>
+												@endif
+											@endif
+											
 											<br />
 											@if ($item->status != 'new')
 												<span class="text-muted2">{{ trans('messages.run_at') }}: &nbsp;&nbsp;<i class="icon-alarm mr-0"></i> {{ isset($item->run_at) ? Tool::formatDateTime($item->run_at) : "" }}</span>
 											@else
 												<span class="text-muted2">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 											@endif
+											
+											
 										</td>
-										<td>
+										<!--<td>
 											<div class="single-stat-box pull-left">
 												@if (is_object($item->segment))
 													<span class="no-margin stat-num">{{ $item->mailList->name }} . {{ $item->segment->name }}</span>
@@ -46,9 +58,19 @@
 													<span class="text-muted text-nowrap">{{ $item->subscribers()->count() }} {{ strtolower(trans('messages.subscribers')) }}</span>
 												@endif
 											</div>
-										</td>
+										</td>-->
 										<td class="stat-fix-size-sm">
 											@if ($item->status != 'new')
+												<div class="single-stat-box pull-left ml-20">
+													<span class="no-margin text-teal-800 stat-num">{{ $item->deliveredRate() }}%</span>
+													<div class="progress progress-xxs bg-danger">
+														<div class="progress-bar progress-bar-info" style="width: {{ $item->deliveredRate() }}%">
+														</div>
+													</div>
+													<span class="text-semibold">{{ $item->deliveredCount() }} / {{ $item->trackingCount() }}</span>
+													<br />
+													<span class="text-muted">{{ trans('messages.sent') }}</span>
+												</div>
 												<div class="single-stat-box pull-left ml-20">
 													<span class="no-margin text-teal-800 stat-num">{{ $item->openUniqRate() }}%</span>
 													<div class="progress progress-xxs">
@@ -86,6 +108,13 @@
 														@endif
 														@if (\Gate::allows('restart', $item))
 															<li><a link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart', ["uids" => $item->uid]) }}"><i class="icon-history"></i> {{ trans("messages.restart") }}</a></li>
+														@endif
+														@if (\Gate::allows('copy', $item))
+															<li>														
+																<a data-uid="{{ $item->uid }}" data-name="{{ trans("messages.copy_of_campaign", ['name' => $item->name]) }}" class="copy-campaign-link">
+																	<i class="icon-copy4"></i> {{ trans('messages.copy') }}
+																</a>
+															</li>
 														@endif
 														@if (\Gate::allows('delete', $item))
 															<li><a delete-confirm="{{ trans('messages.delete_campaigns_confirm') }}" href="{{ action('CampaignController@delete', ["uids" => $item->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
