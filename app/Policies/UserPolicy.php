@@ -36,7 +36,7 @@ class UserPolicy
     {
         $ability = $user->getOption('backend', 'user_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->user_id);
+                || ($ability == 'own' && $user->id == $item->id);
 
         return $can;
     }
@@ -57,6 +57,14 @@ class UserPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
         $can = $can && $item->id != $user->id;
+
+        return $can;
+    }
+    
+    public function change_group(\Acelle\Model\User $user, \Acelle\Model\User $item)
+    {
+        $ability = $user->getOption('backend', 'user_update');
+        $can = $ability == 'all';
 
         return $can;
     }

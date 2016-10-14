@@ -98,7 +98,7 @@ class UserController extends Controller
             $user->fill($request->all());
             
             // Change group
-            if(isset($request->user_group_id)) {
+            if(isset($request->user_group_id) && $current_user->can('change_group', $user)) {
                 $user->user_group_id = $request->user_group_id;
             }
 
