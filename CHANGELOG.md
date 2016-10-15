@@ -1,3 +1,12 @@
+2.0.4-p21 / 2016-10-15
+==================
+ 
+ * Added: create-user API
+ * Added: quick login support
+ * Added: copy campaign
+ * Fixed: detect more environment dependencies when installing
+ * Fixed: layout crashes for old IE browser
+
 2.0.4-p20 / 2016-10-12
 ==================
 
