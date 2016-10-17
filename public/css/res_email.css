@@ -79,7 +79,8 @@ a {
 .two-column img {
     width: 100%;
     max-width: 280px;
-    height: auto;
+    height: 150px;
+    /*height: auto;*/
 }
 .two-column img {
     padding-bottom: 10px;
@@ -104,7 +105,8 @@ a {
 .three-column img {
     width: 100%;
     max-width: 180px;
-    height: auto;
+    height: 145px;
+    /*height: auto;*/
 }
 .three-column img {
     padding-bottom: 10px;
@@ -181,6 +183,12 @@ text-align: center;
     .three-column img {
         max-width: 50% !important;
     }
+    .three-column img {
+        height: auto;
+    }
+    .two-column img {
+        height: auto;
+    }
 }
 @media screen and (min-width: 401px) and (max-width: 620px) {
     .three-column .column {
@@ -188,7 +196,7 @@ text-align: center;
     }
     .two-column .column {
         max-width: 50% !important;
-    }
+    }    
 }
 
 p.h1, h1 {
