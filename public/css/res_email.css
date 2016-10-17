@@ -36,6 +36,7 @@ div[style*="margin: 16px 0"] {
 }
 .full-width-image img {
     max-width: 600px;
+    width: 100%;
     height: auto;
 }
 .inner {

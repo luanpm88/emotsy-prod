@@ -26,6 +26,7 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
+use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use DB;
 
 class Campaign extends Model
@@ -1593,5 +1594,27 @@ class Campaign extends Model
         $copy->run_at = NULL;
         $copy->custom_order = 0;
         $copy->save();
+    }
+    
+    /**
+     * Convert html to inline.
+     */
+    public function inline_html()
+    {
+        $html = $this->html;
+        // Convert to inline css if template source is builder
+        if ($this->template_source == 'builder') {
+            $cssToInlineStyles = new CssToInlineStyles();
+            
+            $css = file_get_contents(public_path("css/res_email.css"));
+            
+            // output
+            $html = $cssToInlineStyles->convert(
+                $html,
+                $css
+            );
+        }
+        
+        return $html;
     }
 }

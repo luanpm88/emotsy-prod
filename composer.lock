@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "79242b0071f560f2fdacea0f7aeb6dbf",
-    "content-hash": "85e3884c3e8e31b481a84854243b6098",
+    "hash": "d78f28d2f6a6b247b9ebee226fa7bac4",
+    "content-hash": "35b2197420e9adf60c7078d56d4da2ed",
     "packages": [
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -3367,19 +3367,20 @@
         },
         {
             "name": "tijsverkoyen/css-to-inline-styles",
-            "version": "2.1.0",
+            "version": "2.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/tijsverkoyen/CssToInlineStyles.git",
-                "reference": "0febd154de815eb5e000eaddb6372454ab4a4736"
+                "reference": "ab03919dfd85a74ae0372f8baf9f3c7d5c03b04b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tijsverkoyen/CssToInlineStyles/zipball/0febd154de815eb5e000eaddb6372454ab4a4736",
-                "reference": "0febd154de815eb5e000eaddb6372454ab4a4736",
+                "url": "https://api.github.com/repos/tijsverkoyen/CssToInlineStyles/zipball/ab03919dfd85a74ae0372f8baf9f3c7d5c03b04b",
+                "reference": "ab03919dfd85a74ae0372f8baf9f3c7d5c03b04b",
                 "shasum": ""
             },
             "require": {
+                "php": "^5.5 || ^7",
                 "symfony/css-selector": "^2.7|~3.0"
             },
             "require-dev": {
@@ -3409,7 +3410,7 @@
             ],
             "description": "CssToInlineStyles is a class that enables you to convert HTML-pages/files into HTML-pages/files with inline styles. This is very useful when you're sending emails.",
             "homepage": "https://github.com/tijsverkoyen/CssToInlineStyles",
-            "time": "2016-09-05 07:09:20"
+            "time": "2016-09-20 12:50:39"
         },
         {
             "name": "vlucas/phpdotenv",

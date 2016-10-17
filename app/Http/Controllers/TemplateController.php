@@ -3,6 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 class TemplateController extends Controller
 {
@@ -499,12 +500,25 @@ class TemplateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function preview($id)
-    {
+    {        
         $template = \Acelle\Model\Template::findByUid($id);
-
+        
         // authorize
         if (\Gate::denies('preview', $template)) {
             return $this->not_authorized();
+        }
+        
+        // Convert to inline css if template source is builder
+        if ($template->source == 'builder') {
+            $cssToInlineStyles = new CssToInlineStyles();
+            $html = $template->content;
+            $css = file_get_contents(public_path("css/res_email.css"));
+            
+            // output
+            $template->content = $cssToInlineStyles->convert(
+                $html,
+                $css
+            );
         }
 
         return view('templates.preview', [
