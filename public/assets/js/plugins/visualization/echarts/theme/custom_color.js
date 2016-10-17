@@ -205,28 +205,24 @@ var theme10 = {
     k: {
         itemStyle: {
             normal: {
-                color: '#d87a80',       // 阳线填充颜色
-                color0: '#2ec7c9',      // 阴线填充颜色
+                color: '#d87a80',       
+                color0: '#2ec7c9',      
                 lineStyle: {
-                    color: '#d87a80',   // 阳线边框颜色
-                    color0: '#2ec7c9'   // 阴线边框颜色
+                    color: '#d87a80',   
+                    color0: '#2ec7c9'   
                 }
             }
         }
     },
     
-    // 散点图默认参数
     scatter: {
-        symbol: 'circle',    // 图形类型
-        symbolSize: 4        // 图形大小，半宽（半径）参数，当图形为方向或菱形则总宽度为symbolSize * 2
+        symbol: 'circle',    
+        symbolSize: 4        
     },
 
-    // 雷达图默认参数
     radar : {
-        symbol: 'emptyCircle',    // 图形类型
+        symbol: 'emptyCircle',    
         symbolSize:3
-        //symbol: null,         // 拐点图形类型
-        //symbolRotate : null,  // 图形旋转控制
     },
 
     map: {
@@ -241,7 +237,7 @@ var theme10 = {
                     }
                 }
             },
-            emphasis: {                 // 也是选中样式
+            emphasis: {                
                 areaStyle: {
                     color: '#fe994e'
                 }
@@ -283,22 +279,22 @@ var theme10 = {
     },
 
     gauge : {
-        axisLine: {            // 坐标轴线
-            lineStyle: {       // 属性lineStyle控制线条样式
+        axisLine: {           
+            lineStyle: {       
                 color: [[0.2, '#2ec7c9'],[0.8, '#5ab1ef'],[1, '#d87a80']], 
                 width: 10
             }
         },
-        axisTick: {            // 坐标轴小标记
-            splitNumber: 10,   // 每份split细分多少段
-            length :15,        // 属性length控制线长
-            lineStyle: {       // 属性lineStyle控制线条样式
+        axisTick: {            
+            splitNumber: 10,   
+            length :15,        
+            lineStyle: {      
                 color: 'auto'
             }
         },
-        splitLine: {           // 分隔线
-            length :22,         // 属性length控制线长
-            lineStyle: {       // 属性lineStyle（详见lineStyle）控制线条样式
+        splitLine: {           
+            length :22,         
+            lineStyle: {      
                 color: 'auto'
             }
         },
