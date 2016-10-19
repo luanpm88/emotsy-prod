@@ -484,7 +484,7 @@ class Campaign extends Model
         // * tagMessage
 
         // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
-        $body = $this->inline_html();
+        $body = $this->inlineHtml();
         if ($this->track_click) {
             $body = $this->addTrackingUrl($body, $msgId);
         }
@@ -1608,7 +1608,7 @@ class Campaign extends Model
     /**
      * Convert html to inline.
      */
-    public function inline_html()
+    public function inlineHtml()
     {
         $html = $this->html;
         // Convert to inline css if template source is builder
