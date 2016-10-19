@@ -417,7 +417,7 @@ class MailList extends Model
     {
         $query = \Acelle\Model\Subscriber::where('subscribers.status', '=', $status);
         
-        if(isset($user)) {
+        if(isset($user) && $user->getOption('backend', 'user_read') != 'all') {
             $query = $query->join('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
                             ->where("mail_lists.user_id", "=", $user->id);
         }
