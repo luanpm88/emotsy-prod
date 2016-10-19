@@ -1444,6 +1444,7 @@ class CampaignController extends Controller
 
         return view('campaigns.template_rebuild', [
             'campaign' => $campaign,
+            'list' => $campaign->mailList
         ]);
     }
     
