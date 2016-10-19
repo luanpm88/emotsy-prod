@@ -1,5 +1,9 @@
 <?php
 
+if(!extension_loaded('mbstring')) {
+    echo "ERROR: The requested PHP extension mbstring is missing from your system.";
+} else {
+
 /**
  * Laravel - A PHP Framework For Web Artisans
  *
@@ -56,3 +60,5 @@ $response = $kernel->handle(
 $response->send();
 
 $kernel->terminate($request, $response);
+
+}
