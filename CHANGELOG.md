@@ -1,4 +1,4 @@
-2.0.4-p21 / 2016-10-15
+2.0.4-p22 / 2016-10-19
 ==================
  
  * Added: create-user API
@@ -6,6 +6,8 @@
  * Added: copy campaign
  * Fixed: detect more environment dependencies when installing
  * Fixed: layout crashes for old IE browser
+ * Fixed: application crashes when mbstring is missing
+ * Fixed: chart view issues on MS Edge
 
 2.0.4-p20 / 2016-10-12
 ==================
