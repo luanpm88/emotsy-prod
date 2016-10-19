@@ -492,7 +492,7 @@
                 <div class="tab-pane active" id="builder">
                     <textarea class="builder-editor pull-right"></textarea>
                     <br />
-                    @include('elements._tags', ['tags' => Acelle\Model\Template::tags()])
+                    @include('elements._tags', ['tags' => Acelle\Model\Template::tags((isset($list) ? $list : null))])
                 </div>
                 <div class="tab-pane" id="design">
                     <div class="form-group">

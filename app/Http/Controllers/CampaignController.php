@@ -1421,7 +1421,8 @@ class CampaignController extends Controller
 
         return view('campaigns.template_build', [
             'campaign' => $campaign,
-            'elements' => $elements
+            'elements' => $elements,
+            'list' => $campaign->mailList,
         ]);
     }
     
