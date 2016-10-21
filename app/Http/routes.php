@@ -10,7 +10,7 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-
+Route::resource('automation', 'AutomationController');
 Route::group(['middleware' => ['installed']], function () {
     // Installation
     Route::get('install', 'InstallController@starting');
@@ -127,7 +127,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     // Notification handler
 
     Route::post('delivery/notify/{stype}', 'DeliveryController@notify');
-    //Route::get('delivery/notify/{stype}', 'DeliveryController@notify');
+    Route::get('delivery/notify/{stype}', 'DeliveryController@notify');
 
     // Segment
     Route::get('segments/select_box', 'SegmentController@selectBox');

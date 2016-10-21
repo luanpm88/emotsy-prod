@@ -56,6 +56,8 @@ class SendingServer extends Model
         'mailgun-smtp' => 'SendingServerMailgunSmtp',
         'sendgrid-api' => 'SendingServerSendGridApi',
         'sendgrid-smtp' => 'SendingServerSendGridSmtp',
+        'elasticemail-api' => 'SendingServerElasticEmailApi',
+        'elasticemail-smtp' => 'SendingServerElasticEmailSmtp',
     );
     
     // Server pools
@@ -314,6 +316,22 @@ class SendingServer extends Model
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
                     'smtp_protocol' => 'required',
+                ],
+            ],
+            'elasticemail-api' => [
+                'cols' => [
+                    'name' => 'required',
+                    'api_key' => 'required',
+                ],
+            ],
+            'elasticemail-smtp' => [
+                'cols' => [
+                    'name' => 'required',
+                    'api_key' => 'required',
+                    'host' => 'required',
+                    'smtp_username' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_port' => 'required',
                 ],
             ],
             'smtp' => [
