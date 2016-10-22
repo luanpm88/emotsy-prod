@@ -40,6 +40,7 @@ class SendingServerElasticEmailSmtp extends SendingServerElasticEmail
     {
         try {
             $this->setupWebhooks();
+            $this->enableCustomHeaders();
 
             $transport = ExtendedSmtpTransport::newInstance($this->host, (int) $this->smtp_port, $this->smtp_protocol)
               ->setUsername($this->smtp_username)

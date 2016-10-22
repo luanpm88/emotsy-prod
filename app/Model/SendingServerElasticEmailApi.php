@@ -22,7 +22,7 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 
 class SendingServerElasticEmailApi extends SendingServerElasticEmail
@@ -40,17 +40,19 @@ class SendingServerElasticEmailApi extends SendingServerElasticEmail
     {
         try {
             $this->setupWebhooks();
-            $result = $this->sendElasticEmail($params['campaign'], $params['subscriber'], $params['msgId']);
+            $this->enableCustomHeaders();
 
-            Log::info('Sent!');
+            $result = $this->sendElasticEmailV2($params['campaign'], $params['subscriber'], $params['msgId']);
+
+            MailLog::info('Sent!');
 
             return array(
                 'runtime_message_id' => $result,
                 'status' => self::DELIVERY_STATUS_SENT,
             );
         } catch (\Exception $e) {
-            Log::warning('Sending failed');
-            Log::warning($e->getMessage());
+            MailLog::warning('Sending failed');
+            MailLog::warning($e->getMessage());
 
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,

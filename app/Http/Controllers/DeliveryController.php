@@ -59,17 +59,10 @@ class DeliveryController extends Controller
         } elseif ($type == SendingServerSendGrid::WEBHOOK) {
             $this->handleSendGrid();
         } elseif ($type == SendingServerElasticEmail::WEBHOOK) {
-            $this->handleElasticEmail();
+            MailLog::configure(storage_path().'/logs/handler-elasticemail.log');
+            SendingServerElasticEmail::handleNotification($_GET);
         } else {
             return;
-        }
-    }
-
-    private function handleElasticEmail() {
-        MailLog::configure(storage_path().'/logs/handler-elasticemail.log');
-        MailLog::info('requested');
-        foreach($_GET as $key => $value){
-            MailLog::info("$key:$value");
         }
     }
     

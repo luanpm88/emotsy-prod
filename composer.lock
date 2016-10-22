@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "d78f28d2f6a6b247b9ebee226fa7bac4",
-    "content-hash": "35b2197420e9adf60c7078d56d4da2ed",
+    "hash": "187c6ebc25f483b70841a40d4407c307",
+    "content-hash": "5ff09a7c0429a6cb6db96fe8f0432054",
     "packages": [
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -2333,6 +2333,51 @@
                 "shell"
             ],
             "time": "2016-03-09 05:03:14"
+        },
+        {
+            "name": "rdok/elasticemail-php",
+            "version": "v1.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/rdok/elasticemail-php.git",
+                "reference": "8875b650eab96fac69086df2439683f126642e01"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/rdok/elasticemail-php/zipball/8875b650eab96fac69086df2439683f126642e01",
+                "reference": "8875b650eab96fac69086df2439683f126642e01",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.2",
+                "php": ">=5.5.9"
+            },
+            "require-dev": {
+                "fzaninotto/faker": "^1.6",
+                "php-vcr/php-vcr": "^1.2",
+                "php-vcr/phpunit-testlistener-vcr": "^1.1",
+                "phpunit/phpunit": "4.8.*",
+                "vlucas/phpdotenv": "^2.2",
+                "whatthejeff/nyancat-phpunit-resultprinter": "^1.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "ElasticEmail\\": "src/ElasticEmail/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Rizart Dokollari",
+                    "email": "r.dokollari@gmail.com"
+                }
+            ],
+            "description": "Integration to the Elastic Email API http://api.elasticemail.com/public/help",
+            "time": "2016-09-03 11:07:20"
         },
         {
             "name": "sendgrid/php-http-client",
