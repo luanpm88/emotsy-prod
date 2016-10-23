@@ -54,6 +54,7 @@ class InstallController extends Controller
     {
         $next = action('InstallController@systemCompatibility');
         \Artisan::call('config:cache');
+        sleep(5);
         return redirect()->away($next);
     }
 
