@@ -1,3 +1,10 @@
+2.0.4-p23 / 2016-10-23
+==================
+
+ * Added: ElasticEmail API/SMTP support
+ * Fixed: reduce the delay time when sending email through SMTP
+ * Changed: delivery server encryption method is no longer required
+
 2.0.4-p22 / 2016-10-19
 ==================
  
