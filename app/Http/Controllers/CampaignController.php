@@ -1468,4 +1468,25 @@ class CampaignController extends Controller
 
         echo trans('messages.campaign.copied');
     }
+    
+    /**
+     * Send email for testing campaign.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendTestEmail(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->send_test_email_campaign_uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
+        $sending = $campaign->sendTestEmail($request->send_test_email_campaign_uid);
+        
+        return json_encode($sending);
+    }
 }

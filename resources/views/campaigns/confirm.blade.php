@@ -95,7 +95,8 @@
 					@if ($campaign->step() >= 5)
 						<br />
 						<div class="text-right">
-							<button class="btn btn-lg bg-teal-800">{{ trans('messages.send') }} <i class="icon-paperplane"></i> </button>
+							<!--<button class="btn btn-lg bg-grey mr-5 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>-->
+							<button class="btn btn-lg bg-teal-800">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>							
 						</div>
 					@endif
                 </form>

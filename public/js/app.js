@@ -745,5 +745,58 @@ $(function() {
     });
     
     $(".embedded-options-form input").trigger("change");
-
+    
+    
+    // send a test email
+    $(document).on('click', '.send-a-test-email-link', function(e) {
+        var uid = $(this).attr("data-uid");
+        
+        $('input[name=send_test_email_campaign_uid]').val(uid);
+        $('a[data-target="#send_a_test_email"]').trigger("click");
+        
+        e.preventDefault();
+    });
+    
+    // Ajax send a test email
+    $(".ajax_send_a_test_email_form").submit(function(e) {
+        var url = $(this).attr("action");
+        var form = $(".ajax_send_a_test_email_form");
+        
+        if(form.valid()) {
+            $.ajax({
+                type: "POST",
+                url: url,
+                data: form.serialize(), // serializes the form's elements.
+                success: function(msg)
+                {
+                    //msg = JSON.parse(msg);
+                    //if(msg != '') {
+                    //    swal({
+                    //        title: msg.message,
+                    //        text: "",
+                    //        confirmButtonColor: "#00695C",
+                    //        type: msg.status,
+                    //        allowOutsideClick: true,
+                    //        confirmButtonText: LANG_OK,
+                    //        customClass: "swl-success"
+                    //    });
+                    //}
+                    
+                    swal({
+                        title: '',
+                        text: form.attr('sending-text'),
+                        confirmButtonColor: "#00695C",
+                        type: msg.status,
+                        allowOutsideClick: true,
+                        confirmButtonText: LANG_OK,
+                        customClass: "swl-success"
+                    });
+                }
+            });
+            
+            $(".copy-campaign-close").trigger("click");
+        }
+        
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
 });

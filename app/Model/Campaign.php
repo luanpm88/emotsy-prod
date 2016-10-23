@@ -1626,4 +1626,22 @@ class Campaign extends Model
         
         return $html;
     }
+    
+    /**
+     * Send a test email for testing campaign
+     */
+    public function sendTestEmail($email)
+    {
+        if(!true) {
+            return [
+                "status" => "success",
+                "message" => trans('messages.campaign.test_sent')
+            ];
+        } else {
+            return [
+                "status" => "error",
+                "message" => "error details"
+            ];
+        }
+    }
 }

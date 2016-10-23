@@ -206,3 +206,44 @@
 		</div>
 	</div>
 	<!-- /basic modal -->
+	
+	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#send_a_test_email"></a>
+	<!-- Basic modal send a test email -->
+	<div id="send_a_test_email" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-header bg-teal">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h2 class="modal-title">{{ trans('messages.send_a_test_email') }}</h2>
+			</div>
+			<div class="modal-content">
+				<form sending-text='<i class="icon-spinner10 spinner position-left"></i> {{ trans('messages.sending_please_wait') }}' action="{{ action('CampaignController@sendTestEmail') }}" method="POST" class="ajax_send_a_test_email_form form-validate-jquery">
+					{{ csrf_field() }}
+					<input type="hidden" name="send_test_email_campaign_uid" />
+					
+					<div class="modal-body">
+						
+						@include('helpers.form_control', [
+							'type' => 'text',
+							'name' => 'send_test_email',
+							'class' => 'email',
+							'value' => '',
+							'label' => trans('messages.enter_an_email_address_for_testing_campaign'),
+							'options' => Acelle\Model\UserGroup::timeUnitOptions(),
+							'include_blank' => trans('messages.choose'),
+							'help_class' => 'campaign',
+							'rules' => ['send_test_email' => 'required']
+						])	
+						
+						
+						<div class="text-right">
+							<button type="submit" class="btn btn-info bg-teal-600 mr-5"><i class="icon-paperplane ml-5"></i> {{ trans('messages.send') }}</button>
+							<button type="button" class="btn btn-default ml-0 copy-campaign-close" data-dismiss="modal">{{ trans('messages.close') }}</button>
+						</div>
+						
+					</div>
+
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- /basic modal -->
