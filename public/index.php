@@ -2,6 +2,14 @@
 
 if(!extension_loaded('mbstring')) {
     echo "ERROR: The requested PHP extension mbstring is missing from your system.";
+} elseif (!(file_exists('../storage/app') && is_dir('../storage/app') && (is_writable('../storage/app')))) {
+    echo "ERROR: The directory [/storage/app] must be writable by the web server.";
+} elseif (!(file_exists('../storage/framework') && is_dir('../storage/framework') && (is_writable('../storage/framework')))) {
+    echo "ERROR: The directory [/storage/framework] must be writable by the web server.";
+} elseif (!(file_exists('../storage/logs') && is_dir('../storage/logs') && (is_writable('../storage/logs')))) {
+    echo "ERROR: The directory [/storage/logs] must be writable by the web server.";
+} elseif (!(file_exists('../bootstrap/cache') && is_dir('../bootstrap/cache') && (is_writable('../bootstrap/cache')))) {
+    echo "ERROR: The directory [/bootstrap/cache] must be writable by the web server.";
 } else {
 
 /**
