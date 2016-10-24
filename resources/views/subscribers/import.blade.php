@@ -32,10 +32,11 @@
 								{!! trans('messages.import_file_help', ['csv_link' => url('files/csv_import_example.csv')]) !!}
 							</div>
 							
+							
                             <div class="upload_file before">
-                                
-                                    
-                                @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file', 'value' => $list->name])
+                                {!! trans('messages.max_file_upload', ['size' => \Acelle\Library\Tool::maxFileUploadInBytes()]) !!}
+								
+                                @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file', 'value' => $list->name])								
                                 
                                 <div class="text-right">
                                     <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.import') }}</button>
@@ -195,6 +196,21 @@
 								success: function (data) {
 									current_job_id = data;
                                     check_process();
+									
+									if(data == 'max_file_upload') {
+										// Success alert
+										swal({
+											title: '{{ trans('messages.file_import_to_large') }}',
+											text: "",
+											confirmButtonColor: "#00695C",
+											type: "error",
+											allowOutsideClick: true,
+											confirmButtonText: LANG_OK,
+										});
+										
+										form.find('.import_another').trigger('click');
+										return;
+									}
 								},
 								cache: false,
 								contentType: false,

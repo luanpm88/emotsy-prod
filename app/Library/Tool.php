@@ -223,4 +223,44 @@ class Tool
     {
         return $time->setTimezone(config('app.timezone'));
     }
+    
+    /**
+     * Get bytes from string.
+     *
+     * @param string
+     *
+     * @return string
+     */
+    public static function returnBytes($val) {
+        //$val = trim($val);
+        //$last = strtolower($val[strlen($val)-1]);
+        //switch($last) 
+        //{
+        //    case 'g':
+        //    $val *= 1024;
+        //    case 'm':
+        //    $val *= 1024;
+        //    case 'k':
+        //    $val *= 1024;
+        //}
+        return $val;
+    }
+    
+    /**
+     * Get max upload file.
+     *
+     * @param string
+     *
+     * @return string
+     */
+    public static function maxFileUploadInBytes() {
+        //select maximum upload size
+        $max_upload = self::returnBytes(ini_get('upload_max_filesize'));
+        //select post limit
+        $max_post = self::returnBytes(ini_get('post_max_size'));
+        //select memory limit
+        $memory_limit = self::returnBytes(ini_get('memory_limit'));
+        // return the smallest of them, this defines the real limit
+        return min($max_upload, $max_post);
+    }
 }
