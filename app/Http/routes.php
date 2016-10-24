@@ -125,7 +125,6 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('lists/{list_uid}/subscribers/export/download', 'SubscriberController@downloadExportedCsv');
 
     // Notification handler
-
     Route::post('delivery/notify/{stype}', 'DeliveryController@notify');
     Route::get('delivery/notify/{stype}', 'DeliveryController@notify');
 
@@ -234,6 +233,12 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::patch('campaigns/{uid}/update', 'CampaignController@update');    
     
     Route::get('users/login-back', 'UserController@loginBack');
+    
+    // System job
+    Route::get('systems/jobs/{type}/listing', 'SystemJobController@listing');
+    Route::get('systems/jobs/delete', 'SystemJobController@delete');
+    Route::get('systems/jobs/{id}/download/log', 'SystemJobController@downloadLog');
+    Route::get('systems/jobs/{id}/download/csv', 'SystemJobController@downloadCsv');
 });
 
 // ADMIN AREA

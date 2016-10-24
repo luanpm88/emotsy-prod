@@ -430,30 +430,32 @@ class InstallController extends Controller
                 'name' => 'Storage/app/',
                 'check' => file_exists(base_path('/storage/app')) &&
                     is_dir(base_path('/storage/app')) &&
-                    (is_writable(base_path('/storage/app'))) &&
-                    \Acelle\Library\Tool::getPerms(base_path('/storage/app')) >= 775,
-                'note' => 'The directory must be writable by the web server (0775).',
+                    (is_writable(base_path('/storage/app'))),
+                'note' => 'The directory must be writable by the web server.',
             ],
             [
                 'type' => 'permission',
                 'name' => 'Storage/framework/',
-                'check' => file_exists(base_path('/storage/framework')) && is_dir(base_path('/storage/framework')) && (is_writable(base_path('/storage/framework'))) &&
-                    \Acelle\Library\Tool::getPerms(base_path('/storage/framework')) >= 775,
-                'note' => 'The directory must be writable by the web server (0775).',
+                'check' => file_exists(base_path('/storage/framework')) && is_dir(base_path('/storage/framework')) && (is_writable(base_path('/storage/framework'))),
+                'note' => 'The directory must be writable by the web server.',
             ],
             [
                 'type' => 'permission',
                 'name' => 'Storage/logs/',
-                'check' => file_exists(base_path('/storage/logs')) && is_dir(base_path('/storage/logs')) && (is_writable(base_path('/storage/logs'))) &&
-                    \Acelle\Library\Tool::getPerms(base_path('/storage/logs')) >= 775,
-                'note' => 'The directory must be writable by the web server (0775).',
+                'check' => file_exists(base_path('/storage/logs')) && is_dir(base_path('/storage/logs')) && (is_writable(base_path('/storage/logs'))),
+                'note' => 'The directory must be writable by the web server.',
+            ],
+            [
+                'type' => 'permission',
+                'name' => 'Storage/job/',
+                'check' => file_exists(base_path('/storage/job')) && is_dir(base_path('/storage/job')) && (is_writable(base_path('/storage/job'))),
+                'note' => 'The directory must be writable by the web server.',
             ],
             [
                 'type' => 'permission',
                 'name' => 'bootstrap/cache/',
-                'check' => file_exists(base_path('/bootstrap/cache')) && is_dir(base_path('/bootstrap/cache')) && (is_writable(base_path('/bootstrap/cache'))) &&
-                    \Acelle\Library\Tool::getPerms(base_path('/bootstrap/cache')) >= 775,
-                'note' => 'The directory must be writable by the web server (0775).',
+                'check' => file_exists(base_path('/bootstrap/cache')) && is_dir(base_path('/bootstrap/cache')) && (is_writable(base_path('/bootstrap/cache'))),
+                'note' => 'The directory must be writable by the web server.',
             ],
         ];
     }

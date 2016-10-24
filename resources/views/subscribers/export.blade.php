@@ -29,7 +29,7 @@
                             {{ csrf_field() }}
                             
                             <div class="upload_file before">
-                                <p>{{ trans('messages.click_to_start_export') }}</p>
+                                <p>{!! trans('messages.click_to_start_export', ['total' => $list->subscribers()->count()]) !!}</p>
                                 <div class="text-right">
                                     <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.export') }}</button>
                                 </div>
@@ -83,35 +83,31 @@
 								type: "GET",
 								success:function(data, textStatus, jqXHR)
 								{
-									if (data[0] != "") {
-										var total = parseFloat($("<div>").html(data).find(".total").html());
-										var success = parseFloat($("<div>").html(data).find(".success").html());
-										var error = parseFloat($("<div>").html(data).find(".error").html());
 									
-										form.find(".processing label").html(data[1]);
+										var total = parseFloat($("<div>").html(data.message).find(".total").html());
+										var success = parseFloat($("<div>").html(data.message).find(".success").html());
+										var error = parseFloat($("<div>").html(data.message).find(".error").html());
+									
+										form.find(".processing label").html(data.message);
 										bar.find(".number").html(parseInt(success/total*100));
 										bar.css({
 											width: (success/total*100) + '%'
 										});
 										
-										//bar_s.find(".number").html(3);
-										//bar_s.css({
-										//	width: 3 + '%'
-										//});
-										
 										bar_e.find(".number").html(parseInt(error/total*100));
 										bar_e.css({
 											width: (error/total*100) + '%'
 										});
-                                    }
-									if (data[0] == "processing" || data[0] == 'start') {
+
+										
+									if (data.status == "running" || data.status == 'starting') {
                                         setTimeout("check_process()", 500);
                                     }
-									if (data[0] == "error" ) {
+									if (data.status == "error" ) {
 										form.find('.finish').removeClass("hide");
 										form.find('.before').addClass("hide");
                                     }
-									if (data[0] == "finished") {
+									if (data.status == "finished") {
 										if(!form.find('.finish').hasClass('hide')) {
 											// Success alert
 											swal({
@@ -211,4 +207,48 @@
 							});
 						});
 					</script>
+						
+						
+			<hr>
+			<h2 class="text-bold text-teal-800"><i class="icon-task"></i> {{ trans('messages.recent_export') }}</h2>
+			<form class="listing-form"
+				data-url="{{ action('SystemJobController@listing', ["type" => "export-subscriber"]) }}"
+				per-page="{{ Acelle\Model\SystemJob::$itemsPerPage }}"					
+			>				
+				<div class="row top-list-controls">
+					<div class="col-md-10">
+						@if ($system_jobs->count() >= 0)					
+							<div class="filter-box">
+								<span class="filter-group">
+									<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
+									<select class="select" name="sort-order">
+										<option value="system_jobs.created_at">{{ trans('messages.created_at') }}</option>
+										<option value="system_jobs.updated_at">{{ trans('messages.updated_at') }}</option>
+									</select>										
+									<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
+										<i class="icon-sort-amount-desc"></i>
+									</button>
+								</span>									
+							</div>
+						@endif
+					</div>
+					<!--<div class="col-md-2 text-right">
+						<a href="{{ action("SegmentController@create", $list->uid) }}" type="button" class="btn bg-info-800">
+							<i class="icon icon-plus2"></i> {{ trans('messages.clear_all') }}
+						</a>
+					</div>-->
+				</div>
+				
+				<div class="pml-table-container">
+					
+					
+					
+				</div>
+			</form>
+				
+			<script>
+				$(document).ready(function() {
+					setInterval('tableFilterAll()', 3000);
+				});
+			</script>
 @endsection

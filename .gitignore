@@ -11,5 +11,6 @@ Homestead.json
 /storage/recache
 /storage/import
 /storage/export
+/storage/job
 /public/source
 /public/thumbs

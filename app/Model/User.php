@@ -202,6 +202,11 @@ class User extends Authenticatable
     {
         return $this->hasMany('Acelle\Model\Log')->orderBy('created_at', 'desc');
     }
+    
+    public function systemJobs()
+    {
+        return $this->hasMany('Acelle\Model\SystemJob')->orderBy('created_at', 'desc');
+    }
 
     /**
      * Bootstrap any application services.

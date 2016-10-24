@@ -32,6 +32,7 @@ cp .env.example .env
 
 # clean up
 rm -fr storage/logs/*
+rm -fr storage/jobs/*
 rm -fr storage/tmp/*
 rm -fr storage/import/*
 rm -fr storage/export/*
