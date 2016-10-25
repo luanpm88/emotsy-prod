@@ -346,35 +346,39 @@ class SubscriberController extends Controller
         if (\Gate::denies('importSubscriber', $system_job)) {
             return $this->notAuthorized();
         }
-
-        if ($request->hasFile('file')) {
-            $upload_path = storage_path('job/');
-
-            // mkdir if not exist
-            if (!file_exists($upload_path)) {
-                mkdir($upload_path, 0777, true);
+        
+        if ($request->isMethod('post')) {
+            if ($request->hasFile('file')) {
+                $upload_path = storage_path('job/');
+    
+                // mkdir if not exist
+                if (!file_exists($upload_path)) {
+                    mkdir($upload_path, 0777, true);
+                }
+                
+                // Save new job
+                $system_job->save();
+                
+                // mkdir if not exist
+                $upload_path = $upload_path.$system_job->id."/";
+                if (!file_exists($upload_path)) {
+                    mkdir($upload_path, 0777, true);
+                }
+                
+                // Upload csv
+                $filename = 'data.csv';
+                $request->file('file')->move($upload_path, $filename);
+                
+                // Start system job
+                $system_job->start();
+                
+                // Action Log
+                $list->log('import_started', $request->user());
+                
+                echo $system_job->id;
+            } else {
+                echo "max_file_upload";
             }
-            
-            // Save new job
-            $system_job->save();
-            
-            // mkdir if not exist
-            $upload_path = $upload_path.$system_job->id."/";
-            if (!file_exists($upload_path)) {
-                mkdir($upload_path, 0777, true);
-            }
-            
-            // Upload csv
-            $filename = 'data.csv';
-            $request->file('file')->move($upload_path, $filename);
-            
-            // Start system job
-            $system_job->start();
-            
-            // Action Log
-            $list->log('import_started', $request->user());
-            
-            echo $system_job->id;
         } else {
             return view('subscribers.import', [
                 'list' => $list,
