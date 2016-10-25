@@ -293,7 +293,9 @@ class MailList extends Model
      */
     public function checkExsitEmail($email)
     {
-        $valid = !filter_var($email, FILTER_VALIDATE_EMAIL) === false && !empty($email) && $this->subscribers()->where('email', '=', $email)->count() == 0;
+        $valid = !filter_var($email, FILTER_VALIDATE_EMAIL) === false &&
+            !empty($email) &&
+            $this->subscribers()->where('email', '=', $email)->count() == 0;
 
         return $valid;
     }

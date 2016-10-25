@@ -1064,7 +1064,7 @@ return [
     'Time' => 'Time',
     'log' => 'Log',
     'download_csv' => 'Download CSV',
-    '' => '',
+    'export-subscriber' => 'Export subscribers',
     '' => '',
     '' => '',
     '' => '',

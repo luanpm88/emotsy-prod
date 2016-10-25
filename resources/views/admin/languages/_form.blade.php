@@ -13,10 +13,11 @@
 						</div>
 						<div class="col-md-4">							
 							@include('helpers.form_control', [
-								'type' => 'text',
+								'type' => 'select',
 								'class' => '',
 								'name' => 'code',
 								'value' => $language->code,
+								'options' => \Acelle\Model\Language::languageCodes(),
 								'help_class' => 'language',
 								'rules' => Acelle\Model\Language::rules()
 							])
