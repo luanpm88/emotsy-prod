@@ -52,6 +52,16 @@ class SendingServerController extends Controller
             'items' => $items,
         ]);
     }
+    
+    /**
+     * Select sending server type.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function select(Request $request)
+    {
+        return view('admin.sending_servers.select');
+    }
 
     /**
      * Show the form for creating a new resource.

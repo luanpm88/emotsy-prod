@@ -222,5 +222,8 @@
 					@endif
 					<br >
 					<div class="text-right">
-						<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+						<button class="btn bg-teal mr-5"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+						<a href="{{ action('Admin\SendingServerController@index') }}" type="button" class="btn bg-grey">
+							<i class="icon-cross2"></i> {{ trans('messages.cancel') }}
+						</a>
 					</div>
