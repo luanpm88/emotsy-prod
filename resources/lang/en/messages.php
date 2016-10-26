@@ -1067,7 +1067,7 @@ return [
     'export-subscriber' => 'Export subscribers',
     'max_file_upload' => '<span class="text-danger">Server max file upload size: <strong class="text-bold">:size</strong></span>',
     'file_import_to_large' => 'Import file is too large. Please check the server limit.',
-    '' => '',
+    'to_email_name' => 'Subscriber',
     '' => '',
     '' => '',
     '' => '',

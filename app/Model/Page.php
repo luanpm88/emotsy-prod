@@ -200,9 +200,9 @@ class Page extends Model
     {
         $page = $this;
         \Mail::send('pages._email_content', ['page' => $page], function ($m) use ($subscriber, $title) {
-            $m->from('service@acellemail.com', 'Acelle');
+            $m->from($subscriber->mailList->from_email, $subscriber->mailList->from_name);
 
-            $m->to($subscriber->email, 'Subscriber')->subject($title);
+            $m->to($subscriber->email, trans('messages.to_email_name'))->subject($title);
         });
     }
 

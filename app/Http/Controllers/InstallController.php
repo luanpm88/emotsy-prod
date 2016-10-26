@@ -125,6 +125,8 @@ class InstallController extends Controller
                 $rules = array_merge($rules, $smtp_rules);
             }
             $this->validate($request, $rules);
+            
+            $site_info = $request->all();
 
             // Check SMTP connection
             if ($request->mail_driver == 'smtp') {
@@ -141,9 +143,12 @@ class InstallController extends Controller
                     $rules['smtp_valid'] = 'required';
                 }
                 $this->validate($request, $rules);
+            } else {
+                $site_info["smtp_from_name"] = $site_info["site_name"];
+                $site_info["smtp_from_email"] = $site_info["email"];
             }
 
-            $site_info = $request->all();
+            
 
             $request->session()->set('site_info', $site_info);
 
