@@ -226,7 +226,7 @@ class SystemJob extends Model
                     $this->save();
                     
                     // Details
-                    $myfile = file_put_contents($directory.'detail.log', $error_detail."\r\n".PHP_EOL , FILE_APPEND | LOCK_EX);
+                    $myfile = file_put_contents($directory.'detail.log', $error_detail.PHP_EOL , FILE_APPEND | LOCK_EX);
                 }
             }
         }
@@ -304,13 +304,13 @@ class SystemJob extends Model
         $myfile = file_put_contents($file_path, $headers.PHP_EOL , FILE_APPEND | LOCK_EX);
         
         $num = 100;
-        for($page = 0; $page < ceil($total/$num); $page++) { // ceil($total/$num)
+        for($page = 0; $page <= ceil($total/$num); $page++) { // ceil($total/$num)
             $data = [];
             foreach ($list->subscribers()->skip($page*$num)->take($num)->get() as $key => $item) {
                 $cols = [];
                 if (true) {
                     if (true) {
-                        foreach ($list->fields as $key => $field) {
+                        foreach ($list->fields as $key2 => $field) {
                             $value = $item->getValueByField($field);
                             $cols[] = $value;
                         }
@@ -321,10 +321,10 @@ class SystemJob extends Model
                         ++$error;
                     }
                 }
-                
-                // write csv
-                $myfile = file_put_contents($file_path, implode("\r\n", $data).PHP_EOL , FILE_APPEND | LOCK_EX);
             }
+            
+            // write csv
+            $myfile = file_put_contents($file_path, implode("\r\n", $data).PHP_EOL , FILE_APPEND | LOCK_EX);
             
             $content_cache = trans('messages.import_export_statistics_line', [
                 'total' => $total,
