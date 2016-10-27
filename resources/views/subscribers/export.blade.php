@@ -84,10 +84,11 @@
 								success:function(data, textStatus, jqXHR)
 								{
 									
-										var total = parseFloat($("<div>").html(data.message).find(".total").html());
-										var success = parseFloat($("<div>").html(data.message).find(".success").html());
-										var error = parseFloat($("<div>").html(data.message).find(".error").html());
-									
+									var total = parseFloat($("<div>").html(data.message).find(".total").html());
+									var success = parseFloat($("<div>").html(data.message).find(".success").html());
+									var error = parseFloat($("<div>").html(data.message).find(".error").html());
+										
+									if(total) {
 										form.find(".processing label").html(data.message);
 										bar.find(".number").html(parseInt(success/total*100));
 										bar.css({
@@ -98,10 +99,12 @@
 										bar_e.css({
 											width: (error/total*100) + '%'
 										});
-
-										
+									} else {									
+										$(".processing label").html("{{ trans('messages.wait_for_queue') }}");										
+									}
+									
 									if (data.status == "running" || data.status == 'starting') {
-                                        setTimeout("check_process()", 500);
+                                        setTimeout("check_process()", 1000);
                                     }
 									if (data.status == "error" ) {
 										form.find('.finish').removeClass("hide");
@@ -153,7 +156,7 @@
 							
 							form.find(".processing h4").html('{{ trans('messages.please_wait_export') }}');
 							
-                            $(".processing label").html("{{ trans('messages.uploading') }}");
+                            $(".processing label").html("{{ trans('messages.starting') }}");
                             $(".before").addClass('hide');
                             $(".processing").removeClass('hide');
                             

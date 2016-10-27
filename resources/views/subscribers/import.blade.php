@@ -94,20 +94,24 @@
 									var total = parseFloat($("<div>").html(data.message).find(".total").html());
 									var success = parseFloat($("<div>").html(data.message).find(".success").html());
 									var error = parseFloat($("<div>").html(data.message).find(".error").html());
-								
-									form.find(".processing label").html(data.message);
-									bar.find(".number").html(Math.round(success/total*100));
-									bar.css({
-										width: (success/total*100) + '%'
-									});
-
-									bar_e.find(".number").html(Math.round(error/total*100));
-									bar_e.css({
-										width: (error/total*100) + '%'
-									});									
+									
+									if(total) {
+										form.find(".processing label").html(data.message);
+										bar.find(".number").html(Math.round(success/total*100));
+										bar.css({
+											width: (success/total*100) + '%'
+										});
+	
+										bar_e.find(".number").html(Math.round(error/total*100));
+										bar_e.css({
+											width: (error/total*100) + '%'
+										});
+									} else {									
+										$(".processing label").html("{{ trans('messages.wait_for_queue') }}");										
+									}
 									
 									if (data.status == "running" || data.status == 'starting') {
-                                        setTimeout("check_process()", 500);
+                                        setTimeout("check_process()", 1000);
                                     }
 									if (data.status == "error" ) {
 										form.find('.finish').removeClass("hide");
@@ -127,8 +131,7 @@
 										}
 										form.find('.upload_file .progress-bar').addClass('success');
 										form.find('.finish').removeClass('hide');
-										form.find(".processing h4").html('{{ trans('messages.import_completed') }}');
-										
+										form.find(".processing h4").html('{{ trans('messages.import_completed') }}');										
 									}
 								}
 							})

@@ -551,7 +551,7 @@ DB_TABLES_PREFIX='.(isset($database['tables_prefix']) ? $database['tables_prefix
 
 CACHE_DRIVER=file
 SESSION_DRIVER=file
-QUEUE_DRIVER=async
+QUEUE_DRIVER=database
 
 REDIS_HOST=localhost
 REDIS_PASSWORD=null
