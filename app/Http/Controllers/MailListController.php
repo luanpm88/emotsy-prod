@@ -386,6 +386,7 @@ class MailListController extends Controller
         } else {
             $list_id = null;
             $list = new \Acelle\Model\MailList();
+            $list->user_id = $request->user()->id;
         }
         
         // authorize
@@ -483,6 +484,7 @@ class MailListController extends Controller
         if (!is_object($list)) {
             $list = new \Acelle\Model\MailList();
             $list->uid = '000';
+            $list->user_id = $request->user()->id;
         }
 
         // authorize

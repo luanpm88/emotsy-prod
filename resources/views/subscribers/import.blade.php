@@ -61,9 +61,6 @@
                                     </div>
                                 </div>
 								<label></label>
-								<div class="text-right">
-									<a href="#retry" class="btn bg-grey-800 mr-10 import_another"><i class="icon-reload-alt"></i> {{ trans('messages.import_another') }}</a>
-								</div>
                             </div>
 								
 							<div class="form-group finish hide">
