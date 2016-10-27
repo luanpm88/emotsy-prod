@@ -19,8 +19,8 @@ class CreateCampaignsTable extends Migration
             $table->text('type');
             $table->text('name');
             $table->text('subject');
-            $table->text('html');
-            $table->text('plain');
+            $table->longtext('html');
+            $table->longtext('plain');
             $table->text('from_email');
             $table->text('from_name');
             $table->text('reply_to');
