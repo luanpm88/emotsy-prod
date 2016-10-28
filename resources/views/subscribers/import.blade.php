@@ -38,7 +38,7 @@
 								
                                 @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file', 'value' => $list->name])								
                                 
-                                <div class="text-right">
+                                <div class="text-left">
                                     <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.import') }}</button>
                                     <a href="{{ action('SubscriberController@index', $list->uid) }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
                                 </div>
@@ -64,11 +64,11 @@
                             </div>
 								
 							<div class="form-group finish hide">
-                                <div class="text-right">
+                                <div class="text-left">
 									<a target="_blank" href="{{ action('SubscriberController@downloadImportLog', ["list_uid" => $list->uid]) }}" type="button" class="btn bg-teal finish hide">
                                         <i class="icon-download"></i> {{ trans('messages.download_import_log') }}
                                     </a>
-                                    <a href="#retry" class="btn bg-grey-800 mr-10 import_another"><i class="icon-reload-alt"></i> {{ trans('messages.import_another') }}</a>
+                                    <a href="#retry" class="btn bg-grey-800 mr-10 retry"><i class="icon-reload-alt"></i> {{ trans('messages.retry') }}</a>
                                 </div>
                             </div>
                             
@@ -110,7 +110,7 @@
 											width: (error/total*100) + '%'
 										});
 									} else {									
-										$(".processing label").html("{{ trans('messages.wait_for_queue') }}");
+										$(".processing label").html("{{ trans('messages.wait_for_import_queue') }}");
 										
 										// return to 0
 										bar_s.find(".number").html(parseInt(0));
@@ -233,7 +233,7 @@
 											confirmButtonText: LANG_OK,
 										});
 										
-										form.find('.import_another').trigger('click');
+										form.find('.retry').trigger('click');
 										return;
 									}
 								},
@@ -244,7 +244,7 @@
 							
 							return false;
 						});
-						$(document).on("click", ".import_another", function() {
+						$(document).on("click", ".retry", function() {
 							$(".input[type=file]").val("");
 							$(".finish").addClass('hide');
                             $(".processing").addClass('hide');

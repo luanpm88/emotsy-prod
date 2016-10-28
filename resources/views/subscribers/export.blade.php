@@ -22,7 +22,7 @@
 				<h2 class="text-bold text-teal-800"><i class="icon-users4"></i> {{ trans('messages.export_subscribers') }}</h2>
 				
                 <div class="row">
-                    <div class="col-md-8">
+                    <div class="col-md-12">
                         <form
                             process-url="{{ action('SubscriberController@exportProccess', $list->uid) }}"
                             action="{{ action('SubscriberController@export', $list->uid) }}" method="POST" class="ajax_upload_form form-validate-jquery">
@@ -30,7 +30,7 @@
                             
                             <div class="upload_file before">
                                 <p>{!! trans('messages.click_to_start_export', ['total' => $list->subscribers()->count()]) !!}</p>
-                                <div class="text-right">
+                                <div class="text-left">
                                     <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.export') }}</button>
                                 </div>
                                 <br />
@@ -57,7 +57,7 @@
                             </div>
 								
 							<div class="form-group finish hide">
-                                <div class="text-right">
+                                <div class="text-left">
                                     <a target="_blank" href="{{ action('SubscriberController@downloadExportedCsv', ["list_uid" => $list->uid]) }}" type="button" class="btn bg-teal finish hide">
                                         <i class="icon-download"></i> {{ trans('messages.download_export') }}
                                     </a>
@@ -103,7 +103,7 @@
 											width: (error/total*100) + '%'
 										});
 									} else {									
-										$(".processing label").html("{{ trans('messages.wait_for_queue') }}");
+										$(".processing label").html("{{ trans('messages.wait_for_export_queue') }}");
 										
 										// return to 0
 										bar_s.find(".number").html(parseInt(0));
@@ -132,7 +132,7 @@
 										if(!form.find('.finish').hasClass('hide')) {
 											// Success alert
 											swal({
-												title: '{{ trans('messages.import_completed') }}',
+												title: '{{ trans('messages.export_completed') }}',
 												text: "",
 												confirmButtonColor: "#00695C",
 												type: "success",
@@ -146,7 +146,7 @@
 										form.find(".processing").removeClass('hide');
 										form.find('.finish').removeClass('hide');
 										
-										form.find(".processing h4").html('{{ trans('messages.import_completed') }}');										
+										form.find(".processing h4").html('{{ trans('messages.export_completed') }}');										
 									}
 								}
 							})
@@ -177,7 +177,7 @@
 								width: 0 + '%'
 							});
 							
-							form.find(".processing h4").html('{{ trans('messages.please_wait_import') }}');
+							form.find(".processing h4").html('{{ trans('messages.please_wait_export') }}');
 							
                             $(".processing label").html("{{ trans('messages.uploading') }}");
                             $(".before").addClass('hide');
@@ -226,7 +226,7 @@
 											confirmButtonText: LANG_OK,
 										});
 										
-										form.find('.import_another').trigger('click');
+										form.find('.retry').trigger('click');
 										return;
 									}
 								},

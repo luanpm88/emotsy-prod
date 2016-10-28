@@ -489,8 +489,15 @@ class SubscriberController extends Controller
      */
     public function exportProccess(Request $request)
     {
-        $job = \Acelle\Model\SystemJob::getCurrent("export-subscriber");
-        return response()->json($job);
+        $system_job = \Acelle\Model\MailList::findByUid($request->current_list_uid)
+            ->getLastExportJob();
+        
+        // authorize
+        if (\Gate::denies('exportSubscriber', $system_job)) {
+            return $this->notAuthorized();
+        }
+        
+        return response()->json($system_job);
     }
 
     /**
@@ -502,9 +509,10 @@ class SubscriberController extends Controller
      */
     public function downloadExportedCsv(Request $request)
     {
-        $job = \Acelle\Model\SystemJob::getCurrent("export-subscriber");
+        $system_job = \Acelle\Model\MailList::findByUid($request->list_uid)
+            ->getLastExportJob();
 
-        return response()->download(storage_path('job/'.$job->id.'/data.csv'));
+        return response()->download(storage_path('job/'.$system_job->id.'/data.csv'));
     }
 
     /**

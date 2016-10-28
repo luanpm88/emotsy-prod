@@ -623,4 +623,17 @@ class MailList extends Model
             ->orderBy("created_at","DESC")
             ->first();
     }
+    
+    /**
+     * Get last import job.
+     *
+     * @return number
+     */
+    public function getLastExportJob()
+    {
+        return \Acelle\Model\SystemJob::where("type","=","export-subscriber")
+            ->where("item_id","=",$this->uid)
+            ->orderBy("created_at","DESC")
+            ->first();
+    }
 }
