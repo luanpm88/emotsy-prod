@@ -353,7 +353,9 @@ class SubscriberController extends Controller
     
                 // mkdir if not exist
                 if (!file_exists($upload_path)) {
-                    mkdir($upload_path, 0777, true);
+                    $oldmask = umask(0);
+                    mkdir($upload_path, 0775, true);
+                    umask($oldmask);
                 }
                 
                 // Save new job
@@ -362,7 +364,9 @@ class SubscriberController extends Controller
                 // mkdir if not exist
                 $upload_path = $upload_path.$system_job->id."/";
                 if (!file_exists($upload_path)) {
-                    mkdir($upload_path, 0777, true);
+                    $oldmask = umask(0);
+                    mkdir($upload_path, 0775, true);
+                    umask($oldmask);
                 }
                 
                 // Upload csv
@@ -454,7 +458,9 @@ class SubscriberController extends Controller
 
             // mkdir if not exist
             if (!file_exists($upload_path)) {
-                mkdir($upload_path, 0777, true);
+                $oldmask = umask(0);
+                mkdir($upload_path, 0775, true);
+                umask($oldmask);
             }
             
             // Save new job
@@ -462,7 +468,9 @@ class SubscriberController extends Controller
             
             // mkdir if not exist
             if (!file_exists($upload_path.$system_job->id."/")) {
-                mkdir($upload_path.$system_job->id."/", 0777, true);
+                $oldmask = umask(0);
+                mkdir($upload_path.$system_job->id."/", 0775, true);
+                umask($oldmask);
             }
             
             // Start system job
