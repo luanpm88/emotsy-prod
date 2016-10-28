@@ -15,5 +15,5 @@
 * * * * * {!! (isset(explode(" ", exec("whereis php"))[1]) ? explode(" ", exec("whereis php"))[1] : "<span class='text-danger'>{PHP_BIN_PATH}</span>") !!} -q {{ base_path() }}/artisan handler:run 2&gt;&amp;1
 * * * * * {!! (isset(explode(" ", exec("whereis php"))[1]) ? explode(" ", exec("whereis php"))[1] : "<span class='text-danger'>{PHP_BIN_PATH}</span>") !!} -q {{ base_path() }}/artisan campaign:run 2&gt;&amp;1
 # {{ trans('messages.cron_jobs_queue') }}
-* * * * * {!! (isset(explode(" ", exec("whereis php"))[1]) ? explode(" ", exec("whereis php"))[1] : "<span class='text-danger'>{PHP_BIN_PATH}</span>") !!} -q {{ base_path() }}/artisan queue:work --tries=1 >> {{ storage_path() }}/logs/queue.log 2&gt;&amp;1
+* * * * * {!! (isset(explode(" ", exec("whereis php"))[1]) ? explode(" ", exec("whereis php"))[1] : "<span class='text-danger'>{PHP_BIN_PATH}</span>") !!} -q {{ base_path() }}/artisan queue:work 2&gt;&amp;1
 </pre>
