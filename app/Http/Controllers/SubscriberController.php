@@ -337,7 +337,7 @@ class SubscriberController extends Controller
         $system_job = new \Acelle\Model\SystemJob([
             'user_id' => $request->user()->id,
             'type' => 'import-subscriber',
-            'item_id' => $list->id,
+            'item_id' => $list->uid,
             'percent' => 0,
             'status' => 'starting',
         ]);
@@ -396,7 +396,8 @@ class SubscriberController extends Controller
      */
     public function importProccess(Request $request)
     {
-        $system_job = \Acelle\Model\SystemJob::getCurrent("import-subscriber");
+        $system_job = \Acelle\Model\MailList::findByUid($request->current_list_uid)
+            ->getLastImportJob();
         
         // authorize
         if (\Gate::denies('importSubscriber', $system_job)) {
@@ -415,9 +416,10 @@ class SubscriberController extends Controller
      */
     public function downloadImportLog(Request $request)
     {
-        $job = \Acelle\Model\SystemJob::getCurrent("import-subscriber");
+        $system_job = \Acelle\Model\MailList::findByUid($request->list_uid)
+            ->getLastImportJob();
 
-        return response()->download(storage_path('job/'.$job->id.'/detail.log'));
+        return response()->download(storage_path('job/'.$system_job->id.'/detail.log'));
     }
 
     /**
@@ -437,7 +439,7 @@ class SubscriberController extends Controller
         $system_job = new \Acelle\Model\SystemJob([
             'user_id' => $request->user()->id,
             'type' => 'export-subscriber',
-            'item_id' => $list->id,
+            'item_id' => $list->uid,
             'percent' => 0,
             'status' => 'starting',
         ]);

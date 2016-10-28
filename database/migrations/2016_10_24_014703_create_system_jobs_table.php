@@ -16,7 +16,7 @@ class CreateSystemJobsTable extends Migration
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->string('type');
-            $table->integer('item_id');
+            $table->uuid('item_id');
             $table->integer('percent');
             $table->string('status');
             $table->text('message');

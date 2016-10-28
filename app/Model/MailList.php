@@ -610,4 +610,17 @@ class MailList extends Model
             $new_field->save();
         }
     }
+    
+    /**
+     * Get last import job.
+     *
+     * @return number
+     */
+    public function getLastImportJob()
+    {
+        return \Acelle\Model\SystemJob::where("type","=","import-subscriber")
+            ->where("item_id","=",$this->uid)
+            ->orderBy("created_at","DESC")
+            ->first();
+    }
 }

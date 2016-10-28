@@ -1071,7 +1071,7 @@ return [
     'select_sending_servers_type' => 'Select sending server type',
     'cron_jobs_queue' => 'For importing/exporting jobs, runs each minute.',
     'wait_for_queue' => 'File Uploaded. Starting import...',
-    '' => '',
+    'unknown' => 'Unknown',
     '' => '',
     '' => '',
     '' => '',

@@ -829,9 +829,10 @@ class CampaignController extends Controller
         $total = $campaign->openCount();
         $count = 0;
         foreach ($campaign->topCountries()->get() as $location) {
-            $result['bar_names'][] = $location->country_name;
+            $country_name = (!empty($location->country_name) ? $location->country_name : trans('messages.unknown'));
+            $result['bar_names'][] = $country_name;
             
-            $datas[] = ['value' => $location->aggregate, 'name' => $location->country_name];
+            $datas[] = ['value' => $location->aggregate, 'name' => $country_name];
             $count += $location->aggregate;
         }
         

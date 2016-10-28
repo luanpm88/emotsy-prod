@@ -117,7 +117,7 @@ class SystemJob extends Model
     {
         // Info from job
         $user = $this->user;
-        $list = \Acelle\Model\MailList::find($this->item_id);
+        $list = \Acelle\Model\MailList::findByUid($this->item_id);
         
         $directory = storage_path('job/' . $this->id . "/");
 
@@ -285,7 +285,7 @@ class SystemJob extends Model
     {
         // Info from job
         $user = $this->user;
-        $list = \Acelle\Model\MailList::find($this->item_id);
+        $list = \Acelle\Model\MailList::findByUid($this->item_id);
         
         $directory = storage_path('job/' . $this->id . "/");
         $file_path = $directory.'data.csv';

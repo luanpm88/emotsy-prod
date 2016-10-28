@@ -70,8 +70,10 @@
                     </div>
                 </div>
                       
-                <script>
-						function check_process() {
+					<script>
+						var current_list_uid = '{{ $list->uid }}';
+						
+						function check_process(first) {
 							var form = $("form.ajax_upload_form")
 							var url = form.attr("process-url")
 							var bar = form.find('.progress-total');
@@ -79,42 +81,58 @@
 							var bar_e = form.find('.progress-error');
 							
                             $.ajax({
-								url : url,
+								url : url + "?&current_list_uid="+current_list_uid,
 								type: "GET",
 								success:function(data, textStatus, jqXHR)
 								{
-									
+									// update progress bar
 									var total = parseFloat($("<div>").html(data.message).find(".total").html());
 									var success = parseFloat($("<div>").html(data.message).find(".success").html());
 									var error = parseFloat($("<div>").html(data.message).find(".error").html());
-										
+									current_job_id = data.id;
+									
 									if(total) {
 										form.find(".processing label").html(data.message);
-										bar.find(".number").html(parseInt(success/total*100));
+										bar.find(".number").html(Math.round(success/total*100));
 										bar.css({
 											width: (success/total*100) + '%'
 										});
-										
-										bar_e.find(".number").html(parseInt(error/total*100));
+	
+										bar_e.find(".number").html(Math.round(error/total*100));
 										bar_e.css({
 											width: (error/total*100) + '%'
 										});
 									} else {									
-										$(".processing label").html("{{ trans('messages.wait_for_queue') }}");										
+										$(".processing label").html("{{ trans('messages.wait_for_queue') }}");
+										
+										// return to 0
+										bar_s.find(".number").html(parseInt(0));
+										bar_s.css({
+											width: 0 + '%'
+										});
+										bar_e.find(".number").html(parseInt(0));
+										bar_e.css({
+											width: 0 + '%'
+										});
 									}
 									
 									if (data.status == "running" || data.status == 'starting') {
                                         setTimeout("check_process()", 1000);
+										form.find(".before").addClass('hide');
+										form.find(".processing").removeClass('hide');
+										form.find('.finish').addClass('hide');
                                     }
+									
 									if (data.status == "error" ) {
 										form.find('.finish').removeClass("hide");
 										form.find('.before').addClass("hide");
                                     }
-									if (data.status == "finished") {
+									
+									if (data.status == "finished" && typeof(first) == 'undefined') {
 										if(!form.find('.finish').hasClass('hide')) {
 											// Success alert
 											swal({
-												title: '{{ trans('messages.export_completed') }}',
+												title: '{{ trans('messages.import_completed') }}',
 												text: "",
 												confirmButtonColor: "#00695C",
 												type: "success",
@@ -123,14 +141,19 @@
 											});
 										}
 										form.find('.upload_file .progress-bar').addClass('success');
+										
+										form.find(".before").addClass('hide');
+										form.find(".processing").removeClass('hide');
 										form.find('.finish').removeClass('hide');
-										form.find(".processing h4").html('{{ trans('messages.export_completed') }}');										
+										
+										form.find(".processing h4").html('{{ trans('messages.import_completed') }}');										
 									}
 								}
 							})
                         }						
 						
-						$(document).on("submit", "form.ajax_upload_form", function() {                
+						var current_job_id;
+						$(document).on("submit", "form.ajax_upload_form", function() {
 							var form = $(this);
                             setTimeout("check_process()", 2000);
                             if(!form.valid()) {
@@ -154,9 +177,9 @@
 								width: 0 + '%'
 							});
 							
-							form.find(".processing h4").html('{{ trans('messages.please_wait_export') }}');
+							form.find(".processing h4").html('{{ trans('messages.please_wait_import') }}');
 							
-                            $(".processing label").html("{{ trans('messages.starting') }}");
+                            $(".processing label").html("{{ trans('messages.uploading') }}");
                             $(".before").addClass('hide');
                             $(".processing").removeClass('hide');
                             
@@ -189,7 +212,23 @@
 								type: 'POST',
 								data: formData,
 								success: function (data) {
+									current_job_id = data;
                                     check_process();
+									
+									if(data == 'max_file_upload') {
+										// Success alert
+										swal({
+											title: '{{ trans('messages.file_import_to_large') }}',
+											text: "",
+											confirmButtonColor: "#00695C",
+											type: "error",
+											allowOutsideClick: true,
+											confirmButtonText: LANG_OK,
+										});
+										
+										form.find('.import_another').trigger('click');
+										return;
+									}
 								},
 								cache: false,
 								contentType: false,
@@ -208,6 +247,10 @@
 							bars.css({
 								width: 0 + '%'
 							});
+						});
+						
+						$(document).ready(function() {
+							check_process(true);
 						});
 					</script>
 			

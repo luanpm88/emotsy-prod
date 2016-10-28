@@ -17,7 +17,10 @@
                                     <div class="pull-right num">
                                         {{ $location->aggregate }}
                                     </div>
-                                    <p class=""><img class="flag-icon" src="{{ url("/images/flags/" . $location->country_code . ".png") }}" /> {{ $location->country_name }}</p>
+                                    <p class="">
+                                        <img class="flag-icon" src="{{ url("/images/flags/" . (empty($location->country_code) ? "unknown" : $location->country_code) . ".png") }}" />
+                                        {{ (empty($location->country_name) ? trans("messages.unknown") : $location->country_name) }}
+                                    </p>
                                 </div>
                             @endforeach 
                         </div>
