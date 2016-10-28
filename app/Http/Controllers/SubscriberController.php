@@ -362,9 +362,10 @@ class SubscriberController extends Controller
                 $system_job->save();
                 
                 // mkdir if not exist
-                $upload_path = $upload_path.$system_job->id."/";
+                $upload_path = $upload_path.$system_job->id."/";                
                 if (!file_exists($upload_path)) {
                     $oldmask = umask(0);
+                    \Acelle\Library\Tool::xdelete($upload_path);
                     mkdir($upload_path, 0775, true);
                     umask($oldmask);
                 }
@@ -467,6 +468,7 @@ class SubscriberController extends Controller
             $system_job->save();
             
             // mkdir if not exist
+            \Acelle\Library\Tool::xdelete($upload_path.$system_job->id."/");
             if (!file_exists($upload_path.$system_job->id."/")) {
                 $oldmask = umask(0);
                 mkdir($upload_path.$system_job->id."/", 0775, true);

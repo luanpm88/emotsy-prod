@@ -308,19 +308,13 @@ class SystemJob extends Model
             $data = [];
             foreach ($list->subscribers()->skip($page*$num)->take($num)->get() as $key => $item) {
                 $cols = [];
-                if (true) {
-                    if (true) {
-                        foreach ($list->fields as $key2 => $field) {
-                            $value = $item->getValueByField($field);
-                            $cols[] = $value;
-                        }
-                        $data[] = implode(',', $cols);
-        
-                        ++$success;
-                    } else {
-                        ++$error;
-                    }
+                foreach ($list->fields as $key2 => $field) {
+                    $value = $item->getValueByField($field);
+                    $cols[] = $value;
                 }
+                $data[] = implode(',', $cols);
+
+                ++$success;
             }
             
             // write csv
