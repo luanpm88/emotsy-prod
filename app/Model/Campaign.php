@@ -871,7 +871,6 @@ class Campaign extends Model
         
         $query = $query->select("subscribers.*");
         $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id');
-        $query = $query->where('tracking_logs.campaign_id', "=", $this->id);
         
         // Filter
         $filters = isset($params["filters"]) ? $params["filters"] : null;
@@ -905,7 +904,8 @@ class Campaign extends Model
         }
         
         // when status == done
-        if($this->status == "done") {
+        if($this->status == "done") {            
+            $query = $query->where('tracking_logs.campaign_id', "=", $this->id);
             $query = $query->where('tracking_logs.id', "!=", "NULL");
         }
 

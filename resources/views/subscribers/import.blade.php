@@ -190,31 +190,7 @@
                             $(".before").addClass('hide');
                             $(".processing").removeClass('hide');
                             
-							$.ajax({
-								xhr: function () {
-									var xhr = new window.XMLHttpRequest();
-									xhr.upload.addEventListener("progress", function (evt) {
-										//if (evt.lengthComputable) {
-										//	var percentComplete = evt.loaded / evt.total;
-										//	console.log(percentComplete);
-										//	bar.find(".number").html(parseInt(percentComplete * 100));
-										//	bar.css({
-										//		width: percentComplete * 100 + '%'
-										//	});
-										//}
-									}, false);
-									xhr.addEventListener("progress", function (evt) {
-										//if (evt.lengthComputable) {
-										//	var percentComplete = evt.loaded / evt.total;
-										//	console.log(percentComplete);
-										//	bar.find(".number").html(parseInt(percentComplete * 100));
-										//	bar.css({
-										//		width: percentComplete * 100 + '%'
-										//	});
-										//}
-									}, false);
-									return xhr;
-								},
+							$.ajax({								
 								url: url,
 								type: 'POST',
 								data: formData,

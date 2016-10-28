@@ -184,36 +184,22 @@
                             $(".processing").removeClass('hide');
                             
 							$.ajax({
-								xhr: function () {
-									var xhr = new window.XMLHttpRequest();
-									xhr.upload.addEventListener("progress", function (evt) {
-										//if (evt.lengthComputable) {
-										//	var percentComplete = evt.loaded / evt.total;
-										//	console.log(percentComplete);
-										//	bar.find(".number").html(parseInt(percentComplete * 100));
-										//	bar.css({
-										//		width: percentComplete * 100 + '%'
-										//	});
-										//}
-									}, false);
-									xhr.addEventListener("progress", function (evt) {
-										//if (evt.lengthComputable) {
-										//	var percentComplete = evt.loaded / evt.total;
-										//	console.log(percentComplete);
-										//	bar.find(".number").html(parseInt(percentComplete * 100));
-										//	bar.css({
-										//		width: percentComplete * 100 + '%'
-										//	});
-										//}
-									}, false);
-									return xhr;
-								},
 								url: url,
 								type: 'POST',
 								data: formData,
 								success: function (data) {
 									current_job_id = data;
                                     check_process();
+									
+									// return to 0
+									bar_s.find(".number").html(parseInt(0));
+									bar_s.css({
+										width: 0 + '%'
+									});
+									bar_e.find(".number").html(parseInt(0));
+									bar_e.css({
+										width: 0 + '%'
+									});
 									
 									if(data == 'max_file_upload') {
 										// Success alert
