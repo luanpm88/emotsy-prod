@@ -63,7 +63,7 @@ class AmazonSmtpTransport extends \Swift_SmtpTransport
     {
         $messageId = null;
         foreach ($this->rawResponses as $e) {
-            preg_match('/(?<=250 ok\s).*/i', $e, $matched);
+            preg_match('/(?<=250 ok\s)[^\s]*/i', $e, $matched);
             if (sizeof($matched) > 0) {
                 $messageId = $matched[0];
             }
