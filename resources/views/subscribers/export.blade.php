@@ -91,7 +91,7 @@
 									var error = parseFloat($("<div>").html(data.message).find(".error").html());
 									current_job_id = data.id;
 									
-									if(total) {
+									if(total && !first) {
 										form.find(".processing label").html(data.message);
 										bar.find(".number").html(Math.round(success/total*100));
 										bar.css({
@@ -128,7 +128,13 @@
 										form.find('.before').addClass("hide");
                                     }
 									
-									if (data.status == "finished" && typeof(first) == 'undefined') {
+									if (data.status == "finished" && typeof(first) == 'undefined') {										
+										form.find('.upload_file .progress-bar').addClass('success');										
+										form.find(".before").addClass('hide');
+										form.find(".processing").removeClass('hide');
+										form.find('.finish').removeClass('hide');										
+										form.find(".processing h4").html('{{ trans('messages.export_completed') }}');
+										
 										if(!form.find('.finish').hasClass('hide')) {
 											// Success alert
 											swal({
@@ -140,13 +146,6 @@
 												confirmButtonText: LANG_OK,
 											});
 										}
-										form.find('.upload_file .progress-bar').addClass('success');
-										
-										form.find(".before").addClass('hide');
-										form.find(".processing").removeClass('hide');
-										form.find('.finish').removeClass('hide');
-										
-										form.find(".processing h4").html('{{ trans('messages.export_completed') }}');										
 									}
 								}
 							})

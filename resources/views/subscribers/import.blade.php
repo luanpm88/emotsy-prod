@@ -135,7 +135,13 @@
 										form.find('.before').addClass("hide");
                                     }
 									
-									if (data.status == "finished" && typeof(first) == 'undefined') {
+									if (data.status == "finished" && typeof(first) == 'undefined') {										
+										form.find('.upload_file .progress-bar').addClass('success');										
+										form.find(".before").addClass('hide');
+										form.find(".processing").removeClass('hide');
+										form.find('.finish').removeClass('hide');										
+										form.find(".processing h4").html('{{ trans('messages.import_completed') }}');
+										
 										if(!form.find('.finish').hasClass('hide')) {
 											// Success alert
 											swal({
@@ -147,13 +153,6 @@
 												confirmButtonText: LANG_OK,
 											});
 										}
-										form.find('.upload_file .progress-bar').addClass('success');
-										
-										form.find(".before").addClass('hide');
-										form.find(".processing").removeClass('hide');
-										form.find('.finish').removeClass('hide');
-										
-										form.find(".processing h4").html('{{ trans('messages.import_completed') }}');										
 									}
 								}
 							})
