@@ -1,7 +1,6 @@
 2.0.4-p24 / 2016-10-28
 ==================
  
- * Changed: PHP 5.5.x is no longer supported. Minimum PHP version is 5.6
  * Fixed: subscriber import does not work well with async
  * Fixed: runtime-message-id with extra invisible space
  * Fixed: directory permission checking error
