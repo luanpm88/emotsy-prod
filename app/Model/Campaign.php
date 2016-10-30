@@ -870,12 +870,15 @@ class Campaign extends Model
         }
         
         $query = $query->select("subscribers.*");
-        $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id');
         
         // Filter
         $filters = isset($params["filters"]) ? $params["filters"] : null;
-        if(isset($filters)) {
-            
+        
+        if(isset($filters) || $this->status == "done") {
+            $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id');
+        }
+        
+        if(isset($filters)) {            
             if(isset($filters["open"])) {
                 $equal = ($filters["open"] == "opened") ? "!=" : "=";                
                 $query = $query->leftJoin('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
