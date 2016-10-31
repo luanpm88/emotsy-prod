@@ -49,7 +49,7 @@ rm -fr public/thumb
 rm -fr build.sh
 rm -fr push.sh
 rm -fr public/upload/templates/*
-rm bootstrap/cache/config.php
+rm -fr bootstrap/cache/config.php
 
 # run artisan
 php artisan config:cache
