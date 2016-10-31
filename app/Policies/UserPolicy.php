@@ -36,7 +36,7 @@ class UserPolicy
     {
         $ability = $user->getOption('backend', 'user_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->id);
+                || ($ability == 'own' && $user->id == $item->user_id);
 
         return $can;
     }
