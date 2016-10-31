@@ -1,5 +1,25 @@
 <?php
 
+/**
+ * SystemJob class.
+ *
+ * Model class for tracking system jobs.
+ *
+ * LICENSE: This product includes software developed at
+ * the Acelle Co., Ltd. (http://acellemail.com/).
+ *
+ * @category   MVC Model
+ *
+ * @author     N. Pham <n.pham@acellemail.com>
+ * @author     L. Pham <l.pham@acellemail.com>
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
+ *
+ * @version    1.0
+ *
+ * @link       http://acellemail.com
+ */
+
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
@@ -7,16 +27,53 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 
 class SystemJob extends Model
 {
-    use DispatchesJobs;
-    
+    // status
+    const STATUS_NEW = 'new';
+    const STATUS_RUNNING = 'running';
+    const STATUS_DONE = 'done';
+    const STATUS_FAILED = 'failed';
+
     /**
      * The attributes that are mass assignable.
      *
      * @var array
      */
     protected $fillable = [
-        'user_id', 'type', 'item_id', 'percent', 'status'
+        'name', 'status'
     ];
+
+    /**
+     * Set job as started.
+     *
+     * @var array
+     */
+    public function setStarted() {
+        $this->status = self::STATUS_RUNNING;
+        $this->start_at = \Carbon\Carbon::now();
+        $this->save();
+    }
+
+    /**
+     * Set job as finished.
+     *
+     * @var array
+     */
+    public function setDone() {
+        $this->status = self::STATUS_DONE;
+        $this->end_at = \Carbon\Carbon::now();
+        $this->save();
+    }
+
+    /**
+     * Set job as finished.
+     *
+     * @var array
+     */
+    public function setFailed() {
+        $this->status = self::STATUS_FAILED;
+        $this->end_at = \Carbon\Carbon::now();
+        $this->save();
+    }
     
     /**
      * Items per page.

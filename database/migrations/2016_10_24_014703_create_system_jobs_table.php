@@ -14,18 +14,13 @@ class CreateSystemJobsTable extends Migration
     {
         Schema::create('system_jobs', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
-            $table->string('type');
-            $table->uuid('item_id');
-            $table->integer('percent');
+            $table->string('name');
             $table->string('status');
-            $table->text('message');
-            $table->boolean('current')->default(false);     
+            $table->text('data');
+            $table->dateTime('start_at')->nullable();
+            $table->dateTime('end_at')->nullable();
             
             $table->timestamps();
-            
-            // foreign
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

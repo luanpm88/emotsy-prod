@@ -7,6 +7,8 @@ use Acelle\Library\Log;
 use Acelle\Model\Campaign;
 use Acelle\Model\TrackingLog;
 use Acelle\Model\SendingServer;
+use Acelle\Model\SendingServerElasticEmailApi;
+use Acelle\Model\SendingServerElasticEmail;
 
 class TestCampaign extends Command
 {
@@ -39,6 +41,10 @@ class TestCampaign extends Command
      */
     public function handle()
     {
-        // 
+        $job = new \Acelle\Jobs\SendCampaignJob();
+        //$systemJob = $job->getSystemJob();
+
+        dispatch($job);
+
     }
 }
