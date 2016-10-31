@@ -158,6 +158,7 @@ return [
         Acelle\Providers\AuthServiceProvider::class,
         Acelle\Providers\EventServiceProvider::class,
         Acelle\Providers\RouteServiceProvider::class,
+        Acelle\Providers\JobServiceProvider::class,
 
     ],
 

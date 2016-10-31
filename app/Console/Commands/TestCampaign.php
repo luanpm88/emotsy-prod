@@ -41,7 +41,7 @@ class TestCampaign extends Command
      */
     public function handle()
     {
-        $job = new \Acelle\Jobs\SendCampaignJob();
+        $job = new \Acelle\Jobs\ImportSubscribersJob();
         //$systemJob = $job->getSystemJob();
 
         dispatch($job);
