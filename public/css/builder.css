@@ -21,6 +21,7 @@ editor {
     padding: 10px;
     display: none;
     border-right: solid 2px #ccc;
+    left: 0;
 }
 editor iframe {
     
