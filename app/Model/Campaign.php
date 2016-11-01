@@ -484,7 +484,8 @@ class Campaign extends Model
         // * tagMessage
 
         // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
-        $body = $this->inlineHtml();
+        $body = $this->html;
+        
         if ($this->track_click) {
             $body = $this->addTrackingUrl($body, $msgId);
         }
@@ -492,8 +493,10 @@ class Campaign extends Model
         if ($this->track_open) {
             $body = $this->appendOpenTrackingUrl($body, $msgId);
         }
-        
+
         $body = $this->tagMessage($body, $subscriber, $msgId);
+
+        $body = $this->inlineHtml($body);
 
         return $body;
     }
@@ -709,12 +712,12 @@ class Campaign extends Model
     public function getUrls()
     {
         // Find all links in campaign content
-        preg_match_all('/(?<=href=)(\'|")?(?<url>.*?)(?=\1|\))/i', $this->html, $matches);
+        preg_match_all('/<a[^>]*href=["\'](?<url>[^"\']*)["\']/i', $this->html, $matches);
         $hrefs = array_unique($matches['url']);
 
         $urls = [];
         foreach ($hrefs as $href) {
-            if (preg_match('/^http/i', $href)) {
+            if (preg_match('/^http/i', $href) && strpos($href, '{UNSUBSCRIBE_URL}') === false) {
                 $urls[] = strtolower(trim($href));
             }
         }
@@ -1562,22 +1565,21 @@ class Campaign extends Model
      */
     public function addTrackingUrl($email_html_content, $msgId)
     {
-        if (preg_match_all('|<a.*(?=href=["\']([^"\']*)["\'])[^>]*>|i', $email_html_content, $matches)) {
-            foreach ($matches[0] as $i => $tag) {
-                $href = $matches[1][$i];
+        if (preg_match_all('/<a[^>]*href=["\'](?<url>[^"\']*)["\']/i', $email_html_content, $matches)) {
+            foreach ($matches['url'] as $href) {
                 $newHref = str_replace('URL', StringHelper::base64UrlEncode($href), Setting::get('url_click_track'));
                 $newHref = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $newHref);
-
                 // if the link contains UNSUBSCRIBE URL tag
                 if (strpos($href, '{UNSUBSCRIBE_URL}') !== false) {
-                    $newTag = preg_replace('/(?<=href=["\'])[^"\']*/', '{UNSUBSCRIBE_URL}', $tag);
+                    $email_html_content = str_replace($href, '{UNSUBSCRIBE_URL}', $email_html_content);
+                } else if (preg_match("/{[A-Z0-9_]+}/", $href)) {
+                    // just skip if the url contains a tag. For example: {UPDATE_PROFILE_URL}
+                    // @todo: do we track these clicks?
                 } else {
-                    $newTag = preg_replace('/(?<=href=["\'])[^"\']*/', $newHref, $tag);
+                    $email_html_content = str_replace($href, $newHref, $email_html_content);
                 }
-                $email_html_content = str_replace($tag, $newTag, $email_html_content);
             }
         }
-
         return $email_html_content;
     }
 
@@ -1611,10 +1613,11 @@ class Campaign extends Model
     
     /**
      * Convert html to inline.
+     * @todo not very OOP here, consider moving this to a Helper instead
+     *
      */
-    public function inlineHtml()
+    public function inlineHtml($html)
     {
-        $html = $this->html;
         // Convert to inline css if template source is builder
         if ($this->template_source == 'builder') {
             $cssToInlineStyles = new CssToInlineStyles();
