@@ -384,6 +384,12 @@ class InstallController extends Controller
             ],
             [
                 'type' => 'requirement',
+                'name' => 'Mysqli Extension',
+                'check' => function_exists('mysqli_connect'),
+                'note' => 'Mysqli Extension is required.',
+            ],
+            [
+                'type' => 'requirement',
                 'name' => 'OpenSSL Extension',
                 'check' => extension_loaded('openssl'),
                 'note' => 'OpenSSL PHP Extension is required.',

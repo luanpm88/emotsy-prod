@@ -67,7 +67,7 @@
 														<div class="progress-bar progress-bar-info" style="width: {{ $item->deliveredRate() }}%">
 														</div>
 													</div>
-													<span class="text-semibold">{{ $item->deliveredCount() }} / {{ $item->trackingCount() }}</span>
+													<span class="text-semibold">{{ $item->deliveredCount() }} / {{ $item->subscribers()->count() }}</span>
 													<br />
 													<span class="text-muted">{{ trans('messages.sent') }}</span>
 												</div>
@@ -80,9 +80,9 @@
 													<span class="text-muted">{{ trans('messages.open_rate') }}</span>
 												</div>
 												<div class="single-stat-box pull-left ml-20">
-													<span class="no-margin text-teal-800 stat-num">{{ $item->clickRate() }}%</span>
+													<span class="no-margin text-teal-800 stat-num">{{ $item->clickALinkRate() }}%</span>
 													<div class="progress progress-xxs">
-														<div class="progress-bar progress-bar-info" style="width: {{ $item->clickRate() }}%">
+														<div class="progress-bar progress-bar-info" style="width: {{ $item->clickALinkRate() }}%">
 														</div>
 													</div>
 													<span class="text-muted">{{ trans('messages.click_rate') }}</span>
