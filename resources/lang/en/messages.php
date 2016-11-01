@@ -1073,7 +1073,7 @@ return [
     'wait_for_import_queue' => 'File Uploaded. Starting import...',
     'unknown' => 'Unknown',
     'wait_for_export_queue' => 'Starting export...',
-    '' => '',
+    'starting' => 'Starting...',
     '' => '',
     '' => '',
     '' => '',

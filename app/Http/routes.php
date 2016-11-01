@@ -117,12 +117,14 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('lists/{list_uid}/subscribers/unsubscribe', 'SubscriberController@unsubscribe');
     Route::get('lists/{list_uid}/subscribers/import', 'SubscriberController@import');
     Route::post('lists/{list_uid}/subscribers/import', 'SubscriberController@import');
+    Route::get('lists/{list_uid}/subscribers/import/list', 'SubscriberController@importList');
     Route::get('lists/{list_uid}/subscribers/import/log', 'SubscriberController@downloadImportLog');
     Route::get('lists/{list_uid}/subscribers/import/proccess', 'SubscriberController@importProccess');
     Route::get('lists/{list_uid}/subscribers/export', 'SubscriberController@export');
     Route::post('lists/{list_uid}/subscribers/export', 'SubscriberController@export');
     Route::get('lists/{list_uid}/subscribers/export/proccess', 'SubscriberController@exportProccess');
     Route::get('lists/{list_uid}/subscribers/export/download', 'SubscriberController@downloadExportedCsv');
+    Route::get('lists/{list_uid}/subscribers/export/list', 'SubscriberController@exportList');
 
     // Notification handler
     Route::post('delivery/notify/{stype}', 'DeliveryController@notify');

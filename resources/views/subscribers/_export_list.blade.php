@@ -1,15 +1,15 @@
-                        @if ($system_jobs->count() > 0)
+                            @if ($system_jobs->count() > 0)
 							<table class="table table-box pml-table"
                                 current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
                             >
 								@foreach ($system_jobs as $key => $item)
 									<tr>
 										<td width="1%">
-											<i class="icon-upload4 icon-list-big"></i>
+											<i class="icon-download4 icon-list-big"></i>
 										</td>
 										<td>
 											<h5 class="no-margin text-bold">
-												{{ trans('messages.' . $item->type) }}
+												{{ trans('messages.export_subscribers') }}
 											</h5>
 											
 											<span class=""><i class="icon-alarm"></i> {{ $item->runTime() }}</span>
@@ -23,19 +23,14 @@
 											
 										</td>
 										<td>
-											<h5 class="no-margin text-bold">
-												{{ $item->mailList()->name }}
-											</h5>
-											<span class="text-muted">{{ trans('messages.list') }}</span>									
-										</td>
-										<td>
 											<div class="single-stat-box">
-												<span class="no-margin text-teal-800 stat-num">{{ $item->percent }}%</span>
+                                                <?php $data = json_decode($item->data); ?>
+												<span class="no-margin text-teal-800 stat-num">{{ $data->percent }}%</span>
 												<div class="progress progress-xxs">
-													<div class="progress-bar progress-bar-info" style="width: {{ $item->percent }}%">
+													<div class="progress-bar progress-bar-info" style="width: {{ $data->percent }}%">
 													</div>
 												</div>
-												<span class="no-margin">{!! $item->message !!}</span>
+												<span class="no-margin">{!! $data->message !!}</span>
 											</div>
 											<br style="clear:both" />
 										</td>
@@ -45,7 +40,7 @@
 											</span>
 										</td>
 										<td class="text-right text-nowrap">
-											@if (\Gate::allows('downloadCsv', $item))
+											@if (\Gate::allows('downloadExportCsv', $item))
 												<a target="_blank" href="{{ action('SystemJobController@downloadCsv', $item->id) }}" type="button" class="btn bg-teal">
 													<i class="icon-download mr-5"></i> {{ trans('messages.download_csv') }}
 												</a>

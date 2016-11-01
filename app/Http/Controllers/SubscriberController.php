@@ -331,56 +331,21 @@ class SubscriberController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         
-        $system_jobs = $request->user()->systemJobs()->where("type", "=", "import-subscriber");
-        
-        // New job
-        $system_job = new \Acelle\Model\SystemJob([
-            'user_id' => $request->user()->id,
-            'type' => 'import-subscriber',
-            'item_id' => $list->uid,
-            'percent' => 0,
-            'status' => 'starting',
-        ]);
-        
+        $system_jobs = $list->importJobs();
+ 
         // authorize
-        if (\Gate::denies('importSubscriber', $system_job)) {
+        if (\Gate::denies('update', $list)) {
             return $this->notAuthorized();
         }
         
         if ($request->isMethod('post')) {
-            if ($request->hasFile('file')) {
-                $upload_path = storage_path('job/');
-    
-                // mkdir if not exist
-                if (!file_exists($upload_path)) {
-                    $oldmask = umask(0);
-                    mkdir($upload_path, 0775, true);
-                    umask($oldmask);
-                }
-                
-                // Save new job
-                $system_job->save();
-                
-                // mkdir if not exist
-                $upload_path = $upload_path.$system_job->id."/";                
-                if (!file_exists($upload_path)) {
-                    $oldmask = umask(0);
-                    \Acelle\Library\Tool::xdelete($upload_path);
-                    mkdir($upload_path, 0775, true);
-                    umask($oldmask);
-                }
-                
-                // Upload csv
-                $filename = 'data.csv';
-                $request->file('file')->move($upload_path, $filename);
-                
+            if ($request->hasFile('file')) {                
                 // Start system job
-                $system_job->start();
+                $job = new \Acelle\Jobs\ImportSubscribersJob($list, $request->user(), $request->file('file'));
+                $this->dispatch($job);
                 
                 // Action Log
-                $list->log('import_started', $request->user());
-                
-                echo $system_job->id;
+                $list->log('import_started', $request->user());                
             } else {
                 echo "max_file_upload";
             }
@@ -401,15 +366,23 @@ class SubscriberController extends Controller
      */
     public function importProccess(Request $request)
     {
-        $system_job = \Acelle\Model\MailList::findByUid($request->current_list_uid)
-            ->getLastImportJob();
+        $list = \Acelle\Model\MailList::findByUid($request->current_list_uid);
+        $system_job = $list->getLastImportJob();
+        
+        if(!is_object($system_job)) {
+            return "none";
+        }
         
         // authorize
-        if (\Gate::denies('importSubscriber', $system_job)) {
+        if (\Gate::denies('update', $list)) {
             return $this->notAuthorized();
         }
         
-        return response()->json($system_job);
+        return response()->json([
+            "job" => $system_job,
+            "data" => json_decode($system_job->data),
+            "timer" => $system_job->runTime(),
+        ]);
     }
     
     /**
@@ -426,6 +399,24 @@ class SubscriberController extends Controller
 
         return response()->download(storage_path('job/'.$system_job->id.'/detail.log'));
     }
+    
+    /**
+     * Display a listing of subscriber import job.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function importList(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $system_jobs = $list->importJobs();
+        $system_jobs = $system_jobs->orderBy($request->sort_order, $request->sort_direction);
+        $system_jobs = $system_jobs->paginate($request->per_page);
+
+        return view('subscribers._import_list', [
+            'system_jobs' => $system_jobs,
+            'list' => $list
+        ]);
+    }
 
     /**
      * Export to csv.
@@ -438,50 +429,21 @@ class SubscriberController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         
-        $system_jobs = $request->user()->systemJobs()->where("type", "=", "export-subscriber");
-        
-        // new system job
-        $system_job = new \Acelle\Model\SystemJob([
-            'user_id' => $request->user()->id,
-            'type' => 'export-subscriber',
-            'item_id' => $list->uid,
-            'percent' => 0,
-            'status' => 'starting',
-        ]);
+        $system_jobs = $list->exportJobs();
 
         // authorize
-        if (\Gate::denies('exportSubscriber', $system_job)) {
+        if (\Gate::denies('update', $list)) {
             return $this->notAuthorized();
         }
 
         if ($request->isMethod('post')) {
-            $upload_path = storage_path('job/');
-
-            // mkdir if not exist
-            if (!file_exists($upload_path)) {
-                $oldmask = umask(0);
-                mkdir($upload_path, 0775, true);
-                umask($oldmask);
-            }
-            
-            // Save new job
-            $system_job->save();
-            
-            // mkdir if not exist
-            \Acelle\Library\Tool::xdelete($upload_path.$system_job->id."/");
-            if (!file_exists($upload_path.$system_job->id."/")) {
-                $oldmask = umask(0);
-                mkdir($upload_path.$system_job->id."/", 0775, true);
-                umask($oldmask);
-            }
-            
+                        
             // Start system job
-            $system_job->start();
+            $job = new \Acelle\Jobs\ExportSubscribersJob($list, $request->user());
+            $this->dispatch($job);
             
             // Action Log
             $list->log('export_started', $request->user());
-            
-            echo $system_job->id;
         } else {
             return view('subscribers.export', [
                 'list' => $list,
@@ -499,15 +461,23 @@ class SubscriberController extends Controller
      */
     public function exportProccess(Request $request)
     {
-        $system_job = \Acelle\Model\MailList::findByUid($request->current_list_uid)
-            ->getLastExportJob();
+        $list = \Acelle\Model\MailList::findByUid($request->current_list_uid);
+        $system_job = $list->getLastExportJob();
+        
+        if(!is_object($system_job)) {
+            return "none";
+        }
         
         // authorize
-        if (\Gate::denies('exportSubscriber', $system_job)) {
+        if (\Gate::denies('update', $list)) {
             return $this->notAuthorized();
         }
         
-        return response()->json($system_job);
+        return response()->json([
+            "job" => $system_job,
+            "data" => json_decode($system_job->data),
+            "timer" => $system_job->runTime(),
+        ]);
     }
 
     /**
@@ -523,6 +493,24 @@ class SubscriberController extends Controller
             ->getLastExportJob();
 
         return response()->download(storage_path('job/'.$system_job->id.'/data.csv'));
+    }
+    
+    /**
+     * Display a listing of subscriber import job.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function exportList(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $system_jobs = $list->exportJobs();
+        $system_jobs = $system_jobs->orderBy($request->sort_order, $request->sort_direction);
+        $system_jobs = $system_jobs->paginate($request->per_page);
+
+        return view('subscribers._export_list', [
+            'system_jobs' => $system_jobs,
+            'list' => $list
+        ]);
     }
 
     /**

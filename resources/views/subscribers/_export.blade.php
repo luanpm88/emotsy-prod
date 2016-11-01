@@ -1,8 +1,8 @@
             <hr>
 			<h2 class="text-bold text-teal-800"><i class="icon-task"></i> {{ trans('messages.recent_export') }}</h2>
 			<form class="listing-form"
-				data-url="{{ action('SystemJobController@listing', ["type" => "export-subscriber"]) }}"
-				per-page="{{ Acelle\Model\SystemJob::$itemsPerPage }}"					
+				data-url="{{ action('SubscriberController@exportList', ["list_uid" => $list->uid]) }}"
+				per-page="10"					
 			>				
 				<div class="row top-list-controls">
 					<div class="col-md-10">

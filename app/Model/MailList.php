@@ -612,27 +612,47 @@ class MailList extends Model
     }
     
     /**
-     * Get last import job.
+     * Get import jobs.
+     *
+     * @return number
+     */
+    public function importJobs()
+    {
+        return \Acelle\Model\SystemJob::where("name","=","Acelle\Jobs\ImportSubscribersJob")
+            ->where("data","like", "%\"mail_list_uid\":\"" . $this->uid . "\"%");            
+    }
+    
+    /**
+     * Get last export job.
      *
      * @return number
      */
     public function getLastImportJob()
     {
-        return \Acelle\Model\SystemJob::where("type","=","import-subscriber")
-            ->where("item_id","=",$this->uid)
+        return $this->importJobs()
             ->orderBy("created_at","DESC")
             ->first();
     }
     
     /**
-     * Get last import job.
+     * Get export jobs.
+     *
+     * @return number
+     */
+    public function exportJobs()
+    {
+        return \Acelle\Model\SystemJob::where("name","=","Acelle\Jobs\ExportSubscribersJob")
+            ->where("data","like", "%\"mail_list_uid\":\"" . $this->uid . "\"%");            
+    }
+    
+    /**
+     * Get last export job.
      *
      * @return number
      */
     public function getLastExportJob()
     {
-        return \Acelle\Model\SystemJob::where("type","=","export-subscriber")
-            ->where("item_id","=",$this->uid)
+        return $this->exportJobs()
             ->orderBy("created_at","DESC")
             ->first();
     }

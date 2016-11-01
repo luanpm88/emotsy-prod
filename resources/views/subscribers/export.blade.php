@@ -44,8 +44,8 @@
 										<span class="sr-only"><span class="number">20</span>% Complete</span>
 									</div>-->
 
-									<div class="progress-bar progress-error progress-bar-danger" style="width: 30%">
-										<span><span class="number">30</span>% {{ trans('messages.error') }}</span>
+									<div class="progress-bar progress-error progress-bar-danger" style="width: 0%">
+										<span><span class="number">0</span>% {{ trans('messages.error') }}</span>
 									</div>
 
                                     <div class="progress-bar progress-total active" style="width: 0%">
@@ -58,7 +58,7 @@
 								
 							<div class="form-group finish hide">
                                 <div class="text-left">
-                                    <a target="_blank" href="{{ action('SubscriberController@downloadExportedCsv', ["list_uid" => $list->uid]) }}" type="button" class="btn bg-teal finish hide">
+                                    <a target="_blank" href="{{ action('SubscriberController@downloadExportedCsv', ["list_uid" => $list->uid]) }}" type="button" class="btn bg-teal success">
                                         <i class="icon-download"></i> {{ trans('messages.download_export') }}
                                     </a>
                                     <a href="#retry" class="btn bg-grey-600 mr-10 retry"><i class="icon-reload-alt"></i> {{ trans('messages.retry') }}</a>
@@ -70,173 +70,158 @@
                     </div>
                 </div>
                       
-					<script>
-						var current_list_uid = '{{ $list->uid }}';
+				<script>
+					var current_list_uid = '{{ $list->uid }}';
+					
+					function check_process(first) {
+						var form = $("form.ajax_upload_form")
+						var url = form.attr("process-url")
+						var bar = form.find('.progress-total');
+						var bar_s = form.find('.progress-success');
+						var bar_e = form.find('.progress-error');
 						
-						function check_process(first) {
-							var form = $("form.ajax_upload_form")
-							var url = form.attr("process-url")
-							var bar = form.find('.progress-total');
-							var bar_s = form.find('.progress-success');
-							var bar_e = form.find('.progress-error');
-							
-                            $.ajax({
-								url : url + "?&current_list_uid="+current_list_uid,
-								type: "GET",
-								success:function(data, textStatus, jqXHR)
-								{
+						$.ajax({
+							url : url + "?&current_list_uid="+current_list_uid,
+							type: "GET",
+							success:function(result, textStatus, jqXHR)
+							{
+								if(result != "none") {
 									// update progress bar
-									var total = parseFloat($("<div>").html(data.message).find(".total").html());
-									var success = parseFloat($("<div>").html(data.message).find(".success").html());
-									var error = parseFloat($("<div>").html(data.message).find(".error").html());
-									current_job_id = data.id;
+									var total = parseFloat(result.data.total);
+									var success = parseFloat(result.data.success);
+									var error = parseFloat(result.data.error);
 									
-									if(total && !first) {
-										form.find(".processing label").html(data.message);
+									if (typeof(first) == "undefined") {									
+										form.find(".processing label").html(result.data.message);
 										bar.find(".number").html(Math.round(success/total*100));
 										bar.css({
 											width: (success/total*100) + '%'
-										});
-	
+										});	
 										bar_e.find(".number").html(Math.round(error/total*100));
 										bar_e.css({
 											width: (error/total*100) + '%'
 										});
-									} else {									
-										$(".processing label").html("{{ trans('messages.wait_for_export_queue') }}");
 										
-										// return to 0
-										bar_s.find(".number").html(parseInt(0));
-										bar_s.css({
-											width: 0 + '%'
-										});
-										bar_e.find(".number").html(parseInt(0));
-										bar_e.css({
-											width: 0 + '%'
-										});
+										if (result.job.status == "failed") {
+											form.find('.finish').removeClass("hide");
+											form.find('.before').addClass("hide");
+											form.find(".processing").removeClass('hide');
+											form.find('.success').addClass("hide");
+										}
+										
+										if (result.job.status == "done") {
+											form.find('.upload_file .progress-bar').addClass('success');										
+											form.find(".before").addClass('hide');
+											form.find(".processing").removeClass('hide');
+											form.find('.finish').removeClass('hide');
+											form.find('.success').removeClass("hide");
+											
+											form.find(".processing h4").html('{{ trans('messages.export_completed') }}');
+											
+											if(!form.find('.finish').hasClass('hide')) {
+												// Success alert
+												swal({
+													title: '{{ trans('messages.export_completed') }}',
+													text: "",
+													confirmButtonColor: "#00695C",
+													type: "success",
+													allowOutsideClick: true,
+													confirmButtonText: LANG_OK,
+												});
+											}
+											
+											
+										}
 									}
 									
-									if (data.status == "running" || data.status == 'starting') {
-                                        setTimeout("check_process()", 1000);
+									if (result.job.status == "running" || result.job.status == "new") {
+										setTimeout("check_process()", 1000);
 										form.find(".before").addClass('hide');
 										form.find(".processing").removeClass('hide');
 										form.find('.finish').addClass('hide');
-                                    }
-									
-									if (data.status == "error" ) {
-										form.find('.finish').removeClass("hide");
-										form.find('.before').addClass("hide");
-                                    }
-									
-									if (data.status == "finished" && typeof(first) == 'undefined') {										
-										form.find('.upload_file .progress-bar').addClass('success');										
-										form.find(".before").addClass('hide');
-										form.find(".processing").removeClass('hide');
-										form.find('.finish').removeClass('hide');										
-										form.find(".processing h4").html('{{ trans('messages.export_completed') }}');
-										
-										if(!form.find('.finish').hasClass('hide')) {
-											// Success alert
-											swal({
-												title: '{{ trans('messages.export_completed') }}',
-												text: "",
-												confirmButtonColor: "#00695C",
-												type: "success",
-												allowOutsideClick: true,
-												confirmButtonText: LANG_OK,
-											});
-										}
 									}
 								}
-							})
-                        }						
-						
-						var current_job_id;
-						$(document).on("submit", "form.ajax_upload_form", function() {
-							var form = $(this);
-                            setTimeout("check_process()", 2000);
-                            if(!form.valid()) {
-                                $("label.error").insertAfter(".uploader");
-                                return false;
-                            }
-                            
-							var formData = new FormData($(this)[0]);
-							var url = form.attr('action');
-							var bar = form.find('.progress-total');
-							var bar_s = form.find('.progress-success');
-							var bar_e = form.find('.progress-error');
-							
-							// return to 0
-							bar_s.find(".number").html(parseInt(0));
-							bar_s.css({
-								width: 0 + '%'
-							});
-							bar_e.find(".number").html(parseInt(0));
-							bar_e.css({
-								width: 0 + '%'
-							});
-							
-							form.find(".processing h4").html('{{ trans('messages.please_wait_export') }}');
-							
-                            $(".processing label").html("{{ trans('messages.uploading') }}");
-                            $(".before").addClass('hide');
-                            $(".processing").removeClass('hide');
-                            
-							$.ajax({
-								url: url,
-								type: 'POST',
-								data: formData,
-								success: function (data) {
-									current_job_id = data;
-                                    check_process();
-									
-									// return to 0
-									bar_s.find(".number").html(parseInt(0));
-									bar_s.css({
-										width: 0 + '%'
-									});
-									bar_e.find(".number").html(parseInt(0));
-									bar_e.css({
-										width: 0 + '%'
-									});
-									
-									if(data == 'max_file_upload') {
-										// Success alert
-										swal({
-											title: '{{ trans('messages.file_import_to_large') }}',
-											text: "",
-											confirmButtonColor: "#00695C",
-											type: "error",
-											allowOutsideClick: true,
-											confirmButtonText: LANG_OK,
-										});
-										
-										form.find('.retry').trigger('click');
-										return;
-									}
-								},
-								cache: false,
-								contentType: false,
-								processData: false
-							});
-							
+							}
+						})
+					}						
+					
+					$(document).on("submit", "form.ajax_upload_form", function() {
+						var form = $(this);
+						setTimeout("check_process()", 2000);
+						if(!form.valid()) {
+							$("label.error").insertAfter(".uploader");
 							return false;
+						}
+						
+						var formData = new FormData($(this)[0]);
+						var url = form.attr('action');
+						var bar = form.find('.progress-total');
+						var bar_s = form.find('.progress-success');
+						var bar_e = form.find('.progress-error');
+						
+						// return to 0
+						bar_s.find(".number").html(parseInt(0));
+						bar_s.css({
+							width: 0 + '%'
 						});
-						$(document).on("click", ".retry", function() {
-							$(".input[type=file]").val("");
-							$(".finish").addClass('hide');
-                            $(".processing").addClass('hide');
-							$(".before").removeClass('hide');
-							var bars = $(".progress-bar");
-							bars.find(".number").html(parseInt(0));
-							bars.css({
-								width: 0 + '%'
-							});
+						bar_e.find(".number").html(parseInt(0));
+						bar_e.css({
+							width: 0 + '%'
 						});
 						
-						$(document).ready(function() {
-							check_process(true);
+						form.find(".processing h4").html('{{ trans('messages.please_wait_export') }}');
+						
+						$(".processing label").html("{{ trans('messages.uploading') }}");
+						$(".before").addClass('hide');
+						$(".processing").removeClass('hide');
+						
+						$.ajax({								
+							url: url,
+							type: 'POST',
+							data: formData,
+							success: function (data) {
+								check_process();
+								
+								if(data == 'max_file_upload') {
+									// Success alert
+									swal({
+										title: '{{ trans('messages.file_import_to_large') }}',
+										text: "",
+										confirmButtonColor: "#00695C",
+										type: "error",
+										allowOutsideClick: true,
+										confirmButtonText: LANG_OK,
+									});
+									
+									form.find('.retry').trigger('click');
+									return;
+								}									
+							},
+							cache: false,
+							contentType: false,
+							processData: false
 						});
-					</script>
+						
+						return false;
+					});
+					
+					$(document).on("click", ".retry", function() {
+						$(".input[type=file]").val("");
+						$(".finish").addClass('hide');
+						$(".processing").addClass('hide');
+						$(".before").removeClass('hide');
+						var bars = $(".progress-bar");
+						bars.find(".number").html(parseInt(0));
+						bars.css({
+							width: 0 + '%'
+						});
+					});
+					
+					$(document).ready(function() {
+						check_process(true);
+					});
+				</script>
+					
+				@include("subscribers._export")
 			
 @endsection

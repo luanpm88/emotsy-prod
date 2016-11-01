@@ -44,7 +44,7 @@ class SystemJobController extends Controller
         $job = \Acelle\Model\SystemJob::find($request->id);
         
         // authorize
-        if (\Gate::denies('downloadLog', $job)) {
+        if (\Gate::denies('downloadImportLog', $job)) {
             return $this->notAuthorized();
         }
 
@@ -84,7 +84,7 @@ class SystemJobController extends Controller
         $job = \Acelle\Model\SystemJob::find($request->id);
         
         // authorize
-        if (\Gate::denies('downloadCsv', $job)) {
+        if (\Gate::denies('downloadExportCsv', $job)) {
             return $this->notAuthorized();
         }
 
