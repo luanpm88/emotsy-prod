@@ -42,7 +42,7 @@ class MailList extends Model
      */
     public static $rules = array(
         'name' => 'required',
-        'from_email' => 'required',
+        'from_email' => 'required|email',
         'from_name' => 'required',
         //'remind_message' => 'required',
         'contact.company' => 'required',
