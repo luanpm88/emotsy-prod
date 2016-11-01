@@ -1,3 +1,9 @@
+2.0.4-p25 / 2016-11-01
+==================
+
+ * Fixed: certain encoding may cause corrupt links
+ * Changed: default user policy change
+
 2.0.4-p24 / 2016-10-28
 ==================
  
