@@ -57,55 +57,19 @@ class RunCampaign extends Command
      */
     public function handle()
     {
-        // initialize the logging engine
-        Log::configure(storage_path().'/logs/mail.log');
+        //try {
+            // initialize the logging engine
+            Log::configure(storage_path().'/logs/mail.log');
+            
+            // Actually run the campaign
+            Campaign::run();
 
-        try {
-            $this->execRunCampaign();
-            Log::info('Campaigns finished!');
-        } catch (\Exception $e) {
-            Log::error('Something went wrong: '.$e->getMessage());
-        }
-    }
-    
-    /**
-     * Actually send the campaign.
-     *
-     */
-    private function execRunCampaign()
-    {
-        // guarantee that only one process can be run at one time
-        // use socket as lock
-        Log::info('Try to start campaigns...');
-        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-        if (false === $socket) {
-            throw new Exception("can't create socket: ".socket_last_error($socket));
-        }
+            $c = Campaign::where('status', Campaign::STATUS_READY)->orderBy('id', 'DESC')->whereRaw('(run_at IS NULL OR run_at <= NOW())')->limit(1)->first();
 
-        // hide warning, because error will be checked manually
-        if (false === @socket_bind($socket, '127.0.0.1', 60202)) {
-            // some other process is already running
-            Log::warning('Another campaign sending process is already running. Terminated!');
-            exit;
-        } else {
-            // just go ahead
-            Log::info('Started!');
-        }
+            var_dump($c);
 
-        $campaigns = Campaign::getWaitingCampaigns();
-
-        Log::info(sizeof($campaigns).' campaigns found');
-        $count = 1;
-        foreach ($campaigns as $campaign) {
-            Log::info('Starting campaign '.$campaign->name." ($count/".sizeof($campaigns).')');
-            // Only run one process if pcntl is not enabled
-            if (extension_loaded('pcntl')) {
-                $campaign->startMultiProcesses();
-            } else {
-                $campaign->start();
-            }
-            Log::info('Finish campaign '.$campaign->name);
-            $count += 1;
-        }
+        //} catch (\Exception $e) {
+        //    Log::error('Something went wrong: '.$e->getMessage());
+        //}
     }
 }

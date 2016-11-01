@@ -155,11 +155,56 @@ class Campaign extends Model
     }
 
     /**
-     * get pending campaigns.
+     * Reset max_execution_time so that command can run for a long time without being terminated
+     *
+     * @return mixed
      */
-    public static function getWaitingCampaigns()
+    public static function resetMaxExecutionTime() {
+        try {
+            set_time_limit(0);
+            ini_set('max_execution_time', 0);
+        } catch (\Exception $e) {
+            MailLog::warning('Cannot reset max_execution_time: '.$e->getMessage());
+        }
+    }
+
+    /**
+     * Get pending campaigns.
+     */
+    public static function run()
     {
-        return self::where('status', self::STATUS_READY)->whereRaw('(run_at IS NULL OR run_at <= NOW())')->get();
+        // Reset max_execution_time so that command can run for a long time without being terminated
+        self::resetMaxExecutionTime();
+        
+        // get the next campaign to process
+        $campaign = self::getNextCampaign();
+
+        if ($campaign) {
+            // mark the campaign as sending, prevent other processes from sending it again
+            $campaign->sending();
+
+            MailLog::info('Starting campaign `'.$campaign->name.'`');
+
+            // Only run multi-process if pcntl is enabled
+            if (extension_loaded('pcntl')) {
+                $campaign->startMultiProcesses();
+            } else {
+                MailLog::warning('Cannot fork processes');
+                $campaign->start();
+            }
+            MailLog::info('Finish campaign `'.$campaign->name.'`');
+        } else {
+            MailLog::info('No campaign found');
+        }
+    }
+
+    /**
+     * Get next pending campaign to run.
+     * 
+     */
+    public static function getNextCampaign()
+    {
+        return self::where('status', self::STATUS_READY)->orderBy('id', 'DESC')->whereRaw('(run_at IS NULL OR run_at <= NOW())')->limit(1)->first();
     }
 
     /**
@@ -168,7 +213,6 @@ class Campaign extends Model
     public function done()
     {
         $this->status = self::STATUS_DONE;
-        $this->delivery_at = \Carbon\Carbon::now();
         $this->save();
     }
 
@@ -178,6 +222,7 @@ class Campaign extends Model
     public function sending()
     {
         $this->status = self::STATUS_SENDING;
+        $this->delivery_at = \Carbon\Carbon::now();
         $this->save();
     }
 
@@ -241,44 +286,49 @@ class Campaign extends Model
      */
     public function startMultiProcesses()
     {
-        $this->sending();
-
-        MailLog::info("Starting campaign `{$this->name}` (ID: {$this->id})");
         $count = (int) $this->user->getOption('frontend', 'max_process');
         $subscribers = $this->getPendingSubscribers();
         MailLog::info(sizeof($subscribers).' subscriber(s) selected');
+        
+        // split the big subscribers list into smaller ones
+        // this is also the number of processes to fork
         $chunks = $this->getChunks($subscribers, $count);
 
         MailLog::info('Start multi-process ('.sizeof($chunks).') session');
         $parentPid = getmypid();
         for ($i = 0; $i < sizeof($chunks); ++$i) {
             $pid = pcntl_fork();
-
+            
+            // for child process only
             if (!$pid) {
                 // Reconnect to the DB to prevent connection closed issue when using fork
                 DB::reconnect('mysql');
+                
                 // Re-initialize logging to capture the child process' PID
                 MailLog::fork();
 
                 MailLog::info('Start child process '.($i + 1).' of '.sizeof($chunks).' (forked from '.$parentPid.')');
                 sleep(self::WORKER_DELAY);
-                $this->start($chunks[$i], true);
+                $this->start($chunks[$i]);
                 exit($i + 1);
             }
         }
-
+        
+        // wait for child processes to finish
         while (pcntl_waitpid(0, $status) != -1) {
             $status = pcntl_wexitstatus($status);
-            MailLog::info("Child $status completed\n");
+            MailLog::info("Child $status completed");
         }
-
+        
+        // after all child processes are done
         $this->refreshStatus();
-
+        
+        // if all child processes finish sucessfully, just mark campaign as done
+        // otherwise, mark campaign with error status (by child process)
         if ($this->status == self::STATUS_SENDING) {
             $this->done();
-            MailLog::info('Campaign sent!');
         } else {
-            MailLog::warning('Campaign sent, but some errors occurred!');
+            // leave the error reported by child process
         }
     }
 
@@ -286,14 +336,15 @@ class Campaign extends Model
      * Send Campaign
      * Iterate through all subscribers and send email.
      */
-    public function start($subscribers = null, $multi = false)
+    public function start($subscribers = NULL)
     {
+        // check if the method is trigger by a child process (triggered by startMultiProcess method)
+        $asChildProcess = !($subscribers == NULL);
+        
+        // try/catch to make sure child process does not stop without reporting any error
         try {
-            if (!$multi) {
-                $this->sending();
-                MailLog::info("Starting campaign `{$this->name}` (ID: {$this->id})");
+            if (!$asChildProcess) {
                 $subscribers = $this->getPendingSubscribers();
-                MailLog::info(sizeof($subscribers).' subscriber(s) selected');
             }
 
             $i = 0;
@@ -319,19 +370,19 @@ class Campaign extends Model
                 $this->trackMessage($sent, $subscriber, $server, $msgId);
             }
 
-            if (!$multi) {
+            // only mark campaign as done when running as its own process
+            // as a child process, just finish and leave the parent process to update campaign status
+            if (!$asChildProcess) {
                 $this->done();
-                MailLog::info('Campaign sent!');
             }
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
-            MailLog::error("Campaign `{$this->name}` (ID: ".$this->id.') deferred!');
             $this->error();
         } finally {
             // reset server pools: just in case DeliveryServerAmazonSesWebApi
             // --> setup SNS requires using from_email of the corresponding campaign
             // but SNS is only made once when the server is initiated
-            SendingServer::resetServerPools();
+            //     SendingServer::resetServerPools();
         }
     }
 
