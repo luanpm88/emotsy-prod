@@ -6,6 +6,7 @@ use Acelle\Jobs\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Acelle\Library\Log as MailLog;
 
 class CampaignJob extends SystemJob implements ShouldQueue
 {
@@ -18,17 +19,19 @@ class CampaignJob extends SystemJob implements ShouldQueue
      * 
      * @return void
      */
-    // public function __construct($datame)
-    // {
-    // }
+    public function __construct()
+    {
+        parent::__construct();
+    }
 
     /**
-     * Execute the job.
+     * Init the logger.
      *
      * @return void
      */
-    public function handle()
+    public function initLogger()
     {
-        
+        // initialize the logging engine
+        MailLog::configure(storage_path().'/logs/mail.log');
     }
 }

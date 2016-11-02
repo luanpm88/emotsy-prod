@@ -57,14 +57,7 @@ class RunCampaign extends Command
      */
     public function handle()
     {
-        try {
-            // initialize the logging engine
-            MailLog::configure(storage_path().'/logs/mail.log');
-            
-            // Actually run the campaign
-            Campaign::runNextCampaign();
-        } catch (\Exception $e) {
-            MailLog::error('Something went wrong: '.$e->getMessage());
-        }
+        // Actually run the campaign
+        Campaign::runNextCampaign();
     }
 }

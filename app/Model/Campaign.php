@@ -173,15 +173,26 @@ class Campaign extends Model
      */
     public static function runNextCampaign()
     {
-        // Reset max_execution_time so that command can run for a long time without being terminated
-        self::resetMaxExecutionTime();
-        
-        // get the next campaign to process
-        $campaign = self::getNextCampaign();
-        if ($campaign) {
-            $campaign->start();
-        } else {
-            MailLog::info('No campaign found');
+        try {
+            // initialize the logging engine
+            MailLog::configure(storage_path().'/logs/mail.log');
+
+            // Reset max_execution_time so that command can run for a long time without being terminated
+            self::resetMaxExecutionTime();
+            
+            // get the next campaign to process
+            $campaign = self::getNextCampaign();
+            
+            
+            if ($campaign) {
+                // queue the campaign for running
+                dispatch(new \Acelle\Jobs\RunCampaignJob($campaign));
+                MailLog::info('Campaign `'.$campaign->name.'` queued');
+            } else {
+                MailLog::info('No campaign found');
+            }
+        } catch (\Exception $e) {
+            MailLog::error('Something went wrong. '.$e->getMessage());
         }
     }
 

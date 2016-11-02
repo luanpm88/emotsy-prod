@@ -6,11 +6,14 @@ use Acelle\Jobs\Job;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Acelle\Library\Log as MailLog;
 
-class SendCampaignJob extends CampaignJob implements ShouldQueue
+class RunCampaignJob extends CampaignJob implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
-   
+    
+    protected $campaign;
+
     /**
      * Create a new job instance.
      * @note: Parent constructors are not called implicitly if the child class defines a constructor.
@@ -18,9 +21,11 @@ class SendCampaignJob extends CampaignJob implements ShouldQueue
      * 
      * @return void
      */
-    // public function __construct($datame)
-    // {
-    // }
+    public function __construct($campaign)
+    {
+        $this->campaign = $campaign;
+        parent::__construct();
+    }
 
     /**
      * Execute the job.
@@ -29,8 +34,10 @@ class SendCampaignJob extends CampaignJob implements ShouldQueue
      */
     public function handle()
     {
-        $myfile = fopen("/tmp/newfile.txt", "w") or die("Unable to open file!");
-        fwrite($myfile, "Those were the days\n");
-        fclose($myfile);
+        // initialize the logging engine
+        $this->initLogger();
+
+        // start campaign
+        $this->campaign->start();
     }
 }
