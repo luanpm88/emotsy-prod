@@ -215,4 +215,29 @@ class LanguageController extends Controller
         // Redirect to my lists page
         echo trans('messages.languages.deleted');
     }
+    
+    /**
+     * Translate.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function translate($id)
+    {
+        $language = \Acelle\Model\Language::findByUid($id);
+
+        // authorize
+        if (\Gate::denies('update', $language)) {
+            return $this->notAuthorized();
+        }
+        
+        $sentences = $language->getLocaleArrayFromFile("messages");
+        ksort($sentences);
+        
+        return view('admin.languages.translate', [
+            'language' => $language,
+            'sentences' => $sentences,
+        ]);
+    }
 }

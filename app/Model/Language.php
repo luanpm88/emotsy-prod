@@ -31,7 +31,7 @@ class Language extends Model
      *
      * @return string
      */
-    public function language_dir()
+    public function languageDir()
     {
         return base_path("resources/lang/" . $this->code . "/");
     }
@@ -147,7 +147,7 @@ class Language extends Model
         // After created
         static::created(function ($item) {
             // Create language folder if not exists            
-            $des = $item->language_dir();
+            $des = $item->languageDir();
             if (!file_exists($des)) {
                 $oldmask = umask(0);
                 mkdir($des, 0775, true);
@@ -161,7 +161,7 @@ class Language extends Model
         // After deleted
         static::deleted(function ($item) {
             // Create language folder if not exists            
-            $des = $item->language_dir();
+            $des = $item->languageDir();
             if (file_exists($des)) {
                 \Acelle\Library\Tool::xdelete($des);
             }
@@ -198,6 +198,17 @@ class Language extends Model
     public static function getDefaultLanguage()
     {
         return \Acelle\Model\Language::where("is_default", "=", true)->first();
+    }
+    
+    /**
+     * Get locale array from file.
+     *
+     * @var array
+     */
+    public function getLocaleArrayFromFile($filename)
+    {
+        $arr = \File::getRequire($this->languageDir() . $filename . '.php');
+        return $arr;
     }
     
     /**

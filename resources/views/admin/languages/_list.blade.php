@@ -30,6 +30,9 @@
 											@can("update", $item)
 												<a href="{{ action('Admin\LanguageController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 											@endcan
+											@can("update", $item)
+												<!--<a href="{{ action('Admin\LanguageController@translate', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.translate') }}" type="button" class="btn bg-teal btn-icon"><i class="icon-pencil"></i> {{ trans('messages.translate') }}</a>-->
+											@endcan
 											@can("delete", $item)
 												<div class="btn-group">										
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
