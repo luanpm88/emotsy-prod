@@ -28,12 +28,13 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use DB;
+use Carbon\Carbon;
 
 class Campaign extends Model
 {
     // Campaign status
     const STATUS_NEW = 'new';
-    const STATUS_READY = 'ready';
+    const STATUS_READY = 'ready'; // equiv. to 'queue'
     const STATUS_SENDING = 'sending';
     const STATUS_ERROR = 'error';
     const STATUS_DONE = 'done';
@@ -169,34 +170,6 @@ class Campaign extends Model
     }
 
     /**
-     * Get pending campaigns.
-     */
-    public static function runNextCampaign()
-    {
-        try {
-            // initialize the logging engine
-            MailLog::configure(storage_path().'/logs/mail.log');
-
-            // Reset max_execution_time so that command can run for a long time without being terminated
-            self::resetMaxExecutionTime();
-            
-            // get the next campaign to process
-            $campaign = self::getNextCampaign();
-            
-            
-            if ($campaign) {
-                // queue the campaign for running
-                dispatch(new \Acelle\Jobs\RunCampaignJob($campaign));
-                MailLog::info('Campaign `'.$campaign->name.'` queued');
-            } else {
-                MailLog::info('No campaign found');
-            }
-        } catch (\Exception $e) {
-            MailLog::error('Something went wrong. '.$e->getMessage());
-        }
-    }
-
-    /**
      * Start the campaign
      * 
      */
@@ -205,6 +178,9 @@ class Campaign extends Model
         try {
             $this->sending();
             MailLog::info('Starting campaign `'.$this->name.'`');
+
+            // Reset max_execution_time so that command can run for a long time without being terminated
+            self::resetMaxExecutionTime();
 
             // Only run multi-process if pcntl is enabled
             if (extension_loaded('pcntl')) {
@@ -221,15 +197,6 @@ class Campaign extends Model
             $this->error();
             MailLog::error('Campaign failed. '.$ex->getMessage());
         }
-    }
-
-    /**
-     * Get next pending campaign to run.
-     * 
-     */
-    public static function getNextCampaign()
-    {
-        return self::where('status', self::STATUS_READY)->orderBy('id', 'DESC')->whereRaw('(run_at IS NULL OR run_at <= NOW())')->limit(1)->first();
     }
 
     /**
@@ -252,6 +219,15 @@ class Campaign extends Model
     }
 
     /**
+     * Mark the campaign as 'ready' (which is equiv. to 'queued')
+     */
+    public function ready()
+    {
+        $this->status = self::STATUS_READY;
+        $this->save();
+    }
+
+    /**
      * Mark the campaign as 'done' or 'sent'.
      */
     public function error()
@@ -267,17 +243,6 @@ class Campaign extends Model
     {
         $me = self::find($this->id);
         $this->status = $me->status;
-        $this->save();
-    }
-    
-    /**
-     * Mark campaign as 'ready'.
-     *
-     * @return boolean
-     */
-    public function ready()
-    {
-        $this->status = self::STATUS_READY;
         $this->save();
     }
     
@@ -1742,5 +1707,28 @@ class Campaign extends Model
                 "message" => "error details"
             ];
         }
+    }
+
+    /**
+     * Get the delay time before sending
+     *
+     */
+    public function getDelayInSecond()
+    {
+        $this->run_at->diffInSeconds(Carbon::now());
+    }
+
+    /**
+     * Queue campaign for sending
+     *
+     */
+    public function queue()
+    {
+        $this->ready();
+
+        $job = new \Acelle\Jobs\RunCampaignJob($this);
+        $job->delay($this->getDelayInSecond());
+        
+        dispatch($job);
     }
 }
