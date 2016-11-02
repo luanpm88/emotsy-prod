@@ -109,14 +109,14 @@
 											width: (error/total*100) + '%'
 										});
 										
-										if (result.job.status == "failed" && typeof(first) == "undefined") {
+										if (result.data.status == "failed" && typeof(first) == "undefined") {
 											form.find('.finish').removeClass("hide");
 											form.find('.before').addClass("hide");
 											form.find(".processing").removeClass('hide');
 											form.find('.success').addClass("hide");
 										}
 										
-										if (result.job.status == "done" && typeof(first) == "undefined") {
+										if (result.data.status == "done" && typeof(first) == "undefined") {
 											form.find('.upload_file .progress-bar').addClass('success');										
 											form.find(".before").addClass('hide');
 											form.find(".processing").removeClass('hide');
@@ -139,7 +139,7 @@
 										}
 									}
 									
-									if (result.job.status == "running" || result.job.status == "new") {
+									if (result.data.status == "running" || result.data.status == "new") {
 										setTimeout("check_process()", 1000);
 										form.find(".before").addClass('hide');
 										form.find(".processing").removeClass('hide');

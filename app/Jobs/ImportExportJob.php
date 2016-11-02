@@ -32,7 +32,7 @@ class ImportExportJob extends SystemJob implements ShouldQueue
         // first init data
         $systemJob->data = json_encode([
             "mail_list_uid" => $mailList->uid,
-            "status" => "starting",
+            "status" => "new",
             "message" => trans('messages.starting'),
             "total" => 0,
             "success" => 0,
@@ -71,5 +71,14 @@ class ImportExportJob extends SystemJob implements ShouldQueue
     public function handle()
     {
         //
+    }
+    
+    /**
+     * Get job files path.
+     *
+     * @return void
+     */
+    public function getPath() {
+        return $this->path;
     }
 }

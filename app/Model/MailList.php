@@ -656,4 +656,260 @@ class MailList extends Model
             ->orderBy("created_at","DESC")
             ->first();
     }
+    
+    /**
+     * Import subscribers.
+     *
+     * @return void
+     */
+    public static function import($list, $user, $job)
+    {
+        // Info from job
+        $systemJob = $job->getSystemJob();        
+        $directory = $job->getPath();
+
+        // Import to database
+        $filename = 'data.csv';
+        $content = \File::get($directory.$filename);
+        $lines = preg_split('/\r\n|\r|\n/', $content); // explode("\n\r", $content);
+        $total = count($lines) - 1;
+        $success = 0;
+        $error = 0;
+        $lines_per_second = 1;
+        $headers = explode(',', $lines[0]);
+        $header_names = explode(',', $lines[0]);
+
+        // update header tags
+        foreach ($headers as $key => $tag) {
+            $tag = trim(strtoupper(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($tag)))));
+            $headers[$key] = $tag;
+            if ($tag == 'EMAIL') {
+                $main_index = $key;
+            }
+        }
+
+        // check valid file
+        if (!in_array('EMAIL', $headers)) {
+            $systemJob->data = json_encode([
+                "mail_list_uid" => $list->uid,
+                "user_id" => $user->id,
+                "status" => "failed",
+                "message" => "<span style='color:red'>".trans('messages.invalid_csv_file')."</span>",
+                "total" => $total,
+                "success" => $success,
+                "error" => $error,
+                "percent" => "0"
+            ]);
+            $systemJob->save();
+         
+            return;
+        }
+
+        $content_cache = '';
+        $count = '0';
+        foreach ($lines as $key => $line) {
+
+            // authorize
+            if ($user->cannot('create', new \Acelle\Model\Subscriber(['mail_list_id' => $list->id]))) {
+                $systemJob->data = json_encode([
+                    "mail_list_uid" => $list->uid,
+                    "user_id" => $user->id,
+                    "status" => "failed",
+                    "message" => "<span style='color:red'>".trans('messages.error_add_max_quota').'</span><br />'.$content_cache,
+                    "total" => $total,
+                    "success" => $success,
+                    "error" => $error,
+                    "percent" => $count
+                ]);
+                $systemJob->save();
+
+                // Action Log
+                $list->log('import_max_error', $user, ['count' => $count]);
+                
+                $error_detail = trans('messages.error_add_max_quota');
+                $myfile = file_put_contents($directory.'detail.log', $error_detail.PHP_EOL , FILE_APPEND | LOCK_EX);
+                
+                return;
+            }
+
+            if ($key > 0) {
+                $parts = explode(',', $line);
+                if(isset($parts[$main_index])) {
+                    $email = strtolower(trim(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($parts[$main_index])))));
+                } else {
+                    $email = "";
+                }
+
+                $valid = $list->checkExsitEmail($email);
+                if ($valid) {
+                    //// save subscribers
+                    $subscriber = new \Acelle\Model\Subscriber();
+                    $subscriber->mail_list_id = $list->id;
+                    $subscriber->email = $email;
+                    $subscriber->status = 'subscribed';
+                    $subscriber->user_id = $list->user_id;
+                    $subscriber->save();
+
+                    foreach ($parts as $key => $value) {
+                        $value = trim(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($value))));
+                        if(isset($headers[$key])) {
+                            $lf = $list->fields()->where('tag', '=', $headers[$key])->first();
+                            if (is_object($lf)) {
+                                //// save fields
+                                $lfv = new \Acelle\Model\SubscriberField(array(
+                                                'field_id' => $lf->id,
+                                                'subscriber_id' => $subscriber->id,
+                                                'value' => $value,
+                                            ));
+                                $lfv->save();
+                            }
+                        }
+                    }
+
+                    ++$success;
+                    $error_detail = trans('messages.email_imported', ['time' => \Carbon\Carbon::now()->timezone($user->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);                    
+                } else {
+                    ++$error;
+                    $error_detail = trans('messages.email_existed_invalid', ['time' => \Carbon\Carbon::now()->timezone($user->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);
+                }
+                if ($key % $lines_per_second == 0) {
+                    $content_cache = trans('messages.import_export_statistics_line', [
+                        'total' => $total,
+                        'processed' => $success + $error,
+                        'success' => $success,
+                        'error' => $error,
+                    ]);
+                    $count = round((($success + $error) / $total) * 100, 0);
+                    
+                    // update system job
+                    $systemJob->data = json_encode([
+                        "mail_list_uid" => $list->uid,
+                        "user_id" => $user->id,
+                        "status" => "running",
+                        "message" => $content_cache,
+                        "total" => $total,
+                        "success" => $success,
+                        "error" => $error,
+                        "percent" => $count
+                    ]);
+                    $systemJob->save();
+                    
+                    // Details
+                    $myfile = file_put_contents($directory.'detail.log', $error_detail.PHP_EOL , FILE_APPEND | LOCK_EX);
+                }
+            }
+        }
+
+        $content_cache = trans('messages.import_export_statistics_line', [
+            'total' => $total,
+            'processed' => $success + $error,
+            'success' => $success,
+            'error' => $error,
+        ]);
+        
+        // update system job
+        $systemJob->data = json_encode([
+            "mail_list_uid" => $list->uid,
+            "user_id" => $user->id,
+            "status" => "done",
+            "message" => $content_cache,
+            "total" => $total,
+            "success" => $success,
+            "error" => $error,
+            "percent" => 100
+        ]);
+        $systemJob->save();
+
+        // Action Log
+        $list->log('import_success', $user, ['count' => $success, 'error' => $error]);
+    }
+    
+    /**
+     * Export subscribers.
+     *
+     * @return void
+     */
+    public static function export($list, $user, $job)
+    {
+        // Info from job
+        $systemJob = $job->getSystemJob();        
+        $directory = $job->getPath();
+        
+        $file_path = $directory.'data.csv';
+        
+        // Import to database
+        $total = $list->subscribers()->count();
+        $success = 0;
+        $error = 0;
+        $lines_per_second = 1;        
+        $headers = [];
+        foreach ($list->getFields as $key => $field) {
+            $headers[] = $field->tag;
+        }
+        $headers = implode(',', $headers);
+        
+        // write csv
+        $myfile = file_put_contents($file_path, $headers.PHP_EOL , FILE_APPEND | LOCK_EX);
+        
+        $num = 100;
+        for($page = 0; $page <= ceil($total/$num); $page++) { // ceil($total/$num)
+            $data = [];
+            foreach ($list->subscribers()->skip($page*$num)->take($num)->get() as $key => $item) {
+                $cols = [];
+                foreach ($list->fields as $key2 => $field) {
+                    $value = $item->getValueByField($field);
+                    $cols[] = $value;
+                }
+                $data[] = implode(',', $cols);
+
+                ++$success;
+            }
+            
+            // write csv
+            $myfile = file_put_contents($file_path, implode("\r\n", $data).PHP_EOL , FILE_APPEND | LOCK_EX);
+            
+            $content_cache = trans('messages.import_export_statistics_line', [
+                'total' => $total,
+                'processed' => $success + $error,
+                'success' => $success,
+                'error' => $error,
+            ]);
+            
+            // update system job
+            $systemJob->data = json_encode([
+                "mail_list_uid" => $list->uid,
+                "user_id" => $user->id,
+                "status" => "running",
+                "message" => $content_cache,
+                "total" => $total,
+                "success" => $success,
+                "error" => $error,
+                "percent" => round((($success + $error) / $total) * 100, 0)
+            ]);
+            $systemJob->save();
+        }
+        
+        $content_cache = trans('messages.import_export_statistics_line', [
+            'total' => $total,
+            'processed' => $success + $error,
+            'success' => $success,
+            'error' => $error,
+        ]);
+        
+        // update system job
+        $systemJob->data = json_encode([
+            "mail_list_uid" => $list->uid,
+            "user_id" => $user->id,
+            "status" => "done",
+            "message" => $content_cache,
+            "total" => $total,
+            "success" => $success,
+            "error" => $error,
+            "percent" => 100
+        ]);
+        $systemJob->save();
+        
+        // Action Log
+        $list->log('export_success', $user, ['count' => $success, 'error' => $error]);
+    }
 }

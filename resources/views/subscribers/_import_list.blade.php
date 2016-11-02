@@ -3,6 +3,7 @@
                                 current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
                             >
 								@foreach ($system_jobs as $key => $item)
+									<?php $data = json_decode($item->data); ?>
 									<tr>
 										<td width="1%">
 											<i class="icon-download4 icon-list-big"></i>
@@ -16,15 +17,14 @@
 											<br />
 											
 											<span class="text-muted">{{ trans('messages.run_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
-											@if ($item->status == 'finished')
+											@if ($data->status == 'done')
 												<br />
 												<span class="text-muted">{{ trans('messages.finished_at') }}: {{ Tool::formatDateTime($item->updated_at) }}</span>
 											@endif
 											
 										</td>
 										<td>
-											<div class="single-stat-box">
-                                                <?php $data = json_decode($item->data); ?>
+											<div class="single-stat-box">                                                
 												<span class="no-margin text-teal-800 stat-num">{{ $data->percent }}%</span>
 												<div class="progress progress-xxs">
 													<div class="progress-bar progress-bar-info" style="width: {{ $data->percent }}%">
@@ -36,7 +36,7 @@
 										</td>
 										<td class="text-center">
 											<span class="text-muted2 list-status">
-												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
+												<span class="label label-flat bg-{{ $data->status }}">{{ $data->status }}</span>
 											</span>
 										</td>
 										<td class="text-right text-nowrap">
