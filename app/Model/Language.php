@@ -144,14 +144,26 @@ class Language extends Model
             $item->uid = $uid;
         });
         
-        // Create uid when creating list.
+        // After created
         static::created(function ($item) {
-            // Create language folder if not exists
-            $path = $item->language_dir();
-            if (!file_exists($path)) {   
+            // Create language folder if not exists            
+            $des = $item->language_dir();
+            if (!file_exists($des)) {
                 $oldmask = umask(0);
-                mkdir($path, 0775, true);
+                mkdir($des, 0775, true);
+                $sou = Language::getDefaultLanguage()->language_dir();
+                \Acelle\Library\Tool::xcopy($sou, $des);
                 umask($oldmask);
+                
+            }
+        });
+        
+        // After deleted
+        static::deleted(function ($item) {
+            // Create language folder if not exists            
+            $des = $item->language_dir();
+            if (file_exists($des)) {
+                \Acelle\Library\Tool::xdelete($des);
             }
         });
     }
@@ -176,6 +188,16 @@ class Language extends Model
             'name' => 'required',
             'code' => 'required',
         ];
+    }
+    
+    /**
+     * Get default language.
+     *
+     * @var object
+     */
+    public static function getDefaultLanguage()
+    {
+        return \Acelle\Model\Language::where("is_default", "=", true)->first();
     }
     
     /**
