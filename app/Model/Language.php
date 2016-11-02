@@ -151,7 +151,7 @@ class Language extends Model
             if (!file_exists($des)) {
                 $oldmask = umask(0);
                 mkdir($des, 0775, true);
-                $sou = Language::getDefaultLanguage()->language_dir();
+                $sou = Language::getDefaultLanguage()->languageDir();
                 \Acelle\Library\Tool::xcopy($sou, $des);
                 umask($oldmask);
                 
