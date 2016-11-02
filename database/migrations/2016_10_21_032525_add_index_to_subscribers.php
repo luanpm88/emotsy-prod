@@ -25,7 +25,7 @@ class AddIndexToSubscribers extends Migration
     public function down()
     {
         Schema::table('subscribers', function (Blueprint $table) {
-            $table->dropIndex(['mail_list_id', 'email']);
+
         });
     }
 }
