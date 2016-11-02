@@ -1733,10 +1733,10 @@ class Campaign extends Model
     }
 
     /**
-     * Re-queue the campaign for sending
+     * Queue campaign for sending
      *
      */
-    public function requeue()
+    public function clearAllJobs()
     {
         // cleanup jobs and system_jobs
         // @todo data should be a JSON field instead
@@ -1745,8 +1745,28 @@ class Campaign extends Model
             // @todo what if jobs were already started? check `reserved` field?
             $systemJob->clear();
         }
+    }
+
+    /**
+     * Re-queue the campaign for sending
+     *
+     */
+    public function requeue()
+    {
+        // clear all jobs
+        $this->clearAllJobs();
 
         // and queue again
         $this->queue();
+    }
+
+    /**
+     * Overwrite the delete() method
+     *
+     */
+    public function delete()
+    {
+        $this->clearAllJobs();
+        parent::delete();
     }
 }
