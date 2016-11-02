@@ -2,7 +2,7 @@ $(document).ready(function() {
     tinymce.init({
         selector: '.full-editor',
         height: 500,
-        relative_urls: false,
+        convert_urls: false,
         remove_script_host: false,
         plugins: [
           'advlist autolink lists link image charmap print preview anchor',
@@ -23,7 +23,7 @@ $(document).ready(function() {
     tinymce.init({
         selector: '.email-editor',
         height: 500,
-        relative_urls: false,
+        convert_urls: false,
         remove_script_host: false,
         plugins: [
           'advlist autolink lists link image charmap print preview anchor',
@@ -43,7 +43,7 @@ $(document).ready(function() {
     tinymce.init({
         selector: '.clean-editor',
         height: 500,
-        relative_urls: false,
+        convert_urls: false,
         remove_script_host: false,
         plugins: [
           'advlist autolink lists link image charmap print preview anchor',
@@ -62,7 +62,7 @@ $(document).ready(function() {
     tinymce.init({
         selector: '.builder-editor',
         height: 300,
-        relative_urls: false,
+        convert_urls: false,
         remove_script_host: false,
         plugins: [
           'advlist autolink lists link image charmap print preview anchor',
