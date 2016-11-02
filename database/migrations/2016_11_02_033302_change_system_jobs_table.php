@@ -21,6 +21,7 @@ class ChangeSystemJobsTable extends Migration
             $table->string('name');
             $table->string('status');
             $table->text('data');
+            $table->integer('job_id')->nullable();
             $table->dateTime('start_at')->nullable();
             $table->dateTime('end_at')->nullable();
             

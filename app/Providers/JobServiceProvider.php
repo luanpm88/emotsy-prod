@@ -17,6 +17,12 @@ class JobServiceProvider extends ServiceProvider
         // mark the SystemJob record as RUNNING
         \Queue::before(function (\Illuminate\Queue\Events\JobProcessing $event) {
             $job = $this->getJobObject($event);
+            
+            // associate the queue job with system_job
+            $systemJob = $job->getSystemJob();
+            $systemJob->job_id = $event->job->getJobId();
+            $systemJob->save();
+
             $job->setStarted();
         });
 
