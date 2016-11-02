@@ -178,7 +178,6 @@ class Campaign extends Model
         
         // get the next campaign to process
         $campaign = self::getNextCampaign();
-
         if ($campaign) {
             $campaign->start();
         } else {
@@ -194,7 +193,6 @@ class Campaign extends Model
         // Reserve: mark the campaign as sending, prevent other processes from sending it again
         try {
             $this->sending();
-
             MailLog::info('Starting campaign `'.$this->name.'`');
 
             // Only run multi-process if pcntl is enabled
@@ -327,6 +325,7 @@ class Campaign extends Model
                 sleep(self::WORKER_DELAY);
                 $this->run($chunks[$i]);
                 exit($i + 1);
+                // end child process
             }
         }
         
@@ -380,7 +379,10 @@ class Campaign extends Model
                 $i += 1;
                 MailLog::info("Sending to subscriber `{$subscriber->email}` ({$i}/".sizeof($subscribers).')');
 
+                // Pick up an available sending server
+                // Throw exception in case no server available
                 $server = $this->pickServer($this);
+
                 list($message, $msgId) = $this->prepareEmail($subscriber, $server);
 
                 $sent = $server->send($message, array(
