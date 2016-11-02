@@ -33,7 +33,7 @@ class LanguagePolicy
     public function delete(\Acelle\Model\User $user, \Acelle\Model\Language $item)
     {
         $ability = $user->getOption('backend', 'language_delete');
-        $can = $ability == 'yes';
+        $can = $ability == 'yes' && !$item->is_default;
 
         return $can;
     }
