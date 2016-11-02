@@ -27,25 +27,6 @@ use Illuminate\Database\Eloquent\Model;
 class Language extends Model
 {
     /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::created(function ($item) {
-            // Create language folder if not exists
-            $path = $item->language_dir();
-            if (!file_exists($path)) {   
-                $oldmask = umask(0);
-                mkdir($path, 0775, true);
-                umask($oldmask);
-            }      
-        });
-    }
-    
-    /**
      * Language folder path.
      *
      * @return string
@@ -161,6 +142,17 @@ class Language extends Model
                 $uid = uniqid();
             }
             $item->uid = $uid;
+        });
+        
+        // Create uid when creating list.
+        static::created(function ($item) {
+            // Create language folder if not exists
+            $path = $item->language_dir();
+            if (!file_exists($path)) {   
+                $oldmask = umask(0);
+                mkdir($path, 0775, true);
+                umask($oldmask);
+            }
         });
     }
 
