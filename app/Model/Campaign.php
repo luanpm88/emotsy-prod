@@ -439,6 +439,9 @@ class Campaign extends Model
 
         $tags = array(
             'SUBSCRIBER_EMAIL' => $subscriber->email,
+            'UPDATE_PROFILE_URL' => str_replace('LIST_UID', $subscriber->mailList->uid,
+                str_replace('SUBSCRIBER_UID', $subscriber->uid,
+                str_replace('SECURE_CODE', $subscriber->getSecurityToken('update-profile'), Setting::get('url_update_profile')))),
             'CAMPAIGN_NAME' => $this->name,
             'CAMPAIGN_UID' => $this->uid,
             'CAMPAIGN_SUBJECT' => $this->subject,

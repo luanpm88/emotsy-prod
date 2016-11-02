@@ -220,6 +220,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'url_update_profile' => [
+                'cat' => 'url',
+                'value' => '', // action('DeliveryController@notify'),
+                'type' => 'text',
+                'not_required' => true,
+            ],
         ];
     }
 
