@@ -73,10 +73,15 @@ class SettingController extends Controller
      */
     public function updateUrls(Request $request)
     {
-        \Acelle\Model\Setting::set('url_unsubscribe', action('CampaignController@unsubscribe', ['message_id' => trans('messages.MESSAGE_ID')]));
-        \Acelle\Model\Setting::set('url_open_track', action('CampaignController@open', ['message_id' => trans('messages.MESSAGE_ID')]));
-        \Acelle\Model\Setting::set('url_click_track', action('CampaignController@click', ['message_id' => trans('messages.MESSAGE_ID'), 'url' => trans('messages.URL')]));
+        \Acelle\Model\Setting::set('url_unsubscribe', action('CampaignController@unsubscribe', ['message_id' => 'MESSAGE_ID']));
+        \Acelle\Model\Setting::set('url_open_track', action('CampaignController@open', ['message_id' => 'MESSAGE_ID']));
+        \Acelle\Model\Setting::set('url_click_track', action('CampaignController@click', ['message_id' => 'MESSAGE_ID', 'url' => 'URL']));
         \Acelle\Model\Setting::set('url_delivery_handler', action('DeliveryController@notify', ['stype' => '']));
+        \Acelle\Model\Setting::set('url_update_profile', action('PageController@profileUpdateForm', array(
+            'list_uid' => 'LIST_UID',
+            'uid' => 'SUBSCRIBER_UID',
+            'code' => 'SECURE_CODE'))
+        );
 
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.setting.updated'));
