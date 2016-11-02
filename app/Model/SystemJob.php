@@ -100,8 +100,13 @@ class SystemJob extends Model
             $jobs = Job::where('reserved', 0)->get();
             foreach($jobs as $job) {
                 $json = json_decode($job->payload, true);
-                $j = unserialize($json['data']['command']);
-                if ($j->getSystemJob()->id == $this->id) {
+                try {
+                    $j = unserialize($json['data']['command']);
+                    if ($j->getSystemJob()->id == $this->id) {
+                        Job::destroy($job->id);
+                    }
+                } catch (\Exception $ex) {
+                    // delete orphan job
                     Job::destroy($job->id);
                 }
             }

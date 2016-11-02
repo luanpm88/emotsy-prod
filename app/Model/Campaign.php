@@ -1714,9 +1714,9 @@ class Campaign extends Model
      * Get the delay time before sending
      *
      */
-    public function getDelayInSecond()
+    public function getDelayInSeconds()
     {
-        $this->run_at->diffInSeconds(Carbon::now());
+        return $this->run_at->diffInSeconds(Carbon::now());
     }
 
     /**
@@ -1727,8 +1727,7 @@ class Campaign extends Model
     {
         $this->ready();
 
-        $job = new \Acelle\Jobs\RunCampaignJob($this);
-        $job->delay($this->getDelayInSecond());
+        $job = (new \Acelle\Jobs\RunCampaignJob($this))->delay($this->getDelayInSeconds());
         
         dispatch($job);
     }
