@@ -520,7 +520,7 @@ class CampaignController extends Controller
         // validate and save posted data
         if ($request->isMethod('post') && $campaign->step() >= 5) {
             // Save campaign
-            $campaign->queue();
+            $campaign->requeue();
 
             // Log
             $campaign->log('started', $request->user());

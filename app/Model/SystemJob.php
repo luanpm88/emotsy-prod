@@ -24,6 +24,8 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use DB;
+use Acelle\Model\Job;
 
 class SystemJob extends Model
 {
@@ -73,7 +75,7 @@ class SystemJob extends Model
         $this->status = self::STATUS_FAILED;
         $this->end_at = \Carbon\Carbon::now();
         $this->save();
-    }    
+    }
     
     /**
      * Run time.
@@ -83,5 +85,29 @@ class SystemJob extends Model
     public function runTime()
     {
         return gmdate("H:i:s", -$this->updated_at->diffInSeconds($this->created_at, false));
+    }
+
+    /**
+     * Stop the job as well as delete the Job records
+     *
+     * @return collect
+     */
+    public function clear()
+    {
+        // delete all system_jobs & jobs
+        DB::transaction(function() {
+            // delete jobs
+            $jobs = Job::where('reserved', 0)->get();
+            foreach($jobs as $job) {
+                $json = json_decode($job->payload, true);
+                $j = unserialize($json['data']['command']);
+                if ($j->getSystemJob()->id == $this->id) {
+                    Job::destroy($job->id);
+                }
+            }
+
+            // delete system_jobs
+            self::destroy($this->id);
+        });
     }
 }

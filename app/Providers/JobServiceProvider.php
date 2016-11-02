@@ -19,6 +19,7 @@ class JobServiceProvider extends ServiceProvider
             $job = $this->getJobObject($event);
             
             // associate the queue job with system_job
+            // @todo IMPORTANT job_id is only available when the job has actually started
             $systemJob = $job->getSystemJob();
             $systemJob->job_id = $event->job->getJobId();
             $systemJob->save();

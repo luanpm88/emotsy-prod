@@ -29,6 +29,7 @@ use Acelle\Library\StringHelper;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use DB;
 use Carbon\Carbon;
+use Acelle\Model\SystemJob;
 
 class Campaign extends Model
 {
@@ -1730,5 +1731,23 @@ class Campaign extends Model
         $job->delay($this->getDelayInSecond());
         
         dispatch($job);
+    }
+
+    /**
+     * Re-queue the campaign for sending
+     *
+     */
+    public function requeue()
+    {
+        // cleanup jobs and system_jobs
+        // @todo data should be a JSON field instead
+        $systemJobs = SystemJob::where('name', 'Acelle\Jobs\RunCampaignJob')->where('data', $this->id)->get();
+        foreach($systemJobs as $systemJob) {
+            // @todo what if jobs were already started? check `reserved` field?
+            $systemJob->clear();
+        }
+
+        // and queue again
+        $this->queue();
     }
 }

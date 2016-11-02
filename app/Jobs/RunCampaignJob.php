@@ -25,6 +25,21 @@ class RunCampaignJob extends CampaignJob implements ShouldQueue
     {
         $this->campaign = $campaign;
         parent::__construct();
+
+        // This line must go after the constructor
+        $this->linkJobToCampaign();
+    }
+
+    /**
+     * Execute the job.
+     *
+     * @return void
+     */
+    public function linkJobToCampaign()
+    {
+        $systemJob = $this->getSystemJob();
+        $systemJob->data = $this->campaign->id;
+        $systemJob->save();
     }
 
     /**
