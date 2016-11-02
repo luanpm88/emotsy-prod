@@ -171,7 +171,7 @@ class Campaign extends Model
     /**
      * Get pending campaigns.
      */
-    public static function run()
+    public static function runNextCampaign()
     {
         // Reset max_execution_time so that command can run for a long time without being terminated
         self::resetMaxExecutionTime();
@@ -180,21 +180,37 @@ class Campaign extends Model
         $campaign = self::getNextCampaign();
 
         if ($campaign) {
-            // mark the campaign as sending, prevent other processes from sending it again
-            $campaign->sending();
+            $campaign->start();
+        } else {
+            MailLog::info('No campaign found');
+        }
+    }
 
-            MailLog::info('Starting campaign `'.$campaign->name.'`');
+    /**
+     * Start the campaign
+     * 
+     */
+    public function start() {
+        // Reserve: mark the campaign as sending, prevent other processes from sending it again
+        try {
+            $this->sending();
+
+            MailLog::info('Starting campaign `'.$this->name.'`');
 
             // Only run multi-process if pcntl is enabled
             if (extension_loaded('pcntl')) {
-                $campaign->startMultiProcesses();
+                $this->runMultiProcesses();
             } else {
                 MailLog::warning('Cannot fork processes');
-                $campaign->start();
+                $this->run();
             }
-            MailLog::info('Finish campaign `'.$campaign->name.'`');
-        } else {
-            MailLog::info('No campaign found');
+            MailLog::info('Finish campaign `'.$this->name.'`');
+
+            // runMultiProcesses() and run() are responsible for setting DONE status
+        } catch (\Exception $ex) {
+            // Set ERROR status
+            $this->error();
+            MailLog::error('Campaign failed. '.$ex->getMessage());
         }
     }
 
@@ -284,7 +300,7 @@ class Campaign extends Model
      *
      * @return mixed
      */
-    public function startMultiProcesses()
+    public function runMultiProcesses()
     {
         $count = (int) $this->user->getOption('frontend', 'max_process');
         $subscribers = $this->getPendingSubscribers();
@@ -294,7 +310,7 @@ class Campaign extends Model
         // this is also the number of processes to fork
         $chunks = $this->getChunks($subscribers, $count);
 
-        MailLog::info('Start multi-process ('.sizeof($chunks).') session');
+        MailLog::info('Forking '.sizeof($chunks).' process(es)');
         $parentPid = getmypid();
         for ($i = 0; $i < sizeof($chunks); ++$i) {
             $pid = pcntl_fork();
@@ -309,7 +325,7 @@ class Campaign extends Model
 
                 MailLog::info('Start child process '.($i + 1).' of '.sizeof($chunks).' (forked from '.$parentPid.')');
                 sleep(self::WORKER_DELAY);
-                $this->start($chunks[$i]);
+                $this->run($chunks[$i]);
                 exit($i + 1);
             }
         }
@@ -323,8 +339,16 @@ class Campaign extends Model
         // after all child processes are done
         $this->refreshStatus();
         
-        // if all child processes finish sucessfully, just mark campaign as done
-        // otherwise, mark campaign with error status (by child process)
+        // If all child processes finish sucessfully, just mark campaign as done
+        // Otherwise, mark campaign with error status (by child process)
+        //
+        // There are conventions here: 
+        //   + Child process does not update status from SENDING to DONE, it is left for the parent process
+        //   + Child process only updates status from SENDING to ERROR
+        //   + Parent process only updates status to DONE when current status is SENDING
+        //     indicating that all child processes finish sucessfully
+        //   + In case one child process update the status from SENDING to ERROR, it is left as the final status
+        //     the latest error is kept
         if ($this->status == self::STATUS_SENDING) {
             $this->done();
         } else {
@@ -336,7 +360,7 @@ class Campaign extends Model
      * Send Campaign
      * Iterate through all subscribers and send email.
      */
-    public function start($subscribers = NULL)
+    public function run($subscribers = NULL)
     {
         // check if the method is trigger by a child process (triggered by startMultiProcess method)
         $asChildProcess = !($subscribers == NULL);
@@ -387,8 +411,8 @@ class Campaign extends Model
     }
 
     /**
-     * Log Delivery
      * Log delivery message, used for later tracking.
+     *
      */
     private function trackMessage($response, $subscriber, $server, $msgId)
     {
@@ -529,7 +553,7 @@ class Campaign extends Model
      * @return String
      */
     public function getHtmlContent($subscriber, $msgId) {
-        // @note: IMPORTANT: the order must be
+        // @note: IMPORTANT: the order must be as follows
         // * addTrackingURL
         // * appendOpenTrackingUrl
         // * tagMessage
@@ -537,16 +561,20 @@ class Campaign extends Model
         // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
         $body = $this->html;
         
+        // Enable click tracking
         if ($this->track_click) {
             $body = $this->addTrackingUrl($body, $msgId);
         }
         
+        // Enable open tracking
         if ($this->track_open) {
             $body = $this->appendOpenTrackingUrl($body, $msgId);
         }
-
+        
+        // Transform tags
         $body = $this->tagMessage($body, $subscriber, $msgId);
-
+        
+        // Transform CSS/HTML content to inline CSS
         $body = $this->inlineHtml($body);
 
         return $body;
@@ -564,10 +592,10 @@ class Campaign extends Model
     }
 
     /**
-     * Prepare Email
      * Prepare the email content using Swift Mailer.
      *
-     * @input Raw email content
+     * @input object subscriber
+     * @input object sending server
      *
      * @return MIME text message
      */
@@ -606,7 +634,7 @@ class Campaign extends Model
             $message = $this->sign($message);
         }
 
-        // attachment
+        // @todo attachment
         //$message->attach(Swift_Attachment::fromPath('/tmp/gaugau.csv'));
         return array($message, $msgId);
     }

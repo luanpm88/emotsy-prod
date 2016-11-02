@@ -23,7 +23,7 @@
 namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
 use Acelle\Model\Campaign;
 
 class RunCampaign extends Command
@@ -40,7 +40,7 @@ class RunCampaign extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Run Campaign';
 
     /**
      * Create a new command instance.
@@ -57,19 +57,14 @@ class RunCampaign extends Command
      */
     public function handle()
     {
-        //try {
+        try {
             // initialize the logging engine
-            Log::configure(storage_path().'/logs/mail.log');
+            MailLog::configure(storage_path().'/logs/mail.log');
             
             // Actually run the campaign
-            Campaign::run();
-
-            $c = Campaign::where('status', Campaign::STATUS_READY)->orderBy('id', 'DESC')->whereRaw('(run_at IS NULL OR run_at <= NOW())')->limit(1)->first();
-
-            var_dump($c);
-
-        //} catch (\Exception $e) {
-        //    Log::error('Something went wrong: '.$e->getMessage());
-        //}
+            Campaign::runNextCampaign();
+        } catch (\Exception $e) {
+            MailLog::error('Something went wrong: '.$e->getMessage());
+        }
     }
 }
