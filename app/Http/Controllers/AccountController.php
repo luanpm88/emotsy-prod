@@ -91,10 +91,10 @@ class AccountController extends Controller
             $contact = $user->contact;
         } else {
             $contact = new \Acelle\Model\Contact([
-                                        'first_name' => $user->first_name,
-                                        'last_name' => $user->last_name,
-                                        'email' => $user->email,
-                                    ]);
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'email' => $user->email,
+            ]);
         }
         // var_dump((array) $user->attributes);
 

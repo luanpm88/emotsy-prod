@@ -212,6 +212,17 @@ class Language extends Model
     }
     
     /**
+     * Read locale file.
+     *
+     * @var text
+     */
+    public function readLocaleFile($filename)
+    {
+        $text = \File::get($this->languageDir() . $filename . '.php');
+        return $text;
+    }
+    
+    /**
      * all language code.
      *
      * @return array

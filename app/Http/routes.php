@@ -313,6 +313,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/languages/listing/{page?}', 'LanguageController@listing');
     Route::get('admin/languages/delete', 'LanguageController@delete');
     Route::get('admin/languages/{id}/translate', 'LanguageController@translate');
+    Route::post('admin/languages/{id}/translate', 'LanguageController@translate');
     Route::resource('admin/languages', 'LanguageController');
 
     // Setting
