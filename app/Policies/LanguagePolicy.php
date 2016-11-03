@@ -25,7 +25,7 @@ class LanguagePolicy
     public function update(\Acelle\Model\User $user, \Acelle\Model\Language $item)
     {
         $ability = $user->getOption('backend', 'language_update');
-        $can = $ability == 'yes';
+        $can = $ability == 'yes' && !$item->is_default;
 
         return $can;
     }
@@ -34,6 +34,14 @@ class LanguagePolicy
     {
         $ability = $user->getOption('backend', 'language_delete');
         $can = $ability == 'yes' && !$item->is_default;
+
+        return $can;
+    }
+    
+    public function translate(\Acelle\Model\User $user, \Acelle\Model\Language $item)
+    {
+        $ability = $user->getOption('backend', 'language_update');
+        $can = $ability == 'yes';
 
         return $can;
     }

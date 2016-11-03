@@ -26,21 +26,26 @@
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
-											</span>
-											@can("update", $item)
-												<a href="{{ action('Admin\LanguageController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+											</span>											
+											@can("translate", $item)
+												<a href="{{ action('Admin\LanguageController@translate', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.translate') }}" type="button" class="btn bg-teal btn-icon"><i class="icon-pencil"></i> {{ trans('messages.translate') }}</a>
 											@endcan
-											@can("update", $item)
-												<!--<a href="{{ action('Admin\LanguageController@translate', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.translate') }}" type="button" class="btn bg-teal btn-icon"><i class="icon-pencil"></i> {{ trans('messages.translate') }}</a>-->
-											@endcan
-											@can("delete", $item)
+											@if(Auth::user()->can("delete", $item) || Auth::user()->can("update", $item))
 												<div class="btn-group">										
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-													<ul class="dropdown-menu dropdown-menu-right">													
-														<li>														
-															<a delete-confirm="{{ trans('messages.delete_languages_confirm') }}" href="{{ action('Admin\LanguageController@delete', ["uids" => $item->uid]) }}">
-																<i class="icon-trash"></i> {{ trans('messages.delete') }}
-															</a>
+													<ul class="dropdown-menu dropdown-menu-right">												
+														@can("update", $item)
+															<li>
+																<a href="{{ action('Admin\LanguageController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+															</li>
+														@endcan
+														@can("update", $item)
+															<li>
+																<a delete-confirm="{{ trans('messages.delete_languages_confirm') }}" href="{{ action('Admin\LanguageController@delete', ["uids" => $item->uid]) }}">
+																	<i class="icon-trash"></i> {{ trans('messages.delete') }}
+																</a>
+															</li>
+														@endcan
 														</li>
 													</ul>
 												</div>

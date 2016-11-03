@@ -11,8 +11,8 @@ return [
     'stay_logged_in' => 'Stay logged in',
     'forgot_password' => 'Forgot Password?',
     'login' => 'Log In',
-    'copy_right_light' => '&copy; 2016. <span class="text-white">Acelle Email Marketing Application</span> by <a href="http://acellemail.com" class="text-white" target="_blank">Acellemail.com</a>',
-    'copy_right' => '&copy; 2016. Acelle Email Marketing Application by <a href="http://acellemail.com" class="" target="_blank">Acellemail.com</a>',
+    'copy_right_light' => '© 2016. <span class="text-white">Acelle Email Marketing Application</span> by <a href="http://acellemail.com" class="text-white" target="_blank">Acellemail.com</a>',
+    'copy_right' => '© 2016. Acelle Email Marketing Application by <a href="http://acellemail.com" class="" target="_blank">Acellemail.com</a>',
     'send_password_reset_link' => 'Send Password Reset Link',
     'password_reset' => 'Password Reset',
     'password_reset.help' => 'We\'ll email you instructions on how to reset your password.',
@@ -1079,5 +1079,10 @@ return [
     'SUBSCRIBER_UID' => 'SUBSCRIBER_UID',
     'url_update_profile' => 'Update profile',
     'translate' => 'Translate',
+    'messages' => 'Messages',
+    'auth' => 'Auth',
+    'pagination' => 'Pagination',
+    'passwords' => 'Passwords',
+    'validation' => 'Validation',
 ];
 
