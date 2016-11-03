@@ -1084,5 +1084,17 @@ return [
     'pagination' => 'Pagination',
     'passwords' => 'Passwords',
     'validation' => 'Validation',
+    'enable_languages_confirm' => 'You\'re about to enable :number language(s).',
+    'disable_languages_confirm' => 'You\'re about to disable :number language(s).',
+    'languages.disabled' => 'One or more languages were successfully disabled',
+    'languages.enabled' => 'One or more languages were successfully enabled',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
 ];
 

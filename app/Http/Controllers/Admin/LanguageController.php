@@ -269,4 +269,48 @@ class LanguageController extends Controller
             'parse_error' => $parse_error
         ]);
     }
+    
+    /**
+     * Disable language.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function disable(Request $request)
+    {
+        $items = \Acelle\Model\Language::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($items->get() as $item) {
+            // authorize
+            if (\Gate::allows('disable', $item)) {
+                $item->disable();
+            }
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.languages.disabled');
+    }
+    
+    /**
+     * Disable language.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function enable(Request $request)
+    {
+        $items = \Acelle\Model\Language::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($items->get() as $item) {
+            // authorize
+            if (\Gate::allows('enable', $item)) {
+                $item->enable();
+            }
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.languages.enabled');
+    }
 }

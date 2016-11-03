@@ -28,6 +28,7 @@ class DatabaseSeeder extends Seeder
             'name' => 'English',
             'code' => 'en',
             'region_code' => 'us',
+            'status' => 'active',
             'is_default' => true,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
