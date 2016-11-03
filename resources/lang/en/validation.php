@@ -117,6 +117,15 @@ return [
         'yaml_parse_error' => [
             'required' => 'Can\'t parse yaml. Please check the syntax',
         ],
+        'file_not_found' => [
+            'required' => 'File not found.',
+        ],
+        'not_zip_archive' => [
+            'required' => 'The file is not a zip package.',
+        ],
+        'zip_archive_unvalid' => [
+            'required' => 'Cannot read the package.',
+        ],
     ],
 
     /*

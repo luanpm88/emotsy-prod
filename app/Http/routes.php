@@ -316,6 +316,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::post('admin/languages/{id}/translate/{file}', 'LanguageController@translate');
     Route::get('admin/languages/disable', 'LanguageController@disable');
     Route::get('admin/languages/enable', 'LanguageController@enable');
+    Route::get('admin/languages/{id}/download', 'LanguageController@download');
+    Route::get('admin/languages/{id}/upload', 'LanguageController@upload');
+    Route::post('admin/languages/{id}/upload', 'LanguageController@upload');
     Route::resource('admin/languages', 'LanguageController');
 
     // Setting

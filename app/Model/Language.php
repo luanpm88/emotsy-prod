@@ -182,11 +182,11 @@ class Language extends Model
      *
      * @return object
      */
-    public static function rules()
+    public function rules()
     {
         return [
             'name' => 'required',
-            'code' => 'required',
+            'code' => 'required|unique:languages,code,'.$this->id,
         ];
     }
     
