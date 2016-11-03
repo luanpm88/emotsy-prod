@@ -1341,8 +1341,7 @@ class CampaignController extends Controller
 
         foreach ($items->get() as $item) {
             if (\Gate::allows('restart', $item)) {
-                $item->status = 'ready';
-                $item->save();
+                $item->requeue();
 
                 // Log
                 $item->log('restarted', $request->user());
