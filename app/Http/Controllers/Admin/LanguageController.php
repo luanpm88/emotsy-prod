@@ -97,11 +97,11 @@ class LanguageController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Acelle\Model\Language::rules());
+            $this->validate($request, $language->rules());
 
             // Save current user info
             $language->fill($request->all());
-            $language->status = 'active';
+            $language->status = 'inactive';
 
             if ($language->save()) {
                 $request->session()->flash('alert-success', trans('messages.language.created'));
@@ -166,7 +166,7 @@ class LanguageController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, \Acelle\Model\Language::rules());
+            $this->validate($request, $language->rules());
 
             // rename locale folder
             if($language->code != $request->code) {
@@ -312,5 +312,83 @@ class LanguageController extends Controller
 
         // Redirect to my lists page
         echo trans('messages.languages.enabled');
+    }
+    
+    /**
+     * Download language package.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function download(Request $request, $id)
+    {
+        $language = \Acelle\Model\Language::findByUid($id);
+        
+        $files = glob($language->languageDir() . "*");
+        $zip = storage_path("tmp/language-" . $language->code . ".zip");
+        
+        \Zipper::make($zip)->add($files)->close();
+       
+        return response()->download($zip);
+    }
+    
+    /**
+     * Upload language package.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function upload(Request $request, $id)
+    {
+        $language = \Acelle\Model\Language::findByUid($id);
+        
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            $zip = new \ZipArchive();
+
+            $rules = array(
+                'file' => 'required',
+            );
+
+            // check if file exsits
+            if (!$request->hasFile('file')) {
+                $rules['file_not_found'] = 'required';
+            }
+            $this->validate($request, $rules);
+
+            // check if file is zip achive
+            $file_ext = $request->file('file')->guessExtension();
+
+            if ($file_ext != 'zip') {
+                $rules['not_zip_archive'] = 'required';
+            }
+            $this->validate($request, $rules);
+
+            // move file to temp place
+            $tmp_path = storage_path('tmp/');
+            $file_name = $request->file('file')->getClientOriginalName();
+            $request->file('file')->move($tmp_path, $file_name);
+            $tmp_zip = $tmp_path.'/'.$file_name;
+
+            // read zip file check if zip archive invalid
+            if ($zip->open($tmp_zip, \ZipArchive::CREATE) !== true) {
+                $rules['zip_archive_unvalid'] = 'required';
+            }
+            $this->validate($request, $rules);
+
+            // unzip template archive and remove zip file
+            $zip->extractTo($language->languageDir());
+            $zip->close();
+            unlink($tmp_zip);
+                       
+            $request->session()->flash('alert-success', trans('messages.language.uploaded'));            
+            return redirect()->action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => "messages"]);
+        }
+        
+        return view('admin.languages.upload', [
+            'language' => $language,
+        ]);
     }
 }

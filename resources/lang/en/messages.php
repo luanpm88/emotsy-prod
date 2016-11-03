@@ -1088,9 +1088,14 @@ return [
     'disable_languages_confirm' => 'You\'re about to disable :number language(s).',
     'languages.disabled' => 'One or more languages were successfully disabled',
     'languages.enabled' => 'One or more languages were successfully enabled',
-    '' => '',
-    '' => '',
-    '' => '',
+    'download' => 'Download',
+    'upload_language' => 'Upload language',
+    'language_upload_guide' => 'Language upload file should be a zip package containing translation files:<br />
+        <span class="text-semibold">messages.php</span><br />
+        <span class="text-semibold">auth.php</span><br />
+        <span class="text-semibold">pagination.php</span><br />
+        <span class="text-semibold">passwords.php</span><br />
+        <span class="text-semibold">validation.php</span>',
     '' => '',
     '' => '',
     '' => '',

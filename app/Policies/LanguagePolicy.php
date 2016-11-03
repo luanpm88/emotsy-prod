@@ -49,7 +49,7 @@ class LanguagePolicy
     public function disable(\Acelle\Model\User $user, \Acelle\Model\Language $item)
     {
         $ability = $user->getOption('backend', 'language_update');
-        $can = $ability == 'yes';
+        $can = $ability == 'yes' && !$item->is_default;
 
         return ($can && $item->status != "inactive");
     }
@@ -57,8 +57,24 @@ class LanguagePolicy
     public function enable(\Acelle\Model\User $user, \Acelle\Model\Language $item)
     {
         $ability = $user->getOption('backend', 'language_update');
-        $can = $ability == 'yes';
+        $can = $ability == 'yes' && !$item->is_default;
 
         return ($can && $item->status != "active");
+    }
+    
+    public function download(\Acelle\Model\User $user, \Acelle\Model\Language $item)
+    {
+        $ability = $user->getOption('backend', 'language_read');
+        $can = $ability == 'yes';
+
+        return $can;
+    }
+    
+    public function upload(\Acelle\Model\User $user, \Acelle\Model\Language $item)
+    {
+        $ability = $user->getOption('backend', 'language_update');
+        $can = $ability == 'yes';
+
+        return $can;
     }
 }

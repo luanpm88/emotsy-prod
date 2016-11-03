@@ -28,9 +28,15 @@
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>											
 											@can("translate", $item)
-												<a href="{{ action('Admin\LanguageController@translate', ["id" => $item->uid, "file" => "messages"]) }}" data-popup="tooltip" title="{{ trans('messages.translate') }}" type="button" class="btn bg-teal btn-icon"><i class="icon-pencil"></i> {{ trans('messages.translate') }}</a>
+												<a href="{{ action('Admin\LanguageController@translate', ["id" => $item->uid, "file" => "messages"]) }}" data-popup="tooltip" title="{{ trans('messages.translate') }}" type="button" class="btn bg-teal btn-icon"><i class="icon-share2"></i> {{ trans('messages.translate') }}</a>
 											@endcan
-											@if(Auth::user()->can("delete", $item) || Auth::user()->can("update", $item))
+											@if(Auth::user()->can("delete", $item) ||
+												Auth::user()->can("update", $item) ||
+												Auth::user()->can("enable", $item) ||
+												Auth::user()->can("disable", $item) ||
+												Auth::user()->can("upload", $item) ||
+												Auth::user()->can("download", $item)
+											)
 												<div class="btn-group">										
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 													<ul class="dropdown-menu dropdown-menu-right">
@@ -46,6 +52,16 @@
 																<a link-confirm="{{ trans('messages.disable_languages_confirm') }}" href="{{ action('Admin\LanguageController@disable', ["uids" => $item->uid]) }}">
 																	<i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
 																</a>
+															</li>
+														@endcan
+														@can("download", $item)
+															<li>
+																<a href="{{ action('Admin\LanguageController@download', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.download') }}"><i class="icon-download"></i> {{ trans('messages.download') }}</a>
+															</li>
+														@endcan
+														@can("upload", $item)
+															<li>
+																<a href="{{ action('Admin\LanguageController@upload', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.upload') }}"><i class="icon-upload"></i> {{ trans('messages.upload') }}</a>
 															</li>
 														@endcan
 														@can("update", $item)

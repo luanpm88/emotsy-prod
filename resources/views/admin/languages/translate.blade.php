@@ -20,7 +20,7 @@
 					<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-pencil"></i> {{ $language->name }}</span>
+					<span class="text-semibold"><i class="icon-share2"></i> {{ $language->name }}</span>
 				</h1>
 			</div>
 				
@@ -79,6 +79,9 @@
 					<hr>
 					<div class="text-right">
 						<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+						<a href="{{ action('Admin\LanguageController@index') }}" type="button" class="btn bg-grey">
+							<i class="icon-cross2"></i> {{ trans('messages.cancel') }}
+						</a>
 					</div>
 					
 				<form>
