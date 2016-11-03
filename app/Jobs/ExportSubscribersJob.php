@@ -18,7 +18,23 @@ class ExportSubscribersJob extends ImportExportJob implements ShouldQueue
      */
     public function handle()
     {
-        $job = $this;
-        \Acelle\Model\MailList::export($job->mailList, $job->user, $job);
+        try {
+            $job = $this;
+            \Acelle\Model\MailList::export($job->mailList, $job->user, $job);
+        } catch (\Exception $e) {
+            $systemJob = $this->getSystemJob();
+        
+            // set failed
+            $systemJob->data = json_encode([
+                "mail_list_uid" => $job->mailList->uid,
+                "status" => "failed",
+                "message" => $e->getMessage(),
+                "total" => 0,
+                "success" => 0,
+                "error" => 0,
+                "percent" => 0
+            ]);
+            $systemJob->save();
+        }
     }
 }
