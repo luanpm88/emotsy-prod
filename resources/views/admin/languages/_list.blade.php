@@ -33,13 +33,27 @@
 											@if(Auth::user()->can("delete", $item) || Auth::user()->can("update", $item))
 												<div class="btn-group">										
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-													<ul class="dropdown-menu dropdown-menu-right">												
+													<ul class="dropdown-menu dropdown-menu-right">
+														@can('enable', $item)
+															<li>														
+																<a link-confirm="{{ trans('messages.enable_languages_confirm') }}" href="{{ action('Admin\LanguageController@enable', ["uids" => $item->uid]) }}">
+																	<i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
+																</a>
+															</li>
+														@endcan
+														@can('disable', $item)
+															<li>														
+																<a link-confirm="{{ trans('messages.disable_languages_confirm') }}" href="{{ action('Admin\LanguageController@disable', ["uids" => $item->uid]) }}">
+																	<i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
+																</a>
+															</li>
+														@endcan
 														@can("update", $item)
 															<li>
 																<a href="{{ action('Admin\LanguageController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 															</li>
 														@endcan
-														@can("update", $item)
+														@can("delete", $item)
 															<li>
 																<a delete-confirm="{{ trans('messages.delete_languages_confirm') }}" href="{{ action('Admin\LanguageController@delete', ["uids" => $item->uid]) }}">
 																	<i class="icon-trash"></i> {{ trans('messages.delete') }}

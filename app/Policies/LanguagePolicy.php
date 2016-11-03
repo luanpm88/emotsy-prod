@@ -45,4 +45,20 @@ class LanguagePolicy
 
         return $can;
     }
+    
+    public function disable(\Acelle\Model\User $user, \Acelle\Model\Language $item)
+    {
+        $ability = $user->getOption('backend', 'language_update');
+        $can = $ability == 'yes';
+
+        return ($can && $item->status != "inactive");
+    }
+    
+    public function enable(\Acelle\Model\User $user, \Acelle\Model\Language $item)
+    {
+        $ability = $user->getOption('backend', 'language_update');
+        $can = $ability == 'yes';
+
+        return ($can && $item->status != "active");
+    }
 }

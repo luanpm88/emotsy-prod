@@ -43,7 +43,7 @@ class Language extends Model
      */
     public static function getAll()
     {
-        return self::all();
+        return self::where("status", "=", "active")->get();
     }
 
     /**
@@ -447,5 +447,27 @@ class Language extends Model
         }
         
         return $result;
+    }
+    
+    /**
+     * Disable language
+     *
+     * @return array
+     */
+    public function disable()
+    {
+        $this->status = "inactive";
+        $this->save();
+    }
+    
+    /**
+     * Enable language
+     *
+     * @return array
+     */
+    public function enable()
+    {
+        $this->status = "active";
+        $this->save();
     }
 }
