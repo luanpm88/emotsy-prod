@@ -114,6 +114,9 @@ return [
         'smtp_valid' => [
             'required' => 'Can\'t connect to SMTP server',
         ],
+        'yaml_parse_error' => [
+            'required' => 'Can\'t parse yaml. Please check the syntax',
+        ],
     ],
 
     /*

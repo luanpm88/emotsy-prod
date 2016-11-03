@@ -231,12 +231,9 @@ class LanguageController extends Controller
     public function translate(Request $request, $id)
     {
         $language = \Acelle\Model\Language::findByUid($id);
-        $messages = $language->readLocaleFile("messages");
-        $auth = $language->readLocaleFile("auth");
-        $pagination = $language->readLocaleFile("pagination");
-        $passwords = $language->readLocaleFile("passwords");
-        $validation = $language->readLocaleFile("validation");
-
+        $parse_error = $request->session()->get("parse_error");
+        $filename = $request->file;
+        
         // authorize
         if (\Gate::denies('translate', $language)) {
             return $this->notAuthorized();
@@ -245,31 +242,31 @@ class LanguageController extends Controller
         // save posted data
         if ($request->isMethod('post')) {
             $rules = [];
+            try {
+                $language->updateFromYaml($filename, $request->all()[$filename]);
+            } catch (\Symfony\Component\Yaml\Exception\ParseException $e) {
+                $request->session()->set("parse_error", $e->getMessage());
+                $rules = ['yaml_parse_error' => 'required'];
+            }
             $this->validate($request, $rules);
             
-            $bytes_written = \File::put($language->languageDir() . "messages.php", $request->messages);
-            $bytes_written = \File::put($language->languageDir() . "auth.php", $request->auth);
-            $bytes_written = \File::put($language->languageDir() . "pagination.php", $request->pagination);
-            $bytes_written = \File::put($language->languageDir() . "passwords.php", $request->passwords);
-            $bytes_written = \File::put($language->languageDir() . "validation.php", $request->validation);
+            $request->session()->flash('alert-success', trans('messages.language.updated'));
+            return redirect()->action('Admin\LanguageController@translate', ["id" => $language->uid, "file" => $filename]);
         }
+        
+        // Get current values
+        $content = \Yaml::dump($language->getLocaleArrayFromFile($filename));
         
         // Get old post values
         if (!empty($request->old())) {
-            $messages = $request->old()["messages"];
-            $auth = $request->old()["auth"];
-            $pagination = $request->old()["pagination"];
-            $passwords = $request->old()["passwords"];
-            $validation = $request->old()["validation"];
+            $content = $request->old()[$filename];
         }
         
         return view('admin.languages.translate', [
             'language' => $language,
-            'messages' => $messages,
-            'auth' => $auth,
-            'pagination' => $pagination,
-            'passwords' => $passwords,
-            'validation' => $validation,
+            'content' => $content,
+            'filename' => $filename,
+            'parse_error' => $parse_error
         ]);
     }
 }

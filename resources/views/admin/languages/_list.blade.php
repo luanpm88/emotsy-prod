@@ -28,7 +28,7 @@
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>											
 											@can("translate", $item)
-												<a href="{{ action('Admin\LanguageController@translate', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.translate') }}" type="button" class="btn bg-teal btn-icon"><i class="icon-pencil"></i> {{ trans('messages.translate') }}</a>
+												<a href="{{ action('Admin\LanguageController@translate', ["id" => $item->uid, "file" => "messages"]) }}" data-popup="tooltip" title="{{ trans('messages.translate') }}" type="button" class="btn bg-teal btn-icon"><i class="icon-pencil"></i> {{ trans('messages.translate') }}</a>
 											@endcan
 											@if(Auth::user()->can("delete", $item) || Auth::user()->can("update", $item))
 												<div class="btn-group">										

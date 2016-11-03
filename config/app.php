@@ -206,6 +206,7 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Tool' => Acelle\Library\Tool::class,
+        'Yaml' => Symfony\Component\Yaml\Yaml::class,
     ],
 
 ];

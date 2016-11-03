@@ -223,6 +223,28 @@ class Language extends Model
     }
     
     /**
+     * Read locale file.
+     *
+     * @var text
+     */
+    public function localeToYaml($filename)
+    {
+        $text = $this->readLocaleFile($filename);
+        return yaml_parse($text);
+    }
+    
+    /**
+     * Update language file from yaml.
+     *
+     * @var text
+     */
+    public function updateFromYaml($filename, $yaml)
+    {
+        $content = '<?php return ' . var_export(\Yaml::parse($yaml), true) . ' ?>';
+        $bytes_written = \File::put($this->languageDir() . $filename . ".php", $content);
+    }
+    
+    /**
      * all language code.
      *
      * @return array
