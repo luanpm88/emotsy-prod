@@ -1,3 +1,8 @@
+2.0.5 / ?????
+
+ * Added: support running several campaigns at the same time
+ * Changed: use queue for better management of campaign sending processes
+
 2.0.4-p25 / 2016-11-01
 ==================
 
