@@ -137,6 +137,12 @@ class MailList extends Model
         static::deleted(function ($item) {
             //  Delete contact when list deleted
             $item->contact->delete();
+            
+            // Delete import jobs
+            $item->importJobs()->delete();
+            
+            // Delete export jobs
+            $item->exportJobs()->delete();
         });
     }
 
