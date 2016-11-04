@@ -435,6 +435,8 @@ class Campaign extends Model
      */
     private function tagMessage($message, $subscriber, $msgId)
     {
+        // @todo consider a solution for UNSUBSCRIBE_URL for test subscriber (also for other tags like: UPDATE_PROFILE_URL)
+
         $tags = array(
             'SUBSCRIBER_EMAIL' => $subscriber->email,
             'CAMPAIGN_NAME' => $this->name,
@@ -467,9 +469,15 @@ class Campaign extends Model
             $message = str_replace('{'.$tag.'}', $value, $message);
         }
 
-        // List field tags
-        foreach ($this->mailList->fields as $field) {
-            $message = str_replace('{SUBSCRIBER_'.$field->tag.'}', $subscriber->getValueByField($field), $message);
+        if (!$this->isStdClassSubscriber($subscriber)) {
+            // in case of actually sending campaign
+            foreach ($this->mailList->fields as $field) {
+                $message = str_replace('{SUBSCRIBER_'.$field->tag.'}', $subscriber->getValueByField($field), $message);
+            }
+        } else {
+            // in case of sending test email
+            // @todo how to manage such tags?
+            $message = str_replace('{SUBSCRIBER_EMAIL}', $subscriber->email, $message);
         }
 
         return $message;
@@ -1663,7 +1671,7 @@ class Campaign extends Model
         $copy->name = $name;
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
-        $copy->status = "new";
+        $copy->status = self::STATUS_NEW;
         $copy->run_at = NULL;
         $copy->custom_order = 0;
         $copy->save();
@@ -1753,7 +1761,7 @@ class Campaign extends Model
      */
     public function requeue()
     {
-        // clear all jobs
+        // clear all campaign's sendign jobs which are being queue
         $this->clearAllJobs();
 
         // and queue again
@@ -1761,12 +1769,85 @@ class Campaign extends Model
     }
 
     /**
-     * Overwrite the delete() method
+     * Overwrite the delete() method to also clear the pending jobs
      *
      */
     public function delete()
     {
         $this->clearAllJobs();
         parent::delete();
+    }
+
+    /**
+     * Send a test message
+     *
+     */
+    public function sendTestMessage($subscriber)
+    {
+        // configure the logger 
+        // @todo: move this to system boostrap instead
+        MailLog::configure(storage_path().'/logs/mail.log');
+        MailLog::info('Sending test email for campaign `' . $this->name . '`');
+        MailLog::info('Sending test email to `' . $subscriber['email'] . '`');
+
+        // @todo: only send a test message when campaign sufficient information is available
+
+        // build a temporary subscriber oject used to pass through the sending methods
+        $subscriber = $this->createStdClassSubscriber($subscriber);
+
+        // Pick up an available sending server
+        // Throw exception in case no server available
+        $server = $this->pickServer($this);
+
+        // build the message from campaign information
+        list($message, $msgId) = $this->prepareEmail($subscriber, $server);
+        
+        // actually send
+        // @todo consider using queue here
+        $result = $server->send($message, array(
+            'from_email' => $this->from_email,
+            'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly (not in MIME message)
+            'campaign' => $this,
+            'subscriber' => $subscriber,
+            'msgId' => $msgId
+        ));
+        
+        // examine the result from sending server
+        if(array_has($result, 'error')) {
+            throw new \Exception($result['error']);
+        }
+
+        return true;
+    }
+
+    /**
+     * Create a stdClass subscriber (for sending a campaign test email)
+     * The campaign sending functions take a subscriber object as input
+     * However, a test email address is not yet a subscriber object, so we have to build a fake stdClass object
+     * which can be used as a real subscriber
+     *
+     * @param array $subscriber
+     */
+    private function createStdClassSubscriber($subscriber)
+    {
+        // default attributes that are required
+        $jsonObj = [
+            'uid' => uniqid()
+        ];
+        
+        // append the user specified attributes and build a stdClass object
+        $stdObj = json_decode(json_encode(array_merge($jsonObj, $subscriber)));
+
+        return $stdObj;
+    }
+    
+    /**
+     * Check if the given variable is a subscriber object (for actually sending a campaign)
+     * Or a stdClass subscriber (for sending test email)
+     *
+     * @param Object $object
+     */
+    private function isStdClassSubscriber($object) {
+        return (get_class($object) == 'stdClass');
     }
 }

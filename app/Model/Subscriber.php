@@ -623,9 +623,7 @@ class Subscriber extends Model
     public function lastClickLog($campaign=null)
     {
         $query = $this->clickLogs();
-        
         $query = $query->orderBy('click_logs.created_at', 'desc')->first();
-        
         return $query;
     }
 }
