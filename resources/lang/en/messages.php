@@ -1097,6 +1097,7 @@ return [
         <span class="text-semibold">pagination.php</span><br />
         <span class="text-semibold">passwords.php</span><br />
         <span class="text-semibold">validation.php</span>',
+<<<<<<< HEAD
     'starting' => 'Starting...',
     '' => '',
     '' => '',
@@ -1174,6 +1175,8 @@ return [
     '' => '',
     '' => '',
     '' => '',
+=======
+>>>>>>> heroku/develop
     '' => '',
     '' => '',
     '' => '',
