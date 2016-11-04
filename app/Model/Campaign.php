@@ -1724,7 +1724,13 @@ class Campaign extends Model
      */
     public function getDelayInSeconds()
     {
-        return $this->run_at->diffInSeconds(Carbon::now());
+        $now = Carbon::now();
+
+        if ($this->run_at->timestamp <= $now->timestamp) {
+            return 0;
+        } else {
+            return $this->run_at->diffInSeconds($now);
+        }
     }
 
     /**
