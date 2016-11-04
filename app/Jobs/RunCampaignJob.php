@@ -49,9 +49,6 @@ class RunCampaignJob extends CampaignJob implements ShouldQueue
      */
     public function handle()
     {
-        // initialize the logging engine
-        $this->initLogger();
-
         // start campaign
         $this->campaign->start();
     }

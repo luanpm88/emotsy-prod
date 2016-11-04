@@ -1784,9 +1784,6 @@ class Campaign extends Model
      */
     public function sendTestMessage($subscriber)
     {
-        // configure the logger 
-        // @todo: move this to system boostrap instead
-        MailLog::configure(storage_path().'/logs/mail.log');
         MailLog::info('Sending test email for campaign `' . $this->name . '`');
         MailLog::info('Sending test email to `' . $subscriber['email'] . '`');
 

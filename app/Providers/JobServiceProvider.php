@@ -14,6 +14,9 @@ class JobServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        // Initialize the MailLog which writes logs to mail.log
+        $this->initMailLog();
+
         // mark the SystemJob record as RUNNING
         \Queue::before(function (\Illuminate\Queue\Events\JobProcessing $event) {
             $job = $this->getJobObject($event);
@@ -57,5 +60,14 @@ class JobServiceProvider extends ServiceProvider
      */
     private function getJobObject($event) {
         return unserialize($event->data['data']['command']);
+    }
+
+    /**
+     * Init the MailLog
+     *
+     * @return void
+     */
+    private function initMailLog() {
+        MailLog::configure(storage_path().'/logs/mail.log');
     }
 }

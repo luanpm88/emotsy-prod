@@ -58,9 +58,6 @@ class RunHandler extends Command
      */
     public function handle()
     {
-        // setup the logging engine
-        Log::configure(storage_path().'/logs/handler.log');
-
         try {
             $this->execRunHandler();
             Log::info('Handlers finished!');

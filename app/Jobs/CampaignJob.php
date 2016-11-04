@@ -23,15 +23,4 @@ class CampaignJob extends SystemJob implements ShouldQueue
     {
         parent::__construct();
     }
-
-    /**
-     * Init the logger.
-     *
-     * @return void
-     */
-    public function initLogger()
-    {
-        // initialize the logging engine
-        MailLog::configure(storage_path().'/logs/mail.log');
-    }
 }
