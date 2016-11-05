@@ -23,9 +23,12 @@
 namespace Acelle\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Acelle\Library\QuotaTracker;
 
 class User extends Authenticatable
 {
+    protected $quotaTracker;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -206,6 +209,11 @@ class User extends Authenticatable
     public function systemJobs()
     {
         return $this->hasMany('Acelle\Model\SystemJob')->orderBy('created_at', 'desc');
+    }
+
+    public function trackingLogs()
+    {
+        return $this->hasMany('Acelle\Model\TrackingLog')->orderBy('created_at', 'asc');
     }
 
     /**
@@ -624,26 +632,7 @@ class User extends Authenticatable
      */
     public function sendingQuota()
     {
-        $time_value = $this->getOption('frontend', 'sending_quota_time');
-        $time_unit = $this->getOption('frontend', 'sending_quota_time_unit');
-
-        if ($time_value == '-1') {
-            $begin = null;
-        } else {
-            if ($time_unit == 'year') {
-                $begin = \Carbon\Carbon::now()->subYear($time_value);
-            } elseif ($time_unit == 'month') {
-                $begin = \Carbon\Carbon::now()->subMonth($time_value);
-            } elseif ($time_unit == 'week') {
-                $begin = \Carbon\Carbon::now()->subWeek($time_value);
-            } elseif ($time_unit == 'day') {
-                $begin = \Carbon\Carbon::now()->subDay($time_value);
-            } elseif ($time_unit == 'hour') {
-                $begin = \Carbon\Carbon::now()->subHour($time_value);
-            } elseif ($time_unit == 'minute') {
-                $begin = \Carbon\Carbon::now()->subMinute($time_value);
-            }
-        }
+        $begin = $this->getQuotaStartingTime();
 
         $query = \Acelle\Model\TrackingLog::leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
         $query = $query->where('campaigns.user_id', '=', $this->id);
@@ -740,5 +729,70 @@ class User extends Authenticatable
             ['value' => 'grey', 'text' => trans('messages.grey')],
             ['value' => 'white', 'text' => trans('messages.white')],
         ];
+    }
+
+    /**
+     * Get quota starting time
+     *
+     * @return array
+     */
+    public function getQuotaStartingTime() {
+        $timeValue = $this->getOption('frontend', 'sending_quota_time');
+        $timeUnit = $this->getOption('frontend', 'sending_quota_time_unit');
+        
+        // @todo: magic number here
+        // @todo: why $timeValue == -1?
+        if ($timeValue == '-1') {
+            $start = NULL;
+        } else {
+            $start = \Carbon\Carbon::parse("{$timeValue} {$timeUnit} ago");
+        }
+        return $start;
+    }
+
+    /**
+     * Get quota starting time
+     *
+     * @return array
+     */
+    public function getQuotaIntervalString() {
+        $timeValue = $this->getOption('frontend', 'sending_quota_time');
+        $timeUnit = $this->getOption('frontend', 'sending_quota_time_unit');
+        return "{$timeValue} {$timeUnit}";
+    }
+
+    /**
+     * Initialize the quota tracker
+     *
+     * @return array
+     */
+    public function initQuotaTracker() {
+        $start = $this->getQuotaStartingTime();
+
+        if ($start == NULL) {
+            return;
+        }
+
+        // @note: trackingLogs() allows appending `where` condition while trackingLogs (dynamic attribute) does not
+        $series = collect($this->trackingLogs()->where('created_at', '>=', $start)->get())->map(function($trackingLog) {
+            return $trackingLog->created_at->timestamp;
+        });
+
+        var_dump($series);
+
+        $this->quotaTracker = new QuotaTracker($this->getQuotaIntervalString(), $this->getOption('frontend', 'sending_quota'), $series);
+    }
+
+    /**
+     * Get user's QuotaTracker
+     *
+     * @return array
+     */
+    public function getQuotaTracker() {
+        if(!$this->quotaTracker) {
+            $this->initQuotaTracker();
+        }
+
+        return $this->quotaTracker;
     }
 }
