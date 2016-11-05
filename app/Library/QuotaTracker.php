@@ -24,7 +24,7 @@ namespace Acelle\Library;
 
 class QuotaTracker
 {
-    protected $series = []; 
+    protected $series; 
     protected $range;
     protected $quota; // in seconds
 
@@ -37,7 +37,7 @@ class QuotaTracker
      *
      * @return void
      */
-    public function __construct($series, $range, $quota)
+    public function __construct($range, $quota, $series = [])
     {
         $this->series = $series;
         $this->range = $range;
@@ -52,9 +52,6 @@ class QuotaTracker
      * @return void
      */
     public function add($timePoint) {
-        //print_r($this->series);
-        //echo "Min: " . $this->first() . ", Count: " . $this->count() . "\n";
-
         $this->shiftBy($timePoint);
         if ($this->count() >= $this->quota) {
             return false;
