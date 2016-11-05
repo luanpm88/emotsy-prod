@@ -21,11 +21,12 @@
  */
 
 namespace Acelle\Library;
+use Carbon\Carbon;
 
 class QuotaTracker
 {
     protected $series; 
-    protected $range;
+    protected $interval;
     protected $quota; // in seconds
 
     const START_POINT = 0;
@@ -37,11 +38,27 @@ class QuotaTracker
      *
      * @return void
      */
-    public function __construct($range, $quota, $series = [])
+    public function __construct($interval, $quota, $series = [])
     {
         $this->series = $series;
-        $this->range = $range;
+        $this->interval = \DateInterval::createFromDateString($interval);
         $this->quota = $quota;
+    }
+
+    /**
+     * Check if over quota, add a time point
+     *
+     * @param Timestamps $timePoint
+     *
+     * @return void
+     */
+    public function add(Carbon $timePoint) {
+        if ($this->check($timePoint)) {
+            $this->series[] = $timePoint->timestamp;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -51,12 +68,11 @@ class QuotaTracker
      *
      * @return void
      */
-    public function add($timePoint) {
+    public function check(Carbon $timePoint) {
         $this->shiftBy($timePoint);
         if ($this->count() >= $this->quota) {
             return false;
         } else {
-            $this->series[] = $timePoint;
             return true;
         }
     }
@@ -68,14 +84,14 @@ class QuotaTracker
      *
      * @return void
      */
-    private function shiftBy($timePoint)
+    private function shiftBy(Carbon $timePoint)
     {
         if (empty($this->series)) {
             return;
         }
         
-        $cutOff = $timePoint - $this->range;
-        while($this->first() < $cutOff ) {
+        $cutOff = $timePoint->copy()->sub($this->interval)->timestamp;
+        while($this->first() != NULL && $this->first() < $cutOff ) {
             array_shift($this->series);
         }
     }

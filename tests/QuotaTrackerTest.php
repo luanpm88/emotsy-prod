@@ -19,9 +19,9 @@ class QuotaTrackerTest extends TestCase
          * Suppose the quota setting is: {6 emails, every 5 seconds}
          * Then we test with: send an email every 1 second and and expect it will NOT to exceed the quota
          */
-        $tracker = new QuotaTracker(5, 6);
+        $tracker = new QuotaTracker('5 seconds', 6);
         $result = $this->nTimes(10, $tracker, function($tracker) {
-            return $tracker->add(Carbon::now()->timestamp);
+            return $tracker->add(Carbon::now());
         });
         $this->assertTrue($result);
 
@@ -29,9 +29,9 @@ class QuotaTrackerTest extends TestCase
          * Suppose the quota setting is: {5 emails, every 4 seconds}
          * Then we test with: send an email every 1 second and and expect it will exceed the quota
          */
-        $tracker = new QuotaTracker(5, 4);
+        $tracker = new QuotaTracker('5 second', 4);
         $result = $this->nTimes(5, $tracker, function($tracker) {
-            return $tracker->add(Carbon::now()->timestamp);
+            return $tracker->add(Carbon::now());
         });
         $this->assertFalse($result);
 
@@ -39,9 +39,29 @@ class QuotaTrackerTest extends TestCase
          * Suppose the quota setting is: {0 emails, every 1 hours}
          * Then we test with: send an email every 1 second and and expect it to fail immediately at first try
          */
-        $tracker = new QuotaTracker(3600, 0);
+        $tracker = new QuotaTracker('1 hour', 0);
         $result = $this->nTimes(1, $tracker, function($tracker) {
-            return $tracker->add(Carbon::now()->timestamp);
+            return $tracker->add(Carbon::now());
+        });
+        $this->assertFalse($result);
+
+        /**
+         * Suppose the quota setting is: {1 emails, every 1 day}
+         * Then we test with: send an email every 1 second and and expect it NOT to fail after 1 try
+         */
+        $tracker = new QuotaTracker('1 days', 1);
+        $result = $this->nTimes(1, $tracker, function($tracker) {
+            return $tracker->add(Carbon::now());
+        });
+        $this->assertTrue($result);
+
+        /**
+         * Suppose the quota setting is: {1 emails, every 1 day}
+         * Then we test with: send an email every 1 second and and expect it to fail after 2 try
+         */
+        $tracker = new QuotaTracker('1 days', 1);
+        $result = $this->nTimes(2, $tracker, function($tracker) {
+            return $tracker->add(Carbon::now());
         });
         $this->assertFalse($result);
     }
@@ -54,7 +74,6 @@ class QuotaTrackerTest extends TestCase
     private function nTimes($try, $tracker, $func) {
         $success = true;
         for($i = 0; $i < $try; $i++) {
-            echo "$i";
             $success = $func($tracker);
             if (!$success) {
                 return false;
