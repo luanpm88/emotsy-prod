@@ -1098,5 +1098,6 @@ return [
         <span class="text-semibold">passwords.php</span><br />
         <span class="text-semibold">validation.php</span>',
     'starting' => 'Starting...',
+    'system_email' => 'System send email',
 ];
 

@@ -24,6 +24,16 @@ class SettingController extends Controller
      */
     public function index(Request $request)
     {
+        return redirect()->action('Admin\SettingController@general');
+    }
+    
+    /**
+     * General settings.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function general(Request $request)
+    {
         // \Acelle\Model\Setting::updateAll();
         $settings = \Acelle\Model\Setting::getAll();
         if (null !== $request->old()) {
@@ -33,7 +43,130 @@ class SettingController extends Controller
                 }
             }
         }
-        
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            
+            if($this->isDemoMode()) {
+                return $this->notAuthorized();
+            }
+            
+            $rules = [
+                'site_name' => 'required',
+                'site_keyword' => 'required',
+                'site_online' => 'required',
+                'site_offline_message' => 'required',
+                'site_description' => 'required',
+                'frontend_scheme' => 'required',
+                'backend_scheme' => 'required',
+            ];
+            $this->validate($request, $rules);
+
+            // Save settings
+            foreach ($request->all() as $name => $value) {
+                if ($name != '_token' && isset($settings[$name])) {
+                    if ($settings[$name]['cat'] == 'general' && $request->user()->getOption('backend', 'setting_general') == 'yes') {
+                        \Acelle\Model\Setting::set($name, $value);
+                    }
+                }
+            }
+
+            // Redirect to my lists page
+            $request->session()->flash('alert-success', trans('messages.setting.updated'));
+            return redirect()->action('Admin\SettingController@general');
+        }
+
+        return view('admin.settings.general', [
+            'settings' => $settings,
+        ]);
+    }
+    
+    /**
+     * Sending settings.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sending(Request $request)
+    {
+        // \Acelle\Model\Setting::updateAll();
+        $settings = \Acelle\Model\Setting::getAll();
+        if (null !== $request->old()) {
+            foreach ($request->old() as $name => $value) {
+                if (isset($settings[$name])) {
+                    $settings[$name]['value'] = $value;
+                }
+            }
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            
+            if($this->isDemoMode()) {
+                return $this->notAuthorized();
+            }
+            
+            $rules = [
+                'sending_campaigns_at_once' => 'required',
+                'sending_change_server_time' => 'required',
+                'sending_emails_per_minute' => 'required',
+                'sending_pause' => 'required',
+                'sending_at_once' => 'required',
+                'sending_subscribers_at_once' => 'required',
+            ];
+            $this->validate($request, $rules);
+
+            // Save settings
+            foreach ($request->all() as $name => $value) {
+                if ($name != '_token' && isset($settings[$name])) {
+                    if ($settings[$name]['cat'] == 'sending' && $request->user()->getOption('backend', 'setting_sending') == 'yes') {
+                        \Acelle\Model\Setting::set($name, $value);
+                    }
+                }
+            }
+
+            // Redirect to my lists page
+            $request->session()->flash('alert-success', trans('messages.setting.updated'));
+            return redirect()->action('Admin\SettingController@sending');
+        }
+
+        return view('admin.settings.sending', [
+            'settings' => $settings,
+        ]);
+    }
+    
+    /**
+     * Url settings.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function urls(Request $request)
+    {
+        $settings = \Acelle\Model\Setting::getAll();
+        return view('admin.settings.urls', [
+            'settings' => $settings,
+        ]);
+    }
+    
+    /**
+     * Cronjob list.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cronjob(Request $request)
+    {
+        $settings = \Acelle\Model\Setting::getAll();
+        return view('admin.settings.cronjob', [
+            'settings' => $settings,
+        ]);
+    }
+    
+    /**
+     * Mailer settings.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function mailer(Request $request)
+    {
         // SMTP
         $env = [
             'MAIL_DRIVER' => config("mail.driver"),
@@ -45,14 +178,21 @@ class SettingController extends Controller
             'MAIL_FROM_EMAIL' => config("mail.from")["address"],
             'MAIL_FROM_NAME' => config("mail.from")["name"],
         ];
+
+        if (null !== $request->old() && isset($request->old()["env"])) {
+            foreach ($request->old()["env"] as $name => $value) {
+                $env[$name] = $value;
+            }
+        }
+        
         $env_rules = [
             'env.MAIL_DRIVER' => 'required',
             'env.MAIL_HOST' => 'required',
             'env.MAIL_PORT' => 'required',
             'env.MAIL_USERNAME' => 'required',
             'env.MAIL_PASSWORD' => 'required',
-            'env.MAIL_ENCRYPTION' => 'required|email',
-            'env.MAIL_FROM_EMAIL' => 'required',
+            'env.MAIL_ENCRYPTION' => 'required',
+            'env.MAIL_FROM_EMAIL' => 'required|email',
             'env.MAIL_FROM_NAME' => 'required',
         ];
 
@@ -63,21 +203,20 @@ class SettingController extends Controller
                 return $this->notAuthorized();
             }
             
-            $rules = \Acelle\Model\Setting::rules();
+            $env = $request->env;
             
-            if ($request->mail_driver == 'smtp') {
-                $rules = array_merge($rules, $smtp_rules);
-            }
-            $this->validate($request, $rules);
+            if ($env["MAIL_DRIVER"] == 'smtp') {
+                $this->validate($request, $env_rules);
+            }            
             
             // Check SMTP connection
-            $site_info = $request->all();
-            if ($request->mail_driver == 'smtp') {
+            $site_info = $request->all();            
+            if ($env["MAIL_DRIVER"] == 'smtp') {
                 $rules = [];
                 try {
-                    $transport = \Swift_SmtpTransport::newInstance($request->smtp_hostname, $request->smtp_port, $request->smtp_encryption);
-                    $transport->setUsername($request->smtp_username);
-                    $transport->setPassword($request->smtp_password);
+                    $transport = \Swift_SmtpTransport::newInstance($env["MAIL_HOST"], $env["MAIL_PORT"], $env["MAIL_ENCRYPTION"]);
+                    $transport->setUsername($env["MAIL_USERNAME"]);
+                    $transport->setPassword($env["MAIL_PASSWORD"]);
                     $mailer = \Swift_Mailer::newInstance($transport);
                     $mailer->getTransport()->start();
                 } catch (\Swift_TransportException $e) {
@@ -86,31 +225,24 @@ class SettingController extends Controller
                     $rules['smtp_valid'] = 'required';
                 }
                 $this->validate($request, $rules);
-            } else {
-                $site_info["smtp_from_name"] = $site_info["site_name"];
-                $site_info["smtp_from_email"] = $site_info["email"];
             }
-
-            // Save settings
-            foreach ($request->all() as $name => $value) {
-                if ($name != '_token') {
-                    if ($settings[$name]['cat'] == 'general' && $request->user()->getOption('backend', 'setting_general') == 'yes') {
-                        \Acelle\Model\Setting::set($name, $value);
-                    }
-                    if ($settings[$name]['cat'] == 'sending' && $request->user()->getOption('backend', 'setting_sending') == 'yes') {
-                        \Acelle\Model\Setting::set($name, $value);
-                    }
+            
+            foreach($env as $key => $value) {
+                if(empty($value)) {
+                    $value = "null";
                 }
+                \Acelle\Model\Setting::setEnv($key, $value);
             }
 
             // Redirect to my lists page
+            $next = action('Admin\SettingController@mailer');
+            \Artisan::call('config:cache');
             $request->session()->flash('alert-success', trans('messages.setting.updated'));
-
-            return redirect()->action('Admin\SettingController@index');
+            sleep(3);
+            return redirect()->away($next);
         }
 
-        return view('admin.settings.index', [
-            'settings' => $settings,
+        return view('admin.settings.mailer', [
             'env_rules' => $env_rules,
             'env' => $env,
         ]);
@@ -136,7 +268,7 @@ class SettingController extends Controller
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.setting.updated'));
 
-        return redirect()->action('Admin\SettingController@index', ['tab' => 'system_urls']);
+        return redirect()->action('Admin\SettingController@urls');
     }
     
     /**

@@ -1,5 +1,5 @@
                         @if (Auth::user()->getOption("backend", "setting_sending") == 'yes')
-							<div class="tab-pane" id="top-sending">
+							<div class="tab-pane active" id="top-sending">
 								<div class="row">
 									<?php $count = 0; ?>
 									@foreach ($settings as $name => $setting)

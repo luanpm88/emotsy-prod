@@ -246,4 +246,27 @@ class Setting extends Model
             ['value' => 'white', 'text' => trans('messages.white')],
         ];
     }
+    
+    /**
+     * Update setting one line.
+     *
+     * @return void
+     */
+    public static function setEnv($key, $value)
+    {
+        $file_path = base_path('.env');
+        $data = file($file_path);
+        $data = array_map(function($data) use ($key, $value) {
+            if (stristr($value, " ")) {
+                return stristr($data, $key) ? "$key='$value'\n" : $data;
+            } else {
+                return stristr($data, $key) ? "$key=$value\n" : $data;
+            }
+        }, $data);
+        
+        // Write file
+        $env_file = fopen($file_path, 'w') or die('Unable to open file!');
+        fwrite($env_file, implode($data, ""));
+        fclose($env_file);
+    }
 }

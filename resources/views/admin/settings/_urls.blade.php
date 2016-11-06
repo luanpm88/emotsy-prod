@@ -1,5 +1,5 @@
                         @if (Auth::user()->getOption("backend", "setting_system_urls") == 'yes')
-							<div class="tab-pane" id="top-system_urls">
+							<div class="tab-pane active" id="top-system_urls">
 								<div class="text-left">
 									<a href="{{ action("Admin\SettingController@updateUrls") }}" class="btn bg-teal">{{ trans('messages.update_urls') }}</a>
 								</div>

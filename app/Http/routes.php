@@ -322,6 +322,14 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/languages', 'LanguageController');
 
     // Setting
+    Route::get('admin/settings/mailer', 'SettingController@mailer');
+    Route::post('admin/settings/mailer', 'SettingController@mailer');
+    Route::get('admin/settings/cronjob', 'SettingController@cronjob');
+    Route::get('admin/settings/urls', 'SettingController@urls');
+    Route::get('admin/settings/sending', 'SettingController@sending');
+    Route::post('admin/settings/sending', 'SettingController@sending');
+    Route::get('admin/settings/general', 'SettingController@general');
+    Route::post('admin/settings/general', 'SettingController@general');
     Route::get('admin/settings/logs', 'SettingController@logs');
     Route::get('log', 'SettingController@download_log');
     Route::get('admin/settings/{tab?}', 'SettingController@index');
