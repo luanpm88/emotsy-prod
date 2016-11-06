@@ -52,7 +52,11 @@ class QuotaTracker
      *
      * @return void
      */
-    public function add(Carbon $timePoint) {
+    public function add(Carbon $timePoint = NULL) {
+        if (!isset($timePoint)) {
+            $timePoint = Carbon::now();
+        }
+
         if ($this->check($timePoint)) {
             $this->series[] = $timePoint->timestamp;
             return true;
@@ -68,9 +72,15 @@ class QuotaTracker
      *
      * @return void
      */
-    public function check(Carbon $timePoint) {
+    public function check(Carbon $timePoint = NULL) {
+        if (!isset($timePoint)) {
+            $timePoint = Carbon::now();
+        }
+
         $this->shiftBy($timePoint);
-        if ($this->count() >= $this->quota) {
+        //echo "Usage " . $this->usage() . "\nQuota " . $this->quota . "\n";
+
+        if ($this->usage() >= $this->quota) {
             return false;
         } else {
             return true;
@@ -111,8 +121,18 @@ class QuotaTracker
      *
      * @return Integer count
      */
-    public function count()
+    public function usage()
     {
         return sizeof($this->series);
+    }
+
+    /**
+     * Get usage percentage
+     *
+     * @return Integer count
+     */
+    public function usagePercentage()
+    {
+        return (float) $this->usage() / $this->quota;
     }
 }

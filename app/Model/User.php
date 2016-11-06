@@ -604,7 +604,7 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function maxQuota()
+    public function getSendingQuota()
     {
         $quota = $this->getOption('frontend', 'sending_quota');
         if ($quota == '-1') {
@@ -630,19 +630,9 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function sendingQuota()
+    public function getSendingQuotaUsage()
     {
-        $begin = $this->getQuotaStartingTime();
-
-        $query = \Acelle\Model\TrackingLog::leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
-        $query = $query->where('campaigns.user_id', '=', $this->id);
-        if (isset($begin)) {
-            $query = $query->where('tracking_logs.created_at', '>=', $begin);
-        }
-
-        $count = $query->count();
-
-        return $count;
+        return $this->getQuotaTracker()->usage();
     }
 
     /**
@@ -650,15 +640,13 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function sendingQuotaUsage()
+    public function getSendingQuotaUsagePercentage()
     {
-        if ($this->maxQuota() == '∞') {
+        if ($this->getSendingQuota() == '∞') {
             return '0';
-        } elseif ($this->maxQuota() == '0' || $this->sendingQuota() >= $this->maxQuota()) {
-            return '100';
         }
 
-        return round((($this->sendingQuota() / $this->maxQuota()) * 100), 2);
+        return round(($this->getQuotaTracker()->usagePercentage() * 100), 2);
     }
 
     /**
@@ -668,7 +656,7 @@ class User extends Authenticatable
      */
     public function overQuota()
     {
-        return (int) $this->sendingQuotaUsage() >= 100;
+        return !$this->getQuotaTracker()->check();
     }
 
     /**
@@ -678,11 +666,11 @@ class User extends Authenticatable
      */
     public function displaySendingQuotaUsage()
     {
-        if ($this->maxQuota() == '∞') {
+        if ($this->getSendingQuota() == '∞') {
             return trans('messages.unlimited');
         }
-
-        return $this->sendingQuotaUsage().'%';
+        // @todo use percentage helper here
+        return $this->getSendingQuotaUsagePercentage().'%';
     }
 
     /**
@@ -777,8 +765,6 @@ class User extends Authenticatable
         $series = collect($this->trackingLogs()->where('created_at', '>=', $start)->get())->map(function($trackingLog) {
             return $trackingLog->created_at->timestamp;
         });
-
-        var_dump($series);
 
         $this->quotaTracker = new QuotaTracker($this->getQuotaIntervalString(), $this->getOption('frontend', 'sending_quota'), $series);
     }
