@@ -18,6 +18,7 @@
  * @version    1.0
  *
  * @link       http://acellemail.com
+ * @todo separate the time-series and the quota stuffs
  */
 
 namespace Acelle\Library;

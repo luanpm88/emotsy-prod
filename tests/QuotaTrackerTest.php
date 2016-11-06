@@ -47,7 +47,7 @@ class QuotaTrackerTest extends TestCase
 
         /**
          * Suppose the quota setting is: {1 emails, every 1 day}
-         * Then we test with: send an email every 1 second and and expect it NOT to fail after 1 try
+         * Then we test with: send an email every 1 second and and expect it NOT to fail after 1st try
          */
         $tracker = new QuotaTracker('1 days', 1);
         $result = $this->nTimes(1, $tracker, function($tracker) {
@@ -57,7 +57,7 @@ class QuotaTrackerTest extends TestCase
 
         /**
          * Suppose the quota setting is: {1 emails, every 1 day}
-         * Then we test with: send an email every 1 second and and expect it to fail after 2 try
+         * Then we test with: send an email every 1 second and and expect it to fail after 2nd try
          */
         $tracker = new QuotaTracker('1 days', 1);
         $result = $this->nTimes(2, $tracker, function($tracker) {
