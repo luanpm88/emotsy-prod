@@ -147,13 +147,12 @@ class QuotaTracker
     }
 
     /**
-     * Append new data points to the data series
+     * Get the data series
      *
-     * @return void
+     * @return Array data series
      */
-    public function append($data)
+    public function getSeries()
     {
-        var_dump($this->series);var_dump($data);
-        $this->series = array_merge($this->series, $data);
+        return $this->series;
     }
 }

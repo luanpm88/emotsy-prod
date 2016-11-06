@@ -378,6 +378,8 @@ class Campaign extends Model
             if (!$asChildProcess) {
                 $this->done();
             }
+
+            $this->user->saveQuotaUsageInfo();
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
             $this->error();
@@ -406,8 +408,13 @@ class Campaign extends Model
         if (!isset($params['runtime_message_id'])) {
             $params['runtime_message_id'] = $msgId;
         }
+        
+        // create tracking log for message
+        TrackingLog::create($params);
 
-        return TrackingLog::create($params);
+        // increment user quota usage
+        $this->user->countUsage();
+        $this->user->quotaDebug();
     }
 
     /**

@@ -661,6 +661,16 @@ class User extends Authenticatable
     }
 
     /**
+     * Increment quota usage
+     *
+     * @return void
+     */
+    public function countUsage()
+    {
+        $this->getQuotaTracker()->add();
+    }
+
+    /**
      * Get user's sending quota rate.
      *
      * @return string
@@ -766,26 +776,21 @@ class User extends Authenticatable
 
         // load the tracker from DB
         if ($this->quota) {
-            $tracker = unserialize($this->quota);
-            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp($tracker->last()));
-
-            // @note: trackingLogs() allows appending `where` condition while trackingLogs (dynamic attribute) does not
+            // retrieve the stored quota usage and merge it with actual (newer) usage
+            $storedTracker = unserialize($this->quota);
+            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp($storedTracker->last()));
             $series = collect($recent->get())->map(function($trackingLog) {
                 return $trackingLog->created_at->timestamp;
             })->toArray();
             
-            $tracker->append($series);
+            $dataSeries = array_merge($storedTracker->getSeries(), $series);
         } else {
-            // @note: trackingLogs() allows appending `where` condition while trackingLogs (dynamic attribute) does not
-            $series = collect($recent->get())->map(function($trackingLog) {
+            $dataSeries = collect($recent->get())->map(function($trackingLog) {
                 return $trackingLog->created_at->timestamp;
             })->toArray();
-
-            $tracker = new QuotaTracker($this->getQuotaIntervalString(), $this->getSendingQuota(), $series);
         }
 
-        $this->quotaTracker = $tracker;
-        return $this->quotaTracker;
+        $this->quotaTracker = new QuotaTracker($this->getQuotaIntervalString(), $this->getSendingQuota(), $dataSeries);;
     }
 
     /**
@@ -806,8 +811,17 @@ class User extends Authenticatable
      *
      * @return array
      */
-    public function saveQuotaTracker() {
+    public function saveQuotaUsageInfo() {
         $this->quota = serialize($this->getQuotaTracker());
         $this->save();
+    }
+
+    public function quotaDebug() {
+        echo "During the last " . $this->getQuotaIntervalString() . ", Count: " . $this->getSendingQuotaUsage() . " / Total: " . $this->getSendingQuota() . "\n";
+        echo "Now " . \Carbon\Carbon::now()->toDateTimeString() . "\n";
+        foreach($this->getQuotaTracker()->getSeries() as $t) {
+            echo \Carbon\Carbon::createFromTimestamp($t)->toDateTimeString() . " <-> " ;
+        }
+        echo "\n";
     }
 }
