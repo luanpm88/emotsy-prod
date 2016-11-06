@@ -60,10 +60,10 @@
 											<div class="single-stat-box pull-left ml-20">
 												<span class="no-margin text-teal-800 stat-num">{{ $item->displaySendingQuotaUsage() }}</span>
 												<div class="progress progress-xxs">
-													<div class="progress-bar progress-bar-info" style="width: {{ $item->sendingQuotaUsage() }}%">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->getSendingQuotaUsagePercentage() }}%">
 													</div>
 												</div>
-												<span class="text-muted"><strong>{{ $item->sendingQuota() }}</strong> {{ trans('messages.' . Acelle\Library\Tool::getPluralPrase('email', $item->sendingQuota()) . '_quota') }}</span>
+												<span class="text-muted"><strong>{{ $item->getSendingQuotaUsage() }}</strong> {{ trans('messages.' . Acelle\Library\Tool::getPluralPrase('email', $item->getSendingQuotaUsage()) . '_quota') }}</span>
 												<br />
 												<span class="text-muted2">/ {{ $item->displayQuota() }}</span>
 											</div>

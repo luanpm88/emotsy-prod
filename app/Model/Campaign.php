@@ -195,7 +195,7 @@ class Campaign extends Model
             // runMultiProcesses() and run() are responsible for setting DONE status
         } catch (\Exception $ex) {
             // Set ERROR status
-            $this->error();
+            $this->error($ex->getMessage());
             MailLog::error('Campaign failed. '.$ex->getMessage());
         }
     }
@@ -231,9 +231,10 @@ class Campaign extends Model
     /**
      * Mark the campaign as 'done' or 'sent'.
      */
-    public function error()
+    public function error($error = NULL)
     {
         $this->status = self::STATUS_ERROR;
+        $this->last_error = $error;
         $this->save();
     }
 
@@ -378,9 +379,11 @@ class Campaign extends Model
             if (!$asChildProcess) {
                 $this->done();
             }
+
+            $this->user->saveQuotaUsageInfo();
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
-            $this->error();
+            $this->error($e->getMessage());
         } finally {
             // reset server pools: just in case DeliveryServerAmazonSesWebApi
             // --> setup SNS requires using from_email of the corresponding campaign
@@ -406,8 +409,13 @@ class Campaign extends Model
         if (!isset($params['runtime_message_id'])) {
             $params['runtime_message_id'] = $msgId;
         }
+        
+        // create tracking log for message
+        TrackingLog::create($params);
 
-        return TrackingLog::create($params);
+        // increment user quota usage
+        $this->user->countUsage();
+        $this->user->quotaDebug();
     }
 
     /**

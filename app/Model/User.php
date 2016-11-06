@@ -23,9 +23,12 @@
 namespace Acelle\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Acelle\Library\QuotaTracker;
 
 class User extends Authenticatable
 {
+    protected $quotaTracker;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -206,6 +209,11 @@ class User extends Authenticatable
     public function systemJobs()
     {
         return $this->hasMany('Acelle\Model\SystemJob')->orderBy('created_at', 'desc');
+    }
+
+    public function trackingLogs()
+    {
+        return $this->hasMany('Acelle\Model\TrackingLog')->orderBy('created_at', 'asc');
     }
 
     /**
@@ -596,7 +604,7 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function maxQuota()
+    public function getSendingQuota()
     {
         $quota = $this->getOption('frontend', 'sending_quota');
         if ($quota == '-1') {
@@ -622,38 +630,9 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function sendingQuota()
+    public function getSendingQuotaUsage()
     {
-        $time_value = $this->getOption('frontend', 'sending_quota_time');
-        $time_unit = $this->getOption('frontend', 'sending_quota_time_unit');
-
-        if ($time_value == '-1') {
-            $begin = null;
-        } else {
-            if ($time_unit == 'year') {
-                $begin = \Carbon\Carbon::now()->subYear($time_value);
-            } elseif ($time_unit == 'month') {
-                $begin = \Carbon\Carbon::now()->subMonth($time_value);
-            } elseif ($time_unit == 'week') {
-                $begin = \Carbon\Carbon::now()->subWeek($time_value);
-            } elseif ($time_unit == 'day') {
-                $begin = \Carbon\Carbon::now()->subDay($time_value);
-            } elseif ($time_unit == 'hour') {
-                $begin = \Carbon\Carbon::now()->subHour($time_value);
-            } elseif ($time_unit == 'minute') {
-                $begin = \Carbon\Carbon::now()->subMinute($time_value);
-            }
-        }
-
-        $query = \Acelle\Model\TrackingLog::leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
-        $query = $query->where('campaigns.user_id', '=', $this->id);
-        if (isset($begin)) {
-            $query = $query->where('tracking_logs.created_at', '>=', $begin);
-        }
-
-        $count = $query->count();
-
-        return $count;
+        return $this->getQuotaTracker()->usage();
     }
 
     /**
@@ -661,15 +640,14 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function sendingQuotaUsage()
+    public function getSendingQuotaUsagePercentage()
     {
-        if ($this->maxQuota() == '∞') {
+        // @todo magic number
+        if ($this->getSendingQuota() == '∞') {
             return '0';
-        } elseif ($this->maxQuota() == '0' || $this->sendingQuota() >= $this->maxQuota()) {
-            return '100';
         }
 
-        return round((($this->sendingQuota() / $this->maxQuota()) * 100), 2);
+        return round(($this->getQuotaTracker()->usagePercentage() * 100), 2);
     }
 
     /**
@@ -679,7 +657,17 @@ class User extends Authenticatable
      */
     public function overQuota()
     {
-        return (int) $this->sendingQuotaUsage() >= 100;
+        return !$this->getQuotaTracker()->check();
+    }
+
+    /**
+     * Increment quota usage
+     *
+     * @return void
+     */
+    public function countUsage()
+    {
+        $this->getQuotaTracker()->add();
     }
 
     /**
@@ -689,11 +677,11 @@ class User extends Authenticatable
      */
     public function displaySendingQuotaUsage()
     {
-        if ($this->maxQuota() == '∞') {
+        if ($this->getSendingQuota() == '∞') {
             return trans('messages.unlimited');
         }
-
-        return $this->sendingQuotaUsage().'%';
+        // @todo use percentage helper here
+        return $this->getSendingQuotaUsagePercentage().'%';
     }
 
     /**
@@ -740,5 +728,100 @@ class User extends Authenticatable
             ['value' => 'grey', 'text' => trans('messages.grey')],
             ['value' => 'white', 'text' => trans('messages.white')],
         ];
+    }
+
+    /**
+     * Get quota starting time
+     *
+     * @return array
+     */
+    public function getQuotaStartingTime() {
+        $timeValue = $this->getOption('frontend', 'sending_quota_time');
+        $timeUnit = $this->getOption('frontend', 'sending_quota_time_unit');
+        
+        // @todo: magic number here
+        // @todo: why $timeValue == -1?
+        if ($timeValue == '-1') {
+            $start = NULL;
+        } else {
+            $start = \Carbon\Carbon::parse("{$timeValue} {$timeUnit} ago");
+        }
+        return $start;
+    }
+
+    /**
+     * Get quota starting time
+     *
+     * @return array
+     */
+    public function getQuotaIntervalString() {
+        $timeValue = $this->getOption('frontend', 'sending_quota_time');
+        $timeUnit = $this->getOption('frontend', 'sending_quota_time_unit');
+        return "{$timeValue} {$timeUnit}";
+    }
+
+    /**
+     * Initialize the quota tracker
+     *
+     * @return array
+     */
+    public function initQuotaTracker() {
+        $start = $this->getQuotaStartingTime();
+        if ($start == NULL) {
+            return;
+        }
+
+        // recent tracking logs
+        $recent = $this->trackingLogs()->where('created_at', '>=', $start);
+
+        // load the tracker from DB
+        if ($this->quota) {
+            // retrieve the stored quota usage and merge it with actual (newer) usage
+            $storedTracker = unserialize($this->quota);
+            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp($storedTracker->last()));
+            $series = collect($recent->get())->map(function($trackingLog) {
+                return $trackingLog->created_at->timestamp;
+            })->toArray();
+            
+            $dataSeries = array_merge($storedTracker->getSeries(), $series);
+        } else {
+            $dataSeries = collect($recent->get())->map(function($trackingLog) {
+                return $trackingLog->created_at->timestamp;
+            })->toArray();
+        }
+
+        $this->quotaTracker = new QuotaTracker($this->getQuotaIntervalString(), $this->getSendingQuota(), $dataSeries);;
+    }
+
+    /**
+     * Get user's QuotaTracker
+     *
+     * @return array
+     */
+    public function getQuotaTracker() {
+        if(!$this->quotaTracker) {
+            $this->initQuotaTracker();
+        }
+
+        return $this->quotaTracker;
+    }
+
+    /**
+     * Store the current quota usage info to DB
+     *
+     * @return array
+     */
+    public function saveQuotaUsageInfo() {
+        $this->quota = serialize($this->getQuotaTracker());
+        $this->save();
+    }
+
+    public function quotaDebug() {
+        echo "During the last " . $this->getQuotaIntervalString() . ", Count: " . $this->getSendingQuotaUsage() . " / Total: " . $this->getSendingQuota() . "\n";
+        echo "Now " . \Carbon\Carbon::now()->toDateTimeString() . "\n";
+        foreach($this->getQuotaTracker()->getSeries() as $t) {
+            echo \Carbon\Carbon::createFromTimestamp($t)->toDateTimeString() . " <-> " ;
+        }
+        echo "\n";
     }
 }

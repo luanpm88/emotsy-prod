@@ -384,7 +384,7 @@ class SendingServer extends Model
      *
      * @return string
      */
-    public function maxQuota()
+    public function getSendingQuota()
     {
         $quota = $this->quota_value;
         if ($quota == '-1') {
@@ -399,7 +399,7 @@ class SendingServer extends Model
      *
      * @return string
      */
-    public function sendingQuota()
+    public function getSendingQuotaUsage()
     {
         $time_value = $this->quota_base;
         $time_unit = $this->quota_unit;
@@ -431,11 +431,6 @@ class SendingServer extends Model
         $count = $query->count();
 
         return $count;
-
-        //$query = \Acelle\Model\TrackingLog::where('sending_server_id', $this->id)
-        //    ->whereRaw("created_at >= NOW() - INTERVAL {$this->quota_base} {$this->quota_unit}");
-
-        //return $query->count();
     }
 
     /**
@@ -443,15 +438,15 @@ class SendingServer extends Model
      *
      * @return string
      */
-    public function sendingQuotaUsage()
+    public function getSendingQuotaUsagePercentage()
     {
-        if ($this->maxQuota() == '∞') {
+        if ($this->getSendingQuota() == '∞') {
             return '0';
-        } elseif ($this->maxQuota() == '0' || $this->sendingQuota() >= $this->maxQuota()) {
+        } elseif ($this->getSendingQuota() == '0' || $this->getSendingQuotaUsage() >= $this->getSendingQuota()) {
             return '100';
         }
 
-        return round((($this->sendingQuota() / $this->maxQuota()) * 100), 2);
+        return round((($this->getSendingQuotaUsage() / $this->getSendingQuota()) * 100), 2);
     }
 
     /**
@@ -461,11 +456,11 @@ class SendingServer extends Model
      */
     public function displaySendingQuotaUsage()
     {
-        if ($this->maxQuota() == '∞') {
+        if ($this->getSendingQuota() == '∞') {
             return trans('messages.unlimited');
         }
 
-        return $this->sendingQuotaUsage().'%';
+        return $this->getSendingQuotaUsagePercentage().'%';
     }
 
     /**
