@@ -117,6 +117,16 @@ class QuotaTracker
     }
 
     /**
+     * Get the last data point of the time series
+     *
+     * @return Mixed data point
+     */
+    public function last()
+    {
+        return (empty($this->series)) ? NULL : $this->series[sizeof($this->series) - 1];
+    }
+
+    /**
      * Count the time series length
      *
      * @return Integer count
@@ -129,10 +139,21 @@ class QuotaTracker
     /**
      * Get usage percentage
      *
-     * @return Integer count
+     * @return float
      */
     public function usagePercentage()
     {
         return (float) $this->usage() / $this->quota;
+    }
+
+    /**
+     * Append new data points to the data series
+     *
+     * @return void
+     */
+    public function append($data)
+    {
+        var_dump($this->series);var_dump($data);
+        $this->series = array_merge($this->series, $data);
     }
 }

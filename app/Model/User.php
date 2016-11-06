@@ -642,6 +642,7 @@ class User extends Authenticatable
      */
     public function getSendingQuotaUsagePercentage()
     {
+        // @todo magic number
         if ($this->getSendingQuota() == '∞') {
             return '0';
         }
@@ -756,17 +757,35 @@ class User extends Authenticatable
      */
     public function initQuotaTracker() {
         $start = $this->getQuotaStartingTime();
-
         if ($start == NULL) {
             return;
         }
 
-        // @note: trackingLogs() allows appending `where` condition while trackingLogs (dynamic attribute) does not
-        $series = collect($this->trackingLogs()->where('created_at', '>=', $start)->get())->map(function($trackingLog) {
-            return $trackingLog->created_at->timestamp;
-        });
+        // recent tracking logs
+        $recent = $this->trackingLogs()->where('created_at', '>=', $start);
 
-        $this->quotaTracker = new QuotaTracker($this->getQuotaIntervalString(), $this->getOption('frontend', 'sending_quota'), $series);
+        // load the tracker from DB
+        if ($this->quota) {
+            $tracker = unserialize($this->quota);
+            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp($tracker->last()));
+
+            // @note: trackingLogs() allows appending `where` condition while trackingLogs (dynamic attribute) does not
+            $series = collect($recent->get())->map(function($trackingLog) {
+                return $trackingLog->created_at->timestamp;
+            })->toArray();
+            
+            $tracker->append($series);
+        } else {
+            // @note: trackingLogs() allows appending `where` condition while trackingLogs (dynamic attribute) does not
+            $series = collect($recent->get())->map(function($trackingLog) {
+                return $trackingLog->created_at->timestamp;
+            })->toArray();
+
+            $tracker = new QuotaTracker($this->getQuotaIntervalString(), $this->getSendingQuota(), $series);
+        }
+
+        $this->quotaTracker = $tracker;
+        return $this->quotaTracker;
     }
 
     /**
@@ -780,5 +799,15 @@ class User extends Authenticatable
         }
 
         return $this->quotaTracker;
+    }
+
+    /**
+     * Store the current quota usage info to DB
+     *
+     * @return array
+     */
+    public function saveQuotaTracker() {
+        $this->quota = serialize($this->getQuotaTracker());
+        $this->save();
     }
 }
