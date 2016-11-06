@@ -33,6 +33,28 @@ class SettingController extends Controller
                 }
             }
         }
+        
+        // SMTP
+        $env = [
+            'MAIL_DRIVER' => config("mail.driver"),
+            'MAIL_HOST' => config("mail.host"),
+            'MAIL_PORT' => config("mail.port"),
+            'MAIL_USERNAME' => config("mail.username"),
+            'MAIL_PASSWORD' => config("mail.password"),
+            'MAIL_ENCRYPTION' => config("mail.encryption"),
+            'MAIL_FROM_EMAIL' => config("mail.from")["address"],
+            'MAIL_FROM_NAME' => config("mail.from")["name"],
+        ];
+        $env_rules = [
+            'env.MAIL_DRIVER' => 'required',
+            'env.MAIL_HOST' => 'required',
+            'env.MAIL_PORT' => 'required',
+            'env.MAIL_USERNAME' => 'required',
+            'env.MAIL_PASSWORD' => 'required',
+            'env.MAIL_ENCRYPTION' => 'required|email',
+            'env.MAIL_FROM_EMAIL' => 'required',
+            'env.MAIL_FROM_NAME' => 'required',
+        ];
 
         // validate and save posted data
         if ($request->isMethod('post')) {
@@ -41,7 +63,33 @@ class SettingController extends Controller
                 return $this->notAuthorized();
             }
             
-            $this->validate($request, \Acelle\Model\Setting::rules());
+            $rules = \Acelle\Model\Setting::rules();
+            
+            if ($request->mail_driver == 'smtp') {
+                $rules = array_merge($rules, $smtp_rules);
+            }
+            $this->validate($request, $rules);
+            
+            // Check SMTP connection
+            $site_info = $request->all();
+            if ($request->mail_driver == 'smtp') {
+                $rules = [];
+                try {
+                    $transport = \Swift_SmtpTransport::newInstance($request->smtp_hostname, $request->smtp_port, $request->smtp_encryption);
+                    $transport->setUsername($request->smtp_username);
+                    $transport->setPassword($request->smtp_password);
+                    $mailer = \Swift_Mailer::newInstance($transport);
+                    $mailer->getTransport()->start();
+                } catch (\Swift_TransportException $e) {
+                    $rules['smtp_valid'] = 'required';
+                } catch (Exception $e) {
+                    $rules['smtp_valid'] = 'required';
+                }
+                $this->validate($request, $rules);
+            } else {
+                $site_info["smtp_from_name"] = $site_info["site_name"];
+                $site_info["smtp_from_email"] = $site_info["email"];
+            }
 
             // Save settings
             foreach ($request->all() as $name => $value) {
@@ -63,6 +111,8 @@ class SettingController extends Controller
 
         return view('admin.settings.index', [
             'settings' => $settings,
+            'env_rules' => $env_rules,
+            'env' => $env,
         ]);
     }
 
@@ -86,7 +136,7 @@ class SettingController extends Controller
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.setting.updated'));
 
-        return redirect()->action('Admin\SettingController@index', ['tab' => '3']);
+        return redirect()->action('Admin\SettingController@index', ['tab' => 'system_urls']);
     }
     
     /**

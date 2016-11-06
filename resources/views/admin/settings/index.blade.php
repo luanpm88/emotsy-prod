@@ -29,133 +29,38 @@
 				<div class="tabbable">
 					<ul class="nav nav-tabs nav-tabs-top">
 						@if (Auth::user()->getOption("backend", "setting_general") == 'yes')
-							<li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
+							<li class="active text-semibold"><a href="#top-general" data-toggle="tab">
 								<i class="icon-equalizer2"></i> {{ trans('messages.general') }}</a></li>
 						@endif
+						@if (Auth::user()->getOption("backend", "setting_general") == 'yes')
+							<li class="text-semibold"><a href="#top-smtp" data-toggle="tab">
+								<i class="icon-envelop"></i> {{ trans('messages.smtp') }}</a></li>
+						@endif
 						@if (Auth::user()->getOption("backend", "setting_sending") == 'yes')
-							<li class="text-semibold"><a href="#top-tab2" data-toggle="tab">
+							<li class="text-semibold"><a href="#top-sending" data-toggle="tab">
 								<i class="icon-paperplane"></i> {{ trans('messages.sending') }}</a></li>
 						@endif
 						@if (Auth::user()->getOption("backend", "setting_system_urls") == 'yes')
-							<li class="text-semibold"><a href="#top-tab3" data-toggle="tab">
+							<li class="text-semibold"><a href="#top-system_urls" data-toggle="tab">
 								<i class="icon-link"></i> {{ trans('messages.system_urls') }}</a></li>
 						@endif
-							<li class="text-semibold"><a href="#top-tab4" data-toggle="tab">
+							<li class="text-semibold"><a href="#top-cron_jobs" data-toggle="tab">
 								<i class="icon-alarm"></i> {{ trans('messages.cron_jobs') }}</a></li>
 					</ul>
 	
 					<div class="tab-content">
-						@if (Auth::user()->getOption("backend", "setting_general") == 'yes')
-							<div class="tab-pane active" id="top-tab1">
-								<div class="row">
-									<?php $count = 0; ?>
-									@foreach ($settings as $name => $setting)
-										@if ($setting['cat'] == 'general')
-											<div class="col-md-4">
-												@if ($setting['type'] == 'checkbox')
-													<div class="form-group checkbox-right-switch">
-												@endif
-													@include('helpers.form_control', [
-														'type' => $setting['type'],
-														'class' => (isset($setting['class']) ? $setting['class'] : "" ),
-														'name' => $name,
-														'value' => $setting['value'],
-														'label' => trans('messages.' . $name),
-														'help_class' => 'setting',
-														'options' => (isset($setting['options']) ? $setting['options'] : "" ),
-														'rules' => Acelle\Model\Setting::rules(),
-													])
-												@if ($setting['type'] == 'checkbox')
-													</div>
-												@endif
-											</div>
-											@if ($count%3 == 2)
-								</div><div class="row">
-											@endif
-											<?php ++$count; ?>
-										@endif
-									@endforeach							
-								</div>
-								<br />
-								<div class="text-left">
-									<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-								</div>
-							</div>
-						@endif
-						@if (Auth::user()->getOption("backend", "setting_sending") == 'yes')
-							<div class="tab-pane" id="top-tab2">
-								<div class="row">
-									<?php $count = 0; ?>
-									@foreach ($settings as $name => $setting)
-										@if ($setting['cat'] == 'sending')
-											<div class="col-md-4">
-												@if ($setting['type'] == 'checkbox')
-													<div class="form-group checkbox-right-switch">
-												@endif
-													@include('helpers.form_control', [
-														'type' => $setting['type'],
-														'class' => (isset($setting['class']) ? $setting['class'] : "" ),
-														'name' => $name,
-														'value' => $setting['value'],
-														'label' => trans('messages.' . $name),
-														'help_class' => 'setting',
-														'options' => (isset($setting['options']) ? $setting['options'] : "" ),
-														'rules' => Acelle\Model\Setting::rules(),
-													])
-												@if ($setting['type'] == 'checkbox')
-													</div>
-												@endif
-											</div>
-											@if ($count%3 == 2)
-								</div><div class="row">
-											@endif
-											<?php ++$count; ?>
-										@endif
-									@endforeach							
-								</div>
-								<br />
-								<div class="text-left">
-									<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-								</div>
-							</div>
-						@endif
-						@if (Auth::user()->getOption("backend", "setting_system_urls") == 'yes')
-							<div class="tab-pane" id="top-tab3">
-								<div class="text-left">
-									<a href="{{ action("Admin\SettingController@updateUrls") }}" class="btn bg-teal">{{ trans('messages.update_urls') }}</a>
-								</div>
-								<br />
-								<div class="">
-									<ul class="modern-listing mt-0 top-border-none">
-										@foreach ($settings as $name => $setting)
-											@if ($setting['cat'] == 'url')
-												<li>
-													<i class="icon-link text-grey"></i>
-													<h5 class="mt-0 mb-0 text-semibold">
-														{!! str_replace("LIST_UID", "<span class='text-info-600'>LIST_UID</span>",
-															str_replace("SUBSCRIBER_UID", "<span class='text-info-600'>SUBSCRIBER_UID</span>",
-															str_replace("SECURE_CODE", "<span class='text-info-600'>SECURE_CODE</span>",
-															str_replace("STYLE", "<span class='text-info-600'>STYLE</span>",
-															str_replace("MESSAGE_ID", "<span class='text-info-600'>MESSAGE_ID</span>",
-															str_replace("URL", "<span class='text-info-600'>URL</span>",
-														$setting['value'])))))) !!}
-													</h5>
-													<p>
-														{{ trans('messages.' . $name) }}
-													</p>
-												</li>
-											@endif
-										@endforeach
-									</ul>
-								</div>
-							</div>
-						@endif
 						
-							<div class="tab-pane" id="top-tab4">
-							
-								@include('elements._cron_jobs')							
-								
-							</div>
+						@include("admin.settings._general")
+						
+						@include("admin.settings._smtp")
+						
+						@include("admin.settings._sending")
+						
+						@include("admin.settings._system_urls")						
+						
+						<div class="tab-pane" id="top-cron_jobs">						
+							@include('elements._cron_jobs')							
+						</div>
 						
 					</div>
 				</div>
@@ -205,12 +110,27 @@
 					});
 				}
 				
+				function toogleMailer() {
+					var value = $("select[name='env[MAIL_DRIVER]']").val();
+					if(value == 'mail') {
+						$('.smtp_box').hide();
+					} else {
+						$('.smtp_box').show();
+					}
+				}
+				
 				$(document).ready(function() {
 					setInterval("changeSelectColor()", 100);
 					
-					@if (isset(request()->tab) && request()->tab == "3")			
-                        $('a[href="#top-tab3"]').trigger("click");
+					@if (isset(request()->tab))			
+                        $('a[href="#top-{{ request()->tab }}"]').trigger("click");
                     @endif
+					
+					// SMTP toogle
+					toogleMailer();
+					$("select[name='env[MAIL_DRIVER]']").change(function() {
+						toogleMailer();
+					});
 				});
 			</script>
 @endsection
