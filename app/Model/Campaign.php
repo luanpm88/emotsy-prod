@@ -1723,7 +1723,36 @@ class Campaign extends Model
     public function sendTestEmail($email)
     {
         try {
-            $this->sendTestMessage( [ 'email' => $email ] );
+            MailLog::info('Sending test email for campaign `' . $this->name . '`');
+            MailLog::info('Sending test email to `' . $email . '`');
+
+            // @todo: only send a test message when campaign sufficient information is available
+
+            // build a temporary subscriber oject used to pass through the sending methods
+            $subscriber = $this->createStdClassSubscriber(['email' => $email]);
+
+            // Pick up an available sending server
+            // Throw exception in case no server available
+            $server = $this->pickServer($this);
+
+            // build the message from campaign information
+            list($message, $msgId) = $this->prepareEmail($subscriber, $server);
+            
+            // actually send
+            // @todo consider using queue here
+            $result = $server->send($message, array(
+                'from_email' => $this->from_email,
+                'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly (not in MIME message)
+                'campaign' => $this,
+                'subscriber' => $subscriber,
+                'msgId' => $msgId
+            ));
+            
+            // examine the result from sending server
+            if(array_has($result, 'error')) {
+                throw new \Exception($result['error']);
+            }
+
             return [
                 "status" => "success",
                 "message" => trans('messages.campaign.test_sent')
@@ -1800,45 +1829,6 @@ class Campaign extends Model
     {
         $this->clearAllJobs();
         parent::delete();
-    }
-
-    /**
-     * Send a test message
-     *
-     */
-    public function sendTestMessage($subscriber)
-    {
-        MailLog::info('Sending test email for campaign `' . $this->name . '`');
-        MailLog::info('Sending test email to `' . $subscriber['email'] . '`');
-
-        // @todo: only send a test message when campaign sufficient information is available
-
-        // build a temporary subscriber oject used to pass through the sending methods
-        $subscriber = $this->createStdClassSubscriber($subscriber);
-
-        // Pick up an available sending server
-        // Throw exception in case no server available
-        $server = $this->pickServer($this);
-
-        // build the message from campaign information
-        list($message, $msgId) = $this->prepareEmail($subscriber, $server);
-        
-        // actually send
-        // @todo consider using queue here
-        $result = $server->send($message, array(
-            'from_email' => $this->from_email,
-            'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly (not in MIME message)
-            'campaign' => $this,
-            'subscriber' => $subscriber,
-            'msgId' => $msgId
-        ));
-        
-        // examine the result from sending server
-        if(array_has($result, 'error')) {
-            throw new \Exception($result['error']);
-        }
-
-        return true;
     }
 
     /**
