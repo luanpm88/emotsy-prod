@@ -212,5 +212,9 @@ return [
         'Zipper' => Chumper\Zipper\Zipper::class
         
     ],
-
+    
+    /*
+     * Custom application settings of Acelle Mail go here
+     */
+    'redis_enabled' => env('REDIS_ENABLED', false)
 ];

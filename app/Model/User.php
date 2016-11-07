@@ -765,7 +765,7 @@ class User extends Authenticatable
      *
      * @return array
      */
-    public function initQuotaTracker() {
+    public function renewQuotaTracker() {
         $start = $this->getQuotaStartingTime();
         if ($start == NULL) {
             return;
@@ -774,23 +774,45 @@ class User extends Authenticatable
         // recent tracking logs
         $recent = $this->trackingLogs()->where('created_at', '>=', $start);
 
-        // load the tracker from DB
+        // load the tracker from DB (if exists)
+        // then merge with the current tracking log data
         if ($this->quota) {
             // retrieve the stored quota usage and merge it with actual (newer) usage
-            $storedTracker = unserialize($this->quota);
-            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp($storedTracker->last()));
-            $series = collect($recent->get())->map(function($trackingLog) {
+            $oldSeries = unserialize($this->quota);
+            $lastUsage = $oldSeries[sizeof($oldSeries) - 1];
+            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp($lastUsage));
+            
+            $newSeries = collect($recent->get())->map(function($trackingLog) {
                 return $trackingLog->created_at->timestamp;
             })->toArray();
             
-            $dataSeries = array_merge($storedTracker->getSeries(), $series);
+            $series = array_merge($oldSeries, $newSeries);
         } else {
-            $dataSeries = collect($recent->get())->map(function($trackingLog) {
+            $series = collect($recent->get())->map(function($trackingLog) {
                 return $trackingLog->created_at->timestamp;
             })->toArray();
         }
+        
+        $this->getQuotaTracker()->renew($series);
+    }
 
-        $this->quotaTracker = new QuotaTracker($this->getQuotaIntervalString(), $this->getSendingQuota(), $dataSeries);;
+    /**
+     * Initialize the quota tracker
+     *
+     * @return array
+     */
+    public function initQuotaTracker() {
+        if (config('app.redis_enabled')) {
+            $this->quotaTracker = new QuotaTrackerRedis($this->getQuotaIntervalString(), $this->getSendingQuota());
+            // @note: in case of Redis tracker, the following command must be issued manually
+            //     $this->renewQuotaTracker();
+            // Normally, Redis tracker is used in a multi-process context, the above command must be executed 
+            //     by the parent process, before forking any child process
+        } else {
+            $this->quotaTracker = new QuotaTracker($this->getQuotaIntervalString(), $this->getSendingQuota());
+            // renew the quota data stored in the DB
+            $this->renewQuotaTracker();
+        }
     }
 
     /**
@@ -812,7 +834,7 @@ class User extends Authenticatable
      * @return array
      */
     public function saveQuotaUsageInfo() {
-        $this->quota = serialize($this->getQuotaTracker());
+        $this->quota = serialize($this->getQuotaTracker()->getSeries());
         $this->save();
     }
 
@@ -822,6 +844,6 @@ class User extends Authenticatable
         foreach($this->getQuotaTracker()->getSeries() as $t) {
             echo \Carbon\Carbon::createFromTimestamp($t)->toDateTimeString() . " <-> " ;
         }
-        echo "\n";
+        echo "\n" . env('REDIS_ENABLED') . "\n";
     }
 }
