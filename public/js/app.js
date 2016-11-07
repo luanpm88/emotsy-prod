@@ -763,38 +763,33 @@ $(function() {
         var form = $(".ajax_send_a_test_email_form");
         
         if(form.valid()) {
+            form.addClass("loading");
+            form.find("button[type='submit']").addClass("disabled");
+            form.find("button[type='submit']").before('<i class="icon-spinner10 spinner position-left loading-icon"></i>');
             $.ajax({
                 type: "POST",
                 url: url,
                 data: form.serialize(), // serializes the form's elements.
-                success: function(msg)
+                success: function(data)
                 {
-                    //msg = JSON.parse(msg);
-                    //if(msg != '') {
-                    //    swal({
-                    //        title: msg.message,
-                    //        text: "",
-                    //        confirmButtonColor: "#00695C",
-                    //        type: msg.status,
-                    //        allowOutsideClick: true,
-                    //        confirmButtonText: LANG_OK,
-                    //        customClass: "swl-success"
-                    //    });
-                    //}
-                    
+                    data = JSON.parse(data);
                     swal({
                         title: '',
-                        text: form.attr('sending-text'),
+                        text: data.message,
                         confirmButtonColor: "#00695C",
-                        type: msg.status,
+                        type: data.status,
                         allowOutsideClick: true,
                         confirmButtonText: LANG_OK,
                         customClass: "swl-success"
                     });
+                    
+                    form.addClass("loading");
+                    form.find("button[type='submit']").removeClass("disabled");
+                    form.find('.loading-icon').remove();
+                    $(".copy-campaign-close").trigger("click");
                 }
             });
-            
-            $(".copy-campaign-close").trigger("click");
+
         }
         
         e.preventDefault(); // avoid to execute the actual submit of the form.

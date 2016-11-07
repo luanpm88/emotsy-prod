@@ -446,10 +446,7 @@ class Campaign extends Model
         // @todo consider a solution for UNSUBSCRIBE_URL for test subscriber (also for other tags like: UPDATE_PROFILE_URL)
 
         $tags = array(
-            'SUBSCRIBER_EMAIL' => $subscriber->email,
-            'UPDATE_PROFILE_URL' => str_replace('LIST_UID', $subscriber->mailList->uid,
-                str_replace('SUBSCRIBER_UID', $subscriber->uid,
-                str_replace('SECURE_CODE', $subscriber->getSecurityToken('update-profile'), Setting::get('url_update_profile')))),
+            'SUBSCRIBER_EMAIL' => $subscriber->email,            
             'CAMPAIGN_NAME' => $this->name,
             'CAMPAIGN_UID' => $this->uid,
             'CAMPAIGN_SUBJECT' => $this->subject,
@@ -475,7 +472,16 @@ class Campaign extends Model
             'LIST_FROM_NAME' => $this->mailList->from_name,
             'LIST_FROM_EMAIL' => $this->mailList->from_email,
         );
+        
+        // UPDATE_PROFILE_URL
+        if(!$this->isStdClassSubscriber($subscriber)) {
+            // in case of actually sending campaign
+            $tags['UPDATE_PROFILE_URL'] = str_replace('LIST_UID', $this->mailList->uid,
+                str_replace('SUBSCRIBER_UID', $subscriber->uid,
+                str_replace('SECURE_CODE', $subscriber->getSecurityToken('update-profile'), Setting::get('url_update_profile'))));
+        }
 
+        // Update tags layout
         foreach ($tags as $tag => $value) {
             $message = str_replace('{'.$tag.'}', $value, $message);
         }
@@ -1716,15 +1722,16 @@ class Campaign extends Model
      */
     public function sendTestEmail($email)
     {
-        if(!true) {
+        try {
+            $this->sendTestMessage( [ 'email' => $email ] );
             return [
                 "status" => "success",
                 "message" => trans('messages.campaign.test_sent')
             ];
-        } else {
+        } catch (\Exception $e) {
             return [
                 "status" => "error",
-                "message" => "error details"
+                "message" => $e->getMessage()
             ];
         }
     }
