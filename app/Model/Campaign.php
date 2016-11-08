@@ -1649,12 +1649,16 @@ class Campaign extends Model
     public function addTrackingUrl($email_html_content, $msgId)
     {
         if (preg_match_all('/<a[^>]*href=["\'](?<url>http[^"\']*)["\']/i', $email_html_content, $matches)) {
-            foreach ($matches['url'] as $href) {
-                $newHref = str_replace('URL', StringHelper::base64UrlEncode($href), Setting::get('url_click_track'));
-                $newHref = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $newHref);
+            foreach ($matches[0] as $key => $href) {
+                $url = $matches['url'][$key];
+
+                $newUrl = str_replace('URL', StringHelper::base64UrlEncode($url), Setting::get('url_click_track'));
+                $newUrl = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $newUrl);
+                $newHref = str_replace($url, $newUrl, $href);
+
                 // if the link contains UNSUBSCRIBE URL tag
                 if (strpos($href, '{UNSUBSCRIBE_URL}') !== false) {
-                    $email_html_content = str_replace($href, '{UNSUBSCRIBE_URL}', $email_html_content);
+                    // just do nothing
                 } else if (preg_match("/{[A-Z0-9_]+}/", $href)) {
                     // just skip if the url contains a tag. For example: {UPDATE_PROFILE_URL}
                     // @todo: do we track these clicks?
