@@ -29,5 +29,5 @@ try {
 
 <pre style="font-size: 16px;background:#f5f5f5"># {{ trans('messages.cron_jobs_comment') }}
 * * * * * {!! $php_bin !!} -q {{ base_path() }}/artisan handler:run 2&gt;&amp;1
-* * * * * {!! $php_bin !!} -q {{ base_path() }}/artisan queue:work 2&gt;&amp;1
+* * * * * {!! $php_bin !!} -q {{ base_path() }}/artisan queue:work --tries=3 2&gt;&amp;1
 </pre>
