@@ -795,7 +795,7 @@ class Campaign extends Model
     public function getUrls()
     {
         // Find all links in campaign content
-        preg_match_all('/<a[^>]*href=["\'](?<url>[^"\']*)["\']/i', $this->html, $matches);
+        preg_match_all('/<a[^>]*href=["\'](?<url>http[^"\']*)["\']/i', $this->html, $matches);
         $hrefs = array_unique($matches['url']);
 
         $urls = [];
@@ -1648,7 +1648,7 @@ class Campaign extends Model
      */
     public function addTrackingUrl($email_html_content, $msgId)
     {
-        if (preg_match_all('/<a[^>]*href=["\'](?<url>[^"\']*)["\']/i', $email_html_content, $matches)) {
+        if (preg_match_all('/<a[^>]*href=["\'](?<url>http[^"\']*)["\']/i', $email_html_content, $matches)) {
             foreach ($matches['url'] as $href) {
                 $newHref = str_replace('URL', StringHelper::base64UrlEncode($href), Setting::get('url_click_track'));
                 $newHref = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $newHref);
