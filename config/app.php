@@ -151,6 +151,7 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         Barryvdh\Queue\AsyncServiceProvider::class,
         Chumper\Zipper\ZipperServiceProvider::class,
+        Maatwebsite\Excel\ExcelServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -209,7 +210,8 @@ return [
         'Image' => Intervention\Image\Facades\Image::class,
         'Tool' => Acelle\Library\Tool::class,
         'Yaml' => Symfony\Component\Yaml\Yaml::class,
-        'Zipper' => Chumper\Zipper\Zipper::class
+        'Zipper' => Chumper\Zipper\Zipper::class,
+        'Excel' => Maatwebsite\Excel\Facades\Excel::class,
         
     ],
 

@@ -668,16 +668,16 @@ class MailList extends Model
      *
      * @return void
      */
-    public static function import($list, $user, $job)
+    public function import($user, $job)
     {
-        // Info from job
+        // Get info
         $systemJob = $job->getSystemJob();        
         $directory = $job->getPath();
-
-        // Import to database
-        $filename = 'data.csv';
+        $filename = $job->getFilename();
         $content = \File::get($directory.$filename);
-        $lines = preg_split('/\r\n|\r|\n/', $content); // explode("\n\r", $content);
+        
+        // Import to database        
+        $lines = preg_split('/\r\n|\r|\n/', $content);
         $total = count($lines) - 1;
         $success = 0;
         $error = 0;
@@ -697,7 +697,7 @@ class MailList extends Model
         // check valid file
         if (!in_array('EMAIL', $headers)) {
             $systemJob->data = json_encode([
-                "mail_list_uid" => $list->uid,
+                "mail_list_uid" => $this->uid,
                 "user_id" => $user->id,
                 "status" => "failed",
                 "message" => "<span style='color:red'>".trans('messages.invalid_csv_file')."</span>",
@@ -716,9 +716,9 @@ class MailList extends Model
         foreach ($lines as $key => $line) {
 
             // authorize
-            if ($user->cannot('create', new \Acelle\Model\Subscriber(['mail_list_id' => $list->id]))) {
+            if ($user->cannot('create', new \Acelle\Model\Subscriber(['mail_list_id' => $this->id]))) {
                 $systemJob->data = json_encode([
-                    "mail_list_uid" => $list->uid,
+                    "mail_list_uid" => $this->uid,
                     "user_id" => $user->id,
                     "status" => "failed",
                     "message" => "<span style='color:red'>".trans('messages.error_add_max_quota').'</span><br />'.$content_cache,
@@ -730,7 +730,7 @@ class MailList extends Model
                 $systemJob->save();
 
                 // Action Log
-                $list->log('import_max_error', $user, ['count' => $count]);
+                $this->log('import_max_error', $user, ['count' => $count]);
                 
                 $error_detail = trans('messages.error_add_max_quota');
                 $myfile = file_put_contents($directory.'detail.log', $error_detail.PHP_EOL , FILE_APPEND | LOCK_EX);
@@ -746,20 +746,20 @@ class MailList extends Model
                     $email = "";
                 }
 
-                $valid = $list->checkExsitEmail($email);
+                $valid = $this->checkExsitEmail($email);
                 if ($valid) {
                     //// save subscribers
                     $subscriber = new \Acelle\Model\Subscriber();
-                    $subscriber->mail_list_id = $list->id;
+                    $subscriber->mail_list_id = $this->id;
                     $subscriber->email = $email;
                     $subscriber->status = 'subscribed';
-                    $subscriber->user_id = $list->user_id;
+                    $subscriber->user_id = $this->user_id;
                     $subscriber->save();
 
                     foreach ($parts as $key => $value) {
                         $value = trim(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($value))));
                         if(isset($headers[$key])) {
-                            $lf = $list->fields()->where('tag', '=', $headers[$key])->first();
+                            $lf = $this->fields()->where('tag', '=', $headers[$key])->first();
                             if (is_object($lf)) {
                                 //// save fields
                                 $lfv = new \Acelle\Model\SubscriberField(array(
@@ -789,7 +789,7 @@ class MailList extends Model
                     
                     // update system job
                     $systemJob->data = json_encode([
-                        "mail_list_uid" => $list->uid,
+                        "mail_list_uid" => $this->uid,
                         "user_id" => $user->id,
                         "status" => "running",
                         "message" => $content_cache,
@@ -815,7 +815,7 @@ class MailList extends Model
         
         // update system job
         $systemJob->data = json_encode([
-            "mail_list_uid" => $list->uid,
+            "mail_list_uid" => $this->uid,
             "user_id" => $user->id,
             "status" => "done",
             "message" => $content_cache,
@@ -827,7 +827,7 @@ class MailList extends Model
         $systemJob->save();
 
         // Action Log
-        $list->log('import_success', $user, ['count' => $success, 'error' => $error]);
+        $this->log('import_success', $user, ['count' => $success, 'error' => $error]);
     }
     
     /**

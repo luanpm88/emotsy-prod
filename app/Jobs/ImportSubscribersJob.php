@@ -11,6 +11,8 @@ class ImportSubscribersJob extends ImportExportJob implements ShouldQueue
 {
     use InteractsWithQueue, SerializesModels;
     
+    protected $filename;
+    
     /**
      * Create a new job instance.
      *
@@ -22,8 +24,18 @@ class ImportSubscribersJob extends ImportExportJob implements ShouldQueue
         parent::__construct($mailList, $user);
         
         // Upload csv
-        $filename = 'data.csv';
-        $file->move($this->path, $filename);
+        $this->filename = 'data.csv';
+        $file->move($this->path, $this->filename);
+    }
+    
+    /**
+     * Get import file name.
+     *
+     * @return void
+     */
+    public function getFilename()
+    {
+        return $this->filename;
     }
 
     /**
@@ -35,7 +47,7 @@ class ImportSubscribersJob extends ImportExportJob implements ShouldQueue
     {
         try {
             $job = $this;
-            \Acelle\Model\MailList::import($job->mailList, $job->user, $job);
+            $job->mailList->import($job->user, $job);
         } catch (\Exception $e) {
             $systemJob = $this->getSystemJob();
             
