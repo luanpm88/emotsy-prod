@@ -446,10 +446,7 @@ class Campaign extends Model
         // @todo consider a solution for UNSUBSCRIBE_URL for test subscriber (also for other tags like: UPDATE_PROFILE_URL)
 
         $tags = array(
-            'SUBSCRIBER_EMAIL' => $subscriber->email,
-            'UPDATE_PROFILE_URL' => str_replace('LIST_UID', $subscriber->mailList->uid,
-                str_replace('SUBSCRIBER_UID', $subscriber->uid,
-                str_replace('SECURE_CODE', $subscriber->getSecurityToken('update-profile'), Setting::get('url_update_profile')))),
+            'SUBSCRIBER_EMAIL' => $subscriber->email,            
             'CAMPAIGN_NAME' => $this->name,
             'CAMPAIGN_UID' => $this->uid,
             'CAMPAIGN_SUBJECT' => $this->subject,
@@ -475,7 +472,16 @@ class Campaign extends Model
             'LIST_FROM_NAME' => $this->mailList->from_name,
             'LIST_FROM_EMAIL' => $this->mailList->from_email,
         );
+        
+        // UPDATE_PROFILE_URL
+        if(!$this->isStdClassSubscriber($subscriber)) {
+            // in case of actually sending campaign
+            $tags['UPDATE_PROFILE_URL'] = str_replace('LIST_UID', $this->mailList->uid,
+                str_replace('SUBSCRIBER_UID', $subscriber->uid,
+                str_replace('SECURE_CODE', $subscriber->getSecurityToken('update-profile'), Setting::get('url_update_profile'))));
+        }
 
+        // Update tags layout
         foreach ($tags as $tag => $value) {
             $message = str_replace('{'.$tag.'}', $value, $message);
         }
@@ -789,7 +795,7 @@ class Campaign extends Model
     public function getUrls()
     {
         // Find all links in campaign content
-        preg_match_all('/<a[^>]*href=["\'](?<url>[^"\']*)["\']/i', $this->html, $matches);
+        preg_match_all('/<a[^>]*href=["\'](?<url>http[^"\']*)["\']/i', $this->html, $matches);
         $hrefs = array_unique($matches['url']);
 
         $urls = [];
@@ -1642,13 +1648,17 @@ class Campaign extends Model
      */
     public function addTrackingUrl($email_html_content, $msgId)
     {
-        if (preg_match_all('/<a[^>]*href=["\'](?<url>[^"\']*)["\']/i', $email_html_content, $matches)) {
-            foreach ($matches['url'] as $href) {
-                $newHref = str_replace('URL', StringHelper::base64UrlEncode($href), Setting::get('url_click_track'));
-                $newHref = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $newHref);
+        if (preg_match_all('/<a[^>]*href=["\'](?<url>http[^"\']*)["\']/i', $email_html_content, $matches)) {
+            foreach ($matches[0] as $key => $href) {
+                $url = $matches['url'][$key];
+
+                $newUrl = str_replace('URL', StringHelper::base64UrlEncode($url), Setting::get('url_click_track'));
+                $newUrl = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $newUrl);
+                $newHref = str_replace($url, $newUrl, $href);
+
                 // if the link contains UNSUBSCRIBE URL tag
                 if (strpos($href, '{UNSUBSCRIBE_URL}') !== false) {
-                    $email_html_content = str_replace($href, '{UNSUBSCRIBE_URL}', $email_html_content);
+                    // just do nothing
                 } else if (preg_match("/{[A-Z0-9_]+}/", $href)) {
                     // just skip if the url contains a tag. For example: {UPDATE_PROFILE_URL}
                     // @todo: do we track these clicks?
@@ -1716,15 +1726,45 @@ class Campaign extends Model
      */
     public function sendTestEmail($email)
     {
-        if(!true) {
+        try {
+            MailLog::info('Sending test email for campaign `' . $this->name . '`');
+            MailLog::info('Sending test email to `' . $email . '`');
+
+            // @todo: only send a test message when campaign sufficient information is available
+
+            // build a temporary subscriber oject used to pass through the sending methods
+            $subscriber = $this->createStdClassSubscriber(['email' => $email]);
+
+            // Pick up an available sending server
+            // Throw exception in case no server available
+            $server = $this->pickServer($this);
+
+            // build the message from campaign information
+            list($message, $msgId) = $this->prepareEmail($subscriber, $server);
+            
+            // actually send
+            // @todo consider using queue here
+            $result = $server->send($message, array(
+                'from_email' => $this->from_email,
+                'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly (not in MIME message)
+                'campaign' => $this,
+                'subscriber' => $subscriber,
+                'msgId' => $msgId
+            ));
+            
+            // examine the result from sending server
+            if(array_has($result, 'error')) {
+                throw new \Exception($result['error']);
+            }
+
             return [
                 "status" => "success",
                 "message" => trans('messages.campaign.test_sent')
             ];
-        } else {
+        } catch (\Exception $e) {
             return [
                 "status" => "error",
-                "message" => "error details"
+                "message" => $e->getMessage()
             ];
         }
     }
@@ -1793,45 +1833,6 @@ class Campaign extends Model
     {
         $this->clearAllJobs();
         parent::delete();
-    }
-
-    /**
-     * Send a test message
-     *
-     */
-    public function sendTestMessage($subscriber)
-    {
-        MailLog::info('Sending test email for campaign `' . $this->name . '`');
-        MailLog::info('Sending test email to `' . $subscriber['email'] . '`');
-
-        // @todo: only send a test message when campaign sufficient information is available
-
-        // build a temporary subscriber oject used to pass through the sending methods
-        $subscriber = $this->createStdClassSubscriber($subscriber);
-
-        // Pick up an available sending server
-        // Throw exception in case no server available
-        $server = $this->pickServer($this);
-
-        // build the message from campaign information
-        list($message, $msgId) = $this->prepareEmail($subscriber, $server);
-        
-        // actually send
-        // @todo consider using queue here
-        $result = $server->send($message, array(
-            'from_email' => $this->from_email,
-            'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly (not in MIME message)
-            'campaign' => $this,
-            'subscriber' => $subscriber,
-            'msgId' => $msgId
-        ));
-        
-        // examine the result from sending server
-        if(array_has($result, 'error')) {
-            throw new \Exception($result['error']);
-        }
-
-        return true;
     }
 
     /**

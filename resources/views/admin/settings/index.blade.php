@@ -34,7 +34,7 @@
 						@endif
 						@if (Auth::user()->getOption("backend", "setting_general") == 'yes')
 							<li class="text-semibold"><a href="#top-smtp" data-toggle="tab">
-								<i class="icon-envelop"></i> {{ trans('messages.smtp') }}</a></li>
+								<i class="icon-envelop"></i> {{ trans('messages.system_email') }}</a></li>
 						@endif
 						@if (Auth::user()->getOption("backend", "setting_sending") == 'yes')
 							<li class="text-semibold"><a href="#top-sending" data-toggle="tab">

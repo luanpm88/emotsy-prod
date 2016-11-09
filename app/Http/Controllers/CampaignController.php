@@ -1484,7 +1484,7 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
         
-        $sending = $campaign->sendTestEmail($request->send_test_email_campaign_uid);
+        $sending = $campaign->sendTestEmail($request->send_test_email);
         
         return json_encode($sending);
     }

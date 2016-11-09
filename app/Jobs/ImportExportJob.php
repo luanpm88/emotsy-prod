@@ -2,15 +2,8 @@
 
 namespace Acelle\Jobs;
 
-use Acelle\Jobs\Job;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
-
-class ImportExportJob extends SystemJob implements ShouldQueue
-{
-    use InteractsWithQueue, SerializesModels;
-    
+class ImportExportJob extends SystemJob
+{    
     protected $mailList;
     protected $user;
     protected $path;

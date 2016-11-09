@@ -1,5 +1,5 @@
                         @if (Auth::user()->getOption("backend", "setting_general") == 'yes')
-							<div class="tab-pane" id="top-smtp">
+							<div class="tab-pane active" id="top-smtp">
 								<div class="row">
 									<div class="col-md-6">
 										@include('helpers.form_control', [

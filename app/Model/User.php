@@ -768,6 +768,8 @@ class User extends Authenticatable
     public function renewQuotaTracker() {
         $start = $this->getQuotaStartingTime();
         if ($start == NULL) {
+            // @todo: workaround for unlimited quota
+            $this->quotaTracker = new QuotaTracker('now', PHP_INT_MAX);
             return;
         }
 

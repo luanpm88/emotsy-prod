@@ -209,7 +209,7 @@ return [
         'Image' => Intervention\Image\Facades\Image::class,
         'Tool' => Acelle\Library\Tool::class,
         'Yaml' => Symfony\Component\Yaml\Yaml::class,
-        'Zipper' => Chumper\Zipper\Zipper::class
+        'Zipper' => Chumper\Zipper\Zipper::class,
         
     ],
     
