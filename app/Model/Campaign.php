@@ -1132,6 +1132,18 @@ class Campaign extends Model
     }
     
     /**
+     * Count unique clicked opened emails.
+     *
+     * @return number
+     */
+    public function clickedPerEmailCount()
+    {
+        $query = $this->clickLogs();
+
+        return $query->distinct('subscriber_id')->count('subscriber_id');
+    }
+    
+    /**
      * Click a link rate.
      *
      * @return number
@@ -1143,6 +1155,20 @@ class Campaign extends Model
         }
 
         return round(($this->clickCount() / $this->openCount()) * 100, 0);
+    }
+    
+    /**
+     * Clicked email rate.
+     *
+     * @return number
+     */
+    public function clickedPerEmailRate()
+    {
+        if ($this->openCount() == 0) {
+            return 0;
+        }
+
+        return round(($this->clickedPerEmailCount() / $this->openCount()) * 100, 0);
     }
 
     /**
