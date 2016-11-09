@@ -2,16 +2,10 @@
 
 namespace Acelle\Jobs;
 
-use Acelle\Jobs\Job;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Acelle\Library\Log as MailLog;
 
-class RunCampaignJob extends CampaignJob implements ShouldQueue
+class RunCampaignJob extends CampaignJob
 {
-    use InteractsWithQueue, SerializesModels;
-    
     protected $campaign;
 
     /**
