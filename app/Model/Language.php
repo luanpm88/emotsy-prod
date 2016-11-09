@@ -197,7 +197,10 @@ class Language extends Model
      */
     public static function getDefaultLanguage()
     {
-        return \Acelle\Model\Language::where("is_default", "=", true)->first();
+        return new \Acelle\Model\Language([
+            'name' => "Default",
+            'code' => "default",
+        ]);
     }
     
     /**
