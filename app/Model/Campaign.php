@@ -1136,7 +1136,7 @@ class Campaign extends Model
      *
      * @return number
      */
-    public function clickedPerEmailCount()
+    public function clickedEmailsCount()
     {
         $query = $this->clickLogs();
 
@@ -1158,17 +1158,17 @@ class Campaign extends Model
     }
     
     /**
-     * Clicked email rate.
+     * Clicked emails count.
      *
      * @return number
      */
-    public function clickedPerEmailRate()
+    public function clickedEmailsRate()
     {
         if ($this->openCount() == 0) {
             return 0;
         }
 
-        return round(($this->clickedPerEmailCount() / $this->openCount()) * 100, 0);
+        return round(($this->clickedEmailsCount() / $this->openCount()) * 100, 0);
     }
 
     /**

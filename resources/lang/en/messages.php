@@ -1099,6 +1099,6 @@ return [
         <span class="text-semibold">validation.php</span>',
     'starting' => 'Starting...',
     'system_email' => 'System send email',
-    'clicked_open_email_count' => 'Clicked rate on open emails',
+    'clicked_emails_rate' => 'Clicked emails rate',
 ];
 

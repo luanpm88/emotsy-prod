@@ -80,9 +80,9 @@
 													<span class="text-muted">{{ trans('messages.open_rate') }}</span>
 												</div>
 												<div class="single-stat-box pull-left ml-20">
-													<span class="no-margin text-teal-800 stat-num">{{ $item->clickedPerEmailRate() }}%</span>
+													<span class="no-margin text-teal-800 stat-num">{{ $item->clickedEmailsRate() }}%</span>
 													<div class="progress progress-xxs">
-														<div class="progress-bar progress-bar-info" style="width: {{ $item->clickedPerEmailRate() }}%">
+														<div class="progress-bar progress-bar-info" style="width: {{ $item->clickedEmailsRate() }}%">
 														</div>
 													</div>
 													<span class="text-muted">{{ trans('messages.click_rate') }}</span>

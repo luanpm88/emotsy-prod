@@ -738,7 +738,7 @@ class CampaignController extends Controller
             'name' => trans('messages.Click'),
             'type' => 'bar',
             'smooth' => true,
-            'data' => [$campaign->clickedPerEmailCount()],
+            'data' => [$campaign->clickedEmailsCount()],
             'itemStyle' => [
                 'normal' => [
                     'color' => '#039BE5'
