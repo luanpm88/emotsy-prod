@@ -234,6 +234,10 @@ class LanguageController extends Controller
         $parse_error = $request->session()->get("parse_error");
         $filename = $request->file;
         
+        if($this->isDemoMode() && $language->is_default) {
+            return $this->notAuthorized();
+        }
+        
         // authorize
         if (\Gate::denies('translate', $language)) {
             return $this->notAuthorized();
