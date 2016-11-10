@@ -23,7 +23,9 @@
 namespace Acelle\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Acelle\Library\QuotaTracker;
+use Illuminate\Support\Facades\Redis;
+use Acelle\Library\QuotaTrackerStd;
+use Acelle\Library\QuotaTrackerRedis;
 
 class User extends Authenticatable
 {
@@ -438,6 +440,7 @@ class User extends Authenticatable
      */
     public function maxLists()
     {
+        // @todo: nhảm, nếu đã qui ước là -1 thì chỉ dùng -1, ∞ chỉ dùng để show bên view
         $count = $this->getOption('frontend', 'list_max');
         if ($count == -1) {
             return '∞';
@@ -606,12 +609,8 @@ class User extends Authenticatable
      */
     public function getSendingQuota()
     {
-        $quota = $this->getOption('frontend', 'sending_quota');
-        if ($quota == '-1') {
-            return '∞';
-        } else {
-            return $quota;
-        }
+        // -1 indicate unlimited
+        return $this->getOption('frontend', 'sending_quota');
     }
 
     /**
@@ -767,11 +766,6 @@ class User extends Authenticatable
      */
     public function renewQuotaTracker() {
         $start = $this->getQuotaStartingTime();
-        if ($start == NULL) {
-            // @todo: workaround for unlimited quota
-            $this->quotaTracker = new QuotaTracker('now', PHP_INT_MAX);
-            return;
-        }
 
         // recent tracking logs
         $recent = $this->trackingLogs()->where('created_at', '>=', $start);
@@ -781,8 +775,10 @@ class User extends Authenticatable
         if ($this->quota) {
             // retrieve the stored quota usage and merge it with actual (newer) usage
             $oldSeries = unserialize($this->quota);
-            $lastUsage = $oldSeries[sizeof($oldSeries) - 1];
-            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp($lastUsage));
+            if (!empty($oldSeries)) {
+                $lastUsage = $oldSeries[sizeof($oldSeries) - 1];
+                $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp($lastUsage));
+            }
             
             $newSeries = collect($recent->get())->map(function($trackingLog) {
                 return $trackingLog->created_at->timestamp;
@@ -805,13 +801,13 @@ class User extends Authenticatable
      */
     public function initQuotaTracker() {
         if (config('app.redis_enabled')) {
-            $this->quotaTracker = new QuotaTrackerRedis($this->getQuotaIntervalString(), $this->getSendingQuota());
+            $this->quotaTracker = new QuotaTrackerRedis(Redis::connection(), $this->getQuotaIntervalString(), $this->getSendingQuota());
             // @note: in case of Redis tracker, the following command must be issued manually
             //     $this->renewQuotaTracker();
             // Normally, Redis tracker is used in a multi-process context, the above command must be executed 
             //     by the parent process, before forking any child process
         } else {
-            $this->quotaTracker = new QuotaTracker($this->getQuotaIntervalString(), $this->getSendingQuota());
+            $this->quotaTracker = new QuotaTrackerStd($this->getQuotaIntervalString(), $this->getSendingQuota());
             // renew the quota data stored in the DB
             $this->renewQuotaTracker();
         }

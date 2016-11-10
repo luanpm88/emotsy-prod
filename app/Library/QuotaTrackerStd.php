@@ -54,12 +54,16 @@ class QuotaTrackerStd extends QuotaTracker implements QuotaTrackerInterface
      * @return void
      */
     public function check(Carbon $timePoint = NULL) {
+        if ($this->quota == self::UNLIMITED) {
+            return true;
+        }
+
         if (!isset($timePoint)) {
             $timePoint = Carbon::now();
         }
 
         $this->shiftBy($timePoint);
-        //echo "Usage " . $this->usage() . "\nQuota " . $this->quota . "\n";
+        echo "Usage " . $this->usage() . "\nQuota " . $this->quota . "\n";
 
         if ($this->usage() >= $this->quota) {
             return false;
@@ -85,6 +89,17 @@ class QuotaTrackerStd extends QuotaTracker implements QuotaTrackerInterface
         while($this->first() != NULL && $this->first() < $cutOff ) {
             array_shift($this->series);
         }
+    }
+
+    /**
+     * Renew the quota data for the tracker
+     *
+     * @param Array $series
+     * @return void
+     */
+    public function renew($series)
+    {
+        $this->series = $series;
     }
 
     /**
@@ -135,5 +150,14 @@ class QuotaTrackerStd extends QuotaTracker implements QuotaTrackerInterface
     public function getSeries()
     {
         return $this->series;
+    }
+
+    public function showSeries() {
+        echo "\n------------------------------------------\n";
+        echo "Now: *" . Carbon::now()->formatLocalized("%H:%M:%S") . "*\n";
+        foreach($this->series as $t) {
+            echo Carbon::createFromTimestamp($t)->formatLocalized("%H:%M:%S") . " | "; 
+        }
+        echo "\n------------------------------------------\n";
     }
 }

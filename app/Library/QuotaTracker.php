@@ -31,6 +31,7 @@ abstract class QuotaTracker
     protected $quota; // in seconds
 
     const START_POINT = 0;
+    const UNLIMITED = -1;
 
     /**
      * Constructor, modeling data from a JSON array 

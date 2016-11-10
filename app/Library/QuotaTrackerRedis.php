@@ -22,7 +22,9 @@
  */
 
 namespace Acelle\Library;
+
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Redis;
 
 class QuotaTrackerRedis extends QuotaTracker implements QuotaTrackerInterface
 {
@@ -96,6 +98,10 @@ class QuotaTrackerRedis extends QuotaTracker implements QuotaTrackerInterface
      * @return void
      */
     public function check(Carbon $timePoint = NULL) {
+        if ($this->quota == self::UNLIMITED) {
+            return true;
+        }
+
         if (!isset($timePoint)) {
             $timePoint = Carbon::now();
         }
@@ -158,7 +164,8 @@ class QuotaTrackerRedis extends QuotaTracker implements QuotaTrackerInterface
         
         $first = $this->redis->lindex(self::REDIS_KEY, 0);
         while(!is_null($first) && $first < $cutOff ) {
-            $first = $this->redis->lpop(self::REDIS_KEY);
+            $this->redis->lpop(self::REDIS_KEY);
+            $first = $this->redis->lindex(self::REDIS_KEY, 0);
         }
     }
 
@@ -168,7 +175,7 @@ class QuotaTrackerRedis extends QuotaTracker implements QuotaTrackerInterface
      */
     public function getSeries()
     {
-        $this->redis->lrange(self::REDIS_KEY, 0, $this->redis->llen(self::REDIS_KEY));
+        return $this->redis->lrange(self::REDIS_KEY, 0, $this->redis->llen(self::REDIS_KEY));
     }
 
     /**
@@ -179,5 +186,13 @@ class QuotaTrackerRedis extends QuotaTracker implements QuotaTrackerInterface
     public function usagePercentage()
     {
         return (float) $this->usage() / $this->quota;
+    }
+
+    public function showSeries() {
+        echo "\n------------------------------------------\n";
+        foreach($this->getSeries() as $t) {
+            echo Carbon::createFromTimestamp($t)->formatLocalized('%H:%M:%S') . " | "; 
+        }
+        echo "  -->  " . Carbon::now()->formatLocalized("%H:%M:%S") . "\n------------------------------------------\n";
     }
 }
