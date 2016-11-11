@@ -321,9 +321,9 @@ class CampaignController extends Controller
                 $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($request->html)));
             }
             
-            // update content
-            $campaign->html = preg_replace('/href\=\'([^\']*\{)/',"href='{", $campaign->html);
-            $campaign->html = preg_replace('/href\=\"([^\"]*\{)/','href="{', $campaign->html);
+            //// update content
+            //$campaign->html = preg_replace('/href\=\'([^\']*\{)/',"href='{", $campaign->html);
+            //$campaign->html = preg_replace('/href\=\"([^\"]*\{)/','href="{', $campaign->html);
             
             $campaign->save();
             
