@@ -23,9 +23,14 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+use DB;
 
 class MailList extends Model
 {
+    // Subscribers to import every time
+    const IMPORT_BATCH_SIZE = 1000;
+
     /**
      * The attributes that are mass assignable.
      *
@@ -917,5 +922,144 @@ class MailList extends Model
         
         // Action Log
         $list->log('export_success', $user, ['count' => $success, 'error' => $error]);
+    }
+
+    /**
+     * Read a CSV file, returning the meta information
+     *
+     * @param string file path
+     * @return array [$headers, $availableFields, $lineCount, $results]
+     */
+    public function getRemainingAddSubscribersQuota($file)
+    {
+        $max = $this->user->getOption('frontend', 'subscriber_max');
+        $maxPerList = $this->user->getOption('frontend', 'subscriber_per_list_max');
+
+        $remaining = $maxPerList - $this->subscribers->count();
+        return ($remaining > $max) ? $remaining : $max;
+    }
+
+    /**
+     * Read a CSV file, returning the meta information
+     *
+     * @param string file path
+     * @return array [$headers, $availableFields, $lineCount, $results]
+     */
+    public function readCsv($file)
+    {
+        // Read CSV files
+        $lineCount = line_count($file);
+        $reader = \League\Csv\Reader::createFromPath($file);
+        $headers = array_map('strtoupper', $reader->fetchOne());        
+        $fields = collect($this->fields)->map(function($field) { return strtoupper($field->tag); })->toArray();
+        
+        // list's fields found in the input CSV
+        $availableFields = array_intersect($headers, $fields);
+        
+        // split the entire list into smaller batches
+        $results = $reader->fetchAssoc($headers);
+
+        return [$headers, $availableFields, $lineCount, $results];
+    }
+
+    /**
+     * Import subscriber from a CSV file
+     *
+     * @param string original value
+     * @return string quoted value
+     * @todo: use MySQL escape function to correctly escape string with astrophe
+     */
+    public function import2($file, $user)
+    {
+        try {
+            // retrive information
+            //$systemJob = $job->getSystemJob();        
+            //$directory = $job->getPath();
+            //$filename = $job->getFilename();
+            
+            // Init the status
+            /*
+            $systemJob->data = json_encode([
+                "mail_list_uid" => $this->uid,
+                "user_id" => $user->id,
+                "status" => "running",
+                "message" => "",
+                "total" => $lineCount,
+                "success" => 0,
+                "error" => 0,
+                "percent" => "0"
+            ]);
+            */
+
+            // Read CSV files
+            list($headers, $availableFields, $lineCount, $results) = $this->readCsv($file);
+
+            each_batch($results, self::IMPORT_BATCH_SIZE, true, function($batch) use ($availableFields) {
+                // If user cannot create other IMPORT_BATCH_SIZE subscribers
+                if (!$user->can('addMoreSubscribers', [$this, self::IMPORT_BATCH_SIZE])) {
+                    // If use cannot create ANY other subscribers
+                    if ($user->can('addMoreSubscribers', [$this, 1])) {
+                        // Action Log
+                        $this->log('import_max_error', $user, ['count' => $count]);
+                        
+                        $error_detail = trans('messages.error_add_max_quota');
+                        $myfile = file_put_contents($directory.'detail.log', $error_detail.PHP_EOL , FILE_APPEND | LOCK_EX);
+
+                        throw new \Exception(trans('messages.error_add_max_quota'));
+                    } else {
+                        // If user can create some more (less than IMPORT_BATCH_SIZE) subscribers
+                        
+                    }
+                }
+                
+                // processing for every batch, 
+                // using transaction to only commit at the end of the batch execution
+                DB::beginTransaction();
+                
+                // current datetime in MySQL format
+                $now = "FROM_UNIXTIME(" . Carbon::now()->timestamp . ")";
+                
+                // create a temporary table containing the input subscribers
+                $tmpTable = table('__tmp_subscribers');
+                $tmpFields = implode(',', array_map(function($field) { return "$field VARCHAR(255)"; }, $availableFields));
+                DB::statement("DROP TEMPORARY TABLE IF EXISTS {$tmpTable};
+                               CREATE TEMPORARY TABLE {$tmpTable}({$tmpFields});");
+
+                // insert subscriber fields from the batch to the temporary table
+                // extract only fields whose name matches TAG NAME of MailList
+                $data = collect($batch)->map(function($r) use ($availableFields) {
+                    return array_intersect_key($r, array_flip($availableFields));
+                })->toArray();
+                DB::table('__tmp_subscribers')->insert($data);
+
+                // Actually insert subscribers to the main table
+                // Skip ones that already exist
+                DB::statement("DELETE FROM {$tmpTable} WHERE email IN (SELECT email FROM " . table('subscribers') . ")");
+                DB::statement("INSERT INTO " . table('subscribers') . "(uid, mail_list_id, user_id, email, status, created_at, updated_at) 
+                               SELECT UUID_SHORT(), " . $this->id . ", NULL, uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", {$now}, {$now}
+                               FROM (SELECT DISTINCT email FROM {$tmpTable}) uniq");
+
+                // Insert subscribers' custom fields to the fields table
+                foreach($availableFields as $field) {
+                    $sql = "INSERT INTO " . table('subscriber_fields') . "(subscriber_id, field_id, value, created_at, updated_at)
+                    SELECT t.subscriber_id, f.id, t.{$field}, {$now}, {$now}
+                    FROM (SELECT main.id AS subscriber_id, tmp.{$field} FROM " . table('subscribers') . " main JOIN {$tmpTable} tmp ON tmp.email = main.email) t
+                    JOIN " . table('fields') . " f ON f.tag = '{$field}'";
+                    DB::statement($sql);
+                }
+
+                // Actually write to the database
+                DB::commit();
+            });
+        } catch (\Exception $e) {
+            /*
+            $json = ($systemJob->data) ? json_decode($systemJob->data) : [];
+            $systemJob->data = json_encode(array_merge($json, [
+                'status' => 'failed',
+                'message' => "<span style='color:red'>".$e->getMessage()."</span>",
+            ]));
+            $systemJob->save();
+            */
+        }
     }
 }
