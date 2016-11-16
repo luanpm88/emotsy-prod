@@ -395,4 +395,20 @@ class LanguageController extends Controller
             'language' => $language,
         ]);
     }
+    
+    /**
+     * Delete confirm message.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteConfirm(Request $request)
+    {
+        $languages = \Acelle\Model\Language::whereIn('uid', explode(',', $request->uids));
+
+        return view('admin.languages.delete_confirm', [
+            'languages' => $languages,
+        ]);
+    }
 }

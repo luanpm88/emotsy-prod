@@ -75,7 +75,7 @@
 														@endcan
 														@can("delete", $item)
 															<li>
-																<a delete-confirm="{{ trans('messages.delete_languages_confirm') }}" href="{{ action('Admin\LanguageController@delete', ["uids" => $item->uid]) }}">
+																<a list-delete-confirm="{{ action('Admin\LanguageController@deleteConfirm', ['uids' => $item->uid]) }}" href="{{ action('Admin\LanguageController@delete', ["uids" => $item->uid]) }}">
 																	<i class="icon-trash"></i> {{ trans('messages.delete') }}
 																</a>
 															</li>
