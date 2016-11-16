@@ -81,6 +81,11 @@ class MailList extends Model
         return $this->hasMany('Acelle\Model\Field');
     }
 
+    public function user()
+    {
+        return $this->belongsTo('Acelle\Model\User');
+    }
+
     public function segments()
     {
         return $this->hasMany('Acelle\Model\Segment');
@@ -930,13 +935,14 @@ class MailList extends Model
      * @param string file path
      * @return array [$headers, $availableFields, $lineCount, $results]
      */
-    public function getRemainingAddSubscribersQuota($file)
+    public function getRemainingAddSubscribersQuota()
     {
         $max = $this->user->getOption('frontend', 'subscriber_max');
         $maxPerList = $this->user->getOption('frontend', 'subscriber_per_list_max');
+        $remainingForList = $maxPerList - $this->subscribers->count();
+        $remaining = $max - $this->user->subscribers->count();
 
-        $remaining = $maxPerList - $this->subscribers->count();
-        return ($remaining > $max) ? $remaining : $max;
+        return ($remainingForList > $remaining) ? $remaining : $remainingForList;
     }
 
     /**
