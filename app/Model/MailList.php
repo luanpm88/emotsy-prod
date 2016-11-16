@@ -29,7 +29,7 @@ use DB;
 class MailList extends Model
 {
     // Subscribers to import every time
-    const IMPORT_BATCH_SIZE = 1000;
+    const IMPORT_BATCH_SIZE = 20000;
 
     /**
      * The attributes that are mass assignable.
@@ -939,10 +939,22 @@ class MailList extends Model
     {
         $max = $this->user->getOption('frontend', 'subscriber_max');
         $maxPerList = $this->user->getOption('frontend', 'subscriber_per_list_max');
-        $remainingForList = $maxPerList - $this->subscribers->count();
-        $remaining = $max - $this->user->subscribers->count();
+        
+        $remainingForList = $maxPerList - $this->reload()->subscribers->count();
+        $remaining = $max - $this->reload()->user->subscribers->count();
 
-        return ($remainingForList > $remaining) ? $remaining : $remainingForList;
+        /*
+        echo "\n--------------------\n";
+        var_dump($max);
+        var_dump($maxPerList);
+        var_dump($this->subscribers->count());
+        var_dump($remainingForList);
+        var_dump($remaining);
+        echo "\n--------------------\n";
+        */
+
+        $result = ($remainingForList > $remaining) ? $remaining : $remainingForList;
+        return ($result > 0) ? $result : 0;
     }
 
     /**
@@ -999,22 +1011,26 @@ class MailList extends Model
 
             // Read CSV files
             list($headers, $availableFields, $lineCount, $results) = $this->readCsv($file);
-
-            each_batch($results, self::IMPORT_BATCH_SIZE, true, function($batch) use ($availableFields) {
+            
+            $count = 0;
+            each_batch($results, self::IMPORT_BATCH_SIZE, true, function($batch) use ($availableFields, $user, $count) {
                 // If user cannot create other IMPORT_BATCH_SIZE subscribers
+                //echo "Batch original size: ".sizeof($batch)." ---\n";
+                //echo "Current list size: " . $this->subscribers()->count()."\n";
+                //echo "Remaining allowed: " . $this->getRemainingAddSubscribersQuota() . "\n";
+
                 if (!$user->can('addMoreSubscribers', [$this, self::IMPORT_BATCH_SIZE])) {
                     // If use cannot create ANY other subscribers
-                    if ($user->can('addMoreSubscribers', [$this, 1])) {
+                    if (!$user->can('addMoreSubscribers', [$this, 1])) {
                         // Action Log
                         $this->log('import_max_error', $user, ['count' => $count]);
                         
-                        $error_detail = trans('messages.error_add_max_quota');
-                        $myfile = file_put_contents($directory.'detail.log', $error_detail.PHP_EOL , FILE_APPEND | LOCK_EX);
-
+                        //$error_detail = trans('messages.error_add_max_quota');
+                        //$myfile = file_put_contents($directory.'detail.log', $error_detail.PHP_EOL , FILE_APPEND | LOCK_EX);
                         throw new \Exception(trans('messages.error_add_max_quota'));
                     } else {
-                        // If user can create some more (less than IMPORT_BATCH_SIZE) subscribers
-                        
+                        $batch = array_slice($batch, 0, $this->getRemainingAddSubscribersQuota());
+                        //echo "Reduced batch size: ".sizeof($batch) . "\n";
                     }
                 }
                 
@@ -1042,7 +1058,7 @@ class MailList extends Model
                 // Skip ones that already exist
                 DB::statement("DELETE FROM {$tmpTable} WHERE email IN (SELECT email FROM " . table('subscribers') . ")");
                 DB::statement("INSERT INTO " . table('subscribers') . "(uid, mail_list_id, user_id, email, status, created_at, updated_at) 
-                               SELECT UUID_SHORT(), " . $this->id . ", NULL, uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", {$now}, {$now}
+                               SELECT UUID_SHORT(), " . $this->id . ", " . $user->id . ", uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", {$now}, {$now}
                                FROM (SELECT DISTINCT email FROM {$tmpTable}) uniq");
 
                 // Insert subscribers' custom fields to the fields table
@@ -1057,6 +1073,7 @@ class MailList extends Model
                 // Actually write to the database
                 DB::commit();
             });
+            $count += 1;
         } catch (\Exception $e) {
             /*
             $json = ($systemJob->data) ? json_decode($systemJob->data) : [];
@@ -1067,5 +1084,14 @@ class MailList extends Model
             $systemJob->save();
             */
         }
+    }
+    
+    /**
+     * Reload mail list information
+     *
+     * @return object mail list model
+     */
+    public function reload() {
+        return self::find($this->id);
     }
 }
