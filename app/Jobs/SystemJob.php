@@ -93,11 +93,11 @@ class SystemJob extends Job implements ShouldQueue
     }
 
     /**
-     * Cark the SystemJob record as FAILED
+     * Mark the SystemJob record as FAILED
      *
      * @return void
      */
-    public function setFaield() {
+    public function setFailed() {
         $systemJob = $this->getSystemJob();
         $systemJob->setFailed();
     }
