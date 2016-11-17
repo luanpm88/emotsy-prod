@@ -1072,11 +1072,13 @@ class Campaign extends Model
      */
     public function deliveredRate()
     {
-        if ($this->trackingCount() == 0) {
+        $tracking_count = $this->trackingCount();
+        
+        if ($tracking_count == 0) {
             return 0;
         }
 
-        return round(($this->deliveredCount() / $this->trackingCount()) * 100, 0);
+        return round(($this->deliveredCount() / $tracking_count) * 100, 0);
     }
 
     /**
@@ -1087,6 +1089,7 @@ class Campaign extends Model
     public function clickCount($start = null, $end = null)
     {
         $query = $this->clickLogs();
+        
         if (isset($start)) {
             $query = $query->where('click_logs.created_at', '>=', $start);
         }
@@ -1124,11 +1127,13 @@ class Campaign extends Model
      */
     public function clickRate()
     {
-        if ($this->urlCount() == 0) {
+        $url_count = $this->urlCount();
+        
+        if ($url_count == 0) {
             return 0;
         }
 
-        return round(($this->clickedLinkCount() / $this->urlCount()) * 100, 0);
+        return round(($this->clickedLinkCount() / $url_count) * 100, 0);
     }
     
     /**
@@ -1150,11 +1155,13 @@ class Campaign extends Model
      */
     public function clickALinkRate()
     {
-        if ($this->openCount() == 0) {
+        $open_count = $this->openCount();
+        
+        if ($open_count == 0) {
             return 0;
         }
 
-        return round(($this->clickCount() / $this->openCount()) * 100, 0);
+        return round(($this->clickCount() / $open_count) * 100, 0);
     }
     
     /**
@@ -1164,11 +1171,13 @@ class Campaign extends Model
      */
     public function clickedEmailsRate()
     {
-        if ($this->openCount() == 0) {
+        $open_count = $this->openCount();
+        
+        if ($open_count == 0) {
             return 0;
         }
 
-        return round(($this->clickedEmailsCount() / $this->openCount()) * 100, 0);
+        return round(($this->clickedEmailsCount() / $open_count) * 100, 0);
     }
 
     /**
@@ -1178,11 +1187,13 @@ class Campaign extends Model
      */
     public function clickPerUniqOpen()
     {
-        if ($this->openCount() == 0) {
+        $open_count = $this->openCount();
+        
+        if ($open_count == 0) {
             return 0;
         }
 
-        return round(($this->clickCount() / $this->openCount()) * 100, 0);
+        return round(($this->clickCount() / $open_count) * 100, 0);
     }
 
     /**
@@ -1240,11 +1251,13 @@ class Campaign extends Model
      */
     public function openRate()
     {
-        if ($this->deliveredCount() == 0) {
+        $delivered_count = $this->deliveredCount();
+        
+        if ($delivered_count == 0) {
             return 0;
         }
 
-        return round(($this->openCount() / $this->deliveredCount()) * 100, 0);
+        return round(($this->openCount() / $delivered_count) * 100, 0);
     }
     
     /**
@@ -1254,11 +1267,13 @@ class Campaign extends Model
      */
     public function notOpenRate()
     {
-        if ($this->subscribers()->count() == 0) {
+        $subcribers_count = $this->subscribers()->count();
+        
+        if ($subcribers_count == 0) {
             return 0;
         }
 
-        return round(($this->notOpenCount() / $this->subscribers()->count()) * 100, 0);
+        return round(($this->notOpenCount() / $subcribers_count) * 100, 0);
     }
 
     /**
@@ -1268,11 +1283,13 @@ class Campaign extends Model
      */
     public function openUniqRate()
     {
-        if ($this->deliveredCount() == 0) {
+        $delivered_count = $this->deliveredCount();
+        
+        if ($delivered_count == 0) {
             return 0;
         }
 
-        return round(($this->openUniqCount() / $this->deliveredCount()) * 100, 0);
+        return round(($this->openUniqCount() / $delivered_count) * 100, 0);
     }
 
     /**
@@ -1292,11 +1309,13 @@ class Campaign extends Model
      */
     public function feedbackRate()
     {
-        if ($this->deliveredCount() == 0) {
+        $delivered_count = $this->deliveredCount();
+        
+        if ($delivered_count == 0) {
             return 0;
         }
 
-        return round(($this->feedbackCount() / $this->deliveredCount()) * 100, 0);
+        return round(($this->feedbackCount() / $delivered_count) * 100, 0);
     }
 
     /**
@@ -1316,11 +1335,13 @@ class Campaign extends Model
      */
     public function bounceRate()
     {
-        if ($this->deliveredCount() == 0) {
+        $delivered_count = $this->deliveredCount();
+        
+        if ($delivered_count == 0) {
             return 0;
         }
 
-        return round(($this->bounceCount() / $this->deliveredCount()) * 100, 0);
+        return round(($this->bounceCount() / $delivered_count) * 100, 0);
     }
 
     /**
@@ -1340,11 +1361,13 @@ class Campaign extends Model
      */
     public function hardBounceRate()
     {
-        if ($this->deliveryProcessedCount() == 0) {
+        $delivered_processed_count = $this->deliveryProcessedCount();
+        
+        if ($delivered_processed_count == 0) {
             return 0;
         }
 
-        return round(($this->hardBounceCount() / $this->deliveryProcessedCount()) * 100, 0);
+        return round(($this->hardBounceCount() / $delivered_processed_count) * 100, 0);
     }
 
     /**
@@ -1364,11 +1387,13 @@ class Campaign extends Model
      */
     public function softBounceRate()
     {
-        if ($this->trackingCount() == 0) {
+        $tracking_count = $this->trackingCount();
+        
+        if ($tracking_count == 0) {
             return 0;
         }
 
-        return round(($this->softBounceCount() / $this->trackingCount()) * 100, 0);
+        return round(($this->softBounceCount() / $tracking_count) * 100, 0);
     }
 
     /**
@@ -1388,11 +1413,13 @@ class Campaign extends Model
      */
     public function unsubscribeRate()
     {
-        if ($this->deliveredCount() == 0) {
+        $delivered_count = $this->deliveredCount();
+        
+        if ($delivered_count == 0) {
             return 0;
         }
 
-        return round(($this->unsubscribeCount() / $this->deliveredCount()) * 100, 0);
+        return round(($this->unsubscribeCount() / $delivered_count) * 100, 0);
     }
 
     /**
