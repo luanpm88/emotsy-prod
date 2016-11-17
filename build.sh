@@ -51,6 +51,10 @@ rm -fr push.sh
 rm -fr public/upload/templates/*
 rm -fr bootstrap/cache/config.php
 
+# copy default lang
+rm -fr resources/lang/default
+cp -r resources/lang/en resources/lang/default
+
 # run artisan
 php artisan config:cache
 php artisan key:generate

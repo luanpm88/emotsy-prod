@@ -22,15 +22,12 @@
 											<br />
 											<span class="text-muted">{{ trans('messages.code') }}</span>
 										</td>
-										<td>
-											<span class="no-margin stat-num kq_search">{{ $item->region_code }}</span>
-											<br />
-											<span class="text-muted">{{ trans('messages.region') }}</span>
-										</td>
-										<td class="text-right">
-											<span class="text-muted2 list-status pull-left">
+										<td class="text-center">
+											<span class="text-muted2 list-status">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
-											</span>											
+											</span>	
+										</td>
+										<td class="text-right">																					
 											@can("translate", $item)
 												<a href="{{ action('Admin\LanguageController@translate', ["id" => $item->uid, "file" => "messages"]) }}" data-popup="tooltip" title="{{ trans('messages.translate') }}" type="button" class="btn bg-teal btn-icon"><i class="icon-share2"></i> {{ trans('messages.translate') }}</a>
 											@endcan
