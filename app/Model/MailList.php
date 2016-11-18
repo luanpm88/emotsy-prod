@@ -898,7 +898,7 @@ class MailList extends Model
                     $sql = "INSERT INTO " . table('subscriber_fields') . "(subscriber_id, field_id, value, created_at, updated_at)
                     SELECT t.subscriber_id, f.id, t.{$field}, {$now}, {$now}
                     FROM (SELECT main.id AS subscriber_id, tmp.{$field} FROM " . table('subscribers') . " main JOIN {$tmpTable} tmp ON tmp.email = main.email WHERE main.mail_list_id = " . $this->id . ") t
-                    JOIN " . table('fields') . " f ON f.tag = '{$field}'";
+                    JOIN " . table('fields') . " f ON f.tag = '{$field}' AND f.mail_list_id = " . $this->id;
                     DB::statement($sql);
                 }
                 
