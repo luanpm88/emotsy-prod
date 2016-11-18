@@ -241,6 +241,13 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('systems/jobs/delete', 'SystemJobController@delete');
     Route::get('systems/jobs/{id}/download/log', 'SystemJobController@downloadLog');
     Route::get('systems/jobs/{id}/download/csv', 'SystemJobController@downloadCsv');
+    
+    // Automation
+    Route::get('automations/{uid}/trigger', 'AutomationController@trigger');
+    Route::get('automations/sort', 'AutomationController@sort');
+    Route::get('automations/listing/{page?}', 'AutomationController@listing');
+    Route::resource('automations', 'AutomationController');
+
 });
 
 // ADMIN AREA

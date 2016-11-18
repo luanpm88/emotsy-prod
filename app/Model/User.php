@@ -215,6 +215,11 @@ class User extends Authenticatable
     {
         return $this->hasMany('Acelle\Model\TrackingLog')->orderBy('created_at', 'asc');
     }
+    
+    public function automations()
+    {
+        return $this->hasMany('Acelle\Model\Automation');
+    }
 
     /**
      * Bootstrap any application services.
