@@ -6,7 +6,8 @@ use Acelle\Model\SystemJob;
 
 class ImportSubscribersJob extends ImportExportJob
 {
-    protected $filename;
+    // @todo this should better be a constant
+    protected $file;
     
     /**
      * Create a new job instance.
@@ -19,18 +20,18 @@ class ImportSubscribersJob extends ImportExportJob
         parent::__construct($mailList, $user);
         
         // Upload csv
-        $this->filename = 'data.csv';
-        $file->move($this->path, $this->filename);
+        $this->file = join_paths($this->path, 'data.csv');
+        rename($file, $this->file);
     }
     
     /**
      * Get import file name.
      *
-     * @return void
+     * @return string file path
      */
-    public function getFilename()
+    public function getFile()
     {
-        return $this->filename;
+        return $this->file;
     }
 
     /**
@@ -41,8 +42,7 @@ class ImportSubscribersJob extends ImportExportJob
     public function updateStatus(array $data)
     {
         $systemJobModel = $this->getSystemJob();
-        $json = ($systemJobModel->data) ? json_decode($systemJobModel->data) : [];
-
+        $json = ($systemJobModel->data) ? json_decode($systemJobModel->data, true) : [];
         $systemJobModel->data = json_encode(array_merge($json, $data));
         $systemJobModel->save();
     }
@@ -54,23 +54,6 @@ class ImportSubscribersJob extends ImportExportJob
      */
     public function handle()
     {
-        try {
-            $job = $this;
-            $job->mailList->import($job->user, $job);
-        } catch (\Exception $e) {
-            $systemJob = $this->getSystemJob();
-            
-            // set failed
-            $systemJob->data = json_encode([
-                "mail_list_uid" => $job->mailList->uid,
-                "status" => "failed",
-                "message" => $e->getMessage(),
-                "total" => 0,
-                "success" => 0,
-                "error" => 0,
-                "percent" => 0
-            ]);
-            $systemJob->save();
-        }
+        $this->mailList->import2($this->user, $this->file, $this);
     }
 }

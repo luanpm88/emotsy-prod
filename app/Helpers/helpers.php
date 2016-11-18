@@ -1,9 +1,7 @@
 <?php
 
 /**
- * Subscriber class.
- *
- * Model class for Subscriber
+ * Globally available helper methods
  *
  * LICENSE: This product includes software developed at
  * the Acelle Co., Ltd. (http://acellemail.com/).
@@ -110,4 +108,20 @@ function line_count($path)
 function array_extract($origin, $keys)
 {
     return array_intersect_key($origin, array_flip($keys));
+}
+
+/**
+ * Join filesystem path strings
+ *
+ * @param * parts of the path
+ * @return string a full path
+ */
+function join_paths()
+{
+    $paths = array();
+    foreach (func_get_args() as $arg) {
+        if ($arg !== '') { $paths[] = $arg; }
+    }
+
+    return preg_replace('#/+#','/',join('/', $paths));
 }

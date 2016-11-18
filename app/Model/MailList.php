@@ -32,7 +32,7 @@ class MailList extends Model
     const IMPORT_BATCH_SIZE = 20000;
     const IMPORT_STATUS_RUNNING = 'running';
     const IMPORT_STATUS_FAILED = 'failed';
-    const IMPORT_STATUS_FAILED = 'done';
+    const IMPORT_STATUS_DONE = 'done';
     const IMPORT_REQUIRED_FIELDS = ['EMAIL'];
 
     /**
@@ -677,172 +677,7 @@ class MailList extends Model
             ->first();
     }
     
-    /**
-     * Import subscribers.
-     *
-     * @return void
-     */
-    public function import($user, $job)
-    {
-        // Get info
-        $systemJob = $job->getSystemJob();        
-        $directory = $job->getPath();
-        $filename = $job->getFilename();
-        $content = \File::get($directory.$filename);
-        
-        // Import to database        
-        $lines = preg_split('/\r\n|\r|\n/', $content);
-        $total = count($lines) - 1;
-        $success = 0;
-        $error = 0;
-        $lines_per_second = 1;
-        $headers = explode(',', $lines[0]);
-        $header_names = explode(',', $lines[0]);
-
-        // update header tags
-        foreach ($headers as $key => $tag) {
-            $tag = trim(strtoupper(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($tag)))));
-            $headers[$key] = $tag;
-            if ($tag == 'EMAIL') {
-                $main_index = $key;
-            }
-        }
-
-        // check valid file
-        if (!in_array('EMAIL', $headers)) {
-            $systemJob->data = json_encode([
-                "mail_list_uid" => $this->uid,
-                "user_id" => $user->id,
-                "status" => "failed",
-                "message" => "<span style='color:red'>".trans('messages.invalid_csv_file')."</span>",
-                "total" => $total,
-                "success" => $success,
-                "error" => $error,
-                "percent" => "0"
-            ]);
-            $systemJob->save();
-         
-            return;
-        }
-
-        $content_cache = '';
-        $count = '0';
-        foreach ($lines as $key => $line) {
-
-            // authorize
-            if ($user->cannot('create', new \Acelle\Model\Subscriber(['mail_list_id' => $this->id]))) {
-                $systemJob->data = json_encode([
-                    "mail_list_uid" => $this->uid,
-                    "user_id" => $user->id,
-                    "status" => "failed",
-                    "message" => "<span style='color:red'>".trans('messages.error_add_max_quota').'</span><br />'.$content_cache,
-                    "total" => $total,
-                    "success" => $success,
-                    "error" => $error,
-                    "percent" => $count
-                ]);
-                $systemJob->save();
-
-                // Action Log
-                $this->log('import_max_error', $user, ['count' => $count]);
-                
-                $error_detail = trans('messages.error_add_max_quota');
-                $myfile = file_put_contents($directory.'detail.log', $error_detail.PHP_EOL , FILE_APPEND | LOCK_EX);
-                
-                return;
-            }
-
-            if ($key > 0) {
-                $parts = explode(',', $line);
-                if(isset($parts[$main_index])) {
-                    $email = strtolower(trim(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($parts[$main_index])))));
-                } else {
-                    $email = "";
-                }
-
-                $valid = $this->checkExsitEmail($email);
-                if ($valid) {
-                    //// save subscribers
-                    $subscriber = new \Acelle\Model\Subscriber();
-                    $subscriber->mail_list_id = $this->id;
-                    $subscriber->email = $email;
-                    $subscriber->status = 'subscribed';
-                    $subscriber->user_id = $this->user_id;
-                    $subscriber->save();
-
-                    foreach ($parts as $key => $value) {
-                        $value = trim(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($value))));
-                        if(isset($headers[$key])) {
-                            $lf = $this->fields()->where('tag', '=', $headers[$key])->first();
-                            if (is_object($lf)) {
-                                //// save fields
-                                $lfv = new \Acelle\Model\SubscriberField(array(
-                                                'field_id' => $lf->id,
-                                                'subscriber_id' => $subscriber->id,
-                                                'value' => $value,
-                                            ));
-                                $lfv->save();
-                            }
-                        }
-                    }
-
-                    ++$success;
-                    $error_detail = trans('messages.email_imported', ['time' => \Carbon\Carbon::now()->timezone($user->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);                    
-                } else {
-                    ++$error;
-                    $error_detail = trans('messages.email_existed_invalid', ['time' => \Carbon\Carbon::now()->timezone($user->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);
-                }
-                if ($key % $lines_per_second == 0) {
-                    $content_cache = trans('messages.import_export_statistics_line', [
-                        'total' => $total,
-                        'processed' => $success + $error,
-                        'success' => $success,
-                        'error' => $error,
-                    ]);
-                    $count = round((($success + $error) / $total) * 100, 0);
-                    
-                    // update system job
-                    $systemJob->data = json_encode([
-                        "mail_list_uid" => $this->uid,
-                        "user_id" => $user->id,
-                        "status" => "running",
-                        "message" => $content_cache,
-                        "total" => $total,
-                        "success" => $success,
-                        "error" => $error,
-                        "percent" => $count
-                    ]);
-                    $systemJob->save();
-                    
-                    // Details
-                    $myfile = file_put_contents($directory.'detail.log', $error_detail.PHP_EOL , FILE_APPEND | LOCK_EX);
-                }
-            }
-        }
-
-        $content_cache = trans('messages.import_export_statistics_line', [
-            'total' => $total,
-            'processed' => $success + $error,
-            'success' => $success,
-            'error' => $error,
-        ]);
-        
-        // update system job
-        $systemJob->data = json_encode([
-            "mail_list_uid" => $this->uid,
-            "user_id" => $user->id,
-            "status" => "done",
-            "message" => $content_cache,
-            "total" => $total,
-            "success" => $success,
-            "error" => $error,
-            "percent" => 100
-        ]);
-        $systemJob->save();
-
-        // Action Log
-        $this->log('import_success', $user, ['count' => $success, 'error' => $error]);
-    }
+    
     
     /**
      * Export subscribers.
@@ -947,16 +782,6 @@ class MailList extends Model
         $remainingForList = $maxPerList - $this->reload()->subscribers->count();
         $remaining = $max - $this->reload()->user->subscribers->count();
 
-        /*
-        echo "\n--------------------\n";
-        var_dump($max);
-        var_dump($maxPerList);
-        var_dump($this->subscribers->count());
-        var_dump($remainingForList);
-        var_dump($remaining);
-        echo "\n--------------------\n";
-        */
-
         $result = ($remainingForList > $remaining) ? $remaining : $remainingForList;
         return ($result > 0) ? $result : 0;
     }
@@ -1006,7 +831,7 @@ class MailList extends Model
      * @return string quoted value
      * @todo: use MySQL escape function to correctly escape string with astrophe
      */
-    public function import2($file, $user, $system_job)
+    public function import2($user, $file, $system_job)
     {
         try {
             // init the status
@@ -1031,13 +856,10 @@ class MailList extends Model
             
             // process by batches
             $processed_count = 0;
-            each_batch($results, self::IMPORT_BATCH_SIZE, true, function($batch) use ($availableFields, $user, $count) {
+            each_batch($results, self::IMPORT_BATCH_SIZE, true, function($batch) use ($availableFields, $user, $processed_count, $system_job) {
                 if (!$user->can('addMoreSubscribers', [$this, self::IMPORT_BATCH_SIZE])) {
                     // If use cannot create ANY other subscribers
                     if (!$user->can('addMoreSubscribers', [$this, 1])) {
-                        // Action Log
-                        $this->log('import_max_error', $user, ['count' => $count]);
-
                         throw new \Exception(trans('messages.error_add_max_quota'));
                     } else {
                         $batch = array_slice($batch, 0, $this->getRemainingAddSubscribersQuota());
@@ -1066,7 +888,7 @@ class MailList extends Model
 
                 // Actually insert subscribers to the main table
                 // Skip ones that already exist
-                DB::statement("DELETE FROM {$tmpTable} WHERE email IN (SELECT email FROM " . table('subscribers') . ") AND mail_list_id = " . $this->id);
+                DB::statement("DELETE FROM {$tmpTable} WHERE email IN (SELECT email FROM " . table('subscribers') . " WHERE mail_list_id = " . $this->id . ")");
                 DB::statement("INSERT INTO " . table('subscribers') . "(uid, mail_list_id, user_id, email, status, created_at, updated_at) 
                                SELECT UUID_SHORT(), " . $this->id . ", " . $user->id . ", uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", {$now}, {$now}
                                FROM (SELECT DISTINCT email FROM {$tmpTable}) uniq");
@@ -1092,11 +914,19 @@ class MailList extends Model
 
             // update status, finish all batches
             $system_job->updateStatus([ 'status' => self::IMPORT_STATUS_DONE ]);
+            
+            // action Log
+            $this->log('import_success', $user, ['count' => $processed_count, 'error' => '']);
         } catch (\Exception $e) {
+            DB::rollBack();
+            
             $system_job->updateStatus([
                 'status' => self::IMPORT_STATUS_FAILED,
                 'error_message' => $e->getMessage(),
             ]);
+            
+            // Action Log
+            $this->log('import_max_error', $user, ['count' => $processed_count]);
         }
     }
     
