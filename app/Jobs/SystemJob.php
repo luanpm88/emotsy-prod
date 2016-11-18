@@ -68,7 +68,7 @@ class SystemJob extends Job implements ShouldQueue
      * @return void
      */
     public function getSystemJob() {
-        return $this->systemJob;
+        return SystemJobModel::find($this->systemJob->id);
         // @todo: what if job cannot be found?
     }
 

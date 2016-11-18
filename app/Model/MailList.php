@@ -30,6 +30,10 @@ class MailList extends Model
 {
     // Subscribers to import every time
     const IMPORT_BATCH_SIZE = 20000;
+    const IMPORT_STATUS_RUNNING = 'running';
+    const IMPORT_STATUS_FAILED = 'failed';
+    const IMPORT_STATUS_FAILED = 'done';
+    const IMPORT_REQUIRED_FIELDS = ['EMAIL'];
 
     /**
      * The attributes that are mass assignable.
@@ -963,10 +967,10 @@ class MailList extends Model
      * @param string file path
      * @return array [$headers, $availableFields, $lineCount, $results]
      */
-    public function readCsv($file)
+    private function readCsv($file)
     {
         // Read CSV files
-        $lineCount = line_count($file);
+        $lineCount = line_count($file) - 1; // do not count the header
         $reader = \League\Csv\Reader::createFromPath($file);
         $headers = array_map('strtoupper', $reader->fetchOne());        
         $fields = collect($this->fields)->map(function($field) { return strtoupper($field->tag); })->toArray();
@@ -979,7 +983,22 @@ class MailList extends Model
 
         return [$headers, $availableFields, $lineCount, $results];
     }
-
+    
+    /**
+     * Validate imported file's headers
+     *
+     * @param headers
+     * @return true or throw an exception
+     */
+    private function validateCsvHeader($headers) {
+        $missing = array_diff(self::IMPORT_REQUIRED_FIELDS, $headers);
+        if (!empty($missing)) {
+            // @todo: I18n is required here
+            throw new \Exception('The following fields are required: ' . implode(', ', $missing) );
+        }
+        return true;
+    }
+    
     /**
      * Import subscriber from a CSV file
      *
@@ -987,50 +1006,41 @@ class MailList extends Model
      * @return string quoted value
      * @todo: use MySQL escape function to correctly escape string with astrophe
      */
-    public function import2($file, $user)
+    public function import2($file, $user, $system_job)
     {
         try {
-            // retrive information
-            //$systemJob = $job->getSystemJob();        
-            //$directory = $job->getPath();
-            //$filename = $job->getFilename();
-            
-            // Init the status
-            /*
-            $systemJob->data = json_encode([
-                "mail_list_uid" => $this->uid,
-                "user_id" => $user->id,
-                "status" => "running",
-                "message" => "",
-                "total" => $lineCount,
-                "success" => 0,
-                "error" => 0,
-                "percent" => "0"
+            // init the status
+            $system_job->updateStatus([
+                'mail_list_uid' => $this->uid,
+                'user_id' => $user->id,
+                'status' => self::IMPORT_STATUS_RUNNING,
+                'error_message' => '',
+                'total' => 0,
+                'processed' => 0,
             ]);
-            */
 
             // Read CSV files
             list($headers, $availableFields, $lineCount, $results) = $this->readCsv($file);
-            
-            $count = 0;
-            each_batch($results, self::IMPORT_BATCH_SIZE, true, function($batch) use ($availableFields, $user, $count) {
-                // If user cannot create other IMPORT_BATCH_SIZE subscribers
-                //echo "Batch original size: ".sizeof($batch)." ---\n";
-                //echo "Current list size: " . $this->subscribers()->count()."\n";
-                //echo "Remaining allowed: " . $this->getRemainingAddSubscribersQuota() . "\n";
 
+            // validate headers, check for required fields
+            // throw an exception in case of error
+            $this->validateCsvHeader($availableFields);
+            
+            // update status, line count
+            $system_job->updateStatus([ 'total' => $lineCount ]);
+            
+            // process by batches
+            $processed_count = 0;
+            each_batch($results, self::IMPORT_BATCH_SIZE, true, function($batch) use ($availableFields, $user, $count) {
                 if (!$user->can('addMoreSubscribers', [$this, self::IMPORT_BATCH_SIZE])) {
                     // If use cannot create ANY other subscribers
                     if (!$user->can('addMoreSubscribers', [$this, 1])) {
                         // Action Log
                         $this->log('import_max_error', $user, ['count' => $count]);
-                        
-                        //$error_detail = trans('messages.error_add_max_quota');
-                        //$myfile = file_put_contents($directory.'detail.log', $error_detail.PHP_EOL , FILE_APPEND | LOCK_EX);
+
                         throw new \Exception(trans('messages.error_add_max_quota'));
                     } else {
                         $batch = array_slice($batch, 0, $this->getRemainingAddSubscribersQuota());
-                        //echo "Reduced batch size: ".sizeof($batch) . "\n";
                     }
                 }
                 
@@ -1050,13 +1060,13 @@ class MailList extends Model
                 // insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
                 $data = collect($batch)->map(function($r) use ($availableFields) {
-                    return array_intersect_key($r, array_flip($availableFields));
+                    return array_extract($r, $availableFields);
                 })->toArray();
                 DB::table('__tmp_subscribers')->insert($data);
 
                 // Actually insert subscribers to the main table
                 // Skip ones that already exist
-                DB::statement("DELETE FROM {$tmpTable} WHERE email IN (SELECT email FROM " . table('subscribers') . ")");
+                DB::statement("DELETE FROM {$tmpTable} WHERE email IN (SELECT email FROM " . table('subscribers') . ") AND mail_list_id = " . $this->id);
                 DB::statement("INSERT INTO " . table('subscribers') . "(uid, mail_list_id, user_id, email, status, created_at, updated_at) 
                                SELECT UUID_SHORT(), " . $this->id . ", " . $user->id . ", uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", {$now}, {$now}
                                FROM (SELECT DISTINCT email FROM {$tmpTable}) uniq");
@@ -1069,20 +1079,24 @@ class MailList extends Model
                     JOIN " . table('fields') . " f ON f.tag = '{$field}'";
                     DB::statement($sql);
                 }
+                
+                // increment count
+                $processed_count += sizeof($batch);
+
+                // update status, finish one batch
+                $system_job->updateStatus([ 'processed' => $processed_count ]);
 
                 // Actually write to the database
                 DB::commit();
             });
-            $count += 1;
+
+            // update status, finish all batches
+            $system_job->updateStatus([ 'status' => self::IMPORT_STATUS_DONE ]);
         } catch (\Exception $e) {
-            /*
-            $json = ($systemJob->data) ? json_decode($systemJob->data) : [];
-            $systemJob->data = json_encode(array_merge($json, [
-                'status' => 'failed',
-                'message' => "<span style='color:red'>".$e->getMessage()."</span>",
-            ]));
-            $systemJob->save();
-            */
+            $system_job->updateStatus([
+                'status' => self::IMPORT_STATUS_FAILED,
+                'error_message' => $e->getMessage(),
+            ]);
         }
     }
     
@@ -1090,6 +1104,7 @@ class MailList extends Model
      * Reload mail list information
      *
      * @return object mail list model
+     * @todo why reload() is needed?
      */
     public function reload() {
         return self::find($this->id);

@@ -2,6 +2,8 @@
 
 namespace Acelle\Jobs;
 
+use Acelle\Model\SystemJob;
+
 class ImportSubscribersJob extends ImportExportJob
 {
     protected $filename;
@@ -29,6 +31,20 @@ class ImportSubscribersJob extends ImportExportJob
     public function getFilename()
     {
         return $this->filename;
+    }
+
+    /**
+     * Get import file name.
+     *
+     * @return void
+     */
+    public function updateStatus(array $data)
+    {
+        $systemJobModel = $this->getSystemJob();
+        $json = ($systemJobModel->data) ? json_decode($systemJobModel->data) : [];
+
+        $systemJobModel->data = json_encode(array_merge($json, $data));
+        $systemJobModel->save();
     }
 
     /**

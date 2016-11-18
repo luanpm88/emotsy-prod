@@ -90,7 +90,7 @@ function each_batch($array, int $batchSize, bool $skipHeader, $callback)
  * Count the total number of line of a given file without loading the entire file.
  * This is effective for large file
  *
- * @param stirng file path
+ * @param string file path
  * @return int line count
  */
 function line_count($path)
@@ -98,4 +98,16 @@ function line_count($path)
     $file = new \SplFileObject($path, 'r');
     $file->seek(PHP_INT_MAX);
     return $file->key() + 1;
+}
+
+/**
+ * Extract an array by keys
+ *
+ * @param array original array
+ * @param array keys to extract
+ * @return array output array
+ */
+function array_extract($origin, $keys)
+{
+    return array_intersect_key($origin, array_flip($keys));
 }
