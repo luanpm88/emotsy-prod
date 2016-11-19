@@ -54,6 +54,6 @@ class ImportSubscribersJob extends ImportExportJob
      */
     public function handle()
     {
-        $this->mailList->import2($this->user, $this->file, $this);
+        $this->mailList->import2($this->file, $this->user, $this);
     }
 }
