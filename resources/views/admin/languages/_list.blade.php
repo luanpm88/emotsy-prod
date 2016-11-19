@@ -22,15 +22,12 @@
 											<br />
 											<span class="text-muted">{{ trans('messages.code') }}</span>
 										</td>
-										<td>
-											<span class="no-margin stat-num kq_search">{{ $item->region_code }}</span>
-											<br />
-											<span class="text-muted">{{ trans('messages.region') }}</span>
-										</td>
-										<td class="text-right">
-											<span class="text-muted2 list-status pull-left">
+										<td class="text-center">
+											<span class="text-muted2 list-status">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
-											</span>											
+											</span>	
+										</td>
+										<td class="text-right">																					
 											@can("translate", $item)
 												<a href="{{ action('Admin\LanguageController@translate', ["id" => $item->uid, "file" => "messages"]) }}" data-popup="tooltip" title="{{ trans('messages.translate') }}" type="button" class="btn bg-teal btn-icon"><i class="icon-share2"></i> {{ trans('messages.translate') }}</a>
 											@endcan
@@ -75,7 +72,7 @@
 														@endcan
 														@can("delete", $item)
 															<li>
-																<a delete-confirm="{{ trans('messages.delete_languages_confirm') }}" href="{{ action('Admin\LanguageController@delete', ["uids" => $item->uid]) }}">
+																<a list-delete-confirm="{{ action('Admin\LanguageController@deleteConfirm', ['uids' => $item->uid]) }}" href="{{ action('Admin\LanguageController@delete', ["uids" => $item->uid]) }}">
 																	<i class="icon-trash"></i> {{ trans('messages.delete') }}
 																</a>
 															</li>

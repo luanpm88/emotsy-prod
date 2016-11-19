@@ -310,6 +310,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/sending_domains', 'SendingDomainController');
 
     // Language
+    Route::get('admin/languages/delete/confirm', 'LanguageController@deleteConfirm');
     Route::get('admin/languages/listing/{page?}', 'LanguageController@listing');
     Route::get('admin/languages/delete', 'LanguageController@delete');
     Route::get('admin/languages/{id}/translate/{file}', 'LanguageController@translate');

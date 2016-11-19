@@ -329,9 +329,9 @@ class LanguageController extends Controller
     {
         $language = \Acelle\Model\Language::findByUid($id);
         
+        // Create tmp language package
         $files = glob($language->languageDir() . "*");
         $zip = storage_path("tmp/language-" . $language->code . ".zip");
-        
         \Zipper::make($zip)->add($files)->close();
        
         return response()->download($zip);
@@ -364,7 +364,6 @@ class LanguageController extends Controller
 
             // check if file is zip achive
             $file_ext = $request->file('file')->guessExtension();
-
             if ($file_ext != 'zip') {
                 $rules['not_zip_archive'] = 'required';
             }
@@ -393,6 +392,22 @@ class LanguageController extends Controller
         
         return view('admin.languages.upload', [
             'language' => $language,
+        ]);
+    }
+    
+    /**
+     * Delete confirm message.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteConfirm(Request $request)
+    {
+        $languages = \Acelle\Model\Language::whereIn('uid', explode(',', $request->uids));
+
+        return view('admin.languages.delete_confirm', [
+            'languages' => $languages,
         ]);
     }
 }
