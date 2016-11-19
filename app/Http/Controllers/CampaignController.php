@@ -57,10 +57,10 @@ class CampaignController extends Controller
     public function create(Request $request)
     {
         $campaign = new \Acelle\Model\Campaign([
-                                            'track_open' => true,
-                                            'track_click' => true,
-                                            'sign_dkim' => true,
-                                        ]);
+            'track_open' => true,
+            'track_click' => true,
+            'sign_dkim' => true,
+        ]);
 
         // authorize
         if (\Gate::denies('create', $campaign)) {
