@@ -25,15 +25,16 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use DB;
+use Illuminate\Support\Facades\Validator;
 
 class MailList extends Model
 {
     // Subscribers to import every time
-    const IMPORT_BATCH_SIZE = 20000;
+    const IMPORT_BATCH_SIZE = 1000;
     const IMPORT_STATUS_RUNNING = 'running';
     const IMPORT_STATUS_FAILED = 'failed';
     const IMPORT_STATUS_DONE = 'done';
-    const IMPORT_REQUIRED_FIELDS = ['EMAIL'];
+    const IMPORT_REQUIRED_FIELDS = ['email'];
 
     /**
      * The attributes that are mass assignable.
@@ -797,8 +798,8 @@ class MailList extends Model
         // Read CSV files
         $lineCount = line_count($file) - 1; // do not count the header
         $reader = \League\Csv\Reader::createFromPath($file);
-        $headers = array_map('strtoupper', $reader->fetchOne());        
-        $fields = collect($this->fields)->map(function($field) { return strtoupper($field->tag); })->toArray();
+        $headers = array_map('strtolower', $reader->fetchOne());        
+        $fields = collect($this->fields)->map(function($field) { return strtolower($field->tag); })->toArray();
         
         // list's fields found in the input CSV
         $availableFields = array_intersect($headers, $fields);
@@ -823,6 +824,22 @@ class MailList extends Model
         }
         return true;
     }
+
+    /**
+     * Validate imported record
+     *
+     * @param headers
+     * @return boolean whether or not the record is valid
+     */
+    private function validateCsvRecord($record) {
+        $validator = Validator::make(
+            $record, 
+            Subscriber::$rules,
+            ['email' => 'invalid email address']
+        );
+
+        return [$validator->passes(), $validator->errors()->all()];
+    }
     
     /**
      * Import subscriber from a CSV file
@@ -833,6 +850,10 @@ class MailList extends Model
      */
     public function import2($file, $user, $system_job)
     {
+        $processed_count = 0;
+        $logger = $system_job->getLogger();
+        $logger->info("Start importing for Mail List " . $this->id);
+
         try {
             // init the status
             $system_job->updateStatus([
@@ -855,8 +876,7 @@ class MailList extends Model
             $system_job->updateStatus([ 'total' => $lineCount ]);
             
             // process by batches
-            $processed_count = 0;
-            each_batch($results, self::IMPORT_BATCH_SIZE, true, function($batch) use ($availableFields, $user, $processed_count, $system_job) {
+            each_batch($results, self::IMPORT_BATCH_SIZE, true, function($batch) use ($logger, $availableFields, &$user, &$processed_count, &$system_job) {
                 if (!$user->can('addMoreSubscribers', [$this, self::IMPORT_BATCH_SIZE])) {
                     // If use cannot create ANY other subscribers
                     if (!$user->can('addMoreSubscribers', [$this, 1])) {
@@ -882,8 +902,18 @@ class MailList extends Model
                 // insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
                 $data = collect($batch)->map(function($r) use ($availableFields) {
-                    return array_extract($r, $availableFields);
+                    return array_only($r, $availableFields);
                 })->toArray();
+
+                $data = array_where($data, function($key, $value) use ($logger) {
+                    list($valid, $errors) = $this->validateCsvRecord($value);
+                    if(!$valid) {
+                        $logger->warning($value['email'].": ".implode(", ", $errors));
+                    }
+
+                    return $valid;
+                });
+
                 DB::table('__tmp_subscribers')->insert($data);
 
                 // Actually insert subscribers to the main table
@@ -913,13 +943,19 @@ class MailList extends Model
             });
 
             // update status, finish all batches
-            $system_job->updateStatus([ 'status' => self::IMPORT_STATUS_DONE ]);
+            $system_job->updateStatus([ 'status' => self::IMPORT_STATUS_DONE, 'total' => $processed_count ]);
             
             // action Log
             $this->log('import_success', $user, ['count' => $processed_count, 'error' => '']);
+            $logger->info("Finish importing for Mail List " . $this->id);
         } catch (\Exception $e) {
+            // finish the transaction
             DB::rollBack();
             
+            // write to job's logger
+            $logger->error($e->getMessage());
+            
+            // update job status
             $system_job->updateStatus([
                 'status' => self::IMPORT_STATUS_FAILED,
                 'error_message' => $e->getMessage(),

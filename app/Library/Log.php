@@ -151,4 +151,24 @@ class Log
         self::$logger->pushHandler($stream);
         self::$path = $path;
     }
+
+    /**
+     * Create a custom logger
+     *
+     * @return logger
+     */
+    public static function create($path, $name = 'default')
+    {
+        $pid = getmypid();
+        $output = '[%datetime%] #'.$pid." %level_name%: %message%\n";
+        $formatter = new LineFormatter($output);
+
+        $stream = new StreamHandler($path, Logger::INFO);
+        $stream->setFormatter($formatter);
+
+        $logger = new Logger($name);
+        $logger->pushHandler($stream);
+        
+        return $logger;
+    }
 }

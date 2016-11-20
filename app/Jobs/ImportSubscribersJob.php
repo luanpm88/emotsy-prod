@@ -3,6 +3,7 @@
 namespace Acelle\Jobs;
 
 use Acelle\Model\SystemJob;
+use Acelle\Library\Log as CustomLog;
 
 class ImportSubscribersJob extends ImportExportJob
 {
@@ -22,6 +23,7 @@ class ImportSubscribersJob extends ImportExportJob
         // Upload csv
         $this->file = join_paths($this->path, 'data.csv');
         rename($file, $this->file);
+        chmod($this->file, 0775);
     }
     
     /**
@@ -55,5 +57,17 @@ class ImportSubscribersJob extends ImportExportJob
     public function handle()
     {
         $this->mailList->import2($this->file, $this->user, $this);
+    }
+
+    /**
+     * Get the job's logger
+     *
+     * @return object job logger
+     */
+    public function getLogger()
+    {
+        $log_name = 'importer';
+        $logger = CustomLog::create( join_paths($this->getPath(), 'import.log'), $log_name );
+        return $logger;
     }
 }

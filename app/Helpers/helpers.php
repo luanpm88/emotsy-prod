@@ -99,18 +99,6 @@ function line_count($path)
 }
 
 /**
- * Extract an array by keys
- *
- * @param array original array
- * @param array keys to extract
- * @return array output array
- */
-function array_extract($origin, $keys)
-{
-    return array_intersect_key($origin, array_flip($keys));
-}
-
-/**
  * Join filesystem path strings
  *
  * @param * parts of the path
