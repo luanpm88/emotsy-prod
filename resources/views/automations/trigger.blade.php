@@ -26,54 +26,159 @@
 @endsection
 
 @section('content')
-                <form action="" method="POST" class="form-validate-jqueryz">
+                <form action="" method="POST" class="form-validate-jqueryz tabable-select-box">
 					<div class="row">
-						<div class="col-md-12">
+						<div class="col-md-12 tabable-select-radio">
 							<h3 class="mt-0">{{ trans('messages.How_to_trigger_automation') }}</h3>
 							@include('helpers.form_control', [
 								'type' => 'radio',
 								'name' => 'type',
-								'class' => 'tabable-select',
+								'class' => '',
 								'label' => '',
 								'value' => '',
 								'options' => [
-									['value' => '1', 'text' => trans('messages.Immediately_or_on_a_specific_date')],
-									['value' => '2', 'text' => trans('messages.Annual_recurring')],
-									['value' => '3', 'text' => trans('messages.Event_based_list_subscription')],
-									['value' => '4', 'text' => trans('messages.Event_based_list_unsubscription')],
-									['value' => '5', 'text' => trans('messages.Event_based_custom_list_subscriber_evennt')],
-									['value' => '6', 'text' => trans('messages.Custom_criteria')],
-									['value' => '7', 'text' => trans('messages.API_call')],
+									['value' => 'specific-date', 'text' => trans('messages.Immediately_or_on_a_specific_date')],
+									['value' => 'annual-recurring', 'text' => trans('messages.Annual_recurring')],
+									['value' => 'list-subscription', 'text' => trans('messages.Event_based_list_subscription')],
+									['value' => 'list-unsubscription', 'text' => trans('messages.Event_based_list_unsubscription')],
+									['value' => 'event-based', 'text' => trans('messages.Event_based_custom_list_subscriber_event')],
+									['value' => 'custom-criteria', 'text' => trans('messages.Custom_criteria')],
+									['value' => 'api-call', 'text' => trans('messages.API_call')],
 								],
 								'rules' => []
 							])
 						</div>
 					</div>
 					<hr />
-					<div class="row">
-						<div class="col-md-6 tabable-container">
-							<div class="tabable-tab-1">
+					<div class="tabable-container">
+						<div class="row tabable-tab specific-date">
+							<div class="col-md-6">
 								<div class="row">
-									<div class="col-md-6 list_select_box" target-box="segments-select-box" segments-url="{{ action('SegmentController@selectBox') }}">
+									<div class="col-md-6">
 										@include('helpers.form_control', [
 											'type' => 'date',
 											'class' => '_from_now',
-											'name' => 'delivery_date',
-											'label' => trans('messages.delivery_date'),
+											'name' => 'send_on',
+											'label' => trans('messages.Send_on'),
 											'value' => '',
 											'rules' => [],
-											'help_class' => 'campaign'
+											'help_class' => 'trigger'
 										])
 									</div>
 									<div class="col-md-6 segments-select-box">
 										@include('helpers.form_control', [
 											'type' => 'time',
-											'name' => 'delivery_time',
-											'label' => trans('messages.delivery_time'),
+											'name' => 'send_at',
+											'label' => trans('messages.At'),
 											'value' => '',
 											'rules' => [],
-											'help_class' => 'campaign'
+											'help_class' => 'trigger'
 										])
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="row tabable-tab annual-recurring">
+							<div class="col-md-6">
+								<div class="row">
+									<div class="col-md-12">
+										<div class="radio form-group">
+											<label>
+												<input type="radio" id="" name="specific_date_type" value="specific-day" class="styled">
+												{{ trans('messages.On_specific_date') }}
+											</label>
+										</div>
+										@include('helpers.form_control', [
+											'type' => 'date',
+											'class' => '_from_now',
+											'name' => 'specific_date',
+											'label' => '',
+											'value' => '',
+											'rules' => [],
+											'help_class' => 'trigger'
+										])
+									</div>
+									<div class="col-md-12">
+										<div class="radio form-group">
+											<label>
+												<input type="radio" id="" name="specific_date_type" value="specific-day-of-week" class="styled">
+												{{ trans('messages.Day_of_the_week') }}
+											</label>
+										</div>
+										<div class="row">
+											<div class="col-md-6">
+												@include('helpers.form_control', [
+													'type' => 'select',
+													'name' => 'type',
+													'class' => '',
+													'label' => '',
+													'value' => '',
+													'options' => Acelle\Library\Tool::dayOfWeekSelectOptions(),
+													'rules' => []
+												])
+											</div>
+											<div class="col-md-6">
+												@include('helpers.form_control', [
+													'type' => 'select',
+													'name' => 'type',
+													'multiple' => '',
+													'label' => '',
+													'value' => '',
+													'include_blank' => trans('messages.Every_month'),
+													'options' => Acelle\Library\Tool::monthSelectOptions(),
+													'rules' => []
+												])
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md-6">
+												@include('helpers.form_control', [
+													'type' => 'select',
+													'name' => 'type',
+													'multiple' => '',
+													'label' => '',
+													'value' => '',
+													'options' => [
+														['value' => 'specific-date', 'text' => trans('messages.Only_1st_week_of_month')],
+														['value' => 'annual-recurring', 'text' => trans('messages.Every_week')],
+													],
+													'rules' => []
+												])
+											</div>
+										</div>
+									</div>
+									<div class="col-md-12">
+										<div class="radio form-group">
+											<label>
+												<input type="radio" id="" name="specific_date_type" value="specific-day-of-week" class="styled">
+												{{ trans('messages.Day_of_the_month') }}
+											</label>
+										</div>
+										<div class="row">
+											<div class="col-md-6">
+												@include('helpers.form_control', [
+													'type' => 'select',
+													'name' => 'type',
+													'class' => '',
+													'label' => '',
+													'value' => '',
+													'options' => Acelle\Library\Tool::dayOfWeekSelectOptions(),
+													'rules' => []
+												])
+											</div>
+											<div class="col-md-6">
+												@include('helpers.form_control', [
+													'type' => 'select',
+													'name' => 'type',
+													'multiple' => '',
+													'label' => '',
+													'value' => '',
+													'include_blank' => trans('messages.Every_month'),
+													'options' => Acelle\Library\Tool::monthSelectOptions(),
+													'rules' => []
+												])
+											</div>
+										</div>										
 									</div>
 								</div>
 							</div>

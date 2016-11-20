@@ -1365,3 +1365,6 @@ ul.no-top-border-list li:first-child {
     font-size: 42px;
     margin-right: 15px;
 }
+.tabable-container .tabable-tab {
+    display: none;
+}

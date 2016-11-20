@@ -25,7 +25,7 @@
 							@if (is_object($automation->mailList) && $automation->mailList->segments()->count())
 								@include('helpers.form_control', [
 									'type' => 'select',
-									'value' => '',
+									'value' => (is_object($automation->segment) ? $automation->segment->uid : ""),
 									'name' => 'segment_uid',
 									'label' => trans('messages.which_segment_send'),
                                     'include_blank' => trans('messages.choose'),

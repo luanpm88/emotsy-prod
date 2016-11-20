@@ -794,4 +794,15 @@ $(function() {
         
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
+    
+    // Table select
+    $(document).on('change', '.tabable-select-radio input[type="radio"]', function() {
+        var box = $(this).parents('.tabable-select-box');
+        var container = box.find('.tabable-container');
+        var val = $(this).val();        
+        
+        container.find('.tabable-tab').hide();
+        box.find('.' + val).show();
+    });
+    $('.tabable-select-radio input[type="radio"]').trigger('click');
 });

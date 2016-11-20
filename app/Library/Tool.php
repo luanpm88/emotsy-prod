@@ -263,4 +263,47 @@ class Tool
         // return the smallest of them, this defines the real limit
         return min($max_upload, $max_post);
     }
+    
+    /**
+     * Day of week select options.
+     *
+     * @param string
+     *
+     * @return array
+     */
+    public static function dayOfWeekSelectOptions() {
+        return [
+            ['value' => '1', 'text' => trans('messages.Monday')],
+            ['value' => '2', 'text' => trans('messages.Tuesday')],
+            ['value' => '3', 'text' => trans('messages.Wednesday')],
+            ['value' => '4', 'text' => trans('messages.Thursday')],
+            ['value' => '5', 'text' => trans('messages.Friday')],
+            ['value' => '6', 'text' => trans('messages.Saturday')],
+            ['value' => '7', 'text' => trans('messages.Sunday')],
+        ];
+    }
+    
+    /**
+     * Month select options.
+     *
+     * @param string
+     *
+     * @return array
+     */
+    public static function monthSelectOptions() {
+        return [
+            ['value' => '1', 'text' => trans('messages.January')],
+            ['value' => '2', 'text' => trans('messages.February')],
+            ['value' => '3', 'text' => trans('messages.March')],
+            ['value' => '4', 'text' => trans('messages.April')],
+            ['value' => '5', 'text' => trans('messages.May')],
+            ['value' => '6', 'text' => trans('messages.June')],
+            ['value' => '7', 'text' => trans('messages.July')],
+            ['value' => '8', 'text' => trans('messages.August')],
+            ['value' => '9', 'text' => trans('messages.September')],
+            ['value' => '10', 'text' => trans('messages.October')],
+            ['value' => '11', 'text' => trans('messages.November')],
+            ['value' => '12', 'text' => trans('messages.December')],
+        ];
+    }
 }

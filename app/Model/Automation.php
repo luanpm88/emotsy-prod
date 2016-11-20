@@ -74,6 +74,11 @@ class Automation extends Model
         return $this->belongsTo('Acelle\Model\MailList');
     }
     
+    public function segment()
+    {
+        return $this->belongsTo('Acelle\Model\Segment');
+    }
+    
     /**
      * The validation rules for automation.
      *
