@@ -1368,3 +1368,6 @@ ul.no-top-border-list li:first-child {
 .tabable-container .tabable-tab {
     display: none;
 }
+.pl-35 {
+    padding-left: 35px;
+}

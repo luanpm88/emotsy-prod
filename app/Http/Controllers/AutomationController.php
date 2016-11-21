@@ -133,4 +133,21 @@ class AutomationController extends Controller
             'automation' => $automation,
         ]);
     }
+    
+    /**
+     * Trigger for automation.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param String                   $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function criteriaForm(Request $request, $uid)
+    {
+        $automation = \Acelle\Model\Automation::findByUid($uid);
+        
+        return view('automations._criteria_form', [
+            'automation' => $automation,
+        ]);
+    }
 }

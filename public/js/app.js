@@ -805,4 +805,27 @@ $(function() {
         box.find('.' + val).show();
     });
     $('.tabable-select-radio input[type="radio"]').trigger('click');
+    
+    // addable multiple form
+    $(document).on("click", ".addable-multiple-form .add-form", function(e) {
+        // ajax update custom sort
+        $.ajax({
+            method: "GET",
+            url: $(this).attr('sample-url'),
+        })
+        .done(function( msg ) {
+            var num = "0";
+            
+            if($('.addable-multiple-container .condition-line').length) {
+                num = parseInt($('.addable-multiple-container .condition-line').last().attr("rel"))+1;
+            }
+            
+            msg = msg.replace(/__index__/g, num);
+            
+            $('.addable-multiple-container').append(msg);
+            
+            var new_line = $('.addable-multiple-container .condition-line').last();
+            new_line.find('select').select2();
+        });
+    });
 });
