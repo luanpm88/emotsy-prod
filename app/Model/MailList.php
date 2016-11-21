@@ -30,7 +30,6 @@ use Illuminate\Support\Facades\Validator;
 class MailList extends Model
 {
     // Subscribers to import every time
-    const IMPORT_BATCH_SIZE = 1000;
     const IMPORT_STATUS_RUNNING = 'running';
     const IMPORT_STATUS_FAILED = 'failed';
     const IMPORT_STATUS_DONE = 'done';
@@ -876,8 +875,8 @@ class MailList extends Model
             $system_job->updateStatus([ 'total' => $lineCount ]);
             
             // process by batches
-            each_batch($results, self::IMPORT_BATCH_SIZE, true, function($batch) use ($logger, $availableFields, &$user, &$processed_count, &$system_job) {
-                if (!$user->can('addMoreSubscribers', [$this, self::IMPORT_BATCH_SIZE])) {
+            each_batch($results, config('app.import_batch_size'), true, function($batch) use ($logger, $availableFields, &$user, &$processed_count, &$system_job) {
+                if (!$user->can('addMoreSubscribers', [$this, config('app.import_batch_size')])) {
                     // If use cannot create ANY other subscribers
                     if (!$user->can('addMoreSubscribers', [$this, 1])) {
                         throw new \Exception(trans('messages.error_add_max_quota'));

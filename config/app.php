@@ -212,5 +212,9 @@ return [
         'Zipper' => Chumper\Zipper\Zipper::class,
         
     ],
-
+    
+    /*
+     * Custom application settings of Acelle Mail go here
+     */
+    'import_batch_size' => 10000,
 ];
