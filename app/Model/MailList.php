@@ -941,6 +941,9 @@ class MailList extends Model
                 // update status, finish one batch
                 $system_job->updateStatus([ 'processed' => $processed_count ]);
 
+                // Cleanup
+                DB::statement("DROP TEMPORARY TABLE IF EXISTS {$tmpTable};");
+
                 // Actually write to the database
                 DB::commit();
             });
