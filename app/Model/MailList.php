@@ -852,7 +852,7 @@ class MailList extends Model
     {
         $processed_count = 0;
         $logger = $system_job->getLogger();
-        $logger->info("Start importing for Mail List " . $this->id);
+        $logger->info("Start importing for mail list ID: " . $this->id);
 
         try {
             // init the status
@@ -899,31 +899,34 @@ class MailList extends Model
                 DB::statement("DROP TEMPORARY TABLE IF EXISTS {$tmpTable};
                                CREATE TEMPORARY TABLE {$tmpTable}({$tmpFields});");
 
-                // insert subscriber fields from the batch to the temporary table
+                // Insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
                 $data = collect($batch)->map(function($r) use ($availableFields) {
                     return array_only($r, $availableFields);
                 })->toArray();
 
+                // make the import data table unique by email 
+                $data = array_unique_by($data, function($r) {
+                    return $r['email'];
+                });
+                
+                // validate amd remove invalid records
                 $data = array_where($data, function($key, $value) use ($logger) {
                     list($valid, $errors) = $this->validateCsvRecord($value);
                     if(!$valid) {
                         $logger->warning($value['email'].": ".implode(", ", $errors));
                     }
-
                     return $valid;
                 });
-
                 DB::table('__tmp_subscribers')->insert($data);
-
-                // Actually insert subscribers to the main table
-                // Skip ones that already exist
-                DB::statement("DELETE FROM {$tmpTable} WHERE email IN (SELECT email FROM " . table('subscribers') . " WHERE mail_list_id = " . $this->id . ")");
+                
+                // Insert new subscribers from temp table to the main table
                 DB::statement("INSERT INTO " . table('subscribers') . "(uid, mail_list_id, user_id, email, status, created_at, updated_at) 
                                SELECT UUID_SHORT(), " . $this->id . ", " . $user->id . ", uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", {$now}, {$now}
-                               FROM (SELECT DISTINCT email FROM {$tmpTable}) uniq");
+                               FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN " . table('subscribers') . " main ON tmp.email = main.email WHERE main.email IS NULL) uniq");
 
                 // Insert subscribers' custom fields to the fields table
+                DB::statement("DELETE FROM " . table('subscriber_fields') . " WHERE subscriber_id IN (SELECT id FROM " . table('subscribers') . " main JOIN {$tmpTable} tmp ON main.email = tmp.email WHERE mail_list_id = " . $this->id . ")");
                 foreach($availableFields as $field) {
                     $sql = "INSERT INTO " . table('subscriber_fields') . "(subscriber_id, field_id, value, created_at, updated_at)
                     SELECT t.subscriber_id, f.id, t.{$field}, {$now}, {$now}
@@ -947,7 +950,7 @@ class MailList extends Model
             
             // action Log
             $this->log('import_success', $user, ['count' => $processed_count, 'error' => '']);
-            $logger->info("Finish importing for Mail List " . $this->id);
+            $logger->info("Finish importing for mail list ID: " . $this->id);
         } catch (\Exception $e) {
             // finish the transaction
             DB::rollBack();

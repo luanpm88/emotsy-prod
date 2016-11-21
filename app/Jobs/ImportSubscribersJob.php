@@ -50,6 +50,16 @@ class ImportSubscribersJob extends ImportExportJob
     }
 
     /**
+     * Get import log file
+     *
+     * @return string file path
+     */
+    public function getLog()
+    {
+        return join_paths($this->getPath(), 'import.log');
+    }
+
+    /**
      * Execute the job.
      *
      * @return void
@@ -67,7 +77,7 @@ class ImportSubscribersJob extends ImportExportJob
     public function getLogger()
     {
         $log_name = 'importer';
-        $logger = CustomLog::create( join_paths($this->getPath(), 'import.log'), $log_name );
+        $logger = CustomLog::create( $this->getLog(), $log_name );
         return $logger;
     }
 }

@@ -113,3 +113,19 @@ function join_paths()
 
     return preg_replace('#/+#','/',join('/', $paths));
 }
+
+/**
+ * Get unique array based on user defined condition
+ *
+ * @param array original array
+ * @return array unique array
+ */
+function array_unique_by($array, $callback)
+{
+    $result = [];
+    foreach($array as $value) {
+        $key = $callback($value);
+        $result[$key] = $value;
+    }
+    return array_values($result);
+}
