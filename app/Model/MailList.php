@@ -677,7 +677,15 @@ class MailList extends Model
             ->first();
     }
     
-    
+    /**
+     * Get last export log file.
+     *
+     * @return string file path
+     */
+    public function getLastImportLog() {
+        $data = json_decode($this->getLastImportJob()->data, true);
+        return $data['log'];
+    }
     
     /**
      * Export subscribers.
@@ -876,6 +884,10 @@ class MailList extends Model
             
             // process by batches
             each_batch($results, config('app.import_batch_size'), true, function($batch) use ($logger, $availableFields, &$user, &$processed_count, &$system_job) {
+                // increment count
+                $processed_count += sizeof($batch);
+
+                // authorization
                 if (!$user->can('addMoreSubscribers', [$this, config('app.import_batch_size')])) {
                     // If use cannot create ANY other subscribers
                     if (!$user->can('addMoreSubscribers', [$this, 1])) {
@@ -933,9 +945,6 @@ class MailList extends Model
                     JOIN " . table('fields') . " f ON f.tag = '{$field}' AND f.mail_list_id = " . $this->id;
                     DB::statement($sql);
                 }
-                
-                // increment count
-                $processed_count += sizeof($batch);
 
                 // update status, finish one batch
                 $system_job->updateStatus([ 'processed' => $processed_count ]);

@@ -44,7 +44,7 @@ class ImportSubscribersJob extends ImportExportJob
     public function updateStatus(array $data)
     {
         $systemJobModel = $this->getSystemJob();
-        $json = ($systemJobModel->data) ? json_decode($systemJobModel->data, true) : [];
+        $json = ($systemJobModel->data) ? json_decode($systemJobModel->data, true) : [ 'log' => $this->getLog() ];
         $systemJobModel->data = json_encode(array_merge($json, $data));
         $systemJobModel->save();
     }
