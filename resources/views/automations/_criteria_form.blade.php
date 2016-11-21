@@ -2,7 +2,7 @@
 									<div class="col-md-4">
 										<div class="form-group">
 											<select class="select" name="conditions[__index__][field_id]">
-												<optgroup label="{{ trans('messages.list_fields') }}">
+												<optgroup label="{{ trans('messages.Subscriber_attributes') }}">
 													@foreach($automation->mailList->getFields as $field)
 														<option value="{{ $field->uid }}">{{ $field->label }}</option>
 													@endforeach
@@ -11,10 +11,22 @@
 										</div>
 									</div>
 									<div class="col-md-3 operator-col">
-										@include('helpers.form_control', ['type' => 'select', 'name' => 'conditions[__index__][operator]', 'label' => '', 'value' => '', 'options' => Acelle\Model\Segment::operators()])
+										@include('helpers.form_control', [
+											'type' => 'select',
+											'name' => '',
+											'label' => '',
+											'value' => '',
+											'options' => Acelle\Model\Segment::operators()
+										])
 									</div>
 									<div class="col-md-4 value-col">
-										@include('helpers.form_control', ['type' => 'text', 'name' => 'conditions[__index__][value]', 'label' => '', 'value' => ''])
+										@include('helpers.form_control', [
+											'type' => 'text',
+											'name' => '',
+											'label' => '',
+											'placeholder' => trans('messages.value'),
+											'value' => ''
+										])
 									</div>
 									<div class="col-md-1">
 										<a onclick="$(this).parents('.condition-line').remove()" href="#delete" class="btn bg-danger-400"><i class="icon-trash"></i></a>

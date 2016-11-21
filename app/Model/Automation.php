@@ -79,6 +79,11 @@ class Automation extends Model
         return $this->belongsTo('Acelle\Model\Segment');
     }
     
+    public function trigger()
+    {
+        return $this->hasOne('Acelle\Model\AutomationTrigger');
+    }
+    
     /**
      * The validation rules for automation.
      *

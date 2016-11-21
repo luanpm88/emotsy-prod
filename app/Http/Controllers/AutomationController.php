@@ -129,6 +129,17 @@ class AutomationController extends Controller
     {
         $automation = \Acelle\Model\Automation::findByUid($uid);
         
+        // Find automation trigger
+        if(!is_object($automation->trigger)) {
+            $automation->trigger = new \Acelle\Model\AutomationTrigger([
+                'type_name' => 'specific-date'
+            ]);
+        }
+        
+         // Save trigger
+        if ($request->isMethod('post')) {
+        }
+        
         return view('automations.trigger', [
             'automation' => $automation,
         ]);

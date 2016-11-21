@@ -244,6 +244,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     
     // Automation
     Route::get('automations/{uid}/custom-criteria/form', 'AutomationController@criteriaForm');
+    Route::post('automations/{uid}/trigger', 'AutomationController@trigger');
     Route::get('automations/{uid}/trigger', 'AutomationController@trigger');
     Route::get('automations/sort', 'AutomationController@sort');
     Route::get('automations/listing/{page?}', 'AutomationController@listing');

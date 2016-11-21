@@ -32,10 +32,10 @@
 							<h3 class="mt-0">{{ trans('messages.How_to_trigger_automation') }}</h3>
 							@include('helpers.form_control', [
 								'type' => 'radio',
-								'name' => 'type',
+								'name' => 'type_name',
 								'class' => '',
 								'label' => '',
-								'value' => '',
+								'value' => $automation->trigger->type_name,
 								'options' => [
 									['value' => 'specific-date', 'text' => trans('messages.Immediately_or_on_a_specific_date')],
 									['value' => 'annual-recurring', 'text' => trans('messages.Annual_recurring')],

@@ -5,7 +5,7 @@
 										@include('helpers.form_control', [
 											'type' => 'date',
 											'class' => '_from_now',
-											'name' => 'send_on',
+											'name' => 'send_day',
 											'label' => trans('messages.Send_on'),
 											'value' => '',
 											'rules' => [],
@@ -15,7 +15,7 @@
 									<div class="col-md-6 segments-select-box">
 										@include('helpers.form_control', [
 											'type' => 'time',
-											'name' => 'send_at',
+											'name' => 'send_time',
 											'label' => trans('messages.at'),
 											'value' => '',
 											'rules' => [],

@@ -1157,7 +1157,7 @@ return [
     'Subscriber_added_date' => 'Subscriber\'s ADDED DATE',
     'Subscriber_field_tag' => 'Subscriber\'s :tag',
     'Add_criteria' => 'Add criteria',
-    '' => '',
+    'Subscriber_attributes' => 'Subscriber attributes',
     '' => '',
     '' => '',
     '' => '',
