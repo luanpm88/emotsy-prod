@@ -30,6 +30,7 @@ use Illuminate\Support\Facades\Validator;
 class MailList extends Model
 {
     // Subscribers to import every time
+    const IMPORT_STATUS_NEW = 'new';
     const IMPORT_STATUS_RUNNING = 'running';
     const IMPORT_STATUS_FAILED = 'failed';
     const IMPORT_STATUS_DONE = 'done';
@@ -864,12 +865,7 @@ class MailList extends Model
         try {
             // init the status
             $system_job->updateStatus([
-                'mail_list_uid' => $this->uid,
-                'user_id' => $user->id,
                 'status' => self::IMPORT_STATUS_RUNNING,
-                'error_message' => '',
-                'total' => 0,
-                'processed' => 0,
             ]);
 
             // Read CSV files

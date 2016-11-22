@@ -95,19 +95,19 @@
 								if(result != "none") {									
 									// update progress bar
 									var total = parseFloat(result.data.total);
-									var success = parseFloat(result.data.success);
-									var error = parseFloat(result.data.error);
+									var success = parseFloat(result.data.processed);
+									//var error = parseFloat(result.data.error);
 									
 									if (typeof(first) == "undefined") {
-										form.find(".processing label").html(result.data.message);
+										form.find(".processing label").html(result.message);
 										bar.find(".number").html(Math.round(success/total*100));
 										bar.css({
 											width: (success/total*100) + '%'
 										});	
-										bar_e.find(".number").html(Math.round(error/total*100));
-										bar_e.css({
-											width: (error/total*100) + '%'
-										});
+										//bar_e.find(".number").html(Math.round(error/total*100));
+										//bar_e.css({
+										//	width: (error/total*100) + '%'
+										//});
 										
 										if (result.data.status == "failed" && typeof(first) == "undefined") {
 											form.find('.finish').removeClass("hide");

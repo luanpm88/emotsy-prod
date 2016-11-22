@@ -378,10 +378,17 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
         
+        // data from json
+        $data = json_decode($system_job->data);
+        
+        // Messages
+        $message = importSubscriberMessage($data);
+        
         return response()->json([
             "job" => $system_job,
-            "data" => json_decode($system_job->data),
+            "data" => $data,
             "timer" => $system_job->runTime(),
+            "message" => $message,
         ]);
     }
     

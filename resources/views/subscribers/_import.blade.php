@@ -32,6 +32,6 @@
 					
 				<script>
 					$(document).ready(function() {
-						setInterval('tableFilterAll()', 3000);
+						setInterval('tableRefreshAll()', 3000);
 					});
 				</script>

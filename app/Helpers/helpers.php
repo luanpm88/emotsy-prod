@@ -129,3 +129,27 @@ function array_unique_by($array, $callback)
     }
     return array_values($result);
 }
+
+/**
+ * Get message for status of importing job
+ *
+ * @param object data
+ * @return string
+ */
+function importSubscriberMessage($data)
+{
+    if($data->status == 'failed') {
+        $message = $data->error_message;
+    } else if ($data->status == 'new') {
+        $message = trans('messages.starting');
+    } else {
+        $message = trans('messages.import_export_statistics_line', [
+            'total' => $data->total,
+            'processed' => $data->processed,
+            'success' => $data->processed,
+            'error' => 0,
+        ]);;
+    }
+    
+    return $message;
+}

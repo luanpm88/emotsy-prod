@@ -25,12 +25,12 @@
 										</td>
 										<td>
 											<div class="single-stat-box">                                                
-												<span class="no-margin text-teal-800 stat-num">{{ $data->percent }}%</span>
+												<span class="no-margin text-teal-800 stat-num">{{ $data->total == 0 ? 0 : $data->processed/$data->total }}%</span>
 												<div class="progress progress-xxs">
-													<div class="progress-bar progress-bar-info" style="width: {{ $data->percent }}%">
+													<div class="progress-bar progress-bar-info" style="width: {{ $data->total == 0 ? 0 : $data->processed/$data->total }}%">
 													</div>
 												</div>
-												<span class="no-margin">{!! $data->message !!}</span>
+												<span class="no-margin">{!! importSubscriberMessage($data) !!}</span>
 											</div>
 											<br style="clear:both" />
 										</td>

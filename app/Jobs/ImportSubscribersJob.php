@@ -24,6 +24,17 @@ class ImportSubscribersJob extends ImportExportJob
         $this->file = join_paths($this->path, 'data.csv');
         rename($file, $this->file);
         chmod($this->file, 0775);
+        
+        // Update system job status
+        // init the status
+        $this->updateStatus([
+            'mail_list_uid' => $mailList->uid,
+            'user_id' => $user->id,
+            'status' => \Acelle\Model\MailList::IMPORT_STATUS_NEW,
+            'error_message' => '',
+            'total' => 0,
+            'processed' => 0,
+        ]);
     }
     
     /**
