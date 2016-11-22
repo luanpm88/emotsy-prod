@@ -44,7 +44,8 @@ class SystemJobController extends Controller
         $job = \Acelle\Model\ImportSubscribersSystemJob::find($request->id);
         
         // authorize
-        if (\Gate::denies('downloadImportLog', $job)) {
+        // @todo: redundant find() here
+        if (\Gate::denies('downloadImportLog', \Acelle\Model\SystemJob::find($request->id))) {
             return $this->notAuthorized();
         }
 

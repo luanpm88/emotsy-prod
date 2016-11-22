@@ -562,7 +562,7 @@ class MailList extends Model
         if ($this->trackingCount() == 0) {
             return 0;
         }
-
+        
         return round(($this->openUniqCount() / $this->trackingCount()) * 100, 0);
     }
 
@@ -576,7 +576,7 @@ class MailList extends Model
         if ($this->urlCount() == 0) {
             return 0;
         }
-
+        
         return round(($this->clickCount() / $this->urlCount()) * 100, 0);
     }
 
@@ -589,7 +589,7 @@ class MailList extends Model
     {
         return \Auth::user()->lists()->where('id', '!=', $this->id)->get();
     }
-
+    
     /**
      * Get name with subscrbers count.
      *
@@ -599,7 +599,7 @@ class MailList extends Model
     {
         return $this->name.' - '.$this->subscribers()->count().' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('subscriber', $this->subscribers()->count())).'';
     }
-
+    
     /**
      * Copy new list.
      */
@@ -611,12 +611,12 @@ class MailList extends Model
         $copy->updated_at = \Carbon\Carbon::now();
         $copy->custom_order = 0;
         $copy->save();
-
+        
         // Contact
         if (is_object($this->contact)) {
             $new_contact = $this->contact->replicate();
             $new_contact->save();
-
+            
             // update contact
             $copy->contact_id = $new_contact->id;
             $copy->save();
@@ -814,7 +814,7 @@ class MailList extends Model
         
         // split the entire list into smaller batches
         $results = $reader->fetchAssoc($headers);
-
+        
         return [$headers, $availableFields, $lineCount, $results];
     }
     
@@ -860,17 +860,17 @@ class MailList extends Model
     {
         $processed_count = 0;
         $logger = $system_job->getLogger();
-        $logger->info("Start importing for mail list ID: " . $this->id);
-
+        $logger->info(trans('messages.Start_importing_for_list_uid', ['uid' => $this->uid]));
+        
         try {
             // init the status
             $system_job->updateStatus([
                 'status' => self::IMPORT_STATUS_RUNNING,
             ]);
-
+            
             // Read CSV files
             list($headers, $availableFields, $lineCount, $results) = $this->readCsv($file);
-
+            
             // validate headers, check for required fields
             // throw an exception in case of error
             $this->validateCsvHeader($availableFields);
@@ -882,7 +882,7 @@ class MailList extends Model
             each_batch($results, config('app.import_batch_size'), true, function($batch) use ($logger, $availableFields, &$user, &$processed_count, &$system_job) {
                 // increment count
                 $processed_count += sizeof($batch);
-
+                
                 // authorization
                 if (!$user->can('addMoreSubscribers', [$this, config('app.import_batch_size')])) {
                     // If use cannot create ANY other subscribers
@@ -905,13 +905,13 @@ class MailList extends Model
                 $tmpFields = implode(',', array_map(function($field) { return "$field VARCHAR(255)"; }, $availableFields));
                 DB::statement("DROP TEMPORARY TABLE IF EXISTS {$tmpTable};
                                CREATE TEMPORARY TABLE {$tmpTable}({$tmpFields});");
-
+                
                 // Insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
                 $data = collect($batch)->map(function($r) use ($availableFields) {
                     return array_only($r, $availableFields);
                 })->toArray();
-
+                
                 // make the import data table unique by email 
                 $data = array_unique_by($data, function($r) {
                     return $r['email'];
@@ -931,7 +931,7 @@ class MailList extends Model
                 DB::statement("INSERT INTO " . table('subscribers') . "(uid, mail_list_id, user_id, email, status, created_at, updated_at) 
                                SELECT UUID_SHORT(), " . $this->id . ", " . $user->id . ", uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", {$now}, {$now}
                                FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN " . table('subscribers') . " main ON tmp.email = main.email WHERE main.email IS NULL) uniq");
-
+                
                 // Insert subscribers' custom fields to the fields table
                 DB::statement("DELETE FROM " . table('subscriber_fields') . " WHERE subscriber_id IN (SELECT id FROM " . table('subscribers') . " main JOIN {$tmpTable} tmp ON main.email = tmp.email WHERE mail_list_id = " . $this->id . ")");
                 foreach($availableFields as $field) {
@@ -941,23 +941,23 @@ class MailList extends Model
                     JOIN " . table('fields') . " f ON f.tag = '{$field}' AND f.mail_list_id = " . $this->id;
                     DB::statement($sql);
                 }
-
+                
                 // update status, finish one batch
                 $system_job->updateStatus([ 'processed' => $processed_count ]);
-
+                
                 // Cleanup
                 DB::statement("DROP TEMPORARY TABLE IF EXISTS {$tmpTable};");
-
+                
                 // Actually write to the database
                 DB::commit();
             });
-
+            
             // update status, finish all batches
             $system_job->updateStatus([ 'status' => self::IMPORT_STATUS_DONE, 'total' => $processed_count ]);
             
             // action Log
             $this->log('import_success', $user, ['count' => $processed_count, 'error' => '']);
-            $logger->info("Finish importing for mail list ID: " . $this->id);
+            $logger->info(trans('messages.Finish_importing_for_list_uid', ['uid' => $this->uid]));
         } catch (\Exception $e) {
             // finish the transaction
             DB::rollBack();

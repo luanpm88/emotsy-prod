@@ -1102,5 +1102,7 @@ return [
     'clicked_emails_rate' => 'Clicked emails rate',
     'delete_language_confirm_warning' => 'If there are one or more users using this language, they will be changed to the default language.',
     'no_user' => 'There are no users',
+    'Start_importing_for_list_uid' => 'Start importing for mail list UID: :uid',
+    'Finish_importing_for_list_uid' => 'Finish importing for mail list UID: :uid',
 ];
 
