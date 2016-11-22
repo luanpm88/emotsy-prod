@@ -216,5 +216,5 @@ return [
     /*
      * Custom application settings of Acelle Mail go here
      */
-    'import_batch_size' => 10000,
+    'import_batch_size' => env('IMPORT_BATCH_SIZE', 5000),
 ];
