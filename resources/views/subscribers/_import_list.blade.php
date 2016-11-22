@@ -25,9 +25,9 @@
 										</td>
 										<td>
 											<div class="single-stat-box">                                                
-												<span class="no-margin text-teal-800 stat-num">{{ $data->total == 0 ? 0 : $data->processed/$data->total }}%</span>
+												<span class="no-margin text-teal-800 stat-num">{{ $data->total == 0 ? 0 : round(($data->processed/$data->total)*100, 0) }}%</span>
 												<div class="progress progress-xxs">
-													<div class="progress-bar progress-bar-info" style="width: {{ $data->total == 0 ? 0 : $data->processed/$data->total }}%">
+													<div class="progress-bar progress-bar-info" style="width: {{ $data->total == 0 ? 0 : round(($data->processed/$data->total)*100, 0) }}%">
 													</div>
 												</div>
 												<span class="no-margin">{!! importSubscriberMessage($data) !!}</span>
