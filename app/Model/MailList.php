@@ -828,7 +828,7 @@ class MailList extends Model
         $missing = array_diff(self::IMPORT_REQUIRED_FIELDS, $headers);
         if (!empty($missing)) {
             // @todo: I18n is required here
-            throw new \Exception('The following fields are required: ' . implode(', ', $missing) );
+            throw new \Exception(trans('messages.import_missing_header_field', ['fields' => implode(', ', $missing)]) );
         }
         return true;
     }
