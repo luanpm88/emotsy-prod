@@ -132,12 +132,24 @@ class AutomationController extends Controller
         // Find automation trigger
         if(!is_object($automation->trigger)) {
             $automation->trigger = new \Acelle\Model\AutomationTrigger([
-                'type_name' => 'specific-date'
+                'type_name' => 'specific-date',
             ]);
+            $automation->automation_id = $automation->id;
         }
         
-         // Save trigger
+        // Fill old post data
+        if(!empty($request->old())) {
+            $automation->trigger->fillAttributes($request->old());
+        }
+        
+        // Save trigger
         if ($request->isMethod('post')) {
+            // validation
+            $this->validate($request, $automation->trigger->rules());
+            
+            // fill data
+            $automation->trigger->fillAttributes($request->all());
+            $automation->trigger->save();
         }
         
         return view('automations.trigger', [

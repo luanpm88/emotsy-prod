@@ -27,6 +27,8 @@
 
 @section('content')
                 <form action="" method="POST" class="form-validate-jqueryz tabable-select-box">
+					{{ csrf_field() }}
+					
 					<div class="row">
 						<div class="col-md-12 tabable-select-radio">
 							<h3 class="mt-0">{{ trans('messages.How_to_trigger_automation') }}</h3>
@@ -36,15 +38,7 @@
 								'class' => '',
 								'label' => '',
 								'value' => $automation->trigger->type_name,
-								'options' => [
-									['value' => 'specific-date', 'text' => trans('messages.Immediately_or_on_a_specific_date')],
-									['value' => 'annual-recurring', 'text' => trans('messages.Annual_recurring')],
-									['value' => 'list-subscription', 'text' => trans('messages.Event_based_list_subscription')],
-									['value' => 'list-unsubscription', 'text' => trans('messages.Event_based_list_unsubscription')],
-									['value' => 'event-based', 'text' => trans('messages.Event_based_custom_list_subscriber_event')],
-									['value' => 'custom-criteria', 'text' => trans('messages.Custom_criteria')],
-									['value' => 'api-call', 'text' => trans('messages.API_call')],
-								],
+								'options' => Acelle\Model\AutomationTrigger::typeNameSelectOptions(),
 								'rules' => []
 							])
 						</div>

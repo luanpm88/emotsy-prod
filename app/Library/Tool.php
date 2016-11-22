@@ -225,6 +225,20 @@ class Tool
     }
     
     /**
+     * Get system time conversion.
+     *
+     * @param       string
+     *
+     * @return string
+     */
+    public static function systemTimeFromString($string, $timezone)
+    {
+        $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $string, $timezone);            
+        $time = self::systemTime($time);
+        return $time;
+    }
+    
+    /**
      * Get bytes from string.
      *
      * @param string
@@ -305,5 +319,39 @@ class Tool
             ['value' => '11', 'text' => trans('messages.November')],
             ['value' => '12', 'text' => trans('messages.December')],
         ];
+    }
+    
+    /**
+     * Get day string from timestamp.
+     *
+     * @param timestamp
+     *
+     * @return string
+     */
+    public static function dayStringFromTimestamp($timestamp) {
+        if(isset($timestamp) && $timestamp != '0000-00-00 00:00:00') {
+            // @todo: hard day format code: 'Y-m-d'
+            $result = \Acelle\Library\Tool::dateTime($timestamp)->format('Y-m-d');
+        } else {
+            $result = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
+        }        
+        return $result;
+    }
+    
+    /**
+     * Get time string from timestamp.
+     *
+     * @param timestamp
+     *
+     * @return string
+     */
+    public static function timeStringFromTimestamp($timestamp) {
+        if(isset($timestamp) && $timestamp != '0000-00-00 00:00:00') {
+            // @todo: hard day format code: 'H:i'
+            $result = \Acelle\Library\Tool::dateTime($timestamp)->format('H:i');
+        } else {
+            $result = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
+        }        
+        return $result;
     }
 }
