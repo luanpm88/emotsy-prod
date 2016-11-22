@@ -41,14 +41,14 @@ class SystemJobController extends Controller
      */
     public function downloadLog(Request $request)
     {
-        $job = \Acelle\Model\SystemJob::find($request->id);
+        $job = \Acelle\Model\ImportSubscribersSystemJob::find($request->id);
         
         // authorize
         if (\Gate::denies('downloadImportLog', $job)) {
             return $this->notAuthorized();
         }
 
-        return response()->download(storage_path('job/'.$job->id.'/detail.log'));
+        return response()->download($job->getLog());
     }
     
     /**
