@@ -139,7 +139,7 @@ function array_unique_by($array, $callback)
 function importSubscriberMessage($data)
 {
     if($data->status == 'failed') {
-        $message = $data->error_message;
+        $message = '<span class="text-danger">' . trans('messages.Failed') . ': ' . $data->error_message . '</span>';
     } else if ($data->status == 'new') {
         $message = trans('messages.starting');
     } else {

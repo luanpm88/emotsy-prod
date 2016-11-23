@@ -1105,5 +1105,6 @@ return [
     'Start_importing_for_list_uid' => 'Start importing for mail list UID: :uid',
     'Finish_importing_for_list_uid' => 'Finish importing for mail list UID: :uid',
     'import_missing_header_field' => 'The following fields are required: :fields',
+    'Failed' => 'Failed',
 ];
 
