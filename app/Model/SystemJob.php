@@ -34,6 +34,7 @@ class SystemJob extends Model
     const STATUS_RUNNING = 'running';
     const STATUS_DONE = 'done';
     const STATUS_FAILED = 'failed';
+    const STATUS_CANCELLED = 'cancelled'
 
     /**
      * The attributes that are mass assignable.
@@ -73,6 +74,17 @@ class SystemJob extends Model
      */
     public function setFailed() {
         $this->status = self::STATUS_FAILED;
+        $this->end_at = \Carbon\Carbon::now();
+        $this->save();
+    }
+
+    /**
+     * Set job status as cancelled
+     *
+     * @var array
+     */
+    public function setCancelled() {
+        $this->status = self::STATUS_CANCELLED;
         $this->end_at = \Carbon\Carbon::now();
         $this->save();
     }
