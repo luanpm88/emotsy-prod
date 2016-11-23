@@ -9,17 +9,42 @@
 											</label>
 										</div>
 										<div class="pl-35">
-											@include('helpers.form_control', [
-												'type' => 'date',
-												'class' => '_from_now',
-												'name' => 'specific_date',
-												'label' => '',
-												'value' => '',
-												'rules' => [],
-												'help_class' => 'trigger'
-											])
+											<div class="row">
+												<div class="col-md-6">
+													<div class="">
+														@include('helpers.form_control', [
+															'type' => 'date',
+															'class' => '_from_now',
+															'name' => 'specific_day',
+															'label' => '',
+															'value' => '',
+															'rules' => [],
+															'help_class' => 'trigger'
+														])
+													</div>
+												</div>
+												<div class="col-md-6">
+													<div class="row">
+														<div class="col-md-2">
+															<label class="col-center">{{ trans('messages.at') }}</label>
+														</div>
+														<div class="col-md-10">
+															@include('helpers.form_control', [
+																'type' => 'time',
+																'name' => 'specific_time',
+																'label' => '',
+																'value' => Acelle\Library\Tool::timeStringFromTimestamp($automation->trigger->send_at),
+																'rules' => $automation->trigger->rules(),
+																'help_class' => 'trigger'
+															])
+														</div>
+													</div>
+												</div>
+											</div>
 										</div>
 									</div>
+								</div>
+								<div class="row">
 									<div class="col-md-12">
 										<div class="radio form-group">
 											<label>
@@ -41,6 +66,25 @@
 													])
 												</div>
 												<div class="col-md-6">
+													<div class="row">
+														<div class="col-md-2">
+															<label class="col-center">{{ trans('messages.at') }}</label>
+														</div>
+														<div class="col-md-10">
+															@include('helpers.form_control', [
+																'type' => 'time',
+																'name' => 'specific_time_2',
+																'label' => '',
+																'value' => Acelle\Library\Tool::timeStringFromTimestamp($automation->trigger->send_at),
+																'rules' => $automation->trigger->rules(),
+																'help_class' => 'trigger'
+															])
+														</div>
+													</div>
+												</div>											
+											</div>
+											<div class="row">
+												<div class="col-md-6">
 													@include('helpers.form_control', [
 														'type' => 'select',
 														'name' => 'type',
@@ -52,8 +96,6 @@
 														'rules' => []
 													])
 												</div>
-											</div>
-											<div class="row">
 												<div class="col-md-6">
 													@include('helpers.form_control', [
 														'type' => 'select',
@@ -91,6 +133,25 @@
 														'rules' => []
 													])
 												</div>
+												<div class="col-md-6">
+													<div class="row">
+														<div class="col-md-2">
+															<label class="col-center">{{ trans('messages.at') }}</label>
+														</div>
+														<div class="col-md-10">
+															@include('helpers.form_control', [
+																'type' => 'time',
+																'name' => 'specific_time_3',
+																'label' => '',
+																'value' => Acelle\Library\Tool::timeStringFromTimestamp($automation->trigger->send_at),
+																'rules' => $automation->trigger->rules(),
+																'help_class' => 'trigger'
+															])
+														</div>
+													</div>
+												</div>
+											</div>
+											<div class="row">
 												<div class="col-md-6">
 													@include('helpers.form_control', [
 														'type' => 'select',

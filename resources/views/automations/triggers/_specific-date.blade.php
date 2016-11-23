@@ -12,15 +12,22 @@
 											'help_class' => 'trigger'
 										])
 									</div>
-									<div class="col-md-6 segments-select-box">
-										@include('helpers.form_control', [
-											'type' => 'time',
-											'name' => 'send_time',
-											'label' => trans('messages.at'),
-											'value' => Acelle\Library\Tool::timeStringFromTimestamp($automation->trigger->send_at),
-											'rules' => $automation->trigger->rules(),
-											'help_class' => 'trigger'
-										])
+									<div class="col-md-6">
+										<div class="row pt-29">
+											<div class="col-md-2">
+												<label class="col-center">{{ trans('messages.at') }}</label>
+											</div>
+											<div class="col-md-10">
+												@include('helpers.form_control', [
+													'type' => 'time',
+													'name' => 'send_time',
+													'label' => '',
+													'value' => Acelle\Library\Tool::timeStringFromTimestamp($automation->trigger->send_at),
+													'rules' => $automation->trigger->rules(),
+													'help_class' => 'trigger'
+												])
+											</div>
+										</div>
 									</div>
 								</div>
 							</div>

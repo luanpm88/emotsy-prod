@@ -1371,3 +1371,10 @@ ul.no-top-border-list li:first-child {
 .pl-35 {
     padding-left: 35px;
 }
+.pt-29 {
+    padding-top: 29px;
+}
+label.col-center {
+    font-weight: 800;
+    line-height: 36px;
+}

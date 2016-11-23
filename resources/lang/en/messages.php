@@ -1158,8 +1158,8 @@ return [
     'Subscriber_field_tag' => 'Subscriber\'s :tag',
     'Add_criteria' => 'Add criteria',
     'Subscriber_attributes' => 'Subscriber attributes',
-    '' => '',
-    '' => '',
+    'On_specific_day' => 'On specific day',
+    'at' => 'at',
     '' => '',
 ];
 
