@@ -803,19 +803,24 @@ class MailList extends Model
      */
     private function readCsv($file)
     {
-        // Read CSV files
-        $lineCount = line_count($file) - 1; // do not count the header
-        $reader = \League\Csv\Reader::createFromPath($file);
-        $headers = array_map('strtolower', $reader->fetchOne());        
-        $fields = collect($this->fields)->map(function($field) { return strtolower($field->tag); })->toArray();
-        
-        // list's fields found in the input CSV
-        $availableFields = array_intersect($headers, $fields);
-        
-        // split the entire list into smaller batches
-        $results = $reader->fetchAssoc($headers);
-        
-        return [$headers, $availableFields, $lineCount, $results];
+        try {
+            // Read CSV files
+            $lineCount = line_count($file) - 1; // do not count the header
+            $reader = \League\Csv\Reader::createFromPath($file);
+            $headers = array_map('strtolower', $reader->fetchOne());
+            $fields = collect($this->fields)->map(function($field) { return strtolower($field->tag); })->toArray();
+
+            // list's fields found in the input CSV
+            $availableFields = array_intersect($headers, $fields);
+
+            // split the entire list into smaller batches
+            $results = $reader->fetchAssoc($headers);
+
+            return [$headers, $availableFields, $lineCount, $results];
+        } catch (\Exception $ex) {
+            // @todo: translation here
+            throw new \Exception("Invalid headers. Original error message is: " . $ex->getMessage());
+        }
     }
     
     /**
