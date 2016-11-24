@@ -40,7 +40,6 @@
                                 
                                 <div class="text-left">
                                     <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.import') }}</button>
-                                    <a href="{{ action('SubscriberController@index', $list->uid) }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
                                 </div>
                                 <br />
                             </div>
@@ -61,6 +60,9 @@
                                     </div>
                                 </div>
 								<label></label>
+								<a link-confirm="{{ trans('messages.cancel_system_jobs_confirm') }}" data-href="{{ action('SystemJobController@cancel', ["uids" => ""]) }}" type="button" class="btn bg-grey btn-icon cancel processing">
+									{{ trans('messages.cancel') }}
+								</a>
                             </div>
 								
 							<div class="form-group finish hide">
@@ -92,7 +94,10 @@
 							type: "GET",
 							success:function(result, textStatus, jqXHR)
 							{
-								if(result != "none") {									
+								if(result != "none" && result.job.status != "cancelled") {
+									// Update cancel link
+									form.find('.cancel').attr('href', form.find('.cancel').attr('data-href') + result.job.id);
+								
 									// update progress bar
 									var total = parseFloat(result.data.total);
 									var success = parseFloat(result.data.processed);
@@ -109,14 +114,14 @@
 										//	width: (error/total*100) + '%'
 										//});
 										
-										if (result.data.status == "failed" && typeof(first) == "undefined") {
+										if (result.data.status == "failed") {
 											form.find('.finish').removeClass("hide");
 											form.find('.before').addClass("hide");
 											form.find(".processing").removeClass('hide');
 											form.find('.success').addClass("hide");
 										}
 										
-										if (result.data.status == "done" && typeof(first) == "undefined") {
+										if (result.data.status == "done") {
 											form.find('.upload_file .progress-bar').addClass('success');										
 											form.find(".before").addClass('hide');
 											form.find(".processing").removeClass('hide');
@@ -137,6 +142,13 @@
 												});
 											}
 										}
+										
+										if (result.job.status == "cancelled") {
+											form.find('.finish').addClass("hide");
+											form.find('.before').removeClass("hide");
+											form.find(".processing").addClass('hide');
+											form.find('.success').removeClass("hide");
+										}
 									}
 									
 									if (result.data.status == "running" || result.data.status == "new") {
@@ -144,7 +156,14 @@
 										form.find(".before").addClass('hide');
 										form.find(".processing").removeClass('hide');
 										form.find('.finish').addClass('hide');
+										form.find('.cancel').removeClass('hide');
+									} else {
+										form.find('.cancel').addClass('hide');
 									}
+								}
+								
+								if (result.job.status == "cancelled") {
+									form.find('.retry').trigger('click');
 								}
 							}
 						})

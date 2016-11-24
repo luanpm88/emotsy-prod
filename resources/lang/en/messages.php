@@ -1106,5 +1106,8 @@ return [
     'Finish_importing_for_list_uid' => 'Finish importing for mail list UID: :uid',
     'import_missing_header_field' => 'The following fields are required: :fields',
     'Failed' => 'Failed',
+    'system_jobs.cancelled' => 'One or more jobs were successfully cancelled',
+    'cancel_system_jobs_confirm' => 'You\'re about to cancel :number job(s).',
+    'cancelled' => 'cancelled',
 ];
 

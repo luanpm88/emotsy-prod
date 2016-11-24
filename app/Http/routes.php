@@ -237,6 +237,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('users/login-back', 'UserController@loginBack');
     
     // System job
+    Route::get('systems/jobs/cancel', 'SystemJobController@cancel');
     Route::get('systems/jobs/{type}/listing', 'SystemJobController@listing');
     Route::get('systems/jobs/delete', 'SystemJobController@delete');
     Route::get('systems/jobs/{id}/download/log', 'SystemJobController@downloadLog');

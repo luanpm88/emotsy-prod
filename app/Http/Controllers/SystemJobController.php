@@ -91,4 +91,25 @@ class SystemJobController extends Controller
 
         return response()->download(storage_path('job/'.$job->id.'/data.csv'));
     }
+    
+    /**
+     * Cancel stukced running import job.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cancel(Request $request)
+    {
+        $jobs = \Acelle\Model\SystemJob::whereIn('id', explode(',', $request->uids));
+
+        foreach ($jobs->get() as $job) {
+            // authorize
+            if (\Gate::allows('cancel', $job)) {
+                $job->setCancelled();
+            }
+        }
+        
+        echo trans('messages.system_jobs.cancelled');
+    }
 }

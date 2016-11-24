@@ -136,11 +136,11 @@ function array_unique_by($array, $callback)
  * @param object data
  * @return string
  */
-function importSubscriberMessage($data)
+function importSubscriberMessage($data, $system_job)
 {
     if($data->status == 'failed') {
         $message = '<span class="text-danger">' . trans('messages.Failed') . ': ' . $data->error_message . '</span>';
-    } else if ($data->status == 'new') {
+    } else if ($data->status == 'new' && $system_job->status != 'cancelled') {
         $message = trans('messages.starting');
     } else {
         $message = trans('messages.import_export_statistics_line', [
@@ -152,4 +152,18 @@ function importSubscriberMessage($data)
     }
     
     return $message;
+}
+
+/**
+ * Get message for status of export job
+ *
+ * @param object data
+ * @return string
+ */
+function exportSubscriberMessage($data, $system_job)
+{
+    if($system_job->status == 'cancelled') {
+        return trans('messages.cancelled');
+    }
+    return $data->message;
 }

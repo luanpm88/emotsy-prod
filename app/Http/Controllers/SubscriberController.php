@@ -382,7 +382,7 @@ class SubscriberController extends Controller
         $data = json_decode($system_job->data);
         
         // Messages
-        $message = importSubscriberMessage($data);
+        $message = importSubscriberMessage($data, $system_job);
         
         return response()->json([
             "job" => $system_job,

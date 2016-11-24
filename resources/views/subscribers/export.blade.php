@@ -54,6 +54,9 @@
 
                                 </div>
 								<label></label>
+								<a link-confirm="{{ trans('messages.cancel_system_jobs_confirm') }}" data-href="{{ action('SystemJobController@cancel', ["uids" => ""]) }}" type="button" class="btn bg-grey btn-icon cancel processing">
+									{{ trans('messages.cancel') }}
+								</a>
                             </div>
 								
 							<div class="form-group finish hide">
@@ -85,7 +88,10 @@
 							type: "GET",
 							success:function(result, textStatus, jqXHR)
 							{
-								if(result != "none") {
+								if(result != "none" && result.job.status != "cancelled") {
+									// Update cancel link
+									form.find('.cancel').attr('href', form.find('.cancel').attr('data-href') + result.job.id);
+									
 									// update progress bar
 									var total = parseFloat(result.data.total);
 									var success = parseFloat(result.data.success);
@@ -129,8 +135,6 @@
 													confirmButtonText: LANG_OK,
 												});
 											}
-											
-											
 										}
 									}
 									
@@ -139,7 +143,13 @@
 										form.find(".before").addClass('hide');
 										form.find(".processing").removeClass('hide');
 										form.find('.finish').addClass('hide');
+									} else {
+										form.find('.cancel').addClass('hide');
 									}
+								}
+								
+								if (result.job.status == "cancelled") {
+									form.find('.retry').trigger('click');
 								}
 							}
 						})

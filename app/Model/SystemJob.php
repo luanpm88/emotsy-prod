@@ -34,7 +34,7 @@ class SystemJob extends Model
     const STATUS_RUNNING = 'running';
     const STATUS_DONE = 'done';
     const STATUS_FAILED = 'failed';
-    const STATUS_CANCELLED = 'cancelled'
+    const STATUS_CANCELLED = 'cancelled';
 
     /**
      * The attributes that are mass assignable.
