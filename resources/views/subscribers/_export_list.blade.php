@@ -50,7 +50,7 @@
 												</a>
 											@endif
 											@if (\Gate::allows('cancel', $item))
-												<a link-confirm="{{ trans('messages.cancel_system_jobs_confirm') }}" href="{{ action('SystemJobController@cancel', ["uids" => $item->id]) }}" type="button" class="btn bg-grey btn-icon">
+												<a data-method="POST" link-confirm="{{ trans('messages.cancel_system_jobs_confirm') }}" href="{{ action('SystemJobController@cancel', ["uids" => $item->id]) }}" type="button" class="btn bg-grey btn-icon">
 													{{ trans('messages.cancel') }}
 												</a>
 											@endif

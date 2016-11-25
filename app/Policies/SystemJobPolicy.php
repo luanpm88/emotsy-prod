@@ -23,8 +23,7 @@ class SystemJobPolicy
         if($item->name == 'Acelle\Jobs\ImportSubscribersJob' || $item->name == 'Acelle\Jobs\ExportSubscribersJob') {
             $data = json_decode($item->data);
             $list = \Acelle\Model\MailList::findByUid($data->mail_list_uid);
-            return $list->user_id == $user->id &&
-                (in_array($data->status, ['failed', 'done']) || $item->status == \Acelle\Model\SystemJob::STATUS_CANCELLED);
+            return $list->user_id == $user->id && !$item->isRunning();
         }
         
         return false;
@@ -54,8 +53,7 @@ class SystemJobPolicy
             $data = json_decode($item->data);
             $list = \Acelle\Model\MailList::findByUid($data->mail_list_uid);
             return $list->user_id == $user->id &&
-                in_array($data->status, [\Acelle\Model\SystemJob::STATUS_RUNNING, \Acelle\Model\SystemJob::STATUS_NEW]) &&
-                $item->status != \Acelle\Model\SystemJob::STATUS_CANCELLED;
+                $item->isRunning();
         }
         
         return false;

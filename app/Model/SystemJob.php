@@ -149,6 +149,17 @@ class SystemJob extends Model
     }
     
     /**
+    * Check if system job is new
+    *
+    * @return boolean
+    */
+    function isRunning()
+    {
+        $data = json_decode($this->data);
+        return !(in_array($data->status, ['failed', 'done']) || $this->status == \Acelle\Model\SystemJob::STATUS_CANCELLED);
+    }
+    
+    /**
     * Get message for status of importing job
     *
     * @return string

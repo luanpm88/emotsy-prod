@@ -286,6 +286,8 @@ $(function() {
     $(document).on("click", "a[link-confirm]", function(e) {
         var mgs = $(this).attr("link-confirm");
         var url = $(this).attr("href");
+        var method = $(this).attr("data-method");
+        
         $(this).attr("new-href", $(this).attr("href"));
         
         if($(this).parents(".list_actions").length) {
@@ -304,11 +306,19 @@ $(function() {
         }
         
         $('a[data-target="#link_confirm_model"]').trigger("click");
+        
         mgs = mgs.replace(":number", "<span class='text-bold text-teal-800'>" + count + "</span>");
         mgs = mgs.replace(":name", "<span class='text-bold text-teal-800'>" + $(this).html() + "</span>");
         
         $("#link_confirm_model h6").html(mgs);
         $(".link-confirm-button").attr("href", url);
+        
+        // set method
+        if(typeof(method) != 'undefined') {
+            $(".link-confirm-button").attr("data-method", method);
+        } else {
+            $(".link-confirm-button").removeAttr("data-method");
+        }
         
         e.stopImmediatePropagation();
         e.preventDefault();
@@ -434,10 +444,19 @@ $(function() {
         
         var url = $(this).attr("href");
         var form = $(this).parents(".listing-form");
+        var method = $(this).attr("data-method");
+        var met = "GET";
+        
+        if(typeof(method) != 'undefined') {
+            met = method;
+        }
         
         $.ajax({
-            method: "GET",
+            method: met,
             url: url,
+            data: {
+                _token: CSRF_TOKEN,
+            }
         })
         .done(function( msg ) {
             tableFilter($(".listing-form"));
@@ -793,5 +812,33 @@ $(function() {
         }
         
         e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+    
+    // Grap link with data-method attribute
+    $(document).on('click', 'a[data-methodz]', function(e) {      
+        
+        var method = $(this).attr("data-method");
+        var action = $(this).attr("href");
+        
+        if(typeof(method) != 'undefined') {
+            var newForm = jQuery('<form>', {
+                'action': action,
+                'method': 'POST',
+                'target': '_top'
+            });
+            newForm.append(jQuery('<input>', {
+                'name': '_token',
+                'value': CSRF_TOKEN,
+                'type': 'hidden'
+            }));
+            newForm.append(jQuery('<input>', {
+                'name': '_method',
+                'value': method,
+                'type': 'hidden'
+            }));
+            newForm.submit();
+            
+            e.preventDefault();
+        }
     });
 });
