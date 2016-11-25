@@ -30,7 +30,7 @@
 													<div class="progress-bar progress-bar-info" style="width: {{ $data->percent }}%">
 													</div>
 												</div>
-												<span class="no-margin">{!! exportSubscriberMessage($data, $item) !!}</span>
+												<span class="no-margin">{!! $item->exportSubscriberMessage() !!}</span>
 											</div>
 											<br style="clear:both" />
 										</td>

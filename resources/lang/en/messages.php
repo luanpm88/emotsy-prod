@@ -1109,5 +1109,6 @@ return [
     'system_jobs.cancelled' => 'One or more jobs were successfully cancelled',
     'cancel_system_jobs_confirm' => 'You\'re about to cancel :number job(s).',
     'cancelled' => 'cancelled',
+    'import_failed_message' => '<span class="text-danger">:error</span>',
 ];
 

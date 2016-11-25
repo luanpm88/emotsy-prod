@@ -30,7 +30,7 @@
 													<div class="progress-bar progress-bar-info" style="width: {{ $data->total == 0 ? 0 : round(($data->processed/$data->total)*100, 0) }}%">
 													</div>
 												</div>
-												<span class="no-margin">{!! importSubscriberMessage($data, $item) !!}</span>
+												<span class="no-margin">{!! $item->importSubscriberMessage() !!}</span>
 											</div>
 											<br style="clear:both" />
 										</td>

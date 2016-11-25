@@ -127,4 +127,65 @@ class SystemJob extends Model
             self::destroy($this->id);
         });
     }
+    
+    /**
+    * Check if system job is cancelled
+    *
+    * @return boolean
+    */
+    function isCancelled()
+    {
+        return $this->status == SystemJob::STATUS_CANCELLED;
+    }
+    
+    /**
+    * Check if system job is new
+    *
+    * @return boolean
+    */
+    function isNew()
+    {
+        return $this->status == SystemJob::STATUS_NEW;
+    }
+    
+    /**
+    * Get message for status of importing job
+    *
+    * @return string
+    */
+    function importSubscriberMessage()
+    {
+        $data = json_decode($this->data);
+        
+        if($data->status == 'failed') {
+            $message = trans('messages.import_failed_message', ['error' => $data->error_message]);
+        } else if ($data->isNew() && !$this->isCancelled()) {
+            $message = trans('messages.starting');
+        } else {
+            $message = trans('messages.import_export_statistics_line', [
+                'total' => $data->total,
+                'processed' => $data->processed,
+                'success' => $data->processed,
+                'error' => 0,
+            ]);;
+        }
+        
+        return $message;
+    }
+    
+    /**
+    * Get message for status of export job
+    *
+    * @return string
+    */
+    function exportSubscriberMessage()
+    {
+        $data = json_decode($this->data);
+        
+        if($this->isCancelled()) {
+            return trans('messages.cancelled');
+        }
+        
+        return $data->message;
+    }
 }
