@@ -7,8 +7,8 @@
 											'class' => '_from_now',
 											'name' => 'send_day',
 											'label' => trans('messages.Send_on'),
-											'value' => Acelle\Library\Tool::dayStringFromTimestamp($automation->trigger->send_at),
-											'rules' => $automation->trigger->rules(),
+											'value' => Acelle\Library\Tool::dayStringFromTimestamp(Acelle\Library\Tool::dateTimeFromString($first_event->getDataValue('datetime'))),
+											'rules' => $first_event->rules(),
 											'help_class' => 'trigger'
 										])
 									</div>
@@ -22,8 +22,8 @@
 													'type' => 'time',
 													'name' => 'send_time',
 													'label' => '',
-													'value' => Acelle\Library\Tool::timeStringFromTimestamp($automation->trigger->send_at),
-													'rules' => $automation->trigger->rules(),
+													'value' => Acelle\Library\Tool::timeStringFromTimestamp(Acelle\Library\Tool::dateTimeFromString($first_event->getDataValue('datetime'))),
+													'rules' => $first_event->rules(),
 													'help_class' => 'trigger'
 												])
 											</div>

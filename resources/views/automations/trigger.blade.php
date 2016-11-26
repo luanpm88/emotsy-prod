@@ -34,11 +34,11 @@
 							<h3 class="mt-0">{{ trans('messages.How_to_trigger_automation') }}</h3>
 							@include('helpers.form_control', [
 								'type' => 'radio',
-								'name' => 'type_name',
+								'name' => 'event_type',
 								'class' => '',
 								'label' => '',
-								'value' => $automation->trigger->type_name,
-								'options' => Acelle\Model\AutomationTrigger::typeNameSelectOptions(),
+								'value' => $first_event->event_type,
+								'options' => Acelle\Model\AutoEvent::typeNameSelectOptions(),
 								'rules' => []
 							])
 						</div>
@@ -48,7 +48,7 @@
 						<div class="row tabable-tab specific-date">
 							@include('automations.triggers._specific-date')
 						</div>
-						<div class="row tabable-tab annual-recurring">
+						<!--<div class="row tabable-tab annual-recurring">
 							@include('automations.triggers._annual-recurring')							
 						</div>
 						<div class="row tabable-tab event-based">
@@ -56,7 +56,7 @@
 						</div>
 						<div class="row tabable-tab custom-criteria">
 							@include('automations.triggers._custom-criteria')							
-						</div>
+						</div>-->
 					</div>
 					
 					<hr>

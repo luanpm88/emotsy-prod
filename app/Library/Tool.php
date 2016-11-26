@@ -162,6 +162,16 @@ class Tool
 
         return $result;
     }
+    
+    /**
+     * Format display datetime.
+     *
+     * @var string
+     */
+    public static function dateTimeFromString(string $time_string)
+    {        
+        return self::dateTime(\Carbon\Carbon::parse($time_string));
+    }
 
     /**
      * For mat human time.

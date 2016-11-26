@@ -79,9 +79,9 @@ class Automation extends Model
         return $this->belongsTo('Acelle\Model\Segment');
     }
     
-    public function trigger()
+    public function autoEvents()
     {
-        return $this->hasOne('Acelle\Model\AutomationTrigger');
+        return $this->hasMany('Acelle\Model\AutoEvent');
     }
     
     /**
@@ -127,5 +127,26 @@ class Automation extends Model
         if(!empty($params["segment_uid"])) {
             $this->segment_id = Segment::findByUid($params["segment_uid"])->id;
         }
+    }
+    
+    /**
+     * Get the first/init auto event.
+     *
+     * @var AutoEvent
+     */
+    public function getInitEvent()
+    {
+        $auto_event = $this->autoEvents()->where('previous_event_id', '=', NULL)
+            ->orderBy('created_at', 'DESC')
+            ->first();
+        
+        if(!is_object($auto_event)) {
+            $auto_event = new AutoEvent([
+                'type_name' => AutoEvent::TYPE_SPECIFIC_DATE,
+            ]);
+            $auto_event->automation_id = $this->id;
+        }
+        
+        return $auto_event;
     }
 }

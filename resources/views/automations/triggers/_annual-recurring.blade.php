@@ -33,8 +33,8 @@
 																'type' => 'time',
 																'name' => 'specific_time',
 																'label' => '',
-																'value' => Acelle\Library\Tool::timeStringFromTimestamp($automation->trigger->send_at),
-																'rules' => $automation->trigger->rules(),
+																'value' => Acelle\Library\Tool::timeStringFromTimestamp($first_event->send_at),
+																'rules' => $first_event->rules(),
 																'help_class' => 'trigger'
 															])
 														</div>
@@ -75,8 +75,8 @@
 																'type' => 'time',
 																'name' => 'specific_time_2',
 																'label' => '',
-																'value' => Acelle\Library\Tool::timeStringFromTimestamp($automation->trigger->send_at),
-																'rules' => $automation->trigger->rules(),
+																'value' => Acelle\Library\Tool::timeStringFromTimestamp($first_event->send_at),
+																'rules' => $first_event->rules(),
 																'help_class' => 'trigger'
 															])
 														</div>
@@ -143,8 +143,8 @@
 																'type' => 'time',
 																'name' => 'specific_time_3',
 																'label' => '',
-																'value' => Acelle\Library\Tool::timeStringFromTimestamp($automation->trigger->send_at),
-																'rules' => $automation->trigger->rules(),
+																'value' => Acelle\Library\Tool::timeStringFromTimestamp($first_event->send_at),
+																'rules' => $first_event->rules(),
 																'help_class' => 'trigger'
 															])
 														</div>
