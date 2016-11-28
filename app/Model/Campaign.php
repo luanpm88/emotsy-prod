@@ -39,6 +39,7 @@ class Campaign extends Model
     const STATUS_SENDING = 'sending';
     const STATUS_ERROR = 'error';
     const STATUS_DONE = 'done';
+    const STATUS_PAUSED = 'paused';
 
     // Campaign types
     const TYPE_REGULAR = 'regular';
