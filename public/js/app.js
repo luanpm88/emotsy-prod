@@ -830,4 +830,10 @@ $(function() {
             new_line.find('select').select2();
         });
     });
+    
+    // radio-box
+    $(document).on("change", ".radio-box .radio-button", function(e) {
+        $(".radio-box .radio-more").hide();
+        $(".radio-box .radio-button:checked").parents(".radio-box").find(".radio-more").show();
+    });
 });

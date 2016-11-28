@@ -1378,3 +1378,10 @@ label.col-center {
     font-weight: 800;
     line-height: 36px;
 }
+.radio-more {
+    display: none;
+}
+.day-of-month-box .checkboxes-container {
+    height: 410px;
+    overflow: auto;
+}

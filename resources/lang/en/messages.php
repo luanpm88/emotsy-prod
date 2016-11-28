@@ -1160,6 +1160,12 @@ return [
     'Subscriber_attributes' => 'Subscriber attributes',
     'On_specific_day' => 'On specific day',
     'at' => 'at',
-    '' => '',
+    'every_year' => 'Every year',
+    'choose_a_day' => 'Choose a day',
+    '1st_week' => '1st week',
+    '2nd_week' => '2nd week',
+    '3rd_week' => '3rd week',
+    '4th_week' => '4th week',
+    '5th_week' => '5th week',
 ];
 

@@ -142,7 +142,7 @@ class Automation extends Model
         
         if(!is_object($auto_event)) {
             $auto_event = new AutoEvent([
-                'type_name' => AutoEvent::TYPE_SPECIFIC_DATE,
+                'event_type' => AutoEvent::TYPE_SPECIFIC_DATE,
             ]);
             $auto_event->automation_id = $this->id;
         }

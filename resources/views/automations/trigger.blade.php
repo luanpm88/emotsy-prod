@@ -48,7 +48,7 @@
 						<div class="row tabable-tab specific-date">
 							@include('automations.triggers._specific-date')
 						</div>
-						<!--<div class="row tabable-tab annual-recurring">
+						<div class="row tabable-tab annual-recurring">
 							@include('automations.triggers._annual-recurring')							
 						</div>
 						<div class="row tabable-tab event-based">
@@ -56,7 +56,7 @@
 						</div>
 						<div class="row tabable-tab custom-criteria">
 							@include('automations.triggers._custom-criteria')							
-						</div>-->
+						</div>
 					</div>
 					
 					<hr>

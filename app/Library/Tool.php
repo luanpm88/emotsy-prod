@@ -332,6 +332,38 @@ class Tool
     }
     
     /**
+     * Month select options.
+     *
+     * @param string
+     *
+     * @return array
+     */
+    public static function weekSelectOptions() {
+        return [
+            ['value' => '1', 'text' => trans('messages.1st_week')],
+            ['value' => '2', 'text' => trans('messages.2nd_week')],
+            ['value' => '3', 'text' => trans('messages.3rd_week')],
+            ['value' => '4', 'text' => trans('messages.4th_week')],
+            ['value' => '5', 'text' => trans('messages.5th_week')],
+        ];
+    }
+    
+    /**
+     * Month select options.
+     *
+     * @param string
+     *
+     * @return array
+     */
+    public static function dayOfMonthSelectOptions() {
+        $arr = [];
+        for($i=1; $i < 32; $i++) {
+            $arr[] = ['value' => $i, 'text' => $i];
+        }
+        return $arr;
+    }
+    
+    /**
      * Get day string from timestamp.
      *
      * @param timestamp

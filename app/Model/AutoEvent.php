@@ -78,8 +78,7 @@ class AutoEvent extends Model
             ['value' => self::TYPE_CUSTOM_CRITERIA, 'text' => trans('messages.Custom_criteria')],
             ['value' => self::TYPE_API_CALL, 'text' => trans('messages.API_call')],
         ];
-    }
-	
+    }	
 	
     /**
      * Fill attributes from array.
@@ -90,13 +89,23 @@ class AutoEvent extends Model
     {
         $this->fill($params);
 		
-        // send at
-        if(!empty($params["send_day"]) && !empty($params["send_time"])) {
-            $send_at = \Acelle\Library\Tool::systemTimeFromString($params["send_day"].' '.$params["send_time"], \Auth::user()->timezone);
-			$this->updateData([
-				'datetime' => $send_at->toAtomString()
-			]);
-        }
+		switch ($this->event_type) {
+			case self::TYPE_SPECIFIC_DATE:
+				// send at specific date
+				if(!empty($params["specific_day"]) && !empty($params["specific_time"])) {
+					$send_at = \Acelle\Library\Tool::systemTimeFromString($params["specific_day"].' '.$params["specific_time"], \Auth::user()->timezone);
+					$this->updateData([
+						'date' => $send_at->toAtomString()
+					]);
+				}
+				break;
+			case 1:
+				echo "i equals 1";
+				break;
+			case 2:
+				echo "i equals 2";
+				break;
+		}			
     }
 	
 	/**
@@ -116,7 +125,8 @@ class AutoEvent extends Model
      */
     public function getDataValue(string $name)
     {
-		return $this->getData()[$name];
+		$data = $this->getData();
+		return isset($data[$name]) ? $data[$name] : NULL;
     }
 	
 	/**

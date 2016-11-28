@@ -5,9 +5,9 @@
 										@include('helpers.form_control', [
 											'type' => 'date',
 											'class' => '_from_now',
-											'name' => 'send_day',
+											'name' => 'specific_day',
 											'label' => trans('messages.Send_on'),
-											'value' => Acelle\Library\Tool::dayStringFromTimestamp(Acelle\Library\Tool::dateTimeFromString($first_event->getDataValue('datetime'))),
+											'value' => null !== $first_event->getDataValue('date') ? Acelle\Library\Tool::dayStringFromTimestamp(Acelle\Library\Tool::dateTimeFromString($first_event->getDataValue('date'))) : '',
 											'rules' => $first_event->rules(),
 											'help_class' => 'trigger'
 										])
@@ -20,9 +20,9 @@
 											<div class="col-md-10">
 												@include('helpers.form_control', [
 													'type' => 'time',
-													'name' => 'send_time',
+													'name' => 'specific_time',
 													'label' => '',
-													'value' => Acelle\Library\Tool::timeStringFromTimestamp(Acelle\Library\Tool::dateTimeFromString($first_event->getDataValue('datetime'))),
+													'value' => null !== $first_event->getDataValue('date') ? Acelle\Library\Tool::timeStringFromTimestamp(Acelle\Library\Tool::dateTimeFromString($first_event->getDataValue('date'))) : '',
 													'rules' => $first_event->rules(),
 													'help_class' => 'trigger'
 												])
