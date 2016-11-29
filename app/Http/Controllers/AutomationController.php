@@ -134,22 +134,25 @@ class AutomationController extends Controller
         
         // Fill old post data
         if(!empty($request->old())) {
-            $automation->autoEvent->fillAttributes($request->old());
+            $first_event->fillAttributes($request->old());
         }
         
         // Save trigger
         if ($request->isMethod('post')) {
-            // validation
-            $this->validate($request, $first_event->rules());
-            
             // fill data
             $first_event->fillAttributes($request->all());
+            
+            // validation
+            $this->validate($request, $first_event->rules($request));
+            
+            // Save to database
             $first_event->save();
         }
         
         return view('automations.trigger', [
             'automation' => $automation,
-            'first_event' => $first_event
+            'first_event' => $first_event,
+            'old' => $request->old(),
         ]);
     }
     

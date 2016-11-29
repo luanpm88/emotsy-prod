@@ -28,10 +28,11 @@ class AutoEvent extends Model
 {
     // event type
     const TYPE_SPECIFIC_DATE = 'specific-date';
-	const TYPE_ANNUAL_RECURRING = 'annual-recurring';
+	const TYPE_MONTHLY_RECURRING = 'monthly-recurring';
+	const TYPE_WEEKLY_RECURRING = 'weekly-recurring';
 	const TYPE_LIST_SUBSCRIPTION = 'list-subscription';
 	const TYPE_LIST_UNSUBSCRIPTION = 'list-unsubscription';
-	const TYPE_EVENT_BASE = 'event-based';
+	const TYPE_SUBSCRIBER_EVENT = 'subscriber-event';
 	const TYPE_CUSTOM_CRITERIA = 'custom-criteria';
 	const TYPE_API_CALL = 'api-call';
     
@@ -43,20 +44,62 @@ class AutoEvent extends Model
     protected $fillable = [
         'event_type'
     ];
+	
+	/**
+     * Associations.
+     *
+     * @var object | collect
+     */
+    public function automation()
+    {
+        return $this->belongsTo('Acelle\Model\Automation');
+    }
     
     /**
      * The validation rules for automation trigger.
      *
      * @var array
      */
-    public function rules()
+    public function rules($request=NULL)
     {
         $rules = [];
-        if($this->event_type == self::TYPE_SPECIFIC_DATE) {
-            $rules = [
-                'send_day' => 'required',
-                'send_time' => 'required',
-            ];
+        switch ($this->event_type) {
+			case AutoEvent::TYPE_SPECIFIC_DATE:
+				$rules = [
+					'specific_day' => 'required',
+					'specific_time' => 'required',
+				];
+				break;
+			case AutoEvent::TYPE_WEEKLY_RECURRING:
+				$rules = [
+					'weekly_recurring_weekdays' => 'required',
+					'weekly_recurring_weeks' => 'required',
+					'weekly_recurring_months' => 'required',
+					'weekly_recurring_time' => 'required',
+				];
+				break;
+			case AutoEvent::TYPE_MONTHLY_RECURRING:
+				$rules = [
+					'monthly_recurring_days' => 'required',
+					'monthly_recurring_months' => 'required',
+					'monthly_recurring_time' => 'required',
+				];
+				break;
+			case AutoEvent::TYPE_SUBSCRIBER_EVENT:
+				$rules = [
+					'subscriber_event' => 'required',
+				];
+			case AutoEvent::TYPE_CUSTOM_CRITERIA:
+				if (isset($request->custom_criteria)) {
+					foreach ($request->custom_criteria as $key => $param) {
+						$rules['custom_criteria.'.$key.'.field_uid'] = 'required';
+						$rules['custom_criteria.'.$key.'.operator'] = 'required';
+						$rules['custom_criteria.'.$key.'.value'] = 'required';
+					}
+				} else {
+					$rules['custom_criteria_empty'] = 'required';
+				}
+				break;
         }
         
         return $rules;
@@ -71,10 +114,11 @@ class AutoEvent extends Model
     {
         return [
             ['value' => self::TYPE_SPECIFIC_DATE, 'text' => trans('messages.Immediately_or_on_a_specific_date')],
-            ['value' => self::TYPE_ANNUAL_RECURRING, 'text' => trans('messages.Annual_recurring')],
+            ['value' => self::TYPE_WEEKLY_RECURRING, 'text' => trans('messages.weekly_recurring')],
+			['value' => self::TYPE_MONTHLY_RECURRING, 'text' => trans('messages.monthly_recurring')],
             ['value' => self::TYPE_LIST_SUBSCRIPTION, 'text' => trans('messages.Event_based_list_subscription')],
             ['value' => self::TYPE_LIST_UNSUBSCRIPTION, 'text' => trans('messages.Event_based_list_unsubscription')],
-            ['value' => self::TYPE_EVENT_BASE, 'text' => trans('messages.Event_based_custom_list_subscriber_event')],
+            ['value' => self::TYPE_SUBSCRIBER_EVENT, 'text' => trans('messages.Event_based_custom_list_subscriber_event')],
             ['value' => self::TYPE_CUSTOM_CRITERIA, 'text' => trans('messages.Custom_criteria')],
             ['value' => self::TYPE_API_CALL, 'text' => trans('messages.API_call')],
         ];
@@ -89,6 +133,7 @@ class AutoEvent extends Model
     {
         $this->fill($params);
 		
+		$this->data = "[]";
 		switch ($this->event_type) {
 			case self::TYPE_SPECIFIC_DATE:
 				// send at specific date
@@ -99,11 +144,60 @@ class AutoEvent extends Model
 					]);
 				}
 				break;
-			case 1:
-				echo "i equals 1";
+			case self::TYPE_WEEKLY_RECURRING:				
+				if(!empty($params["weekly_recurring_weekdays"])) {
+					$this->updateData([
+						'weekdays' => $params["weekly_recurring_weekdays"]
+					]);
+				}
+				if(!empty($params["weekly_recurring_weeks"])) {
+					$this->updateData([
+						'weeks' => $params["weekly_recurring_weeks"]
+					]);
+				}
+				if(!empty($params["weekly_recurring_months"])) {
+					$this->updateData([
+						'months' => $params["weekly_recurring_months"]
+					]);
+				}
+				if(!empty($params["weekly_recurring_time"])) {
+					$send_at = \Acelle\Library\Tool::systemTimeFromString('2000-01-01 '.$params["weekly_recurring_time"], \Auth::user()->timezone);
+					$this->updateData([
+						'time' => $send_at->toAtomString()
+					]);
+				}
 				break;
-			case 2:
-				echo "i equals 2";
+			case self::TYPE_MONTHLY_RECURRING:
+				if(!empty($params["monthly_recurring_days"])) {
+					$this->updateData([
+						'days' => $params["monthly_recurring_days"]
+					]);
+				}
+				if(!empty($params["monthly_recurring_months"])) {
+					$this->updateData([
+						'months' => $params["monthly_recurring_months"]
+					]);
+				}
+				if(!empty($params["monthly_recurring_time"])) {
+					$send_at = \Acelle\Library\Tool::systemTimeFromString('2000-01-01 '.$params["monthly_recurring_time"], \Auth::user()->timezone);
+					$this->updateData([
+						'time' => $send_at->toAtomString()
+					]);
+				}
+				break;
+			case self::TYPE_SUBSCRIBER_EVENT:
+				if(!empty($params["subscriber_event"])) {
+					$this->updateData([
+						'event' => $params["subscriber_event"]
+					]);
+				}
+				break;
+			case self::TYPE_CUSTOM_CRITERIA:
+				if(!empty($params["custom_criteria"])) {
+					$this->updateData([
+						'criteria' => $params["custom_criteria"]
+					]);
+				}
 				break;
 		}			
     }
@@ -138,5 +232,28 @@ class AutoEvent extends Model
     {
         $json = $this->getData();
         $this->data = json_encode(array_merge($json, $data));
+    }
+	
+	/**
+     * Get operators.
+     *
+     * @return options
+     */
+    public static function operators()
+    {
+        return [
+            ['text' => trans('messages.equal'), 'value' => 'equal'],
+            ['text' => trans('messages.not_equal'), 'value' => 'not_equal'],
+            ['text' => trans('messages.contains'), 'value' => 'contains'],
+            ['text' => trans('messages.not_contains'), 'value' => 'not_contains'],
+            ['text' => trans('messages.starts'), 'value' => 'starts'],
+            ['text' => trans('messages.ends'), 'value' => 'ends'],
+            ['text' => trans('messages.not_starts'), 'value' => 'not_starts'],
+            ['text' => trans('messages.not_ends'), 'value' => 'not_ends'],
+            ['text' => trans('messages.greater'), 'value' => 'greater'],
+            ['text' => trans('messages.less'), 'value' => 'less'],
+            ['text' => trans('messages.blank'), 'value' => 'blank'],
+            ['text' => trans('messages.not_blank'), 'value' => 'not_blank'],
+        ];
     }
 }

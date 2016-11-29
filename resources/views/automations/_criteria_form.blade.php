@@ -1,10 +1,12 @@
-                                <div class="row condition-line" rel="__index__">
+                                <?php $index = isset($index) ? $index : '__index__' ?>
+								
+								<div class="row condition-line" rel="__index__">
 									<div class="col-md-4">
 										<div class="form-group">
-											<select class="select" name="conditions[__index__][field_id]">
+											<select class="select" name="custom_criteria[{{ $index }}][field_uid]">
 												<optgroup label="{{ trans('messages.Subscriber_attributes') }}">
 													@foreach($automation->mailList->getFields as $field)
-														<option value="{{ $field->uid }}">{{ $field->label }}</option>
+														<option {{ isset($criteria) && $criteria["field_uid"] == $field->uid ? 'selected' : '' }} value="{{ $field->uid }}">{{ $field->label }}</option>
 													@endforeach
 												</optgroup>
 											</select>
@@ -13,19 +15,19 @@
 									<div class="col-md-3 operator-col">
 										@include('helpers.form_control', [
 											'type' => 'select',
-											'name' => '',
+											'name' => 'custom_criteria[' . $index . '][operator]',
 											'label' => '',
-											'value' => '',
-											'options' => Acelle\Model\Segment::operators()
+											'value' => isset($criteria) ? $criteria["operator"] : '',
+											'options' => Acelle\Model\AutoEvent::operators()
 										])
 									</div>
 									<div class="col-md-4 value-col">
 										@include('helpers.form_control', [
 											'type' => 'text',
-											'name' => '',
+											'name' => 'custom_criteria[' . $index . '][value]',
 											'label' => '',
 											'placeholder' => trans('messages.value'),
-											'value' => ''
+											'value' => isset($criteria) ? $criteria["value"] : ''
 										])
 									</div>
 									<div class="col-md-1">

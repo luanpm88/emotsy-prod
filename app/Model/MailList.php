@@ -918,4 +918,30 @@ class MailList extends Model
         // Action Log
         $list->log('export_success', $user, ['count' => $success, 'error' => $error]);
     }
+    
+    /**
+     * Get date | datetime fields.
+     *
+     * @return array
+     */
+    public function getDateFields()
+    {
+        return $this->getFields()->whereIn('type', ['date', 'datetime'])->get();
+    }
+    
+    /**
+     * Get subscriber's fields select options.
+     *
+     * @return array
+     */
+    public function getSubscriberFieldSelectOptions()
+    {
+        $options = [];
+        $options[] = ['text' => trans('messages.subscriber_added_date'), 'value' => 'added_day'];
+        foreach ($this->getDateFields() as $field) {
+            $options[] = ['text' => trans('messages.subscriber_s_field', ['name' => $field->label]), 'value' => $field->uid];
+        }
+
+        return $options;
+    }
 }

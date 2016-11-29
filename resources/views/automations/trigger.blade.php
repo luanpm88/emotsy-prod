@@ -48,11 +48,14 @@
 						<div class="row tabable-tab specific-date">
 							@include('automations.triggers._specific-date')
 						</div>
-						<div class="row tabable-tab annual-recurring">
-							@include('automations.triggers._annual-recurring')							
+						<div class="row tabable-tab weekly-recurring">
+							@include('automations.triggers._weekly-recurring')							
 						</div>
-						<div class="row tabable-tab event-based">
-							@include('automations.triggers._event-based')							
+						<div class="row tabable-tab monthly-recurring">
+							@include('automations.triggers._monthly-recurring')							
+						</div>
+						<div class="row tabable-tab subscriber-event">
+							@include('automations.triggers._subscriber-event')							
 						</div>
 						<div class="row tabable-tab custom-criteria">
 							@include('automations.triggers._custom-criteria')							
