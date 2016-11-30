@@ -170,7 +170,7 @@ class SystemJob extends Model
         
         if($data->status == 'failed') {
             $message = trans('messages.import_failed_message', ['error' => $data->error_message]);
-        } else if ($data->isNew() && !$this->isCancelled()) {
+        } else if ($this->isNew() && !$this->isCancelled()) {
             $message = trans('messages.starting');
         } else {
             $message = trans('messages.import_export_statistics_line', [
