@@ -158,45 +158,4 @@ class SystemJob extends Model
         $data = json_decode($this->data);
         return !(in_array($data->status, ['failed', 'done']) || $this->status == \Acelle\Model\SystemJob::STATUS_CANCELLED);
     }
-    
-    /**
-    * Get message for status of importing job
-    *
-    * @return string
-    */
-    function importSubscriberMessage()
-    {
-        $data = json_decode($this->data);
-        
-        if($data->status == 'failed') {
-            $message = trans('messages.import_failed_message', ['error' => $data->error_message]);
-        } else if ($this->isNew() && !$this->isCancelled()) {
-            $message = trans('messages.starting');
-        } else {
-            $message = trans('messages.import_export_statistics_line', [
-                'total' => $data->total,
-                'processed' => $data->processed,
-                'success' => $data->processed,
-                'error' => 0,
-            ]);;
-        }
-        
-        return $message;
-    }
-    
-    /**
-    * Get message for status of export job
-    *
-    * @return string
-    */
-    function exportSubscriberMessage()
-    {
-        $data = json_decode($this->data);
-        
-        if($this->isCancelled()) {
-            return trans('messages.cancelled');
-        }
-        
-        return $data->message;
-    }
 }

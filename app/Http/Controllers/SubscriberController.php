@@ -379,7 +379,7 @@ class SubscriberController extends Controller
         }
         
         // Messages
-        $message = $system_job->importSubscriberMessage();
+        $message = \Acelle\Helpers\ImportSubscribersHelper::getMessage($system_job);
         
         return response()->json([
             "job" => $system_job,

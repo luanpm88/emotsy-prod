@@ -30,7 +30,7 @@
 													<div class="progress-bar progress-bar-info" style="width: {{ $data->percent }}%">
 													</div>
 												</div>
-												<span class="no-margin">{!! $item->exportSubscriberMessage() !!}</span>
+												<span class="no-margin">{!! \Acelle\Helpers\ExportSubscribersHelper::getMessage($item) !!}</span>
 											</div>
 											<br style="clear:both" />
 										</td>
