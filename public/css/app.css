@@ -1385,3 +1385,25 @@ label.col-center {
     height: 375px;
     overflow: auto;
 }
+.auto-event-form-line .select2-container {
+    height: 41px;
+    display: inline-block;
+}
+.auto-event-form-line input {
+    width: 80px;
+    text-align: center;
+}
+.auto-event-form-line .form-group {
+    width: auto;
+    display: inline-block;
+    margin: 0;
+}
+.timeline-icon-i i {
+    font-size: 50px;
+}
+.timeline-icon-i {
+    border: none;
+}
+.workflow-form .panel, .workflow-form .panel-heading {
+    background: #f8f8f8;
+}

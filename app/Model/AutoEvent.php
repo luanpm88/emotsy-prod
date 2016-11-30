@@ -199,7 +199,7 @@ class AutoEvent extends Model
 					]);
 				}
 				break;
-		}			
+		}
     }
 	
 	/**
@@ -254,6 +254,68 @@ class AutoEvent extends Model
             ['text' => trans('messages.less'), 'value' => 'less'],
             ['text' => trans('messages.blank'), 'value' => 'blank'],
             ['text' => trans('messages.not_blank'), 'value' => 'not_blank'],
+        ];
+    }
+	
+	/**
+     * Display message about the auto event.
+     *
+     * @return array
+     */
+    public function displayMessage()
+    {
+		$msg = '';
+		switch ($this->event_type) {
+			case self::TYPE_SPECIFIC_DATE:
+				$msg = trans('messages.on_the_specific_date', [
+					'date' => \Acelle\Library\Tool::dayStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('date'))),
+					'time' => \Acelle\Library\Tool::timeStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('date')))
+				]);
+				break;
+			case self::TYPE_WEEKLY_RECURRING:				
+				
+				break;
+			case self::TYPE_MONTHLY_RECURRING:
+				
+				break;
+			case self::TYPE_SUBSCRIBER_EVENT:
+				
+				break;
+			case self::TYPE_CUSTOM_CRITERIA:
+				
+				break;
+		}
+		
+		return $msg;
+    }
+	
+	/**
+     * Time unit options.
+     *
+     * @return array
+     */
+    public static function timeUnitOptions()
+    {
+        return [
+			['value' => 'hour', 'text' => trans('messages.hour_s')],
+			['value' => 'day', 'text' => trans('messages.day_s')],            
+            ['value' => 'week', 'text' => trans('messages.week_s')],
+            ['value' => 'month', 'text' => trans('messages.month_s')],			
+            ['value' => 'year', 'text' => trans('messages.year_s')],
+        ];
+    }
+	
+	/**
+     * Email events.
+     *
+     * @return array
+     */
+    public static function emailEventOptions()
+    {
+        return [
+			['value' => 'sent', 'text' => strtolower(trans('messages.sent'))],
+			['value' => 'opened', 'text' => strtolower(trans('messages.opened'))],            
+            ['value' => 'clicked', 'text' => strtolower(trans('messages.clicked'))],
         ];
     }
 }

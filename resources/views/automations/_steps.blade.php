@@ -9,4 +9,9 @@
 							<i class="icon-alignment-align"></i> {{ trans('messages.Trigger') }}
 						</a>
 					</li>
+					<li class="{{ $step == "workflow" ? "active" : "" }}">
+						<a href="{{ action('AutomationController@workflow', $automation->uid) }}">
+							<i class="icon-stack-play"></i> {{ trans('messages.workflow') }}
+						</a>
+					</li>
 				</ul>

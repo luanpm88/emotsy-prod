@@ -149,4 +149,58 @@ class Automation extends Model
         
         return $auto_event;
     }
+    
+    /**
+     * Filter items.
+     *
+     * @return collect
+     */
+    public static function filter($request)
+    {
+        $user = $request->user();
+        $query = self::where('user_id', '=', $user->id);
+
+        // Keyword
+        if (!empty(trim($request->keyword))) {
+            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
+        }
+
+        return $query;
+    }
+
+    /**
+     * Search items.
+     *
+     * @return collect
+     */
+    public static function search($request)
+    {
+        $query = self::filter($request);
+
+        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+
+        return $query;
+    }
+    
+    /**
+     * Subscribers.
+     *
+     * @return collect
+     */
+    public function subscribers($params=[])
+    {
+        if(!is_object($this->segment) && !is_object($this->mailList)) {
+            return collect([]);
+        }
+        
+        if (is_object($this->segment)) {
+            $query = $this->segment->subscribers();
+        } elseif (is_object($this->mailList)) {
+            $query = $this->mailList->subscribers();
+        }
+        
+        $query = $query->select("subscribers.*");
+        
+        return $query->distinct();
+    }
 }

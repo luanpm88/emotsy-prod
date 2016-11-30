@@ -63,7 +63,7 @@
 					</div>
 					
 					<hr>
-					<div class="">
+					<div class="text-right">
 						<button class="btn bg-teal-800">{{ trans('messages.Save_and_Next') }} <i class="icon-arrow-right7"></i> </button>
 					</div>
 					

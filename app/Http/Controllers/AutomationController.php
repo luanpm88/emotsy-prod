@@ -24,6 +24,20 @@ class AutomationController extends Controller
     }
     
     /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listing(Request $request)
+    {
+        $automations = \Acelle\Model\Automation::search($request)->paginate($request->per_page);
+
+        return view('automations._list', [
+            'automations' => $automations,
+        ]);
+    }
+    
+    /**
      * Creating a new resource.
      *
      * @return \Illuminate\Http\Response
@@ -169,6 +183,46 @@ class AutomationController extends Controller
         $automation = \Acelle\Model\Automation::findByUid($uid);
         
         return view('automations._criteria_form', [
+            'automation' => $automation,
+        ]);
+    }
+    
+    /**
+     * Workflows for automation.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param String                   $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function workflow(Request $request, $uid)
+    {
+        $automation = \Acelle\Model\Automation::findByUid($uid);
+        
+        // Save workflows
+        if ($request->isMethod('post')) {
+            
+        }
+        
+        return view('automations.workflow', [
+            'automation' => $automation,
+            'old' => $request->old(),
+        ]);
+    }
+    
+    /**
+     * Next auto event form.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param String                   $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function nextEventForm(Request $request, $uid)
+    {
+        $automation = \Acelle\Model\Automation::findByUid($uid);
+        
+        return view('automations._next_event_form', [
             'automation' => $automation,
         ]);
     }
