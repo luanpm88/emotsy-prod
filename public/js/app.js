@@ -9,6 +9,24 @@
 *
 * ---------------------------------------------------------------------------- */
 
+function loadAutomationEmail(container) {
+    var url = container.attr('data-url');
+    
+    $.ajax({
+        method: "GET",
+        url: url
+    })
+    .done(function( data ) {
+        container.html(data);
+    });
+}
+
+function loadAutomationEmails() {
+    $('.event-campaigns-container').each(function() {
+        loadAutomationEmail($(this));
+    });
+}
+
 function updateEmbeddedForm(form, url) {
     var data = {};
     form.serializeArray().forEach(function(entry) {
@@ -828,6 +846,10 @@ $(function() {
             
             var new_line = container.find('.condition-line').last();
             new_line.find('select').select2();
+            
+            if(new_line.find('.event-campaigns-container').length) {
+                loadAutomationEmail(new_line.find('.event-campaigns-container'));
+            }
         });
     });
     
@@ -835,5 +857,59 @@ $(function() {
     $(document).on("change", ".radio-box .radio-button", function(e) {
         $(".radio-box .radio-more").hide();
         $(".radio-box .radio-button:checked").parents(".radio-box").find(".radio-more").show();
+    });
+    
+    // load automation email
+    loadAutomationEmails();
+    
+    // Grap link with data-method attribute
+    $(document).on('click', '.event-campaign-add', function(e) {      
+        e.preventDefault();
+        
+        var url = $(this).attr('data-url');
+        var container = $(this).parents('.event-campaigns-box').find('.event-campaigns-container');
+        
+        $.ajax({
+            method: "POST",
+            url: url,
+            data: {
+                "_token": CSRF_TOKEN
+            }
+        })
+        .done(function( data ) {
+            loadAutomationEmail(container);
+        });
+        
+    });
+    
+    // Grap link with data-method attribute
+    $(document).on('click', '.auto-campaign-delete', function(e) {      
+        e.preventDefault();
+        
+        var confirm_msg = $(this).attr('data-confirm');
+        
+        $('#delete_auto_campaign_confirm_model h6').html(confirm_msg);
+        $('#delete_auto_campaign_confirm_model').modal('show');
+        
+        $('.auto-campaign-delete-confirmed').attr('data-url', $(this).attr('data-url'));        
+    });
+    // Grap link with data-method attribute
+    $(document).on('click', '.auto-campaign-delete-confirmed', function(e) {      
+        e.preventDefault();
+        
+        var url = $(this).attr('data-url');
+        
+        $.ajax({
+            method: "DELETE",
+            url: url,
+            data: {
+                "_token": CSRF_TOKEN
+            }
+        })
+        .done(function() {
+            loadAutomationEmails();
+            $('#delete_auto_campaign_confirm_model').modal('hide');
+        });
+        
     });
 });

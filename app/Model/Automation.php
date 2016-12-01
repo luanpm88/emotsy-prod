@@ -137,7 +137,7 @@ class Automation extends Model
     public function getInitEvent()
     {
         $auto_event = $this->autoEvents()->where('previous_event_id', '=', NULL)
-            ->orderBy('created_at', 'DESC')
+            ->orderBy('created_at', 'ASC')
             ->first();
         
         if(!is_object($auto_event)) {
@@ -148,6 +148,39 @@ class Automation extends Model
         }
         
         return $auto_event;
+    }
+    
+    /**
+     * Get the first/init auto event.
+     *
+     * @var AutoEvent
+     */
+    public function getFollowUpEvents()
+    {
+        $events = collect();
+        $event = $this->getInitEvent();
+        while(is_object($event->nextEvent)) {
+            $event = $event->nextEvent;
+            $events->push($event);
+        }
+        
+        return $events;
+    }
+    
+    /**
+     * Get last auto event.
+     *
+     * @var AutoEvent
+     */
+    public function getLastEvent()
+    {
+        $event = $this->getInitEvent();
+        
+        while (is_object($event->nextEvent)) {
+            $event = $event->nextEvent;
+        }
+        
+        return $event;
     }
     
     /**
@@ -202,5 +235,22 @@ class Automation extends Model
         $query = $query->select("subscribers.*");
         
         return $query->distinct();
+    }
+    
+    /**
+     * Create new auto event.
+     *
+     * @return array
+     */
+    public function createAutoEvent()
+    {
+        $event = new AutoEvent([
+			'event_type' => AutoEvent::TYPE_FOLLOW_UP
+		]);
+        $event->previous_event_id = $this->getLastEvent()->id;
+		
+		$this->autoEvents()->save($event);
+        
+        return $event;
     }
 }

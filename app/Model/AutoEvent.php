@@ -35,6 +35,9 @@ class AutoEvent extends Model
 	const TYPE_SUBSCRIBER_EVENT = 'subscriber-event';
 	const TYPE_CUSTOM_CRITERIA = 'custom-criteria';
 	const TYPE_API_CALL = 'api-call';
+	const TYPE_FOLLOW_UP = 'follow-up';
+	const TYPE_FOLLOW_UP_OPENED = 'follow-up-opened';
+	const TYPE_FOLLOW_UP_CLICKED = 'follow-up-clicked';
     
     /**
      * The attributes that are mass assignable.
@@ -53,6 +56,86 @@ class AutoEvent extends Model
     public function automation()
     {
         return $this->belongsTo('Acelle\Model\Automation');
+    }
+	
+	public function campaigns()
+    {
+        return $this->belongsToMany('Acelle\Model\Campaign', 'auto_campaigns');
+    }
+	
+	/**
+     * Set uid for resource.
+     *
+     * @var void
+     */
+    public function createUid()
+    {
+        $uid = uniqid();
+		while (AutoEvent::where('uid', '=', $uid)->count() > 0) {
+			$uid = uniqid();
+		}
+		$this->uid = $uid;
+    }
+	
+	/**
+     * Create custom order for the resource.
+     *
+     * @var void
+     */
+    public function createCustomOrder()
+    {
+        AutoEvent::select('custom_order')->increment('custom_order', 1);
+        $this->custom_order = 0;
+    }
+	
+	/**
+     * Bootstrap any application services.
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        // Create uid when creating automation.
+        static::creating(function ($event) {
+            // Create new uid
+            $event->createUid();
+
+            // Update custom order
+            $event->createCustomOrder();
+        });
+		
+		// Create first campaign when auto event created.
+        static::created(function ($event) {
+			// Create first campaign
+			$event->createFirstCampaign();
+        });
+    }
+	
+	/**
+     * Create first campaign for the auto event.
+     *
+     * @var void
+     */
+    public function createFirstCampaign()
+    {
+        if(!$this->campaigns()->count()) {
+			$campaign = new Campaign([
+				'name' => 'Untitled automation email'
+			]);
+			$campaign->user_id = $this->automation->user_id;
+			
+			$this->campaigns()->save($campaign);
+		}
+    }
+	
+	/**
+     * Find item by uid.
+     *
+     * @return object
+     */
+    public static function findByUid($uid)
+    {
+        return self::where('uid', '=', $uid)->first();
     }
     
     /**
@@ -317,5 +400,40 @@ class AutoEvent extends Model
 			['value' => 'opened', 'text' => strtolower(trans('messages.opened'))],            
             ['value' => 'clicked', 'text' => strtolower(trans('messages.clicked'))],
         ];
+    }
+	
+	/**
+     * Add campaign.
+     *
+     * @return array
+     */
+    public function addCampaign()
+    {
+        $campaign = new Campaign([
+			'name' => 'Untitled automation email'
+		]);
+		$campaign->user_id = $this->automation->user_id;
+		
+		$this->campaigns()->save($campaign);
+    }
+	
+	/**
+     * Next event.
+     *
+     * @return object
+     */
+    public function nextEvent()
+    {
+        return $this->hasOne('Acelle\Model\AutoEvent', 'previous_event_id');
+    }
+	
+	/**
+     * Previous event.
+     *
+     * @return object
+     */
+    public function previousEvent()
+    {
+        return $this->belongsTo('Acelle\Model\AutoEvent', 'previous_event_id');
     }
 }

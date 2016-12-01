@@ -19,6 +19,7 @@ class CreateAutoEventsTable extends Migration
             $table->string('event_type');
             $table->text('data');
             $table->integer('previous_event_id')->unsigned()->nullable();
+            $table->integer('custom_order');
 
             $table->timestamps();
             

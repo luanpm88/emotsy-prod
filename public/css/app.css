@@ -1399,11 +1399,16 @@ label.col-center {
     margin: 0;
 }
 .timeline-icon-i i {
-    font-size: 50px;
+    font-size: 42px;
 }
 .timeline-icon-i {
     border: none;
 }
-.workflow-form .panel, .workflow-form .panel-heading {
+.workflow-form .panel-auto-campaign, .workflow-form .panel-auto-campaign .panel-heading {
     background: #f8f8f8;
+}
+.auto-campaign-icon {
+    margin-right: 20px;
+    font-size: 38px;
+    color: #777;
 }

@@ -81,9 +81,9 @@
 							</div>
 						@else					
 							<div class="empty-list">
-								<i class="icon-paperplane"></i>
+								<i class="icon-alarm-check"></i>
 								<span class="line-1">
-									{{ trans('messages.campaign_empty_line_1') }}
+									{{ trans('messages.automation_empty_line_1') }}
 								</span>
 							</div>
 						@endif

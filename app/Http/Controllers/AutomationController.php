@@ -161,6 +161,9 @@ class AutomationController extends Controller
             
             // Save to database
             $first_event->save();
+            
+            // Redirect to next step
+            return redirect()->action('AutomationController@workflow', $automation->uid);
         }
         
         return view('automations.trigger', [
@@ -198,15 +201,12 @@ class AutomationController extends Controller
     public function workflow(Request $request, $uid)
     {
         $automation = \Acelle\Model\Automation::findByUid($uid);
-        
-        // Save workflows
-        if ($request->isMethod('post')) {
-            
-        }
-        
+        $first_event = $automation->getInitEvent();        
+
         return view('automations.workflow', [
             'automation' => $automation,
             'old' => $request->old(),
+            'first_event' => $first_event
         ]);
     }
     
@@ -220,10 +220,13 @@ class AutomationController extends Controller
      */
     public function nextEventForm(Request $request, $uid)
     {
-        $automation = \Acelle\Model\Automation::findByUid($uid);
+        $automation = \Acelle\Model\Automation::findByUid($uid);        
         
-        return view('automations._next_event_form', [
+        $auto_event = $automation->createAutoEvent();
+        
+        return view('auto_events.show', [
             'automation' => $automation,
+            'auto_event' => $auto_event
         ]);
     }
 }

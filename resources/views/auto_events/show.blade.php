@@ -1,7 +1,7 @@
                                 <!-- Sales stats -->
 								<div class="timeline-row condition-line" rel="__index__">
 									<div class="timeline-icon timeline-icon-i">
-                                        <i class="icon-envelop2 text-teal"></i>
+                                        <i class="icon-paperplane text-teal"></i>
 									</div>
 									<div class="panel panel-flat timeline-content">
 										<div class="panel-heading">
@@ -41,15 +41,18 @@
 										</div>
                                     </div>
                                         
-                                    <div class="panel panel-flat timeline-content">
-                                        <div class="panel-body">
-                                            Has no email yet
-                                        </div>
+                                    <div class="event-campaigns-box">
+										<div class="event-campaigns-container" data-url="{{ action('AutoEventController@campaigns', $auto_event->uid) }}">
+											
+										</div>
+											
+										<div class="text-center">
+											<button class="btn btn-xs bg-teal event-campaign-add" data-url="{{ action('AutoEventController@addCampaign', $auto_event->uid) }}">
+												<i class="icon-plus2"></i> {{ trans('messages.add_email') }}
+											</button>
+										</div>
 									</div>
-                                        
-                                    <div class="text-center">
-                                        <button class="btn btn-small bg-teal"><i class="icon-plus2"></i> {{ trans('messages.add_email') }}</button>
-                                    </div>
+                                    
                                     <br /><br />
 								</div>
 								<!-- /sales stats -->

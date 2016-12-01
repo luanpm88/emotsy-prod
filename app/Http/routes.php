@@ -252,7 +252,11 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('automations/sort', 'AutomationController@sort');
     Route::get('automations/listing/{page?}', 'AutomationController@listing');
     Route::resource('automations', 'AutomationController');
-
+    
+    // Auto event
+    Route::delete('auto-events/campaigns/{uid}/delete', 'AutoEventController@deleteCampaign');
+    Route::post('auto-events/{uid}/campaigns/add', 'AutoEventController@addCampaign');
+    Route::get('auto-events/{uid}/campaigns', 'AutoEventController@campaigns');
 });
 
 // ADMIN AREA

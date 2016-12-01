@@ -1183,5 +1183,12 @@ return [
     'month_s' => 'month(s)',
     'year_s' => 'year(s)',
     'add_email' => 'Add email',
+    'automation_empty_line_1' => 'You have no saved automations',
+    'design_email' => 'Design email',
+    'delete_auto_campaign_confirm' => 'You\'re about to delete automation email: :name',
+    '' => '',
+    '' => '',
+    '' => '',
+    '' => '',
 ];
 
