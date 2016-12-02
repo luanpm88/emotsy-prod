@@ -67,9 +67,7 @@
                                     <a href="#retry" class="btn bg-grey-600 mr-10 retry"><i class="icon-reload-alt"></i> {{ trans('messages.retry') }}</a>
                                 </div>
                             </div>
-                            
                         </form>  
-                        
                     </div>
                 </div>
                       
@@ -180,7 +178,7 @@
 							
 							form.find(".processing h4").html('{{ trans('messages.please_wait_export') }}');
 							
-							$(".processing label").html("{{ trans('messages.uploading') }}");
+							$(".processing label").html("{{ trans('messages.starting') }}");
 							$(".before").addClass('hide');
 							$(".processing").removeClass('hide');
 							

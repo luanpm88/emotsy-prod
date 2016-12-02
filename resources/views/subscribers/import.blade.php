@@ -31,8 +31,7 @@
 							<div class="alert alert-info">
 								{!! trans('messages.import_file_help', ['csv_link' => url('files/csv_import_example.csv')]) !!}
 							</div>
-							
-							
+
                             <div class="upload_file before">
                                 {!! trans('messages.max_file_upload', ['size' => \Acelle\Library\Tool::maxFileUploadInBytes()]) !!}
 								
@@ -70,10 +69,9 @@
 									<a target="_blank" href="{{ action('SubscriberController@downloadImportLog', ["list_uid" => $list->uid]) }}" type="button" class="btn bg-teal success">
                                         <i class="icon-download"></i> {{ trans('messages.download_import_log') }}
                                     </a>
-                                    <a href="#retry" class="btn bg-grey-800 mr-10 retry"><i class="icon-reload-alt"></i> {{ trans('messages.retry') }}</a>
+                                    <a href="#retry" class="btn bg-grey-800 mr-10 retry"><i class="icon-reload-alt"></i> {{ trans('messages.import_another') }}</a>
                                 </div>
                             </div>
-                            
                         </form>  
                         
                     </div>
@@ -247,7 +245,6 @@
 					});
 				</script>
 					
-					
 				@include("subscribers._import")
-			
+
 @endsection
