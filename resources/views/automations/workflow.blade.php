@@ -69,13 +69,11 @@
 								</div>
 								<!-- /sales stats -->
 								
-								
 								<div class="addable-multiple-container">
 									@foreach ($automation->getFollowUpEvents() as $auto_event)
 										@include("auto_events.show")
 									@endforeach
 								</div>
-										
 									
 							</div>
 						</div>

@@ -24,7 +24,7 @@ class CreateAutoEventsTable extends Migration
             $table->timestamps();
             
             $table->foreign('automation_id')->references('id')->on('automations')->onDelete('cascade');
-            $table->foreign('previous_event_id')->references('id')->on('auto_events')->onDelete('cascade');
+            $table->foreign('previous_event_id')->references('id')->on('auto_events');
         });
     }
 

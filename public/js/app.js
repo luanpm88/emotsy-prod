@@ -912,4 +912,37 @@ $(function() {
         });
         
     });
+    
+    // Grap link with data-method attribute
+    $(document).on('click', '.auto-event-delete', function(e) {      
+        e.preventDefault();
+        
+        var confirm_msg = $(this).attr('data-confirm');
+        
+        $('#delete_auto_event_confirm_model h6').html(confirm_msg);
+        $('#delete_auto_event_confirm_model').modal('show');
+        
+        $('.auto-event-delete-confirmed').attr('data-url', $(this).attr('data-url'));
+        $('.auto-event-delete-confirmed').attr('data-id', $(this).attr('data-id'));        
+    });
+    // Grap link with data-method attribute
+    $(document).on('click', '.auto-event-delete-confirmed', function(e) {      
+        e.preventDefault();
+        
+        var url = $(this).attr('data-url');
+        var box_id = $(this).attr('data-id');
+        
+        $.ajax({
+            method: "DELETE",
+            url: url,
+            data: {
+                "_token": CSRF_TOKEN
+            }
+        })
+        .done(function() {
+            $('[rel="'+box_id+'"]').remove();
+            $('#delete_auto_event_confirm_model').modal('hide');
+        });
+        
+    });
 });

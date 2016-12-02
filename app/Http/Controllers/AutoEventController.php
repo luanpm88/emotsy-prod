@@ -56,4 +56,19 @@ class AutoEventController extends Controller
         
         $campaign->delete();
     }
+    
+    /**
+     * Delete auto event.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param String                   $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request, $uid)
+    {
+        $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+        
+        $auto_event->delete();
+    }
 }

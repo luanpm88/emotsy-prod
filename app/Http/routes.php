@@ -254,6 +254,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('automations', 'AutomationController');
     
     // Auto event
+    Route::delete('auto-events/{uid}/delete', 'AutoEventController@delete');
     Route::delete('auto-events/campaigns/{uid}/delete', 'AutoEventController@deleteCampaign');
     Route::post('auto-events/{uid}/campaigns/add', 'AutoEventController@addCampaign');
     Route::get('auto-events/{uid}/campaigns', 'AutoEventController@campaigns');

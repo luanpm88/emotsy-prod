@@ -109,6 +109,16 @@ class AutoEvent extends Model
 			// Create first campaign
 			$event->createFirstCampaign();
         });
+		
+		// when auto event is deleted
+        static::deleting(function ($event) {
+			// Update auto campaign series
+			$next_event = $event->nextEvent;
+			if(is_object($next_event)) {
+				$next_event->previous_event_id = $event->previous_event_id;
+				$next_event->save();
+			}
+        });
     }
 	
 	/**

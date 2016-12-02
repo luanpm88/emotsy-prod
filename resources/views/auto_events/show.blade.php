@@ -1,5 +1,5 @@
                                 <!-- Sales stats -->
-								<div class="timeline-row condition-line" rel="__index__">
+								<div class="timeline-row condition-line" rel="{{ $auto_event->uid }}">
 									<div class="timeline-icon timeline-icon-i">
                                         <i class="icon-paperplane text-teal"></i>
 									</div>
@@ -36,7 +36,13 @@
 											</h6>
                                             <div class="heading-elements">
                                                 <button class="btn btn-default"><i class="icon-checkmark4 mr-5"></i> {{ trans('messages.save') }}</button>
-                                                <button class="btn btn-default"><i class="icon-trash"></i></button>
+                                                <button
+													data-confirm="{{ trans('messages.delete_auto_event_confirm') }}"
+													data-url="{{ action('AutoEventController@delete', $auto_event->uid) }}"
+													data-id="{{ $auto_event->uid }}"
+													class="btn btn-default auto-event-delete">
+														<i class="icon-trash"></i>
+												</button>
                                             </div>
 										</div>
                                     </div>

@@ -14,7 +14,11 @@
 														</td>
 														<td class="text-right">
 															<button class="btn btn-default"><i class="icon-pencil mr-5"></i> {{ trans('messages.design_email') }}</button>
-															<button class="btn btn-default auto-campaign-delete" data-confirm="{{ trans('messages.delete_auto_campaign_confirm', ['name' => $campaign->name]) }}" data-url="{{ action('AutoEventController@deleteCampaign', $campaign->uid) }}"><i class="icon-trash"></i></button>
+															<button class="btn btn-default auto-campaign-delete"
+																data-confirm="{{ trans('messages.delete_auto_campaign_confirm', ['name' => $campaign->name]) }}"
+																data-url="{{ action('AutoEventController@deleteCampaign', $campaign->uid) }}">
+																	<i class="icon-trash"></i>
+															</button>
 														</td>
 													</tr>
 												</table>

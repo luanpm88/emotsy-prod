@@ -1186,7 +1186,7 @@ return [
     'automation_empty_line_1' => 'You have no saved automations',
     'design_email' => 'Design email',
     'delete_auto_campaign_confirm' => 'You\'re about to delete automation email: :name',
-    '' => '',
+    'delete_auto_event_confirm' => 'You\'re about to delete the auto event and it\'s emails.',
     '' => '',
     '' => '',
     '' => '',
