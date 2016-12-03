@@ -25,7 +25,17 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 
 class Language extends Model
-{
+{    
+    /**
+     * Get users.
+     *
+     * @return mixed
+     */
+    public function users()
+    {
+        return $this->hasMany('Acelle\Model\User');
+    }
+    
     /**
      * Language folder path.
      *
@@ -158,6 +168,13 @@ class Language extends Model
             }
         });
         
+        // While deleting
+        static::deleting(function ($item) {
+            // Change deleting language's users to the default langauge            
+            $default_language = Language::getIsDefaultLanguage();
+            $item->users()->update(['language_id' => $default_language->id]);
+        });
+        
         // After deleted
         static::deleted(function ($item) {
             // Create language folder if not exists            
@@ -165,7 +182,7 @@ class Language extends Model
             if (file_exists($des)) {
                 \Acelle\Library\Tool::xdelete($des);
             }
-        });
+        });        
     }
 
     /**
@@ -196,6 +213,19 @@ class Language extends Model
      * @var object
      */
     public static function getDefaultLanguage()
+    {
+        return new \Acelle\Model\Language([
+            'name' => "Default",
+            'code' => "default",
+        ]);
+    }
+    
+    /**
+     * Get is default language.
+     *
+     * @var object
+     */
+    public static function getIsDefaultLanguage()
     {
         return \Acelle\Model\Language::where("is_default", "=", true)->first();
     }
@@ -441,7 +471,7 @@ class Language extends Model
         $result = [];
         foreach($arr as $key => $name) {
             $result[] = [
-                'text' => $name . ' / ' . strtoupper($key),
+                'text' => strtoupper($key) . ' / ' . $name,
                 'value' => $key
             ];
         }

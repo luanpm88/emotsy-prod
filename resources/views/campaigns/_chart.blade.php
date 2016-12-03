@@ -36,11 +36,11 @@
             </div>
                 
             <div class="badge-row">
-                <span class="badge badge-info bg-blue badge-big">{{ $campaign->clickALinkRate() }}%</span>
-                {{ trans('messages.clicked_a_link') }}
+                <span class="badge badge-info bg-blue badge-big">{{ $campaign->clickedEmailsRate() }}%</span>
+                {{ trans('messages.clicked_emails_rate') }}
                 <span class="badge badge-info bg-grey-400 badge-medium">
                     {{ trans('messages.count_clicked_opened', [
-                        'count' => $campaign->clickCount(),
+                        'count' => $campaign->clickedEmailsCount(),
                         'total' => $campaign->openCount()
                     ]) }}
                 </span>

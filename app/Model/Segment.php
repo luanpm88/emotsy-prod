@@ -239,7 +239,7 @@ class Segment extends Model
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
-        return $query;
+        return $query->distinct();
     }
 
     /**

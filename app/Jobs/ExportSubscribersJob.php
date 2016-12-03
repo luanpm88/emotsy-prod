@@ -3,14 +3,9 @@
 namespace Acelle\Jobs;
 
 use Acelle\Jobs\Job;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
-class ExportSubscribersJob extends ImportExportJob implements ShouldQueue
+class ExportSubscribersJob extends ImportExportJob
 {
-    use InteractsWithQueue, SerializesModels;
-
     /**
      * Execute the job.
      *

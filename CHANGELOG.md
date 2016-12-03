@@ -1,3 +1,11 @@
+2.0.4-p27 / 2016-11-09
+===================
+
+ * Added: send a test email of campaign
+ * Added: better internationalization support: allow creating new language
+ * Added: better internationalization support: support custom translation
+ * Changed: support running several campaigns at the same time
+
 2.0.4-p26 / 2016-11-08
 
  * Added: send a test email of campaign

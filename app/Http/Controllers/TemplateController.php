@@ -140,9 +140,9 @@ class TemplateController extends Controller
                 $template->source = $request->source;
             }
             
-            // update content
-            $template->content = preg_replace('/href\=\'([^\']*\{)/',"href='{", $template->content);
-            $template->content = preg_replace('/href\=\"([^\"]*\{)/','href="{', $template->content);
+            //// update content
+            //$template->content = preg_replace('/href\=\'([^\']*\{)/',"href='{", $template->content);
+            //$template->content = preg_replace('/href\=\"([^\"]*\{)/','href="{', $template->content);
             
             $template->save();
 
@@ -223,9 +223,9 @@ class TemplateController extends Controller
             // Save template
             $template->fill($request->all());
             
-            // update content
-            $template->content = preg_replace('/href\=\'([^\']*\{)/',"href='{", $template->content);
-            $template->content = preg_replace('/href\=\"([^\"]*\{)/','href="{', $template->content);
+            //// update content
+            //$template->content = preg_replace('/href\=\'([^\']*\{)/',"href='{", $template->content);
+            //$template->content = preg_replace('/href\=\"([^\"]*\{)/','href="{', $template->content);
             
             $template->save();
 

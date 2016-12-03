@@ -97,8 +97,6 @@ class CampaignController extends Controller
             }),
         ];
 
-        var_dump($item->getTopOpenSubscribers()->get());
-
         return \Response::json(['campaign' => $campaign, 'statistics' => $statistics], 200);
     }
 }

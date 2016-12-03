@@ -19,7 +19,9 @@ class Controller extends BaseController
             $user = \Auth::user();
             if (is_object($user->language)) {
                 \App::setLocale($user->language->code);
-                \Carbon\Carbon::setLocale($user->language->code);
+                if(file_exists(base_path("vendor/nesbot/carbon/src/Carbon/Lang/" . $user->language->code . ".php"))) {
+                    \Carbon\Carbon::setLocale($user->language->code);
+                }
             }
         } catch (\Exception $e) {
         }

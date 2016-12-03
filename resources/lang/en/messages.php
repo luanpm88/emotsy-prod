@@ -1099,5 +1099,8 @@ return [
         <span class="text-semibold">validation.php</span>',
     'starting' => 'Starting...',
     'system_email' => 'System send email',
+    'clicked_emails_rate' => 'Clicked emails rate',
+    'delete_language_confirm_warning' => 'If there are one or more users using this language, they will be changed to the default language.',
+    'no_user' => 'There are no users',
 ];
 
