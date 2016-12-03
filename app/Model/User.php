@@ -26,6 +26,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Support\Facades\Redis;
 use Acelle\Library\QuotaTrackerStd;
 use Acelle\Library\QuotaTrackerRedis;
+use Carbon\Carbon;
 
 class User extends Authenticatable
 {
@@ -664,9 +665,9 @@ class User extends Authenticatable
      *
      * @return void
      */
-    public function countUsage()
+    public function countUsage(Carbon $timePoint = NULL)
     {
-        $this->getQuotaTracker()->add();
+        return $this->getQuotaTracker()->add();
     }
 
     /**
@@ -800,7 +801,7 @@ class User extends Authenticatable
      * @return array
      */
     public function initQuotaTracker() {
-        if (config('app.redis_enabled')) {
+        if (\Config::get('app.redis_enabled')) {
             $this->quotaTracker = new QuotaTrackerRedis(Redis::connection(), $this->getQuotaIntervalString(), $this->getSendingQuota());
             // @note: in case of Redis tracker, the following command must be issued manually
             //     $this->renewQuotaTracker();
