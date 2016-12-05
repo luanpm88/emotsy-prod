@@ -4,11 +4,18 @@ namespace Acelle\Console\Commands;
 
 use Illuminate\Console\Command;
 use Acelle\Library\Log;
+use Acelle\Library\QuotaTrackerStd;
+use Acelle\Library\QuotaTrackerRedis;
 use Acelle\Model\Campaign;
 use Acelle\Model\TrackingLog;
+use Acelle\Model\User;
 use Acelle\Model\SendingServer;
 use Acelle\Model\SendingServerElasticEmailApi;
 use Acelle\Model\SendingServerElasticEmail;
+use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
+use DB;
+use Illuminate\Support\Facades\Validator;
 
 class TestCampaign extends Command
 {
@@ -41,9 +48,13 @@ class TestCampaign extends Command
      */
     public function handle()
     {
-        $job = new \Acelle\Jobs\ImportSubscribersJob(\Acelle\Model\MailList::first(), \Acelle\Model\User::first());
-        //$systemJob = $job->getSystemJob();
+        $user = User::first();
+        echo $user->getSendingQuota() . "/" . $user->getQuotaIntervalString() . "\n";
+        $user->getQuotaTracker()->add();
+        $user->saveQuotaUsageInfo();
 
-        dispatch($job);
+        $user->quotaDebug();
     }
+
+    
 }
