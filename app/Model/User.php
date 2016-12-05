@@ -777,7 +777,7 @@ class User extends Authenticatable
         // recent tracking logs
         $recent = $this->trackingLogs()->where('created_at', '>=', $start);
         
-        // existing series
+        // existing quota usage
         $storedTracker = NULL;
 
         if ($this->quota) {
@@ -804,7 +804,7 @@ class User extends Authenticatable
             })->toArray();
         }
 
-        $this->quotaTracker = new QuotaTracker($this->getQuotaIntervalString(), $this->getSendingQuota(), $dataSeries);;
+        $this->quotaTracker = new QuotaTracker($this->getQuotaIntervalString(), $this->getSendingQuota(), $dataSeries);
     }
 
     /**
