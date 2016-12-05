@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Acelle\Library\QuotaTracker;
+use Acelle\Library\Log as MailLog;
 
 class User extends Authenticatable
 {
@@ -775,11 +776,22 @@ class User extends Authenticatable
 
         // recent tracking logs
         $recent = $this->trackingLogs()->where('created_at', '>=', $start);
+        
+        // existing series
+        $storedTracker = NULL;
+
+        if ($this->quota) {
+            try {
+                $storedTracker = unserialize($this->quota);
+            } catch (\Exception $x) {
+                // @TODO logging here
+                MailLog::warning('Cannot retrieve user quota');
+            }
+        }
 
         // load the tracker from DB
-        if ($this->quota) {
+        if (!is_null($storedTracker)) {
             // retrieve the stored quota usage and merge it with actual (newer) usage
-            $storedTracker = unserialize($this->quota);
             $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp($storedTracker->last()));
             $series = collect($recent->get())->map(function($trackingLog) {
                 return $trackingLog->created_at->timestamp;
