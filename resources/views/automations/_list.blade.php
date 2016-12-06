@@ -53,7 +53,7 @@
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 													<ul class="dropdown-menu dropdown-menu-right">
 														@if (\Gate::allows('delete', $automation) || true)
-															<li><a delete-confirm="{{ trans('messages.delete_automations_confirm') }}" href="{{ action('AutomationController@delete', ["uids" => $automation->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
+															<li><a data-method='delete' delete-confirm="{{ trans('messages.delete_automations_confirm') }}" href="{{ action('AutomationController@delete', ["uids" => $automation->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
 														@endif
 													</ul>
 												</div>

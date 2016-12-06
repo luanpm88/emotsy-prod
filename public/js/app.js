@@ -226,6 +226,12 @@ $(function() {
     // ------------------------------
     $(document).on("click", "a[delete-confirm]", function(e) {
         var mgs = $(this).attr("delete-confirm");
+        var method = $(this).attr("data-method");
+        
+        if (typeof(method) === 'undefined' || method.trim() === '') {
+            method = 'GET';
+        }
+        
         $(this).attr("new-href", $(this).attr("href"));
         // count items
         var count = 1;
@@ -236,6 +242,7 @@ $(function() {
         $('a[data-target="#delete_confirm_model"]').trigger("click");        
         $("#delete_confirm_model h6").html(mgs.replace(":number", "<span class='text-bold text-danger'>" + count + "</span>"));
         $(".delete-confirm-button").attr("href", $(this).attr("new-href"));
+        $(".delete-confirm-button").attr("data-method", method);
         
         if(typeof($(this).attr("no-ajax")) != "undefined") {
             $(".delete-confirm-button").removeClass("ajax_link");
@@ -272,6 +279,12 @@ $(function() {
     $(document).on("click", "a[list-delete-confirm]", function(e) {
         var url = $(this).attr("href");
         var curl = $(this).attr("list-delete-confirm");
+        var method = $(this).attr("data-method");
+        
+        if (typeof(method) === 'undefined' || method.trim() === '') {
+            method = 'GET';
+        }
+        
         $(this).attr("new-href", $(this).attr("href"));
         
         if($(this).parents(".list_actions").length) {
@@ -286,6 +299,7 @@ $(function() {
     
         $('a[data-target="#list_delete_confirm_model"]').trigger("click");
         $(".list-delete-confirm-button").attr("href", url);
+        $(".list-delete-confirm-button").attr("data-method", method);
         
         // Get message
         // ajax update custom sort
@@ -312,6 +326,12 @@ $(function() {
     $(document).on("click", "a[link-confirm]", function(e) {
         var mgs = $(this).attr("link-confirm");
         var url = $(this).attr("href");
+        var method = $(this).attr("data-method");
+        
+        if (typeof(method) === 'undefined' || method.trim() === '') {
+            method = 'GET';
+        }
+        
         $(this).attr("new-href", $(this).attr("href"));
         
         if($(this).parents(".list_actions").length) {
@@ -335,6 +355,7 @@ $(function() {
         
         $("#link_confirm_model h6").html(mgs);
         $(".link-confirm-button").attr("href", url);
+        $(".link-confirm-button").attr("data-method", method);
         
         e.stopImmediatePropagation();
         e.preventDefault();
@@ -460,10 +481,18 @@ $(function() {
         
         var url = $(this).attr("href");
         var form = $(this).parents(".listing-form");
+        var method = $(this).attr('data-method');
+        
+        if(typeof(method) === 'undefined' || method.trim() === '') {
+            method = "GET";
+        }
         
         $.ajax({
-            method: "GET",
+            method: method,
             url: url,
+            data: {
+                "_token": CSRF_TOKEN
+            }
         })
         .done(function( msg ) {
             tableFilter($(".listing-form"));

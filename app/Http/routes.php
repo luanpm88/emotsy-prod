@@ -243,7 +243,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('systems/jobs/{id}/download/csv', 'SystemJobController@downloadCsv');
     
     // Automation
-    Route::get('automations/delete', 'AutomationController@delete');
+    Route::delete('automations/delete', 'AutomationController@delete');
     Route::get('automations/{uid}/auto-event/form', 'AutomationController@nextEventForm');
     Route::post('automations/{uid}/workflow', 'AutomationController@workflow');
     Route::get('automations/{uid}/workflow', 'AutomationController@workflow');
