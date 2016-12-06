@@ -258,6 +258,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::delete('auto-events/campaigns/{uid}/delete', 'AutoEventController@deleteCampaign');
     Route::post('auto-events/{uid}/campaigns/add', 'AutoEventController@addCampaign');
     Route::get('auto-events/{uid}/campaigns', 'AutoEventController@campaigns');
+    Route::resource('auto-events', 'AutoEventController');
 });
 
 // ADMIN AREA

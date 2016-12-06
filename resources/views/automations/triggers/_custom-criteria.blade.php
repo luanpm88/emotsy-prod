@@ -10,11 +10,13 @@
                                 <div class="addable-multiple-form">
                                     <div class="addable-multiple-container">
 										@if (null !== $first_event->getDataValue('criteria'))
+											<?php $num = 0 ?>
 											@foreach ($first_event->getDataValue('criteria') as $key => $criteria)
 												@include('automations._criteria_form', [
 													'criteria' => $criteria,
-													'index' => $key
+													'index' => $num
 												])
+												<?php $num++ ?>
 											@endforeach
 										@endif
                                     </div>

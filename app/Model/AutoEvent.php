@@ -182,6 +182,7 @@ class AutoEvent extends Model
 				$rules = [
 					'subscriber_event' => 'required',
 				];
+				break;
 			case AutoEvent::TYPE_CUSTOM_CRITERIA:
 				if (isset($request->custom_criteria)) {
 					foreach ($request->custom_criteria as $key => $param) {
@@ -291,6 +292,15 @@ class AutoEvent extends Model
 						'criteria' => $params["custom_criteria"]
 					]);
 				}
+			case self::TYPE_FOLLOW_UP:
+			case self::TYPE_FOLLOW_UP_OPENED:
+			case self::TYPE_FOLLOW_UP_CLICKED:
+				if(!empty($params["wait_value"]) && !empty($params["wait_unit"])) {
+					$this->updateData([
+						'value' => $params["wait_value"],
+						'time' => $params["wait_unit"]
+					]);
+				}
 				break;
 		}
     }
@@ -366,16 +376,51 @@ class AutoEvent extends Model
 				]);
 				break;
 			case self::TYPE_WEEKLY_RECURRING:				
-				
+				$msg = trans('messages.weekly_recurring_description', [
+					'weekdays' => implode(', ', \Acelle\Library\Tool::numberArrayToWeekdaysArray($this->getDataValue('weekdays'))),
+					'weeks' => implode(', ', \Acelle\Library\Tool::numberArrayToWeeksArray($this->getDataValue('weeks'))),
+					'months' => implode(', ', \Acelle\Library\Tool::numberArrayToMonthsArray($this->getDataValue('months'))),
+					'time' => \Acelle\Library\Tool::timeStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('time'))),
+				]);
 				break;
 			case self::TYPE_MONTHLY_RECURRING:
-				
+				$msg = trans('messages.monthly_recurring_description', [
+					'days' => implode(', ', $this->getDataValue('days')),
+					'months' => implode(', ', \Acelle\Library\Tool::numberArrayToMonthsArray($this->getDataValue('months'))),
+					'time' => \Acelle\Library\Tool::timeStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('time'))),
+				]);
+				break;
+			case self::TYPE_LIST_SUBSCRIPTION:
+				$msg = trans('messages.event_type_list_subscription_description', [
+					'list_name' => $this->automation->mailList->name
+				]);
+				break;
+			case self::TYPE_LIST_UNSUBSCRIPTION:
+				$msg = trans('messages.event_type_list_unsubscription_description', [
+					'list_name' => $this->automation->mailList->name
+				]);
 				break;
 			case self::TYPE_SUBSCRIBER_EVENT:
-				
+				$msg = trans('messages.event_type_subscriber_event_description', [
+					'event' => strtolower(trans('messages.subscriber_s_field', ['name' => str_replace('_', ' ', $this->getDataValue('event'))]))
+				]);
 				break;
 			case self::TYPE_CUSTOM_CRITERIA:
-				
+				$strings = [];
+				foreach($this->getDataValue('criteria') as $criteria) {
+					$field = Field::findByUid($criteria["field_uid"]);
+					$strings[] = trans('messages.event_type_custom_criteria_description', [
+						'field' => $field->label,
+						'operator' => trans('messages.' . $criteria["operator"]),
+						'value' => $criteria["value"],
+					]);
+				}
+				$msg = trans('messages.event_type_custom_criterias_description', [
+					'conditions' => implode(' or ', $strings)
+				]);
+				break;
+			case self::TYPE_API_CALL:				
+				$msg = trans('messages.event_type_api_description');
 				break;
 		}
 		
@@ -406,9 +451,9 @@ class AutoEvent extends Model
     public static function emailEventOptions()
     {
         return [
-			['value' => 'sent', 'text' => strtolower(trans('messages.sent'))],
-			['value' => 'opened', 'text' => strtolower(trans('messages.opened'))],            
-            ['value' => 'clicked', 'text' => strtolower(trans('messages.clicked'))],
+			['value' => self::TYPE_FOLLOW_UP, 'text' => strtolower(trans('messages.sent'))],
+			['value' => self::TYPE_FOLLOW_UP_OPENED, 'text' => strtolower(trans('messages.opened'))],            
+            ['value' => self::TYPE_FOLLOW_UP_CLICKED, 'text' => strtolower(trans('messages.clicked'))],
         ];
     }
 	

@@ -26,17 +26,15 @@
 @endsection
 
 @section('content')
-                <form action="" method="POST" class="form-validate-jqueryz tabable-select-box workflow-form">
-					{{ csrf_field() }}
-                    
                     <!-- Timeline -->
 					<div class="addable-multiple-form">
 						<div class="timeline timeline-left content-group">
 							<div class="timeline-container">				
 								<!-- Sales stats -->
 								<div class="timeline-row">
-									<div class="timeline-icon timeline-icon-i">
-                                        <i class="icon-paperplane text-teal"></i>
+									<div class="timeline-icon timeline-icon-i auto-event-line">
+                                        <!--<i class="icon-paperplane text-teal"></i>-->
+										1
 									</div>
 		
 									<div class="panel panel-flat timeline-content">
@@ -70,7 +68,7 @@
 								<!-- /sales stats -->
 								
 								<div class="addable-multiple-container">
-									@foreach ($automation->getFollowUpEvents() as $auto_event)
+									@foreach ($automation->getFollowUpEvents() as $key =>  $auto_event)
 										@include("auto_events.show")
 									@endforeach
 								</div>
@@ -87,19 +85,20 @@
 					<div class="text-right">
 						<button class="btn bg-teal-800">{{ trans('messages.next') }} <i class="icon-arrow-right7"></i> </button>
 					</div>
-					
-				<form>
-					
-				<script>
-                    $(document).ready(function() {
-                        // Pick a day from now
-                        // Date limits
-                        $('.pickadate_from_now').pickadate({
-                            min: [{{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now())->year }},
-                                    {{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now()->subMonth(1))->month }},
-                                    {{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now())->day }}],
-                            format: LANG_DATE_FORMAT
-                        });
-                    });
-                </script>
+
+					<script>
+						$(document).ready(function() {
+							// Pick a day from now
+							// Date limits
+							$('.pickadate_from_now').pickadate({
+								min: [{{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now())->year }},
+										{{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now()->subMonth(1))->month }},
+										{{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now())->day }}],
+								format: LANG_DATE_FORMAT
+							});
+							
+							// update auto event number
+							setInterval('updateAutoEventNumber()', 1000);
+						});
+					</script>
 @endsection

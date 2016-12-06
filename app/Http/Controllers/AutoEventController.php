@@ -71,4 +71,27 @@ class AutoEventController extends Controller
         
         $auto_event->delete();
     }
+    
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $uid)
+    {
+        // Generate info
+        $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+
+        // validate and save posted data
+        if ($request->isMethod('patch')) {
+            // fill data
+            $auto_event->fillAttributes($request->all());
+            $auto_event->save();
+            
+            echo trans('messages.auto_event.updated');
+        }
+    }
 }

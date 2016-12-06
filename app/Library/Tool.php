@@ -198,7 +198,7 @@ class Tool
         if ($value > 1) {
             for ($i = 0; $i < strlen($phrase); ++$i) {
                 if ($i == strlen($phrase) - 1) {
-                    $plural .= ($phrase[$i] == 'y') ? 'ies' : (($phrase[$i] == 's' || $phrase[$i] == 'x' || $phrase[$i] == 'z' || $phrase[$i] == 'ch' || $phrase[$i] == 'sh') ? $phrase[$i].'es' : $phrase[$i].'s');
+                    $plural .= ($phrase[$i] == 'y' && $phrase != 'day') ? 'ies' : (($phrase[$i] == 's' || $phrase[$i] == 'x' || $phrase[$i] == 'z' || $phrase[$i] == 'ch' || $phrase[$i] == 'sh') ? $phrase[$i].'es' : $phrase[$i].'s');
                 } else {
                     $plural .= $phrase[$i];
                 }
@@ -308,6 +308,22 @@ class Tool
     }
     
     /**
+     * Day of week arrays.
+     *
+     * @param string
+     *
+     * @return array
+     */
+    public static function weekdaysArray() {
+        $array = [];
+        foreach(self::dayOfWeekSelectOptions() as $day) {
+            $array[$day['value']] = $day['text'];
+        }
+        
+        return $array;
+    }
+    
+    /**
      * Month select options.
      *
      * @param string
@@ -329,10 +345,26 @@ class Tool
             ['value' => '11', 'text' => trans('messages.November')],
             ['value' => '12', 'text' => trans('messages.December')],
         ];
+    }    
+    
+    /**
+     * Month array.
+     *
+     * @param string
+     *
+     * @return array
+     */
+    public static function monthsArray() {
+        $array = [];
+        foreach(self::monthSelectOptions() as $day) {
+            $array[$day['value']] = $day['text'];
+        }
+        
+        return $array;
     }
     
     /**
-     * Month select options.
+     * Week select options.
      *
      * @param string
      *
@@ -346,6 +378,22 @@ class Tool
             ['value' => '4', 'text' => trans('messages.4th_week')],
             ['value' => '5', 'text' => trans('messages.5th_week')],
         ];
+    }
+    
+    /**
+     * Week array.
+     *
+     * @param string
+     *
+     * @return array
+     */
+    public static function weeksArray() {
+        $array = [];
+        foreach(self::weekSelectOptions() as $day) {
+            $array[$day['value']] = $day['text'];
+        }
+        
+        return $array;
     }
     
     /**
@@ -395,5 +443,56 @@ class Tool
             $result = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
         }        
         return $result;
+    }
+    
+    /**
+     * Convert numbers array to weekdays array.
+     *
+     * @param timestamp
+     *
+     * @return string
+     */
+    public static function numberArrayToWeekdaysArray($numbers) {
+        $weekdays_texts = self::weekdaysArray();
+        $weekdays = [];
+        foreach($numbers as $number) {
+            $weekdays[] = $weekdays_texts[$number];
+        }
+        
+        return $weekdays;
+    }
+    
+    /**
+     * Convert numbers array to weeks array.
+     *
+     * @param timestamp
+     *
+     * @return string
+     */
+    public static function numberArrayToWeeksArray($numbers) {
+        $weeks_texts = self::weeksArray();
+        $weeks = [];
+        foreach($numbers as $number) {
+            $weeks[] = $weeks_texts[$number];
+        }
+        
+        return $weeks;
+    }
+    
+    /**
+     * Convert numbers array to months array.
+     *
+     * @param timestamp
+     *
+     * @return string
+     */
+    public static function numberArrayToMonthsArray($numbers) {
+        $month_texts = self::monthsArray();
+        $months = [];
+        foreach($numbers as $number) {
+            $months[] = $month_texts[$number];
+        }
+        
+        return $months;
     }
 }

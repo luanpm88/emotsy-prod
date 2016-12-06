@@ -13,7 +13,7 @@
 															<span class="text-muted2">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($campaign->created_at) }}</span>
 														</td>
 														<td class="text-right">
-															<button class="btn btn-default"><i class="icon-pencil mr-5"></i> {{ trans('messages.design_email') }}</button>
+															<button class="btn btn-info bg-info-800"><i class="icon-pencil mr-5"></i> {{ trans('messages.design_email') }}</button>
 															<button class="btn btn-default auto-campaign-delete"
 																data-confirm="{{ trans('messages.delete_auto_campaign_confirm', ['name' => $campaign->name]) }}"
 																data-url="{{ action('AutoEventController@deleteCampaign', $campaign->uid) }}">

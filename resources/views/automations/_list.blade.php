@@ -26,7 +26,7 @@
 													{{ $automation->name }}
 												</a>
 											</h5>
-											<span class="text-muted">{{ trans('messages.auto_event_' . $automation->getInitEvent()->event_type) }}</span>
+											<span class="text-muted">{!! $automation->getInitEvent()->displayMessage() !!}</span>
 											@if ($automation->subscribers()->count())
 												<br />
 												@if (is_object($automation->segment))
@@ -35,6 +35,12 @@
 													<span class="text-semibold">{{ $automation->subscribers()->count() }}</span> <span class="text-muted">{{ strtolower(trans('messages.subscribers')) }} ({{ $automation->mailList->name }})</span>
 												@endif
 											@endif
+										</td>
+										<td>
+											<h5 class="no-margin">
+												{{ trans('messages.auto_event_' . $automation->getInitEvent()->event_type) }}
+											</h5>
+											<span class="text-muted2">{{ trans('messages.type') }}</span>
 										</td>
 										<td class="text-right">
 											@if (\Gate::allows('update', $automation))

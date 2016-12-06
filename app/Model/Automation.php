@@ -247,6 +247,10 @@ class Automation extends Model
         $event = new AutoEvent([
 			'event_type' => AutoEvent::TYPE_FOLLOW_UP
 		]);
+        $event->updateData([
+            'value' => '1',
+            'time' => 'day',
+        ]);
         $event->previous_event_id = $this->getLastEvent()->id;
 		
 		$this->autoEvents()->save($event);

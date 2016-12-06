@@ -9,6 +9,14 @@
 *
 * ---------------------------------------------------------------------------- */
 
+function updateAutoEventNumber() {
+    var num = 1;
+    $('.auto-event-line').each(function() {
+        $(this).find('.timeline-icon-i').html(num);
+        num = num + 1;
+    });
+}
+
 function loadAutomationEmail(container) {
     var url = container.attr('data-url');
     
@@ -942,7 +950,39 @@ $(function() {
         .done(function() {
             $('[rel="'+box_id+'"]').remove();
             $('#delete_auto_event_confirm_model').modal('hide');
-        });
+        });        
+    });
+    
+    // Auto event saving
+    $(document).on('submit', '.auto-event-line form', function(e) {
+        e.preventDefault();
         
+        var form = $(this);
+        var url = form.attr('action');
+        var method = form.attr('method');
+        var line = form.parents('.auto-event-line');
+        
+        $.ajax({
+            method: method,
+            url: url,
+            data: form.serialize()
+        })
+        .done(function(msg) {
+            form.find('.btn-save').addClass('hide');
+            
+            swal({
+                title: msg,
+                text: "",
+                confirmButtonColor: "#00695C",
+                type: "success",
+                allowOutsideClick: true,
+                confirmButtonText: LANG_OK,
+                customClass: "swl-success"
+            });
+        });
+    });
+    // auto event change value
+    $(document).on('change', '.auto-event-line input, .auto-event-line select', function() {
+       $(this).parents('.auto-event-line').find('.btn-save').removeClass('hide');
     });
 });
