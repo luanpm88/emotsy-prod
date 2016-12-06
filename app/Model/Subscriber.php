@@ -478,7 +478,7 @@ class Subscriber extends Model
      */
     public function getSecurityToken($action)
     {
-        $string = $this->email + $action + env('APP_SECRET');
+        $string = $this->email . $action . config('app.key');
 
         return md5($string);
     }
