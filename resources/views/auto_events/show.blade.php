@@ -15,7 +15,7 @@
 														'name' => 'wait_value',
 														'class' => 'numeric',
 														'label' => '',
-														'value' => null !== $auto_event->getDataValue('value') ? $auto_event->getDataValue('value') : '',
+														'value' => null !== $auto_event->getDataValue('delay_value') ? $auto_event->getDataValue('delay_value') : '',
 														'rules' => []
 													])
 													@include('helpers.form_control', [
@@ -23,7 +23,7 @@
 														'name' => 'wait_unit',
 														'multiple' => '',
 														'label' => '',
-														'value' => null !== $auto_event->getDataValue('time') ? $auto_event->getDataValue('time') : '',
+														'value' => null !== $auto_event->getDataValue('delay_unit') ? $auto_event->getDataValue('delay_unit') : '',
 														'options' => Acelle\Model\AutoEvent::timeUnitOptions(),
 														'rules' => []
 													])

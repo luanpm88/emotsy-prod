@@ -94,4 +94,218 @@ class AutoEventController extends Controller
             echo trans('messages.auto_event.updated');
         }
     }
+    
+    /**
+     * Setting up auto campaign.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function campaignSetup(Request $request, $uid, $campaign_uid)
+    {
+        // Generate info
+        $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
+        
+        // get infor from mail list
+        $campaign->getInfoFromMailList($auto_event->automation->mailList);
+        
+        // Get old post values
+        if (null !== $request->old()) {
+            $campaign->fill($request->old());
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('patch')) {
+            // Check validation
+            $this->validate($request, $campaign->rules());
+
+            // Save campaign
+            $campaign->fill($request->all());
+            $campaign->save();
+            
+            return redirect()->action('AutoEventController@template', ['uid' => $auto_event->uid, 'campaign_uid' => $campaign->uid]);
+        }
+        
+        return view('auto_events.campaigns.setup', [
+            'auto_event' => $auto_event,
+            'campaign' => $campaign
+        ]);
+    }
+    
+    /**
+     * Template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function template(Request $request, $uid, $campaign_uid)
+    {
+        // Generate info
+        $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
+        $user = $request->user();
+        
+        // Get old post values
+        if (null !== $request->old()) {
+            $campaign->fill($request->old());
+        }
+        
+        $rules = [];
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            // Check validation
+            $this->validate($request, $rules);
+
+            // Save campaign
+            $campaign->fill($request->all());
+            
+            // convert html to plain text if plain text is empty
+            if (trim($request->plain) == '') {
+                $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($request->html)));
+            }
+            
+            $campaign->save();
+            
+            if(isset($request->template_source)) {
+                return redirect()->action('AutoEventController@templatePreview', ['uid' => $auto_event->uid, 'campaign_uid' => $campaign->uid]);
+            } else {
+                return redirect()->action('AutomationController@workflow', $auto_event->automation->uid);
+            }
+        }
+        
+        // redirect page
+        if(!empty($campaign->html) || $campaign->type == 'plain-text') {
+            return redirect()->action('AutoEventController@templatePreview', ['uid' => $auto_event->uid, 'campaign_uid' => $campaign->uid]);
+        } else {
+            return redirect()->action('AutoEventController@templateSelect', ['uid' => $auto_event->uid, 'campaign_uid' => $campaign->uid]);
+        }
+
+        return view('auto_events.campaigns.template', [
+            'campaign' => $campaign,
+            'rules' => $rules,
+            'auto_event' => $auto_event
+        ]);
+    }
+    
+    /**
+     * Select template type.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateSelect(Request $request, $uid, $campaign_uid)
+    {
+        $user = $request->user();
+        $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
+
+        return view('auto_events.campaigns.template_select', [
+            'campaign' => $campaign,
+            'auto_event' => $auto_event
+        ]);
+    }
+    
+    /**
+     * Buiding email template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateBuild(Request $request, $uid, $campaign_uid)
+    {
+        $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
+        
+        $elements = [];
+        if(isset($request->style)) {
+            $elements = \Acelle\Model\Template::templateStyles()[$request->style];
+        }
+
+        return view('auto_events.campaigns.template_build', [
+            'campaign' => $campaign,
+            'elements' => $elements,
+            'auto_event' => $auto_event
+        ]);
+    }
+    
+    /**
+     * Template preview.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templatePreview(Request $request, $uid, $campaign_uid)
+    {
+        $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
+
+        $rules = [];
+        
+        return view('auto_events.campaigns.template_preview', [
+            'campaign' => $campaign,
+            'rules' => $rules,
+            'auto_event' => $auto_event
+        ]);
+    }
+    
+    /**
+     * Template preview iframe.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateIframe(Request $request, $uid, $campaign_uid)
+    {
+        $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
+        
+        echo $campaign->html;
+    }
+    
+    /**
+     * Re-Buiding email template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateRebuild(Request $request, $uid, $campaign_uid)
+    {
+        $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
+
+        return view('auto_events.campaigns.template_rebuild', [
+            'campaign' => $campaign,
+            'list' => $campaign->mailList,
+            'auto_event' => $auto_event
+        ]);
+    }
+    
+    /**
+     * Choose an existed template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateChoose(Request $request, $uid, $campaign_uid)
+    {
+        $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+        $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
+        $template = \Acelle\Model\Template::findByUid($request->template_uid);
+        
+        $campaign->html = $template->content;
+        $campaign->template_source = $template->source;
+        $campaign->save();
+
+        return redirect()->action('AutoEventController@templatePreview', ['uid' => $auto_event->uid, 'campaign_uid' => $campaign->uid]);
+    }
 }

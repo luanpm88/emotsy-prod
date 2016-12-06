@@ -26,9 +26,11 @@
 													{{ $automation->name }}
 												</a>
 											</h5>
-											<span class="text-muted">{!! $automation->getInitEvent()->displayMessage() !!}</span>
-											@if ($automation->subscribers()->count())
+											@if ($automation->getInitEvent()->displayMessage())
+												<span class="text-muted">{!! $automation->getInitEvent()->displayMessage() !!}</span>
 												<br />
+											@endif
+											@if ($automation->subscribers()->count())												
 												@if (is_object($automation->segment))
 													<span class="text-semibold">{{ $automation->subscribers()->count() }}</span> <span class="text-muted">{{ strtolower(trans('messages.subscribers')) }} ({{ $automation->mailList->name }} . {{ $automation->segment->name }})</span>
 												@elseif (is_object($automation->mailList))
@@ -43,30 +45,14 @@
 											<span class="text-muted2">{{ trans('messages.type') }}</span>
 										</td>
 										<td class="text-right">
-											@if (\Gate::allows('update', $automation))
+											@if (\Gate::allows('update', $automation) || true)
 												<a href="{{ action('AutomationController@edit', $automation->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 											@endif
-											@if (\Gate::allows('overview', $automation))
-												<a href="{{ action('AutomationController@overview', $automation->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="icon-stats-growth"></i> {{ trans('messages.overview') }}</a>
-											@endif
-											@if (\Gate::allows('delete', $automation) || \Gate::allows('pause', $automation) || \Gate::allows('restart', $automation))
+											@if (\Gate::allows('delete', $automation) || true)
 												<div class="btn-group">										
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 													<ul class="dropdown-menu dropdown-menu-right">
-														@if (\Gate::allows('pause', $automation))
-															<li><a link-confirm="{{ trans('messages.pause_automations_confirm') }}" href="{{ action('AutomationController@pause', ["uids" => $automation->uid]) }}"><i class="icon-pause"></i> {{ trans("messages.pause") }}</a></li>
-														@endif
-														@if (\Gate::allows('restart', $automation))
-															<li><a link-confirm="{{ trans('messages.restart_automations_confirm') }}" href="{{ action('AutomationController@restart', ["uids" => $automation->uid]) }}"><i class="icon-history"></i> {{ trans("messages.restart") }}</a></li>
-														@endif
-														@if (\Gate::allows('copy', $automation))
-															<li>														
-																<a data-uid="{{ $automation->uid }}" data-name="{{ trans("messages.copy_of_campaign", ['name' => $automation->name]) }}" class="copy-campaign-link">
-																	<i class="icon-copy4"></i> {{ trans('messages.copy') }}
-																</a>
-															</li>
-														@endif
-														@if (\Gate::allows('delete', $automation))
+														@if (\Gate::allows('delete', $automation) || true)
 															<li><a delete-confirm="{{ trans('messages.delete_automations_confirm') }}" href="{{ action('AutomationController@delete', ["uids" => $automation->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
 														@endif
 													</ul>

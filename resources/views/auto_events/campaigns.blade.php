@@ -6,14 +6,32 @@
 														<td width="1%">
 															<i class="icon-envelop auto-campaign-icon"></i>
 														</td>
-														<td>
+														<td width="30%">
 															<h6 class="text-semibold mt-0 mb-0">
 																{{ $campaign->name }}
 															</h6>
-															<span class="text-muted2">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($campaign->created_at) }}</span>
+															<span class="text-muted2">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($campaign->updated_at) }}</span>
+														</td>
+														<td width="20%">
+															<h6 class="text-semibold mt-0 mb-0">
+																{{ $campaign->subject ? $campaign->subject : '--' }}
+															</h6>
+															<span class="text-muted">{{ trans('messages.subject') }}</span>
+														</td>
+														<td width="20%">
+															<h6 class="text-semibold mt-0 mb-0">
+																{{ $campaign->from_name ? $campaign->from_name : '--' }}
+															</h6>
+															<span class="text-muted">{{ trans('messages.from_name') }}</span>
 														</td>
 														<td class="text-right">
-															<button class="btn btn-info bg-info-800"><i class="icon-pencil mr-5"></i> {{ trans('messages.design_email') }}</button>
+															<a href="{{ action('AutoEventController@campaignSetup', ['uid' => $auto_event->uid, 'campaign_uid' => $campaign->uid]) }}" class="btn btn-info bg-info-800">
+																@if ($campaign->autoCampaignDesigned())
+																	<i class="icon-pencil mr-5"></i> {{ trans('messages.edit') }}
+																@else
+																	<i class="icon-pencil mr-5"></i> {{ trans('messages.design_email') }}
+																@endif
+															</a>
 															<button class="btn btn-default auto-campaign-delete"
 																data-confirm="{{ trans('messages.delete_auto_campaign_confirm', ['name' => $campaign->name]) }}"
 																data-url="{{ action('AutoEventController@deleteCampaign', $campaign->uid) }}">

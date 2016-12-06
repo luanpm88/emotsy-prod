@@ -243,6 +243,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('systems/jobs/{id}/download/csv', 'SystemJobController@downloadCsv');
     
     // Automation
+    Route::get('automations/delete', 'AutomationController@delete');
     Route::get('automations/{uid}/auto-event/form', 'AutomationController@nextEventForm');
     Route::post('automations/{uid}/workflow', 'AutomationController@workflow');
     Route::get('automations/{uid}/workflow', 'AutomationController@workflow');
@@ -254,6 +255,17 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('automations', 'AutomationController');
     
     // Auto event
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template', 'AutoEventController@template'); //
+    Route::post('auto-events/{uid}/emails/{campaign_uid}/template', 'AutoEventController@template'); //
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/select', 'AutoEventController@templateSelect'); //
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/choose/{template_uid}', 'AutoEventController@templateChoose');
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/preview', 'AutoEventController@templatePreview'); //
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/iframe', 'AutoEventController@templateIframe'); //
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/build/{style}', 'AutoEventController@templateBuild'); //
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/rebuild', 'AutoEventController@templateRebuild'); //
+    
+    Route::patch('auto-events/{uid}/emails/{campaign_uid}/setup', 'AutoEventController@campaignSetup');
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/setup', 'AutoEventController@campaignSetup');
     Route::delete('auto-events/{uid}/delete', 'AutoEventController@delete');
     Route::delete('auto-events/campaigns/{uid}/delete', 'AutoEventController@deleteCampaign');
     Route::post('auto-events/{uid}/campaigns/add', 'AutoEventController@addCampaign');

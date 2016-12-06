@@ -37,7 +37,9 @@
 											{{ trans('messages.actions') }} <span class="caret"></span>
 										</button>
 										<ul class="dropdown-menu">											
-											
+											<li><a data-method='delete' delete-confirm="{{ trans('messages.delete_automations_confirm') }}" href="{{ action('AutomationController@delete') }}">
+												<i class="icon-trash"></i> {{ trans('messages.delete') }}</a>
+											</li>
 										</ul>
 									</div>
 									<div class="checkbox inline check_all_list">

@@ -118,6 +118,9 @@ class AutoEvent extends Model
 				$next_event->previous_event_id = $event->previous_event_id;
 				$next_event->save();
 			}
+			
+			// Delete all campaigns
+			$event->campaigns()->delete();
         });
     }
 	
@@ -133,6 +136,7 @@ class AutoEvent extends Model
 				'name' => 'Untitled automation email'
 			]);
 			$campaign->user_id = $this->automation->user_id;
+			$campaign->is_auto = true;
 			
 			$this->campaigns()->save($campaign);
 		}
@@ -297,8 +301,9 @@ class AutoEvent extends Model
 			case self::TYPE_FOLLOW_UP_CLICKED:
 				if(!empty($params["wait_value"]) && !empty($params["wait_unit"])) {
 					$this->updateData([
-						'value' => $params["wait_value"],
-						'time' => $params["wait_unit"]
+						'delay_type' => 'after',
+						'delay_value' => $params["wait_value"],
+						'delay_unit' => $params["wait_unit"]
 					]);
 				}
 				break;
@@ -367,6 +372,10 @@ class AutoEvent extends Model
      */
     public function displayMessage()
     {
+		if(empty($this->data)) {
+			return '';
+		}
+		
 		$msg = '';
 		switch ($this->event_type) {
 			case self::TYPE_SPECIFIC_DATE:
@@ -468,6 +477,7 @@ class AutoEvent extends Model
 			'name' => 'Untitled automation email'
 		]);
 		$campaign->user_id = $this->automation->user_id;
+		$campaign->is_auto = true;
 		
 		$this->campaigns()->save($campaign);
     }

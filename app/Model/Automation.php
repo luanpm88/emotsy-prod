@@ -248,13 +248,30 @@ class Automation extends Model
 			'event_type' => AutoEvent::TYPE_FOLLOW_UP
 		]);
         $event->updateData([
-            'value' => '1',
-            'time' => 'day',
+            'delay_type' => 'after',
+            'delay_value' => '1',
+            'delay_unit' => 'day',
         ]);
         $event->previous_event_id = $this->getLastEvent()->id;
 		
 		$this->autoEvents()->save($event);
         
         return $event;
+    }
+    
+    /**
+     * Delete automation with its events.
+     *
+     * @return array
+     */
+    public function doDelete()
+    {
+        // remove contraints for deleting auto events
+        $this->autoEvents()->update([
+            'previous_event_id' => NULL
+        ]);
+        
+        // Delete automation
+        $this->delete();
     }
 }

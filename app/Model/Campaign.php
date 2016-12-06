@@ -66,6 +66,20 @@ class Campaign extends Model
     {
         return $this->belongsTo('Acelle\Model\MailList');
     }
+    
+    /**
+     * Get campaign validation rules.
+     */
+    public function rules()
+    {
+        return array(
+            'name' => 'required',
+            'subject' => 'required',
+            'from_email' => 'required|email',
+            'from_name' => 'required',
+            'reply_to' => 'required|email',
+        );
+    }
 
     /**
      * Get the segment of the campaign.
@@ -73,6 +87,14 @@ class Campaign extends Model
     public function segment()
     {
         return $this->belongsTo('Acelle\Model\Segment');
+    }
+    
+    /**
+     * Get the auto event of the campaign.
+     */
+    public function autoEvents()
+    {
+        return $this->belongsToMany('Acelle\Model\AutoEvent', 'auto_campaigns');
     }
 
     /**
@@ -701,16 +723,6 @@ class Campaign extends Model
     );
     
     /**
-     * The rules for validation.
-     *
-     * @var array
-     */
-    public function rules()
-    {
-        return [];
-    }
-
-    /**
      * Items per page.
      *
      * @var array
@@ -914,7 +926,7 @@ class Campaign extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = self::where('user_id', '=', $user->id);
+        $query = self::where('user_id', '=', $user->id)->where('is_auto', '=', false);
 
         // Keyword
         if (!empty(trim($request->keyword))) {
@@ -1917,5 +1929,31 @@ class Campaign extends Model
      */
     private function isStdClassSubscriber($object) {
         return (get_class($object) == 'stdClass');
+    }
+    
+    /**
+     * Get information from mail list
+     *
+     * @param void
+     */
+    public function getInfoFromMailList($list) {
+        $this->from_name = !empty($this->from_name) ? $this->from_name : $list->from_name;
+        $this->from_email = !empty($this->from_email) ? $this->from_email : $list->from_email;
+        $this->subject = !empty($this->subject) ? $this->subject : $list->default_subject;
+    }
+    
+    /**
+     * Check if auto campaign designed.
+     *
+     * @return object
+     */
+    public function autoCampaignDesigned()
+    {
+        $cond = (!empty($this->name) && !empty($this->subject) && !empty($this->from_name)
+            && !empty($this->from_email) && !empty($this->reply_to));
+        
+        $cond = $cond && ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid());
+        
+        return $cond;
     }
 }

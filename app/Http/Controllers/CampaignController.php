@@ -28,7 +28,7 @@ class CampaignController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $campaigns = $user->campaigns;
+        $campaigns = $user->campaigns()->where('is_auto', '=', false);
 
         return view('campaigns.index', [
             'campaigns' => $campaigns,

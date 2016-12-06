@@ -229,4 +229,24 @@ class AutomationController extends Controller
             'auto_event' => $auto_event
         ]);
     }
+    
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {
+        $automations = \Acelle\Model\Automation::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($automations->get() as $automation) {
+            // authorize
+            $automation->doDelete();
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.automations.deleted');
+    }
 }
