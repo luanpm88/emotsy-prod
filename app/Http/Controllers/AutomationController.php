@@ -46,6 +46,11 @@ class AutomationController extends Controller
     {
         $automation = new \Acelle\Model\Automation();
         
+        // authorize
+        if (\Gate::denies('create', $automation)) {
+            return $this->noMoreItem();
+        }
+        
         // Get old value
         if (null !== $request->old()) {
             $automation->fillAttributes($request->old());
@@ -67,6 +72,11 @@ class AutomationController extends Controller
     {
         $current_user = $request->user();
         $automation = new \Acelle\Model\Automation();
+        
+        // authorize
+        if (\Gate::denies('create', $automation)) {
+            return $this->noMoreItem();
+        }
 
         // Create automation
         if ($request->isMethod('post')) {
@@ -76,7 +86,11 @@ class AutomationController extends Controller
             // create automation
             $automation->fillAttributes($request->all());
             $automation->user_id = $current_user->id;
+            $automation->status = \Acelle\Model\Automation::STATUS_NEW;
             $automation->save();
+            
+            // Log
+            $automation->log('created', $request->user());
 
             // Redirect to next step
             return redirect()->action('AutomationController@trigger', $automation->uid);
@@ -94,6 +108,11 @@ class AutomationController extends Controller
     public function edit(Request $request, $uid)
     {
         $automation = \Acelle\Model\Automation::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
         
         // Get old value
         if (null !== $request->old()) {
@@ -116,6 +135,11 @@ class AutomationController extends Controller
     public function update(Request $request, $uid)
     {
         $automation = \Acelle\Model\Automation::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
 
         // Update automation
         if ($request->isMethod('patch')) {
@@ -125,6 +149,9 @@ class AutomationController extends Controller
             // create automation
             $automation->fillAttributes($request->all());
             $automation->save();
+            
+            // Log
+            $automation->log('updated', $request->user());
 
             // Redirect to next step
             return redirect()->action('AutomationController@trigger', $automation->uid);
@@ -142,6 +169,11 @@ class AutomationController extends Controller
     public function trigger(Request $request, $uid)
     {
         $automation = \Acelle\Model\Automation::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
         
         // Find automation first auto event
         $first_event = $automation->getInitEvent();
@@ -161,6 +193,9 @@ class AutomationController extends Controller
             
             // Save to database
             $first_event->save();
+            
+            // Log
+            $automation->log('triggered', $request->user());
             
             // Redirect to next step
             return redirect()->action('AutomationController@workflow', $automation->uid);
@@ -185,6 +220,11 @@ class AutomationController extends Controller
     {
         $automation = \Acelle\Model\Automation::findByUid($uid);
         
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+        
         return view('automations._criteria_form', [
             'automation' => $automation,
         ]);
@@ -201,7 +241,12 @@ class AutomationController extends Controller
     public function workflow(Request $request, $uid)
     {
         $automation = \Acelle\Model\Automation::findByUid($uid);
-        $first_event = $automation->getInitEvent();        
+        $first_event = $automation->getInitEvent();
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
 
         return view('automations.workflow', [
             'automation' => $automation,
@@ -220,7 +265,12 @@ class AutomationController extends Controller
      */
     public function nextEventForm(Request $request, $uid)
     {
-        $automation = \Acelle\Model\Automation::findByUid($uid);        
+        $automation = \Acelle\Model\Automation::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
         
         $auto_event = $automation->createAutoEvent();
         
@@ -243,10 +293,78 @@ class AutomationController extends Controller
 
         foreach ($automations->get() as $automation) {
             // authorize
-            $automation->doDelete();
+            if (\Gate::allows('delete', $automation)) {
+                $automation->doDelete();
+                
+                // Log
+                $automation->log('deleted', $request->user());
+            }
         }
 
         // Redirect to my lists page
         echo trans('messages.automations.deleted');
+    }
+    
+    /**
+     * Cofirm.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function confirm(Request $request, $uid)
+    {
+        $automation = \Acelle\Model\Automation::findByUid($uid);
+        $first_event = $automation->getInitEvent();
+        
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            // authorize
+            if (\Gate::denies('confirm', $automation)) {
+                return $this->notAuthorized();
+            } else {
+                $automation->setReady();
+                
+                // Log
+                $automation->log('started', $request->user());
+                
+                return redirect()->action('AutomationController@index');
+            }
+        }
+
+        return view('automations.confirm', [
+            'automation' => $automation,
+            'first_event' => $first_event
+        ]);
+    }
+    
+    /**
+     * Custom sort items.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sort(Request $request)
+    {
+        $sort = json_decode($request->sort);
+        foreach ($sort as $row) {
+            $item = \Acelle\Model\Automation::findByUid($row[0]);
+
+            // authorize
+            if (\Gate::denies('sort', $item)) {
+                return $this->notAuthorized();
+            }
+
+            $item->custom_order = $row[1];
+            $item->save();
+        }
+
+        echo trans('messages.automations.custom_order.updated');
     }
 }

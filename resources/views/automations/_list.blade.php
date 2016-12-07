@@ -44,15 +44,20 @@
 											</h5>
 											<span class="text-muted2">{{ trans('messages.type') }}</span>
 										</td>
+										<td class="text-center">
+											<span class="text-muted2 list-status">
+												<span class="label label-flat bg-{{ $automation->status }}">{{ $automation->status }}</span>
+											</span>
+										</td>
 										<td class="text-right">
-											@if (\Gate::allows('update', $automation) || true)
+											@if (\Gate::allows('update', $automation))
 												<a href="{{ action('AutomationController@edit', $automation->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 											@endif
-											@if (\Gate::allows('delete', $automation) || true)
+											@if (\Gate::allows('delete', $automation))
 												<div class="btn-group">										
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 													<ul class="dropdown-menu dropdown-menu-right">
-														@if (\Gate::allows('delete', $automation) || true)
+														@if (\Gate::allows('delete', $automation))
 															<li><a data-method='delete' delete-confirm="{{ trans('messages.delete_automations_confirm') }}" href="{{ action('AutomationController@delete', ["uids" => $automation->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
 														@endif
 													</ul>

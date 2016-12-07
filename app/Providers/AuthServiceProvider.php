@@ -29,6 +29,7 @@ class AuthServiceProvider extends ServiceProvider
         \Acelle\Model\SendingDomain::class => \Acelle\Policies\SendingDomainPolicy::class,
         \Acelle\Model\Language::class => \Acelle\Policies\LanguagePolicy::class,
         \Acelle\Model\SystemJob::class => \Acelle\Policies\SystemJobPolicy::class,
+        \Acelle\Model\Automation::class => \Acelle\Policies\AutomationPolicy::class,
     ];
 
     /**

@@ -26,6 +26,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Automation extends Model
 {
+    // Automation status
+    const STATUS_NEW = 'new';
+    const STATUS_READY = 'ready'; // equiv. to 'queue'
+    
     /**
      * Items per page.
      *
@@ -274,4 +278,85 @@ class Automation extends Model
         // Delete automation
         $this->delete();
     }
+    
+    /**
+     * Automation valid.
+     *
+     * @return array
+     */
+    public function isValid()
+    {
+        // subscribers count > 0
+        if($this->subscribers()->count() <= 0) {
+            return false;
+        }
+        
+        // check first auto event
+        $first_event = $this->getInitEvent();
+        if(!isset($first_event->id)) {
+            return false;
+        }
+        
+        
+        foreach($this->autoEvents as $auto_event) {
+            // check auto events emails empty
+            if($auto_event->campaigns()->count() <= 0) {
+                return false;
+            }
+            
+            // check if email is not design
+            foreach($auto_event->campaigns as $campaign) {
+                if(!$campaign->autoCampaignDesigned()) {
+                    return false;
+                }
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * set automation status to ready.
+     *
+     * @return void
+     */
+    public function setReady()
+    {
+        $this->status = Automation::STATUS_READY;
+        $this->save();
+    }
+    
+    /**
+     * Create customer action log.
+     *
+     * @param string $cat
+     * @param User   $user
+     * @param array  $add_datas
+     */
+    public function log($name, $user, $add_datas = [])
+    {
+        $data = [
+            'id' => $this->id,
+            'name' => $this->name,
+        ];
+
+        if (is_object($this->mailList)) {
+            $data['list_id'] = $this->mail_list_id;
+            $data['list_name'] = $this->mailList->name;
+        }
+
+        if (is_object($this->segment)) {
+            $data['segment_id'] = $this->segment_id;
+            $data['segment_name'] = $this->segment->name;
+        }
+
+        $data = array_merge($data, $add_datas);
+
+        \Acelle\Model\Log::create([
+            'user_id' => $user->id,
+            'type' => 'automation',
+            'name' => $name,
+            'data' => json_encode($data),
+        ]);
+}
 }

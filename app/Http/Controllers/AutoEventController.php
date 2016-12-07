@@ -39,7 +39,9 @@ class AutoEventController extends Controller
     {
         $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
         
-        $auto_event->addCampaign();
+        $campaign = $auto_event->addCampaign();
+        
+        return redirect()->action('AutoEventController@campaignSetup', ['uid' => $auto_event->uid, 'campaign_uid' => $campaign->uid]);
     }
     
     /**

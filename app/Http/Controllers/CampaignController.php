@@ -185,7 +185,7 @@ class CampaignController extends Controller
             $item->save();
         }
 
-        echo trans('messages.lists.custom_order.updated');
+        echo trans('messages.campaigns.custom_order.updated');
     }
 
     /**

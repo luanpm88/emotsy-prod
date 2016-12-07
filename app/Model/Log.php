@@ -122,6 +122,19 @@ class Log extends Model
                 $data['to_link'] = $to_link;
             }
         }
+        // Campaign
+        elseif ($this->type == 'automation') {
+            if (isset($data['list_id'])) {
+                $list = MailList::find($data['list_id']);
+                $list_link = is_object($list) ? action('MailListController@show', $list->uid) : '#deleted';
+                $data['list_link'] = $list_link;
+            }
+
+            $item = Automation::find($data['id']);
+            $link = is_object($item) ? action('AutomationController@edit', $item->uid) : '#deleted';
+
+            $data['link'] = $link;
+        }
 
         $message = trans('messages.log.'.$this->type.'.'.$this->name, $data);
 

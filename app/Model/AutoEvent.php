@@ -373,7 +373,7 @@ class AutoEvent extends Model
     public function displayMessage()
     {
 		if(empty($this->data)) {
-			return '';
+			return trans('messages.event_not_set_yet');
 		}
 		
 		$msg = '';
@@ -428,6 +428,15 @@ class AutoEvent extends Model
 					'conditions' => implode(' or ', $strings)
 				]);
 				break;
+			case self::TYPE_FOLLOW_UP:
+			case self::TYPE_FOLLOW_UP_OPENED:
+			case self::TYPE_FOLLOW_UP_CLICKED:
+				$msg = trans('messages.follow_up_description', [
+					'value' => $this->getDataValue('delay_value'),
+					'unit' => \Acelle\Library\Tool::getPluralPrase($this->getDataValue('delay_unit'), $this->getDataValue('delay_value')),
+					'event' => trans('messages.follow_up_event_' . $this->event_type)
+				]);
+				break;
 			case self::TYPE_API_CALL:				
 				$msg = trans('messages.event_type_api_description');
 				break;
@@ -480,6 +489,8 @@ class AutoEvent extends Model
 		$campaign->is_auto = true;
 		
 		$this->campaigns()->save($campaign);
+		
+		return $campaign;
     }
 	
 	/**

@@ -107,7 +107,7 @@
 					<hr>
 					<div class="text-right">
 						<button class="btn bg-teal-800">{{ trans('messages.save_and_next') }} <i class="icon-arrow-right7"></i> </button>
-                        <a href="{{ action("AutomationController@workflow", $auto_event->automation->uid) }}" class="btn bg-grey-800">{{ trans('messages.back_to_workflow') }}</button>
+                        <a href="{{ action("AutomationController@workflow", $auto_event->automation->uid) }}" class="btn bg-grey-800">{{ trans('messages.back_to_workflow') }}</a>
 					</div>
 					
 				<form>

@@ -866,7 +866,7 @@ ul.modern-listing li i, .table-row-icon {
     color: #333;
 }
 ul.modern-listing li h4 {
-    margin: 0;
+    margin: 0 0 5px;
     font-weight: 600;
     font-size: 20px;
 }
@@ -1422,4 +1422,30 @@ label.col-center {
 }
 .panel-auto-campaign {
     background: #f8f8f8;
+}
+numbericon {
+    display: inline-block;
+    background: #00838F;
+    float: left;
+    color: #fff;
+    width: 40px;
+    margin: 0 20px 6px 0;
+    height: 40px;
+    text-align: center;
+    padding: 5px;
+    border-radius: 20px;
+}
+ul.automation-confirm li {
+    list-style: none;
+    clear: both;
+    border-bottom: solid 1px #ddd;
+    margin-bottom: 0;
+    padding-top: 20px;
+}
+ul.automation-confirm li.child-row {
+    padding-left: 110px;
+    background: #f8f8f8;
+}
+ul.automation-confirm li.child-row h5 {
+    margin-top: 0;
 }

@@ -14,4 +14,9 @@
 							<i class="icon-stack-play"></i> {{ trans('messages.workflow') }}
 						</a>
 					</li>
+					<li class="{{ $step == "confirm" ? "active" : "" }}">
+						<a href="{{ action('AutomationController@confirm', $automation->uid) }}">
+							<i class="icon-checkmark4"></i> {{ trans('messages.review_and_confirm') }}
+						</a>
+					</li>
 				</ul>

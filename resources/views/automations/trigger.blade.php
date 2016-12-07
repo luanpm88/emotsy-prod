@@ -13,7 +13,7 @@
 			<div class="page-title">
 				<ul class="breadcrumb breadcrumb-caret position-right">
 					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+					<li><a href="{{ action("AutomationController@index") }}">{{ trans('messages.automations') }}</a></li>
 				</ul>
 				<h1>
 					<span class="text-semibold"><i class="icon-alarm-check"></i> {{ $automation->name }}</span>

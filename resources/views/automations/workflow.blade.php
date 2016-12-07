@@ -13,7 +13,7 @@
 			<div class="page-title">
 				<ul class="breadcrumb breadcrumb-caret position-right">
 					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li><a href="{{ action("CampaignController@index") }}">{{ trans('messages.campaigns') }}</a></li>
+					<li><a href="{{ action("AutomationController@index") }}">{{ trans('messages.automations') }}</a></li>
 				</ul>
 				<h1>
 					<span class="text-semibold"><i class="icon-alarm-check"></i> {{ $automation->name }}</span>
@@ -56,9 +56,15 @@
 										</div>
 											
 										<div class="text-center">
-											<button class="btn btn-xs bg-teal event-campaign-add" data-url="{{ action('AutoEventController@addCampaign', $first_event->uid) }}">
-												<i class="icon-plus2"></i> {{ trans('messages.add_email') }}
-											</button>
+											@if (isset($first_event->id))
+												<button class="btn btn-xs bg-teal event-campaign-add" data-url="{{ action('AutoEventController@addCampaign', $first_event->uid) }}">
+													<i class="icon-plus2"></i> {{ trans('messages.add_email') }}
+												</button>
+											@else
+												<a class="btn btn-xs bg-teal" href="{{ action('AutomationController@trigger', $automation->uid) }}">
+													<i class="icon-alignment-align"></i> {{ trans('messages.set_trigger') }}
+												</a>
+											@endif
 										</div>
 									</div>
 									
@@ -83,9 +89,11 @@
                     
 					<hr>
 					<div class="text-right">
-						<button class="btn bg-teal-800">{{ trans('messages.next') }} <i class="icon-arrow-right7"></i> </button>
+						<a href="{{ action('AutomationController@confirm', $automation->uid) }}" class="btn bg-teal-800">
+							{{ trans('messages.review_and_confirm') }} <i class="icon-arrow-right7"></i>
+						</a>
 					</div>
-
+					
 					<script>
 						$(document).ready(function() {
 							// Pick a day from now

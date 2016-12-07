@@ -1014,4 +1014,32 @@ $(function() {
     $(document).on('change', '.auto-event-line input, .auto-event-line select', function() {
        $(this).parents('.auto-event-line').find('.btn-save').removeClass('hide');
     });
+    
+    // Grap link with data-method attribute
+    $(document).on('click', 'a[link-method]', function(e) {      
+        
+        var method = $(this).attr("link-method");
+        var action = $(this).attr("href");
+        
+        if(typeof(method) != 'undefined') {
+            var newForm = jQuery('<form>', {
+                'action': action,
+                'method': 'POST',
+                'target': '_top'
+            });
+            newForm.append(jQuery('<input>', {
+                'name': '_token',
+                'value': CSRF_TOKEN,
+                'type': 'hidden'
+            }));
+            newForm.append(jQuery('<input>', {
+                'name': '_method',
+                'value': method,
+                'type': 'hidden'
+            }));
+            newForm.submit();
+            
+            e.preventDefault();
+        }
+    });
 });

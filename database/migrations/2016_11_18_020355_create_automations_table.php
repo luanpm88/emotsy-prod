@@ -20,6 +20,7 @@ class CreateAutomationsTable extends Migration
             $table->integer('segment_id')->unsigned()->nullable();
             $table->text('name');
             $table->integer('custom_order');
+            $table->string('status');
             $table->timestamps();
             
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
