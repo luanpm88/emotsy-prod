@@ -939,7 +939,7 @@ class MailList extends Model
         $options = [];
         $options[] = ['text' => trans('messages.subscriber_added_date'), 'value' => 'added_day'];
         foreach ($this->getDateFields() as $field) {
-            $options[] = ['text' => trans('messages.subscriber_s_field', ['name' => $field->label]), 'value' => $field->uid];
+            $options[] = ['text' => trans('messages.subscriber_s_field', ['name' => $field->label]), 'value' => "field_uid:" . $field->uid];
         }
 
         return $options;

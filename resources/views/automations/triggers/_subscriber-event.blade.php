@@ -6,7 +6,7 @@
 									'name' => 'subscriber_event',
 									'class' => '',
 									'label' => '',
-									'value' => null !== $first_event->getDataValue('event_or_field_uid') ? $first_event->getDataValue('event_or_field_uid') : '',
+									'value' => null !== $first_event->getDataValue('event') ? $first_event->getDataValue('event') : '',
 									'options' => $first_event->automation->MailList->getSubscriberFieldSelectOptions(),
 									'rules' => []
 								])

@@ -305,7 +305,7 @@ class AutoEvent extends Model
 				break;
 			case self::TYPE_SUBSCRIBER_EVENT:
 				$this->updateData([
-					'event_or_field_uid' => isset($params["subscriber_event"]) ? $params["subscriber_event"] : ''
+					'event' => isset($params["subscriber_event"]) ? $params["subscriber_event"] : ''
 				]);
 				break;
 			case self::TYPE_CUSTOM_CRITERIA:
@@ -428,8 +428,18 @@ class AutoEvent extends Model
 				]);
 				break;
 			case self::TYPE_SUBSCRIBER_EVENT:
+				$event = $this->getDataValue('event');
+				
+				// check if event with field uid
+				$parts = explode(":", $event);
+				if(count($parts) == 2 && $parts[0] == 'field_uid') {
+					$field = \Acelle\Model\Field::findByUid($parts[1]);
+					$text = is_object($field) ? strtolower(trans('messages.subscriber_s_field', ['name' => $field->label])) : '';
+				} else {
+					$text = strtolower(trans('messages.subscriber_s_field', ['name' => str_replace('_', ' ', $event)]));
+				}
 				$msg = trans('messages.event_type_subscriber_event_description', [
-					'event' => strtolower(trans('messages.subscriber_s_field', ['name' => str_replace('_', ' ', $this->getDataValue('event'))]))
+					'event' => $text
 				]);
 				break;
 			case self::TYPE_CUSTOM_CRITERIA:
