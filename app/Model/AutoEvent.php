@@ -185,6 +185,9 @@ class AutoEvent extends Model
 			case AutoEvent::TYPE_SUBSCRIBER_EVENT:
 				$rules = [
 					'subscriber_event' => 'required',
+					'delay_type' => 'required',
+					'delay_value' => 'required',
+					'delay_unit' => 'required',
 				];
 				break;
 			case AutoEvent::TYPE_CUSTOM_CRITERIA:
@@ -232,6 +235,23 @@ class AutoEvent extends Model
         $this->fill($params);
 		
 		$this->data = "[]";
+		
+		// set delay time
+		switch ($this->event_type) {
+			case self::TYPE_LIST_SUBSCRIPTION:
+			case self::TYPE_LIST_UNSUBSCRIPTION:
+			case self::TYPE_SUBSCRIBER_EVENT:
+			case self::TYPE_CUSTOM_CRITERIA:
+				// Delay time
+				$this->updateData([
+					'delay_type' => isset($params["delay_type"]) ? $params["delay_type"] : 'before',
+					'delay_value' => isset($params["delay_value"]) ? $params["delay_value"] : '0',
+					'delay_unit' => isset($params["delay_unit"]) ? $params["delay_unit"] : 'day',
+				]);
+				break;
+		}
+		
+		// fill other options
 		switch ($this->event_type) {
 			case self::TYPE_SPECIFIC_DATE:
 				// send at specific date
@@ -284,11 +304,9 @@ class AutoEvent extends Model
 				}
 				break;
 			case self::TYPE_SUBSCRIBER_EVENT:
-				if(!empty($params["subscriber_event"])) {
-					$this->updateData([
-						'event' => $params["subscriber_event"]
-					]);
-				}
+				$this->updateData([
+					'event_or_field_uid' => isset($params["subscriber_event"]) ? $params["subscriber_event"] : ''
+				]);
 				break;
 			case self::TYPE_CUSTOM_CRITERIA:
 				if(!empty($params["custom_criteria"])) {
@@ -299,16 +317,16 @@ class AutoEvent extends Model
 			case self::TYPE_FOLLOW_UP:
 			case self::TYPE_FOLLOW_UP_OPENED:
 			case self::TYPE_FOLLOW_UP_CLICKED:
-				if(!empty($params["wait_value"]) && !empty($params["wait_unit"])) {
+				if(!empty($params["delay_value"]) && !empty($params["delay_unit"])) {
 					$this->updateData([
 						'delay_type' => 'after',
-						'delay_value' => $params["wait_value"],
-						'delay_unit' => $params["wait_unit"]
+						'delay_value' => $params["delay_value"],
+						'delay_unit' => $params["delay_unit"]
 					]);
 				}
 				break;
 		}
-    }
+	}
 	
 	/**
      * Get data.
@@ -458,6 +476,19 @@ class AutoEvent extends Model
             ['value' => 'week', 'text' => trans('messages.week_s')],
             ['value' => 'month', 'text' => trans('messages.month_s')],			
             ['value' => 'year', 'text' => trans('messages.year_s')],
+        ];
+    }
+	
+	/**
+     * Delay type options.
+     *
+     * @return array
+     */
+    public static function delayTypeOptions()
+    {
+        return [
+			['value' => 'before', 'text' => trans('messages.before')],
+			['value' => 'after', 'text' => trans('messages.after')],
         ];
     }
 	

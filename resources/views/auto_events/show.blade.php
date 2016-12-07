@@ -12,7 +12,7 @@
 													{{ trans('messages.wait') }}
 													@include('helpers.form_control', [
 														'type' => 'text',
-														'name' => 'wait_value',
+														'name' => 'delay_value',
 														'class' => 'numeric',
 														'label' => '',
 														'value' => null !== $auto_event->getDataValue('delay_value') ? $auto_event->getDataValue('delay_value') : '',
@@ -20,14 +20,14 @@
 													])
 													@include('helpers.form_control', [
 														'type' => 'select',
-														'name' => 'wait_unit',
+														'name' => 'delay_unit',
 														'multiple' => '',
 														'label' => '',
 														'value' => null !== $auto_event->getDataValue('delay_unit') ? $auto_event->getDataValue('delay_unit') : '',
 														'options' => Acelle\Model\AutoEvent::timeUnitOptions(),
 														'rules' => []
 													])
-													after previous email is
+													{{ trans('messages.after_previous_email_is') }}
 													@include('helpers.form_control', [
 														'type' => 'select',
 														'name' => 'event_type',

@@ -1229,5 +1229,9 @@ return [
     'log.automation.deleted' => 'The automation "<a href=":link">:name</a>" was deleted!',
     'log.automation.triggered' => 'The trigger of automation "<a href=":link">:name</a>" was updated!',
     'log.automation.started' => 'The automation "<a href=":link">:name</a>" was started!',
+    'after_previous_email_is' => 'after previous email is',
+    'before' => 'before',
+    'after' => 'after',
+    'trigger_occurred' => 'trigger occurred',
 ];
 

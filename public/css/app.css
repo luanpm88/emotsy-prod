@@ -1449,3 +1449,6 @@ ul.automation-confirm li.child-row {
 ul.automation-confirm li.child-row h5 {
     margin-top: 0;
 }
+.auto-event-form-line .has-error .help-block {
+    display: none;
+}

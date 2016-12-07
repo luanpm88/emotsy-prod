@@ -60,9 +60,43 @@
 						<div class="row tabable-tab custom-criteria">
 							@include('automations.triggers._custom-criteria')							
 						</div>
+						<div class="row tabable-tab custom-criteria subscriber-event list-subscription list-unsubscription">
+							<div class="col-md-6">
+								<hr />
+								<h6 class="panel-title text-semibold auto-event-form-line">
+									{{ trans('messages.wait') }}
+									@include('helpers.form_control', [
+										'type' => 'text',
+										'name' => 'delay_value',
+										'class' => 'numeric',
+										'label' => '',
+										'value' => null !== $first_event->getDataValue('delay_value') ? $first_event->getDataValue('delay_value') : '0',
+										'rules' => []
+									])
+									@include('helpers.form_control', [
+										'type' => 'select',
+										'name' => 'delay_unit',
+										'multiple' => '',
+										'label' => '',
+										'value' => null !== $first_event->getDataValue('delay_unit') ? $first_event->getDataValue('delay_unit') : 'day',
+										'options' => Acelle\Model\AutoEvent::timeUnitOptions(),
+										'rules' => []
+									])
+									@include('helpers.form_control', [
+										'type' => 'select',
+										'name' => 'delay_type',
+										'multiple' => '',
+										'label' => '',
+										'value' => null !== $first_event->getDataValue('delay_type') ? $first_event->getDataValue('delay_type') : 'before',
+										'options' => Acelle\Model\AutoEvent::delayTypeOptions(),
+										'rules' => []
+									])
+									{{ trans('messages.trigger_occurred') }}
+								</h6>
+							</div>
+						</div>
 					</div>
-					
-					<hr>
+				<hr>
 					<div class="text-right">
 						<button class="btn bg-teal-800">{{ trans('messages.Save_and_Next') }} <i class="icon-arrow-right7"></i> </button>
 					</div>
