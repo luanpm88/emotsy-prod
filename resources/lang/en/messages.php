@@ -1233,5 +1233,7 @@ return [
     'before' => 'before',
     'after' => 'after',
     'trigger_occurred' => 'trigger occurred',
+    'none' => 'None',
 ];
+
 

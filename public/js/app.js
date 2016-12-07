@@ -1042,4 +1042,19 @@ $(function() {
             e.preventDefault();
         }
     });
+    
+    // Check all checkboxes group
+    $(document).on('click', '.checkboxes_check_all', function() {      
+        var box = $(this).parents('.form-group');
+        
+        box.find('input[type=checkbox]').prop('checked', true);
+        $.uniform.update();
+    });
+    // Uncheck all checkboxes group
+    $(document).on('click', '.checkboxes_check_none', function() {      
+        var box = $(this).parents('.form-group');
+        
+        box.find('input[type=checkbox]').prop('checked', false);
+        $.uniform.update();
+    });
 });
