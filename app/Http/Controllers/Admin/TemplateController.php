@@ -110,6 +110,10 @@ class TemplateController extends Controller
 
             // Save template
             $template->fill($request->all());
+            $template->source = 'editor';
+            if(isset($request->source)) {
+                $template->source = $request->source;
+            }
             $template->save();
 
             // Redirect to my lists page
