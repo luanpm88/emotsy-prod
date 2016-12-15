@@ -63,13 +63,15 @@ class MailListController extends Controller
         $list->contact = new \Acelle\Model\Contact();
         if (is_object($user->contact)) {
             $list->contact->fill($user->contact->toArray());
-            $list->send_to = $user->contact->email;
-            $list->subscribe_confirmation = true;
-            $list->send_welcome_email = true;
-            $list->unsubscribe_notification = true;
+            $list->send_to = $user->contact->email;            
         } else {
             $list->send_to = $user->email;
         }
+        
+        // default values
+        $list->subscribe_confirmation = true;
+        $list->send_welcome_email = true;
+        $list->unsubscribe_notification = true;
 
         // authorize
         if (\Gate::denies('create', $list)) {
