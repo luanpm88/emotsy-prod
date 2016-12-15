@@ -64,6 +64,9 @@ class MailListController extends Controller
         if (is_object($user->contact)) {
             $list->contact->fill($user->contact->toArray());
             $list->send_to = $user->contact->email;
+            $list->subscribe_confirmation = true;
+            $list->send_welcome_email = true;
+            $list->unsubscribe_notification = true;
         } else {
             $list->send_to = $user->email;
         }
@@ -202,7 +205,7 @@ class MailListController extends Controller
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.list.updated'));
 
-            return redirect()->action('MailListController@index');
+            return redirect()->action('MailListController@edit', $list->uid);
         }
     }
 
@@ -640,14 +643,29 @@ class MailListController extends Controller
             $subscriber->save();
             // Update field
             $subscriber->updateFields($request->all());
-
-            // SEND EMAIL
-            $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
-            $send_page = \Acelle\Model\Page::findPage($list, $layout);
-            $send_page->renderContent(null, $subscriber);
-            $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
-
-            return redirect()->action('PageController@signUpThankyouPage', $list->uid);
+            
+            if($list->subscribe_confirmation) {
+                // SEND subscription confirmation email
+                $list->sendSubscriptionConfirmationEmail($subscriber);
+    
+                return redirect()->action('PageController@signUpThankyouPage', $list->uid);
+            } else {
+                // change status to subscribed
+                $subscriber->updateStatus('subscribed');
+                
+                // Send welcome email
+                if($list->send_welcome_email) {
+                    // SEND subscription confirmation email
+                    $list->sendSubscriptionWelcomeEmail($subscriber);
+                }
+                
+                return redirect()->action('PageController@signUpConfirmationThankyou', [
+                        'list_uid' => $list->uid,
+                        'uid' => $subscriber->uid,
+                        'code' => 'empty',
+                    ]
+                );
+            }
         }
     }
 }

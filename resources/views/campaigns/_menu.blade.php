@@ -65,7 +65,12 @@
 						</a>
 					</li>
 				</ul>
-			</li>			
+			</li>
+			<!--<li rel0="CampaignController/templateReview" class="dropdown">
+				<a href="{{ action('CampaignController@templateReview', $campaign->uid) }}" class="level-1">
+					<i class="icon-magazine"></i> {{ trans('messages.template') }}
+				</a>
+			</li>-->
 		</ul>
 	</div>
 </div>

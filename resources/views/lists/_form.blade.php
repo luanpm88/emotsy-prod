@@ -107,10 +107,10 @@
 						</div>
 					</div>		
 						
-					<div class="sub_section hide">
-						<h2 class="text-semibold text-teal-800">{{ trans('messages.notifications') }}</h2>
+					<div class="sub_section">
+						<h2 class="text-semibold text-teal-800">{{ trans('messages.settings') }}</h2>
 						<div class="row">
-							<div class="col-md-6">
+							<div class="col-md-6 hide">
 							
 								@include('helpers.form_control', ['type' => 'text', 'name' => 'email_subscribe', 'value' => $list->email_subscribe, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
 								
@@ -120,11 +120,23 @@
 									
 							</div>
 							<div class="col-md-6">
+								<div class="form-group checkbox-right-switch">
+									@include('helpers.form_control', [
+										'type' => 'checkbox',
+										'name' => 'subscribe_confirmation',
+										'value' => $list->subscribe_confirmation,
+										'options' => [false,true],
+										'help_class' => 'list',
+										'rules' => Acelle\Model\MailList::$rules
+									])
+									
+									@include('helpers.form_control', ['type' => 'checkbox', 'name' => 'unsubscribe_notification', 'value' => $list->unsubscribe_notification, 'options' => [false,true], 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
+								</div>
+							</div>
+							<div class="col-md-6">
 									<div class="form-group checkbox-right-switch">
 									
 										@include('helpers.form_control', ['type' => 'checkbox', 'name' => 'send_welcome_email', 'value' => $list->send_welcome_email, 'options' => [false,true], 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
-										
-										@include('helpers.form_control', ['type' => 'checkbox', 'name' => 'unsubscribe_notification', 'value' => $list->unsubscribe_notification, 'options' => [false,true], 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
 										
 									</div>
 							</div>

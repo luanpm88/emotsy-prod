@@ -32,7 +32,10 @@ class MailList extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'default_subject', 'from_email', 'from_name', 'remind_message', 'send_to', 'email_daily', 'email_subscribe', 'email_unsubscribe', 'send_welcome_email', 'unsubscribe_notification',
+        'name', 'default_subject', 'from_email', 'from_name',
+        'remind_message', 'send_to', 'email_daily', 'email_subscribe',
+        'email_unsubscribe', 'send_welcome_email', 'unsubscribe_notification',
+        'subscribe_confirmation'
     ];
 
     /**
@@ -917,5 +920,47 @@ class MailList extends Model
         
         // Action Log
         $list->log('export_success', $user, ['count' => $success, 'error' => $error]);
+    }
+    
+    /**
+     * Send subscription confirmation email to subscriber.
+     *
+     * @return void
+     */
+    public function sendSubscriptionConfirmationEmail($subscriber) {
+        $list = $this;
+        
+        $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
+        $send_page = \Acelle\Model\Page::findPage($list, $layout);
+        $send_page->renderContent(null, $subscriber);
+        $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
+    }
+    
+    /**
+     * Send subscription confirmation email to subscriber.
+     *
+     * @return void
+     */
+    public function sendSubscriptionWelcomeEmail($subscriber) {
+        $list = $this;
+        
+        $layout = \Acelle\Model\Layout::where('alias', 'sign_up_welcome_email')->first();
+        $send_page = \Acelle\Model\Page::findPage($list, $layout);
+        $send_page->renderContent(null, $subscriber);
+        $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
+    }
+    
+    /**
+     * Send unsubscription goodbye email to subscriber.
+     *
+     * @return void
+     */
+    public function sendUnsubscriptionNotificationEmail($subscriber) {
+        $list = $this;
+        
+        $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_goodbye_email')->first();
+        $send_page = \Acelle\Model\Page::findPage($list, $layout);
+        $send_page->renderContent(null, $subscriber);
+        $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
     }
 }

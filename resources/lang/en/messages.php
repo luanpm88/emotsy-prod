@@ -107,7 +107,7 @@ return [
     'phone' => 'Phone',
     'send_to' => 'Send to',
     'how_to_send_list_notification' => 'How to send notification',
-    'unsubscribe_notification' => 'Send unsubscribe confirmations to subscribers',
+    'unsubscribe_notification' => 'Send unsubscribe notification to subscribers',
     'list.unsubscribe_notification.help' => 'Send subscribers a final “Goodbye” email to let them know they have unsubscribed.',
     'email_daily' => 'Daily summary',
     'list.email_daily.help' => 'Get an end-of-the-day summary of subscribe and unsubscribe activity.<br />Additional email addresses must be separated by a comma.',
@@ -1102,5 +1102,7 @@ return [
     'clicked_emails_rate' => 'Clicked emails rate',
     'delete_language_confirm_warning' => 'If there are one or more users using this language, they will be changed to the default language.',
     'no_user' => 'There are no users',
+    'subscribe_confirmation' => 'Send subscription confirmation email',
+    'list.subscribe_confirmation.help' => 'When people subscribe to your list, send them a subscription confirmation email.',
 ];
 

@@ -626,4 +626,15 @@ class Subscriber extends Model
         $query = $query->orderBy('click_logs.created_at', 'desc')->first();
         return $query;
     }
+    
+    /**
+     * Update subscriber status.
+     *
+     * @param MailList $list
+     */
+    public function updateStatus($status)
+    {
+        $this->status = $status;
+        $this->save();
+    }
 }
