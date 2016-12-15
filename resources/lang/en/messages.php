@@ -1102,7 +1102,7 @@ return [
     'clicked_emails_rate' => 'Clicked emails rate',
     'delete_language_confirm_warning' => 'If there are one or more users using this language, they will be changed to the default language.',
     'no_user' => 'There are no users',
-    'subscribe_confirmation' => 'Send subscription confirmation email',
+    'subscribe_confirmation' => 'Send subscription confirmation email (Double Opt-In)',
     'list.subscribe_confirmation.help' => 'When people subscribe to your list, send them a subscription confirmation email.',
 ];
 
