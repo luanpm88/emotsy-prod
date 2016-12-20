@@ -157,7 +157,13 @@ class Subscriber extends Model
                     $fv->value = $value;
                 }
                 $fv->save();
-            }
+                
+                // update email attribute of subscriber
+                if($field->tag == 'EMAIL') {
+                    $this->email = $fv->value;
+                    $this->save();
+                }
+            }            
         }
     }
 
