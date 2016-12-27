@@ -34,7 +34,7 @@ class AutomatedCampaign extends Campaign
      * Start the auto campaign
      * 
      */
-    public function start($auto_trigger_id, $subscribers = []) {
+    public function start($auto_trigger_id = NULL, $subscribers = []) { // @todo NULL or empty array???
         try {
             MailLog::info('Starting auto campaign `'.$this->name.'`');
 
