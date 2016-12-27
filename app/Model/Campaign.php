@@ -197,7 +197,7 @@ class Campaign extends Model
      * Start the campaign
      * 
      */
-    public function start() {
+    public function start($event_id = NULL, $subscribers = NULL) {
         // Reserve: mark the campaign as sending, prevent other processes from sending it again
         try {
             $this->sending();
@@ -211,7 +211,7 @@ class Campaign extends Model
                 $this->runMultiProcesses();
             } else {
                 MailLog::warning('Cannot fork processes');
-                $this->run();
+                $this->run($event_id, $subscribers);
             }
             MailLog::info('Finish campaign `'.$this->name.'`');
 
@@ -360,7 +360,7 @@ class Campaign extends Model
      * Send Campaign
      * Iterate through all subscribers and send email.
      */
-    public function run($subscribers = NULL)
+    public function run($event_id, $subscribers)
     {
         // check if the method is trigger by a child process (triggered by startMultiProcess method)
         $asChildProcess = !($subscribers == NULL);
@@ -1857,9 +1857,7 @@ class Campaign extends Model
     public function queue()
     {
         $this->ready();
-
         $job = (new \Acelle\Jobs\RunCampaignJob($this))->delay($this->getDelayInSeconds());
-        
         dispatch($job);
     }
 
