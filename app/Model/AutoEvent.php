@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class AutoEvent extends Model
 {
@@ -552,5 +553,49 @@ class AutoEvent extends Model
     public function previousEvent()
     {
         return $this->belongsTo('Acelle\Model\AutoEvent', 'previous_event_id');
+    }
+
+    /**
+     * Check if the critera are met, then trigger the event
+     *
+     * @return NULL
+     */
+    public function check()
+    {
+        $method = $this->camelize('check-for-' . $this->event_type);
+        $this->$method();
+    }
+    
+    /**
+     * Check if the critera are met, then trigger the event
+     *
+     * @todo move to Helper instead
+     */
+    public function camelize($str)
+    {
+        return lcfirst(
+          implode('', array_map(
+              'ucfirst', array_map(
+                  'strtolower', explode(
+                  '-', $str))))
+        );
+    }
+
+    public function checkForSpecificDate()
+    {
+        $now = Carbon::now();
+        $event_date = Carbon::parse($this->getData()['date']);
+
+        var_dump($event_date);
+        var_dump($now);
+        var_dump($now->gte($event_date));
+    }
+
+    public function fire($subscribers = [])
+    {
+        $trigger = new AutoTrigger();
+        $trigger->subscriber_id = $subscribers;
+        $this->autoTriggers()->save();
+
     }
 }
