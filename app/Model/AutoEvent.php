@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Acelle\Library\Log as MailLog;
 
 class AutoEvent extends Model
 {
@@ -62,6 +63,16 @@ class AutoEvent extends Model
 	public function campaigns()
     {
         return $this->belongsToMany('Acelle\Model\Campaign', 'auto_campaigns');
+    }
+
+    /**
+     * Get campaign tracking logs.
+     *
+     * @return mixed
+     */
+    public function autoTriggers()
+    {
+        return $this->hasMany('Acelle\Model\AutoTrigger');
     }
 	
 	/**
@@ -580,22 +591,38 @@ class AutoEvent extends Model
                   '-', $str))))
         );
     }
-
+    
+    /**
+     * Check for specific-datetime events
+     *
+     * @return NULL
+     */
     public function checkForSpecificDate()
     {
         $now = Carbon::now();
         $event_date = Carbon::parse($this->getData()['date']);
-
-        var_dump($event_date);
-        var_dump($now);
-        var_dump($now->gte($event_date));
+        $checked = $now->gte($event_date);
+        
+        if ($checked) {
+            MailLog::info('Trigger sending automation `' . $this->automation->name . '`, event ID: ' . $this->id );
+            $this->fire();
+        }
     }
-
+    
+    /**
+     * Actually send automation email
+     *
+     * @return NULL
+     */
     public function fire($subscribers = [])
     {
+        // log a trigger record
         $trigger = new AutoTrigger();
-        $trigger->subscriber_id = $subscribers;
-        $this->autoTriggers()->save();
-
+        $this->autoTriggers()->save($trigger);
+        
+        // schedule the corresponding job
+        foreach($this->campaigns as $campaign) {
+            //$campaign->start($this->id);
+        };
     }
 }
