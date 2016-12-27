@@ -31,6 +31,10 @@ class Subscriber extends Model
     const STATUS_BLACKLISTED = 'blacklisted';
     const STATUS_SPAM_REPORTED = 'spam-reported';
 
+    public static $rules = [
+        'email' => ['required', 'email']
+    ];
+
     /**
      * The attributes that are mass assignable.
      *

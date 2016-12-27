@@ -327,11 +327,11 @@ $(function() {
         var mgs = $(this).attr("link-confirm");
         var url = $(this).attr("href");
         var method = $(this).attr("data-method");
-        
+
         if (typeof(method) === 'undefined' || method.trim() === '') {
             method = 'GET';
         }
-        
+
         $(this).attr("new-href", $(this).attr("href"));
         
         if($(this).parents(".list_actions").length) {
@@ -350,12 +350,20 @@ $(function() {
         }
         
         $('a[data-target="#link_confirm_model"]').trigger("click");
+        
         mgs = mgs.replace(":number", "<span class='text-bold text-teal-800'>" + count + "</span>");
         mgs = mgs.replace(":name", "<span class='text-bold text-teal-800'>" + $(this).html() + "</span>");
         
         $("#link_confirm_model h6").html(mgs);
         $(".link-confirm-button").attr("href", url);
         $(".link-confirm-button").attr("data-method", method);
+        
+        // set method
+        if(typeof(method) != 'undefined') {
+            $(".link-confirm-button").attr("data-method", method);
+        } else {
+            $(".link-confirm-button").removeAttr("data-method");
+        }
         
         e.stopImmediatePropagation();
         e.preventDefault();

@@ -471,7 +471,7 @@ class Language extends Model
         $result = [];
         foreach($arr as $key => $name) {
             $result[] = [
-                'text' => $name . ' / ' . strtoupper($key),
+                'text' => strtoupper($key) . ' / ' . $name,
                 'value' => $key
             ];
         }

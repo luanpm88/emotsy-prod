@@ -21,19 +21,7 @@ class ImportExportJob extends SystemJob
         $this->mailList = $mailList;
         $this->user = $user;
         $systemJob = $this->getSystemJob();
-        
-        // first init data
-        $systemJob->data = json_encode([
-            "mail_list_uid" => $mailList->uid,
-            "status" => "new",
-            "message" => trans('messages.starting'),
-            "total" => 0,
-            "success" => 0,
-            "error" => 0,
-            "percent" => 0
-        ]);
-        $systemJob->save();
-        
+
         // folder for job file
         $path = storage_path('job/');
     
@@ -69,7 +57,7 @@ class ImportExportJob extends SystemJob
     /**
      * Get job files path.
      *
-     * @return void
+     * @return string file path
      */
     public function getPath() {
         return $this->path;

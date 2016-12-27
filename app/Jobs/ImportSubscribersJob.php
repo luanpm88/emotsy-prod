@@ -2,9 +2,13 @@
 
 namespace Acelle\Jobs;
 
+use Acelle\Model\SystemJob;
+use Acelle\Library\Log as CustomLog;
+
 class ImportSubscribersJob extends ImportExportJob
 {
-    protected $filename;
+    // @todo this should better be a constant
+    protected $file;
     
     /**
      * Create a new job instance.
@@ -17,18 +21,53 @@ class ImportSubscribersJob extends ImportExportJob
         parent::__construct($mailList, $user);
         
         // Upload csv
-        $this->filename = 'data.csv';
-        $file->move($this->path, $this->filename);
+        $this->file = join_paths($this->path, 'data.csv');
+        rename($file, $this->file);
+        chmod($this->file, 0775);
+        
+        // Update system job status
+        // init the status
+        $this->updateStatus([
+            'mail_list_uid' => $mailList->uid,
+            'user_id' => $user->id,
+            'status' => \Acelle\Model\MailList::IMPORT_STATUS_NEW,
+            'error_message' => '',
+            'total' => 0,
+            'processed' => 0,
+        ]);
     }
     
     /**
      * Get import file name.
      *
+     * @return string file path
+     */
+    public function getFile()
+    {
+        return $this->file;
+    }
+
+    /**
+     * Get import file name.
+     *
      * @return void
      */
-    public function getFilename()
+    public function updateStatus(array $data)
     {
-        return $this->filename;
+        $systemJobModel = $this->getSystemJob();
+        $json = ($systemJobModel->data) ? json_decode($systemJobModel->data, true) : [ 'log' => $this->getLog() ];
+        $systemJobModel->data = json_encode(array_merge($json, $data));
+        $systemJobModel->save();
+    }
+
+    /**
+     * Get import log file
+     *
+     * @return string file path
+     */
+    public function getLog()
+    {
+        return join_paths($this->getPath(), 'import.log');
     }
 
     /**
@@ -38,23 +77,18 @@ class ImportSubscribersJob extends ImportExportJob
      */
     public function handle()
     {
-        try {
-            $job = $this;
-            $job->mailList->import($job->user, $job);
-        } catch (\Exception $e) {
-            $systemJob = $this->getSystemJob();
-            
-            // set failed
-            $systemJob->data = json_encode([
-                "mail_list_uid" => $job->mailList->uid,
-                "status" => "failed",
-                "message" => $e->getMessage(),
-                "total" => 0,
-                "success" => 0,
-                "error" => 0,
-                "percent" => 0
-            ]);
-            $systemJob->save();
-        }
+        $this->mailList->import2($this->file, $this->user, $this);
+    }
+
+    /**
+     * Get the job's logger
+     *
+     * @return object job logger
+     */
+    public function getLogger()
+    {
+        $log_name = 'importer';
+        $logger = CustomLog::create( $this->getLog(), $log_name );
+        return $logger;
     }
 }

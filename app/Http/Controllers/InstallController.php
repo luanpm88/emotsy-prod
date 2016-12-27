@@ -438,6 +438,12 @@ class InstallController extends Controller
                 'name' => 'PHP Fileinfo extension',
                 'check' => extension_loaded('fileinfo'),
                 'note' => 'PHP Fileinfo extension is required.',
+            ],
+            [
+                'type' => 'requirement',
+                'name' => 'PHP CURL extension',
+                'check' => extension_loaded('curl'),
+                'note' => 'PHP CURL extension is required.',
             ],    
             [
                 'type' => 'permission',

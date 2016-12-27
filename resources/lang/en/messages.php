@@ -1234,6 +1234,14 @@ return [
     'after' => 'after',
     'trigger_occurred' => 'trigger occurred',
     'none' => 'None',
+    'Start_importing_for_list_uid' => 'Start importing for mail list UID: :uid',
+    'Finish_importing_for_list_uid' => 'Finish importing for mail list UID: :uid',
+    'import_missing_header_field' => 'The following fields are required: :fields',
+    'Failed' => 'Failed',
+    'system_jobs.cancelled' => 'One or more jobs were successfully cancelled',
+    'cancel_system_jobs_confirm' => 'You\'re about to cancel :number job(s).',
+    'cancelled' => 'cancelled',
+    'import_failed_message' => '<span class="text-danger">:error</span>',
 ];
 
 

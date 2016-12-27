@@ -39,6 +39,7 @@ class Campaign extends Model
     const STATUS_SENDING = 'sending';
     const STATUS_ERROR = 'error';
     const STATUS_DONE = 'done';
+    const STATUS_PAUSED = 'paused';
 
     // Campaign types
     const TYPE_REGULAR = 'regular';
@@ -551,7 +552,7 @@ class Campaign extends Model
         $openTrackingBaseURL = Setting::get('url_open_track');
         $tracking_url = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $openTrackingBaseURL);
 
-        return $body.'<img src="'.$tracking_url.'" width="0" height="0" style="visibility:hidden" />';
+        return $body.'<img src="'.$tracking_url.'" width="0" height="0" alt="" style="visibility:hidden" />';
     }
 
     /**
