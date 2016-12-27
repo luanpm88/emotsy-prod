@@ -91,11 +91,19 @@ class Campaign extends Model
     }
     
     /**
-     * Get the auto event of the campaign.
+     * Get the auto events of the campaign.
      */
     public function autoEvents()
     {
         return $this->belongsToMany('Acelle\Model\AutoEvent', 'auto_campaigns');
+    }
+    
+    /**
+     * Get the auto event of the campaign.
+     */
+    public function autoEvent()
+    {
+        return $this->autoEvents()->first();
     }
 
     /**

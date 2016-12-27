@@ -3,10 +3,10 @@
 @section('title', trans('messages.campaigns') . " - " . trans('messages.confirm'))
 	
 @section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/anytime.min.js') }}"></script>
-	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
 		
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
 @endsection
 
 @section('page_header')	
@@ -28,5 +28,28 @@
 
 @section('content')
     
+	<form class="listing-form"
+		data-url="{{ action('AutomationController@overviewCampaignsList', $automation->uid) }}"
+		per-page="{{ Acelle\Model\AutomatedCampaign::$itemsPerPage }}"
+	>				
+		<div class="row top-list-controls mt-0">
+			<div class="col-md-10">
+				@if ($campaigns->count() >= 0)					
+					<div class="filter-box">
+						<span class="text-nowrap">
+							<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+							<i class="icon-search4 keyword_search_button"></i>
+						</span>
+					</div>
+				@endif
+			</div>
+		</div>
+		
+		<div class="pml-table-container">
+			
+			
+			
+		</div>
+	</form>
         
 @endsection

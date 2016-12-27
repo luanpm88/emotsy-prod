@@ -88,6 +88,26 @@ class Automation extends Model
         return $this->hasMany('Acelle\Model\AutoEvent');
     }
     
+    public function getCampaigns($request=NULL)
+    {
+        $query = Campaign::select('campaigns.*')
+			->leftJoin('auto_campaigns', 'auto_campaigns.campaign_id', '=', 'campaigns.id')
+			->leftJoin('auto_events', 'auto_campaigns.auto_event_id', '=', 'auto_events.id')
+			->leftJoin('automations', 'auto_events.automation_id', '=', 'automations.id')
+            ->where('automations.id', '=', $this->id);
+			
+		// Keyword
+		if(isset($request)) {
+			if (!empty(trim($request->keyword))) {
+				$query = $query->where('campaigns.name', 'like', '%'.$request->keyword.'%');
+			}
+		}
+			
+		$query = $query->orderBy('auto_events.created_at', 'asc');
+		
+		return $query;
+    }
+    
     /**
      * The validation rules for automation.
      *

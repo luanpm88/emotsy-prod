@@ -6,7 +6,7 @@
     </li>
     <li class="{{ $step == "campaigns" ? "active" : "" }}">
 		<a href="{{ action('AutomationController@overviewCampaigns', $automation->uid) }}">
-			<i class="icon-envelop"></i> {{ trans('messages.campaigns') }}
+			<i class="icon-envelop"></i> {{ trans('messages.emails') }}
 		</a>
 	</li>
 </ul>

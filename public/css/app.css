@@ -1452,3 +1452,10 @@ ul.automation-confirm li.child-row h5 {
 .auto-event-form-line .has-error .help-block {
     display: none;
 }
+.auto-event-substr {
+    white-space: nowrap;
+    max-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+}

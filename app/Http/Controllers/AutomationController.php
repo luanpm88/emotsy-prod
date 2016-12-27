@@ -403,6 +403,7 @@ class AutomationController extends Controller
     public function overviewCampaigns(Request $request, $uid)
     {
         $automation = \Acelle\Model\Automation::findByUid($uid);
+        $campaigns = $automation->getCampaigns();
         
         // authorize
         if (\Gate::denies('overview', $automation)) {
@@ -410,7 +411,32 @@ class AutomationController extends Controller
         }
 
         return view('automations.overview.campaigns', [
-            'automation' => $automation
+            'automation' => $automation,
+            'campaigns' => $campaigns,
+        ]);
+    }
+    
+    /**
+     * Campaigns listing overview automation.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param String                   $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function overviewCampaignsList(Request $request, $uid)
+    {
+        $automation = \Acelle\Model\Automation::findByUid($uid);
+        $campaigns = $automation->getCampaigns($request)->paginate($request->per_page);
+        
+        // authorize
+        if (\Gate::denies('overview', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automations.overview._campaigns_list', [
+            'automation' => $automation,
+            'campaigns' => $campaigns,
         ]);
     }
 }
