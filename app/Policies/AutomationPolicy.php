@@ -47,4 +47,9 @@ class AutomationPolicy
     {
         return $automation->user_id == $user->id && $automation->isValid();
     }
+    
+    public function overview(\Acelle\Model\User $user, \Acelle\Model\Automation $automation)
+    {
+        return $automation->user_id == $user->id && $automation->isValid();
+    }
 }

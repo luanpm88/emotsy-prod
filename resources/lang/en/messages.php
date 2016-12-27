@@ -1242,6 +1242,7 @@ return [
     'cancel_system_jobs_confirm' => 'You\'re about to cancel :number job(s).',
     'cancelled' => 'cancelled',
     'import_failed_message' => '<span class="text-danger">:error</span>',
+    'workflow_overview' => 'Workflow overview',
 ];
 
 

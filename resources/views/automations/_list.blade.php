@@ -53,6 +53,11 @@
 											@if (\Gate::allows('update', $automation))
 												<a href="{{ action('AutomationController@edit', $automation->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 											@endif
+											@if (\Gate::allows('overview', $automation))
+												<a data-popup="tooltip" title="{{ trans('messages.overview') }}" href="{{ action('AutomationController@overviewWorkflow', $automation->uid) }}" type="button" class="btn bg-teal-800 btn-icon">
+													<i class="icon-stats-growth mr-0 pr-0"></i>
+												</a>
+											@endif
 											@if (\Gate::allows('delete', $automation))
 												<div class="btn-group">										
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>

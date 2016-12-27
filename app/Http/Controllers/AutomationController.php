@@ -367,4 +367,50 @@ class AutomationController extends Controller
 
         echo trans('messages.automations.custom_order.updated');
     }
+    
+    /**
+     * Workflow overview automation.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param String                   $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function overviewWorkflow(Request $request, $uid)
+    {
+        $automation = \Acelle\Model\Automation::findByUid($uid);
+        $first_event = $automation->getInitEvent();
+        
+        // authorize
+        if (\Gate::denies('overview', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automations.overview.workflow', [
+            'automation' => $automation,
+            'first_event' => $first_event
+        ]);
+    }
+    
+    /**
+     * Campaigns overview automation.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param String                   $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function overviewCampaigns(Request $request, $uid)
+    {
+        $automation = \Acelle\Model\Automation::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('overview', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automations.overview.campaigns', [
+            'automation' => $automation
+        ]);
+    }
 }
