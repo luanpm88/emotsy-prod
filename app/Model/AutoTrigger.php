@@ -28,7 +28,7 @@ use Carbon\Carbon;
 class AutoTrigger extends Model
 {
     protected $fillable = [
-        'created_at'
+        'start_at'
     ];
 
     /**

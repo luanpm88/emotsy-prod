@@ -27,6 +27,7 @@ use Carbon\Carbon;
 use Acelle\Model\Campaign;
 use Acelle\Jobs\RunAutomatedCampaignJob;
 use Acelle\Library\Log as MailLog;
+use Acelle\Library\StringHelper;
 
 class AutomatedCampaign extends Campaign
 {
@@ -102,9 +103,6 @@ class AutomatedCampaign extends Campaign
                 $this->trackMessage($response, $subscriber, $server, $msgId);
             }
             
-            // mark the campaign as done
-            $this->done();
-            
             // record quota usage
             $this->user->saveQuotaUsageInfo();
         } catch (\Exception $e) {
@@ -116,6 +114,61 @@ class AutomatedCampaign extends Campaign
             // but SNS is only made once when the server is initiated
             //     SendingServer::resetServerPools();
         }
+    }
+
+    /**
+     * Transform Tags
+     * Transform tags to actual values before sending.
+     */
+    public function tagMessage($message, $subscriber, $msgId)
+    {
+        $list = $this->trigger->autoEvent->automation->mailList;
+
+        $tags = array(
+            'SUBSCRIBER_EMAIL' => $subscriber->email,
+            'CAMPAIGN_NAME' => $this->name,
+            'CAMPAIGN_UID' => $this->uid,
+            'CAMPAIGN_SUBJECT' => $this->subject,
+            'CAMPAIGN_FROM_EMAIL' => $this->from_email,
+            'CAMPAIGN_FROM_NAME' => $this->from_name,
+            'CAMPAIGN_REPLY_TO' => $this->reply_to,
+            'SUBSCRIBER_UID' => $subscriber->uid,
+            'CURRENT_YEAR' => date('Y'),
+            'CURRENT_MONTH' => date('m'),
+            'CURRENT_DAY' => date('d'),
+            'UNSUBSCRIBE_URL' => str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), Setting::get('url_unsubscribe')),
+            'CONTACT_NAME' => $list->contact->company,
+            'CONTACT_COUNTRY' => $list->contact->country->name,
+            'CONTACT_STATE' => $list->contact->state,
+            'CONTACT_CITY' => $list->contact->city,
+            'CONTACT_ADDRESS_1' => $list->contact->address_1,
+            'CONTACT_ADDRESS_2' => $list->contact->address_2,
+            'CONTACT_PHONE' => $list->contact->phone,
+            'CONTACT_URL' => $list->contact->url,
+            'CONTACT_EMAIL' => $list->contact->email,
+            'LIST_NAME' => $list->name,
+            'LIST_SUBJECT' => $list->default_subject,
+            'LIST_FROM_NAME' => $list->from_name,
+            'LIST_FROM_EMAIL' => $list->from_email,
+        );
+
+        // Update tags layout
+        foreach ($tags as $tag => $value) {
+            $message = str_replace('{'.$tag.'}', $value, $message);
+        }
+
+        if (!$this->isStdClassSubscriber($subscriber)) {
+            // in case of actually sending campaign
+            foreach ($this->trigger->autoEvent->automation->mailList->fields as $field) {
+                $message = str_replace('{SUBSCRIBER_'.$field->tag.'}', $subscriber->getValueByField($field), $message);
+            }
+        } else {
+            // in case of sending test email
+            // @todo how to manage such tags?
+            $message = str_replace('{SUBSCRIBER_EMAIL}', $subscriber->email, $message);
+        }
+
+        return $message;
     }
 
     /**
