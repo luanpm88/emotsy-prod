@@ -617,7 +617,7 @@ class AutoEvent extends Model
     public function fire($subscribers = [])
     {
         // log a trigger record
-        $trigger = new AutoTrigger();
+        $trigger = new AutoTrigger(['start_at' => Carbon::now()]);
         $this->autoTriggers()->save($trigger);
         
         // schedule the corresponding job

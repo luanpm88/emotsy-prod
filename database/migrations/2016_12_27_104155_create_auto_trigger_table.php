@@ -15,6 +15,9 @@ class CreateAutoTriggerTable extends Migration
         Schema::create('auto_triggers', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('auto_event_id')->unsigned();
+            $table->dateTime('start_at');
+            $table->dateTime('finish_at');
+            $table->text('last_error');
             $table->timestamps();
             
             $table->foreign('auto_event_id')->references('id')->on('auto_events')->onDelete('cascade');

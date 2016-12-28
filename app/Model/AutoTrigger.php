@@ -23,8 +23,26 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Carbon\Carbon;
 
 class AutoTrigger extends Model
 {
+    protected $fillable = [
+        'created_at'
+    ];
 
+    /**
+     * Associations.
+     *
+     * @var object | collect
+     */
+    public function autoEvent()
+    {
+        return $this->belongsTo('Acelle\Model\AutoEvent');
+    }
+
+    public function setFinished() {
+        $this->finish_at = Carbon::now();
+        $this->save();
+    }
 }

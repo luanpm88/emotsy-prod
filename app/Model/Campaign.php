@@ -219,7 +219,7 @@ class Campaign extends Model
                 $this->runMultiProcesses();
             } else {
                 MailLog::warning('Cannot fork processes');
-                $this->run($event_id, $subscribers);
+                $this->run($subscribers);
             }
             MailLog::info('Finish campaign `'.$this->name.'`');
 
@@ -262,7 +262,7 @@ class Campaign extends Model
     /**
      * Mark the campaign as 'done' or 'sent'.
      */
-    public function error($error = NULL)
+    public function error($error = null)
     {
         $this->status = self::STATUS_ERROR;
         $this->last_error = $error;
@@ -368,10 +368,10 @@ class Campaign extends Model
      * Send Campaign
      * Iterate through all subscribers and send email.
      */
-    public function run($event_id, $subscribers)
+    public function run($subscribers = null)
     {
         // check if the method is trigger by a child process (triggered by startMultiProcess method)
-        $asChildProcess = !($subscribers == NULL);
+        $asChildProcess = !($subscribers == null);
         
         // try/catch to make sure child process does not stop without reporting any error
         try {
@@ -427,7 +427,7 @@ class Campaign extends Model
      * Log delivery message, used for later tracking.
      *
      */
-    private function trackMessage($response, $subscriber, $server, $msgId)
+    public function trackMessage($response, $subscriber, $server, $msgId)
     {
         $params = array_merge(array(
                 'campaign_id' => $this->id,
@@ -472,7 +472,7 @@ class Campaign extends Model
      * Transform Tags
      * Transform tags to actual values before sending.
      */
-    private function tagMessage($message, $subscriber, $msgId)
+    public function tagMessage($message, $subscriber, $msgId)
     {
         // @todo consider a solution for UNSUBSCRIBE_URL for test subscriber (also for other tags like: UPDATE_PROFILE_URL)
 
@@ -634,7 +634,7 @@ class Campaign extends Model
      *
      * @return MIME text message
      */
-    private function prepareEmail($subscriber, $server)
+    public function prepareEmail($subscriber, $server)
     {
         // build the message
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
@@ -679,7 +679,7 @@ class Campaign extends Model
      *
      * @return mixed
      */
-    private function findSendingDomain($email)
+    public function findSendingDomain($email)
     {
         $domain = substr(strrchr($email, '@'), 1);
 
@@ -691,7 +691,7 @@ class Campaign extends Model
      *
      * @return mixed
      */
-    private function sign($message)
+    public function sign($message)
     {
         $sendingDomain = $this->findSendingDomain($this->from_email);
 
@@ -1767,7 +1767,7 @@ class Campaign extends Model
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
         $copy->status = self::STATUS_NEW;
-        $copy->run_at = NULL;
+        $copy->run_at = null;
         $copy->custom_order = 0;
         $copy->save();
     }
@@ -1915,7 +1915,7 @@ class Campaign extends Model
      *
      * @param array $subscriber
      */
-    private function createStdClassSubscriber($subscriber)
+    public function createStdClassSubscriber($subscriber)
     {
         // default attributes that are required
         $jsonObj = [
@@ -1934,7 +1934,7 @@ class Campaign extends Model
      *
      * @param Object $object
      */
-    private function isStdClassSubscriber($object) {
+    public function isStdClassSubscriber($object) {
         return (get_class($object) == 'stdClass');
     }
     
