@@ -205,7 +205,7 @@ class Campaign extends Model
      * Start the campaign
      * 
      */
-    public function start($event_id = NULL, $subscribers = NULL) {
+    public function start($trigger = null, $subscribers = null) {
         // Reserve: mark the campaign as sending, prevent other processes from sending it again
         try {
             $this->sending();
@@ -1862,7 +1862,7 @@ class Campaign extends Model
      * Queue campaign for sending
      *
      */
-    public function queue()
+    public function queue($trigger = null, $subscribers = null, $delay = 0)
     {
         $this->ready();
         $job = (new \Acelle\Jobs\RunCampaignJob($this))->delay($this->getDelayInSeconds());

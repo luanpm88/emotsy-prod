@@ -25,6 +25,8 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Acelle\Model\Campaign;
+use Acelle\Jobs\RunAutomatedCampaignJob;
+use Acelle\Library\Log as MailLog;
 
 class AutomatedCampaign extends Campaign
 {
@@ -34,7 +36,7 @@ class AutomatedCampaign extends Campaign
      * Start the auto campaign
      * 
      */
-    public function start($auto_trigger_id = NULL, $subscribers = []) { // @todo NULL or empty array???
+    public function start($trigger = null, $subscribers = null) {
         try {
             MailLog::info('Starting auto campaign `'.$this->name.'`');
 
@@ -42,7 +44,7 @@ class AutomatedCampaign extends Campaign
             self::resetMaxExecutionTime();
 
             // @todo now only run as single process
-            $this->run($auto_trigger_id, $subscribers);
+            $this->run($trigger, $subscribers);
 
             MailLog::info('Finish campaign `'.$this->name.'`');
         } catch (\Exception $ex) {
@@ -52,7 +54,7 @@ class AutomatedCampaign extends Campaign
         }
     }
 
-    public function run($auto_trigger_id, $subscribers)
+    public function run($trigger, $subscribers)
     {
         try {
             $i = 0;
@@ -72,14 +74,14 @@ class AutomatedCampaign extends Campaign
 
                 $response = $server->send($message, array(
                     'from_email' => $this->from_email,
-                    'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly (not in MIME message)
+                    'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly as parameter (not in MIME message)
                     'campaign' => $this,
                     'subscriber' => $subscriber,
                     'msgId' => $msgId
                 ));
                 
                 // track the auto trigger id
-                $response['auto_trigger_id'] = $auto_trigger_id;
+                $response['auto_trigger_id'] = $trigger->id;
 
                 $this->trackMessage($response, $subscriber, $server, $msgId);
             }
@@ -104,9 +106,10 @@ class AutomatedCampaign extends Campaign
      * Queue campaign for sending
      *
      */
-    public function queue($delay = 0)
+    public function queue($trigger = null, $subscribers = null, $delay = 0)
     {
-        $job = (new \Acelle\Jobs\RunAutomatedCampaignJob($this))->delay($delay);
+        MailLog::info('Automated campaign queued `' . $this->name . '`, trigger ID: ' . $trigger->id );
+        $job = (new RunAutomatedCampaignJob($this, $trigger, $subscribers))->delay($delay);
         dispatch($job);
     }
 }

@@ -7,6 +7,8 @@ use Acelle\Library\Log as MailLog;
 class RunAutomatedCampaignJob extends CampaignJob
 {
     protected $campaign;
+    protected $trigger;
+    protected $subscribers;
 
     /**
      * Create a new job instance.
@@ -15,13 +17,15 @@ class RunAutomatedCampaignJob extends CampaignJob
      * 
      * @return void
      */
-    public function __construct($campaign, $auto_event_id)
+    public function __construct($campaign, $trigger, $subscribers = null)
     {
         $this->campaign = $campaign;
+        $this->trigger = $trigger;
+        $this->subscribers = $subscribers;
         parent::__construct();
 
         // This line must go after the constructor
-        $this->linkJobToCampaign();
+        $this->linkJobToTrigger();
     }
 
     /**
@@ -29,10 +33,10 @@ class RunAutomatedCampaignJob extends CampaignJob
      *
      * @return void
      */
-    public function linkJobToCampaign()
+    public function linkJobToTrigger()
     {
         $systemJob = $this->getSystemJob();
-        $systemJob->data = $this->campaign->id;
+        $systemJob->data = $this->trigger->id;
         $systemJob->save();
     }
 
@@ -44,6 +48,6 @@ class RunAutomatedCampaignJob extends CampaignJob
     public function handle()
     {
         // start campaign
-        $this->campaign->start();
+        $this->campaign->start($this->trigger, $this->subscribers);
     }
 }

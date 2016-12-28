@@ -13,6 +13,8 @@ use Acelle\Model\Subscriber;
 use Acelle\Model\TrackingLog;
 use Acelle\Model\AutoEvent;
 use Acelle\Model\SendingServer;
+use Acelle\Model\AutoTrigger;
+
 use Acelle\Model\SendingServerElasticEmailApi;
 use Acelle\Model\SendingServerElasticEmail;
 use Illuminate\Database\Eloquent\Model;
@@ -53,4 +55,27 @@ class TestCampaign extends Command
         $e = AutoEvent::first();
         $e->check();
     }
+
+    public function testSmtp() {
+        $transport = \Swift_SmtpTransport::newInstance('smtp.elasticemail.com', 2525, 'tls')
+          ->setUsername('asish@tsjl.in')
+          ->setPassword('266449d5-8c3f-4e9c-bb80-12666bf16dcb')
+          ;
+
+        // Create the Mailer using your created Transport
+        $mailer = \Swift_Mailer::newInstance($transport);
+
+        // Create a message
+        $message = \Swift_Message::newInstance('Wonderful Subject')
+          ->setFrom(array('asish@tsjl.in' => 'Asish'))
+          ->setTo(array('louisitvn@gmail.com' => 'Louis'))
+          ->setBody('Here is the message itself')
+          ;
+
+        // Send the message
+        $result = $mailer->send($message);
+
+        var_dump($result);
+    }
 }
+

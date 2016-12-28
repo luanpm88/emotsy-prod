@@ -622,7 +622,7 @@ class AutoEvent extends Model
         
         // schedule the corresponding job
         foreach($this->campaigns as $campaign) {
-            //$campaign->start($this->id);
+            $campaign->queue($trigger);
         };
     }
 }
