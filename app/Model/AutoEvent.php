@@ -64,6 +64,11 @@ class AutoEvent extends Model
     {
         return $this->belongsToMany('Acelle\Model\AutomatedCampaign', 'auto_campaigns', 'auto_event_id', 'campaign_id');
     }
+	
+	public function originCampaigns()
+    {
+        return $this->belongsToMany('Acelle\Model\Campaign', 'auto_campaigns', 'auto_event_id', 'campaign_id');
+    }
 
     /**
      * Get campaign tracking logs.
@@ -144,13 +149,7 @@ class AutoEvent extends Model
     public function createFirstCampaign()
     {
         if(!$this->campaigns()->count()) {
-			$campaign = new Campaign([
-				'name' => 'Untitled automation email'
-			]);
-			$campaign->user_id = $this->automation->user_id;
-			$campaign->is_auto = true;
-			
-			$this->campaigns()->save($campaign);
+			$this->addCampaign();			
 		}
     }
 	
@@ -538,6 +537,8 @@ class AutoEvent extends Model
         $campaign = new Campaign([
 			'name' => 'Untitled automation email'
 		]);
+		$campaign->mail_list_id = $this->automation->mail_list_id;
+		$campaign->segment_id = $this->automation->segment_id;
 		$campaign->user_id = $this->automation->user_id;
 		$campaign->is_auto = true;
 		

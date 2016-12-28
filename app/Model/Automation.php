@@ -28,7 +28,7 @@ class Automation extends Model
 {
     // Automation status
     const STATUS_NEW = 'new';
-    const STATUS_READY = 'ready'; // equiv. to 'queue'
+    const STATUS_ACTIVE = 'active'; // equiv. to 'queue'
     
     /**
      * Items per page.
@@ -65,6 +65,17 @@ class Automation extends Model
             // Update custom order
             Automation::select('custom_order')->increment('custom_order', 1);
             $automation->custom_order = 0;
+        });
+		
+		// When automation saving.
+        static::saving(function ($automation) {
+            // Update mailist and segment for all campaigns
+			$campaigns = $automation->getCampaigns()->get();
+			foreach($campaigns as $campaign) {
+				$campaign->mail_list_id = $automation->mail_list_id;
+				$campaign->segment_id = $automation->segment_id;
+				$campaign->save();
+			}
         });
     }
     
@@ -150,7 +161,9 @@ class Automation extends Model
         // Fill segment with segment_uid
         if(!empty($params["segment_uid"])) {
             $this->segment_id = Segment::findByUid($params["segment_uid"])->id;
-        }
+        } elseif(!empty($params)) {
+			$this->segment_id = null;
+		}
     }
     
     /**
@@ -340,9 +353,9 @@ class Automation extends Model
      *
      * @return void
      */
-    public function setReady()
+    public function setActive()
     {
-        $this->status = Automation::STATUS_READY;
+        $this->status = Automation::STATUS_ACTIVE;
         $this->save();
     }
     

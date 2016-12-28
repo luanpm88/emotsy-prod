@@ -33,6 +33,14 @@ class AutomatedCampaign extends Campaign
 {
     protected $table = 'campaigns';
     protected $trigger = null;
+    
+    /**
+     * Bootstrap any application services.
+     */
+    public static function boot()
+    {
+        parent::boot();
+    }
 
     /**
      * Start the auto campaign

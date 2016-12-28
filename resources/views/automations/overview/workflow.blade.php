@@ -14,7 +14,6 @@
 				<ul class="breadcrumb breadcrumb-caret position-right">
 					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 					<li><a href="{{ action("AutomationController@index") }}">{{ trans('messages.automations') }}</a></li>
-					<li>{{ trans('messages.overview') }}</li>
 				</ul>
 				<h1>
 					<span class="text-semibold"><i class="icon-alarm-check"></i> {{ $automation->name }}</span>
@@ -28,24 +27,54 @@
 
 @section('content')
     
-        <div class="confirm-campaign-box">
+        <div class="overview-campaign-box">
                 <form action="{{ action('AutomationController@confirm', $automation->uid) }}" method="POST" class="form-validate-jqueryz">
                     {{ csrf_field() }}
                     
                     <div class="head">
-                        <h2 class="text-semibold mb-5">{{ trans('messages.workflow_overview') }}</h2>
+                        <h2 class="text-semibold mb-0 mt-0 text-teal-800">{{ trans('messages.workflow_overview') }}</h2>
                     </div>
                     
                     <ul class="modern-listing automation-confirm">
                         <li>
-                            <h4>{{ trans('messages.recipients') }}</h4>
-                            <p>
-                                @if (is_object($automation->segment))
-                                    {{ $automation->mailList->name }} . {{ $automation->segment->name }}: {{ $automation->subscribers()->count() }} {{ strtolower(trans('messages.recipients')) }}
-                                @elseif (is_object($automation->mailList))
-                                    {{ $automation->mailList->name }}: {{ $automation->subscribers()->count() }} {{ strtolower(trans('messages.recipients')) }}
-                                @endif
-                            </p>
+							<table class="table">
+								<tr>
+									<td>
+										<h4>
+											{{ trans('messages.auto_event_' . $automation->getInitEvent()->event_type) }}
+										</h4>
+										{{ trans('messages.type') }}
+									</td>
+									<td>
+										<h4>
+											@if (is_object($automation->segment))
+												{{ $automation->mailList->name }} . {{ $automation->segment->name }}: {{ $automation->subscribers()->count() }} {{ strtolower(trans('messages.recipients')) }}
+											@elseif (is_object($automation->mailList))
+												{{ $automation->mailList->name }}: {{ $automation->subscribers()->count() }} {{ strtolower(trans('messages.recipients')) }}
+											@endif
+										</h4>
+										{{ trans('messages.recipients') }}
+									</td>
+									<td>
+										<h4>
+											{{ $automation->autoEvents()->count() }}
+										</h4>
+										{{ trans('messages.triggers') }}
+									</td>
+									<td>
+										<h4>
+											{{ $automation->getCampaigns()->count() }}
+										</h4>
+										{{ trans('messages.emails') }}
+									</td>
+									<td>
+										<h4>
+											{{ Tool::formatDateTime($automation->created_at) }}
+										</h4>
+										{{ trans('messages.created_at') }}
+									</td>
+								</tr>
+							</table>								
                         </li>
 						<li>                            
                             <h4><numbericon>1</numbericon> {{ trans('messages.trigger_workflow_when_the_following_conditions_are_met') }}</h4>
@@ -54,7 +83,7 @@
 							</p>
                         </li>
 						@if (isset($first_event->id))
-                            @foreach($first_event->campaigns as $key => $campaign)
+                            @foreach($first_event->originCampaigns as $key => $campaign)
                                 @include('automations.overview._campaign_row', ['event' => $first_event])
                             @endforeach
 						@endif
@@ -66,7 +95,7 @@
 									{{ trans('messages.follow_up') }}
 								</p>
 							</li>
-							@foreach($auto_event->campaigns as $key => $campaign)
+							@foreach($auto_event->originCampaigns as $key => $campaign)
                                 @include('automations.overview._campaign_row', ['event' => $auto_event])
                             @endforeach
 						@endforeach

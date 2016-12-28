@@ -27,8 +27,9 @@
 												</a>
 											</h5>
 											@if ($automation->getInitEvent()->displayMessage())
-												<span class="text-muted">{!! $automation->getInitEvent()->displayMessage() !!}</span>
-												<br />
+												<span class="text-mutedz">
+													<span data-popup="tooltip" title="{{ strip_tags($automation->getInitEvent()->displayMessage()) }}" class="auto-event-substr">{!! $automation->getInitEvent()->displayMessage() !!}</span>
+												</span>
 											@endif
 											@if ($automation->subscribers()->count())												
 												@if (is_object($automation->segment))
@@ -44,6 +45,25 @@
 											</h5>
 											<span class="text-muted2">{{ trans('messages.type') }}</span>
 										</td>
+										<td>
+											<h5 class="no-margin text-teal-800 stat-num">
+												{{ $automation->autoEvents()->count() }}
+											</h5>
+											<span class="text-muted2">{{ trans('messages.triggers') }}</span>
+										</td>
+										<td>
+											<h5 class="no-margin text-teal-800 stat-num">
+												{{ $automation->getCampaigns()->count() }}
+											</h5>
+											<span class="text-muted2">{{ trans('messages.emails') }}</span>
+										</td>
+										<td>
+											<span class="no-margin text-bold">
+												{{ Tool::formatDateTime($automation->created_at) }}
+											</span>
+											<br />
+											<span class="text-muted">{{ trans('messages.created_at') }}</span>
+										</td>
 										<td class="text-center">
 											<span class="text-muted2 list-status">
 												<span class="label label-flat bg-{{ $automation->status }}">{{ $automation->status }}</span>
@@ -51,7 +71,7 @@
 										</td>
 										<td class="text-right">
 											@if (\Gate::allows('update', $automation))
-												<a href="{{ action('AutomationController@edit', $automation->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+												<a data-popup="tooltip" title="{{ trans('messages.edit') }}" href="{{ action('AutomationController@edit', $automation->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i></a>
 											@endif
 											@if (\Gate::allows('overview', $automation))
 												<a data-popup="tooltip" title="{{ trans('messages.overview') }}" href="{{ action('AutomationController@overviewWorkflow', $automation->uid) }}" type="button" class="btn bg-teal-800 btn-icon">

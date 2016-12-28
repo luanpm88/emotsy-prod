@@ -1459,3 +1459,24 @@ ul.automation-confirm li.child-row h5 {
     text-overflow: ellipsis;
     display: block;
 }
+.automation-email-stat-box {
+    width: 100px;
+}
+.overview-campaign-box table td {
+    border: none !important;
+}
+.overview-campaign-box ul.automation-confirm li.child-row {
+    padding-top: 5px;
+}
+.overview-campaign-box ul.automation-confirm li.child-row {
+    padding-left: 40px;
+}
+.overview-campaign-box ul.modern-listing li:first-child {
+    padding-top: 0;
+    /*background: #00695C;
+    color: #fff;*/
+    margin-bottom: 20px;
+}
+.breadcrumb > li {
+    font-weight: 600;
+}

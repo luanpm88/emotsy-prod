@@ -147,7 +147,8 @@ class AutomationController extends Controller
             $this->validate($request, $automation->rules()["init"]);
             
             // create automation
-            $automation->fillAttributes($request->all());
+            $automation->fillAttributes($request->all());            
+            
             $automation->save();
             
             // Log
@@ -328,7 +329,7 @@ class AutomationController extends Controller
             if (\Gate::denies('confirm', $automation)) {
                 return $this->notAuthorized();
             } else {
-                $automation->setReady();
+                $automation->setActive();
                 
                 // Log
                 $automation->log('started', $request->user());

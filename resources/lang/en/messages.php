@@ -1243,6 +1243,9 @@ return [
     'cancelled' => 'cancelled',
     'import_failed_message' => '<span class="text-danger">:error</span>',
     'workflow_overview' => 'Workflow overview',
+    'auto_event_api-call' => 'API call',
+    'events' => 'Events',
+    'triggers' => 'Triggers',
 ];
 
 
