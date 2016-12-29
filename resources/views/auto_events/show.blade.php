@@ -1,5 +1,5 @@
                                 <!-- Sales stats -->
-								<div id="event-{{ $auto_event->uid }}" class="timeline-row condition-line auto-event-line" rel="{{ $auto_event->uid }}">
+								<div id="event-{{ $auto_event->uid }}" class="timeline-row condition-line auto-event-line event-{{ $auto_event->status }}" rel="{{ $auto_event->uid }}">
 									<div class="timeline-icon timeline-icon-i">
                                         <!--<i class="icon-paperplane text-teal"></i>-->
 									</div>

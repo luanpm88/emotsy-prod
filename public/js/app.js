@@ -12,8 +12,12 @@
 function updateAutoEventNumber() {
     var num = 1;
     $('.auto-event-line').each(function() {
-        $(this).find('.timeline-icon-i').html(num);
-        num = num + 1;
+        if(!$(this).hasClass('event-inactive')) {
+            $(this).find('.timeline-icon-i').html(num);
+            num = num + 1;
+        } else {
+             $(this).find('.timeline-icon-i').html("#");
+        }
     });
 }
 

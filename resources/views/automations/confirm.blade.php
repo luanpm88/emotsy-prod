@@ -73,9 +73,9 @@
 							@endforelse
 						@endif
 						
-						@foreach ($automation->getFollowUpEvents() as $key =>  $auto_event)
+						@foreach ($automation->getFollowUpEvents(Acelle\Model\AutoEvent::STATUS_INACTIVE) as $key =>  $auto_event)
 							<li>
-								<a href="{{ action('AutomationController@workflow', $automation->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
+								<a href="{{ action('AutomationController@workflow', $automation->uid) }}#event-{{ $auto_event->uid }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
 								@if (isset($auto_event->id))
 									<i class="icon-checkmark4"></i>
 								@else

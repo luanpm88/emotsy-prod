@@ -664,4 +664,31 @@ class AutoEvent extends Model
         $this->status = AutoEvent::STATUS_INACTIVE;		
         $this->save();
     }
+	
+	/**
+     * disable event.
+     *
+     * @return boolean
+     */
+    public function isValid()
+    {
+		// return true if it is inactive
+		if($this->status == AutoEvent::STATUS_INACTIVE) {
+			return true;
+		}
+		
+        // check auto events emails empty
+		if($this->campaigns()->count() <= 0) {
+			return false;
+		}
+		
+		// check if email is not design
+		foreach($this->campaigns as $campaign) {
+			if(!$campaign->autoCampaignDesigned()) {
+				return false;
+			}
+		}
+		
+		return true;
+    }
 }

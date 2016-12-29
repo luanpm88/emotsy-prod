@@ -195,13 +195,15 @@ class Automation extends Model
      *
      * @var AutoEvent
      */
-    public function getFollowUpEvents()
+    public function getFollowUpEvents($show_inactive=true)
     {
         $events = collect();
         $event = $this->getInitEvent();
         while(is_object($event->nextEvent)) {
-            $event = $event->nextEvent;
-            $events->push($event);
+			$event = $event->nextEvent;
+			if($show_inactive || $event->status != AutoEvent::STATUS_INACTIVE) {				
+				$events->push($event);
+			}
         }
         
         return $events;
@@ -337,17 +339,9 @@ class Automation extends Model
         
 		// check each auto events is valid
         foreach($this->autoEvents as $auto_event) {
-            // check auto events emails empty
-            if($auto_event->campaigns()->count() <= 0) {
-                return false;
-            }
-            
-            // check if email is not design
-            foreach($auto_event->campaigns as $campaign) {
-                if(!$campaign->autoCampaignDesigned()) {
-                    return false;
-                }
-            }
+			if(!$auto_event->isValid()) {
+				return false;
+			}
         }
         
         return true;
