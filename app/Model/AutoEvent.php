@@ -428,7 +428,7 @@ class AutoEvent extends Model
 				break;
 			case self::TYPE_MONTHLY_RECURRING:
 				$msg = trans('messages.monthly_recurring_description', [
-					'days' => implode(', ', $this->getDataValue('days')),
+					'days' => implode(', ', \Acelle\Library\Tool::getDayNamesFromArrayOfNumber($this->getDataValue('days'))),
 					'months' => implode(', ', \Acelle\Library\Tool::numberArrayToMonthsArray($this->getDataValue('months'))),
 					'time' => \Acelle\Library\Tool::timeStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('time'))),
 				]);

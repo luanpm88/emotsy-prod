@@ -495,4 +495,25 @@ class Tool
         
         return $months;
     }
+    
+    /**
+     * Get day names from array of numbers.
+     *
+     * @param timestamp
+     *
+     * @return string
+     */
+    public static function getDayNamesFromArrayOfNumber($numbers) {
+        $names = [];
+        
+        $ends = array('th','st','nd','rd','th','th','th','th','th','th');
+        foreach($numbers as $number) {            
+            if (($number %100) >= 11 && ($number%100) <= 13)
+               $names[] = $number. 'th';
+            else
+               $names[] = $number. $ends[$number % 10];
+        }
+        
+        return $names;
+    }
 }
