@@ -27,8 +27,9 @@ use Illuminate\Database\Eloquent\Model;
 class Automation extends Model
 {
     // Automation status
-    const STATUS_NEW = 'new';
+	const STATUS_DRAFT = 'draft';
     const STATUS_ACTIVE = 'active'; // equiv. to 'queue'
+	const STATUS_INACTIVE = 'inactive';
     
     /**
      * Items per page.
@@ -181,6 +182,8 @@ class Automation extends Model
             $auto_event = new AutoEvent([
                 'event_type' => AutoEvent::TYPE_SPECIFIC_DATE,
             ]);
+			$auto_event->status = AutoEvent::STATUS_DRAFT;
+			
             $auto_event->automation_id = $this->id;
         }
         
@@ -284,6 +287,8 @@ class Automation extends Model
         $event = new AutoEvent([
 			'event_type' => AutoEvent::TYPE_FOLLOW_UP
 		]);
+		$event->status = AutoEvent::STATUS_DRAFT;
+		
         $event->updateData([
             'delay_type' => 'after',
             'delay_value' => '1',
@@ -328,9 +333,9 @@ class Automation extends Model
         $first_event = $this->getInitEvent();
         if(!isset($first_event->id)) {
             return false;
-        }
+        }        
         
-        
+		// check each auto events is valid
         foreach($this->autoEvents as $auto_event) {
             // check auto events emails empty
             if($auto_event->campaigns()->count() <= 0) {
@@ -349,13 +354,21 @@ class Automation extends Model
     }
     
     /**
-     * set automation status to ready.
+     * set automation status to active.
      *
      * @return void
      */
     public function setActive()
     {
         $this->status = Automation::STATUS_ACTIVE;
+		
+		// set active for all events if they are draft
+        foreach($this->autoEvents as $auto_event) {
+            if($auto_event->status == AutoEvent::STATUS_DRAFT) {
+				$auto_event->setActive();
+			}
+        }
+		
         $this->save();
     }
     

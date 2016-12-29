@@ -42,6 +42,11 @@
 											<h6 class="panel-title text-semibold">
 												{{ trans('messages.trigger_workflow_when_the_following_conditions_are_met') }}
 											</h6>
+											<div class="heading-elements">
+												<span class="text-muted2 list-status">
+													<span class="label label-flat bg-{{ $first_event->status }}">{{ $first_event->status }}</span>
+												</span>
+											</div>
 										</div>
 		
 										<div class="panel-body">

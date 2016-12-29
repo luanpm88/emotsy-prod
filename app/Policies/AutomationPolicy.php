@@ -31,7 +31,7 @@ class AutomationPolicy
     public function update(\Acelle\Model\User $user, \Acelle\Model\Automation $automation)
     {
         return $automation->user_id == $user->id && in_array($automation->status, [
-                                                                \Acelle\Model\Automation::STATUS_NEW,
+                                                                \Acelle\Model\Automation::STATUS_DRAFT,
                                                                 \Acelle\Model\Automation::STATUS_ACTIVE
                                                             ]);
     }
@@ -39,7 +39,7 @@ class AutomationPolicy
     public function delete(\Acelle\Model\User $user, \Acelle\Model\Automation $automation)
     {
         return $automation->user_id == $user->id && in_array($automation->status, [
-                                                                \Acelle\Model\Automation::STATUS_NEW,
+                                                                \Acelle\Model\Automation::STATUS_DRAFT,
                                                                 \Acelle\Model\Automation::STATUS_ACTIVE
                                                             ]);
     }

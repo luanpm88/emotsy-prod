@@ -310,4 +310,52 @@ class AutoEventController extends Controller
 
         return redirect()->action('AutoEventController@templatePreview', ['uid' => $auto_event->uid, 'campaign_uid' => $campaign->uid]);
     }
+    
+    /**
+     * Enable event.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function enable(Request $request, $uid)
+    {
+        // Generate info
+        $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+
+        // validate and save posted data
+        if ($request->isMethod('patch')) {
+            // fill data
+            $auto_event->enable();
+            
+            $request->session()->flash('alert-success', trans('messages.auto_event.updated'));
+            $url = action('AutomationController@workflow', $auto_event->automation->uid) . "#event-" . $auto_event->uid;
+            return redirect()->away($url);
+        }
+    }
+    
+    /**
+     * Disable event.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function disable(Request $request, $uid)
+    {
+        // Generate info
+        $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+
+        // validate and save posted data
+        if ($request->isMethod('patch')) {
+            // fill data
+            $auto_event->disable();
+            
+            $request->session()->flash('alert-success', trans('messages.auto_event.updated'));
+            $url = action('AutomationController@workflow', $auto_event->automation->uid) . "#event-" . $auto_event->uid;
+            return redirect()->away($url);
+        }
+    }
 }

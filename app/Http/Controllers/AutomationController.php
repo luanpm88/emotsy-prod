@@ -86,7 +86,7 @@ class AutomationController extends Controller
             // create automation
             $automation->fillAttributes($request->all());
             $automation->user_id = $current_user->id;
-            $automation->status = \Acelle\Model\Automation::STATUS_NEW;
+            $automation->status = \Acelle\Model\Automation::STATUS_DRAFT;
             $automation->save();
             
             // Log

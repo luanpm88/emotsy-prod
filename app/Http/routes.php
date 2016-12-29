@@ -270,6 +270,8 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('auto-events/{uid}/emails/{campaign_uid}/template/build/{style}', 'AutoEventController@templateBuild'); //
     Route::get('auto-events/{uid}/emails/{campaign_uid}/template/rebuild', 'AutoEventController@templateRebuild'); //
     
+    Route::patch('auto-events/{uid}/disable', 'AutoEventController@disable');
+    Route::patch('auto-events/{uid}/enable', 'AutoEventController@enable');
     Route::patch('auto-events/{uid}/emails/{campaign_uid}/setup', 'AutoEventController@campaignSetup');
     Route::get('auto-events/{uid}/emails/{campaign_uid}/setup', 'AutoEventController@campaignSetup');
     Route::delete('auto-events/{uid}/delete', 'AutoEventController@delete');

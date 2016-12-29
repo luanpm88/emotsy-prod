@@ -28,6 +28,11 @@ use Acelle\Library\Log as MailLog;
 
 class AutoEvent extends Model
 {
+	// event status
+	const STATUS_DRAFT = 'draft';
+    const STATUS_ACTIVE = 'active';
+	const STATUS_INACTIVE = 'inactive';
+	
     // event type
     const TYPE_SPECIFIC_DATE = 'specific-date';
 	const TYPE_MONTHLY_RECURRING = 'monthly-recurring';
@@ -625,5 +630,38 @@ class AutoEvent extends Model
         foreach($this->campaigns as $campaign) {
             $campaign->queue($trigger);
         };
+    }
+	
+	/**
+     * set event status to active.
+     *
+     * @return void
+     */
+    public function setActive()
+    {
+        $this->status = AutoEvent::STATUS_ACTIVE;		
+        $this->save();
+    }
+	
+	/**
+     * enable event.
+     *
+     * @return void
+     */
+    public function enable()
+    {
+        $this->status = AutoEvent::STATUS_ACTIVE;		
+        $this->save();
+    }
+	
+	/**
+     * disable event.
+     *
+     * @return void
+     */
+    public function disable()
+    {
+        $this->status = AutoEvent::STATUS_INACTIVE;		
+        $this->save();
     }
 }

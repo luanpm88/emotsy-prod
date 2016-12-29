@@ -1,5 +1,5 @@
                                 <!-- Sales stats -->
-								<div class="timeline-row condition-line auto-event-line" rel="{{ $auto_event->uid }}">
+								<div id="event-{{ $auto_event->uid }}" class="timeline-row condition-line auto-event-line" rel="{{ $auto_event->uid }}">
 									<div class="timeline-icon timeline-icon-i">
                                         <!--<i class="icon-paperplane text-teal"></i>-->
 									</div>
@@ -38,14 +38,38 @@
 													])
 												</h6>
 												<div class="heading-elements">
-													<button class="btn btn-info bg-info-800 btn-save hide"><i class="icon-checkmark4 mr-5"></i> {{ trans('messages.save') }}</button>
-													<button
-														data-confirm="{{ trans('messages.delete_auto_event_confirm') }}"
-														data-url="{{ action('AutoEventController@delete', $auto_event->uid) }}"
-														data-id="{{ $auto_event->uid }}"
-														class="btn btn-default auto-event-delete">
-															<i class="icon-trash"></i>
-													</button>
+													<span class="text-muted2 list-status">
+														<span class="label label-flat bg-{{ $auto_event->status }}">{{ $auto_event->status }}</span>
+													</span>
+													<span class="ml-20">
+														<button class="btn btn-info bg-info-800 btn-save hide"><i class="icon-checkmark4 mr-5"></i> {{ trans('messages.save') }}</button>
+															
+														@if (\Gate::allows('enable', $auto_event))
+															<a
+																href="{{ action('AutoEventController@enable', $auto_event->uid) }}"
+																link-method="PATCH"
+																class="btn btn-default auto-event-action link-method">
+																	<i class=" icon-checkmark4"></i> Enable
+															</a>
+														@endif
+														
+														@if (\Gate::allows('disable', $auto_event))
+															<a
+																href="{{ action('AutoEventController@disable', $auto_event->uid) }}"
+																link-method="PATCH"
+																class="btn btn-default auto-event-action link-method">
+																	<i class="icon-blocked"></i> Disable
+															</a>
+														@endif
+														
+														<button
+															data-confirm="{{ trans('messages.delete_auto_event_confirm') }}"
+															data-url="{{ action('AutoEventController@delete', $auto_event->uid) }}"
+															data-id="{{ $auto_event->uid }}"
+															class="btn btn-default auto-event-delete">
+																<i class="icon-trash"></i>
+														</button>
+													</span>
 												</div>
 											</form>
 										</div>
