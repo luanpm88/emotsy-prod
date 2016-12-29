@@ -54,6 +54,15 @@
 						<div class="row tabable-tab custom-criteria">
 							@include('automations.triggers._custom-criteria')							
 						</div>
+						<div class="row tabable-tab api-call">
+							<div class="col-md-12">
+								<hr>
+								<h5 class="text-semibold">{!! trans('messages.make_request_to_run_automation', ['command' => 'PATCH ' . action('Api\AutomationController@apiCall', [
+									'uid' => $automation->uid,
+									'api_token' => Auth::user()->api_token
+								])]) !!}</h5>
+							</div>
+						</div>
 						<div class="row tabable-tab custom-criteria subscriber-event list-subscription list-unsubscription">
 							<div class="col-md-6">
 								<hr />

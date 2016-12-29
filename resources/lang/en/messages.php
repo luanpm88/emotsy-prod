@@ -1255,6 +1255,8 @@ return [
     'disable_automations_confirm' => 'You\'re about to disable :number automation(s) from the list.',
     'enable_automations_confirm' => 'You\'re about to enable :number automation(s) from the list.',
     'back_to_list' => 'Back to list',
+    'make_request_to_run_automation' => 'Make the following request to trigger your automation:<br /> <code>:command</code>',
+    'automation.updated' => 'Automation was successfully updated',
 ];
 
 

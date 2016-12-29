@@ -540,14 +540,22 @@ class AutoEvent extends Model
     public function addCampaign()
     {
         $campaign = new Campaign([
-			'name' => 'Untitled automation email'
+			'name' => 'Untitled automation email',
+            'track_open' => true,
+            'track_click' => true,
+            'sign_dkim' => true,
 		]);
 		$campaign->mail_list_id = $this->automation->mail_list_id;
 		$campaign->segment_id = $this->automation->segment_id;
 		$campaign->user_id = $this->automation->user_id;
 		$campaign->is_auto = true;
+		$campaign->save();
 		
-		$this->campaigns()->save($campaign);
+		// Auto Campaign
+		$auto_campaign = new AutoCampaign();
+		$auto_campaign->campaign_id = $campaign->id;
+		$auto_campaign->auto_event_id = $this->id;
+		$auto_campaign->save();
 		
 		return $campaign;
     }
