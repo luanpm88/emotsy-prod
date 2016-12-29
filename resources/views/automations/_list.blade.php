@@ -78,10 +78,24 @@
 													<i class="icon-stats-growth mr-0 pr-0"></i>
 												</a>
 											@endif
-											@if (\Gate::allows('delete', $automation))
+											@if (\Gate::allows('delete', $automation) || Auth::user()->can('disable', $automation) || Auth::user()->can('enable', $automation))
 												<div class="btn-group">										
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 													<ul class="dropdown-menu dropdown-menu-right">
+														@can('enable', $automation)
+															<li>														
+																<a data-method="PATCH" link-confirm="{{ trans('messages.enable_automations_confirm') }}" href="{{ action('AutomationController@enable', ["uids" => $automation->uid]) }}">
+																	<i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
+																</a>
+															</li>
+														@endcan
+														@can('disable', $automation)
+															<li>														
+																<a data-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}" href="{{ action('AutomationController@disable', ["uids" => $automation->uid]) }}">
+																	<i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
+																</a>
+															</li>
+														@endcan
 														@if (\Gate::allows('delete', $automation))
 															<li><a data-method='delete' delete-confirm="{{ trans('messages.delete_automations_confirm') }}" href="{{ action('AutomationController@delete', ["uids" => $automation->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
 														@endif

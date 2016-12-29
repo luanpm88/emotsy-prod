@@ -11,13 +11,7 @@
 
 @section('page_header')	
 			<div class="page-title">
-				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li><a href="{{ action("AutomationController@index") }}">{{ trans('messages.automations') }}</a></li>
-				</ul>
-				<h1>
-					<span class="text-semibold"><i class="icon-alarm-check"></i> {{ $automation->name }}</span>
-				</h1>
+				@include('automations._head')
 					
 				@include('automations.overview._menu', [
 					'step' => 'workflow'
@@ -88,7 +82,7 @@
                             @endforeach
 						@endif
 						
-						@foreach ($automation->getFollowUpEvents() as $key =>  $auto_event)
+						@foreach ($automation->getFollowUpEvents(false) as $key =>  $auto_event)
 							<li>								
 								<h4><numbericon>{{ $key+2 }}</numbericon>  {!! $auto_event->displayMessage() !!}</h4>
 								<p>
@@ -103,4 +97,8 @@
                 </form>
                     
             </div>
+				
+			<a href="{{ action("AutomationController@index") }}" class="btn bg-grey-800">
+				<i class="icon-arrow-left7"></i> {{ trans('messages.back_to_list') }}
+			</a>
 @endsection

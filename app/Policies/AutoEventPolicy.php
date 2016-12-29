@@ -31,4 +31,9 @@ class AutoEventPolicy
                                                                 \Acelle\Model\AutoEvent::STATUS_INACTIVE
                                                             ]);
     }
+    
+    public function update(\Acelle\Model\User $user, \Acelle\Model\AutoEvent $event)
+    {
+        return $event->automation->user_id == $user->id;
+    }
 }

@@ -25,7 +25,7 @@
 															<span class="text-muted">{{ trans('messages.from_name') }}</span>
 														</td>
 														<td class="text-right">
-															<a href="{{ action('AutoEventController@campaignSetup', ['uid' => $auto_event->uid, 'campaign_uid' => $campaign->uid]) }}" class="btn btn-info bg-info-800">
+															<a href="{{ action('AutoEventController@campaignSetup', ['uid' => $auto_event->uid, 'campaign_uid' => $campaign->uid]) }}" class="btn btn-info bg-info-800 link-out">
 																@if ($campaign->autoCampaignDesigned())
 																	<i class="icon-pencil mr-5"></i> {{ trans('messages.edit') }}
 																@else

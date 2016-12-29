@@ -21,6 +21,11 @@ class AutoEventController extends Controller
         $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
         $campaigns = $auto_event->campaigns;
         
+        // authorize
+        if (\Gate::denies('update', $auto_event)) {
+            return $this->notAuthorized();
+        }
+        
         return view('auto_events.campaigns', [
             'auto_event' => $auto_event,
             'campaigns' => $campaigns
@@ -39,6 +44,11 @@ class AutoEventController extends Controller
     {
         $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
         
+        // authorize
+        if (\Gate::denies('update', $auto_event)) {
+            return $this->notAuthorized();
+        }
+        
         $campaign = $auto_event->addCampaign();
         
         return redirect()->action('AutoEventController@campaignSetup', ['uid' => $auto_event->uid, 'campaign_uid' => $campaign->uid]);
@@ -56,6 +66,11 @@ class AutoEventController extends Controller
     {
         $campaign = \Acelle\Model\Campaign::findByUid($uid);
         
+        // authorize
+        if (\Gate::denies('update', $campaign->autoEvent())) {
+            return $this->notAuthorized();
+        }
+        
         $campaign->delete();
     }
     
@@ -70,6 +85,11 @@ class AutoEventController extends Controller
     public function delete(Request $request, $uid)
     {
         $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $auto_event)) {
+            return $this->notAuthorized();
+        }
         
         $auto_event->delete();
     }
@@ -86,6 +106,11 @@ class AutoEventController extends Controller
     {
         // Generate info
         $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $auto_event)) {
+            return $this->notAuthorized();
+        }
 
         // validate and save posted data
         if ($request->isMethod('patch')) {
@@ -110,6 +135,11 @@ class AutoEventController extends Controller
         // Generate info
         $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
         $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $auto_event)) {
+            return $this->notAuthorized();
+        }
         
         // get infor from mail list
         $campaign->getInfoFromMailList($auto_event->automation->mailList);
@@ -150,6 +180,11 @@ class AutoEventController extends Controller
         $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
         $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
         $user = $request->user();
+        
+        // authorize
+        if (\Gate::denies('update', $auto_event)) {
+            return $this->notAuthorized();
+        }
         
         // Get old post values
         if (null !== $request->old()) {
@@ -205,6 +240,11 @@ class AutoEventController extends Controller
         $user = $request->user();
         $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
         $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $auto_event)) {
+            return $this->notAuthorized();
+        }
 
         return view('auto_events.campaigns.template_select', [
             'campaign' => $campaign,
@@ -223,6 +263,11 @@ class AutoEventController extends Controller
     {
         $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
         $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $auto_event)) {
+            return $this->notAuthorized();
+        }
         
         $elements = [];
         if(isset($request->style)) {
@@ -247,6 +292,11 @@ class AutoEventController extends Controller
     {
         $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
         $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $auto_event)) {
+            return $this->notAuthorized();
+        }
 
         $rules = [];
         
@@ -269,6 +319,11 @@ class AutoEventController extends Controller
         $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
         $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
         
+        // authorize
+        if (\Gate::denies('update', $auto_event)) {
+            return $this->notAuthorized();
+        }
+        
         echo $campaign->html;
     }
     
@@ -283,6 +338,11 @@ class AutoEventController extends Controller
     {
         $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
         $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
+        
+        // authorize
+        if (\Gate::denies('update', $auto_event)) {
+            return $this->notAuthorized();
+        }
 
         return view('auto_events.campaigns.template_rebuild', [
             'campaign' => $campaign,
@@ -304,6 +364,11 @@ class AutoEventController extends Controller
         $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
         $template = \Acelle\Model\Template::findByUid($request->template_uid);
         
+        // authorize
+        if (\Gate::denies('update', $auto_event)) {
+            return $this->notAuthorized();
+        }
+        
         $campaign->html = $template->content;
         $campaign->template_source = $template->source;
         $campaign->save();
@@ -323,6 +388,11 @@ class AutoEventController extends Controller
     {
         // Generate info
         $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('enable', $auto_event)) {
+            return $this->notAuthorized();
+        }
 
         // validate and save posted data
         if ($request->isMethod('patch')) {
@@ -347,6 +417,11 @@ class AutoEventController extends Controller
     {
         // Generate info
         $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('disable', $auto_event)) {
+            return $this->notAuthorized();
+        }
 
         // validate and save posted data
         if ($request->isMethod('patch')) {

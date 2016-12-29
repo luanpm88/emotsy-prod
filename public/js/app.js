@@ -876,6 +876,13 @@ $(function() {
     $(document).on("click", ".addable-multiple-form .add-form", function(e) {
         var form = $(this).parents('.addable-multiple-form');
         var container = form.find('.addable-multiple-container');
+        var status = $(this).attr('automation-status');
+        
+        if(status == 'active') {
+            //show disable automation confirm
+            $('#disable_automation_confirm').modal('show');
+            return;
+        }
         
         // ajax update custom sort
         $.ajax({
@@ -1009,7 +1016,7 @@ $(function() {
             data: form.serialize()
         })
         .done(function(msg) {
-            form.find('.btn-save').addClass('hide');
+            form.parents('.auto-event-line').removeClass('changing');
             
             swal({
                 title: msg,
@@ -1023,8 +1030,8 @@ $(function() {
         });
     });
     // auto event change value
-    $(document).on('change', '.auto-event-line input, .auto-event-line select', function() {
-       $(this).parents('.auto-event-line').find('.btn-save').removeClass('hide');
+    $(document).on('change keyup', '.auto-event-line input, .auto-event-line select', function() {
+       $(this).parents('.auto-event-line').addClass('changing');
     });
     
     // Grap link with data-method attribute

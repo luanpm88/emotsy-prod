@@ -11,13 +11,7 @@
 
 @section('page_header')	
 			<div class="page-title">
-				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li><a href="{{ action("AutomationController@index") }}">{{ trans('messages.automations') }}</a></li>
-				</ul>
-				<h1>
-					<span class="text-semibold"><i class="icon-alarm-check"></i> {{ $automation->name }}</span>
-				</h1>
+				@include('automations._head')
 					
 				@include('automations._steps', [
 					'step' => 'confirm'
@@ -73,7 +67,7 @@
 							@endforelse
 						@endif
 						
-						@foreach ($automation->getFollowUpEvents(Acelle\Model\AutoEvent::STATUS_INACTIVE) as $key =>  $auto_event)
+						@foreach ($automation->getFollowUpEvents(false) as $key =>  $auto_event)
 							<li>
 								<a href="{{ action('AutomationController@workflow', $automation->uid) }}#event-{{ $auto_event->uid }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
 								@if (isset($auto_event->id))
@@ -94,12 +88,16 @@
 						@endforeach
                     </ul>
                     
-					@if ($automation->isValid())
+					<div class="text-right">
 						<br />
-						<div class="text-right">
+						@if ($automation->isValid())
 							<button class="btn btn-lg bg-teal-800"><i class="icon-paperplane ml-5"></i> {{ trans('messages.send') }}</button>							
-						</div>
-					@endif
+						@else
+							<a href="{{ action("AutomationController@workflow", $auto_event->automation->uid) }}" class="btn bg-grey-800">
+								<i class="icon-arrow-left7"></i> {{ trans('messages.back_to_workflow') }}
+							</a>					
+						@endif
+					</div>
                 </form>
                     
             </div>

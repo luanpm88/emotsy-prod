@@ -1480,9 +1480,24 @@ ul.automation-confirm li.child-row h5 {
 .breadcrumb > li {
     font-weight: 600;
 }
-.event-inactive {
-    opacity: 0.5;
+/*.event-inactive .event-campaigns-box, .event-inactive .panel {
+    opacity: 0.7;
 }
-.event-inactive:hover {
+.event-inactive:hover .event-campaigns-box, .event-inactive:hover .panel {
     opacity: 1;
+}*/
+.event-inactive .timeline-icon-i {
+    background: #777;
+}
+.auto-event-line .btn-save {
+    display: none;
+}
+.auto-event-line.changing .btn-save {
+    display: inline;
+}
+.auto-event-line.changing .link-out {
+    display: none !important;
+}
+.auto-event-line.changing .box-out {
+    opacity: 0.3;
 }

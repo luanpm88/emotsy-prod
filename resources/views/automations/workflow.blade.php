@@ -11,13 +11,7 @@
 
 @section('page_header')	
 			<div class="page-title">
-				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li><a href="{{ action("AutomationController@index") }}">{{ trans('messages.automations') }}</a></li>
-				</ul>
-				<h1>
-					<span class="text-semibold"><i class="icon-alarm-check"></i> {{ $automation->name }}</span>
-				</h1>
+				@include('automations._head')
 					
 				@include('automations._steps', [
 					'step' => 'workflow'
@@ -87,7 +81,13 @@
 							</div>
 						</div>
 						<br />
-						<a sample-url="{{ action('AutomationController@nextEventForm', $automation->uid) }}" href="#add_condition" class="btn btn-info bg-info-800 add-form">
+						<a
+							id="add-event-button"
+							automation-status="{{ $automation->status }}"
+							sample-url="{{ action('AutomationController@nextEventForm', $automation->uid) }}"
+							href="#add_condition"
+							class="btn btn-info bg-info-800 add-form"
+						>
 							<i class="icon-plus2"></i> {{ trans('messages.add_event') }}
 						</a>
 					</div>
@@ -114,4 +114,28 @@
 							setInterval('updateAutoEventNumber()', 1000);
 						});
 					</script>
+						
+					<!-- Basic modal -->
+					<div id="disable_automation_confirm" class="modal fade">
+						<div class="modal-dialog">
+							<div class="modal-content">								
+								<div class="modal-header bg-info-800">
+									<button type="button" class="close" data-dismiss="modal">&times;</button>
+									<h2 class="modal-title">{{ trans('messages.disable_automation_?') }}</h2>
+								</div>
+				
+								<div class="modal-body">
+									
+									<h6>{!! trans('messages.disable_automation_before_add_event_confirm', ['name' => $automation->name]) !!}</h6>
+									
+								</div>
+				
+								<div class="modal-footer">
+									<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+									<a href="{{ action('AutomationController@disable', ['uids' => $automation->uid]) }}" class="btn bg-info-800 link-confirm-button" link-method="PATCH">{{ trans('messages.disable') }}</a>
+									</div>
+							</div>
+						</div>
+					</div>
+					<!-- /basic modal -->
 @endsection

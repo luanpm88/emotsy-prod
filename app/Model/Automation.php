@@ -398,5 +398,27 @@ class Automation extends Model
             'name' => $name,
             'data' => json_encode($data),
         ]);
-}
+	}
+	
+	/**
+     * enable automation.
+     *
+     * @return void
+     */
+    public function enable()
+    {
+        $this->status = Automation::STATUS_ACTIVE;		
+        $this->save();
+    }
+	
+	/**
+     * disable automation.
+     *
+     * @return void
+     */
+    public function disable()
+    {
+        $this->status = Automation::STATUS_INACTIVE;		
+        $this->save();
+    }
 }

@@ -32,7 +32,8 @@ class AutomationPolicy
     {
         return $automation->user_id == $user->id && in_array($automation->status, [
                                                                 \Acelle\Model\Automation::STATUS_DRAFT,
-                                                                \Acelle\Model\Automation::STATUS_ACTIVE
+                                                                \Acelle\Model\Automation::STATUS_ACTIVE,
+                                                                \Acelle\Model\Automation::STATUS_INACTIVE
                                                             ]);
     }
 
@@ -40,7 +41,8 @@ class AutomationPolicy
     {
         return $automation->user_id == $user->id && in_array($automation->status, [
                                                                 \Acelle\Model\Automation::STATUS_DRAFT,
-                                                                \Acelle\Model\Automation::STATUS_ACTIVE
+                                                                \Acelle\Model\Automation::STATUS_ACTIVE,
+                                                                \Acelle\Model\Automation::STATUS_INACTIVE
                                                             ]);
     }
     
@@ -57,5 +59,19 @@ class AutomationPolicy
     public function overview(\Acelle\Model\User $user, \Acelle\Model\Automation $automation)
     {
         return $automation->user_id == $user->id && $automation->isValid();
+    }
+    
+    public function enable(\Acelle\Model\User $user, \Acelle\Model\Automation $automation)
+    {
+        return $automation->user_id == $user->id && in_array($automation->status, [
+                                                                \Acelle\Model\Automation::STATUS_INACTIVE
+                                                            ]);
+    }
+    
+    public function disable(\Acelle\Model\User $user, \Acelle\Model\Automation $automation)
+    {
+        return $automation->user_id == $user->id && in_array($automation->status, [
+                                                                \Acelle\Model\Automation::STATUS_ACTIVE
+                                                            ]);
     }
 }

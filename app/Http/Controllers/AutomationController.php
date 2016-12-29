@@ -440,4 +440,66 @@ class AutomationController extends Controller
             'campaigns' => $campaigns,
         ]);
     }
+    
+    /**
+     * Enable automation.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function enable(Request $request)
+    {
+        // validate and save posted data
+        if ($request->isMethod('patch')) {
+            $automations = \Acelle\Model\Automation::whereIn('uid', explode(',', $request->uids));
+
+            foreach ($automations->get() as $automation) {
+                // authorize
+                if (\Gate::allows('enable', $automation)) {
+                    $automation->enable();
+                }
+            }
+            
+            if($request->ajax()){
+                echo trans('messages.automations.enabled');
+            } else {
+                $request->session()->flash('alert-success', trans('messages.automation.enabled'));
+                $url = action('AutomationController@workflow', $automation->uid) . "#add-event-button";
+                return redirect()->away($url);
+            }            
+        }
+    }
+    
+    /**
+     * Disable event.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function disable(Request $request)
+    {
+        // validate and save posted data
+        if ($request->isMethod('patch')) {
+            $automations = \Acelle\Model\Automation::whereIn('uid', explode(',', $request->uids));
+
+            foreach ($automations->get() as $automation) {
+                // authorize
+                if (\Gate::allows('disable', $automation)) {
+                    $automation->disable();
+                }
+            }
+            
+            if($request->ajax()){
+                echo trans('messages.automations.disabled');
+            } else {
+                $request->session()->flash('alert-success', trans('messages.automation.disabled'));
+                $url = action('AutomationController@workflow', $automation->uid) . "#add-event-button";
+                return redirect()->away($url);
+            }            
+        }
+    }
 }

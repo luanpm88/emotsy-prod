@@ -1246,6 +1246,15 @@ return [
     'auto_event_api-call' => 'API call',
     'events' => 'Events',
     'triggers' => 'Triggers',
+    'disable_automation_before_add_event_confirm' => 'You need to disable automation <span class="text-semibold text-teal-800">:name</span> before adding new event',
+    'automations.disabled' => 'One or more automations were successfully disabled',
+    'automation.disabled' => 'Automation was successfully disabled',
+    'automations.enabled' => 'One or more automations were successfully enabled',
+    'automation.enabled' => 'Automation was successfully enabled',
+    'disable_automation_?' => 'Disable automation?',
+    'disable_automations_confirm' => 'You\'re about to disable :number automation(s) from the list.',
+    'enable_automations_confirm' => 'You\'re about to enable :number automation(s) from the list.',
+    'back_to_list' => 'Back to list',
 ];
 
 

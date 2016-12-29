@@ -42,13 +42,13 @@
 														<span class="label label-flat bg-{{ $auto_event->status }}">{{ $auto_event->status }}</span>
 													</span>
 													<span class="ml-20">
-														<button class="btn btn-info bg-info-800 btn-save hide"><i class="icon-checkmark4 mr-5"></i> {{ trans('messages.save') }}</button>
+														<button class="btn btn-info bg-info-800 btn-save"><i class="icon-checkmark4 mr-5"></i> {{ trans('messages.save') }}</button>
 															
 														@if (\Gate::allows('enable', $auto_event))
 															<a
 																href="{{ action('AutoEventController@enable', $auto_event->uid) }}"
 																link-method="PATCH"
-																class="btn btn-default auto-event-action link-method">
+																class="btn btn-default auto-event-action link-method link-out">
 																	<i class=" icon-checkmark4"></i> Enable
 															</a>
 														@endif
@@ -57,7 +57,7 @@
 															<a
 																href="{{ action('AutoEventController@disable', $auto_event->uid) }}"
 																link-method="PATCH"
-																class="btn btn-default auto-event-action link-method">
+																class="btn btn-default auto-event-action link-method link-out">
 																	<i class="icon-blocked"></i> Disable
 															</a>
 														@endif
@@ -75,7 +75,7 @@
 										</div>
                                     </div>
                                         
-                                    <div class="event-campaigns-box">
+                                    <div class="event-campaigns-box box-out">
 										<div class="event-campaigns-container" data-url="{{ action('AutoEventController@campaigns', $auto_event->uid) }}">
 											
 										</div>
