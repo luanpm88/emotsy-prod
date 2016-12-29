@@ -69,7 +69,7 @@
 												<span class="label label-flat bg-{{ $automation->status }}">{{ $automation->status }}</span>
 											</span>
 										</td>
-										<td class="text-right">
+										<td class="text-right text-nowrap">
 											@if (\Gate::allows('update', $automation))
 												<a data-popup="tooltip" title="{{ trans('messages.edit') }}" href="{{ action('AutomationController@edit', $automation->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i></a>
 											@endif

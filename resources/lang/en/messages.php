@@ -1171,7 +1171,7 @@ return [
     'weekly_recurring' => 'Weekly recurring',
     'monthly_recurring' => 'Monthly recurring',
     'subscriber_s_field' => 'Subscriber\'s :name',
-    'auto_event_specific-date' => 'Specific date',
+    'auto_event_specific-datetime' => 'Specific date',
     'auto_event_custom-criteria' => 'Custom criteria',
     'workflow' => 'Workflow',
     'trigger_workflow_when_the_following_conditions_are_met' => 'Trigger workflow when the following conditions are met:',
