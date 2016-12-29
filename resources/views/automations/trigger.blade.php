@@ -39,8 +39,8 @@
 					</div>
 					
 					<div class="tabable-container">
-						<div class="row tabable-tab specific-date">
-							@include('automations.triggers._specific-date')
+						<div class="row tabable-tab specific-datetime">
+							@include('automations.triggers._specific-datetime')
 						</div>
 						<div class="row tabable-tab weekly-recurring">
 							@include('automations.triggers._weekly-recurring')							

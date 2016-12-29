@@ -34,7 +34,7 @@ class AutoEvent extends Model
 	const STATUS_INACTIVE = 'inactive';
 	
     // event type
-    const TYPE_SPECIFIC_DATE = 'specific-date';
+    const TYPE_SPECIFIC_DATETIME = 'specific-datetime';
 	const TYPE_MONTHLY_RECURRING = 'monthly-recurring';
 	const TYPE_WEEKLY_RECURRING = 'weekly-recurring';
 	const TYPE_LIST_SUBSCRIPTION = 'list-subscription';
@@ -177,7 +177,7 @@ class AutoEvent extends Model
     {
         $rules = [];
         switch ($this->event_type) {
-			case AutoEvent::TYPE_SPECIFIC_DATE:
+			case AutoEvent::TYPE_SPECIFIC_DATETIME:
 				$rules = [
 					'specific_day' => 'required',
 					'specific_time' => 'required',
@@ -230,7 +230,7 @@ class AutoEvent extends Model
     public static function typeNameSelectOptions()
     {
         return [
-            ['value' => self::TYPE_SPECIFIC_DATE, 'text' => trans('messages.Immediately_or_on_a_specific_date')],
+            ['value' => self::TYPE_SPECIFIC_DATETIME, 'text' => trans('messages.Immediately_or_on_a_specific_date')],
             ['value' => self::TYPE_WEEKLY_RECURRING, 'text' => trans('messages.weekly_recurring')],
 			['value' => self::TYPE_MONTHLY_RECURRING, 'text' => trans('messages.monthly_recurring')],
             ['value' => self::TYPE_LIST_SUBSCRIPTION, 'text' => trans('messages.Event_based_list_subscription')],
@@ -269,12 +269,12 @@ class AutoEvent extends Model
 		
 		// fill other options
 		switch ($this->event_type) {
-			case self::TYPE_SPECIFIC_DATE:
+			case self::TYPE_SPECIFIC_DATETIME:
 				// send at specific date
 				if(!empty($params["specific_day"]) && !empty($params["specific_time"])) {
 					$send_at = \Acelle\Library\Tool::systemTimeFromString($params["specific_day"].' '.$params["specific_time"], \Auth::user()->timezone);
 					$this->updateData([
-						'date' => $send_at->toAtomString()
+						'datetime' => $send_at->toAtomString()
 					]);
 				}
 				break;
@@ -412,10 +412,10 @@ class AutoEvent extends Model
 		
 		$msg = '';
 		switch ($this->event_type) {
-			case self::TYPE_SPECIFIC_DATE:
+			case self::TYPE_SPECIFIC_DATETIME:
 				$msg = trans('messages.on_the_specific_date', [
-					'date' => \Acelle\Library\Tool::dayStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('date'))),
-					'time' => \Acelle\Library\Tool::timeStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('date')))
+					'date' => \Acelle\Library\Tool::dayStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('datetime'))),
+					'time' => \Acelle\Library\Tool::timeStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('datetime')))
 				]);
 				break;
 			case self::TYPE_WEEKLY_RECURRING:				
@@ -607,7 +607,7 @@ class AutoEvent extends Model
     }
     
     /**
-     * Check for specific-datetime events
+     * Check for specific-datetimetime events
      *
      * @return NULL
      */

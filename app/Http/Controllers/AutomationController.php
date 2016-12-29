@@ -181,6 +181,7 @@ class AutomationController extends Controller
         
         // Fill old post data
         if(!empty($request->old())) {
+            var_dump($request->old());
             $first_event->fillAttributes($request->old());
         }
         
