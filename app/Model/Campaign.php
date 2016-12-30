@@ -1889,7 +1889,7 @@ class Campaign extends Model
      * Queue campaign for sending
      *
      */
-    public function queue($trigger = null, $subscribers = null, $delay = 0)
+    public function queue($trigger = null, $subscribers = null)
     {
         $this->ready();
         $job = (new \Acelle\Jobs\RunCampaignJob($this))->delay($this->getDelayInSeconds());

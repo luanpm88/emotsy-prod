@@ -52,7 +52,8 @@ class TestCampaign extends Command
      */
     public function handle()
     {
-        $e = AutoEvent::first();
+        
+        $e = AutoEvent::find(2);
         $e->check();
     }
 

@@ -31,6 +31,8 @@ class AutoTrigger extends Model
         'start_at'
     ];
 
+    protected $dates = ['created_at', 'updated_at', 'start_at'];
+
     /**
      * Associations.
      *

@@ -33,14 +33,6 @@ class AutomatedCampaign extends Campaign
 {
     protected $table = 'campaigns';
     protected $trigger = null;
-    
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-    }
 
     /**
      * Start the auto campaign
@@ -183,12 +175,12 @@ class AutomatedCampaign extends Campaign
      * Queue campaign for sending
      *
      */
-    public function queue($trigger = null, $subscribers = null, $delay = 0)
+    public function queue($subscribers = null, $trigger = null)
     {
         // @note only set the trigger when start()
         // since campaign can be started without queue()
-        MailLog::info('Automated campaign queued `' . $this->name . '`, trigger ID: ' . $trigger->id );
-        $job = (new RunAutomatedCampaignJob($this, $trigger, $subscribers))->delay($delay);
+        MailLog::info(sprintf('Automated campaign `%s` (ID: %s) queued, trigger ID: %s', $this->name, $this->id, $trigger->id ));
+        $job = (new RunAutomatedCampaignJob($this, $trigger, $subscribers));
         dispatch($job);
     }
 }

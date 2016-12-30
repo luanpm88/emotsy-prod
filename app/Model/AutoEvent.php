@@ -64,15 +64,22 @@ class AutoEvent extends Model
     {
         return $this->belongsTo('Acelle\Model\Automation');
     }
+
+    /**
+     * Create custom order for the resource.
+     *
+     * @var void
+     */
+    public function triggersToFollowUp()
+    {
+        $relation = $this->hasMany('Acelle\Model\AutoTrigger');
+        $relation->getQuery()->whereRaw(sprintf('id NOT IN (SELECT COALESCE(preceded_by, 0) FROM %s)', table('auto_triggers')));
+        return $relation;
+    }
 	
 	public function campaigns()
     {
         return $this->belongsToMany('Acelle\Model\AutomatedCampaign', 'auto_campaigns', 'auto_event_id', 'campaign_id');
-    }
-	
-	public function originCampaigns()
-    {
-        return $this->belongsToMany('Acelle\Model\Campaign', 'auto_campaigns', 'auto_event_id', 'campaign_id');
     }
 
     /**
@@ -154,7 +161,13 @@ class AutoEvent extends Model
     public function createFirstCampaign()
     {
         if(!$this->campaigns()->count()) {
-			$this->addCampaign();			
+			$campaign = new Campaign([
+				'name' => 'Untitled automation email'
+			]);
+			$campaign->user_id = $this->automation->user_id;
+			$campaign->is_auto = true;
+			
+			$this->campaigns()->save($campaign);
 		}
     }
 	
@@ -545,8 +558,6 @@ class AutoEvent extends Model
             'track_click' => true,
             'sign_dkim' => true,
 		]);
-		$campaign->mail_list_id = $this->automation->mail_list_id;
-		$campaign->segment_id = $this->automation->segment_id;
 		$campaign->user_id = $this->automation->user_id;
 		$campaign->is_auto = true;
 		$campaign->type = Campaign::TYPE_REGULAR;
@@ -614,13 +625,59 @@ class AutoEvent extends Model
      */
     public function checkForSpecificDate()
     {
+        // this is a one-time triggered automation event
+        // just abort if it is already triggered
+        if (!$this->autoTriggers->isEmpty()) {
+            return;
+        }
+
         $now = Carbon::now();
         $event_date = Carbon::parse($this->getData()['date']);
         $checked = $now->gte($event_date);
-        
+
         if ($checked) {
             MailLog::info('Trigger sending automation `' . $this->automation->name . '`, event ID: ' . $this->id );
             $this->fire();
+        }
+    }
+
+    public function parseDelayTime()
+    {
+        $delay = $this->getData();
+        $modifier = ( $delay['delay_type'] == 'before' ) ? '+' : '-';
+        $base = $delay['delay_value'];
+        $unit = $delay['delay_unit'];
+        return "{$modifier}{$base} {$unit}";
+    }
+
+    /**
+     * Check for specific-datetime events
+     *
+     * @return NULL
+     */
+    public function checkForFollowUp()
+    {
+        $now = Carbon::now();
+        $preceding = $this->previousEvent;
+
+        if (is_null($preceding)) {
+            return;
+        }
+
+        // if already followed
+        if ($preceding->triggersToFollowUp->isEmpty()) {
+            return;
+        }
+        
+        // One event may be triggered multiple times
+        // For example: triggerd by birthday --> make sure to follow all these triggers
+        foreach($preceding->triggersToFollowUp as $trigger) {
+            if ($now->gte($trigger->start_at->modify($this->parseDelayTime()))) {
+                // for follow-up type of auto-event, need to pass a preceding trigger
+                // empty $trigger->subscriber indicates ALL
+                MailLog::info(sprintf('Trigger sending follow-up email for automation %s, preceding event ID: %s, event ID: %s', $this->automation->name, $preceding->id, $this->id));
+                $this->fire($trigger->subscriber, $preceding);
+            }
         }
     }
     
@@ -629,15 +686,18 @@ class AutoEvent extends Model
      *
      * @return NULL
      */
-    public function fire($subscribers = [])
+    public function fire($subscribers = null, $preceding = null)
     {
         // log a trigger record
         $trigger = new AutoTrigger(['start_at' => Carbon::now()]);
+        if (!is_null($preceding)) {
+            $trigger->preceded_by = $preceding->id;
+        }
         $this->autoTriggers()->save($trigger);
         
         // schedule the corresponding job
         foreach($this->campaigns as $campaign) {
-            $campaign->queue($trigger);
+            $campaign->queue($subscribers, $trigger);
         };
     }
 	
