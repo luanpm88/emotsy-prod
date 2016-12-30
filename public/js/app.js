@@ -395,7 +395,15 @@ $(function() {
             msg = msg.replace(/__index__/g, index);
             msg = msg.replace(/__type__/g, type_name);
             
-            $('.field-list').append($('<div>').html(msg).find("table tbody").html());
+            $('.field-list').append($('<div>').html(msg).find("table tbody").html());            
+            $('.field-list tr').last().find('.pickadate').pickadate({format: LANG_DATE_FORMAT});
+            
+            // Time picker
+            if ($('.field-list tr').last().find(".pickadatetime").length) {
+                $('.field-list tr').last().find(".pickadatetime").AnyTime_picker({
+                    format: LANG_ANY_DATETIME_FORMAT
+                });
+            }
             
             //
             // Switchery
@@ -611,6 +619,13 @@ $(function() {
     if ($(".pickatime").length) {
         $(".pickatime").AnyTime_picker({
             format: "%H:%i"
+        });
+    }
+    
+    // DateTime picker
+    if ($(".pickadatetime").length) {
+        $(".pickadatetime").AnyTime_picker({
+            format: LANG_ANY_DATETIME_FORMAT
         });
     }
     

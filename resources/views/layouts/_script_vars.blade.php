@@ -5,5 +5,6 @@
 		var LANG_OK = '{{ trans('messages.ok') }}';
 		var LANG_DELETE_VALIDATE = '{{ trans('messages.delete_validate') }}';
 		var LANG_DATE_FORMAT = '{{ trans('messages.j_date_format') }}';
+		var LANG_ANY_DATETIME_FORMAT = '{{ trans('messages.any_datetime_format') }}';
 		var CSRF_TOKEN = "{{ csrf_token() }}";
 	</script>
