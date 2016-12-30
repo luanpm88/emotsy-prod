@@ -599,7 +599,9 @@ class AutoEvent extends Model
      */
     public function check()
     {
+        
         $method = $this->camelize('check-for-' . $this->event_type);
+        var_dump($method);
         $this->$method();
     }
     
@@ -623,7 +625,7 @@ class AutoEvent extends Model
      *
      * @return NULL
      */
-    public function checkForSpecificDate()
+    public function checkForSpecificDatetime()
     {
         // this is a one-time triggered automation event
         // just abort if it is already triggered
@@ -632,7 +634,7 @@ class AutoEvent extends Model
         }
 
         $now = Carbon::now();
-        $event_date = Carbon::parse($this->getData()['date']);
+        $event_date = Carbon::parse($this->getData()['datetime']);
         $checked = $now->gte($event_date);
 
         if ($checked) {
@@ -676,7 +678,7 @@ class AutoEvent extends Model
                 // for follow-up type of auto-event, need to pass a preceding trigger
                 // empty $trigger->subscriber indicates ALL
                 MailLog::info(sprintf('Trigger sending follow-up email for automation %s, preceding event ID: %s, event ID: %s', $this->automation->name, $preceding->id, $this->id));
-                $this->fire($trigger->subscriber, $preceding);
+                $this->fire($trigger->subscriber, $trigger);
             }
         }
     }
@@ -686,12 +688,12 @@ class AutoEvent extends Model
      *
      * @return NULL
      */
-    public function fire($subscribers = null, $preceding = null)
+    public function fire($subscribers = null, $preceding_trigger = null)
     {
         // log a trigger record
         $trigger = new AutoTrigger(['start_at' => Carbon::now()]);
-        if (!is_null($preceding)) {
-            $trigger->preceded_by = $preceding->id;
+        if (!is_null($preceding_trigger)) {
+            $trigger->preceded_by = $preceding_trigger->id;
         }
         $this->autoTriggers()->save($trigger);
         
