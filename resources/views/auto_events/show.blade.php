@@ -48,7 +48,6 @@
 														<span class="label label-flat bg-{{ $auto_event->status }}">{{ $auto_event->status }}</span>
 													</span>
 													<span class="ml-20">														
-															
 														@if (\Gate::allows('enable', $auto_event))
 															<a
 																href="{{ action('AutoEventController@enable', $auto_event->uid) }}"
@@ -57,7 +56,6 @@
 																	<i class=" icon-checkmark4"></i> {{ trans('messages.enable') }}
 															</a>
 														@endif
-														
 														@if (\Gate::allows('disable', $auto_event))
 															<a
 																href="{{ action('AutoEventController@disable', $auto_event->uid) }}"
@@ -66,7 +64,6 @@
 																	<i class="icon-blocked"></i> {{ trans('messages.disable') }}
 															</a>
 														@endif
-														
 														<button
 															data-confirm="{{ trans('messages.delete_auto_event_confirm') }}"
 															data-url="{{ action('AutoEventController@delete', $auto_event->uid) }}"
@@ -79,19 +76,16 @@
 											</form>
 										</div>
                                     </div>
-                                        
                                     <div class="event-campaigns-box box-out">
 										<div class="event-campaigns-container" data-url="{{ action('AutoEventController@campaigns', $auto_event->uid) }}">
-											
 										</div>
-											
+
 										<div class="text-center">
 											<button class="btn btn-xs bg-teal event-campaign-add" data-url="{{ action('AutoEventController@addCampaign', $auto_event->uid) }}">
 												<i class="icon-plus2"></i> {{ trans('messages.add_email') }}
 											</button>
 										</div>
 									</div>
-                                    
                                     <br /><br />
 								</div>
 								<!-- /sales stats -->
