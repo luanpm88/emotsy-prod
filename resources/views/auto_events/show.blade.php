@@ -36,13 +36,15 @@
 														'options' => Acelle\Model\AutoEvent::emailEventOptions(),
 														'rules' => []
 													])
+													
+													<button class="btn btn-primary bg-primary-800 btn-save"><i class="icon-checkmark4 mr-5"></i> {{ trans('messages.save') }}</button>
 												</h6>
 												<div class="heading-elements">
 													<span class="text-muted2 list-status">
 														<span class="label label-flat bg-{{ $auto_event->status }}">{{ $auto_event->status }}</span>
 													</span>
 													<span class="ml-20">
-														<button class="btn btn-info bg-info-800 btn-save"><i class="icon-checkmark4 mr-5"></i> {{ trans('messages.save') }}</button>
+														
 															
 														@if (\Gate::allows('enable', $auto_event))
 															<a
