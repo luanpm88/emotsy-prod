@@ -1486,13 +1486,21 @@ ul.automation-confirm li.child-row h5 {
 .event-inactive:hover .event-campaigns-box, .event-inactive:hover .panel {
     opacity: 1;
 }*/
+.auto-event-line.changing {
+    margin-bottom: 50px;
+}
 .event-inactive .timeline-icon-i {
     background: #777;
 }
-.auto-event-line .btn-save {
-    display: none;
+.auto-event-line .btn-controls .btn {
+    line-height: 21px;
+    margin-top: -4px;    
 }
-.auto-event-line.changing .btn-save {
+.auto-event-line .btn-controls {
+    display: none;
+    margin-left: 20px;
+}
+.auto-event-line.changing .btn-controls {
     display: inline;
 }
 .auto-event-line.changing .link-out {
@@ -1510,11 +1518,6 @@ ul.automation-confirm li.child-row h5 {
 .bg-slate-800 .AnyTime-win {
     color: #333;
 }
-.auto-event-line .btn-save {
-    line-height: 21px;
-    margin-top: -4px;
-    margin-left: 20px;
-}
 .auto-event-line.changing .timeline-content {
     margin-bottom: 20px;
     border-color: #aaa;
@@ -1527,7 +1530,10 @@ ul.automation-confirm li.child-row h5 {
     width: 95%;
     margin-left: 0 !important;
 }
-.auto-event-line.changing:before {
+.auto-event-line.changing .before {
+    display: none;
+}
+.auto-event-line.changing .before {
     content: "";
     text-indent: -9000px;
     position: fixed;
@@ -1537,6 +1543,7 @@ ul.automation-confirm li.child-row h5 {
     height: 100%;
     background: rgba(255,255,255,0.5);
     z-index: 1;
+    display: block;
 }
 @media (min-width: 1024px) {
     .auto-event-line.changing .timeline-content {

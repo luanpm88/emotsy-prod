@@ -1044,9 +1044,45 @@ $(function() {
             });
         });
     });
+    
+    // Auto event saving
+    $(document).on('click', '.auto-event-line .btn-close', function(e) {
+        e.preventDefault();
+        
+        var box = $(this).parents('.auto-event-line');        
+        
+        if(box.hasClass('changing')) {
+            // svae current value
+            box.find('input, select').each(function() {
+                $(this).val($(this).attr('old-value')).trigger("change");
+                $(this).trigger("change");
+            });
+            
+            box.removeClass('changing');
+        }
+    });
+    
+    // Auto event saving
+    $(document).on('click', '.auto-event-line .before', function(e) {
+        e.preventDefault();
+        
+        var box = $(this).parents('.auto-event-line');        
+        box.find('.btn-close').trigger('click');        
+    });
+    
+    // save current auto event values
+    $(document).on('click', '.auto-event-line', function() {
+        if(!$(this).hasClass('changing')) {
+            // svae current value
+            $(this).find('input, select').each(function() {
+                $(this).attr('old-value', $(this).val());
+            });
+        }
+    });
+    
     // auto event change value
     $(document).on('change keyup', '.auto-event-line input, .auto-event-line select', function() {
-       $(this).parents('.auto-event-line').addClass('changing');
+        $(this).parents('.auto-event-line').addClass('changing');
     });
     
     // Grap link with data-method attribute

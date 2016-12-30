@@ -1,5 +1,6 @@
                                 <!-- Sales stats -->
 								<div id="event-{{ $auto_event->uid }}" class="timeline-row condition-line auto-event-line event-{{ $auto_event->status }}" rel="{{ $auto_event->uid }}">
+									<div class="before"></div>
 									<div class="timeline-icon timeline-icon-i">
                                         <!--<i class="icon-paperplane text-teal"></i>-->
 									</div>
@@ -37,7 +38,10 @@
 														'rules' => []
 													])
 													
-													<button class="btn btn-primary bg-primary-800 btn-save"><i class="icon-checkmark4 mr-5"></i> {{ trans('messages.save') }}</button>
+													<span class="btn-controls">
+														<button class="btn btn-primary bg-primary-800 btn-save"><i class="icon-checkmark4 mr-5"></i> {{ trans('messages.save') }}</button>
+														<a class="btn btn-primary bg-grey-600 btn-close"><i class="icon-cross2 mr-5"></i> {{ trans('messages.close') }}</a>
+													</span>
 												</h6>
 												<div class="heading-elements">
 													<span class="text-muted2 list-status">
