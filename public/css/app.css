@@ -1509,8 +1509,8 @@ ul.automation-confirm li.child-row h5 {
 .auto-event-line.changing .box-out {
     opacity: 0.3;
 }
-.tabable-select-radio .radio .choice {
-    line-height: 30px;
+.radio .choice {
+    line-height: 28px;
 }
 .picker__table td {
     padding: 0 !important;

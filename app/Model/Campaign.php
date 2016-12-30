@@ -81,6 +81,21 @@ class Campaign extends Model
             'reply_to' => 'required|email',
         );
     }
+    
+    /**
+     * Get campaign validation rules.
+     */
+    public function automatedCampaignRules()
+    {
+        return array(
+            'type' => 'required',
+            'name' => 'required',
+            'subject' => 'required',
+            'from_email' => 'required|email',
+            'from_name' => 'required',
+            'reply_to' => 'required|email',
+        );
+    }
 
     /**
      * Get the segment of the campaign.
@@ -1962,5 +1977,18 @@ class Campaign extends Model
         $cond = $cond && ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid());
         
         return $cond;
+    }
+    
+    /**
+     * Get type select options.
+     *
+     * @return array
+     */
+    public static function getTypeSelectOptions()
+    {
+        return [
+            ['text' => trans('messages.' . self::TYPE_REGULAR), 'value' => self::TYPE_REGULAR],
+            ['text' => trans('messages.' . self::TYPE_PLAIN_TEXT), 'value' => self::TYPE_PLAIN_TEXT]
+        ];
     }
 }

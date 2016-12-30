@@ -34,46 +34,56 @@
 					<div class="row">
 						<div class="col-md-6 list_select_box" target-box="segments-select-box" segments-url="{{ action('SegmentController@selectBox') }}">
 							@include('helpers.form_control', ['type' => 'text',
-                                                                'name' => 'name',
-                                                                'label' => trans('messages.name_your_email'),
-                                                                'value' => $campaign->name,
-                                                                'rules' => $campaign->rules(),
-                                                                'help_class' => 'campaign'
-                                                            ])
+								'name' => 'name',
+								'label' => trans('messages.name_your_email'),
+								'value' => $campaign->name,
+								'rules' => $campaign->automatedCampaignRules(),
+								'help_class' => 'campaign'
+							])
+							
+                            @include('helpers.form_control', ['type' => 'text',
+								'name' => 'subject',
+								'label' => trans('messages.email_subject'),
+								'value' => $campaign->subject,
+								'rules' => $campaign->automatedCampaignRules(),
+								'help_class' => 'campaign'
+							])
                                                             
                             @include('helpers.form_control', ['type' => 'text',
-                                                                'name' => 'subject',
-                                                                'label' => trans('messages.email_subject'),
-                                                                'value' => $campaign->subject,
-                                                                'rules' => $campaign->rules(),
-                                                                'help_class' => 'campaign'
-                                                            ])
-                                                            
-                            @include('helpers.form_control', ['type' => 'text',
-                                                                'name' => 'from_name',
-                                                                'label' => trans('messages.from_name'),
-                                                                'value' => $campaign->from_name,
-                                                                'rules' => $campaign->rules(),
-                                                                'help_class' => 'campaign'
-                                                            ])
+								'name' => 'from_name',
+								'label' => trans('messages.from_name'),
+								'value' => $campaign->from_name,
+								'rules' => $campaign->automatedCampaignRules(),
+								'help_class' => 'campaign'
+							])
                             
                             @include('helpers.form_control', ['type' => 'text',
-                                                                'name' => 'from_email',
-                                                                'label' => trans('messages.from_email'),
-                                                                'value' => $campaign->from_email,
-                                                                'rules' => $campaign->rules(),
-                                                                'help_class' => 'campaign'
-                                                            ])
+								'name' => 'from_email',
+								'label' => trans('messages.from_email'),
+								'value' => $campaign->from_email,
+								'rules' => $campaign->automatedCampaignRules(),
+								'help_class' => 'campaign'
+							])
                                                             
                             @include('helpers.form_control', ['type' => 'text',
-                                                                'name' => 'reply_to',
-                                                                'label' => trans('messages.reply_to'),
-                                                                'value' => $campaign->reply_to,
-                                                                'rules' => $campaign->rules(),
-                                                                'help_class' => 'campaign'
-                                                            ])
+								'name' => 'reply_to',
+								'label' => trans('messages.reply_to'),
+								'value' => $campaign->reply_to,
+								'rules' => $campaign->automatedCampaignRules(),
+								'help_class' => 'campaign'
+							])
 						</div>
 						<div class="col-md-6 segments-select-box">
+							@include('helpers.form_control', [
+								'type' => 'radio',
+								'name' => 'type',
+								'class' => '',
+								'label' => trans('messages.choose_email_type'),
+								'value' => $campaign->type,
+								'options' => Acelle\Model\Campaign::getTypeSelectOptions(),
+								'rules' => $campaign->automatedCampaignRules(),
+							])
+							
                             <div class="form-group checkbox-right-switch">
                                 @include('helpers.form_control', ['type' => 'checkbox',
                                                                 'name' => 'track_open',
@@ -81,7 +91,7 @@
                                                                 'value' => $campaign->track_open,
                                                                 'options' => [false,true],
                                                                 'help_class' => 'campaign',
-                                                                'rules' => $campaign->rules()
+                                                                'rules' => $campaign->automatedCampaignRules()
                                                             ])
                                 
                                 @include('helpers.form_control', ['type' => 'checkbox',
@@ -90,7 +100,7 @@
                                                                 'value' => $campaign->track_click,
                                                                 'options' => [false,true],
                                                                 'help_class' => 'campaign',
-                                                                'rules' => $campaign->rules()
+                                                                'rules' => $campaign->automatedCampaignRules()
                                                             ])
                                 
                                 @include('helpers.form_control', ['type' => 'checkbox',
@@ -99,7 +109,7 @@
                                                                 'value' => $campaign->sign_dkim,
                                                                 'options' => [false,true],
                                                                 'help_class' => 'campaign',
-                                                                'rules' => $campaign->rules()
+                                                                'rules' => $campaign->automatedCampaignRules()
                                                             ])
                             </div>
 						</div>

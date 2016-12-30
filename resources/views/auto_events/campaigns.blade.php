@@ -14,6 +14,12 @@
 														</td>
 														<td width="20%">
 															<h6 class="text-semibold mt-0 mb-0">
+																{{ trans('messages.' . $campaign->type) }}
+															</h6>
+															<span class="text-muted">{{ trans('messages.type') }}</span>
+														</td>
+														<td width="20%">
+															<h6 class="text-semibold mt-0 mb-0">
 																{{ $campaign->subject ? $campaign->subject : '--' }}
 															</h6>
 															<span class="text-muted">{{ trans('messages.subject') }}</span>
@@ -23,13 +29,13 @@
 																{{ $campaign->from_name ? $campaign->from_name : '--' }}
 															</h6>
 															<span class="text-muted">{{ trans('messages.from_name') }}</span>
-														</td>
-														<td class="text-right">
+														</td>														
+														<td class="text-right text-nowrap">
 															<a href="{{ action('AutoEventController@campaignSetup', ['uid' => $auto_event->uid, 'campaign_uid' => $campaign->uid]) }}" class="btn btn-info bg-info-800 link-out">
 																@if ($campaign->autoCampaignDesigned())
 																	<i class="icon-pencil mr-5"></i> {{ trans('messages.edit') }}
 																@else
-																	<i class="icon-pencil mr-5"></i> {{ trans('messages.design_email') }}
+																	<i class="icon-pencil mr-5"></i> {{ trans('messages.design') }}
 																@endif
 															</a>
 															<button class="btn btn-default auto-campaign-delete"

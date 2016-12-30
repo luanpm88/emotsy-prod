@@ -47,15 +47,14 @@
 													<span class="text-muted2 list-status">
 														<span class="label label-flat bg-{{ $auto_event->status }}">{{ $auto_event->status }}</span>
 													</span>
-													<span class="ml-20">
-														
+													<span class="ml-20">														
 															
 														@if (\Gate::allows('enable', $auto_event))
 															<a
 																href="{{ action('AutoEventController@enable', $auto_event->uid) }}"
 																link-method="PATCH"
 																class="btn btn-default auto-event-action link-method link-out">
-																	<i class=" icon-checkmark4"></i> Enable
+																	<i class=" icon-checkmark4"></i> {{ trans('messages.enable') }}
 															</a>
 														@endif
 														
@@ -64,7 +63,7 @@
 																href="{{ action('AutoEventController@disable', $auto_event->uid) }}"
 																link-method="PATCH"
 																class="btn btn-default auto-event-action link-method link-out">
-																	<i class="icon-blocked"></i> Disable
+																	<i class="icon-blocked"></i> {{ trans('messages.disable') }}
 															</a>
 														@endif
 														

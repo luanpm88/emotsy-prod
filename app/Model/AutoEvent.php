@@ -549,6 +549,7 @@ class AutoEvent extends Model
 		$campaign->segment_id = $this->automation->segment_id;
 		$campaign->user_id = $this->automation->user_id;
 		$campaign->is_auto = true;
+		$campaign->type = Campaign::TYPE_REGULAR;
 		$campaign->save();
 		
 		// Auto Campaign

@@ -1258,6 +1258,7 @@ return [
     'make_request_to_run_automation' => 'Make the following request to trigger your automation:<br /> <code>:command</code>',
     'automation.updated' => 'Automation was successfully updated',
     'any_datetime_format' => '%Z-%m-%d, %H:%i',
+    'choose_email_type' => 'Choose email type',
 ];
 
 
