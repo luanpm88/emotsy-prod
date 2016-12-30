@@ -40,7 +40,7 @@
 													
 													<span class="btn-controls">
 														<button class="btn btn-primary bg-primary-800 btn-save"><i class="icon-checkmark4 mr-5"></i> {{ trans('messages.save') }}</button>
-														<a class="btn btn-primary bg-grey-600 btn-close"><i class="icon-cross2 mr-5"></i> {{ trans('messages.close') }}</a>
+														<a class="btn btn-warning bg-grey-600 btn-close"><i class="icon-cross2 mr-5"></i> {{ trans('messages.close') }}</a>
 													</span>
 												</h6>
 												<div class="heading-elements">
