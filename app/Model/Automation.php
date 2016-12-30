@@ -180,7 +180,7 @@ class Automation extends Model
         
         if(!is_object($auto_event)) {
             $auto_event = new AutoEvent([
-                'event_type' => AutoEvent::TYPE_SPECIFIC_DATE,
+                'event_type' => AutoEvent::TYPE_SPECIFIC_DATETIME,
             ]);
 			$auto_event->status = AutoEvent::STATUS_DRAFT;
 			
