@@ -1,5 +1,5 @@
                                     @foreach($campaigns as $key => $campaign)
-										<div class="panel panel-flat panel-auto-campaign timeline-content ml-20">
+										<div class="panel panel-flat panel-auto-campaign timeline-content">
 											<div class="panel-body">
 												<table>
 													<tr>

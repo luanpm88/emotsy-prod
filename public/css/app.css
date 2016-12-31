@@ -1549,4 +1549,13 @@ ul.automation-confirm li.child-row h5 {
     .auto-event-line.changing .timeline-content {
         width: 95%;
     }
+    .panel-auto-campaign {
+        margin-left: 40px;
+    }
+}
+.timeline-event .panel {
+    border: solid 1px #aaa;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
 }
