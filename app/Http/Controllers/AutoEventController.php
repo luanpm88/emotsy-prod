@@ -211,7 +211,9 @@ class AutoEventController extends Controller
             if(isset($request->template_source)) {
                 return redirect()->action('AutoEventController@templatePreview', ['uid' => $auto_event->uid, 'campaign_uid' => $campaign->uid]);
             } else {
-                return redirect()->action('AutomationController@workflow', $auto_event->automation->uid);
+                $request->session()->flash('alert-success', trans('messages.email.updated'));
+                $url = action('AutomationController@workflow', $auto_event->automation->uid) . "#event-" . $auto_event->uid;
+                return redirect()->away($url);
             }
         }
         

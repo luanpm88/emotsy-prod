@@ -31,11 +31,11 @@
 										1
 									</div>
 		
-									<div class="panel timeline-content">
+									<div class="panel panel-flat timeline-content">
 										<div class="panel-heading">
-											<h6 class="panel-title text-semibold">
+											<h5 class="panel-title text-semibold">
 												{{ trans('messages.trigger_workflow_when_the_following_conditions_are_met') }}
-											</h6>
+											</h5>
 											<div class="heading-elements">
 											</div>
 										</div>

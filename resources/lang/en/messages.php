@@ -1259,6 +1259,7 @@ return [
     'automation.updated' => 'Automation was successfully updated',
     'any_datetime_format' => '%Z-%m-%d, %H:%i',
     'choose_email_type' => 'Choose email type',
+    'email.updated' => 'Email was successfully updated',
 ];
 
 
