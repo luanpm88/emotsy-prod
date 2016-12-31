@@ -1260,6 +1260,7 @@ return [
     'any_datetime_format' => '%Z-%m-%d, %H:%i',
     'choose_email_type' => 'Choose email type',
     'email.updated' => 'Email was successfully updated',
+    'from_other_campaigns' => 'Other campaigns',
 ];
 
 

@@ -831,4 +831,14 @@ class User extends Authenticatable
         }
         echo "\n";
     }
+    
+    /**
+     * Get not auto campaign.
+     *
+     * @return array
+     */
+    public function getNormalCampaigns()
+    {
+        return $this->campaigns()->where('is_auto', '=', false);
+    }
 }

@@ -181,6 +181,13 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
+    Route::post('campaigns/{uid}/image/save', 'CampaignController@saveImage');
+    Route::get('campaigns/{uid}/image', 'CampaignController@image');
+    Route::get('campaigns/{uid}/preview', 'CampaignController@preview');
+    
+    Route::get('campaigns/templates/list', 'CampaignController@templateList');
+    Route::patch('campaigns/{uid}/templates/choose/from/{from_uid}', 'CampaignController@campaignTemplateChoose');
+    
     Route::post('campaigns/send-test-email', 'CampaignController@sendTestEmail');
     Route::get('campaigns/delete/confirm', 'CampaignController@deleteConfirm');
     Route::get('campaigns/{message_id}/open', 'CampaignController@open');

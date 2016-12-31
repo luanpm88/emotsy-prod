@@ -3,6 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 class CampaignController extends Controller
 {
@@ -28,7 +29,7 @@ class CampaignController extends Controller
     public function index(Request $request)
     {
         $user = $request->user();
-        $campaigns = $user->campaigns()->where('is_auto', '=', false);
+        $campaigns = $user->getNormalCampaigns();
 
         return view('campaigns.index', [
             'campaigns' => $campaigns,
@@ -320,11 +321,6 @@ class CampaignController extends Controller
             if (trim($request->plain) == '') {
                 $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($request->html)));
             }
-            
-            //// update content
-            //$campaign->html = preg_replace('/href\=\'([^\']*\{)/',"href='{", $campaign->html);
-            //$campaign->html = preg_replace('/href\=\"([^\"]*\{)/','href="{', $campaign->html);
-            
             $campaign->save();
             
             if(isset($request->template_source)) {
@@ -389,9 +385,14 @@ class CampaignController extends Controller
         
         $campaign->html = $template->content;
         $campaign->template_source = $template->source;
+        // $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($campaign->html)));
         $campaign->save();
 
-        return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
+        if(!$campaign->is_auto) {
+            return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
+        } else {
+            return redirect()->action('AutoEventController@templatePreview', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid]);
+        }
     }
     
     /**
@@ -1487,5 +1488,155 @@ class CampaignController extends Controller
         $sending = $campaign->sendTestEmail($request->send_test_email);
         
         return json_encode($sending);
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateList(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);        
+        $request->request->add(['source' => 'template']);
+
+        $campaigns = \Acelle\Model\Campaign::search($request, 'all')
+            ->where('id', '!=', $campaign->id)
+            ->where('html', '!=', "")
+            ->paginate($request->per_page);
+
+        return view('campaigns._template_list', [
+            'campaigns' => $campaigns,
+            'uid' => $campaign->uid
+        ]);
+    }
+    
+    /**
+     * Preview template.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function preview($id)
+    {        
+        $campaign = \Acelle\Model\Campaign::findByUid($id);
+        
+        // authorize
+        if (\Gate::denies('preview', $campaign)) {
+            return $this->not_authorized();
+        }
+        
+        // Convert to inline css if template source is builder
+        if ($campaign->template_source == 'builder') {
+            $cssToInlineStyles = new CssToInlineStyles();
+            $html = $campaign->html;
+            $css = file_get_contents(public_path("css/res_email.css"));
+            
+            // output
+            $campaign->html = $cssToInlineStyles->convert(
+                $html,
+                $css
+            );
+        }
+
+        return view('campaigns.preview', [
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Save campaign screenshot.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function saveImage(Request $request, $id)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($id);
+
+        // authorize
+        if (\Gate::denies('saveImage', $campaign)) {
+            return $this->not_authorized();
+        }
+
+        $upload_loca = 'app/campaign_templates/';
+        $upload_path = storage_path($upload_loca);
+        if (!file_exists($upload_path)) {
+            mkdir($upload_path, 0777, true);
+        }
+        $filename = 'screenshot-'.$id.'.png';
+
+        // remove "data:image/png;base64,"
+        $uri = substr($request->data, strpos($request->data, ',') + 1);
+
+        // save to file
+        file_put_contents($upload_path.$filename, base64_decode($uri));
+
+        // create thumbnails
+        $img = \Image::make($upload_path.$filename);
+        $img->fit(178, 200)->save($upload_path.$filename.'.thumb.jpg');
+
+        // save
+        $campaign->image = $upload_loca.$filename;
+        $campaign->save();
+    }
+    
+    /**
+     * Template screenshot.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function image(Request $request)
+    {
+        // Get current user
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('image', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        if (!empty($campaign->image)) {
+            $img = \Image::make(storage_path($campaign->image).'.thumb.jpg');
+        } else {
+            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
+        }
+
+        return $img->response();
+    }
+    
+    /**
+     * Choose an existed campaign template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function campaignTemplateChoose(Request $request)
+    {
+        $user = $request->user();
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $from_campaign = \Acelle\Model\Campaign::findByUid($request->from_uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
+        $campaign->html = $from_campaign->html;
+        $campaign->template_source = $from_campaign->template_source;
+        // $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($campaign->html)));
+        $campaign->save();
+        
+        if(!$campaign->is_auto) {
+            return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
+        } else {
+            return redirect()->action('AutoEventController@templatePreview', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid]);
+        }
     }
 }

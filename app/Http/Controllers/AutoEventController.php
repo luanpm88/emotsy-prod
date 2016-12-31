@@ -208,7 +208,7 @@ class AutoEventController extends Controller
             
             $campaign->save();
             
-            if(isset($request->template_source)) {
+            if(isset($request->template_source) || !$campaign->unsubscribe_url_valid()) {
                 return redirect()->action('AutoEventController@templatePreview', ['uid' => $auto_event->uid, 'campaign_uid' => $campaign->uid]);
             } else {
                 $request->session()->flash('alert-success', trans('messages.email.updated'));

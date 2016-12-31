@@ -24,7 +24,7 @@
 					{{ csrf_field() }}
 					
 					<div class="row">
-						<div class="col-md-12 tabable-select-radio">
+						<div class="col-md-6 tabable-select-radio">
 							<h3 class="mt-0">{{ trans('messages.How_to_trigger_automation') }}</h3>
 							@include('helpers.form_control', [
 								'type' => 'radio',

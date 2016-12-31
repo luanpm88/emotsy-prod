@@ -950,11 +950,23 @@ class Campaign extends Model
     public static function filter($request)
     {
         $user = $request->user();
-        $query = self::where('user_id', '=', $user->id)->where('is_auto', '=', false);
+        $query = self::where('user_id', '=', $user->id);
+        
+        // Get campaign from ... (all|normal|automated)
+        if($request->source == 'template') {
+            $query = $query->where('html', '!=', null);
+        } else {
+            $query = $query->where('is_auto', '=', false);
+        }
 
         // Keyword
         if (!empty(trim($request->keyword))) {
             $query = $query->where('name', 'like', '%'.$request->keyword.'%');
+        }
+        
+        // Status
+        if (!empty(trim($request->statuses))) {
+            $query = $query->whereIn('status', explode(",", $request->statuses));
         }
 
         return $query;

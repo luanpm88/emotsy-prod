@@ -32,8 +32,8 @@
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 											</span>											
-											@if (!empty($campaign->autoEvents))
-												<a href="{{ action('AutoEventController@templateChoose', ['uid' => $campaign->autoEvents()->first()->uid, 'campaign_uid' => $campaign->uid, 'template_uid' => $item->uid]) }}" type="button" class="btn bg-teal btn-icon"> <i class="icon-checkmark4"></i> {{ trans('messages.choose') }}</a>
+											@if (is_object($campaign->autoEvent()))
+												<a href="{{ action('AutoEventController@templateChoose', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid, 'template_uid' => $item->uid]) }}" type="button" class="btn bg-teal btn-icon"> <i class="icon-checkmark4"></i> {{ trans('messages.choose') }}</a>
 											@else
 												<a href="{{ action('CampaignController@templateChoose', ['uid' => $campaign->uid, 'template_uid' => $item->uid]) }}" type="button" class="btn bg-teal btn-icon"> <i class="icon-checkmark4"></i> {{ trans('messages.choose') }}</a>
 											@endif
