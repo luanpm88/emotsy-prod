@@ -42,9 +42,4 @@ class AutoTrigger extends Model
     {
         return $this->belongsTo('Acelle\Model\AutoEvent');
     }
-
-    public function setFinished() {
-        $this->finish_at = Carbon::now();
-        $this->save();
-    }
 }

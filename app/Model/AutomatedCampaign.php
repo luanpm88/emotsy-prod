@@ -95,9 +95,6 @@ class AutomatedCampaign extends Campaign
                 
                 // track the auto trigger id
                 $response['auto_trigger_id'] = $this->trigger->id;
-
-                // record the finish datetime of the campaign triggered
-                $this->trigger->setFinished();
                 
                 // record to tracking log
                 $this->trackMessage($response, $subscriber, $server, $msgId);

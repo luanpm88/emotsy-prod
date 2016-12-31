@@ -166,7 +166,8 @@ class AutoEvent extends Model
 			]);
 			$campaign->user_id = $this->automation->user_id;
 			$campaign->is_auto = true;
-			
+			$campaign->type = Campaign::TYPE_REGULAR;
+
 			$this->campaigns()->save($campaign);
 		}
     }
@@ -559,8 +560,8 @@ class AutoEvent extends Model
             'sign_dkim' => true,
 		]);
 		$campaign->user_id = $this->automation->user_id;
-		$campaign->is_auto = true;
-		$campaign->type = Campaign::TYPE_REGULAR;
+        $campaign->is_auto = true;
+        $campaign->type = Campaign::TYPE_REGULAR;
 		$campaign->save();
 		
 		// Auto Campaign
@@ -646,7 +647,7 @@ class AutoEvent extends Model
     public function parseDelayTime()
     {
         $delay = $this->getData();
-        $modifier = ( $delay['delay_type'] == 'before' ) ? '+' : '-';
+        $modifier = ( $delay['delay_type'] == 'before' ) ? '-' : '+';
         $base = $delay['delay_value'];
         $unit = $delay['delay_unit'];
         return "{$modifier}{$base} {$unit}";
@@ -682,6 +683,11 @@ class AutoEvent extends Model
             }
         }
     }
+
+    public function checkForFollowUpOpened()
+    {
+        
+    }
     
     /**
      * Actually send automation email
@@ -701,6 +707,16 @@ class AutoEvent extends Model
         foreach($this->campaigns as $campaign) {
             $campaign->queue($subscribers, $trigger);
         };
+    }
+
+    /**
+     * Time unit options.
+     *
+     * @return array
+     */
+    public function getOpenedMessagesToFollow()
+    {
+        return TrackingLog::join('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')->where('auto_event_id', $this->previousEvent->id)->whereRaw(sprintf('tracking_logs.subscriber_id NOT IN (SELECT subscriber_id FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
     }
 	
 	/**
