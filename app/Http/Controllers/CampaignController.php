@@ -437,7 +437,9 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
         
-        echo $campaign->html;
+        return view('campaigns.preview', [
+            'campaign' => $campaign,
+        ]);
     }
 
     /**
