@@ -686,7 +686,15 @@ class AutoEvent extends Model
 
     public function checkForFollowUpOpened()
     {
-        
+        $now = Carbon::now();
+        $logs = $this->getOpenedMessagesToFollow();
+        foreach($logs as $log) {
+            if ($now->gte($log->created_at->modify($this->parseDelayTime()))) {
+                MailLog::info(sprintf('Trigger sending follow-up opened email for automation `%s`, subscriber: %s, event ID: %s', $this->automation->name, $log->subscriber_id, $this->id));
+                $this->fire(collect([$log->subscriber]));
+                // a more verbal way is: fire(Subscriber::where('id', $log->subscriber_id)
+            }
+        }
     }
     
     /**
@@ -696,6 +704,7 @@ class AutoEvent extends Model
      */
     public function fire($subscribers = null, $preceding_trigger = null)
     {
+        var_dump(sizeof($subscribers));
         // log a trigger record
         $trigger = new AutoTrigger(['start_at' => Carbon::now()]);
         if (!is_null($preceding_trigger)) {
@@ -716,7 +725,7 @@ class AutoEvent extends Model
      */
     public function getOpenedMessagesToFollow()
     {
-        return TrackingLog::join('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')->where('auto_event_id', $this->previousEvent->id)->whereRaw(sprintf('tracking_logs.subscriber_id NOT IN (SELECT subscriber_id FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
+        return TrackingLog::select('tracking_logs.*')->join('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')->where('auto_event_id', $this->previousEvent->id)->whereRaw(sprintf('tracking_logs.subscriber_id NOT IN (SELECT subscriber_id FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
     }
 	
 	/**
