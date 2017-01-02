@@ -678,6 +678,21 @@ class AutoEvent extends Model
     {
         if ($this->matchMonth() && $this->matchWeekOfMonth() && $this->matchDayOfWeek() && !$this->hasTriggeredToday()) {
             MailLog::info(sprintf('Trigger sending automation `%s`, event type: %s, event ID: %s', $this->automation->name, $this->event_type, $this->id));
+            // @todo: check time as well
+            $this->fire();
+        }
+    }
+
+    /**
+     * Check for weekly-recurring events
+     *
+     * @return NULL
+     */
+    public function checkForMonthlyRecurring()
+    {
+        if ($this->matchMonth() && $this->matchDayOfMonth() && !$this->hasTriggeredToday()) {
+            MailLog::info(sprintf('Trigger sending automation `%s`, event type: %s, event ID: %s', $this->automation->name, $this->event_type, $this->id));
+            // @todo: check time as well
             $this->fire();
         }
     }
@@ -694,14 +709,25 @@ class AutoEvent extends Model
     }
 
     /**
+     * Check if the current date matches the scheduled month
+     *
+     * @return NULL
+     */
+    public function matchDayOfMonth()
+    {
+        $days = $this->getDataValue('days');
+        return in_array(Carbon::now()->day, $days, false);
+    }
+
+    /**
      * Check if the current date matches the scheduled day of week
      *
      * @return NULL
      */
     public function matchDayOfWeek()
     {
-        $months = $this->getDataValue('weekdays');
-        return in_array(Carbon::now()->dayOfWeek, $months, false);
+        $weekdays = $this->getDataValue('weekdays');
+        return in_array(Carbon::now()->dayOfWeek, $weekdays, false);
     }
     
     /**
@@ -711,8 +737,8 @@ class AutoEvent extends Model
      */
     public function matchWeekOfMonth()
     {
-        $months = $this->getDataValue('weeks');
-        return in_array(Carbon::now()->weekOfMonth, $months, false);
+        $weeks = $this->getDataValue('weeks');
+        return in_array(Carbon::now()->weekOfMonth, $weeks, false);
     }
     
     /**
