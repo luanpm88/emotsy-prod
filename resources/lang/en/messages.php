@@ -1261,6 +1261,9 @@ return [
     'choose_email_type' => 'Choose email type',
     'email.updated' => 'Email was successfully updated',
     'from_other_campaigns' => 'Other campaigns',
+    'move_up' => 'Move up',
+    'move_down' => 'Move down',
+    'auto_event.moved' => 'Automation was successfully moved',
 ];
 
 

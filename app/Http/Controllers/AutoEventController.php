@@ -438,4 +438,63 @@ class AutoEventController extends Controller
             return redirect()->away($url);
         }
     }
+    
+    /**
+     * Move event up.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function moveUp(Request $request, $uid)
+    {
+        // Generate info
+        $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('moveUp', $auto_event)) {
+            return $this->notAuthorized();
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('patch')) {
+            // fill data
+            $auto_event->moveUp();
+            
+            $request->session()->flash('alert-success', trans('messages.auto_event.moved'));
+            $url = action('AutomationController@workflow', $auto_event->automation->uid) . "#event-" . $auto_event->uid;
+            return redirect()->away($url);
+        }
+    }
+    
+    /**
+     * Move event up.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function moveDown(Request $request, $uid)
+    {
+        // Generate info
+        $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('moveDown', $auto_event)) {
+            return $this->notAuthorized();
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('patch')) {
+            // fill data
+            $auto_event->moveDown();
+            
+            $request->session()->flash('alert-success', trans('messages.auto_event.moved'));
+            $url = action('AutomationController@workflow', $auto_event->automation->uid) . "#event-" . $auto_event->uid;
+            return redirect()->away($url);
+        }
+    }
+    
 }

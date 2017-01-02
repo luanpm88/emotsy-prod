@@ -65,12 +65,27 @@
 															</a>
 														@endif
 														<button
+															data-popup="tooltip" title="{{ trans('messages.delete') }}"
 															data-confirm="{{ trans('messages.delete_auto_event_confirm') }}"
 															data-url="{{ action('AutoEventController@delete', $auto_event->uid) }}"
 															data-id="{{ $auto_event->uid }}"
-															class="btn btn-default auto-event-delete">
+															class="btn btn-danger auto-event-delete">
 																<i class="icon-trash"></i>
 														</button>
+														<div class="btn-group btn-updown link-out">
+															<a data-popup="tooltip" title="{{ trans('messages.move_up') }}"
+																href="{{ action('AutoEventController@moveUp', $auto_event->uid) }}"
+																class="btn btn-default {{ \Gate::denies('moveUp', $auto_event) ? 'disabled' : '' }}"
+																link-method="PATCH">
+																<i class="icon-arrow-up5 position-left mr-0"></i>
+															</a>
+															<a data-popup="tooltip" title="{{ trans('messages.move_down') }}"
+																href="{{ action('AutoEventController@moveDown', $auto_event->uid) }}"
+																class="btn btn-default {{ \Gate::denies('moveDown', $auto_event) ? 'disabled' : '' }}"
+																link-method="PATCH">
+																<i class="icon-arrow-down5 mr-0"></i>
+															</a>
+														</div>
 													</span>
 												</div>
 											</form>

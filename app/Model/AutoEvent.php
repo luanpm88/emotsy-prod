@@ -787,4 +787,42 @@ class AutoEvent extends Model
 		
 		return true;
     }
+	
+	/**
+     * move event up.
+     *
+     * @return void
+     */
+    public function moveUp()
+    {
+        $preivous_id = $this->id;
+		$previous_event = $this->previousEvent;
+		
+		// move 1st one
+		$this->previous_event_id = $previous_event->previous_event_id;
+		$this->save();
+		
+		// move 2nd
+		$previous_event->previous_event_id = $preivous_id;
+		$previous_event->save();
+    }
+	
+	/**
+     * move event down.
+     *
+     * @return void
+     */
+    public function moveDown()
+    {
+        $preivous_id = $this->previous_event_id;
+		$next_event = $this->nextEvent;		
+		
+		// move 1st
+		$next_event->previous_event_id = $preivous_id;
+		$next_event->save();
+		
+		// move 2nd
+		$this->previous_event_id = $next_event->id;
+		$this->save();
+    }
 }

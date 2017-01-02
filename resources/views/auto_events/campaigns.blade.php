@@ -38,11 +38,13 @@
 																	<i class="icon-pencil mr-5"></i> {{ trans('messages.design') }}
 																@endif
 															</a>
-															<button class="btn btn-default auto-campaign-delete"
+															<button
+																data-popup="tooltip" title="{{ trans('messages.delete') }}"
+																class="btn btn-danger auto-campaign-delete"
 																data-confirm="{{ trans('messages.delete_auto_campaign_confirm', ['name' => $campaign->name]) }}"
 																data-url="{{ action('AutoEventController@deleteCampaign', $campaign->uid) }}">
 																	<i class="icon-trash"></i>
-															</button>
+															</button>															
 														</td>
 													</tr>
 												</table>

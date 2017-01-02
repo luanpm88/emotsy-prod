@@ -1507,7 +1507,7 @@ ul.automation-confirm li.child-row h5 {
     display: none !important;
 }
 .auto-event-line.changing .box-out {
-    opacity: 0.3;
+    visibility: hidden;
 }
 .radio .choice {
     line-height: 28px;
@@ -1556,6 +1556,28 @@ ul.automation-confirm li.child-row h5 {
 .timeline-event .panel {
     border: solid 1px #aaa;
     border-radius: 5px;
-    overflow: hidden;
     box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+    background: transparent;
+}
+.timeline-event .panel-flat > .panel-heading {
+    background: transparent;
+}
+.btn-updown {
+    margin-left: 10px;
+    padding-left: 10px;
+    border-left: solid 1px #ddd;
+}
+.btn-updown .btn {
+    border-radius: 20px !important;
+    padding: 7px 10px;
+    border: solid 1px #aaa !important;
+}
+.btn-updown .btn:first-child:hover {
+    border-right: none !important;
+}
+.btn-updown .btn:first-child {
+    margin-right: 5px !important;
+}
+.btn-updown a.btn.disabled {
+    background: #ddd;
 }

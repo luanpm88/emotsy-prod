@@ -36,4 +36,14 @@ class AutoEventPolicy
     {
         return $event->automation->user_id == $user->id;
     }
+    
+    public function moveUp(\Acelle\Model\User $user, \Acelle\Model\AutoEvent $event)
+    {
+        return $event->automation->user_id == $user->id && $event->previous_event_id != $event->automation->getInitEvent()->id;
+    }
+    
+    public function moveDown(\Acelle\Model\User $user, \Acelle\Model\AutoEvent $event)
+    {
+        return $event->automation->user_id == $user->id && isset($event->nextEvent);
+    }
 }
