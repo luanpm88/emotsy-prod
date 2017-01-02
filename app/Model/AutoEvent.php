@@ -600,9 +600,7 @@ class AutoEvent extends Model
      */
     public function check()
     {
-        
         $method = $this->camelize('check-for-' . $this->event_type);
-        var_dump($method);
         $this->$method();
     }
     
@@ -644,6 +642,29 @@ class AutoEvent extends Model
         }
     }
 
+    /**
+     * Check for anually-recurring events
+     *
+     * @return NULL
+     */
+    public function checkForAnuallyRecurring()
+    {
+        $now = Carbon::now();
+        $event_date = Carbon::parse($this->getData()['datetime']);
+        $checked = $now->gte($event_date);
+
+        if ($checked) {
+            MailLog::info('Trigger sending automation `' . $this->automation->name . '`, event ID: ' . $this->id );
+            $this->fire();
+        }
+    }
+    
+    /**
+     * Convert the delay setting to a human readable string compatible with Carbon interval
+     * For example: "+1 day", "-2 hour"
+     *
+     * @return NULL
+     */
     public function parseDelayTime()
     {
         $delay = $this->getData();
@@ -654,7 +675,7 @@ class AutoEvent extends Model
     }
 
     /**
-     * Check for specific-datetime events
+     * Check for follow-up events
      *
      * @return NULL
      */
@@ -683,7 +704,12 @@ class AutoEvent extends Model
             }
         }
     }
-
+    
+    /**
+     * Check for follow-up-opened events
+     *
+     * @return NULL
+     */
     public function checkForFollowUpOpened()
     {
         $now = Carbon::now();
@@ -698,18 +724,42 @@ class AutoEvent extends Model
     }
     
     /**
+     * Check for follow-up-clicked events
+     *
+     * @return NULL
+     */
+    public function checkForFollowUpClicked()
+    {
+        $now = Carbon::now();
+        $logs = $this->getClickedMessagesToFollow();
+
+        foreach($logs as $log) {
+            if ($now->gte($log->created_at->modify($this->parseDelayTime()))) {
+                MailLog::info(sprintf('Trigger sending follow-up clicked email for automation `%s`, subscriber: %s, event ID: %s, message ID: %s', $this->automation->name, $log->subscriber_id, $this->id, $log->message_id));
+                $this->fire(collect([$log->subscriber]));
+                // a more verbal way is: fire(Subscriber::where('id', $log->subscriber_id)
+            }
+        }
+    }
+    
+    /**
      * Actually send automation email
      *
      * @return NULL
      */
     public function fire($subscribers = null, $preceding_trigger = null)
     {
-        var_dump(sizeof($subscribers));
         // log a trigger record
         $trigger = new AutoTrigger(['start_at' => Carbon::now()]);
         if (!is_null($preceding_trigger)) {
             $trigger->preceded_by = $preceding_trigger->id;
         }
+        
+        // @todo: retrieve the first subscriber only, what if there are more than one subscribers?
+        if (!empty($subscribers) && !is_null($subscribers)) {
+            $trigger->subscriber_id = $subscribers[0]->id;
+        }
+
         $this->autoTriggers()->save($trigger);
         
         // schedule the corresponding job
@@ -719,13 +769,23 @@ class AutoEvent extends Model
     }
 
     /**
-     * Time unit options.
+     * Get previous event's opened messages to follow up.
      *
-     * @return array
+     * @return collection
      */
     public function getOpenedMessagesToFollow()
     {
         return TrackingLog::select('tracking_logs.*')->join('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')->where('auto_event_id', $this->previousEvent->id)->whereRaw(sprintf('tracking_logs.subscriber_id NOT IN (SELECT subscriber_id FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
+    }
+
+    /**
+     * Get previous event's clicked messages to follow up.
+     *
+     * @return collection
+     */
+    public function getClickedMessagesToFollow()
+    {
+        return TrackingLog::select('tracking_logs.*')->join('click_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')->where('auto_event_id', $this->previousEvent->id)->whereRaw(sprintf('tracking_logs.subscriber_id NOT IN (SELECT subscriber_id FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
     }
 	
 	/**
