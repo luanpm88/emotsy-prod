@@ -31,6 +31,10 @@ class Subscriber extends Model
     const STATUS_BLACKLISTED = 'blacklisted';
     const STATUS_SPAM_REPORTED = 'spam-reported';
 
+    const SUBSCRIPTION_TYPE_DOUBLE_OPTIN = 'double';
+    const SUBSCRIPTION_TYPE_SINGLE_OPTIN = 'single';
+    const SUBSCRIPTION_TYPE_IMPORTED = 'imported';
+
     public static $rules = [
         'email' => ['required', 'email']
     ];

@@ -959,8 +959,8 @@ class MailList extends Model
                 DB::table('__tmp_subscribers')->insert($data);
                 
                 // Insert new subscribers from temp table to the main table
-                DB::statement("INSERT INTO " . table('subscribers') . "(uid, mail_list_id, user_id, email, status, created_at, updated_at) 
-                               SELECT UUID_SHORT(), " . $this->id . ", " . $user->id . ", uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", {$now}, {$now}
+                DB::statement("INSERT INTO " . table('subscribers') . "(uid, mail_list_id, user_id, email, status, subscription_type, created_at, updated_at) 
+                               SELECT UUID_SHORT(), " . $this->id . ", " . $user->id . ", uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", " . db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED) . ", {$now}, {$now}
                                FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN " . table('subscribers') . " main ON tmp.email = main.email WHERE main.email IS NULL) uniq");
                 
                 // Insert subscribers' custom fields to the fields table
