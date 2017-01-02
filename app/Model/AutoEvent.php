@@ -618,6 +618,23 @@ class AutoEvent extends Model
                   '-', $str))))
         );
     }
+
+    /**
+     * Check whether or not another trigger of the same event has occured on the same day
+     *
+     * @return boolean
+     */
+    public function hasTriggeredToday()
+    {
+        $today = Carbon::now()->toDateString();
+        foreach($this->autoTriggers as $trigger) {
+            if ($trigger->start_at->toDateString() == $today) {
+                return true;
+            }
+        }
+
+        return false;
+    }
     
     /**
      * Check for specific-datetimetime events
@@ -637,7 +654,7 @@ class AutoEvent extends Model
         $checked = $now->gte($event_date);
 
         if ($checked) {
-            MailLog::info('Trigger sending automation `' . $this->automation->name . '`, event ID: ' . $this->id );
+            MailLog::info(sprintf('Trigger sending automation `%s`, event type: %s, event ID: %s', $this->automation->name, $this->event_type, $this->id));
             $this->fire();
         }
     }
@@ -649,14 +666,53 @@ class AutoEvent extends Model
      */
     public function checkForAnuallyRecurring()
     {
-        $now = Carbon::now();
-        $event_date = Carbon::parse($this->getData()['datetime']);
-        $checked = $now->gte($event_date);
+        // not supported
+    }
 
-        if ($checked) {
-            MailLog::info('Trigger sending automation `' . $this->automation->name . '`, event ID: ' . $this->id );
+    /**
+     * Check for weekly-recurring events
+     *
+     * @return NULL
+     */
+    public function checkForWeeklyRecurring()
+    {
+        if ($this->matchMonth() && $this->matchWeekOfMonth() && $this->matchDayOfWeek() && !$this->hasTriggeredToday()) {
+            MailLog::info(sprintf('Trigger sending automation `%s`, event type: %s, event ID: %s', $this->automation->name, $this->event_type, $this->id));
             $this->fire();
         }
+    }
+    
+    /**
+     * Check if the current date matches the scheduled month
+     *
+     * @return NULL
+     */
+    public function matchMonth()
+    {
+        $months = $this->getDataValue('months');
+        return in_array(Carbon::now()->month, $months, false);
+    }
+
+    /**
+     * Check if the current date matches the scheduled day of week
+     *
+     * @return NULL
+     */
+    public function matchDayOfWeek()
+    {
+        $months = $this->getDataValue('weekdays');
+        return in_array(Carbon::now()->dayOfWeek, $months, false);
+    }
+    
+    /**
+     * Check if the current date matches the scheduled week of month
+     *
+     * @return NULL
+     */
+    public function matchWeekOfMonth()
+    {
+        $months = $this->getDataValue('weeks');
+        return in_array(Carbon::now()->weekOfMonth, $months, false);
     }
     
     /**
@@ -847,8 +903,8 @@ class AutoEvent extends Model
 		
 		return true;
     }
-	
-	/**
+
+    /**
      * move event up.
      *
      * @return void
@@ -856,18 +912,18 @@ class AutoEvent extends Model
     public function moveUp()
     {
         $preivous_id = $this->id;
-		$previous_event = $this->previousEvent;
-		
-		// move 1st one
-		$this->previous_event_id = $previous_event->previous_event_id;
-		$this->save();
-		
-		// move 2nd
-		$previous_event->previous_event_id = $preivous_id;
-		$previous_event->save();
+        $previous_event = $this->previousEvent;
+
+        // move 1st one
+        $this->previous_event_id = $previous_event->previous_event_id;
+        $this->save();
+
+        // move 2nd
+        $previous_event->previous_event_id = $preivous_id;
+        $previous_event->save();
     }
-	
-	/**
+
+    /**
      * move event down.
      *
      * @return void
@@ -875,14 +931,14 @@ class AutoEvent extends Model
     public function moveDown()
     {
         $preivous_id = $this->previous_event_id;
-		$next_event = $this->nextEvent;		
-		
-		// move 1st
-		$next_event->previous_event_id = $preivous_id;
-		$next_event->save();
-		
-		// move 2nd
-		$this->previous_event_id = $next_event->id;
-		$this->save();
+        $next_event = $this->nextEvent;
+
+        // move 1st
+        $next_event->previous_event_id = $preivous_id;
+        $next_event->save();
+
+        // move 2nd
+        $this->previous_event_id = $next_event->id;
+        $this->save();
     }
 }
