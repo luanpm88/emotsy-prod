@@ -826,6 +826,26 @@ class AutoEvent extends Model
     }
 
     /**
+     * Check for follow-up-clicked events
+     *
+     * @return NULL
+     */
+    public function checkForListUnsubscription()
+    {
+        
+        $now = Carbon::now();
+        $subscribers = $this->getUnsubscribersToFollow();
+
+        foreach($subscribers as $subscriber) {
+            if ($now->gte($subscriber->unsubscribed_at->modify($this->parseDelayTime()))) {
+                MailLog::info(sprintf('Trigger sending follow-up unsubscribed email for automation `%s`, subscriber ID: %s, event ID: %s, message ID: %s', $this->automation->name, $subscriber->id, $this->id, $subscriber->message_id));
+                $this->fire(collect([$subscriber]));
+                // a more verbal way is: fire(Subscriber::where('id', $log->subscriber_id)
+            }
+        }
+    }
+
+    /**
      * Check for list-subscription events
      *
      * @return NULL
@@ -899,6 +919,23 @@ class AutoEvent extends Model
     public function getClickedMessagesToFollow()
     {
         return TrackingLog::select('tracking_logs.*')->join('click_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')->where('auto_event_id', $this->previousEvent->id)->whereRaw(sprintf('tracking_logs.subscriber_id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
+    }
+
+    /**
+     * Get previous event's unsubscribed messages to follow up.
+     *
+     * @return collection
+     */
+    public function getUnsubscribersToFollow()
+    {
+        return $this->automation->subscribers()
+                    ->addSelect('unsubscribe_logs.created_at AS unsubscribed_at')
+                    ->addSelect('tracking_logs.message_id')
+                    ->join('tracking_logs', 'subscribers.id', '=', 'tracking_logs.subscriber_id')
+                    ->join('unsubscribe_logs', 'tracking_logs.message_id', '=', 'unsubscribe_logs.message_id')
+                    ->whereRaw(sprintf('subscribers.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))
+                    ->where('unsubscribe_logs.created_at', '>=', $this->created_at)
+                    ->get();
     }
 	
 	/**

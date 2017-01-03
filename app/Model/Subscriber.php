@@ -35,6 +35,8 @@ class Subscriber extends Model
     const SUBSCRIPTION_TYPE_SINGLE_OPTIN = 'single';
     const SUBSCRIPTION_TYPE_IMPORTED = 'imported';
 
+    protected $dates = ['unsubscribed_at'];
+
     public static $rules = [
         'email' => ['required', 'email']
     ];
