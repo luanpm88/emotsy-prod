@@ -1005,8 +1005,16 @@ class Campaign extends Model
             return collect([]);
         }
         
-        // Get subscriber from mailist and segment
-        $query = $this->autoEvent()->subscribers();
+        if($this->isAuto()) {
+            $query = $this->autoEvent()->subscribers();
+        } else {
+            // Get subscriber from mailist and segment
+            if (is_object($this->segment)) {
+                $query = $this->segment->subscribers();
+            } elseif (is_object($this->mailList)) {
+                $query = $this->mailList->subscribers();
+            }
+        }
         
         $query = $query->select("subscribers.*");
         
