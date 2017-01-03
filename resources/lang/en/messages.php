@@ -1266,6 +1266,7 @@ return [
     'move_down' => 'Move down',
     'auto_event.moved' => 'Automation was successfully moved',
     'Trigger_the_automation_for_the_following_conditions_recur' => 'Trigger the automation following these conditions:',
+    'criteria_and' => 'and',
 ];
 
 

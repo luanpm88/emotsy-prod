@@ -514,7 +514,7 @@ class AutoEvent extends Model
 					
 				}
 				$msg = trans('messages.event_type_custom_criterias_description', [
-					'conditions' => implode(' or ', $strings)
+					'conditions' => implode(' ' . trans('messages.criteria_and') . ' ', $strings)
 				]);
 				break;
 			case self::TYPE_FOLLOW_UP:
