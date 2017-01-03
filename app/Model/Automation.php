@@ -83,6 +83,11 @@ class Automation extends Model
     {
         return $this->belongsTo('Acelle\Model\Segment');
     }
+
+    public function user()
+    {
+        return $this->belongsTo('Acelle\Model\User');
+    }
     
     public function autoEvents()
     {

@@ -632,9 +632,10 @@ class AutoEvent extends Model
      */
     public function hasTriggeredToday()
     {
-        $today = Carbon::now()->toDateString();
+        $zone = $this->automation->user->timezone;
+        $today = Carbon::now($zone)->toDateString();
         foreach($this->autoTriggers as $trigger) {
-            if ($trigger->start_at->toDateString() == $today) {
+            if ($trigger->start_at->tz($zone)->toDateString() == $today) {
                 return true;
             }
         }
@@ -708,7 +709,7 @@ class AutoEvent extends Model
      *
      * @return NULL
      */
-    public function matchMonth()
+    public function matchTime()
     {
         $months = $this->getDataValue('months');
         return in_array(Carbon::now()->month, $months, false);
@@ -719,10 +720,21 @@ class AutoEvent extends Model
      *
      * @return NULL
      */
+    public function matchMonth()
+    {
+        $months = $this->getDataValue('months');
+        return in_array(Carbon::now($this->automation->user->timezone)->month, $months, false);
+    }
+
+    /**
+     * Check if the current date matches the scheduled month
+     *
+     * @return NULL
+     */
     public function matchDayOfMonth()
     {
         $days = $this->getDataValue('days');
-        return in_array(Carbon::now()->day, $days, false);
+        return in_array(Carbon::now($this->automation->user->timezone)->day, $days, false);
     }
 
     /**
@@ -733,7 +745,7 @@ class AutoEvent extends Model
     public function matchDayOfWeek()
     {
         $weekdays = $this->getDataValue('weekdays');
-        return in_array(Carbon::now()->dayOfWeek, $weekdays, false);
+        return in_array(Carbon::now($this->automation->user->timezone)->dayOfWeek, $weekdays, false);
     }
     
     /**
@@ -744,7 +756,7 @@ class AutoEvent extends Model
     public function matchWeekOfMonth()
     {
         $weeks = $this->getDataValue('weeks');
-        return in_array(Carbon::now()->weekOfMonth, $weeks, false);
+        return in_array(Carbon::now($this->automation->user->timezone)->weekOfMonth, $weeks, false);
     }
     
     /**
