@@ -1040,4 +1040,16 @@ class AutoEvent extends Model
         $this->previous_event_id = $next_event->id;
         $this->save();
     }
+	
+	/**
+     * Subscribers.
+     *
+     * @return collect
+     */
+    public function subscribers($params=[])
+    {        
+        $query = $this->automation->subscribers();
+		
+		return $query;
+    }
 }
