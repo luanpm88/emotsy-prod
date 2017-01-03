@@ -795,9 +795,9 @@ class MailList extends Model
     public function getSubscriberFieldSelectOptions()
     {
         $options = [];
-        $options[] = ['text' => trans('messages.subscriber_added_date'), 'value' => 'added_day'];
+        $options[] = ['text' => trans('messages.subscriber_subscription_date'), 'value' => 'subscription_date'];
         foreach ($this->getDateFields() as $field) {
-            $options[] = ['text' => trans('messages.subscriber_s_field', ['name' => $field->label]), 'value' => "field_uid:" . $field->uid];
+            $options[] = ['text' => trans('messages.subscriber_s_field', ['name' => $field->label]), 'value' => $field->uid];
         }
 
         return $options;

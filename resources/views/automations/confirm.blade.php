@@ -59,10 +59,12 @@
                             <h4><numbericon>1</numbericon> {{ trans('messages.trigger_workflow_when_the_following_conditions_are_met') }}</h4>
 							<p>
 								{!! $first_event->displayMessage() !!}
-								<br />
-								<span class="{{ $first_event->subscribers()->count() <= 0 ? 'text-warning' : '' }}">
-									<span class="text-bold">{{ $first_event->subscribers()->count() }}</span> {{ trans('messages.subscribers') }}
-								</span>
+								@if (in_array($first_event->event_type, [Acelle\Model\AutoEvent::TYPE_CUSTOM_CRITERIA]))
+									<br />
+									<span class="{{ $first_event->subscribers()->count() <= 0 ? 'text-warning' : '' }}">
+										<span class="text-bold">{{ $first_event->subscribers()->count() }}</span> {{ trans('messages.subscribers') }}
+									</span>
+								@endif
 							</p>							
                         </li>
 						@if (isset($first_event->id))

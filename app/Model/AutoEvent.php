@@ -483,9 +483,8 @@ class AutoEvent extends Model
 				$event = $this->getDataValue('event');
 				
 				// check if event with field uid
-				$parts = explode(":", $event);
-				if(count($parts) == 2 && $parts[0] == 'field_uid') {
-					$field = \Acelle\Model\Field::findByUid($parts[1]);
+				if($event != 'subscription_date') {
+					$field = \Acelle\Model\Field::findByUid($event);
 					$text = is_object($field) ? strtolower(trans('messages.subscriber_s_field', ['name' => $field->label])) : '';
 				} else {
 					$text = strtolower(trans('messages.subscriber_s_field', ['name' => str_replace('_', ' ', $event)]));

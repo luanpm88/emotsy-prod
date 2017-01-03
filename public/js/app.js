@@ -396,7 +396,7 @@ $(function() {
             msg = msg.replace(/__type__/g, type_name);
             
             $('.field-list').append($('<div>').html(msg).find("table tbody").html());            
-            $('.field-list tr').last().find('.pickadate').pickadate({format: LANG_DATE_FORMAT});
+            $('.field-list tr').last().find('.pickadate').pickadate({format: LANG_DATE_FORMAT, selectYears: 100});
             
             // Time picker
             if ($('.field-list tr').last().find(".pickadatetime").length) {
@@ -455,7 +455,7 @@ $(function() {
     });
     
     // Basic options
-    $('.pickadate').pickadate({format: LANG_DATE_FORMAT});
+    $('.pickadate').pickadate({format: LANG_DATE_FORMAT, selectYears: 100});
     
     // Numberic input
     $(".numeric").numeric();

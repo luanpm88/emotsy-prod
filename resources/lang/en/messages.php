@@ -1155,6 +1155,7 @@ return [
     'Trigger_the_automation_for_the_following_recur' => 'Trigger the automation following anually recurring events:',
     'List_creation_date' => 'List creation DATE',
     'subscriber_added_date' => 'Subscriber\'s ADDED DATE',
+    'subscriber_subscription_date' => 'Subscriber\'s SUBSCRIPTION DATE',
     'Subscriber_field_tag' => 'Subscriber\'s :tag',
     'Add_criteria' => 'Add criteria',
     'Subscriber_attributes' => 'Subscriber attributes',
