@@ -1062,6 +1062,68 @@ class AutoEvent extends Model
     {        
         $query = $this->automation->subscribers();
 		
+		if($this->event_type == AutoEvent::TYPE_CUSTOM_CRITERIA) {
+			//// for custom cateria
+			//$conditions = array();
+			//foreach ($this->segmentConditions as $condition) {
+			//	$keyword = $condition->value;
+			//	$keyword = str_replace('[EMPTY]', '', $keyword);
+			//	$keyword = str_replace('[DATETIME]', date('Y-m-d H:i:s'), $keyword);
+			//	$keyword = str_replace('[DATE]', date('Y-m-d'), $keyword);
+			//
+			//	$keyword = trim(strtolower($keyword));
+			//	switch ($condition->operator) {
+			//		case 'equal':
+			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) = '".$keyword."'";
+			//			break;
+			//		case 'not_equal':
+			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) != '".$keyword."'";
+			//			break;
+			//		case 'contains':
+			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) LIKE '%".$keyword."%'";
+			//			break;
+			//		case 'not_contains':
+			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) NOT LIKE '%".$keyword."%'";
+			//			break;
+			//		case 'starts':
+			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) LIKE '".$keyword."%'";
+			//			break;
+			//		case 'ends':
+			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) LIKE '%".$keyword."'";
+			//			break;
+			//		case 'greater':
+			//			$cond = \DB::getTablePrefix()."subscriber_fields.value > '".$keyword."'";
+			//			break;
+			//		case 'less':
+			//			$cond = \DB::getTablePrefix()."subscriber_fields.value < '".$keyword."'";
+			//			break;
+			//		case 'not_starts':
+			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) NOT LIKE '".$keyword."%'";
+			//			break;
+			//		case 'not_ends':
+			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) NOT LIKE '%".$keyword."'";
+			//			break;
+			//		case 'not_blank':
+			//			$cond = '(LOWER('.\DB::getTablePrefix()."subscriber_fields.value) != '' AND LOWER(".\DB::getTablePrefix().'subscriber_fields.value) IS NOT NULL)';
+			//			break;
+			//		case 'blank':
+			//			$cond = '(LOWER('.\DB::getTablePrefix()."subscriber_fields.value) = '' OR LOWER(".\DB::getTablePrefix().'subscriber_fields.value) IS NULL)';
+			//			break;
+			//		default:
+			//
+			//	}
+			//
+			//	$conditions[] = \DB::getTablePrefix().'subscribers.id IN (SELECT '.\DB::getTablePrefix().'subscriber_fields.subscriber_id FROM '.\DB::getTablePrefix().'subscriber_fields WHERE ('.\DB::getTablePrefix().'subscriber_fields.field_id = '.$condition->field_id.' AND '.$cond.'))';
+			//}
+			//
+			////return $conditions;
+			//$conditions = implode(' AND ', $conditions);
+			//
+			//if (!empty($conditions)) {
+			//	$query = $query->whereRaw($conditions);
+			//}
+		}
+		
 		return $query;
     }
 }

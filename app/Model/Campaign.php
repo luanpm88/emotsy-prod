@@ -1005,7 +1005,9 @@ class Campaign extends Model
             return collect([]);
         }
         
+        // get subscribers from auto campaign or normal campaign
         if($this->isAuto()) {
+            // Get subscriber from auto event
             $query = $this->autoEvent()->subscribers();
         } else {
             // Get subscriber from mailist and segment
