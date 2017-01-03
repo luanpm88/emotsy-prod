@@ -67,17 +67,6 @@ class Automation extends Model
             Automation::select('custom_order')->increment('custom_order', 1);
             $automation->custom_order = 0;
         });
-		
-		// When automation saving.
-        static::saving(function ($automation) {
-            // Update mailist and segment for all campaigns
-			$campaigns = $automation->getCampaigns()->get();
-			foreach($campaigns as $campaign) {
-				$campaign->mail_list_id = $automation->mail_list_id;
-				$campaign->segment_id = $automation->segment_id;
-				$campaign->save();
-			}
-        });
     }
     
     /**

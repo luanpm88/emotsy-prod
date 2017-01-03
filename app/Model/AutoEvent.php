@@ -82,6 +82,11 @@ class AutoEvent extends Model
     {
         return $this->belongsToMany('Acelle\Model\AutomatedCampaign', 'auto_campaigns', 'auto_event_id', 'campaign_id');
     }
+	
+	public function originCampaigns()
+    {
+        return $this->belongsToMany('Acelle\Model\Campaign', 'auto_campaigns');
+    }
 
     /**
      * Get campaign tracking logs.

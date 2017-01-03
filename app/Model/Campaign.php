@@ -65,7 +65,11 @@ class Campaign extends Model
      */
     public function mailList()
     {
-        return $this->belongsTo('Acelle\Model\MailList');
+        if($this->isAuto()) {
+            return $this->autoEvent()->automation->belongsTo('Acelle\Model\MailList');
+        } else {
+            return $this->belongsTo('Acelle\Model\MailList');
+        }
     }
     
     /**
@@ -102,7 +106,11 @@ class Campaign extends Model
      */
     public function segment()
     {
-        return $this->belongsTo('Acelle\Model\Segment');
+        if($this->isAuto()) {
+            return $this->autoEvent()->belongsTo('Acelle\Model\Segment');
+        } else {
+            return $this->belongsTo('Acelle\Model\Segment');
+        }
     }
     
     /**
@@ -2002,5 +2010,15 @@ class Campaign extends Model
             ['text' => trans('messages.' . self::TYPE_REGULAR), 'value' => self::TYPE_REGULAR],
             ['text' => trans('messages.' . self::TYPE_PLAIN_TEXT), 'value' => self::TYPE_PLAIN_TEXT]
         ];
+    }
+    
+    /**
+     * Check if campaign is automated.
+     *
+     * @return boolean
+     */
+    public function isAuto()
+    {
+        return $this->is_auto;
     }
 }
