@@ -707,7 +707,7 @@ class AutoEvent extends Model
      */
     public function checkForWeeklyRecurring()
     {
-        if ($this->matchMonth() && $this->matchWeekOfMonth() && $this->matchDayOfWeek() && !$this->hasTriggeredToday()) {
+        if ($this->matchMonth() && $this->matchWeekOfMonth() && $this->matchDayOfWeek() && $this->matchTime() && !$this->hasTriggeredToday()) {
             MailLog::info(sprintf('Trigger sending automation `%s`, event type: %s, event ID: %s', $this->automation->name, $this->event_type, $this->id));
             // @todo: check time as well
             $this->fire();
@@ -721,7 +721,7 @@ class AutoEvent extends Model
      */
     public function checkForMonthlyRecurring()
     {
-        if ($this->matchMonth() && $this->matchDayOfMonth() && !$this->hasTriggeredToday()) {
+        if ($this->matchMonth() && $this->matchDayOfMonth() && $this->matchTime() && !$this->hasTriggeredToday()) {
             MailLog::info(sprintf('Trigger sending automation `%s`, event type: %s, event ID: %s', $this->automation->name, $this->event_type, $this->id));
             // @todo: check time as well
             $this->fire();
@@ -735,8 +735,10 @@ class AutoEvent extends Model
      */
     public function matchTime()
     {
-        $months = $this->getDataValue('months');
-        return in_array(Carbon::now()->month, $months, false);
+        $zone = $this->automation->user->timezone;
+        $today = Carbon::now($zone)->toTimeString();
+        $time = Carbon::parse($this->getDataValue('time'))->tz($zone)->toTimeString();
+        return $today >= $time;
     }
 
     /**
