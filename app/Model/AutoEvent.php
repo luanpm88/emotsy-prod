@@ -25,6 +25,7 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Acelle\Library\Log as MailLog;
+use Acelle\Model\Subscriber;
 
 class AutoEvent extends Model
 {
@@ -823,6 +824,22 @@ class AutoEvent extends Model
             }
         }
     }
+
+    /**
+     * Check for list-subscription events
+     *
+     * @return NULL
+     */
+    public function checkForListSubscription()
+    {
+        $now = Carbon::now();
+        $subscribers = $this->getNewSubscribersToFollow();
+        foreach($subscribers as $subscriber) {
+            if ($now->gte($subscriber->created_at->modify($this->parseDelayTime()))) {
+                $this->fire(collect([$subscriber]));
+            }
+        }
+    }
     
     /**
      * Actually send automation email
@@ -855,9 +872,23 @@ class AutoEvent extends Model
      *
      * @return collection
      */
+    public function getNewSubscribersToFollow()
+    {
+        return $this->automation->subscribers()
+                    ->whereRaw(sprintf('subscribers.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))
+                    ->where('created_at', '>=', $this->created_at)
+                    ->whereRaw(sprintf("COALESCE(subscribers.subscription_type, '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
+                    ->get();
+    }
+
+    /**
+     * Get previous event's opened messages to follow up.
+     *
+     * @return collection
+     */
     public function getOpenedMessagesToFollow()
     {
-        return TrackingLog::select('tracking_logs.*')->join('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')->where('auto_event_id', $this->previousEvent->id)->whereRaw(sprintf('tracking_logs.subscriber_id NOT IN (SELECT subscriber_id FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
+        return TrackingLog::select('tracking_logs.*')->join('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')->where('auto_event_id', $this->previousEvent->id)->whereRaw(sprintf('tracking_logs.subscriber_id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
     }
 
     /**
@@ -867,7 +898,7 @@ class AutoEvent extends Model
      */
     public function getClickedMessagesToFollow()
     {
-        return TrackingLog::select('tracking_logs.*')->join('click_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')->where('auto_event_id', $this->previousEvent->id)->whereRaw(sprintf('tracking_logs.subscriber_id NOT IN (SELECT subscriber_id FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
+        return TrackingLog::select('tracking_logs.*')->join('click_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')->where('auto_event_id', $this->previousEvent->id)->whereRaw(sprintf('tracking_logs.subscriber_id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
     }
 	
 	/**
