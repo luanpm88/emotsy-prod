@@ -46,6 +46,20 @@ class AutoEvent extends Model
 	const TYPE_FOLLOW_UP = 'follow-up';
 	const TYPE_FOLLOW_UP_OPENED = 'follow-up-opened';
 	const TYPE_FOLLOW_UP_CLICKED = 'follow-up-clicked';
+	
+	// operators
+    const OPERATOR_EQUAL = 'equal';
+	const OPERATOR_NOT_EQUAL = 'not_equal';
+	const OPERATOR_CONTAINS = 'contains';
+	const OPERATOR_NOT_CONTAINS = 'not_contains';
+	const OPERATOR_STARTS = 'starts';
+	const OPERATOR_ENDS = 'ends';
+	const OPERATOR_NOT_STARTS = 'not_starts';
+	const OPERATOR_NOT_ENDS = 'not_ends';
+	const OPERATOR_GREATOR = 'greater';
+	const OPERATOR_LESS = 'less';
+	const OPERATOR_BLANK = 'blank';
+	const OPERATOR_NOT_BLANK = 'not_blank';
     
     /**
      * The attributes that are mass assignable.
@@ -231,7 +245,9 @@ class AutoEvent extends Model
 					foreach ($request->custom_criteria as $key => $param) {
 						$rules['custom_criteria.'.$key.'.field_uid'] = 'required';
 						$rules['custom_criteria.'.$key.'.operator'] = 'required';
-						$rules['custom_criteria.'.$key.'.value'] = 'required';
+						if(!in_array($param['operator'], [AutoEvent::OPERATOR_BLANK, AutoEvent::OPERATOR_NOT_BLANK])) {
+							$rules['custom_criteria.'.$key.'.value'] = 'required';
+						}
 					}
 				} else {
 					$rules['custom_criteria_empty'] = 'required';
@@ -404,18 +420,18 @@ class AutoEvent extends Model
     public static function operators()
     {
         return [
-            ['text' => trans('messages.equal'), 'value' => 'equal'],
-            ['text' => trans('messages.not_equal'), 'value' => 'not_equal'],
-            ['text' => trans('messages.contains'), 'value' => 'contains'],
-            ['text' => trans('messages.not_contains'), 'value' => 'not_contains'],
-            ['text' => trans('messages.starts'), 'value' => 'starts'],
-            ['text' => trans('messages.ends'), 'value' => 'ends'],
-            ['text' => trans('messages.not_starts'), 'value' => 'not_starts'],
-            ['text' => trans('messages.not_ends'), 'value' => 'not_ends'],
-            ['text' => trans('messages.greater'), 'value' => 'greater'],
-            ['text' => trans('messages.less'), 'value' => 'less'],
-            ['text' => trans('messages.blank'), 'value' => 'blank'],
-            ['text' => trans('messages.not_blank'), 'value' => 'not_blank'],
+            ['text' => trans('messages.equal'), 'value' => self::OPERATOR_EQUAL],
+            ['text' => trans('messages.not_equal'), 'value' => self::OPERATOR_NOT_EQUAL],
+            ['text' => trans('messages.contains'), 'value' => self::OPERATOR_CONTAINS],
+            ['text' => trans('messages.not_contains'), 'value' => self::OPERATOR_NOT_CONTAINS],
+            ['text' => trans('messages.starts'), 'value' => self::OPERATOR_STARTS],
+            ['text' => trans('messages.ends'), 'value' => self::OPERATOR_ENDS],
+            ['text' => trans('messages.not_starts'), 'value' => self::OPERATOR_NOT_STARTS],
+            ['text' => trans('messages.not_ends'), 'value' => self::OPERATOR_NOT_ENDS],
+            ['text' => trans('messages.greater'), 'value' => self::OPERATOR_GREATOR],
+            ['text' => trans('messages.less'), 'value' => self::OPERATOR_LESS],
+            ['text' => trans('messages.blank'), 'value' => self::OPERATOR_BLANK],
+            ['text' => trans('messages.not_blank'), 'value' => self::OPERATOR_NOT_BLANK],
         ];
     }
 	
@@ -1063,65 +1079,71 @@ class AutoEvent extends Model
         $query = $this->automation->subscribers();
 		
 		if($this->event_type == AutoEvent::TYPE_CUSTOM_CRITERIA) {
-			//// for custom cateria
-			//$conditions = array();
-			//foreach ($this->segmentConditions as $condition) {
-			//	$keyword = $condition->value;
-			//	$keyword = str_replace('[EMPTY]', '', $keyword);
-			//	$keyword = str_replace('[DATETIME]', date('Y-m-d H:i:s'), $keyword);
-			//	$keyword = str_replace('[DATE]', date('Y-m-d'), $keyword);
-			//
-			//	$keyword = trim(strtolower($keyword));
-			//	switch ($condition->operator) {
-			//		case 'equal':
-			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) = '".$keyword."'";
-			//			break;
-			//		case 'not_equal':
-			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) != '".$keyword."'";
-			//			break;
-			//		case 'contains':
-			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) LIKE '%".$keyword."%'";
-			//			break;
-			//		case 'not_contains':
-			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) NOT LIKE '%".$keyword."%'";
-			//			break;
-			//		case 'starts':
-			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) LIKE '".$keyword."%'";
-			//			break;
-			//		case 'ends':
-			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) LIKE '%".$keyword."'";
-			//			break;
-			//		case 'greater':
-			//			$cond = \DB::getTablePrefix()."subscriber_fields.value > '".$keyword."'";
-			//			break;
-			//		case 'less':
-			//			$cond = \DB::getTablePrefix()."subscriber_fields.value < '".$keyword."'";
-			//			break;
-			//		case 'not_starts':
-			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) NOT LIKE '".$keyword."%'";
-			//			break;
-			//		case 'not_ends':
-			//			$cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) NOT LIKE '%".$keyword."'";
-			//			break;
-			//		case 'not_blank':
-			//			$cond = '(LOWER('.\DB::getTablePrefix()."subscriber_fields.value) != '' AND LOWER(".\DB::getTablePrefix().'subscriber_fields.value) IS NOT NULL)';
-			//			break;
-			//		case 'blank':
-			//			$cond = '(LOWER('.\DB::getTablePrefix()."subscriber_fields.value) = '' OR LOWER(".\DB::getTablePrefix().'subscriber_fields.value) IS NULL)';
-			//			break;
-			//		default:
-			//
-			//	}
-			//
-			//	$conditions[] = \DB::getTablePrefix().'subscribers.id IN (SELECT '.\DB::getTablePrefix().'subscriber_fields.subscriber_id FROM '.\DB::getTablePrefix().'subscriber_fields WHERE ('.\DB::getTablePrefix().'subscriber_fields.field_id = '.$condition->field_id.' AND '.$cond.'))';
-			//}
-			//
-			////return $conditions;
-			//$conditions = implode(' AND ', $conditions);
-			//
-			//if (!empty($conditions)) {
-			//	$query = $query->whereRaw($conditions);
-			//}
+			$criteria = $this->getDataValue('criteria');
+			
+			// for custom cateria
+			$conditions = array();
+			foreach ($criteria as $condition) {
+				$keyword = $condition['value'];
+				$keyword = str_replace('[EMPTY]', '', $keyword);
+				$keyword = str_replace('[DATETIME]', date('Y-m-d H:i:s'), $keyword);
+				$keyword = str_replace('[DATE]', date('Y-m-d'), $keyword);
+			
+				$keyword = trim(strtolower($keyword));
+				switch ($condition['operator']) {
+					case 'equal':
+						$cond = 'LOWER('.table('subscriber_fields') . ".value) = '".$keyword."'";
+						break;
+					case 'not_equal':
+						$cond = 'LOWER('.table('subscriber_fields') . ".value) != '".$keyword."'";
+						break;
+					case 'contains':
+						$cond = 'LOWER('.table('subscriber_fields') . ".value) LIKE '%".$keyword."%'";
+						break;
+					case 'not_contains':
+						$cond = 'LOWER('.table('subscriber_fields') . ".value) NOT LIKE '%".$keyword."%'";
+						break;
+					case 'starts':
+						$cond = 'LOWER('.table('subscriber_fields') . ".value) LIKE '".$keyword."%'";
+						break;
+					case 'ends':
+						$cond = 'LOWER('.table('subscriber_fields') . ".value) LIKE '%".$keyword."'";
+						break;
+					case 'greater':
+						$cond = table('subscriber_fields') . ".value > '".$keyword."'";
+						break;
+					case 'less':
+						$cond = table('subscriber_fields') . ".value < '".$keyword."'";
+						break;
+					case 'not_starts':
+						$cond = 'LOWER('.table('subscriber_fields') . ".value) NOT LIKE '".$keyword."%'";
+						break;
+					case 'not_ends':
+						$cond = 'LOWER('.table('subscriber_fields') . ".value) NOT LIKE '%".$keyword."'";
+						break;
+					case 'not_blank':
+						$cond = '(LOWER('.table('subscriber_fields') . ".value) != '' AND LOWER(".table('subscriber_fields') . '.value) IS NOT NULL)';
+						break;
+					case 'blank':
+						$cond = '(LOWER('.table('subscriber_fields') . ".value) = '' OR LOWER(".table('subscriber_fields') . '.value) IS NULL)';
+						break;
+					default:
+			
+				}
+			
+				$conditions[] = \DB::getTablePrefix().'subscribers.id IN (SELECT '.table('subscriber_fields') .
+					'.subscriber_id FROM '.table('subscriber_fields') .
+					' LEFT JOIN ' . table('fields') . ' ON ' . table('subscriber_fields') . '.field_id = ' . table('fields') . '.id' .
+					' WHERE ('.table('fields') .
+					'.uid = "'.$condition['field_uid'] . '" AND '.$cond.'))';
+			}
+			
+			//return $conditions;
+			$conditions = implode(' AND ', $conditions);
+			
+			if (!empty($conditions)) {
+				$query = $query->whereRaw($conditions);
+			}
 		}
 		
 		return $query;

@@ -21,7 +21,7 @@
 											'options' => Acelle\Model\AutoEvent::operators()
 										])
 									</div>
-									<div class="col-md-4 value-col">
+									<div class="col-md-4 value-col" {!! (isset($criteria) && in_array($criteria["operator"], [Acelle\Model\AutoEvent::OPERATOR_BLANK, Acelle\Model\AutoEvent::OPERATOR_NOT_BLANK])) ? 'style="visibility: hidden"' : '' !!}>
 										@include('helpers.form_control', [
 											'type' => 'text',
 											'name' => 'custom_criteria[' . $index . '][value]',
