@@ -1198,6 +1198,7 @@ return [
     'event_type_list_unsubscription_description' => 'Send email(s) when subscriber <span class="text-semibold">unsubscribes</span> to list <span class="text-semibold">:list_name</span>.',
     'event_type_subscriber_event_description' => 'Send on <span class="text-semibold">:event</span>',
     'event_type_custom_criteria_description' => '<span class="text-semibold">:field</span> <span class="text-semibold">:operator</span> "<span class="text-semibold">:value</span>"',
+    'event_type_custom_criteria_description_2' => '<span class="text-semibold">:field</span> <span class="text-semibold">:operator</span>',
     'event_type_custom_criterias_description' => 'Send when: :conditions',
     'event_type_api_description' => 'Send when API called',
     'automations' => 'Automations',
@@ -1264,6 +1265,7 @@ return [
     'move_up' => 'Move up',
     'move_down' => 'Move down',
     'auto_event.moved' => 'Automation was successfully moved',
+    'Trigger_the_automation_for_the_following_conditions_recur' => 'Trigger the automation following these conditions:',
 ];
 
 

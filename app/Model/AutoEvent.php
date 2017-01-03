@@ -498,11 +498,20 @@ class AutoEvent extends Model
 				$strings = [];
 				foreach($this->getDataValue('criteria') as $criteria) {
 					$field = Field::findByUid($criteria["field_uid"]);
-					$strings[] = trans('messages.event_type_custom_criteria_description', [
-						'field' => $field->label,
-						'operator' => trans('messages.' . $criteria["operator"]),
-						'value' => $criteria["value"],
-					]);
+					if(in_array($criteria['operator'], [AutoEvent::OPERATOR_BLANK, AutoEvent::OPERATOR_NOT_BLANK])) {
+						$strings[] = trans('messages.event_type_custom_criteria_description_2', [
+							'field' => $field->label,
+							'operator' => trans('messages.' . $criteria["operator"]),
+							'value' => $criteria["value"],
+						]);
+					} else {
+						$strings[] = trans('messages.event_type_custom_criteria_description', [
+							'field' => $field->label,
+							'operator' => trans('messages.' . $criteria["operator"]),
+							'value' => $criteria["value"],
+						]);
+					}
+					
 				}
 				$msg = trans('messages.event_type_custom_criterias_description', [
 					'conditions' => implode(' or ', $strings)
@@ -1091,40 +1100,40 @@ class AutoEvent extends Model
 			
 				$keyword = trim(strtolower($keyword));
 				switch ($condition['operator']) {
-					case 'equal':
+					case AutoEvent::OPERATOR_EQUAL:
 						$cond = 'LOWER('.table('subscriber_fields') . ".value) = '".$keyword."'";
 						break;
-					case 'not_equal':
+					case AutoEvent::OPERATOR_NOT_EQUAL:
 						$cond = 'LOWER('.table('subscriber_fields') . ".value) != '".$keyword."'";
 						break;
-					case 'contains':
+					case AutoEvent::OPERATOR_CONTAINS:
 						$cond = 'LOWER('.table('subscriber_fields') . ".value) LIKE '%".$keyword."%'";
 						break;
-					case 'not_contains':
+					case AutoEvent::OPERATOR_NOT_CONTAINS:
 						$cond = 'LOWER('.table('subscriber_fields') . ".value) NOT LIKE '%".$keyword."%'";
 						break;
-					case 'starts':
+					case AutoEvent::OPERATOR_STARTS:
 						$cond = 'LOWER('.table('subscriber_fields') . ".value) LIKE '".$keyword."%'";
 						break;
-					case 'ends':
+					case AutoEvent::OPERATOR_ENDS:
 						$cond = 'LOWER('.table('subscriber_fields') . ".value) LIKE '%".$keyword."'";
 						break;
-					case 'greater':
+					case AutoEvent::OPERATOR_GREATOR:
 						$cond = table('subscriber_fields') . ".value > '".$keyword."'";
 						break;
-					case 'less':
+					case AutoEvent::OPERATOR_LESS:
 						$cond = table('subscriber_fields') . ".value < '".$keyword."'";
 						break;
-					case 'not_starts':
+					case AutoEvent::OPERATOR_NOT_STARTS:
 						$cond = 'LOWER('.table('subscriber_fields') . ".value) NOT LIKE '".$keyword."%'";
 						break;
-					case 'not_ends':
+					case AutoEvent::OPERATOR_NOT_ENDS:
 						$cond = 'LOWER('.table('subscriber_fields') . ".value) NOT LIKE '%".$keyword."'";
 						break;
-					case 'not_blank':
+					case AutoEvent::OPERATOR_NOT_BLANK:
 						$cond = '(LOWER('.table('subscriber_fields') . ".value) != '' AND LOWER(".table('subscriber_fields') . '.value) IS NOT NULL)';
 						break;
-					case 'blank':
+					case AutoEvent::OPERATOR_BLANK:
 						$cond = '(LOWER('.table('subscriber_fields') . ".value) = '' OR LOWER(".table('subscriber_fields') . '.value) IS NULL)';
 						break;
 					default:

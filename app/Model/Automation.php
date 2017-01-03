@@ -325,9 +325,9 @@ class Automation extends Model
             return false;
         }
         
-        // check first auto event
+        // check first auto event isset
         $first_event = $this->getInitEvent();
-        if(!isset($first_event->id)) {
+        if(!isset($first_event->id)) { //  || $first_event->subscribers()->count() <= 0
             return false;
         }        
         

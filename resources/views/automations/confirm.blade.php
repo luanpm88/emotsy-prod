@@ -41,23 +41,29 @@
                             <h4>{{ trans('messages.recipients') }}</h4>
                             <p>
                                 @if (is_object($automation->segment))
-                                    {{ $automation->mailList->name }} . {{ $automation->segment->name }}: {{ $automation->subscribers()->count() }} {{ strtolower(trans('messages.recipients')) }}
+                                    {{ $automation->mailList->name }} . {{ $automation->segment->name }}: <span class="text-bold">{{ $automation->subscribers()->count() }}</span> {{ strtolower(trans('messages.recipients')) }}
                                 @elseif (is_object($automation->mailList))
-                                    {{ $automation->mailList->name }}: {{ $automation->subscribers()->count() }} {{ strtolower(trans('messages.recipients')) }}
+                                    {{ $automation->mailList->name }}: <span class="text-bold">{{ $automation->subscribers()->count() }}</span> {{ strtolower(trans('messages.recipients')) }}
                                 @endif
                             </p>
                         </li>
 						<li>
-                            <a href="{{ action('AutomationController@trigger', $automation->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-							@if (isset($first_event->id))
+                            <a href="{{ action('AutomationController@trigger', $automation->uid) }}" class="btn {{ (isset($first_event->id) && $first_event->subscribers()->count() > 0) ? 'btn-info bg-grey' : ' btn-info bg-info-800' }}">{{ trans('messages.edit') }}</a>
+							@if (isset($first_event->id) && $first_event->subscribers()->count() > 0)
 								<i class="icon-checkmark4"></i>
+							@elseif($first_event->subscribers()->count() <= 0)
+								<i class="fa fa-exclamation text-warning"></i>
 							@else
 								<i class="icon-cross2 text-danger"></i>
 							@endif							
                             <h4><numbericon>1</numbericon> {{ trans('messages.trigger_workflow_when_the_following_conditions_are_met') }}</h4>
 							<p>
 								{!! $first_event->displayMessage() !!}
-							</p>
+								<br />
+								<span class="{{ $first_event->subscribers()->count() <= 0 ? 'text-warning' : '' }}">
+									<span class="text-bold">{{ $first_event->subscribers()->count() }}</span> {{ trans('messages.subscribers') }}
+								</span>
+							</p>							
                         </li>
 						@if (isset($first_event->id))
 							@forelse($first_event->campaigns as $key => $campaign)
@@ -93,7 +99,7 @@
 						@if ($automation->isValid())
 							<button class="btn btn-lg bg-teal-800"><i class="icon-paperplane ml-5"></i> {{ trans('messages.send') }}</button>							
 						@else
-							<a href="{{ action("AutomationController@workflow", $auto_event->automation->uid) }}" class="btn bg-grey-800">
+							<a href="{{ action("AutomationController@workflow", $automation->uid) }}" class="btn bg-grey-800">
 								<i class="icon-arrow-left7"></i> {{ trans('messages.back_to_workflow') }}
 							</a>					
 						@endif

@@ -1,6 +1,6 @@
                             <div class="col-md-8">
                                 <hr>
-                                <h5 class="text-semibold">{{ trans('messages.Trigger_the_automation_for_the_following_recur') }}</h5>
+                                <h5 class="text-semibold">{{ trans('messages.Trigger_the_automation_for_the_following_conditions_recur') }}</h5>
 								@if ($errors->has("custom_criteria_empty"))
 									<div class="text-danger text-semibold">
 										<strong>{{ $errors->first("custom_criteria_empty") }}</strong>

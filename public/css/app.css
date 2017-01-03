@@ -861,6 +861,8 @@ ul.modern-listing li i, .table-row-icon {
     margin-right: 20px;
     color: #00838F;
     margin-top: 5px;
+    width: 30px;
+    text-align: center;
 }
 .table-row-icon {
     color: #333;
@@ -1429,7 +1431,7 @@ numbericon {
     float: left;
     color: #fff;
     width: 40px;
-    margin: 0 20px 6px 0;
+    margin: 0 20px 25px 0;
     height: 40px;
     text-align: center;
     padding: 5px;
