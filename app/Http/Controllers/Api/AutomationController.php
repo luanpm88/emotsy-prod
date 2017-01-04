@@ -21,13 +21,22 @@ class AutomationController extends Controller
         $user = \Auth::guard('api')->user();
         $automation = \Acelle\Model\Automation::findByUid($uid);
         
-        // trigger api call
-        // $automation->setRunning();
-        return \Response::json(array('message' => trans('messages.automation.updated')), 200);
-        
-        // authorize
-        if (!$user->can('update', $automation)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
+        try {            
+            // check if automation exists
+            if (!is_object($automation)) {
+                throw new \Exception("Automation not found"); 
+            }
+            
+            // authorize
+            if (!$user->can('update', $automation)) {
+                throw new \Exception("Unauthorized"); 
+            }
+            
+            // start automation
+            $automation->start();
+            return \Response::json(array('message' => trans('messages.automation.started')), 200);
+        } catch (\Exception $e) {
+            return \Response::json(array('message' => $e->getMessage()), 400);
         }
     }
 }
