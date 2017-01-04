@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Log as MailLog;
 
 class Automation extends Model
 {
@@ -46,6 +47,33 @@ class Automation extends Model
     protected $fillable = [
         'name', 'mail_list_id', 'segment_id'
     ];
+
+    /**
+     * Check if automation is active
+     *
+     * @return boolean active or not
+     */
+    public function isActive()
+    {
+        return $this->status == self::STATUS_ACTIVE;
+    }
+
+    /**
+     * Check if automation is active
+     *
+     * @return boolean active or not
+     */
+    public function start()
+    {
+        if (!$this->isActive()) {
+            throw new \Exception('Automation is not ready');
+        }
+
+        MailLog::info(sprintf('Automation %s (ID: %s) started', $this->name, $this->id));
+        $this->getInitEvent()->fire();
+
+        return true;
+    }
     
     /**
      * Bootstrap any application services.
