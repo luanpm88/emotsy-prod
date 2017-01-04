@@ -59,6 +59,24 @@ class Automation extends Model
     }
 
     /**
+     * Monitor and trigger automation events
+     *
+     * @return null
+     */
+    public static function run()
+    {
+        // @todo: usue a `scoped` instead
+        $automations = self::where('status', self::STATUS_ACTIVE)->get();
+
+        foreach ($automations as $automation) {
+            MailLog::info(sprintf('Checking automation `%s`', $automation->name));
+            foreach ($automation->autoEvents as $event) {
+                $event->check();
+            }
+        }
+    }
+
+    /**
      * Check if automation is active
      *
      * @return boolean active or not
@@ -70,6 +88,7 @@ class Automation extends Model
         }
 
         MailLog::info(sprintf('Automation %s (ID: %s) started', $this->name, $this->id));
+        
         $this->getInitEvent()->fire();
 
         return true;
