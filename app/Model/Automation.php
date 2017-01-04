@@ -71,7 +71,9 @@ class Automation extends Model
         foreach ($automations as $automation) {
             MailLog::info(sprintf('Checking automation `%s`', $automation->name));
             foreach ($automation->autoEvents as $event) {
-                $event->check();
+                if ($event->isActive()) {
+                    $event->check();
+                }
             }
         }
     }

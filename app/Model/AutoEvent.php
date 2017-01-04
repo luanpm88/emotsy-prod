@@ -113,6 +113,16 @@ class AutoEvent extends Model
     {
         return $this->hasMany('Acelle\Model\AutoTrigger');
     }
+
+    /**
+     * Get AutoEvent status
+     *
+     * @return boolean active or not
+     */
+    public function isActive()
+    {
+        return $this->status == self::STATUS_ACTIVE;
+    }
 	
 	/**
      * Set uid for resource.
@@ -699,8 +709,8 @@ class AutoEvent extends Model
      */
     public function checkForCustomCriteria()
     {
-        $subscribers = $this->subscribers()->whereRaw(sprintf('subscribers.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id));
-        
+        $subscribers = $this->subscribers()
+                            ->whereRaw(sprintf(table('subscribers') . '.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();      
         foreach ($subscribers as $subscriber) {
             MailLog::info(sprintf('Trigger sending custom-criteria email for automation `%s`, subscriber ID: %s, event ID: %s', $this->automation->name, $subscriber->id, $this->id));
             $this->fire(collect([$subscriber]), null, $this->getDelayInSeconds());
@@ -728,16 +738,16 @@ class AutoEvent extends Model
 
         if ($field == 'subscription_date') {
             $subscribers = Subscriber::select('subscribers.id')
-                         ->whereRaw(sprintf('DATE(CONVERT_TZ(subscribers.created_at, %1$s, %2$s) + %3$s) = DATE(CONVERT_TZ(NOW(), %1$s, %2$s)) AND DATE(CONVERT_TZ(subscribers.created_at, %1$s, %2$s)) + %3$s <= CONVERT_TZ(NOW(), %1$s, %2$s)', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), $this->getDelayIntervalMySql()))
-                         ->whereRaw(sprintf('subscribers.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %3$s WHERE auto_event_id = %4$s AND EXTRACT(YEAR FROM CONVERT_TZ(NOW(), %1$s, %2$s)) = EXTRACT(YEAR FROM CONVERT_TZ(created_at, %1$s, %2$s)) )', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), table('auto_triggers'), $this->id))
+                         ->whereRaw(sprintf('DATE(CONVERT_TZ(' . table('subscribers') . '.created_at, %1$s, %2$s) + %3$s) = DATE(CONVERT_TZ(NOW(), %1$s, %2$s)) AND DATE(CONVERT_TZ(' . table('subscribers') . '.created_at, %1$s, %2$s)) + %3$s <= CONVERT_TZ(NOW(), %1$s, %2$s)', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), $this->getDelayIntervalMySql()))
+                         ->whereRaw(sprintf('' . table('subscribers') . '.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %3$s WHERE auto_event_id = %4$s AND EXTRACT(YEAR FROM CONVERT_TZ(NOW(), %1$s, %2$s)) = EXTRACT(YEAR FROM CONVERT_TZ(created_at, %1$s, %2$s)) )', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), table('auto_triggers'), $this->id))
                          ->get();
         } else {
             $subscribers = Subscriber::select('subscribers.id')
                          ->join('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
                          ->join('fields', 'subscriber_fields.field_id', '=', 'fields.id')
                          ->where('fields.uid', $field)
-                         ->whereRaw(sprintf('DATE(CONVERT_TZ(subscriber_fields.value, %1$s, %2$s) + %3$s) = DATE(CONVERT_TZ(NOW(), %1$s, %2$s)) AND DATE(CONVERT_TZ(subscriber_fields.value, %1$s, %2$s)) + %3$s <= CONVERT_TZ(NOW(), %1$s, %2$s)', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), $this->getDelayIntervalMySql()))
-                         ->whereRaw(sprintf('subscribers.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %3$s WHERE auto_event_id = %4$s AND EXTRACT(YEAR FROM CONVERT_TZ(NOW(), %1$s, %2$s)) = EXTRACT(YEAR FROM CONVERT_TZ(created_at, %1$s, %2$s)) )', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), table('auto_triggers'), $this->id))
+                         ->whereRaw(sprintf('DATE(CONVERT_TZ(' . table('subscriber_fields') . '.value, %1$s, %2$s) + %3$s) = DATE(CONVERT_TZ(NOW(), %1$s, %2$s)) AND DATE(CONVERT_TZ(' . table('subscriber_fields') . '.value, %1$s, %2$s)) + %3$s <= CONVERT_TZ(NOW(), %1$s, %2$s)', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), $this->getDelayIntervalMySql()))
+                         ->whereRaw(sprintf('' . table('subscribers') . '.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %3$s WHERE auto_event_id = %4$s AND EXTRACT(YEAR FROM CONVERT_TZ(NOW(), %1$s, %2$s)) = EXTRACT(YEAR FROM CONVERT_TZ(created_at, %1$s, %2$s)) )', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), table('auto_triggers'), $this->id))
                          ->get();
         }
 
@@ -1011,9 +1021,9 @@ class AutoEvent extends Model
     public function getNewSubscribersToFollow()
     {
         return $this->automation->subscribers()
-                    ->whereRaw(sprintf('subscribers.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))
+                    ->whereRaw(sprintf(table('subscribers') . '.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))
                     ->where('created_at', '>=', $this->created_at)
-                    ->whereRaw(sprintf("COALESCE(subscribers.subscription_type, '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
+                    ->whereRaw(sprintf("COALESCE(". table('subscribers') .".subscription_type, '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
                     ->get();
     }
 
@@ -1024,7 +1034,7 @@ class AutoEvent extends Model
      */
     public function getOpenedMessagesToFollow()
     {
-        return TrackingLog::select('tracking_logs.*')->join('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')->where('auto_event_id', $this->previousEvent->id)->whereRaw(sprintf('tracking_logs.subscriber_id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
+        return TrackingLog::select('tracking_logs.*')->join('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')->where('auto_event_id', $this->previousEvent->id)->whereRaw(sprintf(table('tracking_logs') . '.subscriber_id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
     }
 
     /**
@@ -1034,7 +1044,7 @@ class AutoEvent extends Model
      */
     public function getClickedMessagesToFollow()
     {
-        return TrackingLog::select('tracking_logs.*')->join('click_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')->where('auto_event_id', $this->previousEvent->id)->whereRaw(sprintf('tracking_logs.subscriber_id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
+        return TrackingLog::select('tracking_logs.*')->join('click_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')->where('auto_event_id', $this->previousEvent->id)->whereRaw(sprintf(table('tracking_logs') . '.subscriber_id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
     }
 
     /**
@@ -1049,7 +1059,7 @@ class AutoEvent extends Model
                     ->addSelect('tracking_logs.message_id')
                     ->join('tracking_logs', 'subscribers.id', '=', 'tracking_logs.subscriber_id')
                     ->join('unsubscribe_logs', 'tracking_logs.message_id', '=', 'unsubscribe_logs.message_id')
-                    ->whereRaw(sprintf('subscribers.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))
+                    ->whereRaw(sprintf(table('subscribers') . '.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))
                     ->where('unsubscribe_logs.created_at', '>=', $this->created_at)
                     ->get();
     }
