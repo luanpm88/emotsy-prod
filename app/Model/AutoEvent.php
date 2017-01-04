@@ -713,7 +713,7 @@ class AutoEvent extends Model
         if ($field == 'subscription_date') {
             $subscribers = Subscriber::select('subscribers.id')
                          ->whereRaw(sprintf('DATE(CONVERT_TZ(subscribers.created_at, %1$s, %2$s) + %3$s) = DATE(CONVERT_TZ(NOW(), %1$s, %2$s)) AND DATE(CONVERT_TZ(subscribers.created_at, %1$s, %2$s)) + %3$s <= CONVERT_TZ(NOW(), %1$s, %2$s)', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), $this->getDelayIntervalMySql()))
-                         ->whereRaw(sprintf('subscribers.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))
+                         ->whereRaw(sprintf('subscribers.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %3$s WHERE auto_event_id = %4$s AND EXTRACT(YEAR FROM CONVERT_TZ(NOW(), %1$s, %2$s)) = EXTRACT(YEAR FROM CONVERT_TZ(created_at, %1$s, %2$s)) )', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), table('auto_triggers'), $this->id))
                          ->get();
         } else {
             $subscribers = Subscriber::select('subscribers.id')
@@ -721,7 +721,7 @@ class AutoEvent extends Model
                          ->join('fields', 'subscriber_fields.field_id', '=', 'fields.id')
                          ->where('fields.uid', $field)
                          ->whereRaw(sprintf('DATE(CONVERT_TZ(subscriber_fields.value, %1$s, %2$s) + %3$s) = DATE(CONVERT_TZ(NOW(), %1$s, %2$s)) AND DATE(CONVERT_TZ(subscriber_fields.value, %1$s, %2$s)) + %3$s <= CONVERT_TZ(NOW(), %1$s, %2$s)', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), $this->getDelayIntervalMySql()))
-                         ->whereRaw(sprintf('subscribers.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))
+                         ->whereRaw(sprintf('subscribers.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %3$s WHERE auto_event_id = %4$s AND EXTRACT(YEAR FROM CONVERT_TZ(NOW(), %1$s, %2$s)) = EXTRACT(YEAR FROM CONVERT_TZ(created_at, %1$s, %2$s)) )', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), table('auto_triggers'), $this->id))
                          ->get();
         }
         foreach ($subscribers as $subscriber) {
