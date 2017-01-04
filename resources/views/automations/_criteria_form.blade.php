@@ -6,7 +6,9 @@
 											<select class="select" name="custom_criteria[{{ $index }}][field_uid]">
 												<optgroup label="{{ trans('messages.Subscriber_attributes') }}">
 													@foreach($automation->mailList->getFields as $field)
-														<option {{ isset($criteria) && $criteria["field_uid"] == $field->uid ? 'selected' : '' }} value="{{ $field->uid }}">{{ $field->label }}</option>
+														@if (!in_array($field->type, ['datetime','date']))
+															<option {{ isset($criteria) && $criteria["field_uid"] == $field->uid ? 'selected' : '' }} value="{{ $field->uid }}">{{ $field->label }}</option>
+														@endif
 													@endforeach
 												</optgroup>
 											</select>
