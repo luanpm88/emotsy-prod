@@ -709,7 +709,7 @@ class AutoEvent extends Model
     public function checkForSubscriberEvent()
     {
         $field = $this->getDataValue('event');
-        $subscribers = Subscriber::join('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
+        $subscribers = Subscriber::select('subscribers.id')->join('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
                          ->join('fields', 'subscriber_fields.field_id', '=', 'fields.id')
                          ->where('fields.uid', $field)
                          ->whereRaw(sprintf('DATE(CONVERT_TZ(subscriber_fields.value, %1$s, %2$s) + %3$s) = DATE(CONVERT_TZ(NOW(), %1$s, %2$s)) AND DATE(CONVERT_TZ(subscriber_fields.value, %1$s, %2$s)) + %3$s <= CONVERT_TZ(NOW(), %1$s, %2$s)', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), $this->getDelayIntervalMySql()))
