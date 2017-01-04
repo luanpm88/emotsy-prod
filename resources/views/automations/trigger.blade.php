@@ -94,12 +94,15 @@
 										'options' => Acelle\Model\AutoEvent::delayTypeOptions(),
 										'rules' => []
 									])
+									<span class="delay-after-text text-bold">
+										{{ trans('messages.delay_after') }}
+									</span>
 									{{ trans('messages.trigger_occurred') }}
 								</h6>
 							</div>
 						</div>
 					</div>
-				<hr>
+					<hr>
 					<div class="text-right">
 						<button class="btn bg-teal-800">{{ trans('messages.Save_and_Next') }} <i class="icon-arrow-right7"></i> </button>
 					</div>
@@ -109,13 +112,27 @@
 				<script>
                     $(document).ready(function() {
                         // Pick a day from now
-                        // Date limits
                         $('.pickadate_from_now').pickadate({
                             min: [{{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now())->year }},
                                     {{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now()->subMonth(1))->month }},
                                     {{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now())->day }}],
                             format: LANG_DATE_FORMAT
                         });
+						
+						// custom criteria delay type retricted
+						$(document).on("change", "input[name='event_type']", function() {
+							var type = $("input[name='event_type']:checked").val();
+							
+							if(type === 'custom-criteria') {
+								$('.delay-after-text').show();
+								$('select[name="delay_type"]').val('after').change();
+								$('select[name="delay_type"]').parents('.form-group').hide();
+							} else {
+								$('.delay-after-text').hide();
+								$('select[name="delay_type"]').parents('.form-group').show();
+							}
+						});
+						$("input[name='event_type']:checked").trigger('change');
                     });
                 </script>
 @endsection
