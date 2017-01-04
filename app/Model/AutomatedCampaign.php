@@ -172,12 +172,12 @@ class AutomatedCampaign extends Campaign
      * Queue campaign for sending
      *
      */
-    public function queue($subscribers = null, $trigger = null)
+    public function queue($subscribers = null, $trigger = null, $delay = 0)
     {
         // @note only set the trigger when start()
         // since campaign can be started without queue()
         MailLog::info(sprintf('Automated campaign `%s` (ID: %s) queued, trigger ID: %s', $this->name, $this->id, $trigger->id ));
-        $job = (new RunAutomatedCampaignJob($this, $trigger, $subscribers));
+        $job = ((new RunAutomatedCampaignJob($this, $trigger, $subscribers))->delay($delay));
         dispatch($job);
     }
 }

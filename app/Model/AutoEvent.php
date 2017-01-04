@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Carbon\CarbonInterval;
 use Acelle\Library\Log as MailLog;
 use Acelle\Model\Subscriber;
 use DB;
@@ -632,7 +633,7 @@ class AutoEvent extends Model
     public function check()
     {
         $method = $this->camelize('check-for-' . $this->event_type);
-        $this->$method();
+        return $this->$method();
     }
     
     /**
@@ -696,13 +697,28 @@ class AutoEvent extends Model
      *
      * @return NULL
      */
+    public function checkForCustomCriteria()
+    {
+        $subscribers = $this->subscribers()->whereRaw(sprintf('subscribers.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id));
+        
+        foreach ($subscribers as $subscriber) {
+            MailLog::info(sprintf('Trigger sending custom-criteria email for automation `%s`, subscriber ID: %s, event ID: %s', $this->automation->name, $subscriber->id, $this->id));
+            $this->fire(collect([$subscriber]), null, $this->getDelayInSeconds());
+        }
+    }
+
+    /**
+     * Check for anually-recurring events
+     *
+     * @return NULL
+     */
     public function checkForAnuallyRecurring()
     {
         // not supported
     }
 
     /**
-     * Check for subscriber-events
+     * Check for subscriber-event
      *
      * @return NULL
      */
@@ -724,6 +740,7 @@ class AutoEvent extends Model
                          ->whereRaw(sprintf('subscribers.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %3$s WHERE auto_event_id = %4$s AND EXTRACT(YEAR FROM CONVERT_TZ(NOW(), %1$s, %2$s)) = EXTRACT(YEAR FROM CONVERT_TZ(created_at, %1$s, %2$s)) )', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), table('auto_triggers'), $this->id))
                          ->get();
         }
+
         foreach ($subscribers as $subscriber) {
             MailLog::info(sprintf('Trigger sending subscriber-event email for automation `%s`, subscriber ID: %s, event ID: %s', $this->automation->name, $subscriber->id, $this->id));
             $this->fire(collect([$subscriber]));
@@ -844,6 +861,18 @@ class AutoEvent extends Model
         $unit = $delay['delay_unit'];
         return "INTERVAL {$modifier}{$base} {$unit}";
     }
+    
+    /**
+     * Convert the delay setting to interval (seconds)
+     *
+     * @return int seconds
+     */
+    public function getDelayInSeconds()
+    {
+        $now = Carbon::now();
+        $delayed = $now->copy()->modify($this->getDelayInterval());
+        return $delayed->diffInSeconds($now);
+    }
 
     /**
      * Check for follow-up events
@@ -867,7 +896,7 @@ class AutoEvent extends Model
         // One event may be triggered multiple times
         // For example: triggerd by birthday --> make sure to follow all these triggers
         foreach($preceding->triggersToFollowUp as $trigger) {
-            if ($now->gte($trigger->start_at->modify($this->getDelayInterval()))) {
+            if ($now->gte($trigger->start_at->copy()->modify($this->getDelayInterval()))) {
                 // for follow-up type of auto-event, need to pass a preceding trigger
                 // empty $trigger->subscriber indicates ALL
                 MailLog::info(sprintf('Trigger sending follow-up email for automation %s, preceding event ID: %s, event ID: %s', $this->automation->name, $preceding->id, $this->id));
@@ -886,7 +915,7 @@ class AutoEvent extends Model
         $now = Carbon::now();
         $logs = $this->getOpenedMessagesToFollow();
         foreach($logs as $log) {
-            if ($now->gte($log->created_at->modify($this->getDelayInterval()))) {
+            if ($now->gte($log->created_at->copy()->modify($this->getDelayInterval()))) {
                 MailLog::info(sprintf('Trigger sending follow-up opened email for automation `%s`, subscriber: %s, event ID: %s', $this->automation->name, $log->subscriber_id, $this->id));
                 $this->fire(collect([$log->subscriber]));
                 // a more verbal way is: fire(Subscriber::where('id', $log->subscriber_id)
@@ -905,7 +934,7 @@ class AutoEvent extends Model
         $logs = $this->getClickedMessagesToFollow();
 
         foreach($logs as $log) {
-            if ($now->gte($log->created_at->modify($this->getDelayInterval()))) {
+            if ($now->gte($log->created_at->copy()->modify($this->getDelayInterval()))) {
                 MailLog::info(sprintf('Trigger sending follow-up clicked email for automation `%s`, subscriber: %s, event ID: %s, message ID: %s', $this->automation->name, $log->subscriber_id, $this->id, $log->message_id));
                 $this->fire(collect([$log->subscriber]));
                 // a more verbal way is: fire(Subscriber::where('id', $log->subscriber_id)
@@ -920,12 +949,11 @@ class AutoEvent extends Model
      */
     public function checkForListUnsubscription()
     {
-        
         $now = Carbon::now();
         $subscribers = $this->getUnsubscribersToFollow();
 
         foreach ($subscribers as $subscriber) {
-            if ($now->gte($subscriber->unsubscribed_at->modify($this->getDelayInterval()))) {
+            if ($now->gte($subscriber->unsubscribed_at->copy()->modify($this->getDelayInterval()))) {
                 MailLog::info(sprintf('Trigger sending follow-up unsubscribed email for automation `%s`, subscriber ID: %s, event ID: %s, message ID: %s', $this->automation->name, $subscriber->id, $this->id, $subscriber->message_id));
                 $this->fire(collect([$subscriber]));
                 // a more verbal way is: fire(Subscriber::where('id', $log->subscriber_id)
@@ -943,7 +971,7 @@ class AutoEvent extends Model
         $now = Carbon::now();
         $subscribers = $this->getNewSubscribersToFollow();
         foreach($subscribers as $subscriber) {
-            if ($now->gte($subscriber->created_at->modify($this->getDelayInterval()))) {
+            if ($now->gte($subscriber->created_at->copy()->modify($this->getDelayInterval()))) {
                 $this->fire(collect([$subscriber]));
             }
         }
@@ -954,7 +982,7 @@ class AutoEvent extends Model
      *
      * @return NULL
      */
-    public function fire($subscribers = null, $preceding_trigger = null)
+    public function fire($subscribers = null, $preceding_trigger = null, $delay = 0)
     {
         // log a trigger record
         $trigger = new AutoTrigger(['start_at' => Carbon::now()]);
@@ -971,7 +999,7 @@ class AutoEvent extends Model
         
         // schedule the corresponding job
         foreach($this->campaigns as $campaign) {
-            $campaign->queue($subscribers, $trigger);
+            $campaign->queue($subscribers, $trigger, $delay);
         };
     }
 
@@ -1128,6 +1156,7 @@ class AutoEvent extends Model
      * Subscribers.
      *
      * @return collect
+     * @todo: sanitize the input
      */
     public function subscribers($params=[])
     {        

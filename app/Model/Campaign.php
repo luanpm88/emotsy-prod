@@ -1893,7 +1893,7 @@ class Campaign extends Model
     {
         $now = Carbon::now();
 
-        if ($this->run_at->timestamp <= $now->timestamp) {
+        if ($now->gte($this->run_at)) {
             return 0;
         } else {
             return $this->run_at->diffInSeconds($now);
@@ -1904,7 +1904,7 @@ class Campaign extends Model
      * Queue campaign for sending
      *
      */
-    public function queue($trigger = null, $subscribers = null)
+    public function queue($trigger = null, $subscribers = null, $delay = 0)
     {
         $this->ready();
         $job = (new \Acelle\Jobs\RunCampaignJob($this))->delay($this->getDelayInSeconds());
