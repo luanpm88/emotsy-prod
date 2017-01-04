@@ -27,6 +27,5 @@ try {
 }
 ?>
 
-<pre style="font-size: 16px;background:#f5f5f5"># {{ trans('messages.cron_jobs_comment') }}
-* * * * * {!! $php_bin !!} -q {{ base_path() }}/artisan schedule:run 2&gt;&amp;1
+<pre style="font-size: 16px;background:#f5f5f5">* * * * * {!! $php_bin !!} -q {{ base_path() }}/artisan schedule:run 2&gt;&amp;1
 </pre>

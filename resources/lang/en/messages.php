@@ -11,8 +11,8 @@ return [
     'stay_logged_in' => 'Stay logged in',
     'forgot_password' => 'Forgot Password?',
     'login' => 'Log In',
-    'copy_right_light' => '© 2016. <span class="text-white">Acelle Email Marketing Application</span> by <a href="http://acellemail.com" class="text-white" target="_blank">Acellemail.com</a>',
-    'copy_right' => '© 2016. Acelle Email Marketing Application by <a href="http://acellemail.com" class="" target="_blank">Acellemail.com</a>',
+    'copy_right_light' => '© 2017. <span class="text-white">Acelle Email Marketing Application</span> by <a href="http://acellemail.com" class="text-white" target="_blank">Acellemail.com</a>',
+    'copy_right' => '© 2017. Acelle Email Marketing Application by <a href="http://acellemail.com" class="" target="_blank">Acellemail.com</a>',
     'send_password_reset_link' => 'Send Password Reset Link',
     'password_reset' => 'Password Reset',
     'password_reset.help' => 'We\'ll email you instructions on how to reset your password.',
@@ -925,10 +925,9 @@ return [
     'custom_css' => 'Custom CSS',
     'validate_script' => 'Validate script',
     'cron_jobs_guide' => '
-        Insert the following lines to your system contab. <br />
+        Insert the following line to your system\'s contab. <br />
         Please note, below timings for running the cron jobs are the recommended, you can change it if you want.
     ',
-    'cron_jobs_comment' => 'Campaigns sender, runs each minute.',
     'last_click' => 'Last click',
     'not_opened' => 'Not opened',
     'not_clicked' => 'Not clicked',
