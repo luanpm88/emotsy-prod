@@ -46,7 +46,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
     Route::resource('users', 'UserController');
     
     // Automation
-    Route::patch('automations/{uid}/api/call', 'AutomationController@apiCall');
+    Route::post('automations/{uid}/api/call', 'AutomationController@apiCall');
 });
 
 Route::auth();

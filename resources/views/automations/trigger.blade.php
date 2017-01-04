@@ -57,7 +57,7 @@
 						<div class="row tabable-tab api-call">
 							<div class="col-md-12">
 								<hr>
-								<h5 class="text-semibold">{!! trans('messages.make_request_to_run_automation', ['command' => 'PATCH ' . action('Api\AutomationController@apiCall', [
+								<h5 class="text-semibold">{!! trans('messages.make_request_to_run_automation', ['command' => 'POST ' . action('Api\AutomationController@apiCall', [
 									'uid' => $automation->uid,
 									'api_token' => Auth::user()->api_token
 								])]) !!}</h5>
