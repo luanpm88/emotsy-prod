@@ -1,4 +1,4 @@
-2.0.4-p28 / 2017-01-08
+2.0.4-p29 / 2017-01-08
 ===================
 
  * Fixed: mail list export compatibility issue on certain systems
@@ -11,7 +11,7 @@
  * Changed: only one cronjob is required
  * Added: support automation/autorespond functionality
 
-2.0.4-p27 / 2016-11-09
+2.0.4-p27 & 2.0.4-p28 / 2016-11-09
 ===================
 
  * Added: send a test email of campaign
