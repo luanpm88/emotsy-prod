@@ -1,3 +1,16 @@
+2.0.4-p28 / 2017-01-08
+===================
+
+ * Fixed: mail list export compatibility issue on certain systems
+ * Fixed: cannot delete out-dated campaigns
+ * Fixed: php-curl compatibility issue
+ * Fixed: improve subscribers import performance
+ * Fixed: PHP 7.1 compatibility issues
+ * Changed: php-xml is now required
+ * Changed: refractor of the system jobs
+ * Changed: only one cronjob is required
+ * Added: support automation/autorespond functionality
+
 2.0.4-p27 / 2016-11-09
 ===================
 
