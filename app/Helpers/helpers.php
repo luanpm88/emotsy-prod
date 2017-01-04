@@ -129,3 +129,31 @@ function array_unique_by($array, $callback)
     }
     return array_values($result);
 }
+
+/**
+ * Get UTC offset of a particular time zone
+ *
+ * @param string timezone
+ * @return string UTC offset (+02:00 for example)
+ */
+function utc_offset($timezone)
+{
+    $offset = \Carbon\Carbon::now($timezone)->offsetHours - \Carbon\Carbon::now('UTC')->offsetHours;
+    return sprintf("%+'03d:00", $offset);
+}
+
+/**
+ * Get Database UTC offset
+ *
+ * @return string UTC offset (+02:00 for example)
+ */
+function db_utc_offset()
+{
+    $zone = DB::select("SELECT TIME_FORMAT(TIMEDIFF(NOW(), UTC_TIMESTAMP), '%H:%i') AS zone")[0]->zone;
+
+    if (!preg_match('/^-/', $zone)) {
+        $zone = "+$zone";
+    }
+
+    return $zone;
+}
