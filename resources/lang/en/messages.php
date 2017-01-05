@@ -1271,6 +1271,7 @@ return [
     'criteria_and' => 'and',
     'delay_after' => 'AFTER',
     'automation.started' => 'Automation was successfully started',
+    'follow_up_send_right_after' => 'Send right after previous email is :event',
 ];
 
 

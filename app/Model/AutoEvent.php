@@ -374,13 +374,13 @@ class AutoEvent extends Model
 			case self::TYPE_FOLLOW_UP:
 			case self::TYPE_FOLLOW_UP_OPENED:
 			case self::TYPE_FOLLOW_UP_CLICKED:
-				if(!empty($params["delay_value"]) && !empty($params["delay_unit"])) {
+				// if(!isset($params["delay_value"]) && !isset($params["delay_unit"])) {
 					$this->updateData([
 						'delay_type' => 'after',
 						'delay_value' => $params["delay_value"],
 						'delay_unit' => $params["delay_unit"]
 					]);
-				}
+				// }
 				break;
 		}
 	}
@@ -524,11 +524,17 @@ class AutoEvent extends Model
 			case self::TYPE_FOLLOW_UP:
 			case self::TYPE_FOLLOW_UP_OPENED:
 			case self::TYPE_FOLLOW_UP_CLICKED:
-				$msg = trans('messages.follow_up_description', [
-					'value' => $this->getDataValue('delay_value'),
-					'unit' => \Acelle\Library\Tool::getPluralPrase($this->getDataValue('delay_unit'), $this->getDataValue('delay_value')),
-					'event' => trans('messages.follow_up_event_' . $this->event_type)
-				]);
+				if(empty($this->getDataValue('delay_value'))) {
+					$msg = trans('messages.follow_up_send_right_after', [						
+						'event' => trans('messages.follow_up_event_' . $this->event_type)
+					]);
+				} else {
+					$msg = trans('messages.follow_up_description', [
+						'value' => $this->getDataValue('delay_value'),
+						'unit' => \Acelle\Library\Tool::getPluralPrase($this->getDataValue('delay_unit'), $this->getDataValue('delay_value')),
+						'event' => trans('messages.follow_up_event_' . $this->event_type)
+					]);
+				}
 				break;
 			case self::TYPE_API_CALL:				
 				$msg = trans('messages.event_type_api_description');
