@@ -123,7 +123,7 @@
 						$(document).on("change", "input[name='event_type']", function() {
 							var type = $("input[name='event_type']:checked").val();
 							
-							if(type === 'custom-criteria') {
+							if(type === '{{ Acelle\Model\AutoEvent::TYPE_CUSTOM_CRITERIA }}' || type === '{{ Acelle\Model\AutoEvent::TYPE_LIST_UNSUBSCRIPTION }}' || type === '{{ Acelle\Model\AutoEvent::TYPE_LIST_SUBSCRIPTION }}') {
 								$('.delay-after-text').show();
 								$('select[name="delay_type"]').val('after').change();
 								$('select[name="delay_type"]').parents('.form-group').hide();
