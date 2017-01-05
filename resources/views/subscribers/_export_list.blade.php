@@ -30,19 +30,28 @@
 													<div class="progress-bar progress-bar-info" style="width: {{ $data->percent }}%">
 													</div>
 												</div>
-												<span class="no-margin">{!! $data->message !!}</span>
+												<span class="no-margin">{!! \Acelle\Helpers\ExportSubscribersHelper::getMessage($item) !!}</span>
 											</div>
 											<br style="clear:both" />
 										</td>
 										<td class="text-center">
 											<span class="text-muted2 list-status">
-												<span class="label label-flat bg-{{ $data->status }}">{{ $data->status }}</span>
+												@if ($item->status == 'cancelled')
+													<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
+												@else
+													<span class="label label-flat bg-{{ $data->status }}">{{ $data->status }}</span>
+												@endif
 											</span>
 										</td>
 										<td class="text-right text-nowrap">
 											@if (\Gate::allows('downloadExportCsv', $item))
 												<a target="_blank" href="{{ action('SystemJobController@downloadCsv', $item->id) }}" type="button" class="btn bg-teal">
 													<i class="icon-download mr-5"></i> {{ trans('messages.download_csv') }}
+												</a>
+											@endif
+											@if (\Gate::allows('cancel', $item))
+												<a data-method="POST" link-confirm="{{ trans('messages.cancel_system_jobs_confirm') }}" href="{{ action('SystemJobController@cancel', ["uids" => $item->id]) }}" type="button" class="btn bg-grey btn-icon">
+													{{ trans('messages.cancel') }}
 												</a>
 											@endif
 											@if (\Gate::allows('delete', $item))

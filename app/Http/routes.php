@@ -44,6 +44,9 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
     
     // User
     Route::resource('users', 'UserController');
+    
+    // Automation
+    Route::post('automations/{uid}/api/call', 'AutomationController@apiCall');
 });
 
 Route::auth();
@@ -179,7 +182,11 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
 
     // Campaign
     Route::get('campaigns/{uid}/template/review', 'CampaignController@templateReview');
-    
+    Route::post('campaigns/{uid}/image/save', 'CampaignController@saveImage');
+    Route::get('campaigns/{uid}/image', 'CampaignController@image');
+    Route::get('campaigns/{uid}/preview', 'CampaignController@preview');
+    Route::get('campaigns/templates/list', 'CampaignController@templateList');
+    Route::patch('campaigns/{uid}/templates/choose/from/{from_uid}', 'CampaignController@campaignTemplateChoose');
     Route::post('campaigns/send-test-email', 'CampaignController@sendTestEmail');
     Route::get('campaigns/delete/confirm', 'CampaignController@deleteConfirm');
     Route::get('campaigns/{message_id}/open', 'CampaignController@open');
@@ -239,10 +246,52 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('users/login-back', 'UserController@loginBack');
     
     // System job
+    Route::post('systems/jobs/cancel', 'SystemJobController@cancel');
     Route::get('systems/jobs/{type}/listing', 'SystemJobController@listing');
     Route::get('systems/jobs/delete', 'SystemJobController@delete');
     Route::get('systems/jobs/{id}/download/log', 'SystemJobController@downloadLog');
     Route::get('systems/jobs/{id}/download/csv', 'SystemJobController@downloadCsv');
+    
+    // Automation
+    Route::patch('automations/disable', 'AutomationController@disable');
+    Route::patch('automations/enable', 'AutomationController@enable');
+    Route::get('automations/{uid}/overview/emails/list', 'AutomationController@overviewCampaignsList');
+    Route::get('automations/{uid}/overview/emails', 'AutomationController@overviewCampaigns');
+    Route::get('automations/{uid}/overview/workflow', 'AutomationController@overviewWorkflow');
+    Route::post('automations/{uid}/confirm', 'AutomationController@confirm');
+    Route::get('automations/{uid}/confirm', 'AutomationController@confirm');
+    Route::delete('automations/delete', 'AutomationController@delete');
+    Route::get('automations/{uid}/auto-event/form', 'AutomationController@nextEventForm');
+    Route::post('automations/{uid}/workflow', 'AutomationController@workflow');
+    Route::get('automations/{uid}/workflow', 'AutomationController@workflow');
+    Route::get('automations/{uid}/custom-criteria/form', 'AutomationController@criteriaForm');
+    Route::post('automations/{uid}/trigger', 'AutomationController@trigger');
+    Route::get('automations/{uid}/trigger', 'AutomationController@trigger');
+    Route::get('automations/sort', 'AutomationController@sort');
+    Route::get('automations/listing/{page?}', 'AutomationController@listing');
+    Route::resource('automations', 'AutomationController');
+    
+    // Auto event
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template', 'AutoEventController@template'); //
+    Route::post('auto-events/{uid}/emails/{campaign_uid}/template', 'AutoEventController@template'); //
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/select', 'AutoEventController@templateSelect'); //
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/choose/{template_uid}', 'AutoEventController@templateChoose');
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/preview', 'AutoEventController@templatePreview'); //
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/iframe', 'AutoEventController@templateIframe'); //
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/build/{style}', 'AutoEventController@templateBuild'); //
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/rebuild', 'AutoEventController@templateRebuild'); //
+    
+    Route::patch('auto-events/{uid}/move/up', 'AutoEventController@moveUp');
+    Route::patch('auto-events/{uid}/move/down', 'AutoEventController@moveDown');
+    Route::patch('auto-events/{uid}/disable', 'AutoEventController@disable');
+    Route::patch('auto-events/{uid}/enable', 'AutoEventController@enable');
+    Route::patch('auto-events/{uid}/emails/{campaign_uid}/setup', 'AutoEventController@campaignSetup');
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/setup', 'AutoEventController@campaignSetup');
+    Route::delete('auto-events/{uid}/delete', 'AutoEventController@delete');
+    Route::delete('auto-events/campaigns/{uid}/delete', 'AutoEventController@deleteCampaign');
+    Route::post('auto-events/{uid}/campaigns/add', 'AutoEventController@addCampaign');
+    Route::get('auto-events/{uid}/campaigns', 'AutoEventController@campaigns');
+    Route::resource('auto-events', 'AutoEventController');
 });
 
 // ADMIN AREA

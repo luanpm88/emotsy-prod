@@ -20,6 +20,11 @@
 												@if ($required)
 													<span class="text-danger">*</span>
 												@endif
+												@if (isset($check_all_none))
+													&nbsp;&nbsp;&nbsp;
+													<a href="#all" class="checkboxes_check_all">{{ trans('messages.all') }}</a>
+													| <a href="#none" class="checkboxes_check_none">{{ trans('messages.none') }}</a>
+												@endif
 											</label>
 										@endif
 										

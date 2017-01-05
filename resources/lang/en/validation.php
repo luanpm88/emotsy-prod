@@ -126,6 +126,9 @@ return [
         'zip_archive_unvalid' => [
             'required' => 'Cannot read the package.',
         ],
+        'custom_criteria_empty' => [
+            'required' => 'Custom criteria cannot be empty',
+        ],
     ],
 
     /*

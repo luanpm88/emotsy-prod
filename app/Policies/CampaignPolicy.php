@@ -34,7 +34,8 @@ class CampaignPolicy
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
-        return $item->user_id == $user->id && in_array($item->status, ['new', 'ready', 'error']);
+        return $item->user_id == $user->id
+            && ($item->is_auto || in_array($item->status, ['new', 'ready', 'error']));
     }
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
@@ -58,6 +59,21 @@ class CampaignPolicy
     }
     
     public function copy(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
+    {
+        return $item->user_id == $user->id;
+    }
+    
+    public function preview(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
+    {
+        return $item->user_id == $user->id;
+    }
+    
+    public function saveImage(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
+    {
+        return $item->user_id == $user->id;
+    }
+    
+    public function image(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
     {
         return $item->user_id == $user->id;
     }

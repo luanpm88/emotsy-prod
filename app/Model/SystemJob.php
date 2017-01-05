@@ -34,6 +34,7 @@ class SystemJob extends Model
     const STATUS_RUNNING = 'running';
     const STATUS_DONE = 'done';
     const STATUS_FAILED = 'failed';
+    const STATUS_CANCELLED = 'cancelled';
 
     /**
      * The attributes that are mass assignable.
@@ -76,6 +77,17 @@ class SystemJob extends Model
         $this->end_at = \Carbon\Carbon::now();
         $this->save();
     }
+
+    /**
+     * Set job status as cancelled
+     *
+     * @var array
+     */
+    public function setCancelled() {
+        $this->status = self::STATUS_CANCELLED;
+        $this->end_at = \Carbon\Carbon::now();
+        $this->save();
+    }
     
     /**
      * Run time.
@@ -114,5 +126,36 @@ class SystemJob extends Model
             // delete system_jobs
             self::destroy($this->id);
         });
+    }
+    
+    /**
+    * Check if system job is cancelled
+    *
+    * @return boolean
+    */
+    function isCancelled()
+    {
+        return $this->status == SystemJob::STATUS_CANCELLED;
+    }
+    
+    /**
+    * Check if system job is new
+    *
+    * @return boolean
+    */
+    function isNew()
+    {
+        return $this->status == SystemJob::STATUS_NEW;
+    }
+    
+    /**
+    * Check if system job is new
+    *
+    * @return boolean
+    */
+    function isRunning()
+    {
+        $data = json_decode($this->data);
+        return !(in_array($data->status, ['failed', 'done']) || $this->status == \Acelle\Model\SystemJob::STATUS_CANCELLED);
     }
 }

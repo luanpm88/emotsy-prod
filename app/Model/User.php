@@ -216,6 +216,11 @@ class User extends Authenticatable
     {
         return $this->hasMany('Acelle\Model\TrackingLog')->orderBy('created_at', 'asc');
     }
+    
+    public function automations()
+    {
+        return $this->hasMany('Acelle\Model\Automation');
+    }
 
     /**
      * Bootstrap any application services.
@@ -837,5 +842,15 @@ class User extends Authenticatable
             echo \Carbon\Carbon::createFromTimestamp($t)->toDateTimeString() . " <-> " ;
         }
         echo "\n";
+    }
+    
+    /**
+     * Get not auto campaign.
+     *
+     * @return array
+     */
+    public function getNormalCampaigns()
+    {
+        return $this->campaigns()->where('is_auto', '=', false);
     }
 }

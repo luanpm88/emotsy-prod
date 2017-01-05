@@ -25,18 +25,22 @@
 										</td>
 										<td>
 											<div class="single-stat-box">                                                
-												<span class="no-margin text-teal-800 stat-num">{{ $data->percent }}%</span>
+												<span class="no-margin text-teal-800 stat-num">{{ $data->total == 0 ? 0 : round(($data->processed/$data->total)*100, 0) }}%</span>
 												<div class="progress progress-xxs">
-													<div class="progress-bar progress-bar-info" style="width: {{ $data->percent }}%">
+													<div class="progress-bar progress-bar-info" style="width: {{ $data->total == 0 ? 0 : round(($data->processed/$data->total)*100, 0) }}%">
 													</div>
 												</div>
-												<span class="no-margin">{!! $data->message !!}</span>
+												<span class="no-margin">{!! \Acelle\Helpers\ImportSubscribersHelper::getMessage($item) !!}</span>
 											</div>
 											<br style="clear:both" />
 										</td>
 										<td class="text-center">
 											<span class="text-muted2 list-status">
-												<span class="label label-flat bg-{{ $data->status }}">{{ $data->status }}</span>
+												@if ($item->status == 'cancelled')
+													<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
+												@else
+													<span class="label label-flat bg-{{ $data->status }}">{{ $data->status }}</span>
+												@endif
 											</span>
 										</td>
 										<td class="text-right text-nowrap">
@@ -45,11 +49,16 @@
 													<i class="icon-download mr-5"></i> {{ trans('messages.log') }}
 												</a>
 											@endif
+											@if (\Gate::allows('cancel', $item))
+												<a link-confirm="{{ trans('messages.cancel_system_jobs_confirm') }}" href="{{ action('SystemJobController@cancel', ["uids" => $item->id]) }}" type="button" class="btn bg-grey btn-icon">
+													{{ trans('messages.cancel') }}
+												</a>
+											@endif
 											@if (\Gate::allows('delete', $item))
 												<a delete-confirm="{{ trans('messages.delete_system_jobs_confirm') }}" href="{{ action('SystemJobController@delete', ["uids" => $item->id]) }}" type="button" class="btn bg-grey btn-icon">
 													<i class="icon-cross2"></i>
 												</a>
-											@endif											
+											@endif
 										</td>
 										
 									</tr>

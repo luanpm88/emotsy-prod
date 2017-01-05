@@ -54,6 +54,9 @@
 
                                 </div>
 								<label></label>
+								<a link-confirm="{{ trans('messages.cancel_system_jobs_confirm') }}" data-href="{{ action('SystemJobController@cancel', ["uids" => ""]) }}" type="button" class="btn bg-grey btn-icon cancel processing">
+									{{ trans('messages.cancel') }}
+								</a>
                             </div>
 								
 							<div class="form-group finish hide">
@@ -64,9 +67,7 @@
                                     <a href="#retry" class="btn bg-grey-600 mr-10 retry"><i class="icon-reload-alt"></i> {{ trans('messages.retry') }}</a>
                                 </div>
                             </div>
-                            
                         </form>  
-                        
                     </div>
                 </div>
                       
@@ -85,7 +86,10 @@
 							type: "GET",
 							success:function(result, textStatus, jqXHR)
 							{
-								if(result != "none") {
+								if(result != "none" && result.job.status != "cancelled") {
+									// Update cancel link
+									form.find('.cancel').attr('href', form.find('.cancel').attr('data-href') + result.job.id);
+									
 									// update progress bar
 									var total = parseFloat(result.data.total);
 									var success = parseFloat(result.data.success);
@@ -129,8 +133,6 @@
 													confirmButtonText: LANG_OK,
 												});
 											}
-											
-											
 										}
 									}
 									
@@ -139,7 +141,13 @@
 										form.find(".before").addClass('hide');
 										form.find(".processing").removeClass('hide');
 										form.find('.finish').addClass('hide');
+									} else {
+										form.find('.cancel').addClass('hide');
 									}
+								}
+								
+								if (result.job.status == "cancelled") {
+									form.find('.retry').trigger('click');
 								}
 							}
 						})
@@ -147,60 +155,60 @@
 					
 					$(document).on("submit", "form.ajax_upload_form", function() {
 						var form = $(this);
-						setTimeout("check_process()", 2000);
+						
 						if(!form.valid()) {
 							$("label.error").insertAfter(".uploader");
-							return false;
-						}
-						
-						var formData = new FormData($(this)[0]);
-						var url = form.attr('action');
-						var bar = form.find('.progress-total');
-						var bar_s = form.find('.progress-success');
-						var bar_e = form.find('.progress-error');
-						
-						// return to 0
-						bar_s.find(".number").html(parseInt(0));
-						bar_s.css({
-							width: 0 + '%'
-						});
-						bar_e.find(".number").html(parseInt(0));
-						bar_e.css({
-							width: 0 + '%'
-						});
-						
-						form.find(".processing h4").html('{{ trans('messages.please_wait_export') }}');
-						
-						$(".processing label").html("{{ trans('messages.uploading') }}");
-						$(".before").addClass('hide');
-						$(".processing").removeClass('hide');
-						
-						$.ajax({								
-							url: url,
-							type: 'POST',
-							data: formData,
-							success: function (data) {
-								check_process();
-								
-								if(data == 'max_file_upload') {
-									// Success alert
-									swal({
-										title: '{{ trans('messages.file_import_to_large') }}',
-										text: "",
-										confirmButtonColor: "#00695C",
-										type: "error",
-										allowOutsideClick: true,
-										confirmButtonText: LANG_OK,
-									});
+						} else {
+							setTimeout("check_process()", 2000);
+							var formData = new FormData($(this)[0]);
+							var url = form.attr('action');
+							var bar = form.find('.progress-total');
+							var bar_s = form.find('.progress-success');
+							var bar_e = form.find('.progress-error');
+							
+							// return to 0
+							bar_s.find(".number").html(parseInt(0));
+							bar_s.css({
+								width: 0 + '%'
+							});
+							bar_e.find(".number").html(parseInt(0));
+							bar_e.css({
+								width: 0 + '%'
+							});
+							
+							form.find(".processing h4").html('{{ trans('messages.please_wait_export') }}');
+							
+							$(".processing label").html("{{ trans('messages.starting') }}");
+							$(".before").addClass('hide');
+							$(".processing").removeClass('hide');
+							
+							$.ajax({								
+								url: url,
+								type: 'POST',
+								data: formData,
+								success: function (data) {
+									check_process();
 									
-									form.find('.retry').trigger('click');
-									return;
-								}									
-							},
-							cache: false,
-							contentType: false,
-							processData: false
-						});
+									if(data == 'max_file_upload') {
+										// Success alert
+										swal({
+											title: '{{ trans('messages.file_import_to_large') }}',
+											text: "",
+											confirmButtonColor: "#00695C",
+											type: "error",
+											allowOutsideClick: true,
+											confirmButtonText: LANG_OK,
+										});
+										
+										form.find('.retry').trigger('click');
+										return;
+									}									
+								},
+								cache: false,
+								contentType: false,
+								processData: false
+							});
+						}
 						
 						return false;
 					});

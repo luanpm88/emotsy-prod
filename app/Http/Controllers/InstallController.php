@@ -450,7 +450,7 @@ class InstallController extends Controller
                 'name' => 'PHP XML extension',
                 'check' => extension_loaded('xml'),
                 'note' => 'PHP XML extension is required.',
-            ], 
+            ],
             [
                 'type' => 'permission',
                 'name' => 'Storage/app/',
