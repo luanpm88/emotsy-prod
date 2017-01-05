@@ -1272,6 +1272,11 @@ return [
     'delay_after' => 'AFTER',
     'automation.started' => 'Automation was successfully started',
     'follow_up_send_right_after' => 'Send right after previous email is :event',
+    'event_type_list_subscription_description_with_delay' => 'Send :delay subscriber <span class="text-semibold">subscribes</span> to list <span class="text-semibold">:list_name</span>.',
+    'delay_message' => ':value :unit(s) :type',
+    'event_type_list_unsubscription_description_with_delay' => 'Send :delay subscriber <span class="text-semibold">unsubscribes</span> to list <span class="text-semibold">:list_name</span>.',
+    'event_type_subscriber_event_description_with_delay' => 'Send :delay <span class="text-semibold">:event</span>',
+    'event_type_custom_criterias_description_with_delay' => 'Send :delay: :conditions',
 ];
 
 

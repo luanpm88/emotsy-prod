@@ -1,7 +1,7 @@
 <li class="child-row">
     <table class="table">
         <tr>
-            <td>
+            <td width="40%">
                 <h5 class="mb-5 text-semibold"><i class="icon-envelop"></i> {{ $campaign->name }}</h5>
                 @if ($campaign->autoCampaignDesigned())
                     <p>

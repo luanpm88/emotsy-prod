@@ -475,14 +475,28 @@ class AutoEvent extends Model
 				]);
 				break;
 			case self::TYPE_LIST_SUBSCRIPTION:
-				$msg = trans('messages.event_type_list_subscription_description', [
-					'list_name' => $this->automation->mailList->name
-				]);
+				if(!empty($this->getDataValue('delay_value'))) {
+					$msg = trans('messages.event_type_list_subscription_description_with_delay', [
+						'list_name' => $this->automation->mailList->name,
+						'delay' => $this->getDelayMessage()
+					]);
+				} else {
+					$msg = trans('messages.event_type_list_subscription_description', [
+						'list_name' => $this->automation->mailList->name
+					]);
+				}
 				break;
 			case self::TYPE_LIST_UNSUBSCRIPTION:
-				$msg = trans('messages.event_type_list_unsubscription_description', [
-					'list_name' => $this->automation->mailList->name
-				]);
+				if(!empty($this->getDataValue('delay_value'))) {
+					$msg = trans('messages.event_type_list_unsubscription_description_with_delay', [
+						'list_name' => $this->automation->mailList->name,
+						'delay' => $this->getDelayMessage()
+					]);
+				} else {
+					$msg = trans('messages.event_type_list_unsubscription_description', [
+						'list_name' => $this->automation->mailList->name
+					]);
+				}
 				break;
 			case self::TYPE_SUBSCRIBER_EVENT:
 				$event = $this->getDataValue('event');
@@ -494,9 +508,16 @@ class AutoEvent extends Model
 				} else {
 					$text = strtolower(trans('messages.subscriber_s_field', ['name' => str_replace('_', ' ', $event)]));
 				}
-				$msg = trans('messages.event_type_subscriber_event_description', [
-					'event' => $text
-				]);
+				if(!empty($this->getDataValue('delay_value'))) {
+					$msg = trans('messages.event_type_subscriber_event_description_with_delay', [
+						'event' => $text,
+						'delay' => $this->getDelayMessage()
+					]);
+				} else {
+					$msg = trans('messages.event_type_subscriber_event_description', [
+						'event' => $text
+					]);
+				}
 				break;
 			case self::TYPE_CUSTOM_CRITERIA:
 				$strings = [];
@@ -514,12 +535,19 @@ class AutoEvent extends Model
 							'operator' => trans('messages.' . $criteria["operator"]),
 							'value' => $criteria["value"],
 						]);
-					}
-					
+					}					
 				}
-				$msg = trans('messages.event_type_custom_criterias_description', [
-					'conditions' => implode(' ' . trans('messages.criteria_and') . ' ', $strings)
-				]);
+				
+				if(!empty($this->getDataValue('delay_value'))) {
+					$msg = trans('messages.event_type_custom_criterias_description_with_delay', [
+						'conditions' => implode(' ' . trans('messages.criteria_and') . ' ', $strings),
+						'delay' => $this->getDelayMessage()
+					]);
+				} else {
+					$msg = trans('messages.event_type_custom_criterias_description', [
+						'conditions' => implode(' ' . trans('messages.criteria_and') . ' ', $strings)
+					]);
+				}
 				break;
 			case self::TYPE_FOLLOW_UP:
 			case self::TYPE_FOLLOW_UP_OPENED:
@@ -542,6 +570,22 @@ class AutoEvent extends Model
 		}
 		
 		return $msg;
+    }
+	
+	/**
+     * Get delay message.
+     *
+     * @return array
+     */
+    public function getDelayMessage()
+    {
+        if($this->getDataValue('delay_value') !== NULL) {
+			return trans('messages.delay_message', [
+				'value' => $this->getDataValue('delay_value'),
+				'unit' =>  trans('messages.' . $this->getDataValue('delay_unit')),
+				'type' =>  trans('messages.' . $this->getDataValue('delay_type')),
+			]);
+		}
     }
 	
 	/**
@@ -1185,22 +1229,22 @@ class AutoEvent extends Model
 				$keyword = trim(strtolower($keyword));
 				switch ($condition['operator']) {
 					case AutoEvent::OPERATOR_EQUAL:
-						$cond = 'LOWER('.table('subscriber_fields') . ".value) = '".$keyword."'";
+						$cond = 'LOWER(' . table('subscriber_fields') . ".value) = '".$keyword."'";
 						break;
 					case AutoEvent::OPERATOR_NOT_EQUAL:
-						$cond = 'LOWER('.table('subscriber_fields') . ".value) != '".$keyword."'";
+						$cond = 'LOWER(' . table('subscriber_fields') . ".value) != '".$keyword."'";
 						break;
 					case AutoEvent::OPERATOR_CONTAINS:
-						$cond = 'LOWER('.table('subscriber_fields') . ".value) LIKE '%".$keyword."%'";
+						$cond = 'LOWER(' . table('subscriber_fields') . ".value) LIKE '%".$keyword."%'";
 						break;
 					case AutoEvent::OPERATOR_NOT_CONTAINS:
-						$cond = 'LOWER('.table('subscriber_fields') . ".value) NOT LIKE '%".$keyword."%'";
+						$cond = 'LOWER(' . table('subscriber_fields') . ".value) NOT LIKE '%".$keyword."%'";
 						break;
 					case AutoEvent::OPERATOR_STARTS:
-						$cond = 'LOWER('.table('subscriber_fields') . ".value) LIKE '".$keyword."%'";
+						$cond = 'LOWER(' . table('subscriber_fields') . ".value) LIKE '".$keyword."%'";
 						break;
 					case AutoEvent::OPERATOR_ENDS:
-						$cond = 'LOWER('.table('subscriber_fields') . ".value) LIKE '%".$keyword."'";
+						$cond = 'LOWER(' . table('subscriber_fields') . ".value) LIKE '%".$keyword."'";
 						break;
 					case AutoEvent::OPERATOR_GREATOR:
 						$cond = table('subscriber_fields') . ".value > '".$keyword."'";
@@ -1209,25 +1253,25 @@ class AutoEvent extends Model
 						$cond = table('subscriber_fields') . ".value < '".$keyword."'";
 						break;
 					case AutoEvent::OPERATOR_NOT_STARTS:
-						$cond = 'LOWER('.table('subscriber_fields') . ".value) NOT LIKE '".$keyword."%'";
+						$cond = 'LOWER(' . table('subscriber_fields') . ".value) NOT LIKE '".$keyword."%'";
 						break;
 					case AutoEvent::OPERATOR_NOT_ENDS:
-						$cond = 'LOWER('.table('subscriber_fields') . ".value) NOT LIKE '%".$keyword."'";
+						$cond = 'LOWER(' . table('subscriber_fields') . ".value) NOT LIKE '%".$keyword."'";
 						break;
 					case AutoEvent::OPERATOR_NOT_BLANK:
-						$cond = '(LOWER('.table('subscriber_fields') . ".value) != '' AND LOWER(".table('subscriber_fields') . '.value) IS NOT NULL)';
+						$cond = '(LOWER(' . table('subscriber_fields') . ".value) != '' AND LOWER(".table('subscriber_fields') . '.value) IS NOT NULL)';
 						break;
 					case AutoEvent::OPERATOR_BLANK:
-						$cond = '(LOWER('.table('subscriber_fields') . ".value) = '' OR LOWER(".table('subscriber_fields') . '.value) IS NULL)';
+						$cond = '(LOWER(' . table('subscriber_fields') . ".value) = '' OR LOWER(".table('subscriber_fields') . '.value) IS NULL)';
 						break;
 					default:
 			
 				}
 			
-				$conditions[] = \DB::getTablePrefix().'subscribers.id IN (SELECT '.table('subscriber_fields') .
-					'.subscriber_id FROM '.table('subscriber_fields') .
+				$conditions[] = \DB::getTablePrefix().'subscribers.id IN (SELECT ' . table('subscriber_fields') .
+					'.subscriber_id FROM ' . table('subscriber_fields') .
 					' LEFT JOIN ' . table('fields') . ' ON ' . table('subscriber_fields') . '.field_id = ' . table('fields') . '.id' .
-					' WHERE ('.table('fields') .
+					' WHERE (' . table('fields') .
 					'.uid = "'.$condition['field_uid'] . '" AND '.$cond.'))';
 			}
 			
