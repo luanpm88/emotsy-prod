@@ -107,7 +107,7 @@ class Campaign extends Model
     public function segment()
     {
         if($this->isAuto()) {
-            return $this->autoEvent()->belongsTo('Acelle\Model\Segment');
+            return $this->autoEvent()->automation->belongsTo('Acelle\Model\Segment');
         } else {
             return $this->belongsTo('Acelle\Model\Segment');
         }
