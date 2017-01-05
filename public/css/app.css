@@ -1588,3 +1588,6 @@ ul.automation-confirm li.child-row h5 {
 .btn-updown a.btn.disabled {
     background: #ddd;
 }
+.auto-event-form-line input {
+    display: inline-block;
+}
