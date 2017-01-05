@@ -9,8 +9,8 @@ then
   echo "Error: directory does not exist" && exit 1
 fi
 
-APPNAME="acelle"
-APPVERSION="2.0.4"
+APPNAME="acellemail"
+APPVERSION="2.2.0"
 APPDIR="$APPNAME-$APPVERSION"
 OUTPUT="$1/$APPDIR"
 
@@ -47,7 +47,6 @@ rm -fr run
 rm -fr public/source
 rm -fr public/thumb
 rm -fr build.sh
-rm -fr push.sh
 rm -fr public/upload/templates/*
 rm -fr bootstrap/cache/config.php
 
