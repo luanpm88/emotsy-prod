@@ -193,14 +193,7 @@ class AutoEvent extends Model
     public function createFirstCampaign()
     {
         if(!$this->campaigns()->count()) {
-			$campaign = new Campaign([
-				'name' => 'Untitled automation email'
-			]);
-			$campaign->user_id = $this->automation->user_id;
-			$campaign->is_auto = true;
-			$campaign->type = Campaign::TYPE_REGULAR;
-
-			$this->campaigns()->save($campaign);
+			$this->addCampaign();
 		}
     }
 	
