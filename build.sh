@@ -40,10 +40,8 @@ rm -fr storage/installed
 touch storage/recache
 rm -fr .authenticate
 rm -fr .git*
-rm -fr database/seeds/DatabaseSeeder.php
-rm -fr reset
-rm -fr pull
 rm -fr run
+rm -fr database/seeds/DatabaseSeeder.php
 rm -fr public/source
 rm -fr public/thumb
 rm -fr build.sh
