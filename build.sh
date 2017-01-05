@@ -12,6 +12,9 @@ fi
 APPNAME="acellemail"
 APPVERSION="2.2.0"
 APPDIR="$APPNAME-$APPVERSION"
+BUILDVERSION=$(git tag --points-at HEAD)
+BUILDVERSION=${BUILDVERSION:-"v$APPVERSION-latest"}
+APPZIP="$APPDIR$(echo $BUILDVERSION | grep -o '\-.*').zip"
 OUTPUT="$1/$APPDIR"
 
 if [ -d "$OUTPUT" ]; then
@@ -25,7 +28,7 @@ cd $OUTPUT
 
 # create version file
 touch VERSION
-echo "$(git tag --points-at HEAD)" > VERSION
+echo "$BUILDVERSION" > VERSION
 
 # create default env file
 cp .env.example .env
@@ -56,5 +59,9 @@ cp -r resources/lang/en resources/lang/default
 php artisan config:cache
 php artisan key:generate
 
-echo "File exported [$OUTPUT]"
+cd ..
+zip -r "$APPZIP" "$APPDIR" > /dev/null
+rm -fr "$APPDIR"
+
+echo "File exported [$APPZIP]"
 
