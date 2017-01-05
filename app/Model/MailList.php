@@ -973,9 +973,6 @@ class MailList extends Model
                 // using transaction to only commit at the end of the batch execution
                 DB::beginTransaction();
                 
-                // current datetime in MySQL format
-                $now = "FROM_UNIXTIME(" . Carbon::now()->timestamp . ")";
-                
                 // create a temporary table containing the input subscribers
                 $tmpTable = table('__tmp_subscribers');
                 $tmpFields = implode(',', array_map(function($field) { return "$field VARCHAR(255)"; }, $availableFields));
@@ -1005,14 +1002,14 @@ class MailList extends Model
                 
                 // Insert new subscribers from temp table to the main table
                 DB::statement("INSERT INTO " . table('subscribers') . "(uid, mail_list_id, user_id, email, status, subscription_type, created_at, updated_at) 
-                               SELECT UUID_SHORT(), " . $this->id . ", " . $user->id . ", uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", " . db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED) . ", {$now}, {$now}
+                               SELECT UUID_SHORT(), " . $this->id . ", " . $user->id . ", uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", " . db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED) . ", NOW(), NOW()
                                FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN " . table('subscribers') . " main ON tmp.email = main.email WHERE main.email IS NULL) uniq");
                 
                 // Insert subscribers' custom fields to the fields table
                 DB::statement("DELETE FROM " . table('subscriber_fields') . " WHERE subscriber_id IN (SELECT id FROM " . table('subscribers') . " main JOIN {$tmpTable} tmp ON main.email = tmp.email WHERE mail_list_id = " . $this->id . ")");
                 foreach($availableFields as $field) {
                     $sql = "INSERT INTO " . table('subscriber_fields') . "(subscriber_id, field_id, value, created_at, updated_at)
-                    SELECT t.subscriber_id, f.id, t.{$field}, {$now}, {$now}
+                    SELECT t.subscriber_id, f.id, t.{$field}, NOW(), NOW()
                     FROM (SELECT main.id AS subscriber_id, tmp.{$field} FROM " . table('subscribers') . " main JOIN {$tmpTable} tmp ON tmp.email = main.email WHERE main.mail_list_id = " . $this->id . ") t
                     JOIN " . table('fields') . " f ON f.tag = '{$field}' AND f.mail_list_id = " . $this->id;
                     DB::statement($sql);
