@@ -1,4 +1,4 @@
-2.0.4-p29 / 2017-01-08
+2.2.0-p1 / 2017-01-08
 ===================
 
  * Fixed: mail list export compatibility issue on certain systems
