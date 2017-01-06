@@ -411,7 +411,7 @@ class AutoEvent extends Model
      *
      * @return void
      */
-    public function updateData(array $data)
+    public function updateData($data)
     {
         $json = $this->getData();
         $this->data = json_encode(array_merge($json, $data));
