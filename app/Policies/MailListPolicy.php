@@ -37,7 +37,7 @@ class MailListPolicy
         return $item->user_id == $user->id;
     }
 
-    public function addMoreSubscribers(\Acelle\Model\User $user, \Acelle\Model\MailList $mailList, int $numberOfSubscribers)
+    public function addMoreSubscribers(\Acelle\Model\User $user, \Acelle\Model\MailList $mailList, $numberOfSubscribers)
     {
         $max = $user->getOption('frontend', 'subscriber_max');
         $maxPerList = $user->getOption('frontend', 'subscriber_per_list_max');

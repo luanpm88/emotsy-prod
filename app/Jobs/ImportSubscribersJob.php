@@ -52,7 +52,7 @@ class ImportSubscribersJob extends ImportExportJob
      *
      * @return void
      */
-    public function updateStatus(array $data)
+    public function updateStatus($data)
     {
         $systemJobModel = $this->getSystemJob();
         $json = ($systemJobModel->data) ? json_decode($systemJobModel->data, true) : [ 'log' => $this->getLog() ];
