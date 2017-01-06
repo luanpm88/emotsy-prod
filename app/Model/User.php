@@ -853,4 +853,13 @@ class User extends Authenticatable
     {
         return $this->campaigns()->where('is_auto', '=', false);
     }
+    
+    /**
+     * Get user timezone
+     *
+     * @return string
+     */
+    public function getTimezone() {
+        return $this->timezone;
+    }
 }
