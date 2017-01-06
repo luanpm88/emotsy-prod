@@ -400,7 +400,7 @@ class AutoEvent extends Model
      *
      * @return array
      */
-    public function getDataValue(string $name)
+    public function getDataValue($name)
     {
 		$data = $this->getData();
 		return isset($data[$name]) ? $data[$name] : NULL;
