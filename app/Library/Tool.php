@@ -168,7 +168,7 @@ class Tool
      *
      * @var string
      */
-    public static function dateTimeFromString(string $time_string)
+    public static function dateTimeFromString($time_string)
     {        
         return self::dateTime(\Carbon\Carbon::parse($time_string));
     }
