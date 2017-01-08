@@ -13,6 +13,12 @@ function hiliterList(form, keyword) {
     }
 }
 
+function tableRefreshAll() {
+    $(".listing-form").each(function() {
+        tableFilter($(this), $(this).attr("current-url"));
+    });
+}
+
 function tableFilterAll() {
     $(".listing-form").each(function() {
         tableFilter($(this));
@@ -98,6 +104,9 @@ function tableFilter(form, custom_url) {
         
         // update checklist
         updateCheckList();
+        
+        // Save current url for listing form
+        form.attr("current-url", url);
     });
 }
 

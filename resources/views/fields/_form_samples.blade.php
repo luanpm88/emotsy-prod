@@ -28,7 +28,7 @@
 				@include('helpers.form_control', ['type' => 'text', 'name' => 'fields[__index__][tag]', 'label' => '', 'value' => '', 'help_class' => 'field', 'prefix' => "[", 'subfix' => "]"])
 			</td>
 			<td class="text-nowrap">
-				@include('helpers.form_control', ['type' => 'text', 'name' => 'fields[__index__][default_value]', 'label' => '', 'value' => '', 'help_class' => 'field'])
+				@include('helpers.form_control', ['type' => Acelle\Model\Field::getControlNameByType($type), 'name' => 'fields[__index__][default_value]', 'label' => '', 'value' => '', 'help_class' => 'field'])
 			</td>
 			<td>
 				<a href="#delete" class="btn bg-danger-400 remove-not-saved-field"><i class="icon-trash"></i></a>

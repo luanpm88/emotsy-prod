@@ -11,7 +11,7 @@ try {
         $php_bin = "<span class='text-danger'>{PHP_BIN_PATH}</span>";
 ?>
     <div class="alert alert-danger">
-        Cannot find a PHP CLI on your server. Please check your server's setup it and replace {PHP_BIN_PATH} with the actual path to your PHP CLI.<br /> Ex: /usr/bin/php7.0, /usr/bin/php, /usr/lib/php.
+        Cannot find a PHP CLI on your server. Please check your server's settings and replace {PHP_BIN_PATH} with the actual path to your PHP CLI.<br /> It may look like this: /usr/bin/php7.0, /usr/bin/php, /usr/lib/php.
     </div>
 <?php
     } else {
@@ -21,13 +21,11 @@ try {
     $php_bin = "<span class='text-danger'>{PHP_BIN_PATH}</span>";
 ?>
     <div class="alert alert-danger">
-        Cannot find a PHP CLI on your server. Please check your server's setup it and replace {PHP_BIN_PATH} with the actual path to your PHP CLI.<br /> Ex: /usr/bin/php7.0, /usr/bin/php, /usr/lib/php.
+        Cannot find a PHP CLI on your server. Please check your server's settings and replace {PHP_BIN_PATH} with the actual path to your PHP CLI.<br /> It may look like this: /usr/bin/php7.0, /usr/bin/php, /usr/lib/php.
     </div>
 <?php
 }
 ?>
 
-<pre style="font-size: 16px;background:#f5f5f5"># {{ trans('messages.cron_jobs_comment') }}
-* * * * * {!! $php_bin !!} -q {{ base_path() }}/artisan handler:run 2&gt;&amp;1
-* * * * * {!! $php_bin !!} -q {{ base_path() }}/artisan queue:work --tries=3 2&gt;&amp;1
+<pre style="font-size: 16px;background:#f5f5f5">* * * * * {!! $php_bin !!} -q {{ base_path() }}/artisan schedule:run 2&gt;&amp;1
 </pre>

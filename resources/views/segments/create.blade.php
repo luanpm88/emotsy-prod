@@ -25,7 +25,7 @@
 					
 					<div class="row">
 						<div class="col-md-12">
-							@include("segments._form")					
+							@include("segments._form")
 							
 							<div class="text-right">
 								<button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>

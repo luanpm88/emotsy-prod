@@ -27,6 +27,8 @@ use Illuminate\Support\Facades\Redis;
 use Acelle\Library\QuotaTrackerStd;
 use Acelle\Library\QuotaTrackerRedis;
 use Carbon\Carbon;
+use Acelle\Library\QuotaTracker;
+use Acelle\Library\Log as MailLog;
 
 class User extends Authenticatable
 {
@@ -217,6 +219,11 @@ class User extends Authenticatable
     public function trackingLogs()
     {
         return $this->hasMany('Acelle\Model\TrackingLog')->orderBy('created_at', 'asc');
+    }
+    
+    public function automations()
+    {
+        return $this->hasMany('Acelle\Model\Automation');
     }
 
     /**
@@ -770,18 +777,26 @@ class User extends Authenticatable
 
         // recent tracking logs
         $recent = $this->trackingLogs()->where('created_at', '>=', $start);
+        
+        // existing quota usage
+        $storedTracker = NULL;
 
         // load the tracker from DB (if exists)
         // then merge with the current tracking log data
         if ($this->quota) {
-            // retrieve the stored quota usage and merge it with actual (newer) usage
-            $oldSeries = unserialize($this->quota);
-            if (!empty($oldSeries)) {
-                $lastUsage = $oldSeries[sizeof($oldSeries) - 1];
-                $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp($lastUsage));
+            try {
+                $storedTracker = unserialize($this->quota);
+            } catch (\Exception $x) {
+                // @TODO logging here
+                MailLog::warning('Cannot retrieve user quota');
             }
-            
-            $newSeries = collect($recent->get())->map(function($trackingLog) {
+        }
+
+        // load the tracker from DB
+        if (!is_null($storedTracker)) {
+            // retrieve the stored quota usage and merge it with actual (newer) usage
+            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp($storedTracker->last()));
+            $series = collect($recent->get())->map(function($trackingLog) {
                 return $trackingLog->created_at->timestamp;
             })->toArray();
             
@@ -844,5 +859,24 @@ class User extends Authenticatable
             echo \Carbon\Carbon::createFromTimestamp($t)->toDateTimeString() . " <-> " ;
         }
         echo "\n" . env('REDIS_ENABLED') . "\n";
+    }
+    
+    /**
+     * Get not auto campaign.
+     *
+     * @return array
+     */
+    public function getNormalCampaigns()
+    {
+        return $this->campaigns()->where('is_auto', '=', false);
+    }
+    
+    /**
+     * Get user timezone
+     *
+     * @return string
+     */
+    public function getTimezone() {
+        return $this->timezone;
     }
 }

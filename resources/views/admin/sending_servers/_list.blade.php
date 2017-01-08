@@ -77,7 +77,7 @@
 											@can('update', $item)
 												<a href="{{ action('Admin\SendingServerController@edit', ["uid" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 											@endcan
-											@if (Auth::user()->can('delete', $item) || Auth::user()->can('disable', $item))
+											@if (Auth::user()->can('delete', $item) || Auth::user()->can('disable', $item) || Auth::user()->can('enable', $item))
 												<div class="btn-group">										
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 													<ul class="dropdown-menu dropdown-menu-right">

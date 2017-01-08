@@ -7,6 +7,31 @@ use Acelle\Jobs\Job;
 class ExportSubscribersJob extends ImportExportJob
 {
     /**
+     * Create a new job instance.
+     *
+     * @return void
+     */
+    public function __construct($mailList, $user)
+    {
+        // call parent's constructor
+        parent::__construct($mailList, $user);
+        
+        
+        $systemJob = $this->getSystemJob();
+        // set failed
+        $systemJob->data = json_encode([
+            "mail_list_uid" => $mailList->uid,
+            "status" => "new",
+            "message" => trans('messages.starting'),
+            "total" => 0,
+            "success" => 0,
+            "error" => 0,
+            "percent" => 0
+        ]);
+        $systemJob->save();
+    }
+    
+    /**
      * Execute the job.
      *
      * @return void

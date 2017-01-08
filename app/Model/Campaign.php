@@ -65,7 +65,40 @@ class Campaign extends Model
      */
     public function mailList()
     {
-        return $this->belongsTo('Acelle\Model\MailList');
+        if($this->isAuto()) {
+            return $this->autoEvent()->automation->belongsTo('Acelle\Model\MailList');
+        } else {
+            return $this->belongsTo('Acelle\Model\MailList');
+        }
+    }
+    
+    /**
+     * Get campaign validation rules.
+     */
+    public function rules()
+    {
+        return array(
+            'name' => 'required',
+            'subject' => 'required',
+            'from_email' => 'required|email',
+            'from_name' => 'required',
+            'reply_to' => 'required|email',
+        );
+    }
+    
+    /**
+     * Get campaign validation rules.
+     */
+    public function automatedCampaignRules()
+    {
+        return array(
+            'type' => 'required',
+            'name' => 'required',
+            'subject' => 'required',
+            'from_email' => 'required|email',
+            'from_name' => 'required',
+            'reply_to' => 'required|email',
+        );
     }
 
     /**
@@ -73,7 +106,27 @@ class Campaign extends Model
      */
     public function segment()
     {
-        return $this->belongsTo('Acelle\Model\Segment');
+        if($this->isAuto() && is_object($this->autoEvent())) {
+            return $this->autoEvent()->automation->belongsTo('Acelle\Model\Segment');
+        } else {
+            return $this->belongsTo('Acelle\Model\Segment');
+        }
+    }
+    
+    /**
+     * Get the auto events of the campaign.
+     */
+    public function autoEvents()
+    {
+        return $this->belongsToMany('Acelle\Model\AutoEvent', 'auto_campaigns');
+    }
+    
+    /**
+     * Get the auto event of the campaign.
+     */
+    public function autoEvent()
+    {
+        return $this->autoEvents()->first();
     }
 
     /**
@@ -175,7 +228,7 @@ class Campaign extends Model
      * Start the campaign
      * 
      */
-    public function start() {
+    public function start($trigger = null, $subscribers = null) {
         // Reserve: mark the campaign as sending, prevent other processes from sending it again
         try {
             $this->sending();
@@ -189,7 +242,7 @@ class Campaign extends Model
                 $this->runMultiProcesses();
             } else {
                 MailLog::warning('Cannot fork processes');
-                $this->run();
+                $this->run($subscribers);
             }
             MailLog::info('Finish campaign `'.$this->name.'`');
 
@@ -232,7 +285,7 @@ class Campaign extends Model
     /**
      * Mark the campaign as 'done' or 'sent'.
      */
-    public function error($error = NULL)
+    public function error($error = null)
     {
         $this->status = self::STATUS_ERROR;
         $this->last_error = $error;
@@ -338,10 +391,10 @@ class Campaign extends Model
      * Send Campaign
      * Iterate through all subscribers and send email.
      */
-    public function run($subscribers = NULL)
+    public function run($subscribers = null)
     {
         // check if the method is trigger by a child process (triggered by startMultiProcess method)
-        $asChildProcess = !($subscribers == NULL);
+        $asChildProcess = !($subscribers == null);
         
         // try/catch to make sure child process does not stop without reporting any error
         try {
@@ -397,7 +450,7 @@ class Campaign extends Model
      * Log delivery message, used for later tracking.
      *
      */
-    private function trackMessage($response, $subscriber, $server, $msgId)
+    public function trackMessage($response, $subscriber, $server, $msgId)
     {
         $params = array_merge(array(
                 'campaign_id' => $this->id,
@@ -442,7 +495,7 @@ class Campaign extends Model
      * Transform Tags
      * Transform tags to actual values before sending.
      */
-    private function tagMessage($message, $subscriber, $msgId)
+    public function tagMessage($message, $subscriber, $msgId)
     {
         // @todo consider a solution for UNSUBSCRIBE_URL for test subscriber (also for other tags like: UPDATE_PROFILE_URL)
 
@@ -530,7 +583,7 @@ class Campaign extends Model
         $openTrackingBaseURL = Setting::get('url_open_track');
         $tracking_url = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $openTrackingBaseURL);
 
-        return $body.'<img src="'.$tracking_url.'" width="0" height="0" style="visibility:hidden" />';
+        return $body.'<img src="'.$tracking_url.'" width="0" height="0" alt="" style="visibility:hidden" />';
     }
 
     /**
@@ -604,7 +657,7 @@ class Campaign extends Model
      *
      * @return MIME text message
      */
-    private function prepareEmail($subscriber, $server)
+    public function prepareEmail($subscriber, $server)
     {
         // build the message
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
@@ -649,7 +702,7 @@ class Campaign extends Model
      *
      * @return mixed
      */
-    private function findSendingDomain($email)
+    public function findSendingDomain($email)
     {
         $domain = substr(strrchr($email, '@'), 1);
 
@@ -661,7 +714,7 @@ class Campaign extends Model
      *
      * @return mixed
      */
-    private function sign($message)
+    public function sign($message)
     {
         $sendingDomain = $this->findSendingDomain($this->from_email);
 
@@ -701,16 +754,6 @@ class Campaign extends Model
         'mail_list_uid' => 'required',
     );
     
-    /**
-     * The rules for validation.
-     *
-     * @var array
-     */
-    public function rules()
-    {
-        return [];
-    }
-
     /**
      * Items per page.
      *
@@ -916,10 +959,22 @@ class Campaign extends Model
     {
         $user = $request->user();
         $query = self::where('user_id', '=', $user->id);
+        
+        // Get campaign from ... (all|normal|automated)
+        if($request->source == 'template') {
+            $query = $query->where('html', '!=', null);
+        } else {
+            $query = $query->where('is_auto', '=', false);
+        }
 
         // Keyword
         if (!empty(trim($request->keyword))) {
             $query = $query->where('name', 'like', '%'.$request->keyword.'%');
+        }
+        
+        // Status
+        if (!empty(trim($request->statuses))) {
+            $query = $query->whereIn('status', explode(",", $request->statuses));
         }
 
         return $query;
@@ -950,10 +1005,17 @@ class Campaign extends Model
             return collect([]);
         }
         
-        if (is_object($this->segment)) {
-            $query = $this->segment->subscribers();
-        } elseif (is_object($this->mailList)) {
-            $query = $this->mailList->subscribers();
+        // get subscribers from auto campaign or normal campaign
+        if($this->isAuto()) {
+            // Get subscriber from auto event
+            $query = $this->autoEvent()->subscribers();
+        } else {
+            // Get subscriber from mailist and segment
+            if (is_object($this->segment)) {
+                $query = $this->segment->subscribers();
+            } elseif (is_object($this->mailList)) {
+                $query = $this->mailList->subscribers();
+            }
         }
         
         $query = $query->select("subscribers.*");
@@ -1747,7 +1809,7 @@ class Campaign extends Model
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
         $copy->status = self::STATUS_NEW;
-        $copy->run_at = NULL;
+        $copy->run_at = null;
         $copy->custom_order = 0;
         $copy->save();
     }
@@ -1831,7 +1893,7 @@ class Campaign extends Model
     {
         $now = Carbon::now();
 
-        if ($this->run_at->timestamp <= $now->timestamp) {
+        if ($now->gte($this->run_at)) {
             return 0;
         } else {
             return $this->run_at->diffInSeconds($now);
@@ -1842,12 +1904,10 @@ class Campaign extends Model
      * Queue campaign for sending
      *
      */
-    public function queue()
+    public function queue($trigger = null, $subscribers = null, $delay = 0)
     {
         $this->ready();
-
         $job = (new \Acelle\Jobs\RunCampaignJob($this))->delay($this->getDelayInSeconds());
-        
         dispatch($job);
     }
 
@@ -1897,7 +1957,7 @@ class Campaign extends Model
      *
      * @param array $subscriber
      */
-    private function createStdClassSubscriber($subscriber)
+    public function createStdClassSubscriber($subscriber)
     {
         // default attributes that are required
         $jsonObj = [
@@ -1916,7 +1976,56 @@ class Campaign extends Model
      *
      * @param Object $object
      */
-    private function isStdClassSubscriber($object) {
+    public function isStdClassSubscriber($object) {
         return (get_class($object) == 'stdClass');
+    }
+    
+    /**
+     * Get information from mail list
+     *
+     * @param void
+     */
+    public function getInfoFromMailList($list) {
+        $this->from_name = !empty($this->from_name) ? $this->from_name : $list->from_name;
+        $this->from_email = !empty($this->from_email) ? $this->from_email : $list->from_email;
+        $this->subject = !empty($this->subject) ? $this->subject : $list->default_subject;
+    }
+    
+    /**
+     * Check if auto campaign designed.
+     *
+     * @return object
+     */
+    public function autoCampaignDesigned()
+    {
+        $cond = (!empty($this->name) && !empty($this->subject) && !empty($this->from_name)
+            && !empty($this->from_email) && !empty($this->reply_to));
+        
+        $cond = $cond && ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid());
+        
+        return $cond;
+    }
+    
+    /**
+     * Get type select options.
+     *
+     * @return array
+     */
+    public static function getTypeSelectOptions()
+    {
+        return [
+            ['text' => trans('messages.' . self::TYPE_REGULAR), 'value' => self::TYPE_REGULAR],
+            ['text' => trans('messages.' . self::TYPE_PLAIN_TEXT), 'value' => self::TYPE_PLAIN_TEXT]
+        ];
+    }
+    
+    /**
+     * Check if campaign is automated.
+     *
+     * @return boolean
+     */
+    public function isAuto()
+    {
+        return $this->is_auto;
     }
 }

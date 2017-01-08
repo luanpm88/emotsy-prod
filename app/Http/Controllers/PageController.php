@@ -141,8 +141,12 @@ class PageController extends Controller
 
         // Create subscriber
         if ($request->isMethod('post')) {
-            $subscriber = new \Acelle\Model\Subscriber($request->all());
-            $subscriber->mail_list_id = $list->id;
+            $subscriber = \Acelle\Model\Subscriber::where("email", "=", strtolower($request->EMAIL))->first();
+            if(!is_object($subscriber)) {
+                $subscriber = new \Acelle\Model\Subscriber($request->all());
+                $subscriber->mail_list_id = $list->id;
+            }
+            
             $subscriber->status = 'unconfirmed';
             $subscriber->from = 'web';
 
@@ -154,14 +158,27 @@ class PageController extends Controller
             $subscriber->save();
             // Update field
             $subscriber->updateFields($request->all());
-
-            // SEND EMAIL
-            $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
-            $send_page = \Acelle\Model\Page::findPage($list, $layout);
-            $send_page->renderContent(null, $subscriber);
-            $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
-
-            return redirect()->action('PageController@signUpThankyouPage', $list->uid);
+            
+            if($list->subscribe_confirmation) {
+                // SEND subscription confirmation email
+                $list->sendSubscriptionConfirmationEmail($subscriber);                
+    
+                return redirect()->action('PageController@signUpThankyouPage', $list->uid);
+            } else {
+                // change status to subscribed
+                $subscriber->updateStatus('subscribed');
+                
+                // Send welcome email
+                if($list->send_welcome_email) {
+                    // SEND subscription confirmation email
+                    $list->sendSubscriptionWelcomeEmail($subscriber);
+                }
+                
+                // find display thank you page
+                $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_thankyou')->first();
+                $page = \Acelle\Model\Page::findPage($list, $layout);
+                $page->renderContent(null, $subscriber);
+            }
         }
 
         return view('pages.form', [
@@ -214,11 +231,10 @@ class PageController extends Controller
             $subscriber->save();
 
             // Send welcome email
-            // SEND EMAIL
-            $layout = \Acelle\Model\Layout::where('alias', 'sign_up_welcome_email')->first();
-            $send_page = \Acelle\Model\Page::findPage($list, $layout);
-            $send_page->renderContent(null, $subscriber);
-            $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
+            if($list->send_welcome_email) {
+                // SEND subscription confirmation email
+                $list->sendSubscriptionWelcomeEmail($subscriber);
+            }
         }
 
         return view('pages.default', [
@@ -253,12 +269,10 @@ class PageController extends Controller
                 $subscriber->save();
 
                 // Send goodbye email
-                // SEND EMAIL
-                $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_goodbye_email')->first();
-                $send_page = \Acelle\Model\Page::findPage($list, $layout);
-                $send_page->renderContent(null, $subscriber);
-                $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
-                
+                if($list->unsubscribe_notification) {
+                    // SEND subscription confirmation email
+                    $list->sendUnsubscriptionNotificationEmail($subscriber);
+                }                
             }
             return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'uid' => $subscriber->uid]);
         }

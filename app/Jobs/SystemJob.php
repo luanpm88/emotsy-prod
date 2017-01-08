@@ -68,7 +68,7 @@ class SystemJob extends Job implements ShouldQueue
      * @return void
      */
     public function getSystemJob() {
-        return $this->systemJob;
+        return SystemJobModel::find($this->systemJob->id);
         // @todo: what if job cannot be found?
     }
 
@@ -93,11 +93,11 @@ class SystemJob extends Job implements ShouldQueue
     }
 
     /**
-     * Cark the SystemJob record as FAILED
+     * Mark the SystemJob record as FAILED
      *
      * @return void
      */
-    public function setFaield() {
+    public function setFailed() {
         $systemJob = $this->getSystemJob();
         $systemJob->setFailed();
     }

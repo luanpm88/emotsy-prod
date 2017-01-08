@@ -341,7 +341,7 @@ class SubscriberController extends Controller
         if ($request->isMethod('post')) {
             if ($request->hasFile('file')) {                
                 // Start system job
-                $job = new \Acelle\Jobs\ImportSubscribersJob($list, $request->user(), $request->file('file'));
+                $job = new \Acelle\Jobs\ImportSubscribersJob($list, $request->user(), $request->file('file')->path());
                 $this->dispatch($job);
                 
                 // Action Log
@@ -378,10 +378,14 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
         
+        // Messages
+        $message = \Acelle\Helpers\ImportSubscribersHelper::getMessage($system_job);
+        
         return response()->json([
             "job" => $system_job,
             "data" => json_decode($system_job->data),
             "timer" => $system_job->runTime(),
+            "message" => $message,
         ]);
     }
     
@@ -391,13 +395,15 @@ class SubscriberController extends Controller
      * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
+     * @todo move this to the MailList controller
      */
     public function downloadImportLog(Request $request)
     {
-        $system_job = \Acelle\Model\MailList::findByUid($request->list_uid)
-            ->getLastImportJob();
-
-        return response()->download(storage_path('job/'.$system_job->id.'/detail.log'));
+        // @todo: should be the exact MailList here
+        $log = \Acelle\Model\MailList::findByUid($request->list_uid)
+            ->getLastImportLog();
+        // @todo what if log does not exist (removed)?
+        return response()->download($log);
     }
     
     /**

@@ -7,17 +7,18 @@
                                         <td width="1%">
 											<img width="50" class="img-circle mr-10" src="{{ action('UserController@avatar', $item->user->uid) }}" alt="">
 										</td>
-										<td>                                            
+										<td>
 											<p class="mb-0">                                                
-                                                {!! $item->message() !!}
+                                                {!! $item->message() !!}<br />
+												<div class="text-muted2">{{ trans('messages.' . $item->type) }}</div>
                                             </p>
-                                            <div class="text-muted2 mt-5">{{ trans('messages.' . $item->type) }}</div>
 										</td>
 										<td>
 											<div class="pull-right">
-												<span class="text-muted2">{{ trans("messages.created_at") }}: {{ Acelle\Library\Tool::formatDateTime($item->created_at) }}</span>
+												<div class="text-semibold">{{ $item->created_at->diffForHumans() }}</div>
+												<span class="text-muted2">{{ Acelle\Library\Tool::formatDateTime($item->created_at) }}</span>
 											</div>
-										</td>										
+										</td>
 									</tr>
 								@endforeach
 							</table>

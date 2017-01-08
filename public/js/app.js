@@ -9,6 +9,36 @@
 *
 * ---------------------------------------------------------------------------- */
 
+function updateAutoEventNumber() {
+    var num = 1;
+    $('.auto-event-line').each(function() {
+        if(!$(this).hasClass('event-inactive')) {
+            $(this).find('.timeline-icon-i').html(num);
+            num = num + 1;
+        } else {
+             $(this).find('.timeline-icon-i').html("#");
+        }
+    });
+}
+
+function loadAutomationEmail(container) {
+    var url = container.attr('data-url');
+    
+    $.ajax({
+        method: "GET",
+        url: url
+    })
+    .done(function( data ) {
+        container.html(data);
+    });
+}
+
+function loadAutomationEmails() {
+    $('.event-campaigns-container').each(function() {
+        loadAutomationEmail($(this));
+    });
+}
+
 function updateEmbeddedForm(form, url) {
     var data = {};
     form.serializeArray().forEach(function(entry) {
@@ -200,6 +230,12 @@ $(function() {
     // ------------------------------
     $(document).on("click", "a[delete-confirm]", function(e) {
         var mgs = $(this).attr("delete-confirm");
+        var method = $(this).attr("data-method");
+        
+        if (typeof(method) === 'undefined' || method.trim() === '') {
+            method = 'GET';
+        }
+        
         $(this).attr("new-href", $(this).attr("href"));
         // count items
         var count = 1;
@@ -210,6 +246,7 @@ $(function() {
         $('a[data-target="#delete_confirm_model"]').trigger("click");        
         $("#delete_confirm_model h6").html(mgs.replace(":number", "<span class='text-bold text-danger'>" + count + "</span>"));
         $(".delete-confirm-button").attr("href", $(this).attr("new-href"));
+        $(".delete-confirm-button").attr("data-method", method);
         
         if(typeof($(this).attr("no-ajax")) != "undefined") {
             $(".delete-confirm-button").removeClass("ajax_link");
@@ -246,6 +283,12 @@ $(function() {
     $(document).on("click", "a[list-delete-confirm]", function(e) {
         var url = $(this).attr("href");
         var curl = $(this).attr("list-delete-confirm");
+        var method = $(this).attr("data-method");
+        
+        if (typeof(method) === 'undefined' || method.trim() === '') {
+            method = 'GET';
+        }
+        
         $(this).attr("new-href", $(this).attr("href"));
         
         if($(this).parents(".list_actions").length) {
@@ -260,6 +303,7 @@ $(function() {
     
         $('a[data-target="#list_delete_confirm_model"]').trigger("click");
         $(".list-delete-confirm-button").attr("href", url);
+        $(".list-delete-confirm-button").attr("data-method", method);
         
         // Get message
         // ajax update custom sort
@@ -286,6 +330,12 @@ $(function() {
     $(document).on("click", "a[link-confirm]", function(e) {
         var mgs = $(this).attr("link-confirm");
         var url = $(this).attr("href");
+        var method = $(this).attr("data-method");
+
+        if (typeof(method) === 'undefined' || method.trim() === '') {
+            method = 'GET';
+        }
+
         $(this).attr("new-href", $(this).attr("href"));
         
         if($(this).parents(".list_actions").length) {
@@ -304,11 +354,20 @@ $(function() {
         }
         
         $('a[data-target="#link_confirm_model"]').trigger("click");
+        
         mgs = mgs.replace(":number", "<span class='text-bold text-teal-800'>" + count + "</span>");
         mgs = mgs.replace(":name", "<span class='text-bold text-teal-800'>" + $(this).html() + "</span>");
         
         $("#link_confirm_model h6").html(mgs);
         $(".link-confirm-button").attr("href", url);
+        $(".link-confirm-button").attr("data-method", method);
+        
+        // set method
+        if(typeof(method) != 'undefined') {
+            $(".link-confirm-button").attr("data-method", method);
+        } else {
+            $(".link-confirm-button").removeAttr("data-method");
+        }
         
         e.stopImmediatePropagation();
         e.preventDefault();
@@ -336,7 +395,15 @@ $(function() {
             msg = msg.replace(/__index__/g, index);
             msg = msg.replace(/__type__/g, type_name);
             
-            $('.field-list').append($('<div>').html(msg).find("table tbody").html());
+            $('.field-list').append($('<div>').html(msg).find("table tbody").html());            
+            $('.field-list tr').last().find('.pickadate').pickadate({format: LANG_DATE_FORMAT, selectYears: 100});
+            
+            // Time picker
+            if ($('.field-list tr').last().find(".pickadatetime").length) {
+                $('.field-list tr').last().find(".pickadatetime").AnyTime_picker({
+                    format: LANG_ANY_DATETIME_FORMAT
+                });
+            }
             
             //
             // Switchery
@@ -388,7 +455,7 @@ $(function() {
     });
     
     // Basic options
-    $('.pickadate').pickadate({format: LANG_DATE_FORMAT});
+    $('.pickadate').pickadate({format: LANG_DATE_FORMAT, selectYears: 100});
     
     // Numberic input
     $(".numeric").numeric();
@@ -434,10 +501,18 @@ $(function() {
         
         var url = $(this).attr("href");
         var form = $(this).parents(".listing-form");
+        var method = $(this).attr('data-method');
+        
+        if(typeof(method) === 'undefined' || method.trim() === '') {
+            method = "GET";
+        }
         
         $.ajax({
-            method: "GET",
+            method: method,
             url: url,
+            data: {
+                "_token": CSRF_TOKEN
+            }
         })
         .done(function( msg ) {
             tableFilter($(".listing-form"));
@@ -544,6 +619,13 @@ $(function() {
     if ($(".pickatime").length) {
         $(".pickatime").AnyTime_picker({
             format: "%H:%i"
+        });
+    }
+    
+    // DateTime picker
+    if ($(".pickadatetime").length) {
+        $(".pickadatetime").AnyTime_picker({
+            format: LANG_ANY_DATETIME_FORMAT
         });
     }
     
@@ -789,9 +871,260 @@ $(function() {
                     $(".copy-campaign-close").trigger("click");
                 }
             });
-
         }
         
         e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+    
+    // Table select
+    $(document).on('change', '.tabable-select-radio input[type="radio"]', function() {
+        var box = $(this).parents('.tabable-select-box');
+        var container = box.find('.tabable-container');
+        var val = $(this).val();        
+        
+        container.find('.tabable-tab').hide();
+        box.find('.' + val).show();
+    });
+    $('.tabable-select-radio input[type="radio"]:checked').trigger('change');
+    
+    // addable multiple form
+    $(document).on("click", ".addable-multiple-form .add-form", function(e) {
+        var form = $(this).parents('.addable-multiple-form');
+        var container = form.find('.addable-multiple-container');
+        var status = $(this).attr('automation-status');
+        
+        if(status == 'active') {
+            //show disable automation confirm
+            $('#disable_automation_confirm').modal('show');
+            return;
+        }
+        
+        // ajax update custom sort
+        $.ajax({
+            method: "GET",
+            url: $(this).attr('sample-url'),
+        })
+        .done(function( msg ) {
+            var num = "0";
+            
+            if(container.find('.condition-line').length) {
+                num = parseInt(container.find('.condition-line').last().attr("rel"))+1;
+            }
+            
+            msg = msg.replace(/__index__/g, num);
+            
+            container.append(msg);
+            
+            var new_line = container.find('.condition-line').last();
+            new_line.find('select').select2();
+            
+            if(new_line.find('.event-campaigns-container').length) {
+                loadAutomationEmail(new_line.find('.event-campaigns-container'));
+            }
+        });
+    });
+    
+    // radio-box
+    $(document).on("change", ".radio-box .radio-button", function(e) {
+        $(".radio-box .radio-more").hide();
+        $(".radio-box .radio-button:checked").parents(".radio-box").find(".radio-more").show();
+    });
+    
+    // load automation email
+    loadAutomationEmails();
+    
+    // Grap link with data-method attribute
+    $(document).on('click', '.event-campaign-add', function(e) {      
+        e.preventDefault();
+        
+        var url = $(this).attr('data-url');
+        var container = $(this).parents('.event-campaigns-box').find('.event-campaigns-container');
+        
+        $.ajax({
+            method: "POST",
+            url: url,
+            data: {
+                "_token": CSRF_TOKEN
+            }
+        })
+        .done(function( data ) {
+            loadAutomationEmail(container);
+        });
+        
+    });
+    
+    // Grap link with data-method attribute
+    $(document).on('click', '.auto-campaign-delete', function(e) {      
+        e.preventDefault();
+        
+        var confirm_msg = $(this).attr('data-confirm');
+        
+        $('#delete_auto_campaign_confirm_model h6').html(confirm_msg);
+        $('#delete_auto_campaign_confirm_model').modal('show');
+        
+        $('.auto-campaign-delete-confirmed').attr('data-url', $(this).attr('data-url'));        
+    });
+    // Grap link with data-method attribute
+    $(document).on('click', '.auto-campaign-delete-confirmed', function(e) {      
+        e.preventDefault();
+        
+        var url = $(this).attr('data-url');
+        
+        $.ajax({
+            method: "DELETE",
+            url: url,
+            data: {
+                "_token": CSRF_TOKEN
+            }
+        })
+        .done(function() {
+            loadAutomationEmails();
+            $('#delete_auto_campaign_confirm_model').modal('hide');
+        });
+        
+    });
+    
+    // Grap link with data-method attribute
+    $(document).on('click', '.auto-event-delete', function(e) {      
+        e.preventDefault();
+        
+        var confirm_msg = $(this).attr('data-confirm');
+        
+        $('#delete_auto_event_confirm_model h6').html(confirm_msg);
+        $('#delete_auto_event_confirm_model').modal('show');
+        
+        $('.auto-event-delete-confirmed').attr('data-url', $(this).attr('data-url'));
+        $('.auto-event-delete-confirmed').attr('data-id', $(this).attr('data-id'));        
+    });
+    // Grap link with data-method attribute
+    $(document).on('click', '.auto-event-delete-confirmed', function(e) {      
+        e.preventDefault();
+        
+        var url = $(this).attr('data-url');
+        var box_id = $(this).attr('data-id');
+        
+        $.ajax({
+            method: "DELETE",
+            url: url,
+            data: {
+                "_token": CSRF_TOKEN
+            }
+        })
+        .done(function() {
+            $('[rel="'+box_id+'"]').remove();
+            $('#delete_auto_event_confirm_model').modal('hide');
+        });        
+    });
+    
+    // Auto event saving
+    $(document).on('submit', '.auto-event-line form', function(e) {
+        e.preventDefault();
+        
+        var form = $(this);
+        var url = form.attr('action');
+        var method = form.attr('method');
+        var line = form.parents('.auto-event-line');
+        
+        $.ajax({
+            method: method,
+            url: url,
+            data: form.serialize()
+        })
+        .done(function(msg) {
+            form.parents('.auto-event-line').removeClass('changing');
+            
+            swal({
+                title: msg,
+                text: "",
+                confirmButtonColor: "#00695C",
+                type: "success",
+                allowOutsideClick: true,
+                confirmButtonText: LANG_OK,
+                customClass: "swl-success"
+            });
+        });
+    });
+    
+    // Auto event saving
+    $(document).on('click', '.auto-event-line .btn-close', function(e) {
+        e.preventDefault();
+        
+        var box = $(this).parents('.auto-event-line');        
+        
+        if(box.hasClass('changing')) {
+            // svae current value
+            box.find('input, select').each(function() {
+                $(this).val($(this).attr('old-value')).trigger("change");
+                $(this).trigger("change");
+            });
+            
+            box.removeClass('changing');
+        }
+    });
+    
+    // Auto event saving
+    $(document).on('click', '.auto-event-line .before', function(e) {
+        e.preventDefault();
+        
+        var box = $(this).parents('.auto-event-line');        
+        box.find('.btn-close').trigger('click');        
+    });
+    
+    // save current auto event values
+    $(document).on('click', '.auto-event-line', function() {
+        if(!$(this).hasClass('changing')) {
+            // svae current value
+            $(this).find('input, select').each(function() {
+                $(this).attr('old-value', $(this).val());
+            });
+        }
+    });
+    
+    // auto event change value
+    $(document).on('change keyup', '.auto-event-line input, .auto-event-line select', function() {
+        $(this).parents('.auto-event-line').addClass('changing');
+    });
+    
+    // Grap link with data-method attribute
+    $(document).on('click', 'a[link-method]', function(e) {      
+        
+        var method = $(this).attr("link-method");
+        var action = $(this).attr("href");
+        
+        if(typeof(method) != 'undefined') {
+            var newForm = jQuery('<form>', {
+                'action': action,
+                'method': 'POST',
+                'target': '_top'
+            });
+            newForm.append(jQuery('<input>', {
+                'name': '_token',
+                'value': CSRF_TOKEN,
+                'type': 'hidden'
+            }));
+            newForm.append(jQuery('<input>', {
+                'name': '_method',
+                'value': method,
+                'type': 'hidden'
+            }));
+            newForm.submit();
+            
+            e.preventDefault();
+        }
+    });
+    
+    // Check all checkboxes group
+    $(document).on('click', '.checkboxes_check_all', function() {      
+        var box = $(this).parents('.form-group');
+        
+        box.find('input[type=checkbox]').prop('checked', true);
+        $.uniform.update();
+    });
+    // Uncheck all checkboxes group
+    $(document).on('click', '.checkboxes_check_none', function() {      
+        var box = $(this).parents('.form-group');
+        
+        box.find('input[type=checkbox]').prop('checked', false);
+        $.uniform.update();
     });
 });

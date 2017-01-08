@@ -34,7 +34,7 @@
 	
 	@yield('page_script')
 	
-    <script type="text/javascript" src="{{ URL::asset('js/app.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('js/app.js') }}?v=1"></script>
 	<!-- /theme JS files -->
 	
 	@include('layouts._script_vars')

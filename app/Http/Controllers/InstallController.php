@@ -444,7 +444,13 @@ class InstallController extends Controller
                 'name' => 'PHP CURL extension',
                 'check' => extension_loaded('curl'),
                 'note' => 'PHP CURL extension is required.',
-            ],    
+            ],
+            [
+                'type' => 'requirement',
+                'name' => 'PHP XML extension',
+                'check' => extension_loaded('xml'),
+                'note' => 'PHP XML extension is required.',
+            ],
             [
                 'type' => 'permission',
                 'name' => 'Storage/app/',

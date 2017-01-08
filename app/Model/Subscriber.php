@@ -31,6 +31,16 @@ class Subscriber extends Model
     const STATUS_BLACKLISTED = 'blacklisted';
     const STATUS_SPAM_REPORTED = 'spam-reported';
 
+    const SUBSCRIPTION_TYPE_DOUBLE_OPTIN = 'double';
+    const SUBSCRIPTION_TYPE_SINGLE_OPTIN = 'single';
+    const SUBSCRIPTION_TYPE_IMPORTED = 'imported';
+
+    protected $dates = ['unsubscribed_at'];
+
+    public static $rules = [
+        'email' => ['required', 'email']
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -157,7 +167,13 @@ class Subscriber extends Model
                     $fv->value = $value;
                 }
                 $fv->save();
-            }
+                
+                // update email attribute of subscriber
+                if($field->tag == 'EMAIL') {
+                    $this->email = $fv->value;
+                    $this->save();
+                }
+            }            
         }
     }
 
@@ -478,7 +494,7 @@ class Subscriber extends Model
      */
     public function getSecurityToken($action)
     {
-        $string = $this->email + $action + env('APP_SECRET');
+        $string = $this->email . $action . config('app.key');
 
         return md5($string);
     }
@@ -625,5 +641,16 @@ class Subscriber extends Model
         $query = $this->clickLogs();
         $query = $query->orderBy('click_logs.created_at', 'desc')->first();
         return $query;
+    }
+    
+    /**
+     * Update subscriber status.
+     *
+     * @param MailList $list
+     */
+    public function updateStatus($status)
+    {
+        $this->status = $status;
+        $this->save();
     }
 }

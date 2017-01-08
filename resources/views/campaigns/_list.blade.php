@@ -63,7 +63,7 @@
 											@if ($item->status != 'new')
 												<div class="single-stat-box pull-left ml-20">
 													<span class="no-margin text-teal-800 stat-num">{{ $item->deliveredRate() }}%</span>
-													<div class="progress progress-xxs bg-danger">
+													<div class="progress progress-xxs">
 														<div class="progress-bar progress-bar-info" style="width: {{ $item->deliveredRate() }}%">
 														</div>
 													</div>

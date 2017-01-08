@@ -117,7 +117,7 @@ class AccountController extends Controller
 
             // Save current user info
             if ($contact->save()) {
-                if (!is_object($contact)) {
+                if (is_object($contact)) {
                     $user->contact_id = $contact->id;
                     $user->save();
                 }
