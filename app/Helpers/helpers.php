@@ -62,7 +62,7 @@ function db_quote($value)
  * @param bool whether or not to skip the first header line
  * @param callback function
  */
-function each_batch($array, int $batchSize, bool $skipHeader, $callback)
+function each_batch($array, $batchSize, $skipHeader, $callback)
 {
     $batch = [];
     foreach($array as $i => $value) {
