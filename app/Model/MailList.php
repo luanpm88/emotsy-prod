@@ -34,7 +34,6 @@ class MailList extends Model
     const IMPORT_STATUS_RUNNING = 'running';
     const IMPORT_STATUS_FAILED = 'failed';
     const IMPORT_STATUS_DONE = 'done';
-    const IMPORT_REQUIRED_FIELDS = ['email'];
 
     /**
      * The attributes that are mass assignable.
@@ -901,7 +900,8 @@ class MailList extends Model
      * @return true or throw an exception
      */
     private function validateCsvHeader($headers) {
-        $missing = array_diff(self::IMPORT_REQUIRED_FIELDS, $headers);
+        // @todo: validation rules required here, currently hard-coded
+        $missing = array_diff(['email'], $headers);
         if (!empty($missing)) {
             // @todo: I18n is required here
             throw new \Exception(trans('messages.import_missing_header_field', ['fields' => implode(', ', $missing)]) );
@@ -916,6 +916,7 @@ class MailList extends Model
      * @return boolean whether or not the record is valid
      */
     private function validateCsvRecord($record) {
+        //@todo: failed validate should affect the count showing up on the UI (currently, failed is also counted as success)
         $validator = Validator::make(
             $record, 
             Subscriber::$rules,
