@@ -15,7 +15,7 @@ $(document).ready(function() {
           APP_URL+'/css/page.css',
         ],
         
-        external_filemanager_path:"/filemanager/",
+        external_filemanager_path:APP_URL+"/filemanager/",
         filemanager_title:"Responsive Filemanager" ,
         external_plugins: { "filemanager" : APP_URL+"/filemanager/plugin.min.js"}
     });
