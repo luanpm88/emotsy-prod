@@ -976,7 +976,8 @@ class MailList extends Model
                 
                 // create a temporary table containing the input subscribers
                 $tmpTable = table('__tmp_subscribers');
-                $tmpFields = implode(',', array_map(function($field) { return "$field VARCHAR(255)"; }, $availableFields));
+                // @todo: hard-coded charset and COLLATE
+                $tmpFields = implode(',', array_map(function($field) { return "$field VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci"; }, $availableFields));
                 DB::statement("DROP TEMPORARY TABLE IF EXISTS {$tmpTable};
                                CREATE TEMPORARY TABLE {$tmpTable}({$tmpFields});");
                 
