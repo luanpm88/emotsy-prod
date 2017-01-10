@@ -1,3 +1,10 @@
+2.2.0-p2 / 2017-01-11
+===================
+
+ * Fixed: compatibility issues with old PHP versions
+ * Fixed: compatibility issues with 
+ * Fixed: calendar glitches on some browsers
+
 2.2.0-p1 / 2017-01-08
 ===================
 
