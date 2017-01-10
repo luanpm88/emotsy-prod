@@ -776,6 +776,7 @@ class User extends Authenticatable
         $start = $this->getQuotaStartingTime();
 
         // recent tracking logs
+        // @todo: potential issue here, application fails in case $start is NULL
         $recent = $this->trackingLogs()->where('created_at', '>=', $start);
         
         // existing quota usage
