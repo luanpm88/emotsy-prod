@@ -209,6 +209,65 @@ class Campaign extends Model
         return UnsubscribeLog::select('unsubscribe_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'unsubscribe_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
     }
+    
+    /**
+     * Get campaign list segment.
+     *
+     * @return mixed
+     */
+    public function listsSegments()
+    {
+        return $this->hasMany('Acelle\Model\CampaignsListsSegment');
+    }
+    
+    /**
+     * Get campaign lists segments.
+     *
+     * @return mixed
+     */
+    public function getListsSegments()
+    {
+        $lists_segments = $this->listsSegments;
+        
+        if($lists_segments->isEmpty()) {
+            $lists_segment = new CampaignsListsSegment();
+            $lists_segment->campaign_id = $this->id;
+            $lists_segment->is_default = true;
+            
+            $lists_segments->push($lists_segment);
+        }
+        
+        return $lists_segments;
+    }
+    
+    /**
+     * Get campaign lists segments group by list.
+     *
+     * @return mixed
+     */
+    public function getListsSegmentsGroups()
+    {
+        $lists_segments = $this->getListsSegments();
+        $groups = [];
+        
+        foreach($lists_segments as $lists_segment) {
+            if(!isset($groups[$lists_segment->mail_list_id])) {
+                $groups[$lists_segment->mail_list_id] = [];
+                $groups[$lists_segment->mail_list_id]['list'] = $lists_segment->mailList;
+                if($this->default_mail_list_id == $lists_segment->mail_list_id) {
+                    $groups[$lists_segment->mail_list_id]['is_default'] = true;
+                } else {
+                    $groups[$lists_segment->mail_list_id]['is_default'] = false;
+                }
+                $groups[$lists_segment->mail_list_id]['segment_uids'] = [];
+            }
+            if(is_object($lists_segment->segment) && !in_array($lists_segment->segment->uid, $groups[$lists_segment->mail_list_id]['segment_uids'])) {
+                $groups[$lists_segment->mail_list_id]['segment_uids'][] = $lists_segment->segment->uid;
+            }
+        }
+        
+        return $groups;
+    }
 
     /**
      * Reset max_execution_time so that command can run for a long time without being terminated
@@ -2027,5 +2086,67 @@ class Campaign extends Model
     public function isAuto()
     {
         return $this->is_auto;
+    }
+    
+    /**
+     * The validation rules for automation trigger.
+     *
+     * @var array
+     */
+    public function recipientsRules($params=[])
+    {
+        $rules = [
+            'lists_segments' => 'required'
+        ];
+        
+        if(isset($params['lists_segments'])) {
+            foreach ($params['lists_segments'] as $key => $param) {
+                $rules['lists_segments.'.$key.'.mail_list_uid'] = 'required';
+            }
+        }
+        
+        return $rules;
+    }
+    
+    /**
+     * Fill recipients by params.
+     *
+     * @var void
+     */
+    public function fillRecipients($params=[])
+    {
+        if(isset($params['lists_segments'])) {
+            foreach ($params['lists_segments'] as $key => $param) {
+                if(!empty($param['mail_list_uid'])) {
+                    $mail_list = MailList::findByUid($param['mail_list_uid']);
+                    
+                    // default mail list id
+                    if(isset($param['is_default']) && $param['is_default'] == 'true') {
+                        $this->default_mail_list_id = $mail_list->id;
+                    }
+                }
+                
+                if(!empty($param['segment_uids'])) {
+                    foreach ($param['segment_uids'] as $segment_uid) {
+                        $segment = Segment::findByUid($segment_uid);
+                        
+                        $lists_segment = new CampaignsListsSegment();
+                        $lists_segment->campaign_id = $this->id;
+                        if(is_object($mail_list)) {
+                            $lists_segment->mail_list_id = $mail_list->id;
+                        }
+                        $lists_segment->segment_id = $segment->id;
+                        $this->listsSegments->push($lists_segment);
+                    }
+                } else {
+                    $lists_segment = new CampaignsListsSegment();
+                    $lists_segment->campaign_id = $this->id;
+                    if(is_object($mail_list)) {
+                        $lists_segment->mail_list_id = $mail_list->id;
+                    }
+                    $this->listsSegments->push($lists_segment);
+                }                
+            }
+        }
     }
 }

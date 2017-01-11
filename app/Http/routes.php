@@ -181,6 +181,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
+    Route::get('campaigns/{uid}/list-segment-form', 'CampaignController@listSegmentForm');
     Route::get('campaigns/{uid}/template/review', 'CampaignController@templateReview');
     Route::post('campaigns/{uid}/image/save', 'CampaignController@saveImage');
     Route::get('campaigns/{uid}/image', 'CampaignController@image');

@@ -1591,3 +1591,9 @@ ul.automation-confirm li.child-row h5 {
 .auto-event-form-line input {
     display: inline-block;
 }
+.pt-28 {
+    padding-top: 28px;
+}
+.multiple .select2 {
+    height: auto
+}

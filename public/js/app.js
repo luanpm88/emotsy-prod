@@ -560,7 +560,7 @@ $(function() {
     });
     
     // Click to insert tag
-    $(document).on("click", ".insert_tag_button", function(e) {
+    $(document).on("click", ".insert_tag_button", function() {
         var tag = $(this).attr("data-tag-name");
         
         if(!$(".plain_text_li").hasClass("active")) {
@@ -571,17 +571,19 @@ $(function() {
     });
     
     // Segments select box by list
-    $(document).on("change", ".list_select_box select", function(e) {
+    $(document).on("change", ".list_select_box select", function() {
         var url = $(this).parents('.list_select_box').attr("segments-url");
-        var box = $("."+$(this).parents('.list_select_box').attr("target-box"));
+        var box = $(this).parents('.list-segment-container').find("."+$(this).parents('.list_select_box').attr("target-box"));
         var id = $(this).val();
+        var index = $(this).parents('.condition-line').attr('rel');
         
-        if(id != '') {
+        if(id !== '') {
             $.ajax({
                 method: "GET",
                 url: url,
                 data: {
-                    list_uid: id
+                    list_uid: id,
+                    index: index
                 }
             })
             .done(function( msg ) {
@@ -917,6 +919,9 @@ $(function() {
             
             var new_line = container.find('.condition-line').last();
             new_line.find('select').select2();
+            new_line.find('.styled').uniform({
+                radioClass: 'choice'
+            });
             
             if(new_line.find('.event-campaigns-container').length) {
                 loadAutomationEmail(new_line.find('.event-campaigns-container'));
@@ -1126,5 +1131,18 @@ $(function() {
         
         box.find('input[type=checkbox]').prop('checked', false);
         $.uniform.update();
+    });
+    
+    // radio group check
+    $(document).on('change', '[radio-group]', function() {      
+        var checked = $(this).is(':checked');
+        var group = $(this).attr('radio-group');
+        
+        if(checked) {
+            $('[radio-group="' + group + '"]').prop('checked', false);
+            $(this).prop('checked', true);
+            
+            $.uniform.update();
+        }
     });
 });

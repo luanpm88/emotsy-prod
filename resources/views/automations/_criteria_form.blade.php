@@ -1,6 +1,6 @@
                                 <?php $index = isset($index) ? $index : '__index__' ?>
 								
-								<div class="row condition-line" rel="__index__">
+								<div class="row condition-line" rel="{{ $index }}">
 									<div class="col-md-4">
 										<div class="form-group">
 											<select class="select" name="custom_criteria[{{ $index }}][field_uid]">

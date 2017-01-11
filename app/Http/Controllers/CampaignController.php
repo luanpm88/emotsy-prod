@@ -204,32 +204,44 @@ class CampaignController extends Controller
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
+        
+        // Get rules and data
+        $rules = $campaign->recipientsRules($request->all());
+        $campaign->fillRecipients($request->all());
+        if (!empty($request->old())) {
+            $rules = $campaign->recipientsRules($request->old());
+            $campaign->fillRecipients($request->old());
+        }
+        
+        // var_dump($campaign->getListsSegmentsGroups());
+        var_dump($request->all());
 
-        $rules = array(
-            'mail_list_uid' => 'required',
-        );
-
-        // validate and save posted data
         if ($request->isMethod('post')) {
-
             // Check validation
-            $this->validate($request, \Acelle\Model\Campaign::$rules);
-
-            // Save campaign
-            $campaign->mail_list_id = \Acelle\Model\MailList::findByUid($request->mail_list_uid)->id;
-            if ($request->segment_uid) {
-                $campaign->segment_id = \Acelle\Model\Segment::findByUid($request->segment_uid)->id;
-            } else {
-                $campaign->segment_id = null;
-            }
-            $campaign->save();
-
-            return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
+            $this->validate($request, $rules);
         }
 
+        //// validate and save posted data
+        //if ($request->isMethod('post')) {
+        //
+        //    // Check validation
+        //    $this->validate($request, \Acelle\Model\Campaign::$rules);
+        //
+        //    // Save campaign
+        //    $campaign->mail_list_id = \Acelle\Model\MailList::findByUid($request->mail_list_uid)->id;
+        //    if ($request->segment_uid) {
+        //        $campaign->segment_id = \Acelle\Model\Segment::findByUid($request->segment_uid)->id;
+        //    } else {
+        //        $campaign->segment_id = null;
+        //    }
+        //    $campaign->save();
+        //
+        //    return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
+        //}
+        
         return view('campaigns.recipients', [
             'campaign' => $campaign,
-            'rules' => $rules,
+            'rules' => $rules
         ]);
     }
 
@@ -1640,5 +1652,31 @@ class CampaignController extends Controller
         } else {
             return redirect()->action('AutoEventController@templatePreview', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid]);
         }
+    }
+    
+    /**
+     * List segment form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listSegmentForm(Request $request)
+    {
+        // Get current user
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns._list_segment_form', [
+            'campaign' => $campaign,
+            'lists_segment_group' => [
+                'list' => null,
+                'is_default' => false
+            ]
+        ]);
     }
 }
