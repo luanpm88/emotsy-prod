@@ -66,7 +66,7 @@ class Campaign extends Model
     public function defaultMailList()
     {
         if($this->isAuto()) {
-            return $this->autoEvent()->automation->belongsTo('Acelle\Model\MailList');
+            return $this->autoEvent()->automation->belongsTo('Acelle\Model\MailList', 'default_mail_list_id');
         } else {
             return $this->belongsTo('Acelle\Model\MailList', 'default_mail_list_id');
         }
@@ -99,18 +99,6 @@ class Campaign extends Model
             'from_name' => 'required',
             'reply_to' => 'required|email',
         );
-    }
-
-    /**
-     * Get the segment of the campaign.
-     */
-    public function segment()
-    {
-        if($this->isAuto() && is_object($this->autoEvent())) {
-            return $this->autoEvent()->automation->belongsTo('Acelle\Model\Segment');
-        } else {
-            return $this->belongsTo('Acelle\Model\Segment');
-        }
     }
     
     /**

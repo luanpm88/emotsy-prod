@@ -7,7 +7,7 @@
 									'class' => '',
 									'label' => '',
 									'value' => null !== $first_event->getDataValue('event') ? $first_event->getDataValue('event') : '',
-									'options' => $first_event->automation->MailList->getSubscriberFieldSelectOptions(),
+									'options' => $first_event->automation->defaultMailList->getSubscriberFieldSelectOptions(),
 									'rules' => []
 								])
 							</div>

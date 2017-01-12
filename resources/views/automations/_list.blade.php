@@ -31,13 +31,9 @@
 													<span data-popup="tooltip" title="{{ strip_tags($automation->getInitEvent()->displayMessage()) }}" class="auto-event-substr">{!! $automation->getInitEvent()->displayMessage() !!}</span>
 												</span>
 											@endif
-											@if ($automation->subscribers()->count())												
-												@if (is_object($automation->segment))
-													<span class="text-semibold">{{ $automation->subscribers()->count() }}</span> <span class="text-muted">{{ strtolower(trans('messages.subscribers')) }} ({{ $automation->mailList->name }} . {{ $automation->segment->name }})</span>
-												@elseif (is_object($automation->mailList))
-													<span class="text-semibold">{{ $automation->subscribers()->count() }}</span> <span class="text-muted">{{ strtolower(trans('messages.subscribers')) }} ({{ $automation->mailList->name }})</span>
-												@endif
-											@endif
+											<div class="text-semibold" data-popup="tooltip" title="{{ $automation->displayRecipients() }}">
+												{{ $automation->subscribers()->count() }} {{ trans('messages.recipients') }}
+											</div>
 										</td>
 										<td>
 											<h5 class="no-margin">

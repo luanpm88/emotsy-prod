@@ -9,6 +9,11 @@
 							])
 						</div>
 					</div>
+					
+					<h4 class="mb-20">
+						{{ trans('messages.choose_lists_segments_for_the_campaign') }}
+					</h4>
+						
 					<div class="addable-multiple-form">
 						<div class="addable-multiple-container">
 							<?php $num = 0 ?>
@@ -23,7 +28,7 @@
 							
 						<br />
 						<a
-							sample-url="{{ action('AutomationController@listSegmentForm', $automation->uid) }}"
+							sample-url="{{ action('AutomationController@listSegmentForm', (!$automation->uid ? '000' : '')) }}"
 							href="#add_condition" class="btn btn-info bg-info-800 add-form">
 							<i class="icon-plus2"></i> {{ trans('messages.add_list_segment') }}
 						</a>

@@ -123,16 +123,6 @@ class Automation extends Model
      *
      * @var object | collect
      */
-    public function mailList()
-    {
-        return $this->belongsTo('Acelle\Model\MailList');
-    }
-    
-    public function segment()
-    {
-        return $this->belongsTo('Acelle\Model\Segment');
-    }
-
     public function user()
     {
         return $this->belongsTo('Acelle\Model\User');
@@ -423,9 +413,9 @@ class Automation extends Model
             'name' => $this->name,
         ];
 
-        if (is_object($this->mailList)) {
+        if (is_object($this->defaultMailList)) {
             $data['list_id'] = $this->mail_list_id;
-            $data['list_name'] = $this->mailList->name;
+            $data['list_name'] = $this->defaultMailList->name;
         }
 
         if (is_object($this->segment)) {
@@ -463,5 +453,218 @@ class Automation extends Model
     {
         $this->status = Automation::STATUS_INACTIVE;		
         $this->save();
+    }
+	
+	/**
+     * Get automation lists segments.
+     *
+     * @return mixed
+     */
+    public function getListsSegments()
+    {
+        $lists_segments = $this->listsSegments;
+        
+        if($lists_segments->isEmpty()) {
+            $lists_segment = new AutomationsListsSegment();
+            $lists_segment->automation_id = $this->id;
+            $lists_segment->is_default = true;
+            
+            $lists_segments->push($lists_segment);
+        }
+        
+        return $lists_segments;
+    }
+    
+    /**
+     * Get automation lists segments group by list.
+     *
+     * @return mixed
+     */
+    public function getListsSegmentsGroups()
+    {
+        $lists_segments = $this->getListsSegments();
+        $groups = [];
+        
+        foreach($lists_segments as $lists_segment) {
+            if(!isset($groups[$lists_segment->mail_list_id])) {
+                $groups[$lists_segment->mail_list_id] = [];
+                $groups[$lists_segment->mail_list_id]['list'] = $lists_segment->mailList;
+                if($this->default_mail_list_id == $lists_segment->mail_list_id) {
+                    $groups[$lists_segment->mail_list_id]['is_default'] = true;
+                } else {
+                    $groups[$lists_segment->mail_list_id]['is_default'] = false;
+                }
+                $groups[$lists_segment->mail_list_id]['segment_uids'] = [];
+            }
+            if(is_object($lists_segment->segment) && !in_array($lists_segment->segment->uid, $groups[$lists_segment->mail_list_id]['segment_uids'])) {
+                $groups[$lists_segment->mail_list_id]['segment_uids'][] = $lists_segment->segment->uid;
+            }
+        }
+        
+        return $groups;
+    }
+	
+	/**
+     * Get automation list segment.
+     *
+     * @return mixed
+     */
+    public function listsSegments()
+    {
+        return $this->hasMany('Acelle\Model\AutomationsListsSegment');
+    }
+	
+	/**
+     * Fill recipients by params.
+     *
+     * @var void
+     */
+    public function fillRecipients($params=[])
+    {        
+        if(isset($params['lists_segments'])) {
+            foreach ($params['lists_segments'] as $key => $param) {
+                if(!empty($param['mail_list_uid'])) {
+                    $mail_list = MailList::findByUid($param['mail_list_uid']);
+                    
+                    // default mail list id
+                    if(isset($param['is_default']) && $param['is_default'] == 'true') {
+                        $this->default_mail_list_id = $mail_list->id;
+                    }
+					
+					if(!empty($param['segment_uids'])) {
+						foreach ($param['segment_uids'] as $segment_uid) {
+							$segment = Segment::findByUid($segment_uid);
+							
+							$lists_segment = new AutomationsListsSegment();
+							$lists_segment->automation_id = $this->id;
+							if(is_object($mail_list)) {
+								$lists_segment->mail_list_id = $mail_list->id;
+							}
+							$lists_segment->segment_id = $segment->id;
+							$this->listsSegments->push($lists_segment);
+						}
+					} else {
+						$lists_segment = new AutomationsListsSegment();
+						$lists_segment->automation_id = $this->id;
+						if(is_object($mail_list)) {
+							$lists_segment->mail_list_id = $mail_list->id;
+						}
+						$this->listsSegments->push($lists_segment);
+					}                
+                }
+            }
+        }
+    }
+    
+    /**
+     * Save Recipients.
+     *
+     * @var void
+     */
+    public function saveRecipients($params=[])
+    {
+        // Empty current data
+        $this->listsSegments = collect([]);
+        // Fill params
+        $this->fillRecipients($params);
+        
+        $lists_segments_groups = $this->getListsSegmentsGroups();
+        
+        $data = [];
+        foreach($lists_segments_groups as $lists_segments_group) {
+            if(!empty($lists_segments_group['segment_uids'])) {
+                foreach($lists_segments_group['segment_uids'] as $segment_uid) {
+                    $segment = Segment::findByUid($segment_uid);
+                    $data[] = [
+                        'automation_id' => $this->id,
+                        'mail_list_id' => $lists_segments_group['list']->id,
+                        'segment_id' => $segment->id,
+                    ];
+                }
+            } else {
+                $data[] = [
+                    'automation_id' => $this->id,
+                    'mail_list_id' => $lists_segments_group['list']->id,
+                    'segment_id' => NULL,
+                ];
+            }
+        }
+        
+        var_dump($data);
+        
+        // Empty old data
+        $this->listsSegments()->delete();
+        
+        // Insert Data
+        AutomationsListsSegment::insert($data);
+        
+        // Save campaign with default list id
+        $automation = Automation::find($this->id);
+        $automation->default_mail_list_id = $this->default_mail_list_id;
+        $automation->save();
+    }
+    
+    /**
+     * Display Recipients.
+     *
+     * @var array
+     */
+    public function displayRecipients()
+    {
+        if(!is_object($this->defaultMailList)) {
+            return "";
+        }
+        
+        $lines = [];
+        foreach($this->getListsSegmentsGroups() as $lists_segments_group) {
+            $list_name = $lists_segments_group['list']->name;
+            
+            $segment_names = [];
+            if(!empty($lists_segments_group['segment_uids'])) {
+                foreach($lists_segments_group['segment_uids'] as $segment_uid) {
+                    $segment = Segment::findByUid($segment_uid);
+                    $segment_names[] = $segment->name;
+                }
+            }
+            
+            if(empty($segment_names)) {
+                $lines[] = $list_name;
+            } else {
+                $lines[] = implode(': ', [$list_name, implode(', ', $segment_names)]);
+            }            
+        }
+        
+        return implode(' | ', $lines);
+    }
+	
+	/**
+     * Get default mail list.
+     *
+     * @var array
+     */
+	public function defaultMailList()
+    {
+        return $this->belongsTo('Acelle\Model\MailList', 'default_mail_list_id');
+    }
+	
+	/**
+     * The validation rules for automation trigger.
+     *
+     * @var array
+     */
+    public function recipientsRules($params=[])
+    {
+        $rules = [
+            'lists_segments' => 'required',
+			'name' => 'required'
+        ];
+        
+        if(isset($params['lists_segments'])) {
+            foreach ($params['lists_segments'] as $key => $param) {
+                $rules['lists_segments.'.$key.'.mail_list_uid'] = 'required';
+            }
+        }
+        
+        return $rules;
     }
 }

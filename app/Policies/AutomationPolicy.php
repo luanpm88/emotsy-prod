@@ -30,7 +30,7 @@ class AutomationPolicy
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Automation $automation)
     {
-        return $automation->user_id == $user->id && in_array($automation->status, [
+        return !isset($automation->id) || $automation->user_id == $user->id && in_array($automation->status, [
                                                                 \Acelle\Model\Automation::STATUS_DRAFT,
                                                                 \Acelle\Model\Automation::STATUS_ACTIVE,
                                                                 \Acelle\Model\Automation::STATUS_INACTIVE
