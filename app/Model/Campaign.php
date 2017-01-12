@@ -63,12 +63,12 @@ class Campaign extends Model
     /**
      * Get the user that owns the phone.
      */
-    public function mailList()
+    public function defaultMailList()
     {
         if($this->isAuto()) {
             return $this->autoEvent()->automation->belongsTo('Acelle\Model\MailList');
         } else {
-            return $this->belongsTo('Acelle\Model\MailList');
+            return $this->belongsTo('Acelle\Model\MailList', 'default_mail_list_id');
         }
     }
     
@@ -571,25 +571,25 @@ class Campaign extends Model
             'CURRENT_MONTH' => date('m'),
             'CURRENT_DAY' => date('d'),
             'UNSUBSCRIBE_URL' => str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), Setting::get('url_unsubscribe')),
-            'CONTACT_NAME' => $this->mailList->contact->company,
-            'CONTACT_COUNTRY' => $this->mailList->contact->country->name,
-            'CONTACT_STATE' => $this->mailList->contact->state,
-            'CONTACT_CITY' => $this->mailList->contact->city,
-            'CONTACT_ADDRESS_1' => $this->mailList->contact->address_1,
-            'CONTACT_ADDRESS_2' => $this->mailList->contact->address_2,
-            'CONTACT_PHONE' => $this->mailList->contact->phone,
-            'CONTACT_URL' => $this->mailList->contact->url,
-            'CONTACT_EMAIL' => $this->mailList->contact->email,
-            'LIST_NAME' => $this->mailList->name,
-            'LIST_SUBJECT' => $this->mailList->default_subject,
-            'LIST_FROM_NAME' => $this->mailList->from_name,
-            'LIST_FROM_EMAIL' => $this->mailList->from_email,
+            'CONTACT_NAME' => $this->defaultMailList->contact->company,
+            'CONTACT_COUNTRY' => $this->defaultMailList->contact->country->name,
+            'CONTACT_STATE' => $this->defaultMailList->contact->state,
+            'CONTACT_CITY' => $this->defaultMailList->contact->city,
+            'CONTACT_ADDRESS_1' => $this->defaultMailList->contact->address_1,
+            'CONTACT_ADDRESS_2' => $this->defaultMailList->contact->address_2,
+            'CONTACT_PHONE' => $this->defaultMailList->contact->phone,
+            'CONTACT_URL' => $this->defaultMailList->contact->url,
+            'CONTACT_EMAIL' => $this->defaultMailList->contact->email,
+            'LIST_NAME' => $this->defaultMailList->name,
+            'LIST_SUBJECT' => $this->defaultMailList->default_subject,
+            'LIST_FROM_NAME' => $this->defaultMailList->from_name,
+            'LIST_FROM_EMAIL' => $this->defaultMailList->from_email,
         );
         
         // UPDATE_PROFILE_URL
         if(!$this->isStdClassSubscriber($subscriber)) {
             // in case of actually sending campaign
-            $tags['UPDATE_PROFILE_URL'] = str_replace('LIST_UID', $this->mailList->uid,
+            $tags['UPDATE_PROFILE_URL'] = str_replace('LIST_UID', $this->defaultMailList->uid,
                 str_replace('SUBSCRIBER_UID', $subscriber->uid,
                 str_replace('SECURE_CODE', $subscriber->getSecurityToken('update-profile'), Setting::get('url_update_profile'))));
         }
@@ -601,7 +601,7 @@ class Campaign extends Model
 
         if (!$this->isStdClassSubscriber($subscriber)) {
             // in case of actually sending campaign
-            foreach ($this->mailList->fields as $field) {
+            foreach ($this->defaultMailList->fields as $field) {
                 $message = str_replace('{SUBSCRIBER_'.$field->tag.'}', $subscriber->getValueByField($field), $message);
             }
         } else {
@@ -622,7 +622,7 @@ class Campaign extends Model
         if (is_object($this->segment)) {
             $scoped = $this->segment;
         } else {
-            $scoped = $this->mailList;
+            $scoped = $this->defaultMailList;
         }
 
         return $scoped->subscribers()
@@ -797,7 +797,7 @@ class Campaign extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'mail_list_id', 'segment_id',
+        'name',
         'subject', 'from_name', 'from_email',
         'reply_to', 'track_open',
         'track_click', 'sign_dkim', 'track_fbl',
@@ -971,7 +971,7 @@ class Campaign extends Model
         $step = 0;
 
         // Step 1
-        if (is_object($this->mailList)) {
+        if (is_object($this->defaultMailList)) {
             $step = 1;
         } else {
             return $step;
@@ -1137,9 +1137,9 @@ class Campaign extends Model
                 'name' => $this->name,
         ];
 
-        if (is_object($this->mailList)) {
-            $data['list_id'] = $this->mail_list_id;
-            $data['list_name'] = $this->mailList->name;
+        if (is_object($this->defaultMailList)) {
+            $data['list_id'] = $this->default_mail_list_id;
+            $data['list_name'] = $this->defaultMailList->name;
         }
 
         if (is_object($this->segment)) {
@@ -2114,7 +2114,7 @@ class Campaign extends Model
      * @var void
      */
     public function fillRecipients($params=[])
-    {
+    {        
         if(isset($params['lists_segments'])) {
             foreach ($params['lists_segments'] as $key => $param) {
                 if(!empty($param['mail_list_uid'])) {
@@ -2148,5 +2148,86 @@ class Campaign extends Model
                 }                
             }
         }
+    }
+    
+    /**
+     * Save Recipients.
+     *
+     * @var void
+     */
+    public function saveRecipients($params=[])
+    {
+        // Empty current data
+        $this->listsSegments = collect([]);
+        // Fill params
+        $this->fillRecipients($params);
+        
+        $lists_segments_groups = $this->getListsSegmentsGroups();
+        
+        $data = [];
+        foreach($lists_segments_groups as $lists_segments_group) {
+            if(!empty($lists_segments_group['segment_uids'])) {
+                foreach($lists_segments_group['segment_uids'] as $segment_uid) {
+                    $segment = Segment::findByUid($segment_uid);
+                    $data[] = [
+                        'campaign_id' => $this->id,
+                        'mail_list_id' => $lists_segments_group['list']->id,
+                        'segment_id' => $segment->id,
+                    ];
+                }
+            } else {
+                $data[] = [
+                    'campaign_id' => $this->id,
+                    'mail_list_id' => $lists_segments_group['list']->id,
+                    'segment_id' => NULL,
+                ];
+            }
+        }
+        
+        var_dump($data);
+        
+        // Empty old data
+        $this->listsSegments()->delete();
+        
+        // Insert Data
+        CampaignsListsSegment::insert($data);
+        
+        // Save campaign with default list id
+        $campaign = Campaign::find($this->id);
+        $campaign->default_mail_list_id = $this->default_mail_list_id;
+        $campaign->save();
+    }
+    
+    /**
+     * Display Recipients.
+     *
+     * @var array
+     */
+    public function displayRecipients()
+    {
+        if(!is_object($this->defaultMailList)) {
+            return "";
+        }
+        
+        $lines = [];
+        foreach($this->getListsSegmentsGroups() as $lists_segments_group) {
+            $list_name = $lists_segments_group['list']->name;
+            
+            $segment_names = [];
+            if(!empty($lists_segments_group['segment_uids'])) {
+                foreach($lists_segments_group['segment_uids'] as $segment_uid) {
+                    $segment = Segment::findByUid($segment_uid);
+                    $segment_names[] = $segment->name;
+                }
+            }
+            
+            if(empty($segment_names)) {
+                $lines[] = $list_name;
+            } else {
+                $lines[] = implode(': ', [$list_name, implode(', ', $segment_names)]);
+            }            
+        }
+        
+        return implode(' | ', $lines);
     }
 }

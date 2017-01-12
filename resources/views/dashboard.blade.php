@@ -152,11 +152,7 @@
                                                 </a>
                                             </h6>
                                             <p>
-												@if (is_object($item->segment))
-													{{ $item->mailList->name }} . {{ $item->segment->name }}													
-												@elseif (is_object($item->mailList))
-													{{ $item->mailList->name }}
-												@endif                                                
+												{!! $item->displayRecipients() !!}
                                             </p>
                                         </div>
 										<div class="col-sm-2 col-md-2 text-left">
@@ -199,11 +195,7 @@
                                                 </a>
                                             </h6>
                                             <p>
-												@if (is_object($item->segment))
-													{{ $item->mailList->name }} . {{ $item->segment->name }}													
-												@elseif (is_object($item->mailList))
-													{{ $item->mailList->name }}
-												@endif                                                
+												{!! $item->displayRecipients() !!}
                                             </p>
                                         </div>
                                         <div class="col-sm-2 col-md-2 text-left">

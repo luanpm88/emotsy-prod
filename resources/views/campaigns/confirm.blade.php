@@ -44,13 +44,9 @@
 							@else
 								<i class="icon-cross2 text-danger"></i>
 							@endif
-                            <h4>{{ trans('messages.recipients') }}</h4>
+                            <h4>{{ $campaign->subscribers()->count() }} {{ trans('messages.recipients') }}</h4>
                             <p>
-                                @if (is_object($campaign->segment))
-                                    {{ $campaign->mailList->name }} . {{ $campaign->segment->name }}: {{ $campaign->subscribers()->count() }} {{ strtolower(trans('messages.recipients')) }}
-                                @elseif (is_object($campaign->mailList))
-                                    {{ $campaign->mailList->name }}: {{ $campaign->subscribers()->count() }} {{ strtolower(trans('messages.recipients')) }}
-                                @endif
+                                {!! $campaign->displayRecipients() !!}
                             </p>                        
                         </li>
                         <li>

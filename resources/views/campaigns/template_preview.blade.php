@@ -100,9 +100,9 @@
                         ])
 					</div>
 				</div>
-					
+
                 @if ($campaign->template_source != 'builder')
-                    @include('elements._tags', ['tags' => Acelle\Model\Template::tags($campaign->mailList)])
+                    @include('elements._tags', ['tags' => Acelle\Model\Template::tags($campaign->defaultMailList)])
                 @endif
                     
 				<hr>

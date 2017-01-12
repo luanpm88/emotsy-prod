@@ -4,11 +4,7 @@
                 <div class="col-md-6 campaigns-summary">
                     <div class="mb-10">
                         <span class="text-bold text-muted">{{ trans('messages.from') }}:</span>
-                        @if (is_object($campaign->segment))
-                            {{ $campaign->mailList->name }} . {{ $campaign->segment->name }}                        
-                        @elseif (is_object($campaign->mailList))
-                            {{ $campaign->mailList->name }}
-                        @endif
+                        {!! $campaign->displayRecipients() !!}
                     </div>
                     <div class="mb-10">
                         <span class="text-bold text-muted">{{ trans('messages.subject') }}:</span>

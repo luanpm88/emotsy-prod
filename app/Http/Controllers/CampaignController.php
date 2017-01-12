@@ -212,13 +212,14 @@ class CampaignController extends Controller
             $rules = $campaign->recipientsRules($request->old());
             $campaign->fillRecipients($request->old());
         }
-        
-        // var_dump($campaign->getListsSegmentsGroups());
-        var_dump($request->all());
 
         if ($request->isMethod('post')) {
             // Check validation
             $this->validate($request, $rules);
+            
+            $campaign->saveRecipients($request->all());
+            
+            return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
         }
 
         //// validate and save posted data
@@ -261,9 +262,9 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $campaign->from_name = !empty($campaign->from_name) ? $campaign->from_name : $campaign->mailList->from_name;
-        $campaign->from_email = !empty($campaign->from_email) ? $campaign->from_email : $campaign->mailList->from_email;
-        $campaign->subject = !empty($campaign->subject) ? $campaign->subject : $campaign->mailList->default_subject;
+        $campaign->from_name = !empty($campaign->from_name) ? $campaign->from_name : $campaign->defaultMailList->from_name;
+        $campaign->from_email = !empty($campaign->from_email) ? $campaign->from_email : $campaign->defaultMailList->from_email;
+        $campaign->subject = !empty($campaign->subject) ? $campaign->subject : $campaign->defaultMailList->default_subject;
 
         $rules = array(
             'name' => 'required',
@@ -1384,7 +1385,7 @@ class CampaignController extends Controller
         return view('campaigns.subscribers', [
             'subscribers' => $subscribers,
             'campaign' => $campaign,
-            'list' => $campaign->mailList,
+            'list' => $campaign->defaultMailList,
         ]);
     }
 
@@ -1402,11 +1403,11 @@ class CampaignController extends Controller
 
         $subscribers = $campaign->subscribers($request->all())
                                 ->paginate($request->per_page);
-        $fields = $campaign->mailList->getFields->whereIn('uid', explode(',', $request->columns));
+        $fields = $campaign->defaultMailList->getFields->whereIn('uid', explode(',', $request->columns));
 
         return view('campaigns._subscribers_list', [
             'subscribers' => $subscribers,
-            'list' => $campaign->mailList,
+            'list' => $campaign->defaultMailList,
             'campaign' => $campaign,
             'fields' => $fields,
         ]);
@@ -1436,7 +1437,7 @@ class CampaignController extends Controller
         return view('campaigns.template_build', [
             'campaign' => $campaign,
             'elements' => $elements,
-            'list' => $campaign->mailList,
+            'list' => $campaign->defaultMailList,
         ]);
     }
     
@@ -1458,7 +1459,7 @@ class CampaignController extends Controller
 
         return view('campaigns.template_rebuild', [
             'campaign' => $campaign,
-            'list' => $campaign->mailList
+            'list' => $campaign->defaultMailList
         ]);
     }
     

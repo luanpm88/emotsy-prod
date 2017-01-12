@@ -512,4 +512,30 @@ class AutomationController extends Controller
             }            
         }
     }
+    
+    /**
+     * List segment form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listSegmentForm(Request $request)
+    {
+        // Get current user
+        $automation = \Acelle\Model\Automation::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automations._list_segment_form', [
+            'automation' => $automation,
+            'lists_segment_group' => [
+                'list' => null,
+                'is_default' => false
+            ]
+        ]);
+    }
 }
