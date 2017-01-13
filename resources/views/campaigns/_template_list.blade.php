@@ -36,9 +36,9 @@
                     @if ($campaign->subscribers()->count())
                         <br />
                         @if (is_object($campaign->segment))
-                            <span class="text-semibold">{{ $campaign->subscribers()->count() }}</span> <span class="text-muted">{{ strtolower(trans('messages.subscribers')) }} ({!! $item->displayRecipients() !!})</span>
+                            <span class="text-semibold">{{ $campaign->subscribers()->count() }}</span> <span class="text-muted">{{ strtolower(trans('messages.subscribers')) }} ({!! $campaign->displayRecipients() !!})</span>
                         @elseif (is_object($campaign->defaultMailList))
-                            <span class="text-semibold">{{ $campaign->subscribers()->count() }}</span> <span class="text-muted">{{ strtolower(trans('messages.subscribers')) }} ({!! $item->displayRecipients() !!})</span>
+                            <span class="text-semibold">{{ $campaign->subscribers()->count() }}</span> <span class="text-muted">{{ strtolower(trans('messages.subscribers')) }} ({!! $campaign->displayRecipients() !!})</span>
                         @endif
                     @endif
                     
