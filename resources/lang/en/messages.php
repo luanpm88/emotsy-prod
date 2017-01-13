@@ -1281,6 +1281,7 @@ return [
     'default_list_information' => 'Default information',
     'selected' => 'Selected',
     'choose_lists_segments_for_the_campaign' => 'Choose one or more lists/segments for sending email',
+    'leave_empty_to_choose_all_list' => '* Leave this box empty to choose all subscribers in the list',
 ];
 
 

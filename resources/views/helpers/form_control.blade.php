@@ -44,6 +44,12 @@
 										
 										@include('helpers._' . $type)
 										
+										@if (!empty($quick_note))
+											<span class="quick_note">
+												{!! $quick_note !!}
+											</span>
+										@endif
+										
 										@if (!empty($subfix))
 											<span class="subfix">
 												{!! $subfix !!}

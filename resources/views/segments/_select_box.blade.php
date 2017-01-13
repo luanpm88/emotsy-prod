@@ -6,5 +6,6 @@
         'value' => '',
         'options' => $options,
         'multiple' => true,
+        'quick_note' => trans('messages.leave_empty_to_choose_all_list'),
     ])
 @endif

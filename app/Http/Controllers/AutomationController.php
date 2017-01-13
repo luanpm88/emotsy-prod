@@ -141,9 +141,9 @@ class AutomationController extends Controller
             return $this->notAuthorized();
         }
         
-        // Get old value
-        if (null !== $request->old()) {
-            $automation->fillAttributes($request->old());
+        if (!empty($request->old())) {
+            $rules = $automation->recipientsRules($request->old());
+            $automation->fillRecipients($request->old());
         }
 
         return view('automations.edit', [
@@ -167,21 +167,19 @@ class AutomationController extends Controller
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
+        
+        // Get rules and data
+        $rules = $automation->recipientsRules($request->all());
+        $automation->fillRecipients($request->all());        
 
         // Update automation
         if ($request->isMethod('patch')) {
-            // Check validation
-            $this->validate($request, $automation->rules()["init"]);
+            $this->validate($request, $rules);
             
-            // create automation
-            $automation->fillAttributes($request->all());            
-            
+            $automation->fill($request->all());            
             $automation->save();
+            $automation->saveRecipients($request->all());
             
-            // Log
-            $automation->log('updated', $request->user());
-
-            // Redirect to next step
             return redirect()->action('AutomationController@trigger', $automation->uid);
         }
     }
