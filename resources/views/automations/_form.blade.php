@@ -28,7 +28,7 @@
 							
 						<br />
 						<a
-							sample-url="{{ action('AutomationController@listSegmentForm', (!$automation->uid ? '000' : '')) }}"
+							sample-url="{{ action('AutomationController@listSegmentForm', (!$automation->uid ? '000' : $automation->uid)) }}"
 							href="#add_condition" class="btn btn-info bg-info-800 add-form">
 							<i class="icon-plus2"></i> {{ trans('messages.add_list_segment') }}
 						</a>

@@ -477,8 +477,8 @@ class MailList extends Model
     public function urlCount()
     {
         $query = CampaignLink::join('campaigns', 'campaigns.id', '=', 'campaign_links.campaign_id')
-            ->where('campaigns.mail_list_id', '=', $this->id);
-
+            ->where('campaigns.default_mail_list_id', '=', $this->id);
+        
         return $query->count();
     }
 

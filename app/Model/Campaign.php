@@ -1048,7 +1048,7 @@ class Campaign extends Model
      */
     public function subscribers($params=[])
     {
-        if(!is_object($this->segment) && !is_object($this->mailList)) {
+        if($this->listsSegments->isEmpty()) {
             return collect([]);
         }
         
@@ -1058,14 +1058,20 @@ class Campaign extends Model
             $query = $this->autoEvent()->subscribers();
         } else {
             // Get subscriber from mailist and segment
-            if (is_object($this->segment)) {
-                $query = $this->segment->subscribers();
-            } elseif (is_object($this->mailList)) {
-                $query = $this->mailList->subscribers();
+            $conditions = [];
+            foreach($this->listsSegments as $lists_segment) {
+                if(!empty($lists_segment->segment_id)) {
+                    $conditions[] = '(' . $lists_segment->segment->getSubscribersConditions() . ')';
+                } else {
+                    $conditions[] = '(' . table('subscribers') . '.mail_list_id = ' . $lists_segment->mail_list_id . ')';
+                }
+            }
+            
+            $query = Subscriber::select("subscribers.*");
+            if (!empty($conditions)) {
+                $query = $query->whereRaw(implode(' OR ', $conditions));
             }
         }
-        
-        $query = $query->select("subscribers.*");
         
         // Filter
         $filters = isset($params["filters"]) ? $params["filters"] : null;
@@ -2171,8 +2177,6 @@ class Campaign extends Model
                 ];
             }
         }
-        
-        var_dump($data);
         
         // Empty old data
         $this->listsSegments()->delete();

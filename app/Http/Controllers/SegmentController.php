@@ -373,7 +373,7 @@ class SegmentController extends Controller
 
         return view('segments._select_box', [
             'options' => $list->getSegmentSelectOptions(),
-            'index' => 1,
+            'index' => $request->index,
         ]);
     }
 }

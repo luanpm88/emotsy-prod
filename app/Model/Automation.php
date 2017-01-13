@@ -297,17 +297,24 @@ class Automation extends Model
      */
     public function subscribers($params=[])
     {
-        if(!is_object($this->segment) && !is_object($this->mailList)) {
+        if($this->listsSegments->isEmpty()) {
             return collect([]);
         }
         
-        if (is_object($this->segment)) {
-            $query = $this->segment->subscribers();
-        } elseif (is_object($this->mailList)) {
-            $query = $this->mailList->subscribers();
-        }
-        
-        $query = $query->select("subscribers.*");
+        // Get subscriber from mailist and segment
+		$conditions = [];
+		foreach($this->listsSegments as $lists_segment) {
+			if(!empty($lists_segment->segment_id)) {
+				$conditions[] = '(' . $lists_segment->segment->getSubscribersConditions() . ')';
+			} else {
+				$conditions[] = '(' . table('subscribers') . '.mail_list_id = ' . $lists_segment->mail_list_id . ')';
+			}
+		}
+		
+		$query = Subscriber::select("subscribers.*");
+		if (!empty($conditions)) {
+			$query = $query->whereRaw(implode(' OR ', $conditions));
+		}
         
         return $query->distinct();
     }
@@ -589,8 +596,6 @@ class Automation extends Model
                 ];
             }
         }
-        
-        var_dump($data);
         
         // Empty old data
         $this->listsSegments()->delete();
