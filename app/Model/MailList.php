@@ -874,6 +874,11 @@ class MailList extends Model
     private function readCsv($file)
     {
         try {
+            // Fix the problem with MAC OS's line endings
+            if (!ini_get("auto_detect_line_endings")) {
+                ini_set("auto_detect_line_endings", '1');
+            }
+
             // Read CSV files
             $lineCount = line_count($file) - 1; // do not count the header
             $reader = \League\Csv\Reader::createFromPath($file);
