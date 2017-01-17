@@ -1,3 +1,10 @@
+2.2.0-p3 / 2017-01-17
+===================
+
+ * Fixed: memory limit issue with importing
+ * Fixed: MAC OS line-ending issue
+ * Fixed: follow-up email is triggered more than one time
+
 2.2.0-p2 / 2017-01-11
 ===================
 
