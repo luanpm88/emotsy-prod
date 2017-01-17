@@ -30,6 +30,7 @@ use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use DB;
 use Carbon\Carbon;
 use Acelle\Model\SystemJob;
+use Acelle\Exceptions\CampaignPausedException;
 
 class Campaign extends Model
 {
@@ -301,6 +302,8 @@ class Campaign extends Model
         $me = self::find($this->id);
         $this->status = $me->status;
         $this->save();
+
+        return $this;
     }
     
     /**
@@ -408,6 +411,14 @@ class Campaign extends Model
                 if ($this->user->overQuota()) {
                     throw new \Exception("Customer (ID: {$this->user->id}) has reached sending quota");
                 }
+                
+                // randomly check for campaign PAUSED status after 10 emails
+                // @todo wrap up the probability checking here
+                if (($i % 10) == 0) {
+                    if ($this->refreshStatus()->isPaused()) {
+                        throw new CampaignPausedException();
+                    }
+                }
 
                 $i += 1;
                 MailLog::info("Sending to subscriber `{$subscriber->email}` ({$i}/".sizeof($subscribers).')');
@@ -436,6 +447,9 @@ class Campaign extends Model
             }
 
             $this->user->saveQuotaUsageInfo();
+        } catch (CampaignPausedException $e) {
+            // just finish
+            MailLog::info('Campaign paused');
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
             $this->error($e->getMessage());
@@ -2028,5 +2042,15 @@ class Campaign extends Model
     public function isAuto()
     {
         return $this->is_auto;
+    }
+
+    /**
+     * Check if campaign is paused.
+     *
+     * @return boolean
+     */
+    public function isPaused()
+    {
+        return $this->status == self::STATUS_PAUSED;
     }
 }
