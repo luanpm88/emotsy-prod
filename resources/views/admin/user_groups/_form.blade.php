@@ -290,7 +290,7 @@
 															'class' => 'numeric',
 															'name' => 'sending_servers[' . $server->uid . '][fitness]',
 															'label' => trans('messages.fitness'),
-															'value' => (is_object($group->user_group_sending_servers->where('sending_server_id', $server->id)->first()) ? $group->user_group_sending_servers->where('sending_server_id', $server->id)->first()->fitness : "100"),
+															'value' => (is_object($group->user_group_sending_servers()->where('sending_server_id', $server->id)->first()) ? $group->user_group_sending_servers()->where('sending_server_id', $server->id)->first()->fitness : "100"),
 															'help_class' => 'user_group',
 															'rules' => Acelle\Model\UserGroup::rules()
 														])
