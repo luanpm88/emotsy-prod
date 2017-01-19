@@ -638,7 +638,9 @@ class User extends Authenticatable
      */
     public function getSendingQuotaUsage()
     {
-        return $this->getQuotaTracker()->usage();
+        $tracker = $this->getQuotaTracker();
+        $tracker->check(); // renew the usage data (trigger the private shiftBy() function)
+        return $tracker->usage();
     }
 
     /**
