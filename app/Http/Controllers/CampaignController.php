@@ -1016,12 +1016,12 @@ class CampaignController extends Controller
             $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
             $log->save();
 
-            try {
+            try {                
                 // Send goodbye email
-                $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_goodbye_email')->first();
-                $send_page = \Acelle\Model\Page::findPage($list, $layout);
-                $send_page->renderContent(null, $subscriber);
-                $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
+                if($list->unsubscribe_notification) {
+                    // SEND subscription confirmation email
+                    $list->sendUnsubscriptionNotificationEmail($subscriber);
+                }   
             } catch (\Exception $e) {
             }
 
