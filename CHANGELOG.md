@@ -1,3 +1,9 @@
+2.2.0-p4 / 2017-01-20
+===================
+
+ * Fixed: file manager URL issue with old browsers
+ * Changed: new quota renewal method
+
 2.2.0-p3 / 2017-01-17
 ===================
 
