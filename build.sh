@@ -50,6 +50,7 @@ rm -fr public/thumb
 rm -fr build.sh
 rm -fr public/upload/templates/*
 rm -fr bootstrap/cache/config.php
+rm -fr generate-upgrade-script.sh
 
 # copy default lang
 rm -fr resources/lang/default
@@ -64,4 +65,3 @@ zip -r "$APPZIP" "$APPDIR" > /dev/null
 rm -fr "$APPDIR"
 
 echo "File exported [$APPZIP]"
-
