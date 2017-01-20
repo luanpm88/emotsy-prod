@@ -749,7 +749,7 @@ class User extends Authenticatable
         // @todo: magic number here
         // @todo: why $timeValue == -1?
         if ($timeValue == '-1') {
-            $start = NULL;
+            $start = '1 month ago';
         } else {
             $start = \Carbon\Carbon::parse("{$timeValue} {$timeUnit} ago");
         }
