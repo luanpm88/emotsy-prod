@@ -523,6 +523,7 @@ class CampaignController extends Controller
         // validate and save posted data
         if ($request->isMethod('post') && $campaign->step() >= 5) {
             // Save campaign
+            // @todo: check campaign status before requeuing. Otherwise, several jobs shall be created and campaign will get sent several times
             $campaign->requeue();
 
             // Log
