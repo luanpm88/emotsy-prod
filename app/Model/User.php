@@ -23,11 +23,8 @@
 namespace Acelle\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Support\Facades\Redis;
 use Acelle\Library\QuotaTrackerStd;
-use Acelle\Library\QuotaTrackerRedis;
 use Carbon\Carbon;
-use Acelle\Library\QuotaTracker;
 use Acelle\Library\Log as MailLog;
 
 class User extends Authenticatable
@@ -674,7 +671,7 @@ class User extends Authenticatable
      *
      * @return void
      */
-    public function countUsage(Carbon $timePoint = NULL)
+    public function countUsage(Carbon $timePoint = null)
     {
         return $this->getQuotaTracker()->add();
     }
@@ -783,7 +780,7 @@ class User extends Authenticatable
         $recent = $this->trackingLogs()->where('created_at', '>=', $start);
         
         // existing quota usage
-        $storedTracker = NULL;
+        $storedTracker = null;
 
         // load the tracker from DB (if exists)
         // then merge with the current tracking log data
