@@ -1022,7 +1022,7 @@ return [
     'template_type_builder' => 'Drag & Drop',
     'template_type_upload' => 'Upload',
     'template_type_editor' => 'Custom HTML',
-    'existed_templates' => 'Existed templates',
+    'existed_templates' => 'Template gallery',
     'build_new_template' => 'Build new template',
     'select_temmplate_for_email_content' => 'Select a template for campaign email content',
     'rebuild' => 'Rebuild',
