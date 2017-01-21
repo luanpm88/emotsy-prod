@@ -22,7 +22,7 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use Mailgun\Mailgun;
 
@@ -65,11 +65,11 @@ class SendingServerMailgun extends SendingServer
             return true;
         }
 
-        Log::info('Setting up webhooks for bounce/complaints');
+        MailLog::info('Setting up webhooks for bounce/complaints');
 
         $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
 
-        Log::info('Webhook set to: '.$subscribeUrl);
+        MailLog::info('Webhook set to: '.$subscribeUrl);
 
         try {
             $result = $this->client()->delete("domains/$domain/webhooks/bounce");
@@ -88,13 +88,13 @@ class SendingServerMailgun extends SendingServer
                 'id' => 'bounce',
                 'url' => $subscribeUrl,
             ));
-            Log::info('Bounce webhook created');
+            MailLog::info('Bounce webhook created');
 
             $result = $this->client()->post("domains/$domain/webhooks", array(
                 'id' => 'spam',
                 'url' => $subscribeUrl,
             ));
-            Log::info('Complaint webhook created');
+            MailLog::info('Complaint webhook created');
 
             self::$isWebhookSetup = true;
         } catch (\Exception $e) {

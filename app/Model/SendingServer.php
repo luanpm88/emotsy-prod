@@ -24,7 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\RouletteWheel;
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
 
 class SendingServer extends Model
 {
@@ -108,11 +108,11 @@ class SendingServer extends Model
         $selectedServer = self::find($id);
 
         if (!empty(self::$serverPools[$id])) {
-            Log::info('Reuse sending server `'.self::$serverPools[$id]->name.'` (ID: '.$id.')');
+            MailLog::info('Reuse sending server `'.self::$serverPools[$id]->name.'` (ID: '.$id.')');
 
             return self::$serverPools[$id];
         } else {
-            Log::info('Initialize delivery server `'.$selectedServer->name.'` (ID: '.$id.')');
+            MailLog::info('Initialize delivery server `'.$selectedServer->name.'` (ID: '.$id.')');
 
             return self::$serverPools[$id] = self::mapServerType($selectedServer);
         }

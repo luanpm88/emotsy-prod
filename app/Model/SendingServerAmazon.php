@@ -22,7 +22,7 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 
 class SendingServerAmazon extends SendingServer
@@ -88,7 +88,7 @@ class SendingServerAmazon extends SendingServer
             return true;
         }
 
-        Log::info('Set up Amazon SNS for email delivery tracking');
+        MailLog::info('Set up Amazon SNS for email delivery tracking');
 
         $awsIdentity = $params['from_email'];
         $verifyByDomain = false;
@@ -99,7 +99,7 @@ class SendingServerAmazon extends SendingServer
             ));
         } catch (\Exception $e) {
             $verifyByDomain = true;
-            Log::warning("From Email address {$params['from_email']} not verified by Amazon SES, using domain instead");
+            MailLog::warning("From Email address {$params['from_email']} not verified by Amazon SES, using domain instead");
         }
 
         if ($verifyByDomain) {

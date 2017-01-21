@@ -22,7 +22,7 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use SendGrid\Mail;
 use SendGrid\Email;
@@ -49,7 +49,7 @@ class SendingServerSendGridApi extends SendingServerSendGrid
             
             # if response from SendGrid is 200, 202, 2xx
             if (preg_match("/^2../i", $statusCode)) {
-                Log::info('Sent!');
+                MailLog::info('Sent!');
 
                 return array(
                     'runtime_message_id' => StringHelper::cleanupMessageId($this->getMessageId($response->headers())),
@@ -59,8 +59,8 @@ class SendingServerSendGridApi extends SendingServerSendGrid
                 throw new \Exception("{$statusCode} ".$response->body());
             }
         } catch (\Exception $e) {
-            Log::warning('Sending failed');
-            Log::warning($e->getMessage());
+            MailLog::warning('Sending failed');
+            MailLog::warning($e->getMessage());
 
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,
