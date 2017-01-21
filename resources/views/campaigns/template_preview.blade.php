@@ -37,9 +37,11 @@
 						<i class="icon icon-pencil"></i> {{ trans('messages.edit') }}
 					</a>
 				@endif
-                <a href="{{ action('CampaignController@templateSelect', $campaign->uid) }}" class="btn btn-info bg-teal-800">
-					<i class="icon-loop"></i> {{ trans('messages.change_template') }}
-				</a>				
+				@if ($campaign->type != 'plain-text')
+					<a href="{{ action('CampaignController@templateSelect', $campaign->uid) }}" class="btn btn-info bg-teal-800">
+						<i class="icon-loop"></i> {{ trans('messages.change_template') }}
+					</a>
+				@endif
             </div>
     
 			<form action="{{ action('CampaignController@template', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">

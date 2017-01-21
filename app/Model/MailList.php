@@ -949,17 +949,17 @@ class MailList extends Model
             $system_job->updateStatus([
                 'status' => self::IMPORT_STATUS_RUNNING,
             ]);
-            
+
             // Read CSV files
             list($headers, $availableFields, $lineCount, $results) = $this->readCsv($file);
-            
+
             // validate headers, check for required fields
             // throw an exception in case of error
             $this->validateCsvHeader($availableFields);
-            
+
             // update status, line count
             $system_job->updateStatus([ 'total' => $lineCount ]);
-            
+
             // process by batches
             each_batch($results, config('app.import_batch_size'), true, function($batch) use ($logger, $availableFields, &$user, &$processed_count, &$system_job) {
                 // increment count
@@ -974,28 +974,29 @@ class MailList extends Model
                         $batch = array_slice($batch, 0, $this->getRemainingAddSubscribersQuota());
                     }
                 }
-                
+
                 // processing for every batch, 
                 // using transaction to only commit at the end of the batch execution
                 DB::beginTransaction();
-                
+
                 // create a temporary table containing the input subscribers
                 $tmpTable = table('__tmp_subscribers');
-                $tmpFields = implode(',', array_map(function($field) { return "$field VARCHAR(255)"; }, $availableFields));
+                // @todo: hard-coded charset and COLLATE
+                $tmpFields = implode(',', array_map(function($field) { return "`{$field}` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci"; }, $availableFields));
                 DB::statement("DROP TEMPORARY TABLE IF EXISTS {$tmpTable};
                                CREATE TEMPORARY TABLE {$tmpTable}({$tmpFields});");
-                
+
                 // Insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
                 $data = collect($batch)->map(function($r) use ($availableFields) {
                     return array_only($r, $availableFields);
                 })->toArray();
-                
+
                 // make the import data table unique by email 
                 $data = array_unique_by($data, function($r) {
                     return $r['email'];
                 });
-                
+
                 // validate amd remove invalid records
                 $data = array_where($data, function($key, $value) use ($logger) {
                     list($valid, $errors) = $this->validateCsvRecord($value);
@@ -1005,56 +1006,56 @@ class MailList extends Model
                     return $valid;
                 });
                 DB::table('__tmp_subscribers')->insert($data);
-                
+
                 // Insert new subscribers from temp table to the main table
                 DB::statement("INSERT INTO " . table('subscribers') . "(uid, mail_list_id, user_id, email, status, subscription_type, created_at, updated_at) 
                                SELECT UUID_SHORT(), " . $this->id . ", " . $user->id . ", uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", " . db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED) . ", NOW(), NOW()
-                               FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN " . table('subscribers') . " main ON tmp.email = main.email WHERE main.email IS NULL) uniq");
-                
+                               FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN " . table('subscribers') . " main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL) uniq");
+
                 // Insert subscribers' custom fields to the fields table
-                DB::statement("DELETE FROM " . table('subscriber_fields') . " WHERE subscriber_id IN (SELECT id FROM " . table('subscribers') . " main JOIN {$tmpTable} tmp ON main.email = tmp.email WHERE mail_list_id = " . $this->id . ")");
+                DB::statement("DELETE FROM " . table('subscriber_fields') . " WHERE subscriber_id IN (SELECT main.id FROM " . table('subscribers') . " main JOIN {$tmpTable} tmp ON main.email = tmp.email WHERE mail_list_id = " . $this->id . ")");
                 foreach($availableFields as $field) {
                     $sql = "INSERT INTO " . table('subscriber_fields') . "(subscriber_id, field_id, value, created_at, updated_at)
-                    SELECT t.subscriber_id, f.id, t.{$field}, NOW(), NOW()
+                    SELECT t.subscriber_id, f.id, t.`{$field}`, NOW(), NOW()
                     FROM (SELECT main.id AS subscriber_id, tmp.{$field} FROM " . table('subscribers') . " main JOIN {$tmpTable} tmp ON tmp.email = main.email WHERE main.mail_list_id = " . $this->id . ") t
                     JOIN " . table('fields') . " f ON f.tag = '{$field}' AND f.mail_list_id = " . $this->id;
                     DB::statement($sql);
                 }
-                
+
                 // update status, finish one batch
                 $system_job->updateStatus([ 'processed' => $processed_count ]);
-                
+
                 // Cleanup
                 DB::statement("DROP TEMPORARY TABLE IF EXISTS {$tmpTable};");
-                
+
                 // Actually write to the database
                 DB::commit();
             });
-            
+
             // update status, finish all batches
             $system_job->updateStatus([ 'status' => self::IMPORT_STATUS_DONE, 'total' => $processed_count ]);
-            
+
             // action Log
             $this->log('import_success', $user, ['count' => $processed_count, 'error' => '']);
             $logger->info(trans('messages.Finish_importing_for_list_uid', ['uid' => $this->uid]));
         } catch (\Exception $e) {
             // finish the transaction
             DB::rollBack();
-            
+
             // write to job's logger
             $logger->error($e->getMessage());
-            
+
             // update job status
             $system_job->updateStatus([
                 'status' => self::IMPORT_STATUS_FAILED,
                 'error_message' => $e->getMessage(),
             ]);
-            
+
             // Action Log
             $this->log('import_max_error', $user, ['count' => $processed_count]);
         }
     }
-    
+
     /**
      * Reload mail list information
      *

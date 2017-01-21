@@ -42,7 +42,7 @@
 										</button>
 									</span>
 									<span class="ml-10">										
-										<select class="select2-ajax" name="campaign_uid" data-url="{{ action('CampaignController@select2') }}">
+										<select data-placeholder="{{ trans('messages.all_campaigns') }}" class="select2-ajax" name="campaign_uid" data-url="{{ action('CampaignController@select2') }}">
 											
 										</select>										
 									</span>

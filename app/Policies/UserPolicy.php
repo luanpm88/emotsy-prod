@@ -22,7 +22,7 @@ class UserPolicy
 
     public function create(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {
-        $can = $user->getOption('backend', 'user_create') == 'yes';
+        $can = $user->userGroup->backend_access && $user->getOption('backend', 'user_create') == 'yes';
 
         return $can;
     }
@@ -34,7 +34,7 @@ class UserPolicy
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {
-        $ability = $user->getOption('backend', 'user_update');
+        $ability = $user->userGroup->backend_access && $user->getOption('backend', 'user_update');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
 
@@ -43,7 +43,7 @@ class UserPolicy
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {
-        $ability = $user->getOption('backend', 'user_delete');
+        $ability = $user->userGroup->backend_access && $user->getOption('backend', 'user_delete');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
         $can = $can && $item->lists()->count() == 0 && $item->user_id != null;
@@ -53,7 +53,7 @@ class UserPolicy
 
     public function switch_user(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {
-        $ability = $user->getOption('backend', 'user_switch');
+        $ability = $user->userGroup->backend_access && $user->getOption('backend', 'user_switch');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
         $can = $can && $item->id != $user->id;
@@ -63,7 +63,7 @@ class UserPolicy
     
     public function change_group(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {
-        $ability = $user->getOption('backend', 'user_update');
+        $ability = $user->userGroup->backend_access && $user->getOption('backend', 'user_update');
         $can = $ability == 'all';
 
         return $can;

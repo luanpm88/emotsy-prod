@@ -1,3 +1,23 @@
+2.2.0-p4 / 2017-01-20
+===================
+
+ * Fixed: file manager URL issue with old browsers
+ * Changed: new quota renewal method
+
+2.2.0-p3 / 2017-01-17
+===================
+
+ * Fixed: memory limit issue with importing
+ * Fixed: MAC OS line-ending issue
+ * Fixed: follow-up email is triggered more than one time
+
+2.2.0-p2 / 2017-01-11
+===================
+
+ * Fixed: compatibility issues with old PHP versions
+ * Fixed: compatibility issues with 
+ * Fixed: calendar glitches on some browsers
+
 2.2.0-p1 / 2017-01-08
 ===================
 

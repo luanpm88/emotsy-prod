@@ -47,7 +47,7 @@
 						<a href="#top-justified-divided-tab2" data-toggle="tab">
 							<i class="icon-file-text2"></i> {{ trans('messages.plain_text_version') }}
 						</a>
-					</li>                       
+					</li>
 				</ul>
 				
 				<div class="tab-content">

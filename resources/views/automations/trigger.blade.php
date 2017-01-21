@@ -113,9 +113,6 @@
                     $(document).ready(function() {
                         // Pick a day from now
                         $('.pickadate_from_now').pickadate({
-                            min: [{{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now()->subYear(1))->year }},
-                                    {{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now()->subMonth(1))->month }},
-                                    {{ Acelle\Library\Tool::dateTime(Carbon\Carbon::now())->day }}],
                             format: LANG_DATE_FORMAT
                         });
 						
