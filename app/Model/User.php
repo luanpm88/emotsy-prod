@@ -750,8 +750,9 @@ class User extends Authenticatable
         
         // @todo: magic number here
         // @todo: why $timeValue == -1?
+        // @todo: configuration setting for default Quota Starting Time
         if ($timeValue == '-1') {
-            $start = '1 month ago';
+            $start = \Carbon\Carbon::parse("1 month ago");
         } else {
             $start = \Carbon\Carbon::parse("{$timeValue} {$timeUnit} ago");
         }
