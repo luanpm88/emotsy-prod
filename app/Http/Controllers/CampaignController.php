@@ -463,8 +463,8 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format('Y-m-d') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
-        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format('H:i') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
+        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format(trans('messages.date_format')) : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
+        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format(trans('messages.time_format')) : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
 
         $rules = array(
             'delivery_date' => 'required',
@@ -482,7 +482,8 @@ class CampaignController extends Controller
             // $this->validate($request, $rules);
 
             //// Save campaign
-            $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date.' '.$request->delivery_time, $request->user()->timezone);            
+            echo trans('messages.datetime_string_formated', ['date' => $request->delivery_date, 'time' => $request->delivery_time]);
+            $time = \Carbon\Carbon::createFromFormat(trans('messages.datetime_format'), trans('messages.datetime_string_formated', ['date' => $request->delivery_date, 'time' => $request->delivery_time]), $request->user()->timezone);            
             $time = \Acelle\Library\Tool::systemTime($time);
 
             $campaign->run_at = $time;
