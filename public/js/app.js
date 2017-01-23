@@ -724,6 +724,32 @@ $(function() {
     });
     $('.unlimited-check input').trigger("change");
     
+    // sending quota unlimited check check
+    $(document).on('change', '.sending_quota-check input[type=checkbox]', function() {
+        var box = $(this).parents(".boxing");
+        
+        if($(this).is(":checked")) {
+            box.find("input[type=text]").val("-1");
+            box.find("input[type=text]").addClass("text-trans");
+            box.find("input[type=text]").attr("readonly", "readonly");
+            
+            $('select[name="options[frontend][sending_quota_time_unit]"]').val('month').change();
+            $('input[name="options[frontend][sending_quota_time]"]').val(1);
+            $('input[name="options[frontend][sending_quota_time]"]').addClass("disabled");
+            $('input[name="options[frontend][sending_quota_time]"]').attr("readonly", "readonly");
+        } else {
+            if(box.find("input[type=text]").val() == "-1") {
+                box.find("input[type=text]").val(1000);
+            }
+            box.find("input[type=text]").removeClass("text-trans");
+            box.find("input[type=text]").removeAttr("readonly", "readonly");
+
+            $('input[name="options[frontend][sending_quota_time]"]').removeClass("disabled");
+            $('input[name="options[frontend][sending_quota_time]"]').removeAttr("readonly", "readonly");
+        }
+    });
+    $('.sending_quota-check input').trigger("change");
+    
     // unlimited check
     $(document).on('click', 'ul.install-steps li:not(.enabled) a', function(e) {
         e.preventDefault();

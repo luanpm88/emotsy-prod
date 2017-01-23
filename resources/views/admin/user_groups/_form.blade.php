@@ -194,7 +194,7 @@
 												'help_class' => 'user_group',
 												'rules' => Acelle\Model\UserGroup::rules()
 											])
-											<div class="checkbox inline unlimited-check text-semibold">
+											<div class="checkbox inline sending_quota-check text-semibold">
 												<label>
 													<input{{ $options['frontend']['sending_quota']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
 													{{ trans('messages.unlimited') }}
@@ -211,12 +211,6 @@
 												'help_class' => 'user_group',
 												'rules' => Acelle\Model\UserGroup::rules()
 											])
-											<div class="checkbox inline unlimited-check text-semibold">
-												<label>
-													<input{{ $options['frontend']['sending_quota_time']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
-													{{ trans('messages.unlimited') }}
-												</label>
-											</div>
 										</div>
 										<div class="col-md-3">
 											@include('helpers.form_control', ['type' => 'select',
