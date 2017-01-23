@@ -463,8 +463,8 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format(trans('messages.date_format')) : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
-        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format(trans('messages.time_format')) : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
+        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format(trans('messages.date_format')) : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format(trans('messages.date_format'));
+        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format(trans('messages.time_format')) : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format(trans('messages.time_format'));
 
         $rules = array(
             'delivery_date' => 'required',
