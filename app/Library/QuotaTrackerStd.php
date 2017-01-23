@@ -54,21 +54,16 @@ class QuotaTrackerStd extends QuotaTracker implements QuotaTrackerInterface
      * @return void
      */
     public function check(Carbon $timePoint = NULL) {
-        if ($this->quota == self::UNLIMITED) {
-            return true;
-        }
-
         if (!isset($timePoint)) {
             $timePoint = Carbon::now();
         }
 
         $this->shiftBy($timePoint);
-        echo "Usage " . $this->usage() . "\nQuota " . $this->quota . "\n";
-
-        if ($this->usage() >= $this->quota) {
-            return false;
-        } else {
+        
+        if (self::UNLIMITED == $this->quota || $this->usage() < $this->quota) {
             return true;
+        } else {
+            return false;
         }
     }
     

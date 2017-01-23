@@ -446,7 +446,6 @@ class Campaign extends Model
                 $this->done();
             }
 
-            $this->user->saveQuotaUsageInfo();
         } catch (CampaignPausedException $e) {
             // just finish
             MailLog::info('Campaign paused');
@@ -457,7 +456,12 @@ class Campaign extends Model
             // reset server pools: just in case DeliveryServerAmazonSesWebApi
             // --> setup SNS requires using from_email of the corresponding campaign
             // but SNS is only made once when the server is initiated
-            //     SendingServer::resetServerPools();
+            // UPDATE: this is no longer the case as one process now only deals with one campaign
+            //         however, the method is still needed to save sending servers'' 
+            // SendingServer::resetServerPools();
+            
+            // store user quota usage
+            $this->user->saveQuotaUsageInfo();
         }
     }
 
@@ -484,7 +488,7 @@ class Campaign extends Model
 
         // increment user quota usage
         $this->user->countUsage();
-        $this->user->quotaDebug();
+        $server->countUsage();
     }
 
     /**

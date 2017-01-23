@@ -24,7 +24,7 @@
 													<div class="progress-bar progress-bar-info" style="width: {{ $item->getSendingQuotaUsagePercentage() }}%">
 													</div>
 												</div>
-												<span class="text-muted"><strong>{{ $item->getSendingQuotaUsage() }}/{{ $item->getSendingQuota() }}</strong> {{ trans('messages.sending_quota') }}</span>
+												<span class="text-muted"><strong>{{ $item->getSendingQuotaUsage() }}/{{ ($item->getSendingQuota() == -1) ? '∞' : $item->getSendingQuota() }}</strong> {{ trans('messages.sending_quota') }}</span>
 											</div>
 											<!--<div class="single-stat-box pull-left ml-20">
 												<span class="no-margin text-teal-800 stat-num">{{ $item->subscribersUsage() }}%</span>

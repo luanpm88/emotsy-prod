@@ -47,6 +47,7 @@ class SendingServer extends Model
         'name', 'host', 'aws_access_key_id', 'aws_secret_access_key', 'aws_region', 'smtp_username',
         'smtp_password', 'smtp_port', 'smtp_protocol', 'quota_value', 'quota_base', 'quota_unit',
         'bounce_handler_id', 'feedback_loop_handler_id', 'sendmail_path', 'domain', 'api_key',
+        'user_id'
     ];
     
     // Supported server types
@@ -84,7 +85,7 @@ class SendingServer extends Model
      */
     public function trackingLogs()
     {
-        return $this->hasMany('Acelle\Model\TrackingLog')->orderBy('created_at', 'asc');
+        return $this->hasMany('Acelle\Model\TrackingLog', 'sending_server_id')->orderBy('created_at', 'asc');
     }
 
     /**
@@ -94,7 +95,7 @@ class SendingServer extends Model
     {
         return $this->belongsTo('Acelle\Model\BounceHandler');
     }
-    
+
     /**
      * Pick up a sending server for the provided campaign.
      *
@@ -104,6 +105,7 @@ class SendingServer extends Model
     public static function pickServer($campaign)
     {
         // retrieve all sending servers associated to user's group
+        // @todo: the following code is breaking the Law of Demeter
         if ($campaign->user->allSendingServer()) {
             $servers = self::where('status', self::STATUS_ACTIVE)->selectRaw('*, 100 AS fitness')->get();
         } else {
@@ -133,6 +135,7 @@ class SendingServer extends Model
             
             if (self::$serverPools[$id]->overQuota()) {
                 MailLog::warning(sprintf("Sending server `%s` exceeds sending quota", self::$serverPools[$id]->name));
+                self::$serverPools[$id]->saveQuotaUsageInfo();
                 unset(self::$serverPools[$id]);
                 unset($serverSelection[$id]);
                 continue;
@@ -420,36 +423,9 @@ class SendingServer extends Model
      */
     public function getSendingQuotaUsage()
     {
-        $time_value = $this->quota_base;
-        $time_unit = $this->quota_unit;
-
-        if ($time_value == '-1') {
-            $begin = null;
-        } else {
-            if ($time_unit == 'year') {
-                $begin = \Carbon\Carbon::now()->subYear($time_value);
-            } elseif ($time_unit == 'month') {
-                $begin = \Carbon\Carbon::now()->subMonth($time_value);
-            } elseif ($time_unit == 'week') {
-                $begin = \Carbon\Carbon::now()->subWeek($time_value);
-            } elseif ($time_unit == 'day') {
-                $begin = \Carbon\Carbon::now()->subDay($time_value);
-            } elseif ($time_unit == 'hour') {
-                $begin = \Carbon\Carbon::now()->subHour($time_value);
-            } elseif ($time_unit == 'minute') {
-                $begin = \Carbon\Carbon::now()->subMinute($time_value);
-            }
-        }
-
-        $query = \Acelle\Model\TrackingLog::leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
-        $query = $query->where('sending_servers.id', '=', $this->id);
-        if (isset($begin)) {
-            $query = $query->where('tracking_logs.created_at', '>=', $begin);
-        }
-
-        $count = $query->count();
-
-        return $count;
+        $tracker = $this->getQuotaTracker();
+        $tracker->check(); // renew the usage data (trigger the private shiftBy() function)
+        return $tracker->usage();
     }
 
     /**
@@ -602,13 +578,13 @@ class SendingServer extends Model
         $recent = $this->trackingLogs()->where('created_at', '>=', $start);
         
         // existing quota usage
-        $storedTracker = null;
+        $stored = null;
 
         // load the tracker from DB (if exists)
         // then merge with the current tracking log data
         if ($this->quota) {
             try {
-                $storedTracker = unserialize($this->quota);
+                $stored = unserialize($this->quota);
             } catch (\Exception $x) {
                 // @TODO logging here
                 MailLog::warning('Cannot retrieve sending server quota');
@@ -616,14 +592,16 @@ class SendingServer extends Model
         }
 
         // load the tracker from DB
-        if (!is_null($storedTracker)) {
+        if (!is_null($stored) && !empty($stored)) {
             // retrieve the stored quota usage and merge it with actual (newer) usage
-            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp($storedTracker->last()));
+            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp(end($stored)));
             $series = collect($recent->get())->map(function($trackingLog) {
                 return $trackingLog->created_at->timestamp;
             })->toArray();
             
-            $series = array_merge($oldSeries, $newSeries);
+            // in case quota tracker does not log latest usage
+            // this is an unexpected case, implying something wrong has occurred
+            $series = array_unique(array_merge($stored, $series));
         } else {
             $series = collect($recent->get())->map(function($trackingLog) {
                 return $trackingLog->created_at->timestamp;

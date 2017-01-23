@@ -649,7 +649,7 @@ class User extends Authenticatable
     public function getSendingQuotaUsagePercentage()
     {
         // @todo magic number
-        if ($this->getSendingQuota() == '∞') {
+        if ($this->getSendingQuota() == -1) {
             return '0';
         }
 
@@ -683,7 +683,7 @@ class User extends Authenticatable
      */
     public function displaySendingQuotaUsage()
     {
-        if ($this->getSendingQuota() == '∞') {
+        if ($this->getSendingQuota() == -1) {
             return trans('messages.unlimited');
         }
         // @todo use percentage helper here
@@ -780,13 +780,13 @@ class User extends Authenticatable
         $recent = $this->trackingLogs()->where('created_at', '>=', $start);
         
         // existing quota usage
-        $storedTracker = null;
+        $stored = null;
 
         // load the tracker from DB (if exists)
         // then merge with the current tracking log data
         if ($this->quota) {
             try {
-                $storedTracker = unserialize($this->quota);
+                $stored = unserialize($this->quota);
             } catch (\Exception $x) {
                 // @TODO logging here
                 MailLog::warning('Cannot retrieve user quota');
@@ -794,14 +794,14 @@ class User extends Authenticatable
         }
 
         // load the tracker from DB
-        if (!is_null($storedTracker)) {
+        if (!is_null($stored) && !empty($stored)) {
             // retrieve the stored quota usage and merge it with actual (newer) usage
-            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp($storedTracker->last()));
+            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp(end($stored)));
             $series = collect($recent->get())->map(function($trackingLog) {
                 return $trackingLog->created_at->timestamp;
             })->toArray();
             
-            $series = array_merge($oldSeries, $newSeries);
+            $series = array_unique(array_merge($stored, $series));
         } else {
             $series = collect($recent->get())->map(function($trackingLog) {
                 return $trackingLog->created_at->timestamp;

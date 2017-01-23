@@ -17,7 +17,7 @@
 		<div class="col-sm-6 col-md-6">
 			<div class="content-group-sm">
 				<div class="pull-right text-teal-800 text-semibold">
-					<span class="text-muted">{{ Auth::user()->getSendingQuotaUsage() }}/{{ Auth::user()->getSendingQuota() }}</span>
+					<span class="text-muted">{{ Auth::user()->getSendingQuotaUsage() }}/{{ (Auth::user()->getSendingQuota() == -1) ? '∞' : Auth::user()->getSendingQuota() }}</span>
 					&nbsp;&nbsp;&nbsp;{{ Auth::user()->displaySendingQuotaUsage() }}
 				</div>
 				<h5 class="text-semibold mb-5">{{ trans('messages.sending_quota') }}</h5>
