@@ -75,6 +75,9 @@ class SendingServer extends Model
      */
     public static function resetServerPools()
     {
+        foreach(self::$serverPools as $server) {
+            $server->saveQuotaUsageInfo();
+        }
         self::$serverPools = array();
     }
     
@@ -116,7 +119,7 @@ class SendingServer extends Model
         foreach ($servers as $server) {
             $serverSelection[$server->id] = (float) $server->fitness;
         }
-        
+
         while (true) {
             // check if there is at least one sending server available
             if (empty($serverSelection)) {
@@ -124,13 +127,12 @@ class SendingServer extends Model
             }
             
             $id = (int) RouletteWheel::generate($serverSelection);
-            
             if (empty(self::$serverPools[$id])) {
                 MailLog::info('Initialize delivery server `'.$server->name.'` (ID: '.$id.')');
                 $server = self::find($id);
                 self::$serverPools[$id] = self::mapServerType($server);
             } else {
-                MailLog::info('Pick up delivery server `'.$server->name.'` (ID: '.$id.')');
+                MailLog::info('Pick up delivery server `'.self::$serverPools[$id]->name.'` (ID: '.$id.')');
             }
             
             if (self::$serverPools[$id]->overQuota()) {
@@ -601,7 +603,7 @@ class SendingServer extends Model
             
             // in case quota tracker does not log latest usage
             // this is an unexpected case, implying something wrong has occurred
-            $series = array_unique(array_merge($stored, $series));
+            $series = array_merge($stored, $series);
         } else {
             $series = collect($recent->get())->map(function($trackingLog) {
                 return $trackingLog->created_at->timestamp;

@@ -458,7 +458,7 @@ class Campaign extends Model
             // but SNS is only made once when the server is initiated
             // UPDATE: this is no longer the case as one process now only deals with one campaign
             //         however, the method is still needed to save sending servers'' 
-            // SendingServer::resetServerPools();
+            SendingServer::resetServerPools();
             
             // store user quota usage
             $this->user->saveQuotaUsageInfo();

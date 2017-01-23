@@ -801,7 +801,7 @@ class User extends Authenticatable
                 return $trackingLog->created_at->timestamp;
             })->toArray();
             
-            $series = array_unique(array_merge($stored, $series));
+            $series = array_merge($stored, $series);
         } else {
             $series = collect($recent->get())->map(function($trackingLog) {
                 return $trackingLog->created_at->timestamp;
