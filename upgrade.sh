@@ -49,6 +49,7 @@ cp ./composer.json $1/composer.json
 cp ./composer.lock $1/composer.lock
 cp ./config/app.php $1/config/app.php
 cp ./database/migrations/2017_01_22_175544_add_sending_servers_quota_column.php $1/database/migrations/2017_01_22_175544_add_sending_servers_quota_column.php
+cp ./database/migrations/2017_01_24_092138_update_user_quota.php $1/database/migrations/2017_01_24_092138_update_user_quota.php
 cp ./generate-upgrade-script.sh $1/generate-upgrade-script.sh
 cp ./phpunit.xml $1/phpunit.xml
 cp ./public/css/app.css $1/public/css/app.css
