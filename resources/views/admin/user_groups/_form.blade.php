@@ -201,7 +201,7 @@
 												</label>
 											</div>
 										</div>
-										<div class="boxing col-md-3">
+										<div class="col-md-3">
 											@include('helpers.form_control', [
 												'type' => 'text',
 												'class' => 'numeric',

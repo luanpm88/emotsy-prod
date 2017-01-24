@@ -186,7 +186,7 @@ class UserGroup extends Model
                 'segment_per_list_max' => '3',
                 'campaign_max' => '-1',
                 'sending_quota' => '-1',
-                'sending_quota_time' => '-1',
+                'sending_quota_time' => '1',
                 'sending_quota_time_unit' => 'month',
                 'max_process' => '1',
                 'all_sending_servers' => 'yes',
