@@ -90,7 +90,7 @@
 											@endif
 										</td>										
 										<td class="text-right">
-											<span class="text-muted2 list-status pull-left">
+											<span class="text-muted2 list-status pull-left" title='{{ $item->status == Acelle\Model\Campaign::STATUS_ERROR ? $item->last_error : '' }}' data-popup='tooltip'>
 												<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.campaign_status_' . $item->status) }}</span>
 											</span>											
 											@if (\Gate::allows('update', $item))
