@@ -452,7 +452,7 @@ class Campaign extends Model
             $i = 0;
             foreach ($subscribers as $subscriber) {
                 if ($this->user->overQuota()) {
-                    throw new \Exception("Customer (ID: {$this->user->id}) has reached sending quota");
+                    throw new \Exception("User has reached sending limit");
                 }
 
                 $i += 1;
