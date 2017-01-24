@@ -95,11 +95,13 @@ cp ./resources/views/subscribers/import.blade.php $1/resources/views/subscribers
 cp ./resources/views/subscribers/_import_list.blade.php $1/resources/views/subscribers/_import_list.blade.php
 cp ./resources/views/templates/_list.blade.php $1/resources/views/templates/_list.blade.php
 cp ./resources/views/templates/_list_choose.blade.php $1/resources/views/templates/_list_choose.blade.php
+cp ./storage/install/database_init.sql $1/storage/install/database_init.sql
 cp ./tests/QuotaTrackerRedisTest.php $1/tests/QuotaTrackerRedisTest.php
 cp ./tests/QuotaTrackerStdTest.php $1/tests/QuotaTrackerStdTest.php
 cp ./tests/QuotaTrackerTest.php $1/tests/QuotaTrackerTest.php
 cp ./tests/SendingServerQuotaTest.php $1/tests/SendingServerQuotaTest.php
 cp ./tests/UserQuotaTest.php $1/tests/UserQuotaTest.php
+cp ./upgrade.sh $1/upgrade.sh
 
 cd "$1"
 
