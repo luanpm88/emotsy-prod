@@ -1,9 +1,9 @@
 <?php return array (
-  'datetime_format' => 'd-m-Y, H:i',
-  'datetime_format_2' => 'd-m-Y, H:i:s',
+  'datetime_format' => 'Y-m-d, H:i',
+  'datetime_format_2' => 'Y-m-d, H:i:s',
   'time_format' => 'H:i',
-  'date_format' => 'd-m-Y',
-  'j_date_format' => 'dd-mm-yyyy',
+  'date_format' => 'Y-m-d',
+  'j_date_format' => 'yyyy-mm-dd',
   'datetime_string_formated' => ':date, :time',
   'email' => 'Email',
   'password' => 'Password',
