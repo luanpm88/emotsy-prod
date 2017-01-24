@@ -524,7 +524,8 @@ $(function() {
                     type: "success",
                     allowOutsideClick: true,
                     confirmButtonText: LANG_OK,
-                    customClass: "swl-success"
+                    customClass: "swl-success",
+                    html: true
                 });
             }
         });        
@@ -784,7 +785,8 @@ $(function() {
                         type: "success",
                         allowOutsideClick: true,
                         confirmButtonText: LANG_OK,
-                        customClass: "swl-success"
+                        customClass: "swl-success",
+                        html: true
                     });
                 }                
             }
@@ -823,7 +825,8 @@ $(function() {
                         type: "success",
                         allowOutsideClick: true,
                         confirmButtonText: LANG_OK,
-                        customClass: "swl-success"
+                        customClass: "swl-success",
+                        html: true
                     });
                 }                
             }
@@ -888,7 +891,8 @@ $(function() {
                         type: data.status,
                         allowOutsideClick: true,
                         confirmButtonText: LANG_OK,
-                        customClass: "swl-success"
+                        customClass: "swl-success",
+                        html: true
                     });
                     
                     form.addClass("loading");

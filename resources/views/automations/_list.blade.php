@@ -66,7 +66,7 @@
 										</td>
 										<td class="text-center">
 											<span class="text-muted2 list-status">
-												<span class="label label-flat bg-{{ $automation->status }}">{{ $automation->status }}</span>
+												<span class="label label-flat bg-{{ $automation->status }}">{{ trans('messages.automation_status_' . $automation->status) }}</span>
 											</span>
 										</td>
 										<td class="text-right text-nowrap">

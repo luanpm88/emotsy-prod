@@ -4,5 +4,5 @@
 </ul>
 <h1>
     <span class="text-semibold"><i class="icon-alarm-check"></i> {{ $automation->name }}</span>
-    <span class="label label-flat bg-{{ $automation->status }}">{{ $automation->status }}</span>
+    <span class="label label-flat bg-{{ $automation->status }}">{{ trans('messages.automation_status_' . $automation->status) }}</span>
 </h1>

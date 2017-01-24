@@ -43,9 +43,6 @@
 											</div>
 										</td>
 										<td class="text-right">
-											<span class="text-muted2 list-status pull-left">
-												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
-											</span>
 											@can('preview', $item)
 												<a href="#preview" class="btn bg-teal-600 btn-icon" onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a>
 											@endcan

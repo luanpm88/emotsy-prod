@@ -506,7 +506,7 @@ class AutoEvent extends Model
 					$field = \Acelle\Model\Field::findByUid($event);
 					$text = is_object($field) ? strtolower(trans('messages.subscriber_s_field', ['name' => $field->label])) : '';
 				} else {
-					$text = strtolower(trans('messages.subscriber_s_field', ['name' => str_replace('_', ' ', $event)]));
+					$text = strtolower(trans('messages.subscriber_s_field', ['name' => trans('messages.' . $event)]));
 				}
 				if(!empty($this->getDataValue('delay_value'))) {
 					$msg = trans('messages.event_type_subscriber_event_description_with_delay', [

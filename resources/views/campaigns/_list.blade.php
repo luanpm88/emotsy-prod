@@ -91,7 +91,7 @@
 										</td>										
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
-												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
+												<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.campaign_status_' . $item->status) }}</span>
 											</span>											
 											@if (\Gate::allows('update', $item))
 												<a href="{{ action('CampaignController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>

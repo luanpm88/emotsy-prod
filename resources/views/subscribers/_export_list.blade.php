@@ -37,9 +37,9 @@
 										<td class="text-center">
 											<span class="text-muted2 list-status">
 												@if ($item->status == 'cancelled')
-													<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
+													<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.system_job_status_' . $item->status) }}</span>
 												@else
-													<span class="label label-flat bg-{{ $data->status }}">{{ $data->status }}</span>
+													<span class="label label-flat bg-{{ $data->status }}">{{ trans('messages.system_job_status_' . $item->status) }}</span>
 												@endif
 											</span>
 										</td>

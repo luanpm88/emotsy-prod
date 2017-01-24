@@ -49,9 +49,6 @@
 											</div>
 										</td>
 										<td class="text-right">
-											<span class="text-muted2 list-status pull-left">
-												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
-											</span>
 											@can('update', $item)
 												<a href="{{ action('Admin\UserGroupController@edit', $item->id) }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil"></i> {{ trans('messages.edit') }}</a>
 											@endcan

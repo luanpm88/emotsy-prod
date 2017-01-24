@@ -42,10 +42,7 @@
 											</div>
 										</td>
 										
-										<td class="text-right">
-											<span class="text-muted2 list-status pull-left">
-												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
-											</span>											
+										<td class="text-right">										
 											@can('update', $item)
 												@if ($item->source == 'builder')
 													<a href="{{ action('TemplateController@rebuild', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
