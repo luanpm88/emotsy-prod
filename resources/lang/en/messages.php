@@ -1278,8 +1278,8 @@ return [
     'event_type_subscriber_event_description_with_delay' => 'Send :delay <span class="text-semibold">:event</span>',
     'event_type_custom_criterias_description_with_delay' => 'Send :delay: :conditions',
     'add_list_segment' => 'Add list/segment',
-    'default_list_information' => 'Default information',
-    'selected' => 'Selected',
+    'default_list_information' => 'Set as default list',
+    'selected' => 'Default',
     'choose_lists_segments_for_the_campaign' => 'Choose one or more lists/segments for sending email',
     'leave_empty_to_choose_all_list' => '* Leave this box empty to choose all subscribers in the list',
 ];
