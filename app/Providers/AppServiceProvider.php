@@ -12,6 +12,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        ini_set('memory_limit', '-1');
+        
         app('view')->composer('*', function ($view) {
             $action = app('request')->route()->getAction();
 
