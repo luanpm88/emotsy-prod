@@ -75,7 +75,11 @@ class UserGroup extends Model
         $options = self::defaultOptions();
         foreach ($options as $type => $option) {
             foreach ($option as $name => $value) {
-                $rules['options.'.$type.'.'.$name] = 'required';
+                if ($type == 'frontend' && $name == 'sending_quota_time') {
+                    $rules['options.'.$type.'.'.$name] = 'required|numeric|min:1';
+                } else {
+                    $rules['options.'.$type.'.'.$name] = 'required';
+                }                
             }
         }
 
@@ -182,7 +186,7 @@ class UserGroup extends Model
                 'segment_per_list_max' => '3',
                 'campaign_max' => '-1',
                 'sending_quota' => '-1',
-                'sending_quota_time' => '-1',
+                'sending_quota_time' => '1',
                 'sending_quota_time_unit' => 'month',
                 'max_process' => '1',
                 'all_sending_servers' => 'yes',

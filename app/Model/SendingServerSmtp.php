@@ -22,7 +22,7 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
 
 class SendingServerSmtp extends SendingServer
 {
@@ -54,14 +54,14 @@ class SendingServerSmtp extends SendingServer
             $sent = $mailer->send($message);
 
             if ($sent) {
-                Log::info('Sent!');
+                MailLog::info('Sent!');
 
                 return array(
                     'runtime_message_id' => $sent['MessageId'],
                     'status' => self::DELIVERY_STATUS_SENT,
                 );
             } else {
-                Log::warning('Sending failed');
+                MailLog::warning('Sending failed');
 
                 return array(
                     'status' => self::DELIVERY_STATUS_FAILED,
@@ -69,8 +69,8 @@ class SendingServerSmtp extends SendingServer
                 );
             }
         } catch (\Exception $e) {
-            Log::warning('Sending failed');
-            Log::warning($e->getMessage());
+            MailLog::warning('Sending failed');
+            MailLog::warning($e->getMessage());
 
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,

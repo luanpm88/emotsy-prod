@@ -476,8 +476,8 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format('Y-m-d') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
-        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format('H:i') : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
+        $delivery_date = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format(trans('messages.date_format')) : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format(trans('messages.date_format'));
+        $delivery_time = isset($campaign->run_at) && $campaign->run_at != '0000-00-00 00:00:00' ? \Acelle\Library\Tool::dateTime($campaign->run_at)->format(trans('messages.time_format')) : \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format(trans('messages.time_format'));
 
         $rules = array(
             'delivery_date' => 'required',
@@ -495,7 +495,8 @@ class CampaignController extends Controller
             // $this->validate($request, $rules);
 
             //// Save campaign
-            $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date.' '.$request->delivery_time, $request->user()->timezone);            
+            echo trans('messages.datetime_string_formated', ['date' => $request->delivery_date, 'time' => $request->delivery_time]);
+            $time = \Carbon\Carbon::createFromFormat(trans('messages.datetime_format'), trans('messages.datetime_string_formated', ['date' => $request->delivery_date, 'time' => $request->delivery_time]), $request->user()->timezone);            
             $time = \Acelle\Library\Tool::systemTime($time);
 
             $campaign->run_at = $time;
@@ -536,6 +537,7 @@ class CampaignController extends Controller
         // validate and save posted data
         if ($request->isMethod('post') && $campaign->step() >= 5) {
             // Save campaign
+            // @todo: check campaign status before requeuing. Otherwise, several jobs shall be created and campaign will get sent several times
             $campaign->requeue();
 
             // Log
@@ -1029,12 +1031,12 @@ class CampaignController extends Controller
             $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
             $log->save();
 
-            try {
+            try {                
                 // Send goodbye email
-                $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_goodbye_email')->first();
-                $send_page = \Acelle\Model\Page::findPage($list, $layout);
-                $send_page->renderContent(null, $subscriber);
-                $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
+                if($list->unsubscribe_notification) {
+                    // SEND subscription confirmation email
+                    $list->sendUnsubscriptionNotificationEmail($subscriber);
+                }   
             } catch (\Exception $e) {
             }
 

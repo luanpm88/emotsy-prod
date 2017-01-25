@@ -2,7 +2,6 @@
 
 namespace Acelle\Jobs;
 
-use Acelle\Model\SystemJob;
 use Acelle\Library\Log as CustomLog;
 
 class ImportSubscribersJob extends ImportExportJob

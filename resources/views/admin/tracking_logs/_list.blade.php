@@ -18,7 +18,7 @@
 										</td>
 										<td>
 											<span class="no-margin">
-												<span data-popup="tooltip" title="{{ $item->error }}" class="label label-flat bg-{{ $item->status }} kq_search">{{ $item->status }}</span>
+												<span data-popup="tooltip" title="{{ $item->error }}" class="label label-flat bg-{{ $item->status }} kq_search">{{ trans('messages.tracking_log_status_' . $item->status) }}</span>
 											</span>
 											<span class="text-muted second-line-mobile">{{ trans('messages.status') }}</span>
 										</td>

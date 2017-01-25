@@ -23,7 +23,8 @@
 namespace Acelle\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Acelle\Library\QuotaTracker;
+use Acelle\Library\QuotaTrackerStd;
+use Carbon\Carbon;
 use Acelle\Library\Log as MailLog;
 
 class User extends Authenticatable
@@ -444,6 +445,7 @@ class User extends Authenticatable
      */
     public function maxLists()
     {
+        // @todo: nhảm, nếu đã qui ước là -1 thì chỉ dùng -1, ∞ chỉ dùng để show bên view
         $count = $this->getOption('frontend', 'list_max');
         if ($count == -1) {
             return '∞';
@@ -612,12 +614,8 @@ class User extends Authenticatable
      */
     public function getSendingQuota()
     {
-        $quota = $this->getOption('frontend', 'sending_quota');
-        if ($quota == '-1') {
-            return '∞';
-        } else {
-            return $quota;
-        }
+        // -1 indicate unlimited
+        return $this->getOption('frontend', 'sending_quota');
     }
 
     /**
@@ -638,7 +636,9 @@ class User extends Authenticatable
      */
     public function getSendingQuotaUsage()
     {
-        return $this->getQuotaTracker()->usage();
+        $tracker = $this->getQuotaTracker();
+        $tracker->check(); // renew the usage data (trigger the private shiftBy() function)
+        return $tracker->usage();
     }
 
     /**
@@ -649,7 +649,7 @@ class User extends Authenticatable
     public function getSendingQuotaUsagePercentage()
     {
         // @todo magic number
-        if ($this->getSendingQuota() == '∞') {
+        if ($this->getSendingQuota() == -1) {
             return '0';
         }
 
@@ -671,9 +671,9 @@ class User extends Authenticatable
      *
      * @return void
      */
-    public function countUsage()
+    public function countUsage(Carbon $timePoint = null)
     {
-        $this->getQuotaTracker()->add();
+        return $this->getQuotaTracker()->add();
     }
 
     /**
@@ -683,7 +683,7 @@ class User extends Authenticatable
      */
     public function displaySendingQuotaUsage()
     {
-        if ($this->getSendingQuota() == '∞') {
+        if ($this->getSendingQuota() == -1) {
             return trans('messages.unlimited');
         }
         // @todo use percentage helper here
@@ -747,8 +747,9 @@ class User extends Authenticatable
         
         // @todo: magic number here
         // @todo: why $timeValue == -1?
+        // @todo: configuration setting for default Quota Starting Time
         if ($timeValue == '-1') {
-            $start = NULL;
+            $start = \Carbon\Carbon::parse("1 month ago");
         } else {
             $start = \Carbon\Carbon::parse("{$timeValue} {$timeUnit} ago");
         }
@@ -771,23 +772,21 @@ class User extends Authenticatable
      *
      * @return array
      */
-    public function initQuotaTracker() {
+    public function renewQuotaTracker() {
         $start = $this->getQuotaStartingTime();
-        if ($start == NULL) {
-            // @todo: workaround for unlimited quota
-            $this->quotaTracker = new QuotaTracker('now', PHP_INT_MAX);
-            return;
-        }
 
         // recent tracking logs
+        // @todo: potential issue here, application fails in case $start is NULL
         $recent = $this->trackingLogs()->where('created_at', '>=', $start);
         
         // existing quota usage
-        $storedTracker = NULL;
+        $stored = null;
 
+        // load the tracker from DB (if exists)
+        // then merge with the current tracking log data
         if ($this->quota) {
             try {
-                $storedTracker = unserialize($this->quota);
+                $stored = unserialize($this->quota);
             } catch (\Exception $x) {
                 // @TODO logging here
                 MailLog::warning('Cannot retrieve user quota');
@@ -795,21 +794,40 @@ class User extends Authenticatable
         }
 
         // load the tracker from DB
-        if (!is_null($storedTracker)) {
+        if (!is_null($stored) && !empty($stored)) {
             // retrieve the stored quota usage and merge it with actual (newer) usage
-            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp($storedTracker->last()));
+            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp(end($stored)));
             $series = collect($recent->get())->map(function($trackingLog) {
                 return $trackingLog->created_at->timestamp;
             })->toArray();
             
-            $dataSeries = array_merge($storedTracker->getSeries(), $series);
+            $series = array_merge($stored, $series);
         } else {
-            $dataSeries = collect($recent->get())->map(function($trackingLog) {
+            $series = collect($recent->get())->map(function($trackingLog) {
                 return $trackingLog->created_at->timestamp;
             })->toArray();
         }
+        
+        $this->getQuotaTracker()->renew($series);
+    }
 
-        $this->quotaTracker = new QuotaTracker($this->getQuotaIntervalString(), $this->getSendingQuota(), $dataSeries);
+    /**
+     * Initialize the quota tracker
+     *
+     * @return array
+     */
+    public function initQuotaTracker() {
+        if (\Config::get('app.redis_enabled')) {
+            $this->quotaTracker = new QuotaTrackerRedis(Redis::connection(), $this->getQuotaIntervalString(), $this->getSendingQuota());
+            // @note: in case of Redis tracker, the following command must be issued manually
+            //     $this->renewQuotaTracker();
+            // Normally, Redis tracker is used in a multi-process context, the above command must be executed 
+            //     by the parent process, before forking any child process
+        } else {
+            $this->quotaTracker = new QuotaTrackerStd($this->getQuotaIntervalString(), $this->getSendingQuota());
+            // renew the quota data stored in the DB
+            $this->renewQuotaTracker();
+        }
     }
 
     /**
@@ -831,7 +849,7 @@ class User extends Authenticatable
      * @return array
      */
     public function saveQuotaUsageInfo() {
-        $this->quota = serialize($this->getQuotaTracker());
+        $this->quota = serialize($this->getQuotaTracker()->getSeries());
         $this->save();
     }
 
@@ -841,7 +859,7 @@ class User extends Authenticatable
         foreach($this->getQuotaTracker()->getSeries() as $t) {
             echo \Carbon\Carbon::createFromTimestamp($t)->toDateTimeString() . " <-> " ;
         }
-        echo "\n";
+        echo "\n" . env('REDIS_ENABLED') . "\n";
     }
     
     /**

@@ -194,14 +194,14 @@
 												'help_class' => 'user_group',
 												'rules' => Acelle\Model\UserGroup::rules()
 											])
-											<div class="checkbox inline unlimited-check text-semibold">
+											<div class="checkbox inline sending_quota-check text-semibold">
 												<label>
 													<input{{ $options['frontend']['sending_quota']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
 													{{ trans('messages.unlimited') }}
 												</label>
 											</div>
 										</div>
-										<div class="boxing col-md-3">
+										<div class="col-md-3">
 											@include('helpers.form_control', [
 												'type' => 'text',
 												'class' => 'numeric',
@@ -211,12 +211,6 @@
 												'help_class' => 'user_group',
 												'rules' => Acelle\Model\UserGroup::rules()
 											])
-											<div class="checkbox inline unlimited-check text-semibold">
-												<label>
-													<input{{ $options['frontend']['sending_quota_time']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
-													{{ trans('messages.unlimited') }}
-												</label>
-											</div>
 										</div>
 										<div class="col-md-3">
 											@include('helpers.form_control', ['type' => 'select',
@@ -290,7 +284,7 @@
 															'class' => 'numeric',
 															'name' => 'sending_servers[' . $server->uid . '][fitness]',
 															'label' => trans('messages.fitness'),
-															'value' => (is_object($group->user_group_sending_servers->where('sending_server_id', $server->id)->first()) ? $group->user_group_sending_servers->where('sending_server_id', $server->id)->first()->fitness : "100"),
+															'value' => (is_object($group->user_group_sending_servers()->where('sending_server_id', $server->id)->first()) ? $group->user_group_sending_servers()->where('sending_server_id', $server->id)->first()->fitness : "100"),
 															'help_class' => 'user_group',
 															'rules' => Acelle\Model\UserGroup::rules()
 														])

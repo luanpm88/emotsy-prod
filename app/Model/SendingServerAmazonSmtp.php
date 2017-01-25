@@ -22,7 +22,7 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
 use Acelle\Library\AmazonSmtpTransport;
 
 class SendingServerAmazonSmtp extends SendingServerAmazon
@@ -52,14 +52,14 @@ class SendingServerAmazonSmtp extends SendingServerAmazon
             $sent = $mailer->send($message);
 
             if ($sent) {
-                Log::info('Sent!');
+                MailLog::info('Sent!');
 
                 return array(
                     'runtime_message_id' => $transport->getMessageId(),
                     'status' => self::DELIVERY_STATUS_SENT,
                 );
             } else {
-                Log::warning('Sending failed');
+                MailLog::warning('Sending failed');
 
                 return array(
                     'status' => self::DELIVERY_STATUS_FAILED,
@@ -67,8 +67,8 @@ class SendingServerAmazonSmtp extends SendingServerAmazon
                 );
             }
         } catch (\Exception $e) {
-            Log::warning('Sending failed');
-            Log::warning($e->getMessage());
+            MailLog::warning('Sending failed');
+            MailLog::warning($e->getMessage());
 
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,

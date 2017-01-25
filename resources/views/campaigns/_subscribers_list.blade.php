@@ -23,7 +23,7 @@
 												</a>
 												@if (null !== $item->trackingLog($campaign))
 													<br />
-													<span data-popup="tooltip" title="{{ $item->trackingLog($campaign)->error }}" class="label label-flat bg-{{ $item->trackingLog($campaign)->status }} kq_search">{{ $item->trackingLog($campaign)->status }}</span>
+													<span data-popup="tooltip" title="{{ $item->trackingLog($campaign)->error }}" class="label label-flat bg-{{ $item->trackingLog($campaign)->status }} kq_search">{{ trans('messages.tracking_log_status_' . $item->trackingLog($campaign)->status) }}</span>
 												@else
 													<br />
 													<span data-popup="tooltip" class="label label-flat bg-not_sent kq_search">{{ trans('messages.not_sent') }}</span>

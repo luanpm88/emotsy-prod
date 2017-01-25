@@ -24,7 +24,9 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\RouletteWheel;
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
+use Acelle\Library\QuotaTrackerStd;
+use Carbon\Carbon;
 
 class SendingServer extends Model
 {
@@ -33,6 +35,8 @@ class SendingServer extends Model
 
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
+    
+    protected $quotaTracker;
 
     /**
      * The attributes that are mass assignable.
@@ -43,6 +47,7 @@ class SendingServer extends Model
         'name', 'host', 'aws_access_key_id', 'aws_secret_access_key', 'aws_region', 'smtp_username',
         'smtp_password', 'smtp_port', 'smtp_protocol', 'quota_value', 'quota_base', 'quota_unit',
         'bounce_handler_id', 'feedback_loop_handler_id', 'sendmail_path', 'domain', 'api_key',
+        'user_id'
     ];
     
     // Supported server types
@@ -70,7 +75,20 @@ class SendingServer extends Model
      */
     public static function resetServerPools()
     {
+        foreach(self::$serverPools as $server) {
+            $server->saveQuotaUsageInfo();
+        }
         self::$serverPools = array();
+    }
+    
+    /**
+     * Tracking logs.
+     *
+     * @return collection
+     */
+    public function trackingLogs()
+    {
+        return $this->hasMany('Acelle\Model\TrackingLog', 'sending_server_id')->orderBy('created_at', 'asc');
     }
 
     /**
@@ -80,7 +98,7 @@ class SendingServer extends Model
     {
         return $this->belongsTo('Acelle\Model\BounceHandler');
     }
-    
+
     /**
      * Pick up a sending server for the provided campaign.
      *
@@ -89,14 +107,12 @@ class SendingServer extends Model
      */
     public static function pickServer($campaign)
     {
+        // retrieve all sending servers associated to user's group
+        // @todo: the following code is breaking the Law of Demeter
         if ($campaign->user->allSendingServer()) {
             $servers = self::where('status', self::STATUS_ACTIVE)->selectRaw('*, 100 AS fitness')->get();
         } else {
             $servers = self::where('status', self::STATUS_ACTIVE)->select('sending_servers.*', 'user_group_sending_servers.fitness')->join('user_group_sending_servers', 'user_group_sending_servers.sending_server_id', '=', 'sending_servers.id')->where('user_group_id', $campaign->user->user_group_id)->get();
-        }
-
-        if (sizeof($servers) == 0) {
-            throw new \Exception('No delivery servers available');
         }
 
         $serverSelection = array();
@@ -104,17 +120,30 @@ class SendingServer extends Model
             $serverSelection[$server->id] = (float) $server->fitness;
         }
 
-        $id = (int) RouletteWheel::generate($serverSelection);
-        $selectedServer = self::find($id);
-
-        if (!empty(self::$serverPools[$id])) {
-            Log::info('Reuse sending server `'.self::$serverPools[$id]->name.'` (ID: '.$id.')');
-
+        while (true) {
+            // check if there is at least one sending server available
+            if (empty($serverSelection)) {
+                throw new \Exception('No delivery servers available');
+            }
+            
+            $id = (int) RouletteWheel::generate($serverSelection);
+            if (empty(self::$serverPools[$id])) {
+                MailLog::info('Initialize delivery server `'.$server->name.'` (ID: '.$id.')');
+                $server = self::find($id);
+                self::$serverPools[$id] = self::mapServerType($server);
+            } else {
+                MailLog::info('Pick up delivery server `'.self::$serverPools[$id]->name.'` (ID: '.$id.')');
+            }
+            
+            if (self::$serverPools[$id]->overQuota()) {
+                MailLog::warning(sprintf("Sending server `%s` exceeds sending quota", self::$serverPools[$id]->name));
+                self::$serverPools[$id]->saveQuotaUsageInfo();
+                unset(self::$serverPools[$id]);
+                unset($serverSelection[$id]);
+                continue;
+            }
+            
             return self::$serverPools[$id];
-        } else {
-            Log::info('Initialize delivery server `'.$selectedServer->name.'` (ID: '.$id.')');
-
-            return self::$serverPools[$id] = self::mapServerType($selectedServer);
         }
     }
     
@@ -386,12 +415,7 @@ class SendingServer extends Model
      */
     public function getSendingQuota()
     {
-        $quota = $this->quota_value;
-        if ($quota == '-1') {
-            return '∞';
-        } else {
-            return $quota;
-        }
+        return $this->quota_value;
     }
 
     /**
@@ -401,36 +425,9 @@ class SendingServer extends Model
      */
     public function getSendingQuotaUsage()
     {
-        $time_value = $this->quota_base;
-        $time_unit = $this->quota_unit;
-
-        if ($time_value == '-1') {
-            $begin = null;
-        } else {
-            if ($time_unit == 'year') {
-                $begin = \Carbon\Carbon::now()->subYear($time_value);
-            } elseif ($time_unit == 'month') {
-                $begin = \Carbon\Carbon::now()->subMonth($time_value);
-            } elseif ($time_unit == 'week') {
-                $begin = \Carbon\Carbon::now()->subWeek($time_value);
-            } elseif ($time_unit == 'day') {
-                $begin = \Carbon\Carbon::now()->subDay($time_value);
-            } elseif ($time_unit == 'hour') {
-                $begin = \Carbon\Carbon::now()->subHour($time_value);
-            } elseif ($time_unit == 'minute') {
-                $begin = \Carbon\Carbon::now()->subMinute($time_value);
-            }
-        }
-
-        $query = \Acelle\Model\TrackingLog::leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
-        $query = $query->where('sending_servers.id', '=', $this->id);
-        if (isset($begin)) {
-            $query = $query->where('tracking_logs.created_at', '>=', $begin);
-        }
-
-        $count = $query->count();
-
-        return $count;
+        $tracker = $this->getQuotaTracker();
+        $tracker->check(); // renew the usage data (trigger the private shiftBy() function)
+        return $tracker->usage();
     }
 
     /**
@@ -527,5 +524,131 @@ class SendingServer extends Model
     {
         $this->status = "active";
         $this->save();
+    }
+    
+    /**
+     * Get sending server's QuotaTracker
+     *
+     * @return array
+     */
+    public function getQuotaTracker() {
+        if(!$this->quotaTracker) {
+            $this->initQuotaTracker();
+        }
+
+        return $this->quotaTracker;
+    }
+    
+    /**
+     * Initialize the quota tracker
+     *
+     * @return void
+     */
+    public function initQuotaTracker() {
+        if (\Config::get('app.redis_enabled')) {
+            $this->quotaTracker = new QuotaTrackerRedis(Redis::connection(), $this->getQuotaIntervalString(), $this->getSendingQuota());
+            // @note: in case of Redis tracker, the following command must be issued manually
+            //     $this->renewQuotaTracker();
+            // Normally, Redis tracker is used in a multi-process context, the above command must be executed 
+            //     by the parent process, before forking any child process
+        } else {
+            $this->quotaTracker = new QuotaTrackerStd($this->getQuotaIntervalString(), $this->getSendingQuota());
+            // renew the quota data stored in the DB
+            $this->renewQuotaTracker();
+        }
+    }
+    
+    /**
+     * Get quota starting time
+     *
+     * @return string
+     */
+    public function getQuotaIntervalString() {
+        return "{$this->quota_base} {$this->quota_unit}";
+    }
+    
+    /**
+     * Initialize the quota tracker
+     *
+     * @return array
+     */
+    public function renewQuotaTracker() {
+        $start = $this->getQuotaStartingTime();
+
+        // recent tracking logs
+        // @todo: potential issue here, application fails in case $start is NULL
+        $recent = $this->trackingLogs()->where('created_at', '>=', $start);
+        
+        // existing quota usage
+        $stored = null;
+
+        // load the tracker from DB (if exists)
+        // then merge with the current tracking log data
+        if ($this->quota) {
+            try {
+                $stored = unserialize($this->quota);
+            } catch (\Exception $x) {
+                // @TODO logging here
+                MailLog::warning('Cannot retrieve sending server quota');
+            }
+        }
+
+        // load the tracker from DB
+        if (!is_null($stored) && !empty($stored)) {
+            // retrieve the stored quota usage and merge it with actual (newer) usage
+            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp(end($stored)));
+            $series = collect($recent->get())->map(function($trackingLog) {
+                return $trackingLog->created_at->timestamp;
+            })->toArray();
+            
+            // in case quota tracker does not log latest usage
+            // this is an unexpected case, implying something wrong has occurred
+            $series = array_merge($stored, $series);
+        } else {
+            $series = collect($recent->get())->map(function($trackingLog) {
+                return $trackingLog->created_at->timestamp;
+            })->toArray();
+        }
+        
+        $this->getQuotaTracker()->renew($series);
+    }
+    
+    /**
+     * Get quota starting time
+     *
+     * @return array
+     */
+    public function getQuotaStartingTime() {
+        return "{$this->getQuotaIntervalString()} ago";
+    }
+    
+    /**
+     * Store the current quota usage info to DB
+     *
+     * @return array
+     */
+    public function saveQuotaUsageInfo() {
+        $this->quota = serialize($this->getQuotaTracker()->getSeries());
+        $this->save();
+    }
+    
+    /**
+     * Increment quota usage
+     *
+     * @return void
+     */
+    public function countUsage(Carbon $timePoint = null)
+    {
+        return $this->getQuotaTracker()->add();
+    }
+    
+    /**
+     * Check if user has used up all quota allocated.
+     *
+     * @return string
+     */
+    public function overQuota()
+    {
+        return !$this->getQuotaTracker()->check();
     }
 }

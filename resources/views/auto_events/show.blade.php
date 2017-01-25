@@ -45,7 +45,7 @@
 												</h6>
 												<div class="heading-elements">
 													<span class="text-muted2 list-status">
-														<span class="label label-flat bg-{{ $auto_event->status }}">{{ $auto_event->status }}</span>
+														<span class="label label-flat bg-{{ $auto_event->status }}">{{ trans('messages.auto_event_status_' . $auto_event->status) }}</span>
 													</span>
 													<span class="ml-20">														
 														@if (\Gate::allows('enable', $auto_event))

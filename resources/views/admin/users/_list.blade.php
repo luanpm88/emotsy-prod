@@ -24,7 +24,7 @@
 													<div class="progress-bar progress-bar-info" style="width: {{ $item->getSendingQuotaUsagePercentage() }}%">
 													</div>
 												</div>
-												<span class="text-muted"><strong>{{ $item->getSendingQuotaUsage() }}/{{ $item->getSendingQuota() }}</strong> {{ trans('messages.sending_quota') }}</span>
+												<span class="text-muted"><strong>{{ $item->getSendingQuotaUsage() }}/{{ ($item->getSendingQuota() == -1) ? '∞' : $item->getSendingQuota() }}</strong> {{ trans('messages.sending_quota') }}</span>
 											</div>
 											<!--<div class="single-stat-box pull-left ml-20">
 												<span class="no-margin text-teal-800 stat-num">{{ $item->subscribersUsage() }}%</span>
@@ -65,7 +65,7 @@
 										</td>
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
-												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
+												<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.user_status_' . $item->status) }}</span>
 											</span>
 											@can('switch_user', $item)
 												<a href="{{ action('Admin\UserController@switch_user', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.login_as_this_user') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="glyphicon glyphicon-random pr-5"></i></a>

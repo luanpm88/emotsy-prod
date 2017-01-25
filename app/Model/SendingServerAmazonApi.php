@@ -22,7 +22,7 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
 
 class SendingServerAmazonApi extends SendingServerAmazon
 {
@@ -44,15 +44,15 @@ class SendingServerAmazonApi extends SendingServerAmazon
                 ),
             ));
 
-            Log::info('Sent!');
+            MailLog::info('Sent!');
 
             return array(
                 'runtime_message_id' => $sent['MessageId'],
                 'status' => self::DELIVERY_STATUS_SENT,
             );
         } catch (\Exception $e) {
-            Log::warning('Sending failed');
-            Log::warning($e->getMessage());
+            MailLog::warning('Sending failed');
+            MailLog::warning($e->getMessage());
 
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,

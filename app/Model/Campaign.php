@@ -30,6 +30,7 @@ use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use DB;
 use Carbon\Carbon;
 use Acelle\Model\SystemJob;
+use Acelle\Exceptions\CampaignPausedException;
 
 class Campaign extends Model
 {
@@ -266,6 +267,7 @@ class Campaign extends Model
         try {
             set_time_limit(0);
             ini_set('max_execution_time', 0);
+            ini_set('memory_limit', '-1');
         } catch (\Exception $e) {
             MailLog::warning('Cannot reset max_execution_time: '.$e->getMessage());
         }
@@ -347,6 +349,8 @@ class Campaign extends Model
         $me = self::find($this->id);
         $this->status = $me->status;
         $this->save();
+
+        return $this;
     }
     
     /**
@@ -454,6 +458,14 @@ class Campaign extends Model
                 if ($this->user->overQuota()) {
                     throw new \Exception("User has reached sending limit");
                 }
+                
+                // randomly check for campaign PAUSED status after 10 emails
+                // @todo wrap up the probability checking here
+                if (($i % 10) == 0) {
+                    if ($this->refreshStatus()->isPaused()) {
+                        throw new CampaignPausedException();
+                    }
+                }
 
                 $i += 1;
                 MailLog::info("Sending to subscriber `{$subscriber->email}` ({$i}/".sizeof($subscribers).')');
@@ -481,7 +493,9 @@ class Campaign extends Model
                 $this->done();
             }
 
-            $this->user->saveQuotaUsageInfo();
+        } catch (CampaignPausedException $e) {
+            // just finish
+            MailLog::info('Campaign paused');
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
             $this->error($e->getMessage());
@@ -489,7 +503,12 @@ class Campaign extends Model
             // reset server pools: just in case DeliveryServerAmazonSesWebApi
             // --> setup SNS requires using from_email of the corresponding campaign
             // but SNS is only made once when the server is initiated
-            //     SendingServer::resetServerPools();
+            // UPDATE: this is no longer the case as one process now only deals with one campaign
+            //         however, the method is still needed to save sending servers'' 
+            SendingServer::resetServerPools();
+            
+            // store user quota usage
+            $this->user->saveQuotaUsageInfo();
         }
     }
 
@@ -516,7 +535,7 @@ class Campaign extends Model
 
         // increment user quota usage
         $this->user->countUsage();
-        $this->user->quotaDebug();
+        $server->countUsage();
     }
 
     /**
@@ -2075,7 +2094,7 @@ class Campaign extends Model
     {
         return $this->is_auto;
     }
-    
+
     /**
      * The validation rules for automation trigger.
      *
@@ -2215,5 +2234,15 @@ class Campaign extends Model
         }
         
         return implode(' | ', $lines);
+    }
+
+    /**
+     * Check if campaign is paused.
+     *
+     * @return boolean
+     */
+    public function isPaused()
+    {
+        return $this->status == self::STATUS_PAUSED;
     }
 }
