@@ -35,7 +35,7 @@
             ])
         </div>
         <div class="col-md-5 segments-select-box multiple">
-            @if (is_object($lists_segment_group['list']))
+            @if (is_object($lists_segment_group['list']) && $lists_segment_group['list']->getSegmentSelectOptions()->count())
                 @include('helpers.form_control', [
                     'value' => implode(",", $lists_segment_group['segment_uids']),
                     'type' => 'select',
