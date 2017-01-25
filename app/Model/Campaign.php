@@ -607,13 +607,7 @@ class Campaign extends Model
      */
     public function getPendingSubscribers()
     {
-        if (is_object($this->segment)) {
-            $scoped = $this->segment;
-        } else {
-            $scoped = $this->defaultMailList;
-        }
-
-        return $scoped->subscribers()
+        return $this->subscribers()
                 ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = '.$this->id.') log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
                 ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
