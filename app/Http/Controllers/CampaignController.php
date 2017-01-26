@@ -976,16 +976,20 @@ class CampaignController extends Controller
     public function click(Request $request)
     {
         $decoded_url = \Acelle\Library\StringHelper::base64UrlDecode($request->url);
-        // redirect base64_decode($url);
-        $log = new \Acelle\Model\ClickLog();
-        $log->message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
-        $location = \Acelle\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
-        $log->ip_address = $location->ip_address;
-        $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
-        $log->url = $decoded_url;
-        $log->save();
-
-        return redirect()->away($decoded_url);
+        try {
+            // redirect base64_decode($url);
+            $log = new \Acelle\Model\ClickLog();
+            $log->message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
+            $location = \Acelle\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
+            $log->ip_address = $location->ip_address;
+            $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
+            $log->url = $decoded_url;
+            $log->save();
+        } catch (\Exception $e) {
+            // Allow click from a test email    
+        } finally {
+            return redirect()->away($decoded_url);
+        }
     }
 
     /**
