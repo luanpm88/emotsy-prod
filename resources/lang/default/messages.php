@@ -1288,4 +1288,4 @@
   'system_job_status_cancelled' => 'Cancelled',
   'auto_event_follow-up' => 'Follow up',
   'subscription_date' => 'subscription date',
-) ?>
+);
