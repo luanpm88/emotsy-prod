@@ -12,6 +12,7 @@
                         'type' => 'radio',
                         'name' => 'lists_segments[' . $index . '][is_default]',
                         'label' => '',
+                        'popup' => trans('messages.automation_default_list_help'),
                         'value' => $lists_segment_group['is_default'],
                         'options' => [['text' => trans('messages.selected'), 'value' => 'true']],
                         'rules' => [],
