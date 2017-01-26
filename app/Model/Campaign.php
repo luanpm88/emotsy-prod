@@ -2124,6 +2124,8 @@ class Campaign extends Model
     {        
         if(isset($params['lists_segments'])) {
             foreach ($params['lists_segments'] as $key => $param) {
+                $mail_list = null;
+                
                 if(!empty($param['mail_list_uid'])) {
                     $mail_list = MailList::findByUid($param['mail_list_uid']);
                     
