@@ -1,5 +1,5 @@
 <?php
-return array (
+return [
     'datetime_format' => 'Y-m-d, H:i',
     'datetime_format_2' => 'Y-m-d, H:i:s',
     'time_format' => 'H:i',
