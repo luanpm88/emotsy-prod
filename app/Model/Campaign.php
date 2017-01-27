@@ -626,12 +626,18 @@ class Campaign extends Model
      */
     public function getPendingSubscribers()
     {
-        return $this->subscribers()
+        $subscribers = $this->subscribers()
                 ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = '.$this->id.') log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
                 ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
                 ->select('subscribers.*')
                 ->get();
+
+        $unique = $subscribers->unique(function ($r) {
+            return $r['email'];
+        });
+
+        return $unique;
     }
 
     /**
@@ -1061,15 +1067,15 @@ class Campaign extends Model
      */
     public function subscribers($params=[])
     {
-        if($this->listsSegments->isEmpty()) {
-            return collect([]);
-        }
-        
         // get subscribers from auto campaign or normal campaign
         if($this->isAuto()) {
             // Get subscriber from auto event
             $query = $this->autoEvent()->subscribers();
         } else {
+            if($this->listsSegments->isEmpty()) {
+                return collect([]);
+            }
+            
             // Get subscriber from mailist and segment
             $conditions = [];
             foreach($this->listsSegments as $lists_segment) {
