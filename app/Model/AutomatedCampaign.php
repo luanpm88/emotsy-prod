@@ -119,7 +119,7 @@ class AutomatedCampaign extends Campaign
      */
     public function tagMessage($message, $subscriber, $msgId)
     {
-        $list = $this->trigger->autoEvent->automation->mailList;
+        $list = $this->trigger->autoEvent->automation->defaultMailList;
 
         $tags = array(
             'SUBSCRIBER_EMAIL' => $subscriber->email,
@@ -156,7 +156,7 @@ class AutomatedCampaign extends Campaign
 
         if (!$this->isStdClassSubscriber($subscriber)) {
             // in case of actually sending campaign
-            foreach ($this->trigger->autoEvent->automation->mailList->fields as $field) {
+            foreach ($this->trigger->autoEvent->automation->defaultMailList->fields as $field) {
                 $message = str_replace('{SUBSCRIBER_'.$field->tag.'}', $subscriber->getValueByField($field), $message);
             }
         } else {

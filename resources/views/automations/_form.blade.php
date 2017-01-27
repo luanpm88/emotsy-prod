@@ -9,28 +9,27 @@
 							])
 						</div>
 					</div>
-					<div class="row">
-						<div class="col-md-6 list_select_box" target-box="segments-select-box" segments-url="{{ action('SegmentController@selectBox') }}">
-							@include('helpers.form_control', [								
-								'type' => 'select',
-								'name' => 'mail_list_uid',
-                                'value' => (is_object($automation->mailList) ? $automation->mailList->uid : ""),
-								'label' => trans('messages.which_list_send'),								
-								'options' => Acelle\Model\MailList::getSelectOptions(Auth::user()),
-                                'include_blank' => trans('messages.choose'),
-								'rules' => $automation->rules()["init"]
-							])
-						</div>
-						<div class="col-md-6 segments-select-box">
-							@if (is_object($automation->mailList) && $automation->mailList->segments()->count())
-								@include('helpers.form_control', [
-									'type' => 'select',
-									'value' => (is_object($automation->segment) ? $automation->segment->uid : ""),
-									'name' => 'segment_uid',
-									'label' => trans('messages.which_segment_send'),
-                                    'include_blank' => trans('messages.choose'),
-									'options' => $automation->mailList->getSegmentSelectOptions()
+					
+					<h4 class="mb-20">
+						{{ trans('messages.choose_lists_segments_for_the_campaign') }}
+					</h4>
+						
+					<div class="addable-multiple-form">
+						<div class="addable-multiple-container">
+							<?php $num = 0 ?>
+							@foreach ($automation->getListsSegmentsGroups() as $index =>  $lists_segment_group)
+								@include('automations._list_segment_form', [
+									'lists_segment_group' => $lists_segment_group,
+									'index' => $num,
 								])
-							@endif
+								<?php $num++ ?>
+							@endforeach
 						</div>
+							
+						<br />
+						<a
+							sample-url="{{ action('AutomationController@listSegmentForm', (!$automation->uid ? '000' : $automation->uid)) }}"
+							href="#add_condition" class="btn btn-info bg-info-800 add-form">
+							<i class="icon-plus2"></i> {{ trans('messages.add_list_segment') }}
+						</a>
 					</div>

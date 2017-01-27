@@ -79,7 +79,7 @@
 					</div>
 				</div>
 					
-				@include('elements._tags', ['tags' => Acelle\Model\Template::tags($campaign->mailList)])
+				@include('elements._tags', ['tags' => Acelle\Model\Template::tags($campaign->defaultMailList)])
 				
 				<hr>
 				<div class="text-right">

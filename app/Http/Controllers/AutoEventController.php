@@ -152,7 +152,7 @@ class AutoEventController extends Controller
         }
         
         // get infor from mail list
-        $campaign->getInfoFromMailList($auto_event->automation->mailList);
+        $campaign->getInfoFromMailList($auto_event->automation->defaultMailList);
         
         // Get old post values
         if (null !== $request->old()) {

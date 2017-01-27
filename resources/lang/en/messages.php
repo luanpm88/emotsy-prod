@@ -1253,6 +1253,11 @@ return [
     'event_type_list_unsubscription_description_with_delay' => 'Send :delay subscriber <span class="text-semibold">unsubscribes</span> to list <span class="text-semibold">:list_name</span>.',
     'event_type_subscriber_event_description_with_delay' => 'Send :delay <span class="text-semibold">:event</span>',
     'event_type_custom_criterias_description_with_delay' => 'Send :delay: :conditions',
+    'add_list_segment' => 'Add list/segment',
+    'default_list_information' => 'Set as default list',
+    'selected' => 'Default',
+    'choose_lists_segments_for_the_campaign' => 'Choose one or more lists/segments for sending email',
+    'leave_empty_to_choose_all_list' => '* Leave this box empty to choose all subscribers in the list',
     'language.uploaded' => 'Language was successfully uploaded',
     'campaign_status_new' => 'New',
     'campaign_status_ready' => 'Ready',
@@ -1289,4 +1294,6 @@ return [
     'system_job_status_cancelled' => 'Cancelled',
     'auto_event_follow-up' => 'Follow up',
     'subscription_date' => 'subscription date',
+    'campaign_default_list_help' => 'A default list is required if you select more than one list. The campaign will use the default list information to translate TAGS found in email content.',
+    'automation_default_list_help' => 'A default list is required if you select more than one list. The automation will use the default list information to translate TAGS found in email content.',
 ];

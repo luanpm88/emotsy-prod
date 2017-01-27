@@ -181,6 +181,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
+    Route::get('campaigns/{uid}/list-segment-form', 'CampaignController@listSegmentForm');
     Route::get('campaigns/{uid}/template/review', 'CampaignController@templateReview');
     Route::post('campaigns/{uid}/image/save', 'CampaignController@saveImage');
     Route::get('campaigns/{uid}/image', 'CampaignController@image');
@@ -253,6 +254,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('systems/jobs/{id}/download/csv', 'SystemJobController@downloadCsv');
     
     // Automation
+    Route::get('automations/{uid}/list-segment-form', 'AutomationController@listSegmentForm');    
     Route::patch('automations/disable', 'AutomationController@disable');
     Route::patch('automations/enable', 'AutomationController@enable');
     Route::get('automations/{uid}/overview/emails/list', 'AutomationController@overviewCampaignsList');

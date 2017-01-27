@@ -15,13 +15,9 @@
 											</h5>
 											<span data-popup="tooltip" title="{{ strip_tags($item->autoEvent()->displayMessage()) }}" class="auto-event-substr">{!! $item->autoEvent()->displayMessage() !!}</span>
 												
-											@if ($item->subscribers()->count())
-												@if (is_object($item->segment))
-													<span class="text-semibold">{{ $item->subscribers()->count() }}</span> <span class="text-muted">{{ strtolower(trans('messages.subscribers')) }} ({{ $item->mailList->name }} . {{ $item->segment->name }})</span>
-												@elseif (is_object($item->mailList))
-													<span class="text-semibold">{{ $item->subscribers()->count() }}</span> <span class="text-muted">{{ strtolower(trans('messages.subscribers')) }} ({{ $item->mailList->name }})</span>
-												@endif
-											@endif
+											<div class="text-semibold" data-popup="tooltip" title="{{ $item->displayRecipients() }}">
+												{{ $item->subscribers()->count() }} {{ trans('messages.recipients') }}
+											</div>
 										</td>
 										<!--<td>
 											<div class="single-stat-box pull-left">

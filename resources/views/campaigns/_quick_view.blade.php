@@ -5,11 +5,7 @@
 					<h5 class="mt-10 text-semibold">{{ trans('messages.sent_to') }} <span class="text-bold badge badge-info bg-info-800 badge-big">{{ $campaign->subscribers()->count() }}</span> {{ trans('messages.recipients') }}</h5>
                     <div class="mb-10">
                         <span class="text-bold text-muted">{{ trans('messages.from') }}:</span>
-                        @if (is_object($campaign->segment))
-                            {{ $campaign->mailList->name }} . {{ $campaign->segment->name }}                        
-                        @elseif (is_object($campaign->mailList))
-                            {{ $campaign->mailList->name }}
-                        @endif
+                        {!! $campaign->displayRecipients() !!}
                     </div>                    
                 </div>
                 <div class="col-md-6">

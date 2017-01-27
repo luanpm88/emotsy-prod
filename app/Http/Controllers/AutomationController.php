@@ -61,9 +61,9 @@ class AutomationController extends Controller
             return $this->noMoreItem();
         }
         
-        // Get old value
-        if (null !== $request->old()) {
-            $automation->fillAttributes($request->old());
+        if (!empty($request->old())) {
+            $rules = $automation->recipientsRules($request->old());
+            $automation->fillRecipients($request->old());
         }
 
         return view('automations.create', [
@@ -88,23 +88,40 @@ class AutomationController extends Controller
             return $this->noMoreItem();
         }
 
-        // Create automation
+        // Get rules and data
+        $rules = $automation->recipientsRules($request->all());
+        $automation->fillRecipients($request->all());        
+
         if ($request->isMethod('post')) {
             // Check validation
-            $this->validate($request, $automation->rules()["init"]);
+            $this->validate($request, $rules);
             
-            // create automation
-            $automation->fillAttributes($request->all());
+            $automation->fill($request->all());            
             $automation->user_id = $current_user->id;
             $automation->status = \Acelle\Model\Automation::STATUS_DRAFT;
             $automation->save();
+            $automation->saveRecipients($request->all());
             
-            // Log
-            $automation->log('created', $request->user());
-
-            // Redirect to next step
             return redirect()->action('AutomationController@trigger', $automation->uid);
         }
+
+        //// Create automation
+        //if ($request->isMethod('post')) {
+        //    // Check validation
+        //    $this->validate($request, $automation->rules()["init"]);
+        //    
+        //    // create automation
+        //    $automation->fillAttributes($request->all());
+        //    $automation->user_id = $current_user->id;
+        //    $automation->status = \Acelle\Model\Automation::STATUS_DRAFT;
+        //    $automation->save();
+        //    
+        //    // Log
+        //    $automation->log('created', $request->user());
+        //
+        //    // Redirect to next step
+        //    return redirect()->action('AutomationController@trigger', $automation->uid);
+        //}
     }
     
     /**
@@ -124,9 +141,9 @@ class AutomationController extends Controller
             return $this->notAuthorized();
         }
         
-        // Get old value
-        if (null !== $request->old()) {
-            $automation->fillAttributes($request->old());
+        if (!empty($request->old())) {
+            $rules = $automation->recipientsRules($request->old());
+            $automation->fillRecipients($request->old());
         }
 
         return view('automations.edit', [
@@ -150,21 +167,19 @@ class AutomationController extends Controller
         if (\Gate::denies('update', $automation)) {
             return $this->notAuthorized();
         }
+        
+        // Get rules and data
+        $rules = $automation->recipientsRules($request->all());
+        $automation->fillRecipients($request->all());        
 
         // Update automation
         if ($request->isMethod('patch')) {
-            // Check validation
-            $this->validate($request, $automation->rules()["init"]);
+            $this->validate($request, $rules);
             
-            // create automation
-            $automation->fillAttributes($request->all());            
-            
+            $automation->fill($request->all());            
             $automation->save();
+            $automation->saveRecipients($request->all());
             
-            // Log
-            $automation->log('updated', $request->user());
-
-            // Redirect to next step
             return redirect()->action('AutomationController@trigger', $automation->uid);
         }
     }
@@ -511,5 +526,31 @@ class AutomationController extends Controller
                 return redirect()->away($url);
             }            
         }
+    }
+    
+    /**
+     * List segment form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listSegmentForm(Request $request)
+    {
+        // Get current user
+        $automation = new \Acelle\Model\Automation();
+
+        // authorize
+        if (\Gate::denies('update', $automation)) {
+            return $this->notAuthorized();
+        }
+
+        return view('automations._list_segment_form', [
+            'automation' => $automation,
+            'lists_segment_group' => [
+                'list' => null,
+                'is_default' => false
+            ]
+        ]);
     }
 }

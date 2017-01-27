@@ -1,11 +1,11 @@
                                 <?php $index = isset($index) ? $index : '__index__' ?>
 								
-								<div class="row condition-line" rel="__index__">
+								<div class="row condition-line" rel="{{ $index }}">
 									<div class="col-md-4">
 										<div class="form-group">
 											<select class="select" name="custom_criteria[{{ $index }}][field_uid]">
 												<optgroup label="{{ trans('messages.Subscriber_attributes') }}">
-													@foreach($automation->mailList->getFields as $field)
+													@foreach($automation->defaultMailList->getFields as $field)
 														@if (!in_array($field->type, ['datetime','date']))
 															<option {{ isset($criteria) && $criteria["field_uid"] == $field->uid ? 'selected' : '' }} value="{{ $field->uid }}">{{ $field->label }}</option>
 														@endif
