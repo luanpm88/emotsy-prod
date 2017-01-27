@@ -1,3 +1,11 @@
+2.2.0-p6 / 2017-01-27
+===================
+
+ * Added: support sending campaign to multiple lists / segments
+ * Fixed: issue of migrating from v2.0.4
+ * Fixed: links sometimes do not work in test email
+ * Fixed: intermittent memory issue of PHP 5.6 or below
+
 2.2.0-p5 / 2017-01-23
 ===================
 
