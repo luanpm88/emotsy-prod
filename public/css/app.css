@@ -1608,3 +1608,12 @@ ul.automation-confirm li.child-row h5 {
     margin-top: 4px;
     display: inline-block;
 }
+.select2-selection--multiple .select2-search--inline .select2-search__field {
+    padding: 2px 0;
+}
+.select2-selection--multiple .select2-selection__choice {
+    padding: 2px 12px;
+}
+.select2-selection--multiple .select2-selection__choice .select2-selection__choice__remove {
+    margin-top: 5px;
+}

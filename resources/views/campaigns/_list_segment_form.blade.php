@@ -43,7 +43,8 @@
                     'name' => 'lists_segments[' . $index . '][segment_uids][]',
                     'label' => trans('messages.which_segment_send'),
                     'options' => $lists_segment_group['list']->getSegmentSelectOptions(),
-                    'multiple' => true
+                    'multiple' => true,
+                    'quick_note' => trans('messages.leave_empty_to_choose_all_list')
                 ])
             @endif
         </div>
