@@ -1884,6 +1884,13 @@ class Campaign extends Model
         $copy->run_at = null;
         $copy->custom_order = 0;
         $copy->save();
+        
+        // Lists segments
+        foreach ($this->listsSegments as $lists_segment) {
+            $new_lists_segment = $lists_segment->replicate();
+            $new_lists_segment->campaign_id = $copy->id;
+            $new_lists_segment->save();
+        }
     }
     
     /**
