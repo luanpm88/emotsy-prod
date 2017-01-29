@@ -495,8 +495,7 @@ class CampaignController extends Controller
             // $this->validate($request, $rules);
 
             //// Save campaign
-            echo trans('messages.datetime_string_formated', ['date' => $request->delivery_date, 'time' => $request->delivery_time]);
-            $time = \Carbon\Carbon::createFromFormat(trans('messages.datetime_format'), trans('messages.datetime_string_formated', ['date' => $request->delivery_date, 'time' => $request->delivery_time]), $request->user()->timezone);            
+            $time = \Carbon\Carbon::createFromFormat(trans('messages.datetime_format'), trans('messages.datetime_string_formated', ['date' => $request->delivery_date, 'time' => $request->delivery_time]), $request->user()->getTimezone());
             $time = \Acelle\Library\Tool::systemTime($time);
 
             $campaign->run_at = $time;
