@@ -5,7 +5,7 @@ $(document).ready(function() {
         convert_urls: false,
         remove_script_host: false,
         plugins: [
-          'advlist autolink lists link image charmap print preview anchor',
+          'advlist autolink lists link image charmap print preview anchor fullpage',
           'searchreplace visualblocks code fullscreen textcolor',
           'insertdatetime media table contextmenu paste responsivefilemanager code'
         ],
@@ -26,7 +26,7 @@ $(document).ready(function() {
         convert_urls: false,
         remove_script_host: false,
         plugins: [
-          'advlist autolink lists link image charmap print preview anchor',
+          'advlist autolink lists link image charmap print preview anchor fullpage',
           'searchreplace visualblocks code fullscreen textcolor',
           'insertdatetime media table contextmenu paste responsivefilemanager code'
         ],
@@ -46,7 +46,7 @@ $(document).ready(function() {
         convert_urls: false,
         remove_script_host: false,
         plugins: [
-          'advlist autolink lists link image charmap print preview anchor',
+          'advlist autolink lists link image charmap print preview anchor fullpage',
           'searchreplace visualblocks code fullscreen',
           'insertdatetime media table contextmenu paste code textcolor' 
         ],
@@ -65,7 +65,7 @@ $(document).ready(function() {
         convert_urls: false,
         remove_script_host: false,
         plugins: [
-          'advlist autolink lists link image charmap print preview anchor',
+          'advlist autolink lists link image charmap print preview anchor fullpage',
           'searchreplace visualblocks code fullscreen',
           'insertdatetime media contextmenu paste code textcolor' 
         ],
