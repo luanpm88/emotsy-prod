@@ -55,6 +55,7 @@ Route::get('/offline', 'Controller@offline');
 Route::get('/not-authorized', 'Controller@notAuthorized');
 Route::get('/demo', 'Controller@demo');
 Route::get('/autologin/{api_token}', 'Controller@autoLogin');
+Route::get('/reload/cache', 'Controller@reloadCache');
 
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {

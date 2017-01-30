@@ -159,4 +159,17 @@ class Controller extends BaseController
                 min: jQuery.validator.format("'.trans('messages.jvalidate_min').'")
             });';
     }
+    
+    /**
+     * Show demo home page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function reloadCache()
+    {
+        $next = action('HomeController@index');
+        \Artisan::call('config:cache');
+        sleep(5);
+        return redirect()->away($next);
+    }
 }
