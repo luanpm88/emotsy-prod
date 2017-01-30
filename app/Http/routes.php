@@ -56,7 +56,7 @@ Route::get('/not-authorized', 'Controller@notAuthorized');
 Route::get('/demo', 'Controller@demo');
 Route::get('/autologin/{api_token}', 'Controller@autoLogin');
 Route::get('/reload/cache', 'Controller@reloadCache');
-
+Route::get('/migrate/run', 'Controller@runMigration');
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('/', 'HomeController@index');

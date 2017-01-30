@@ -161,9 +161,9 @@ class Controller extends BaseController
     }
     
     /**
-     * Show demo home page.
+     * Reload application settings
      *
-     * @return \Illuminate\Http\Response
+     * @todo only authenticated user can execute this
      */
     public function reloadCache()
     {
@@ -171,5 +171,17 @@ class Controller extends BaseController
         \Artisan::call('config:cache');
         sleep(5);
         return redirect()->away($next);
+    }
+    
+    /**
+     * Reload application settings
+     *
+     * @todo only authenticated user can execute this
+     */
+    public function runMigration()
+    {
+        \Artisan::call('migrate', ['--force' => true]);
+        sleep(5);
+        echo "migrated!";
     }
 }
