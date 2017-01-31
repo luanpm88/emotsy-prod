@@ -27,6 +27,7 @@ class AddAutoTriggerIdToTrackingLogs extends Migration
     public function down()
     {
         Schema::table('tracking_logs', function (Blueprint $table) {
+            $table->dropForeign('tracking_logs_auto_trigger_id_foreign');
             $table->dropColumn('auto_trigger_id');
         });
     }

@@ -102,23 +102,23 @@ class DatabaseSeeder extends Seeder
             'updated_at' => $updated_at,
         ]);
 
-        DB::table('campaigns')->insert([
-            'id' => 1,
-            'uid' => uniqid(),
-            'mail_list_id' => 1,
-            'user_id' => 1,
-            'name' => 'My Campaign',
-            'type' => 'regular',
-            'subject' => 'Newsletter of June, 13',
-            'from_email' => 'noreply@anphabeta.com',
-            'reply_to' => 'noreply@anphabeta.com',
-            'from_name' => 'Those were the days',
-            'html' => 'Hello {CAMPAIGN_NAME}, <br><b>Those</b> were the <span style="color:green">days</span><a style="abc" href="http://www.google.com.vn">GoogleVN</a> <br>{UNSUBSCRIBE_URL}',
-            'plain' => 'Those were the <i>days</i>',
-            'status' => 'ready',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
+        //DB::table('campaigns')->insert([
+        //    'id' => 1,
+        //    'uid' => uniqid(),
+        //    'mail_list_id' => 1,
+        //    'user_id' => 1,
+        //    'name' => 'My Campaign',
+        //    'type' => 'regular',
+        //    'subject' => 'Newsletter of June, 13',
+        //    'from_email' => 'noreply@anphabeta.com',
+        //    'reply_to' => 'noreply@anphabeta.com',
+        //    'from_name' => 'Those were the days',
+        //    'html' => 'Hello {CAMPAIGN_NAME}, <br><b>Those</b> were the <span style="color:green">days</span><a style="abc" href="http://www.google.com.vn">GoogleVN</a> <br>{UNSUBSCRIBE_URL}',
+        //    'plain' => 'Those were the <i>days</i>',
+        //    'status' => 'ready',
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
 
         DB::table('fields')->insert([
             'id' => 1,
@@ -422,64 +422,64 @@ class DatabaseSeeder extends Seeder
             'updated_at' => $updated_at,
         ]);
 
-        DB::table('tracking_logs')->insert([
-            'id' => 1,
-            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
-            'sending_server_id' => 1,
-            'user_id' => 1,
-            'campaign_id' => 1,
-            'subscriber_id' => 1,
-            'status' => 'sent',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-
-        DB::table('tracking_logs')->insert([
-            'id' => 2,
-            'message_id' => '5069900013.fece1089d17ee@anphabeta.com',
-            'sending_server_id' => 1,
-            'user_id' => 1,
-            'campaign_id' => 1,
-            'subscriber_id' => 2,
-            'status' => 'sent',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-
-        DB::table('open_logs')->insert([
-            'id' => 1,
-            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
-            'ip_address' => '111.111.00.11',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-
-        DB::table('click_logs')->insert([
-            'id' => 1,
-            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
-            'url' => 'http://google.com',
-            'ip_address' => '111.111.00.11',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-
-        DB::table('feedback_logs')->insert([
-            'id' => 1,
-            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
-            'feedback_type' => 'abuse',
-            'raw_feedback_content' => '0',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-
-        DB::table('unsubscribe_logs')->insert([
-            'id' => 1,
-            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
-            'user_agent' => '0',
-            'ip_address' => '111.111.00.11',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
+        //DB::table('tracking_logs')->insert([
+        //    'id' => 1,
+        //    'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
+        //    'sending_server_id' => 1,
+        //    'user_id' => 1,
+        //    'campaign_id' => 1,
+        //    'subscriber_id' => 1,
+        //    'status' => 'sent',
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
+        //
+        //DB::table('tracking_logs')->insert([
+        //    'id' => 2,
+        //    'message_id' => '5069900013.fece1089d17ee@anphabeta.com',
+        //    'sending_server_id' => 1,
+        //    'user_id' => 1,
+        //    'campaign_id' => 1,
+        //    'subscriber_id' => 2,
+        //    'status' => 'sent',
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
+        //
+        //DB::table('open_logs')->insert([
+        //    'id' => 1,
+        //    'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
+        //    'ip_address' => '111.111.00.11',
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
+        //
+        //DB::table('click_logs')->insert([
+        //    'id' => 1,
+        //    'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
+        //    'url' => 'http://google.com',
+        //    'ip_address' => '111.111.00.11',
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
+        //
+        //DB::table('feedback_logs')->insert([
+        //    'id' => 1,
+        //    'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
+        //    'feedback_type' => 'abuse',
+        //    'raw_feedback_content' => '0',
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
+        //
+        //DB::table('unsubscribe_logs')->insert([
+        //    'id' => 1,
+        //    'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
+        //    'user_agent' => '0',
+        //    'ip_address' => '111.111.00.11',
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
 
         DB::table('user_group_sending_servers')->insert([
             'id' => 1,
