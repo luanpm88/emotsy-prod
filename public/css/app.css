@@ -1630,4 +1630,5 @@ ul.automation-confirm li.child-row h5 {
     margin-left: 2px;
     float: left;
     font-weight: 600;
+    position: absolute;
 }
