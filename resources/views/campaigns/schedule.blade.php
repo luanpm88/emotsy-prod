@@ -63,7 +63,7 @@
                         // Pick a day from now
                         // Date limits
                         $('.pickadate_from_now').pickadate({
-                            format: LANG_DATE_FORMAT
+                            format: 'yyyy-mm-dd'
                         });
                     });
                 </script>

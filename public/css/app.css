@@ -1617,3 +1617,17 @@ ul.automation-confirm li.child-row h5 {
 .select2-selection--multiple .select2-selection__choice .select2-selection__choice__remove {
     margin-top: 5px;
 }
+.control-with-mask {
+    color: rgba(0,0,0,0);
+}
+.mask-control {
+    height: 26px;
+    display: block;
+    margin-top: -29px;
+    font-size: 15px;
+    padding-left: 11px;
+    background: #fff;
+    margin-left: 2px;
+    float: left;
+    font-weight: 600;
+}

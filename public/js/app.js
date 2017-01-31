@@ -396,7 +396,7 @@ $(function() {
             msg = msg.replace(/__type__/g, type_name);
             
             $('.field-list').append($('<div>').html(msg).find("table tbody").html());            
-            $('.field-list tr').last().find('.pickadate').pickadate({format: LANG_DATE_FORMAT, selectYears: 100});
+            $('.field-list tr').last().find('.pickadate').pickadate({format: 'yyyy-mm-dd', selectYears: 100});
             
             // Time picker
             if ($('.field-list tr').last().find(".pickadatetime").length) {
@@ -455,7 +455,7 @@ $(function() {
     });
     
     // Basic options
-    $('.pickadate').pickadate({format: LANG_DATE_FORMAT, selectYears: 100});
+    $('.pickadate').pickadate({format: 'yyyy-mm-dd', selectYears: 100});
     
     // Numberic input
     $(".numeric").numeric();
@@ -1175,4 +1175,15 @@ $(function() {
             $.uniform.update();
         }
     });
+    
+    // pickadate mask
+    $(document).on('change', '.pickadate-control', function() {      
+        var mask = $(this).parent().find('.date-mask-control');
+        var value = $(this).val();
+        
+        var date = moment(value); //Get the current date
+        
+        mask.html(date.format(LANG_DATE_FORMAT.toUpperCase()));
+    });
+    $('.pickadate-control').trigger('change');
 });
