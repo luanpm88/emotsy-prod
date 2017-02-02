@@ -15,7 +15,7 @@
 	@include('layouts._js')
 </head>
 
-<body class="bg-slate-800">
+<body class="bg-slate-800 color-scheme-{{ is_object($list) ? $list->user->getFrontendScheme() : '' }}">
 
 
 

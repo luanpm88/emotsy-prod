@@ -4,7 +4,8 @@
 .color-scheme-blue .text-teal-800 {
     color: rgb(20,130,160) !important;
 }
-.color-scheme-blue .navbar-inverse {
+.color-scheme-blue .navbar-inverse,
+.bg-slate-800.color-scheme-blue {
     background-color: rgb(20,60,80);
 }
 .color-scheme-blue .nav-tabs.nav-tabs-top > li.active > a,
@@ -57,7 +58,8 @@
 .color-scheme-green .text-teal-800 {
     color: rgb(0,140,110) !important;
 }
-.color-scheme-green .navbar-inverse {
+.color-scheme-green .navbar-inverse,
+.bg-slate-800.color-scheme-green {
     background-color: rgba(0,60,40, 0.9);
 }
 .color-scheme-green .nav-tabs.nav-tabs-top > li.active > a,
@@ -110,8 +112,8 @@
 .color-scheme-brown .text-teal-800 {
     color: rgb(145,115,25) !important;
 }
-.color-scheme-brown .navbar-inverse
-{
+.color-scheme-brown .navbar-inverse,
+.bg-slate-800.color-scheme-brown {
     background-color: rgba(55,45,10,0.9);
 }
 .color-scheme-brown .nav-tabs.nav-tabs-top > li.active > a,
@@ -165,7 +167,8 @@
 .color-scheme-pink .text-teal-800 {
     color: rgb(190,50,120) !important;
 }
-.color-scheme-pink .navbar-inverse {
+.color-scheme-pink .navbar-inverse,
+.bg-slate-800.color-scheme-pink {
     background-color: rgba(100,40,60,0.9);
 }
 .color-scheme-pink .nav-tabs.nav-tabs-top > li.active > a,
@@ -218,7 +221,8 @@
 .color-scheme-grey .text-teal-800 {
     color: #333 !important;
 }
-.color-scheme-grey .navbar-inverse {
+.color-scheme-grey .navbar-inverse,
+.bg-slate-800.color-scheme-grey {
     background-color: #444;
 }
 .color-scheme-grey .nav-tabs.nav-tabs-top > li.active > a,
