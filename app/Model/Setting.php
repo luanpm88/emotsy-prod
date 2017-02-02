@@ -148,6 +148,12 @@ class Setting extends Model
                 'value' => 'Makes it easy for you to create, send, and optimize your email marketing campaigns.',
                 'type' => 'textarea',
             ],
+            'default_language' => [
+                'cat' => 'general',
+                'value' => 'en',
+                'type' => 'select',
+                'options' => \Acelle\Model\Language::getSelectOptions(),
+            ],
             'frontend_scheme' => [
                 'cat' => 'general',
                 'value' => 'default',
