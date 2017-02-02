@@ -11,6 +11,8 @@
 	
 	@include('layouts._js')
 	
+	@include('layouts._user_script')
+	
 </head>
 
 <body class="navbar-top  color-scheme-{{ Auth::user()->getBackendScheme() }}">

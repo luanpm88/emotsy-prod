@@ -880,4 +880,13 @@ class User extends Authenticatable
     public function getTimezone() {
         return $this->timezone;
     }
+    
+    /**
+     * Get user language code
+     *
+     * @return string
+     */
+    public function getLanguageCode() {
+        return (is_object($this->language) ? $this->language->code : null);
+    }
 }
