@@ -409,14 +409,14 @@ class MailListController extends Controller
         $datas = [];
         if (isset($list->id)) {
             // create data
-            if ($list->unsubscribeCount()) {
+            if ($list->subscribeCount()) {
                 $result['bar_names'][] = trans('messages.subscribed');
-                $datas[] = ['value' => $list->unsubscribeCount(), 'name' => trans('messages.subscribed')];
+                $datas[] = ['value' => $list->subscribeCount(), 'name' => trans('messages.subscribed')];
             }
             // create data
-            if ($list->subscribeCount()) {
+            if ($list->unsubscribeCount()) {
                 $result['bar_names'][] = trans('messages.unsubscribed');
-                $datas[] = ['value' => $list->subscribeCount(), 'name' => trans('messages.unsubscribed')];
+                $datas[] = ['value' => $list->unsubscribeCount(), 'name' => trans('messages.unsubscribed')];
             }
             // create data
             if ($list->unconfirmedCount()) {
