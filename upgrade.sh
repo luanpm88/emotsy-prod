@@ -22,6 +22,7 @@ cp ./app/Http/Controllers/AutoEventController.php $1/app/Http/Controllers/AutoEv
 cp ./app/Http/Controllers/AutomationController.php $1/app/Http/Controllers/AutomationController.php
 cp ./app/Http/Controllers/CampaignController.php $1/app/Http/Controllers/CampaignController.php
 cp ./app/Http/Controllers/Controller.php $1/app/Http/Controllers/Controller.php
+cp ./app/Http/Controllers/MailListController.php $1/app/Http/Controllers/MailListController.php
 cp ./app/Http/Controllers/SegmentController.php $1/app/Http/Controllers/SegmentController.php
 cp ./app/Http/Kernel.php $1/app/Http/Kernel.php
 cp ./app/Http/routes.php $1/app/Http/routes.php
@@ -50,6 +51,7 @@ cp ./app/Model/SendingServerPhpMail.php $1/app/Model/SendingServerPhpMail.php
 cp ./app/Model/SendingServerSendGridApi.php $1/app/Model/SendingServerSendGridApi.php
 cp ./app/Model/SendingServerSendmail.php $1/app/Model/SendingServerSendmail.php
 cp ./app/Model/SendingServerSmtp.php $1/app/Model/SendingServerSmtp.php
+cp ./app/Model/Setting.php $1/app/Model/Setting.php
 cp ./app/Model/UserGroup.php $1/app/Model/UserGroup.php
 cp ./app/Model/User.php $1/app/Model/User.php
 cp ./app/Policies/AutomationPolicy.php $1/app/Policies/AutomationPolicy.php
@@ -61,6 +63,7 @@ cp ./CHANGELOG.md $1/CHANGELOG.md
 cp ./composer.json $1/composer.json
 cp ./composer.lock $1/composer.lock
 cp ./config/app.php $1/config/app.php
+cp ./database/migrations/2016_12_28_095315_add_auto_trigger_id_to_tracking_logs.php $1/database/migrations/2016_12_28_095315_add_auto_trigger_id_to_tracking_logs.php
 cp ./database/migrations/2017_01_11_114659_create_campaigns_lists_segments_table.php $1/database/migrations/2017_01_11_114659_create_campaigns_lists_segments_table.php
 cp ./database/migrations/2017_01_11_174230_add_default_mail_list_id_to_campaigns.php $1/database/migrations/2017_01_11_174230_add_default_mail_list_id_to_campaigns.php
 cp ./database/migrations/2017_01_12_155942_delete_list_segmnet_cols_form_campaigns.php $1/database/migrations/2017_01_12_155942_delete_list_segmnet_cols_form_campaigns.php
@@ -69,13 +72,16 @@ cp ./database/migrations/2017_01_12_161001_add_default_mail_list_id_to_automatio
 cp ./database/migrations/2017_01_12_170519_delete_list_segment_cols_from_automations.php $1/database/migrations/2017_01_12_170519_delete_list_segment_cols_from_automations.php
 cp ./database/migrations/2017_01_22_175544_add_sending_servers_quota_column.php $1/database/migrations/2017_01_22_175544_add_sending_servers_quota_column.php
 cp ./database/migrations/2017_01_24_092138_update_user_quota.php $1/database/migrations/2017_01_24_092138_update_user_quota.php
+cp ./database/seeds/DatabaseSeeder.php $1/database/seeds/DatabaseSeeder.php
 cp ./generate-upgrade-script.sh $1/generate-upgrade-script.sh
 cp ./phpunit.xml $1/phpunit.xml
 cp ./public/css/app.css $1/public/css/app.css
 cp ./public/css/theme.css $1/public/css/theme.css
 cp ./public/filemanager/config/config.php $1/public/filemanager/config/config.php
+cp ./public/index.php $1/public/index.php
 cp ./public/js/app.js $1/public/js/app.js
 cp ./public/js/editor.js $1/public/js/editor.js
+cp ./public/js/jquery.cookie.js $1/public/js/jquery.cookie.js
 cp ./resources/lang/default/messages.php $1/resources/lang/default/messages.php
 cp ./resources/lang/en/messages.php $1/resources/lang/en/messages.php
 cp ./resources/views/account/quota_log.blade.php $1/resources/views/account/quota_log.blade.php
@@ -110,6 +116,7 @@ cp ./resources/views/campaigns/confirm.blade.php $1/resources/views/campaigns/co
 cp ./resources/views/campaigns/_info.blade.php $1/resources/views/campaigns/_info.blade.php
 cp ./resources/views/campaigns/_list.blade.php $1/resources/views/campaigns/_list.blade.php
 cp ./resources/views/campaigns/_list_segment_form.blade.php $1/resources/views/campaigns/_list_segment_form.blade.php
+cp ./resources/views/campaigns/_open_click_rate.blade.php $1/resources/views/campaigns/_open_click_rate.blade.php
 cp ./resources/views/campaigns/_quick_view.blade.php $1/resources/views/campaigns/_quick_view.blade.php
 cp ./resources/views/campaigns/recipients.blade.php $1/resources/views/campaigns/recipients.blade.php
 cp ./resources/views/campaigns/schedule.blade.php $1/resources/views/campaigns/schedule.blade.php
@@ -119,12 +126,17 @@ cp ./resources/views/campaigns/_template_list.blade.php $1/resources/views/campa
 cp ./resources/views/campaigns/template_preview.blade.php $1/resources/views/campaigns/template_preview.blade.php
 cp ./resources/views/common/flash.blade.php $1/resources/views/common/flash.blade.php
 cp ./resources/views/dashboard.blade.php $1/resources/views/dashboard.blade.php
+cp ./resources/views/helpers/_date.blade.php $1/resources/views/helpers/_date.blade.php
 cp ./resources/views/helpers/form_control.blade.php $1/resources/views/helpers/form_control.blade.php
 cp ./resources/views/helpers/_radio.blade.php $1/resources/views/helpers/_radio.blade.php
 cp ./resources/views/layouts/account.blade.php $1/resources/views/layouts/account.blade.php
+cp ./resources/views/layouts/backend.blade.php $1/resources/views/layouts/backend.blade.php
 cp ./resources/views/layouts/_css.blade.php $1/resources/views/layouts/_css.blade.php
 cp ./resources/views/layouts/frontend.blade.php $1/resources/views/layouts/frontend.blade.php
 cp ./resources/views/layouts/_js.blade.php $1/resources/views/layouts/_js.blade.php
+cp ./resources/views/layouts/page.blade.php $1/resources/views/layouts/page.blade.php
+cp ./resources/views/layouts/_script_vars.blade.php $1/resources/views/layouts/_script_vars.blade.php
+cp ./resources/views/layouts/_user_script.blade.php $1/resources/views/layouts/_user_script.blade.php
 cp ./resources/views/lists/_list.blade.php $1/resources/views/lists/_list.blade.php
 cp ./resources/views/segments/_select_box.blade.php $1/resources/views/segments/_select_box.blade.php
 cp ./resources/views/subscribers/_export_list.blade.php $1/resources/views/subscribers/_export_list.blade.php
