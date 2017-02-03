@@ -10,7 +10,7 @@
 
 @section('content')
 	<h6 class="h1-subtitle">{{ trans('messages.reseller') }}</h6>
-    <h1 class="mt-0">{{ trans('messages.dashboard') }}</h1>
+    <h1 class="mt-0 mb-0">{{ trans('messages.dashboard') }}</h1>
 	
 	<div class="row">
 		<div class="col-md-7">

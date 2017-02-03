@@ -1738,3 +1738,31 @@ ul.automation-confirm li.child-row h5 {
     font-weight: 600;
     position: absolute;
 }
+.dashboard-box .dashboard-icon i {
+    text-shadow: 1px 1px 0px rgba(0,0,0,0.6);
+}
+.dashboard-box .badge {
+    font-size: 12px;
+    border-radius: 20px;
+    height: 21px;
+    min-width: 21px;
+    padding: 1px 5px;
+    font-weight: bold;
+}
+.dashboard-box {
+    border-width: 0;
+    margin-bottom: 10px;
+    height: auto;
+    width: 100px;
+    margin-right: 10px;
+}
+@media (max-width: 500px) {
+    .dashboard-box {
+        height: 110px;
+    }
+}
+.admin-dashboard-container h2 {
+    color: #555;
+    border-bottom: dashed 2px #bbb;
+    padding-bottom: 3px;
+}

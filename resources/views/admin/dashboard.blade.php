@@ -10,9 +10,9 @@
 
 @section('content')
 	<h6 class="h1-subtitle">{{ trans('messages.admin') }}</h6>
-    <h1 class="mt-0">{{ trans('messages.dashboard') }}</h1>
+    <h1 class="mt-0 mb-0">{{ trans('messages.dashboard') }}</h1>
 	
-	<div class="row">
+	<div class="row admin-dashboard-container">
 		<div class="col-md-7">
 			<div class="row">
 				@if (
@@ -20,7 +20,7 @@
 					Auth::user()->can("read", new Acelle\Model\ResellerGroup())
 				)
 					<div class="col-md-6">
-						<h2 class="text-muted">{{ trans('messages.reseller') }}</h2>
+						<h2 class="">{{ trans('messages.reseller') }}</h2>
 						@if (Auth::user()->can("read", new Acelle\Model\Reseller()))
 							<a class="dashboard-box" href="{{ action('Admin\ResellerController@index') }}">
 								<span class="badge badge-info bg-teal-800">{{ Auth::user()->admin->resellers->count() }}</span>
@@ -47,7 +47,7 @@
 					Auth::user()->can("read", new Acelle\Model\AdminGroup())
 				)
 					<div class="col-md-6">
-						<h2 class="text-muted">{{ trans('messages.admin') }}</h2>						
+						<h2 class="">{{ trans('messages.admin') }}</h2>						
 						@if (Auth::user()->can("read", new Acelle\Model\Admin()))
 							<a class="dashboard-box" href="{{ action('Admin\AdminController@index') }}">
 								<div class="dashboard-icon">
@@ -70,7 +70,6 @@
 				@endif		
 				
 			</div>
-			<br />
 			
 			<div class="row">				
 				@if (
@@ -78,7 +77,7 @@
 					Auth::user()->can("read", new Acelle\Model\Currency())
 				)
 					<div class="col-md-12">
-						<h2 class="text-muted">{{ trans('messages.plan') }}</h2>
+						<h2 class="">{{ trans('messages.plan') }}</h2>
 						@if (Auth::user()->can("read", new Acelle\Model\CustomerGroup()))
 							<a class="dashboard-box" href="{{ action('Admin\CustomerGroupController@index') }}">
 								<div class="dashboard-icon">
@@ -107,7 +106,6 @@
 					</div>
 				@endif
 			</div>
-			<br />
 			
 			@if (
 				Auth::user()->admin->getPermission("sending_domain_read") != 'no'
@@ -117,7 +115,7 @@
 			)
 				<div class="row">
 					<div class="col-md-12">
-						<h2 class="text-muted">{{ trans('messages.sending') }}</h2>
+						<h2 class="">{{ trans('messages.sending') }}</h2>
 						@if (Auth::user()->admin->getPermission("sending_server_read") != 'no')
 							<a class="dashboard-box" href="{{ action('Admin\SendingServerController@index') }}">
 								<div class="dashboard-icon">
@@ -153,13 +151,12 @@
 						<br style="clear:both" />
 					</div>
 				</div>
-				<br />
 			@endif
 			
 			
 				<div class="row">
 					<div class="col-md-12">
-						<h2 class="text-muted">{{ trans('messages.setting') }}</h2>
+						<h2 class="">{{ trans('messages.setting') }}</h2>
 						<a class="dashboard-box" href="{{ action('Admin\SettingController@index') }}">
 							<div class="dashboard-icon">
 								<i class="icon-equalizer2"></i>
@@ -193,7 +190,6 @@
 						<br style="clear:both" />
 					</div>
 				</div>
-				<br />
 			
 			@if (
 				Auth::user()->admin->getPermission("report_blacklist") != 'no'
@@ -206,7 +202,7 @@
 			)
 				<div class="row">
 					<div class="col-md-12">
-						<h2 class="text-muted">{{ trans('messages.report') }}</h2>
+						<h2 class="">{{ trans('messages.report') }}</h2>
 						@if (Auth::user()->admin->getPermission("report_blacklist") != 'no')
 							<a class="dashboard-box" href="{{ action('Admin\BlacklistController@index') }}">
 								<div class="dashboard-icon">
@@ -298,14 +294,14 @@
 												<h6 class="no-margin text-bold">
 													{{ $item->customers->count() }}
 												</h6>
-												<span class="text-muted">{{ trans('messages.customers') }}</span>
+												<span class="">{{ trans('messages.customers') }}</span>
 													<br><br>
 											</div>
 											<div class="col-sm-4 col-md-4 text-left">
 												<h6 class="no-margin text-semibold">
 													{{ Tool::formatDateTime($item->created_at) }}
 												</h6>
-												<span class="text-muted">{{ trans('messages.created_at') }}</span>
+												<span class="">{{ trans('messages.created_at') }}</span>
 											</div>	
 										</div>
 			
