@@ -1181,9 +1181,10 @@ $(function() {
         var mask = $(this).parent().find('.date-mask-control');
         var value = $(this).val();
         
-        var date = moment(value); //Get the current date
-        
-        mask.html(date.format(LANG_DATE_FORMAT.toUpperCase()));
+        if(value !== '') {
+            var date = moment(value); //Get the current date
+            mask.html(date.format(LANG_DATE_FORMAT.toUpperCase()));
+        }
     });
     $('.pickadate-control').trigger('change');
 });
