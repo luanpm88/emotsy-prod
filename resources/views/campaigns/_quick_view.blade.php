@@ -1,21 +1,18 @@
-			<h4 class="mt-10 text-semibold">{{ trans('messages.sent_to') }} <span class="text-teal text-bold">2</span> {{ trans('messages.recipients') }}</h4>
+			
             
             <div class="row">
                 <div class="col-md-6 campaigns-summary">
+					<h5 class="mt-10 text-semibold">{{ trans('messages.sent_to') }} <span class="text-bold badge badge-info bg-info-800 badge-big">{{ $campaign->subscribers()->count() }}</span> {{ trans('messages.recipients') }}</h5>
                     <div class="mb-10">
                         <span class="text-bold text-muted">{{ trans('messages.from') }}:</span>
-                        @if (is_object($campaign->segment))
-                            {{ $campaign->mailList->name }} . {{ $campaign->segment->name }}                        
-                        @elseif (is_object($campaign->mailList))
-                            {{ $campaign->mailList->name }}
-                        @endif
-                    </div>
-                    <div class="mb-10">
+                        {!! $campaign->displayRecipients() !!}
+                    </div>                    
+                </div>
+                <div class="col-md-6">
+					<div class="mb-10">
                         <span class="text-bold text-muted">{{ trans('messages.subject') }}:</span>
                         {{ $campaign->subject }}  
                     </div>
-                </div>
-                <div class="col-md-6">
                     <div class="mb-10">
                         <span class="text-bold text-muted">{{ trans('messages.run_at') }}:</span>
                         {{ isset($campaign->run_at) ? Tool::formatDateTime($campaign->run_at) : "" }}
@@ -27,8 +24,6 @@
                 </div>
             </div>
 			
-			
-            <br />
             @include("campaigns._chart")
             <br />
 			@include("campaigns._open_click_rate")

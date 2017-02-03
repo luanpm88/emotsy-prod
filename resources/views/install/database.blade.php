@@ -12,6 +12,12 @@
 
 <h3 class="text-teal-800"><i class="icon-database"></i> {{ trans('messages.database_configuration') }}</h3>
 
+@if (isset($connect_error))
+	<div class="alert alert-danger">
+		{{ $connect_error }}
+	</div>
+@endif
+
 <form action="{{ action('InstallController@database') }}" method="POST" class="form-validate-jqueryz">
 	{!! csrf_field() !!}
 	

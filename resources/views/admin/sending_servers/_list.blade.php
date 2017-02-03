@@ -60,24 +60,24 @@
 											<div class="single-stat-box pull-left ml-20">
 												<span class="no-margin text-teal-800 stat-num">{{ $item->displaySendingQuotaUsage() }}</span>
 												<div class="progress progress-xxs">
-													<div class="progress-bar progress-bar-info" style="width: {{ $item->sendingQuotaUsage() }}%">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->getSendingQuotaUsagePercentage() }}%">
 													</div>
 												</div>
-												<span class="text-muted"><strong>{{ $item->sendingQuota() }}</strong> {{ trans('messages.' . Acelle\Library\Tool::getPluralPrase('email', $item->sendingQuota()) . '_quota') }}</span>
+												<span class="text-muted"><strong>{{ $item->getSendingQuotaUsage() }}</strong> {{ trans('messages.' . Acelle\Library\Tool::getPluralPrase('email', $item->getSendingQuotaUsage()) . '_quota') }}</span>
 												<br />
 												<span class="text-muted2">/ {{ $item->displayQuota() }}</span>
 											</div>
 										</td>
 										<td>
 											<span class="text-muted2 list-status pull-left">
-												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
+												<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.sending_server_status_' . $item->status) }}</span>
 											</span>
 										</td>
 										<td class="text-right">											
 											@can('update', $item)
 												<a href="{{ action('Admin\SendingServerController@edit', ["uid" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 											@endcan
-											@if (Auth::user()->can('delete', $item) || Auth::user()->can('disable', $item))
+											@if (Auth::user()->can('delete', $item) || Auth::user()->can('disable', $item) || Auth::user()->can('enable', $item))
 												<div class="btn-group">										
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 													<ul class="dropdown-menu dropdown-menu-right">

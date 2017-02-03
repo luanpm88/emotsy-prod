@@ -15,7 +15,28 @@ class Controller extends BaseController
     public function __construct()
     {
         // Generate info
+        $user = \Auth::user();
+        $default_language = \Acelle\Model\Language::find(\Acelle\Model\Setting::get('default_language'));
+        if(is_object($user) && is_object($user->customer) && is_object($user->customer->language)) {
+            $language_code = $user->customer->language->code;
+        } else if (isset($_COOKIE['last_language_code'])) {
+            $language_code = $_COOKIE['last_language_code'];
+        } else if (is_object($default_language)) {
+            $language_code = $default_language->code;
+        }
         
+        if(isset($language_code)) {
+            // Set language
+            \App::setLocale($language_code);
+            
+            // In case Carbon dose not support language code
+            try {
+                if(file_exists(base_path("vendor/nesbot/carbon/src/Carbon/Lang/" . $language_code . ".php"))) {
+                    \Carbon\Carbon::setLocale($language_code);
+                }
+            } catch (\Exception $e) {
+            }
+        }
     }
     
     /**
@@ -77,6 +98,20 @@ class Controller extends BaseController
     {
         return view('docs.api.v1');
     }
+    
+    /**
+     * Login from outsite.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function autoLogin($api_token)
+    {
+        $user = \Acelle\Model\User::where('api_token', $api_token)->first();
+
+        \Auth::login($user);
+        
+        return redirect()->action('HomeController@index');
+    }
 
     /**
      * Translate datatable.
@@ -135,5 +170,30 @@ class Controller extends BaseController
                 max: jQuery.validator.format("'.trans('messages.jvalidate_max').'"),
                 min: jQuery.validator.format("'.trans('messages.jvalidate_min').'")
             });';
+    }
+    
+    /**
+     * Reload application settings
+     *
+     * @todo only authenticated user can execute this
+     */
+    public function reloadCache()
+    {
+        $next = action('HomeController@index');
+        \Artisan::call('config:cache');
+        sleep(5);
+        return redirect()->away($next);
+    }
+    
+    /**
+     * Reload application settings
+     *
+     * @todo only authenticated user can execute this
+     */
+    public function runMigration()
+    {
+        \Artisan::call('migrate', ['--force' => true]);
+        sleep(5);
+        echo "migrated!";
     }
 }

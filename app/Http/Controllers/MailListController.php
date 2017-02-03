@@ -13,7 +13,12 @@ class MailListController extends Controller
     {
         parent::__construct();
 
-        $this->middleware('auth');
+        $this->middleware('auth', [
+            'except' => [
+                'embeddedFormSubscribe',
+                'embeddedFormCaptcha',
+            ]
+        ]);
     }
 
     /**
@@ -56,13 +61,18 @@ class MailListController extends Controller
         $customer = $request->user()->customer;
         $list = new \Acelle\Model\MailList();
         $list->contact = new \Acelle\Model\Contact();
-        
+
         if (is_object($customer->contact)) {
             $list->contact->fill($customer->contact->toArray());
             $list->send_to = $customer->contact->email;
         } else {
             $list->send_to = $customer->user->email;
         }
+        
+        // default values
+        $list->subscribe_confirmation = true;
+        $list->send_welcome_email = true;
+        $list->unsubscribe_notification = true;
 
         // authorize
         if (\Gate::denies('create', $list)) {
@@ -198,7 +208,7 @@ class MailListController extends Controller
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.list.updated'));
 
-            return redirect()->action('MailListController@index');
+            return redirect()->action('MailListController@edit', $list->uid);
         }
     }
 
@@ -400,14 +410,14 @@ class MailListController extends Controller
         $datas = [];
         if (isset($list->id)) {
             // create data
-            if ($list->unsubscribeCount()) {
+            if ($list->subscribeCount()) {
                 $result['bar_names'][] = trans('messages.subscribed');
-                $datas[] = ['value' => $list->unsubscribeCount(), 'name' => trans('messages.subscribed')];
+                $datas[] = ['value' => $list->subscribeCount(), 'name' => trans('messages.subscribed')];
             }
             // create data
-            if ($list->subscribeCount()) {
+            if ($list->unsubscribeCount()) {
                 $result['bar_names'][] = trans('messages.unsubscribed');
-                $datas[] = ['value' => $list->subscribeCount(), 'name' => trans('messages.unsubscribed')];
+                $datas[] = ['value' => $list->unsubscribeCount(), 'name' => trans('messages.unsubscribed')];
             }
             // create data
             if ($list->unconfirmedCount()) {
@@ -636,14 +646,29 @@ class MailListController extends Controller
             $subscriber->save();
             // Update field
             $subscriber->updateFields($request->all());
-
-            // SEND EMAIL
-            $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
-            $send_page = \Acelle\Model\Page::findPage($list, $layout);
-            $send_page->renderContent(null, $subscriber);
-            $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
-
-            return redirect()->action('PageController@signUpThankyouPage', $list->uid);
+            
+            if($list->subscribe_confirmation) {
+                // SEND subscription confirmation email
+                $list->sendSubscriptionConfirmationEmail($subscriber);
+    
+                return redirect()->action('PageController@signUpThankyouPage', $list->uid);
+            } else {
+                // change status to subscribed
+                $subscriber->updateStatus('subscribed');
+                
+                // Send welcome email
+                if($list->send_welcome_email) {
+                    // SEND subscription confirmation email
+                    $list->sendSubscriptionWelcomeEmail($subscriber);
+                }
+                
+                return redirect()->action('PageController@signUpConfirmationThankyou', [
+                        'list_uid' => $list->uid,
+                        'uid' => $subscriber->uid,
+                        'code' => 'empty',
+                    ]
+                );
+            }
         }
     }
 }

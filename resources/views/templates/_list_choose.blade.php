@@ -19,12 +19,21 @@
 											<br />
 											<span class="text-muted">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
+											
+										<td>
+											<div class="single-stat-box pull-left">
+												<span class="no-margin stat-num">{{ trans('messages.template_type_' . $item->source) }}</span>
+												<br>
+												<span class="text-muted text-nowrap">{{ trans('messages.type') }}</span>
+											</div>
+										</td>
 										
-										<td class="text-right">
-											<span class="text-muted2 list-status pull-left">
-												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
-											</span>											
-											<a data-url="{{ action('TemplateController@content', $item->uid) }}" href="#choose" type="button" class="btn bg-warning-600 btn-icon choose-template-button"> <i class="icon-checkmark4"></i> {{ trans('messages.choose') }}</a>											
+										<td class="text-right">										
+											@if (is_object($campaign->autoEvent()))
+												<a href="{{ action('AutoEventController@templateChoose', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid, 'template_uid' => $item->uid]) }}" type="button" class="btn bg-teal btn-icon"> <i class="icon-checkmark4"></i> {{ trans('messages.choose') }}</a>
+											@else
+												<a href="{{ action('CampaignController@templateChoose', ['uid' => $campaign->uid, 'template_uid' => $item->uid]) }}" type="button" class="btn bg-teal btn-icon"> <i class="icon-checkmark4"></i> {{ trans('messages.choose') }}</a>
+											@endif
 										</td>
 									</tr>
 								@endforeach

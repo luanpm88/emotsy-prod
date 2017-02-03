@@ -27,10 +27,9 @@ class SubscriberPolicy
         $max = $customer->getOption('subscriber_max');
         $max_per_list = $customer->getOption('subscriber_per_list_max');
 
-        return $customer->id == $item->mailList->customer_id
-                && ($max > $customer->subscribers()->count() || $max == -1)
-                && ($max_per_list > $item->mailList->subscribers()->count()
-                || $max_per_list == -1);
+        return $customer->id == $item->mailList->customer_id &&
+            ($max > $customer->subscribers()->count() || $max == -1) &&
+            ($max_per_list > $item->mailList->subscribers()->count() || $max_per_list == -1);
     }
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)

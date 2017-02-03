@@ -294,4 +294,24 @@
 							</div>
 						</div>
 					</div>
+						
+				<script>
+					$(document).ready(function() {
+						// all sending servers checking
+						$(document).on("change", "input[name='options[all_sending_servers]']", function(e) {
+							if($("input[name='options[all_sending_servers]']:checked").length) {									
+								$(".sending-servers").find("input[type=checkbox]").each(function() {
+									if($(this).is(":checked")) {
+										$(this).parents(".form-group").find(".switchery").eq(1).click();
+									}
+								});
+								$(".sending-servers").hide();
+							} else {
+								$(".sending-servers").show();
+							}
+						});
+						
+						$("input[name='options[all_sending_servers]']").trigger("change");
+					});
+				</script>
 					

@@ -123,7 +123,7 @@ class SendingServerSendGrid extends SendingServer
         $plain = new Content("text/plain", $campaign->getPlainContent($subscriber, $msgId));
         $html = new Content("text/html", $campaign->getHtmlContent($subscriber, $msgId));
         
-        $mail = new Mail($from, $campaign->subject, $to, $plain);
+        $mail = new Mail($from, $campaign->getSubject($subscriber, $msgId), $to, $plain);
         foreach($customHeaders as $key => $value) {
             $mail->addHeader($key, $value);
         }

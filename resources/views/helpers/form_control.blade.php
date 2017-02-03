@@ -20,6 +20,11 @@
 												@if ($required)
 													<span class="text-danger">*</span>
 												@endif
+												@if (isset($check_all_none))
+													&nbsp;&nbsp;&nbsp;
+													<a href="#all" class="checkboxes_check_all">{{ trans('messages.all') }}</a>
+													| <a href="#none" class="checkboxes_check_none">{{ trans('messages.none') }}</a>
+												@endif
 											</label>
 										@endif
 										
@@ -38,6 +43,12 @@
 										@endif
 										
 										@include('helpers._' . $type)
+										
+										@if (!empty($quick_note))
+											<span class="quick_note">
+												{!! $quick_note !!}
+											</span>
+										@endif
 										
 										@if (!empty($subfix))
 											<span class="subfix">

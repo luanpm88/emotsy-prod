@@ -158,17 +158,14 @@ class Segment extends Model
             ['text' => trans('messages.not_blank'), 'value' => 'not_blank'],
         ];
     }
-
+    
     /**
-     * Get all subscribers belongs to the segment.
+     * Get subscribers conditions.
      *
      * @return collect
      */
-    public function subscribers($request = null)
+    public function getSubscribersConditions()
     {
-        $query = \Acelle\Model\Subscriber::select('subscribers.*')
-                    ->where('subscribers.mail_list_id', $this->mail_list_id);
-
         $conditions = array();
         foreach ($this->segmentConditions as $condition) {
             $keyword = $condition->value;
@@ -227,6 +224,21 @@ class Segment extends Model
         } else {
             $conditions = implode(' AND ', $conditions);
         }
+        
+        return $conditions;
+    }
+
+    /**
+     * Get all subscribers belongs to the segment.
+     *
+     * @return collect
+     */
+    public function subscribers($request = null)
+    {
+        $query = \Acelle\Model\Subscriber::select('subscribers.*')
+                    ->where('subscribers.mail_list_id', $this->mail_list_id);
+
+        $conditions = $this->getSubscribersConditions();
 
         if (!empty($conditions)) {
             $query = $query->whereRaw($conditions);
@@ -238,7 +250,7 @@ class Segment extends Model
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
-        return $query;
+        return $query->distinct();
     }
 
     /**

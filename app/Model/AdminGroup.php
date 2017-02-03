@@ -144,7 +144,6 @@ class AdminGroup extends Model
     public static function defaultOptions()
     {
         return [
-            
         ];
     }
     

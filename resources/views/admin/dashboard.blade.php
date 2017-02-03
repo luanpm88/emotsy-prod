@@ -315,7 +315,6 @@
 						</div>
 					</div>
 				</div>
-
 				<div class="panel panel-white panel-no-color">
 					<div class="panel-heading">
 						<h5 class="panel-title text-semibold">

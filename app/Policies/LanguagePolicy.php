@@ -39,16 +39,56 @@ class LanguagePolicy
     public function update(\Acelle\Model\User $user, \Acelle\Model\Language $item)
     {
         $ability = $user->admin->getPermission('language_update');
-        $can = $ability == 'yes';
+        $can = $ability == 'yes' && !$item->is_default;
 
-        return $can && false;
+        return $can;
     }
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\Language $item)
     {
         $ability = $user->admin->getPermission('language_delete');
+        $can = $ability == 'yes' && !$item->is_default;
+
+        return $can;
+    }
+    
+    public function translate(\Acelle\Model\User $user, \Acelle\Model\Language $item)
+    {
+        $ability = $user->getOption('backend', 'language_update');
         $can = $ability == 'yes';
 
-        return $can && false;
+        return $can;
+    }
+    
+    public function disable(\Acelle\Model\User $user, \Acelle\Model\Language $item)
+    {
+        $ability = $user->admin->getPermission('language_update');
+        $can = $ability == 'yes' && !$item->is_default;
+
+        return ($can && $item->status != "inactive");
+    }
+    
+    public function enable(\Acelle\Model\User $user, \Acelle\Model\Language $item)
+    {
+        $ability = $user->admin->getPermission('language_update');
+        $can = $ability == 'yes' && !$item->is_default;
+
+        return ($can && $item->status != "active");
+    }
+    
+    public function download(\Acelle\Model\User $user, \Acelle\Model\Language $item)
+    {
+        $ability = $user->admin->getPermission('language_read');
+        $can = $ability == 'yes';
+
+        return $can;
+    }
+    
+    public function upload(\Acelle\Model\User $user, \Acelle\Model\Language $item)
+    {
+        $ability = $user->admin->getPermission('language_update');
+        $can = $ability == 'yes';
+
+        return $can;
     }
 }

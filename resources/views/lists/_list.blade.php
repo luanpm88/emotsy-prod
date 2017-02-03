@@ -54,7 +54,7 @@
 										</td>
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
-												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
+												<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.list_status_' . $item->status) }}</span>
 											</span>
 											<a href="{{ action('SubscriberController@create', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.create_subscriber') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></a>
 											<a href="{{ action('MailListController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="icon-stats-growth mr-0 pr-0"></i></a>
@@ -69,6 +69,11 @@
 														</a>
 													</li>
 													<li><a href="{{ action('PageController@update', ['list_uid' => $item->uid, 'alias' => 'sign_up_form']) }}"><i class="icon-certificate"></i> {{ trans('messages.custom_forms_and_emails') }}</a></li>
+													<li>
+														<a class="level-1" href="{{ action('FieldController@index', $item->uid) }}">
+															<i class="icon-list3"></i> {{ trans('messages.manage_list_fields') }}
+														</a>
+													</li>
 													<li><a href="{{ action('MailListController@edit', $item->uid) }}"><i class="icon-pencil7"></i> {{ trans("messages.edit_list") }}</a></li>
 													<li><a href="{{ action('SubscriberController@import', $item->uid) }}"><i class="icon-download4"></i> {{ trans('messages.import') }}</a></li>
 													<li><a href="{{ action('SubscriberController@export', $item->uid) }}"><i class="icon-upload4"></i> {{ trans('messages.export') }}</a></li>

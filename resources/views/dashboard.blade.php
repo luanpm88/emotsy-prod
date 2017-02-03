@@ -9,8 +9,65 @@
 @endsection
 
 @section('content')
-    <h1>{{ trans('messages.dashboard') }}</h1>
-    
+    <h1>{{ trans('messages.dashboard') }}</h1>    
+	
+	<h2 class="text-teal-800"><i class="icon-stats-bars4"></i> {{ trans("messages.used_quota") }}</h2>
+	<div class="row quota_box">
+		<div class="col-sm-6 col-md-6">
+			<div class="content-group-sm">
+				<div class="pull-right text-teal-800 text-semibold">
+					<span class="text-muted">{{ Auth::user()->customer->getSendingQuotaUsage() }}/{{ (Auth::user()->customer->getSendingQuota() == -1) ? '∞' : Auth::user()->customer->getSendingQuota() }}</span>
+					&nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingQuotaUsage() }}
+				</div>
+				<h5 class="text-semibold mb-5">{{ trans('messages.sending_quota') }}</h5>
+				<div class="progress progress-xxs">
+					<div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->getSendingQuotaUsagePercentage() }}%">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-6">
+			<div class="content-group-sm">
+				<div class="pull-right text-teal-800 text-semibold">
+					<span class="text-muted">{{ Auth::user()->customer->listsCount() }}/{{ Auth::user()->customer->maxLists() }}</span>
+					&nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayListsUsage() }}
+				</div>
+				<h5 class="text-semibold mb-5">{{ trans('messages.list') }}</h5>
+				<div class="progress progress-xxs">
+					<div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->listsUsage() }}%">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-6">
+			<div class="content-group-sm mt-20">
+				<div class="pull-right text-teal-800 text-semibold">
+					<span class="text-muted progress-xxs">{{ Auth::user()->customer->campaignsCount() }}/{{ Auth::user()->customer->maxCampaigns() }}</span>
+					&nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayCampaignsUsage() }}
+				</div>
+				<h5 class="text-semibold mb-5 mt-0">{{ trans('messages.campaign') }}</h5>
+				<div class="progress progress-xxs">
+					<div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->campaignsUsage() }}%">
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="col-sm-6 col-md-6">
+			<div class="content-group-sm">
+				<div class="pull-right text-teal-800 text-semibold">
+					<span class="text-muted">{{ Auth::user()->customer->subscribersCount() }}/{{ Auth::user()->customer->maxSubscribers() }}</span>
+					&nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySubscribersUsage() }}
+				</div>
+				<h5 class="text-semibold mb-5">{{ trans('messages.subscriber') }}</h5>
+				<div class="progress progress-xxs">
+					<div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->subscribersUsage() }}%">
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<hr />
 	
     <h2 class="text-teal-800"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h2>
 		
@@ -36,9 +93,8 @@
 		</div>
 		<div class="campaign-quickview-container" data-url="{{ action("CampaignController@quickView") }}"></div>
 	@endif
-    
-	<br />
-    <br />
+
+    <hr />
     
     <h2 class="text-teal-800"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h2>
     
@@ -79,7 +135,6 @@
 			<li class="text-semibold"><a href="#top-tab3" data-toggle="tab">
 				<i class="icon-link"></i> {{ trans('messages.clicked_links') }}</a></li>
 		</ul>
-
 		<div class="tab-content">
 			<div class="tab-pane active" id="top-tab1">
 				<ul class="modern-listing mt-0 top-border-none">
@@ -94,11 +149,7 @@
 										</a>
 									</h6>
 									<p>
-										@if (is_object($item->segment))
-											{{ $item->mailList->name }} . {{ $item->segment->name }}													
-										@elseif (is_object($item->mailList))
-											{{ $item->mailList->name }}
-										@endif                                                
+										{!! $item->displayRecipients() !!}
 									</p>
 								</div>
 								<div class="col-sm-2 col-md-2 text-left">
@@ -123,7 +174,7 @@
 										<br /><br />
 								</div>	
 							</div>
-
+	
 						</li>
 					@endforeach
 				</ul>
@@ -141,11 +192,7 @@
 										</a>
 									</h6>
 									<p>
-										@if (is_object($item->segment))
-											{{ $item->mailList->name }} . {{ $item->segment->name }}													
-										@elseif (is_object($item->mailList))
-											{{ $item->mailList->name }}
-										@endif                                                
+										{!! $item->displayRecipients() !!}
 									</p>
 								</div>
 								<div class="col-sm-2 col-md-2 text-left">
@@ -170,7 +217,6 @@
 										<br /><br />
 								</div>										
 							</div>
-
 						</li>
 					@endforeach
 				</ul>

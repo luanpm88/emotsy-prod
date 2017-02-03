@@ -1,5 +1,3 @@
-					<h4 class="mt-0 text-semibold">{{ trans('messages.' . request()->type) }}</h4>
-					
 					<div class="row">
 						<div class="col-md-4">							
 							@include('helpers.form_control', [
@@ -8,27 +6,18 @@
 								'name' => 'name',
 								'value' => $language->name,
 								'help_class' => 'language',
-								'rules' => Acelle\Model\Language::rules()
+								'rules' => $language->rules()
 							])
 						</div>
 						<div class="col-md-4">							
 							@include('helpers.form_control', [
-								'type' => 'text',
+								'type' => 'select',
 								'class' => '',
 								'name' => 'code',
 								'value' => $language->code,
+								'options' => \Acelle\Model\Language::languageCodes(),
 								'help_class' => 'language',
-								'rules' => Acelle\Model\Language::rules()
-							])
-						</div>
-						<div class="col-md-4">							
-							@include('helpers.form_control', [
-								'type' => 'text',
-								'class' => '',
-								'name' => 'region_code',
-								'value' => $language->region_code,
-								'help_class' => 'language',
-								'rules' => Acelle\Model\Language::rules()
+								'rules' => $language->rules()
 							])
 						</div>
 					</div>
@@ -36,4 +25,7 @@
 					<hr >
 					<div class="text-left">
 						<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+						<a href="{{ action('Admin\LanguageController@index') }}" type="button" class="btn bg-grey">
+							<i class="icon-cross2"></i> {{ trans('messages.cancel') }}
+						</a>
 					</div>

@@ -4,7 +4,8 @@
 .color-scheme-blue .text-teal-800 {
     color: rgb(20,130,160) !important;
 }
-.color-scheme-blue .navbar-inverse {
+.color-scheme-blue .navbar-inverse,
+.bg-slate-800.color-scheme-blue {
     background-color: rgb(20,60,80);
 }
 .color-scheme-blue .nav-tabs.nav-tabs-top > li.active > a,
@@ -33,7 +34,8 @@
 .color-scheme-blue .progress-bar-info,
 .color-scheme-blue .modern-listing .number,
 .color-scheme-blue ul.campaign-steps > li.active > a,
-.color-scheme-blue ul.campaign-steps > li.active > a:hover
+.color-scheme-blue ul.campaign-steps > li.active > a:hover,
+.color-scheme-blue .bg-teal
 {
     background: rgb(20,130,160);
     border-color: rgb(20,130,160);
@@ -66,7 +68,8 @@
 .color-scheme-green .text-teal-800 {
     color: rgb(0,140,110) !important;
 }
-.color-scheme-green .navbar-inverse {
+.color-scheme-green .navbar-inverse,
+.bg-slate-800.color-scheme-green {
     background-color: rgba(0,60,40, 0.9);
 }
 .color-scheme-green .nav-tabs.nav-tabs-top > li.active > a,
@@ -95,7 +98,8 @@
 .color-scheme-green .progress-bar-info,
 .color-scheme-green .modern-listing .number,
 .color-scheme-green ul.campaign-steps > li.active > a,
-.color-scheme-green ul.campaign-steps > li.active > a:hover
+.color-scheme-green ul.campaign-steps > li.active > a:hover,
+.color-scheme-green .bg-teal
 {
     background: rgb(0,140,110);
     border-color: rgb(0,140,110);
@@ -128,8 +132,8 @@
 .color-scheme-brown .text-teal-800 {
     color: rgb(145,115,25) !important;
 }
-.color-scheme-brown .navbar-inverse
-{
+.color-scheme-brown .navbar-inverse,
+.bg-slate-800.color-scheme-brown {
     background-color: rgba(55,45,10,0.9);
 }
 .color-scheme-brown .nav-tabs.nav-tabs-top > li.active > a,
@@ -158,7 +162,8 @@
 .color-scheme-brown .progress-bar-info,
 .color-scheme-brown .modern-listing .number,
 .color-scheme-brown ul.campaign-steps > li.active > a,
-.color-scheme-brown ul.campaign-steps > li.active > a:hover
+.color-scheme-brown ul.campaign-steps > li.active > a:hover,
+.color-scheme-brown .bg-teal
 {
     background: rgb(145,115,25);
     border-color: rgb(145,115,25);
@@ -192,7 +197,8 @@
 .color-scheme-pink .text-teal-800 {
     color: rgb(190,50,120) !important;
 }
-.color-scheme-pink .navbar-inverse {
+.color-scheme-pink .navbar-inverse,
+.bg-slate-800.color-scheme-pink {
     background-color: rgba(100,40,60,0.9);
 }
 .color-scheme-pink .nav-tabs.nav-tabs-top > li.active > a,
@@ -221,7 +227,8 @@
 .color-scheme-pink .progress-bar-info,
 .color-scheme-pink .modern-listing .number,
 .color-scheme-pink ul.campaign-steps > li.active > a,
-.color-scheme-pink ul.campaign-steps > li.active > a:hover
+.color-scheme-pink ul.campaign-steps > li.active > a:hover,
+.color-scheme-pink .bg-teal
 {
     background: rgb(170,80,100);
     border-color: rgb(170,80,100);
@@ -254,7 +261,8 @@
 .color-scheme-grey .text-teal-800 {
     color: #333 !important;
 }
-.color-scheme-grey .navbar-inverse {
+.color-scheme-grey .navbar-inverse,
+.bg-slate-800.color-scheme-grey {
     background-color: #444;
 }
 .color-scheme-grey .nav-tabs.nav-tabs-top > li.active > a,
@@ -283,7 +291,8 @@
 .color-scheme-grey .progress-bar-info,
 .color-scheme-grey .modern-listing .number,
 .color-scheme-grey ul.campaign-steps > li.active > a,
-.color-scheme-grey ul.campaign-steps > li.active > a:hover
+.color-scheme-grey ul.campaign-steps > li.active > a:hover,
+.color-scheme-grey .bg-teal
 {
     background: #666;
     border-color: #666;

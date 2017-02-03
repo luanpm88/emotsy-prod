@@ -9,6 +9,8 @@ Homestead.json
 /storage/upload
 /storage/installed
 /storage/recache
+/storage/import
+/storage/export
 /public/source
 /public/thumbs
 /storage/tmp

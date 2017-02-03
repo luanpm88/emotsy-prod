@@ -23,9 +23,14 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\QuotaTrackerStd;
+use Carbon\Carbon;
+use Acelle\Library\Log as MailLog;
 
 class Customer extends Model
 {
+    protected $quotaTracker;    
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -125,6 +130,16 @@ class Customer extends Model
     public function logs()
     {
         return $this->hasMany('Acelle\Model\Log')->orderBy('created_at', 'desc');
+    }
+    
+    public function trackingLogs()
+    {
+        return $this->hasMany('Acelle\Model\TrackingLog')->orderBy('created_at', 'asc');
+    }
+    
+    public function automations()
+    {
+        return $this->hasMany('Acelle\Model\Automation');
     }
 
     /**
@@ -569,7 +584,17 @@ class Customer extends Model
      */
     public function overQuota()
     {
-        return (int) $this->sendingQuotaUsage() >= 100;
+        return !$this->getQuotaTracker()->check();
+    }
+    
+    /**
+     * Increment quota usage
+     *
+     * @return void
+     */
+    public function countUsage(Carbon $timePoint = null)
+    {
+        return $this->getQuotaTracker()->add();
     }
     
     /**
@@ -638,5 +663,197 @@ class Customer extends Model
     {
         $this->status = 'active';
         return $this->save();
+    }
+    
+    /**
+     * Get customer's quota.
+     *
+     * @return string
+     */
+    public function getSendingQuota()
+    {
+        // -1 indicate unlimited
+        return $this->getOption('sending_quota');
+    }
+    
+    /**
+     * Get customer's sending quota.
+     *
+     * @return string
+     */
+    public function getSendingQuotaUsage()
+    {
+        $tracker = $this->getQuotaTracker();
+        $tracker->check(); // renew the usage data (trigger the private shiftBy() function)
+        return $tracker->usage();
+    }
+    
+    /**
+     * Get user's sending quota rate.
+     *
+     * @return string
+     */
+    public function getSendingQuotaUsagePercentage()
+    {
+        // @todo magic number
+        if ($this->getSendingQuota() == -1) {
+            return '0';
+        }
+
+        return round(($this->getQuotaTracker()->usagePercentage() * 100), 2);
+    }
+    
+    /**
+     * Get quota starting time
+     *
+     * @return array
+     */
+    public function getQuotaStartingTime() {
+        $timeValue = $this->getOption('sending_quota_time');
+        $timeUnit = $this->getOption('sending_quota_time_unit');
+        
+        // @todo: magic number here
+        // @todo: why $timeValue == -1?
+        // @todo: configuration setting for default Quota Starting Time
+        if ($timeValue == '-1') {
+            $start = \Carbon\Carbon::parse("1 month ago");
+        } else {
+            $start = \Carbon\Carbon::parse("{$timeValue} {$timeUnit} ago");
+        }
+        return $start;
+    }
+
+    /**
+     * Get quota starting time
+     *
+     * @return array
+     */
+    public function getQuotaIntervalString() {
+        $timeValue = $this->getOption('sending_quota_time');
+        $timeUnit = $this->getOption('sending_quota_time_unit');
+        return "{$timeValue} {$timeUnit}";
+    }
+
+    /**
+     * Initialize the quota tracker
+     *
+     * @return array
+     */
+    public function renewQuotaTracker() {
+        $start = $this->getQuotaStartingTime();
+
+        // recent tracking logs
+        // @todo: potential issue here, application fails in case $start is NULL
+        $recent = $this->trackingLogs()->where('created_at', '>=', $start);
+        
+        // existing quota usage
+        $stored = null;
+
+        // load the tracker from DB (if exists)
+        // then merge with the current tracking log data
+        if ($this->quota) {
+            try {
+                $stored = unserialize($this->quota);
+            } catch (\Exception $x) {
+                // @TODO logging here
+                MailLog::warning('Cannot retrieve user quota');
+            }
+        }
+
+        // load the tracker from DB
+        if (!is_null($stored) && !empty($stored)) {
+            // retrieve the stored quota usage and merge it with actual (newer) usage
+            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp(end($stored)));
+            $series = collect($recent->get())->map(function($trackingLog) {
+                return $trackingLog->created_at->timestamp;
+            })->toArray();
+            
+            $series = array_merge($stored, $series);
+        } else {
+            $series = collect($recent->get())->map(function($trackingLog) {
+                return $trackingLog->created_at->timestamp;
+            })->toArray();
+        }
+        
+        $this->getQuotaTracker()->renew($series);
+    }
+
+    /**
+     * Initialize the quota tracker
+     *
+     * @return array
+     */
+    public function initQuotaTracker() {
+        if (\Config::get('app.redis_enabled')) {
+            $this->quotaTracker = new QuotaTrackerRedis(Redis::connection(), $this->getQuotaIntervalString(), $this->getSendingQuota());
+            // @note: in case of Redis tracker, the following command must be issued manually
+            //     $this->renewQuotaTracker();
+            // Normally, Redis tracker is used in a multi-process context, the above command must be executed 
+            //     by the parent process, before forking any child process
+        } else {
+            $this->quotaTracker = new QuotaTrackerStd($this->getQuotaIntervalString(), $this->getSendingQuota());
+            // renew the quota data stored in the DB
+            $this->renewQuotaTracker();
+        }
+    }
+
+    /**
+     * Get user's QuotaTracker
+     *
+     * @return array
+     */
+    public function getQuotaTracker() {
+        if(!$this->quotaTracker) {
+            $this->initQuotaTracker();
+        }
+
+        return $this->quotaTracker;
+    }
+
+    /**
+     * Store the current quota usage info to DB
+     *
+     * @return array
+     */
+    public function saveQuotaUsageInfo() {
+        $this->quota = serialize($this->getQuotaTracker()->getSeries());
+        $this->save();
+    }
+
+    public function quotaDebug() {
+        echo "During the last " . $this->getQuotaIntervalString() . ", Count: " . $this->getSendingQuotaUsage() . " / Total: " . $this->getSendingQuota() . "\n";
+        echo "Now " . \Carbon\Carbon::now()->toDateTimeString() . "\n";
+        foreach($this->getQuotaTracker()->getSeries() as $t) {
+            echo \Carbon\Carbon::createFromTimestamp($t)->toDateTimeString() . " <-> " ;
+        }
+        echo "\n" . env('REDIS_ENABLED') . "\n";
+    }
+    
+    /**
+     * Get not auto campaign.
+     *
+     * @return array
+     */
+    public function getNormalCampaigns()
+    {
+        return $this->campaigns()->where('is_auto', '=', false);
+    }
+    
+    /**
+     * Get user timezone
+     *
+     * @return string
+     */
+    public function getTimezone() {
+        return $this->timezone;
+    }
+    
+    /**
+     * Get user language code
+     *
+     * @return string
+     */
+    public function getLanguageCode() {
+        return (is_object($this->language) ? $this->language->code : null);
     }
 }

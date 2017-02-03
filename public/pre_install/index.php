@@ -76,7 +76,7 @@ $compatibilities =  [
   ],
 ];
 
-var_dump($compatibilities);
+//var_dump($compatibilities);
 
 ?>
 <!DOCTYPE html>

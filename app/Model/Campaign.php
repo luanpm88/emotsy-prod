@@ -26,16 +26,21 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
+use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use DB;
+use Carbon\Carbon;
+use Acelle\Model\SystemJob;
+use Acelle\Exceptions\CampaignPausedException;
 
 class Campaign extends Model
 {
     // Campaign status
     const STATUS_NEW = 'new';
-    const STATUS_READY = 'ready';
+    const STATUS_READY = 'ready'; // equiv. to 'queue'
     const STATUS_SENDING = 'sending';
     const STATUS_ERROR = 'error';
     const STATUS_DONE = 'done';
+    const STATUS_PAUSED = 'paused';
 
     // Campaign types
     const TYPE_REGULAR = 'regular';
@@ -59,17 +64,58 @@ class Campaign extends Model
     /**
      * Get the mail list.
      */
-    public function mailList()
+    public function defaultMailList()
     {
-        return $this->belongsTo('Acelle\Model\MailList');
+        if($this->isAuto()) {
+            return $this->autoEvent()->automation->belongsTo('Acelle\Model\MailList', 'default_mail_list_id');
+        } else {
+            return $this->belongsTo('Acelle\Model\MailList', 'default_mail_list_id');
+        }
     }
-
+    
     /**
-     * Get the segment of the campaign.
+     * Get campaign validation rules.
      */
-    public function segment()
+    public function rules()
     {
-        return $this->belongsTo('Acelle\Model\Segment');
+        return array(
+            'name' => 'required',
+            'subject' => 'required',
+            'from_email' => 'required|email',
+            'from_name' => 'required',
+            'reply_to' => 'required|email',
+        );
+    }
+    
+    /**
+     * Get campaign validation rules.
+     */
+    public function automatedCampaignRules()
+    {
+        return array(
+            'type' => 'required',
+            'name' => 'required',
+            'subject' => 'required',
+            'from_email' => 'required|email',
+            'from_name' => 'required',
+            'reply_to' => 'required|email',
+        );
+    }
+    
+    /**
+     * Get the auto events of the campaign.
+     */
+    public function autoEvents()
+    {
+        return $this->belongsToMany('Acelle\Model\AutoEvent', 'auto_campaigns');
+    }
+    
+    /**
+     * Get the auto event of the campaign.
+     */
+    public function autoEvent()
+    {
+        return $this->autoEvents()->first();
     }
 
     /**
@@ -152,13 +198,109 @@ class Campaign extends Model
         return UnsubscribeLog::select('unsubscribe_logs.*')->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'unsubscribe_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
     }
+    
+    /**
+     * Get campaign list segment.
+     *
+     * @return mixed
+     */
+    public function listsSegments()
+    {
+        return $this->hasMany('Acelle\Model\CampaignsListsSegment');
+    }
+    
+    /**
+     * Get campaign lists segments.
+     *
+     * @return mixed
+     */
+    public function getListsSegments()
+    {
+        $lists_segments = $this->listsSegments;
+        
+        if($lists_segments->isEmpty()) {
+            $lists_segment = new CampaignsListsSegment();
+            $lists_segment->campaign_id = $this->id;
+            $lists_segment->is_default = true;
+            
+            $lists_segments->push($lists_segment);
+        }
+        
+        return $lists_segments;
+    }
+    
+    /**
+     * Get campaign lists segments group by list.
+     *
+     * @return mixed
+     */
+    public function getListsSegmentsGroups()
+    {
+        $lists_segments = $this->getListsSegments();
+        $groups = [];
+        
+        foreach($lists_segments as $lists_segment) {
+            if(!isset($groups[$lists_segment->mail_list_id])) {
+                $groups[$lists_segment->mail_list_id] = [];
+                $groups[$lists_segment->mail_list_id]['list'] = $lists_segment->mailList;
+                if($this->default_mail_list_id == $lists_segment->mail_list_id) {
+                    $groups[$lists_segment->mail_list_id]['is_default'] = true;
+                } else {
+                    $groups[$lists_segment->mail_list_id]['is_default'] = false;
+                }
+                $groups[$lists_segment->mail_list_id]['segment_uids'] = [];
+            }
+            if(is_object($lists_segment->segment) && !in_array($lists_segment->segment->uid, $groups[$lists_segment->mail_list_id]['segment_uids'])) {
+                $groups[$lists_segment->mail_list_id]['segment_uids'][] = $lists_segment->segment->uid;
+            }
+        }
+        
+        return $groups;
+    }
 
     /**
-     * get pending campaigns.
+     * Reset max_execution_time so that command can run for a long time without being terminated
+     *
+     * @return mixed
      */
-    public static function getWaitingCampaigns()
-    {
-        return self::where('status', self::STATUS_READY)->whereRaw('(run_at IS NULL OR run_at <= NOW())')->get();
+    public static function resetMaxExecutionTime() {
+        try {
+            set_time_limit(0);
+            ini_set('max_execution_time', 0);
+            ini_set('memory_limit', '-1');
+        } catch (\Exception $e) {
+            MailLog::warning('Cannot reset max_execution_time: '.$e->getMessage());
+        }
+    }
+
+    /**
+     * Start the campaign
+     * 
+     */
+    public function start($trigger = null, $subscribers = null) {
+        // Reserve: mark the campaign as sending, prevent other processes from sending it again
+        try {
+            $this->sending();
+            MailLog::info('Starting campaign `'.$this->name.'`');
+
+            // Reset max_execution_time so that command can run for a long time without being terminated
+            self::resetMaxExecutionTime();
+
+            // Only run multi-process if pcntl is enabled
+            if (extension_loaded('pcntl')) {
+                $this->runMultiProcesses();
+            } else {
+                MailLog::warning('Cannot fork processes');
+                $this->run($subscribers);
+            }
+            MailLog::info('Finish campaign `'.$this->name.'`');
+
+            // runMultiProcesses() and run() are responsible for setting DONE status
+        } catch (\Exception $ex) {
+            // Set ERROR status
+            $this->error($ex->getMessage());
+            MailLog::error('Campaign failed. '.$ex->getMessage());
+        }
     }
 
     /**
@@ -167,7 +309,6 @@ class Campaign extends Model
     public function done()
     {
         $this->status = self::STATUS_DONE;
-        $this->delivery_at = \Carbon\Carbon::now();
         $this->save();
     }
 
@@ -177,15 +318,26 @@ class Campaign extends Model
     public function sending()
     {
         $this->status = self::STATUS_SENDING;
+        $this->delivery_at = \Carbon\Carbon::now();
+        $this->save();
+    }
+
+    /**
+     * Mark the campaign as 'ready' (which is equiv. to 'queued')
+     */
+    public function ready()
+    {
+        $this->status = self::STATUS_READY;
         $this->save();
     }
 
     /**
      * Mark the campaign as 'done' or 'sent'.
      */
-    public function error()
+    public function error($error = null)
     {
         $this->status = self::STATUS_ERROR;
+        $this->last_error = $error;
         $this->save();
     }
 
@@ -197,17 +349,8 @@ class Campaign extends Model
         $me = self::find($this->id);
         $this->status = $me->status;
         $this->save();
-    }
-    
-    /**
-     * Mark campaign as 'ready'.
-     *
-     * @return boolean
-     */
-    public function ready()
-    {
-        $this->status = self::STATUS_READY;
-        $this->save();
+
+        return $this;
     }
     
     /**
@@ -238,48 +381,60 @@ class Campaign extends Model
      *
      * @return mixed
      */
-    public function startMultiProcesses()
+    public function runMultiProcesses()
     {
-        $this->sending();
-        
-        // @todo: customerneedcheck
-        MailLog::info("Starting campaign `{$this->name}` (ID: {$this->id})");
         $count = (int) $this->user->customer->getOption('max_process');
-
         $subscribers = $this->getPendingSubscribers();
         MailLog::info(sizeof($subscribers).' subscriber(s) selected');
+        
+        // split the big subscribers list into smaller ones
+        // this is also the number of processes to fork
         $chunks = $this->getChunks($subscribers, $count);
 
-        MailLog::info('Start multi-process ('.sizeof($chunks).') session');
+        MailLog::info('Forking '.sizeof($chunks).' process(es)');
         $parentPid = getmypid();
         for ($i = 0; $i < sizeof($chunks); ++$i) {
             $pid = pcntl_fork();
-
+            
+            // for child process only
             if (!$pid) {
                 // Reconnect to the DB to prevent connection closed issue when using fork
                 DB::reconnect('mysql');
+                
                 // Re-initialize logging to capture the child process' PID
                 MailLog::fork();
 
                 MailLog::info('Start child process '.($i + 1).' of '.sizeof($chunks).' (forked from '.$parentPid.')');
                 sleep(self::WORKER_DELAY);
-                $this->start($chunks[$i], true);
+                $this->run($chunks[$i]);
                 exit($i + 1);
+                // end child process
             }
         }
-
+        
+        // wait for child processes to finish
         while (pcntl_waitpid(0, $status) != -1) {
             $status = pcntl_wexitstatus($status);
-            MailLog::info("Child $status completed\n");
+            MailLog::info("Child $status completed");
         }
-
+        
+        // after all child processes are done
         $this->refreshStatus();
-
+        
+        // If all child processes finish sucessfully, just mark campaign as done
+        // Otherwise, mark campaign with error status (by child process)
+        //
+        // There are conventions here: 
+        //   + Child process does not update status from SENDING to DONE, it is left for the parent process
+        //   + Child process only updates status from SENDING to ERROR
+        //   + Parent process only updates status to DONE when current status is SENDING
+        //     indicating that all child processes finish sucessfully
+        //   + In case one child process update the status from SENDING to ERROR, it is left as the final status
+        //     the latest error is kept
         if ($this->status == self::STATUS_SENDING) {
             $this->done();
-            MailLog::info('Campaign sent!');
         } else {
-            MailLog::warning('Campaign sent, but some errors occurred!');
+            // leave the error reported by child process
         }
     }
 
@@ -287,27 +442,39 @@ class Campaign extends Model
      * Send Campaign
      * Iterate through all subscribers and send email.
      */
-    public function start($subscribers = null, $multi = false)
+    public function run($subscribers = null)
     {
+        // check if the method is trigger by a child process (triggered by startMultiProcess method)
+        $asChildProcess = !($subscribers == null);
+        
+        // try/catch to make sure child process does not stop without reporting any error
         try {
-            if (!$multi) {
-                $this->sending();
-                MailLog::info("Starting campaign `{$this->name}` (ID: {$this->id})");
+            if (!$asChildProcess) {
                 $subscribers = $this->getPendingSubscribers();
-                MailLog::info(sizeof($subscribers).' subscriber(s) selected');
             }
 
             $i = 0;
             foreach ($subscribers as $subscriber) {
                 // @todo: customerneedcheck
                 if ($this->user->overQuota()) {
-                    throw new \Exception("Customer (ID: {$this->user->id}) has reached sending quota");
+                    throw new \Exception("User has reached sending limit");
+                }
+                
+                // randomly check for campaign PAUSED status after 10 emails
+                // @todo wrap up the probability checking here
+                if (($i % 10) == 0) {
+                    if ($this->refreshStatus()->isPaused()) {
+                        throw new CampaignPausedException();
+                    }
                 }
 
                 $i += 1;
                 MailLog::info("Sending to subscriber `{$subscriber->email}` ({$i}/".sizeof($subscribers).')');
 
+                // Pick up an available sending server
+                // Throw exception in case no server available
                 $server = $this->pickServer($this);
+
                 list($message, $msgId) = $this->prepareEmail($subscriber, $server);
 
                 $sent = $server->send($message, array(
@@ -321,27 +488,36 @@ class Campaign extends Model
                 $this->trackMessage($sent, $subscriber, $server, $msgId);
             }
 
-            if (!$multi) {
+            // only mark campaign as done when running as its own process
+            // as a child process, just finish and leave the parent process to update campaign status
+            if (!$asChildProcess) {
                 $this->done();
-                MailLog::info('Campaign sent!');
             }
+
+        } catch (CampaignPausedException $e) {
+            // just finish
+            MailLog::info('Campaign paused');
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
-            MailLog::error("Campaign `{$this->name}` (ID: ".$this->id.') deferred!');
-            $this->error();
+            $this->error($e->getMessage());
         } finally {
             // reset server pools: just in case DeliveryServerAmazonSesWebApi
             // --> setup SNS requires using from_email of the corresponding campaign
             // but SNS is only made once when the server is initiated
+            // UPDATE: this is no longer the case as one process now only deals with one campaign
+            //         however, the method is still needed to save sending servers'' 
             SendingServer::resetServerPools();
+            
+            // store user quota usage
+            $this->user->saveQuotaUsageInfo();
         }
     }
 
     /**
-     * Log Delivery
      * Log delivery message, used for later tracking.
+     *
      */
-    private function trackMessage($response, $subscriber, $server, $msgId)
+    public function trackMessage($response, $subscriber, $server, $msgId)
     {
         // @todo: customerneedcheck
         $params = array_merge(array(
@@ -355,8 +531,22 @@ class Campaign extends Model
         if (!isset($params['runtime_message_id'])) {
             $params['runtime_message_id'] = $msgId;
         }
+        
+        // create tracking log for message
+        TrackingLog::create($params);
 
-        return TrackingLog::create($params);
+        // increment user quota usage
+        $this->user->countUsage();
+        $server->countUsage();
+    }
+
+    /**
+     * Get tagged Subject
+     *
+     * @return String
+     */
+    public function getSubject($subscriber, $msgId) {
+        return $this->tagMessage($this->subject, $subscriber, $msgId);
     }
     
     /**
@@ -370,57 +560,15 @@ class Campaign extends Model
     }
 
     /**
-     * Template tags.
-     *
-     * All availabel template tags
-     */
-    public function tags()
-    {
-        $tags = [];
-
-        // List field tags
-        foreach ($this->mailList->fields as $field) {
-            $tags[] = ['name' => 'SUBSCRIBER_'.$field->tag, 'required' => false];
-        }
-
-        $tags = array_merge($tags, [
-            ['name' => 'UNSUBSCRIBE_URL', 'required' => (\Auth::user()->customer->getOption('unsubscribe_url_required') == 'yes' ? true : false)],
-            ['name' => 'SUBSCRIBER_UID', 'required' => false],
-            ['name' => 'CAMPAIGN_NAME', 'required' => false],
-            ['name' => 'CAMPAIGN_UID', 'required' => false],
-            ['name' => 'CAMPAIGN_SUBJECT', 'required' => false],
-            ['name' => 'CAMPAIGN_FROM_EMAIL', 'required' => false],
-            ['name' => 'CAMPAIGN_FROM_NAME', 'required' => false],
-            ['name' => 'CAMPAIGN_REPLY_TO', 'required' => false],
-            ['name' => 'CURRENT_YEAR', 'required' => false],
-            ['name' => 'CURRENT_MONTH', 'required' => false],
-            ['name' => 'CURRENT_DAY', 'required' => false],
-            ['name' => 'CONTACT_NAME', 'required' => false],
-            ['name' => 'CONTACT_COUNTRY', 'required' => false],
-            ['name' => 'CONTACT_STATE', 'required' => false],
-            ['name' => 'CONTACT_CITY', 'required' => false],
-            ['name' => 'CONTACT_ADDRESS_1', 'required' => false],
-            ['name' => 'CONTACT_ADDRESS_2', 'required' => false],
-            ['name' => 'CONTACT_PHONE', 'required' => false],
-            ['name' => 'CONTACT_URL', 'required' => false],
-            ['name' => 'CONTACT_EMAIL', 'required' => false],
-            ['name' => 'LIST_NAME', 'required' => false],
-            ['name' => 'LIST_SUBJECT', 'required' => false],
-            ['name' => 'LIST_FROM_NAME', 'required' => false],
-            ['name' => 'LIST_FROM_EMAIL', 'required' => false],
-        ]);
-
-        return $tags;
-    }
-
-    /**
      * Transform Tags
      * Transform tags to actual values before sending.
      */
-    private function tagMessage($message, $subscriber, $msgId)
+    public function tagMessage($message, $subscriber, $msgId)
     {
+        // @todo consider a solution for UNSUBSCRIBE_URL for test subscriber (also for other tags like: UPDATE_PROFILE_URL)
+
         $tags = array(
-            'SUBSCRIBER_EMAIL' => $subscriber->email,
+            'SUBSCRIBER_EMAIL' => $subscriber->email,            
             'CAMPAIGN_NAME' => $this->name,
             'CAMPAIGN_UID' => $this->uid,
             'CAMPAIGN_SUBJECT' => $this->subject,
@@ -432,28 +580,43 @@ class Campaign extends Model
             'CURRENT_MONTH' => date('m'),
             'CURRENT_DAY' => date('d'),
             'UNSUBSCRIBE_URL' => str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), Setting::get('url_unsubscribe')),
-            'CONTACT_NAME' => $this->mailList->contact->company,
-            'CONTACT_COUNTRY' => $this->mailList->contact->country->name,
-            'CONTACT_STATE' => $this->mailList->contact->state,
-            'CONTACT_CITY' => $this->mailList->contact->city,
-            'CONTACT_ADDRESS_1' => $this->mailList->contact->address_1,
-            'CONTACT_ADDRESS_2' => $this->mailList->contact->address_2,
-            'CONTACT_PHONE' => $this->mailList->contact->phone,
-            'CONTACT_URL' => $this->mailList->contact->url,
-            'CONTACT_EMAIL' => $this->mailList->contact->email,
-            'LIST_NAME' => $this->mailList->name,
-            'LIST_SUBJECT' => $this->mailList->default_subject,
-            'LIST_FROM_NAME' => $this->mailList->from_name,
-            'LIST_FROM_EMAIL' => $this->mailList->from_email,
+            'CONTACT_NAME' => $this->defaultMailList->contact->company,
+            'CONTACT_COUNTRY' => $this->defaultMailList->contact->country->name,
+            'CONTACT_STATE' => $this->defaultMailList->contact->state,
+            'CONTACT_CITY' => $this->defaultMailList->contact->city,
+            'CONTACT_ADDRESS_1' => $this->defaultMailList->contact->address_1,
+            'CONTACT_ADDRESS_2' => $this->defaultMailList->contact->address_2,
+            'CONTACT_PHONE' => $this->defaultMailList->contact->phone,
+            'CONTACT_URL' => $this->defaultMailList->contact->url,
+            'CONTACT_EMAIL' => $this->defaultMailList->contact->email,
+            'LIST_NAME' => $this->defaultMailList->name,
+            'LIST_SUBJECT' => $this->defaultMailList->default_subject,
+            'LIST_FROM_NAME' => $this->defaultMailList->from_name,
+            'LIST_FROM_EMAIL' => $this->defaultMailList->from_email,
         );
+        
+        // UPDATE_PROFILE_URL
+        if(!$this->isStdClassSubscriber($subscriber)) {
+            // in case of actually sending campaign
+            $tags['UPDATE_PROFILE_URL'] = str_replace('LIST_UID', $this->defaultMailList->uid,
+                str_replace('SUBSCRIBER_UID', $subscriber->uid,
+                str_replace('SECURE_CODE', $subscriber->getSecurityToken('update-profile'), Setting::get('url_update_profile'))));
+        }
 
+        // Update tags layout
         foreach ($tags as $tag => $value) {
             $message = str_replace('{'.$tag.'}', $value, $message);
         }
 
-        // List field tags
-        foreach ($this->mailList->fields as $field) {
-            $message = str_replace('{SUBSCRIBER_'.$field->tag.'}', $subscriber->getValueByField($field), $message);
+        if (!$this->isStdClassSubscriber($subscriber)) {
+            // in case of actually sending campaign
+            foreach ($this->defaultMailList->fields as $field) {
+                $message = str_replace('{SUBSCRIBER_'.$field->tag.'}', $subscriber->getValueByField($field), $message);
+            }
+        } else {
+            // in case of sending test email
+            // @todo how to manage such tags?
+            $message = str_replace('{SUBSCRIBER_EMAIL}', $subscriber->email, $message);
         }
 
         return $message;
@@ -465,30 +628,30 @@ class Campaign extends Model
      */
     public function getPendingSubscribers()
     {
-        if (is_object($this->segment)) {
-            $scoped = $this->segment;
-        } else {
-            $scoped = $this->mailList;
-        }
-
-        return $scoped->subscribers()
+        $subscribers = $this->subscribers()
                 ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = '.$this->id.') log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
                 ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
                 ->select('subscribers.*')
                 ->get();
+
+        $unique = $subscribers->unique(function ($r) {
+            return $r['email'];
+        });
+
+        return $unique;
     }
 
     /**
      * Append Open Tracking URL
      * Append open-tracking URL to every email message.
      */
-    private function appendOpenTrackingUrl($body, $msgId)
+    public function appendOpenTrackingUrl($body, $msgId)
     {
         $openTrackingBaseURL = Setting::get('url_open_track');
         $tracking_url = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $openTrackingBaseURL);
 
-        return $body.'<img src="'.$tracking_url.'" width="0" height="0" style="visibility:hidden" />';
+        return $body.'<img src="'.$tracking_url.'" width="0" height="0" alt="" style="visibility:hidden" />';
     }
 
     /**
@@ -516,15 +679,29 @@ class Campaign extends Model
      * @return String
      */
     public function getHtmlContent($subscriber, $msgId) {
-        $body = $this->tagMessage($this->html, $subscriber, $msgId);
+        // @note: IMPORTANT: the order must be as follows
+        // * addTrackingURL
+        // * appendOpenTrackingUrl
+        // * tagMessage
 
-        if ($this->track_open) {
-            $body = $this->appendOpenTrackingUrl($body, $msgId);
-        }
-
+        // @note: addTrackingUrl() must go before appendOpenTrackingUrl()
+        $body = $this->html;
+        
+        // Enable click tracking
         if ($this->track_click) {
             $body = $this->addTrackingUrl($body, $msgId);
         }
+        
+        // Enable open tracking
+        if ($this->track_open) {
+            $body = $this->appendOpenTrackingUrl($body, $msgId);
+        }
+        
+        // Transform tags
+        $body = $this->tagMessage($body, $subscriber, $msgId);
+        
+        // Transform CSS/HTML content to inline CSS
+        $body = $this->inlineHtml($body);
 
         return $body;
     }
@@ -541,14 +718,14 @@ class Campaign extends Model
     }
 
     /**
-     * Prepare Email
      * Prepare the email content using Swift Mailer.
      *
-     * @input Raw email content
+     * @input object subscriber
+     * @input object sending server
      *
      * @return MIME text message
      */
-    private function prepareEmail($subscriber, $server)
+    public function prepareEmail($subscriber, $server)
     {
         // build the message
         $customHeaders = $this->getCustomHeaders($subscriber, $this);
@@ -569,7 +746,7 @@ class Campaign extends Model
 
         // @TODO for AWS, setting returnPath requires verified domain or email address
         //$message->setReturnPath($server->getVerp($subscriber->email));
-        $message->setSubject($this->subject);
+        $message->setSubject($this->getSubject($subscriber, $msgId));
         $message->setFrom(array($this->from_email => $this->from_name));
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
@@ -583,7 +760,7 @@ class Campaign extends Model
             $message = $this->sign($message);
         }
 
-        // attachment
+        // @todo attachment
         //$message->attach(Swift_Attachment::fromPath('/tmp/gaugau.csv'));
         return array($message, $msgId);
     }
@@ -593,7 +770,7 @@ class Campaign extends Model
      *
      * @return mixed
      */
-    private function findSendingDomain($email)
+    public function findSendingDomain($email)
     {
         $domain = substr(strrchr($email, '@'), 1);
 
@@ -605,7 +782,7 @@ class Campaign extends Model
      *
      * @return mixed
      */
-    private function sign($message)
+    public function sign($message)
     {
         $sendingDomain = $this->findSendingDomain($this->from_email);
 
@@ -629,11 +806,11 @@ class Campaign extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'mail_list_id', 'segment_id',
+        'name',
         'subject', 'from_name', 'from_email',
         'reply_to', 'track_open',
         'track_click', 'sign_dkim', 'track_fbl',
-        'html', 'plain',
+        'html', 'plain', 'template_source',
     ];
 
     /**
@@ -644,7 +821,7 @@ class Campaign extends Model
     public static $rules = array(
         'mail_list_uid' => 'required',
     );
-
+    
     /**
      * Items per page.
      *
@@ -702,7 +879,10 @@ class Campaign extends Model
             // Update custom order
             Campaign::getAll()->increment('custom_order', 1);
             $item->custom_order = 0;
-
+        });
+        
+        // Created
+        static::created(function ($item) {
             // Update links
             $item->updateLinks();
         });
@@ -727,12 +907,12 @@ class Campaign extends Model
     public function getUrls()
     {
         // Find all links in campaign content
-        preg_match_all('/(?<=href=)(\'|")?(?<url>.*?)(?=\1|\))/i', $this->html, $matches);
+        preg_match_all('/<a[^>]*href=["\'](?<url>http[^"\']*)["\']/i', $this->html, $matches);
         $hrefs = array_unique($matches['url']);
 
         $urls = [];
         foreach ($hrefs as $href) {
-            if (preg_match('/^http/i', $href)) {
+            if (preg_match('/^http/i', $href) && strpos($href, '{UNSUBSCRIBE_URL}') === false) {
                 $urls[] = strtolower(trim($href));
             }
         }
@@ -772,6 +952,23 @@ class Campaign extends Model
     {
         return self::where('uid', '=', $uid)->first();
     }
+    
+    /**
+     * CHeck UNSUBSCRIBE_URL.
+     *
+     * @return object
+     */
+    public function unsubscribe_url_valid()
+    {
+        if($this->type != 'plain-text' &&
+           \Auth::user()->getOption('frontend', 'unsubscribe_url_required') == 'yes' &&
+            strpos($this->html, '{UNSUBSCRIBE_URL}') == false   
+        ) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     /**
      * Get max step.
@@ -783,7 +980,7 @@ class Campaign extends Model
         $step = 0;
 
         // Step 1
-        if (is_object($this->mailList)) {
+        if (is_object($this->defaultMailList)) {
             $step = 1;
         } else {
             return $step;
@@ -798,15 +995,22 @@ class Campaign extends Model
         }
 
         // Step 3
-        if ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain)) {
+        if ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid()) {            
             $step = 3;
         } else {
             return $step;
         }
 
         // Step 4
-        if (isset($this->delivery_at) && $this->delivery_at != '0000-00-00 00:00:00') {
+        if (isset($this->run_at) && $this->run_at != '0000-00-00 00:00:00') {
             $step = 4;
+        } else {
+            return $step;
+        }
+        
+        // Step 5
+        if ($this->subscribers()->count()) {
+            $step = 5;
         } else {
             return $step;
         }
@@ -823,10 +1027,22 @@ class Campaign extends Model
     {
         $customer = $request->user()->customer;
         $query = self::where('customer_id', '=', $customer->id);
+        
+        // Get campaign from ... (all|normal|automated)
+        if($request->source == 'template') {
+            $query = $query->where('html', '!=', null);
+        } else {
+            $query = $query->where('is_auto', '=', false);
+        }
 
         // Keyword
         if (!empty(trim($request->keyword))) {
             $query = $query->where('name', 'like', '%'.$request->keyword.'%');
+        }
+        
+        // Status
+        if (!empty(trim($request->statuses))) {
+            $query = $query->whereIn('status', explode(",", $request->statuses));
         }
 
         return $query;
@@ -853,26 +1069,39 @@ class Campaign extends Model
      */
     public function subscribers($params=[])
     {
-        if(!is_object($this->segment) && !is_object($this->mailList)) {
-            return collect([]);
+        // get subscribers from auto campaign or normal campaign
+        if($this->isAuto()) {
+            // Get subscriber from auto event
+            $query = $this->autoEvent()->subscribers();
+        } else {
+            if($this->listsSegments->isEmpty()) {
+                return collect([]);
+            }
+            
+            // Get subscriber from mailist and segment
+            $conditions = [];
+            foreach($this->listsSegments as $lists_segment) {
+                if(!empty($lists_segment->segment_id)) {
+                    $conditions[] = '(' . $lists_segment->segment->getSubscribersConditions() . ')';
+                } else {
+                    $conditions[] = '(' . table('subscribers') . '.mail_list_id = ' . $lists_segment->mail_list_id . ')';
+                }
+            }
+            
+            $query = Subscriber::select("subscribers.*");
+            if (!empty($conditions)) {
+                $query = $query->whereRaw(implode(' OR ', $conditions));
+            }
         }
-        
-        if (is_object($this->segment)) {
-            $query = $this->segment->subscribers();
-        } elseif (is_object($this->mailList)) {
-            $query = $this->mailList->subscribers();
-        }
-        
-        $query = $query->select("subscribers.*");
         
         // Filter
         $filters = isset($params["filters"]) ? $params["filters"] : null;
-        if(isset($filters)) {
-            
-            if(isset($filters["open"]) || isset($filters["click"]) || isset($filters["tracking_status"])) {
-                $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id');
-            }
-            
+        
+        if(isset($filters) || $this->status == "done") {
+            $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id');
+        }
+        
+        if(isset($filters)) {            
             if(isset($filters["open"])) {
                 $equal = ($filters["open"] == "opened") ? "!=" : "=";                
                 $query = $query->leftJoin('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
@@ -899,6 +1128,12 @@ class Campaign extends Model
                 });
             }
         }
+        
+        // when status == done
+        if($this->status == "done") {            
+            $query = $query->where('tracking_logs.campaign_id', "=", $this->id);
+            $query = $query->where('tracking_logs.id', "!=", "NULL");
+        }
 
         return $query->distinct();
     }
@@ -917,9 +1152,9 @@ class Campaign extends Model
                 'name' => $this->name,
         ];
 
-        if (is_object($this->mailList)) {
-            $data['list_id'] = $this->mail_list_id;
-            $data['list_name'] = $this->mailList->name;
+        if (is_object($this->defaultMailList)) {
+            $data['list_id'] = $this->default_mail_list_id;
+            $data['list_name'] = $this->defaultMailList->name;
         }
 
         if (is_object($this->segment)) {
@@ -974,11 +1209,13 @@ class Campaign extends Model
      */
     public function deliveredRate()
     {
-        if ($this->trackingCount() == 0) {
+        $tracking_count = $this->trackingCount();
+        
+        if ($tracking_count == 0) {
             return 0;
         }
 
-        return round(($this->deliveredCount() / $this->trackingCount()) * 100, 0);
+        return round(($this->deliveredCount() / $tracking_count) * 100, 0);
     }
 
     /**
@@ -989,6 +1226,7 @@ class Campaign extends Model
     public function clickCount($start = null, $end = null)
     {
         $query = $this->clickLogs();
+        
         if (isset($start)) {
             $query = $query->where('click_logs.created_at', '>=', $start);
         }
@@ -1008,6 +1246,16 @@ class Campaign extends Model
     {
         return $this->links()->count();
     }
+    
+    /**
+     * Click rate.
+     *
+     * @return number
+     */
+    public function clickedLinkCount()
+    {
+        return $this->clickLogs()->distinct('url')->count('url');
+    }
 
     /**
      * Click rate.
@@ -1016,11 +1264,57 @@ class Campaign extends Model
      */
     public function clickRate()
     {
-        if ($this->urlCount() == 0) {
+        $url_count = $this->urlCount();
+        
+        if ($url_count == 0) {
             return 0;
         }
 
-        return round(($this->clickCount() / $this->urlCount()) * 100, 0);
+        return round(($this->clickedLinkCount() / $url_count) * 100, 0);
+    }
+    
+    /**
+     * Count unique clicked opened emails.
+     *
+     * @return number
+     */
+    public function clickedEmailsCount()
+    {
+        $query = $this->clickLogs();
+
+        return $query->distinct('subscriber_id')->count('subscriber_id');
+    }
+    
+    /**
+     * Click a link rate.
+     *
+     * @return number
+     */
+    public function clickALinkRate()
+    {
+        $open_count = $this->openCount();
+        
+        if ($open_count == 0) {
+            return 0;
+        }
+
+        return round(($this->clickCount() / $open_count) * 100, 0);
+    }
+    
+    /**
+     * Clicked emails count.
+     *
+     * @return number
+     */
+    public function clickedEmailsRate()
+    {
+        $open_count = $this->openCount();
+        
+        if ($open_count == 0) {
+            return 0;
+        }
+
+        return round(($this->clickedEmailsCount() / $open_count) * 100, 0);
     }
 
     /**
@@ -1030,11 +1324,13 @@ class Campaign extends Model
      */
     public function clickPerUniqOpen()
     {
-        if ($this->openCount() == 0) {
+        $open_count = $this->openCount();
+        
+        if ($open_count == 0) {
             return 0;
         }
 
-        return round(($this->clickCount() / $this->openCount()) * 100, 0);
+        return round(($this->clickCount() / $open_count) * 100, 0);
     }
 
     /**
@@ -1092,11 +1388,29 @@ class Campaign extends Model
      */
     public function openRate()
     {
-        if ($this->deliveredCount() == 0) {
+        $delivered_count = $this->deliveredCount();
+        
+        if ($delivered_count == 0) {
             return 0;
         }
 
-        return round(($this->openCount() / $this->deliveredCount()) * 100, 0);
+        return round(($this->openCount() / $delivered_count) * 100, 0);
+    }
+    
+    /**
+     * Not open rate.
+     *
+     * @return number
+     */
+    public function notOpenRate()
+    {
+        $subcribers_count = $this->subscribers()->count();
+        
+        if ($subcribers_count == 0) {
+            return 0;
+        }
+
+        return round(($this->notOpenCount() / $subcribers_count) * 100, 0);
     }
 
     /**
@@ -1106,11 +1420,13 @@ class Campaign extends Model
      */
     public function openUniqRate()
     {
-        if ($this->deliveredCount() == 0) {
+        $delivered_count = $this->deliveredCount();
+        
+        if ($delivered_count == 0) {
             return 0;
         }
 
-        return round(($this->openUniqCount() / $this->deliveredCount()) * 100, 0);
+        return round(($this->openUniqCount() / $delivered_count) * 100, 0);
     }
 
     /**
@@ -1120,7 +1436,7 @@ class Campaign extends Model
      */
     public function feedbackCount()
     {
-        return $this->feedbackLogs()->count();
+        return $this->feedbackLogs()->distinct('subscriber_id')->count('subscriber_id');
     }
     
     /**
@@ -1130,11 +1446,13 @@ class Campaign extends Model
      */
     public function feedbackRate()
     {
-        if ($this->deliveredCount() == 0) {
+        $delivered_count = $this->deliveredCount();
+        
+        if ($delivered_count == 0) {
             return 0;
         }
 
-        return round(($this->feedbackCount() / $this->deliveredCount()) * 100, 0);
+        return round(($this->feedbackCount() / $delivered_count) * 100, 0);
     }
 
     /**
@@ -1144,7 +1462,7 @@ class Campaign extends Model
      */
     public function bounceCount()
     {
-        return $this->bounceLogs()->count();
+        return $this->bounceLogs()->distinct('subscriber_id')->count('subscriber_id');
     }
 
     /**
@@ -1154,11 +1472,13 @@ class Campaign extends Model
      */
     public function bounceRate()
     {
-        if ($this->deliveredCount() == 0) {
+        $delivered_count = $this->deliveredCount();
+        
+        if ($delivered_count == 0) {
             return 0;
         }
 
-        return round(($this->bounceCount() / $this->deliveredCount()) * 100, 0);
+        return round(($this->bounceCount() / $delivered_count) * 100, 0);
     }
 
     /**
@@ -1168,7 +1488,7 @@ class Campaign extends Model
      */
     public function hardBounceCount()
     {
-        return $this->campaign_bounce_logs()->where('bounce_type', '=', 'hard')->count();
+        return $this->campaign_bounce_logs()->where('bounce_type', '=', 'hard')->distinct('subscriber_id')->count('subscriber_id');
     }
 
     /**
@@ -1178,11 +1498,13 @@ class Campaign extends Model
      */
     public function hardBounceRate()
     {
-        if ($this->deliveryProcessedCount() == 0) {
+        $delivered_processed_count = $this->deliveryProcessedCount();
+        
+        if ($delivered_processed_count == 0) {
             return 0;
         }
 
-        return round(($this->hardBounceCount() / $this->deliveryProcessedCount()) * 100, 0);
+        return round(($this->hardBounceCount() / $delivered_processed_count) * 100, 0);
     }
 
     /**
@@ -1192,7 +1514,7 @@ class Campaign extends Model
      */
     public function softBounceCount()
     {
-        return $this->campaign_bounce_logs()->where('bounce_type', '=', 'soft')->count();
+        return $this->campaign_bounce_logs()->where('bounce_type', '=', 'soft')->distinct('subscriber_id')->count('subscriber_id');
     }
 
     /**
@@ -1202,11 +1524,13 @@ class Campaign extends Model
      */
     public function softBounceRate()
     {
-        if ($this->trackingCount() == 0) {
+        $tracking_count = $this->trackingCount();
+        
+        if ($tracking_count == 0) {
             return 0;
         }
 
-        return round(($this->softBounceCount() / $this->trackingCount()) * 100, 0);
+        return round(($this->softBounceCount() / $tracking_count) * 100, 0);
     }
 
     /**
@@ -1216,7 +1540,7 @@ class Campaign extends Model
      */
     public function unsubscribeCount()
     {
-        return $this->unsubscribeLogs()->count();
+        return $this->unsubscribeLogs()->distinct('subscriber_id')->count('subscriber_id');
     }
 
     /**
@@ -1226,11 +1550,13 @@ class Campaign extends Model
      */
     public function unsubscribeRate()
     {
-        if ($this->deliveredCount() == 0) {
+        $delivered_count = $this->deliveredCount();
+        
+        if ($delivered_count == 0) {
             return 0;
         }
 
-        return round(($this->unsubscribeCount() / $this->deliveredCount()) * 100, 0);
+        return round(($this->unsubscribeCount() / $delivered_count) * 100, 0);
     }
 
     /**
@@ -1373,11 +1699,11 @@ class Campaign extends Model
      */
     public function getTopLinks($number = 5)
     {
-        $records = Link::select(\DB::raw(\DB::getTablePrefix().'links.*, count(*) as `aggregate`'))
-            ->join('campaign_links', 'campaign_links.link_id', '=', 'links.id')
-            ->where('campaign_id', '=', $this->id);
-
-        $records = $records->groupBy('campaign_links.link_id')
+        $records = ClickLog::select(\DB::raw(\DB::getTablePrefix().'click_logs.*, count(*) as `aggregate`'))
+            ->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
+            ->where('tracking_logs.campaign_id', '=', $this->id);
+        
+        $records = $records->groupBy('click_logs.url')
             ->orderBy('aggregate', 'desc');
 
         return $records->take($number);
@@ -1508,17 +1834,29 @@ class Campaign extends Model
      * Replace link in text by click tracking url.
      *
      * @return text
+     * @note addTrackingUrl() must go before appendOpenTrackingUrl()
      */
-    private function addTrackingUrl($email_html_content, $msgId)
+    public function addTrackingUrl($email_html_content, $msgId)
     {
-        if (preg_match_all('|<a.*(?=href="([^"]*)")[^>]*>([^<]*)</a>|i', $email_html_content, $matches)) {
-            foreach ($matches[1] as $href) {
-                $new_src = str_replace('URL', StringHelper::base64UrlEncode($href), Setting::get('url_click_track'));
-                $new_src = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $new_src);
-                $email_html_content = str_replace($href, $new_src, $email_html_content);
+        if (preg_match_all('/<a[^>]*href=["\'](?<url>http[^"\']*)["\']/i', $email_html_content, $matches)) {
+            foreach ($matches[0] as $key => $href) {
+                $url = $matches['url'][$key];
+
+                $newUrl = str_replace('URL', StringHelper::base64UrlEncode($url), Setting::get('url_click_track'));
+                $newUrl = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $newUrl);
+                $newHref = str_replace($url, $newUrl, $href);
+
+                // if the link contains UNSUBSCRIBE URL tag
+                if (strpos($href, '{UNSUBSCRIBE_URL}') !== false) {
+                    // just do nothing
+                } else if (preg_match("/{[A-Z0-9_]+}/", $href)) {
+                    // just skip if the url contains a tag. For example: {UPDATE_PROFILE_URL}
+                    // @todo: do we track these clicks?
+                } else {
+                    $email_html_content = str_replace($href, $newHref, $email_html_content);
+                }
             }
         }
-
         return $email_html_content;
     }
 
@@ -1533,5 +1871,395 @@ class Campaign extends Model
             'regular' => [],
             'plain-text' => [],
         ];
+    }
+    
+    /**
+     * Copy new campaign.
+     */
+    public function copy($name)
+    {
+        $copy = $this->replicate();
+        $copy->name = $name;
+        $copy->created_at = \Carbon\Carbon::now();
+        $copy->updated_at = \Carbon\Carbon::now();
+        $copy->status = self::STATUS_NEW;
+        $copy->run_at = null;
+        $copy->custom_order = 0;
+        $copy->save();
+        
+        // Lists segments
+        foreach ($this->listsSegments as $lists_segment) {
+            $new_lists_segment = $lists_segment->replicate();
+            $new_lists_segment->campaign_id = $copy->id;
+            $new_lists_segment->save();
+        }
+    }
+    
+    /**
+     * Convert html to inline.
+     * @todo not very OOP here, consider moving this to a Helper instead
+     *
+     */
+    public function inlineHtml($html)
+    {
+        // Convert to inline css if template source is builder
+        if ($this->template_source == 'builder') {
+            $cssToInlineStyles = new CssToInlineStyles();
+            
+            $css = file_get_contents(public_path("css/res_email.css"));
+            
+            // output
+            $html = $cssToInlineStyles->convert(
+                $html,
+                $css
+            );
+        }
+        
+        return $html;
+    }
+    
+    /**
+     * Send a test email for testing campaign
+     */
+    public function sendTestEmail($email)
+    {
+        try {
+            MailLog::info('Sending test email for campaign `' . $this->name . '`');
+            MailLog::info('Sending test email to `' . $email . '`');
+
+            // @todo: only send a test message when campaign sufficient information is available
+
+            // build a temporary subscriber oject used to pass through the sending methods
+            $subscriber = $this->createStdClassSubscriber(['email' => $email]);
+
+            // Pick up an available sending server
+            // Throw exception in case no server available
+            $server = $this->pickServer($this);
+
+            // build the message from campaign information
+            list($message, $msgId) = $this->prepareEmail($subscriber, $server);
+            
+            // actually send
+            // @todo consider using queue here
+            $result = $server->send($message, array(
+                'from_email' => $this->from_email,
+                'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly (not in MIME message)
+                'campaign' => $this,
+                'subscriber' => $subscriber,
+                'msgId' => $msgId
+            ));
+            
+            // examine the result from sending server
+            if(array_has($result, 'error')) {
+                throw new \Exception($result['error']);
+            }
+
+            return [
+                "status" => "success",
+                "message" => trans('messages.campaign.test_sent')
+            ];
+        } catch (\Exception $e) {
+            return [
+                "status" => "error",
+                "message" => $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Get the delay time before sending
+     *
+     */
+    public function getDelayInSeconds()
+    {
+        $now = Carbon::now();
+
+        if ($now->gte($this->run_at)) {
+            return 0;
+        } else {
+            return $this->run_at->diffInSeconds($now);
+        }
+    }
+
+    /**
+     * Queue campaign for sending
+     *
+     */
+    public function queue($trigger = null, $subscribers = null, $delay = 0)
+    {
+        $this->ready();
+        $job = (new \Acelle\Jobs\RunCampaignJob($this))->delay($this->getDelayInSeconds());
+        dispatch($job);
+    }
+
+    /**
+     * Queue campaign for sending
+     *
+     */
+    public function clearAllJobs()
+    {
+        // cleanup jobs and system_jobs
+        // @todo data should be a JSON field instead
+        $systemJobs = SystemJob::where('name', 'Acelle\Jobs\RunCampaignJob')->where('data', $this->id)->get();
+        foreach($systemJobs as $systemJob) {
+            // @todo what if jobs were already started? check `reserved` field?
+            $systemJob->clear();
+        }
+    }
+
+    /**
+     * Re-queue the campaign for sending
+     *
+     */
+    public function requeue()
+    {
+        // clear all campaign's sendign jobs which are being queue
+        $this->clearAllJobs();
+
+        // and queue again
+        $this->queue();
+    }
+
+    /**
+     * Overwrite the delete() method to also clear the pending jobs
+     *
+     */
+    public function delete()
+    {
+        $this->clearAllJobs();
+        parent::delete();
+    }
+
+    /**
+     * Create a stdClass subscriber (for sending a campaign test email)
+     * The campaign sending functions take a subscriber object as input
+     * However, a test email address is not yet a subscriber object, so we have to build a fake stdClass object
+     * which can be used as a real subscriber
+     *
+     * @param array $subscriber
+     */
+    public function createStdClassSubscriber($subscriber)
+    {
+        // default attributes that are required
+        $jsonObj = [
+            'uid' => uniqid()
+        ];
+        
+        // append the user specified attributes and build a stdClass object
+        $stdObj = json_decode(json_encode(array_merge($jsonObj, $subscriber)));
+
+        return $stdObj;
+    }
+    
+    /**
+     * Check if the given variable is a subscriber object (for actually sending a campaign)
+     * Or a stdClass subscriber (for sending test email)
+     *
+     * @param Object $object
+     */
+    public function isStdClassSubscriber($object) {
+        return (get_class($object) == 'stdClass');
+    }
+    
+    /**
+     * Get information from mail list
+     *
+     * @param void
+     */
+    public function getInfoFromMailList($list) {
+        $this->from_name = !empty($this->from_name) ? $this->from_name : $list->from_name;
+        $this->from_email = !empty($this->from_email) ? $this->from_email : $list->from_email;
+        $this->subject = !empty($this->subject) ? $this->subject : $list->default_subject;
+    }
+    
+    /**
+     * Check if auto campaign designed.
+     *
+     * @return object
+     */
+    public function autoCampaignDesigned()
+    {
+        $cond = (!empty($this->name) && !empty($this->subject) && !empty($this->from_name)
+            && !empty($this->from_email) && !empty($this->reply_to));
+        
+        $cond = $cond && ((!empty($this->html) || $this->type == 'plain-text') && !empty($this->plain) && $this->unsubscribe_url_valid());
+        
+        return $cond;
+    }
+    
+    /**
+     * Get type select options.
+     *
+     * @return array
+     */
+    public static function getTypeSelectOptions()
+    {
+        return [
+            ['text' => trans('messages.' . self::TYPE_REGULAR), 'value' => self::TYPE_REGULAR],
+            ['text' => trans('messages.' . self::TYPE_PLAIN_TEXT), 'value' => self::TYPE_PLAIN_TEXT]
+        ];
+    }
+    
+    /**
+     * Check if campaign is automated.
+     *
+     * @return boolean
+     */
+    public function isAuto()
+    {
+        return $this->is_auto;
+    }
+
+    /**
+     * The validation rules for automation trigger.
+     *
+     * @var array
+     */
+    public function recipientsRules($params=[])
+    {
+        $rules = [
+            'lists_segments' => 'required'
+        ];
+        
+        if(isset($params['lists_segments'])) {
+            foreach ($params['lists_segments'] as $key => $param) {
+                $rules['lists_segments.'.$key.'.mail_list_uid'] = 'required';
+            }
+        }
+        
+        return $rules;
+    }
+    
+    /**
+     * Fill recipients by params.
+     *
+     * @var void
+     */
+    public function fillRecipients($params=[])
+    {        
+        if(isset($params['lists_segments'])) {
+            foreach ($params['lists_segments'] as $key => $param) {
+                $mail_list = null;
+                
+                if(!empty($param['mail_list_uid'])) {
+                    $mail_list = MailList::findByUid($param['mail_list_uid']);
+                    
+                    // default mail list id
+                    if(isset($param['is_default']) && $param['is_default'] == 'true') {
+                        $this->default_mail_list_id = $mail_list->id;
+                    }
+                }
+                
+                if(!empty($param['segment_uids'])) {
+                    foreach ($param['segment_uids'] as $segment_uid) {
+                        $segment = Segment::findByUid($segment_uid);
+                        
+                        $lists_segment = new CampaignsListsSegment();
+                        $lists_segment->campaign_id = $this->id;
+                        if(is_object($mail_list)) {
+                            $lists_segment->mail_list_id = $mail_list->id;
+                        }
+                        $lists_segment->segment_id = $segment->id;
+                        $this->listsSegments->push($lists_segment);
+                    }
+                } else {
+                    $lists_segment = new CampaignsListsSegment();
+                    $lists_segment->campaign_id = $this->id;
+                    if(is_object($mail_list)) {
+                        $lists_segment->mail_list_id = $mail_list->id;
+                    }
+                    $this->listsSegments->push($lists_segment);
+                }                
+            }
+        }
+    }
+    
+    /**
+     * Save Recipients.
+     *
+     * @var void
+     */
+    public function saveRecipients($params=[])
+    {
+        // Empty current data
+        $this->listsSegments = collect([]);
+        // Fill params
+        $this->fillRecipients($params);
+        
+        $lists_segments_groups = $this->getListsSegmentsGroups();
+        
+        $data = [];
+        foreach($lists_segments_groups as $lists_segments_group) {
+            if(!empty($lists_segments_group['segment_uids'])) {
+                foreach($lists_segments_group['segment_uids'] as $segment_uid) {
+                    $segment = Segment::findByUid($segment_uid);
+                    $data[] = [
+                        'campaign_id' => $this->id,
+                        'mail_list_id' => $lists_segments_group['list']->id,
+                        'segment_id' => $segment->id,
+                    ];
+                }
+            } else {
+                $data[] = [
+                    'campaign_id' => $this->id,
+                    'mail_list_id' => $lists_segments_group['list']->id,
+                    'segment_id' => NULL,
+                ];
+            }
+        }
+        
+        // Empty old data
+        $this->listsSegments()->delete();
+        
+        // Insert Data
+        CampaignsListsSegment::insert($data);
+        
+        // Save campaign with default list id
+        $campaign = Campaign::find($this->id);
+        $campaign->default_mail_list_id = $this->default_mail_list_id;
+        $campaign->save();
+    }
+    
+    /**
+     * Display Recipients.
+     *
+     * @var array
+     */
+    public function displayRecipients()
+    {
+        if(!is_object($this->defaultMailList)) {
+            return "";
+        }
+        
+        $lines = [];
+        foreach($this->getListsSegmentsGroups() as $lists_segments_group) {
+            $list_name = $lists_segments_group['list']->name;
+            
+            $segment_names = [];
+            if(!empty($lists_segments_group['segment_uids'])) {
+                foreach($lists_segments_group['segment_uids'] as $segment_uid) {
+                    $segment = Segment::findByUid($segment_uid);
+                    $segment_names[] = $segment->name;
+                }
+            }
+            
+            if(empty($segment_names)) {
+                $lines[] = $list_name;
+            } else {
+                $lines[] = implode(': ', [$list_name, implode(', ', $segment_names)]);
+            }            
+        }
+        
+        return implode(' | ', $lines);
+    }
+
+    /**
+     * Check if campaign is paused.
+     *
+     * @return boolean
+     */
+    public function isPaused()
+    {
+        return $this->status == self::STATUS_PAUSED;
     }
 }

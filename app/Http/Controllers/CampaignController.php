@@ -3,6 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 class CampaignController extends Controller
 {
@@ -28,7 +29,7 @@ class CampaignController extends Controller
     public function index(Request $request)
     {
         $customer = $request->user()->customer;
-        $campaigns = $customer->campaigns;
+        $campaigns = $customer->getNormalCampaigns();
 
         return view('campaigns.index', [
             'campaigns' => $campaigns,
@@ -58,10 +59,10 @@ class CampaignController extends Controller
     {
         $customer = $request->user()->customer;
         $campaign = new \Acelle\Model\Campaign([
-                                            'track_open' => true,
-                                            'track_click' => true,
-                                            'sign_dkim' => true,
-                                        ]);
+            'track_open' => true,
+            'track_click' => true,
+            'sign_dkim' => true,
+        ]);
 
         // authorize
         if (\Gate::denies('create', $campaign)) {
@@ -136,7 +137,7 @@ class CampaignController extends Controller
             return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
         } elseif ($campaign->step() == 3) {
             return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
-        } elseif ($campaign->step() == 4) {
+        } elseif ($campaign->step() >= 4) {
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
     }
@@ -186,7 +187,7 @@ class CampaignController extends Controller
             $item->save();
         }
 
-        echo trans('messages.lists.custom_order.updated');
+        echo trans('messages.campaigns.custom_order.updated');
     }
 
     /**
@@ -204,30 +205,45 @@ class CampaignController extends Controller
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
+        
+        // Get rules and data
+        $rules = $campaign->recipientsRules($request->all());
+        $campaign->fillRecipients($request->all());
+        if (!empty($request->old())) {
+            $rules = $campaign->recipientsRules($request->old());
+            $campaign->fillRecipients($request->old());
+        }
 
-        $rules = array(
-            'mail_list_uid' => 'required',
-        );
-
-        // validate and save posted data
         if ($request->isMethod('post')) {
-
             // Check validation
-            $this->validate($request, \Acelle\Model\Campaign::$rules);
-
-            // Save campaign
-            $campaign->mail_list_id = \Acelle\Model\MailList::findByUid($request->mail_list_uid)->id;
-            if ($request->segment_uid) {
-                $campaign->segment_id = \Acelle\Model\Segment::findByUid($request->segment_uid)->id;
-            }
-            $campaign->save();
-
+            $this->validate($request, $rules);
+            
+            $campaign->saveRecipients($request->all());
+            
             return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
         }
 
+        //// validate and save posted data
+        //if ($request->isMethod('post')) {
+        //
+        //    // Check validation
+        //    $this->validate($request, \Acelle\Model\Campaign::$rules);
+        //
+        //    // Save campaign
+        //    $campaign->mail_list_id = \Acelle\Model\MailList::findByUid($request->mail_list_uid)->id;
+        //    if ($request->segment_uid) {
+        //        $campaign->segment_id = \Acelle\Model\Segment::findByUid($request->segment_uid)->id;
+        //    } else {
+        //        $campaign->segment_id = null;
+        //    }
+        //    $campaign->save();
+        //
+        //    return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
+        //}
+        
         return view('campaigns.recipients', [
             'campaign' => $campaign,
-            'rules' => $rules,
+            'rules' => $rules
         ]);
     }
 
@@ -248,9 +264,9 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $campaign->from_name = !empty($campaign->from_name) ? $campaign->from_name : $campaign->mailList->from_name;
-        $campaign->from_email = !empty($campaign->from_email) ? $campaign->from_email : $campaign->mailList->from_email;
-        $campaign->subject = !empty($campaign->subject) ? $campaign->subject : $campaign->mailList->default_subject;
+        $campaign->from_name = !empty($campaign->from_name) ? $campaign->from_name : $campaign->defaultMailList->from_name;
+        $campaign->from_email = !empty($campaign->from_email) ? $campaign->from_email : $campaign->defaultMailList->from_email;
+        $campaign->subject = !empty($campaign->subject) ? $campaign->subject : $campaign->defaultMailList->default_subject;
 
         $rules = array(
             'name' => 'required',
@@ -297,7 +313,7 @@ class CampaignController extends Controller
     {
         $customer = $request->user()->customer;
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-
+        
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
@@ -322,7 +338,8 @@ class CampaignController extends Controller
         if (null !== $request->old()) {
             $campaign->fill($request->old());
         }
-
+        
+        $rules = [];
         // validate and save posted data
         if ($request->isMethod('post')) {
             // Check validation
@@ -332,21 +349,126 @@ class CampaignController extends Controller
             $campaign->fill($request->all());
             // convert html to plain text if plain text is empty
             if (trim($request->plain) == '') {
-                $campaign->plain = strip_tags($request->html);
+                $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($request->html)));
             }
-            
-            // update content
-            $campaign->html = preg_replace('/href\=\'([^\']*\{)/',"href='{", $campaign->html);
-            $campaign->html = preg_replace('/href\=\"([^\"]*\{)/','href="{', $campaign->html);
-            
             $campaign->save();
             
-            return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
+            if(isset($request->template_source)) {
+                return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
+            } else {
+                return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
+            }
+        }
+        
+        // redirect page
+        if(!empty($campaign->html) || $campaign->type == 'plain-text') {
+            return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
+        } else {
+            return redirect()->action('CampaignController@templateSelect', ['uid' => $campaign->uid]);
         }
 
         return view('campaigns.template', [
             'campaign' => $campaign,
             'rules' => $rules,
+        ]);
+    }
+    
+    /**
+     * Select template type.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateSelect(Request $request)
+    {
+        $user = $request->user();
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }     
+
+        return view('campaigns.template_select', [
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Choose an existed template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateChoose(Request $request)
+    {
+        $user = $request->user();
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $template = \Acelle\Model\Template::findByUid($request->template_uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
+        $campaign->html = $template->content;
+        $campaign->template_source = $template->source;
+        // $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($campaign->html)));
+        $campaign->save();
+
+        if(!$campaign->is_auto) {
+            return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
+        } else {
+            return redirect()->action('AutoEventController@templatePreview', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid]);
+        }
+    }
+    
+    /**
+     * Template preview.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templatePreview(Request $request)
+    {
+        $user = $request->user();
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        $rules = [];
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
+        return view('campaigns.template_preview', [
+            'campaign' => $campaign,
+            'rules' => $rules
+        ]);
+    }
+    
+    /**
+     * Template preview iframe.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateIframe(Request $request)
+    {
+        $user = $request->user();
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
+        return view('campaigns.preview', [
+            'campaign' => $campaign,
         ]);
     }
 
@@ -360,7 +482,12 @@ class CampaignController extends Controller
     public function schedule(Request $request)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-    
+        
+        // check step
+        if($campaign->step() < 3) {
+            return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
+        }
+        
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
@@ -385,7 +512,9 @@ class CampaignController extends Controller
             // $this->validate($request, $rules);
 
             //// Save campaign
-            $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $request->delivery_date.' '.$request->delivery_time, $request->user()->timezone);            
+            $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i',
+                $request->delivery_date . ' ' . $request->delivery_time,
+                $request->user()->timezone);
             $time = \Acelle\Library\Tool::systemTime($time);
 
             $campaign->run_at = $time;
@@ -413,6 +542,11 @@ class CampaignController extends Controller
     {
         $customer = $request->user()->customer;
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        
+        // check step
+        if($campaign->step() < 4) {
+            return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
+        }
 
         // authorize
         if (\Gate::denies('update', $campaign)) {
@@ -420,10 +554,10 @@ class CampaignController extends Controller
         }
 
         // validate and save posted data
-        if ($request->isMethod('post')) {
+        if ($request->isMethod('post') && $campaign->step() >= 5) {
             // Save campaign
-            $campaign->status = \Acelle\Model\Campaign::STATUS_READY;
-            $campaign->save();
+            // @todo: check campaign status before requeuing. Otherwise, several jobs shall be created and campaign will get sent several times
+            $campaign->requeue();
 
             // Log
             $campaign->log('started', $customer);
@@ -642,7 +776,7 @@ class CampaignController extends Controller
             'name' => trans('messages.Click'),
             'type' => 'bar',
             'smooth' => true,
-            'data' => [$campaign->clickCount()],
+            'data' => [$campaign->clickedEmailsCount()],
             'itemStyle' => [
                 'normal' => [
                     'color' => '#039BE5'
@@ -654,7 +788,7 @@ class CampaignController extends Controller
             'name' => trans('messages.Open'),
             'type' => 'bar',
             'smooth' => true,
-            'data' => [$campaign->openCount()],
+            'data' => [$campaign->openUniqCount()],
             'itemStyle' => [
                 'normal' => [
                     'color' => '#546E7A'
@@ -732,9 +866,10 @@ class CampaignController extends Controller
         $total = $campaign->openCount();
         $count = 0;
         foreach ($campaign->topCountries()->get() as $location) {
-            $result['bar_names'][] = $location->country_name;
+            $country_name = (!empty($location->country_name) ? $location->country_name : trans('messages.unknown'));
+            $result['bar_names'][] = $country_name;
             
-            $datas[] = ['value' => $location->aggregate, 'name' => $location->country_name];
+            $datas[] = ['value' => $location->aggregate, 'name' => $country_name];
             $count += $location->aggregate;
         }
         
@@ -863,6 +998,9 @@ class CampaignController extends Controller
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
         $log->save();
+
+        # Just return a blank image
+        return response()->file(public_path('images/transparent.gif'));
     }
 
     /**
@@ -871,16 +1009,20 @@ class CampaignController extends Controller
     public function click(Request $request)
     {
         $decoded_url = \Acelle\Library\StringHelper::base64UrlDecode($request->url);
-        // redirect base64_decode($url);
-        $log = new \Acelle\Model\ClickLog();
-        $log->message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
-        $location = \Acelle\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
-        $log->ip_address = $location->ip_address;
-        $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
-        $log->url = $decoded_url;
-        $log->save();
-
-        return redirect()->away($decoded_url);
+        try {
+            // redirect base64_decode($url);
+            $log = new \Acelle\Model\ClickLog();
+            $log->message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
+            $location = \Acelle\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
+            $log->ip_address = $location->ip_address;
+            $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
+            $log->url = $decoded_url;
+            $log->save();
+        } catch (\Exception $e) {
+            // Allow click from a test email    
+        } finally {
+            return redirect()->away($decoded_url);
+        }
     }
 
     /**
@@ -913,12 +1055,12 @@ class CampaignController extends Controller
             $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
             $log->save();
 
-            try {
+            try {                
                 // Send goodbye email
-                $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_goodbye_email')->first();
-                $send_page = \Acelle\Model\Page::findPage($list, $layout);
-                $send_page->renderContent(null, $subscriber);
-                $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
+                if($list->unsubscribe_notification) {
+                    // SEND subscription confirmation email
+                    $list->sendUnsubscriptionNotificationEmail($subscriber);
+                }   
             } catch (\Exception $e) {
             }
 
@@ -1243,8 +1385,7 @@ class CampaignController extends Controller
 
         foreach ($items->get() as $item) {
             if (\Gate::allows('restart', $item)) {
-                $item->status = 'ready';
-                $item->save();
+                $item->requeue();
 
                 // Log
                 $item->log('restarted', $customer);
@@ -1272,7 +1413,7 @@ class CampaignController extends Controller
         return view('campaigns.subscribers', [
             'subscribers' => $subscribers,
             'campaign' => $campaign,
-            'list' => $campaign->mailList,
+            'list' => $campaign->defaultMailList,
         ]);
     }
 
@@ -1290,13 +1431,281 @@ class CampaignController extends Controller
 
         $subscribers = $campaign->subscribers($request->all())
                                 ->paginate($request->per_page);
-        $fields = $campaign->mailList->getFields->whereIn('uid', explode(',', $request->columns));
+        $fields = $campaign->defaultMailList->getFields->whereIn('uid', explode(',', $request->columns));
 
         return view('campaigns._subscribers_list', [
             'subscribers' => $subscribers,
-            'list' => $campaign->mailList,
+            'list' => $campaign->defaultMailList,
             'campaign' => $campaign,
             'fields' => $fields,
+        ]);
+    }
+    
+    /**
+     * Buiding email template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateBuild(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
+        $elements = [];
+        if(isset($request->style)) {
+            $elements = \Acelle\Model\Template::templateStyles()[$request->style];
+        }
+
+        return view('campaigns.template_build', [
+            'campaign' => $campaign,
+            'elements' => $elements,
+            'list' => $campaign->defaultMailList,
+        ]);
+    }
+    
+    /**
+     * Re-Buiding email template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateRebuild(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.template_rebuild', [
+            'campaign' => $campaign,
+            'list' => $campaign->defaultMailList
+        ]);
+    }
+    
+    /**
+     * Copy campaign.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function copy(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->copy_campaign_uid);
+
+        // authorize
+        if (\Gate::denies('copy', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        $campaign->copy($request->copy_campaign_name);
+
+        echo trans('messages.campaign.copied');
+    }
+    
+    /**
+     * Send email for testing campaign.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendTestEmail(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->send_test_email_campaign_uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
+        $sending = $campaign->sendTestEmail($request->send_test_email);
+        
+        return json_encode($sending);
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateList(Request $request)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);        
+        $request->request->add(['source' => 'template']);
+
+        $campaigns = \Acelle\Model\Campaign::search($request, 'all')
+            ->where('id', '!=', $campaign->id)
+            ->where('html', '!=', "")
+            ->paginate($request->per_page);
+
+        return view('campaigns._template_list', [
+            'campaigns' => $campaigns,
+            'uid' => $campaign->uid
+        ]);
+    }
+    
+    /**
+     * Preview template.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function preview($id)
+    {        
+        $campaign = \Acelle\Model\Campaign::findByUid($id);
+        
+        // authorize
+        if (\Gate::denies('preview', $campaign)) {
+            return $this->not_authorized();
+        }
+        
+        // Convert to inline css if template source is builder
+        if ($campaign->template_source == 'builder') {
+            $cssToInlineStyles = new CssToInlineStyles();
+            $html = $campaign->html;
+            $css = file_get_contents(public_path("css/res_email.css"));
+            
+            // output
+            $campaign->html = $cssToInlineStyles->convert(
+                $html,
+                $css
+            );
+        }
+
+        return view('campaigns.preview', [
+            'campaign' => $campaign,
+        ]);
+    }
+    
+    /**
+     * Save campaign screenshot.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function saveImage(Request $request, $id)
+    {
+        $campaign = \Acelle\Model\Campaign::findByUid($id);
+
+        // authorize
+        if (\Gate::denies('saveImage', $campaign)) {
+            return $this->not_authorized();
+        }
+
+        $upload_loca = 'app/campaign_templates/';
+        $upload_path = storage_path($upload_loca);
+        if (!file_exists($upload_path)) {
+            mkdir($upload_path, 0777, true);
+        }
+        $filename = 'screenshot-'.$id.'.png';
+
+        // remove "data:image/png;base64,"
+        $uri = substr($request->data, strpos($request->data, ',') + 1);
+
+        // save to file
+        file_put_contents($upload_path.$filename, base64_decode($uri));
+
+        // create thumbnails
+        $img = \Image::make($upload_path.$filename);
+        $img->fit(178, 200)->save($upload_path.$filename.'.thumb.jpg');
+
+        // save
+        $campaign->image = $upload_loca.$filename;
+        $campaign->save();
+    }
+    
+    /**
+     * Template screenshot.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function image(Request $request)
+    {
+        // Get current user
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('image', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        if (!empty($campaign->image)) {
+            $img = \Image::make(storage_path($campaign->image).'.thumb.jpg');
+        } else {
+            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
+        }
+
+        return $img->response();
+    }
+    
+    /**
+     * Choose an existed campaign template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function campaignTemplateChoose(Request $request)
+    {
+        $user = $request->user();
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        $from_campaign = \Acelle\Model\Campaign::findByUid($request->from_uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+        
+        $campaign->html = $from_campaign->html;
+        $campaign->template_source = $from_campaign->template_source;
+        // $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($campaign->html)));
+        $campaign->save();
+        
+        if(!$campaign->is_auto) {
+            return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
+        } else {
+            return redirect()->action('AutoEventController@templatePreview', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid]);
+        }
+    }
+    
+    /**
+     * List segment form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listSegmentForm(Request $request)
+    {
+        // Get current user
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns._list_segment_form', [
+            'campaign' => $campaign,
+            'lists_segment_group' => [
+                'list' => null,
+                'is_default' => false
+            ]
         ]);
     }
 }

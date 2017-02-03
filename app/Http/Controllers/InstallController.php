@@ -52,10 +52,10 @@ class InstallController extends Controller
     // Starting installation
     public function starting(Request $request)
     {
-        \Artisan::call('cache:clear');
-        exec('php '.base_path().'/artisan config:cache');
-
-        return redirect()->action('InstallController@systemCompatibility');
+        $next = action('InstallController@systemCompatibility');
+        \Artisan::call('config:cache');
+        sleep(5);
+        return redirect()->away($next);
     }
 
     public function systemCompatibility(Request $request)
@@ -84,9 +84,10 @@ class InstallController extends Controller
                 'current' => 1,
             ]);
         } catch (\Exception $e) {
-            \Artisan::call('cache:clear');
+            $next_page = action('InstallController@systemCompatibility');
+            \Artisan::call('config:cache');
             sleep(5);
-            return redirect()->action('InstallController@systemCompatibility');
+            return redirect()->away($next_page);
         }
     }
 
@@ -124,6 +125,8 @@ class InstallController extends Controller
                 $rules = array_merge($rules, $smtp_rules);
             }
             $this->validate($request, $rules);
+            
+            $site_info = $request->all();
 
             // Check SMTP connection
             if ($request->mail_driver == 'smtp') {
@@ -140,9 +143,12 @@ class InstallController extends Controller
                     $rules['smtp_valid'] = 'required';
                 }
                 $this->validate($request, $rules);
+            } else {
+                $site_info["smtp_from_name"] = $site_info["site_name"];
+                $site_info["smtp_from_email"] = $site_info["email"];
             }
 
-            $site_info = $request->all();
+            
 
             $request->session()->set('site_info', $site_info);
 
@@ -199,12 +205,16 @@ class InstallController extends Controller
             // Save database session
             $database = $request->all();
             $request->session()->set('database', $database);
-
-            // IMPORT DATABASE
+            
+            $next_page = action('InstallController@databaseImport');
+            
             // write config file
             $this->writeEnv($request);
-
-            return redirect()->action('InstallController@databaseImport');
+            
+            // wait for config:cache
+            sleep(5);
+            
+            return redirect()->away($next_page);
         }
 
         $database = $request->session()->get('database');
@@ -266,13 +276,15 @@ class InstallController extends Controller
                 $rules['database_not_empty'] = 'required';
             }
             $this->validate($request, $rules);
+            
+            $next_page = action('InstallController@cronJobs');
 
             // Run migrate
-            exec('php '.base_path().'/artisan migrate --force');
+            \Artisan::call('migrate', ["--force"=> true]);
 
             // import database with prefix
             $this->importDatabase($database);
-
+            
             // get database connection
             $database = $request->session()->get('database');
             $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
@@ -293,13 +305,16 @@ class InstallController extends Controller
                             ('url_delivery_handler', '".action('DeliveryController@notify', ['stype' => ''])."', '".$date."', '".$date."');");
             $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_unsubscribe'");
             $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                            ('url_unsubscribe', '".action('CampaignController@unsubscribe', ['message_id' => trans('messages.MESSAGE_ID')])."', '".$date."', '".$date."');");
+                            ('url_unsubscribe', '".action('CampaignController@unsubscribe', ['message_id' => 'MESSAGE_ID'])."', '".$date."', '".$date."');");
             $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_open_track'");
             $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                            ('url_open_track', '".action('CampaignController@open', ['message_id' => trans('messages.MESSAGE_ID')])."', '".$date."', '".$date."');");
+                            ('url_open_track', '".action('CampaignController@open', ['message_id' => 'MESSAGE_ID'])."', '".$date."', '".$date."');");
             $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_click_track'");
             $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                            ('url_click_track', '".action('CampaignController@click', ['message_id' => trans('messages.MESSAGE_ID'), 'url' => trans('messages.URL')])."', '".$date."', '".$date."');");
+                            ('url_click_track', '".action('CampaignController@click', ['message_id' => 'MESSAGE_ID', 'url' => 'URL'])."', '".$date."', '".$date."');");
+            $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_update_profile'");
+            $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                            ('url_update_profile', '".action('PageController@profileUpdateForm', ['list_uid' => 'LIST_UID', 'uid' => 'SUBSCRIBER_UID', 'code' => 'SECURE_CODE'])."', '".$date."', '".$date."');");
             //$mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='url_campaign_notification'");
             //$mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
             //                ('url_campaign_notification', '".action('HomeController@index')."', '".$date."', '".$date."');");
@@ -317,7 +332,7 @@ class InstallController extends Controller
 
             $request->session()->flash('alert-success', trans('messages.install.database_import.success'));
 
-            return redirect()->action('InstallController@cronJobs');
+            return redirect()->away($next_page);
         }
 
         return view('install.database_import', [
@@ -348,6 +363,11 @@ class InstallController extends Controller
         }
 
         $request->session()->set('install_finish', true);
+        
+        $file_path = storage_path('installed');
+        $file = fopen($file_path, 'w') or die('Unable to open file!');
+        fwrite($file, '');
+        fclose($file);
 
         return view('install.finish', [
             'step' => $this->step($request),
@@ -364,6 +384,12 @@ class InstallController extends Controller
                 'name' => 'PHP version',
                 'check' => version_compare(PHP_VERSION, '5.5.9', '>='),
                 'note' => 'PHP 5.5.9 or higher is required.',
+            ],
+            [
+                'type' => 'requirement',
+                'name' => 'Mysqli Extension',
+                'check' => function_exists('mysqli_connect'),
+                'note' => 'Mysqli Extension is required.',
             ],
             [
                 'type' => 'requirement',
@@ -406,36 +432,56 @@ class InstallController extends Controller
                 'name' => 'PHP GD Library',
                 'check' => (extension_loaded('gd') && function_exists('gd_info')),
                 'note' => 'PHP GD Library is required.',
-            ],            
+            ],
+            [
+                'type' => 'requirement',
+                'name' => 'PHP Fileinfo extension',
+                'check' => extension_loaded('fileinfo'),
+                'note' => 'PHP Fileinfo extension is required.',
+            ],
+            [
+                'type' => 'requirement',
+                'name' => 'PHP CURL extension',
+                'check' => extension_loaded('curl'),
+                'note' => 'PHP CURL extension is required.',
+            ],
+            [
+                'type' => 'requirement',
+                'name' => 'PHP XML extension',
+                'check' => extension_loaded('xml'),
+                'note' => 'PHP XML extension is required.',
+            ],
             [
                 'type' => 'permission',
                 'name' => 'Storage/app/',
                 'check' => file_exists(base_path('/storage/app')) &&
                     is_dir(base_path('/storage/app')) &&
-                    (is_writable(base_path('/storage/app'))) &&
-                    \Acelle\Library\Tool::getPerms(base_path('/storage/app')) >= 775,
-                'note' => 'The directory must be writable by the web server (0775).',
+                    (is_writable(base_path('/storage/app'))),
+                'note' => 'The directory must be writable by the web server.',
             ],
             [
                 'type' => 'permission',
                 'name' => 'Storage/framework/',
-                'check' => file_exists(base_path('/storage/framework')) && is_dir(base_path('/storage/framework')) && (is_writable(base_path('/storage/framework'))) &&
-                    \Acelle\Library\Tool::getPerms(base_path('/storage/framework')) >= 775,
-                'note' => 'The directory must be writable by the web server (0775).',
+                'check' => file_exists(base_path('/storage/framework')) && is_dir(base_path('/storage/framework')) && (is_writable(base_path('/storage/framework'))),
+                'note' => 'The directory must be writable by the web server.',
             ],
             [
                 'type' => 'permission',
                 'name' => 'Storage/logs/',
-                'check' => file_exists(base_path('/storage/logs')) && is_dir(base_path('/storage/logs')) && (is_writable(base_path('/storage/logs'))) &&
-                    \Acelle\Library\Tool::getPerms(base_path('/storage/logs')) >= 775,
-                'note' => 'The directory must be writable by the web server (0775).',
+                'check' => file_exists(base_path('/storage/logs')) && is_dir(base_path('/storage/logs')) && (is_writable(base_path('/storage/logs'))),
+                'note' => 'The directory must be writable by the web server.',
+            ],
+            [
+                'type' => 'permission',
+                'name' => 'Storage/job/',
+                'check' => file_exists(base_path('/storage/job')) && is_dir(base_path('/storage/job')) && (is_writable(base_path('/storage/job'))),
+                'note' => 'The directory must be writable by the web server.',
             ],
             [
                 'type' => 'permission',
                 'name' => 'bootstrap/cache/',
-                'check' => file_exists(base_path('/bootstrap/cache')) && is_dir(base_path('/bootstrap/cache')) && (is_writable(base_path('/bootstrap/cache'))) &&
-                    \Acelle\Library\Tool::getPerms(base_path('/bootstrap/cache')) >= 775,
-                'note' => 'The directory must be writable by the web server (0775).',
+                'check' => file_exists(base_path('/bootstrap/cache')) && is_dir(base_path('/bootstrap/cache')) && (is_writable(base_path('/bootstrap/cache'))),
+                'note' => 'The directory must be writable by the web server.',
             ],
         ];
     }
@@ -526,7 +572,7 @@ DB_TABLES_PREFIX='.(isset($database['tables_prefix']) ? $database['tables_prefix
 
 CACHE_DRIVER=file
 SESSION_DRIVER=file
-QUEUE_DRIVER=async
+QUEUE_DRIVER=database
 
 REDIS_HOST=localhost
 REDIS_PASSWORD=null
@@ -546,13 +592,13 @@ MAIL_FROM_NAME="'.(isset($smtp['smtp_from_name']) ? $smtp['smtp_from_name'] : ''
         fclose($env_file);
 
         // Reload .env
-        exec('php '.base_path().'/artisan config:cache');
+        \Artisan::call('config:cache');
     }
 
     public function importDatabase($database)
     {
         // read and replace prefix
-        $file_path = storage_path('import/database_init.sql');
+        $file_path = storage_path('install/database_init.sql');
         $file = fopen($file_path, 'r') or die('Unable to open file!');
         $sql = fread($file, filesize($file_path));
         $sql = str_replace('<<prefix>>', $database['tables_prefix'], $sql);

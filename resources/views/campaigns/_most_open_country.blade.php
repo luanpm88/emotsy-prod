@@ -12,12 +12,15 @@
                         </div>
                     @else
                         <div class="stat-table">
-                            @foreach ($campaign->topCountries()->get() as $location)
+                            @foreach ($campaign->topCountries(7)->get() as $location)
                                 <div class="stat-row">
                                     <div class="pull-right num">
                                         {{ $location->aggregate }}
                                     </div>
-                                    <p class="text-muted">{{ $location->country_name }}</p>
+                                    <p class="">
+                                        <img class="flag-icon" src="{{ url("/images/flags/" . (empty($location->country_code) ? "unknown" : $location->country_code) . ".png") }}" />
+                                        {{ (empty($location->country_name) ? trans("messages.unknown") : $location->country_name) }}
+                                    </p>
                                 </div>
                             @endforeach 
                         </div>

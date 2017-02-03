@@ -73,9 +73,9 @@ $(function() {
 
 });
 
-	function loadMarkers() {
+function loadMarkers() {
 
-	};
+};
 
 </script>
 @endsection

@@ -35,11 +35,14 @@
 											<br />
 											<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
-										
+										<td>
+											<div class="single-stat-box pull-left">
+												<span class="no-margin stat-num">{{ trans('messages.template_type_' . $item->source) }}</span>
+												<br>
+												<span class="text-muted text-nowrap">{{ trans('messages.type') }}</span>
+											</div>
+										</td>
 										<td class="text-right">
-											<span class="text-muted2 list-status pull-left">
-												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
-											</span>
 											@can('preview', $item)
 												<a href="#preview" class="btn bg-teal-600 btn-icon" onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a>
 											@endcan
@@ -47,7 +50,11 @@
 												Auth::user()->getOption("backend", "template_update") == 'all'
 												|| (Auth::user()->getOption("backend", "template_update") == 'own' && $item->user_id == Auth::user()->id)
 											)
-												<a href="{{ action('Admin\TemplateController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+												@if ($item->source == 'builder')
+													<a href="{{ action('Admin\TemplateController@rebuild', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+												@else
+													<a href="{{ action('Admin\TemplateController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+												@endif
 											@endif
 											@if (
 												Auth::user()->getOption("backend", "template_delete") == 'all'

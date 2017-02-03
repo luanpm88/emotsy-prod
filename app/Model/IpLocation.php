@@ -81,7 +81,7 @@ class IpLocation extends Model
         if (!empty($this->country_name)) {
             $str[] = $this->country_name;
         }
-
-        return implode(', ', $str);
+        $name = implode(', ', $str);
+        return (empty($name) ? trans('messages.unknown') : $name);
     }
 }

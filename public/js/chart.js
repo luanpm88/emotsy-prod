@@ -43,7 +43,7 @@ function showChart(id, data) {
     require(
         [
             'echarts',
-            'echarts/theme/limitless',
+            'echarts/theme/custom_color',
             'echarts/chart/bar',
             'echarts/chart/line',
             'echarts/chart/pie',
@@ -52,13 +52,13 @@ function showChart(id, data) {
 
 
         // Charts setup
-        function (ec, limitless) {
+        function (ec, acelle) {
 
 
             // Initialize charts
             // ------------------------------            
             
-            charts[id] = ec.init(document.getElementById(id), limitless);
+            charts[id] = ec.init(document.getElementById(id), acelle);
 
             // Charts setup
             // ------------------------------

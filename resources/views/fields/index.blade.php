@@ -5,6 +5,7 @@
 @section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/anytime.min.js') }}"></script>
 		
 	<script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
 @endsection
@@ -83,7 +84,7 @@
 										@include('helpers.form_control', ['disabled' => $item->tag == 'EMAIL', 'type' => 'text', 'name' => 'fields[' . $item->uid . '][tag]', 'label' => '', 'value' => $item->tag, 'help_class' => 'field', 'prefix' => "[", 'subfix' => "]"])
 									</td>
                                     <td class="text-nowrap">
-										@include('helpers.form_control', ['type' => 'text', 'name' => 'fields[' . $item->uid . '][default_value]', 'label' => '', 'value' => $item->default_value, 'help_class' => 'field'])
+										@include('helpers.form_control', ['type' => Acelle\Model\Field::getControlNameByType($item->type), 'name' => 'fields[' . $item->uid . '][default_value]', 'label' => '', 'value' => $item->default_value, 'help_class' => 'field'])										
 									</td>
 									<td>
 										@if (is_object(Acelle\Model\Field::findByUid($item->uid)))
@@ -145,7 +146,6 @@
 					<hr /><br />
 					<div class="">
 						<button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save_change') }}</button>
-						<a href="{{ trans('messages.cancel') }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
 					</div>
                 </form>
 @endsection

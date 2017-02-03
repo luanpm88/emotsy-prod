@@ -32,9 +32,11 @@
     <link rel="stylesheet" href="{{ URL::asset('js/scrollbar/jquery.mCustomScrollbar.css') }}">
     <script type="text/javascript" src="{{ URL::asset('js/scrollbar/jquery.mCustomScrollbar.concat.min.js') }}"></script>
 	
+    <script type="text/javascript" src="{{ URL::asset('js/jquery.cookie.js') }}"></script>
+    
 	@yield('page_script')
 	
-    <script type="text/javascript" src="{{ URL::asset('js/app.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('js/app.js') }}?v=1"></script>
 	<!-- /theme JS files -->
 	
 	@include('layouts._script_vars')

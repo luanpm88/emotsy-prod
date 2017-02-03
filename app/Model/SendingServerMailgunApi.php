@@ -22,7 +22,7 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 
 class SendingServerMailgunApi extends SendingServerMailgun
@@ -48,15 +48,15 @@ class SendingServerMailgunApi extends SendingServerMailgun
                 $message->toString()
             );
 
-            Log::info('Sent!');
+            MailLog::info('Sent!');
 
             return array(
                 'runtime_message_id' => StringHelper::cleanupMessageId($result->http_response_body->id),
                 'status' => self::DELIVERY_STATUS_SENT,
             );
         } catch (\Exception $e) {
-            Log::warning('Sending failed');
-            Log::warning($e->getMessage());
+            MailLog::warning('Sending failed');
+            MailLog::warning($e->getMessage());
 
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,

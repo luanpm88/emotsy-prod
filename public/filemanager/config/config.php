@@ -119,6 +119,8 @@ define('DEBUG_ERROR_MESSAGE', true); // TRUE or FALSE
 */
 
 $user_uid = $_SESSION["user_uid"];
+$base_url = ((isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] && ! in_array(strtolower($_SERVER['HTTPS']), array( 'off', 'no' ))) ? 'https' : 'http') . '://' . $_SERVER['HTTP_HOST'];
+$base_r_url =  str_replace("filemanager/dialog.php", "", str_replace($base_url, "", URL::to('/')));
 $config = array(
 
 	/*
@@ -139,7 +141,7 @@ $config = array(
 	| with start and final /
 	|
 	*/
-	'upload_dir' => '/source/' . $user_uid . "/",
+	'upload_dir' => $base_r_url . 'source/' . $user_uid . "/",
 
 	/*
 	|--------------------------------------------------------------------------

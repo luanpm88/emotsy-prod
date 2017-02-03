@@ -77,7 +77,7 @@
 						</div>
 						@can('create', new Acelle\Model\SendingServer())
 							<div class="col-md-2 text-right">
-								<a href="#" type="button" class="btn bg-info-800" data-toggle="modal" data-target="#server_types">
+								<a href="{{ action('Admin\SendingServerController@select') }}" type="button" class="btn bg-info-800">
 									<i class="icon icon-plus2"></i> {{ trans('messages.create_sending_server') }}
 								</a>
 							</div>

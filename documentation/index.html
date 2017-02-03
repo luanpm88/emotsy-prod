@@ -1,192 +1,200 @@
-<!doctype html>  
-<!--[if IE 6 ]><html lang="en-us" class="ie6"> <![endif]-->
-<!--[if IE 7 ]><html lang="en-us" class="ie7"> <![endif]-->
-<!--[if IE 8 ]><html lang="en-us" class="ie8"> <![endif]-->
-<!--[if (gt IE 7)|!(IE)]><!-->
-<html lang="en-us"><!--<![endif]-->
-<head>
-	<meta charset="utf-8">
-	
-	<title>Acelle User Guideline - 2.0.4</title>
-	
-	<meta name="description" content="">
-	<meta name="author" content="N. Pham">
-	<meta name="copyright" content="N. Pham">
-	<meta name="generator" content="Documenter v2.0 http://rxa.li/documenter">
-	<meta name="date" content="2016-09-06T00:00:00+02:00">
-	
-	<link rel="stylesheet" href="assets/css/documenter_style.css" media="all">
-	
-	
-	
-	<script src="assets/js/jquery.js"></script>
-	
-	<script src="assets/js/jquery.scrollTo.js"></script>
-	<script src="assets/js/jquery.easing.js"></script>
-	
-	<script>document.createElement('section');var duration='500',easing='swing';</script>
-	<script src="assets/js/script.js"></script>
-	
-	<style>
-		html{background-color:#FFFFFF;color:#383838;}
-		::-moz-selection{background:#444444;color:#DDDDDD;}
-		::selection{background:#444444;color:#DDDDDD;}
-		#documenter_sidebar #documenter_logo{background-image:url();}
-		a{color:#0000FF;}
-		.btn {
-			border-radius:3px;
-		}
-		.btn-primary {
-			  background-image: -moz-linear-gradient(top, #0088CC, #0044CC);
-			  background-image: -ms-linear-gradient(top, #0088CC, #0044CC);
-			  background-image: -webkit-gradient(linear, 0 0, 0 0088CC%, from(#DDDDDD), to(#0044CC));
-			  background-image: -webkit-linear-gradient(top, #0088CC, #0044CC);
-			  background-image: -o-linear-gradient(top, #0088CC, #0044CC);
-			  background-image: linear-gradient(top, #0088CC, #0044CC);
-			  filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#0088CC', endColorstr='#0044CC', GradientType=0);
-			  border-color: #0044CC #0044CC #bfbfbf;
-			  color:#FFFFFF;
-		}
-		.btn-primary:hover,
-		.btn-primary:active,
-		.btn-primary.active,
-		.btn-primary.disabled,
-		.btn-primary[disabled] {
-		  border-color: #0088CC #0088CC #bfbfbf;
-		  background-color: #0044CC;
-		}
-		hr{border-top:1px solid #EBEBEB;border-bottom:1px solid #FFFFFF;}
-		#documenter_sidebar, #documenter_sidebar ul a{background-color:#DDDDDD;color:#222222;}
-		#documenter_sidebar ul a{-webkit-text-shadow:1px 1px 0px #EEEEEE;-moz-text-shadow:1px 1px 0px #EEEEEE;text-shadow:1px 1px 0px #EEEEEE;}
-		#documenter_sidebar ul{border-top:1px solid #AAAAAA;}
-		#documenter_sidebar ul a{border-top:1px solid #EEEEEE;border-bottom:1px solid #AAAAAA;color:#444444;}
-		#documenter_sidebar ul a:hover{background:#444444;color:#DDDDDD;border-top:1px solid #444444;}
-		#documenter_sidebar ul a.current{background:#444444;color:#DDDDDD;border-top:1px solid #444444;}
-		#documenter_copyright{display:block !important;visibility:visible !important;}
-	</style>
-	
-</head>
-<body class="documenter-project-acelle-user-guideline">
-	<div id="documenter_sidebar">
-		<a href="#documenter_cover" id="documenter_logo"></a>
-		<ul id="documenter_nav">
-			<li><a class="current" href="#documenter_cover">Start</a></li>
-				
-			<li><a href="#introduction" title="Introduction">Introduction</a></li>
-			<li><a href="#installation" title="Installation">Installation</a></li>
-			<li><a href="#getting_started" title="Getting Started">Getting Started</a></li>
-			<li><a href="#features" title="Features">Features</a></li>
-			<li><a href="#web_api" title="Web API ">Web API </a></li>
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        
+        <link rel="canonical" href="http://acellemail.com/">
+        <link rel="shortcut icon" href="./img/favicon.ico">
 
-		</ul>
-		<div id="documenter_copyright">Copyright N. Pham 2016<br>
-		made with the <a href="http://rxa.li/documenter">Documenter v2.0</a> 
-		</div>
-	</div>
-	<div id="documenter_content">
-	<section id="documenter_cover">
-	<h1>Acelle User Guideline</h1>
-	<h2>2.0.4</h2>
-	<div id="documenter_buttons">
-		
-	</div>
-	<hr>
-	<ul>
-	
-	<li>latest update: 09/06/2016</li>
-	<li>by: N. Pham</li>
-	<li><a href=""></a></li>
-	
-	</ul>
-	<p></p>
-	</section>
-	
-	<section id="introduction">
-	<div class="page-header"><h3>Introduction</h3><hr class="notop"></div>
-<p>
-	Acelle is a self hosted, full-featured, easy to use email marketing web application that lets you send high-volume marketing or transactional emails via your own server or through other email service provider.</p>
-<p>
-	Install Acelle on your own web server and you can use marketing/transaction emails without any limitation. You can get rid of expensive email services like Mailchimp, ActiveCampaign&hellip; as now you can have full control over the entire system of your own.</p>
-<p>
-	Acelle is also made for commercial purposes, allowing you to manage and sell your email services to the others.</p>
-<p>
-	Acelle can be configured to send email through your own SMTP servers like Postfix, Exim, Sendmail or Qmail. It can also integrate with other email service provider like Google Mail or Amazon SES.</p>
-</section>
-<section id="installation">
-	<div class="page-header"><h3>Installation</h3><hr class="notop"></div>
-<h2>
-	Overview</h2>
-<p>
-	Acelle is a self-hosted web application written in PHP, on top of the Laravel 5.2 framework. The followings are required to install Acelle:</p>
+	<title>Acelle Mail 2.0</title>
+
+        <link href="./css/bootstrap-custom.min.css" rel="stylesheet">
+        <link href="./css/font-awesome-4.5.0.css" rel="stylesheet">
+        <link href="./css/base.css" rel="stylesheet">
+        <link rel="stylesheet" href="./css/highlight.css">
+        <link href="./css/extra.css" rel="stylesheet">
+
+        <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!--[if lt IE 9]>
+            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+            <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+        <![endif]-->
+
+        
+    </head>
+
+    <body class="homepage">
+
+        <div class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="container">
+
+        <!-- Collapsed navigation -->
+        <div class="navbar-header">
+            
+            <!-- Expander button -->
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            
+
+            <!-- Main title -->
+            <a class="navbar-brand" href=".">Acelle Mail 2.2</a>
+        </div>
+
+        <!-- Expanded navigation -->
+        <div class="navbar-collapse collapse">
+            
+                <!-- Main navigation -->
+                <ul class="nav navbar-nav">
+                
+                
+                    <li class="active">
+                        <a href=".">Getting Started</a>
+                    </li>
+                
+                
+                
+                    <li >
+                        <a href="api/">API Reference</a>
+                    </li>
+                
+                
+                </ul>
+            
+
+            <ul class="nav navbar-nav navbar-right">
+                <li>
+                    <a href="#" data-toggle="modal" data-target="#mkdocs_search_modal">
+                        <i class="fa fa-search"></i> Search
+                    </a>
+                </li>
+                
+                    <li class="disabled">
+                        <a rel="next" >
+                            <i class="fa fa-arrow-left"></i> Previous
+                        </a>
+                    </li>
+                    <li >
+                        <a rel="prev" href="api/">
+                            Next <i class="fa fa-arrow-right"></i>
+                        </a>
+                    </li>
+                
+                
+            </ul>
+        </div>
+    </div>
+</div>
+
+        <div class="container">
+            
+                <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
+    <ul class="nav bs-sidenav">
+    
+        <li class="main active"><a href="#1-introduction">1. Introduction</a></li>
+        
+    
+        <li class="main "><a href="#2-installation">2. Installation</a></li>
+        
+            <li><a href="#21-installation-with-cpanel">2.1. Installation with cPanel</a></li>
+        
+            <li><a href="#22-installation-with-apache-24-without-cpanel">2.2. Installation with Apache 2.4 (without Cpanel)</a></li>
+        
+    
+        <li class="main "><a href="#3-configuration-wizard">3. Configuration wizard</a></li>
+        
+    
+        <li class="main "><a href="#4-getting-started">4. Getting started</a></li>
+        
+            <li><a href="#41-user-roles">4.1. User roles</a></li>
+        
+            <li><a href="#42-create-your-first-campaign">4.2. Create your first campaign</a></li>
+        
+    
+    </ul>
+</div></div>
+                <div class="col-md-9" role="main">
+
+<h1 id="1-introduction">1. Introduction</h1>
+<p>Acelle is a self hosted, full-featured, easy to use email marketing web application that lets you send high-volume marketing or transactional emails through your own server or other email service providers.</p>
+<p>Install Acelle on your own web server and you can use marketing/transaction emails without any limitation. You can get rid of expensive email services like Mailchimp, ActiveCampaign… as now you can have full control over the entire system of your own.</p>
+<p>Acelle is also made for commercial purposes, allowing you to manage and sell your email services to the others.</p>
 <ul>
-	<li>
-		<p>
-			Operating System: Linux (RedHat, Fedora, CentOS, Debian, Ubuntu, etc.). Unfortunately we have yet to support Windows or Mac OS.</p>
-	</li>
-	<li>
-		<p>
-			PHP Version: 5.x, 7.x</p>
-	</li>
-	<li>
-		<p>
-			MySQL Version: &gt;= 5.x</p>
-	</li>
-	<li>
-		<p>
-			Application server: Apache, Nginx</p>
-	</li>
-	<li>
-		<p>
-			Some other PHP libraries and Linux utilities (OpenSSL for example)</p>
-	</li>
+<li>Current version: 2.0.4</li>
+<li>Developed by: Blue Nature Co., Ltd.</li>
+<li>Framework: PHP Laravel 5.x</li>
 </ul>
-<h2>
-	Required PHP extensions</h2>
-<p>
-	Dependencies will be checked as you install Acelle to your system. Just follow the setup wizard to install the dependencies.</p>
+<hr />
+<h1 id="2-installation">2. Installation</h1>
+<p>Acelle is a self-hosted web application written in PHP, on top of the Laravel 5.2 framework. The followings are required to install Acelle:</p>
 <ul>
-	<li>
-		<p>
-			Mbstring</p>
-	</li>
-	<li>
-		<p>
-			OpenSSL</p>
-	</li>
-	<li>
-		<p>
-			Socket</p>
-	</li>
+<li>
+<p>Operating System: Linux (RedHat, Fedora, CentOS, Debian, Ubuntu, etc.). Unfortunately we have yet to support Windows or Mac OS.</p>
+</li>
+<li>
+<p>PHP Version: 5.6, 7.x</p>
+</li>
+<li>
+<p>MySQL Version: &gt;= 5.x</p>
+</li>
+<li>
+<p>Application server: Apache, Nginx</p>
+</li>
 </ul>
+<p>Below are the PHP extensions that are required for installing Acelle Mail:</p>
 <ul>
-	<li>
-		<p>
-			PDO Driver</p>
-	</li>
-	<li>
-		<p>
-			Tokenizer</p>
-	</li>
-	<li>
-		<p>
-			PHP Zip Archive</p>
-	</li>
-	<li>
-		<p>
-			IMAP Extension</p>
-	</li>
+<li>
+<p>Mbstring</p>
+</li>
+<li>
+<p>OpenSSL</p>
+</li>
+<li>
+<p>Socket</p>
+</li>
+<li>
+<p>PDO Driver</p>
+</li>
+<li>
+<p>Tokenizer</p>
+</li>
+<li>
+<p>PHP Zip Archive</p>
+</li>
+<li>
+<p>IMAP Extension</p>
+</li>
 </ul>
-<h2>
-	Installation with Apache</h2>
-<p>
-	Unzip the source file</p>
-<pre>
-cd /home/user/
-unzip Acelle-2.0.4.zip</pre>
-<p>
-	Put the Acelle source folder into your webroot. For example, if your Acelle source is located at `/home/user/Acelle`, you can configure Apache virtual host as follows (remember to point the DocumentRoot to the public folder of the source)</p>
-<pre>
-&lt;VirtualHost *:80&gt;
+<p>Don't worry if you are not sure which extensions are available on your server, Acelle Mail will check and prompt you to install a missing one during the installation wizard</p>
+<h3 id="21-installation-with-cpanel">2.1. Installation with cPanel</h3>
+<p>It is recommended that you install Acelle Mail onto one of your subdomains. Suppose your domain name is <code>mydomain.com</code>, then you may want to install Acelle Mail on a subdomain like <code>marketing.mydomain.com</code></p>
+<p>The steps are as follows</p>
+<ul>
+<li>Go to cPnanel's <strong>Subdomains</strong> menu</li>
+<li>Add a subdomain named <strong>marketing</strong></li>
+<li>By default, cPanel will then create a webroot folder (document root) for your subdomain at <code>/marketing.mydomain.com/</code></li>
+<li>Upload Acelle Mail source files to the subdomain webroot folder. The file structure should look like this:
+<img alt="Change domain webroot" src="https://dl.dropboxusercontent.com/u/47371140/acellemail-guideline-dir-structure.png" title="Directory Structure" /></li>
+<li>After you have uploaded the source files, it is important to change the subdomain's document root to the <code>public</code> folder of Acelle Mail
+<img alt="Change domain webroot" src="https://dl.dropboxusercontent.com/u/47371140/acellemail-guideline-change-subdomain-webroot.png" title="Change domain webroot" /></li>
+<li>Now you can access Acelle Mail at: <code>http://marketing.mydomain.com</code>. Follow the web installation wizard and you will get Acelle installed on your own host.</li>
+</ul>
+<p><strong>Note</strong>: if you are on other web hosting manager like Plesk, DirectAdmin, Kloxo... the same rules apply. The key is to set Acelle Mail's <code>public</code> folder as the document root of your domain or subdomain.</p>
+<h3 id="22-installation-with-apache-24-without-cpanel">2.2. Installation with Apache 2.4 (without Cpanel)</h3>
+<p>Before installing, make sure Apache <code>mod_rewrite</code> is enabled.</p>
+<p>Then, unzip the source file</p>
+<pre><code>cd /home/user/
+unzip Acelle-2.0.4.zip
+</code></pre>
+
+<p>Put Acelle source folder into your domain or subdomain's document root. For example, if your Acelle source is located at <code>/home/user/Acelle</code>, you can configure Apache virtual host as follows, notice how <code>DocumentRoot</code> is setup</p>
+<pre><code>&lt;VirtualHost *:80&gt;
   ServerName yourhost.net
   DocumentRoot &quot;/home/user/Acelle/public&quot;
   Options Indexes FollowSymLinks
@@ -194,215 +202,178 @@ unzip Acelle-2.0.4.zip</pre>
     AllowOverride All
     Require all granted
   &lt;/Directory&gt;
-&lt;/VirtualHost&gt;</pre>
-<p>
-	Change the director/file&#39;s owner to Apache&#39;s running user (www-data for example), to make sure it has proper permission on your source files</p>
-<pre>
-sudo chown www-data:www-data -R /home/user/Acelle
-sudo chmod 775 -R /home/user/Acelle</pre>
-<p>
-	Then restart Apache and go to the webapp&#39;s installation URL. For example</p>
-<pre>
-http://yourhost.net/install</pre>
-<p>
-	Follow the web installation wizard and you will get Acelle installed on your own host.</p>
-<h2>
-	Installation with other application servers</h2>
-<p>
-	Although Apache is the recommended application server for production, Acelle webapp can also work with any other application that supports PHP like Nginx, Lightspeed, etc. Please follow the related documentation for how to setup a standard webapp on those application servers.</p>
-</section>
-<section id="getting_started">
-	<div class="page-header"><h3>Getting Started</h3><hr class="notop"></div>
-<p>
-	After you have setup and configured Acelle on your server in the previous step, you are ready to go with your first email marketing campaign.</p>
-<h2>
-	User Account</h2>
-<p>
-	Acelle supports two permission groups for user account: Admin and Campaign manager</p>
-<h5>
-	Administrator</h5>
-<p>
-	As an Acelle Admin, you can</p>
-<ul>
-	<li>
-		Manage users / groups</li>
-	<li>
-		Manage sending servers</li>
-	<li>
-		Manage bounce handlers</li>
-	<li>
-		Manage sending domains</li>
-	<li>
-		Monitor application statistics</li>
-	<li>
-		Manage application-wide settings</li>
-	<li>
-		Others</li>
-</ul>
-<h5>
-	Campaign Manager</h5>
-<p>
-	As an Acelle Campaign manager, you can:</p>
-<ul>
-	<li>
-		Manage lists</li>
-	<li>
-		Manage and run campaigns</li>
-	<li>
-		Monitor your own campaigns statistics</li>
-	<li>
-		Others</li>
-</ul>
-<h2>
-	Use Case</h2>
-<p>
-	Below is a very basic use case of Acelle</p>
-<h5>
-	Setup sending server for the application (as an Admin)</h5>
-<p>
-	First of all, you need to setup sending servers that actually work with email delivery. You can configure Acelle to work with your own Sendmail engine or your SMTP server or with other email service providers like Amazon AWS or Mailgun. Switch to Admin View and choose <strong>Sending &gt; Sending Servers</strong> to setup your sending servers.</p>
-<p>
-	Currently, the following are supported by Acelle:</p>
-<ul>
-	<li>
-		Standard SMTP server</li>
-	<li>
-		Standard Sendmail command</li>
-	<li>
-		Standard PHP mail() function</li>
-	<li>
-		Amazon AWS SES API</li>
-	<li>
-		Amazon AWS SES SMTP</li>
-	<li>
-		Mailgun API</li>
-	<li>
-		Mailgun SMTP</li>
-	<li>
-		(more to be supported)</li>
-</ul>
-<h5>
-	Create a List of your relevant customers (as a Campaign Manager)</h5>
-<p>
-	Then, as a Campaign manager, the first thing is to create a list of all your subscribers.</p>
-<p>
-	Go to <strong>List &gt; Create List</strong> to create a list</p>
-<p>
-	Then add subscribers to your list. You can add one by one or import the list of subscribers from a CSV file</p>
-<p>
-	Your list is now ready. The next step is to create a Campaign to send to your list</p>
-<h5>
-	Create Campaign&nbsp;(as a Campaign Manager)</h5>
-<p>
-	Go to <strong>Campaign &gt; Create Campaign</strong> to create a new Campaign</p>
-<p>
-	You are going to setup the followings for an email Campaign:</p>
-<ul>
-	<li>
-		Specify subscriber List</li>
-	<li>
-		Compose email content</li>
-	<li>
-		Schedule time for sending</li>
-</ul>
-<p>
-	After finishing the configuration wizard of the Campaign, you can click on the Send Campaign button to have it sent.</p>
-<p>
-	That&#39;s all about email marketing!&nbsp;You can always track your Campaign&#39;s email delivery status (Sent / Bounced / Open) in the Campaign statistics page.</p>
-<p>
-	&nbsp;</p>
-</section>
-<section id="features">
-	<div class="page-header"><h3>Features</h3><hr class="notop"></div>
-<h2 dir="ltr">
-	Complete Lists &amp; Subscribers Management</h2>
-<p dir="ltr">
-	Manage lists &amp; subscribers easily with Acelle:</p>
-<ul>
-	<li dir="ltr">
-		<p dir="ltr">
-			Mass import subscribers from Excel or CSV</p>
-	</li>
-	<li dir="ltr">
-		<p dir="ltr">
-			Single/double opt-in support</p>
-	</li>
-	<li dir="ltr">
-		<p dir="ltr">
-			Custom subscribe/unsubscribe confirmation page</p>
-	</li>
-	<li dir="ltr">
-		<p dir="ltr">
-			Autoresponder for subscriber welcome/goodbye emails</p>
-	</li>
-	<li dir="ltr">
-		<p dir="ltr">
-			List segmentation support</p>
-	</li>
-</ul>
-<h2 dir="ltr">
-	Delivery Tracking &amp; Statistics Reporting</h2>
-<p dir="ltr">
-	Track delivery of every single email sent out from Acelle. You can always find out whether or not your emails reach subscribers&rsquo; inbox. Opens / clicks / bounces / complaints are automatically recorded and are visualized using interactive charts &amp; data table. Acelle&rsquo;s different types of report give you lots of valuable information to help you improve your campaigns going forward.</p>
-<p>
-	&nbsp;</p>
-<p dir="ltr">
-	<img src="https://lh6.googleusercontent.com/lK7MglEoPfh9Bhb34G2HDMw0tYESiNVD01WwX0V0k_3wRvIW0btGbx5JgQIX_A83pSr4yUYgNKdK8w9URedn5FTOYOnN7JCT4Kjf500jc5k9xvzeZwhDgAav1GGp9ptIiHoXqBQ7"></p>
-<p dir="ltr">
-	&nbsp;</p>
-<h2 dir="ltr">
-	Integration with your SMTP Server</h2>
-<p dir="ltr">
-	Acelle can be configured to send email directly from your own SMTP server so that you can now get away from expensive email services like Mailchimp, ActiveCampaign, etc. Install Acelle on your server and you have control over the whole system from front-end web to the sendmail backend. You have unlimited access to any functionality.</p>
-<h2 dir="ltr">
-	Integration with Amazon SES &amp; Google Mail</h2>
-<p dir="ltr">
-	Acelle comes with built-in support for sending email from 3rd service providers like Google Email or Amazon SES API You can now send email from either your own SMTP server or via those services.</p>
-<p dir="ltr">
-	<img alt="Untitled-4.png" src="https://lh5.googleusercontent.com/cb5EQ5uh6gLTptFOBh6MB8g8DnETTRumgUYHeo24iU-1aDTav1DtKW5uz99BKsvnFO0N25Os5hf9mpknwcyJgeiGFJ78q1krYdtd_zHkK_cwZuUdhhoN3-DxOxCBJ38DbpBDcRAs"></p>
-<h2 dir="ltr">
-	Fully Responsive!</h2>
-<p>
-	Acelle is made fully responsive. You can access Acelle webapp using any device from yourPC, tablet or smartphone.</p>
-<p dir="ltr">
-	&nbsp;</p>
-<h2 dir="ltr">
-	Mass Newsletter Sending Made Easy!</h2>
-<p dir="ltr">
-	Acelle supports multi-threading so that you can send millions of email everyday. Acelle also supports auto scheduling your email campaigns.</p>
-<p dir="ltr">
-	<img alt="Maa sending easy.png" src="https://lh3.googleusercontent.com/qXRVj6RHz9joiVB8N2c_Co2Rtur9y0jOx-xCqL_zXOZPoNiP8Q3-rqQj6FexlfyagVpvH1t5Ugtctm8U1sw5a0hpXWTv6futaTRNVDAx2UpYX9NnEEUs_OXO-uhMFIoFoN-uYtdn"></p>
-<h2 dir="ltr">
-	Room for Customization!</h2>
-<p dir="ltr">
-	Acelle is written in clean PHP code, based on the Laravel framework. This makes it easy to extend or customize any part of the webapp. You can also write and embed your own PHP component.</p>
-<h2 dir="ltr">
-	Multiple Themes Available!</h2>
-<p dir="ltr">
-	Acelle comes with several themes for you to choose: dark / light / red / blue / green / pink / brown. You can choose different themes for different types of admin/user/reseller. You can also extend the standard CSS to build your own theme &amp; layout.</p>
-<p dir="ltr">
-	<img src="https://lh3.googleusercontent.com/dwnzsAcC__vfn9uR_XoQBsTQEc0G7InSH00YXbN5om5ux0OnMfOZZgwVfIHOiDG6vKrAl-UFk9slEud9hyeP_CB0HMk_aQYnzdxmOwUSZCDIklcYsQfoBT_PLKCbdHsStDW7tnSi"></p>
-<h2 dir="ltr">
-	Great for Email Service Provider!</h2>
-<p dir="ltr">
-	Acelle is also made for commercial purposes. Using Acelle, you can sell your email service to other people. The following features are supported</p>
-<ul>
-	<li dir="ltr">
-		<p dir="ltr">
-			Manage resellers and users</p>
-	</li>
-	<li dir="ltr">
-		<p dir="ltr">
-			Manage resources &amp; quota (sending limit, account limit, subscribers limit, etc.)</p>
-	</li>
-</ul>
-</section>
-<section id="web_api">
-	<div class="page-header"><h3>Web API </h3><hr class="notop"></div>
-<p>	Acelle offers API access to any functionality of the system. You can create and send email marketing campaigns, manage your lists... from outside of the Acelle web application. Acelle API is provided as HTTP REST web service which is easy to integrate with any application.</p>
-<p>	Checkout the API documentation in the main menu of the webapp after you install Acelle.</p>
-</section>
+&lt;/VirtualHost&gt;
+</code></pre>
 
-	</div>
-</body>
+<p>Change the director/file's owner to Apache's running user, to make sure it has proper permission on your source files.
+If you are on Ubuntu, the default user that Apache runs under is <code>www-data</code> (and it is <code>apache</code> for CentOS/RedHat).</p>
+<pre><code>sudo chown www-data:www-data -R /home/user/Acelle
+sudo chmod 775 -R /home/user/Acelle
+</code></pre>
+
+<p>Then restart Apache and go to the webapp's installation URL. For example</p>
+<pre><code class="html">http://yourhost.net/install
+</code></pre>
+
+<p>Follow the web installation wizard to get Acelle installed on your own host.</p>
+<hr />
+<h1 id="3-configuration-wizard">3. Configuration wizard</h1>
+<p>Once you have successfully got Acelle Mail up and running, you can go through the configuration wizard to setup it on your server.</p>
+<ul>
+<li>
+<p>First of all, Acelle Mail will check if there is any library missing on the server and will remind you to install it.
+<img alt="System Compatibility" src="https://0.s3.envato.com/files/203750656/screenshots/setup1-1-zoom.png" title="System Compatibility" /></p>
+</li>
+<li>
+<p>Once all the dependencies are installed, you can go to the next step to fill in the webapp information. The information can be changed later on in the Administration dashboard.
+<img alt="System Configuration" src="https://0.s3.envato.com/files/203750656/screenshots/setup2-1-zoom.png" title="System Configuration" /></p>
+</li>
+<li>
+<p>Acelle Mail uses a MySQL database in the background, so you need to have one available. At this step, you need to fill in the database credentials for Acelle Mail to connect to.
+<img alt="Database setting" src="https://0.s3.envato.com/files/203750656/screenshots/setup3.png" title="Database setting" /></p>
+</li>
+<li>
+<p>Once the database connection is established, Acelle Mail will initialize the database with the default settings as well as create the default administrator.
+<img alt="Init database" src="https://0.s3.envato.com/files/203750656/screenshots/setup4.png" title="Init database" /></p>
+</li>
+<li>
+<p>Acelle Mail will generate the cronjob settings so that you can install to your system. Cronjobs are used to trigger the email campaigns as well as other system processes in the background. Remember that Acelle Mail source folder must be <strong>writable</strong> by the cronjob processes.
+<img alt="Cronjob" src="https://0.s3.envato.com/files/203750656/screenshots/setup5.png" title="Cronjob" /></p>
+</li>
+<li>
+<p>And after everything is setup. You are ready to go with Acelle Mail
+<img alt="Cronjob" src="https://0.s3.envato.com/files/203750656/screenshots/setup6_3.png" title="Cronjob" /></p>
+</li>
+</ul>
+<hr />
+<h1 id="4-getting-started">4. Getting started</h1>
+<h3 id="41-user-roles">4.1. User roles</h3>
+<p>Acelle Mail supports two different roles for user account: Administrator and User (Campaign Manager). One user account can be of either or both roles.</p>
+<p>An <strong>Administrator</strong> is responsible for</p>
+<ul>
+<li>
+<p>Manage users / groups</p>
+</li>
+<li>
+<p>Manage sending servers</p>
+</li>
+<li>
+<p>Manage bounce/feedback handlers</p>
+</li>
+<li>
+<p>Manage sending domains</p>
+</li>
+<li>
+<p>Manage application-wide settings</p>
+</li>
+<li>
+<p>Manage shared template libraries</p>
+</li>
+<li>
+<p>Monitor application statistics</p>
+</li>
+</ul>
+<p>A <strong>Campaign Manager</strong> can actually work with mailing lists/campaigns:</p>
+<ul>
+<li>
+<p>Create/update/delete own mailing lists</p>
+</li>
+<li>
+<p>Create/update/delete own campaigns</p>
+</li>
+<li>
+<p>Monitor own campaigns statistics</p>
+</li>
+</ul>
+<p><strong>Note</strong>: Administrator and Campaign Manager have their own view in Acelle Mail. If one user is of both roles, he can switch the view accordingly</p>
+<h3 id="42-create-your-first-campaign">4.2. Create your first campaign</h3>
+<p>In order to send an email campaigns, the followings are required</p>
+<ul>
+<li>
+<p>A sending server (an application, server or 3rd service) which actually delivers our emails</p>
+</li>
+<li>
+<p>A mail list containing the subscribers to whom we're are sending emails to</p>
+</li>
+</ul>
+<h4 id="1-create-a-sending-server-administrator">1. Create a sending server (Administrator)</h4>
+<p>The administrator must configure at least one sending server for the system. <em>Switch to <strong>Admin View</strong> and choose <strong>Sending</strong> &gt; <strong>Sending Servers</strong>, then choose a sending server type to create</em></p>
+<p>As of version <code>2.0.4</code>, the following sending server types are supported by Acelle Mail:</p>
+<ul>
+<li>
+<p><strong>Standard SMTP</strong>: send email through an internal/external SMTP service.</p>
+</li>
+<li>
+<p><strong>Sendmail</strong>: send email directly through the <code>sendmail</code> program on the hosting server.</p>
+</li>
+<li>
+<p><strong>PHP mail() function</strong>: send email directly through the <code>mail()</code> function of PHP.</p>
+</li>
+<li>
+<p><strong>Amazon SES API/SMTP</strong>: send email through Amazon Simple Mail Service, using either Amazon's web API or standard SMTP connection.</p>
+</li>
+<li>
+<p><strong>Mailgun API/SMTP</strong>: send email through Mailgun, using either Mailgun's web API or standard SMTP connection.</p>
+</li>
+<li>
+<p><strong>SendGrid API/SMTP</strong>: send email through SendGrid, using either SendGrid's web API (v2) or standard SMTP connection.</p>
+</li>
+<li>
+<p><strong>ElasticEmail API</strong>: send email through ElasticEmail, using its web API (v2)</p>
+</li>
+<li>
+<p>more to be supported...</p>
+</li>
+</ul>
+<h4 id="2-create-a-mail-list-and-campaign-campaign-manager">2. Create a mail list and Campaign (Campaign Manager)</h4>
+<p>As a Campaign Manager, the first step is to create a mail list of all your subscribers. <em>Go to <strong>Lists</strong> &gt; <strong>Create List</strong> to create a Mail List</em>. Then you can add subscribers to your list (or potential subscribers can subscribe to your list through Acelle Mail supscription form). You can also import subscribers from a CSV file.</p>
+<p>Once your mail list is ready, you can create an email campaign to send to your list. <em>Go to <strong>Campaigns</strong> &gt; <strong>Create Campaign</strong>, choose the mail list to send and follow the steps to setup and send your campaign.</em></p>
+<p>That's it! You can always track your Campaign's email delivery status (Sent/Bounced/Open) in the Campaign statistics page.</p></div>
+            
+        </div>
+
+        <footer class="col-md-12">
+            <hr>
+            
+            <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
+        </footer>
+
+        <script src="./js/jquery-1.10.2.min.js"></script>
+        <script src="./js/bootstrap-3.0.3.min.js"></script>
+        <script src="./js/highlight.pack.js"></script>
+        <script>var base_url = '.';</script>
+        <script data-main="./mkdocs/js/search.js" src="./mkdocs/js/require.js"></script>
+        <script src="./js/base.js"></script>
+
+        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                        <h4 class="modal-title" id="exampleModalLabel">Search</h4>
+                    </div>
+                    <div class="modal-body">
+                        <p>
+                            From here you can search these documents. Enter
+                            your search terms below.
+                        </p>
+                        <form role="form">
+                            <div class="form-group">
+                                <input type="text" class="form-control" placeholder="Search..." id="mkdocs-search-query">
+                            </div>
+                        </form>
+                        <div id="mkdocs-search-results"></div>
+                    </div>
+                    <div class="modal-footer">
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </body>
 </html>
+
+<!--
+MkDocs version : 0.15.3
+Build Date UTC : 2016-11-01 14:04:24.586306
+-->

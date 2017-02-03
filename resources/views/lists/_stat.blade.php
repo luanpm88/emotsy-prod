@@ -41,7 +41,7 @@
                     <div class="col-md-3">
                         <div class="panel panel-white bg-teal-400">
                             <div class="panel-body text-center">
-                                <h2 class="text-semibold mb-10 mt-0">{{ $list->subscribers()->count() }}</h2>
+                                <h2 class="text-semibold mb-10 mt-0">{{ $list->unsubscribeCount() }}</h2>
                                 <div class="text-muted">{{ trans('messages.total_unsubscribers') }}</div>
                             </div>
                         </div>

@@ -110,4 +110,20 @@ class Field extends Model
 
         return $options;
     }
+    
+    /**
+     * Get control name.
+     *
+     * @return array
+     */
+    public static function getControlNameByType($type)
+    {
+        if($type == 'date') {
+            return 'date';
+        } elseif ($type == 'datetime') {
+            return 'datetime';
+        }
+        
+        return 'text';
+    }
 }

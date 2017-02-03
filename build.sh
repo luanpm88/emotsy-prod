@@ -9,9 +9,12 @@ then
   echo "Error: directory does not exist" && exit 1
 fi
 
-APPNAME="acelle"
-APPVERSION="2.0.4"
+APPNAME="acellemail"
+APPVERSION="2.2.0"
 APPDIR="$APPNAME-$APPVERSION"
+BUILDVERSION=$(git tag --points-at HEAD)
+BUILDVERSION=${BUILDVERSION:-"v$APPVERSION-latest"}
+APPZIP="$APPDIR$(echo $BUILDVERSION | grep -o '\-.*').zip"
 OUTPUT="$1/$APPDIR"
 
 if [ -d "$OUTPUT" ]; then
@@ -25,31 +28,40 @@ cd $OUTPUT
 
 # create version file
 touch VERSION
-echo "$(git tag --points-at HEAD)" > VERSION
+echo "$BUILDVERSION" > VERSION
 
 # create default env file
 cp .env.example .env
 
 # clean up
 rm -fr storage/logs/*
+rm -fr storage/jobs/*
 rm -fr storage/tmp/*
+rm -fr storage/import/*
+rm -fr storage/export/*
 rm -fr storage/installed
 touch storage/recache
 rm -fr .authenticate
 rm -fr .git*
-rm -fr database/seeds/DatabaseSeeder.php
-rm -fr reset
-rm -fr pull
 rm -fr run
+rm -fr database/seeds/DatabaseSeeder.php
 rm -fr public/source
 rm -fr public/thumb
 rm -fr build.sh
-rm -fr push.sh
 rm -fr public/upload/templates/*
+rm -fr bootstrap/cache/config.php
+rm -fr generate-upgrade-script.sh
+
+# copy default lang
+rm -fr resources/lang/default
+cp -r resources/lang/en resources/lang/default
 
 # run artisan
 php artisan config:cache
 php artisan key:generate
 
-echo "File exported [$OUTPUT]"
+cd ..
+zip -r "$APPZIP" "$APPDIR" > /dev/null
+rm -fr "$APPDIR"
 
+echo "File exported [$APPZIP]"

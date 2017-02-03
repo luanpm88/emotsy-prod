@@ -1,8 +1,9 @@
+            <div class="sub-h3">{{ trans('messages.campaign_open_click_rate_intro') }}</div>
             <div class="row">
                 <div class="col-md-6">
                     <div class="content-group-sm">
                         <div class="pull-right progress-right-info text-teal-800">{{ $campaign->openUniqRate() }}%</div>
-                        <h4 class="text-semibold">{{ trans('messages.open_rate') }}</h4>
+                        <h4 class="text-semibold mt-0">{{ trans('messages.open_rate') }}</h4>
                         <div class="progress progress-sm">
                             <div class="progress-bar bg-teal-400" style="width: {{ $campaign->openUniqRate() }}%">
                             </div>
@@ -42,26 +43,26 @@
                 </div>
                 <div class="col-md-6">
                     <div class="content-group-sm">
-                        <div class="pull-right progress-right-info text-teal-800">{{ $campaign->clickRate() }}%</div>
-                        <h4 class="text-semibold">{{ trans('messages.click_rate') }}</h4>
+                        <div class="pull-right progress-right-info text-teal-800">{{ $campaign->clickedEmailsRate() }}%</div>
+                        <h4 class="text-semibold mt-0">{{ trans('messages.click_rate') }}</h4>
                         <div class="progress progress-sm">
-                            <div class="progress-bar bg-teal-400" style="width: {{ $campaign->clickPerUniqOpen() }}%">
+                            <div class="progress-bar bg-teal-400" style="width: {{ $campaign->clickedEmailsRate() }}%">
                             </div>
                         </div>
                     </div>
-                    <div class="stat-table">
-                        <div class="stat-row">
-                            <div class="pull-right num">
-                                {{ $campaign->clickPerUniqOpen() }}%
-                            </div>
-                            <p class="text-muted">{{ trans('messages.clicks_per_unique_open') }}</p>
-                        </div>
+                    <div class="stat-table">                        
                         <div class="stat-row">
                             <div class="pull-right num">
                                 {{ $campaign->clickCount() }}
                             </div>
                             <p class="text-muted">{{ trans('messages.total_clicks') }}</p>
-                        </div>                        
+                        </div>
+                        <div class="stat-row">
+                            <div class="pull-right num">
+                                {{ $campaign->openCount() }}
+                            </div>
+                            <p class="text-muted">{{ trans('messages.total_opens') }}</p>
+                        </div>
                         <div class="stat-row">
                             <div class="pull-right num">
                                 {{ $campaign->abuseFeedbackCount() }}

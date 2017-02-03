@@ -144,6 +144,9 @@
 											<option value="">{{ trans('messages.all_subscribers') }}</option>
 											<option value="subscribed">{{ trans('messages.subscribed') }}</option>
 											<option value="unsubscribed">{{ trans('messages.unsubscribed') }}</option>
+											<option value="unconfirmed">{{ trans('messages.unconfirmed') }}</option>
+											<option value="spam-reported">{{ trans('messages.spam-reported') }}</option>
+											<option value="blacklisted">{{ trans('messages.blacklisted') }}</option>
 										</select>										
 									</span>
 									<div class="btn-group list_columns ml-10">

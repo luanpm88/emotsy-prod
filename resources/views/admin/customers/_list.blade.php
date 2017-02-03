@@ -21,10 +21,10 @@
 											<div class="single-stat-box pull-left ml-20">
 												<span class="no-margin text-teal-800 stat-num">{{ $item->displaySendingQuotaUsage() }}</span>
 												<div class="progress progress-xxs">
-													<div class="progress-bar progress-bar-info" style="width: {{ $item->sendingQuotaUsage() }}%">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->getSendingQuotaUsagePercentage() }}%">
 													</div>
 												</div>
-												<span class="text-muted"><strong>{{ $item->sendingQuota() }}/{{ $item->maxQuota() }}</strong><br /> {{ trans('messages.sending_quota') }}</span>
+												<span class="text-muted"><strong>{{ $item->customer->getSendingQuotaUsage() }}/{{ ($item->customer->getSendingQuota() == -1) ? '∞' : $item->customer->getSendingQuota() }}</strong> {{ trans('messages.sending_quota') }}</span>
 											</div>
 											<div class="single-stat-box pull-left ml-20">
 												<span class="no-margin text-teal-800 stat-num">{{ $item->displaySubscribersUsage() }}</span>
@@ -53,7 +53,7 @@
 										</td>
 										<td>
 											<span class="text-muted2 list-status pull-left">
-												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
+												<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.user_status_' . $item->status) }}</span>
 											</span>
 										</td>
 										<td class="text-right">

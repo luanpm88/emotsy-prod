@@ -96,10 +96,10 @@ class AccountController extends Controller
             $contact = $customer->contact;
         } else {
             $contact = new \Acelle\Model\Contact([
-                                        'first_name' => $customer->first_name,
-                                        'last_name' => $customer->last_name,
-                                        'email' => $customer->user->email,
-                                    ]);
+                'first_name' => $customer->first_name,
+                'last_name' => $customer->last_name,
+                'email' => $customer->user->email,
+            ]);
         }
 
         // Create new company if null

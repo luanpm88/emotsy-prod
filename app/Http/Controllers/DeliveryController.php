@@ -13,6 +13,7 @@ use Acelle\Model\BounceLog;
 use Acelle\Model\SendingServer;
 use Acelle\Model\SendingServerMailgun;
 use Acelle\Model\SendingServerSendGrid;
+use Acelle\Model\SendingServerElasticEmail;
 use Acelle\Model\FeedbackLog;
 
 class DeliveryController extends Controller
@@ -42,9 +43,10 @@ class DeliveryController extends Controller
     public function notify(Request $request)
     {
         // Make sure the request is POST
-        if (!$request->isMethod('post')) {
-            return;
-        }
+        // ElasticEmail send notification via GET
+        // if (!$request->isMethod('post')) {
+        //     return;
+        // }
 
         $type = $request->stype;
 
@@ -56,6 +58,9 @@ class DeliveryController extends Controller
             $this->handleMailgun();
         } elseif ($type == SendingServerSendGrid::WEBHOOK) {
             $this->handleSendGrid();
+        } elseif ($type == SendingServerElasticEmail::WEBHOOK) {
+            MailLog::configure(storage_path().'/logs/handler-elasticemail.log');
+            SendingServerElasticEmail::handleNotification($_GET);
         } else {
             return;
         }

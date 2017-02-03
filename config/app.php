@@ -150,6 +150,7 @@ return [
         Illuminate\View\ViewServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,
         Barryvdh\Queue\AsyncServiceProvider::class,
+        Chumper\Zipper\ZipperServiceProvider::class,
 
         /*
          * Application Service Providers...
@@ -158,6 +159,7 @@ return [
         Acelle\Providers\AuthServiceProvider::class,
         Acelle\Providers\EventServiceProvider::class,
         Acelle\Providers\RouteServiceProvider::class,
+        Acelle\Providers\JobServiceProvider::class,
 
     ],
 
@@ -206,6 +208,14 @@ return [
         'View' => Illuminate\Support\Facades\View::class,
         'Image' => Intervention\Image\Facades\Image::class,
         'Tool' => Acelle\Library\Tool::class,
+        'Yaml' => Symfony\Component\Yaml\Yaml::class,
+        'Zipper' => Chumper\Zipper\Zipper::class,
+        
     ],
-
+    
+    /*
+     * Custom application settings of Acelle Mail go here
+     */
+    'redis_enabled' => env('REDIS_ENABLED', false),
+    'import_batch_size' => env('IMPORT_BATCH_SIZE', 5000),
 ];

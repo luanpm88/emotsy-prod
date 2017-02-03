@@ -84,4 +84,12 @@ class UserPolicy
     {        
         return is_object($user->reseller);
     }
+    
+    public function change_group(\Acelle\Model\User $user, \Acelle\Model\User $item)
+    {
+        $ability = $user->admin->getPermission('user_update');
+        $can = $ability == 'all';
+
+        return $can;
+    }
 }

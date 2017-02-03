@@ -35,6 +35,8 @@ class AuthController extends Controller
      */
     public function __construct()
     {
+        parent::__construct();
+        
         $this->middleware($this->guestMiddleware(), ['except' => 'logout']);
     }
 
@@ -45,7 +47,7 @@ class AuthController extends Controller
      *
      * @return \Illuminate\Contracts\Validation\Validator
      */
-    protected function validator(array $data)
+    protected function validator($data)
     {
         return Validator::make($data, [
             'name' => 'required|max:255',
@@ -61,7 +63,7 @@ class AuthController extends Controller
      *
      * @return User
      */
-    protected function create(array $data)
+    protected function create($data)
     {
         return User::create([
             'name' => $data['name'],

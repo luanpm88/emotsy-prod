@@ -39,14 +39,14 @@
                     <ul class="modern-listing">
                         <li>
                             <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-                            <i class="icon-checkmark4"></i>
-                            <h4>{{ trans('messages.recipients') }}</h4>
+							@if ($campaign->subscribers()->count())
+								<i class="icon-checkmark4"></i>
+							@else
+								<i class="icon-cross2 text-danger"></i>
+							@endif
+                            <h4>{{ $campaign->subscribers()->count() }} {{ trans('messages.recipients') }}</h4>
                             <p>
-                                @if (is_object($campaign->segment))
-                                    {{ $campaign->mailList->name }} . {{ $campaign->segment->name }}: {{ $campaign->subscribers()->count() }} {{ strtolower(trans('messages.recipients')) }}
-                                @elseif (is_object($campaign->mailList))
-                                    {{ $campaign->mailList->name }}: {{ $campaign->subscribers()->count() }} {{ strtolower(trans('messages.recipients')) }}
-                                @endif
+                                {!! $campaign->displayRecipients() !!}
                             </p>                        
                         </li>
                         <li>
@@ -87,11 +87,14 @@
                             </p>                        
                         </li>
                     </ul>
-                        
-                    <br />
-                    <div class="text-right">
-                        <button class="btn btn-lg bg-teal-800">{{ trans('messages.send') }} <i class="icon-paperplane"></i> </button>
-                    </div>
+                    
+					@if ($campaign->step() >= 5)
+						<br />
+						<div class="text-right">
+							<button class="btn btn-lg bg-grey mr-5 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
+							<button class="btn btn-lg bg-teal-800">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>							
+						</div>
+					@endif
                 </form>
                     
             </div>

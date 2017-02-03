@@ -11,6 +11,8 @@
 	
 	@include('layouts._js')
 	
+	@include('layouts._user_script')
+	
 </head>
 
 <body class="navbar-top color-scheme-{{ Auth::user()->customer->getColorScheme() }}">
@@ -39,6 +41,11 @@
 						<i class="icon-paperplane"></i> {{ trans('messages.campaigns') }}
 					</a>
 				</li>
+				<li rel0="AutomationController">
+					<a href="{{ action('AutomationController@index') }}">
+						<i class="icon-alarm-check"></i> {{ trans('messages.Automations') }}
+					</a>
+				</li>
 				<li
 					rel0="MailListController"
 					rel1="FieldController"
@@ -51,7 +58,7 @@
 					<a href="{{ action('TemplateController@index') }}">
 						<i class="icon-magazine"></i> {{ trans('messages.templates') }}
 					</a>
-				</li>
+				</li>				
 				<li rel0="AccountController/api">
 					<a href="{{ action("AccountController@api") }}" class="level-1">
 						<i class="icon-key position-left"></i> {{ trans('messages.api') }}

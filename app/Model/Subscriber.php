@@ -31,6 +31,16 @@ class Subscriber extends Model
     const STATUS_BLACKLISTED = 'blacklisted';
     const STATUS_SPAM_REPORTED = 'spam-reported';
 
+    const SUBSCRIPTION_TYPE_DOUBLE_OPTIN = 'double';
+    const SUBSCRIPTION_TYPE_SINGLE_OPTIN = 'single';
+    const SUBSCRIPTION_TYPE_IMPORTED = 'imported';
+
+    protected $dates = ['unsubscribed_at'];
+
+    public static $rules = [
+        'email' => ['required', 'email']
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -157,7 +167,13 @@ class Subscriber extends Model
                     $fv->value = $value;
                 }
                 $fv->save();
-            }
+                
+                // update email attribute of subscriber
+                if($field->tag == 'EMAIL') {
+                    $this->email = $fv->value;
+                    $this->save();
+                }
+            }            
         }
     }
 
@@ -293,7 +309,7 @@ class Subscriber extends Model
         // Import to database
         $filename = $list->id.'-data.csv';
         $content = \File::get($directory.$filename);
-        $lines = explode("\n", $content);
+        $lines = preg_split('/\r\n|\r|\n/', $content); // explode("\n\r", $content);
         $total = count($lines) - 1;
         $success = 0;
         $error = 0;
@@ -314,7 +330,7 @@ class Subscriber extends Model
         if (!in_array('EMAIL', $headers)) {
             $str = "error\n<span style='color:red'>".trans('messages.invalid_csv_file').'</span>';
             $str .= "\n0";
-            $bytes_written = \File::put($directory.$mail_list->list_id.'-process.log', $str);
+            $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
 
             return;
         }
@@ -340,7 +356,11 @@ class Subscriber extends Model
 
             if ($key > 0) {
                 $parts = explode(',', $line);
-                $email = $parts[$main_index];
+                if(isset($parts[$main_index])) {
+                    $email = strtolower(trim(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($parts[$main_index])))));
+                } else {
+                    $email = "";
+                }
 
                 $valid = $list->checkExsitEmail($email);
                 if ($valid) {
@@ -352,6 +372,7 @@ class Subscriber extends Model
                     $subscriber->save();
 
                     foreach ($parts as $key => $value) {
+                        $value = trim(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($value))));
                         if(isset($headers[$key])) {
                             $lf = $list->fields()->where('tag', '=', $headers[$key])->first();
                             if (is_object($lf)) {
@@ -370,7 +391,7 @@ class Subscriber extends Model
                     $error_detail = trans('messages.email_imported', ['time' => \Carbon\Carbon::now()->timezone($user->customer->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);                    
                 } else {
                     ++$error;
-                    $error_detail = trans('messages.email_existed', ['time' => \Carbon\Carbon::now()->timezone($user->customer->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);
+                    $error_detail = trans('messages.email_existed_invalid', ['time' => \Carbon\Carbon::now()->timezone($user->customer->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);
                 }
                 if ($key % $lines_per_second == 0) {
                     $content_cache = trans('messages.import_export_statistics_line', [
@@ -474,7 +495,7 @@ class Subscriber extends Model
      */
     public function getSecurityToken($action)
     {
-        $string = $this->email + $action + env('APP_SECRET');
+        $string = $this->email . $action . config('app.key');
 
         return md5($string);
     }
@@ -619,9 +640,18 @@ class Subscriber extends Model
     public function lastClickLog($campaign=null)
     {
         $query = $this->clickLogs();
-        
         $query = $query->orderBy('click_logs.created_at', 'desc')->first();
-        
         return $query;
+    }
+    
+    /**
+     * Update subscriber status.
+     *
+     * @param MailList $list
+     */
+    public function updateStatus($status)
+    {
+        $this->status = $status;
+        $this->save();
     }
 }

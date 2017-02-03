@@ -21,7 +21,7 @@ class MailListPolicy
         return $item->customer_id == $customer->id;
     }
 
-    public function create(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
+    public function create(\Acelle\Model\User $user)
     {
         $customer = $user->customer;
         $max = $customer->getOption('list_max');
@@ -39,5 +39,15 @@ class MailListPolicy
     {
         $customer = $user->customer;
         return $item->customer_id == $customer->id;
+    }
+
+    public function addMoreSubscribers(\Acelle\Model\User $user, \Acelle\Model\MailList $mailList, $numberOfSubscribers)
+    {
+        $max = $user->customer->getOption('subscriber_max');
+        $maxPerList = $user->customer->getOption('subscriber_per_list_max');
+
+        return $user->customer->id == $mailList->user_id &&
+            ($max >= $user->customer->subscribers()->count() + $numberOfSubscribers || $max == -1) &&
+            ($maxPerList >= $mailList->subscribers()->count() + $numberOfSubscribers || $maxPerList == -1);
     }
 }

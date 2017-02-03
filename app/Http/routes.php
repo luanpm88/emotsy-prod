@@ -10,7 +10,7 @@
 | and give it the controller to call when that URI is requested.
 |
 */
-
+Route::resource('automation', 'AutomationController');
 Route::group(['middleware' => ['installed']], function () {
     // Installation
     Route::get('install', 'InstallController@starting');
@@ -28,15 +28,25 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
     // Route::group(['namespace' => 'Api', 'prefix' => 'api/v1'], function () {
     Route::get('', 'HomeController@index');
     
-    
+    // List
     Route::resource('lists', 'MailListController');
+    
+    // Campaign
     Route::resource('campaigns', 'CampaignController');
+    
+    // Subscriber
     Route::get('lists/{list_uid}/subscribers', 'SubscriberController@index');
     Route::get('lists/{list_uid}/subscribers/{uid}', 'SubscriberController@show');
     Route::patch('lists/{list_uid}/subscribers/{uid}/subscribe', 'SubscriberController@subscribe');
     Route::patch('lists/{list_uid}/subscribers/{uid}/unsubscribe', 'SubscriberController@unsubscribe');
     Route::delete('lists/{list_uid}/subscribers/{uid}/delete', 'SubscriberController@delete');
     Route::post('lists/{list_uid}/subscribers/store', 'SubscriberController@store');
+    
+    // User
+    Route::resource('users', 'UserController');
+    
+    // Automation
+    Route::post('automations/{uid}/api/call', 'AutomationController@apiCall');
 });
 
 Route::auth();
@@ -44,7 +54,9 @@ Route::auth();
 Route::get('/offline', 'Controller@offline');
 Route::get('/not-authorized', 'Controller@notAuthorized');
 Route::get('/demo', 'Controller@demo');
-
+Route::get('/autologin/{api_token}', 'Controller@autoLogin');
+Route::get('/reload/cache', 'Controller@reloadCache');
+Route::get('/migrate/run', 'Controller@runMigration');
 
 // Customer avatar
 Route::get('assets/images/avatar/customer-{uid?}.jpg', 'CustomerController@avatar');
@@ -119,17 +131,18 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('lists/{list_uid}/subscribers/unsubscribe', 'SubscriberController@unsubscribe');
     Route::get('lists/{list_uid}/subscribers/import', 'SubscriberController@import');
     Route::post('lists/{list_uid}/subscribers/import', 'SubscriberController@import');
+    Route::get('lists/{list_uid}/subscribers/import/list', 'SubscriberController@importList');
     Route::get('lists/{list_uid}/subscribers/import/log', 'SubscriberController@downloadImportLog');
     Route::get('lists/{list_uid}/subscribers/import/proccess', 'SubscriberController@importProccess');
     Route::get('lists/{list_uid}/subscribers/export', 'SubscriberController@export');
     Route::post('lists/{list_uid}/subscribers/export', 'SubscriberController@export');
     Route::get('lists/{list_uid}/subscribers/export/proccess', 'SubscriberController@exportProccess');
     Route::get('lists/{list_uid}/subscribers/export/download', 'SubscriberController@downloadExportedCsv');
+    Route::get('lists/{list_uid}/subscribers/export/list', 'SubscriberController@exportList');
 
     // Notification handler
-
     Route::post('delivery/notify/{stype}', 'DeliveryController@notify');
-    //Route::get('delivery/notify/{stype}', 'DeliveryController@notify');
+    Route::get('delivery/notify/{stype}', 'DeliveryController@notify');
 
     // Segment
     Route::get('segments/select_box', 'SegmentController@selectBox');
@@ -164,23 +177,35 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('templates/{uid}/content', 'TemplateController@content');
     Route::get('templates/sort', 'TemplateController@sort');
     Route::get('templates/listing/{page?}', 'TemplateController@listing');
-    Route::get('templates/choosing/{page?}', 'TemplateController@choosing');
+    Route::get('templates/choosing/{campaign_uid}/{page?}', 'TemplateController@choosing');
     Route::get('templates/upload', 'TemplateController@upload');
     Route::post('templates/upload', 'TemplateController@upload');
     Route::get('templates/{uid}/image', 'TemplateController@image');
     Route::post('templates/{uid}/saveImage', 'TemplateController@saveImage');
     Route::get('templates/{uid}/preview', 'TemplateController@preview');
     Route::get('templates/delete', 'TemplateController@delete');
+    Route::get('templates/build/select', 'TemplateController@buildSelect');
+    Route::get('templates/build/{style?}', 'TemplateController@build');
+    Route::get('templates/{uid}/rebuild', 'TemplateController@rebuild');
     Route::resource('templates', 'TemplateController');
     Route::get('templates/{uid}/edit', 'TemplateController@edit');
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
+    Route::get('campaigns/{uid}/list-segment-form', 'CampaignController@listSegmentForm');
+    Route::get('campaigns/{uid}/template/review', 'CampaignController@templateReview');
+    Route::post('campaigns/{uid}/image/save', 'CampaignController@saveImage');
+    Route::get('campaigns/{uid}/image', 'CampaignController@image');
+    Route::get('campaigns/{uid}/preview', 'CampaignController@preview');
+    Route::get('campaigns/templates/list', 'CampaignController@templateList');
+    Route::patch('campaigns/{uid}/templates/choose/from/{from_uid}', 'CampaignController@campaignTemplateChoose');
+    Route::post('campaigns/send-test-email', 'CampaignController@sendTestEmail');
     Route::get('campaigns/delete/confirm', 'CampaignController@deleteConfirm');
     Route::get('campaigns/{message_id}/open', 'CampaignController@open');
     Route::get('campaigns/{message_id}/click/{url}', 'CampaignController@click');
     Route::get('campaigns/{message_id}/unsubscribe', 'CampaignController@unsubscribe');
 
+    Route::post('campaigns/copy', 'CampaignController@copy');
     Route::get('campaigns/{uid}/subscribers', 'CampaignController@subscribers');
     Route::get('campaigns/{uid}/subscribers/listing', 'CampaignController@subscribersListing');
     Route::get('campaigns/{uid}/open-map', 'CampaignController@openMap');
@@ -212,6 +237,12 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('campaigns/{uid}/setup', 'CampaignController@setup');
     Route::get('campaigns/{uid}/template', 'CampaignController@template');
     Route::post('campaigns/{uid}/template', 'CampaignController@template');
+    Route::get('campaigns/{uid}/template/select', 'CampaignController@templateSelect');
+    Route::get('campaigns/{uid}/template/choose/{template_uid}', 'CampaignController@templateChoose');
+    Route::get('campaigns/{uid}/template/preview', 'CampaignController@templatePreview');
+    Route::get('campaigns/{uid}/template/iframe', 'CampaignController@templateIframe');
+    Route::get('campaigns/{uid}/template/build/{style}', 'CampaignController@templateBuild');
+    Route::get('campaigns/{uid}/template/rebuild', 'CampaignController@templateRebuild');
     Route::get('campaigns/{uid}/schedule', 'CampaignController@schedule');
     Route::post('campaigns/{uid}/schedule', 'CampaignController@schedule');
     Route::get('campaigns/{uid}/confirm', 'CampaignController@confirm');
@@ -225,6 +256,56 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::patch('campaigns/{uid}/update', 'CampaignController@update');    
     
     Route::get('customers/login-back', 'CustomerController@loginBack');
+    Route::get('users/login-back', 'UserController@loginBack');
+    
+    // System job
+    Route::post('systems/jobs/cancel', 'SystemJobController@cancel');
+    Route::get('systems/jobs/{type}/listing', 'SystemJobController@listing');
+    Route::get('systems/jobs/delete', 'SystemJobController@delete');
+    Route::get('systems/jobs/{id}/download/log', 'SystemJobController@downloadLog');
+    Route::get('systems/jobs/{id}/download/csv', 'SystemJobController@downloadCsv');
+    
+    // Automation
+    Route::get('automations/{uid}/list-segment-form', 'AutomationController@listSegmentForm');    
+    Route::patch('automations/disable', 'AutomationController@disable');
+    Route::patch('automations/enable', 'AutomationController@enable');
+    Route::get('automations/{uid}/overview/emails/list', 'AutomationController@overviewCampaignsList');
+    Route::get('automations/{uid}/overview/emails', 'AutomationController@overviewCampaigns');
+    Route::get('automations/{uid}/overview/workflow', 'AutomationController@overviewWorkflow');
+    Route::post('automations/{uid}/confirm', 'AutomationController@confirm');
+    Route::get('automations/{uid}/confirm', 'AutomationController@confirm');
+    Route::delete('automations/delete', 'AutomationController@delete');
+    Route::get('automations/{uid}/auto-event/form', 'AutomationController@nextEventForm');
+    Route::post('automations/{uid}/workflow', 'AutomationController@workflow');
+    Route::get('automations/{uid}/workflow', 'AutomationController@workflow');
+    Route::get('automations/{uid}/custom-criteria/form', 'AutomationController@criteriaForm');
+    Route::post('automations/{uid}/trigger', 'AutomationController@trigger');
+    Route::get('automations/{uid}/trigger', 'AutomationController@trigger');
+    Route::get('automations/sort', 'AutomationController@sort');
+    Route::get('automations/listing/{page?}', 'AutomationController@listing');
+    Route::resource('automations', 'AutomationController');
+    
+    // Auto event
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template', 'AutoEventController@template'); //
+    Route::post('auto-events/{uid}/emails/{campaign_uid}/template', 'AutoEventController@template'); //
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/select', 'AutoEventController@templateSelect'); //
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/choose/{template_uid}', 'AutoEventController@templateChoose');
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/preview', 'AutoEventController@templatePreview'); //
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/iframe', 'AutoEventController@templateIframe'); //
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/build/{style}', 'AutoEventController@templateBuild'); //
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/template/rebuild', 'AutoEventController@templateRebuild'); //
+    
+    Route::patch('auto-events/{uid}/move/up', 'AutoEventController@moveUp');
+    Route::patch('auto-events/{uid}/move/down', 'AutoEventController@moveDown');
+    Route::patch('auto-events/{uid}/disable', 'AutoEventController@disable');
+    Route::patch('auto-events/{uid}/enable', 'AutoEventController@enable');
+    Route::patch('auto-events/{uid}/emails/{campaign_uid}/setup', 'AutoEventController@campaignSetup');
+    Route::get('auto-events/{uid}/emails/{campaign_uid}/setup', 'AutoEventController@campaignSetup');
+    Route::delete('auto-events/{uid}/delete', 'AutoEventController@delete');
+    Route::delete('auto-events/campaigns/{uid}/delete', 'AutoEventController@deleteCampaign');
+    Route::post('auto-events/{uid}/campaigns/add', 'AutoEventController@addCampaign');
+    Route::get('auto-events/{uid}/campaigns', 'AutoEventController@campaigns');
+    Route::resource('auto-events', 'AutoEventController');
 });
 
 // ADMIN AREA
@@ -243,6 +324,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/templates/upload', 'TemplateController@upload');
     Route::post('admin/templates/upload', 'TemplateController@upload');
     Route::get('admin/templates/delete', 'TemplateController@delete');
+    Route::get('admin/templates/build/select', 'TemplateController@buildSelect');
+    Route::get('admin/templates/build/{style?}', 'TemplateController@build');
+    Route::get('admin/templates/{uid}/rebuild', 'TemplateController@rebuild');
     Route::resource('admin/templates', 'TemplateController');
     Route::get('admin/templates/{uid}/edit', 'TemplateController@edit');
     Route::patch('admin/templates/{uid}/update', 'TemplateController@update');
@@ -253,6 +337,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/layouts', 'LayoutController');
 
     // Sending servers
+    Route::get('admin/sending_servers/select', 'SendingServerController@select');
     Route::get('admin/sending_servers/listing/{page?}', 'SendingServerController@listing');
     Route::get('admin/sending_servers/sort', 'SendingServerController@sort');
     Route::get('admin/sending_servers/delete', 'SendingServerController@delete');
@@ -283,11 +368,27 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/sending_domains', 'SendingDomainController');
 
     // Language
+    Route::get('admin/languages/delete/confirm', 'LanguageController@deleteConfirm');
     Route::get('admin/languages/listing/{page?}', 'LanguageController@listing');
     Route::get('admin/languages/delete', 'LanguageController@delete');
+    Route::get('admin/languages/{id}/translate/{file}', 'LanguageController@translate');
+    Route::post('admin/languages/{id}/translate/{file}', 'LanguageController@translate');
+    Route::get('admin/languages/disable', 'LanguageController@disable');
+    Route::get('admin/languages/enable', 'LanguageController@enable');
+    Route::get('admin/languages/{id}/download', 'LanguageController@download');
+    Route::get('admin/languages/{id}/upload', 'LanguageController@upload');
+    Route::post('admin/languages/{id}/upload', 'LanguageController@upload');
     Route::resource('admin/languages', 'LanguageController');
 
     // Setting
+    Route::get('admin/settings/mailer', 'SettingController@mailer');
+    Route::post('admin/settings/mailer', 'SettingController@mailer');
+    Route::get('admin/settings/cronjob', 'SettingController@cronjob');
+    Route::get('admin/settings/urls', 'SettingController@urls');
+    Route::get('admin/settings/sending', 'SettingController@sending');
+    Route::post('admin/settings/sending', 'SettingController@sending');
+    Route::get('admin/settings/general', 'SettingController@general');
+    Route::post('admin/settings/general', 'SettingController@general');
     Route::get('admin/settings/logs', 'SettingController@logs');
     Route::get('log', 'SettingController@download_log');
     Route::get('admin/settings/{tab?}', 'SettingController@index');

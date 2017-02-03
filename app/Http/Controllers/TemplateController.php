@@ -3,6 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 class TemplateController extends Controller
 {
@@ -52,9 +53,11 @@ class TemplateController extends Controller
     public function choosing(Request $request)
     {
         $templates = \Acelle\Model\Template::search($request)->paginate($request->per_page);
+        $campaign = \Acelle\Model\Campaign::findByUid($request->campaign_uid);
 
         return view('templates._list_choose', [
             'templates' => $templates,
+            'campaign' => $campaign,
         ]);
     }
 
@@ -132,6 +135,15 @@ class TemplateController extends Controller
 
             // Save template
             $template->fill($request->all());
+            $template->source = 'editor';
+            if(isset($request->source)) {
+                $template->source = $request->source;
+            }
+            
+            //// update content
+            //$template->content = preg_replace('/href\=\'([^\']*\{)/',"href='{", $template->content);
+            //$template->content = preg_replace('/href\=\"([^\"]*\{)/','href="{', $template->content);
+            
             $template->save();
 
             // Redirect to my lists page
@@ -210,6 +222,11 @@ class TemplateController extends Controller
 
             // Save template
             $template->fill($request->all());
+            
+            //// update content
+            //$template->content = preg_replace('/href\=\'([^\']*\{)/',"href='{", $template->content);
+            //$template->content = preg_replace('/href\=\"([^\"]*\{)/','href="{', $template->content);
+            
             $template->save();
 
             // Redirect to my lists page
@@ -381,6 +398,7 @@ class TemplateController extends Controller
             // Save new template
             $template->fill($request->all());
             $template->content = $html_content;
+            $template->source = 'upload';
             $template->save();
             
             // copy all folder to public path
@@ -482,12 +500,25 @@ class TemplateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function preview($id)
-    {
+    {        
         $template = \Acelle\Model\Template::findByUid($id);
-
+        
         // authorize
         if (\Gate::denies('preview', $template)) {
             return $this->not_authorized();
+        }
+        
+        // Convert to inline css if template source is builder
+        if ($template->source == 'builder') {
+            $cssToInlineStyles = new CssToInlineStyles();
+            $html = $template->content;
+            $css = file_get_contents(public_path("css/res_email.css"));
+            
+            // output
+            $template->content = $cssToInlineStyles->convert(
+                $html,
+                $css
+            );
         }
 
         return view('templates.preview', [
@@ -532,5 +563,72 @@ class TemplateController extends Controller
         // save
         $template->image = $upload_loca.$filename;
         $template->save();
+    }
+    
+    /**
+     * Buiding email template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function build(Request $request)
+    {
+        $template = new \Acelle\Model\Template();
+        $template->name = trans('messages.untitled_template');
+        
+        // authorize
+        if (\Gate::denies('create', $template)) {
+            return $this->notAuthorized();
+        }
+        
+        $elements = [];
+        if(isset($request->style)) {
+            $elements = \Acelle\Model\Template::templateStyles()[$request->style];
+        }
+        
+        return view('templates.build', [
+            'template' => $template,
+            'elements' => $elements
+        ]);
+    }
+    
+    /**
+     * Buiding email template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function rebuild(Request $request)
+    {
+        // Generate info
+        $user = $request->user();
+        $template = \Acelle\Model\Template::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('update', $template)) {
+            return $this->notAuthorized();
+        }
+
+        return view('templates.rebuild', [
+            'template' => $template,
+        ]);
+    }
+    
+    /**
+     * Select template style.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function buildSelect(Request $request)
+    {
+        $template = new \Acelle\Model\Template();
+        
+        return view('templates.build_start', [
+            'template' => $template,
+        ]);
     }
 }

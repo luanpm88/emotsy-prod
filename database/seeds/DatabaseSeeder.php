@@ -28,6 +28,8 @@ class DatabaseSeeder extends Seeder
             'name' => 'English',
             'code' => 'en',
             'region_code' => 'us',
+            'status' => 'active',
+            'is_default' => true,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
@@ -197,24 +199,6 @@ class DatabaseSeeder extends Seeder
             'customer_id' => 1,
             'name' => 'My List',
             'status' => 'active',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-
-        DB::table('campaigns')->insert([
-            'id' => 1,
-            'uid' => uniqid(),
-            'mail_list_id' => 1,
-            'customer_id' => 1,
-            'name' => 'My Campaign',
-            'type' => 'regular',
-            'subject' => 'Newsletter of June, 13',
-            'from_email' => 'noreply@anphabeta.com',
-            'reply_to' => 'noreply@anphabeta.com',
-            'from_name' => 'Those were the days',
-            'html' => 'Hello {CAMPAIGN_NAME}, <br><b>Those</b> were the <span style="color:green">days</span><a style="abc" href="http://www.google.com.vn">GoogleVN</a> <br>{UNSUBSCRIBE_URL}',
-            'plain' => 'Those were the <i>days</i>',
-            'status' => 'ready',
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
@@ -504,7 +488,7 @@ class DatabaseSeeder extends Seeder
             'id' => 9,
             'uid' => uniqid(),
             'name' => 'SendGrid SMTP',
-            'user_id' => 1,
+            'admin_id' => 1,
             'type' => 'sendgrid-smtp',
             'api_key' => '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',
             'host' => 'smtp.sendgrid.net',  // giá trị gợi ý màu xám xám trong textbox
@@ -515,65 +499,6 @@ class DatabaseSeeder extends Seeder
             'quota_value' => 1000,
             'quota_base' => 5,
             'quota_unit' => 'minute',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-
-        DB::table('tracking_logs')->insert([
-            'id' => 1,
-            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
-            'sending_server_id' => 1,
-            'customer_id' => 1,
-            'campaign_id' => 1,
-            'subscriber_id' => 1,
-            'status' => 'sent',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-
-        DB::table('tracking_logs')->insert([
-            'id' => 2,
-            'message_id' => '5069900013.fece1089d17ee@anphabeta.com',
-            'sending_server_id' => 1,
-            'customer_id' => 1,
-            'campaign_id' => 1,
-            'subscriber_id' => 2,
-            'status' => 'sent',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-
-        DB::table('open_logs')->insert([
-            'id' => 1,
-            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
-            'ip_address' => '111.111.00.11',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-
-        DB::table('click_logs')->insert([
-            'id' => 1,
-            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
-            'url' => 'http://google.com',
-            'ip_address' => '111.111.00.11',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-
-        DB::table('feedback_logs')->insert([
-            'id' => 1,
-            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
-            'feedback_type' => 'abuse',
-            'raw_feedback_content' => '0',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-
-        DB::table('unsubscribe_logs')->insert([
-            'id' => 1,
-            'message_id' => '1469976713.579e1089d17d6@anphabeta.com',
-            'user_agent' => '0',
-            'ip_address' => '111.111.00.11',
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);

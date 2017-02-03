@@ -34,12 +34,21 @@
 											<span class="text-muted">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
 										
-										<td class="text-right">
-											<span class="text-muted2 list-status pull-left">
-												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
-											</span>											
+										<td>
+											<div class="single-stat-box pull-left">
+												<span class="no-margin stat-num">{{ trans('messages.template_type_' . $item->source) }}</span>
+												<br>
+												<span class="text-muted text-nowrap">{{ trans('messages.type') }}</span>
+											</div>
+										</td>
+										
+										<td class="text-right">										
 											@can('update', $item)
-												<a href="{{ action('TemplateController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+												@if ($item->source == 'builder')
+													<a href="{{ action('TemplateController@rebuild', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+												@else
+													<a href="{{ action('TemplateController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+												@endif
 											@endcan
 											<div class="btn-group">										
 												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
