@@ -17,11 +17,13 @@ class ImportSubscribersHelper
             $message = trans('messages.import_failed_message', ['error' => $data->error_message]);
         } else if ($job->isNew() && !$job->isCancelled()) {
             $message = trans('messages.starting');
+        } else if ($job->isCancelled()) {
+            $message = trans('messages.cancelled');
         } else {
             $message = trans('messages.import_export_statistics_line', [
                 'total' => $data->total,
                 'processed' => $data->processed,
-                'success' => $data->processed,
+                'success' => $data->success,
                 'error' => 0,
             ]);;
         }
