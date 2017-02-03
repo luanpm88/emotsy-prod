@@ -14,28 +14,27 @@ class Controller extends BaseController
 
     public function __construct()
     {
-        // Generate info
-        $user = \Auth::user();
-        $default_language = \Acelle\Model\Language::find(\Acelle\Model\Setting::get('default_language'));
-        if(is_object($user) && is_object($user->language)) {
-            $language_code = $user->language->code;
-        } else if (isset($_COOKIE['last_language_code'])) {
-            $language_code = $_COOKIE['last_language_code'];
-        } else if (is_object($default_language)) {
-            $language_code = $default_language->code;
-        }
-        
-        if(isset($language_code)) {
-            // Set language
-            \App::setLocale($language_code);
+        // In case Carbon dose not support language code or app not installed
+        try {
+            // Generate info
+            $user = \Auth::user();
+            $default_language = \Acelle\Model\Language::find(\Acelle\Model\Setting::get('default_language'));
+            if(is_object($user) && is_object($user->language)) {
+                $language_code = $user->language->code;
+            } else if (isset($_COOKIE['last_language_code'])) {
+                $language_code = $_COOKIE['last_language_code'];
+            } else if (is_object($default_language)) {
+                $language_code = $default_language->code;
+            }
             
-            // In case Carbon dose not support language code
-            try {
+            if(isset($language_code)) {
+                // Set language
+                \App::setLocale($language_code);
                 if(file_exists(base_path("vendor/nesbot/carbon/src/Carbon/Lang/" . $language_code . ".php"))) {
                     \Carbon\Carbon::setLocale($language_code);
-                }
-            } catch (\Exception $e) {
+                }                
             }
+        } catch (\Exception $e) {
         }
     }
     
