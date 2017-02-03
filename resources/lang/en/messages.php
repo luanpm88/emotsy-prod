@@ -1266,6 +1266,7 @@ return [
     'campaign_status_done' => 'Done',
     'campaign_status_paused' => 'Paused',
     'tracking_log_status_sent' => 'Sent',
+    'tracking_log_status_failed' => 'Failed',
     'tracking_log_status_bounced' => 'Bounced',
     'tracking_log_status_feedback-abuse' => 'Feedback-abuse',
     'tracking_log_status_feedback-spam' => 'Feedback-spam',
