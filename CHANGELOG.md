@@ -5,7 +5,7 @@
  * Added: support sending campaign without using cronjob
  * Fixed: timezone issue while scheduling future campaign
 
-2.2.0-p6 / 2017-01-27
+2.2.0-p6* / 2017-01-27
 ===================
 
  * Added: support sending campaign to multiple lists / segments
