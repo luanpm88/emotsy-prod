@@ -2,7 +2,7 @@
 
 # UPGRADE
 # * FROM : "v2.2.0*"
-# * TO   : "v2.2.0-p7"
+# * TO   : "5aa5359a26320aaf2295e41b355bf5ebe6f08ba3"
 
 if [ -z "$1" ]
 then
@@ -17,6 +17,7 @@ fi
 echo "* Replacing files"
 cp ./app/Exceptions/CampaignPausedException.php $1/app/Exceptions/CampaignPausedException.php
 cp ./app/Helpers/helpers.php $1/app/Helpers/helpers.php
+cp ./app/Helpers/ImportSubscribersHelper.php $1/app/Helpers/ImportSubscribersHelper.php
 cp ./app/Http/Controllers/Auth/AuthController.php $1/app/Http/Controllers/Auth/AuthController.php
 cp ./app/Http/Controllers/AutoEventController.php $1/app/Http/Controllers/AutoEventController.php
 cp ./app/Http/Controllers/AutomationController.php $1/app/Http/Controllers/AutomationController.php
@@ -139,6 +140,7 @@ cp ./resources/views/layouts/_script_vars.blade.php $1/resources/views/layouts/_
 cp ./resources/views/layouts/_user_script.blade.php $1/resources/views/layouts/_user_script.blade.php
 cp ./resources/views/lists/_list.blade.php $1/resources/views/lists/_list.blade.php
 cp ./resources/views/segments/_select_box.blade.php $1/resources/views/segments/_select_box.blade.php
+cp ./resources/views/subscribers/export.blade.php $1/resources/views/subscribers/export.blade.php
 cp ./resources/views/subscribers/_export_list.blade.php $1/resources/views/subscribers/_export_list.blade.php
 cp ./resources/views/subscribers/import.blade.php $1/resources/views/subscribers/import.blade.php
 cp ./resources/views/subscribers/_import_list.blade.php $1/resources/views/subscribers/_import_list.blade.php
