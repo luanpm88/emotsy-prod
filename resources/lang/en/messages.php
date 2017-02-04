@@ -1298,4 +1298,5 @@ return [
     'campaign_default_list_help' => 'A default list is required if you select more than one list. The campaign will use the default list information to translate TAGS found in email content.',
     'automation_default_list_help' => 'A default list is required if you select more than one list. The automation will use the default list information to translate TAGS found in email content.',
     'default_language' => 'Default language',
+    'return_back' => 'Return back',
 ];
