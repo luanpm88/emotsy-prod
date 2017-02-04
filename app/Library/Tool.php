@@ -516,4 +516,29 @@ class Tool
         
         return $names;
     }
+    
+    /**
+     * Get php paths select options.
+     *
+     * @param timestamp
+     *
+     * @return string
+     */
+    public static function phpPathsSelectOptions($paths) {
+        $options = [];
+        
+        foreach($paths as $path) {
+            $options[] = [
+                'text' => $path,
+                'value' => $path
+            ];
+        }
+        
+        $options[] = [
+            'text' => trans('messages.php_bin_manual'),
+            'value' => 'manual'
+        ];
+        
+        return $options;
+    }
 }

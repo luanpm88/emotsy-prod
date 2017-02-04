@@ -347,12 +347,37 @@ class InstallController extends Controller
         if ($this->step($request) < 5) {
             return redirect()->action('InstallController@database');
         }
-
-        $request->session()->set('cron_jobs', true);
+        
+        // Find all php bin path in system
+        $php_paths = [];        
+        try {
+            $paths = explode(" ", exec("whereis php"));
+            foreach($paths as $path) {
+                $exec_script = $path . " " . base_path() . "/php_bin_test.php";
+                $result = exec($exec_script);
+                
+                if($result == 'ok') {
+                    $php_paths[] = $path;
+                }
+            }
+        } catch (\Exception $e) {
+        }
+        
+        $rules = [
+            'php_bin_path_value' => 'required'
+        ];
+        
+        // Current path
+        $current_path = empty($php_paths) ? 'manual' : $php_paths[0];
+        $current_path_value = empty($php_paths) ? '{PHP_BIN_PATH}' : $php_paths[0];
 
         return view('install.cron_jobs', [
             'step' => $this->step($request),
             'current' => 5,
+            'php_paths' => $php_paths,
+            'current_path' => $current_path,
+            'current_path_value' => $current_path_value,
+            'rules' => $rules,
         ]);
     }
 

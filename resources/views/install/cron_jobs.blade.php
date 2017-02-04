@@ -9,13 +9,16 @@
 @endsection
 
 @section('content')
-
-	@include('elements._cron_jobs')
-                            
+	<form action="{{ action('InstallController@cronJobs') }}" method="POST" class="form-validate-jqueryz">
+		{!! csrf_field() !!}
+		
+		@include('elements._cron_jobs')
     
-	<br />
-	<div class="text-right">                                    
-		<a href="{{ action('InstallController@finish') }}" class="btn btn-primary bg-teal">{!! trans('messages.finish') !!} <i class="icon-arrow-right14 position-right"></i></a>
-	</div>
-
+		<br />
+		<div class="text-right">                                    
+			<button class="btn btn-primary bg-teal">
+				{!! trans('messages.next') !!} <i class="icon-arrow-right14 position-right"></i>
+			</button>
+		</div>
+	</form>
 @endsection
