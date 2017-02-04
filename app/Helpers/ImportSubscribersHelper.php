@@ -23,7 +23,7 @@ class ImportSubscribersHelper
             $message = trans('messages.import_export_statistics_line', [
                 'total' => $data->total,
                 'processed' => $data->processed,
-                'success' => $data->success,
+                'success' => $data->processed,
                 'error' => 0,
             ]);;
         }
