@@ -19,10 +19,12 @@
         'value' => '',
         'rules' => $rules
     ])
-    <button style="margin-top: -10px; margin-bottom: 20px;" class="btn btn-primary bg-info-800">
+    <button style="margin-top: -10px; margin-bottom: 0px;" class="btn btn-primary bg-info-800">
         {!! trans('messages.check_php_bin_path') !!}</i>
     </button>
 </div>
+    
+<hr>
 
 <label class="text-bold">{!! trans('messages.cron_jobs_guide') !!} </label>
 <pre style="font-size: 16px;background:#f5f5f5">* * * * * <span class="current_path_value">{!! $current_path_value !!}</span> -q {{ base_path() }}/artisan schedule:run 2&gt;&amp;1
