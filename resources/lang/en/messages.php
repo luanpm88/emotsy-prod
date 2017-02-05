@@ -1301,4 +1301,8 @@ return [
     'php_bin_manual' => 'Other path',
     'check_php_bin_path' => 'Check php bin path',
     'return_back' => 'Return back',
+    'this_is_not_executable_php_bin_path' => 'This is not executable PHP BIN PATH',
+    'choose_background_job_method' => 'Select system background jobs proccessing method',
+    'find_php_bin_path' => 'Find PHP BINARY PATH for background jobs',
+    'enter_php_bin_path' => 'Enter your system PHP BINARY PATH here',
 ];

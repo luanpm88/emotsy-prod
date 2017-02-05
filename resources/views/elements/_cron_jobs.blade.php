@@ -4,7 +4,7 @@
     'type' => 'radio',
     'name' => 'queue_driver',
     'class' => '',
-    'label' => 'Select system background jobs proccessing method',
+    'label' => trans('messages.choose_background_job_method'),
     'value' => $queue_driver,
     'options' => \Acelle\Library\Tool::availableSystemBackgroundMethodSelectOptions(),
     'rules' => [['queue_driver' => 'required']]
@@ -16,7 +16,7 @@
         'type' => 'radio',
         'name' => 'php_bin_path',
         'class' => '',
-        'label' => 'Find PHP BINARY PATH for background jobs',
+        'label' => trans('messages.find_php_bin_path'),
         'value' => $php_bin_path,
         'options' => \Acelle\Library\Tool::phpPathsSelectOptions($php_paths),
         'rules' => [['php_bin_path' => 'required']]
@@ -27,15 +27,19 @@
             'type' => 'text',
             'name' => 'php_bin_path_value',
             'class' => '',
-            'label' => 'Enter your system crontab here',
+            'label' => trans('messages.enter_php_bin_path'),
             'value' => $php_bin_path_value,
             'rules' => [['php_bin_path_value' => 'required']]
         ])    
     </div>
     
-    @if ($errors->has('php_bin_path_invalid') && \Acelle\Library\Tool::checkPHPBinPath($php_bin_path_value) != '')
+    @if ($errors->has('php_bin_path_invalid'))
         <div class="alert alert-danger">
-            {!! \Acelle\Library\Tool::checkPHPBinPath($php_bin_path_value) !!}
+            @if (\Acelle\Library\Tool::checkPHPBinPath($php_bin_path_value) == '')
+                {{ trans('messages.this_is_not_executable_php_bin_path') }}
+            @else
+                {!! \Acelle\Library\Tool::checkPHPBinPath($php_bin_path_value) !!}
+            @endif
         </div>
     @endif
     
