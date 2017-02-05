@@ -157,3 +157,12 @@ function db_utc_offset()
 
     return $zone;
 }
+
+/**
+ * Check if exec() function is available
+ *
+ * @return boolean
+ */
+function exec_enabled() {
+   return function_exists('exec') && !in_array('exec', array_map('trim', explode(', ', ini_get('disable_functions'))));
+}
