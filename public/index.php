@@ -1,5 +1,9 @@
 <?php
 $valid = true;
+if(!version_compare(PHP_VERSION, '5.5.9', '>=')) {
+    echo "ERROR: PHP 5.5.9 or higher is required.<br />";
+    $valid = false;
+}
 if(!extension_loaded('mbstring')) {
     echo "ERROR: The requested PHP extension mbstring is missing from your system.<br />";
     $valid = false;

@@ -129,6 +129,9 @@ return [
         'custom_criteria_empty' => [
             'required' => 'Custom criteria cannot be empty',
         ],
+        'php_bin_path_invalid' => [
+            'required' => 'PHP bin path is not valid. Please check again.',
+        ],
     ],
 
     /*

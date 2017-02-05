@@ -67,8 +67,10 @@ class Setting extends Model
         $setting = self::where('name', $name)->first();
         if (is_object($setting)) {
             return $setting->value;
-        } else {
+        } else if(isset(self::defaultSettings()[$name])) {
             return self::defaultSettings()[$name]['value'];
+        } else {
+            return NULL;
         }
     }
 
@@ -228,6 +230,12 @@ class Setting extends Model
             ],
             'url_update_profile' => [
                 'cat' => 'url',
+                'value' => '', // action('DeliveryController@notify'),
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'php_bin_path' => [
+                'cat' => 'cronjob',
                 'value' => '', // action('DeliveryController@notify'),
                 'type' => 'text',
                 'not_required' => true,

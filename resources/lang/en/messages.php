@@ -1300,4 +1300,5 @@ return [
     'default_language' => 'Default language',
     'php_bin_manual' => 'Other path',
     'check_php_bin_path' => 'Check php bin path',
+    'return_back' => 'Return back',
 ];

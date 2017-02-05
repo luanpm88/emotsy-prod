@@ -541,4 +541,131 @@ class Tool
         
         return $options;
     }
+    
+    /**
+     * Check php bin path is valid.
+     *
+     * @param string
+     *
+     * @return boolean
+     */
+    public static function checkPHPBinPath($path) {
+        $exec_script = $path . " " . base_path() . "/php_bin_test.php";
+        $result = exec($exec_script);
+        
+        return $result;
+    }
+    
+    /**
+     * Get available System Background Methods Select Options.
+     *
+     * @param timestamp
+     *
+     * @return string
+     */
+    public static function availableSystemBackgroundMethodSelectOptions() {
+        $options = [
+            [
+                'text' => 'Database (recommended)',
+                'value' => 'database'
+            ]
+        ];
+        
+        if(true) {
+            $options[] = [
+                'text' => 'Async',
+                'value' => 'async'
+            ];
+        }
+        
+        return $options;
+    }
+    
+    /**
+     * Control cronjob update request.
+     *
+     * @param timestamp
+     *
+     * @return string
+     */
+    public static function cronjobUpdateController($request, $controller) {
+        // Find all php bin path in system
+        $php_paths = [];        
+        try {
+            $paths = explode(" ", exec("whereis php"));
+            foreach($paths as $path) {
+                if(\Acelle\Library\Tool::checkPHPBinPath($path) == true) {
+                    $php_paths[] = $path;
+                }
+            }
+        } catch (\Exception $e) {
+        }
+        
+        $rules = [];
+        
+        // Current path
+        $queue_driver = config('queue.default');
+        $php_bin_path = empty($php_paths) ? 'manual' : $php_paths[0];
+        $php_bin_path_value = empty($php_paths) ? '{PHP_BIN_PATH}' : $php_paths[0];
+        
+        $setting_php_bin_path = \Acelle\Model\Setting::get('php_bin_path');
+        if(isset($setting_php_bin_path)) {
+            if(in_array($setting_php_bin_path, $php_paths)) {
+                $php_bin_path = $setting_php_bin_path;
+            } else {
+                $php_bin_path = 'manual';
+            }
+            $php_bin_path_value = $setting_php_bin_path;
+        }
+        
+        if (!empty($request->old())) {
+            $php_bin_path = $request->old()["php_bin_path"];
+            $php_bin_path_value = $request->old()["php_bin_path_value"];
+            $queue_driver = $request->old()["queue_driver"];
+        }
+        
+        $request->session()->forget('cron_jobs');
+        $error = '';
+        if($request->isMethod('post')) {
+            if($request->queue_driver == 'database') {
+                $rules = [
+                    'php_bin_path' => 'required',
+                    'php_bin_path_value' => 'required',
+                    'queue_driver' => 'required',
+                ];
+            
+                $controller->validate($request, $rules);
+                
+                // Check valid path
+                $check = \Acelle\Library\Tool::checkPHPBinPath($request->php_bin_path_value);
+                
+                if($check != 'ok') {
+                    $rules['php_bin_path_invalid'] = 'required';
+                }
+                
+                $controller->validate($request, $rules);
+                
+                \Acelle\Model\Setting::set('php_bin_path', $request->php_bin_path_value);
+                
+                $next = action('InstallController@cronJobs');
+            }
+            
+            $request->session()->set('cron_jobs', true);
+            
+            \Acelle\Model\Setting::setEnv('QUEUE_DRIVER', $request->queue_driver);
+            
+            return 'done';
+        }
+        
+        return [
+            'step' => 5,
+            'current' => 5,
+            'php_paths' => $php_paths,
+            'php_bin_path' => $php_bin_path,
+            'php_bin_path_value' => $php_bin_path_value,
+            'rules' => $rules,
+            'error' => $error,
+            'queue_driver' => $queue_driver,
+        ];
+    }
 }

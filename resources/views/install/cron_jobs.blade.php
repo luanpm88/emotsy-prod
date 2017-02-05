@@ -14,7 +14,7 @@
 		
 		@include('elements._cron_jobs')
     
-		<br />
+		<hr>
 		<div class="text-right">                                    
 			<button class="btn btn-primary bg-teal">
 				{!! trans('messages.next') !!} <i class="icon-arrow-right14 position-right"></i>
