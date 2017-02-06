@@ -1307,7 +1307,7 @@ return [
     'enter_php_bin_path' => 'Enter PHP executable path:',
     'change_cronjob_setting' => 'Change cronjob setting',
     'database_job_type' => 'Cron Job (recommended)',
-    'database_job_type_desc' => 'Send emails using hosting system\'s cron job. It is required that PHP CLI must be available on your server.',
+    'database_job_type_desc' => 'Send emails using hosting system\'s cron job. It is required that PHP CLI is available on your server.',
     'async_job_type' => 'Async',
     'async_job_type_desc' => 'Send emails by forking PHP child processes. It is required that PHP `exec` function is enabled on your server.',
     'check_and_save_crontab' => 'Check & Save',
