@@ -636,7 +636,7 @@ class Tool
             }
         } else {            
             foreach($paths as $path) {
-                if(file_exists($path)) {
+                if(file_exists($path) && is_executable($path)) {
                     $php_paths[] = $path;
                 }
             }
