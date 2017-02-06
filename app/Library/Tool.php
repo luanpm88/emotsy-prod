@@ -558,7 +558,7 @@ class Tool
                 return 'ok';
             }
         } else {
-            if(file_exists($path)) {
+            if(file_exists($path) && is_executable($path)) {
                 return 'ok';
             }
         }
