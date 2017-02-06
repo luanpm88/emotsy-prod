@@ -1,5 +1,13 @@
+2.2.0-p8 / 2017-02-06
+=====================
+ 
+ * Added: support advanced background job installation wizard
+ * Added: support erasing existing database before initialization
+ * Added: support customizing system's default language
+ * Fixed: issue with auto login by token
+
 2.2.0-p7 / 2017-01-30
-===================
+=====================
 
  * Added: support updating the application configuration without re-installing
  * Added: support sending campaign without using cronjob
