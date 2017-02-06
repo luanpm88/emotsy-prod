@@ -24,7 +24,7 @@
 					{!! trans('messages.next') !!} <i class="icon-arrow-right14 position-right"></i>
 				</a>				
 			@else
-				<button class="btn btn-primary bg-teal">
+				<button type="submit" class="btn btn-primary bg-teal">
 					{!! trans('messages.check_and_save_crontab') !!}
 				</button>
 			@endif

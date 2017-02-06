@@ -550,10 +550,19 @@ class Tool
      * @return boolean
      */
     public static function checkPHPBinPath($path) {
-        $exec_script = $path . " " . base_path() . "/php_bin_test.php";
-        $result = exec($exec_script);
+        if(exec_enabled()) {
+            $exec_script = $path . " " . base_path() . "/php_bin_test.php";
+            $result = exec($exec_script);
+            if($result == 'ok') {
+                return true;
+            }
+        } else {
+            if(file_exists($path)) {
+                return true;
+            }
+        }
         
-        return $result;
+        return false;
     }
     
     /**
@@ -638,7 +647,7 @@ class Tool
         $php_bin_path_value = empty($php_paths) ? '{PHP_BIN_PATH}' : $php_paths[0];
         
         $setting_php_bin_path = \Acelle\Model\Setting::get('php_bin_path');
-        if(isset($setting_php_bin_path)) {
+        if(!empty($setting_php_bin_path)) {
             if(in_array($setting_php_bin_path, $php_paths)) {
                 $php_bin_path = $setting_php_bin_path;
             } else {
@@ -663,32 +672,25 @@ class Tool
             
             if($request->queue_driver == 'database') {
                 $rules = [
-                    'php_bin_path' => 'required',
                     'php_bin_path_value' => 'required',
                     'queue_driver' => 'required',
                 ];
             
-                $controller->validate($request, $rules);
-                
                 // Check valid path
-                if(exec_enabled()) {
-                    $check = \Acelle\Library\Tool::checkPHPBinPath($request->php_bin_path_value);                
-                    if($check != 'ok') {
-                        $rules['php_bin_path_invalid'] = 'required';
-                    }
-                } else {
-                    $check = file_exists($request->php_bin_path_value);                
-                    if($check != 'ok') {
-                        $rules['php_bin_path_invalid'] = 'required';
-                    }
+                $check = \Acelle\Library\Tool::checkPHPBinPath($php_bin_path_value);                
+                if($check != 'ok') {
+                    $rules['php_bin_path_invalid'] = 'required';
                 }
                 
                 $controller->validate($request, $rules);
                 
-                \Acelle\Model\Setting::set('php_bin_path', $request->php_bin_path_value);
+                \Acelle\Model\Setting::set('php_bin_path', $php_bin_path_value);
             }
             
-            \Acelle\Model\Setting::setEnv('QUEUE_DRIVER', $request->queue_driver);
+            if(config('queue.default') != $queue_driver) {
+                \Acelle\Model\Setting::setEnv('QUEUE_DRIVER', $queue_driver);
+                artisan_config_cache();
+            }
             
             $valid = true;
             $request->session()->set('cron_jobs', true);
@@ -699,7 +701,7 @@ class Tool
             
             $request->session()->flash('alert-success', trans('messages.setting.updated'));
         }
-        
+
         return [
             'step' => 5,
             'current' => 5,
