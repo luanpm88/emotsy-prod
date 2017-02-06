@@ -2,7 +2,7 @@
 
 # UPGRADE
 # * FROM : "v2.2.0*"
-# * TO   : "5aa5359a26320aaf2295e41b355bf5ebe6f08ba3"
+# * TO   : "v2.2.0-p8"
 
 if [ -z "$1" ]
 then
@@ -18,11 +18,17 @@ echo "* Replacing files"
 cp ./app/Exceptions/CampaignPausedException.php $1/app/Exceptions/CampaignPausedException.php
 cp ./app/Helpers/helpers.php $1/app/Helpers/helpers.php
 cp ./app/Helpers/ImportSubscribersHelper.php $1/app/Helpers/ImportSubscribersHelper.php
+cp ./app/Http/Controllers/Admin/LayoutController.php $1/app/Http/Controllers/Admin/LayoutController.php
+cp ./app/Http/Controllers/Admin/SettingController.php $1/app/Http/Controllers/Admin/SettingController.php
+cp ./app/Http/Controllers/Api/MailListController.php $1/app/Http/Controllers/Api/MailListController.php
+cp ./app/Http/Controllers/Api/SubscriberController.php $1/app/Http/Controllers/Api/SubscriberController.php
+cp ./app/Http/Controllers/Api/UserController.php $1/app/Http/Controllers/Api/UserController.php
 cp ./app/Http/Controllers/Auth/AuthController.php $1/app/Http/Controllers/Auth/AuthController.php
 cp ./app/Http/Controllers/AutoEventController.php $1/app/Http/Controllers/AutoEventController.php
 cp ./app/Http/Controllers/AutomationController.php $1/app/Http/Controllers/AutomationController.php
 cp ./app/Http/Controllers/CampaignController.php $1/app/Http/Controllers/CampaignController.php
 cp ./app/Http/Controllers/Controller.php $1/app/Http/Controllers/Controller.php
+cp ./app/Http/Controllers/InstallController.php $1/app/Http/Controllers/InstallController.php
 cp ./app/Http/Controllers/MailListController.php $1/app/Http/Controllers/MailListController.php
 cp ./app/Http/Controllers/SegmentController.php $1/app/Http/Controllers/SegmentController.php
 cp ./app/Http/Kernel.php $1/app/Http/Kernel.php
@@ -75,6 +81,7 @@ cp ./database/migrations/2017_01_22_175544_add_sending_servers_quota_column.php 
 cp ./database/migrations/2017_01_24_092138_update_user_quota.php $1/database/migrations/2017_01_24_092138_update_user_quota.php
 cp ./database/seeds/DatabaseSeeder.php $1/database/seeds/DatabaseSeeder.php
 cp ./generate-upgrade-script.sh $1/generate-upgrade-script.sh
+cp ./php_bin_test.php $1/php_bin_test.php
 cp ./phpunit.xml $1/phpunit.xml
 cp ./public/css/app.css $1/public/css/app.css
 cp ./public/css/theme.css $1/public/css/theme.css
@@ -83,8 +90,10 @@ cp ./public/index.php $1/public/index.php
 cp ./public/js/app.js $1/public/js/app.js
 cp ./public/js/editor.js $1/public/js/editor.js
 cp ./public/js/jquery.cookie.js $1/public/js/jquery.cookie.js
+cp ./public/main.php $1/public/main.php
 cp ./resources/lang/default/messages.php $1/resources/lang/default/messages.php
 cp ./resources/lang/en/messages.php $1/resources/lang/en/messages.php
+cp ./resources/lang/en/validation.php $1/resources/lang/en/validation.php
 cp ./resources/views/account/quota_log.blade.php $1/resources/views/account/quota_log.blade.php
 cp ./resources/views/admin/bounce_handlers/_form.blade.php $1/resources/views/admin/bounce_handlers/_form.blade.php
 cp ./resources/views/admin/bounce_handlers/_list.blade.php $1/resources/views/admin/bounce_handlers/_list.blade.php
@@ -97,6 +106,8 @@ cp ./resources/views/admin/sending_domains/_form.blade.php $1/resources/views/ad
 cp ./resources/views/admin/sending_domains/_list.blade.php $1/resources/views/admin/sending_domains/_list.blade.php
 cp ./resources/views/admin/sending_servers/_form.blade.php $1/resources/views/admin/sending_servers/_form.blade.php
 cp ./resources/views/admin/sending_servers/_list.blade.php $1/resources/views/admin/sending_servers/_list.blade.php
+cp ./resources/views/admin/settings/cronjob.blade.php $1/resources/views/admin/settings/cronjob.blade.php
+cp ./resources/views/admin/settings/_tabs.blade.php $1/resources/views/admin/settings/_tabs.blade.php
 cp ./resources/views/admin/templates/_list.blade.php $1/resources/views/admin/templates/_list.blade.php
 cp ./resources/views/admin/tracking_logs/index.blade.php $1/resources/views/admin/tracking_logs/index.blade.php
 cp ./resources/views/admin/tracking_logs/_list.blade.php $1/resources/views/admin/tracking_logs/_list.blade.php
@@ -127,9 +138,13 @@ cp ./resources/views/campaigns/_template_list.blade.php $1/resources/views/campa
 cp ./resources/views/campaigns/template_preview.blade.php $1/resources/views/campaigns/template_preview.blade.php
 cp ./resources/views/common/flash.blade.php $1/resources/views/common/flash.blade.php
 cp ./resources/views/dashboard.blade.php $1/resources/views/dashboard.blade.php
+cp ./resources/views/elements/_cron_jobs.blade.php $1/resources/views/elements/_cron_jobs.blade.php
 cp ./resources/views/helpers/_date.blade.php $1/resources/views/helpers/_date.blade.php
 cp ./resources/views/helpers/form_control.blade.php $1/resources/views/helpers/form_control.blade.php
 cp ./resources/views/helpers/_radio.blade.php $1/resources/views/helpers/_radio.blade.php
+cp ./resources/views/install/cron_jobs.blade.php $1/resources/views/install/cron_jobs.blade.php
+cp ./resources/views/install/database_import.blade.php $1/resources/views/install/database_import.blade.php
+cp ./resources/views/install/_steps.blade.php $1/resources/views/install/_steps.blade.php
 cp ./resources/views/layouts/account.blade.php $1/resources/views/layouts/account.blade.php
 cp ./resources/views/layouts/backend.blade.php $1/resources/views/layouts/backend.blade.php
 cp ./resources/views/layouts/_css.blade.php $1/resources/views/layouts/_css.blade.php
@@ -138,6 +153,7 @@ cp ./resources/views/layouts/_js.blade.php $1/resources/views/layouts/_js.blade.
 cp ./resources/views/layouts/page.blade.php $1/resources/views/layouts/page.blade.php
 cp ./resources/views/layouts/_script_vars.blade.php $1/resources/views/layouts/_script_vars.blade.php
 cp ./resources/views/layouts/_user_script.blade.php $1/resources/views/layouts/_user_script.blade.php
+cp ./resources/views/lists/embedded_form_errors.blade.php $1/resources/views/lists/embedded_form_errors.blade.php
 cp ./resources/views/lists/_list.blade.php $1/resources/views/lists/_list.blade.php
 cp ./resources/views/segments/_select_box.blade.php $1/resources/views/segments/_select_box.blade.php
 cp ./resources/views/subscribers/export.blade.php $1/resources/views/subscribers/export.blade.php
