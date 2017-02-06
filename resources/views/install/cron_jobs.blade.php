@@ -9,13 +9,25 @@
 @endsection
 
 @section('content')
-
-	@include('elements._cron_jobs')
-                            
+	<form action="{{ action('InstallController@cronJobs') }}" method="POST" class="form-validate-jqueryz">
+		{!! csrf_field() !!}
+		
+		@include('elements._cron_jobs')
     
-	<br />
-	<div class="text-right">                                    
-		<a href="{{ action('InstallController@finish') }}" class="btn btn-primary bg-teal">{!! trans('messages.finish') !!} <i class="icon-arrow-right14 position-right"></i></a>
-	</div>
-
+		<hr>
+		<div class="text-right">
+			@if($valid)
+				<a href="{{ action('InstallController@cronJobs') }}" class="btn btn-primary bg-grey">
+					<i class="icon-gear"></i> {!! trans('messages.change_cronjob_setting') !!}
+				</a>
+				<a href="{{ action('InstallController@finishing') }}" class="btn btn-primary bg-teal">
+					{!! trans('messages.next') !!} <i class="icon-arrow-right14 position-right"></i>
+				</a>				
+			@else
+				<button type="submit" class="btn btn-primary bg-teal">
+					{!! trans('messages.check_and_save_crontab') !!}
+				</button>
+			@endif
+		</div>
+	</form>
 @endsection

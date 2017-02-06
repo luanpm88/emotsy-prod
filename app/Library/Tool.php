@@ -516,4 +516,202 @@ class Tool
         
         return $names;
     }
+    
+    /**
+     * Get php paths select options.
+     *
+     * @param timestamp
+     *
+     * @return string
+     */
+    public static function phpPathsSelectOptions($paths) {
+        $options = [];
+        
+        foreach($paths as $path) {
+            $options[] = [
+                'text' => $path,
+                'value' => $path
+            ];
+        }
+        
+        $options[] = [
+            'text' => trans('messages.php_bin_manual'),
+            'value' => 'manual'
+        ];
+        
+        return $options;
+    }
+    
+    /**
+     * Check php bin path is valid.
+     *
+     * @param string
+     *
+     * @return boolean
+     */
+    public static function checkPHPBinPath($path) {
+        $result = '';
+        if(exec_enabled()) {
+            $exec_script = $path . " " . base_path() . "/php_bin_test.php";
+            $result = exec($exec_script);
+            if($result == 'ok') {
+                return 'ok';
+            }
+        } else {
+            if(file_exists($path) && is_executable($path)) {
+                return 'ok';
+            }
+        }
+        
+        return $result;
+    }
+    
+    /**
+     * Get available System Background Methods Select Options.
+     *
+     * @param timestamp
+     *
+     * @return string
+     */
+    public static function availableSystemBackgroundMethodSelectOptions() {
+        $options = [
+            [
+                'text' => trans('messages.database_job_type'),
+                'value' => 'database',
+                'description' => trans('messages.database_job_type_desc'),
+            ]
+        ];
+        
+        if(true) {
+            $options[] = [
+                'text' => trans('messages.async_job_type'),
+                'description' => trans('messages.async_job_type_desc'),
+                'value' => 'async',
+                'disabled' => exec_enabled(),
+                'tooltip' => (!exec_enabled() ? 'Your server does not support async' : ''),
+            ];
+        }
+        
+        return $options;
+    }
+    
+    /**
+     * Control cronjob update request.
+     *
+     * @param timestamp
+     *
+     * @return string
+     */
+    public static function cronjobUpdateController($request, $controller) {
+        // Find all php bin path in system
+        $php_paths = [];
+        
+        if(exec_enabled()) {
+            try {
+                $paths = explode(" ", exec("whereis php"));
+                foreach($paths as $path) {
+                    if(\Acelle\Library\Tool::checkPHPBinPath($path) == 'ok') {
+                        $php_paths[] = $path;
+                    }
+                }
+            } catch (\Exception $e) {
+                echo $e->getMessage();
+            }
+        } else {
+            $paths = [
+                '/usr/bin/php',
+                '/usr/local/bin/php',
+                '/bin/php',
+                '/usr/bin/php7',
+                '/usr/bin/php7.0',
+                '/usr/bin/php70',
+                '/usr/bin/php7.1',
+                '/usr/bin/php71',
+                '/usr/bin/php56',
+                '/usr/bin/php5.6',
+                '/opt/plesk/php/5.6/bin/php',
+                '/opt/plesk/php/7.0/bin/php',
+                '/opt/plesk/php/7.1/bin/php',
+            ];
+            foreach($paths as $path) {
+                if(file_exists($path)) {
+                    $php_paths[] = $path;
+                }
+            }
+        }
+        
+        $rules = [];
+        
+        // Current path
+        $queue_driver = config('queue.default');
+        $php_bin_path = empty($php_paths) ? 'manual' : $php_paths[0];
+        $php_bin_path_value = empty($php_paths) ? '{PHP_BIN_PATH}' : $php_paths[0];
+        
+        $setting_php_bin_path = \Acelle\Model\Setting::get('php_bin_path');
+        if(!empty($setting_php_bin_path)) {
+            if(in_array($setting_php_bin_path, $php_paths)) {
+                $php_bin_path = $setting_php_bin_path;
+            } else {
+                $php_bin_path = 'manual';
+            }
+            $php_bin_path_value = $setting_php_bin_path;
+        }
+        
+        if (!empty($request->old())) {
+            $php_bin_path = $request->old()["php_bin_path"];
+            $php_bin_path_value = $request->old()["php_bin_path_value"];
+            $queue_driver = $request->old()["queue_driver"];
+        }
+        
+        $request->session()->forget('cron_jobs');
+        $error = '';
+        $valid = false;
+        if($request->isMethod('post')) {
+            $php_bin_path = $request->php_bin_path;
+            $php_bin_path_value = $request->php_bin_path_value;
+            $queue_driver = $request->queue_driver;
+            
+            if($request->queue_driver == 'database') {
+                $rules = [
+                    'php_bin_path_value' => 'required',
+                    'queue_driver' => 'required',
+                ];
+            
+                // Check valid path
+                $check = \Acelle\Library\Tool::checkPHPBinPath($php_bin_path_value);                
+                if($check != 'ok') {
+                    $rules['php_bin_path_invalid'] = 'required';
+                }
+                
+                $controller->validate($request, $rules);
+                
+                \Acelle\Model\Setting::set('php_bin_path', $php_bin_path_value);
+            }
+            
+            if(config('queue.default') != $queue_driver) {
+                \Acelle\Model\Setting::setEnv('QUEUE_DRIVER', $queue_driver);                
+            }
+            
+            $valid = true;
+            $request->session()->set('cron_jobs', true);            
+            
+            if($request->queue_driver == 'async') {
+                return 'done';
+            }
+            
+            $request->session()->flash('alert-success', trans('messages.setting.updated'));
+        }
+
+        return [
+            'step' => 5,
+            'current' => 5,
+            'php_paths' => $php_paths,
+            'php_bin_path' => $php_bin_path,
+            'php_bin_path_value' => $php_bin_path_value,
+            'rules' => $rules,
+            'error' => $error,
+            'queue_driver' => $queue_driver,
+            'valid' => $valid,
+        ];
+    }
 }
