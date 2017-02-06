@@ -611,7 +611,17 @@ class Tool
             $paths = [
                 '/usr/bin/php',
                 '/usr/local/bin/php',
-                '/bin/php'
+                '/bin/php',
+                '/usr/bin/php7',
+                '/usr/bin/php7.0',
+                '/usr/bin/php70',
+                '/usr/bin/php7.1',
+                '/usr/bin/php71',
+                '/usr/bin/php56',
+                '/usr/bin/php5.6',
+                '/opt/plesk/php/5.6/bin/php',
+                '/opt/plesk/php/7.0/bin/php',
+                '/opt/plesk/php/7.1/bin/php',
             ];
             foreach($paths as $path) {
                 if(file_exists($path)) {
