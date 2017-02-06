@@ -566,15 +566,19 @@ class Tool
     public static function availableSystemBackgroundMethodSelectOptions() {
         $options = [
             [
-                'text' => 'Database (recommended)',
-                'value' => 'database'
+                'text' => trans('messages.database_job_type'),
+                'value' => 'database',
+                'description' => trans('messages.database_job_type_desc'),
             ]
         ];
         
         if(true) {
             $options[] = [
-                'text' => 'Async',
-                'value' => 'async'
+                'text' => trans('messages.async_job_type'),
+                'description' => trans('messages.async_job_type_desc'),
+                'value' => 'async',
+                'disabled' => exec_enabled(),
+                'tooltip' => (!exec_enabled() ? 'Your server does not support async' : ''),
             ];
         }
         
@@ -590,15 +594,30 @@ class Tool
      */
     public static function cronjobUpdateController($request, $controller) {
         // Find all php bin path in system
-        $php_paths = [];        
-        try {
-            $paths = explode(" ", exec("whereis php"));
+        $php_paths = [];
+        
+        if(exec_enabled()) {
+            try {
+                $paths = explode(" ", exec("whereis php"));
+                foreach($paths as $path) {
+                    if(\Acelle\Library\Tool::checkPHPBinPath($path) == true) {
+                        $php_paths[] = $path;
+                    }
+                }
+            } catch (\Exception $e) {
+                echo $e->getMessage();
+            }
+        } else {
+            $paths = [
+                '/usr/bin/php',
+                '/usr/local/bin/php',
+                '/bin/php'
+            ];
             foreach($paths as $path) {
-                if(\Acelle\Library\Tool::checkPHPBinPath($path) == true) {
+                if(file_exists($path)) {
                     $php_paths[] = $path;
                 }
             }
-        } catch (\Exception $e) {
         }
         
         $rules = [];
@@ -626,7 +645,12 @@ class Tool
         
         $request->session()->forget('cron_jobs');
         $error = '';
+        $valid = false;
         if($request->isMethod('post')) {
+            $php_bin_path = $request->php_bin_path;
+            $php_bin_path_value = $request->php_bin_path_value;
+            $queue_driver = $request->queue_driver;
+            
             if($request->queue_driver == 'database') {
                 $rules = [
                     'php_bin_path' => 'required',
@@ -637,24 +661,33 @@ class Tool
                 $controller->validate($request, $rules);
                 
                 // Check valid path
-                $check = \Acelle\Library\Tool::checkPHPBinPath($request->php_bin_path_value);
-                
-                if($check != 'ok') {
-                    $rules['php_bin_path_invalid'] = 'required';
+                if(exec_enabled()) {
+                    $check = \Acelle\Library\Tool::checkPHPBinPath($request->php_bin_path_value);                
+                    if($check != 'ok') {
+                        $rules['php_bin_path_invalid'] = 'required';
+                    }
+                } else {
+                    $check = file_exists($request->php_bin_path_value);                
+                    if($check != 'ok') {
+                        $rules['php_bin_path_invalid'] = 'required';
+                    }
                 }
                 
                 $controller->validate($request, $rules);
                 
                 \Acelle\Model\Setting::set('php_bin_path', $request->php_bin_path_value);
-                
-                $next = action('InstallController@cronJobs');
             }
-            
-            $request->session()->set('cron_jobs', true);
             
             \Acelle\Model\Setting::setEnv('QUEUE_DRIVER', $request->queue_driver);
             
-            return 'done';
+            $valid = true;
+            $request->session()->set('cron_jobs', true);
+            
+            if($request->queue_driver == 'async') {
+                return 'done';
+            }
+            
+            $request->session()->flash('alert-success', trans('messages.setting.updated'));
         }
         
         return [
@@ -666,6 +699,7 @@ class Tool
             'rules' => $rules,
             'error' => $error,
             'queue_driver' => $queue_driver,
+            'valid' => $valid,
         ];
     }
 }

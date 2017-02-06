@@ -157,9 +157,9 @@ class SettingController extends Controller
         $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);
         
         if($respone == 'done') {
-            $next = action('Admin\SettingController@cronjob');                
+            $next = action('Admin\SettingController@cronjob');
             \Artisan::call('config:cache');
-            sleep(3);
+            sleep(3);            
             return redirect()->away($next);
         }
         

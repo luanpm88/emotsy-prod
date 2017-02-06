@@ -30,7 +30,7 @@
                     <form action="{{ action('Admin\SettingController@cronjob') }}" method="POST" class="form-validate-jqueryz">
 						{!! csrf_field() !!}
 						
-						@include('elements._cron_jobs')
+						@include('elements._cron_jobs', ['show_all' => true])
 					
 						<hr>
 						<div class="text-right">                                    

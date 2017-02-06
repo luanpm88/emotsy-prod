@@ -1305,4 +1305,12 @@ return [
     'choose_background_job_method' => 'Select system background jobs proccessing method',
     'find_php_bin_path' => 'Find PHP BINARY PATH for background jobs',
     'enter_php_bin_path' => 'Enter your system PHP BINARY PATH here',
+    'change_cronjob_setting' => 'Change cronjob setting',
+    'database_job_type' => 'Database (recommended)',
+    'database_job_type_desc' => 'Send emails using hosting system\'s cronjob. It is required that PHP CLI must be available on your server.',
+    'async_job_type' => 'Async',
+    'async_job_type_desc' => 'Send emails by forking PHP child processes. It is required that PHP `exec` function is enabled on your server.',
+    'check_and_save_crontab' => 'Check & Save',
+    'background_job' => 'Background Job',
+    'setting_up_background_job' => 'Setting up background job',
 ];

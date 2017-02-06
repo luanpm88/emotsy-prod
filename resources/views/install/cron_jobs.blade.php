@@ -15,10 +15,19 @@
 		@include('elements._cron_jobs')
     
 		<hr>
-		<div class="text-right">                                    
-			<button class="btn btn-primary bg-teal">
-				{!! trans('messages.next') !!} <i class="icon-arrow-right14 position-right"></i>
-			</button>
+		<div class="text-right">
+			@if($valid)
+				<a href="{{ action('InstallController@cronJobs') }}" class="btn btn-primary bg-grey">
+					<i class="icon-gear"></i> {!! trans('messages.change_cronjob_setting') !!}
+				</a>
+				<a href="{{ action('InstallController@finish') }}" class="btn btn-primary bg-teal">
+					{!! trans('messages.next') !!} <i class="icon-arrow-right14 position-right"></i>
+				</a>				
+			@else
+				<button class="btn btn-primary bg-teal">
+					{!! trans('messages.check_and_save_crontab') !!}
+				</button>
+			@endif
 		</div>
 	</form>
 @endsection

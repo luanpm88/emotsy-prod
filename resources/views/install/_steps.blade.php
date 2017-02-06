@@ -16,7 +16,7 @@
 					</li>
 					<li class="{{ $current == 5 ? "active" : "" }} {{ $step >= 4 ? "enabled" : "" }}">
 						<a href="{{ action("InstallController@cronJobs") }}">
-							<i class="icon-alarm"></i> {{ trans('messages.cron_jobs') }}
+							<i class="icon-alarm"></i> {{ trans('messages.background_job') }}
 						</a>
 					</li>
 					<li class="{{ $current == 6 ? "active" : "" }} {{ $step >= 5 ? "enabled" : "" }}">
