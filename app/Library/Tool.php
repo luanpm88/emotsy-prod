@@ -606,33 +606,35 @@ class Tool
         // Find all php bin path in system
         $php_paths = [];
         
+        // Suggestion paths
+        $paths = [
+            '/usr/bin/php',
+            '/usr/local/bin/php',
+            '/bin/php',
+            '/usr/bin/php7',
+            '/usr/bin/php7.0',
+            '/usr/bin/php70',
+            '/usr/bin/php7.1',
+            '/usr/bin/php71',
+            '/usr/bin/php56',
+            '/usr/bin/php5.6',
+            '/opt/plesk/php/5.6/bin/php',
+            '/opt/plesk/php/7.0/bin/php',
+            '/opt/plesk/php/7.1/bin/php',
+        ];
+        
         if(exec_enabled()) {
             try {
-                $paths = explode(" ", exec("whereis php"));
+                $paths = array_merge($paths, explode(" ", exec("whereis php")));
                 foreach($paths as $path) {
-                    if(\Acelle\Library\Tool::checkPHPBinPath($path) == 'ok') {
+                    if(!in_array($path, $php_paths) && \Acelle\Library\Tool::checkPHPBinPath($path) == 'ok') {
                         $php_paths[] = $path;
                     }
                 }
             } catch (\Exception $e) {
                 echo $e->getMessage();
             }
-        } else {
-            $paths = [
-                '/usr/bin/php',
-                '/usr/local/bin/php',
-                '/bin/php',
-                '/usr/bin/php7',
-                '/usr/bin/php7.0',
-                '/usr/bin/php70',
-                '/usr/bin/php7.1',
-                '/usr/bin/php71',
-                '/usr/bin/php56',
-                '/usr/bin/php5.6',
-                '/opt/plesk/php/5.6/bin/php',
-                '/opt/plesk/php/7.0/bin/php',
-                '/opt/plesk/php/7.1/bin/php',
-            ];
+        } else {            
             foreach($paths as $path) {
                 if(file_exists($path)) {
                     $php_paths[] = $path;
