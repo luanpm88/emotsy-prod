@@ -16,9 +16,9 @@
         The settings was successfully configured! Click <span class="text-semibold">{!! trans('messages.setup_database') !!}</span> button to start importing data to database '{{ $database["database_name"] }}'.
     </h5>
 		
-	@if ($tables_exist && false)
+	@if ($tables_exist)
 		<div class="alert alert-danger">
-			The previous installed tables exist. This will delete them and install new one by clicking {{ trans('messages.setup_database') }}.
+			Acelle Mail is going to initialize your database, all existing data will be erased
 		</div>
 	@endif
 			

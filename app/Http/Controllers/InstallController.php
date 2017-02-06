@@ -245,7 +245,7 @@ class InstallController extends Controller
         $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database['database_name']."'");
         $result = $result->fetch_object();
         if ($result->count > 0) {
-            $rules['database_not_empty'] = 'required';
+            //$rules['database_not_empty'] = 'required';
             $tables_exist = true;
         }
 
@@ -254,21 +254,21 @@ class InstallController extends Controller
 
             $this->validate($request, $rules);
             
-            //// Drop all old table
-            //try {
-            //    $delete_all_tables_query = "SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' )
-            //                                AS statement FROM information_schema.tables
-            //                                WHERE table_schema = '".$database['database_name']."'" . $prefix_check;
-            //    $result = $mysqli->query($delete_all_tables_query);
-            //    $result = $result->fetch_object();
-            //    if (isset($result->statement)) {
-            //        $mysqli->query("SET FOREIGN_KEY_CHECKS = 0;");
-            //        $mysqli->query($result->statement);
-            //        $mysqli->query("SET FOREIGN_KEY_CHECKS = 1;");
-            //    }
-            //} catch (\Exception $e) {
-            //    $rules["mysql_connection"] = "required";
-            //}
+            // Drop all old table
+            try {
+                $delete_all_tables_query = "SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' )
+                                            AS statement FROM information_schema.tables
+                                            WHERE table_schema = '".$database['database_name']."'";
+                $result = $mysqli->query($delete_all_tables_query);
+                $result = $result->fetch_object();
+                if (isset($result->statement)) {
+                    $mysqli->query("SET FOREIGN_KEY_CHECKS = 0;");
+                    $mysqli->query($result->statement);
+                    $mysqli->query("SET FOREIGN_KEY_CHECKS = 1;");
+                }
+            } catch (\Exception $e) {
+                $rules["mysql_connection"] = "required";
+            }
             
             $request->session()->set('database_imported', true);
             $next_page = action('InstallController@cronJobs');
