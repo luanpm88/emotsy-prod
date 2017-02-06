@@ -32,7 +32,10 @@ class UserController extends Controller
         
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, $user->apiRules());
+            $validator = \Validator::make($request->all(), $user->apiRules());    
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 403);
+            }
 
             // Save current user info
             $user->fill($request->all());
@@ -92,7 +95,10 @@ class UserController extends Controller
         
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, $user->apiUpdateRules($request));
+            $validator = \Validator::make($request->all(), $user->apiUpdateRules($request));    
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 403);
+            }
             
             // Save current user info
             $user->fill($request->all());
