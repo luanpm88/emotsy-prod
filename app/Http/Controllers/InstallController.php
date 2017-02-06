@@ -51,10 +51,9 @@ class InstallController extends Controller
 
     // Starting installation
     public function starting(Request $request)
-    {
+    {        
         $next = action('InstallController@systemCompatibility');
-        \Artisan::call('config:cache');
-        sleep(5);
+        artisan_config_cache();
         return redirect()->away($next);
     }
 
@@ -85,8 +84,7 @@ class InstallController extends Controller
             ]);
         } catch (\Exception $e) {
             $next_page = action('InstallController@systemCompatibility');
-            \Artisan::call('config:cache');
-            sleep(5);
+            artisan_config_cache();
             return redirect()->away($next_page);
         }
     }
@@ -211,9 +209,6 @@ class InstallController extends Controller
             // write config file
             $this->writeEnv($request);
             
-            // wait for config:cache
-            sleep(5);
-            
             return redirect()->away($next_page);
         }
 
@@ -275,10 +270,11 @@ class InstallController extends Controller
             //    $rules["mysql_connection"] = "required";
             //}
             
+            $request->session()->set('database_imported', true);
             $next_page = action('InstallController@cronJobs');
 
             // Run migrate
-            \Artisan::call('migrate', ["--force"=> true]);
+            artisan_migrate();
 
             // import database with prefix
             $this->importDatabase($database);
@@ -326,8 +322,6 @@ class InstallController extends Controller
             $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
                             ('site_description', '".$site_info['site_description']."', '".$date."', '".$date."');");
 
-            $request->session()->set('database_imported', true);
-
             $request->session()->flash('alert-success', trans('messages.install.database_import.success'));
 
             return redirect()->away($next_page);
@@ -351,8 +345,7 @@ class InstallController extends Controller
         
         if($respone == 'done') {
             $next = action('InstallController@finish');                
-            \Artisan::call('config:cache');
-            sleep(3);
+            artisan_config_cache();
             return redirect()->away($next);
         }
         
@@ -595,7 +588,7 @@ MAIL_FROM_NAME="'.(isset($smtp['smtp_from_name']) ? $smtp['smtp_from_name'] : ''
         fclose($env_file);
 
         // Reload .env
-        \Artisan::call('config:cache');
+        artisan_config_cache();
     }
 
     public function importDatabase($database)

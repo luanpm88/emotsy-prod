@@ -166,3 +166,32 @@ function db_utc_offset()
 function exec_enabled() {
    return function_exists('exec') && !in_array('exec', array_map('trim', explode(', ', ini_get('disable_functions'))));
 }
+
+/**
+ * Run artisan config cache
+ *
+ * @return boolean
+ */
+function artisan_config_cache() {
+    $file = base_path('bootstrap/cache/config.php');
+    $start_time = filemtime($file);
+    
+    $time_out = 5;
+    $init_time = time();
+    
+    \Artisan::call('config:cache');
+    while($start_time == filemtime($file) && time() - $init_time <= $time_out) {}
+    
+    sleep(5);
+    
+    return $start_time - filemtime($file);
+}
+
+/**
+ * Run artisan migrate
+ *
+ * @return boolean
+ */
+function artisan_migrate() {
+    \Artisan::call('migrate', ["--force"=> true]);
+}

@@ -158,8 +158,7 @@ class SettingController extends Controller
         
         if($respone == 'done') {
             $next = action('Admin\SettingController@cronjob');
-            \Artisan::call('config:cache');
-            sleep(3);            
+            artisan_config_cache();
             return redirect()->away($next);
         }
         
