@@ -13,13 +13,6 @@
 @endif
 
 <div class="database-config-box">
-    
-    @if(!exec_enabled())
-        <div class="alert alert-warning">
-            {{ trans('messages.please_enable_php_exec_for_cronjob_check') }}
-        </div>
-    @endif
-
     @if(!$valid || isset($show_all))
         @include('helpers.form_control', [
             'type' => 'radio',
@@ -44,13 +37,20 @@
         
         @if ($errors->has('php_bin_path_invalid'))
             <div class="alert alert-danger">
-                @if (\Acelle\Library\Tool::checkPHPBinPath($php_bin_path_value) == '')
+                <?php $check = \Acelle\Library\Tool::checkPHPBinPath($php_bin_path_value); ?>
+                @if ($check == '')
                     {{ trans('messages.this_is_not_executable_php_bin_path') }}
                 @else
-                    {!! \Acelle\Library\Tool::checkPHPBinPath($php_bin_path_value) !!}
+                    {!! $check !!}
                 @endif
             </div>
         @endif
+    @endif
+    
+    @if(!exec_enabled())
+        <div class="alert alert-warning">
+            {{ trans('messages.please_enable_php_exec_for_cronjob_check') }}
+        </div>
     @endif
     
     @if($valid || isset($show_all))

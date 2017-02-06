@@ -550,19 +550,20 @@ class Tool
      * @return boolean
      */
     public static function checkPHPBinPath($path) {
+        $result = '';
         if(exec_enabled()) {
             $exec_script = $path . " " . base_path() . "/php_bin_test.php";
             $result = exec($exec_script);
             if($result == 'ok') {
-                return true;
+                return 'ok';
             }
         } else {
             if(file_exists($path)) {
-                return true;
+                return 'ok';
             }
         }
         
-        return false;
+        return $result;
     }
     
     /**
@@ -609,7 +610,7 @@ class Tool
             try {
                 $paths = explode(" ", exec("whereis php"));
                 foreach($paths as $path) {
-                    if(\Acelle\Library\Tool::checkPHPBinPath($path) == true) {
+                    if(\Acelle\Library\Tool::checkPHPBinPath($path) == 'ok') {
                         $php_paths[] = $path;
                     }
                 }
