@@ -16,7 +16,7 @@
     
     @if(!exec_enabled())
         <div class="alert alert-warning">
-            Please enable PHP `exec` function to validate cronjob setting
+            {{ trans('messages.please_enable_php_exec_for_cronjob_check') }}
         </div>
     @endif
 

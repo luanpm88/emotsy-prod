@@ -1313,4 +1313,5 @@ return [
     'check_and_save_crontab' => 'Check & Save',
     'background_job' => 'Background Job',
     'setting_up_background_job' => 'Background Job Setup',
+    'please_enable_php_exec_for_cronjob_check' => 'Please enable PHP `exec` function to validate cronjob setting',
 ];
