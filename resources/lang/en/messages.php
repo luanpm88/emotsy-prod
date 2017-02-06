@@ -1312,5 +1312,5 @@ return [
     'async_job_type_desc' => 'Send emails by forking PHP child processes. It is required that PHP `exec` function is enabled on your server.',
     'check_and_save_crontab' => 'Check & Save',
     'background_job' => 'Background Job',
-    'setting_up_background_job' => 'Setting up background job',
+    'setting_up_background_job' => 'Background Job Setup',
 ];
