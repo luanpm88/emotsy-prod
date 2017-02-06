@@ -245,7 +245,6 @@ class InstallController extends Controller
         $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database['database_name']."'");
         $result = $result->fetch_object();
         if ($result->count > 0) {
-            //$rules['database_not_empty'] = 'required';
             $tables_exist = true;
         }
 
@@ -269,6 +268,14 @@ class InstallController extends Controller
             } catch (\Exception $e) {
                 $rules["mysql_connection"] = "required";
             }
+            
+            // Re-check database empty for sure
+            $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database['database_name']."'");
+            $result = $result->fetch_object();
+            if ($result->count > 0) {
+                $rules['can_not_empty_database'] = 'required';
+            }
+            $this->validate($request, $rules);
             
             $request->session()->set('database_imported', true);
             $next_page = action('InstallController@cronJobs');

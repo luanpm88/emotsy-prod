@@ -132,6 +132,9 @@ return [
         'php_bin_path_invalid' => [
             'required' => 'Invalid PHP executable. Please check again.',
         ],
+        'can_not_empty_database' => [
+            'required' => 'Cannot DROP certain tables, please cleanup your database and try again.',
+        ],
     ],
 
     /*
