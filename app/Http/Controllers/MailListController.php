@@ -628,7 +628,7 @@ class MailListController extends Controller
                 // $validator->errors()
                 $errs = [];
                 foreach($validator->errors()->toArray() as $key => $error) {
-                    $errs[] = "errors[" . $key . "]=" . $error[0];
+                    $errs[] = $key . ": " . $error[0];
                 }
                 
                 if (strpos($url, '?') !== false) {
@@ -637,7 +637,12 @@ class MailListController extends Controller
                     $url = $url . "?" . implode('&', $errs);
                 }
 
-                return redirect()->away($url);
+                // return redirect()->away($url);
+                return view('lists.embedded_form_errors', [
+                    'errors' => $errs,
+                    'list' => $list,
+                    'back_link' => $url,
+                ]);
             }
 
             $subscriber->email = $request->EMAIL;

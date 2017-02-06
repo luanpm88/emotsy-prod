@@ -21,5 +21,5 @@
 						@endif
 							<li class="{{ $action == "cronjob" ? "active" : "" }} text-semibold">
                                 <a href="{{ action('Admin\SettingController@cronjob') }}">
-								<i class="icon-alarm"></i> {{ trans('messages.cron_jobs') }}</a></li>
+								<i class="icon-alarm"></i> {{ trans('messages.background_job') }}</a></li>
 					</ul>

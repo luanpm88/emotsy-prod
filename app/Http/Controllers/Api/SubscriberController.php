@@ -99,7 +99,10 @@ class SubscriberController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, $subscriber->getRules());
+            $validator = \Validator::make($request->all(), $subscriber->getRules());    
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 403);
+            }
 
             // Save subscriber
             $subscriber->email = $request->EMAIL;
