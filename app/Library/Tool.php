@@ -688,12 +688,11 @@ class Tool
             }
             
             if(config('queue.default') != $queue_driver) {
-                \Acelle\Model\Setting::setEnv('QUEUE_DRIVER', $queue_driver);
-                artisan_config_cache();
+                \Acelle\Model\Setting::setEnv('QUEUE_DRIVER', $queue_driver);                
             }
             
             $valid = true;
-            $request->session()->set('cron_jobs', true);
+            $request->session()->set('cron_jobs', true);            
             
             if($request->queue_driver == 'async') {
                 return 'done';

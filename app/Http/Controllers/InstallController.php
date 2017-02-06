@@ -341,15 +341,19 @@ class InstallController extends Controller
             return redirect()->action('InstallController@database');
         }
         
-        $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);
-        
+        $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);        
         if($respone == 'done') {
-            $next = action('InstallController@finish');                
-            artisan_config_cache();
-            return redirect()->away($next);
+            return redirect()->action('InstallController@finishing');
         }
         
         return view('install.cron_jobs', $respone);
+    }
+    
+    public function finishing(Request $request)
+    {
+        $next_page = action('InstallController@finish');
+        artisan_config_cache();
+        return redirect()->away($next_page);
     }
 
     public function finish(Request $request)
@@ -357,7 +361,7 @@ class InstallController extends Controller
         if ($this->step($request) < 6) {
             return redirect()->action('InstallController@database');
         }
-
+        
         $request->session()->set('install_finish', true);
         
         $file_path = storage_path('installed');

@@ -22,6 +22,7 @@ Route::group(['middleware' => ['installed']], function () {
     Route::get('install/database_import', 'InstallController@databaseImport');
     Route::get('install/cron-jobs', 'InstallController@cronJobs');
     Route::post('install/cron-jobs', 'InstallController@cronJobs');
+    Route::get('install/finishing', 'InstallController@finishing');
     Route::get('install/finish', 'InstallController@finish');
 });
 
