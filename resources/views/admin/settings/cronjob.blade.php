@@ -35,7 +35,7 @@
 						<hr>
 						<div class="text-right">                                    
 							<button class="btn btn-primary bg-teal">
-								{!! trans('messages.save') !!} <i class="icon-arrow-right14 position-right"></i>
+								{!! trans('messages.save') !!}
 							</button>
 						</div>
 					</form>
