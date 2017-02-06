@@ -29,6 +29,7 @@
                 'type' => 'text',
                 'name' => 'php_bin_path_value',
                 'class' => '',
+                'placeholder' => 'Example: /usr/local/bin/php',
                 'label' => trans('messages.enter_php_bin_path'),
                 'value' => $php_bin_path_value,
                 'rules' => [['php_bin_path_value' => 'required']]

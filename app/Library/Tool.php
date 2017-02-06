@@ -636,7 +636,7 @@ class Tool
             }
         } else {            
             foreach($paths as $path) {
-                if(file_exists($path) && is_executable($path)) {
+                if(\Acelle\Library\Tool::checkPHPBinPath($path) == 'ok') {
                     $php_paths[] = $path;
                 }
             }
@@ -647,7 +647,7 @@ class Tool
         // Current path
         $queue_driver = config('queue.default');
         $php_bin_path = empty($php_paths) ? 'manual' : $php_paths[0];
-        $php_bin_path_value = empty($php_paths) ? '{PHP_BIN_PATH}' : $php_paths[0];
+        $php_bin_path_value = empty($php_paths) ? '' : $php_paths[0];
         
         $setting_php_bin_path = \Acelle\Model\Setting::get('php_bin_path');
         if(!empty($setting_php_bin_path)) {
