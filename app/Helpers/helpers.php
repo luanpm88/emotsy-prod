@@ -173,22 +173,57 @@ function exec_enabled() {
  * @return boolean
  */
 function artisan_config_cache() {
-    $file = base_path('bootstrap/cache/config.php');
-    if(file_exists($file)) {
-        $start_time = filemtime($file);
+    // Artisan config:cache generate the following two files
+    // Since config:cache runs in the background
+    // to determine if it is done, we just check if the files modified time have been changed
+    $files = ['bootstrap/cache/config.php', 'bootstrap/cache/services.php'];
     
-        $time_out = 5;
-        $init_time = time();
-    
-        \Artisan::call('config:cache');
-        while($start_time == filemtime($file) && time() - $init_time <= $time_out) {
-            sleep(1);
+    // get the last modified time of the files
+    $last = 0;
+    foreach ($files as $file) {
+        $path = base_path($file);
+        if (file_exists($path)) {
+            if (filemtime($path) > $last) {
+                $last = filemtime($path);
+            }
         }
     }
+        
+    // prepare to run
+    $timeout = 5;
+    $start = time();
     
-    sleep(5);
+    // actually call the Artisan command
+    \Artisan::call('config:cache');
     
-    return $start_time - filemtime($file);
+    // Check if Artisan call is done
+    while (true) {
+        // just finish if timeout
+        if (time() - $start >= $timeout) {
+            echo "Timeout\n";
+            break;
+        }
+        
+        // if any file is still missing, keep waiting
+        // if any file is not updated, keep waiting
+        // @todo: services.php file keeps unchanged after artisan config:cache
+        foreach($files as $file) {
+            $path = base_path($file);
+            if (!file_exists($path)) {
+                sleep(1);
+                continue;
+            } else {
+                if (filemtime($path) == $last) {
+                    sleep(1);
+                    continue;
+                }
+            }
+        }
+        
+        // just wait another extra 3 seconds before finishing
+        sleep(3);
+        break;
+    }
 }
 
 /**
