@@ -180,7 +180,9 @@ function artisan_config_cache() {
     $init_time = time();
     
     \Artisan::call('config:cache');
-    while($start_time == filemtime($file) && time() - $init_time <= $time_out) {}
+    while($start_time == filemtime($file) && time() - $init_time <= $time_out) {
+        sleep(1);
+    }
     
     sleep(5);
     
