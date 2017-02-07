@@ -1315,4 +1315,5 @@ return [
     'setting_up_background_job' => 'Background Job Setup',
     'please_enable_php_exec_for_cronjob_check' => 'WARNING: Please enable PHP `exec` function to validate the cron job setting',
     'automation_not_work_with_async' => 'Automation is not available with Async.',
+    'invalid_captcha' => 'Invalid captcha',
 ];

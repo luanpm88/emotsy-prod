@@ -601,17 +601,17 @@ class MailListController extends Controller
         ]]);
         $success = json_decode($res->getBody(), true)["success"];
         
-        if (!$success) {
-            $url = $request->session()->pull('form_url');
-            if (strpos($url, '?') !== false) {
-                $url = $url . "&errors[captcha]=false";
-            } else {
-                $url = $url . "?errors[captcha]=false";
-            }
-            return redirect()->away($url);
-        }
-        
         $list = \Acelle\Model\MailList::findByUid($request->uid);
+        
+        if (!$success) {            
+            $url = $request->session()->pull('form_url');
+            $errs = [trans("messages.invalid_captcha")];
+            return view('lists.embedded_form_captcha_invalid', [
+                'errors' => $errs,
+                'list' => $list,
+                'back_link' => $url,
+            ]);
+        }
 
         // Create subscriber
         if ($request->isMethod('post')) {
