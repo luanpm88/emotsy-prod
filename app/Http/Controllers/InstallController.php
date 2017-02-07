@@ -460,7 +460,7 @@ class InstallController extends Controller
             ],
             [
                 'type' => 'permission',
-                'name' => 'Storage/app/',
+                'name' => base_path('storage/app'),
                 'check' => file_exists(base_path('/storage/app')) &&
                     is_dir(base_path('/storage/app')) &&
                     (is_writable(base_path('/storage/app'))),
@@ -468,25 +468,25 @@ class InstallController extends Controller
             ],
             [
                 'type' => 'permission',
-                'name' => 'Storage/framework/',
+                'name' => base_path('storage/framework'),
                 'check' => file_exists(base_path('/storage/framework')) && is_dir(base_path('/storage/framework')) && (is_writable(base_path('/storage/framework'))),
                 'note' => 'The directory must be writable by the web server.',
             ],
             [
                 'type' => 'permission',
-                'name' => 'Storage/logs/',
+                'name' => base_path('storage/logs'),
                 'check' => file_exists(base_path('/storage/logs')) && is_dir(base_path('/storage/logs')) && (is_writable(base_path('/storage/logs'))),
                 'note' => 'The directory must be writable by the web server.',
             ],
             [
                 'type' => 'permission',
-                'name' => 'Storage/job/',
+                'name' => base_path('storage/job'),
                 'check' => file_exists(base_path('/storage/job')) && is_dir(base_path('/storage/job')) && (is_writable(base_path('/storage/job'))),
                 'note' => 'The directory must be writable by the web server.',
             ],
             [
                 'type' => 'permission',
-                'name' => 'bootstrap/cache/',
+                'name' => base_path('bootstrap/cache'),
                 'check' => file_exists(base_path('/bootstrap/cache')) && is_dir(base_path('/bootstrap/cache')) && (is_writable(base_path('/bootstrap/cache'))),
                 'note' => 'The directory must be writable by the web server.',
             ],
