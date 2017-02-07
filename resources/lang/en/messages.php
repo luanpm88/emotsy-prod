@@ -1309,7 +1309,7 @@ return [
     'database_job_type' => 'Cron Job (recommended)',
     'database_job_type_desc' => 'Send emails using hosting system\'s cron job. It is required that PHP CLI is available on your server.',
     'async_job_type' => 'Async',
-    'async_job_type_desc' => 'Send emails by forking PHP child processes. It is required that PHP `exec` function is enabled on your server.',
+    'async_job_type_desc' => 'Send emails by forking PHP child processes. It is required that PHP `exec` function is enabled on your server. Note that Async does not work with Automation & Autoresponder features.',
     'check_and_save_crontab' => 'Check & Save',
     'background_job' => 'Background Job',
     'setting_up_background_job' => 'Background Job Setup',
