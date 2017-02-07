@@ -174,14 +174,16 @@ function exec_enabled() {
  */
 function artisan_config_cache() {
     $file = base_path('bootstrap/cache/config.php');
-    $start_time = filemtime($file);
+    if(file_exists($file)) {
+        $start_time = filemtime($file);
     
-    $time_out = 5;
-    $init_time = time();
+        $time_out = 5;
+        $init_time = time();
     
-    \Artisan::call('config:cache');
-    while($start_time == filemtime($file) && time() - $init_time <= $time_out) {
-        sleep(1);
+        \Artisan::call('config:cache');
+        while($start_time == filemtime($file) && time() - $init_time <= $time_out) {
+            sleep(1);
+        }
     }
     
     sleep(5);
