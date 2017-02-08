@@ -114,7 +114,10 @@ class SubscriberController extends Controller
             // Log
             $subscriber->log('created', $user);
             
-            return \Response::json(array('message' => trans('messages.subscriber.created')), 200);
+            return \Response::json(array(
+                'message' => trans('messages.subscriber.created'),
+                'subscriber_uid' => $subscriber->uid
+            ), 200);
         }
     }
 
