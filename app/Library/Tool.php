@@ -734,10 +734,12 @@ class Tool
         
         // Check recaptch
         $client = new \GuzzleHttp\Client();
-        return $client->post('https://www.google.com/recaptcha/api/siteverify', ['form_params' => [
+        $res = $client->post('https://www.google.com/recaptcha/api/siteverify', ['form_params' => [
             'secret' => "6LfyISoTAAAAAC0hJ916unwi0m_B0p7fAvCRK4Kp",
             'remoteip' => $request->ip(),
             'response' => $request->all()["g-recaptcha-response"]
         ]]);
+    
+        return json_decode($res->getBody(), true)["success"];
     }
 }

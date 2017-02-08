@@ -592,8 +592,7 @@ class MailListController extends Controller
      */
     public function embeddedFormSubscribe(Request $request)
     {        
-        $res = \Acelle\Library\Tool::checkReCaptcha($request);
-        $success = json_decode($res->getBody(), true)["success"];
+        $success = \Acelle\Library\Tool::checkReCaptcha($request);
         
         $list = \Acelle\Model\MailList::findByUid($request->uid);
         
