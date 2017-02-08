@@ -713,4 +713,44 @@ class Tool
             'valid' => $valid,
         ];
     }
+    
+    /**
+     * Show re-captcha in views.
+     *
+     * @return string
+     */
+    public static function showReCaptcha($errors=NULL) {
+        ?>
+            <div class="recaptcha-box">
+                <script src='https://www.google.com/recaptcha/api.js?hl=<?php echo language_code() ?>'></script>
+                <div class="g-recaptcha" data-sitekey="6LfyISoTAAAAABJV8zycUZNLgd0sj-sBFjctzXKw"></div>
+                <?php if (isset($errors) && $errors->has('recaptcha_invalid')) { ?>
+                    <span class="help-block text-danger">
+                        <strong><?php echo $errors->first('recaptcha_invalid'); ?></strong>
+                    </span>
+                <?php } ?>
+            </div>
+        <?php
+    }
+    
+    /**
+     * Check re-captcha success.
+     *
+     * @return boolean
+     */
+    public static function checkReCaptcha($request) {
+        if(!isset($request->all()["g-recaptcha-response"])) {
+            return false;
+        }
+        
+        // Check recaptch
+        $client = new \GuzzleHttp\Client();
+        $res = $client->post('https://www.google.com/recaptcha/api/siteverify', ['form_params' => [
+            'secret' => "6LfyISoTAAAAAC0hJ916unwi0m_B0p7fAvCRK4Kp",
+            'remoteip' => $request->ip(),
+            'response' => $request->all()["g-recaptcha-response"]
+        ]]);
+    
+        return json_decode($res->getBody(), true)["success"];
+    }
 }

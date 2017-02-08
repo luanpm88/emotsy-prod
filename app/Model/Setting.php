@@ -168,6 +168,12 @@ class Setting extends Model
                 'type' => 'select',
                 'options' => self::colors(),
             ],
+            'login_recaptcha' => [
+                'cat' => 'general',
+                'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no','yes'],
+            ],
             'sending_campaigns_at_once' => [
                 'cat' => 'sending',
                 'value' => '10',

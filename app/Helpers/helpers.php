@@ -240,3 +240,25 @@ function artisan_config_cache() {
 function artisan_migrate() {
     \Artisan::call('migrate', ["--force"=> true]);
 }
+
+/**
+ * Get language code
+ *
+ * @return string
+ */
+function language_code() {
+    // Generate info
+    $user = \Auth::user();
+    $default_language = \Acelle\Model\Language::find(\Acelle\Model\Setting::get('default_language'));
+    if(is_object($user) && is_object($user->language)) {
+        $language_code = $user->language->code;
+    } else if (isset($_COOKIE['last_language_code'])) {
+        $language_code = $_COOKIE['last_language_code'];
+    } else if (is_object($default_language)) {
+        $language_code = $default_language->code;
+    } else {
+        $language_code = 'en';
+    }
+    
+    return $language_code;
+}

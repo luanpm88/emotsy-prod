@@ -135,6 +135,9 @@ return [
         'can_not_empty_database' => [
             'required' => 'Cannot DROP certain tables, please cleanup your database and try again.',
         ],
+        'recaptcha_invalid' => [
+            'required' => 'Invalid reCAPTCHA code.',
+        ],
     ],
 
     /*

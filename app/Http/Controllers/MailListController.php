@@ -591,15 +591,8 @@ class MailListController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function embeddedFormSubscribe(Request $request)
-    {   
-        // Check recaptch
-        $client = new \GuzzleHttp\Client();
-        $res = $client->post('https://www.google.com/recaptcha/api/siteverify', ['form_params' => [
-            'secret' => "6LfyISoTAAAAAC0hJ916unwi0m_B0p7fAvCRK4Kp",
-            'remoteip' => $request->ip(),
-            'response' => $request->all()["g-recaptcha-response"]
-        ]]);
-        $success = json_decode($res->getBody(), true)["success"];
+    {        
+        $success = \Acelle\Library\Tool::checkReCaptcha($request);
         
         $list = \Acelle\Model\MailList::findByUid($request->uid);
         
