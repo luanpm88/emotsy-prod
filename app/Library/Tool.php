@@ -551,16 +551,16 @@ class Tool
      */
     public static function checkPHPBinPath($path) {
         $result = '';
+        
+        if (!file_exists($path) || !is_executable($path)) {
+            return $result;
+        }
+        
         if(exec_enabled()) {
             $exec_script = $path . " " . base_path() . "/php_bin_test.php";
             $result = exec($exec_script);
-            if($result == 'ok') {
-                return 'ok';
-            }
         } else {
-            if(file_exists($path) && is_executable($path)) {
-                return 'ok';
-            }
+            $result = 'ok';
         }
         
         return $result;
@@ -603,6 +603,7 @@ class Tool
      * @return string
      */
     public static function cronjobUpdateController($request, $controller) {
+
         // Suggestion paths
         $paths = [
             '/usr/bin/php',
@@ -630,10 +631,12 @@ class Tool
             }
         }
         
+        file_put_contents(base_path() . '/ahello.txt', print_r($paths, true));
+        
         // validate detected / default PHP CLI
         // Because array_filter() preserves keys, you should consider the resulting array to be an associative array even if the original array had integer keys for there may be holes in your sequence of keys. This means that, for example, json_encode() will convert your result array into an object instead of an array. Call array_values() on the result array to guarantee json_encode() gives you an array.
         $paths = array_values(array_filter($paths, function($path) {
-            return \Acelle\Library\Tool::checkPHPBinPath($path) == 'ok';
+            return is_executable($path);
         }));
         
         $rules = [];
