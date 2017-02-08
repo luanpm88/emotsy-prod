@@ -222,7 +222,7 @@
             <a href="#more" class="toogle-api">/api/v1/lists/{list_uid}/subscribers</a>
           </td>
           <td>
-            Display all list's subscribers
+            Display list's subscribers
           </td>
         </tr>
         <tr style="display:none;background: #f6f6f6">
@@ -230,10 +230,18 @@
             <td>
               <div>
                 <div class="description detailed">
-                  <h4>Returns</h4>
-                  <div class="list">
-                    List of all list's subscribers in json
-                  </div>
+                    <div class="list"><dl>
+                        <dt><var>$list_uid</var></dt>
+                        <dd>List's uid</dd>
+                        <dt><var>$per_page &nbsp;&nbsp;<span class="text-muted2 text-normal">{{ trans('messages.optional') }}</var></dt>
+                        <dd>Number of subscribers per page</dd>
+                        <dt><var>$page &nbsp;&nbsp;<span class="text-muted2 text-normal">{{ trans('messages.optional') }} - default: 25</var></dt>
+                        <dd>Page number</dd>                    
+                    </dl></div>
+                    <h4>Returns</h4>
+                    <div class="list">
+                      List of list's subscribers in json
+                    </div>
                 </div>
               </div>
             </td>
@@ -241,7 +249,9 @@
                 <h4>Example:</h4>
                 <pre class=""><code>curl -X GET -H "accept:application/json" -G \
 {!! str_replace("-LIST_ID-", "<redbold>{list_uid}</redbold>", action("Api\SubscriberController@index", ["list_id" => "-LIST_ID-"])) !!}? \
--d api_token={{ Auth::user()->api_token }}
+-d api_token={{ Auth::user()->api_token }} \
+-d per_page=20 \
+-d page=2
 </code></pre>
             </td>
         </tr>
@@ -266,7 +276,7 @@
                   <h4>Parameters</h4>
                   <div class="list"><dl>
                     <dt><var>$uid</var></dt>
-                    <dd>Subsciber's uid</dd>
+                    <dd>Subsciber's uid</dd>                   
                   </dl></div>
           
                   <h4>Returns</h4>
