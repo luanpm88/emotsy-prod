@@ -709,4 +709,35 @@ class Tool
             'valid' => $valid,
         ];
     }
+    
+    /**
+     * Show re-captcha in views.
+     *
+     * @return string
+     */
+    public static function showReCaptcha() {
+        ?>
+            <script src='https://www.google.com/recaptcha/api.js'></script>
+            <div class="g-recaptcha" data-sitekey="6LfyISoTAAAAABJV8zycUZNLgd0sj-sBFjctzXKw"></div>
+        <?php
+    }
+    
+    /**
+     * Check re-captcha success.
+     *
+     * @return boolean
+     */
+    public static function checkReCaptcha($request) {
+        if(!isset($request->all()["g-recaptcha-response"])) {
+            return false;
+        }
+        
+        // Check recaptch
+        $client = new \GuzzleHttp\Client();
+        return $client->post('https://www.google.com/recaptcha/api/siteverify', ['form_params' => [
+            'secret' => "6LfyISoTAAAAAC0hJ916unwi0m_B0p7fAvCRK4Kp",
+            'remoteip' => $request->ip(),
+            'response' => $request->all()["g-recaptcha-response"]
+        ]]);
+    }
 }
