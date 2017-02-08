@@ -630,10 +630,11 @@ class Tool
             }
         }
         
-        // validate detected / default PHP CLI 
-        $paths = array_filter($paths, function($path) {
+        // validate detected / default PHP CLI
+        // Because array_filter() preserves keys, you should consider the resulting array to be an associative array even if the original array had integer keys for there may be holes in your sequence of keys. This means that, for example, json_encode() will convert your result array into an object instead of an array. Call array_values() on the result array to guarantee json_encode() gives you an array.
+        $paths = array_values(array_filter($paths, function($path) {
             return \Acelle\Library\Tool::checkPHPBinPath($path) == 'ok';
-        });
+        }));
         
         $rules = [];
         
