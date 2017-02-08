@@ -603,9 +603,6 @@ class Tool
      * @return string
      */
     public static function cronjobUpdateController($request, $controller) {
-        // Find all php bin path in system
-        $php_paths = [];
-        
         // Suggestion paths
         $paths = [
             '/usr/bin/php',
@@ -623,35 +620,31 @@ class Tool
             '/opt/plesk/php/7.1/bin/php',
         ];
         
+        // try to detect system's PHP CLI
         if(exec_enabled()) {
             try {
-                $paths = array_merge($paths, explode(" ", exec("whereis php")));
-                foreach($paths as $path) {
-                    if(!in_array($path, $php_paths) && \Acelle\Library\Tool::checkPHPBinPath($path) == 'ok') {
-                        $php_paths[] = $path;
-                    }
-                }
+                $paths = array_unique(array_merge($paths, explode(" ", exec("whereis php"))));
             } catch (\Exception $e) {
+                // @todo: system logging here
                 echo $e->getMessage();
             }
-        } else {            
-            foreach($paths as $path) {
-                if(\Acelle\Library\Tool::checkPHPBinPath($path) == 'ok') {
-                    $php_paths[] = $path;
-                }
-            }
         }
+        
+        // validate detected / default PHP CLI 
+        $paths = array_filter($paths, function($path) {
+            return \Acelle\Library\Tool::checkPHPBinPath($path) == 'ok';
+        });
         
         $rules = [];
         
         // Current path
         $queue_driver = config('queue.default');
-        $php_bin_path = empty($php_paths) ? 'manual' : $php_paths[0];
-        $php_bin_path_value = empty($php_paths) ? '' : $php_paths[0];
+        $php_bin_path = empty($paths) ? 'manual' : $paths[0];
+        $php_bin_path_value = empty($paths) ? '' : $paths[0];
         
         $setting_php_bin_path = \Acelle\Model\Setting::get('php_bin_path');
         if(!empty($setting_php_bin_path)) {
-            if(in_array($setting_php_bin_path, $php_paths)) {
+            if(in_array($setting_php_bin_path, $paths)) {
                 $php_bin_path = $setting_php_bin_path;
             } else {
                 $php_bin_path = 'manual';
@@ -707,7 +700,7 @@ class Tool
         return [
             'step' => 5,
             'current' => 5,
-            'php_paths' => $php_paths,
+            'php_paths' => $paths,
             'php_bin_path' => $php_bin_path,
             'php_bin_path_value' => $php_bin_path_value,
             'rules' => $rules,
