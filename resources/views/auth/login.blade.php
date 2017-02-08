@@ -55,9 +55,9 @@
 							</div>
 						</div>
 						
-						<div class="recaptcha-box">
-							{!! \Acelle\Library\Tool::showReCaptcha() !!}
-						</div>
+						@if (\Acelle\Model\Setting::get('login_recaptcha') == 'yes')							
+							{!! \Acelle\Library\Tool::showReCaptcha($errors) !!}
+						@endif
 						
 						<button type="submit" class="btn btn-lg bg-teal btn-block">{{ trans("messages.login") }} <i class="icon-circle-right2 position-right"></i></button>						
 					</div>

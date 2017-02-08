@@ -89,9 +89,11 @@ class AuthController extends Controller
             $this->loginUsername() => 'required',
             'password' => 'required'
         ];
-
-        if(!\Acelle\Library\Tool::checkReCaptcha($request)) {
-            $rules['recaptcha_invalid'] = 'required';
+        
+        if (\Acelle\Model\Setting::get('login_recaptcha') == 'yes') {
+            if(!\Acelle\Library\Tool::checkReCaptcha($request)) {
+                $rules['recaptcha_invalid'] = 'required';
+            }
         }
         
         $this->validate($request, $rules);

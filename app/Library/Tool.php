@@ -715,10 +715,17 @@ class Tool
      *
      * @return string
      */
-    public static function showReCaptcha() {
+    public static function showReCaptcha($errors) {
         ?>
-            <script src='https://www.google.com/recaptcha/api.js'></script>
-            <div class="g-recaptcha" data-sitekey="6LfyISoTAAAAABJV8zycUZNLgd0sj-sBFjctzXKw"></div>
+            <div class="recaptcha-box">
+                <script src='https://www.google.com/recaptcha/api.js?hl=<?php echo language_code() ?>'></script>
+                <div class="g-recaptcha" data-sitekey="6LfyISoTAAAAABJV8zycUZNLgd0sj-sBFjctzXKw"></div>
+                <?php if ($errors->has('recaptcha_invalid')) { ?>
+                    <span class="help-block text-danger">
+                        <strong><?php echo $errors->first('recaptcha_invalid'); ?></strong>
+                    </span>
+                <?php } ?>
+            </div>
         <?php
     }
     

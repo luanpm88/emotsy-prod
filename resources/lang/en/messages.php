@@ -1317,4 +1317,5 @@ return [
     'automation_not_work_with_async' => 'Automation is not available with Async.',
     'invalid_captcha' => 'Invalid captcha',
     'display_sending_quota' => 'during the last :number :period(s)',
+    'login_recaptcha' => 'Enable reCAPTCHA when logging in',
 ];
