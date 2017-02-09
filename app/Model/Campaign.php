@@ -744,7 +744,6 @@ class Campaign extends Model
 
         // @TODO for AWS, setting returnPath requires verified domain or email address
         if ($server->allowCustomReturnPath() && is_object($server->bounceHandler)) {
-            MailLog::info('Bounce handler set!');
             $message->setReturnPath($server->getVerp($subscriber->email));
         }
         $message->setSubject($this->getSubject($subscriber, $msgId));
