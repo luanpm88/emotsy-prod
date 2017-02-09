@@ -1,3 +1,11 @@
+2.2.0-p9 / 2017-02-10
+=====================
+
+ * Fixed: installation issues with exec on restricted OS
+ * Added: support Re-captcha
+ * Added: include more details in installation error messages
+ * Changed: API - return newly created subscriber's UID in the response
+
 2.2.0-p8 / 2017-02-06
 =====================
  
