@@ -186,4 +186,18 @@ class Controller extends BaseController
         sleep(5);
         echo "migrated!";
     }
+    
+    /**
+     * Run remote cronjob
+     *
+     * @return boolean
+     */
+    public function remoteJob($remote_job_token)
+    {
+        if(\Acelle\Model\Setting::get('remote_job_token') === $remote_job_token) {
+            // @todo remote cronjob code here...
+        } else {
+            echo trans('messages.invalid_token');
+        }
+    }
 }

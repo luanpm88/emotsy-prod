@@ -592,6 +592,12 @@ class Tool
             ];
         }
         
+        $options[] = [
+            'text' => trans('messages.remote_job'),
+            'description' => trans('messages.remote_job_type_desc'),
+            'value' => 'remote'
+        ];
+        
         return $options;
     }
     
@@ -640,7 +646,7 @@ class Tool
         $rules = [];
         
         // Current path
-        $queue_driver = config('queue.default');
+        $queue_driver = \Acelle\Model\Setting::get('queue_driver');
         $php_bin_path = empty($paths) ? 'manual' : $paths[0];
         $php_bin_path_value = empty($paths) ? '' : $paths[0];
         
@@ -660,6 +666,11 @@ class Tool
             $queue_driver = $request->old()["queue_driver"];
         }
         
+        // create remote token if empty
+        if(empty(\Acelle\Model\Setting::get('remote_job_token'))) {
+            \Acelle\Model\Setting::set('remote_job_token', str_random(60));
+        }
+        
         $request->session()->forget('cron_jobs');
         $error = '';
         $valid = false;
@@ -668,6 +679,7 @@ class Tool
             $php_bin_path_value = $request->php_bin_path_value;
             $queue_driver = $request->queue_driver;
             
+            // If type == database
             if($request->queue_driver == 'database') {
                 $rules = [
                     'php_bin_path_value' => 'required',
@@ -683,14 +695,28 @@ class Tool
                 $controller->validate($request, $rules);
                 
                 \Acelle\Model\Setting::set('php_bin_path', $php_bin_path_value);
+                
+                $valid = true;
             }
             
-            if(config('queue.default') != $queue_driver) {
+            $request->session()->set('cron_jobs', true);
+            
+            // Update .env
+            if(in_array($queue_driver, ['database', 'async']) && config('queue.default') != $queue_driver) {
                 \Acelle\Model\Setting::setEnv('QUEUE_DRIVER', $queue_driver);                
             }
             
-            $valid = true;
-            $request->session()->set('cron_jobs', true);            
+            // Save setting
+            \Acelle\Model\Setting::set('queue_driver', $queue_driver);
+            
+            // If type == remote
+            if($request->queue_driver == 'remote') {                
+                if(!empty($request->re_generate_remote_job_url)) {
+                    $remote_job_token = str_random(60);
+                    \Acelle\Model\Setting::set('remote_job_token', $remote_job_token);
+                }
+                return "done";
+            }
             
             if($request->queue_driver == 'async') {
                 return 'done';

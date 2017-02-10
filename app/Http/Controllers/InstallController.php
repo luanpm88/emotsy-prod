@@ -349,7 +349,7 @@ class InstallController extends Controller
         }
         
         $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);        
-        if($respone == 'done') {
+        if($respone == 'done' || $respone == 'remote') {
             return redirect()->action('InstallController@finishing');
         }
         

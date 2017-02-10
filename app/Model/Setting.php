@@ -236,13 +236,25 @@ class Setting extends Model
             ],
             'url_update_profile' => [
                 'cat' => 'url',
-                'value' => '', // action('DeliveryController@notify'),
+                'value' => '',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'queue_driver' => [
+                'cat' => 'cronjob',
+                'value' => 'database',
                 'type' => 'text',
                 'not_required' => true,
             ],
             'php_bin_path' => [
                 'cat' => 'cronjob',
-                'value' => '', // action('DeliveryController@notify'),
+                'value' => '',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'remote_job_token' => [
+                'cat' => 'cronjob',
+                'value' => '',
                 'type' => 'text',
                 'not_required' => true,
             ],

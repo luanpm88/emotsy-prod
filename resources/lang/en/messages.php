@@ -1321,4 +1321,9 @@ return [
     'setting.login_recaptcha.help' => 'Enable captcha to block spammers and bots from accessing the webapp.',
     'bounce_type' => 'Bounce type',
     'raw' => 'Raw',
+    'invalid_token' => 'Invalid token',
+    'remote_job' => 'Remote job',
+    'remote_job_url' => 'Remote job URL',
+    're_generate_remote_job_url' => 'Re-generate URL',
+    'remote_job_type_desc' => 'Remote job desc',
 ];

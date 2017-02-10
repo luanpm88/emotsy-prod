@@ -12,6 +12,14 @@
     ])
 @endif
 
+<div class="remote_job_box">
+    <div class="form-group">
+        <label>{{ trans('messages.remote_job_url') }}</label>
+        <code style="font-size: 16px">{{ action('Controller@remoteJob', ['remote_job_token' => \Acelle\Model\Setting::get('remote_job_token')]) }}</code>
+    </div>
+    <input type='submit' class="btn btn-primary bg-teal" name="re_generate_remote_job_url" value="{!! trans('messages.re_generate_remote_job_url') !!}" />
+</div>
+
 <div class="database-config-box">
     @if(!$valid || isset($show_all))
         @include('helpers.form_control', [
@@ -35,7 +43,6 @@
                 'rules' => [['php_bin_path_value' => 'required']]
             ])    
         </div>
-        
         @if ($errors->has('php_bin_path_invalid'))
             <div class="alert alert-danger">
                 <?php $check = \Acelle\Library\Tool::checkPHPBinPath($php_bin_path_value); ?>
@@ -101,8 +108,13 @@
             
             if(value === 'database') {
                 $('.database-config-box').show();
-            } else {
+                $('.remote_job_box').hide();
+            } else if (value === 'async') {
                 $('.database-config-box').hide();
+                $('.remote_job_box').hide();
+            } else if (value === 'remote') {
+                $('.database-config-box').hide();
+                $('.remote_job_box').show();
             }
         });
         $('input[name="queue_driver"]:checked').trigger('change');
