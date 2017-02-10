@@ -287,7 +287,8 @@ class Campaign extends Model
             self::resetMaxExecutionTime();
 
             // Only run multi-process if pcntl is enabled
-            if (extension_loaded('pcntl')) {
+            $processes = (int) $this->user->getOption('frontend', 'max_process');
+            if (extension_loaded('pcntl') && $processes > 1) {
                 $this->runMultiProcesses();
             } else {
                 MailLog::warning('Cannot fork processes');
