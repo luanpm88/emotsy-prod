@@ -1319,4 +1319,6 @@ return [
     'display_sending_quota' => 'during the last :number :period(s)',
     'login_recaptcha' => 'Captcha',
     'setting.login_recaptcha.help' => 'Enable captcha to block spammers and bots from accessing the webapp.',
+    'bounce_type' => 'Bounce type',
+    'raw' => 'Raw',
 ];
