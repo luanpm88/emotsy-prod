@@ -1122,6 +1122,7 @@ $(function() {
     
     // Grap link with data-method attribute
     $(document).on('click', 'a[link-method]', function(e) {      
+        e.preventDefault();
         
         var method = $(this).attr("link-method");
         var action = $(this).attr("href");
@@ -1129,8 +1130,7 @@ $(function() {
         if(typeof(method) != 'undefined') {
             var newForm = jQuery('<form>', {
                 'action': action,
-                'method': 'POST',
-                'target': '_top'
+                'method': 'POST'
             });
             newForm.append(jQuery('<input>', {
                 'name': '_token',
@@ -1142,9 +1142,8 @@ $(function() {
                 'value': method,
                 'type': 'hidden'
             }));
-            newForm.submit();
-            
-            e.preventDefault();
+            $(document.body).append(newForm);
+            newForm.submit();            
         }
     });
     
