@@ -495,11 +495,13 @@ class MailList extends Model
 
         return $query->count();
     }
-
+    
     /**
-     * Open count.
+     * Get list click logs.
+     *
+     * @return mixed
      */
-    public function clickCount()
+    public function clickLogs()
     {
         $query = ClickLog::join('tracking_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
             ->whereIn('tracking_logs.subscriber_id', function ($query) {
@@ -507,6 +509,16 @@ class MailList extends Model
                     ->from('subscribers')
                     ->where('subscribers.mail_list_id', '=', $this->id);
             });
+            
+        return $query;
+    }
+
+    /**
+     * Open count.
+     */
+    public function clickCount()
+    {
+        $query = $this->clickLogs();
 
         return $query->distinct('url')->count('url');
     }
@@ -575,11 +587,24 @@ class MailList extends Model
      */
     public function clickRate()
     {
-        if ($this->urlCount() == 0) {
+        $open_count = $this->openCount();
+        if ($open_count == 0) {
             return 0;
         }
         
-        return round(($this->clickCount() / $this->urlCount()) * 100, 0);
+        return round(($this->clickedEmailsCount() / $open_count) * 100, 0);
+    }
+    
+    /**
+     * Count unique clicked opened emails.
+     *
+     * @return number
+     */
+    public function clickedEmailsCount()
+    {
+        $query = $this->clickLogs();
+
+        return $query->distinct('subscriber_id')->count('subscriber_id');
     }
 
     /**
