@@ -1326,4 +1326,5 @@ return [
     'remote_job_url' => 'Remote job URL',
     're_generate_remote_job_url' => 'Re-generate URL',
     'remote_job_type_desc' => 'Remote job desc',
+    'remote_job_guide' => 'OR you can configure your remote cronjob make a POST request to the following URL',
 ];

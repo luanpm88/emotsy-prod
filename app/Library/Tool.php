@@ -592,12 +592,6 @@ class Tool
             ];
         }
         
-        $options[] = [
-            'text' => trans('messages.remote_job'),
-            'description' => trans('messages.remote_job_type_desc'),
-            'value' => 'remote'
-        ];
-        
         return $options;
     }
     
@@ -646,7 +640,7 @@ class Tool
         $rules = [];
         
         // Current path
-        $queue_driver = \Acelle\Model\Setting::get('queue_driver');
+        $queue_driver = config('queue.default');
         $php_bin_path = empty($paths) ? 'manual' : $paths[0];
         $php_bin_path_value = empty($paths) ? '' : $paths[0];
         
@@ -704,18 +698,6 @@ class Tool
             // Update .env
             if(in_array($queue_driver, ['database', 'async']) && config('queue.default') != $queue_driver) {
                 \Acelle\Model\Setting::setEnv('QUEUE_DRIVER', $queue_driver);                
-            }
-            
-            // Save setting
-            \Acelle\Model\Setting::set('queue_driver', $queue_driver);
-            
-            // If type == remote
-            if($request->queue_driver == 'remote') {                
-                if(!empty($request->re_generate_remote_job_url)) {
-                    $remote_job_token = str_random(60);
-                    \Acelle\Model\Setting::set('remote_job_token', $remote_job_token);
-                }
-                return "done";
             }
             
             if($request->queue_driver == 'async') {

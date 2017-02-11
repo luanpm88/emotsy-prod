@@ -240,12 +240,6 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
-            'queue_driver' => [
-                'cat' => 'cronjob',
-                'value' => 'database',
-                'type' => 'text',
-                'not_required' => true,
-            ],
             'php_bin_path' => [
                 'cat' => 'cronjob',
                 'value' => '',

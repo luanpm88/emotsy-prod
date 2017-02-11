@@ -348,6 +348,14 @@ class InstallController extends Controller
             return redirect()->action('InstallController@database');
         }
         
+        // Re-generate remote job url
+        if($request->re_generate_remote_job_url) {
+            $remote_job_token = str_random(60);
+            \Acelle\Model\Setting::set('remote_job_token', $remote_job_token);
+            echo action('Controller@remoteJob', ['remote_job_token' => $remote_job_token]);
+            return;
+        }
+        
         $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);        
         if($respone == 'done' || $respone == 'remote') {
             return redirect()->action('InstallController@finishing');
