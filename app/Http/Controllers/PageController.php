@@ -141,28 +141,29 @@ class PageController extends Controller
 
         // Create subscriber
         if ($request->isMethod('post')) {
-            $subscriber = \Acelle\Model\Subscriber::where("email", "=", strtolower($request->EMAIL))->first();
+            $subscriber = \Acelle\Model\Subscriber::where("email", "=", strtolower($request->EMAIL))
+                ->where("mail_list_id", "=", $list->id)->first();
             if(!is_object($subscriber)) {
                 $subscriber = new \Acelle\Model\Subscriber($request->all());
-                $subscriber->mail_list_id = $list->id;
+                $subscriber->mail_list_id = $list->id;                
             }
             
-            $subscriber->status = 'unconfirmed';
-            $subscriber->from = 'web';
-
             // Validation
             $this->validate($request, $subscriber->getRules());
-
+            
             $subscriber->email = $request->EMAIL;
-            $subscriber->ip = $request->ip();
+            $subscriber->ip = $request->ip();            
+            $subscriber->from = 'web';
+            $subscriber->status = 'unconfirmed';
+            
             $subscriber->save();
             // Update field
             $subscriber->updateFields($request->all());
             
             if($list->subscribe_confirmation) {
                 // SEND subscription confirmation email
-                $list->sendSubscriptionConfirmationEmail($subscriber);                
-    
+                $list->sendSubscriptionConfirmationEmail($subscriber);
+                
                 return redirect()->action('PageController@signUpThankyouPage', $list->uid);
             } else {
                 // change status to subscribed
