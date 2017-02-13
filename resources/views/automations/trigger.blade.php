@@ -113,7 +113,7 @@
                     $(document).ready(function() {
                         // Pick a day from now
                         $('.pickadate_from_now').pickadate({
-                            format: LANG_DATE_FORMAT
+                            format: 'yyyy-mm-dd'
                         });
 						
 						// custom criteria delay type retricted
