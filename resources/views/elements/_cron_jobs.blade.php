@@ -59,13 +59,13 @@
         <label class="text-bold">{!! trans('messages.cron_jobs_guide') !!} </label>
         <pre style="font-size: 16px;background:#f5f5f5">* * * * * <span class="current_path_value">{!! $php_bin_path_value !!}</span> -q {{ base_path() }}/artisan schedule:run 2&gt;&amp;1    </pre>
         
-        <hr>
+        <!--<hr>
         <label class="text-bold">{!! trans('messages.remote_job_guide') !!} </label>
         <div class="form-group mb-10">
             <pre class="remote-job-url" style="font-size: 16px;background:#f5f5f5">{{ action('Controller@remoteJob', ['remote_job_token' => \Acelle\Model\Setting::get('remote_job_token')]) }}</pre>
         </div>
         <a class="btn btn-default re_generate_remote_job_url">
-            <i class="icon-reload-alt"></i> {!! trans('messages.re_generate_remote_job_url') !!}</a>
+            <i class="icon-reload-alt"></i> {!! trans('messages.re_generate_remote_job_url') !!}</a>-->
     @endif
 </div>
     
