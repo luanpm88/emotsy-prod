@@ -174,6 +174,12 @@ class Setting extends Model
                 'type' => 'checkbox',
                 'options' => ['no','yes'],
             ],
+            'embedded_form_recaptcha' => [
+                'cat' => 'general',
+                'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no','yes'],
+            ],
             'sending_campaigns_at_once' => [
                 'cat' => 'sending',
                 'value' => '10',
@@ -237,12 +243,6 @@ class Setting extends Model
             'url_update_profile' => [
                 'cat' => 'url',
                 'value' => '',
-                'type' => 'text',
-                'not_required' => true,
-            ],
-            'queue_driver' => [
-                'cat' => 'cronjob',
-                'value' => 'database',
                 'type' => 'text',
                 'not_required' => true,
             ],

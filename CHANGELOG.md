@@ -1,3 +1,14 @@
+2.2.0-p10 / 2017-02-15
+====================
+
+ * Fixed: suppress verbose error message
+ * Fixed: do not fork new processes if it is not really needed
+ * Fixed: file manager upload limit
+ * Fixed: issue with plain text campaign when working with SendGrid
+ * Fixed: prevent campaign from being queued more than one time 
+ * Fixed: template selection issue on old Firefox browsers
+ * Fixed: click-to-open rate not showing up correctly
+
 2.2.0-p9 / 2017-02-10
 =====================
 

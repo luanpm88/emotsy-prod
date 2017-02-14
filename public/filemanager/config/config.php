@@ -56,7 +56,7 @@ class Uidd
     return [
 				"user_uid" => $user_uid,
 				"max_size_upload_total" => $app['auth']->user()->getOption("frontend", "max_size_upload_total"),
-				"max_file_size_upload" => $user_uid,
+				"max_file_size_upload" => $app['auth']->user()->getOption("frontend", "max_file_size_upload"),
 		];
   }
 }

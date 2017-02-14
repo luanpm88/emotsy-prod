@@ -1186,4 +1186,22 @@ $(function() {
         }
     });
     $('.pickadate-control').trigger('change');
+    
+    // Check all checkboxes group
+    $(document).on('click', '.re_generate_remote_job_url', function(e) {
+        e.preventDefault();
+        
+        $.ajax({
+            method: 'POST',
+            url: '',
+            data: {
+                re_generate_remote_job_url: true,
+                _token: CSRF_TOKEN
+            }
+        })
+        .done(function(msg) {
+            $('.remote-job-url').html(msg);
+        });
+    });
+    
 });

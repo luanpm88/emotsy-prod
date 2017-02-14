@@ -59,7 +59,7 @@ Route::get('/demo', 'Controller@demo');
 Route::get('/autologin/{api_token}', 'Controller@autoLogin');
 Route::get('/reload/cache', 'Controller@reloadCache');
 Route::get('/migrate/run', 'Controller@runMigration');
-Route::get('/remote-job/{remote_job_token}', 'Controller@remoteJob');
+Route::post('/remote-job/{remote_job_token}', 'Controller@remoteJob');
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('/', 'HomeController@index');
