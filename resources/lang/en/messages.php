@@ -1327,4 +1327,6 @@ return [
     're_generate_remote_job_url' => 'Re-generate URL',
     'remote_job_type_desc' => 'Remote job desc',
     'remote_job_guide' => 'OR you can configure your remote cronjob make a POST request to the following URL',
+    'embedded_form_recaptcha' => 'Embedded form captcha',
+    'setting.embedded_form_recaptcha.help' => 'Enable acptcha for embedded form to block spammers and bots from accessing the webapp.',
 ];
