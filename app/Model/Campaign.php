@@ -216,6 +216,10 @@ class Campaign extends Model
      */
     public function getListsSegments()
     {
+        if($this->isAuto()) {
+            return $this->autoEvent->automation->getListsSegments();
+        }
+        
         $lists_segments = $this->listsSegments;
         
         if($lists_segments->isEmpty()) {
@@ -236,6 +240,10 @@ class Campaign extends Model
      */
     public function getListsSegmentsGroups()
     {
+        if($this->isAuto()) {
+            return $this->autoEvent->automation->getListsSegmentsGroups();
+        }
+        
         $lists_segments = $this->getListsSegments();
         $groups = [];
         
