@@ -160,6 +160,9 @@ class SubscriberController extends Controller
         $subscriber = [
             'uid' => $item->uid,
             'email' => $item->email,
+            'status' => $item->status,
+            'source' => $item->from,
+            'ip_address' => $item->ip
         ];
 
         foreach ($list->fields as $field) {
