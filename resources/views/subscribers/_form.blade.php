@@ -23,12 +23,6 @@
 						@elseif ($field->type == "datetime")
 							@include('helpers.form_control', ['multiple' => true, 'type' => 'datetime', 'name' => $field->tag . "[]", 'label' => $field->label, 'value' => (isset($values[$field->tag]) ? $values[$field->tag] : $field->default_value), 'options' => $field->getSelectOptions(), 'rules' => $list->getFieldRules()])
 						@endif
-					@elseif (isset($email_readonly))
-						<div class="form-group main-email-group">
-							<label>{{ $field->label }}</label>
-							<input type="hidden" name="EMAIL" value="{{ (isset($values[$field->tag]) ? $values[$field->tag] : $field->default_value) }}" />
-							<div class="text-bold">{{ (isset($values[$field->tag]) ? $values[$field->tag] : $field->default_value) }}</div>
-						</div>
 					@else
 						@include('helpers.form_control', ['type' => $field->type, 'name' => $field->tag, 'label' => $field->label, 'value' => (isset($values[$field->tag]) ? $values[$field->tag] : $field->default_value), 'rules' => $list->getFieldRules()])
 					@endif
