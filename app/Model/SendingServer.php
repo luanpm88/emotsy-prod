@@ -123,7 +123,7 @@ class SendingServer extends Model
         while (true) {
             // check if there is at least one sending server available
             if (empty($serverSelection)) {
-                throw new \Exception('No delivery servers available');
+                throw new \Exception('No sending servers available or sending servers exceed sending limit');
             }
             
             $id = (int) RouletteWheel::generate($serverSelection);
