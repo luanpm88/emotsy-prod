@@ -59,7 +59,7 @@
 							@if (Auth::user()->can("read", new Acelle\Model\CustomerGroup()))
 								<li rel0="CustomerGroupController">
 									<a href="{{ action('Admin\CustomerGroupController@index') }}">
-										<i class="icon-users4"></i> {{ trans('messages.groups') }}
+										<i class="icon-users4"></i> {{ trans('messages.customer_groups') }}
 									</a>
 								</li>
 							@endif
@@ -128,7 +128,7 @@
 							@if (Auth::user()->admin->getPermission("admin_group_read") != 'no')
 								<li rel0="AdminGroupController">
 									<a href="{{ action('Admin\AdminGroupController@index') }}">
-										<i class="icon-users4"></i> {{ trans('messages.groups') }}
+										<i class="icon-users4"></i> {{ trans('messages.admin_groups') }}
 									</a>
 								</li>
 							@endif
@@ -312,10 +312,6 @@
 					<ul class="dropdown-menu dropdown-menu-right">
 						@can("customer_access", Auth::user())
 							<li><a href="{{ action("HomeController@index") }}"><i class="icon-exit2"></i> {{ trans('messages.customer_view') }}</a></li>
-							<li class="divider"></li>
-						@endif
-						@can("reseller_access", Auth::user())
-							<li><a href="{{ action("Reseller\HomeController@index") }}"><i class="icon-exit2"></i> {{ trans('messages.reseller_view') }}</a></li>
 							<li class="divider"></li>
 						@endif
 						<li><a href="{{ action("Admin\AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.account') }}</a></li>

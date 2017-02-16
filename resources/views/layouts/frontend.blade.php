@@ -90,7 +90,7 @@
 				</li>-->
 				
 				@include('layouts._top_activity_log')
-
+				
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						<img src="{{ action('CustomerController@avatar', Auth::user()->customer->uid) }}" alt="">
@@ -99,10 +99,6 @@
 					</a>
 
 					<ul class="dropdown-menu dropdown-menu-right">
-						@can("reseller_access", Auth::user())
-							<li><a href="{{ action("Reseller\HomeController@index") }}"><i class="icon-exit2"></i> {{ trans('messages.reseller_view') }}</a></li>
-							<li class="divider"></li>
-						@endif
 						@can("admin_access", Auth::user())
 							<li><a href="{{ action("Admin\HomeController@index") }}"><i class="icon-enter2"></i> {{ trans('messages.admin_view') }}</a></li>
 							<li class="divider"></li>

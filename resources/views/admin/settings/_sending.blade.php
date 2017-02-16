@@ -1,4 +1,4 @@
-                        @if (Auth::user()->getOption("backend", "setting_sending") == 'yes')
+                        @if (Auth::user()->admin->getPermission("setting_sending") == 'yes')
 							<div class="tab-pane active" id="top-sending">
 								<div class="row">
 									<?php $count = 0; ?>

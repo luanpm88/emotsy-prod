@@ -1,4 +1,4 @@
-                        @if (Auth::user()->getOption("backend", "setting_general") == 'yes')
+                        @if (Auth::user()->admin->getPermission("setting_general") == 'yes')
 							<div class="tab-pane active" id="top-smtp">
 								<div class="row">
 									<div class="col-md-6">

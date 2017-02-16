@@ -13,7 +13,13 @@
 											</h5>
 											<span class="text-muted kq_search">{{ $item->user->email }}</span>
 											<br />
-											{{ $item->adminGroup->name }}
+											@if (Auth::user()->admin->getPermission("admin_group_update") != 'no')
+												<a class="kq_search" href="{{ action('Admin\AdminGroupController@edit', $item->adminGroup->id) }}">
+													{{ $item->adminGroup->name }}
+												</a>
+											@else
+												{{ $item->adminGroup->name }}
+											@endif
 											<br />
 											<span class="text-muted2">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>

@@ -1,4 +1,4 @@
-                        @if (Auth::user()->getOption("backend", "setting_general") == 'yes')
+                        @if (Auth::user()->admin->getPermission("setting_general") == 'yes')
 							<div class="tab-pane active" id="top-general">
 								<div class="row">
 									<?php $count = 0; ?>
