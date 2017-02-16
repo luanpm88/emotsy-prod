@@ -16,28 +16,28 @@
 		<div class="col-md-7">
 			<div class="row">
 				@if (
-					Auth::user()->can("read", new Acelle\Model\Reseller()) ||
-					Auth::user()->can("read", new Acelle\Model\ResellerGroup())
+					Auth::user()->can("read", new Acelle\Model\Customer()) ||
+					Auth::user()->can("read", new Acelle\Model\CustomerGroup())
 				)
 					<div class="col-md-6">
-						<h2 class="">{{ trans('messages.reseller') }}</h2>
+						<h2 class="">{{ trans('messages.customer') }}</h2>
 						@if (Auth::user()->can("read", new Acelle\Model\Reseller()))
-							<a class="dashboard-box" href="{{ action('Admin\ResellerController@index') }}">
-								<span class="badge badge-info bg-teal-800">{{ Auth::user()->admin->resellers->count() }}</span>
+							<a class="dashboard-box" href="{{ action('Admin\CustomerController@index') }}">
+								<span class="badge badge-info bg-teal-800">22</span>
 								<div class="dashboard-icon">
 									<i class="icon-users2"></i>
 								</div>
-								<h4>{{ trans('messages.resellers') }}</h4>
+								<h4>{{ trans('messages.customers') }}</h4>
 							</a>
 						@endif
-						@if (Auth::user()->can("read", new Acelle\Model\ResellerGroup()))
-							<a class="dashboard-box" href="{{ action('Admin\ResellerGroupController@index') }}">
+						@if (Auth::user()->can("read", new Acelle\Model\CustomerGroup()))
+							<a class="dashboard-box" href="{{ action('Admin\CustomerGroupController@index') }}">
 								<div class="dashboard-icon">
 									<i class="icon-make-group"></i>
 								</div>
-								<h4>{{ trans('messages.groups') }}</h4>
+								<h4>{{ trans('messages.customer_groups') }}</h4>
 							</a>
-						@endif						
+						@endif
 						<br style="clear:both" />
 					</div>
 				@endif
@@ -61,7 +61,7 @@
 								<div class="dashboard-icon">
 									<i class="icon-make-group"></i>
 								</div>
-								<h4>{{ trans('messages.groups') }}</h4>
+								<h4>{{ trans('messages.admin_groups') }}</h4>
 							</a>
 						@endif
 						
@@ -78,12 +78,12 @@
 				)
 					<div class="col-md-12">
 						<h2 class="">{{ trans('messages.plan') }}</h2>
-						@if (Auth::user()->can("read", new Acelle\Model\CustomerGroup()))
-							<a class="dashboard-box" href="{{ action('Admin\CustomerGroupController@index') }}">
+						@if (Auth::user()->can("read", new Acelle\Model\Plan()))
+							<a class="dashboard-box" href="{{ action('Admin\PlanController@index') }}">
 								<div class="dashboard-icon">
-									<i class="icon-make-group"></i>
+									<i class="icon-quill4"></i>
 								</div>
-								<h4>{{ trans('messages.customer_groups') }}</h4>
+								<h4>{{ trans('messages.subscriptions') }}</h4>
 							</a>
 						@endif
 						@if (Auth::user()->can("read", new Acelle\Model\Plan()))

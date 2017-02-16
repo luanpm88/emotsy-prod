@@ -253,11 +253,8 @@ class Customer extends Model
     public static function filter($request)
     {
         $query = self::select('customers.*')
-                        ->leftJoin('customer_groups', 'customer_groups.id', '=', 'customers.customer_group_id');
-        
-        if ($request->user()->reseller->getPermission('customer_read') == 'own') {
-            $query = $query->where('customers.reseller_id', '=', $request->user()->reseller->id);
-        }
+            ->leftJoin('users', 'users.id', '=', 'customers.user_id')
+            ->leftJoin('customer_groups', 'customer_groups.id', '=', 'customers.customer_group_id');
         
         // Keyword
         if (!empty(trim($request->keyword))) {
@@ -265,7 +262,8 @@ class Customer extends Model
                 $query = $query->where(function ($q) use ($keyword) {
                     $q->orwhere('customers.first_name', 'like', '%'.$keyword.'%')
                         ->orWhere('customer_groups.name', 'like', '%'.$keyword.'%')
-                        ->orWhere('customers.last_name', 'like', '%'.$keyword.'%');
+                        ->orWhere('customers.last_name', 'like', '%'.$keyword.'%')
+                        ->orWhere('users.email', 'like', '%'.$keyword.'%');
                 });
             }
         }

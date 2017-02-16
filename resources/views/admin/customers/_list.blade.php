@@ -13,7 +13,9 @@
 											</h5>
 											<span class="text-muted kq_search">{{ $item->user->email }}</span>
 											<br />
-											{{ $item->customerGroup->name }}
+											<a class="kq_search" href="{{ action('Admin\CustomerGroupController@edit', $item->customerGroup->id) }}">
+												{{ $item->customerGroup->name }}
+											</a>
 											<br />
 											<span class="text-muted2">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
@@ -24,11 +26,11 @@
 													<div class="progress-bar progress-bar-info" style="width: {{ $item->getSendingQuotaUsagePercentage() }}%">
 													</div>
 												</div>
-												<span class="text-muted"><strong>{{ $item->customer->getSendingQuotaUsage() }}/{{ ($item->customer->getSendingQuota() == -1) ? '∞' : $item->customer->getSendingQuota() }}</strong>
+												<span class="text-muted"><strong>{{ $item->getSendingQuotaUsage() }}/{{ ($item->getSendingQuota() == -1) ? '∞' : $item->getSendingQuota() }}</strong>
 													@if(($item->getSendingQuota() != -1))
 														{{ trans('messages.display_sending_quota', [
-															'number' => $item->customer->getOption('sending_quota_time'),
-															'period' => trans('messages.' . $item->customer->getOption('sending_quota_time_unit'))
+															'number' => $item->getOption('sending_quota_time'),
+															'period' => trans('messages.' . $item->getOption('sending_quota_time_unit'))
 														]) }}
 													@endif
 												</span>

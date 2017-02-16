@@ -37,7 +37,9 @@
 					</a>
 				</li>
 				
-				@if (Auth::user()->can("read", new Acelle\Model\CustomerGroup()))
+				@if (Auth::user()->can("read", new Acelle\Model\CustomerGroup())
+					|| Auth::user()->can("read", new Acelle\Model\Customer())
+				)
 					<li class="dropdown language-switch"
 						rel0="CustomerGroupController"
 						rel1="CustomerController"
@@ -47,39 +49,55 @@
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
-							<li rel0="CustomerGroupController">
-								<a href="{{ action('Admin\CustomerGroupController@index') }}">
-									<i class="icon-users4"></i> {{ trans('messages.groups') }}
-								</a>
-							</li>
+							@if (Auth::user()->can("read", new Acelle\Model\Customer()))
+								<li rel0="CustomerController">
+									<a href="{{ action('Admin\CustomerController@index') }}">
+										<i class="icon-users"></i> {{ trans('messages.customers') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->can("read", new Acelle\Model\CustomerGroup()))
+								<li rel0="CustomerGroupController">
+									<a href="{{ action('Admin\CustomerGroupController@index') }}">
+										<i class="icon-users4"></i> {{ trans('messages.groups') }}
+									</a>
+								</li>
+							@endif
 						</ul>
 					</li>
 				@endif
 				
 				@if (
-					Auth::user()->can("read", new Acelle\Model\Reseller())
-					|| Auth::user()->can("read", new Acelle\Model\ResellerGroup())
+					Auth::user()->can("read", new Acelle\Model\Plan())
+					|| Auth::user()->can("read", new Acelle\Model\Currency())
 				)
 					<li class="dropdown language-switch"
 						rel0="ResellerController"
 						rel1="ResellerGroupController"
 					>
 						<a class="dropdown-toggle" data-toggle="dropdown">
-							<i class="icon-users2"></i> {{ trans('messages.reseller') }}
+							<i class="icon-credit-card2"></i> {{ trans('messages.subscription') }}
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
-							@if (Auth::user()->can("read", new Acelle\Model\Reseller()))
+							@if (Auth::user()->can("read", new Acelle\Model\Plan()))
 								<li rel0="ResellerController">
-									<a href="{{ action('Admin\ResellerController@index') }}">
-										<i class="icon-users"></i> {{ trans('messages.resellers') }}
+									<a href="{{ action('Admin\PlanController@index') }}">
+										<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
 									</a>
 								</li>
 							@endif
-							@if (Auth::user()->can("read", new Acelle\Model\ResellerGroup()))
+							@if (Auth::user()->can("read", new Acelle\Model\Plan()))
+								<li rel0="ResellerController">
+									<a href="{{ action('Admin\PlanController@index') }}">
+										<i class="icon-clipboard2"></i> {{ trans('messages.plans') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->can("read", new Acelle\Model\Currency()))
 								<li rel0="ResellerGroupController">
-									<a href="{{ action('Admin\ResellerGroupController@index') }}">
-										<i class="icon-users4"></i> {{ trans('messages.groups') }}
+									<a href="{{ action('Admin\CurrencyController@index') }}">
+										<i class="icon-coins"></i> {{ trans('messages.currencies') }}
 									</a>
 								</li>
 							@endif
