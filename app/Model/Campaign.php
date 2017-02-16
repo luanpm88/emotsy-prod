@@ -659,12 +659,13 @@ class Campaign extends Model
                 ->select('subscribers.*')
                 ->get();
         */
-        
+
         $subscribers = $this->subscribers()
                 ->whereRaw(sprintf('subscribers.id NOT IN (SELECT subscriber_id FROM %s WHERE campaign_id = %s)', table('tracking_logs'), $this->id))
                 ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
                 ->select('subscribers.*')
                 ->get();
+
         // the array_unique_by functions out-perform the Collection::unique of Laravel!!!
         $unique = array_unique_by($subscribers, function ($r) {
             return $r['email'];
