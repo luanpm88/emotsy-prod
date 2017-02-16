@@ -430,6 +430,7 @@ class Campaign extends Model
                 MailLog::info('Start child process '.($i + 1).' of '.sizeof($chunks).' (forked from '.$parentPid.')');
                 sleep(self::WORKER_DELAY);
                 $this->run($chunks[$i]);
+                sleep(30);
                 exit($i + 1);
                 // end child process
             } else {
@@ -442,7 +443,7 @@ class Campaign extends Model
             $pid = pcntl_wait($status);
             if (pcntl_wifexited($status)) {
                 $code = pcntl_wexitstatus($status);
-                MailLog::info("Child $pid finished, status code: $code");
+                MailLog::info("Child process $pid finished, status code: $code");
             } else {
                 MailLog::warning("Child process $pid did not normally exit");
                 $this->error("Child process $pid did not normally exit");
