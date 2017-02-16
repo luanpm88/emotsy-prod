@@ -648,14 +648,25 @@ class Campaign extends Model
      */
     public function getPendingSubscribers()
     {
+        /* *
+         * 
+         * Using LEFT JOIN is much slower than NOT IN
+         * 
         $subscribers = $this->subscribers()
                 ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = '.$this->id.') log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
                 ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
                 ->select('subscribers.*')
                 ->get();
-
-        $unique = $subscribers->unique(function ($r) {
+        */
+        
+        $subscribers = $this->subscribers()
+                ->whereRaw(sprintf('subscribers.id NOT IN (SELECT subscriber_id FROM %s WHERE campaign_id = %s)', table('tracking_logs'), $this->id))
+                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
+                ->select('subscribers.*')
+                ->get();
+        // the array_unique_by functions out-perform the Collection::unique of Laravel!!!
+        $unique = array_unique_by($subscribers, function ($r) {
             return $r['email'];
         });
 
@@ -1157,7 +1168,7 @@ class Campaign extends Model
             $query = $query->where('tracking_logs.id', "!=", "NULL");
         }
 
-        return $query->distinct();
+        return $query;
     }
 
     /**
