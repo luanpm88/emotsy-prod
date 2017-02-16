@@ -18,6 +18,9 @@ class CreateLogsTable extends Migration
             $table->text('data');
 
             $table->timestamps();
+            
+            // foreign
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
