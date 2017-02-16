@@ -592,27 +592,24 @@ class MailListController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function embeddedFormSubscribe(Request $request)
-    {   
-        // Check recaptch
-        $client = new \GuzzleHttp\Client();
-        $res = $client->post('https://www.google.com/recaptcha/api/siteverify', ['form_params' => [
-            'secret' => "6LfyISoTAAAAAC0hJ916unwi0m_B0p7fAvCRK4Kp",
-            'remoteip' => $request->ip(),
-            'response' => $request->all()["g-recaptcha-response"]
-        ]]);
-        $success = json_decode($res->getBody(), true)["success"];
-        
-        if (!$success) {
-            $url = $request->session()->pull('form_url');
-            if (strpos($url, '?') !== false) {
-                $url = $url . "&errors[captcha]=false";
-            } else {
-                $url = $url . "?errors[captcha]=false";
-            }
-            return redirect()->away($url);
-        }
+    {
+        if (\Acelle\Model\Setting::get('embedded_form_recaptcha') == 'yes') {
+            $success = \Acelle\Library\Tool::checkReCaptcha($request);
+        } else {
+            $success = true;
+        }        
         
         $list = \Acelle\Model\MailList::findByUid($request->uid);
+        
+        if (!$success) {            
+            $url = $request->session()->pull('form_url');
+            $errs = [trans("messages.invalid_captcha")];
+            return view('lists.embedded_form_captcha_invalid', [
+                'errors' => $errs,
+                'list' => $list,
+                'back_link' => $url,
+            ]);
+        }
 
         // Create subscriber
         if ($request->isMethod('post')) {
@@ -629,7 +626,7 @@ class MailListController extends Controller
                 // $validator->errors()
                 $errs = [];
                 foreach($validator->errors()->toArray() as $key => $error) {
-                    $errs[] = "errors[" . $key . "]=" . $error[0];
+                    $errs[] = $key . ": " . $error[0];
                 }
                 
                 if (strpos($url, '?') !== false) {
@@ -638,7 +635,12 @@ class MailListController extends Controller
                     $url = $url . "?" . implode('&', $errs);
                 }
 
-                return redirect()->away($url);
+                // return redirect()->away($url);
+                return view('lists.embedded_form_errors', [
+                    'errors' => $errs,
+                    'list' => $list,
+                    'back_link' => $url,
+                ]);
             }
 
             $subscriber->email = $request->EMAIL;

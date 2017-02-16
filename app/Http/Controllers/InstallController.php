@@ -51,10 +51,9 @@ class InstallController extends Controller
 
     // Starting installation
     public function starting(Request $request)
-    {
+    {        
         $next = action('InstallController@systemCompatibility');
-        \Artisan::call('config:cache');
-        sleep(5);
+        artisan_config_cache();
         return redirect()->away($next);
     }
 
@@ -85,8 +84,7 @@ class InstallController extends Controller
             ]);
         } catch (\Exception $e) {
             $next_page = action('InstallController@systemCompatibility');
-            \Artisan::call('config:cache');
-            sleep(5);
+            artisan_config_cache();
             return redirect()->away($next_page);
         }
     }
@@ -211,9 +209,6 @@ class InstallController extends Controller
             // write config file
             $this->writeEnv($request);
             
-            // wait for config:cache
-            sleep(5);
-            
             return redirect()->away($next_page);
         }
 
@@ -239,48 +234,54 @@ class InstallController extends Controller
 
         $database = $request->session()->get('database');
         $site_info = $request->session()->get('site_info');
+        
+        // connect mysql
+        $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
+        
+        // Check if database is not empty
+        $rules = [];
+        $tables_exist = false;
+        $prefix_check = empty($database['tables_prefix']) ? '' : "  AND table_name LIKE '".$database['tables_prefix']."%'";
+        $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database['database_name']."'");
+        $result = $result->fetch_object();
+        if ($result->count > 0) {
+            $tables_exist = true;
+        }
 
         if ($request->action == 'import') {
             $request->session()->forget('database_imported');
 
-            // connect mysql
-            $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
-
-            //// Drop all old table
-            //$done = true;
-            //while ($done) {
-            //    try {
-            //        $delete_all_tables_query = "SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' )
-            //                                    AS statement FROM information_schema.tables
-            //                                    WHERE table_schema = '".$database["database_name"]."' AND table_name LIKE '".$database["tables_prefix"]."%' limit 1;";
-            //        $result = $mysqli->query($delete_all_tables_query);
-            //        $result = $result->fetch_object();
-
-            //        if (isset($result->statement)) {
-            //            $mysqli->query($result->statement);
-            //            continue;
-            //        }
-            //    } catch (\Exception $e) {
-            //        $rules["mysql_connection"] = "required";
-            //    }
-
-            //    $done = false;
-            //}
-
-            // Check if database is not empty
-            $rules = [];
-            $prefix_check = empty($database['tables_prefix']) ? '' : "  AND table_name LIKE '".$database['tables_prefix']."%'";
-            $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database['database_name']."'".$prefix_check);
+            $this->validate($request, $rules);
+            
+            // Drop all old table
+            try {
+                $delete_all_tables_query = "SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' )
+                                            AS statement FROM information_schema.tables
+                                            WHERE table_schema = '".$database['database_name']."'";
+                $result = $mysqli->query($delete_all_tables_query);
+                $result = $result->fetch_object();
+                if (isset($result->statement)) {
+                    $mysqli->query("SET FOREIGN_KEY_CHECKS = 0;");
+                    $mysqli->query($result->statement);
+                    $mysqli->query("SET FOREIGN_KEY_CHECKS = 1;");
+                }
+            } catch (\Exception $e) {
+                $rules["mysql_connection"] = "required";
+            }
+            
+            // Re-check database empty for sure
+            $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database['database_name']."'");
             $result = $result->fetch_object();
             if ($result->count > 0) {
-                $rules['database_not_empty'] = 'required';
+                $rules['can_not_empty_database'] = 'required';
             }
             $this->validate($request, $rules);
             
+            $request->session()->set('database_imported', true);
             $next_page = action('InstallController@cronJobs');
 
             // Run migrate
-            \Artisan::call('migrate', ["--force"=> true]);
+            artisan_migrate();
 
             // import database with prefix
             $this->importDatabase($database);
@@ -328,8 +329,6 @@ class InstallController extends Controller
             $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
                             ('site_description', '".$site_info['site_description']."', '".$date."', '".$date."');");
 
-            $request->session()->set('database_imported', true);
-
             $request->session()->flash('alert-success', trans('messages.install.database_import.success'));
 
             return redirect()->away($next_page);
@@ -339,6 +338,7 @@ class InstallController extends Controller
             'database' => $database,
             'step' => $this->step($request),
             'current' => 3,
+            'tables_exist' => $tables_exist,
         ]);
     }
 
@@ -347,13 +347,28 @@ class InstallController extends Controller
         if ($this->step($request) < 5) {
             return redirect()->action('InstallController@database');
         }
-
-        $request->session()->set('cron_jobs', true);
-
-        return view('install.cron_jobs', [
-            'step' => $this->step($request),
-            'current' => 5,
-        ]);
+        
+        // Re-generate remote job url
+        if($request->re_generate_remote_job_url) {
+            $remote_job_token = str_random(60);
+            \Acelle\Model\Setting::set('remote_job_token', $remote_job_token);
+            echo action('Controller@remoteJob', ['remote_job_token' => $remote_job_token]);
+            return;
+        }
+        
+        $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);        
+        if($respone == 'done' || $respone == 'remote') {
+            return redirect()->action('InstallController@finishing');
+        }
+        
+        return view('install.cron_jobs', $respone);
+    }
+    
+    public function finishing(Request $request)
+    {
+        $next_page = action('InstallController@finish');
+        artisan_config_cache();
+        return redirect()->away($next_page);
     }
 
     public function finish(Request $request)
@@ -361,7 +376,7 @@ class InstallController extends Controller
         if ($this->step($request) < 6) {
             return redirect()->action('InstallController@database');
         }
-
+        
         $request->session()->set('install_finish', true);
         
         $file_path = storage_path('installed');
@@ -453,7 +468,7 @@ class InstallController extends Controller
             ],
             [
                 'type' => 'permission',
-                'name' => 'Storage/app/',
+                'name' => base_path('storage/app'),
                 'check' => file_exists(base_path('/storage/app')) &&
                     is_dir(base_path('/storage/app')) &&
                     (is_writable(base_path('/storage/app'))),
@@ -461,25 +476,25 @@ class InstallController extends Controller
             ],
             [
                 'type' => 'permission',
-                'name' => 'Storage/framework/',
+                'name' => base_path('storage/framework'),
                 'check' => file_exists(base_path('/storage/framework')) && is_dir(base_path('/storage/framework')) && (is_writable(base_path('/storage/framework'))),
                 'note' => 'The directory must be writable by the web server.',
             ],
             [
                 'type' => 'permission',
-                'name' => 'Storage/logs/',
+                'name' => base_path('storage/logs'),
                 'check' => file_exists(base_path('/storage/logs')) && is_dir(base_path('/storage/logs')) && (is_writable(base_path('/storage/logs'))),
                 'note' => 'The directory must be writable by the web server.',
             ],
             [
                 'type' => 'permission',
-                'name' => 'Storage/job/',
+                'name' => base_path('storage/job'),
                 'check' => file_exists(base_path('/storage/job')) && is_dir(base_path('/storage/job')) && (is_writable(base_path('/storage/job'))),
                 'note' => 'The directory must be writable by the web server.',
             ],
             [
                 'type' => 'permission',
-                'name' => 'bootstrap/cache/',
+                'name' => base_path('bootstrap/cache'),
                 'check' => file_exists(base_path('/bootstrap/cache')) && is_dir(base_path('/bootstrap/cache')) && (is_writable(base_path('/bootstrap/cache'))),
                 'note' => 'The directory must be writable by the web server.',
             ],
@@ -592,7 +607,7 @@ MAIL_FROM_NAME="'.(isset($smtp['smtp_from_name']) ? $smtp['smtp_from_name'] : ''
         fclose($env_file);
 
         // Reload .env
-        \Artisan::call('config:cache');
+        artisan_config_cache();
     }
 
     public function importDatabase($database)

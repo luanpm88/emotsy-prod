@@ -21,6 +21,8 @@ Route::group(['middleware' => ['installed']], function () {
     Route::post('install/database', 'InstallController@database');
     Route::get('install/database_import', 'InstallController@databaseImport');
     Route::get('install/cron-jobs', 'InstallController@cronJobs');
+    Route::post('install/cron-jobs', 'InstallController@cronJobs');
+    Route::get('install/finishing', 'InstallController@finishing');
     Route::get('install/finish', 'InstallController@finish');
 });
 
@@ -57,6 +59,7 @@ Route::get('/demo', 'Controller@demo');
 Route::get('/autologin/{api_token}', 'Controller@autoLogin');
 Route::get('/reload/cache', 'Controller@reloadCache');
 Route::get('/migrate/run', 'Controller@runMigration');
+Route::post('/remote-job/{remote_job_token}', 'Controller@remoteJob');
 
 // Customer avatar
 Route::get('assets/images/avatar/customer-{uid?}.jpg', 'CustomerController@avatar');
@@ -384,6 +387,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/settings/mailer', 'SettingController@mailer');
     Route::post('admin/settings/mailer', 'SettingController@mailer');
     Route::get('admin/settings/cronjob', 'SettingController@cronjob');
+    Route::post('admin/settings/cronjob', 'SettingController@cronjob');
     Route::get('admin/settings/urls', 'SettingController@urls');
     Route::get('admin/settings/sending', 'SettingController@sending');
     Route::post('admin/settings/sending', 'SettingController@sending');

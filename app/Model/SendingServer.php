@@ -168,10 +168,12 @@ class SendingServer extends Model
      */
     public function getVerp($recipient)
     {
-        if (empty($this->bounceHandler)) {
-            return $recipient;
+        if (is_object($this->bounceHandler)) {
+            // @todo disable VERP as it is not supported by all mailbox
+            // return str_replace('@', '+'.str_replace('@', '=', $recipient).'@', $this->bounceHandler->username);
+            return $this->bounceHandler->username;
         } else {
-            return str_replace('@', '+'.str_replace('@', '=', $recipient).'@', $this->bounceHandler->username);
+            return null;
         }
     }
 
@@ -651,5 +653,15 @@ class SendingServer extends Model
     public function overQuota()
     {
         return !$this->getQuotaTracker()->check();
+    }
+    
+    /**
+     * Check if sending server supports custom ReturnPath header (used for bounced/feedback handling)
+     *
+     * @return boolean
+     */
+    public function allowCustomReturnPath()
+    {
+        return ( $this->type == 'smtp' || $this->type == 'sendmail' || $this->type == 'php-mail' );
     }
 }

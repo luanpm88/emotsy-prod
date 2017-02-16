@@ -216,6 +216,10 @@ class Campaign extends Model
      */
     public function getListsSegments()
     {
+        if($this->isAuto()) {
+            return $this->autoEvent->automation->getListsSegments();
+        }
+        
         $lists_segments = $this->listsSegments;
         
         if($lists_segments->isEmpty()) {
@@ -236,6 +240,10 @@ class Campaign extends Model
      */
     public function getListsSegmentsGroups()
     {
+        if($this->isAuto()) {
+            return $this->autoEvent->automation->getListsSegmentsGroups();
+        }
+        
         $lists_segments = $this->getListsSegments();
         $groups = [];
         
@@ -278,8 +286,13 @@ class Campaign extends Model
      * 
      */
     public function start($trigger = null, $subscribers = null) {
-        // Reserve: mark the campaign as sending, prevent other processes from sending it again
         try {
+            // make sure the same campaign is not started twice
+            if (!$this->refreshStatus()->isReady()) {
+                throw new \Exception("Campaign ID: {$this->id} is not ready or already started");
+            }
+            
+            // lock the campaign, marked as sending
             $this->sending();
             MailLog::info('Starting campaign `'.$this->name.'`');
 
@@ -287,7 +300,8 @@ class Campaign extends Model
             self::resetMaxExecutionTime();
 
             // Only run multi-process if pcntl is enabled
-            if (extension_loaded('pcntl')) {
+            $processes = (int) $this->user->getOption('frontend', 'max_process');
+            if (extension_loaded('pcntl') && $processes > 1) {
                 $this->runMultiProcesses();
             } else {
                 MailLog::warning('Cannot fork processes');
@@ -299,7 +313,7 @@ class Campaign extends Model
         } catch (\Exception $ex) {
             // Set ERROR status
             $this->error($ex->getMessage());
-            MailLog::error('Campaign failed. '.$ex->getMessage());
+            MailLog::error('Starting campaign failed. '.$ex->getMessage());
         }
     }
 
@@ -320,6 +334,14 @@ class Campaign extends Model
         $this->status = self::STATUS_SENDING;
         $this->delivery_at = \Carbon\Carbon::now();
         $this->save();
+    }
+    
+    /**
+     * Check if the campaign is ready to start
+     */
+    public function isReady()
+    {
+        return $this->status == self::STATUS_READY;
     }
 
     /**
@@ -745,7 +767,9 @@ class Campaign extends Model
         }
 
         // @TODO for AWS, setting returnPath requires verified domain or email address
-        //$message->setReturnPath($server->getVerp($subscriber->email));
+        if ($server->allowCustomReturnPath() && is_object($server->bounceHandler)) {
+            $message->setReturnPath($server->getVerp($subscriber->email));
+        }
         $message->setSubject($this->getSubject($subscriber, $msgId));
         $message->setFrom(array($this->from_email => $this->from_name));
         $message->setTo($subscriber->email);

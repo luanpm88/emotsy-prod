@@ -1,11 +1,38 @@
+2.2.0-p10 / 2017-02-15
+====================
+
+ * Fixed: suppress verbose error message
+ * Fixed: do not fork new processes if it is not really needed
+ * Fixed: file manager upload limit
+ * Fixed: issue with plain text campaign when working with SendGrid
+ * Fixed: prevent campaign from being queued more than one time 
+ * Fixed: template selection issue on old Firefox browsers
+ * Fixed: click-to-open rate not showing up correctly
+
+2.2.0-p9 / 2017-02-10
+=====================
+
+ * Fixed: installation issues with exec on restricted OS
+ * Added: support Re-captcha
+ * Added: include more details in installation error messages
+ * Changed: API - return newly created subscriber's UID in the response
+
+2.2.0-p8 / 2017-02-06
+=====================
+ 
+ * Added: support advanced background job installation wizard
+ * Added: support erasing existing database before initialization
+ * Added: support customizing system's default language
+ * Fixed: issue with auto login by token
+
 2.2.0-p7 / 2017-01-30
-===================
+=====================
 
  * Added: support updating the application configuration without re-installing
  * Added: support sending campaign without using cronjob
  * Fixed: timezone issue while scheduling future campaign
 
-2.2.0-p6 / 2017-01-27
+2.2.0-p6* / 2017-01-27
 ===================
 
  * Added: support sending campaign to multiple lists / segments

@@ -79,6 +79,7 @@ class BounceLog extends Model
         $query = $query->leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
         $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
         $query = $query->leftJoin('customers', 'customers.id', '=', 'tracking_logs.customer_id');
+        $query = $query->where('tracking_logs.id', "!=", NULL);
 
         // Keyword
         if (!empty(trim($request->keyword))) {

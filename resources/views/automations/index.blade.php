@@ -19,6 +19,12 @@
 					<span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.Automations') }}</span>
 				</h1>				
 			</div>
+				
+			@if(config('queue.default') == 'async')
+				<div class="alert alert-warning">
+					{{ trans('messages.automation_not_work_with_async') }}
+				</div>
+			@endif
 
 @endsection
 

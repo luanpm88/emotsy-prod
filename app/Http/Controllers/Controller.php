@@ -14,29 +14,6 @@ class Controller extends BaseController
 
     public function __construct()
     {
-        // Generate info
-        $user = \Auth::user();
-        $default_language = \Acelle\Model\Language::find(\Acelle\Model\Setting::get('default_language'));
-        if(is_object($user) && is_object($user->customer) && is_object($user->customer->language)) {
-            $language_code = $user->customer->language->code;
-        } else if (isset($_COOKIE['last_language_code'])) {
-            $language_code = $_COOKIE['last_language_code'];
-        } else if (is_object($default_language)) {
-            $language_code = $default_language->code;
-        }
-        
-        if(isset($language_code)) {
-            // Set language
-            \App::setLocale($language_code);
-            
-            // In case Carbon dose not support language code
-            try {
-                if(file_exists(base_path("vendor/nesbot/carbon/src/Carbon/Lang/" . $language_code . ".php"))) {
-                    \Carbon\Carbon::setLocale($language_code);
-                }
-            } catch (\Exception $e) {
-            }
-        }
     }
     
     /**
@@ -195,5 +172,19 @@ class Controller extends BaseController
         \Artisan::call('migrate', ['--force' => true]);
         sleep(5);
         echo "migrated!";
+    }
+    
+    /**
+     * Run remote cronjob
+     *
+     * @return boolean
+     */
+    public function remoteJob($remote_job_token)
+    {
+        if(\Acelle\Model\Setting::get('remote_job_token') === $remote_job_token) {
+            // @todo remote cronjob code here...
+        } else {
+            echo trans('messages.invalid_token');
+        }
     }
 }

@@ -25,14 +25,19 @@
 @section('content')
 				<div class="tabbable">
 					
-                    @include("admin.settings._tabs")
-	
-					<div class="tab-content">
+					@include("admin.settings._tabs")
+					
+                    <form action="{{ action('Admin\SettingController@cronjob') }}" method="POST" class="form-validate-jqueryz">
+						{!! csrf_field() !!}
 						
-						<div class="tab-pane active" id="top-cron_jobs">						
-							@include('elements._cron_jobs')							
+						@include('elements._cron_jobs', ['show_all' => true])
+					
+						<hr>
+						<div class="text-right">                                    
+							<button class="btn btn-primary bg-teal">
+								{!! trans('messages.save') !!}
+							</button>
 						</div>
-						
-					</div>
+					</form>
 				</div>
 @endsection

@@ -122,7 +122,10 @@ class MailListController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Acelle\Model\MailList::$rules);
+            $validator = \Validator::make($request->all(), \Acelle\Model\MailList::$rules);    
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 403);
+            }
 
             // Save contact
             $contact = \Acelle\Model\Contact::create($request->all()['contact']);

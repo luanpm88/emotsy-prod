@@ -27,7 +27,7 @@ class UserController extends Controller
         } else {
             $user = new \Acelle\Model\User();
         }
-        if (!empty($user->imagePath())) {
+        if (!empty($user->imagePath()) && file_exists($user->imagePath())) {
             $img = \Image::make($user->imagePath());
         } else {
             $img = \Image::make(public_path('assets/images/placeholder.jpg'));

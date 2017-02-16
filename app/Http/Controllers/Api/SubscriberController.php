@@ -98,7 +98,10 @@ class SubscriberController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, $subscriber->getRules());
+            $validator = \Validator::make($request->all(), $subscriber->getRules());    
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 403);
+            }
 
             // Save subscriber
             $subscriber->email = $request->EMAIL;
@@ -110,7 +113,10 @@ class SubscriberController extends Controller
             // Log
             $subscriber->log('created', $user->customer);
             
-            return \Response::json(array('message' => trans('messages.subscriber.created')), 200);
+            return \Response::json(array(
+                'message' => trans('messages.subscriber.created'),
+                'subscriber_uid' => $subscriber->uid
+            ), 200);
         }
     }
 
@@ -153,6 +159,9 @@ class SubscriberController extends Controller
         $subscriber = [
             'uid' => $item->uid,
             'email' => $item->email,
+            'status' => $item->status,
+            'source' => $item->from,
+            'ip_address' => $item->ip
         ];
 
         foreach ($list->fields as $field) {

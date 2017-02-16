@@ -154,10 +154,22 @@ class SettingController extends Controller
      */
     public function cronjob(Request $request)
     {
-        $settings = \Acelle\Model\Setting::getAll();
-        return view('admin.settings.cronjob', [
-            'settings' => $settings,
-        ]);
+        // Re-generate remote job url
+        if($request->re_generate_remote_job_url) {
+            $remote_job_token = str_random(60);
+            \Acelle\Model\Setting::set('remote_job_token', $remote_job_token);
+            echo action('Controller@remoteJob', ['remote_job_token' => $remote_job_token]);
+            return;
+        }
+        
+        $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);        
+        if($respone == 'done' || $respone['valid'] == true) {
+            $next = action('Admin\SettingController@cronjob');
+            artisan_config_cache();
+            return redirect()->away($next);
+        }
+        
+        return view('admin.settings.cronjob', $respone);
     }
     
     /**

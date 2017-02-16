@@ -67,8 +67,10 @@ class Setting extends Model
         $setting = self::where('name', $name)->first();
         if (is_object($setting)) {
             return $setting->value;
-        } else {
+        } else if(isset(self::defaultSettings()[$name])) {
             return self::defaultSettings()[$name]['value'];
+        } else {
+            return NULL;
         }
     }
 
@@ -166,6 +168,18 @@ class Setting extends Model
                 'type' => 'select',
                 'options' => self::colors(),
             ],
+            'login_recaptcha' => [
+                'cat' => 'general',
+                'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no','yes'],
+            ],
+            'embedded_form_recaptcha' => [
+                'cat' => 'general',
+                'value' => 'no',
+                'type' => 'checkbox',
+                'options' => ['no','yes'],
+            ],
             'sending_campaigns_at_once' => [
                 'cat' => 'sending',
                 'value' => '10',
@@ -228,7 +242,19 @@ class Setting extends Model
             ],
             'url_update_profile' => [
                 'cat' => 'url',
-                'value' => '', // action('DeliveryController@notify'),
+                'value' => '',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'php_bin_path' => [
+                'cat' => 'cronjob',
+                'value' => '',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'remote_job_token' => [
+                'cat' => 'cronjob',
+                'value' => '',
                 'type' => 'text',
                 'not_required' => true,
             ],

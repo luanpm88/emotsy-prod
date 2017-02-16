@@ -27,6 +27,7 @@ use Acelle\Library\StringHelper;
 use SendGrid\Mail;
 use SendGrid\Email;
 use SendGrid\Content;
+use Acelle\Model\Campaign;
 
 class SendingServerSendGrid extends SendingServer
 {
@@ -111,7 +112,7 @@ class SendingServerSendGrid extends SendingServer
     /**
      * Prepare the email object for sending
      *
-     * @return Mixed
+     * @return mixed
      */
     public function prepareEmail($campaign, $subscriber, $msgId) {
         $customHeaders = $campaign->getCustomHeaders($subscriber, $this);
@@ -122,12 +123,16 @@ class SendingServerSendGrid extends SendingServer
         $to = new Email(null, $subscriber->email);
         $plain = new Content("text/plain", $campaign->getPlainContent($subscriber, $msgId));
         $html = new Content("text/html", $campaign->getHtmlContent($subscriber, $msgId));
-        
+                
         $mail = new Mail($from, $campaign->getSubject($subscriber, $msgId), $to, $plain);
+        if ($campaign->type == Campaign::TYPE_REGULAR) {
+            $mail->addContent($html);
+        }
+        
         foreach($customHeaders as $key => $value) {
             $mail->addHeader($key, $value);
         }
-        $mail->addContent($html);
+
         return $mail;
     }
 }

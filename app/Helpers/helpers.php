@@ -157,3 +157,108 @@ function db_utc_offset()
 
     return $zone;
 }
+
+/**
+ * Check if exec() function is available
+ *
+ * @return boolean
+ */
+function exec_enabled() {
+   try {
+       // make a small test
+       exec("ls");
+       return function_exists('exec') && !in_array('exec', array_map('trim', explode(', ', ini_get('disable_functions'))));
+   } catch (\Exception $ex) {
+       return false;
+   }   
+}
+
+/**
+ * Run artisan config cache
+ *
+ * @return boolean
+ */
+function artisan_config_cache() {
+    // Artisan config:cache generate the following two files
+    // Since config:cache runs in the background
+    // to determine if it is done, we just check if the files modified time have been changed
+    $files = ['bootstrap/cache/config.php', 'bootstrap/cache/services.php'];
+    
+    // get the last modified time of the files
+    $last = 0;
+    foreach ($files as $file) {
+        $path = base_path($file);
+        if (file_exists($path)) {
+            if (filemtime($path) > $last) {
+                $last = filemtime($path);
+            }
+        }
+    }
+        
+    // prepare to run
+    $timeout = 5;
+    $start = time();
+    
+    // actually call the Artisan command
+    \Artisan::call('config:cache');
+    
+    // Check if Artisan call is done
+    while (true) {
+        // just finish if timeout
+        if (time() - $start >= $timeout) {
+            echo "Timeout\n";
+            break;
+        }
+        
+        // if any file is still missing, keep waiting
+        // if any file is not updated, keep waiting
+        // @todo: services.php file keeps unchanged after artisan config:cache
+        foreach($files as $file) {
+            $path = base_path($file);
+            if (!file_exists($path)) {
+                sleep(1);
+                continue;
+            } else {
+                if (filemtime($path) == $last) {
+                    sleep(1);
+                    continue;
+                }
+            }
+        }
+        
+        // just wait another extra 3 seconds before finishing
+        sleep(3);
+        break;
+    }
+}
+
+/**
+ * Run artisan migrate
+ *
+ * @return boolean
+ */
+function artisan_migrate() {
+    \Artisan::call('migrate', ["--force"=> true]);
+}
+
+/**
+ * Get language code
+ *
+ * @return string
+ */
+function language_code() {
+    // Generate info
+    $user = \Auth::user();
+    $default_language = \Acelle\Model\Language::find(\Acelle\Model\Setting::get('default_language'));
+    if(is_object($user) && is_object($user->language)) {
+        $language_code = $user->language->code;
+    } else if (isset($_COOKIE['last_language_code'])) {
+        $language_code = $_COOKIE['last_language_code'];
+    } else if (is_object($default_language)) {
+        $language_code = $default_language->code;
+    } else {
+        $language_code = 'en';
+    }
+    
+    return $language_code;
+}

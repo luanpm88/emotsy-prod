@@ -125,6 +125,10 @@ class LayoutController extends Controller
         // Generate info
         $user = $request->user();
         $layout = \Acelle\Model\Layout::findByUid($id);
+        
+        if($this->isDemoMode()) {
+            return $this->notAuthorized();
+        }
 
         // authorize
         if (\Gate::denies('update', $layout)) {

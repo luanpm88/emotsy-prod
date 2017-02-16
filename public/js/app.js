@@ -1128,6 +1128,7 @@ $(function() {
     
     // Grap link with data-method attribute
     $(document).on('click', 'a[link-method]', function(e) {      
+        e.preventDefault();
         
         var method = $(this).attr("link-method");
         var action = $(this).attr("href");
@@ -1135,8 +1136,7 @@ $(function() {
         if(typeof(method) != 'undefined') {
             var newForm = jQuery('<form>', {
                 'action': action,
-                'method': 'POST',
-                'target': '_top'
+                'method': 'POST'
             });
             newForm.append(jQuery('<input>', {
                 'name': '_token',
@@ -1148,9 +1148,8 @@ $(function() {
                 'value': method,
                 'type': 'hidden'
             }));
-            newForm.submit();
-            
-            e.preventDefault();
+            $(document.body).append(newForm);
+            newForm.submit();            
         }
     });
     
@@ -1187,9 +1186,28 @@ $(function() {
         var mask = $(this).parent().find('.date-mask-control');
         var value = $(this).val();
         
-        var date = moment(value); //Get the current date
-        
-        mask.html(date.format(LANG_DATE_FORMAT.toUpperCase()));
+        if(value !== '') {
+            var date = moment(value); //Get the current date
+            mask.html(date.format(LANG_DATE_FORMAT.toUpperCase()));
+        }
     });
     $('.pickadate-control').trigger('change');
+    
+    // Check all checkboxes group
+    $(document).on('click', '.re_generate_remote_job_url', function(e) {
+        e.preventDefault();
+        
+        $.ajax({
+            method: 'POST',
+            url: '',
+            data: {
+                re_generate_remote_job_url: true,
+                _token: CSRF_TOKEN
+            }
+        })
+        .done(function(msg) {
+            $('.remote-job-url').html(msg);
+        });
+    });
+    
 });

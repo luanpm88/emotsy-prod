@@ -1766,3 +1766,10 @@ ul.automation-confirm li.child-row h5 {
     border-bottom: dashed 2px #bbb;
     padding-bottom: 3px;
 }
+.recaptcha-box {
+    text-align: center;
+    margin-bottom: 20px;
+}
+.recaptcha-box .g-recaptcha > div {
+    width: auto !important;
+}
