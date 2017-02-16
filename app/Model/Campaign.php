@@ -415,6 +415,7 @@ class Campaign extends Model
 
         MailLog::info('Forking '.sizeof($chunks).' process(es)');
         $parentPid = getmypid();
+        $children = [];
         for ($i = 0; $i < sizeof($chunks); ++$i) {
             $pid = pcntl_fork();
             
@@ -431,13 +432,21 @@ class Campaign extends Model
                 $this->run($chunks[$i]);
                 exit($i + 1);
                 // end child process
+            } else {
+                $children[] = $pid;
             }
         }
         
         // wait for child processes to finish
-        while (pcntl_waitpid(0, $status) != -1) {
-            $status = pcntl_wexitstatus($status);
-            MailLog::info("Child $status completed");
+        foreach($children as $child) {
+            $pid = pcntl_wait($status);
+            if (pcntl_wifexited($status)) {
+                $code = pcntl_wexitstatus($status);
+                MailLog::info("Child $pid finished, status code: $code");
+            } else {
+                MailLog::warning("Child process $pid did not normally exit");
+                $this->error("Child process $pid did not normally exit");
+            }
         }
         
         // after all child processes are done
@@ -456,7 +465,7 @@ class Campaign extends Model
         if ($this->status == self::STATUS_SENDING) {
             $this->done();
         } else {
-            // leave the error reported by child process
+            // leave the latest error reported by child process
         }
     }
 
