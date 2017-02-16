@@ -43,6 +43,7 @@ class UserPolicy
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\User $item)
     {
+        //@todo cannot delete user currently has other users
         $ability = $user->userGroup->backend_access && $user->getOption('backend', 'user_delete');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
