@@ -322,9 +322,20 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'profile_update_form')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
-
-        // Get old post values
+        
         $values = [];
+        
+        // Fetch subscriber fields to values
+        foreach ($list->fields as $key => $field) {
+            $value = $subscriber->getValueByField($field);
+            if (is_array($value)) {
+                $values[str_replace('[]', '', $key)] = implode(',', $value);
+            } else {
+                $values[$field->tag] = $value;
+            }
+        }
+
+        // Get old post values        
         if (null !== $request->old()) {
             foreach ($request->old() as $key => $value) {
                 if (is_array($value)) {
