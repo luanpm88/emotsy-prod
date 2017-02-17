@@ -36,7 +36,7 @@
 							@if ($automation->subscribers()->count())
 								<i class="icon-checkmark4"></i>
 							@else
-								<i class="icon-cross2 text-danger"></i>
+								<i class="fa fa-exclamation text-warning"></i>
 							@endif
                             <h4>{{ $automation->subscribers()->count() }} {{ trans('messages.recipients') }}</h4>
                             <p>
@@ -94,13 +94,10 @@
                     
 					<div class="text-right">
 						<br />
-						@if ($automation->isValid())
-							<button class="btn btn-lg bg-teal-800"><i class="icon-paperplane ml-5"></i> {{ trans('messages.send') }}</button>							
-						@else
-							<a href="{{ action("AutomationController@workflow", $automation->uid) }}" class="btn bg-grey-800">
-								<i class="icon-arrow-left7"></i> {{ trans('messages.back_to_workflow') }}
-							</a>					
-						@endif
+						<a href="{{ action("AutomationController@workflow", $automation->uid) }}" class="btn bg-grey-800">
+							<i class="icon-arrow-left7"></i> {{ trans('messages.back_to_workflow') }}
+						</a>
+						<button class="btn btn-lg bg-teal-800"><i class="icon-paperplane ml-5"></i> {{ trans('messages.send') }}</button>							
 					</div>
                 </form>
                     
