@@ -168,12 +168,19 @@ class SendingServer extends Model
     public function getVerp($recipient)
     {
         if (is_object($this->bounceHandler)) {
-            // @todo disable VERP as it is not supported by all mailbox
-            // return str_replace('@', '+'.str_replace('@', '=', $recipient).'@', $this->bounceHandler->username);
-            return $this->bounceHandler->username;
-        } else {
-            return null;
+            $validator = \Validator::make(
+                ['email' => $this->bounceHandler->username],
+                ['email' => 'required|email']
+            );
+    
+            if ($validator->passes()) {
+                // @todo disable VERP as it is not supported by all mailbox
+                // return str_replace('@', '+'.str_replace('@', '=', $recipient).'@', $this->bounceHandler->username);
+                return $this->bounceHandler->username;
+            }
         }
+        
+        return null;
     }
 
     /**
