@@ -68,7 +68,6 @@ class CustomerController extends Controller
         
         if (!empty($request->old())) {
             $customer->fill($request->old());
-            $customer->customer_group_id = $request->old()["customer_group_id"];
             // User info
             $customer->user = new \Acelle\Model\User();
             $customer->user->fill($request->old());
@@ -106,9 +105,6 @@ class CustomerController extends Controller
         // save posted data
         if ($request->isMethod('post')) {
             $rules = $customer->rules();
-            $rules = array_merge($rules, [
-                'customer_group_id' => 'required',
-            ]);
             $this->validate($request, $rules);
             
             // Create user account for customer
@@ -124,7 +120,6 @@ class CustomerController extends Controller
             $customer->user_id = $user->id;
             $customer->admin_id = $request->user()->admin->id;
             $customer->fill($request->all());
-            $customer->customer_group_id = $request->customer_group_id;            
             $customer->status = 'active';
             
             if ($customer->save()) {
@@ -180,7 +175,6 @@ class CustomerController extends Controller
 
         if (!empty($request->old())) {
             $customer->fill($request->old());
-            $customer->customer_group_id = $request->old()["customer_group_id"];
             // User info
             $customer->user->fill($request->old());
         }
@@ -217,9 +211,7 @@ class CustomerController extends Controller
             }
             
             $rules = $customer->rules();
-            $rules = array_merge($rules, [
-                'customer_group_id' => 'required',
-            ]);
+
             $this->validate($request, $rules);
             
             // Update user account for customer
@@ -233,9 +225,6 @@ class CustomerController extends Controller
             
             // Save current user info
             $customer->fill($request->all());
-            
-            // Change group
-            $customer->customer_group_id = $request->customer_group_id;
             
             // Upload and save image
             if ($request->hasFile('image')) {

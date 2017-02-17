@@ -26,15 +26,6 @@
 
 								@include('helpers.form_control', ['type' => 'text', 'name' => 'email', 'value' => $customer->email(), 'help_class' => 'profile', 'rules' => $customer->rules()])
 								
-								@include('helpers.form_control', ['type' => 'select',
-																'name' => 'customer_group_id',
-																'label' => trans('messages.group'),
-																'value' => $customer->customer_group_id,
-																'options' => Acelle\Model\CustomerGroup::getSelectOptions(),
-																'include_blank' => trans('messages.choose'),
-																'rules' => $customer->rules()
-															])
-								
 								@include('helpers.form_control', ['type' => 'password', 'label'=> trans('messages.new_password'), 'name' => 'password', 'rules' => $customer->rules()])
 								
 								@include('helpers.form_control', ['type' => 'password', 'name' => 'password_confirmation', 'rules' => $customer->rules()])

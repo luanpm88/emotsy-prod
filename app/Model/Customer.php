@@ -92,14 +92,9 @@ class Customer extends Model
         return $this->belongsTo('Acelle\Model\User');
     }
     
-    public function reseller()
+    public function admin()
     {
-        return $this->belongsTo('Acelle\Model\Reseller');
-    }
-
-    public function customerGroup()
-    {
-        return $this->belongsTo('Acelle\Model\CustomerGroup');
+        return $this->belongsTo('Acelle\Model\Admin');
     }
 
     public function lists()
@@ -253,15 +248,13 @@ class Customer extends Model
     public static function filter($request)
     {
         $query = self::select('customers.*')
-            ->leftJoin('users', 'users.id', '=', 'customers.user_id')
-            ->leftJoin('customer_groups', 'customer_groups.id', '=', 'customers.customer_group_id');
+            ->leftJoin('users', 'users.id', '=', 'customers.user_id');
         
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
                     $q->orwhere('customers.first_name', 'like', '%'.$keyword.'%')
-                        ->orWhere('customer_groups.name', 'like', '%'.$keyword.'%')
                         ->orWhere('customers.last_name', 'like', '%'.$keyword.'%')
                         ->orWhere('users.email', 'like', '%'.$keyword.'%');
                 });
@@ -271,9 +264,7 @@ class Customer extends Model
         // filters
         $filters = $request->filters;
         if (!empty($filters)) {
-            if (!empty($filters['customer_group_id'])) {
-                $query = $query->where('customers.customer_group_id', '=', $filters['customer_group_id']);
-            }
+            
         }
 
         return $query;
@@ -323,7 +314,8 @@ class Customer extends Model
      */
     public function getOption($name)
     {
-        return $this->customerGroup->getOption($name);
+        //@todo how to get option from subscription/plan
+        return Plan::defaultOptions()[$name];
     }
     
     /**
