@@ -122,7 +122,7 @@ class CustomerController extends Controller
 
             // Save current user info
             $customer->user_id = $user->id;
-            $customer->creator_id = $request->user()->id;
+            $customer->admin_id = $request->user()->admin->id;
             $customer->fill($request->all());
             $customer->customer_group_id = $request->customer_group_id;            
             $customer->status = 'active';

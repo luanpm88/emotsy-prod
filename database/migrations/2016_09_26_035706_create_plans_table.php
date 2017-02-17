@@ -16,10 +16,11 @@ class CreatePlansTable extends Migration
             $table->increments('id');
             $table->uuid('uid');
             $table->integer('admin_id')->unsigned();
-            $table->integer('customer_group_id')->unsigned();
             $table->string('name');
             $table->decimal('price');
-            $table->string('frequency');
+            $table->string('frequency_amount');
+            $table->string('frequency_unit');
+            $table->text('options');
             $table->string('status');
             $table->string('color');
             $table->integer('custom_order');

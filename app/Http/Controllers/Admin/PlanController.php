@@ -64,7 +64,11 @@ class PlanController extends Controller
      */
     public function create(Request $request)
     {
-        $plan = new \Acelle\Model\Plan();
+        $plan = new \Acelle\Model\Plan([
+            'price' => 0,
+            'frequency_amount' => 1,
+            'frequency_unit' => 'month'
+        ]);
         $plan->status = 'active';
 
         // authorize
@@ -75,9 +79,31 @@ class PlanController extends Controller
         if (!empty($request->old())) {
             $plan->fill($request->old());
         }
+        
+        // For options
+        if (isset($request->old()['options'])) {
+            $plan->options = json_encode($request->old()['options']);
+        }
+        $options = $plan->getOptions();
+        
+        // Sending servers
+        if (isset($request->old()['sending_servers'])) {
+            $plan->plansSendingServers = collect([]);
+            foreach ($request->old()['sending_servers'] as $key => $param) {
+                if ($param['check']) {
+                    $server = \Acelle\Model\SendingServer::findByUid($key);
+                    $row = new \Acelle\Model\PlansSendingServer();
+                    $row->plan_id = $plan->id;
+                    $row->sending_server_id = $server->id;
+                    $row->fitness = $param['fitness'];
+                    $plan->plansSendingServers->push($row);
+                }
+            }
+        }
 
         return view('admin.plans.create', [
             'plan' => $plan,
+            'options' => $options
         ]);
     }
 
@@ -101,19 +127,31 @@ class PlanController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $rules = $plan->rules();
+            $this->validate($request, $plan->rules());
 
+            $rules = [];
+            if (isset($request->sending_servers)) {
+                foreach ($request->sending_servers as $key => $param) {
+                    if ($param['check']) {
+                        $rules['sending_servers.'.$key.'.fitness'] = 'required';
+                    }
+                }
+            }
             $this->validate($request, $rules);
 
-            // Save current user info
+            $plan->fill($request->all());
+            $plan->options = json_encode($request->options);
             $plan->admin_id = $user->admin->id;
-            $plan->fill($request->all());      
             $plan->status = 'active';
-            
-            if ($plan->save()) {                
-                $request->session()->flash('alert-success', trans('messages.plan.created'));
-                return redirect()->action('Admin\PlanController@index');
+            $plan->save();
+
+            // For sending servers
+            if (isset($request->sending_servers)) {
+                $plan->updateSendingServers($request->sending_servers);
             }
+            
+            $request->session()->flash('alert-success', trans('messages.plan.created'));
+            return redirect()->action('Admin\PlanController@index');
         }
     }
 
@@ -147,9 +185,31 @@ class PlanController extends Controller
         if (!empty($request->old())) {
             $plan->fill($request->old());
         }
+        
+        // For options
+        if (isset($request->old()['options'])) {
+            $plan->options = json_encode($request->old()['options']);
+        }
+        $options = $plan->getOptions();
+        
+        // Sending servers
+        if (isset($request->old()['sending_servers'])) {
+            $plan->plansSendingServers = collect([]);
+            foreach ($request->old()['sending_servers'] as $key => $param) {
+                if ($param['check']) {
+                    $server = \Acelle\Model\SendingServer::findByUid($key);
+                    $row = new \Acelle\Model\PlansSendingServer();
+                    $row->plan_id = $plan->id;
+                    $row->sending_server_id = $server->id;
+                    $row->fitness = $param['fitness'];
+                    $plan->plansSendingServers->push($row);
+                }
+            }
+        }
 
         return view('admin.plans.edit', [
             'plan' => $plan,
+            'options' => $options
         ]);
     }
 
@@ -174,17 +234,29 @@ class PlanController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-             $rules = $plan->rules();
+            $this->validate($request, $plan->rules());
 
+            $rules = [];
+            if (isset($request->sending_servers)) {
+                foreach ($request->sending_servers as $key => $param) {
+                    if ($param['check']) {
+                        $rules['sending_servers.'.$key.'.fitness'] = 'required';
+                    }
+                }
+            }
             $this->validate($request, $rules);
 
-            // Save current user info
-            $plan->fill($request->all());      
+            $plan->fill($request->all());
+            $plan->options = json_encode($request->options);
+            $plan->save();
 
-            if ($plan->save()) {
-                $request->session()->flash('alert-success', trans('messages.plan.updated'));
-                return redirect()->action('Admin\PlanController@index');
+            // For sending servers
+            if (isset($request->sending_servers)) {
+                $plan->updateSendingServers($request->sending_servers);
             }
+            
+            $request->session()->flash('alert-success', trans('messages.plan.updated'));
+            return redirect()->action('Admin\PlanController@index');
         }
     }
 

@@ -25,7 +25,7 @@
 
 @section('content')
 	
-				<form enctype="multipart/form-data" action="{{ action('Admin\PlanController@update', $plan->uid) }}" method="POST" class="form-validate-jquery">
+				<form enctype="multipart/form-data" action="{{ action('Admin\PlanController@update', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
 					{{ csrf_field() }}
 					<input type="hidden" name="_method" value="PATCH">
 					

@@ -32,7 +32,7 @@ class Plan extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'customer_group_id', 'frequency', 'price', 'color'
+        'name', 'frequency_amount', 'frequency_unit', 'price', 'color'
     ];
 
     /**
@@ -42,13 +42,20 @@ class Plan extends Model
      */
     public function rules()
     {
-        return array(
+        $rules = array(
             'name' => 'required',
-            'customer_group_id' => 'required',
-            'frequency' => 'required',
-            'price' => 'required',
+            'frequency_amount' => 'required|min:1',
+            'frequency_unit' => 'required',
+            'price' => 'required|min:0',
             'color' => 'required',
         );
+    
+        $options = self::defaultOptions();
+        foreach ($options as $type => $option) {
+            $rules['options.' . $type] = 'required';
+        }
+        
+        return $rules;
     }
 
     /**
@@ -60,20 +67,15 @@ class Plan extends Model
     {
         return self::where('uid', '=', $uid)->first();
     }
-
-    /**
-     * Associations.
-     *
-     * @var object | collect
-     */
-    public function customerGroup()
-    {
-        return $this->belongsTo('Acelle\Model\CustomerGroup');
-    }
     
     public function admin()
     {
         return $this->belongsTo('Acelle\Model\Admin');
+    }
+    
+    public function plansSendingServers()
+    {
+        return $this->hasMany('Acelle\Model\PlansSendingServer');
     }
 
     /**
@@ -122,8 +124,7 @@ class Plan extends Model
      */
     public static function filter($request)
     {
-        $query = self::select('plans.*')
-                        ->leftJoin('customer_groups', 'customer_groups.id', '=', 'plans.customer_group_id');
+        $query = self::select('plans.*');
         
         if ($request->user()->admin->getPermission('plan_read') == 'own') {
             $query = $query->where('plans.admin_id', '=', $request->user()->admin->id);
@@ -133,19 +134,13 @@ class Plan extends Model
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('plans.name', 'like', '%'.$keyword.'%')
-                        ->orWhere('customer_groups.name', 'like', '%'.$keyword.'%');
+                    $q->orwhere('plans.name', 'like', '%'.$keyword.'%');
                 });
             }
         }
 
         // filters
         $filters = $request->filters;
-        if (!empty($filters)) {
-            if (!empty($filters['customer_group_id'])) {
-                $query = $query->where('plans.customer_group_id', '=', $filters['customer_group_id']);
-            }
-        }
 
         return $query;
     }
@@ -165,7 +160,7 @@ class Plan extends Model
     }
     
     /**
-     * Disable customer.
+     * Disable plan.
      *
      * @return boolean
      */
@@ -176,7 +171,7 @@ class Plan extends Model
     }
     
     /**
-     * Enable customer.
+     * Enable plan.
      *
      * @return boolean
      */
@@ -214,5 +209,212 @@ class Plan extends Model
             ['value' => 'rgb(170,80,100)', 'text' => trans('messages.pink')],
             ['value' => '#555', 'text' => trans('messages.grey')],
         ];
+    }
+    
+    /**
+     * Frequency time unit options.
+     *
+     * @return array
+     */
+    public static function timeUnitOptions()
+    {
+        return [
+            ['value' => 'day', 'text' => trans('messages.day')],
+            ['value' => 'week', 'text' => trans('messages.week')],
+            ['value' => 'month', 'text' => trans('messages.month')],
+            ['value' => 'year', 'text' => trans('messages.year')],
+        ];
+    }
+    
+    /**
+     * Default options for new plan.
+     *
+     * @return array
+     */
+    public static function defaultOptions()
+    {
+        return [
+            'list_max' => '-1',
+            'subscriber_max' => '-1',
+            'subscriber_per_list_max' => '-1',
+            'segment_per_list_max' => '3',
+            'campaign_max' => '-1',
+            'sending_quota' => '-1',
+            'sending_quota_time' => '-1',
+            'sending_quota_time_unit' => 'month',
+            'max_process' => '1',
+            'all_sending_servers' => 'yes',
+            'max_size_upload_total' => '500',
+            'max_file_size_upload' => '5',
+            'unsubscribe_url_required' => 'yes',
+            'access_when_offline' => 'no',
+        ];
+    }
+    
+    /**
+     * Get options.
+     *
+     * @return array
+     */
+    public function getOptions()
+    {
+        if (empty($this->options)) {
+            return self::defaultOptions();
+        } else {
+            $defaul_options = self::defaultOptions();
+            $saved_options = json_decode($this->options, true);
+            foreach($defaul_options as $x => $group) {
+                if(isset($saved_options[$x])) {
+                    $defaul_options[$x] = $saved_options[$x];
+                }
+            }
+            return $defaul_options;
+        }
+    }
+
+    /**
+     * Get option.
+     *
+     * @return string
+     */
+    public function getOption($name)
+    {
+        return $this->getOptions()[$name];
+    }
+    
+    /**
+     * Get sending servers ids.
+     *
+     * @return array
+     */
+    public function getSendingServerIds()
+    {
+        $arr = [];
+        foreach ($this->sending_servers as $server) {
+            $arr[] = $server->uid;
+        }
+
+        return $arr;
+    }
+
+    /**
+     * Update sending servers.
+     *
+     * @return array
+     */
+    public function updateSendingServers($servers)
+    {
+        $this->plansSendingServers()->delete();
+        foreach ($servers as $key => $param) {
+            if ($param['check']) {
+                $server = SendingServer::findByUid($key);
+                $row = new PlansSendingServer();
+                $row->plan_id = $this->id;
+                $row->sending_server_id = $server->id;
+                $row->fitness = $param['fitness'];
+                $row->save();
+            }
+        }
+    }
+
+    /**
+     * Multi process select options.
+     *
+     * @return array
+     */
+    public static function multiProcessSelectOptions()
+    {
+        $options = [['value' => 1, 'text' => trans('messages.one_single_process')]];
+        for ($i = 2; $i < 101; ++$i) {
+            $options[] = ['value' => $i, 'text' => $i];
+        }
+
+        return $options;
+    }
+    
+    /**
+     * Display group quota.
+     *
+     * @return array
+     */
+    public function displayQuota()
+    {
+        if ($this->getOption("sending_quota") == -1) {
+            return trans('messages.unlimited');
+        } elseif ($this->getOption("sending_quota_time") == -1) {
+            return $this->getOption("sending_quota");
+        } else {
+            return $this->getOption("sending_quota") . " " . trans('messages.' . \Acelle\Library\Tool::getPluralPrase('email', $this->getOption("sending_quota"))) . ' / '.$this->getOption("sending_quota_time").' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption("sending_quota_time_unit"), $this->getOption("sending_quota")));
+        }        
+    }
+    
+    /**
+     * Display max lists.
+     *
+     * @return array
+     */
+    public function displayMaxList()
+    {
+        if ($this->getOption("list_max") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("list_max");
+        }        
+    }
+    
+    /**
+     * Display max subscribers.
+     *
+     * @return array
+     */
+    public function displayMaxSubscriber()
+    {
+        if ($this->getOption("subscriber_max") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("subscriber_max");
+        }        
+    }
+    
+    /**
+     * Display max campaign.
+     *
+     * @return array
+     */
+    public function displayMaxCampaign()
+    {
+        if ($this->getOption("campaign_max") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("campaign_max");
+        }        
+    }
+    
+    /**
+     * Display max campaign.
+     *
+     * @return array
+     */
+    public function displayMaxSizeUploadTotal()
+    {
+        if ($this->getOption("max_size_upload_total") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("max_size_upload_total");
+        }        
+    }
+    
+    /**
+     * Display max campaign.
+     *
+     * @return array
+     */
+    public function displayFileSizeUpload()
+    {
+        if ($this->getOption("max_file_size_upload") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("max_file_size_upload");
+        }        
     }
 }

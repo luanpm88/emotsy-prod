@@ -1451,4 +1451,6 @@ return [
     'customer_and_plan' => 'Customer & Plan',
     'subscriptions' => 'Subscriptions',
     'subscription' => 'Subscription',
+    'frequency_amount' => 'Frequency amount',
+    'frequency_unit' => 'Frequency unit',
 ];

@@ -108,7 +108,7 @@
 							</table>
                             @include('elements/_per_page_select')
 							{{ $customers->links() }}
-						@elseif (!empty(request()->filters))
+						@elseif (!empty(request()->keyword))
 							<div class="empty-list">
 								<i class="icon-users"></i>
 								<span class="line-1">

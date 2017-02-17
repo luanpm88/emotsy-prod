@@ -30,33 +30,33 @@
 												</h4>
 											</div>
 											<div class="plan-price-box">
-												<span class="price">{{ $item->price }}</span> / {{ trans('messages.unit_' . $item->frequency) }}
+												<span class="price">{{ $item->price }}</span> / {{ $item->frequency_amount }} {{ \Acelle\Library\Tool::getPluralPrase($item->frequency_unit, $item->frequency_amount)  }}
 											</div>
 											<div class="panel-body pt-0">
 												<ul class="mt-0 mb-0 top-border-none plans-intro">
 													<li>
-														{!! trans('messages.sending_quota_intro', ["value" => $item->customerGroup->displayQuota()]) !!}
+														{!! trans('messages.sending_quota_intro', ["value" => $item->displayQuota()]) !!}
 													</li>
 													<li>
-														{!! trans('messages.max_lists_intro', ["value" => $item->customerGroup->displayMaxList()]) !!}
+														{!! trans('messages.max_lists_intro', ["value" => $item->displayMaxList()]) !!}
 													</li>
 													<li>
-														{!! trans('messages.max_subscribers_intro', ["value" => $item->customerGroup->displayMaxSubscriber()]) !!}
+														{!! trans('messages.max_subscribers_intro', ["value" => $item->displayMaxSubscriber()]) !!}
 													</li>
 													<li>
-														{!! trans('messages.max_campaigns_intro', ["value" => $item->customerGroup->displayMaxCampaign()]) !!}
+														{!! trans('messages.max_campaigns_intro', ["value" => $item->displayMaxCampaign()]) !!}
 													</li>
 													<li>
-														{!! trans('messages.max_size_upload_total_intro', ["value" => $item->customerGroup->displayMaxSizeUploadTotal()]) !!}
+														{!! trans('messages.max_size_upload_total_intro', ["value" => $item->displayMaxSizeUploadTotal()]) !!}
 													</li>
 													<li>
-														{!! trans('messages.max_file_size_upload_intro', ["value" => $item->customerGroup->displayFileSizeUpload()]) !!}
+														{!! trans('messages.max_file_size_upload_intro', ["value" => $item->displayFileSizeUpload()]) !!}
 													</li>
 												</ul>
 											</div>
 											<div class="panel-footer pt-10 pb-10 text-center">												
 												@can('update', $item)
-													<a href="{{ action('Admin\PlanController@edit', $item->uid) }}" title="{{ trans('messages.edit') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
+													<a href="{{ action('Admin\PlanController@edit', $item->uid) }}" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-800 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
 												@endcan
 												@can('delete', $item)
 													<a delete-confirm="{{ trans('messages.delete_currencies_confirm') }}" href="{{ action('Admin\PlanController@delete', ['uids' => $item->uid]) }}" title="{{ trans('messages.delete') }}" type="button" class="btn btn-danger btn-icon"><i class="icon icon-cross2"></i></a>
@@ -68,7 +68,7 @@
 							</div>
                             @include('elements/_per_page_select')
 							{{ $plans->links() }}
-						@elseif (!empty(request()->filters))
+						@elseif (!empty(request()->keyword))
 							<div class="empty-list">
 								<i class="icon-clipboard2"></i>
 								<span class="line-1">
@@ -77,7 +77,7 @@
 							</div>
 						@else					
 							<div class="empty-list">
-								<i class="icon-users"></i>
+								<i class="icon-clipboard2"></i>
 								<span class="line-1">
 									{{ trans('messages.plan_empty_line_1') }}
 								</span>

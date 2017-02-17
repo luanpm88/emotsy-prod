@@ -10,24 +10,25 @@
 
 @section('page_header')
 	
-			<div class="page-title">
-				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
-				</ul>
-				<h1>
-					<span class="text-semibold"><i class="icon-plus-circle2"></i> {{ trans('messages.create_admin') }}</span>
-				</h1>
-			</div>
+	<div class="page-title">
+		<ul class="breadcrumb breadcrumb-caret position-right">
+			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+			<li><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
+		</ul>
+		<h1>
+			<span class="text-semibold"><i class="icon-plus-circle2"></i> {{ trans('messages.create_admin') }}</span>
+		</h1>
+	</div>
 
 @endsection
 
 @section('content')
-          <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@store') }}" method="POST" class="form-validate-jqueryz">
-					{{ csrf_field() }}
-					
-					@include('admin.plans._form')			
-					
-				<form>
-				
+	
+	<form enctype="multipart/form-data" action="{{ action('Admin\PlanController@store') }}" method="POST" class="form-validate-jqueryz">
+		{{ csrf_field() }}
+		
+		@include('admin.plans._form')			
+		
+	<form>
+	
 @endsection

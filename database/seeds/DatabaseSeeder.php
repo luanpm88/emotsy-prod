@@ -140,30 +140,30 @@ class DatabaseSeeder extends Seeder
             'updated_at' => $updated_at,
         ]);        
         
-        // Create default reseller group
-        DB::table('reseller_groups')->insert([
-            'id' => 1,
-            'name' => 'Reseller Group 1',
-            'admin_id' => 1,
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-        
-        // Create default reseller for admin user
-        DB::table('resellers')->insert([
-            'id' => 1,
-            'uid' => uniqid(),
-            'user_id' => 1,
-            'admin_id' => 1,
-            'contact_id' => 5,
-            'reseller_group_id' => 1,
-            'language_id' => 1,
-            'first_name' => 'Luan',
-            'last_name' => 'Pham',
-            'timezone' => 'Atlantic/Cape_Verde',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
+        //// Create default reseller group
+        //DB::table('reseller_groups')->insert([
+        //    'id' => 1,
+        //    'name' => 'Reseller Group 1',
+        //    'admin_id' => 1,
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
+        //
+        //// Create default reseller for admin user
+        //DB::table('resellers')->insert([
+        //    'id' => 1,
+        //    'uid' => uniqid(),
+        //    'user_id' => 1,
+        //    'admin_id' => 1,
+        //    'contact_id' => 5,
+        //    'reseller_group_id' => 1,
+        //    'language_id' => 1,
+        //    'first_name' => 'Luan',
+        //    'last_name' => 'Pham',
+        //    'timezone' => 'Atlantic/Cape_Verde',
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
         
         
         // Create default customer group
@@ -180,7 +180,7 @@ class DatabaseSeeder extends Seeder
             'id' => 1,
             'uid' => uniqid(),
             'user_id' => 1,
-            'reseller_id' => 1,
+            'admin_id' => 1,
             'contact_id' => 3,
             'customer_group_id' => 1,
             'language_id' => 1,
