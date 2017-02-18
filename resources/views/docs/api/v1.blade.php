@@ -19,6 +19,108 @@
         <!-- LISTS -->
         <tr>
           <td>
+            <span class="label label-flat bg-primary">{{ trans('messages.POST') }}</span>
+          </td>
+          <td>
+            <a href="#more" class="toogle-api">/api/v1/lists</a>
+          </td>
+          <td>
+            Add a new list
+          </td>
+        </tr>
+        <tr style="display:none;background: #f6f6f6">
+          <td></td>
+          <td>
+            <div>
+              <div class="description detailed">
+                <h4>Parameters</h4>
+                  <div class="list"><dl>
+                    <dt><var>$name</var></dt></dt>
+                    <dd>List's name</dd>
+                    
+                    <dt><var>$from_email</var></dt></dt>
+                    <dd>Default From email address</dd>
+                    
+                    <dt><var>$from_name</var></dt></dt>
+                    <dd>Default From name</dd>
+                    
+                    <dt><var>$default_subject &nbsp;&nbsp;<span class="text-muted2 text-normal">{{ trans('messages.optional') }}</span></var></dt></dt>
+                    <dd>Default email subject</dd>
+                    <br/>
+                    <h5>Contact information</h5>
+                    
+                    <dt><var>$contact[company]</var></dt></dt>
+                    <dd>Name</dd>
+                    
+                    <dt><var>$contact[state]</var></dt></dt>
+                    <dd>State / Province / Region</dd>
+                        
+                    <dt><var>$contact[address_1]</var></dt></dt>
+                    <dd>Address 1</dd>
+                    
+                    <dt><var>$contact[address_2]</var></dt></dt>
+                    <dd>Address 2</dd>
+                    
+                    <dt><var>$contact[city]</var></dt></dt>
+                    <dd>City</dd>
+                    
+                    <dt><var>$contact[zip]</var></dt></dt>
+                    <dd>Zip / Postal code</dd>
+                    
+                    <dt><var>$contact[phone]</var></dt></dt>
+                    <dd>Phone</dd>
+                    
+                    <dt><var>$contact[country_id]</var></dt></dt>
+                    <dd>Country</dd>
+                    
+                    <dt><var>$contact[email]</var></dt></dt>
+                    <dd>Email</dd>
+                    
+                    <dt><var>$contact[url] &nbsp;&nbsp;<span class="text-muted2 text-normal">{{ trans('messages.optional') }}</span></var></dt></dt>
+                    <dd>Home page</dd>
+                        
+                    <dt><var>$subscribe_confirmation</var></dt></dt>
+                    <dd>Send subscription confirmation email (Double Opt-In)</dd>
+                        
+                    <dt><var>$send_welcome_email</var></dt></dt>
+                    <dd>Send a final welcome email</dd>
+                        
+                    <dt><var>$unsubscribe_notification</var></dt></dt>
+                    <dd>Send unsubscribe notification to subscribers</dd>
+                </dl></div>
+                <h4>Returns</h4>
+                <div class="list">
+                    Creation messages in json
+                </div>
+              </div>
+            </div>
+          </td>
+            <td>
+                <h4>Example:</h4>
+                <pre class=""><code>curl -X POST -H "accept:application/json" -G \
+{{ action("Api\MailListController@store") }}? \
+-d api_token=I0ab15jsAGCitF4B3ub1DWIXb1CXqN2o9vEKPb3YoFzW66FVXpP87AKw9nSL \
+-d name=List+1 \
+-d from_email=admin@abccorp.org \
+-d from_name=ABC+Corp. \
+-d default_subject=Welcome+to+ABC+Corp. \
+-d contact[company]=ABC+Corp. \
+-d contact[state]=Armagh \
+-d contact[address_1]=14+Tottenham+Court+Road+London+England \
+-d contact[address_2]=44-46+Morningside+Road+Edinburgh+Scotland+EH10+4BF \
+-d contact[city]=Noname \
+-d contact[zip]=80000 \
+-d contact[phone]=123+456+889 \
+-d contact[country_id]={{ \Acelle\Model\Country::first()->id }} \
+-d contact[email]=info@abccorp.org \
+-d contact[url]=http://www.abccorp.org \
+-d subscribe_confirmation=1 \
+-d send_welcome_email=1 \
+-d unsubscribe_notification=1</code></pre>
+            </td>
+        </tr>
+        <tr>
+          <td>
             <span class="label label-flat bg-info">{{ trans('messages.GET') }}</span>
           </td>
           <td>

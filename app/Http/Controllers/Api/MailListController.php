@@ -134,9 +134,12 @@ class MailListController extends Controller
             $list->save();
             
             // Log
-            $list->log('created', $request->user());
+            $list->log('created', $user);
             
-            return \Response::json(array('message' => trans('messages.list.created')), 200);
+            return \Response::json(array(
+                'message' => trans('messages.list.created'),
+                'list_uid' => $list->uid
+            ), 200);
         }
     }
 }
