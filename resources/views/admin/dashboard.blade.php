@@ -10,7 +10,7 @@
 
 @section('content')
     <h1>{{ trans('messages.dashboard') }}</h1>
-	
+
     <h2 class="text-teal-800"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h2>
 		
 	@if (Acelle\Model\Campaign::where("status", "=", "done")->count() == 0)
@@ -57,7 +57,6 @@
 					'name' => 'list_id',
 					'label' => '',
 					'value' => '',
-					'include_blank' => trans('messages.all'),
 					'options' => Acelle\Model\MailList::getSelectOptions(),
 				])
 			</div>
