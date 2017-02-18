@@ -1773,3 +1773,9 @@ ul.automation-confirm li.child-row h5 {
 .recaptcha-box .g-recaptcha > div {
     width: auto !important;
 }
+.content-group-lg .modern-listing {
+    margin-bottom: 0;
+}
+.pb-0 {
+    padding-bottom: 0;
+}

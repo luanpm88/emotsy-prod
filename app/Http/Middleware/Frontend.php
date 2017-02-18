@@ -38,7 +38,7 @@ class Frontend
             }
         } catch (\Exception $e) {
         }
-
+        
         return $next($request);
     }
 }

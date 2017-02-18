@@ -92,9 +92,9 @@ class Admin extends Model
         return $this->belongsTo('Acelle\Model\AdminGroup');
     }
     
-    public function resellers()
+    public function customers()
     {
-        return $this->hasMany('Acelle\Model\Reseller');
+        return $this->hasMany('Acelle\Model\Customer');
     }
 
     /**
@@ -329,8 +329,8 @@ class Admin extends Model
      *
      * @return collect
      */
-    public function recentResellers()
+    public function recentCustomers()
     {
-        return $this->resellers()->orderBy("created_at", "DESC")->limit(5)->get();
+        return $this->customers()->orderBy("created_at", "DESC")->limit(5)->get();
     }
 }

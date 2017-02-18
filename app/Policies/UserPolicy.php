@@ -55,7 +55,7 @@ class UserPolicy
         $ability = $user->admin->getPermission('user_delete');
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->user_id);
-        $can = $can && $item->lists()->count() == 0 && $item->user_id != null;
+        $can = $can && $user->id != $item->id;
 
         return $can;
     }

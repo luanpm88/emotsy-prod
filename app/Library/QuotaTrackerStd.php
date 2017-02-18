@@ -4,6 +4,7 @@
  * QuotaTrackerStd class.
  *
  * Provide a data structure for storing and measure quota
+ * Used for SINGLE PROCESS only!
  *
  * LICENSE: This product includes software developed at
  * the Acelle Co., Ltd. (http://acellemail.com/).

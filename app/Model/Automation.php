@@ -366,14 +366,9 @@ class Automation extends Model
      */
     public function isValid()
     {
-        // subscribers count > 0
-        if($this->subscribers()->count() <= 0) {
-            return false;
-        }
-        
         // check first auto event isset
         $first_event = $this->getInitEvent();
-        if(!isset($first_event->id) || $first_event->subscribers()->count() <= 0) { //  || 
+        if(!isset($first_event->id)) { //  || 
             return false;
         }        
         

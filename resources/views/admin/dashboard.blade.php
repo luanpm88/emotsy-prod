@@ -152,44 +152,43 @@
 					</div>
 				</div>
 			@endif
-			
-			
-				<div class="row">
-					<div class="col-md-12">
-						<h2 class="">{{ trans('messages.setting') }}</h2>
-						<a class="dashboard-box" href="{{ action('Admin\SettingController@index') }}">
+				
+			<div class="row">
+				<div class="col-md-12">
+					<h2 class="">{{ trans('messages.setting') }}</h2>
+					<a class="dashboard-box" href="{{ action('Admin\SettingController@index') }}">
+						<div class="dashboard-icon">
+							<i class="icon-equalizer2"></i>
+						</div>
+						<h4>{{ trans('messages.all_settings') }}</h4>
+					</a>
+					@if (Auth::user()->admin->getPermission("template_read") != 'no')
+						<a class="dashboard-box" href="{{ action('Admin\TemplateController@index') }}">
 							<div class="dashboard-icon">
-								<i class="icon-equalizer2"></i>
+								<i class="icon-magazine"></i>
 							</div>
-							<h4>{{ trans('messages.all_settings') }}</h4>
+							<h4>{{ trans('messages.template_gallery') }}</h4>
 						</a>
-						@if (Auth::user()->admin->getPermission("template_read") != 'no')
-							<a class="dashboard-box" href="{{ action('Admin\TemplateController@index') }}">
-								<div class="dashboard-icon">
-									<i class="icon-magazine"></i>
-								</div>
-								<h4>{{ trans('messages.template_gallery') }}</h4>
-							</a>
-						@endif
-						@if (Auth::user()->admin->getPermission("layout_read") != 'no')
-							<a class="dashboard-box" href="{{ action('Admin\LayoutController@index') }}">
-								<div class="dashboard-icon">
-									<i class="glyphicon glyphicon-file"></i>
-								</div>
-								<h4>{{ trans('messages.page_form_layout') }}</h4>
-							</a>
-						@endif
-						@if (Auth::user()->admin->getPermission("language_read") != 'no')
-							<a class="dashboard-box" href="{{ action('Admin\LanguageController@index') }}">
-								<div class="dashboard-icon">
-									<i class="glyphicon glyphicon-flag"></i>
-								</div>
-								<h4>{{ trans('messages.languages') }}</h4>
-							</a>
-						@endif
-						<br style="clear:both" />
-					</div>
+					@endif
+					@if (Auth::user()->admin->getPermission("layout_read") != 'no')
+						<a class="dashboard-box" href="{{ action('Admin\LayoutController@index') }}">
+							<div class="dashboard-icon">
+								<i class="glyphicon glyphicon-file"></i>
+							</div>
+							<h4>{{ trans('messages.page_form_layout') }}</h4>
+						</a>
+					@endif
+					@if (Auth::user()->admin->getPermission("language_read") != 'no')
+						<a class="dashboard-box" href="{{ action('Admin\LanguageController@index') }}">
+							<div class="dashboard-icon">
+								<i class="glyphicon glyphicon-flag"></i>
+							</div>
+							<h4>{{ trans('messages.languages') }}</h4>
+						</a>
+					@endif
+					<br style="clear:both" />
 				</div>
+			</div>
 			
 			@if (
 				Auth::user()->admin->getPermission("report_blacklist") != 'no'
@@ -274,57 +273,35 @@
 						</h5>
 					</div>
 					<div id="accordion-group1" class="panel-collapse collapse in">
-						<div class="panel-body">
+						<div class="panel-body pb-0">
 							<ul class="modern-listing mt-0 mb-0 top-border-none">
-								@foreach(Auth::user()->admin->recentResellers() as $item)
+								@foreach(Auth::user()->admin->recentCustomers() as $customer)
 									<li class="">
 										<div class="row">
 											<div class="col-sm-5 col-md-5">
-												<img width="40" class="img-circle mr-10 pull-left" src="{{ action('ResellerController@avatar', $item->uid) }}" alt="">
+												<img width="40" class="img-circle mr-10 pull-left" src="{{ action('CustomerController@avatar', $customer->uid) }}" alt="">
 												<h6 class="mt-0 mb-0 text-semibold">													
-													<a href="{{ action('Admin\ResellerController@edit', $item->uid) }}">
-														{{ $item->displayName() }}
+													<a href="{{ action('Admin\ResellerController@edit', $customer->uid) }}">
+														{{ $customer->displayName() }}
 													</a>
 												</h6>
 												<p>
-													{{ $item->resellerGroup->name }}
+													{{ $customer->admin->displayName() }}
 												</p>
-											</div>
-											<div class="col-sm-3 col-md-3 text-left">
-												<h6 class="no-margin text-bold">
-													{{ $item->customers->count() }}
-												</h6>
-												<span class="">{{ trans('messages.customers') }}</span>
-													<br><br>
 											</div>
 											<div class="col-sm-4 col-md-4 text-left">
 												<h6 class="no-margin text-semibold">
-													{{ Tool::formatDateTime($item->created_at) }}
+													{{ Tool::formatDateTime($customer->created_at) }}
 												</h6>
 												<span class="">{{ trans('messages.created_at') }}</span>
 											</div>	
 										</div>
-			
 									</li>
 								@endforeach
 							</ul>
 						</div>
 					</div>
 				</div>
-				<div class="panel panel-white panel-no-color">
-					<div class="panel-heading">
-						<h5 class="panel-title text-semibold">
-							<a class="collapsed" data-toggle="collapse" data-parent="#accordion1" href="#accordion-group2">{{ trans('messages.recent_customers') }}</a>
-							<i class="icon-menu-open"></i>
-						</h5>
-					</div>
-					<div id="accordion-group2" class="panel-collapse collapse">
-						<div class="panel-body">
-							Тon cupidatat skateboard dolor brunch. Тesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it squid single-origin coffee nulla assumenda.
-						</div>
-					</div>
-				</div>
-
 				<div class="panel panel-white panel-no-color">
 					<div class="panel-heading">
 						<h5 class="panel-title text-semibold">

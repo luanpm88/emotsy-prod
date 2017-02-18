@@ -415,6 +415,7 @@ class Campaign extends Model
 
         MailLog::info('Forking '.sizeof($chunks).' process(es)');
         $parentPid = getmypid();
+        $children = [];
         for ($i = 0; $i < sizeof($chunks); ++$i) {
             $pid = pcntl_fork();
             
@@ -429,15 +430,24 @@ class Campaign extends Model
                 MailLog::info('Start child process '.($i + 1).' of '.sizeof($chunks).' (forked from '.$parentPid.')');
                 sleep(self::WORKER_DELAY);
                 $this->run($chunks[$i]);
+                sleep(30);
                 exit($i + 1);
                 // end child process
+            } else {
+                $children[] = $pid;
             }
         }
         
         // wait for child processes to finish
-        while (pcntl_waitpid(0, $status) != -1) {
-            $status = pcntl_wexitstatus($status);
-            MailLog::info("Child $status completed");
+        foreach($children as $child) {
+            $pid = pcntl_wait($status);
+            if (pcntl_wifexited($status)) {
+                $code = pcntl_wexitstatus($status);
+                MailLog::info("Child process $pid finished, status code: $code");
+            } else {
+                MailLog::warning("Child process $pid did not normally exit");
+                $this->error("Child process $pid did not normally exit");
+            }
         }
         
         // after all child processes are done
@@ -456,7 +466,7 @@ class Campaign extends Model
         if ($this->status == self::STATUS_SENDING) {
             $this->done();
         } else {
-            // leave the error reported by child process
+            // leave the latest error reported by child process
         }
     }
 
@@ -650,14 +660,26 @@ class Campaign extends Model
      */
     public function getPendingSubscribers()
     {
+        /* *
+         * 
+         * Using LEFT JOIN is much slower than NOT IN
+         * 
         $subscribers = $this->subscribers()
                 ->leftJoin(DB::raw('(SELECT * FROM '.DB::getTablePrefix().'tracking_logs WHERE campaign_id = '.$this->id.') log'), 'subscribers.id', '=', 'subscriber_id')
                 ->whereRaw('log.id IS NULL')
                 ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
                 ->select('subscribers.*')
                 ->get();
+        */
 
-        $unique = $subscribers->unique(function ($r) {
+        $subscribers = $this->subscribers()
+                ->whereRaw(sprintf('subscribers.id NOT IN (SELECT subscriber_id FROM %s WHERE campaign_id = %s)', table('tracking_logs'), $this->id))
+                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
+                ->select('subscribers.*')
+                ->get();
+
+        // the array_unique_by functions out-perform the Collection::unique of Laravel!!!
+        $unique = array_unique_by($subscribers, function ($r) {
             return $r['email'];
         });
 
@@ -767,8 +789,11 @@ class Campaign extends Model
         }
 
         // @TODO for AWS, setting returnPath requires verified domain or email address
-        if ($server->allowCustomReturnPath() && is_object($server->bounceHandler)) {
-            $message->setReturnPath($server->getVerp($subscriber->email));
+        if ($server->allowCustomReturnPath()) {
+            $returnPath = $server->getVerp($subscriber->email);
+            if ($returnPath) {
+                $message->setReturnPath($returnPath);
+            }
         }
         $message->setSubject($this->getSubject($subscriber, $msgId));
         $message->setFrom(array($this->from_email => $this->from_name));
@@ -1159,7 +1184,7 @@ class Campaign extends Model
             $query = $query->where('tracking_logs.id', "!=", "NULL");
         }
 
-        return $query->distinct();
+        return $query;
     }
 
     /**

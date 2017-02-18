@@ -861,9 +861,11 @@ class AdminGroup extends Model
     public static function multiProcessSelectOptions()
     {
         $options = [['value' => 1, 'text' => trans('messages.one_single_process')]];
-        for ($i = 2; $i < 101; ++$i) {
-            $options[] = ['value' => $i, 'text' => $i];
-        }
+        
+        //@todo temprory disable multi proccess
+        //for ($i = 2; $i < 101; ++$i) {
+        //    $options[] = ['value' => $i, 'text' => $i];
+        //}
 
         return $options;
     }
