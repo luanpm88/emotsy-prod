@@ -36,7 +36,8 @@ class Frontend
             $action_name != 'Acelle\Http\Controllers\CampaignController@chart24h' &&
             $action_name != 'Acelle\Http\Controllers\CampaignController@chart' &&
             $action_name != 'Acelle\Http\Controllers\CampaignController@chartCountry' &&
-            $action_name != 'Acelle\Http\Controllers\CampaignController@chartClickCountry'
+            $action_name != 'Acelle\Http\Controllers\CampaignController@chartClickCountry' &&
+            $action_name != 'Acelle\Http\Controllers\UserController@loginBack'
         ) {
             if($request->user()->userGroup->backend_access) {
                 return redirect()->action('Admin\HomeController@index');
