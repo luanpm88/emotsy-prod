@@ -248,6 +248,8 @@ class Plan extends Model
             'max_file_size_upload' => '5',
             'unsubscribe_url_required' => 'yes',
             'access_when_offline' => 'no',
+            'allow_customer_create_sending_servers' => 'no',
+            'sending_servers_max' => '-1',
         ];
     }
     
@@ -416,5 +418,27 @@ class Plan extends Model
         } else {
             return $this->getOption("max_file_size_upload");
         }        
+    }
+    
+    /**
+     * Get customer select2 select options
+     *
+     * @return array
+     */
+    public static function select2() {
+        $data = ['items' => [], 'more' => true];
+        
+        $query = \Acelle\Model\Plan::getAll();
+        if (isset($request->q)) {
+            $keyword = $request->q;
+            $query = $query->where(function ($q) use ($keyword) {
+                $q->orwhere('plans.name', 'like', '%'.$keyword.'%');
+            });
+        }
+        foreach ($query->limit(20)->get() as $plan) {
+            $data['items'][] = ['id' => $plan->id, 'text' => $plan->name];
+        }
+        
+        return json_encode($data);
     }
 }

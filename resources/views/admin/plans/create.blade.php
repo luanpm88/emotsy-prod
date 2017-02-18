@@ -16,7 +16,7 @@
 			<li><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><i class="icon-plus-circle2"></i> {{ trans('messages.create_admin') }}</span>
+			<span class="text-semibold"><i class="icon-plus-circle2"></i> {{ trans('messages.create_plan') }}</span>
 		</h1>
 	</div>
 

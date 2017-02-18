@@ -58,12 +58,23 @@
 	<div class="tabbable">
 		<ul class="nav nav-tabs nav-tabs-top">
 			<li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
-				<i class="icon-user"></i> {{ trans('messages.frontend') }}</a></li>
+				<i class="icon-paperplane"></i> {{ trans('messages.list_or_subscriber_or_segment_or_campaign') }}</a>
+			</li>
+			<li class="text-semibold"><a href="#top-tab2" data-toggle="tab">
+				<i class="icon-upload"></i> {{ trans('messages.file_upload') }}</a>
+			</li>
+			<li class="text-semibold"><a href="#top-tab3" data-toggle="tab">
+				<i class="icon-stats-bars4"></i> {{ trans('messages.sending_quota') }}</a>
+			</li>
+			<li class="text-semibold"><a href="#top-tab4" data-toggle="tab">
+				<i class="icon-server"></i> {{ trans('messages.sending_servers') }}</a>
+			</li>
+			
 		</ul>
 
 		<div class="tab-content">
 			<div class="tab-pane active" id="top-tab1">
-				<h3 class="text-teal-800">{{ trans('messages.list_or_subscriber_or_segment_or_campaign') }}</h3>
+				<!--<h3 class="text-teal-800">{{ trans('messages.list_or_subscriber_or_segment_or_campaign') }}</h3>-->
 				<div class="row">
 					<div class="boxing col-md-3">
 						@include('helpers.form_control', [
@@ -185,8 +196,9 @@
 						</span>
 					</div>
 				</div>
-					
-				<h3 class="text-teal-800">{{ trans('messages.file_upload') }}</h3>
+			</div>
+			<div class="tab-pane" id="top-tab2">
+				<!--<h3 class="text-teal-800">{{ trans('messages.file_upload') }}</h3>-->
 				<div class="row">
 					<div class="boxing col-md-3">
 						@include('helpers.form_control', [
@@ -211,9 +223,9 @@
 						])
 					</div>		
 				</div>
-				
-					
-				<h3 class="text-teal-800">{{ trans('messages.sending_quota') }}</h3>
+			</div>
+			<div class="tab-pane" id="top-tab3">
+				<!--<h3 class="text-teal-800">{{ trans('messages.sending_quota') }}</h3>-->
 				<div class="row">
 					<div class="boxing col-md-3">
 						@include('helpers.form_control', [
@@ -274,66 +286,110 @@
 						</div>
 					</div>
 				</div>
-					
-				<h3 class="text-teal-800">{{ trans('messages.sending_servers') }}</h3>
+			</div>
+			<div class="tab-pane" id="top-tab4">
+				<h4 class="text-teal-800 text-semibold">{{ trans('messages.sending_servers_settings') }}</h4>
+				
 				<div class="row">
-					<div class="col-md-3">
-						{{ trans('messages.all_sending_servers') }}&nbsp;&nbsp;&nbsp;
-						<span class="notoping">												
+					<div class="col-md-5">
+						<span class="text-semibold">{{ trans('messages.allow_customer_create_sending_servers') }}</span> &nbsp;&nbsp;&nbsp;
+						<span class="notoping">
 							@include('helpers.form_control', ['type' => 'checkbox',
 								'class' => '',
-								'name' => 'options[all_sending_servers]',
-								'value' => $options['all_sending_servers'],
+								'name' => 'options[allow_customer_create_sending_servers]',
+								'value' => $options['allow_customer_create_sending_servers'],
 								'label' => '',
 								'options' => ['no','yes'],
 								'help_class' => 'plan',
 								'rules' => $plan->rules()
 							])
 						</span>
-						
 					</div>
 				</div>
-				<br />
-				<div class="row sending-servers">
-					@foreach (Acelle\Model\SendingServer::getAll()->orderBy("name")->get() as $server)
-																
-						<div class="col-md-6">
-							<h5 class="mt-0 mb-5 text-semibold text-teal-600">{{ $server->name }}</h5>
-							<div class="row">											
-								<div class="col-md-2">
-									<div class="form-group">
-										<label class="mt-0 mb-5 text-semibold">{{ trans('messages.choose') }}</label>
+				<hr>
+				
+				<div class="sending-servers-yes">
+					<div class="row">
+						<div class="col-md-4">
+							<div class="boxing">
+								@include('helpers.form_control', [
+									'type' => 'text',
+									'class' => 'numeric',
+									'name' => 'options[sending_servers_max]',
+									'value' => $options['sending_servers_max'],
+									'label' => trans('messages.max_sending_servers'),
+									'help_class' => 'plan',
+									'options' => ['true', 'false'],
+									'rules' => $plan->rules()
+								])
+								<div class="checkbox inline unlimited-check text-semibold">
+									<label>
+										<input{{ $options['sending_servers_max']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
+										{{ trans('messages.unlimited') }}
+									</label>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				
+				<div class="sending-servers-no">
+					<h5 class="text-semibold">{{ trans('messages.setting_up_sending_servers_for_plan') }}</h5>
+					<div class="row">
+						<div class="col-md-3">
+							{{ trans('messages.use_all_sending_servers') }}&nbsp;&nbsp;&nbsp;
+							<span class="notoping">												
+								@include('helpers.form_control', ['type' => 'checkbox',
+									'class' => '',
+									'name' => 'options[all_sending_servers]',
+									'value' => $options['all_sending_servers'],
+									'label' => '',
+									'options' => ['no','yes'],
+									'help_class' => 'plan',
+									'rules' => $plan->rules()
+								])
+							</span>
+							
+						</div>
+					</div>
+					<br />
+					<div class="row sending-servers">
+						@foreach (Acelle\Model\SendingServer::getAll()->orderBy("name")->get() as $server)
+							<div class="col-md-6">
+								<h5 class="mt-0 mb-5 text-semibold text-teal-600">{{ $server->name }}</h5>
+								<div class="row">											
+									<div class="col-md-2">
+										<div class="form-group">
+											<label class="mt-0 mb-5 text-semibold">{{ trans('messages.choose') }}</label>
+											@include('helpers.form_control', [
+												'type' => 'checkbox',
+												'name' => 'sending_servers[' . $server->uid . '][check]',
+												'value' => $plan->plansSendingServers->contains('sending_server_id', $server->id),
+												'label' => '',
+												'options' => [false, true],
+												'help_class' => 'plan',
+												'rules' => $plan->rules()
+											])
+										</div>
+										<br><br>
+									</div>
+									<div class="col-md-9">
 										@include('helpers.form_control', [
-											'type' => 'checkbox',
-											'name' => 'sending_servers[' . $server->uid . '][check]',
-											'value' => $plan->plansSendingServers->contains('sending_server_id', $server->id),
-											'label' => '',
-											'options' => [false, true],
+											'type' => 'text',
+											'class' => 'numeric',
+											'name' => 'sending_servers[' . $server->uid . '][fitness]',
+											'label' => trans('messages.fitness'),
+											'value' => (is_object($plan->plansSendingServers()->where('sending_server_id', $server->id)->first()) ? $plan->plansSendingServers()->where('sending_server_id', $server->id)->first()->fitness : "100"),
 											'help_class' => 'plan',
 											'rules' => $plan->rules()
 										])
 									</div>
-									<br><br>
-								</div>
-								<div class="col-md-9">
-									@include('helpers.form_control', [
-										'type' => 'text',
-										'class' => 'numeric',
-										'name' => 'sending_servers[' . $server->uid . '][fitness]',
-										'label' => trans('messages.fitness'),
-										'value' => (is_object($plan->plansSendingServers()->where('sending_server_id', $server->id)->first()) ? $plan->plansSendingServers()->where('sending_server_id', $server->id)->first()->fitness : "100"),
-										'help_class' => 'plan',
-										'rules' => $plan->rules()
-									])
 								</div>
 							</div>
-						</div>
-							
-					@endforeach
+						@endforeach
+					</div>
 				</div>
-					
 			</div>
-				
 		</div>
 	</div>
 </div>
@@ -396,8 +452,20 @@
 			} else {
 				$(".sending-servers").show();
 			}
-		});
-		
+		});		
 		$("input[name='options[all_sending_servers]']").trigger("change");
+		
+		
+		// Sending servers checking setting
+		$(document).on("change", "input[name='options[allow_customer_create_sending_servers]']", function(e) {			
+			if($('input[name="options[allow_customer_create_sending_servers]"]:checked').val() == 'yes') {
+				$(".sending-servers-yes").show();
+				$(".sending-servers-no").hide();
+			} else {
+				$(".sending-servers-no").show();
+				$(".sending-servers-yes").hide();
+			}
+		});		
+		$('input[name="options[allow_customer_create_sending_servers]"]').trigger("change");
 	});
 </script>

@@ -230,7 +230,7 @@ class Customer extends Model
      */
     public static function getAll()
     {
-        return Customer::select('*');
+        return Customer::select('customers.*');
     }
 
     /**
@@ -845,5 +845,29 @@ class Customer extends Model
      */
     public function getLanguageCode() {
         return (is_object($this->language) ? $this->language->code : null);
+    }
+    
+    /**
+     * Get customer select2 select options
+     *
+     * @return array
+     */
+    public static function select2() {
+        $data = ['items' => [], 'more' => true];
+        
+        $query = \Acelle\Model\Customer::getAll()->leftJoin('users', 'users.id', '=', 'customers.user_id');
+        if (isset($request->q)) {
+            $keyword = $request->q;
+            $query = $query->where(function ($q) use ($keyword) {
+                $q->orwhere('customers.first_name', 'like', '%'.$keyword.'%')
+                    ->orWhere('customers.last_name', 'like', '%'.$keyword.'%')
+                    ->orWhere('users.email', 'like', '%'.$keyword.'%');
+            });
+        }
+        foreach ($query->limit(20)->get() as $customer) {
+            $data['items'][] = ['id' => $customer->id, 'text' => $customer->displayName()];
+        }
+        
+        return json_encode($data);
     }
 }

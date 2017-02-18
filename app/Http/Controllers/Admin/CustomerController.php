@@ -368,4 +368,16 @@ class CustomerController extends Controller
         
         return redirect()->action('Admin\UserController@index');
     }
+    
+    /**
+     * Select2 customer.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function select2(Request $request)
+    {        
+        echo \Acelle\Model\Customer::select2();
+    }
 }

@@ -435,7 +435,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/customer_groups/delete', 'CustomerGroupController@delete');
     Route::resource('admin/customer_groups', 'CustomerGroupController');
     
-    // Customer    
+    // Customer
+    Route::get('admin/customers/select2', 'CustomerController@select2');
     Route::get('admin/customers/login-as/{uid}', 'CustomerController@loginAs');
     Route::get('admin/customers/listing/{page?}', 'CustomerController@listing');
     Route::get('admin/customers/sort', 'CustomerController@sort');
@@ -482,7 +483,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/resellers/enable', 'ResellerController@enable');
     Route::resource('admin/resellers', 'ResellerController');
     
-    // Plan    
+    // Plan
+    Route::get('admin/plans/select2', 'PlanController@select2');
     Route::get('admin/plans/listing/{page?}', 'PlanController@listing');
     Route::get('admin/plans/sort', 'PlanController@sort');
     Route::get('admin/plans/delete', 'PlanController@delete');
@@ -497,6 +499,12 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/currencies/disable', 'CurrencyController@disable');
     Route::get('admin/currencies/enable', 'CurrencyController@enable');
     Route::resource('admin/currencies', 'CurrencyController');
+    
+    // Plan    
+    Route::get('admin/subscriptions/listing/{page?}', 'SubscriptionController@listing');
+    Route::get('admin/subscriptions/sort', 'SubscriptionController@sort');
+    Route::get('admin/subscriptions/delete', 'SubscriptionController@delete');    
+    Route::resource('admin/subscriptions', 'SubscriptionController');
 });
 
 
@@ -510,7 +518,7 @@ Route::group(['namespace' => 'Reseller', 'middleware' => ['not_installed', 'rese
     Route::get('reseller/account/contact', 'AccountController@contact');
     Route::post('reseller/account/contact', 'AccountController@contact');
     
-    // Customer    
+    // Customer
     Route::get('reseller/customers/login-as/{uid}', 'CustomerController@loginAs');
     Route::get('reseller/customers/listing/{page?}', 'CustomerController@listing');
     Route::get('reseller/customers/sort', 'CustomerController@sort');

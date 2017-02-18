@@ -80,9 +80,9 @@
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
-							@if (Auth::user()->can("read", new Acelle\Model\Plan()))
-								<li rel0="ResellerController">
-									<a href="{{ action('Admin\PlanController@index') }}">
+							@if (Auth::user()->can("read", new Acelle\Model\Subscription()))
+								<li rel0="SubscriptionController">
+									<a href="{{ action('Admin\SubscriptionController@index') }}">
 										<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
 									</a>
 								</li>

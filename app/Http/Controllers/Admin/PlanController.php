@@ -128,7 +128,7 @@ class PlanController extends Controller
         // save posted data
         if ($request->isMethod('post')) {
             $this->validate($request, $plan->rules());
-
+            
             $rules = [];
             if (isset($request->sending_servers)) {
                 foreach ($request->sending_servers as $key => $param) {
@@ -138,13 +138,13 @@ class PlanController extends Controller
                 }
             }
             $this->validate($request, $rules);
-
+            
             $plan->fill($request->all());
             $plan->options = json_encode($request->options);
             $plan->admin_id = $user->admin->id;
             $plan->status = 'active';
             $plan->save();
-
+            
             // For sending servers
             if (isset($request->sending_servers)) {
                 $plan->updateSendingServers($request->sending_servers);
@@ -364,5 +364,17 @@ class PlanController extends Controller
         }
 
         echo trans('messages.lists.custom_order.updated');
+    }
+    
+    /**
+     * Select2 plan.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function select2(Request $request)
+    {        
+        echo \Acelle\Model\Plan::select2();
     }
 }
