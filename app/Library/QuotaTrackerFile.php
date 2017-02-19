@@ -58,12 +58,27 @@ class QuotaTrackerFile extends QuotaTracker implements QuotaTrackerInterface
                 $timePoint = Carbon::now();
             }
     
-            if ($this->check($timePoint)) {
+            if ($this->doCheck($timePoint)) {
                 $this->series[] = $timePoint->timestamp;
                 $result = true;
             } else {
                 $result = false;
             }
+        });
+        
+        return $result;
+    }
+    
+    /**
+     * Check if over quota, add a time point
+     *
+     * @param Timestamps $timePoint
+     *
+     * @return void
+     */
+    public function check(Carbon $timePoint = null) {
+        $this->transaction(function() use ($timePoint, &$result) {
+            $result = $this->doCheck($timePoint);
         });
         
         return $result;
@@ -76,17 +91,14 @@ class QuotaTrackerFile extends QuotaTracker implements QuotaTrackerInterface
      *
      * @return void
      */
-    public function check(Carbon $timePoint = null) {
-        //$this->transaction(function() use ($timePoint, &$result) {
-            if (!isset($timePoint)) {
-                $timePoint = Carbon::now();
-            }
-    
-            $this->shiftBy($timePoint);
-            
-            $result = (self::UNLIMITED == $this->quota || $this->usage() < $this->quota);
-        //});
+    public function doCheck(Carbon $timePoint = null) {
+        if (!isset($timePoint)) {
+            $timePoint = Carbon::now();
+        }
+
+        $this->shiftBy($timePoint);
         
+        $result = (self::UNLIMITED == $this->quota || $this->usage() < $this->quota);
         return $result;
     }
     
@@ -170,7 +182,7 @@ class QuotaTrackerFile extends QuotaTracker implements QuotaTrackerInterface
      */
     public function getSeries()
     {
-        return $this->series;
+        return $this->series = array_map('intval', array_values(array_filter(explode(',', file_get_contents($this->file)))));
     }
 
     public function showSeries() {
@@ -197,7 +209,7 @@ class QuotaTrackerFile extends QuotaTracker implements QuotaTrackerInterface
             
             if (flock($this->reader, LOCK_EX | LOCK_NB)) {  // acquire an exclusive lock                
                 // retrieve the series data
-                $this->series = array_map('intval', array_filter(explode(',', file_get_contents($this->file))));
+                $this->series = $this->getSeries();
                 
                 // execute the callback
                 $callback();
