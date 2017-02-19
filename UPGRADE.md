@@ -12,6 +12,5 @@ This is the guideline for upgrading Acelle Mail source:
     php artisan config:cache
     php artisan migrate
 ````
-6. Check and update your cronjob settings if needed: Admin View > Setting > Cron Jobs
 
 That's it! You are now on the latest version of Acelle Mail.
