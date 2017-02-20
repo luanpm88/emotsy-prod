@@ -150,8 +150,12 @@ class QuotaTrackerFile extends QuotaTracker
      */
     public function getUsage($timePoint = null)
     {
-        $this->shiftBy($timePoint);
-        return sizeof($this->series);
+        $this->getSharedLock(function() use ($timePoint, &$usage) {
+            $this->shiftBy($timePoint);
+            $usage = sizeof($this->series);
+        });
+        
+        return $usage;
     }
 
     /**
@@ -248,11 +252,21 @@ class QuotaTrackerFile extends QuotaTracker
         }
     }
     
+    /**
+     * Load time series from file
+     *
+     * @return array time series
+     */
     private function load()
     {
         return array_map('intval', array_values(array_filter(explode(',', file_get_contents($this->file)))));
     }
     
+    /**
+     * Time out a lock request when it exceeds the QUOTA setting
+     *
+     * @return void
+     */
     private function timeout($start)
     {
         if (time() - $start > self::TIMEOUT) {
