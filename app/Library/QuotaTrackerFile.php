@@ -85,8 +85,7 @@ class QuotaTrackerFile extends QuotaTracker
         }
         
         $this->getSharedLock(function() use (&$result, $timePoint) {
-            $this->shiftBy($timePoint);
-            $result = (self::UNLIMITED == $this->quota || $this->getUsage() < $this->quota);
+            $result = (self::UNLIMITED == $this->quota || $this->getUsage($timePoint) < $this->quota);
         });
         
         return $result;
@@ -149,8 +148,9 @@ class QuotaTrackerFile extends QuotaTracker
      *
      * @return Integer count
      */
-    public function getUsage()
+    public function getUsage($timePoint = null)
     {
+        $this->shiftBy($timePoint);
         return sizeof($this->series);
     }
 
