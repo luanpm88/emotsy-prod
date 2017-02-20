@@ -23,7 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Acelle\Library\QuotaTrackerStd;
+use Acelle\Library\QuotaTrackerFile;
 use Carbon\Carbon;
 use Acelle\Library\Log as MailLog;
 
@@ -638,7 +638,7 @@ class User extends Authenticatable
     {
         $tracker = $this->getQuotaTracker();
         $tracker->check(); // renew the usage data (trigger the private shiftBy() function)
-        return $tracker->usage();
+        return $tracker->getUsage();
     }
 
     /**
@@ -653,7 +653,7 @@ class User extends Authenticatable
             return '0';
         }
 
-        return round(($this->getQuotaTracker()->usagePercentage() * 100), 2);
+        return round(($this->getQuotaTracker()->getUsagePercentage() * 100), 2);
     }
 
     /**
@@ -773,42 +773,44 @@ class User extends Authenticatable
      * @return array
      */
     public function renewQuotaTracker() {
-        $start = $this->getQuotaStartingTime();
-
-        // recent tracking logs
-        // @todo: potential issue here, application fails in case $start is NULL
-        $recent = $this->trackingLogs()->where('created_at', '>=', $start);
-        
-        // existing quota usage
-        $stored = null;
-
-        // load the tracker from DB (if exists)
-        // then merge with the current tracking log data
-        if ($this->quota) {
-            try {
-                $stored = unserialize($this->quota);
-            } catch (\Exception $x) {
-                // @TODO logging here
-                MailLog::warning('Cannot retrieve user quota');
-            }
-        }
-
-        // load the tracker from DB
-        if (!is_null($stored) && !empty($stored)) {
-            // retrieve the stored quota usage and merge it with actual (newer) usage
-            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp(end($stored)));
-            $series = collect($recent->get())->map(function($trackingLog) {
-                return $trackingLog->created_at->timestamp;
-            })->toArray();
+        $this->getQuotaTracker()->getExclusiveLock(function() {
+            $start = $this->getQuotaStartingTime();
+    
+            // recent tracking logs
+            // @todo: potential issue here, application fails in case $start is NULL
+            $recent = $this->trackingLogs()->where('created_at', '>=', $start);
             
-            $series = array_merge($stored, $series);
-        } else {
-            $series = collect($recent->get())->map(function($trackingLog) {
-                return $trackingLog->created_at->timestamp;
-            })->toArray();
-        }
-        
-        $this->getQuotaTracker()->renew($series);
+            // existing quota usage
+            $stored = null;
+ 
+            // load the tracker from DB (if exists)
+            // then merge with the current tracking log data
+            if ($this->quota) {
+                try {
+                    $stored = unserialize($this->quota);
+                } catch (\Exception $x) {
+                    // @TODO logging here
+                    MailLog::warning('Cannot retrieve user quota');
+                }
+            }
+    
+            // load the tracker from DB
+            if (!is_null($stored) && !empty($stored)) {
+                // retrieve the stored quota usage and merge it with actual (newer) usage
+                $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp(end($stored)));
+                $series = $recent->get()->map(function($trackingLog) {
+                    return $trackingLog->created_at->timestamp;
+                })->toArray();
+                
+                $series = array_merge($stored, $series);
+            } else {
+                $series = $recent->get()->map(function($trackingLog) {
+                    return $trackingLog->created_at->timestamp;
+                })->toArray();
+            }
+            
+            $this->getQuotaTracker()->reset($series);
+        });
     }
 
     /**
@@ -817,17 +819,18 @@ class User extends Authenticatable
      * @return array
      */
     public function initQuotaTracker() {
-        if (\Config::get('app.redis_enabled')) {
-            $this->quotaTracker = new QuotaTrackerRedis(Redis::connection(), $this->getQuotaIntervalString(), $this->getSendingQuota());
-            // @note: in case of Redis tracker, the following command must be issued manually
-            //     $this->renewQuotaTracker();
-            // Normally, Redis tracker is used in a multi-process context, the above command must be executed 
-            //     by the parent process, before forking any child process
-        } else {
-            $this->quotaTracker = new QuotaTrackerStd($this->getQuotaIntervalString(), $this->getSendingQuota());
-            // renew the quota data stored in the DB
-            $this->renewQuotaTracker();
-        }
+        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $this->getQuotaIntervalString(), $this->getSendingQuota());
+        // @note: in case of multi-process, the following command must be issued manually
+        //     $this->renewQuotaTracker();
+    }
+    
+    /**
+     * Get sending quota lock file
+     *
+     * @return string file path
+     */
+    public function getSendingQuotaLockFile() {
+        return storage_path("app/user/quota/{$this->uid}");
     }
 
     /**

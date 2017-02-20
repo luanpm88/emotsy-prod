@@ -43,7 +43,16 @@ class QuotaTrackerFile extends QuotaTracker
     {
         parent::__construct($interval, $quota);
         $this->file = $file;
-        
+        $this->createLogFile();
+    }
+    
+    /**
+     * Create the lock file itself if not exist 
+     *
+     * @return void
+     */
+    private function createLogFile()
+    {
         // make dir
         if (!file_exists(dirname($this->file))) {
             mkdir(dirname($this->file), 0755, true);
@@ -242,6 +251,7 @@ class QuotaTrackerFile extends QuotaTracker
             return;
         }
         
+        $this->createLogFile();
         $this->reader = fopen($this->file, "r");
         $start = time();
         while (true) {
