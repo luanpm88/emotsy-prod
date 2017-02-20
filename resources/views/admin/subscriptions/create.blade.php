@@ -24,7 +24,7 @@
 
 @section('content')
 	
-	<form enctype="multipart/form-data" action="{{ action('Admin\SubscriptionController@store') }}" method="POST" class="form-validate-jqueryz">
+	<form enctype="multipart/form-data" action="{{ action('Admin\SubscriptionController@store') }}" method="POST" class="form-validate-jqueryz subscription-form">
 		{{ csrf_field() }}
 		
 		@include('admin.subscriptions._form')			

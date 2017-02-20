@@ -1210,4 +1210,31 @@ $(function() {
         });
     });
     
+    // ajax form review link
+    $('.ajax-detail-box').each(function() {
+        var container = $(this);
+        var form_class = container.attr('data-form');
+        var form = $(form_class);
+        var url = container.attr('data-url');
+        var method = form.attr('method');
+        var action = form.attr('action');
+        
+        if(typeof(method) === 'undefined') {
+            method = 'POST';
+        }
+        
+        $(document).on('change', form_class + ' select', function() {
+            $.ajax({
+                method: 'GET',
+                url: url,
+                data: form.serialize()
+            })
+            .done(function(msg) {
+                container.html(msg);
+                container.find('.pickadate').pickadate({format: 'yyyy-mm-dd', selectYears: 100});
+                container.find('.pickadate-control').trigger('change');
+            });
+        });
+    });
+    
 });

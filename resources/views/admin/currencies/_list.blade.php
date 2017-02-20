@@ -29,6 +29,13 @@
 												<span class="text-muted">{{ trans("messages.code") }}</span>
 											</div>
 										</td>
+										<td class="stat-fix-size-sm">
+											<div class="single-stat-box pull-left">
+												<span class="no-margin stat-num kq_search">{{ $item->format }}</span>
+												<br />
+												<span class="text-muted">{{ trans("messages.currency_format") }}</span>
+											</div>
+										</td>
 										<td class="stat-fix-size">
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>

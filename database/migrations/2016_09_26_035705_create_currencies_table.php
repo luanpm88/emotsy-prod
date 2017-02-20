@@ -18,6 +18,7 @@ class CreateCurrenciesTable extends Migration
             $table->integer('admin_id')->unsigned();
             $table->string('name');
             $table->string('code');
+            $table->string('format');
             $table->string('status');
             
             $table->timestamps();

@@ -500,7 +500,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/currencies/enable', 'CurrencyController@enable');
     Route::resource('admin/currencies', 'CurrencyController');
     
-    // Plan    
+    // Subscription
+    Route::get('admin/subscriptions/preview', 'SubscriptionController@preview');
     Route::get('admin/subscriptions/listing/{page?}', 'SubscriptionController@listing');
     Route::get('admin/subscriptions/sort', 'SubscriptionController@sort');
     Route::get('admin/subscriptions/delete', 'SubscriptionController@delete');    

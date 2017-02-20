@@ -12,7 +12,14 @@
 								@include('helpers.form_control', ['type' => 'text', 'name' => 'code', 'value' => $currency->code, 'help_class' => 'currency', 'rules' => $currency->rules()])
 								
 							</div>
-						</div>						
+						</div>
+						<div class="col-md-4">
+							<div class="">
+
+								@include('helpers.form_control', ['type' => 'text', 'name' => 'format', 'label' => trans('messages.currency_format'), 'value' => $currency->format, 'help_class' => 'currency', 'rules' => $currency->rules()])
+								
+							</div>
+						</div>		
 					</div>
 					
 					<hr />

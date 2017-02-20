@@ -776,4 +776,47 @@ class Tool
     
         return json_decode($res->getBody(), true)["success"];
     }
+    
+    /**
+     * Number select options.
+     *
+     * @param string
+     *
+     * @return array
+     */
+    public static function numberSelectOptions($min=1, $max=100) {
+        $options = [];
+        
+        for($i = $min; $i <= $max; $i++) {
+            $options[] = ['value' => $i, 'text' => $i];
+        }
+        
+        return $options;
+    }
+    
+    /**
+     * Format price.
+     *
+     * @param string
+     *
+     * @return string
+     */
+    public static function format_price($price, $format='{PRICE}') {
+        return str_replace('{PRICE}', Tool::format_number($price), $format);
+    }
+    
+    /**
+     * Format price.
+     *
+     * @param string
+     *
+     * @return string
+     */
+    public static function format_number($number) {
+        if(is_numeric( $number ) && floor( $number ) != $number) {
+            return number_format($number, 2, trans('messages.dec_point'), trans('messages.thousands_sep'));
+        } else {
+            return number_format($number, 0, trans('messages.dec_point'), trans('messages.thousands_sep'));
+        }        
+    }
 }

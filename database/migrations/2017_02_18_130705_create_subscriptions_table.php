@@ -17,8 +17,11 @@ class CreateSubscriptionsTable extends Migration
             $table->uuid('uid');
             $table->integer('plan_id')->unsigned();
             $table->integer('customer_id')->unsigned();
+            $table->integer('quantity');
             $table->text('options');
             $table->decimal('price');
+            $table->timestamp('start_at');
+            $table->timestamp('end_at');
             
             $table->timestamps();
             

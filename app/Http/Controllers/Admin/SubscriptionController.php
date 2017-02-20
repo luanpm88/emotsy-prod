@@ -72,7 +72,7 @@ class SubscriptionController extends Controller
         }
         
         if (!empty($request->old())) {
-            $subscription->fill($request->old());
+            $subscription->fillAttributes($request->old());
         }
 
         return view('admin.subscriptions.create', [
@@ -102,7 +102,7 @@ class SubscriptionController extends Controller
             $this->validate($request, $subscription->rules());
             
             $plan = \Acelle\Model\Plan::find($request->plan_id);
-            $subscription->fill($request->all());
+            $subscription->fillAttributes($request->all());
             $subscription->options = $plan->options;
             $subscription->price = $plan->price;
             $subscription->save();
@@ -139,7 +139,7 @@ class SubscriptionController extends Controller
         }
         
         if (!empty($request->old())) {
-            $subscription->fill($request->old());
+            $subscription->fillAttributes($request->old());
         }
 
         return view('admin.subscriptions.edit', [
@@ -168,7 +168,7 @@ class SubscriptionController extends Controller
             $this->validate($request, $subscription->rules());
             
             $plan = \Acelle\Model\Plan::find($request->plan_id);
-            $subscription->fill($request->all());
+            $subscription->fillAttributes($request->all());
             $subscription->options = $plan->options;
             $subscription->price = $plan->price;
             $subscription->save();
@@ -187,5 +187,28 @@ class SubscriptionController extends Controller
     public function destroy($id)
     {
         //
+    }
+    
+    /**
+     * Subscription preview.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function preview(Request $request)
+    {
+        // Get current user
+        $subscription = new \Acelle\Model\Subscription();
+
+        // authorize
+        if (\Gate::denies('read', $subscription)) {
+            return $this->notAuthorized();
+        }
+
+        $subscription->fillAttributes($request->all());
+        
+        return view('admin.subscriptions.preview', [
+            'subscription' => $subscription
+        ]);
     }
 }

@@ -12,7 +12,7 @@ class Currency extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'code'
+        'name', 'code', 'format'
     ];
 
     /**
@@ -25,6 +25,7 @@ class Currency extends Model
         return array(
             'name' => 'required',
             'code' => 'required',
+            'format' => 'required|substring:{PRICE}',
         );
     }
 
