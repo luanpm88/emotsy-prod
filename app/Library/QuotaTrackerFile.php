@@ -24,10 +24,13 @@
 namespace Acelle\Library;
 use Carbon\Carbon;
 
-class QuotaTrackerFile extends QuotaTracker implements QuotaTrackerInterface
+class QuotaTrackerFile extends QuotaTracker
 {
     protected $file;
     protected $reader;
+    protected $hasLock = false;
+    
+    const TIMEOUT = 60;
     
     /**
      * Constructor, modeling data from a JSON array 
@@ -53,32 +56,17 @@ class QuotaTrackerFile extends QuotaTracker implements QuotaTrackerInterface
      * @return void
      */
     public function add(Carbon $timePoint = null) {
-        $this->transaction(function() use ($timePoint, &$result) {
-            if (!isset($timePoint)) {
-                $timePoint = Carbon::now();
-            }
-    
-            if ($this->doCheck($timePoint)) {
+        if (!isset($timePoint)) {
+            $timePoint = Carbon::now();
+        }
+        
+        $this->getExclusiveLock(function() use ($timePoint, &$result) {
+            if ($this->check($timePoint)) {
                 $this->series[] = $timePoint->timestamp;
                 $result = true;
             } else {
                 $result = false;
             }
-        });
-        
-        return $result;
-    }
-    
-    /**
-     * Check if over quota, add a time point
-     *
-     * @param Timestamps $timePoint
-     *
-     * @return void
-     */
-    public function check(Carbon $timePoint = null) {
-        $this->transaction(function() use ($timePoint, &$result) {
-            $result = $this->doCheck($timePoint);
         });
         
         return $result;
@@ -91,14 +79,16 @@ class QuotaTrackerFile extends QuotaTracker implements QuotaTrackerInterface
      *
      * @return void
      */
-    public function doCheck(Carbon $timePoint = null) {
+    public function check(Carbon $timePoint = null) {
         if (!isset($timePoint)) {
             $timePoint = Carbon::now();
         }
-
-        $this->shiftBy($timePoint);
         
-        $result = (self::UNLIMITED == $this->quota || $this->usage() < $this->quota);
+        $this->getSharedLock(function() use (&$result, $timePoint) {
+            $this->shiftBy($timePoint);
+            $result = (self::UNLIMITED == $this->quota || $this->getUsage() < $this->quota);
+        });
+        
         return $result;
     }
     
@@ -128,11 +118,9 @@ class QuotaTrackerFile extends QuotaTracker implements QuotaTrackerInterface
      * @param Array $series
      * @return void
      */
-    public function renew($series)
+    public function reset($series = [])
     {
-        $this->transaction(function() use ($series) {
-            $this->series = $series;
-        });
+        $this->series = $series;
     }
 
     /**
@@ -140,7 +128,7 @@ class QuotaTrackerFile extends QuotaTracker implements QuotaTrackerInterface
      *
      * @return Mixed data point
      */
-    public function first()
+    private function first()
     {
         return (empty($this->series)) ? null : $this->series[self::START_POINT];
     }
@@ -150,79 +138,126 @@ class QuotaTrackerFile extends QuotaTracker implements QuotaTrackerInterface
      *
      * @return Mixed data point
      */
-    public function last()
+    private function last()
     {
         return (empty($this->series)) ? null : $this->series[sizeof($this->series) - 1];
     }
 
     /**
      * Count the time series length
+     * @transaction-safe
      *
      * @return Integer count
      */
-    public function usage()
+    public function getUsage()
     {
         return sizeof($this->series);
     }
 
     /**
-     * Get usage percentage
-     *
-     * @return float
-     */
-    public function usagePercentage()
-    {
-        return (float) $this->usage() / $this->quota;
-    }
-
-    /**
      * Get the data series
+     * @transaction-safe
      *
      * @return Array data series
      */
     public function getSeries()
     {
-        return $this->series = array_map('intval', array_values(array_filter(explode(',', file_get_contents($this->file)))));
-    }
-
-    public function showSeries() {
-        echo "\n------------------------------------------\n";
-        echo "Now: *" . Carbon::now()->formatLocalized("%H:%M:%S") . "*\n";
-        foreach($this->series as $t) {
-            echo Carbon::createFromTimestamp($t)->formatLocalized("%H:%M:%S") . " | "; 
-        }
-        echo "\n------------------------------------------\n";
+        $this->getSharedLock(function() use (&$series) {
+            $series = $this->series;
+        });
+        
+        return $series;
     }
     
-    public function transaction($callback)
+    /**
+     * Get exclusive lock, preparing to read/write quota data
+     *
+     * @return void
+     */
+    public function getExclusiveLock($callback)
     {
-        $this->reader = fopen($this->file, "r+");
+        if ($this->hasLock) {
+            // execute the callback without getting for a lock again
+            $callback($this);
+            return;
+        }
         
+        $this->reader = fopen($this->file, "r+");
         $start = time();
-        $timeout = 60;
         while (true) {
             // if timed out
-            if (time() - $start > $timeout) {
-                fclose($this->reader);
-                throw new \Exception("Timeout getting file lock: {$this->file}");
-            }
+            $this->timeout($start);
             
             if (flock($this->reader, LOCK_EX | LOCK_NB)) {  // acquire an exclusive lock                
+                $this->hasLock = true;
+                
                 // retrieve the series data
-                $this->series = $this->getSeries();
+                $this->series = array_map('intval', array_values(array_filter(explode(',', file_get_contents($this->file)))));
                 
                 // execute the callback
-                $callback();
+                $callback($this);
                 
                 ftruncate($this->reader, 0);
                 fwrite($this->reader, implode(",", $this->series));
                 fflush($this->reader);
+                $this->hasLock = false;
                 flock($this->reader, LOCK_UN);    // release the lock
                 fclose($this->reader);
                 break;
-            } else {
-                // waiting to for the lock
             }
+            
+            // Otherwise, loop and wait to for the lock
+        }
+    }
+    
+    /**
+     * Get shared lock, preparing to read quota data
+     *
+     * @return void
+     */
+    public function getSharedLock($callback)
+    {
+        if ($this->hasLock) {
+            // execute the callback
+            $callback($this);
+            return;
+        }
+        
+        $this->reader = fopen($this->file, "r");
+        $start = time();
+        while (true) {
+            // if timed out
+            $this->timeout($start);
+
+            if (flock($this->reader, LOCK_SH | LOCK_NB)) {  // acquire an exclusive lock                
+                $this->hasLock = true;
+                // retrieve the series data
+                $this->series = $this->load();
+                
+                // execute the callback
+                $callback($this);
+                
+                $this->hasLock = false;
+                flock($this->reader, LOCK_UN);    // release the lock
+                fclose($this->reader);
+                
+                break;
+            }
+            
+            // Otherwise, loop and wait to for the lock
+        }
+    }
+    
+    private function load()
+    {
+        return array_map('intval', array_values(array_filter(explode(',', file_get_contents($this->file)))));
+    }
+    
+    private function timeout($start)
+    {
+        if (time() - $start > self::TIMEOUT) {
+            fclose($this->reader);
+            throw new \Exception("Timeout getting lock: {$this->file}");
         }
     }
 }
