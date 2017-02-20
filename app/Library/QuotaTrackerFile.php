@@ -44,6 +44,11 @@ class QuotaTrackerFile extends QuotaTracker
         parent::__construct($interval, $quota);
         $this->file = $file;
         
+        // make dir
+        if (!file_exists(dirname($this->file))) {
+            mkdir(dirname($this->file), 0755, true);
+        }
+        
         // init an empty file if not exist
         touch($this->file);
     }
@@ -150,12 +155,17 @@ class QuotaTrackerFile extends QuotaTracker
      */
     public function getUsage($timePoint = null)
     {
-        $this->getSharedLock(function() use ($timePoint, &$usage) {
-            $this->shiftBy($timePoint);
-            $usage = sizeof($this->series);
-        });
-        
-        return $usage;
+        return sizeof($this->getSeries($timePoint));
+    }
+    
+    /**
+     * Get usage percentage
+     *
+     * @return float
+     */
+    public function getUsagePercentage()
+    {
+        return (float) $this->getUsage() / $this->quota;
     }
 
     /**
@@ -164,9 +174,14 @@ class QuotaTrackerFile extends QuotaTracker
      *
      * @return Array data series
      */
-    public function getSeries()
+    public function getSeries(Carbon $timePoint = null)
     {
-        $this->getSharedLock(function() use (&$series) {
+        if (is_null($timePoint)) {
+            $timePoint = Carbon::now();
+        }
+        
+        $this->getSharedLock(function() use (&$series, $timePoint) {
+            $this->shiftBy($timePoint);
             $series = $this->series;
         });
         
