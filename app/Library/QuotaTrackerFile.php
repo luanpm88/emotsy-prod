@@ -76,11 +76,12 @@ class QuotaTrackerFile extends QuotaTracker
         
         $this->getExclusiveLock(function() use ($timePoint, &$result) {
             if ($this->check($timePoint)) {
-                $this->series[] = $timePoint->timestamp;
                 $result = true;
             } else {
                 $result = false;
             }
+            
+            $this->series[] = $timePoint->timestamp;
         });
         
         return $result;

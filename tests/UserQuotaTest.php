@@ -24,10 +24,11 @@ class UserQuotaTest extends TestCase
         
         // assume that REDIS is not enabled (then QuotaTrackerStd is used)
         // and user quota is: 3 emails every 1 minute
-        \Config::shouldReceive('get')
-                    ->once()
-                    ->with('app.redis_enabled')
-                    ->andReturn(false);
+        //\Config::shouldReceive('get')
+        //            ->once()
+        //            ->with('app.redis_enabled')
+        //            ->andReturn(false);
+        
         $user->method('getQuotaIntervalString')->willReturn('1 minute');
         $user->method('getSendingQuota')->willReturn('3');
         

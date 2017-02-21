@@ -637,7 +637,6 @@ class User extends Authenticatable
     public function getSendingQuotaUsage()
     {
         $tracker = $this->getQuotaTracker();
-        $tracker->check(); // renew the usage data (trigger the private shiftBy() function)
         return $tracker->getUsage();
     }
 
@@ -651,6 +650,8 @@ class User extends Authenticatable
         // @todo magic number
         if ($this->getSendingQuota() == -1) {
             return '0';
+        } elseif ($this->getSendingQuota() == '0' || $this->getSendingQuotaUsage() >= $this->getSendingQuota()) {
+            return '100';
         }
 
         return round(($this->getQuotaTracker()->getUsagePercentage() * 100), 2);
@@ -673,7 +674,7 @@ class User extends Authenticatable
      */
     public function countUsage(Carbon $timePoint = null)
     {
-        return $this->getQuotaTracker()->add();
+        return $this->getQuotaTracker($timePoint)->add();
     }
 
     /**
