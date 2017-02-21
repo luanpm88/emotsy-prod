@@ -22,14 +22,14 @@
 
 namespace Acelle\Model;
 
+use Acelle\Library\QuotaTrackerFile;
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\QuotaTrackerStd;
 use Carbon\Carbon;
 use Acelle\Library\Log as MailLog;
 
 class Customer extends Model
 {
-    protected $quotaTracker;    
+    protected $quotaTracker;
     
     /**
      * The attributes that are mass assignable.

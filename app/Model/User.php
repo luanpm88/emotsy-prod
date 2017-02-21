@@ -24,7 +24,6 @@ namespace Acelle\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-use Acelle\Library\QuotaTrackerFile;
 use Carbon\Carbon;
 use Acelle\Library\Log as MailLog;
 
