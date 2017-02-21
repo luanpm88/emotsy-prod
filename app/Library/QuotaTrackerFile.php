@@ -67,11 +67,13 @@ class QuotaTrackerFile extends QuotaTracker
                     mkdir(dirname($this->file), 0775, true);
                 }
                 
-                // init an empty file if not exist
-                touch($this->file);
-                
-                // change file permisson
-                chmod($this->file, 0775);
+                if (!file_exists($this->file)) {
+                    // init an empty file if not exist
+                    touch($this->file);
+                    
+                    // change file permisson
+                    chmod($this->file, 0775);
+                }
                 
                 // change umask back to its original value
                 umask($old);
