@@ -53,13 +53,36 @@ class QuotaTrackerFile extends QuotaTracker
      */
     private function createLogFile()
     {
-        // make dir
-        if (!file_exists(dirname($this->file))) {
-            mkdir(dirname($this->file), 0755, true);
+        // lock at application level
+        $fp = fopen(storage_path('lock'), "r+");
+        $start = time();
+        while (true) {
+            $this->timeout($start);
+            
+            if (flock($fp, LOCK_EX | LOCK_NB)) {
+                $old = umask(0);
+                
+                // create the base directories for log files
+                if (!file_exists(dirname($this->file))) {
+                    mkdir(dirname($this->file), 0775, true);
+                }
+                
+                // init an empty file if not exist
+                touch($this->file);
+                
+                // change file permisson
+                chmod($this->file, 0775);
+                
+                // change umask back to its original value
+                umask($old);
+                
+                // unlock
+                flock($fp, LOCK_UN);
+                break;
+            }
         }
-        
-        // init an empty file if not exist
-        touch($this->file);
+
+        fclose($fp);
     }
     
     /**
@@ -296,8 +319,7 @@ class QuotaTrackerFile extends QuotaTracker
     private function timeout($start)
     {
         if (time() - $start > self::TIMEOUT) {
-            fclose($this->reader);
-            throw new \Exception("Timeout getting lock: {$this->file}");
+            throw new \Exception("Timeout getting lock");
         }
     }
 }
