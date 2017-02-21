@@ -32,7 +32,7 @@ class Plan extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'frequency_amount', 'frequency_unit', 'price', 'color'
+        'name', 'frequency_amount', 'frequency_unit', 'price', 'color', 'currency_id'
     ];
 
     /**
@@ -44,6 +44,7 @@ class Plan extends Model
     {
         $rules = array(
             'name' => 'required',
+            'currency_id' => 'required',
             'frequency_amount' => 'required|min:1',
             'frequency_unit' => 'required',
             'price' => 'required|min:0',
@@ -76,6 +77,11 @@ class Plan extends Model
     public function plansSendingServers()
     {
         return $this->hasMany('Acelle\Model\PlansSendingServer');
+    }
+    
+    public function currency()
+    {
+        return $this->belongsTo('Acelle\Model\Currency');
     }
 
     /**

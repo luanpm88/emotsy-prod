@@ -41,7 +41,11 @@
                     <div class="form-group">									
                         <label>{{ trans('messages.subscription_time_registered') }}</label>
                         <div class="text-right">											
-                            <h3 class="mt-0 text-semibold">{{ $subscription->registered_time }}</h3>
+                            <h3 class="mt-0 text-semibold">{{
+                            trans('messages.display_' . $subscription->plan->frequency_unit . '_number', [
+                                'number' => $subscription->quantity * $subscription->plan->frequency_amount
+                            ]) }}
+                            </h3>
                         </div>
                     </div>
                 </div>

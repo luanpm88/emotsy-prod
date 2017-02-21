@@ -16,6 +16,7 @@ class Subscription extends Model
         'updated_at',
         'start_at',
         'end_at',
+        'note',
     ];
     
     /**
@@ -155,10 +156,6 @@ class Subscription extends Model
         if(!$this->start_at) {
             $this->start_at = \Carbon\Carbon::now();
         }
-        
-        $this->registered_time = trans('messages.display_' . $plan->frequency_unit . '_number', [
-            'number' => $params['quantity'] * $plan->frequency_amount
-        ]);
         
         switch ($plan->frequency_unit) {
             case 'day':

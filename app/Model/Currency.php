@@ -145,4 +145,37 @@ class Currency extends Model
         $this->status = 'active';
         return $this->save();
     }
+    
+    /**
+     * Get customer select2 select options
+     *
+     * @return array
+     */
+    public static function select2() {
+        $data = ['items' => [], 'more' => true];
+        
+        $query = Currency::getAll();
+        if (isset($request->q)) {
+            $keyword = $request->q;
+            $query = $query->where(function ($q) use ($keyword) {
+                $q->orwhere('currencies.name', 'like', '%'.$keyword.'%')
+                    ->orwhere('currencies.code', 'like', '%'.$keyword.'%');
+            });
+        }
+        foreach ($query->limit(20)->get() as $currency) {
+            $data['items'][] = ['id' => $currency->id, 'text' => $currency->displayName()];
+        }
+        
+        return json_encode($data);
+    }
+    
+    /**
+     * Display currency name.
+     *
+     * @return collect
+     */
+    public function displayName()
+    {
+        return $this->name . " (" . $this->code . ")";
+    }
 }

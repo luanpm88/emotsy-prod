@@ -18,7 +18,7 @@ class CreatePlansTable extends Migration
             $table->integer('admin_id')->unsigned();
             $table->integer('currency_id')->unsigned();
             $table->string('name');
-            $table->decimal('price');
+            $table->decimal('price', 16, 2);
             $table->string('frequency_amount');
             $table->string('frequency_unit');
             $table->text('options');

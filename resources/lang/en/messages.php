@@ -1478,7 +1478,7 @@ return [
     'thousands_sep' => ',',
     'free' => 'Free',
     'currency_format' => 'Format',
-    '' => '',
+    'select_currency' => 'Choose currency',
     '' => '',
     '' => '',
     '' => '',

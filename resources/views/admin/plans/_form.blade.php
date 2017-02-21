@@ -17,6 +17,23 @@
 			])
 		</div>
 	</div>
+	<div class="col-md-4">
+		<div class="">
+			@include('helpers.form_control', [
+				'type' => 'select_ajax',
+				'name' => 'currency_id',
+				'label' => trans('messages.currency'),
+				'selected' => [
+					'value' => $plan->currency_id,
+					'text' => is_object($plan->currency) ? $plan->currency->displayName() : ''
+				],
+				'help_class' => 'plan',
+				'rules' => $plan->rules(),
+				'url' => action('Admin\CurrencyController@select2'),
+				'placeholder' => trans('messages.select_currency')
+			])
+		</div>
+	</div>
 </div>
 <div class="row">
 	<div class="col-md-4">

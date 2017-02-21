@@ -268,4 +268,16 @@ class CurrencyController extends Controller
         // Redirect to my lists page
         echo trans('messages.currencies.deleted');
     }
+    
+    /**
+     * Select2 plan.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function select2(Request $request)
+    {        
+        echo \Acelle\Model\Currency::select2();
+    }
 }
