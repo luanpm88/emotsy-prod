@@ -675,7 +675,7 @@ class Customer extends Model
     {
         $tracker = $this->getQuotaTracker();
         $tracker->check(); // renew the usage data (trigger the private shiftBy() function)
-        return $tracker->usage();
+        return $tracker->getUsage();
     }
     
     /**
