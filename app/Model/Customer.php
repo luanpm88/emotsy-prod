@@ -594,11 +594,11 @@ class Customer extends Model
      */
     public function displaySendingQuotaUsage()
     {
-        if ($this->maxQuota() == '∞') {
+        if ($this->getSendingQuota() == -1) {
             return trans('messages.unlimited');
         }
-    
-        return $this->sendingQuotaUsage().'%';
+        // @todo use percentage helper here
+        return $this->getSendingQuotaUsagePercentage().'%';
     }
     
     /**
@@ -679,7 +679,7 @@ class Customer extends Model
     }
     
     /**
-     * Get user's sending quota rate.
+     * Get customer's sending quota rate.
      *
      * @return string
      */
@@ -746,7 +746,7 @@ class Customer extends Model
                 $stored = unserialize($this->quota);
             } catch (\Exception $x) {
                 // @TODO logging here
-                MailLog::warning('Cannot retrieve user quota');
+                MailLog::warning('Cannot retrieve customer quota');
             }
         }
 
@@ -774,21 +774,22 @@ class Customer extends Model
      * @return array
      */
     public function initQuotaTracker() {
-        if (\Config::get('app.redis_enabled')) {
-            $this->quotaTracker = new QuotaTrackerRedis(Redis::connection(), $this->getQuotaIntervalString(), $this->getSendingQuota());
-            // @note: in case of Redis tracker, the following command must be issued manually
-            //     $this->renewQuotaTracker();
-            // Normally, Redis tracker is used in a multi-process context, the above command must be executed 
-            //     by the parent process, before forking any child process
-        } else {
-            $this->quotaTracker = new QuotaTrackerStd($this->getQuotaIntervalString(), $this->getSendingQuota());
-            // renew the quota data stored in the DB
-            $this->renewQuotaTracker();
-        }
+        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $this->getQuotaIntervalString(), $this->getSendingQuota());
+        // @note: in case of multi-process, the following command must be issued manually
+        //     $this->renewQuotaTracker();
+    }
+    
+    /**
+     * Get sending quota lock file
+     *
+     * @return string file path
+     */
+    public function getSendingQuotaLockFile() {
+        return storage_path("app/customer/quota/{$this->uid}");
     }
 
     /**
-     * Get user's QuotaTracker
+     * Get customer's QuotaTracker
      *
      * @return array
      */
@@ -830,7 +831,7 @@ class Customer extends Model
     }
     
     /**
-     * Get user timezone
+     * Get customer timezone
      *
      * @return string
      */
@@ -839,7 +840,7 @@ class Customer extends Model
     }
     
     /**
-     * Get user language code
+     * Get customer language code
      *
      * @return string
      */

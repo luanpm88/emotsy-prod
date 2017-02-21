@@ -217,7 +217,7 @@ class Campaign extends Model
     public function getListsSegments()
     {
         if($this->isAuto()) {
-            return $this->autoEvent->automation->getListsSegments();
+            return $this->autoEvent()->automation->getListsSegments();
         }
         
         $lists_segments = $this->listsSegments;

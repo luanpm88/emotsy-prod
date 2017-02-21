@@ -37,6 +37,9 @@ class MailListPolicy
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
     {
+        if (isSiteDemo()) {
+            return false;
+        }
         $customer = $user->customer;
         return $item->customer_id == $customer->id;
     }

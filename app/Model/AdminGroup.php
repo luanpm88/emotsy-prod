@@ -862,10 +862,9 @@ class AdminGroup extends Model
     {
         $options = [['value' => 1, 'text' => trans('messages.one_single_process')]];
         
-        //@todo temprory disable multi proccess
-        //for ($i = 2; $i < 101; ++$i) {
-        //    $options[] = ['value' => $i, 'text' => $i];
-        //}
+        for ($i = 2; $i < 101; ++$i) {
+            $options[] = ['value' => $i, 'text' => $i];
+        }
 
         return $options;
     }

@@ -262,3 +262,12 @@ function language_code() {
     
     return $language_code;
 }
+
+/**
+ * Check if site is in demo mod
+ *
+ * @return boolean
+ */
+function isSiteDemo() {
+    return config('app.demo');
+}
