@@ -671,7 +671,7 @@ class Campaign extends Model
         */
 
         $subscribers = $this->subscribers()
-                ->whereRaw(sprintf('subscribers.id NOT IN (SELECT subscriber_id FROM %s WHERE campaign_id = %s)', table('tracking_logs'), $this->id))
+                ->whereRaw(sprintf(table('subscribers').'.id NOT IN (SELECT subscriber_id FROM %s WHERE campaign_id = %s)', table('tracking_logs'), $this->id))
                 ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
                 ->select('subscribers.*')
                 ->get();
