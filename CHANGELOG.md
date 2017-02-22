@@ -1,3 +1,13 @@
+2.2.0-p11 / 2017-02-22
+===================
+
+ * Added: fully multi-process supported
+ * Added: support more API for list/subscriber management
+ * Changed: new default user permissions
+ * Fixed: better handle invalid bounced message
+ * Fixed: invalid bounces not showing up correctly
+ * Fixed: automation cannot start for certain scenarios
+
 2.2.0-p10 / 2017-02-15
 ====================
 

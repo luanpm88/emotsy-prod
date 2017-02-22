@@ -584,7 +584,7 @@ class Customer extends Model
      */
     public function countUsage(Carbon $timePoint = null)
     {
-        return $this->getQuotaTracker()->add();
+        return $this->getQuotaTracker($timePoint)->add();
     }
     
     /**
@@ -674,7 +674,6 @@ class Customer extends Model
     public function getSendingQuotaUsage()
     {
         $tracker = $this->getQuotaTracker();
-        $tracker->check(); // renew the usage data (trigger the private shiftBy() function)
         return $tracker->getUsage();
     }
     
@@ -688,9 +687,11 @@ class Customer extends Model
         // @todo magic number
         if ($this->getSendingQuota() == -1) {
             return '0';
+        } elseif ($this->getSendingQuota() == '0' || $this->getSendingQuotaUsage() >= $this->getSendingQuota()) {
+            return '100';
         }
 
-        return round(($this->getQuotaTracker()->usagePercentage() * 100), 2);
+        return round(($this->getQuotaTracker()->getUsagePercentage() * 100), 2);
     }
     
     /**
@@ -730,42 +731,44 @@ class Customer extends Model
      * @return array
      */
     public function renewQuotaTracker() {
-        $start = $this->getQuotaStartingTime();
-
-        // recent tracking logs
-        // @todo: potential issue here, application fails in case $start is NULL
-        $recent = $this->trackingLogs()->where('created_at', '>=', $start);
-        
-        // existing quota usage
-        $stored = null;
-
-        // load the tracker from DB (if exists)
-        // then merge with the current tracking log data
-        if ($this->quota) {
-            try {
-                $stored = unserialize($this->quota);
-            } catch (\Exception $x) {
-                // @TODO logging here
-                MailLog::warning('Cannot retrieve customer quota');
-            }
-        }
-
-        // load the tracker from DB
-        if (!is_null($stored) && !empty($stored)) {
-            // retrieve the stored quota usage and merge it with actual (newer) usage
-            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp(end($stored)));
-            $series = collect($recent->get())->map(function($trackingLog) {
-                return $trackingLog->created_at->timestamp;
-            })->toArray();
+        $this->getQuotaTracker()->getExclusiveLock(function() {
+            $start = $this->getQuotaStartingTime();
+    
+            // recent tracking logs
+            // @todo: potential issue here, application fails in case $start is NULL
+            $recent = $this->trackingLogs()->where('created_at', '>=', $start);
             
-            $series = array_merge($stored, $series);
-        } else {
-            $series = collect($recent->get())->map(function($trackingLog) {
-                return $trackingLog->created_at->timestamp;
-            })->toArray();
-        }
-        
-        $this->getQuotaTracker()->renew($series);
+            // existing quota usage
+            $stored = null;
+ 
+            // load the tracker from DB (if exists)
+            // then merge with the current tracking log data
+            if ($this->quota) {
+                try {
+                    $stored = unserialize($this->quota);
+                } catch (\Exception $x) {
+                    // @TODO logging here
+                    MailLog::warning('Cannot retrieve user quota');
+                }
+            }
+    
+            // load the tracker from DB
+            if (!is_null($stored) && !empty($stored)) {
+                // retrieve the stored quota usage and merge it with actual (newer) usage
+                $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp(end($stored)));
+                $series = $recent->get()->map(function($trackingLog) {
+                    return $trackingLog->created_at->timestamp;
+                })->toArray();
+                
+                $series = array_merge($stored, $series);
+            } else {
+                $series = $recent->get()->map(function($trackingLog) {
+                    return $trackingLog->created_at->timestamp;
+                })->toArray();
+            }
+            
+            $this->getQuotaTracker()->reset($series);
+        });
     }
 
     /**

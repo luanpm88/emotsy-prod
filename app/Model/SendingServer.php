@@ -25,7 +25,7 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\Log as MailLog;
-use Acelle\Library\QuotaTrackerStd;
+use Acelle\Library\QuotaTrackerFile;
 use Carbon\Carbon;
 
 class SendingServer extends Model
@@ -436,8 +436,7 @@ class SendingServer extends Model
     public function getSendingQuotaUsage()
     {
         $tracker = $this->getQuotaTracker();
-        $tracker->check(); // renew the usage data (trigger the private shiftBy() function)
-        return $tracker->usage();
+        return $tracker->getUsage();
     }
 
     /**
@@ -453,7 +452,7 @@ class SendingServer extends Model
             return '100';
         }
 
-        return round((($this->getSendingQuotaUsage() / $this->getSendingQuota()) * 100), 2);
+        return round(($this->getUsagePercentage * 100), 2);
     }
 
     /**
@@ -555,17 +554,18 @@ class SendingServer extends Model
      * @return void
      */
     public function initQuotaTracker() {
-        if (\Config::get('app.redis_enabled')) {
-            $this->quotaTracker = new QuotaTrackerRedis(Redis::connection(), $this->getQuotaIntervalString(), $this->getSendingQuota());
-            // @note: in case of Redis tracker, the following command must be issued manually
-            //     $this->renewQuotaTracker();
-            // Normally, Redis tracker is used in a multi-process context, the above command must be executed 
-            //     by the parent process, before forking any child process
-        } else {
-            $this->quotaTracker = new QuotaTrackerStd($this->getQuotaIntervalString(), $this->getSendingQuota());
-            // renew the quota data stored in the DB
-            $this->renewQuotaTracker();
-        }
+        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $this->getQuotaIntervalString(), $this->getSendingQuota());
+        // @note: in case of multi-process, the following command must be issued manually
+        //     $this->renewQuotaTracker();
+    }
+    
+    /**
+     * Get sending quota lock file
+     *
+     * @return string file path
+     */
+    public function getSendingQuotaLockFile() {
+        return storage_path("app/server/quota/{$this->uid}");
     }
     
     /**
@@ -583,44 +583,44 @@ class SendingServer extends Model
      * @return array
      */
     public function renewQuotaTracker() {
-        $start = $this->getQuotaStartingTime();
-
-        // recent tracking logs
-        // @todo: potential issue here, application fails in case $start is NULL
-        $recent = $this->trackingLogs()->where('created_at', '>=', $start);
+        $this->getQuotaTracker()->getExclusiveLock(function() {
+            $start = $this->getQuotaStartingTime();
         
-        // existing quota usage
-        $stored = null;
-
-        // load the tracker from DB (if exists)
-        // then merge with the current tracking log data
-        if ($this->quota) {
-            try {
-                $stored = unserialize($this->quota);
-            } catch (\Exception $x) {
-                // @TODO logging here
-                MailLog::warning('Cannot retrieve sending server quota');
-            }
-        }
-
-        // load the tracker from DB
-        if (!is_null($stored) && !empty($stored)) {
-            // retrieve the stored quota usage and merge it with actual (newer) usage
-            $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp(end($stored)));
-            $series = collect($recent->get())->map(function($trackingLog) {
-                return $trackingLog->created_at->timestamp;
-            })->toArray();
+            // recent tracking logs
+            // @todo: potential issue here, application fails in case $start is NULL
+            $recent = $this->trackingLogs()->where('created_at', '>=', $start);
             
-            // in case quota tracker does not log latest usage
-            // this is an unexpected case, implying something wrong has occurred
-            $series = array_merge($stored, $series);
-        } else {
-            $series = collect($recent->get())->map(function($trackingLog) {
-                return $trackingLog->created_at->timestamp;
-            })->toArray();
-        }
-        
-        $this->getQuotaTracker()->renew($series);
+            // existing quota usage
+            $stored = null;
+    
+            // load the tracker from DB (if exists)
+            // then merge with the current tracking log data
+            if ($this->quota) {
+                try {
+                    $stored = unserialize($this->quota);
+                } catch (\Exception $x) {
+                    // @TODO logging here
+                    MailLog::warning('Cannot retrieve sending server quota');
+                }
+            }
+    
+            // load the tracker from DB
+            if (!is_null($stored) && !empty($stored)) {
+                // retrieve the stored quota usage and merge it with actual (newer) usage
+                $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp(end($stored)));
+                $series = $recent->get()->map(function($trackingLog) {
+                    return $trackingLog->created_at->timestamp;
+                })->toArray();
+                
+                $series = array_merge($stored, $series);
+            } else {
+                $series = $recent->get()->map(function($trackingLog) {
+                    return $trackingLog->created_at->timestamp;
+                })->toArray();
+            }
+            
+            $this->getQuotaTracker()->reset($series);
+        });
     }
     
     /**
@@ -649,7 +649,7 @@ class SendingServer extends Model
      */
     public function countUsage(Carbon $timePoint = null)
     {
-        return $this->getQuotaTracker()->add();
+        return $this->getQuotaTracker($timePoint)->add();
     }
     
     /**
