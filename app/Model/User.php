@@ -188,9 +188,7 @@ class User extends Authenticatable
         $redirect_url = urlencode($redirect_url);
         
         $layout->content = str_replace('{ACTIVATION_URL}', action('UserController@activate', ['token' => $token, 'redirect' => $redirect_url]), $layout->content);
-        $layout->content = str_replace('{CUSTOMER_NAME}', $name, $layout->content);
-        
-        
+        $layout->content = str_replace('{CUSTOMER_NAME}', $name, $layout->content);        
         
         \Mail::send('users.registration_confirmation_email', ['content' => $layout->content], function ($m) {
             $m->from(config("mail.from")["address"], config("mail.from")["name"]);
