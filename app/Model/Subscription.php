@@ -15,8 +15,7 @@ class Subscription extends Model
         'created_at',
         'updated_at',
         'start_at',
-        'end_at',
-        'note',
+        'end_at'
     ];
     
     /**
@@ -25,7 +24,7 @@ class Subscription extends Model
      * @var array
      */
     protected $fillable = [
-        'plan_id', 'customer_id', 'start_at', 'end_at', 'quantity'
+        'plan_id', 'customer_id', 'start_at', 'end_at', 'quantity', 'note'
     ];
     
     /**
@@ -37,7 +36,7 @@ class Subscription extends Model
     {
         $rules = array(
             'plan_id' => 'required',
-            'customer_id' => 'required',
+            'customer_id' => 'required'
         );
         
         return $rules;
@@ -147,29 +146,48 @@ class Subscription extends Model
      */
     public function fillAttributes($params)
     {
-        $plan = Plan::find($params['plan_id']);
+        $this->quantity = empty($params['quantity']) ? 1 : $params['quantity'];
+        $this->plan_id = $this->plan_id ? $this->plan_id : (isset($params['plan_id']) ? $params['plan_id'] : null);
+        
+        $plan = $this->plan_id ? Plan::find($this->plan_id) : null;
         
         $this->fill($params);
         
-        $this->price = $params['quantity'] * $plan->price;
-        
-        if(!$this->start_at) {
-            $this->start_at = \Carbon\Carbon::now();
+        if(isset($this->plan_id)) {
+            $this->price = $this->quantity * $plan->price;
+            
+            if(empty($params["start_at"])) {
+                $this->start_at = \Carbon\Carbon::now();
+            }
+            
+            switch ($plan->frequency_unit) {
+                case 'day':
+                    $this->end_at = $this->start_at->addDays($plan->frequency_amount * $this->quantity);
+                    break;
+                case 'week':
+                    $this->end_at = $this->start_at->addWeeks($plan->frequency_amount * $this->quantity);
+                    break;
+                case 'month':
+                    $this->end_at = $this->start_at->addMonths($plan->frequency_amount * $this->quantity);
+                    break;
+                case 'year':
+                    $this->end_at = $this->start_at->addYears($plan->frequency_amount * $this->quantity);
+                    break;
+            }
         }
+    }
+    
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function frontendRules()
+    {
+        $rules = array(
+            'plan_id' => 'required',
+        );
         
-        switch ($plan->frequency_unit) {
-            case 'day':
-                $this->end_at = $this->start_at->addDays($plan->frequency_amount * $params['quantity']);
-                break;
-            case 'week':
-                $this->end_at = $this->start_at->addWeeks($plan->frequency_amount * $params['quantity']);
-                break;
-            case 'month':
-                $this->end_at = $this->start_at->addMonths($plan->frequency_amount * $params['quantity']);
-                break;
-            case 'year':
-                $this->end_at = $this->start_at->addYears($plan->frequency_amount * $params['quantity']);
-                break;
-        }
+        return $rules;
     }
 }

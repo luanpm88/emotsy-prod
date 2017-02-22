@@ -176,4 +176,13 @@ class User extends Authenticatable
 
         return ['email' => '', 'password' => ''];
     }
+    
+    /**
+     * Send regitration activation email.
+     *
+     * @return string
+     */
+    public function sendActivationMail() {
+        
+    }
 }

@@ -26,10 +26,10 @@
 										<td class="stat-fix-size-sm">
 											<div class="single-stat-box pull-left">
 												<a href="{{ action('Admin\CustomerController@index') }}">
-													<span class="no-margin stat-num">{{ $item->resellers()->count() }}</span>
+													<span class="no-margin stat-num">{{ $item->customers()->count() }}</span>
 												</a>
 												<br />
-												<span class="text-muted">{{ trans("messages." . Acelle\Library\Tool::getPluralPrase('reseller', $item->resellers()->count())) }}</span>
+												<span class="text-muted">{{ trans("messages." . Acelle\Library\Tool::getPluralPrase('customer', $item->customers()->count())) }}</span>
 											</div>
 										</td>
 										<td class="stat-fix-size">

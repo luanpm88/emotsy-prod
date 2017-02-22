@@ -31,6 +31,10 @@ class Customer extends Model
 {
     protected $quotaTracker;
     
+    // Plan status
+	const STATUS_INACTIVE = 'inactive';
+    const STATUS_ACTIVE = 'active';
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -53,7 +57,7 @@ class Customer extends Model
             'last_name' => 'required',
             'timezone' => 'required',
             'language_id' => 'required',
-            'password' => 'confirmed|min:5',
+            'password' => 'required|confirmed|min:5',
         );
     }
     
@@ -873,5 +877,49 @@ class Customer extends Model
         }
         
         return json_encode($data);
+    }
+    
+    /**
+     * Create/Update customer information
+     *
+     * @return object
+     */
+    public function updateInformation($request) {
+        // Create user account for customer
+        $user = is_object($this->user) ? $this->user : new \Acelle\Model\User();
+        $user->email = $request->email;
+        // Update password
+        if (!empty($request->password)) {
+            $user->password = bcrypt($request->password);
+        }
+        $user->save();
+
+        // Save current user info
+        if(!$this->id) {
+            $this->user_id = $user->id;
+            $this->admin_id = is_object($request->user()) ? $request->user()->admin->id : null;
+            $this->status = 'active';
+        }
+        
+        $this->customer_group_id = 1;
+        $this->fill($request->all());
+        
+        $this->save();
+        
+        // Upload and save image
+        if ($request->hasFile('image')) {
+            if ($request->file('image')->isValid()) {
+                // Remove old images
+                $this->removeImage();
+                $this->image = $this->uploadImage($request->file('image'));
+                $this->save();
+            }
+        }
+
+        // Remove image
+        if ($request->_remove_image == 'true') {
+            $this->removeImage();
+            $this->image = '';
+        }
     }
 }

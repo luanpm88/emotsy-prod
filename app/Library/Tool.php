@@ -154,7 +154,7 @@ class Tool
      */
     public static function dateTime($datetime)
     {
-        $timezone = \Auth::user()->timezone;
+        $timezone = is_object(\Auth::user()) ? \Auth::user()->timezone : '';
         $result = $datetime;
         if (!empty($timezone)) {
             $result = $result->timezone($timezone);
@@ -818,5 +818,17 @@ class Tool
         } else {
             return number_format($number, 0, trans('messages.dec_point'), trans('messages.thousands_sep'));
         }        
+    }
+    
+    /**
+     * Format display date.
+     *
+     * @var string
+     */
+    public static function formatDate($datetime)
+    {
+        $result = !isset($datetime) ? '' : $datetime->format(trans('messages.date_format'));
+
+        return $result;
     }
 }

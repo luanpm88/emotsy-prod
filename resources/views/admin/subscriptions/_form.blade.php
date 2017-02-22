@@ -44,7 +44,7 @@
 						'type' => 'select',
 						'name' => 'quantity',
 						'label' => trans('messages.quantity'),
-						'value' => '',
+						'value' => $subscription->quantity,
 						'help_class' => 'subscription',
 						'rules' => $subscription->rules(),
 						'options' => \Acelle\Library\Tool::numberSelectOptions(),
@@ -58,7 +58,7 @@
 						'type' => 'textarea',
 						'name' => 'note',
 						'label' => trans('messages.subscription_note'),
-						'value' => '',
+						'value' => $subscription->note,
 						'help_class' => 'subscription',
 						'rules' => $subscription->rules()
 					])

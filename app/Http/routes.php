@@ -52,6 +52,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
 });
 
 Route::auth();
+Route::get('user/activate/{token}', 'UserController@activate');
 
 Route::get('/offline', 'Controller@offline');
 Route::get('/not-authorized', 'Controller@notAuthorized');
@@ -70,6 +71,14 @@ Route::get('assets/images/avatar/admin-{uid?}.jpg', 'AdminController@avatar');
 // Reseller avatar
 Route::get('assets/images/avatar/reseller-{uid?}.jpg', 'ResellerController@avatar');
 
+// Customer subscription
+Route::get('subscriptions/preview', 'SubscriptionController@preview');
+Route::post('subscriptions/register/{plan_uid?}', 'SubscriptionController@register');
+Route::get('subscriptions/register/{plan_uid?}', 'SubscriptionController@register');
+Route::get('subscriptions/select-plan', 'SubscriptionController@selectPlan');
+
+// Plan
+Route::get('plans/select2', 'PlanController@select2');
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('/', 'HomeController@index');

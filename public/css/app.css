@@ -21,7 +21,7 @@ h2, .h2 {
     background-color: rgba(0, 0, 0, 0.5);
 }
 .mt-0 {
-  margin-top: 0px!important;
+  margin-top: 0px !important;
 }
 p {
     margin: 0 0 20px;
@@ -1778,4 +1778,59 @@ ul.automation-confirm li.child-row h5 {
 }
 .pb-0 {
     padding-bottom: 0;
+}
+.wizard-dark {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+.wizard-dark > .steps > ul > li > a {
+    color: rgba(255,255,255,0.5);
+    line-height: 30px;
+}
+.wizard-dark > .steps > ul > li.current > a {
+    color: #fff;
+}
+.wizard-dark > .steps .number {
+    width: 48px;
+    height: 48px;
+    line-height: 44px;
+    font-size: 22px;
+    color: #aaa;
+    background: #56707d;
+    border-color: #aaa;
+}
+.wizard-dark > .steps > ul > li.current .number:after {
+    font-size: 22px;
+    line-height: 44px;
+}
+.wizard-dark > .steps > ul > li.current:after, .wizard-dark > .steps > ul > li.current ~ li:before, .wizard-dark > .steps > ul > li.current ~ li:after {
+    background: rgba(255,255,255,0.5);
+}
+.wizard-dark > .steps > ul > li.current > a {
+    color: #fff;
+}
+.subscription-header {
+    margin-top: 30px;
+}
+.subscription-plans {
+    text-align: center;
+}
+.plan-box-center {
+    width: 300px;
+    display: inline-block;
+    margin-left: 20px;
+    margin-bottom: 20px;
+}
+.wizard-dark > .steps > ul > li.done .number:after {
+    font-size: 22px;
+    line-height: 44px;
+}
+.box-shadow {
+    box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+}
+.mt-30 {
+    margin-top: 30px;
+}
+.plan-left-preview .plan-right, .plan-right-preview .plan-left {
+    display: none;
 }

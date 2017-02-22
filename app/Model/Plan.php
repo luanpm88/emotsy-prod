@@ -26,6 +26,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Plan extends Model
 {
+    // Plan status
+	const STATUS_INACTIVE = 'inactive';
+    const STATUS_ACTIVE = 'active';
+    
     /**
      * The attributes that are mass assignable.
      *
@@ -434,7 +438,7 @@ class Plan extends Model
     public static function select2() {
         $data = ['items' => [], 'more' => true];
         
-        $query = \Acelle\Model\Plan::getAll();
+        $query = \Acelle\Model\Plan::getAll()->orderBy('custom_order', 'asc');
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {
@@ -446,5 +450,17 @@ class Plan extends Model
         }
         
         return json_encode($data);
+    }
+    
+    /**
+     * Get all items.
+     *
+     * @return collect
+     */
+    public static function getAllActive()
+    {
+        return Plan::getAll()
+			->where("plans.status", "=", Plan::STATUS_ACTIVE)
+			->orderBy('custom_order', 'asc');
     }
 }

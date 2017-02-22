@@ -1,5 +1,5 @@
 @if (is_object($plan))
-    <div class="panel panel-plan box-{{ $plan->status }}">
+    <div class="panel panel-plan box-{{ $plan->status }} box-shadow">
         <div class="panel-heading" style="background-color: {{ $plan->color }}; color: white">
             @if (!isset($readonly))
                 <div class="pull-right">

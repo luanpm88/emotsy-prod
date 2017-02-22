@@ -1,12 +1,6 @@
 @if (is_object($subscription->plan))
     <hr />
-    <div class="row">
-        <div class="col-md-6">
-            @include('admin/plans/_plan', [
-                'plan' => $subscription->plan,
-                'readonly' => true,
-            ])
-        </div>
+    <div class="row">        
         <div class="col-md-6">
             <div class="row">
                 <div class="col-md-6">
@@ -60,6 +54,12 @@
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="col-md-6">
+            @include('admin/plans/_plan', [
+                'plan' => $subscription->plan,
+                'readonly' => true,
+            ])
         </div>
     </div>
 @endif

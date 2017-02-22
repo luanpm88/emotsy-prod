@@ -29,13 +29,13 @@
 				</td>
 				<td>
 					<h5 class="no-margin text-bold">
-						{{ $subscription->plan->name }}
+						{{ Acelle\Library\Tool::formatDate($subscription->start_at) }}
 					</h5>
 					<span class="text-muted">{{ trans('messages.start_at') }}</span>
 				</td>
 				<td>
 					<h5 class="no-margin text-bold">
-						{{ $subscription->plan->name }}
+						{{ Acelle\Library\Tool::formatDate($subscription->end_at) }}
 					</h5>
 					<span class="text-muted">{{ trans('messages.end_at') }}</span>
 				</td>

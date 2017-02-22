@@ -19,7 +19,8 @@ class CreateSubscriptionsTable extends Migration
             $table->integer('customer_id')->unsigned();
             $table->integer('quantity');
             $table->text('options');
-            $table->decimal('price');
+            $table->text('note');
+            $table->decimal('price', 16, 2);
             $table->timestamp('start_at');
             $table->timestamp('end_at');
             

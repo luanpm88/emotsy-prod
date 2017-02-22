@@ -15,15 +15,7 @@
 	@include('layouts._js')
 </head>
 
-<body class="bg-slate-800 color-scheme-{{ is_object($list) ? $list->user->getFrontendScheme() : '' }}">
-
-
-
-					
-		@yield('content')
-			
-
-
-
+<body class="bg-slate-800 color-scheme-{{ isset($list) && is_object($list) ? $list->user->getFrontendScheme() : '' }}">
+	@yield('content')
 </body>
 </html>
