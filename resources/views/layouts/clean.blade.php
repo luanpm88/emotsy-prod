@@ -40,6 +40,9 @@
 		
 		});
 	</script>
+		
+	<!-- display flash message -->
+	@include('common.flash')
 
 </head>
 

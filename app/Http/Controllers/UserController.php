@@ -13,7 +13,10 @@ class UserController extends Controller
     {
         parent::__construct();
 
-        $this->middleware('auth');
+        $this->middleware('auth', ['except' => [
+            'resendActivationEmail',
+            'activate'
+        ]]);
     }
 
     /**
@@ -60,5 +63,45 @@ class UserController extends Controller
         \Auth::login($orig_user);
         
         return redirect()->action('Admin\UserController@index');
+    }
+    
+    /**
+     * Activate user account.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function activate(Request $request, $token)
+    {
+        $userActivation = \Acelle\Model\UserActivation::where('token', '=', $token)->first();
+        
+        if(!$userActivation) {
+            return view('notAuthorized');
+        } else {
+            $userActivation->user->setActivated();
+            
+            if(isset($request->redirect)) {
+                return redirect()->away(urldecode($request->redirect));
+            } else {
+                return redirect()->action('HomeController@index');
+            }
+        }
+    }
+    
+    /**
+     * Resen activation confirmation email.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function resendActivationEmail(Request $request)
+    {
+        $user = \Acelle\Model\User::findByUid($request->uid);
+        
+        $user->sendActivationMail($user->email, action('HomeController@index'));
+            
+        return view('users.registration_confirmation_sent');
     }
 }

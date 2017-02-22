@@ -25,12 +25,12 @@
 
 @section('content')
 	
-				<form enctype="multipart/form-data" action="{{ action('Admin\SubscriptionController@update', $subscription->uid) }}" method="POST" class="form-validate-jqueryx">
+				<form enctype="multipart/form-data" action="{{ action('Admin\SubscriptionController@update', $subscription->uid) }}" method="POST">
 					{{ csrf_field() }}
 					<input type="hidden" name="_method" value="PATCH">
 					
 					@include('admin.subscriptions._form')
 					
-				<form>
+				</form>
 	
 @endsection

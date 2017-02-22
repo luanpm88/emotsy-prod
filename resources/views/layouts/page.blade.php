@@ -16,6 +16,8 @@
 </head>
 
 <body class="bg-slate-800 color-scheme-{{ isset($list) && is_object($list) ? $list->user->getFrontendScheme() : '' }}">
+
 	@yield('content')
+	
 </body>
 </html>

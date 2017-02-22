@@ -74,6 +74,11 @@ class AuthController extends Controller
 
     public function authenticated($request, $user)
     {
+        if (!$user->activated) {
+            $uid = $user->uid;
+            auth()->logout();
+            return view('notActivated', ['uid' => $uid]);
+        }
         return redirect()->intended('/');
     }
     

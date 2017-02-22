@@ -62,8 +62,11 @@ class SubscriptionController extends Controller
             $subscription->customer_id = $customer->id;
             $subscription->save();
             
-            // Send resgistration confirmation email
-            $customer->user->sendActivationMail();
+            // Send registration confirmation email
+            $user = \Acelle\Model\User::find($customer->user_id);
+            $user->sendActivationMail($customer->displayName(), action('SubscriptionController@checkout'));
+            
+            return view('subscriptions.register_confirmation_notice');
         }
         
         return view('subscriptions.register', [

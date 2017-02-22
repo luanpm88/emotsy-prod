@@ -18,7 +18,7 @@
             <div class="col-md-10">
                 @include('common.errors')
                 
-                <h2 class="mt-0"><i class="icon-user"></i> {{ trans('messages.customer_account') }}</h2>
+                <h2 class="mt-0"><i class="icon-quill4"></i> {{ trans('messages.customer_account') }}</h2>
                 <div class="panel">
                     <div class="panel-body">
                         <div class="row">

@@ -182,7 +182,63 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function sendActivationMail() {
+    public function sendActivationMail($name=null, $redirect_url=null) {
+        $layout = \Acelle\Model\Layout::where('alias', 'registration_confirmation_email')->first();
+        $token = $this->getToken();
+        $redirect_url = urlencode($redirect_url);
         
+        $layout->content = str_replace('{ACTIVATION_URL}', action('UserController@activate', ['token' => $token, 'redirect' => $redirect_url]), $layout->content);
+        $layout->content = str_replace('{CUSTOMER_NAME}', $name, $layout->content);
+        
+        
+        
+        \Mail::send('users.registration_confirmation_email', ['content' => $layout->content], function ($m) {
+            $m->from(config("mail.from")["address"], config("mail.from")["name"]);
+
+            $m->to($this->email, trans('messages.to_email_name'))->subject(trans('messages.registration_confirmation_email_subject'));
+        });
+    }
+    
+    /**
+     * User activation.
+     *
+     * @return string
+     */
+    public function userActivation()
+    {
+        return $this->hasOne('Acelle\Model\userActivation');
+    }
+    
+    /**
+     * Create activation token for user.
+     *
+     * @return string
+     */
+    public function getToken()
+    {
+        $token = \Acelle\Model\UserActivation::getToken();
+        
+        $userActivation = $this->userActivation;
+
+        if (!is_object($userActivation)) {                      
+            $userActivation = new \Acelle\Model\UserActivation();
+            $userActivation->user_id = $this->id;            
+        }
+        
+        $userActivation->token = $token;
+        $userActivation->save();        
+        
+        return $token;
+    }
+    
+    /**
+     * Set user is activated.
+     *
+     * @return boolean
+     */
+    public function setActivated()
+    {
+        $this->activated = true;
+        $this->save();
     }
 }

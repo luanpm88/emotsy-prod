@@ -566,5 +566,16 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
+        
+        DB::table('currencies')->insert([
+            'id' => 1,
+            'uid' => uniqid(),
+            'admin_id' => 1,
+            'name' => 'USD',
+            'code' => 'USD',
+            'format' => '${PRICE}',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+        ]);
     }
 }

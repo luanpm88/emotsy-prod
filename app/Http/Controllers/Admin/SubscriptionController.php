@@ -107,7 +107,7 @@ class SubscriptionController extends Controller
             $subscription->price = $plan->price;
             $subscription->save();
             
-            $request->session()->flash('alert-success', trans('messages.subscriptions.created'));
+            $request->session()->flash('alert-success', trans('messages.subscription.created'));
             return redirect()->action('Admin\SubscriptionController@index');
         }
     }
@@ -140,6 +140,7 @@ class SubscriptionController extends Controller
         
         if (!empty($request->old())) {
             $subscription->fillAttributes($request->old());
+            var_dump($request->old());
         }
 
         return view('admin.subscriptions.edit', [
@@ -164,7 +165,7 @@ class SubscriptionController extends Controller
         }
 
         // save posted data
-        if ($request->isMethod('post')) {
+        if ($request->isMethod('patch')) {
             $this->validate($request, $subscription->rules());
             
             $plan = \Acelle\Model\Plan::find($request->plan_id);
@@ -173,7 +174,7 @@ class SubscriptionController extends Controller
             $subscription->price = $plan->price;
             $subscription->save();
             
-            $request->session()->flash('alert-success', trans('messages.subscriptions.updated'));
+            $request->session()->flash('alert-success', trans('messages.subscription.updated'));
             return redirect()->action('Admin\SubscriptionController@index');
         }
     }

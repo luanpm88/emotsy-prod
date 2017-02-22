@@ -73,9 +73,13 @@ Route::get('assets/images/avatar/reseller-{uid?}.jpg', 'ResellerController@avata
 
 // Customer subscription
 Route::get('subscriptions/preview', 'SubscriptionController@preview');
+Route::get('subscriptions/checkout', 'SubscriptionController@checkout');
 Route::post('subscriptions/register/{plan_uid?}', 'SubscriptionController@register');
 Route::get('subscriptions/register/{plan_uid?}', 'SubscriptionController@register');
 Route::get('subscriptions/select-plan', 'SubscriptionController@selectPlan');
+
+// User resend activation email
+Route::get('users/resend-activation-email', 'UserController@resendActivationEmail');
 
 // Plan
 Route::get('plans/select2', 'PlanController@select2');
