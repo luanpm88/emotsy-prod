@@ -1,0 +1,92 @@
+<?php
+
+namespace Acelle\Policies;
+
+use Illuminate\Auth\Access\HandlesAuthorization;
+
+class UserGroupPolicy
+{
+    use HandlesAuthorization;
+
+    /**
+     * Create a new policy instance.
+     */
+    public function __construct()
+    {
+    }
+    
+    public function readAll(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
+    {
+        if(!$user->userGroup->backend_access) {
+            return false;
+        }
+        
+        $ability = $user->getOption('backend', 'user_group_read');
+        $can = $ability == 'all';
+
+        return $can;
+    }
+    
+    public function read(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
+    {
+        if(!$user->userGroup->backend_access) {
+            return false;
+        }
+        
+        $ability = $user->getOption('backend', 'user_group_read');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->id == $item->user_id);
+
+        return $can;
+    }
+
+    public function create(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
+    {
+        if(!$user->userGroup->backend_access) {
+            return false;
+        }
+        
+        $can = $user->getOption('backend', 'user_group_create') == 'yes';
+
+        return $can;
+    }
+
+    public function update(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
+    {
+        if(!$user->userGroup->backend_access) {
+            return false;
+        }
+        
+        $ability = $user->getOption('backend', 'user_group_update');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->id == $item->user_id);
+
+        return $can;
+    }
+
+    public function sort(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
+    {
+        if(!$user->userGroup->backend_access) {
+            return false;
+        }
+        
+        $ability = $user->getOption('backend', 'user_group_update');
+        $can = $ability == 'all';
+
+        return $can;
+    }
+
+    public function delete(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
+    {
+        if(!$user->userGroup->backend_access) {
+            return false;
+        }
+        
+        $ability = $user->getOption('backend', 'user_group_delete');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->id == $item->user_id);
+        $can = $can && $item->users()->count() == 0 && $item->user_id != null;
+
+        return $can;
+    }
+}

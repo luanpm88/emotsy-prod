@@ -18,10 +18,37 @@ class SubscriptionPolicy
         //
     }
     
-    public function read(\Acelle\Model\User $user, \Acelle\Model\Subscription $item)
+    public function readAll(\Acelle\Model\User $user, \Acelle\Model\Subscription $subscription)
     {
-        $can = true; // $user->admin->getPermission('subscription_read') != 'no';
-
+        $can = false;
+        
+        $admin = $user->admin;
+        if (is_object($admin)) {
+            $can = $can || true;
+        }
+        
+        $customer = $user->customer;
+        if (is_object($customer)) {
+            $can = $can || false;
+        }
+        
+        return $can;
+    }
+    
+    public function read(\Acelle\Model\User $user, \Acelle\Model\Subscription $subscription)
+    {
+        $can = false;
+        
+        $admin = $user->admin;
+        if (is_object($admin)) {
+            $can = $can || true;
+        }
+        
+        $customer = $user->customer;
+        if (is_object($customer)) {
+            $can = $can || $customer->id == $subscription->customer_id;
+        }
+        
         return $can;
     }
     
@@ -37,12 +64,20 @@ class SubscriptionPolicy
         return true; // $user->id == $item->user_id;
     }
 
-    public function update(\Acelle\Model\User $user, \Acelle\Model\Subscription $item)
+    public function update(\Acelle\Model\User $user, \Acelle\Model\Subscription $subscription)
     {
-        // $ability = $user->admin->getPermission('subscription_update');
-        $can = true; // $ability == 'all'
-                // || ($ability == 'own' && $user->admin->id == $item->admin_id);
-
+        $can = false;
+        
+        $admin = $user->admin;
+        if (is_object($admin)) {
+            $can = $can || true;
+        }
+        
+        $customer = $user->customer;
+        if (is_object($customer)) {
+            $can = $can || $customer->id == $subscription->customer_id;
+        }
+        
         return $can;
     }
 

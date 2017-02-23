@@ -50,7 +50,7 @@
 								</div>
 							@endif
 						</div>
-						@can('create', new Acelle\Model\Admin())
+						@can('create', new Acelle\Model\Subscription())
 							<div class="col-md-2 text-right">
 								<a href="{{ action("Admin\SubscriptionController@create") }}" type="button" class="btn bg-info-800">
 									<i class="icon icon-plus2"></i> {{ trans('messages.create_subscription') }}

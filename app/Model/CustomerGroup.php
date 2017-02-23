@@ -383,4 +383,53 @@ class CustomerGroup extends Model
             return $this->getOption("max_file_size_upload");
         }        
     }
+    
+    /**
+     * Display sending servers count
+     *
+     * @return array
+     */
+    public function displaySendingServersCount()
+    {
+        if ($this->getOption("all_sending_servers") == 'yes') {
+            return trans('messages.all');
+        } else {
+            return $this->user_group_sending_servers()->count();
+        }
+    }
+    
+    /**
+     * Api rules.
+     *
+     * @return array
+     */
+    public static function apiRules()
+    {
+        $rules = [
+            'name' => 'required',
+        ];
+
+        return $rules;
+    }
+    
+    /**
+     * Update options from request.
+     *
+     * @return void
+     */
+    public function updateOptions($options)
+    {
+        if (is_array($options)) {
+            $defaul_options = self::defaultOptions();
+            $saved_options = $options;
+            foreach($defaul_options as $x => $group) {
+                foreach($group as $y => $option) {
+                    if(isset($saved_options[$x]) && isset($saved_options[$x][$y])) {
+                        $defaul_options[$x][$y] = $saved_options[$x][$y];
+                    }
+                }
+            }
+            $this->options = json_encode($defaul_options, true);
+        }
+    }
 }

@@ -852,34 +852,4 @@ class AdminGroup extends Model
 
         return $arr;
     }
-
-    /**
-     * Multi process select options.
-     *
-     * @return array
-     */
-    public static function multiProcessSelectOptions()
-    {
-        $options = [['value' => 1, 'text' => trans('messages.one_single_process')]];
-        
-        for ($i = 2; $i < 101; ++$i) {
-            $options[] = ['value' => $i, 'text' => $i];
-        }
-
-        return $options;
-    }
-    
-    /**
-     * Display sending servers count
-     *
-     * @return array
-     */
-    public function displaySendingServersCount()
-    {
-        if ($this->getOption("frontend","all_sending_servers") == 'yes') {
-            return trans('messages.all');
-        } else {
-            return $this->user_group_sending_servers()->count();
-        }
-    }
 }

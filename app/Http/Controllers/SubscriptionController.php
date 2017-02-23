@@ -7,6 +7,22 @@ use Illuminate\Http\Request;
 class SubscriptionController extends Controller
 {
     /**
+     * Create a new controller instance.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $this->middleware('auth', [
+            'except' => [
+                'selectPlan',
+                'register',
+                'preview',                
+            ]
+        ]);
+    }
+    
+    /**
      * Select a plan.
      */
     public function selectPlan()
@@ -55,10 +71,7 @@ class SubscriptionController extends Controller
             $customer->updateInformation($request);
             
             // Save current user info
-            $plan = \Acelle\Model\Plan::find($request->plan_id);
-            $subscription->fillAttributes($request->all());
-            $subscription->options = $plan->options;
-            $subscription->price = $plan->price;
+            $subscription->fillAttributes($request->all());            
             $subscription->customer_id = $customer->id;
             $subscription->save();
             
@@ -91,5 +104,164 @@ class SubscriptionController extends Controller
         return view('subscriptions.preview', [
             'subscription' => $subscription
         ]);
+    }
+    
+    /**
+     * Checkout page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function checkout(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $subscription = $customer->getCurrentSubscription();
+        
+        return view('subscriptions.checkout', [
+            'subscription' => $subscription
+        ]);
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function index(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        $subscriptions = \Acelle\Model\Subscription::search($request, $customer->id);
+
+        return view('subscriptions.index', [
+            'subscriptions' => $subscriptions,
+        ]);
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function listing(Request $request)
+    {
+        $customer = $request->user()->customer;
+        
+        $subscriptions = \Acelle\Model\Subscription::search($request, $customer->id)->paginate($request->per_page);
+
+        return view('admin.subscriptions._list', [
+            'subscriptions' => $subscriptions,
+        ]);
+    }
+    
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request)
+    {
+        $subscription = new \Acelle\Model\Subscription();
+
+        // authorize
+        if (\Gate::denies('create', $subscription)) {
+            return $this->notAuthorized();
+        }
+        
+        if (!empty($request->old())) {
+            $subscription->fillAttributes($request->old());
+        }
+
+        return view('subscriptions.create', [
+            'subscription' => $subscription
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request)
+    {
+        // Get current user
+        $user = $request->user();
+        $customer = $user->customer;
+        $subscription = new \Acelle\Model\Subscription();
+
+        // authorize
+        if (\Gate::denies('create', $subscription)) {
+            return $this->notAuthorized();
+        }
+
+        // save posted data
+        if ($request->isMethod('post')) {
+            $this->validate($request, $subscription->frontendRules());
+            
+            $subscription->fillAttributes($request->all());            
+            $subscription->customer_id = $customer->id;
+            $subscription->save();
+            
+            $request->session()->flash('alert-success', trans('messages.subscription.created'));
+            return redirect()->action('SubscriptionController@index');
+        }
+    }
+    
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Request $request, $uid)
+    {
+        $subscription = \Acelle\Model\Subscription::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $subscription)) {
+            return $this->notAuthorized();
+        }
+        
+        if (!empty($request->old())) {
+            $subscription->fillAttributes($request->old());
+        }
+
+        return view('subscriptions.edit', [
+            'subscription' => $subscription
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $uid)
+    {
+        // Get current user
+        $user = $request->user();
+        $customer = $user->customer;
+        
+        $subscription = \Acelle\Model\Subscription::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $subscription)) {
+            return $this->notAuthorized();
+        }
+
+        // save posted data
+        if ($request->isMethod('patch')) {
+            $this->validate($request, $subscription->frontendRules());
+            
+            $subscription->fillAttributes($request->all());            
+            $subscription->customer_id = $customer->id;
+            $subscription->save();
+            
+            $request->session()->flash('alert-success', trans('messages.subscription.updated'));
+            return redirect()->action('SubscriptionController@index');
+        }
     }
 }

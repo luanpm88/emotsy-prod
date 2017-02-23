@@ -99,7 +99,7 @@
                 <h4>Example:</h4>
                 <pre class=""><code>curl -X POST -H "accept:application/json" -G \
 {{ action("Api\MailListController@store") }}? \
--d api_token=I0ab15jsAGCitF4B3ub1DWIXb1CXqN2o9vEKPb3YoFzW66FVXpP87AKw9nSL \
+-d api_token={{ Auth::user()->api_token }} \
 -d name=List+1 \
 -d from_email=admin@abccorp.org \
 -d from_name=ABC+Corp. \
@@ -569,7 +569,7 @@
           <th>{{ trans('messages.Function') }}</th>
         </tr>
         
-        <!-- LISTS -->
+        <!-- USER -->
         <tr>
           <td>
             <span class="label label-flat bg-primary">{{ trans('messages.POST') }}</span>
@@ -683,7 +683,291 @@
 </code></pre>
             </td>
         </tr>
-      </table>  
+      </table>
+        
+        
+        
+        <h2>{{ trans('messages.USER_GROUPS') }}</h2>
+        <table class="table table-box pml-table table-log">
+          <tr>
+            <th width="1%" class="text-nowrap">{{ trans('messages.HTTP_method') }}</th>
+            <th width="40%">{{ trans('messages.Endpoint') }}</th>
+            <th>{{ trans('messages.Function') }}</th>
+          </tr>
+          
+          <!-- USER GROUPS -->
+          
+          <tr>
+            <td>
+              <span class="label label-flat bg-info">{{ trans('messages.GET') }}</span>
+            </td>
+            <td>
+              <a href="#more" class="toogle-api">/api/v1/user_groups</a>
+            </td>
+            <td>
+              Get information about all user groups
+            </td>
+          </tr>
+          <tr style="display:none;background: #f6f6f6">
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">                
+                  <h4>Returns</h4>
+                  <div class="list">
+                    List of all user groups in json
+                  </div>
+                </div>
+              </div>
+            </td>
+              <td>
+                  <h4>Example:</h4>
+                  <pre class=""><code>curl -X GET -H "accept:application/json" -G \
+{{ action("Api\UserGroupController@index") }}? \
+-d api_token={{ Auth::user()->api_token }}
+</code></pre>
+              </td>
+          </tr>
+            
+            
+          <tr>
+            <td>
+              <span class="label label-flat bg-info">{{ trans('messages.GET') }}</span>
+            </td>
+            <td>
+              <a href="#more" class="toogle-api">/api/v1/user_groups/{id}</a>
+            </td>
+            <td>
+              Get information about a specific user group
+            </td>
+          </tr>
+          <tr style="display:none;background: #f6f6f6">
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">
+                  <h4>Parameters</h4>
+                    <div class="list"><dl>
+                      <dt><var>$id</var></dt></dt>
+                      <dd>User group's id</dd>
+                    </dl></div>
+                  <h4>Returns</h4>
+                  <div class="list">
+                    All user group informations in json
+                  </div>
+                </div>
+              </div>
+              </td>
+              <td>
+                  <h4>Example:</h4>
+                  <pre class=""><code>curl -X GET -H "accept:application/json" -G \
+{!! str_replace("-ID-", "<redbold>{id}</redbold>", action("Api\UserGroupController@show", "-ID-")) !!}? \
+-d api_token={{ Auth::user()->api_token }}
+</code></pre>
+              </td>
+          </tr>
+          
+          
+          <tr>
+            <td>
+              <span class="label label-flat bg-primary">{{ trans('messages.POST') }}</span>
+            </td>
+            <td>
+              <a href="#more" class="toogle-api">/api/v1/user_groups</a>
+            </td>
+            <td>
+              Add a new user group
+            </td>
+          </tr>
+          <tr style="display:none;background: #f6f6f6">
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">
+                  <h4>Parameters</h4>
+                    <div class="list"><dl>
+                      <dt><var>$name</var></dt></dt>
+                      <dd>User group's name</dd>
+                      
+                      <dt><var>$frontend_access</var></dt></dt>
+                      <dd>Is users in the group can access campaign view</dd>
+                        
+                      <dt><var>$backend_access</var></dt></dt>
+                      <dd>Is users in the group can access admin view</dd>
+                        
+                      <dt><var>$options[frontend][OPTION...]</var></dt></dt>
+                      <dd>Set campaign view options. OPTION is the option you want set value. All other options will be set to system default values.</dd>
+                    
+                      <dt><var>$options[backend][OPTION...]</var></dt></dt>
+                      <dd>Set admin view permissions. OPTION is the option you want set value. All other options will be set to system default values.</dd>
+                        
+                      <dt><var>$sending_servers[SENDING_SERVER_UID][FITNESS]</var></dt></dt>
+                      <dd>Add sending servers to the group. This only works if <span class="text-semibold">$options[frontent][all_sending_servers]</span> is set to <span class="text-semibold">0</span>.</dd>
+                  </dl></div>
+                  <h4>Returns</h4>
+                  <div class="list">
+                      Creation messages in json
+                  </div>
+                </div>
+              </div>
+            </td>
+              <td>
+                  <h4>Example:</h4>
+                  <pre class=""><code>curl -X POST -H "accept:application/json" -G \
+{{ action("Api\UserGroupController@store") }}? \
+-d api_token={{ Auth::user()->api_token }} \
+-d name=Group+A \
+-d frontend_access=1 \
+-d backend_access=1 \
+-d options[frontend][list_max]=2 \
+-d options[frontend][max_size_upload_total]=200 \
+-d options[frontend][all_sending_servers]=0 \
+-d sending_servers[<redbold>{sending_server_uid}</redbold>][fitness]=40 \
+-d sending_servers[<redbold>{sending_server_uid}</redbold>][fitness]=60</code></pre>
+              </td>
+          </tr>
+          
+            
+          <tr>
+            <td>
+              <span class="label label-flat bg-success">{{ trans('messages.PATCH') }}</span>
+            </td>
+            <td>
+              <a href="#more" class="toogle-api">/api/v1/user_groups/{id}</a>
+            </td>
+            <td>
+              Update user group
+            </td>
+          </tr>
+          <tr style="display:none;background: #f6f6f6">
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">
+                  <h4>Parameters</h4>
+                    <div class="list"><dl>
+                      <dt><var>$name</var></dt></dt>
+                      <dd>User group's name</dd>
+                      
+                      <dt><var>$frontend_access</var></dt></dt>
+                      <dd>Is users in the group can access campaign view</dd>
+                        
+                      <dt><var>$backend_access</var></dt></dt>
+                      <dd>Is users in the group can access admin view</dd>
+                        
+                      <dt><var>$options[frontend][OPTION...]</var></dt></dt>
+                      <dd>Set campaign view options. OPTION is the option you want set value. All other options will be set to system default values.</dd>
+                    
+                      <dt><var>$options[backend][OPTION...]</var></dt></dt>
+                      <dd>Set admin view permissions. OPTION is the option you want set value. All other options will be set to system default values.</dd>
+                        
+                      <dt><var>$sending_servers[SENDING_SERVER_UID][FITNESS]</var></dt></dt>
+                      <dd>Add sending servers to the group. This only works if <span class="text-semibold">$options[frontent][all_sending_servers]</span> is set to <span class="text-semibold">0</span>.</dd>
+                  </dl></div>
+                  <h4>Returns</h4>
+                  <div class="list">
+                      Updating result in json
+                  </div>
+                </div>
+              </div>
+            </td>
+              <td>
+                  <h4>Example:</h4>
+                  <pre class=""><code>curl -X PATCH -H "accept:application/json" -G \
+{!! str_replace("-ID-", "<redbold>{id}</redbold>", action("Api\UserGroupController@update", "-ID-")) !!}? \
+-d api_token={{ Auth::user()->api_token }} \
+-d name=Group+A \
+-d frontend_access=1 \
+-d backend_access=1 \
+-d options[frontend][list_max]=2 \
+-d options[frontend][max_size_upload_total]=200 \
+-d options[frontend][all_sending_servers]=0 \
+-d sending_servers[<redbold>{sending_server_uid}</redbold>][fitness]=40 \
+-d sending_servers[<redbold>{sending_server_uid}</redbold>][fitness]=60</code></pre>
+              </td>
+          </tr>
+            
+            
+          <tr>
+            <td>
+              <span class="label label-flat bg-danger">{{ trans('messages.DELETE') }}</span>
+            </td>
+            <td>
+              <a href="#more" class="toogle-api">/api/v1/user_groups/{id}</a>
+            </td>
+            <td>
+              Delete user group
+            </td>
+          </tr>
+          <tr style="display:none;background: #f6f6f6">
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">
+                  <h4>Parameters</h4>
+                    <div class="list"><dl>
+                      <dt><var>$id</var></dt></dt>
+                      <dd>User group's id</dd>                      
+                  </dl></div>
+                  <h4>Returns</h4>
+                  <div class="list">
+                      Deleting result in json
+                  </div>
+                </div>
+              </div>
+            </td>
+              <td>
+                  <h4>Example:</h4>
+                  <pre class=""><code>curl -X DELETE -H "accept:application/json" -G \
+{!! str_replace("-ID-", "<redbold>{id}</redbold>", action("Api\UserGroupController@update", "-ID-")) !!}? \
+-d api_token={{ Auth::user()->api_token }}</code></pre>
+              </td>
+          </tr>
+          
+        </table>
+            
+            
+        <h2>{{ trans('messages.SENDING_SERVERS') }}</h2>
+        <table class="table table-box pml-table table-log">
+          <tr>
+            <th width="1%" class="text-nowrap">{{ trans('messages.HTTP_method') }}</th>
+            <th width="40%">{{ trans('messages.Endpoint') }}</th>
+            <th>{{ trans('messages.Function') }}</th>
+          </tr>
+          
+          <!-- SENDING SERVERS -->          
+          <tr>
+            <td>
+              <span class="label label-flat bg-info">{{ trans('messages.GET') }}</span>
+            </td>
+            <td>
+              <a href="#more" class="toogle-api">/api/v1/sending_servers</a>
+            </td>
+            <td>
+              Get information about all sending servers
+            </td>
+          </tr>
+          <tr style="display:none;background: #f6f6f6">
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">                
+                  <h4>Returns</h4>
+                  <div class="list">
+                    List of all sending servers in json
+                  </div>
+                </div>
+              </div>
+            </td>
+              <td>
+                  <h4>Example:</h4>
+                  <pre class=""><code>curl -X GET -H "accept:application/json" -G \
+{{ action("Api\SendingServerController@index") }}? \
+-d api_token={{ Auth::user()->api_token }}
+</code></pre>
+              </td>
+          </tr>
+        </table>
       
   </div>
     

@@ -8,7 +8,7 @@
             </div>
             <h5 class="text-semibold mb-5">{{ trans('messages.sending_quota') }}</h5>
             <div class="progress progress-xxs">
-                <div class="progress-bar bg-warning" style="width: {{ Auth::user()->getSendingQuotaUsagePercentage() }}%">
+                <div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->getSendingQuotaUsagePercentage() }}%">
                 </div>
             </div>
         </div>

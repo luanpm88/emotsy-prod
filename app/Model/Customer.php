@@ -140,6 +140,11 @@ class Customer extends Model
     {
         return $this->hasMany('Acelle\Model\Automation');
     }
+	
+	public function subscriptions()
+    {
+        return $this->hasMany('Acelle\Model\Subscription');
+    }
 
     /**
      * Bootstrap any application services.
@@ -921,5 +926,14 @@ class Customer extends Model
             $this->removeImage();
             $this->image = '';
         }
+    }
+	
+	/**
+     * Get customer active subscription
+     *
+     * @return Subscription
+     */
+    public function getCurrentSubscription() {
+        $subsciption = $this->subscriptions()->orderBy('created_at', 'desc')->first();
     }
 }

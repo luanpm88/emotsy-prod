@@ -49,6 +49,12 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
     
     // Automation
     Route::post('automations/{uid}/api/call', 'AutomationController@apiCall');
+    
+    // User group
+    Route::resource('user_groups', 'UserGroupController');
+    
+    // Sending server
+    Route::resource('sending_servers', 'SendingServerController');
 });
 
 Route::auth();
@@ -322,6 +328,13 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('auto-events/{uid}/campaigns/add', 'AutoEventController@addCampaign');
     Route::get('auto-events/{uid}/campaigns', 'AutoEventController@campaigns');
     Route::resource('auto-events', 'AutoEventController');
+    
+    // Subscription
+    Route::get('subscriptions/preview', 'SubscriptionController@preview');
+    Route::get('subscriptions/listing/{page?}', 'SubscriptionController@listing');
+    Route::get('subscriptions/sort', 'SubscriptionController@sort');
+    Route::get('subscriptions/delete', 'SubscriptionController@delete');
+    Route::resource('subscriptions', 'SubscriptionController');
 });
 
 // ADMIN AREA

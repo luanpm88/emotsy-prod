@@ -130,11 +130,18 @@ class Subscription extends Model
      *
      * @return collect
      */
-    public static function search($request)
+    public static function search($request, $customer_id=null)
     {
         $query = self::filter($request);
+        
+        // Filer by customer
+        if($customer_id) {
+            $query = $query->where('subscriptions.customer_id', '=', $customer_id);
+        }
 
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        if(isset($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
 
         return $query;
     }
@@ -174,6 +181,9 @@ class Subscription extends Model
                     $this->end_at = $this->start_at->addYears($plan->frequency_amount * $this->quantity);
                     break;
             }
+            
+            $this->options = $plan->options;
+            $this->price = $plan->price * $this->quantity;
         }
     }
     
