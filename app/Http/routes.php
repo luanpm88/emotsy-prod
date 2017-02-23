@@ -49,6 +49,12 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
     
     // Automation
     Route::post('automations/{uid}/api/call', 'AutomationController@apiCall');
+    
+    // User group
+    Route::resource('user_groups', 'UserGroupController');
+    
+    // Sending server
+    Route::resource('sending_servers', 'SendingServerController');
 });
 
 Route::auth();

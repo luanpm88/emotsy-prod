@@ -1329,4 +1329,6 @@ return [
     'remote_job_guide' => 'OR you can configure your remote cronjob make a POST request to the following URL',
     'embedded_form_recaptcha' => 'Embedded form captcha',
     'setting.embedded_form_recaptcha.help' => 'Enable acptcha for embedded form to block spammers and bots from accessing the webapp.',
+    'USER_GROUPS' => 'USER GROUPS',
+    'SENDING_SERVERS' => 'SENDING SERVERS',
 ];

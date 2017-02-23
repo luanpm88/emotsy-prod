@@ -14,6 +14,23 @@ class UserGroupPolicy
     public function __construct()
     {
     }
+    
+    public function readAll(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
+    {
+        $ability = $user->getOption('backend', 'user_group_read');
+        $can = $ability == 'all';
+
+        return $can;
+    }
+    
+    public function read(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
+    {
+        $ability = $user->getOption('backend', 'user_group_read');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->id == $item->user_id);
+
+        return $can;
+    }
 
     public function create(\Acelle\Model\User $user, \Acelle\Model\UserGroup $item)
     {

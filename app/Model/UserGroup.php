@@ -660,14 +660,14 @@ class UserGroup extends Model
     {
         $this->user_group_sending_servers()->delete();
         foreach ($servers as $key => $param) {
-            if ($param['check']) {
+            //if ($param['check']) {
                 $server = SendingServer::findByUid($key);
                 $row = new UserGroupSendingServer();
                 $row->user_group_id = $this->id;
                 $row->sending_server_id = $server->id;
                 $row->fitness = $param['fitness'];
                 $row->save();
-            }
+            //}
         }
     }
 
@@ -698,6 +698,41 @@ class UserGroup extends Model
             return trans('messages.all');
         } else {
             return $this->user_group_sending_servers()->count();
+        }
+    }
+    
+    /**
+     * Api rules.
+     *
+     * @return array
+     */
+    public static function apiRules()
+    {
+        $rules = [
+            'name' => 'required',
+        ];
+
+        return $rules;
+    }
+    
+    /**
+     * Update options from request.
+     *
+     * @return void
+     */
+    public function updateOptions($options)
+    {
+        if (is_array($options)) {
+            $defaul_options = self::defaultOptions();
+            $saved_options = $options;
+            foreach($defaul_options as $x => $group) {
+                foreach($group as $y => $option) {
+                    if(isset($saved_options[$x]) && isset($saved_options[$x][$y])) {
+                        $defaul_options[$x][$y] = $saved_options[$x][$y];
+                    }
+                }
+            }
+            $this->options = json_encode($defaul_options, true);
         }
     }
 }
