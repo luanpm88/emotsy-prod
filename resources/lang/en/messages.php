@@ -1331,4 +1331,5 @@ return [
     'setting.embedded_form_recaptcha.help' => 'Enable acptcha for embedded form to block spammers and bots from accessing the webapp.',
     'USER_GROUPS' => 'USER GROUPS',
     'SENDING_SERVERS' => 'SENDING SERVERS',
+    'user_group.deleted' => 'User group was successfully deleted',
 ];

@@ -87,6 +87,11 @@ class UserGroupController extends Controller
     {
         $user = \Auth::guard('api')->user();
         $user_group = new \Acelle\Model\UserGroup();
+        
+        // check if item exists
+        if (!is_object($user_group)) {
+            return \Response::json(array('message' => 'User group not found'), 404);
+        }
 
         // authorize
         if (!$user->can('create', $user_group)) {
@@ -115,5 +120,82 @@ class UserGroupController extends Controller
                 'user_group_id' => $user_group->id
             ), 200);
         }
+    }
+    
+    /**
+     * Update user group.
+     *
+     * PATCH /api/v1/user_groups/id
+     *
+     * @param \Illuminate\Http\Request $request All user group information.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $user = \Auth::guard('api')->user();
+        $user_group = \Acelle\Model\UserGroup::find($id);
+        
+        // check if item exists
+        if (!is_object($user_group)) {
+            return \Response::json(array('message' => 'User group not found'), 404);
+        }
+
+        // authorize
+        if (!$user->can('update', $user_group)) {
+            return \Response::json(array('message' => 'Unauthorized'), 401);
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('patch')) {
+            $validator = \Validator::make($request->all(), \Acelle\Model\UserGroup::apiRules());
+            
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 403);
+            }
+            
+            $user_group->fill($request->all());
+            $user_group->updateOptions($request->options);
+            $user_group->save();
+            
+            if (isset($request->sending_servers)) {
+                $user_group->updateSendingServers($request->sending_servers);
+            }
+            
+            return \Response::json(array(
+                'message' => trans('messages.user_group.updated'),
+                'user_group_id' => $user_group->id
+            ), 200);
+        }
+    }
+    
+    /**
+     * Delete a user group.
+     *
+     * DELETE /api/v1/user_groups/{id}/delete
+     *
+     * @param string $id      User group's id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function destroy(Request $request, $id)
+    {
+        $user = \Auth::guard('api')->user();
+        $user_group = \Acelle\Model\UserGroup::find($id);
+        
+        // check if item exists
+        if (!is_object($user_group)) {
+            return \Response::json(array('message' => 'User group not found'), 404);
+        }
+        
+        // authorize
+        if (!$user->can('delete', $user_group)) {
+            return \Response::json(array('message' => 'Unauthorized'), 401);
+        }
+
+        // Unsubscribe
+        $user_group->delete();
+
+        return \Response::json(array('message' => trans('messages.user_group.deleted')), 200);
     }
 }
