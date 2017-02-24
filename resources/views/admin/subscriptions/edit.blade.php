@@ -25,7 +25,7 @@
 
 @section('content')
 	
-				<form enctype="multipart/form-data" action="{{ action('Admin\SubscriptionController@update', $subscription->uid) }}" method="POST">
+				<form enctype="multipart/form-data" action="{{ action('Admin\SubscriptionController@update', $subscription->uid) }}" method="POST" class="subscription-form">
 					{{ csrf_field() }}
 					<input type="hidden" name="_method" value="PATCH">
 					

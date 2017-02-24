@@ -111,6 +111,7 @@ class DatabaseSeeder extends Seeder
             'email' => 'luanpm88@gmail.com',
             'password' => bcrypt('123456'),
             'status' => 'active',
+            'activated' => 1,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);

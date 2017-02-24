@@ -109,6 +109,13 @@
 								<span class="">{{ trans('messages.used_quota') }}</span>
 							</a>
 						</li>
+						@if (Auth::user()->can("read", new Acelle\Model\Subscription()))
+							<li rel0="SubscriptionController">
+								<a href="{{ action('SubscriptionController@index') }}">
+									<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
+								</a>
+							</li>
+						@endif
 						<li><a href="{{ action("AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.account') }}</a></li>
 						<li><a href="{{ url("/logout") }}"><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a></li>
 					</ul>

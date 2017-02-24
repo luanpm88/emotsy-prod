@@ -1,11 +1,11 @@
 <div class="row">
-	<div class="col-md-6">
+	<div class="col-md-12">
 		<div class="row">                                    
-			<div class="col-md-6">
+			<div class="col-md-3">
 				<div class="">
 					@include('helpers.form_control', [
 						'type' => 'select_ajax',
-						'class' => 'subsciption-plan-select',
+						'class' => 'subsciption-plan-select hook',
 						'name' => 'plan_id',
 						'label' => trans('messages.plan'),
 						'selected' => [
@@ -19,7 +19,7 @@
 					])
 				</div>
 			</div>
-			<div class="col-md-6">
+			<div class="col-md-3">
 				<div class="">
 					@include('helpers.form_control', [
 						'type' => 'select',
@@ -27,13 +27,14 @@
 						'label' => trans('messages.quantity'),
 						'value' => $subscription->quantity,
 						'help_class' => 'subscription',
+						'class' => 'hook',
 						'rules' => $subscription->rules(),
 						'options' => \Acelle\Library\Tool::numberSelectOptions(),
 						'placeholder' => trans('messages.select_plan')
 					])
 				</div>                                        
 			</div>
-			<div class="col-md-12">
+			<div class="col-md-6">
 				<div class="">
 					@include('helpers.form_control', [
 						'type' => 'textarea',
@@ -46,13 +47,8 @@
 				</div>
 			</div>
 		</div>
-		<div class="ajax-detail-box plan-left-preview" data-url="{{ action('SubscriptionController@preview') }}" data-form=".subscription-form">
-			@include('subscriptions.preview', [
-				'subscription' => $subscription
-			])
-		</div>
 	</div>
-	<div class="col-md-6 ajax-detail-box plan-right-preview" data-url="{{ action('SubscriptionController@preview') }}" data-form=".subscription-form">
+	<div class="col-md-12 ajax-detail-box" data-url="{{ action('SubscriptionController@preview') }}" data-form=".subscription-form">
 		@include('subscriptions.preview', [
 			'subscription' => $subscription
 		])

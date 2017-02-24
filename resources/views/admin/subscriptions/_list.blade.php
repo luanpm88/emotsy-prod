@@ -39,16 +39,35 @@
 					</h5>
 					<span class="text-muted">{{ trans('messages.end_at') }}</span>
 				</td>
+				<td>
+					<span class="text-muted2 list-status pull-left">
+						<span class="label label-flat bg-{{ $subscription->status }}">{{ trans('messages.subscription_status_' . $subscription->status) }}</span>
+					</span>
+				</td>
 				<td class="text-right">											
 					@can('update', $subscription)
-						<a href="{{ action('SubscriptionController@edit', $subscription->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
+						<a href="{{ action('Admin\SubscriptionController@edit', $subscription->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
 					@endcan
-					@if (Auth::user()->can('delete', $subscription))
+					@if (Auth::user()->can('delete', $subscription) || Auth::user()->can('enable', $subscription) || Auth::user()->can('disable', $subscription))
 						<div class="btn-group">										
 							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
+								@can('enable', $subscription)
+									<li>														
+										<a data-method='PATCH' link-confirm="{{ trans('messages.enable_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@enable', ["uids" => $subscription->uid]) }}">
+											<i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
+										</a>
+									</li>
+								@endcan
+								@can('disable', $subscription)
+									<li>														
+										<a data-method='PATCH' link-confirm="{{ trans('messages.disable_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@disable', ["uids" => $subscription->uid]) }}">
+											<i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
+										</a>
+									</li>
+								@endcan
 								<li>														
-									<a delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('SubscriptionController@delete', ['uids' => $subscription->uid]) }}">
+									<a delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@delete', ['uids' => $subscription->uid]) }}">
 										<i class="icon-trash"></i> {{ trans('messages.delete') }}
 									</a>
 								</li>

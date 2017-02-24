@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Subscription extends Model
 {
+    // Automation status
+    const STATUS_ACTIVE = 'active'; // equiv. to 'queue'
+	const STATUS_INACTIVE = 'inactive';
+    
     /**
      * The attributes that should be mutated to dates.
      *
@@ -24,7 +28,7 @@ class Subscription extends Model
      * @var array
      */
     protected $fillable = [
-        'plan_id', 'customer_id', 'start_at', 'end_at', 'quantity', 'note'
+        'plan_id', 'customer_id', 'start_at', 'quantity', 'note'
     ];
     
     /**
@@ -199,5 +203,27 @@ class Subscription extends Model
         );
         
         return $rules;
+    }
+	
+	/**
+     * Disable subscription.
+     *
+     * @return boolean
+     */
+    public function disable()
+    {
+        $this->status = Subscription::STATUS_INACTIVE;
+        return $this->save();
+    }
+    
+    /**
+     * Enable subscription.
+     *
+     * @return boolean
+     */
+    public function enable()
+    {
+        $this->status = Subscription::STATUS_ACTIVE;
+        return $this->save();
     }
 }

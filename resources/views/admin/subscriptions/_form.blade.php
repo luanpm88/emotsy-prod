@@ -22,7 +22,7 @@
 				<div class="">
 					@include('helpers.form_control', [
 						'type' => 'select_ajax',
-						'class' => 'subsciption-plan-select',
+						'class' => 'subsciption-plan-select hook',
 						'name' => 'plan_id',
 						'label' => trans('messages.plan'),
 						'selected' => [
@@ -45,6 +45,7 @@
 						'name' => 'quantity',
 						'label' => trans('messages.quantity'),
 						'value' => $subscription->quantity,
+						'class' => 'hook',
 						'help_class' => 'subscription',
 						'rules' => $subscription->rules(),
 						'options' => \Acelle\Library\Tool::numberSelectOptions(),

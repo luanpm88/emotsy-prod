@@ -23,7 +23,7 @@ class CreateSubscriptionsTable extends Migration
             $table->decimal('price', 16, 2);
             $table->timestamp('start_at');
             $table->timestamp('end_at');
-            $table->text('note');
+            $table->string('status');
             
             $table->timestamps();
             

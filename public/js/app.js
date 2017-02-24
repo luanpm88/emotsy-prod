@@ -9,6 +9,27 @@
 *
 * ---------------------------------------------------------------------------- */
 
+function pickadateMask(selector) {
+    $(document).on('change', selector, function() {      
+        updatePickadateDateMask($(this));
+    });
+    $(selector).each(function() {
+        updatePickadateDateMask($(this));
+    });
+}
+
+function updatePickadateDateMask(control) {
+    control.each(function() {
+        var mask = $(this).parent().find('.date-mask-control');
+        var value = $(this).val();
+        
+        if(value !== '') {
+            var date = moment(value); //Get the current date
+            mask.html(date.format(LANG_DATE_FORMAT.toUpperCase()));
+        }
+    });        
+}
+
 function updateAutoEventNumber() {
     var num = 1;
     $('.auto-event-line').each(function() {
@@ -1182,16 +1203,7 @@ $(function() {
     });
     
     // pickadate mask
-    $(document).on('change', '.pickadate-control', function() {      
-        var mask = $(this).parent().find('.date-mask-control');
-        var value = $(this).val();
-        
-        if(value !== '') {
-            var date = moment(value); //Get the current date
-            mask.html(date.format(LANG_DATE_FORMAT.toUpperCase()));
-        }
-    });
-    $('.pickadate-control').trigger('change');
+    pickadateMask('.pickadate-control');    
     
     // Check all checkboxes group
     $(document).on('click', '.re_generate_remote_job_url', function(e) {
@@ -1223,7 +1235,7 @@ $(function() {
             method = 'POST';
         }
         
-        $(document).on('change', form_class + ' select', function() {
+        $(document).on('change', form_class + ' .hook', function() {
             $.ajax({
                 method: 'GET',
                 url: url,
@@ -1232,7 +1244,7 @@ $(function() {
             .done(function(msg) {
                 container.html(msg);
                 container.find('.pickadate').pickadate({format: 'yyyy-mm-dd', selectYears: 100});
-                container.find('.pickadate-control').trigger('change');
+                updatePickadateDateMask(container.find('.pickadate'));
             });
         });
     });

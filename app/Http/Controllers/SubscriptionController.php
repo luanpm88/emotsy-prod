@@ -40,7 +40,8 @@ class SubscriptionController extends Controller
     public function register(Request $request)
     {
         // Subscription        
-        $subscription = new \Acelle\Model\Subscription();        
+        $subscription = new \Acelle\Model\Subscription();
+        $subscription->status = \Acelle\Model\Subscription::STATUS_INACTIVE;
         if($request->plan_uid) {
             $plan = \Acelle\Model\Plan::findbyUid($request->plan_uid);
             $subscription->plan_id = $plan->id;            
@@ -149,7 +150,7 @@ class SubscriptionController extends Controller
         
         $subscriptions = \Acelle\Model\Subscription::search($request, $customer->id)->paginate($request->per_page);
 
-        return view('admin.subscriptions._list', [
+        return view('subscriptions._list', [
             'subscriptions' => $subscriptions,
         ]);
     }
@@ -161,7 +162,7 @@ class SubscriptionController extends Controller
      */
     public function create(Request $request)
     {
-        $subscription = new \Acelle\Model\Subscription();
+        $subscription = new \Acelle\Model\Subscription();        
 
         // authorize
         if (\Gate::denies('create', $subscription)) {
@@ -189,6 +190,7 @@ class SubscriptionController extends Controller
         $user = $request->user();
         $customer = $user->customer;
         $subscription = new \Acelle\Model\Subscription();
+        $subscription->status = \Acelle\Model\Subscription::STATUS_INACTIVE;
 
         // authorize
         if (\Gate::denies('create', $subscription)) {
@@ -263,5 +265,27 @@ class SubscriptionController extends Controller
             $request->session()->flash('alert-success', trans('messages.subscription.updated'));
             return redirect()->action('SubscriptionController@index');
         }
+    }
+    
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {
+        $subscriptions = \Acelle\Model\Subscription::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($subscriptions->get() as $subscription) {
+            // authorize
+            if (\Gate::allows('delete', $subscription)) {
+                $subscription->delete();
+            }
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.subscriptions.deleted');
     }
 }

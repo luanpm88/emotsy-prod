@@ -34,7 +34,7 @@
                 <div class="col-md-6">
                     <div class="form-group">									
                         <label>{{ trans('messages.subscription_time_registered') }}</label>
-                        <div class="text-right">											
+                        <div class="text-left">											
                             <h3 class="mt-0 text-semibold">{{
                             trans('messages.display_' . $subscription->plan->frequency_unit . '_number', [
                                 'number' => $subscription->quantity * $subscription->plan->frequency_amount
@@ -46,7 +46,7 @@
                 <div class="col-md-6">
                     <div class="form-group">									
                         <label>{{ trans('messages.total') }}</label>
-                        <div class="text-right">											
+                        <div class="text-left">											
                             <h3 class="mt-0 text-semibold">
                                 {{ Acelle\Library\Tool::format_price($subscription->price, $subscription->plan->currency->format) }}
                             </h3>

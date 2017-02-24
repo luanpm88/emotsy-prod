@@ -91,6 +91,7 @@ class SubscriptionController extends Controller
         // Get current user
         $user = $request->user();
         $subscription = new \Acelle\Model\Subscription();
+        $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
 
         // authorize
         if (\Gate::denies('create', $subscription)) {
@@ -101,7 +102,13 @@ class SubscriptionController extends Controller
         if ($request->isMethod('post')) {
             $this->validate($request, $subscription->rules());
             
-            $subscription->fillAttributes($request->all());            
+            $subscription->fillAttributes($request->all());
+            
+            // Allow admin update end at date
+            if(empty($params["end_at"])) {
+                $this->end_at = $params["end_at"];
+            }
+            
             $subscription->save();
             
             $request->session()->flash('alert-success', trans('messages.subscription.created'));
@@ -164,7 +171,13 @@ class SubscriptionController extends Controller
         if ($request->isMethod('patch')) {
             $this->validate($request, $subscription->rules());
             
-            $subscription->fillAttributes($request->all());            
+            $subscription->fillAttributes($request->all());
+            
+            // Allow admin update end at date
+            if(empty($params["end_at"])) {
+                $this->end_at = $params["end_at"];
+            }
+            
             $subscription->save();
             
             $request->session()->flash('alert-success', trans('messages.subscription.updated'));
@@ -205,4 +218,71 @@ class SubscriptionController extends Controller
             'subscription' => $subscription
         ]);
     }
+    
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {
+        $subscriptions = \Acelle\Model\Subscription::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($subscriptions->get() as $subscription) {
+            // authorize
+            if (\Gate::allows('delete', $subscription)) {
+                $subscription->delete();
+            }
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.subscriptions.deleted');
+    }
+    
+    /**
+     * Enable subscriptions.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function enable(Request $request)
+    {
+        $subscriptions = \Acelle\Model\Subscription::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($subscriptions->get() as $subscription) {
+            // authorize
+            if (\Gate::allows('enable', $subscription)) {
+                $subscription->enable();
+            }            
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.subscriptions.disabled');
+    }
+
+    /**
+     * Disable subscriptions.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function disable(Request $request)
+    {
+        $subscriptions = \Acelle\Model\Subscription::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($subscriptions->get() as $subscription) {
+            // authorize
+            if (\Gate::allows('disable', $subscription)) {
+                $subscription->disable();
+            }            
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.subscriptions.disabled');
+    }
+
 }
