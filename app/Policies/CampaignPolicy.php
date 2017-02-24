@@ -39,10 +39,7 @@ class CampaignPolicy
     }
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\Campaign $item)
-    {
-        if (isSiteDemo()) {
-            return false;
-        }
+    {        
         return $item->user_id == $user->id && in_array($item->status, ['new', 'ready', 'paused', 'done', 'sending', 'error']);
     }
     

@@ -120,7 +120,8 @@ class MailList extends Model
 
     public function campaigns()
     {
-        return $this->hasMany('Acelle\Model\Campaign');
+        return \Acelle\Model\Campaign::leftJoin('campaigns_lists_segments', 'campaigns_lists_segments.campaign_id', '=', 'campaigns.id')
+            ->where('campaigns_lists_segments.mail_list_id', '=', $this->id);
     }
 
     /**

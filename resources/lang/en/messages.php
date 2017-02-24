@@ -1332,4 +1332,5 @@ return [
     'USER_GROUPS' => 'USER GROUPS',
     'SENDING_SERVERS' => 'SENDING SERVERS',
     'user_group.deleted' => 'User group was successfully deleted',
+    'operation_not_allowed_in_demo' => 'Operation not allowed in DEMO mode',
 ];

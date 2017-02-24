@@ -272,6 +272,11 @@ class MailListController extends Controller
      */
     public function delete(Request $request)
     {
+        if (isSiteDemo()) {
+            echo trans('messages.operation_not_allowed_in_demo');
+            return;
+        }
+        
         $lists = \Acelle\Model\MailList::whereIn('uid', explode(',', $request->uids));
 
         foreach ($lists->get() as $item) {

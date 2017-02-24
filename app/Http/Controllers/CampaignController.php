@@ -561,6 +561,11 @@ class CampaignController extends Controller
      */
     public function delete(Request $request)
     {
+        if (isSiteDemo()) {
+            echo trans('messages.operation_not_allowed_in_demo');
+            return;
+        }
+        
         $items = \Acelle\Model\Campaign::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
