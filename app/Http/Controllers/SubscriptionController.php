@@ -53,23 +53,35 @@ class SubscriptionController extends Controller
         }
         
         // Customer account
-        $customer = new \Acelle\Model\Customer();
-        $customer->uid = 0;
-        $customer->status = \Acelle\Model\Customer::STATUS_ACTIVE;
-        if (!empty($request->old())) {
-            $customer->fill($request->old());
-            // User info
-            $customer->user = new \Acelle\Model\User();
-            $customer->user->fill($request->old());
+        $user = $request->user();
+        $is_customer_logged_in = is_object($user) && is_object($user->customer);
+        if($is_customer_logged_in) {
+            $customer = $user->customer;
+        } else {
+            $customer = new \Acelle\Model\Customer();
+            $customer->uid = 0;
+            $customer->status = \Acelle\Model\Customer::STATUS_ACTIVE;
+            if (!empty($request->old())) {
+                $customer->fill($request->old());
+                // User info
+                $customer->user = new \Acelle\Model\User();
+                $customer->user->fill($request->old());
+            }
         }
         
          // save posted data
         if ($request->isMethod('post')) {
             // Validation
-            $this->validate($request, array_merge($customer->rules(), $subscription->frontendRules()));
+            if($is_customer_logged_in) {
+                $this->validate($request, $subscription->frontendRules());
+            } else {
+                $this->validate($request, array_merge($customer->rules(), $subscription->frontendRules()));
+            }
             
             // Save customer            
-            $customer->updateInformation($request);
+            if(!$is_customer_logged_in) {
+                $customer->updateInformation($request);
+            }
             
             // Save current user info
             $subscription->fillAttributes($request->all());            
@@ -77,15 +89,21 @@ class SubscriptionController extends Controller
             $subscription->save();
             
             // Send registration confirmation email
-            $user = \Acelle\Model\User::find($customer->user_id);
-            $user->sendActivationMail($customer->displayName(), action('SubscriptionController@checkout'));
-            
-            return view('subscriptions.register_confirmation_notice');
+            if($is_customer_logged_in) {
+                $request->session()->flash('alert-success', trans('messages.subscription.created'));
+                return redirect()->action('SubscriptionController@checkout');
+            } else {
+                $user = \Acelle\Model\User::find($customer->user_id);
+                $user->sendActivationMail($customer->displayName(), action('SubscriptionController@checkout'));
+                
+                return view('subscriptions.register_confirmation_notice');
+            }
         }
         
         return view('subscriptions.register', [
             'subscription' => $subscription,
-            'customer' => $customer
+            'customer' => $customer,
+            'is_customer_logged_in' => $is_customer_logged_in
         ]);
     }
     
@@ -116,7 +134,7 @@ class SubscriptionController extends Controller
     public function checkout(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscription = $customer->getCurrentSubscription();
+        $subscription = $customer->getCurrentInactiveSubscription();
         
         return view('subscriptions.checkout', [
             'subscription' => $subscription

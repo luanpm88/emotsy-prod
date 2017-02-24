@@ -79,7 +79,6 @@ Route::get('assets/images/avatar/reseller-{uid?}.jpg', 'ResellerController@avata
 
 // Customer subscription
 Route::get('subscriptions/preview', 'SubscriptionController@preview');
-Route::get('subscriptions/checkout', 'SubscriptionController@checkout');
 Route::post('subscriptions/register/{plan_uid?}', 'SubscriptionController@register');
 Route::get('subscriptions/register/{plan_uid?}', 'SubscriptionController@register');
 Route::get('subscriptions/select-plan', 'SubscriptionController@selectPlan');
@@ -330,6 +329,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('auto-events', 'AutoEventController');
     
     // Subscription
+    Route::get('subscriptions/checkout', 'SubscriptionController@checkout');
     Route::get('subscriptions/preview', 'SubscriptionController@preview');
     Route::get('subscriptions/listing/{page?}', 'SubscriptionController@listing');
     Route::get('subscriptions/sort', 'SubscriptionController@sort');

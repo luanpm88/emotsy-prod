@@ -145,7 +145,9 @@ class Subscription extends Model
 
         if(isset($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        }
+        } else {
+			$query = $query->orderBy('created_at', 'desc');
+		}
 
         return $query;
     }

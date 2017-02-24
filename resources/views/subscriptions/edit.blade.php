@@ -13,7 +13,7 @@
 	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
 			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-			<li><a href="{{ action("Admin\SubscriptionController@index") }}">{{ trans('messages.subscriptions') }}</a></li>
+			<li><a href="{{ action("SubscriptionController@index") }}">{{ trans('messages.subscriptions') }}</a></li>
 			<li class="active">{{ trans('messages.update') }}</li>
 		</ul>
 		<h1>

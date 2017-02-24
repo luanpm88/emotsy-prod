@@ -66,11 +66,13 @@
 										</a>
 									</li>
 								@endcan
-								<li>														
-									<a delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@delete', ['uids' => $subscription->uid]) }}">
-										<i class="icon-trash"></i> {{ trans('messages.delete') }}
-									</a>
-								</li>
+								@can('delete', $subscription)
+									<li>														
+										<a delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@delete', ['uids' => $subscription->uid]) }}">
+											<i class="icon-trash"></i> {{ trans('messages.delete') }}
+										</a>
+									</li>
+								@endcan
 							</ul>
 						</div>
 					@endcan

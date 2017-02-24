@@ -52,11 +52,13 @@
 						<div class="btn-group">										
 							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
-								<li>														
-									<a delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('SubscriptionController@delete', ['uids' => $subscription->uid]) }}">
-										<i class="icon-trash"></i> {{ trans('messages.delete') }}
-									</a>
-								</li>
+								@can('delete', $subscription)
+									<li>														
+										<a delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('SubscriptionController@delete', ['uids' => $subscription->uid]) }}">
+											<i class="icon-trash"></i> {{ trans('messages.delete') }}
+										</a>
+									</li>
+								@endcan									
 							</ul>
 						</div>
 					@endcan

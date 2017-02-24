@@ -929,11 +929,24 @@ class Customer extends Model
     }
 	
 	/**
-     * Get customer active subscription
+     * Get customer current subscription
      *
      * @return Subscription
      */
     public function getCurrentSubscription() {
-        $subsciption = $this->subscriptions()->orderBy('created_at', 'desc')->first();
+        return $subsciption = $this->subscriptions()
+			->where('status', '=', \Acelle\Model\Subscription::STATUS_ACTIVE)
+			->orderBy('created_at', 'desc')->first();
+    }
+	
+	/**
+     * Get customer current pending subscription
+     *
+     * @return Subscription
+     */
+    public function getCurrentInactiveSubscription() {
+        return $subsciption = $this->subscriptions()
+			->where('status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
+			->orderBy('created_at', 'desc')->first();
     }
 }
