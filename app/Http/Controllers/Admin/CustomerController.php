@@ -378,6 +378,6 @@ class CustomerController extends Controller
      */
     public function select2(Request $request)
     {        
-        echo \Acelle\Model\Customer::select2();
+        echo \Acelle\Model\Customer::select2($request);
     }
 }

@@ -24,6 +24,7 @@
                     <li role="tab" class="{{ in_array(request()->route()->getActionName(), [
                     'Acelle\Http\Controllers\SubscriptionController@register']) ? 'current' : '' }}
                     {{ in_array(request()->route()->getActionName(), [
+                    'Acelle\Http\Controllers\SubscriptionController@finish',
                     'Acelle\Http\Controllers\SubscriptionController@checkout']) ? 'done' : '' }}
                     "
                         aria-disabled="true">
@@ -31,12 +32,15 @@
                         <span class="number">2</span>
                         {{ trans('messages.subscription_information') }}
                     </a>
-                    <li role="tab" class="{{ request()->route()->getActionName() == 'Acelle\Http\Controllers\SubscriptionController@checkout' ? 'current' : '' }}" aria-disabled="true">
+                    <li role="tab" class="{{ request()->route()->getActionName() == 'Acelle\Http\Controllers\SubscriptionController@checkout' ? 'current' : '' }}
+                        {{ in_array(request()->route()->getActionName(), [
+                        'Acelle\Http\Controllers\SubscriptionController@finish']) ? 'done' : '' }}
+                    " aria-disabled="true">
                         <a id="steps-uid-0-t-1" href="#steps-uid-0-h-1" aria-controls="steps-uid-0-p-1">
                         <span class="number">3</span>
                         {{ trans('messages.checkout') }}
                     </a>
-                    <li role="tab" class="" aria-disabled="true">
+                    <li role="tab" class="{{ request()->route()->getActionName() == 'Acelle\Http\Controllers\SubscriptionController@finish' ? 'current' : '' }}" aria-disabled="true">
                         <a id="steps-uid-0-t-1" href="#steps-uid-0-h-1" aria-controls="steps-uid-0-p-1">
                         <span class="number">4</span>
                         {{ trans('messages.finish') }}

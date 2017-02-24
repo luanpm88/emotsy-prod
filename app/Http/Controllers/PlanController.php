@@ -15,6 +15,6 @@ class PlanController extends Controller
      */
     public function select2(Request $request)
     {        
-        echo \Acelle\Model\Plan::select2();
+        echo \Acelle\Model\Plan::select2($request);
     }
 }

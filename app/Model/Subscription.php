@@ -228,4 +228,14 @@ class Subscription extends Model
         $this->status = Subscription::STATUS_ACTIVE;
         return $this->save();
     }
+	
+	/**
+     * Check if subscription is free.
+     *
+     * @return boolean
+     */
+    public function isFree()
+    {
+        return $this->price == 0;
+    }
 }

@@ -865,7 +865,7 @@ class Customer extends Model
      *
      * @return array
      */
-    public static function select2() {
+    public static function select2($request) {
         $data = ['items' => [], 'more' => true];
         
         $query = \Acelle\Model\Customer::getAll()->leftJoin('users', 'users.id', '=', 'customers.user_id');

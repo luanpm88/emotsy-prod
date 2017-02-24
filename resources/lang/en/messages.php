@@ -1511,4 +1511,8 @@ return [
     'enable_subscriptions_confirm' => 'You\'re about to enable :number subscription(s).',
     'you_are_logged_in_as' => 'You are logged in as :name',
     'you_have_inactive_subscription' => 'You have already had an pending subscription',
+    'subscription_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">Congratulation!</h2>
+        <p>You are successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is activated.</p><p>Let choose an action below for next step.</p>',
+    'go_to_dashboard' => 'Go to the dashboard',
+    'check_your_subscriptions' => 'Check your subscriptions',
 ];

@@ -101,6 +101,13 @@
                     </div>
                 </div>
             </div>
+                
+            <br />
+            @if ($subscription->isFree())
+                <div class="text-center">
+                    <a href="{{ action('SubscriptionController@finish') }}" class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.confirm') }}</a>
+                </div>
+            @endif
         </div>
     </div>
 @endsection

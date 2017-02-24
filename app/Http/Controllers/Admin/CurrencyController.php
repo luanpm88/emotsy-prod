@@ -278,6 +278,6 @@ class CurrencyController extends Controller
      */
     public function select2(Request $request)
     {        
-        echo \Acelle\Model\Currency::select2();
+        echo \Acelle\Model\Currency::select2($request);
     }
 }

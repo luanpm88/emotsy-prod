@@ -21,7 +21,7 @@
 				)
 					<div class="col-md-6">
 						<h2 class="">{{ trans('messages.customer') }}</h2>
-						@if (Auth::user()->can("read", new Acelle\Model\Reseller()))
+						@if (Auth::user()->can("read", new Acelle\Model\Customer()))
 							<a class="dashboard-box" href="{{ action('Admin\CustomerController@index') }}">
 								<span class="badge badge-info bg-teal-800">22</span>
 								<div class="dashboard-icon">
@@ -268,7 +268,7 @@
 				<div class="panel panel-white panel-no-color">
 					<div class="panel-heading">
 						<h5 class="panel-title text-semibold">
-							<a data-toggle="collapse" data-parent="#accordion1" href="#accordion-group1">{{ trans('messages.recent_resellers') }}</a>
+							<a data-toggle="collapse" data-parent="#accordion1" href="#accordion-group1">{{ trans('messages.recent_customers') }}</a>
 							<i class="icon-menu-open"></i>
 						</h5>
 					</div>
@@ -281,7 +281,7 @@
 											<div class="col-sm-5 col-md-5">
 												<img width="40" class="img-circle mr-10 pull-left" src="{{ action('CustomerController@avatar', $customer->uid) }}" alt="">
 												<h6 class="mt-0 mb-0 text-semibold">													
-													<a href="{{ action('Admin\ResellerController@edit', $customer->uid) }}">
+													<a href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">
 														{{ $customer->displayName() }}
 													</a>
 												</h6>

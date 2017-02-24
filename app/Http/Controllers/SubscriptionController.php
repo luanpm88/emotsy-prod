@@ -142,6 +142,22 @@ class SubscriptionController extends Controller
     }
     
     /**
+     * Finish page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function finish(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $subscription = $customer->getCurrentInactiveSubscription();
+        
+        return view('subscriptions.finish', [
+            'subscription' => $subscription
+        ]);
+    }
+    
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

@@ -151,7 +151,7 @@ class Currency extends Model
      *
      * @return array
      */
-    public static function select2() {
+    public static function select2($request) {
         $data = ['items' => [], 'more' => true];
         
         $query = Currency::getAll();

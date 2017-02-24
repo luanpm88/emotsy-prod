@@ -72,8 +72,8 @@
 					|| Auth::user()->can("read", new Acelle\Model\Currency())
 				)
 					<li class="dropdown language-switch"
-						rel0="ResellerController"
-						rel1="ResellerGroupController"
+						rel0="PlanController"
+						rel1="CurrencyGroupController"
 					>
 						<a class="dropdown-toggle" data-toggle="dropdown">
 							<i class="icon-credit-card2"></i> {{ trans('messages.subscription') }}
@@ -88,14 +88,14 @@
 								</li>
 							@endif
 							@if (Auth::user()->can("read", new Acelle\Model\Plan()))
-								<li rel0="ResellerController">
+								<li rel0="PlanController">
 									<a href="{{ action('Admin\PlanController@index') }}">
 										<i class="icon-clipboard2"></i> {{ trans('messages.plans') }}
 									</a>
 								</li>
 							@endif
 							@if (Auth::user()->can("read", new Acelle\Model\Currency()))
-								<li rel0="ResellerGroupController">
+								<li rel0="CurrencyController">
 									<a href="{{ action('Admin\CurrencyController@index') }}">
 										<i class="icon-coins"></i> {{ trans('messages.currencies') }}
 									</a>
