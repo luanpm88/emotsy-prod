@@ -332,27 +332,9 @@ class TemplateController extends Controller
             \Acelle\Library\Tool::xcopy($tmp_path, $public_upload_path);
 
             // find all link in html content
-            preg_match_all('/(?<=src=|background=|href=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $template->content, $matches);
-            $srcs = array_unique($matches['url']);
+            $template->replaceHtmlUrl($request->root().'/'.$public_dir.'/'.$sub_path);
             
-            foreach($srcs as $key => $src) {
-                $srcs[$key] = htmlspecialchars_decode($src);
-                $srcs[$key] = str_replace('"', '', $srcs[$key]);
-                $srcs[$key] = str_replace('\'', '', $srcs[$key]);
-            }
-            
-            foreach ($srcs as $src) {
-                if (preg_match('/https?/i', $src) || preg_match('/^https?/i', $src) || preg_match('/^#/i', $src) || strpos($src, '//') === 0) {
-                    continue;
-                }
-            
-                $new_src = $request->root().'/'.$public_dir.'/'.$sub_path.$src;
-                
-                // replace image url
-                $template->content = str_replace($src, $new_src, $template->content);
-                $template->content = str_replace('&quot;', '', $template->content);
-                $template->save();
-            }
+            $template->save();
 
             // remove tmp folder
             //exec("rm -r {$tmp_path}");
