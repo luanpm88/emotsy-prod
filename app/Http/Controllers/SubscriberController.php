@@ -124,6 +124,9 @@ class SubscriberController extends Controller
             $subscriber->save();
             // Update field
             $subscriber->updateFields($request->all());
+            
+            // update MailList cache
+            $subscriber->mailList->updateCachedInfo();
 
             // Log
             $subscriber->log('created', $request->user());

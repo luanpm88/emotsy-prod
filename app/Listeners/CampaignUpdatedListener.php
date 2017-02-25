@@ -27,6 +27,10 @@ class CampaignUpdatedListener
      */
     public function handle(CampaignUpdated $event)
     {
-        dispatch(new UpdateCampaignJob($event->campaign));
+        if ($event->delayed) {
+            dispatch(new UpdateCampaignJob($event->campaign));
+        } else {
+            $event->campaign->updateCache('SubscriberCount');
+        }
     }
 }

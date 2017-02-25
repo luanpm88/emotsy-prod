@@ -11,15 +11,17 @@ class CampaignUpdated extends Event
     use SerializesModels;
     
     public $campaign;
+    public $delayed;
 
     /**
      * Create a new event instance.
      *
      * @return void
      */
-    public function __construct($campaign)
+    public function __construct($campaign, $delayed = true)
     {
         $this->campaign = $campaign;
+        $this->delayed = $delayed;
     }
 
     /**

@@ -297,7 +297,7 @@ class SegmentController extends Controller
             $segment->log('updated', $request->user());
             
             // update cached information
-            $segment->mailList->updateCachedInfo()
+            $segment->mailList->updateCachedInfo();
 
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.segment.updated'));

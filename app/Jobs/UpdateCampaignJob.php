@@ -43,7 +43,6 @@ class UpdateCampaignJob extends SystemJob
      */
     public function handle()
     {
-        // start campaign
         $this->campaign->updateCache('SubscriberCount');
     }
 }

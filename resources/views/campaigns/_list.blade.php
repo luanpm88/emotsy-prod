@@ -29,7 +29,7 @@
 											<span class="text-muted">{{ trans('messages.' . $item->type) }}</span>
 											
 											<div class="text-semibold" data-popup="tooltip" title="{{ $item->displayRecipients() }}">
-												{{ $item->subscribers()->count() }} {{ trans('messages.recipients') }}
+												{{ $item->readCache('SubscriberCount') }} {{ trans('messages.recipients') }}
 											</div>
 
 											@if ($item->status != 'new')
@@ -46,7 +46,7 @@
 														<div class="progress-bar progress-bar-info" style="width: {{ $item->deliveredRate() }}%">
 														</div>
 													</div>
-													<span class="text-semibold">{{ $item->deliveredCount() }} / {{ $item->subscribers()->count() }}</span>
+													<span class="text-semibold">{{ $item->deliveredCount() }} / {{ $item->readCache('SubscriberCount')  }}</span>
 													<br />
 													<span class="text-muted">{{ trans('messages.sent') }}</span>
 												</div>

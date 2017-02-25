@@ -2267,7 +2267,8 @@ class Campaign extends Model
         $campaign->save();
         
         // Trigger the CampaignUpdate event to update the campaign cache information
-        event(new \Acelle\Events\CampaignUpdated($campaign));
+        // The second parameter of the constructor function is false, meanining immediate update
+        event(new \Acelle\Events\CampaignUpdated($campaign, false));
     }
     
     /**
