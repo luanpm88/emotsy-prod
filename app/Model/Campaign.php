@@ -2379,14 +2379,18 @@ class Campaign extends Model
      *
      * @return mixed
      */
-    public function readCache($key)
+    public function readCache($key, $default = null)
     {
         $cache = json_decode($this->cache, true);
         if (is_null($cache)) {
-            return null;
+            return $default;
         }
         if (array_key_exists($key, $cache)) {
-            return $cache[$key];
+            if (is_null($cache[$key])) {
+                return $default;
+            } else {
+                return $cache[$key];
+            }
         } else {
             return null;
         }
