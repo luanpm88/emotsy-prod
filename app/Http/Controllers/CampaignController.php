@@ -4,6 +4,7 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
+use Acelle\Library\Log as MailLog;
 
 class CampaignController extends Controller
 {
@@ -98,6 +99,14 @@ class CampaignController extends Controller
     public function show($id)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($id);
+        
+        // Trigger the CampaignUpdate event to update the campaign cache information
+        // The second parameter of the constructor function is false, meanining immediate update
+        try {
+            event(new \Acelle\Events\CampaignUpdated($campaign, false));
+        } catch (\Exception $ex) {
+            // in case TrackingLog record does not exist yet (open before logged!)
+        }
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -591,6 +600,14 @@ class CampaignController extends Controller
     public function overview(Request $request)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+        
+        // Trigger the CampaignUpdate event to update the campaign cache information
+        // The second parameter of the constructor function is false, meanining immediate update
+        try {
+            event(new \Acelle\Events\CampaignUpdated($campaign, false));
+        } catch (\Exception $ex) {
+            // in case TrackingLog record does not exist yet (open before logged!)
+        }
 
         // authorize
         if (\Gate::denies('read', $campaign)) {
@@ -984,7 +1001,14 @@ class CampaignController extends Controller
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
         $log->save();
-
+        
+        // Trigger the CampaignUpdate event to update the campaign cache information
+        // The second parameter of the constructor function is false, meanining immediate update
+        try {
+            event(new \Acelle\Events\CampaignUpdated($log->trackingLog->campaign, false));
+        } catch (\Exception $ex) {
+            // in case TrackingLog record does not exist yet (open before logged!)
+        }
         # Just return a blank image
         return response()->file(public_path('images/transparent.gif'));
     }
@@ -1004,6 +1028,14 @@ class CampaignController extends Controller
             $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
             $log->url = $decoded_url;
             $log->save();
+            
+            // Trigger the CampaignUpdate event to update the campaign cache information
+            // The second parameter of the constructor function is false, meanining immediate update
+            try {
+                event(new \Acelle\Events\CampaignUpdated($log->trackingLog->campaign, false));
+            } catch (\Exception $ex) {
+                // in case TrackingLog record does not exist yet (open before logged!)
+            }
         } catch (\Exception $e) {
             // Allow click from a test email    
         } finally {

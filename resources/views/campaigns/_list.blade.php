@@ -41,27 +41,27 @@
 										<td class="stat-fix-size-sm">
 											@if ($item->status != 'new')
 												<div class="single-stat-box pull-left ml-20">
-													<span class="no-margin text-teal-800 stat-num">{{ $item->deliveredRate() }}%</span>
+													<span class="no-margin text-teal-800 stat-num">{{ $item->isSending() ? $item->deliveredRate() : $item->readCache('DeliveredRate') }}%</span>
 													<div class="progress progress-xxs">
-														<div class="progress-bar progress-bar-info" style="width: {{ $item->deliveredRate() }}%">
+														<div class="progress-bar progress-bar-info" style="width: {{ $item->isSending() ? $item->deliveredRate() : $item->readCache('DeliveredRate') }}%">
 														</div>
 													</div>
-													<span class="text-semibold">{{ $item->deliveredCount() }} / {{ $item->readCache('SubscriberCount')  }}</span>
+													<span class="text-semibold">{{ $item->isSending() ? $item->deliveredCount() : $item->readCache('DeliveredCount') }} / {{ $item->readCache('SubscriberCount')  }}</span>
 													<br />
 													<span class="text-muted">{{ trans('messages.sent') }}</span>
 												</div>
 												<div class="single-stat-box pull-left ml-20">
-													<span class="no-margin text-teal-800 stat-num">{{ $item->openUniqRate() }}%</span>
+													<span class="no-margin text-teal-800 stat-num">{{ $item->readCache('UniqOpenRate') }}%</span>
 													<div class="progress progress-xxs">
-														<div class="progress-bar progress-bar-info" style="width: {{ $item->openUniqRate() }}%">
+														<div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('UniqOpenRate') }}%">
 														</div>
 													</div>
 													<span class="text-muted">{{ trans('messages.open_rate') }}</span>
 												</div>
 												<div class="single-stat-box pull-left ml-20">
-													<span class="no-margin text-teal-800 stat-num">{{ $item->clickedEmailsRate() }}%</span>
+													<span class="no-margin text-teal-800 stat-num">{{ $item->readCache('ClickedRate') }}%</span>
 													<div class="progress progress-xxs">
-														<div class="progress-bar progress-bar-info" style="width: {{ $item->clickedEmailsRate() }}%">
+														<div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('ClickedRate') }}%">
 														</div>
 													</div>
 													<span class="text-muted">{{ trans('messages.click_rate') }}</span>

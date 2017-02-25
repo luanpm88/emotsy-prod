@@ -30,7 +30,7 @@ class CampaignUpdatedListener
         if ($event->delayed) {
             dispatch(new UpdateCampaignJob($event->campaign));
         } else {
-            $event->campaign->updateCache('SubscriberCount');
+            $event->campaign->updateCache();
         }
     }
 }

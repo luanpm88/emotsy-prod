@@ -337,6 +337,14 @@ class Campaign extends Model
     }
     
     /**
+     * Check if the campaign is in the "SENDING" status;
+     */
+    public function isSending()
+    {
+        return $this->status == self::STATUS_SENDING;
+    }
+    
+    /**
      * Check if the campaign is ready to start
      */
     public function isReady()
@@ -430,7 +438,7 @@ class Campaign extends Model
                 MailLog::info('Start child process '.($i + 1).' of '.sizeof($chunks).' (forked from '.$parentPid.')');
                 sleep(self::WORKER_DELAY);
                 $this->run($chunks[$i]);
-                sleep(30);
+
                 exit($i + 1);
                 // end child process
             } else {
@@ -541,6 +549,10 @@ class Campaign extends Model
             
             // store user quota usage
             $this->user->saveQuotaUsageInfo();
+            
+            // Trigger the CampaignUpdate event to update the campaign cache information
+            // The second parameter of the constructor function is false, meanining immediate update
+            event(new \Acelle\Events\CampaignUpdated($this, false));
         }
     }
 
@@ -2319,12 +2331,24 @@ class Campaign extends Model
      *
      * @return void
      */
-    public function updateCache($key)
+    public function updateCache($key = null)
     {
         // cache indexes
         $index = [
             'SubscriberCount' => function(&$campaign) {
                 return $campaign->subscribers()->count();
+            },
+            'DeliveredRate' => function(&$campaign) {
+                return $campaign->deliveredRate();
+            },
+            'DeliveredCount' => function(&$campaign) {
+                return $campaign->deliveredCount();
+            },
+            'ClickedRate' => function(&$campaign) {
+                return $campaign->clickedEmailsRate();
+            },
+            'UniqOpenRate' => function(&$campaign) {
+                return $campaign->openUniqRate();
             },
         ];
         
@@ -2334,9 +2358,16 @@ class Campaign extends Model
             $cache = [];
         }
         
-        // callback to update the cache
-        $callback = $index[$key];
-        $cache[$key] = $callback($this);
+        if (is_null($key)) {
+            // update all cache
+            foreach($index as $key => $callback) {
+                $cache[$key] = $callback($this);
+            }
+        } else {
+            // update specific key
+            $callback = $index[$key];
+            $cache[$key] = $callback($this);    
+        }
         
         // write back to the DB
         $this->cache = json_encode($cache);
@@ -2354,7 +2385,10 @@ class Campaign extends Model
         if (is_null($cache)) {
             return null;
         }
-        
-        return $cache[$key];
+        if (array_key_exists($key, $cache)) {
+            return $cache[$key];
+        } else {
+            return null;
+        }
     }
 }
