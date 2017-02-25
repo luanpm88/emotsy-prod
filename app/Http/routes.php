@@ -337,6 +337,19 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('subscriptions/sort', 'SubscriptionController@sort');
     Route::get('subscriptions/delete', 'SubscriptionController@delete');
     Route::resource('subscriptions', 'SubscriptionController');
+    
+    // Sending servers
+    Route::get('sending_servers/select', 'SendingServerController@select');
+    Route::get('sending_servers/listing/{page?}', 'SendingServerController@listing');
+    Route::get('sending_servers/sort', 'SendingServerController@sort');
+    Route::get('sending_servers/delete', 'SendingServerController@delete');
+    Route::get('sending_servers/disable', 'SendingServerController@disable');
+    Route::get('sending_servers/enable', 'SendingServerController@enable');
+    Route::resource('sending_servers', 'SendingServerController');
+    Route::get('sending_servers/create/{type}', 'SendingServerController@create');
+    Route::post('sending_servers/create/{type}', 'SendingServerController@store');
+    Route::get('sending_servers/{id}/edit/{type}', 'SendingServerController@edit');
+    Route::patch('sending_servers/{id}/update/{type}', 'SendingServerController@update');
 });
 
 // ADMIN AREA

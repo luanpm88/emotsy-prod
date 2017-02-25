@@ -9,30 +9,35 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
+        // Insert from file
+        $query = File::get(storage_path('install/database_init.sql'));
+        $query = str_replace('<<prefix>>', env('DB_TABLES_PREFIX', ''), $query);        
+        DB::statement($query);
+        
         $created_at = Carbon\Carbon::now();
         $updated_at = $created_at;
 
-        // Create default countries
-        DB::table('countries')->insert([
-            'id' => 1,
-            'name' => 'Việt Nam',
-            'code' => 'vn',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-
-        // Create default languages
-        DB::table('languages')->insert([
-            'id' => 1,
-            'uid' => uniqid(),
-            'name' => 'English',
-            'code' => 'en',
-            'region_code' => 'us',
-            'status' => 'active',
-            'is_default' => true,
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
+        //// Create default countries
+        //DB::table('countries')->insert([
+        //    'id' => 1,
+        //    'name' => 'Việt Nam',
+        //    'code' => 'vn',
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
+        //
+        //// Create default languages
+        //DB::table('languages')->insert([
+        //    'id' => 1,
+        //    'uid' => uniqid(),
+        //    'name' => 'English',
+        //    'code' => 'en',
+        //    'region_code' => 'us',
+        //    'status' => 'active',
+        //    'is_default' => true,
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
 
         // Create default contact for admin user
         DB::table('contacts')->insert([
@@ -139,33 +144,7 @@ class DatabaseSeeder extends Seeder
             'timezone' => 'Atlantic/Cape_Verde',
             'created_at' => $created_at,
             'updated_at' => $updated_at,
-        ]);        
-        
-        //// Create default reseller group
-        //DB::table('reseller_groups')->insert([
-        //    'id' => 1,
-        //    'name' => 'Reseller Group 1',
-        //    'admin_id' => 1,
-        //    'created_at' => $created_at,
-        //    'updated_at' => $updated_at,
-        //]);
-        //
-        //// Create default reseller for admin user
-        //DB::table('resellers')->insert([
-        //    'id' => 1,
-        //    'uid' => uniqid(),
-        //    'user_id' => 1,
-        //    'admin_id' => 1,
-        //    'contact_id' => 5,
-        //    'reseller_group_id' => 1,
-        //    'language_id' => 1,
-        //    'first_name' => 'Luan',
-        //    'last_name' => 'Pham',
-        //    'timezone' => 'Atlantic/Cape_Verde',
-        //    'created_at' => $created_at,
-        //    'updated_at' => $updated_at,
-        //]);
-        
+        ]);
         
         // Create default customer group
         DB::table('customer_groups')->insert([
@@ -575,6 +554,24 @@ class DatabaseSeeder extends Seeder
             'name' => 'USD',
             'code' => 'USD',
             'format' => '${PRICE}',
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+        ]);
+        
+        DB::table('plans')->insert([
+            'id' => 1,
+            'uid' => uniqid(),
+            'admin_id' => 1,
+            'currency_id' => 1,
+            'name' => 'Free',
+            'price' => 0.0,
+            'frequency_amount' => 1,
+            'frequency_unit' => 'month',
+            'frequency_amount' => 1,
+            'options' => '',
+            'status' => 'active',
+            'color' => 'rgb(20,130,160)',
+            'custom_order' => 0,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
