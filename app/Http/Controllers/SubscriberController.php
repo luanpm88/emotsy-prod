@@ -241,7 +241,14 @@ class SubscriberController extends Controller
     public function delete(Request $request)
     {
         $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
-
+        
+        // get related mail lists to update the cached information
+        $lists = $subscribers->get()->map(function($e) { return \Acelle\Model\MailList::find($e->mail_list_id); });
+        foreach ($lists as $list) {
+            $list->updateCachedInfo();
+        }
+        
+        // actually delete the subscriber
         foreach ($subscribers->get() as $subscriber) {
             // authorize
             if (\Gate::denies('delete', $subscriber)) {

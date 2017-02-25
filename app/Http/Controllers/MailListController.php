@@ -119,6 +119,9 @@ class MailListController extends Controller
             $list->user_id = $user->id;
             $list->contact_id = $contact->id;
             $list->save();
+            
+            // Trigger updating related campaigns cache
+            $list->updateCachedInfo();
 
             // Log
             $list->log('created', $request->user());
@@ -282,6 +285,7 @@ class MailListController extends Controller
         foreach ($lists->get() as $item) {
             // authorize
             if (\Gate::allows('delete', $item)) {
+                $this->updateCachedInfo();
                 $item->delete();
                 // Log
                 $item->log('deleted', $request->user());

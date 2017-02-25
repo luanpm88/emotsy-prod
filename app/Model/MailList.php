@@ -1058,10 +1058,13 @@ class MailList extends Model
                 DB::commit();
             });
 
-            // update status, finish all batches
+            // Update status, finish all batches
             $system_job->updateStatus([ 'status' => self::IMPORT_STATUS_DONE, 'total' => $processed_count ]);
-
-            // action Log
+            
+            // Trigger updating related campaigns cache
+            $this->updateCachedInfo();
+            
+            // Action Log
             $this->log('import_success', $user, ['count' => $processed_count, 'error' => '']);
             $logger->info(trans('messages.Finish_importing_for_list_uid', ['uid' => $this->uid]));
         } catch (\Exception $e) {
@@ -1079,6 +1082,19 @@ class MailList extends Model
 
             // Action Log
             $this->log('import_max_error', $user, ['count' => $processed_count]);
+        }
+    }
+    
+    /**
+     * Update List related cache
+     *
+     * @return void
+     */
+    public function updateCachedInfo()
+    {
+        // Trigger the CampaignUpdate event to update the campaign cache information
+        foreach ($this->campaigns as $campaign) {
+            event(new \Acelle\Events\CampaignUpdated($campaign));
         }
     }
 

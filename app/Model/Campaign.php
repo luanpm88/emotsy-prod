@@ -66,7 +66,7 @@ class Campaign extends Model
      */
     public function defaultMailList()
     {
-        if($this->isAuto()) {
+        if ($this->isAuto()) {
             return $this->autoEvent()->automation->belongsTo('Acelle\Model\MailList', 'default_mail_list_id');
         } else {
             return $this->belongsTo('Acelle\Model\MailList', 'default_mail_list_id');
@@ -2265,6 +2265,9 @@ class Campaign extends Model
         $campaign = Campaign::find($this->id);
         $campaign->default_mail_list_id = $this->default_mail_list_id;
         $campaign->save();
+        
+        // Trigger the CampaignUpdate event to update the campaign cache information
+        event(new \Acelle\Events\CampaignUpdated($campaign));
     }
     
     /**
@@ -2308,5 +2311,49 @@ class Campaign extends Model
     public function isPaused()
     {
         return $this->status == self::STATUS_PAUSED;
+    }
+    
+    /**
+     * Update Campaign cached data
+     *
+     * @return void
+     */
+    public function updateCache($key)
+    {
+        // cache indexes
+        $index = [
+            'SubscriberCount' => function(&$campaign) {
+                return $campaign->subscribers()->count();
+            },
+        ];
+        
+        // retrieve cached data
+        $cache = json_decode($this->cache, true);
+        if (is_null($cache)) {
+            $cache = [];
+        }
+        
+        // callback to update the cache
+        $callback = $index[$key];
+        $cache[$key] = $callback($this);
+        
+        // write back to the DB
+        $this->cache = json_encode($cache);
+        $this->save();
+    }
+    
+    /**
+     * Retrieve Campaign cached data
+     *
+     * @return mixed
+     */
+    public function readCache($key)
+    {
+        $cache = json_decode($this->cache, true);
+        if (is_null($cache)) {
+            return null;
+        }
+        
+        return $cache[$key];
     }
 }
