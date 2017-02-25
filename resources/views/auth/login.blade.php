@@ -61,6 +61,12 @@
 						
 						<button type="submit" class="btn btn-lg bg-teal btn-block">{{ trans("messages.login") }} <i class="icon-circle-right2 position-right"></i></button>						
 					</div>
+						
+					<div class="text-center">
+						{!! trans('messages.need_a_account_create_an_one', [
+							'link' => action('SubscriptionController@selectPlan')
+						]) !!}
+					</div>
 				</form>
 				<!-- /advanced login -->
     

@@ -17,9 +17,8 @@ class CreateSubscriptionsTable extends Migration
             $table->uuid('uid');
             $table->integer('plan_id')->unsigned();
             $table->integer('customer_id')->unsigned();
-            $table->integer('quantity');
+            $table->integer('admin_id')->unsigned()->nullable();
             $table->text('options');
-            $table->text('note');
             $table->decimal('price', 16, 2);
             $table->timestamp('start_at');
             $table->timestamp('end_at');
@@ -29,6 +28,7 @@ class CreateSubscriptionsTable extends Migration
             
             $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
         });
     }
 

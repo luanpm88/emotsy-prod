@@ -27,12 +27,7 @@
 	<form enctype="multipart/form-data" action="{{ action('SubscriptionController@store') }}" method="POST" class="form-validate-jqueryz subscription-form">
 		{{ csrf_field() }}
 		
-		@include('subscriptions._form')			
-		
-		<br />
-		<div class="text-right">
-			<button type='submit' class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-		</div>
+		@include('subscriptions._form')
 	<form>
 	
 @endsection

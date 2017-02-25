@@ -1826,11 +1826,20 @@ ul.automation-confirm li.child-row h5 {
     line-height: 44px;
 }
 .box-shadow {
-    box-shadow: 4px 4px 0px rgba(0,0,0,0.2);
+    box-shadow: 1px 1px 10px rgba(0,0,0,0.3);
 }
 .mt-30 {
     margin-top: 30px;
 }
 .plan-left-preview .plan-right, .plan-right-preview .plan-left {
     display: none;
+}
+.panel-plan {
+    width: 330px;
+    display: inline-block;
+}
+@media (min-width: 1025px) {
+    .plan-top-80 {
+        margin-top: -80px;
+    }
 }

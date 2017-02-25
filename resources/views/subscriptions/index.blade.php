@@ -52,13 +52,13 @@
 						</div>
 						@can('create', new Acelle\Model\Subscription())
 							<div class="col-md-2 text-right">
-								<a href="{{ action("SubscriptionController@selectPlan") }}" type="button" class="btn bg-info-800">
+								<a href="{{ action("SubscriptionController@create") }}" type="button" class="btn bg-info-800">
 									<i class="icon icon-plus2"></i> {{ trans('messages.create_subscription') }}
 								</a>
 							</div>
 						@else
 							<div class="col-md-2 text-right" data-popup="tooltip" title="{{ trans('messages.you_have_inactive_subscription') }}">
-								<a href="{{ action("SubscriptionController@selectPlan") }}" type="button" class="btn btn-default disabled">
+								<a href="{{ action("SubscriptionController@create") }}" type="button" class="btn btn-default disabled">
 									<i class="icon icon-plus2"></i> {{ trans('messages.create_subscription') }}
 								</a>
 							</div>

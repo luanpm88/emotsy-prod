@@ -35,10 +35,7 @@
                     <div class="form-group">									
                         <label>{{ trans('messages.subscription_time_registered') }}</label>
                         <div class="text-left">											
-                            <h3 class="mt-0 text-semibold">{{
-                            trans('messages.display_' . $subscription->plan->frequency_unit . '_number', [
-                                'number' => $subscription->quantity * $subscription->plan->frequency_amount
-                            ]) }}
+                            <h3 class="mt-0 text-semibold">{{ $subscription->plan->displayFrequencyTime() }}
                             </h3>
                         </div>
                     </div>
@@ -55,7 +52,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-md-6">
+        <div class="col-md-6 text-center">
             @include('admin/plans/_plan', [
                 'plan' => $subscription->plan,
                 'readonly' => true,

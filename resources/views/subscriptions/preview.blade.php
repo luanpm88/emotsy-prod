@@ -1,20 +1,15 @@
 @if (is_object($subscription->plan))
-    <hr />
-    <div class="row">
+    <div class="row">        
         <div class="col-md-6 plan-left">
             <div class="row">
                 <div class="col-md-6">
-                    <div class="">
-                        @include('helpers.form_control', [
-                            'type' => 'date',
-                            'name' => 'start_at',
-                            'label' => trans('messages.start_at'),
-                            'value' => $subscription->start_at ? \Acelle\Library\Tool::dateTime($subscription->start_at)->format('Y-m-d') : '',
-                            'help_class' => 'subscription',
-                            'class' => ' hook',
-                            'rules' => $subscription->rules(),
-                            'placeholder' => trans('messages.start_at')
-                        ])
+                    <div class="form-group">									
+                        <label>{{ trans('messages.end_at') }}</label>
+                        <div class="text-left">											
+                            <h3 class="mt-0 text-bold">{{
+                            $subscription->start_at ? \Acelle\Library\Tool::dateTime($subscription->start_at)->format(trans('messages.date_format')) : '' }}
+                            </h3>
+                        </div>
                     </div>
                 </div>
                 <div class="col-md-6">
@@ -33,10 +28,8 @@
                     <div class="form-group">									
                         <label>{{ trans('messages.subscription_time_registered') }}</label>
                         <div class="text-left">											
-                            <h3 class="mt-0 text-bold">{{
-                            trans('messages.display_' . $subscription->plan->frequency_unit . '_number', [
-                                'number' => $subscription->quantity * $subscription->plan->frequency_amount
-                            ]) }}
+                            <h3 class="mt-0 text-bold">
+                            {{ $subscription->plan->displayFrequencyTime() }}
                             </h3>
                         </div>
                     </div>
@@ -56,8 +49,17 @@
                     </div>
                 </div>
             </div>
+            <hr />
+            
+            @if ($subscription->isFree())
+                <div class="text-left">
+                    <button type='submit' class="btn bg-teal">
+                    {{ trans('messages.get_started') }}
+                    <i class="icon-arrow-right7"></i></button>
+                </div>
+            @endif
         </div>
-        <div class="col-md-6 plan-right">
+        <div class="col-md-6 plan-right text-center plan-top-80">
             @include('admin/plans/_plan', [
                 'plan' => $subscription->plan,
                 'readonly' => true,

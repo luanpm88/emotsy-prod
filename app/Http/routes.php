@@ -330,7 +330,8 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     
     // Subscription
     Route::get('subscriptions/finish', 'SubscriptionController@finish');
-    Route::get('subscriptions/checkout', 'SubscriptionController@checkout');
+    Route::post('subscriptions/subscription/{plan_uid?}', 'SubscriptionController@subscription');
+    Route::get('subscriptions/subscription/{plan_uid?}', 'SubscriptionController@subscription');
     Route::get('subscriptions/preview', 'SubscriptionController@preview');
     Route::get('subscriptions/listing/{page?}', 'SubscriptionController@listing');
     Route::get('subscriptions/sort', 'SubscriptionController@sort');

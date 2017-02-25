@@ -13,17 +13,13 @@
 							{{ $subscription->customer->displayName() }}
 						</a>
 					</h5>
-					<span class="text-muted kq_search">{{ $subscription->customer->user->email }}</span>					
+					<span class="text-muted kq_search">{{ $subscription->customer->user->email }}</span>
+					<br />
+					<span><i class="icon-clipboard2"></i> {{ $subscription->plan->name }}</span>
 				</td>
 				<td>
 					<h5 class="no-margin text-bold">
-						{{ $subscription->plan->name }}
-					</h5>
-					<span class="text-muted">{{ trans('messages.plan') }}</span>
-				</td>
-				<td>
-					<h5 class="no-margin text-bold">
-						{{ $subscription->price }}
+						{{ Acelle\Library\Tool::format_price($subscription->price, $subscription->plan->currency->format) }}
 					</h5>
 					<span class="text-muted">{{ trans('messages.price') }}</span>
 				</td>
@@ -38,6 +34,12 @@
 						{{ Acelle\Library\Tool::formatDate($subscription->end_at) }}
 					</h5>
 					<span class="text-muted">{{ trans('messages.end_at') }}</span>
+				</td>
+				<td>
+					<h5 class="no-margin text-bold">
+						{{ $subscription->daysRemainCount() }}
+					</h5>
+					<span class="text-muted">{!! trans_choice('messages.days_remain', $subscription->daysRemainCount()) !!}</span>
 				</td>
 				<td>
 					<span class="text-muted2 list-status pull-left">

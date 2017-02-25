@@ -16,7 +16,7 @@
 </head>
 
 <body class="bg-slate-800 color-scheme-{{ isset($list) && is_object($list) ? $list->user->getFrontendScheme() : '' }}">
-<!-- Page container -->
+	<!-- Page container -->
 	<div class="page-container login-container">
 
 		<!-- Page content -->

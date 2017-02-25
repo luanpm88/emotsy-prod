@@ -1515,4 +1515,10 @@ return [
         <p>You are successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is activated.</p><p>Let choose an action below for next step.</p>',
     'go_to_dashboard' => 'Go to the dashboard',
     'check_your_subscriptions' => 'Check your subscriptions',
+    'to' => 'To',
+    'days_remain' => 'Day remaining|Days remaining',
+    'need_a_account_create_an_one' => 'Need a AcelleMail account? <a href=":link" class="text-info">Create an account</a>',
+    'customer_account' => 'Account',
+    'signin_if_has_account' => 'Already have a AcelleMail account? <a href=":link" class="text-info">Log in here</a>',
+    'get_started' => 'Get started',
 ];

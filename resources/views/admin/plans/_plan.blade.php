@@ -19,7 +19,8 @@
             @if ($plan->price == 0.0)
                 <span class="price">{{ trans('messages.free') }}</span>
             @else
-                <span class="price">{{ Acelle\Library\Tool::format_price($plan->price, $plan->currency->format) }}</span> / {{ $plan->frequency_amount }} {{ \Acelle\Library\Tool::getPluralPrase($plan->frequency_unit, $plan->frequency_amount)  }}
+                <span class="price">{{ Acelle\Library\Tool::format_price($plan->price, $plan->currency->format) }}</span> /
+                {{ $plan->displayFrequencyTime() }}
             @endif
                 
         </div>

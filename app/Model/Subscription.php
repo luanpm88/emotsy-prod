@@ -28,7 +28,7 @@ class Subscription extends Model
      * @var array
      */
     protected $fillable = [
-        'plan_id', 'customer_id', 'start_at', 'quantity', 'note'
+        'plan_id', 'customer_id', 'start_at'
     ];
     
     /**
@@ -159,7 +159,6 @@ class Subscription extends Model
      */
     public function fillAttributes($params)
     {
-        $this->quantity = empty($params['quantity']) ? 1 : $params['quantity'];
         $this->plan_id = $this->plan_id ? $this->plan_id : (isset($params['plan_id']) ? $params['plan_id'] : null);
         
         $plan = $this->plan_id ? Plan::find($this->plan_id) : null;
@@ -167,7 +166,9 @@ class Subscription extends Model
         $this->fill($params);
         
         if(isset($this->plan_id)) {
-            $this->price = $this->quantity * $plan->price;
+			// Save info from plan
+            $this->price = $plan->price;
+			$this->options = $plan->options;
             
             if(empty($params["start_at"])) {
                 $this->start_at = \Carbon\Carbon::now();
@@ -175,21 +176,18 @@ class Subscription extends Model
             
             switch ($plan->frequency_unit) {
                 case 'day':
-                    $this->end_at = $this->start_at->addDays($plan->frequency_amount * $this->quantity);
+                    $this->end_at = $this->start_at->addDays($plan->frequency_amount);
                     break;
                 case 'week':
-                    $this->end_at = $this->start_at->addWeeks($plan->frequency_amount * $this->quantity);
+                    $this->end_at = $this->start_at->addWeeks($plan->frequency_amount);
                     break;
                 case 'month':
-                    $this->end_at = $this->start_at->addMonths($plan->frequency_amount * $this->quantity);
+                    $this->end_at = $this->start_at->addMonths($plan->frequency_amount);
                     break;
                 case 'year':
-                    $this->end_at = $this->start_at->addYears($plan->frequency_amount * $this->quantity);
+                    $this->end_at = $this->start_at->addYears($plan->frequency_amount);
                     break;
             }
-            
-            $this->options = $plan->options;
-            $this->price = $plan->price * $this->quantity;
         }
     }
     
@@ -236,6 +234,16 @@ class Subscription extends Model
      */
     public function isFree()
     {
-        return $this->price == 0;
+        return $this->price != 0;
+    }
+	
+	/**
+     * Count remaining days.
+     *
+     * @return integer
+     */
+    public function daysRemainCount()
+    {
+        return $this->end_at->diffInDays(\Carbon\Carbon::now());
     }
 }

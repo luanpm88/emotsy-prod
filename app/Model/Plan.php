@@ -463,4 +463,14 @@ class Plan extends Model
 			->where("plans.status", "=", Plan::STATUS_ACTIVE)
 			->orderBy('custom_order', 'asc');
     }
+	
+	/**
+     * Display plan time.
+     *
+     * @return collect
+     */
+    public function displayFrequencyTime()
+    {
+        return $this->frequency_amount . ' ' . \Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount);
+    }
 }

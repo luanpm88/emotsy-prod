@@ -11,7 +11,7 @@
 @section('content')
     @include('subscriptions._steps')
     
-    <form enctype="multipart/form-data" action="{{ action('SubscriptionController@register') }}" method="POST" class="form-validate-jqueryz subscription-form">
+    <form enctype="multipart/form-data" action="{{ action('SubscriptionController@register', request()->plan_uid) }}" method="POST" class="form-validate-jqueryz subscription-form">
         {{ csrf_field() }}
         <div class="row">
             <div class="col-md-1"></div>
@@ -21,7 +21,11 @@
                 @if ($is_customer_logged_in)
                     <h2 class="mt-0"><i class="icon-user"></i> {{ trans('messages.you_are_logged_in_as', ['name' => $customer->displayName()]) }}</h2>
                 @else
-                    <h2 class="mt-0"><i class="icon-user"></i> {{ trans('messages.customer_account') }}</h2>
+                    <h2 class="mt-0"><i class="icon-user"></i> {{ trans('messages.customer_account') }}
+                         / <span class="subhead text-white">{!! trans('messages.signin_if_has_account', [
+                            'link' => url("/login")
+                        ]) !!}</span>
+                    </h2>
                     <div class="panel">
                         <div class="panel-body">
                             <div class="row">
@@ -96,13 +100,6 @@
                         </div>
                     </div>
                 @endif
-                    
-                <h2 class="mt-30"><i class="icon-quill4"></i> {{ trans('messages.plan_information') }}</h2>
-                <div class="panel">
-                    <div class="panel-body">
-                        @include('subscriptions._form')                
-                    </div>
-                </div>
                 
                 <br />
                 <div class="text-center">

@@ -39,19 +39,6 @@ class SubscriptionController extends Controller
      */
     public function register(Request $request)
     {
-        // Subscription        
-        $subscription = new \Acelle\Model\Subscription();
-        $subscription->status = \Acelle\Model\Subscription::STATUS_INACTIVE;
-        if($request->plan_uid) {
-            $plan = \Acelle\Model\Plan::findbyUid($request->plan_uid);
-            $subscription->plan_id = $plan->id;            
-        }
-        
-        $subscription->fillAttributes($request->all());
-        if (!empty($request->old())) {
-            $subscription->fillAttributes($request->old());
-        }
-        
         // Customer account
         $user = $request->user();
         $is_customer_logged_in = is_object($user) && is_object($user->customer);
@@ -73,9 +60,8 @@ class SubscriptionController extends Controller
         if ($request->isMethod('post')) {
             // Validation
             if($is_customer_logged_in) {
-                $this->validate($request, $subscription->frontendRules());
             } else {
-                $this->validate($request, array_merge($customer->rules(), $subscription->frontendRules()));
+                $this->validate($request, array_merge($customer->rules()));
             }
             
             // Save customer            
@@ -83,27 +69,64 @@ class SubscriptionController extends Controller
                 $customer->updateInformation($request);
             }
             
-            // Save current user info
-            $subscription->fillAttributes($request->all());            
-            $subscription->customer_id = $customer->id;
-            $subscription->save();
-            
             // Send registration confirmation email
             if($is_customer_logged_in) {
-                $request->session()->flash('alert-success', trans('messages.subscription.created'));
-                return redirect()->action('SubscriptionController@checkout');
             } else {
                 $user = \Acelle\Model\User::find($customer->user_id);
-                $user->sendActivationMail($customer->displayName(), action('SubscriptionController@checkout'));
+                $user->sendActivationMail($customer->displayName(), action('SubscriptionController@subscription', $request->plan_uid));
                 
                 return view('subscriptions.register_confirmation_notice');
             }
         }
         
         return view('subscriptions.register', [
-            'subscription' => $subscription,
             'customer' => $customer,
             'is_customer_logged_in' => $is_customer_logged_in
+        ]);
+    }
+    
+    /**
+     * Customer subscription.
+     */
+    public function subscription(Request $request)
+    {
+        $user = $request->user();
+        $customer = $user->customer;
+        
+        // Subscription        
+        $subscription = new \Acelle\Model\Subscription();
+        
+        if($request->plan_uid) {
+            $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
+            $subscription->plan_id = $plan->id;
+        }
+        
+        $subscription->fillAttributes($request->all());
+        if (!empty($request->old())) {
+            $subscription->fillAttributes($request->old());
+        }
+        
+         // save posted data
+        if ($request->isMethod('post')) {
+            // Validation
+            $this->validate($request, $subscription->frontendRules());
+            
+            // Save current user info
+            $subscription->fillAttributes($request->all());            
+            $subscription->customer_id = $customer->id;
+            $subscription->save();
+            
+            if ($subscription->isFree()) {
+                $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
+                
+                $request->session()->flash('alert-success', trans('messages.subscription.created'));
+                return redirect()->action('SubscriptionController@finish');
+            } else {                
+            }
+        }
+        
+        return view('subscriptions.subscription', [
+            'subscription' => $subscription
         ]);
     }
     
@@ -126,22 +149,6 @@ class SubscriptionController extends Controller
     }
     
     /**
-     * Checkout page.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function checkout(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $subscription = $customer->getCurrentInactiveSubscription();
-        
-        return view('subscriptions.checkout', [
-            'subscription' => $subscription
-        ]);
-    }
-    
-    /**
      * Finish page.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -150,7 +157,7 @@ class SubscriptionController extends Controller
     public function finish(Request $request)
     {
         $customer = $request->user()->customer;
-        $subscription = $customer->getCurrentInactiveSubscription();
+        $subscription = $customer->getCurrentSubscription();
         
         return view('subscriptions.finish', [
             'subscription' => $subscription

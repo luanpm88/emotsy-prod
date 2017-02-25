@@ -105,8 +105,8 @@ class SubscriptionController extends Controller
             $subscription->fillAttributes($request->all());
             
             // Allow admin update end at date
-            if(empty($params["end_at"])) {
-                $this->end_at = $params["end_at"];
+            if(empty($request->end_at)) {
+                $this->end_at = $request->end_at;
             }
             
             $subscription->save();

@@ -25,14 +25,14 @@
                     'Acelle\Http\Controllers\SubscriptionController@register']) ? 'current' : '' }}
                     {{ in_array(request()->route()->getActionName(), [
                     'Acelle\Http\Controllers\SubscriptionController@finish',
-                    'Acelle\Http\Controllers\SubscriptionController@checkout']) ? 'done' : '' }}
+                    'Acelle\Http\Controllers\SubscriptionController@subscription']) ? 'done' : '' }}
                     "
                         aria-disabled="true">
                         <a id="steps-uid-0-t-1" href="#steps-uid-0-h-1" aria-controls="steps-uid-0-p-1">
                         <span class="number">2</span>
-                        {{ trans('messages.subscription_information') }}
+                        {{ trans('messages.customer_account') }}
                     </a>
-                    <li role="tab" class="{{ request()->route()->getActionName() == 'Acelle\Http\Controllers\SubscriptionController@checkout' ? 'current' : '' }}
+                    <li role="tab" class="{{ request()->route()->getActionName() == 'Acelle\Http\Controllers\SubscriptionController@subscription' ? 'current' : '' }}
                         {{ in_array(request()->route()->getActionName(), [
                         'Acelle\Http\Controllers\SubscriptionController@finish']) ? 'done' : '' }}
                     " aria-disabled="true">

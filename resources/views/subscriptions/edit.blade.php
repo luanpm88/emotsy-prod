@@ -30,11 +30,6 @@
 		<input type="hidden" name="_method" value="PATCH">
 		
 		@include('subscriptions._form')
-		
-		<br />
-		<div class="text-right">
-			<button type='submit' class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-		</div>
 	</form>
 	
 @endsection
