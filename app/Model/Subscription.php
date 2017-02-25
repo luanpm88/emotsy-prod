@@ -234,7 +234,7 @@ class Subscription extends Model
      */
     public function isFree()
     {
-        return $this->price != 0;
+        return $this->price == 0;
     }
 	
 	/**

@@ -22,9 +22,9 @@
                     <h2 class="mt-0"><i class="icon-user"></i> {{ trans('messages.you_are_logged_in_as', ['name' => $customer->displayName()]) }}</h2>
                 @else
                     <h2 class="mt-0"><i class="icon-user"></i> {{ trans('messages.customer_account') }}
-                         / <span class="subhead text-white">{!! trans('messages.signin_if_has_account', [
+                         <!--/ <span class="subhead text-white">{!! trans('messages.signin_if_has_account', [
                             'link' => url("/login")
-                        ]) !!}</span>
+                        ]) !!}</span>-->
                     </h2>
                     <div class="panel">
                         <div class="panel-body">

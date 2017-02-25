@@ -240,7 +240,7 @@ $(document).ready(function() {
         // Make list sortable        
         form.sortable({
             connectWith: '.boxes-plans',
-            items: '.col-md-3',
+            items: '.plan-box-list',
             helper: 'original',
             cursor: 'move',
             handle: '.panel-heading',

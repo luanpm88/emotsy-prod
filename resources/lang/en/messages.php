@@ -1518,7 +1518,7 @@ return [
     'to' => 'To',
     'days_remain' => 'Day remaining|Days remaining',
     'need_a_account_create_an_one' => 'Need a AcelleMail account? <a href=":link" class="text-info">Create an account</a>',
-    'customer_account' => 'Account',
+    'customer_account' => 'Account information',
     'signin_if_has_account' => 'Already have a AcelleMail account? <a href=":link" class="text-info">Log in here</a>',
     'get_started' => 'Get started',
 ];

@@ -103,6 +103,7 @@ class SubscriptionController extends Controller
             $this->validate($request, $subscription->rules());
             
             $subscription->fillAttributes($request->all());
+            $subscription->admin_id = $user->admin->id;
             
             // Allow admin update end at date
             if(empty($request->end_at)) {

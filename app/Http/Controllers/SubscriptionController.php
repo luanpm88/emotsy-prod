@@ -43,7 +43,7 @@ class SubscriptionController extends Controller
         $user = $request->user();
         $is_customer_logged_in = is_object($user) && is_object($user->customer);
         if($is_customer_logged_in) {
-            $customer = $user->customer;
+            return redirect()->action('SubscriptionController@subscription', $request->plan_uid);
         } else {
             $customer = new \Acelle\Model\Customer();
             $customer->uid = 0;
@@ -121,7 +121,7 @@ class SubscriptionController extends Controller
                 
                 $request->session()->flash('alert-success', trans('messages.subscription.created'));
                 return redirect()->action('SubscriptionController@finish');
-            } else {                
+            } else {
             }
         }
         

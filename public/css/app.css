@@ -1816,7 +1816,6 @@ ul.automation-confirm li.child-row h5 {
     text-align: center;
 }
 .plan-box-center {
-    width: 300px;
     display: inline-block;
     margin-left: 20px;
     margin-bottom: 20px;
@@ -1842,4 +1841,15 @@ ul.automation-confirm li.child-row h5 {
     .plan-top-80 {
         margin-top: -80px;
     }
+}
+.plan-box-list {
+    display: inline-block;
+    margin-right: 20px;
+}
+.user-top-right img {
+    width: 30px;
+    border-radius: 50px;
+}
+.user-top-right a {
+    color: #fff;
 }

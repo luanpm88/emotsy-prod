@@ -1,9 +1,9 @@
 @if ($plans->count() > 0)
-	<div class="row boxes-list boxes-plans table-box pml-table"
+	<div class="boxes-list boxes-plans table-box pml-table"
 		current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
 	>
 		@foreach ($plans as $key => $plan)
-			<div class="col-md-3">
+			<div class="plan-box-list">
 			
 				<table class="table table-box pml-table hide"
 					current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
