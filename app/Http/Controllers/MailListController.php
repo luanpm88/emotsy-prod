@@ -285,8 +285,11 @@ class MailListController extends Controller
         foreach ($lists->get() as $item) {
             // authorize
             if (\Gate::allows('delete', $item)) {
-                $this->updateCachedInfo();
                 $item->delete();
+                
+                // not needed as the related campaigns will be deleted as well
+                // $item->updateCachedInfo();
+                
                 // Log
                 $item->log('deleted', $request->user());
             }

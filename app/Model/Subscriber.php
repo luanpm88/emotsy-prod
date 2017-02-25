@@ -565,9 +565,13 @@ class Subscriber extends Model
      */
     public function move($list, $type = 'keep')
     {
+        $fromList = $this->mailList;
         $this->copy($list, $type);
-
         $this->delete();
+        
+        // update related campaign cache information
+        $fromList->updateCachedInfo();
+        $list->updateCachedInfo();
     }
     
     /**

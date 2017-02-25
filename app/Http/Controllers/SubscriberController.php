@@ -246,7 +246,7 @@ class SubscriberController extends Controller
         $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
         
         // get related mail lists to update the cached information
-        $lists = $subscribers->get()->map(function($e) { return \Acelle\Model\MailList::find($e->mail_list_id); });
+        $lists = $subscribers->get()->map(function($e) { return \Acelle\Model\MailList::find($e->mail_list_id); })->unique();
         foreach ($lists as $list) {
             $list->updateCachedInfo();
         }
