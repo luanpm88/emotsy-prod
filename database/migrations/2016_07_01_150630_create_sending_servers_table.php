@@ -13,7 +13,8 @@ class CreateSendingServersTable extends Migration
         Schema::create('sending_servers', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uid');
-            $table->integer('admin_id')->unsigned();
+            $table->integer('admin_id')->unsigned()->nullable();
+            $table->integer('customer_id')->unsigned()->nullable();
             $table->integer('bounce_handler_id')->unsigned()->nullable();
             $table->integer('feedback_loop_handler_id')->unsigned()->nullable();
             $table->string('name');
@@ -39,6 +40,7 @@ class CreateSendingServersTable extends Migration
 
             // foreign
             $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('bounce_handler_id')->references('id')->on('bounce_handlers')->onDelete('cascade');
             $table->foreign('feedback_loop_handler_id')->references('id')->on('feedback_loop_handlers')->onDelete('cascade');
         });

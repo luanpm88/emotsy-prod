@@ -48,10 +48,6 @@ class SendingDomain extends Model
         $user = $request->user();
         $query = self::select('sending_domains.*');
 
-        if (!$request->user()->can("read_all", new SendingDomain())) {
-            $query = $query->where('sending_domains.admin_id', '=', $request->user()->admin->id);
-        }
-
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
@@ -70,6 +66,15 @@ class SendingDomain extends Model
                 $query = $query->where('sending_domains.type', '=', $filters['type']);
             }
         }
+        
+        // Other filter
+        if(!empty($request->customer_id)) {
+            $query = $query->where('sending_domains.customer_id', '=', $request->customer_id);
+        }
+        
+        if(!empty($request->admin_id)) {
+            $query = $query->where('sending_domains.admin_id', '=', $request->admin_id);
+        }
 
         return $query;
     }
@@ -82,8 +87,10 @@ class SendingDomain extends Model
     public static function search($request)
     {
         $query = self::filter($request);
-
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        
+        if(!empty($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
 
         return $query;
     }

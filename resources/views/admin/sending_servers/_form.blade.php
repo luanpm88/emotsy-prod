@@ -174,7 +174,7 @@
 			'name' => 'quota_unit',
 			'value' => $server->quota_unit,
 			'label' => trans('messages.quota_time_unit'),
-			'options' => Acelle\Model\UserGroup::timeUnitOptions(),
+			'options' => Acelle\Model\CustomerGroup::timeUnitOptions(),
 			'include_blank' => trans('messages.choose'),
 			'help_class' => 'sending_server',
 			'rules' => Acelle\Model\SendingServer::rules(request()->type)

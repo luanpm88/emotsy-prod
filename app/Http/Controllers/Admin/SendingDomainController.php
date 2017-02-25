@@ -27,8 +27,13 @@ class SendingDomainController extends Controller
         if (\Gate::denies('read', new \Acelle\Model\SendingDomain())) {
             return $this->notAuthorized();
         }
-
-        $items = \Acelle\Model\SendingDomain::getAll();
+        
+        // If admin can view all sending domains
+        if (\Gate::denies("read_all", new \Acelle\Model\SendingDomain())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
+        }
+        
+        $items = \Acelle\Model\SendingDomain::search($request);
 
         return view('admin.sending_domains.index', [
             'items' => $items,
@@ -44,6 +49,11 @@ class SendingDomainController extends Controller
     {
         if (\Gate::denies('read', new \Acelle\Model\SendingDomain())) {
             return $this->notAuthorized();
+        }
+        
+        // If admin can view all sending domains
+        if (\Gate::denies("read_all", new \Acelle\Model\SendingDomain())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
         $items = \Acelle\Model\SendingDomain::search($request)->paginate($request->per_page);

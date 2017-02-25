@@ -13,7 +13,8 @@ class CreateSendingDomainsTable extends Migration
         Schema::create('sending_domains', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uid');
-            $table->integer('admin_id')->unsigned();
+            $table->integer('admin_id')->unsigned()->nullable();
+            $table->integer('customer_id')->unsigned()->nullable();
             $table->string('name');
             $table->text('dkim_private');
             $table->text('dkim_public');
@@ -25,6 +26,7 @@ class CreateSendingDomainsTable extends Migration
 
             // foreign
             $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
     }
 

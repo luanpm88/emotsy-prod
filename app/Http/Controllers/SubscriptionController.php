@@ -118,6 +118,7 @@ class SubscriptionController extends Controller
             
             if ($subscription->isFree()) {
                 $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
+                $subscription->save();
                 
                 $request->session()->flash('alert-success', trans('messages.subscription.created'));
                 return redirect()->action('SubscriptionController@finish');
@@ -172,8 +173,9 @@ class SubscriptionController extends Controller
     public function index(Request $request)
     {
         $customer = $request->user()->customer;
-
-        $subscriptions = \Acelle\Model\Subscription::search($request, $customer->id);
+        
+        $request->merge(array("customer_id" => $customer->id));
+        $subscriptions = \Acelle\Model\Subscription::search($request);
 
         return view('subscriptions.index', [
             'subscriptions' => $subscriptions,
@@ -189,7 +191,8 @@ class SubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         
-        $subscriptions = \Acelle\Model\Subscription::search($request, $customer->id)->paginate($request->per_page);
+        $request->merge(array("customer_id" => $customer->id));
+        $subscriptions = \Acelle\Model\Subscription::search($request)->paginate($request->per_page);
 
         return view('subscriptions._list', [
             'subscriptions' => $subscriptions,

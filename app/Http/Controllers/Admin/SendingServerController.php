@@ -27,8 +27,13 @@ class SendingServerController extends Controller
         if (\Gate::denies('read', new \Acelle\Model\SendingServer())) {
             return $this->notAuthorized();
         }
+        
+        // If admin can view all sending domains
+        if (\Gate::denies("read_all", new \Acelle\Model\SendingServer())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
+        }
 
-        $items = \Acelle\Model\SendingServer::getAll();
+        $items = \Acelle\Model\SendingServer::search($request);
 
         return view('admin.sending_servers.index', [
             'items' => $items,
@@ -45,7 +50,12 @@ class SendingServerController extends Controller
         if (\Gate::denies('read', new \Acelle\Model\SendingServer())) {
             return $this->notAuthorized();
         }
-
+        
+        // If admin can view all sending domains
+        if (\Gate::denies("read_all", new \Acelle\Model\SendingServer())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
+        }
+        
         $items = \Acelle\Model\SendingServer::search($request)->paginate($request->per_page);
 
         return view('admin.sending_servers._list', [
@@ -109,7 +119,7 @@ class SendingServerController extends Controller
 
             // Save current user info
             $server->fill($request->all());
-            $server->admin_id = $request->user()->admin->id;
+            $server->customer_id = $request->user()->customer->id;
             $server->type = $request->type;
             $server->status = 'active';
 

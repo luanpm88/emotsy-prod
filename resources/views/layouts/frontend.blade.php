@@ -58,12 +58,37 @@
 					<a href="{{ action('TemplateController@index') }}">
 						<i class="icon-magazine"></i> {{ trans('messages.templates') }}
 					</a>
-				</li>				
-				<li rel0="AccountController/api">
-					<a href="{{ action("AccountController@api") }}" class="level-1">
-						<i class="icon-key position-left"></i> {{ trans('messages.api') }}
-					</a>
-				</li>  
+				</li>
+				@if(
+					Auth::user()->can("read", new Acelle\Model\SendingServer()) ||
+					Auth::user()->can("read", new Acelle\Model\SendingDomain())
+				)
+					<li class="dropdown language-switch"
+						rel0="SendingServerController"
+						rel1="SendingDomainController"
+					>
+						<a class="dropdown-toggle" data-toggle="dropdown">
+							<i class="glyphicon glyphicon-transfer"></i> {{ trans('messages.sending') }}
+							<span class="caret"></span>
+						</a>
+						<ul class="dropdown-menu">
+							@if (Auth::user()->can("read", new Acelle\Model\SendingServer()))
+								<li rel0="SendingServerController">
+									<a href="{{ action('SendingServerController@index') }}">
+										<i class="icon-server"></i> {{ trans('messages.sending_servers') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->can("read", new Acelle\Model\SendingDomain()))
+								<li rel0="SendingDomainController">
+									<a href="{{ action('SendingDomainController@index') }}">
+										<i class="icon-earth"></i> {{ trans('messages.sending_domains') }}
+									</a>
+								</li>
+							@endif
+						</ul>
+					</li>
+				@endif
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right">
@@ -117,6 +142,11 @@
 							</li>
 						@endif
 						<li><a href="{{ action("AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.account') }}</a></li>
+						<li rel0="AccountController/api">
+							<a href="{{ action("AccountController@api") }}" class="level-1">
+								<i class="icon-key position-left"></i> {{ trans('messages.api') }}
+							</a>
+						</li>
 						<li><a href="{{ url("/logout") }}"><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a></li>
 					</ul>
 				</li>

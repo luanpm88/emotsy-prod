@@ -125,6 +125,11 @@ class Subscription extends Model
 
         // filters
         $filters = $request->filters;
+		
+		// Other filter
+        if(!empty($request->customer_id)) {
+            $query = $query->where('subscriptions.customer_id', '=', $request->customer_id);
+        }
 
         return $query;
     }
@@ -134,14 +139,9 @@ class Subscription extends Model
      *
      * @return collect
      */
-    public static function search($request, $customer_id=null)
+    public static function search($request)
     {
         $query = self::filter($request);
-        
-        // Filer by customer
-        if($customer_id) {
-            $query = $query->where('subscriptions.customer_id', '=', $customer_id);
-        }
 
         if(isset($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);

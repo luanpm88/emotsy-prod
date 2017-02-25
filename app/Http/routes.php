@@ -350,6 +350,12 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('sending_servers/create/{type}', 'SendingServerController@store');
     Route::get('sending_servers/{id}/edit/{type}', 'SendingServerController@edit');
     Route::patch('sending_servers/{id}/update/{type}', 'SendingServerController@update');
+    
+    // Sending domain
+    Route::get('sending_domains/listing/{page?}', 'SendingDomainController@listing');
+    Route::get('sending_domains/sort', 'SendingDomainController@sort');
+    Route::get('sending_domains/delete', 'SendingDomainController@delete');
+    Route::resource('sending_domains', 'SendingDomainController');
 });
 
 // ADMIN AREA

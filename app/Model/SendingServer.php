@@ -214,10 +214,6 @@ class SendingServer extends Model
         $user = $request->user();
         $query = self::select('sending_servers.*');
 
-        if (!$request->user()->can("read_all", new SendingServer())) {
-            $query = $query->where('sending_servers.admin_id', '=', $request->user()->admin->id);
-        }
-
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
@@ -236,6 +232,15 @@ class SendingServer extends Model
                 $query = $query->where('sending_servers.type', '=', $filters['type']);
             }
         }
+        
+        // Other filter
+        if(!empty($request->customer_id)) {
+            $query = $query->where('sending_domains.customer_id', '=', $request->customer_id);
+        }
+        
+        if(!empty($request->admin_id)) {
+            $query = $query->where('sending_domains.admin_id', '=', $request->admin_id);
+        }
 
         return $query;
     }
@@ -249,7 +254,9 @@ class SendingServer extends Model
     {
         $query = self::filter($request);
 
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        if(!empty($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
 
         return $query;
     }

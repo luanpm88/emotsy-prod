@@ -73,7 +73,7 @@
 												<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.sending_server_status_' . $item->status) }}</span>
 											</span>
 										</td>
-										<td class="text-right">											
+										<td class="text-right text-nowrap">											
 											@can('update', $item)
 												<a href="{{ action('Admin\SendingServerController@edit', ["uid" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 											@endcan
