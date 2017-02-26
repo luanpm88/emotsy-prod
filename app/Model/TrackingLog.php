@@ -47,6 +47,11 @@ class TrackingLog extends Model
     {
         return $this->belongsTo('Acelle\Model\Campaign');
     }
+    
+    public function mailList()
+    {
+        return $this->belongsTo('Acelle\Model\MailList');
+    }
 
     public function sendingServer()
     {

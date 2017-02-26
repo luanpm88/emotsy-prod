@@ -16,6 +16,9 @@ class EventServiceProvider extends ServiceProvider
         'Acelle\Events\CampaignUpdated' => [
             'Acelle\Listeners\CampaignUpdatedListener',
         ],
+        'Acelle\Events\MailListUpdated' => [
+            'Acelle\Listeners\MailListUpdatedListener',
+        ],
     ];
 
     /**
