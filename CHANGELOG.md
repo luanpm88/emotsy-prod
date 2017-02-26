@@ -1,3 +1,13 @@
+2.2.0-p12 / 2017-02-27
+===================
+
+ * Added: speed up page loading using cache
+ * Added: support additional user group API
+ * Fixed: file manager's thumbnail image 
+ * Fixed: intermittent glitch with code editor
+ * Fixed: template upload issues with old HTML/CSS styles
+ * Fixed: translating missing in system email
+
 2.2.0-p11 / 2017-02-22
 ===================
 
