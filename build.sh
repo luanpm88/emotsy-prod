@@ -51,6 +51,7 @@ rm -fr build.sh
 rm -fr public/upload/templates/*
 rm -fr bootstrap/cache/config.php
 rm -fr generate-upgrade-script.sh
+rm -fr php-cs-fixer
 
 # copy default lang
 rm -fr resources/lang/default
