@@ -15,23 +15,24 @@ class UserQuotaTest extends TestCase
     {
         // setup assumptions
         $user = $this->getMockBuilder(User::class)
-                     ->setMethods(['getQuotaIntervalString', 'getSendingQuota', 'renewQuotaTracker'])
+                     ->setMethods(['getQuotaIntervalString', 'getSendingQuota', 'renewQuotaTracker', 'getSendingQuotaLockFile'])
                      ->disableOriginalConstructor()
                      ->disableOriginalClone()
                      ->disableArgumentCloning()
                      ->disallowMockingUnknownTypes()
                      ->getMock();
-        
+
         // assume that REDIS is not enabled (then QuotaTrackerStd is used)
         // and user quota is: 3 emails every 1 minute
         //\Config::shouldReceive('get')
         //            ->once()
         //            ->with('app.redis_enabled')
         //            ->andReturn(false);
-        
+
         $user->method('getQuotaIntervalString')->willReturn('1 minute');
         $user->method('getSendingQuota')->willReturn('3');
-        
+        $user->method('getSendingQuotaLockFile')->willReturn('/tmp/' . uniqid());
+
         // TEST IF QUOTA IS CORRECTLY ENFORCED
         // no usage yet
         $this->assertFalse($user->overQuota());
@@ -40,7 +41,7 @@ class UserQuotaTest extends TestCase
         $this->assertTrue($user->countUsage());
         $this->assertTrue($user->countUsage());
         $this->assertTrue($user->countUsage());
-        
+
         // use extra slot -> failed
         $this->assertTrue($user->overQuota());
         $this->assertFalse($user->countUsage());
@@ -48,14 +49,14 @@ class UserQuotaTest extends TestCase
         sleep(61);
         // more than 1 minute has passed, now OKIE
         $this->assertFalse($user->overQuota());
-        
+
         // TEST IF THE TIME SERIES IS CORRECTLY RECORDED
         $t1 = Carbon::now();
         $user->countUsage($t1);
         sleep(20);
         $t2 = Carbon::now();
         $user->countUsage($t2);
-        
+
         // now $t1 is the first point of the time series
         $this->assertTrue($user->getQuotaTracker()->getSeries()[0] == $t1->timestamp);
 

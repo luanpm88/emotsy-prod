@@ -26,6 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Support\Facades\Validator;
+use Acelle\Library\Log as MailLog;
 
 class MailList extends Model
 {
@@ -120,8 +121,9 @@ class MailList extends Model
 
     public function campaigns()
     {
-        return \Acelle\Model\Campaign::leftJoin('campaigns_lists_segments', 'campaigns_lists_segments.campaign_id', '=', 'campaigns.id')
-            ->where('campaigns_lists_segments.mail_list_id', '=', $this->id);
+        //return \Acelle\Model\Campaign::leftJoin('campaigns_lists_segments', 'campaigns_lists_segments.campaign_id', '=', 'campaigns.id')
+        //    ->where('campaigns_lists_segments.mail_list_id', '=', $this->id);
+        return $this->belongsToMany('Acelle\Model\Campaign', 'campaigns_lists_segments', 'mail_list_id', 'campaign_id');
     }
 
     /**

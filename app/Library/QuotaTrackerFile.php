@@ -29,11 +29,11 @@ class QuotaTrackerFile extends QuotaTracker
     protected $file;
     protected $reader;
     protected $hasLock = false;
-    
+
     const TIMEOUT = 60;
-    
+
     /**
-     * Constructor, modeling data from a JSON array 
+     * Constructor, modeling data from a JSON array
      *
      * @param Array $series
      *
@@ -45,9 +45,9 @@ class QuotaTrackerFile extends QuotaTracker
         $this->file = $file;
         $this->createLogFile();
     }
-    
+
     /**
-     * Create the lock file itself if not exist 
+     * Create the lock file itself if not exist
      *
      * @return void
      */
@@ -58,26 +58,26 @@ class QuotaTrackerFile extends QuotaTracker
         $start = time();
         while (true) {
             $this->timeout($start);
-            
+
             if (flock($fp, LOCK_EX | LOCK_NB)) {
                 $old = umask(0);
-                
+
                 // create the base directories for log files
                 if (!file_exists(dirname($this->file))) {
                     mkdir(dirname($this->file), 0775, true);
                 }
-                
+
                 if (!file_exists($this->file)) {
                     // init an empty file if not exist
                     touch($this->file);
-                    
+
                     // change file permisson
                     chmod($this->file, 0775);
                 }
-                
+
                 // change umask back to its original value
                 umask($old);
-                
+
                 // unlock
                 flock($fp, LOCK_UN);
                 break;
@@ -86,7 +86,7 @@ class QuotaTrackerFile extends QuotaTracker
 
         fclose($fp);
     }
-    
+
     /**
      * Check if over quota, add a time point
      *
@@ -98,17 +98,17 @@ class QuotaTrackerFile extends QuotaTracker
         if (!isset($timePoint)) {
             $timePoint = Carbon::now();
         }
-        
+
         $this->getExclusiveLock(function() use ($timePoint, &$result) {
             if ($this->check($timePoint)) {
                 $result = true;
             } else {
                 $result = false;
             }
-            
+
             $this->series[] = $timePoint->timestamp;
         });
-        
+
         return $result;
     }
 
@@ -123,14 +123,14 @@ class QuotaTrackerFile extends QuotaTracker
         if (!isset($timePoint)) {
             $timePoint = Carbon::now();
         }
-        
+
         $this->getSharedLock(function() use (&$result, $timePoint) {
             $result = (self::UNLIMITED == $this->quota || $this->getUsage($timePoint) < $this->quota);
         });
-        
+
         return $result;
     }
-    
+
     /**
      * Shift the time series until its range fits the new time point
      *
@@ -143,7 +143,7 @@ class QuotaTrackerFile extends QuotaTracker
         if (empty($this->series)) {
             return;
         }
-        
+
         $cutOff = $timePoint->copy()->sub($this->interval)->timestamp;
         while($this->first() != null && $this->first() < $cutOff ) {
             array_shift($this->series);
@@ -152,8 +152,8 @@ class QuotaTrackerFile extends QuotaTracker
 
     /**
      * Renew the quota data for the tracker
-     * @note this method must be wrapped in a transaction
-     * 
+     * @note this method MUST be wrapped in a transaction
+     *
      * @param Array $series
      * @return void
      */
@@ -192,7 +192,7 @@ class QuotaTrackerFile extends QuotaTracker
     {
         return sizeof($this->getSeries($timePoint));
     }
-    
+
     /**
      * Get usage percentage
      *
@@ -214,15 +214,15 @@ class QuotaTrackerFile extends QuotaTracker
         if (is_null($timePoint)) {
             $timePoint = Carbon::now();
         }
-        
+
         $this->getSharedLock(function() use (&$series, $timePoint) {
             $this->shiftBy($timePoint);
             $series = $this->series;
         });
-        
+
         return $series;
     }
-    
+
     /**
      * Get exclusive lock, preparing to read/write quota data
      *
@@ -235,22 +235,22 @@ class QuotaTrackerFile extends QuotaTracker
             $callback($this);
             return;
         }
-        
+
         $this->reader = fopen($this->file, "r+");
         $start = time();
         while (true) {
             // if timed out
             $this->timeout($start);
-            
-            if (flock($this->reader, LOCK_EX | LOCK_NB)) {  // acquire an exclusive lock                
+
+            if (flock($this->reader, LOCK_EX | LOCK_NB)) {  // acquire an exclusive lock
                 $this->hasLock = true;
-                
+
                 // retrieve the series data
                 $this->series = array_map('intval', array_values(array_filter(explode(',', file_get_contents($this->file)))));
-                
+
                 // execute the callback
                 $callback($this);
-                
+
                 ftruncate($this->reader, 0);
                 fwrite($this->reader, implode(",", $this->series));
                 fflush($this->reader);
@@ -259,11 +259,11 @@ class QuotaTrackerFile extends QuotaTracker
                 fclose($this->reader);
                 break;
             }
-            
+
             // Otherwise, loop and wait to for the lock
         }
     }
-    
+
     /**
      * Get shared lock, preparing to read quota data
      *
@@ -276,7 +276,7 @@ class QuotaTrackerFile extends QuotaTracker
             $callback($this);
             return;
         }
-        
+
         $this->createLogFile();
         $this->reader = fopen($this->file, "r");
         $start = time();
@@ -284,25 +284,25 @@ class QuotaTrackerFile extends QuotaTracker
             // if timed out
             $this->timeout($start);
 
-            if (flock($this->reader, LOCK_SH | LOCK_NB)) {  // acquire an exclusive lock                
+            if (flock($this->reader, LOCK_SH | LOCK_NB)) {  // acquire an exclusive lock
                 $this->hasLock = true;
                 // retrieve the series data
                 $this->series = $this->load();
-                
+
                 // execute the callback
                 $callback($this);
-                
+
                 $this->hasLock = false;
                 flock($this->reader, LOCK_UN);    // release the lock
                 fclose($this->reader);
-                
+
                 break;
             }
-            
+
             // Otherwise, loop and wait to for the lock
         }
     }
-    
+
     /**
      * Load time series from file
      *
@@ -312,7 +312,7 @@ class QuotaTrackerFile extends QuotaTracker
     {
         return array_map('intval', array_values(array_filter(explode(',', file_get_contents($this->file)))));
     }
-    
+
     /**
      * Time out a lock request when it exceeds the QUOTA setting
      *
