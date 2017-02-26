@@ -24,6 +24,8 @@ class AddCacheColumnForCampaigns extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('campaigns', function (Blueprint $table) {
+            $table->dropColumn('cache');
+        });
     }
 }
