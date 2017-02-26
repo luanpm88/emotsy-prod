@@ -114,7 +114,6 @@ class SubscriptionController extends Controller
             // Save current user info
             $subscription->fillAttributes($request->all());            
             $subscription->customer_id = $customer->id;
-            $subscription->save();
             
             if ($subscription->isFree()) {
                 $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
@@ -123,6 +122,10 @@ class SubscriptionController extends Controller
                 $request->session()->flash('alert-success', trans('messages.subscription.created'));
                 return redirect()->action('SubscriptionController@finish');
             } else {
+                $subscription->status = \Acelle\Model\Subscription::STATUS_INACTIVE;
+                $subscription->save();
+                
+                return redirect()->action('PaymentController@payment', $subscription->uid);
             }
         }
         

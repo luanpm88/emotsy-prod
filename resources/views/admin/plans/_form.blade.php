@@ -313,8 +313,8 @@
 						<span class="notoping">
 							@include('helpers.form_control', ['type' => 'checkbox',
 								'class' => '',
-								'name' => 'options[allow_customer_create_sending_servers]',
-								'value' => $options['allow_customer_create_sending_servers'],
+								'name' => 'options[create_sending_servers]',
+								'value' => $options['create_sending_servers'],
 								'label' => '',
 								'options' => ['no','yes'],
 								'help_class' => 'plan',
@@ -474,8 +474,8 @@
 		
 		
 		// Sending servers checking setting
-		$(document).on("change", "input[name='options[allow_customer_create_sending_servers]']", function(e) {			
-			if($('input[name="options[allow_customer_create_sending_servers]"]:checked').val() == 'yes') {
+		$(document).on("change", "input[name='options[create_sending_servers]']", function(e) {			
+			if($('input[name="options[create_sending_servers]"]:checked').val() == 'yes') {
 				$(".sending-servers-yes").show();
 				$(".sending-servers-no").hide();
 			} else {
@@ -483,6 +483,6 @@
 				$(".sending-servers-yes").hide();
 			}
 		});		
-		$('input[name="options[allow_customer_create_sending_servers]"]').trigger("change");
+		$('input[name="options[create_sending_servers]"]').trigger("change");
 	});
 </script>

@@ -96,6 +96,11 @@ class Admin extends Model
     {
         return $this->hasMany('Acelle\Model\Customer');
     }
+    
+    public function templates()
+    {
+        return $this->hasMany('Acelle\Model\Template');
+    }
 
     /**
      * Bootstrap any application services.

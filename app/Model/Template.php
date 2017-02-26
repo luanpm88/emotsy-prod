@@ -74,9 +74,14 @@ class Template extends Model
      *
      * @var object | collect
      */
-    public function user()
+    public function customer()
     {
-        return $this->belongsTo('Acelle\Model\User');
+        return $this->belongsTo('Acelle\Model\Customer');
+    }
+    
+    public function admin()
+    {
+        return $this->belongsTo('Acelle\Model\Admin');
     }
 
     /**
@@ -96,7 +101,6 @@ class Template extends Model
      */
     public static function filter($request)
     {
-        $user = $request->user();
         $query = self::select('templates.*');
 
         // Keyword
@@ -106,16 +110,25 @@ class Template extends Model
 
         // filters
         $filters = $request->filters;
-        if (!empty($filters)) {
-            if (!empty($filters['from'])) {
+        
+        // Customer
+        if (!empty($request->customer_id)) {
+            if (!empty($filters) && !empty($filters['from'])) {
                 if ($filters['from'] == 'mine') {
-                    $query = $query->where('user_id', '=', $user->id);
+                    $query = $query->where('customer_id', '=', $request->customer_id);
                 } elseif ($filters['from'] == 'gallery') {
-                    $query = $query->where('shared', '=', true)->where('user_id', '!=', $user->id);
+                    $query = $query->where('customer_id', '=', NULL)
+                                    ->where('customer_id', '!=', $request->customer_id);
                 } else {
-                    $query = $query->where('shared', '=', true)->orWhere('user_id', '=', $user->id);
+                    $query = $query->where('customer_id', '=', NULL)
+                                    ->orWhere('customer_id', '=', $request->customer_id);
                 }
             }
+        }
+        
+        // Admin
+        if (!empty($request->admin_id)) {
+            $query = $query->where('admin_id', '=', $request->admin_id);
         }
 
         return $query;
@@ -129,8 +142,10 @@ class Template extends Model
     public static function search($request)
     {
         $query = self::filter($request);
-
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        
+        if (!empty($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
 
         return $query;
     }

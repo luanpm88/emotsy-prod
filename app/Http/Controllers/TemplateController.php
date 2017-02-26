@@ -22,9 +22,10 @@ class TemplateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        $templates = \Acelle\Model\Template::getAll();
+    public function index(Request $request)
+    {        
+        $request->merge(array("customer_id" => $request->user()->customer->id));
+        $templates = \Acelle\Model\Template::search($request);
 
         return view('templates.index', [
             'templates' => $templates,
@@ -38,6 +39,7 @@ class TemplateController extends Controller
      */
     public function listing(Request $request)
     {
+        $request->merge(array("customer_id" => $request->user()->customer->id));
         $templates = \Acelle\Model\Template::search($request)->paginate($request->per_page);
 
         return view('templates._list', [
@@ -115,9 +117,10 @@ class TemplateController extends Controller
     {
         // Generate info
         $user = $request->user();
+        $customer = $request->user()->customer;
+        
         $template = new \Acelle\Model\Template();
-        $template->user_id = $request->user()->id;
-        $template->shared = false;
+        $template->customer_id = $customer->id;
 
         // authorize
         if (\Gate::denies('update', $template)) {
@@ -282,14 +285,14 @@ class TemplateController extends Controller
     public function upload(Request $request)
     {
         $user = $request->user();
+        $customer = $request->user()->customer;
 
         // Create template
         $template = new \Acelle\Model\Template();
-        $template->user_id = $user->id;
-        $template->shared = false;
+        $template->customer_id = $customer->id;
 
         // authorize
-        if (\Gate::denies('update', $template)) {
+        if (\Gate::denies('create', $template)) {
             return $this->notAuthorized();
         }
 

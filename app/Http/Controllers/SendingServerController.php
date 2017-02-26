@@ -27,8 +27,9 @@ class SendingServerController extends Controller
         if (\Gate::denies('read', new \Acelle\Model\SendingServer())) {
             return $this->notAuthorized();
         }
-
-        $items = \Acelle\Model\SendingServer::getAll();
+        
+        $request->merge(array("customer_id" => $request->user()->customer->id));
+        $items = \Acelle\Model\SendingServer::search($request);
 
         return view('sending_servers.index', [
             'items' => $items,
@@ -45,7 +46,8 @@ class SendingServerController extends Controller
         if (\Gate::denies('read', new \Acelle\Model\SendingServer())) {
             return $this->notAuthorized();
         }
-
+        
+        $request->merge(array("customer_id" => $request->user()->customer->id));
         $items = \Acelle\Model\SendingServer::search($request)->paginate($request->per_page);
 
         return view('sending_servers._list', [

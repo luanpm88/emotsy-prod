@@ -24,11 +24,16 @@ class TemplateController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->admin->getPermission('template_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\Template())) {
             return $this->notAuthorized();
         }
+        
+        // If admin can view all sending domains
+        if (\Gate::denies("read_all", new \Acelle\Model\Template())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
+        }
 
-        $templates = \Acelle\Model\Template::getAll();
+        $templates = \Acelle\Model\Template::search($request);
 
         return view('admin.templates.index', [
             'templates' => $templates,
@@ -42,11 +47,16 @@ class TemplateController extends Controller
      */
     public function listing(Request $request)
     {
-        if ($request->user()->admin->getPermission('template_read') == 'no') {
+        if (\Gate::denies('read', new \Acelle\Model\Template())) {
             return $this->notAuthorized();
         }
+        
+        // If admin can view all sending domains
+        if (\Gate::denies("read_all", new \Acelle\Model\Template())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
+        }
 
-        $templates = \Acelle\Model\Template::adminSearch($request)->paginate($request->per_page);
+        $templates = \Acelle\Model\Template::search($request)->paginate($request->per_page);
 
         return view('admin.templates._list', [
             'templates' => $templates,
@@ -65,7 +75,7 @@ class TemplateController extends Controller
         $template = new \Acelle\Model\Template();
 
         // authorize
-        if ($request->user()->admin->getPermission('template_create') == 'no') {
+        if (\Gate::denies('create', $template)) {
             return $this->notAuthorized();
         }
 
@@ -91,11 +101,10 @@ class TemplateController extends Controller
         // Generate info
         $user = $request->user();
         $template = new \Acelle\Model\Template();
-        $template->user_id = $request->user()->id;
-        $template->shared = true;
+        $template->admin_id = $request->user()->admin->id;
 
         // authorize
-        if ($request->user()->admin->getPermission('template_create') == 'no') {
+        if (\Gate::denies('create', $template)) {
             return $this->notAuthorized();
         }
 
@@ -137,9 +146,7 @@ class TemplateController extends Controller
         $template = \Acelle\Model\Template::findByUid($uid);
 
         // authorize
-        if ($request->user()->admin->getPermission('template_update') == 'no'
-            || ($request->user()->admin->getPermission('template_update') == 'own' && $template->user_id != $user->id)
-        ) {
+        if (\Gate::denies('update', $template)) {
             return $this->notAuthorized();
         }
 
@@ -168,9 +175,7 @@ class TemplateController extends Controller
         $template = \Acelle\Model\Template::findByUid($request->uid);
 
         // authorize
-        if ($request->user()->admin->getPermission('template_update') == 'no'
-            || ($request->user()->admin->getPermission('template_update') == 'own' && $template->user_id != $user->id)
-        ) {
+        if (\Gate::denies('update', $template)) {
             return $this->notAuthorized();
         }
 
@@ -207,11 +212,10 @@ class TemplateController extends Controller
 
         // Create template
         $template = new \Acelle\Model\Template();
-        $template->user_id = $user->id;
-        $template->shared = true;
+        $template->admin_id = $request->user()->admin->id;
 
         // authorize
-        if ($request->user()->admin->getPermission('template_create') == 'no') {
+        if (\Gate::denies('create', new \Acelle\Model\Template())) {
             return $this->notAuthorized();
         }
 
@@ -374,16 +378,9 @@ class TemplateController extends Controller
 
         foreach ($items->get() as $item) {
             // authorize
-            if (
-                $request->user()->admin->getPermission('template_delete') == 'no'
-                || ($request->user()->admin->getPermission('template_delete') == 'own' && $item->user_id != $request->user()->id)
-            ) {
-                return;
+            if (\Gate::allows('delete', $item)) {
+                $item->delete();
             }
-        }
-
-        foreach ($items->get() as $item) {
-            $item->delete();
         }
 
         // Redirect to my lists page

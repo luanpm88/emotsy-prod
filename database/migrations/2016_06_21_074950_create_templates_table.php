@@ -13,7 +13,8 @@ class CreateTemplatesTable extends Migration
         Schema::create('templates', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uid');
-            $table->integer('user_id')->unsigned();
+            $table->integer('customer_id')->unsigned()->nullable();
+            $table->integer('admin_id')->unsigned()->nullable();
             $table->string('name');
             $table->longtext('content');
             $table->string('image');
@@ -23,7 +24,8 @@ class CreateTemplatesTable extends Migration
             $table->timestamps();
 
             // foreign
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
+            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
         });
     }
 

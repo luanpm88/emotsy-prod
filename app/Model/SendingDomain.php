@@ -27,7 +27,22 @@ use Illuminate\Database\Eloquent\Model;
 class SendingDomain extends Model
 {
     const DKIM_FULL_SELECTOR = 'mailer._domainkey';
-
+    
+    /**
+     * Associations.
+     *
+     * @var object | collect
+     */
+    public function customer()
+    {
+        return $this->belongsTo('Acelle\Model\Customer');
+    }
+    
+    public function admin()
+    {
+        return $this->belongsTo('Acelle\Model\Admin');
+    }
+    
     /**
      * Get all items.
      *

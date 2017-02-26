@@ -89,6 +89,13 @@ Route::get('users/resend-activation-email', 'UserController@resendActivationEmai
 // Plan
 Route::get('plans/select2', 'PlanController@select2');
 
+// Payments
+Route::get('payment-status', 'PaymentController@paymentInfo');
+Route::get('payment/{subscription_uid}', 'PaymentController@payment');
+Route::get('payment-cancel', function () {
+    return 'Payment has been canceled';
+});
+
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('/', 'HomeController@index');
     Route::get('/docs/api/v1', 'Controller@docsApiV1');

@@ -258,7 +258,7 @@ class Plan extends Model
             'max_file_size_upload' => '5',
             'unsubscribe_url_required' => 'yes',
             'access_when_offline' => 'no',
-            'allow_customer_create_sending_servers' => 'no',
+            'create_sending_servers' => 'no',
             'sending_servers_max' => '-1',
         ];
     }

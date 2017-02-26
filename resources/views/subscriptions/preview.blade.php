@@ -57,6 +57,12 @@
                     {{ trans('messages.get_started') }}
                     <i class="icon-arrow-right7"></i></button>
                 </div>
+            @else
+                <div class="text-left">
+                    <button type='submit' class="btn bg-teal">
+                    {{ trans('messages.checkout') }}
+                    <i class="icon-arrow-right7"></i></button>
+                </div>
             @endif
         </div>
         <div class="col-md-6 plan-right text-center plan-top-80">

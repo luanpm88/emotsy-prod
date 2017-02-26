@@ -199,6 +199,11 @@ class SendingServer extends Model
      *
      * @var object | collect
      */
+    public function customer()
+    {
+        return $this->belongsTo('Acelle\Model\Customer');
+    }
+    
     public function admin()
     {
         return $this->belongsTo('Acelle\Model\Admin');
@@ -235,11 +240,11 @@ class SendingServer extends Model
         
         // Other filter
         if(!empty($request->customer_id)) {
-            $query = $query->where('sending_domains.customer_id', '=', $request->customer_id);
+            $query = $query->where('sending_servers.customer_id', '=', $request->customer_id);
         }
         
         if(!empty($request->admin_id)) {
-            $query = $query->where('sending_domains.admin_id', '=', $request->admin_id);
+            $query = $query->where('sending_servers.admin_id', '=', $request->admin_id);
         }
 
         return $query;
