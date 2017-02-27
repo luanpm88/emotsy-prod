@@ -324,7 +324,12 @@ class Customer extends Model
     public function getOption($name)
     {
         //@todo how to get option from subscription/plan
-        return Plan::defaultOptions()[$name];
+		$subscription = $this->getCurrentSubscription();
+        if(is_object($subscription)) {
+			return $subscription->getOption($name);
+		} else {
+			return \Acelle\Model\Subscription::defaultOptions()[$name];
+		}
     }
     
     /**
@@ -935,8 +940,10 @@ class Customer extends Model
      */
     public function getCurrentSubscription() {
         return $subsciption = $this->subscriptions()
-			->where('status', '=', \Acelle\Model\Subscription::STATUS_ACTIVE)
-			->orderBy('created_at', 'desc')->first();
+			->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_ACTIVE)
+			->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
+			->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay())
+			->orderBy('subscriptions.created_at', 'desc')->first();
     }
 	
 	/**
@@ -948,5 +955,21 @@ class Customer extends Model
         return $subsciption = $this->subscriptions()
 			->where('status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
 			->orderBy('created_at', 'desc')->first();
+    }
+	
+	/**
+     * Get next subscription start at
+     *
+     * @return Date
+     */
+    public function getNextScriptionStartAt() {
+        $last_subscription = $this->subscriptions()
+			->orderBy('created_at', 'desc')->first();
+		
+		if(is_object($last_subscription)) {
+			return $last_subscription->end_at->addDay(1);
+		} else {
+			return \Acelle\Library\Tool::customerDateTime(\Carbon\Carbon::now());
+		}
     }
 }

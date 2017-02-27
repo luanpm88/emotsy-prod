@@ -6,9 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Subscription extends Model
 {
-    // Automation status
+    // Subscription status
     const STATUS_ACTIVE = 'active'; // equiv. to 'queue'
 	const STATUS_INACTIVE = 'inactive';
+	
+	// Subscription state
+    const STATE_CURRENT = 'current'; // equiv. to 'queue'
+	const STATE_PENDING = 'pending';
+	const STATE_OUTDATED = 'outdated';
+	const STATE_READY = 'ready';
     
     /**
      * The attributes that should be mutated to dates.
@@ -28,7 +34,7 @@ class Subscription extends Model
      * @var array
      */
     protected $fillable = [
-        'plan_id', 'customer_id', 'start_at'
+        'plan_id'
     ];
     
     /**
@@ -112,23 +118,37 @@ class Subscription extends Model
      */
     public static function filter($request)
     {
-        $query = self::select('subscriptions.*');
+        $query = self::select('subscriptions.*')
+			->join('customers', 'customers.id', '=', 'subscriptions.customer_id');
         
-        //// Keyword
-        //if (!empty(trim($request->keyword))) {
-        //    foreach (explode(' ', trim($request->keyword)) as $keyword) {
-        //        $query = $query->where(function ($q) use ($keyword) {
-        //            $q->orwhere('plans.name', 'like', '%'.$keyword.'%');
-        //        });
-        //    }
-        //}
+        // Keyword
+        if (!empty(trim($request->keyword))) {
+            foreach (explode(' ', trim($request->keyword)) as $keyword) {
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('customers.first_name', 'like', '%'.$keyword.'%')
+						->orwhere('customers.last_name', 'like', '%'.$keyword.'%');
+                });
+            }
+        }
 
         // filters
         $filters = $request->filters;
 		
+		if (!empty($filters)) {
+            if (!empty($filters['customer_uid'])) {
+				$customer = \Acelle\Model\Customer::findByUid($filters['customer_uid']);
+                $query = $query->where('subscriptions.customer_id', '=', $customer->id);
+            }
+        }
+		
 		// Other filter
         if(!empty($request->customer_id)) {
             $query = $query->where('subscriptions.customer_id', '=', $request->customer_id);
+        }
+		
+		// Other filter
+        if(!empty($request->customer_admin_id)) {
+            $query = $query->where('customers.admin_id', '=', $request->customer_admin_id);
         }
 
         return $query;
@@ -146,7 +166,7 @@ class Subscription extends Model
         if(isset($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         } else {
-			$query = $query->orderBy('created_at', 'desc');
+			$query = $query->orderBy('created_at', 'asc');
 		}
 
         return $query;
@@ -160,7 +180,9 @@ class Subscription extends Model
     public function fillAttributes($params)
     {
         $this->plan_id = $this->plan_id ? $this->plan_id : (isset($params['plan_id']) ? $params['plan_id'] : null);
-        
+		$this->customer_id = $this->customer_id ? $this->customer_id : (isset($params['customer_id']) ? $params['customer_id'] : null);
+		$this->start_at = $this->start_at ? $this->start_at : $this->customer->getNextScriptionStartAt();
+		
         $plan = $this->plan_id ? Plan::find($this->plan_id) : null;
         
         $this->fill($params);
@@ -168,11 +190,7 @@ class Subscription extends Model
         if(isset($this->plan_id)) {
 			// Save info from plan
             $this->price = $plan->price;
-			$this->options = $plan->options;
-            
-            if(empty($params["start_at"])) {
-                $this->start_at = \Carbon\Carbon::now();
-            }
+			$this->options = json_encode($plan->getOptions());
             
             switch ($plan->frequency_unit) {
                 case 'day':
@@ -244,6 +262,207 @@ class Subscription extends Model
      */
     public function daysRemainCount()
     {
-        return $this->end_at->diffInDays(\Carbon\Carbon::now());
+        $count = $this->end_at->diffInDays(\Carbon\Carbon::now());
+		
+		return $count;
+    }
+	
+	/**
+     * Default options for new plan.
+     *
+     * @return array
+     */
+    public static function defaultOptions()
+    {
+        return [
+            'list_max' => '0',
+            'subscriber_max' => '0',
+            'subscriber_per_list_max' => '0',
+            'segment_per_list_max' => '0',
+            'campaign_max' => '0',
+            'sending_quota' => '0',
+            'sending_quota_time' => '0',
+            'sending_quota_time_unit' => 'month',
+            'max_process' => '0',
+            'all_sending_servers' => 'no',
+            'max_size_upload_total' => '0',
+            'max_file_size_upload' => '0',
+            'unsubscribe_url_required' => 'yes',
+            'access_when_offline' => 'no',
+            'create_sending_servers' => 'no',
+            'sending_servers_max' => '0',
+        ];
+    }
+    
+    /**
+     * Get options.
+     *
+     * @return array
+     */
+    public function getOptions()
+    {
+        if (empty($this->options)) {
+            return self::defaultOptions();
+        } else {
+            $defaul_options = self::defaultOptions();
+            $saved_options = json_decode($this->options, true);
+            foreach($defaul_options as $x => $group) {
+                if(isset($saved_options[$x])) {
+                    $defaul_options[$x] = $saved_options[$x];
+                }
+            }
+            return $defaul_options;
+        }
+    }
+
+    /**
+     * Get option.
+     *
+     * @return string
+     */
+    public function getOption($name)
+    {
+        return $this->getOptions()[$name];
+    }
+	
+	/**
+     * Display group quota.
+     *
+     * @return array
+     */
+    public function displayQuota()
+    {
+        if ($this->getOption("sending_quota") == -1) {
+            return trans('messages.unlimited');
+        } elseif ($this->getOption("sending_quota_time") == -1) {
+            return $this->getOption("sending_quota");
+        } else {
+            return $this->getOption("sending_quota") . " " . trans('messages.' . \Acelle\Library\Tool::getPluralPrase('email', $this->getOption("sending_quota"))) . ' / '.$this->getOption("sending_quota_time").' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption("sending_quota_time_unit"), $this->getOption("sending_quota")));
+        }        
+    }
+    
+    /**
+     * Display max lists.
+     *
+     * @return array
+     */
+    public function displayMaxList()
+    {
+        if ($this->getOption("list_max") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("list_max");
+        }        
+    }
+    
+    /**
+     * Display max subscribers.
+     *
+     * @return array
+     */
+    public function displayMaxSubscriber()
+    {
+        if ($this->getOption("subscriber_max") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("subscriber_max");
+        }        
+    }
+    
+    /**
+     * Display max campaign.
+     *
+     * @return array
+     */
+    public function displayMaxCampaign()
+    {
+        if ($this->getOption("campaign_max") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("campaign_max");
+        }        
+    }
+    
+    /**
+     * Display max campaign.
+     *
+     * @return array
+     */
+    public function displayMaxSizeUploadTotal()
+    {
+        if ($this->getOption("max_size_upload_total") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("max_size_upload_total");
+        }        
+    }
+    
+    /**
+     * Display max campaign.
+     *
+     * @return array
+     */
+    public function displayFileSizeUpload()
+    {
+        if ($this->getOption("max_file_size_upload") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("max_file_size_upload");
+        }        
+    }
+	
+	/**
+     * Check if subscription is active.
+     *
+     * @return array
+     */
+    public function isActive()
+    {
+        return $this->status == Subscription::STATUS_ACTIVE;
+    }
+	
+	/**
+     * Check if subscription is outdated.
+     *
+     * @return array
+     */
+    public function isOutdated()
+    {
+        return $this->end_at->endOfDay() < \Carbon\Carbon::now();
+    }
+	
+	/**
+     * Check if subscription is current used.
+     *
+     * @return array
+     */
+    public function beingUsed()
+    {
+        if($this->start_at->startOfDay() <= \Carbon\Carbon::now() &&
+		   !$this->isOutdated() &&
+		   $this->isActive()
+		) {
+			return true;
+		}
+		
+		return false;
+    }
+	
+	/**
+     * Check current state
+     *
+     * @return array
+     */
+    public function getState()
+    {
+        if($this->beingUsed()) {
+			return Subscription::STATE_CURRENT;
+		} elseif ($this->isOutdated()) {
+			return Subscription::STATE_OUTDATED;
+		} elseif ($this->isActive()) {
+			return Subscription::STATE_READY;
+		} else {
+			return Subscription::STATE_PENDING;
+		}
     }
 }

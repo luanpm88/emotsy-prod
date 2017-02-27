@@ -168,6 +168,22 @@ class Tool
      *
      * @var string
      */
+    public static function customerDateTime($datetime)
+    {
+        $timezone = is_object(\Auth::user()) && is_object(\Auth::user()->customer) ? \Auth::user()->customer->timezone : '';
+        $result = $datetime;
+        if (!empty($timezone)) {
+            $result = $result->timezone($timezone);
+        }
+
+        return $result;
+    }
+    
+    /**
+     * Format display datetime.
+     *
+     * @var string
+     */
     public static function dateTimeFromString($time_string)
     {        
         return self::dateTime(\Carbon\Carbon::parse($time_string));

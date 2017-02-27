@@ -8,6 +8,7 @@
 							@include('helpers.form_control', [
 								'type' => 'select_ajax',
 								'name' => 'customer_id',
+								'class' => 'hook',
 								'label' => trans('messages.customer'),
 								'selected' => [
 									'value' => $subscription->customer_id,

@@ -80,14 +80,14 @@ class SubscriptionPolicy
         if (is_object($admin)) {
             $ability = $user->admin->getPermission('subscription_update');
             $ability = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $subscription->admin_id);
+                    || ($ability == 'own' && $user->admin->id == $subscription->customer->admin_id);
             $can = $can || $ability;
         }
         
         $customer = $user->customer;
         if (is_object($customer)) {
             $can = $can ||
-                ( $subscription->status == \Acelle\Model\Subscription::STATUS_ACTIVE &&
+                ( $subscription->status == \Acelle\Model\Subscription::STATUS_INACTIVE &&
                  $customer->id == $subscription->customer_id );
         }
         
@@ -102,15 +102,14 @@ class SubscriptionPolicy
         if (is_object($admin)) {
             $ability = $user->admin->getPermission('subscription_delete');
             $ability = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $subscription->admin_id);
+                    || ($ability == 'own' && $user->admin->id == $subscription->customer->admin_id);
             $can = $can || $ability;
         }
         
         $customer = $user->customer;
         if (is_object($customer)) {
             $can = $can ||
-                ( $subscription->status == \Acelle\Model\Subscription::STATUS_INACTIVE &&
-                 $customer->id == $subscription->customer_id );
+                ( $customer->id == $subscription->customer_id );
         }
         
         return $can;
@@ -124,7 +123,7 @@ class SubscriptionPolicy
         if (is_object($admin)) {
             $ability = $user->admin->getPermission('subscription_disable');
             $ability = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $subscription->admin_id);
+                    || ($ability == 'own' && $user->admin->id == $subscription->customer->admin_id);
             $can = $can || $ability;
         }
         
@@ -146,7 +145,7 @@ class SubscriptionPolicy
         if (is_object($admin)) {
             $ability = $user->admin->getPermission('subscription_enable');
             $ability = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $subscription->admin_id);
+                    || ($ability == 'own' && $user->admin->id == $subscription->customer->admin_id);
             $can = $can || $ability;
         }
         

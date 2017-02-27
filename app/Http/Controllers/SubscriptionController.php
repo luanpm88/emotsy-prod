@@ -95,6 +95,7 @@ class SubscriptionController extends Controller
         
         // Subscription        
         $subscription = new \Acelle\Model\Subscription();
+        $subscription->customer_id = $customer->id;
         
         if($request->plan_uid) {
             $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
@@ -111,9 +112,8 @@ class SubscriptionController extends Controller
             // Validation
             $this->validate($request, $subscription->frontendRules());
             
-            // Save current user info
+            // Save current user info            
             $subscription->fillAttributes($request->all());            
-            $subscription->customer_id = $customer->id;
             
             if ($subscription->isFree()) {
                 $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
@@ -144,7 +144,8 @@ class SubscriptionController extends Controller
     {
         // Get current user
         $subscription = new \Acelle\Model\Subscription();
-
+        
+        $subscription->customer_id = $request->user()->customer->id;
         $subscription->fillAttributes($request->all());
         
         return view('subscriptions.preview', [
@@ -238,6 +239,7 @@ class SubscriptionController extends Controller
         $customer = $user->customer;
         $subscription = new \Acelle\Model\Subscription();
         $subscription->status = \Acelle\Model\Subscription::STATUS_INACTIVE;
+        $subscription->customer_id = $customer->id;
 
         // authorize
         if (\Gate::denies('create', $subscription)) {
@@ -246,10 +248,9 @@ class SubscriptionController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, $subscription->frontendRules());
+            $this->validate($request, $subscription->frontendRules());            
             
             $subscription->fillAttributes($request->all());            
-            $subscription->customer_id = $customer->id;
             $subscription->save();
             
             $request->session()->flash('alert-success', trans('messages.subscription.created'));

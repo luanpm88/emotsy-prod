@@ -24,13 +24,15 @@ class SubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(Request $request)
     {
         // authorize
         if (\Gate::denies('read', new \Acelle\Model\Subscription())) {
             return $this->notAuthorized();
         }
-
+        
+        // If admin can view all subscriptions of their customer
+        $request->merge(array("customer_admin_id" => $request->user()->admin->id));
         $subscriptions = \Acelle\Model\Subscription::getAll();
 
         return view('admin.subscriptions.index', [
@@ -49,7 +51,9 @@ class SubscriptionController extends Controller
         if (\Gate::denies('read', new \Acelle\Model\Subscription())) {
             return $this->notAuthorized();
         }
-
+        
+        // If admin can view all subscriptions of their customer
+        $request->merge(array("customer_admin_id" => $request->user()->admin->id));
         $subscriptions = \Acelle\Model\Subscription::search($request)->paginate($request->per_page);
 
         return view('admin.subscriptions._list', [
@@ -106,8 +110,11 @@ class SubscriptionController extends Controller
             $subscription->admin_id = $user->admin->id;
             
             // Allow admin update end at date
-            if(empty($request->end_at)) {
-                $this->end_at = $request->end_at;
+            if(!empty($request->start_at)) {
+                $subscription->start_at = $request->start_at;
+            }
+            if(!empty($request->end_at)) {
+                $subscription->end_at = $request->end_at;
             }
             
             $subscription->save();
@@ -175,8 +182,11 @@ class SubscriptionController extends Controller
             $subscription->fillAttributes($request->all());
             
             // Allow admin update end at date
-            if(empty($params["end_at"])) {
-                $this->end_at = $params["end_at"];
+            if(!empty($request->start_at)) {
+                $subscription->start_at = $request->start_at;
+            }
+            if(!empty($request->end_at)) {
+                $subscription->end_at = $request->end_at;
             }
             
             $subscription->save();
@@ -207,6 +217,7 @@ class SubscriptionController extends Controller
     {
         // Get current user
         $subscription = new \Acelle\Model\Subscription();
+        $subscription->customer_id = $request->customer_id;
 
         // authorize
         if (\Gate::denies('read', $subscription)) {
@@ -261,7 +272,7 @@ class SubscriptionController extends Controller
         }
 
         // Redirect to my lists page
-        echo trans('messages.subscriptions.disabled');
+        echo trans('messages.subscriptions.enabled');
     }
 
     /**
@@ -285,5 +296,4 @@ class SubscriptionController extends Controller
         // Redirect to my lists page
         echo trans('messages.subscriptions.disabled');
     }
-
 }

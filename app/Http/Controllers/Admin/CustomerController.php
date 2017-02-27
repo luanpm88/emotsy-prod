@@ -380,4 +380,24 @@ class CustomerController extends Controller
     {        
         echo \Acelle\Model\Customer::select2($request);
     }
+    
+    /**
+     * User's subscriptions.
+     *
+     * @param  int  $id
+     * @return \Illuminate\Http\Response
+     */
+    public function subscriptions(Request $request, $uid)
+    {
+        $customer = \Acelle\Model\Customer::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('read', $customer)) {
+            return $this->notAuthorized();
+        }
+
+        return view('admin.customers.subscriptions', [
+            'customer' => $customer
+        ]);
+    }
 }

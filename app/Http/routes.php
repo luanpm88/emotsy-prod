@@ -490,6 +490,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/customer_groups', 'CustomerGroupController');
     
     // Customer
+    Route::get('admin/customers/{id}/subscriptions', 'CustomerController@subscriptions');
     Route::get('admin/customers/select2', 'CustomerController@select2');
     Route::get('admin/customers/login-as/{uid}', 'CustomerController@loginAs');
     Route::get('admin/customers/listing/{page?}', 'CustomerController@listing');

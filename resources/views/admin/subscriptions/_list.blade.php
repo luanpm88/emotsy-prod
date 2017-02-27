@@ -36,14 +36,26 @@
 					<span class="text-muted">{{ trans('messages.end_at') }}</span>
 				</td>
 				<td>
-					<h5 class="no-margin text-bold">
-						{{ $subscription->daysRemainCount() }}
-					</h5>
-					<span class="text-muted">{!! trans_choice('messages.days_remain', $subscription->daysRemainCount()) !!}</span>
+					@if ($subscription->beingUsed())
+						<h5 class="no-margin text-bold">
+							{{ $subscription->daysRemainCount() }}
+						</h5>
+						<span class="text-muted">{!! trans_choice('messages.days_remain', $subscription->daysRemainCount()) !!}</span>
+					@else
+						<h5 class="no-margin text-bold">
+							--
+						</h5>
+						<span class="text-muted">{!! trans_choice('messages.days_remain', 0) !!}</span>
+					@endif
 				</td>
 				<td>
 					<span class="text-muted2 list-status pull-left">
 						<span class="label label-flat bg-{{ $subscription->status }}">{{ trans('messages.subscription_status_' . $subscription->status) }}</span>
+					</span>
+				</td>
+				<td>
+					<span class="text-muted2 list-status pull-left">
+						<span class="label label-flat bg-{{ $subscription->getState() }}">{{ trans('messages.subscription_state_' . $subscription->getState()) }}</span>
 					</span>
 				</td>
 				<td class="text-right">											

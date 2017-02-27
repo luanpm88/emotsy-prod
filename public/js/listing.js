@@ -41,8 +41,9 @@ function tableFilter(form, custom_url) {
     
     var sort_direction = form.find(".sort-direction").attr("rel");
     var keyword = form.find("input[name='search_keyword']").val();
+    
     // Default page
-    if(typeof(custom_url) != 'undefined') {
+    if(typeof(custom_url) !== 'undefined') {
         url = custom_url;
     }
     
@@ -58,7 +59,7 @@ function tableFilter(form, custom_url) {
             d[entry.name] = entry.value
         }
     });
-    
+
     // ajax update custom sort
     $.ajax({
         method: "GET",
