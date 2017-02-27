@@ -279,7 +279,7 @@ class MailListController extends Controller
             echo trans('messages.operation_not_allowed_in_demo');
             return;
         }
-        
+
         $lists = \Acelle\Model\MailList::whereIn('uid', explode(',', $request->uids));
 
         foreach ($lists->get() as $item) {
@@ -310,7 +310,7 @@ class MailListController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
 
-        event(new \Acelle\Events\CampaignUpdated($list, false));
+        event(new \Acelle\Events\MailListUpdated($list));
 
         // authorize
         if (\Gate::denies('read', $list)) {
