@@ -145,8 +145,20 @@ class QuotaTrackerFile extends QuotaTracker
         }
 
         $cutOff = $timePoint->copy()->sub($this->interval)->timestamp;
-        while($this->first() != null && $this->first() < $cutOff ) {
-            array_shift($this->series);
+
+        // cut off the series from the point
+        $offset = null;
+        foreach($this->series as $i => $value) {
+            if ($value >= $cutOff) {
+                $offset = $i;
+                break;
+            }
+        }
+
+        if (is_null($offset)) {
+            $this->series = [];
+        } else {
+            $this->series = array_slice($this->series, $offset);
         }
     }
 
