@@ -155,7 +155,7 @@ class UserController extends Controller
     {
         $user = \Acelle\Model\User::findByUid($id);
 
-        event(new \Acelle\Events\UserUpdated($user, false));
+        event(new \Acelle\Events\UserUpdated($user));
 
         // authorize
         if (\Gate::denies('update', $user)) {
