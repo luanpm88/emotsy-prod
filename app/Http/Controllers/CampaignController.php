@@ -99,7 +99,7 @@ class CampaignController extends Controller
     public function show($id)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($id);
-        
+
         // Trigger the CampaignUpdate event to update the campaign cache information
         // The second parameter of the constructor function is false, meanining immediate update
         try {
@@ -213,7 +213,7 @@ class CampaignController extends Controller
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
-        
+
         // Get rules and data
         $rules = $campaign->recipientsRules($request->all());
         $campaign->fillRecipients($request->all());
@@ -225,9 +225,9 @@ class CampaignController extends Controller
         if ($request->isMethod('post')) {
             // Check validation
             $this->validate($request, $rules);
-            
+
             $campaign->saveRecipients($request->all());
-            
+
             return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
         }
 
@@ -248,7 +248,7 @@ class CampaignController extends Controller
         //
         //    return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
         //}
-        
+
         return view('campaigns.recipients', [
             'campaign' => $campaign,
             'rules' => $rules
@@ -320,17 +320,17 @@ class CampaignController extends Controller
     {
         $user = $request->user();
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-        
+
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
-        
+
         // Get old post values
         if (null !== $request->old()) {
             $campaign->fill($request->old());
         }
-        
+
         $rules = [];
         // validate and save posted data
         if ($request->isMethod('post')) {
@@ -344,14 +344,14 @@ class CampaignController extends Controller
                 $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($request->html)));
             }
             $campaign->save();
-            
+
             if(isset($request->template_source)) {
                 return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
             } else {
                 return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
             }
         }
-        
+
         // redirect page
         if(!empty($campaign->html) || $campaign->type == 'plain-text') {
             return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
@@ -364,7 +364,7 @@ class CampaignController extends Controller
             'rules' => $rules,
         ]);
     }
-    
+
     /**
      * Select template type.
      *
@@ -380,13 +380,13 @@ class CampaignController extends Controller
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
-        }     
+        }
 
         return view('campaigns.template_select', [
             'campaign' => $campaign,
         ]);
     }
-    
+
     /**
      * Choose an existed template.
      *
@@ -404,7 +404,7 @@ class CampaignController extends Controller
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
-        
+
         $campaign->html = $template->content;
         $campaign->template_source = $template->source;
         // $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($campaign->html)));
@@ -416,7 +416,7 @@ class CampaignController extends Controller
             return redirect()->action('AutoEventController@templatePreview', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid]);
         }
     }
-    
+
     /**
      * Template preview.
      *
@@ -435,13 +435,13 @@ class CampaignController extends Controller
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
-        
+
         return view('campaigns.template_preview', [
             'campaign' => $campaign,
             'rules' => $rules
         ]);
     }
-    
+
     /**
      * Template preview iframe.
      *
@@ -458,7 +458,7 @@ class CampaignController extends Controller
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
-        
+
         return view('campaigns.preview', [
             'campaign' => $campaign,
         ]);
@@ -474,12 +474,12 @@ class CampaignController extends Controller
     public function schedule(Request $request)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-        
+
         // check step
         if($campaign->step() < 3) {
             return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
         }
-        
+
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
@@ -511,7 +511,7 @@ class CampaignController extends Controller
 
             $campaign->run_at = $time;
             $campaign->save();
-            
+
             return redirect()->action('CampaignController@confirm', ['uid' => $campaign->uid]);
         }
 
@@ -533,7 +533,7 @@ class CampaignController extends Controller
     public function confirm(Request $request)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-        
+
         // check step
         if($campaign->step() < 4) {
             return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
@@ -574,7 +574,7 @@ class CampaignController extends Controller
             echo trans('messages.operation_not_allowed_in_demo');
             return;
         }
-        
+
         $items = \Acelle\Model\Campaign::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
@@ -600,11 +600,11 @@ class CampaignController extends Controller
     public function overview(Request $request)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-        
+
         // Trigger the CampaignUpdate event to update the campaign cache information
         // The second parameter of the constructor function is false, meanining immediate update
         try {
-            event(new \Acelle\Events\CampaignUpdated($campaign, false));
+            event(new \Acelle\Events\CampaignUpdated($campaign));
         } catch (\Exception $ex) {
             // in case TrackingLog record does not exist yet (open before logged!)
         }
@@ -703,7 +703,7 @@ class CampaignController extends Controller
 
         return json_encode($result);
     }
-    
+
     /**
      * Chart.
      *
@@ -737,7 +737,7 @@ class CampaignController extends Controller
 
         // columns
         $result['columns'][] = trans("messages.count");
-        
+
         // datas
         $result['data'][] = [
             'name' => trans('messages.unsubscribe'),
@@ -750,7 +750,7 @@ class CampaignController extends Controller
                 ]
             ],
         ];
-        
+
         $result['data'][] = [
             'name' => trans('messages.report'),
             'type' => 'bar',
@@ -762,7 +762,7 @@ class CampaignController extends Controller
                 ]
             ],
         ];
-        
+
         $result['data'][] = [
             'name' => trans('messages.Bounce'),
             'type' => 'bar',
@@ -774,7 +774,7 @@ class CampaignController extends Controller
                 ]
             ],
         ];
-        
+
         $result['data'][] = [
             'name' => trans('messages.Click'),
             'type' => 'bar',
@@ -786,7 +786,7 @@ class CampaignController extends Controller
                 ]
             ],
         ];
-        
+
         $result['data'][] = [
             'name' => trans('messages.Open'),
             'type' => 'bar',
@@ -798,7 +798,7 @@ class CampaignController extends Controller
                 ]
             ],
         ];
-        
+
         $result['data'][] = [
             'name' => trans('messages.failed'),
             'type' => 'bar',
@@ -810,7 +810,7 @@ class CampaignController extends Controller
                 ]
             ],
         ];
-        
+
         $result['data'][] = [
             'name' => trans('messages.delivered'),
             'type' => 'bar',
@@ -822,7 +822,7 @@ class CampaignController extends Controller
                 ]
             ],
         ];
-        
+
         $result['data'][] = [
             'name' => trans('messages.recipients'),
             'type' => 'bar',
@@ -834,10 +834,10 @@ class CampaignController extends Controller
                 ]
             ],
         ];
-        
-        
+
+
         $result['horizontal'] = 1;
-        
+
         return json_encode($result);
     }
 
@@ -863,7 +863,7 @@ class CampaignController extends Controller
             'data' => [],
             'bar_names' => [],
         ];
-        
+
         // create data
         $datas = [];
         $total = $campaign->openCount();
@@ -871,11 +871,11 @@ class CampaignController extends Controller
         foreach ($campaign->topCountries()->get() as $location) {
             $country_name = (!empty($location->country_name) ? $location->country_name : trans('messages.unknown'));
             $result['bar_names'][] = $country_name;
-            
+
             $datas[] = ['value' => $location->aggregate, 'name' => $country_name];
             $count += $location->aggregate;
         }
-        
+
         // others
         if($total > $count) {
             $result['bar_names'][] = trans('messages.others');
@@ -889,13 +889,13 @@ class CampaignController extends Controller
             'radius' => '70%',
             'center' => ['50%', '57.5%'],
             'data' => $datas
-        ];        
-        
+        ];
+
         $result['pie'] = 1;
-        
+
         return json_encode($result);
     }
-    
+
     /**
      * Chart Country by clicks.
      *
@@ -918,18 +918,18 @@ class CampaignController extends Controller
             'data' => [],
             'bar_names' => [],
         ];
-        
+
         // create data
         $datas = [];
         $total = $campaign->clickCount();
         $count = 0;
         foreach ($campaign->topClickCountries()->get() as $location) {
             $result['bar_names'][] = $location->country_name;
-            
+
             $datas[] = ['value' => $location->aggregate, 'name' => $location->country_name];
             $count += $location->aggregate;
         }
-        
+
         // others
         if($total > $count) {
             $result['bar_names'][] = trans('messages.others');
@@ -943,13 +943,13 @@ class CampaignController extends Controller
             'radius' => '70%',
             'center' => ['50%', '57.5%'],
             'data' => $datas
-        ];        
-        
+        ];
+
         $result['pie'] = 1;
-        
+
         return json_encode($result);
     }
-    
+
     /**
      * 24-hour quickView.
      *
@@ -1001,7 +1001,7 @@ class CampaignController extends Controller
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
         $log->save();
-        
+
         // Trigger the CampaignUpdate event to update the campaign cache information
         // The second parameter of the constructor function is false, meanining immediate update
         try {
@@ -1029,7 +1029,7 @@ class CampaignController extends Controller
             $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
             $log->url = $decoded_url;
             $log->save();
-            
+
             // Trigger the CampaignUpdate event to update the campaign cache information
             // The second parameter of the constructor function is false, meanining immediate update
             try {
@@ -1039,7 +1039,7 @@ class CampaignController extends Controller
                 // in case TrackingLog record does not exist yet (open before logged!)
             }
         } catch (\Exception $e) {
-            // Allow click from a test email    
+            // Allow click from a test email
         } finally {
             return redirect()->away($decoded_url);
         }
@@ -1075,12 +1075,12 @@ class CampaignController extends Controller
             $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
             $log->save();
 
-            try {                
+            try {
                 // Send goodbye email
                 if($list->unsubscribe_notification) {
                     // SEND subscription confirmation email
                     $list->sendUnsubscriptionNotificationEmail($subscriber);
-                }   
+                }
             } catch (\Exception $e) {
             }
 
@@ -1413,7 +1413,7 @@ class CampaignController extends Controller
         // Redirect to my lists page
         echo trans('messages.campaigns.restarted');
     }
-    
+
     /**
      * Subscribers list.
      */
@@ -1458,7 +1458,7 @@ class CampaignController extends Controller
             'fields' => $fields,
         ]);
     }
-    
+
     /**
      * Buiding email template.
      *
@@ -1469,12 +1469,12 @@ class CampaignController extends Controller
     public function templateBuild(Request $request)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-        
+
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
-        
+
         $elements = [];
         if(isset($request->style)) {
             $elements = \Acelle\Model\Template::templateStyles()[$request->style];
@@ -1486,7 +1486,7 @@ class CampaignController extends Controller
             'list' => $campaign->defaultMailList,
         ]);
     }
-    
+
     /**
      * Re-Buiding email template.
      *
@@ -1497,7 +1497,7 @@ class CampaignController extends Controller
     public function templateRebuild(Request $request)
     {
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
-        
+
         // authorize
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
@@ -1508,7 +1508,7 @@ class CampaignController extends Controller
             'list' => $campaign->defaultMailList
         ]);
     }
-    
+
     /**
      * Copy campaign.
      *
@@ -1529,7 +1529,7 @@ class CampaignController extends Controller
 
         echo trans('messages.campaign.copied');
     }
-    
+
     /**
      * Send email for testing campaign.
      *
@@ -1545,12 +1545,12 @@ class CampaignController extends Controller
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
-        
+
         $sending = $campaign->sendTestEmail($request->send_test_email);
-        
+
         return json_encode($sending);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -1558,7 +1558,7 @@ class CampaignController extends Controller
      */
     public function templateList(Request $request)
     {
-        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);        
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
         $request->request->add(['source' => 'template']);
 
         $campaigns = \Acelle\Model\Campaign::search($request, 'all')
@@ -1571,7 +1571,7 @@ class CampaignController extends Controller
             'uid' => $campaign->uid
         ]);
     }
-    
+
     /**
      * Preview template.
      *
@@ -1580,20 +1580,20 @@ class CampaignController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function preview($id)
-    {        
+    {
         $campaign = \Acelle\Model\Campaign::findByUid($id);
-        
+
         // authorize
         if (\Gate::denies('preview', $campaign)) {
             return $this->not_authorized();
         }
-        
+
         // Convert to inline css if template source is builder
         if ($campaign->template_source == 'builder') {
             $cssToInlineStyles = new CssToInlineStyles();
             $html = $campaign->html;
             $css = file_get_contents(public_path("css/res_email.css"));
-            
+
             // output
             $campaign->html = $cssToInlineStyles->convert(
                 $html,
@@ -1605,7 +1605,7 @@ class CampaignController extends Controller
             'campaign' => $campaign,
         ]);
     }
-    
+
     /**
      * Save campaign screenshot.
      *
@@ -1644,7 +1644,7 @@ class CampaignController extends Controller
         $campaign->image = $upload_loca.$filename;
         $campaign->save();
     }
-    
+
     /**
      * Template screenshot.
      *
@@ -1670,7 +1670,7 @@ class CampaignController extends Controller
 
         return $img->response();
     }
-    
+
     /**
      * Choose an existed campaign template.
      *
@@ -1688,19 +1688,19 @@ class CampaignController extends Controller
         if (\Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
-        
+
         $campaign->html = $from_campaign->html;
         $campaign->template_source = $from_campaign->template_source;
         // $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($campaign->html)));
         $campaign->save();
-        
+
         if(!$campaign->is_auto) {
             return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
         } else {
             return redirect()->action('AutoEventController@templatePreview', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid]);
         }
     }
-    
+
     /**
      * List segment form.
      *
