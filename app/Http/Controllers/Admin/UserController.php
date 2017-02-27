@@ -155,6 +155,8 @@ class UserController extends Controller
     {
         $user = \Acelle\Model\User::findByUid($id);
 
+        event(new \Acelle\Events\UserUpdated($user, false));
+
         // authorize
         if (\Gate::denies('update', $user)) {
             return $this->notAuthorized();
@@ -188,16 +190,16 @@ class UserController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            
+
             if($this->isDemoMode()) {
                 return $this->notAuthorized();
             }
-            
+
             $this->validate($request, $user->rules());
-            
+
             // Save current user info
             $user->fill($request->all());
-            
+
             // Change group
             $user->user_group_id = $request->user_group_id;
 
@@ -322,7 +324,7 @@ class UserController extends Controller
         if (\Gate::denies('switch_user', $user)) {
             return;
         }
-        
+
         $orig_id = $request->user()->uid;
         \Auth::login($user);
         \Session::put('orig_user_id', $orig_id);
@@ -341,9 +343,9 @@ class UserController extends Controller
     {
         $id = \Session::pull('orig_user_id');
         $orig_user = \Acelle\Model\User::findByUid($id);
-        
+
         \Auth::login($orig_user);
-        
+
         return redirect()->action('Admin\UserController@index');
     }
 

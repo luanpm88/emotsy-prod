@@ -98,7 +98,7 @@ class User extends Authenticatable
             'password' => 'required|confirmed|min:5',
         );
     }
-    
+
     /**
      * The rules for validation via api.
      *
@@ -116,7 +116,7 @@ class User extends Authenticatable
             'password' => 'required|min:5',
         );
     }
-    
+
     /**
      * The rules for validation via api.
      *
@@ -125,7 +125,7 @@ class User extends Authenticatable
     public function apiUpdateRules($request)
     {
         $arr = [];
-        
+
         if(isset($request->email)) {
             $arr['email'] = 'required|email|unique:users,email,'.$this->id.',id';
         }
@@ -144,7 +144,7 @@ class User extends Authenticatable
         if(isset($request->password)) {
             $arr['password'] = 'min:5';
         }
-        
+
         return $arr;
     }
 
@@ -207,7 +207,7 @@ class User extends Authenticatable
     {
         return $this->hasMany('Acelle\Model\Log')->orderBy('created_at', 'desc');
     }
-    
+
     public function systemJobs()
     {
         return $this->hasMany('Acelle\Model\SystemJob')->orderBy('created_at', 'desc');
@@ -217,7 +217,7 @@ class User extends Authenticatable
     {
         return $this->hasMany('Acelle\Model\TrackingLog')->orderBy('created_at', 'asc');
     }
-    
+
     public function automations()
     {
         return $this->hasMany('Acelle\Model\Automation');
@@ -263,11 +263,11 @@ class User extends Authenticatable
     {
         $path = 'app/users/';
         $upload_path = storage_path($path);
-        
+
         if (!file_exists($upload_path)) {
             mkdir($upload_path, 0777, true);
         }
-        
+
         $filename = 'avatar-'.$this->id.'.'.$file->getClientOriginalExtension();
 
         // save to server
@@ -745,7 +745,7 @@ class User extends Authenticatable
     public function getQuotaStartingTime() {
         $timeValue = $this->getOption('frontend', 'sending_quota_time');
         $timeUnit = $this->getOption('frontend', 'sending_quota_time_unit');
-        
+
         // @todo: magic number here
         // @todo: why $timeValue == -1?
         // @todo: configuration setting for default Quota Starting Time
@@ -776,14 +776,14 @@ class User extends Authenticatable
     public function renewQuotaTracker() {
         $this->getQuotaTracker()->getExclusiveLock(function() {
             $start = $this->getQuotaStartingTime();
-    
+
             // recent tracking logs
             // @todo: potential issue here, application fails in case $start is NULL
             $recent = $this->trackingLogs()->where('created_at', '>=', $start);
-            
+
             // existing quota usage
             $stored = null;
- 
+
             // load the tracker from DB (if exists)
             // then merge with the current tracking log data
             if ($this->quota) {
@@ -794,7 +794,7 @@ class User extends Authenticatable
                     MailLog::warning('Cannot retrieve user quota');
                 }
             }
-    
+
             // load the tracker from DB
             if (!is_null($stored) && !empty($stored)) {
                 // retrieve the stored quota usage and merge it with actual (newer) usage
@@ -802,14 +802,14 @@ class User extends Authenticatable
                 $series = $recent->get()->map(function($trackingLog) {
                     return $trackingLog->created_at->timestamp;
                 })->toArray();
-                
+
                 $series = array_merge($stored, $series);
             } else {
                 $series = $recent->get()->map(function($trackingLog) {
                     return $trackingLog->created_at->timestamp;
                 })->toArray();
             }
-            
+
             $this->getQuotaTracker()->reset($series);
         });
     }
@@ -824,7 +824,7 @@ class User extends Authenticatable
         // @note: in case of multi-process, the following command must be issued manually
         //     $this->renewQuotaTracker();
     }
-    
+
     /**
      * Get sending quota lock file
      *
@@ -865,7 +865,7 @@ class User extends Authenticatable
         }
         echo "\n" . env('REDIS_ENABLED') . "\n";
     }
-    
+
     /**
      * Get not auto campaign.
      *
@@ -875,7 +875,7 @@ class User extends Authenticatable
     {
         return $this->campaigns()->where('is_auto', '=', false);
     }
-    
+
     /**
      * Get user timezone
      *
@@ -884,7 +884,7 @@ class User extends Authenticatable
     public function getTimezone() {
         return $this->timezone;
     }
-    
+
     /**
      * Get user language code
      *
@@ -892,5 +892,66 @@ class User extends Authenticatable
      */
     public function getLanguageCode() {
         return (is_object($this->language) ? $this->language->code : null);
+    }
+
+    /**
+     * Update Campaign cached data
+     *
+     * @return void
+     */
+    public function updateCache($key = null)
+    {
+        // cache indexes
+        $index = [
+            'SubscriberCount' => function(&$user) {
+                return $user->subscribersCount();
+            },
+            'SubscriberUsage' => function(&$user) {
+                return $user->subscribersUsage();
+            },
+        ];
+
+        // retrieve cached data
+        $cache = json_decode($this->cache, true);
+        if (is_null($cache)) {
+            $cache = [];
+        }
+
+        if (is_null($key)) {
+            // update all cache
+            foreach($index as $key => $callback) {
+                $cache[$key] = $callback($this);
+            }
+        } else {
+            // update specific key
+            $callback = $index[$key];
+            $cache[$key] = $callback($this);
+        }
+
+        // write back to the DB
+        $this->cache = json_encode($cache);
+        $this->save();
+    }
+
+    /**
+     * Retrieve Campaign cached data
+     *
+     * @return mixed
+     */
+    public function readCache($key, $default = null)
+    {
+        $cache = json_decode($this->cache, true);
+        if (is_null($cache)) {
+            return $default;
+        }
+        if (array_key_exists($key, $cache)) {
+            if (is_null($cache[$key])) {
+                return $default;
+            } else {
+                return $cache[$key];
+            }
+        } else {
+            return null;
+        }
     }
 }
