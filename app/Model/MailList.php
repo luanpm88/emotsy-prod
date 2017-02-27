@@ -750,7 +750,7 @@ class MailList extends Model
             $data = [];
             foreach ($list->subscribers()->skip($page*$num)->take($num)->get() as $key => $item) {
                 $cols = [];
-                foreach ($list->fields as $key2 => $field) {
+                foreach ($list->getFields as $key2 => $field) {
                     $value = $item->getValueByField($field);
                     $cols[] = $value;
                 }
