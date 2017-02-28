@@ -575,5 +575,23 @@ class DatabaseSeeder extends Seeder
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);
+        
+        DB::table('plans')->insert([
+            'id' => 2,
+            'uid' => uniqid(),
+            'admin_id' => 1,
+            'currency_id' => 1,
+            'name' => 'Advanced',
+            'price' => 500.0,
+            'frequency_amount' => 1,
+            'frequency_unit' => 'month',
+            'frequency_amount' => 1,
+            'options' => '',
+            'status' => 'active',
+            'color' => '#E91E63',
+            'custom_order' => 1,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+        ]);
     }
 }

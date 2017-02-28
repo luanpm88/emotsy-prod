@@ -99,7 +99,7 @@ class SubscriptionController extends Controller
         
         if($request->plan_uid) {
             $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
-            $subscription->plan_uid = $plan->id;
+            $subscription->plan_id = $plan->id;
         }
         
         $subscription->fillAttributes($request->all());

@@ -195,7 +195,7 @@ class Subscription extends Model
             $this->price = $plan->price;
 			$this->plan_name = $plan->name;
 			$this->plan_color = $plan->color;
-			$this->currency_code = $plan->plan->currency->code;
+			$this->currency_code = $plan->currency->code;
 			$this->options = json_encode($plan->getOptions());
             
             switch ($plan->frequency_unit) {
