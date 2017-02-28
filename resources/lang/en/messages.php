@@ -1333,4 +1333,6 @@ return [
     'SENDING_SERVERS' => 'SENDING SERVERS',
     'user_group.deleted' => 'User group was successfully deleted',
     'operation_not_allowed_in_demo' => 'Operation not allowed in DEMO mode',
+    'follow_up_event_follow-up-not-opened' => 'not opened',
+    'follow_up_event_follow-up-not-clicked' => 'not clicked',
 ];
