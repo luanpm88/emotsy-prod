@@ -1204,4 +1204,7 @@ $(function() {
         });
     });
     
+    // load locale js
+    $.getScript(JVALIDATE_TRANSLATE_URL, function(){
+    });
 });
