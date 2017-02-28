@@ -691,6 +691,7 @@ $(function() {
         }
         $(this).select2({
             placeholder: placeholder,
+            allowClear: true,
             ajax: {
                 url: url,
                 dataType: 'json',

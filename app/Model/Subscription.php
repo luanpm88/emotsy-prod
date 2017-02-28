@@ -45,8 +45,8 @@ class Subscription extends Model
     public function rules()
     {
         $rules = array(
-            'plan_id' => 'required',
-            'customer_id' => 'required'
+            'plan_uid' => 'required',
+            'customer_uid' => 'required'
         );
         
         return $rules;
@@ -136,8 +136,11 @@ class Subscription extends Model
 		
 		if (!empty($filters)) {
             if (!empty($filters['customer_uid'])) {
-				$customer = \Acelle\Model\Customer::findByUid($filters['customer_uid']);
-                $query = $query->where('subscriptions.customer_id', '=', $customer->id);
+                $query = $query->where('customers.uid', '=', $filters['customer_uid']);
+            }
+			if (!empty($filters['plan_uid'])) {
+				$plan = \Acelle\Model\Plan::findByUid($filters['plan_uid']);
+                $query = $query->where('subscriptions.plan_id', '=', $plan->id);
             }
         }
 		
@@ -166,7 +169,7 @@ class Subscription extends Model
         if(isset($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         } else {
-			$query = $query->orderBy('created_at', 'asc');
+			$query = $query->orderBy('subscriptions.created_at', 'asc');
 		}
 
         return $query;
@@ -179,8 +182,8 @@ class Subscription extends Model
      */
     public function fillAttributes($params)
     {
-        $this->plan_id = $this->plan_id ? $this->plan_id : (isset($params['plan_id']) ? $params['plan_id'] : null);
-		$this->customer_id = $this->customer_id ? $this->customer_id : (isset($params['customer_id']) ? $params['customer_id'] : null);
+        $this->plan_id = $this->plan_id ? $this->plan_id : (isset($params['plan_uid']) ? \Acelle\Model\Plan::findByUid($params['plan_uid'])->id : null);
+		$this->customer_id = $this->customer_id ? $this->customer_id : (isset($params['customer_uid']) ? \Acelle\Model\Customer::findByUid($params['customer_uid'])->id : null);
 		$this->start_at = $this->start_at ? $this->start_at : $this->customer->getNextScriptionStartAt();
 		
         $plan = $this->plan_id ? Plan::find($this->plan_id) : null;
@@ -190,6 +193,9 @@ class Subscription extends Model
         if(isset($this->plan_id)) {
 			// Save info from plan
             $this->price = $plan->price;
+			$this->plan_name = $plan->name;
+			$this->plan_color = $plan->color;
+			$this->currency_code = $plan->plan->currency->code;
 			$this->options = json_encode($plan->getOptions());
             
             switch ($plan->frequency_unit) {
@@ -217,7 +223,7 @@ class Subscription extends Model
     public function frontendRules()
     {
         $rules = array(
-            'plan_id' => 'required',
+            'plan_uid' => 'required',
         );
         
         return $rules;
@@ -465,4 +471,22 @@ class Subscription extends Model
 			return Subscription::STATE_PENDING;
 		}
     }
+	
+	/**
+     * Get subsciption display name
+     *
+     * @return array
+     */
+    public function getName() {
+		return $this->plan->name;
+	}
+	
+	/**
+     * Get id for payment
+     *
+     * @return array
+     */
+    public function getID() {
+		return $this->uid;
+	}
 }

@@ -32,7 +32,9 @@ class SubscriptionController extends Controller
         }
         
         // If admin can view all subscriptions of their customer
-        $request->merge(array("customer_admin_id" => $request->user()->admin->id));
+        if (\Gate::denies('readAll', new \Acelle\Model\Subscription())) {
+            $request->merge(array("customer_admin_id" => $request->user()->admin->id));
+        }
         $subscriptions = \Acelle\Model\Subscription::getAll();
 
         return view('admin.subscriptions.index', [
@@ -53,7 +55,9 @@ class SubscriptionController extends Controller
         }
         
         // If admin can view all subscriptions of their customer
-        $request->merge(array("customer_admin_id" => $request->user()->admin->id));
+        if (\Gate::denies('readAll', new \Acelle\Model\Subscription())) {
+            $request->merge(array("customer_admin_id" => $request->user()->admin->id));
+        }
         $subscriptions = \Acelle\Model\Subscription::search($request)->paginate($request->per_page);
 
         return view('admin.subscriptions._list', [

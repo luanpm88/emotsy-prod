@@ -90,7 +90,8 @@ Route::get('users/resend-activation-email', 'UserController@resendActivationEmai
 Route::get('plans/select2', 'PlanController@select2');
 
 // Payments
-Route::get('payment-status', 'PaymentController@paymentInfo');
+Route::get('payment-cancel/{subscription_uid}', 'PaymentController@paymentCancel');
+Route::get('payment-status/{subscription_uid}', 'PaymentController@paymentInfo');
 Route::get('payment/{subscription_uid}', 'PaymentController@payment');
 Route::get('payment-cancel', function () {
     return 'Payment has been canceled';

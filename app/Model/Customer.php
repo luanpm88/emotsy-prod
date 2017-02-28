@@ -883,7 +883,7 @@ class Customer extends Model
             });
         }
         foreach ($query->limit(20)->get() as $customer) {
-            $data['items'][] = ['id' => $customer->id, 'text' => $customer->displayName()];
+            $data['items'][] = ['id' => $customer->uid, 'text' => $customer->displayName()];
         }
         
         return json_encode($data);

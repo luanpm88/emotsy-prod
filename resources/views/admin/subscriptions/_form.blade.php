@@ -7,11 +7,11 @@
 						<div class="">
 							@include('helpers.form_control', [
 								'type' => 'select_ajax',
-								'name' => 'customer_id',
+								'name' => 'customer_uid',
 								'class' => 'hook',
 								'label' => trans('messages.customer'),
 								'selected' => [
-									'value' => $subscription->customer_id,
+									'value' => is_object($subscription->customer) ? $subscription->customer->uid : '',
 									'text' => is_object($subscription->customer) ? $subscription->customer->displayName() : ''
 								],
 								'help_class' => 'subscription',
@@ -26,10 +26,10 @@
 							@include('helpers.form_control', [
 								'type' => 'select_ajax',
 								'class' => 'subsciption-plan-select hook',
-								'name' => 'plan_id',
+								'name' => 'plan_uid',
 								'label' => trans('messages.plan'),
 								'selected' => [
-									'value' => $subscription->plan_id,
+									'value' => is_object($subscription->plan) ? $subscription->plan->uid : '',
 									'text' => is_object($subscription->plan) ? $subscription->plan->name : ''
 								],
 								'help_class' => 'subscription',

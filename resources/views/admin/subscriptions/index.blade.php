@@ -43,10 +43,25 @@
 											<i class="icon-sort-amount-desc"></i>
 										</button>
 									</span>
+									<span class="mr-10 input-medium">
+										<select placeholder="{{ trans('messages.customer') }}"
+											class="select2-ajax"
+											name="customer_uid"
+											data-url="{{ action('Admin\CustomerController@select2') }}">
+										</select>
+									</span>
+									<span class="mr-10 input-medium">
+										<select placeholder="{{ trans('messages.plan') }}"
+											class="select2-ajax"
+											name="plan_uid"
+											data-url="{{ action('Admin\PlanController@select2') }}">
+										</select>
+									</span>
 									<span class="text-nowrap">
 										<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 										<i class="icon-search4 keyword_search_button"></i>
 									</span>
+									
 								</div>
 							@endif
 						</div>

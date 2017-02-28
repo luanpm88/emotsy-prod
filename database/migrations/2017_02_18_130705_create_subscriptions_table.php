@@ -20,6 +20,9 @@ class CreateSubscriptionsTable extends Migration
             $table->integer('admin_id')->unsigned()->nullable();
             $table->text('options');
             $table->decimal('price', 16, 2);
+            $table->string('currency_code');
+            $table->string('plan_name');
+            $table->string('plan_color');
             $table->timestamp('start_at');
             $table->timestamp('end_at');
             $table->string('status');

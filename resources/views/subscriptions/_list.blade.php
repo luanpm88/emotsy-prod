@@ -5,9 +5,9 @@
 	>
 		@foreach ($subscriptions as $key => $subscription)
 			<div class="panel panel-plan mr-30 {{ $subscription->beingUsed() ? 'box-shadow' : '' }}">
-				<div class="panel-heading subscription-state subscription-state-{{ $subscription->getState() }}" style="background-color: {{ $subscription->plan->color }}; color: white">
+				<div class="panel-heading subscription-state subscription-state-{{ $subscription->getState() }}" style="background-color: {{ $subscription->plan_color }}; color: white">
 					<h4 class="pull-left panel-title text-center">													
-						{{ $subscription->plan->name }}
+						{{ $subscription->plan_name }}
 					</h4>
 				</div>
 				<div class="panel-body pt-0 subscription-state subscription-state-{{ $subscription->getState() }}">

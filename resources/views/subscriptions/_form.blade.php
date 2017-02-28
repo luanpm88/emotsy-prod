@@ -6,11 +6,11 @@
 					@include('helpers.form_control', [
 						'type' => 'select_ajax',
 						'class' => 'subsciption-plan-select hook',
-						'name' => 'plan_id',
+						'name' => 'plan_uid',
 						'label' => trans('messages.plan'),
 						'selected' => [
-							'value' => $subscription->plan_id,
-							'text' => is_object($subscription->plan) ? $subscription->plan->name : 'sss'
+							'value' => is_object($subscription->plan) ? $subscription->plan->uid : '',
+							'text' => is_object($subscription->plan) ? $subscription->plan->name : ''
 						],
 						'help_class' => 'subscription',
 						'rules' => $subscription->rules(),

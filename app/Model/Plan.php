@@ -446,7 +446,7 @@ class Plan extends Model
             });
         }
         foreach ($query->limit(20)->get() as $plan) {
-            $data['items'][] = ['id' => $plan->id, 'text' => $plan->name];
+            $data['items'][] = ['id' => $plan->uid, 'text' => $plan->name];
         }
         
         return json_encode($data);

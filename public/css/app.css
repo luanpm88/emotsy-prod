@@ -1871,3 +1871,10 @@ ul.plans-intro li span {
 .mr-30 {
     margin-right: 30px;
 }
+.filter-box .input-medium .select2 {
+    max-width: 200px !important;
+    min-width: 180px !important;
+}
+.select2-selection--single .select2-selection__clear:after {
+    font-size: 19px;
+}
