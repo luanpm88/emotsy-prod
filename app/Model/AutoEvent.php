@@ -47,7 +47,9 @@ class AutoEvent extends Model
 	const TYPE_API_CALL = 'api-call';
 	const TYPE_FOLLOW_UP = 'follow-up';
 	const TYPE_FOLLOW_UP_OPENED = 'follow-up-opened';
+	const TYPE_FOLLOW_UP_NOT_OPENED = 'follow-up-not-opened';
 	const TYPE_FOLLOW_UP_CLICKED = 'follow-up-clicked';
+	const TYPE_FOLLOW_UP_NOT_CLICKED = 'follow-up-not-clicked';
 	
 	// operators
     const OPERATOR_EQUAL = 'equal';
@@ -373,7 +375,9 @@ class AutoEvent extends Model
 				}
 			case self::TYPE_FOLLOW_UP:
 			case self::TYPE_FOLLOW_UP_OPENED:
+			case self::TYPE_FOLLOW_UP_NOT_OPENED:
 			case self::TYPE_FOLLOW_UP_CLICKED:
+			case self::TYPE_FOLLOW_UP_NOT_CLICKED:
 				// if(!isset($params["delay_value"]) && !isset($params["delay_unit"])) {
 					$this->updateData([
 						'delay_type' => 'after',
@@ -551,7 +555,9 @@ class AutoEvent extends Model
 				break;
 			case self::TYPE_FOLLOW_UP:
 			case self::TYPE_FOLLOW_UP_OPENED:
+			case self::TYPE_FOLLOW_UP_NOT_OPENED:
 			case self::TYPE_FOLLOW_UP_CLICKED:
+			case self::TYPE_FOLLOW_UP_NOT_CLICKED:
 				if(empty($this->getDataValue('delay_value'))) {
 					$msg = trans('messages.follow_up_send_right_after', [						
 						'event' => trans('messages.follow_up_event_' . $this->event_type)
@@ -626,8 +632,10 @@ class AutoEvent extends Model
     {
         return [
 			['value' => self::TYPE_FOLLOW_UP, 'text' => strtolower(trans('messages.sent'))],
-			['value' => self::TYPE_FOLLOW_UP_OPENED, 'text' => strtolower(trans('messages.opened'))],            
+			['value' => self::TYPE_FOLLOW_UP_OPENED, 'text' => strtolower(trans('messages.opened'))],
+			['value' => self::TYPE_FOLLOW_UP_NOT_OPENED, 'text' => strtolower(trans('messages.not_opened'))],            
             ['value' => self::TYPE_FOLLOW_UP_CLICKED, 'text' => strtolower(trans('messages.clicked'))],
+			['value' => self::TYPE_FOLLOW_UP_NOT_CLICKED, 'text' => strtolower(trans('messages.not_clicked'))],
         ];
     }
 	
