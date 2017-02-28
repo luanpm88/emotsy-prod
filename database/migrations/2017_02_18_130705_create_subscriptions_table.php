@@ -21,13 +21,15 @@ class CreateSubscriptionsTable extends Migration
             $table->text('options');
             $table->decimal('price', 16, 2);
             $table->string('currency_code');
+            $table->string('currency_format');
             $table->string('plan_name');
-            $table->string('plan_color');
-            $table->timestamp('start_at');
-            $table->timestamp('end_at');
+            $table->string('plan_color');            
             $table->string('status');
             
             $table->timestamps();
+            
+            $table->timestamp('start_at');
+            $table->timestamp('end_at');
             
             $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');

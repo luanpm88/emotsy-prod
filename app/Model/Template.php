@@ -288,7 +288,7 @@ class Template extends Model
         }
 
         $tags = array_merge($tags, [
-            ['name' => 'UNSUBSCRIBE_URL', 'required' => (\Auth::user()->getOption('frontend', 'unsubscribe_url_required') == 'yes' ? true : false)],
+            ['name' => 'UNSUBSCRIBE_URL', 'required' => (\Auth::user()->customer->getOption('unsubscribe_url_required') == 'yes' ? true : false)],
             ['name' => 'SUBSCRIBER_UID', 'required' => false],
             ['name' => 'CAMPAIGN_NAME', 'required' => false],
             ['name' => 'CAMPAIGN_UID', 'required' => false],

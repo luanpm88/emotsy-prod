@@ -54,7 +54,7 @@ class LanguagePolicy
     
     public function translate(\Acelle\Model\User $user, \Acelle\Model\Language $item)
     {
-        $ability = $user->getOption('backend', 'language_update');
+        $ability = $user->admin->getPermission('language_update');
         $can = $ability == 'yes';
 
         return $can;

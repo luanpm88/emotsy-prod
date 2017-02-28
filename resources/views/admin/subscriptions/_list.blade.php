@@ -19,7 +19,7 @@
 				</td>
 				<td>
 					<h5 class="no-margin text-bold">
-						{{ Acelle\Library\Tool::format_price($subscription->price, $subscription->plan->currency->format) }}
+						{{ Acelle\Library\Tool::format_price($subscription->price, $subscription->currency_format) }}
 					</h5>
 					<span class="text-muted">{{ trans('messages.price') }}</span>
 				</td>
