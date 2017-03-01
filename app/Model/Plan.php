@@ -206,10 +206,10 @@ class Plan extends Model
     public static function colors($default)
     {
         return [
-            ['value' => 'rgb(20,130,160)', 'text' => trans('messages.blue')],
-            ['value' => 'rgb(0,140,110)', 'text' => trans('messages.green')],
-            ['value' => 'rgb(145,115,25)', 'text' => trans('messages.brown')],
-            ['value' => 'rgb(170,80,100)', 'text' => trans('messages.pink')],
+            ['value' => '#1482a0', 'text' => trans('messages.blue')],
+            ['value' => '#008c6e', 'text' => trans('messages.green')],
+            ['value' => '#917319', 'text' => trans('messages.brown')],
+            ['value' => '#aa5064', 'text' => trans('messages.pink')],
             ['value' => '#555', 'text' => trans('messages.grey')],
         ];
     }
@@ -285,21 +285,6 @@ class Plan extends Model
     public function getOption($name)
     {
         return $this->getOptions()[$name];
-    }
-    
-    /**
-     * Get sending servers ids.
-     *
-     * @return array
-     */
-    public function getSendingServerIds()
-    {
-        $arr = [];
-        foreach ($this->sending_servers as $server) {
-            $arr[] = $server->uid;
-        }
-
-        return $arr;
     }
 
     /**

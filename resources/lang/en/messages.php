@@ -1554,4 +1554,7 @@ return [
     'features' => 'Features',
     'delete_plans_confirm' => 'You\'re about to disable :number plan(s).',
     'delete_plan_confirm_warning' => 'You\'re about to delete all informations below:',
+    'edit_plan_subsctiptions_warning' => '',
+    'plan_update_all_subscriptions_yes' => '',
+    'plan_update_all_subscriptions_no' => '',
 ];

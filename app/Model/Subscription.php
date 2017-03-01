@@ -82,6 +82,10 @@ class Subscription extends Model
     {
         return $this->belongsTo('Acelle\Model\PaymentMethod');
     }
+	public function subscriptionsSendingServers()
+    {
+        return $this->hasMany('Acelle\Model\SubscriptionsSendingServer');
+    }
     
     /**
      * Bootstrap any application services.
@@ -525,4 +529,24 @@ class Subscription extends Model
 		}
 		return $value;
 	}
+
+    /**
+     * Update sending servers.
+     *
+     * @return array
+     */
+    public function updateSendingServers($servers)
+    {
+        $this->subscriptionsSendingServers()->delete();
+        foreach ($servers as $key => $param) {
+            if ($param['check']) {
+                $server = SendingServer::findByUid($key);
+                $row = new SubscriptionsSendingServer();
+                $row->subscription_id = $this->id;
+                $row->sending_server_id = $server->id;
+                $row->fitness = $param['fitness'];
+                $row->save();
+            }
+        }
+    }
 }

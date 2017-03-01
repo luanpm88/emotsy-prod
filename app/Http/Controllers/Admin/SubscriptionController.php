@@ -157,9 +157,31 @@ class SubscriptionController extends Controller
         if (!empty($request->old())) {
             $subscription->fillAttributes($request->old());
         }
+        
+        // Sending servers
+        if (isset($request->old()['sending_servers'])) {
+            $subscription->subscriptionsSendingServers = collect([]);
+            foreach ($request->old()['sending_servers'] as $key => $param) {
+                if ($param['check']) {
+                    $server = \Acelle\Model\SendingServer::findByUid($key);
+                    $row = new \Acelle\Model\SubscriptionsSendingServer();
+                    $row->subscription_id = $subscription->id;
+                    $row->sending_server_id = $server->id;
+                    $row->fitness = $param['fitness'];
+                    $subscription->subscriptionsSendingServers->push($row);
+                }
+            }
+        }
+        
+        // For options
+        if (isset($request->old()['options'])) {
+            $subscription->options = json_encode($request->old()['options']);
+        }
+        $options = $subscription->getOptions();
 
         return view('admin.subscriptions.edit', [
-            'subscription' => $subscription
+            'subscription' => $subscription,
+            'options' => $options
         ]);
     }
 
@@ -183,6 +205,16 @@ class SubscriptionController extends Controller
         if ($request->isMethod('patch')) {
             $this->validate($request, $subscription->rules());
             
+            $rules = [];
+            if (isset($request->sending_servers)) {
+                foreach ($request->sending_servers as $key => $param) {
+                    if ($param['check']) {
+                        $rules['sending_servers.'.$key.'.fitness'] = 'required';
+                    }
+                }
+            }
+            $this->validate($request, $rules);
+            
             // Allow admin update end at date
             if(!empty($request->start_at)) {
                 $subscription->start_at = $request->start_at;
@@ -191,7 +223,14 @@ class SubscriptionController extends Controller
                 $subscription->end_at = $request->end_at;
             }
             
+            $subscription->options = json_encode($request->options);
+            
             $subscription->save();
+            
+            // For sending servers
+            if (isset($request->sending_servers)) {
+                $subscription->updateSendingServers($request->sending_servers);
+            }
             
             $request->session()->flash('alert-success', trans('messages.subscription.updated'));
             return redirect()->action('Admin\SubscriptionController@index');
