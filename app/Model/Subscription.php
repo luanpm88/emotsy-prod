@@ -462,7 +462,7 @@ class Subscription extends Model
      */
     public function getState()
     {
-        if($this->beingUsed()) {
+        if ($this->beingUsed()) {
 			return Subscription::STATE_CURRENT;
 		} elseif ($this->isOutdated()) {
 			return Subscription::STATE_OUTDATED;
