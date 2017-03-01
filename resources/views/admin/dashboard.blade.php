@@ -31,7 +31,7 @@
 						@endif
 						@if (Auth::user()->can("read", new Acelle\Model\Subscription()))
 							<a class="dashboard-box" href="{{ action('Admin\SubscriptionController@index') }}">
-								<span class="badge badge-info bg-teal-800">22</span>
+								<span class="badge badge-danger">22</span>
 								<div class="dashboard-icon">
 									<i class="icon-quill4"></i>
 								</div>
