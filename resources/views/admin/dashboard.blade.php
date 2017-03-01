@@ -16,26 +16,26 @@
 		<div class="col-md-7">
 			<div class="row">
 				@if (
-					Auth::user()->can("read", new Acelle\Model\Customer()) ||
-					Auth::user()->can("read", new Acelle\Model\CustomerGroup())
+					Auth::user()->can("read", new Acelle\Model\Subscription()) ||
+					Auth::user()->can("read", new Acelle\Model\Customer())
 				)
 					<div class="col-md-6">
 						<h2 class="">{{ trans('messages.customer') }}</h2>
 						@if (Auth::user()->can("read", new Acelle\Model\Customer()))
-							<a class="dashboard-box" href="{{ action('Admin\CustomerController@index') }}">
-								<span class="badge badge-info bg-teal-800">22</span>
+							<a class="dashboard-box" href="{{ action('Admin\CustomerController@index') }}">								
 								<div class="dashboard-icon">
 									<i class="icon-users2"></i>
 								</div>
 								<h4>{{ trans('messages.customers') }}</h4>
 							</a>
 						@endif
-						@if (Auth::user()->can("read", new Acelle\Model\CustomerGroup()))
-							<a class="dashboard-box" href="{{ action('Admin\CustomerGroupController@index') }}">
+						@if (Auth::user()->can("read", new Acelle\Model\Subscription()))
+							<a class="dashboard-box" href="{{ action('Admin\SubscriptionController@index') }}">
+								<span class="badge badge-info bg-teal-800">22</span>
 								<div class="dashboard-icon">
-									<i class="icon-make-group"></i>
+									<i class="icon-quill4"></i>
 								</div>
-								<h4>{{ trans('messages.customer_groups') }}</h4>
+								<h4>{{ trans('messages.subscriptions') }}</h4>
 							</a>
 						@endif
 						<br style="clear:both" />
@@ -74,20 +74,11 @@
 			<div class="row">				
 				@if (
 					Auth::user()->can("read", new Acelle\Model\Plan()) ||
-					Auth::user()->can("read", new Acelle\Model\Currency()) ||
-					Auth::user()->can("read", new Acelle\Model\Subscription()) ||
+					Auth::user()->can("read", new Acelle\Model\Currency()) ||					
 					Auth::user()->can("read", new Acelle\Model\PaymentMethod())
 				)
 					<div class="col-md-12">
-						<h2 class="">{{ trans('messages.plan') }}</h2>
-						@if (Auth::user()->can("read", new Acelle\Model\Subscription()))
-							<a class="dashboard-box" href="{{ action('Admin\SubscriptionController@index') }}">
-								<div class="dashboard-icon">
-									<i class="icon-quill4"></i>
-								</div>
-								<h4>{{ trans('messages.subscriptions') }}</h4>
-							</a>
-						@endif
+						<h2 class="">{{ trans('messages.plan') }}</h2>						
 						@if (Auth::user()->can("read", new Acelle\Model\Plan()))
 							<a class="dashboard-box" href="{{ action('Admin\PlanController@index') }}">
 								<div class="dashboard-icon">

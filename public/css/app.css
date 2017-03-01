@@ -1881,6 +1881,27 @@ ul.plans-intro li span {
 .select2-selection--single .select2-selection__clear:after {
     font-size: 19px;
 }
-/*.border-dark {
-    border: solid 1px #777;
-}*/
+.dashboard-box {
+    border: solid 1px #bbb;
+    box-shadow: 1px 1px 5px rgba(0,0,0,0.1);
+    background: #fafafa;
+    height: 105px;
+    margin-right: 15px;
+    margin-bottom: 15px;
+}
+.dashboard-box:hover {
+    background: #fff;
+}
+.dashboard-box h4 {
+    line-height: 16px;
+}
+.dashboard-box .badge {
+    border-radius: 30px;
+    height: 31px;
+    min-width: 31px;
+    font-weight: bold;
+    margin-top: -10px;
+    margin-right: -10px;
+    font-size: 14px;
+    padding: 4px 0;
+}
