@@ -37,8 +37,8 @@
 					</a>
 				</li>
 				
-				@if (Auth::user()->can("read", new Acelle\Model\CustomerGroup())
-					|| Auth::user()->can("read", new Acelle\Model\Customer())
+				@if (Auth::user()->can("read", new Acelle\Model\Customer())
+					|| Auth::user()->can("read", new Acelle\Model\Subscription())
 				)
 					<li class="dropdown language-switch"
 						rel0="CustomerGroupController"
@@ -56,10 +56,10 @@
 									</a>
 								</li>
 							@endif
-							@if (Auth::user()->can("read", new Acelle\Model\CustomerGroup()))
-								<li rel0="CustomerGroupController">
-									<a href="{{ action('Admin\CustomerGroupController@index') }}">
-										<i class="icon-users4"></i> {{ trans('messages.customer_groups') }}
+							@if (Auth::user()->can("read", new Acelle\Model\Subscription()))
+								<li rel0="SubscriptionController">
+									<a href="{{ action('Admin\SubscriptionController@index') }}">
+										<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
 									</a>
 								</li>
 							@endif
@@ -69,8 +69,7 @@
 				
 				@if (
 					Auth::user()->can("read", new Acelle\Model\Plan())
-					|| Auth::user()->can("read", new Acelle\Model\Currency())
-					|| Auth::user()->can("read", new Acelle\Model\Subscription())
+					|| Auth::user()->can("read", new Acelle\Model\Currency())					
 					|| Auth::user()->can("read", new Acelle\Model\PaymentMethod())
 				)
 					<li class="dropdown language-switch"
@@ -78,17 +77,10 @@
 						rel1="CurrencyGroupController"
 					>
 						<a class="dropdown-toggle" data-toggle="dropdown">
-							<i class="icon-credit-card2"></i> {{ trans('messages.subscription') }}
+							<i class="icon-credit-card2"></i> {{ trans('messages.plan') }}
 							<span class="caret"></span>
 						</a>
-						<ul class="dropdown-menu">
-							@if (Auth::user()->can("read", new Acelle\Model\Subscription()))
-								<li rel0="SubscriptionController">
-									<a href="{{ action('Admin\SubscriptionController@index') }}">
-										<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
-									</a>
-								</li>
-							@endif
+						<ul class="dropdown-menu">							
 							@if (Auth::user()->can("read", new Acelle\Model\Plan()))
 								<li rel0="PlanController">
 									<a href="{{ action('Admin\PlanController@index') }}">
