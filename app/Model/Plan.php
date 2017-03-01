@@ -87,6 +87,11 @@ class Plan extends Model
     {
         return $this->belongsTo('Acelle\Model\Currency');
     }
+	
+	public function subscriptions()
+    {
+        return $this->hasMany('Acelle\Model\Subscription');
+    }
 
     /**
      * Bootstrap any application services.
@@ -460,5 +465,25 @@ class Plan extends Model
     public function displayFrequencyTime()
     {
         return $this->frequency_amount . ' ' . \Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount);
+    }
+	
+	/**
+     * Subscriptions count.
+     *
+     * @return integer
+     */
+    public function subscriptionsCount()
+    {
+        return $this->subscriptions()->count();
+    }
+	
+	/**
+     * Customers count.
+     *
+     * @return integer
+     */
+    public function cutomersCount()
+    {
+        return $this->subscriptions()->distinct('customer_id')->count('customer_id');
     }
 }

@@ -377,4 +377,20 @@ class PlanController extends Controller
     {        
         echo \Acelle\Model\Plan::select2($request);
     }
+    
+    /**
+     * Delete confirm message.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function deleteConfirm(Request $request)
+    {
+        $plans = \Acelle\Model\Plan::whereIn('uid', explode(',', $request->uids));
+
+        return view('admin.plans.delete_confirm', [
+            'plans' => $plans,
+        ]);
+    }
 }

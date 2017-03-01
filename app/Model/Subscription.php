@@ -43,10 +43,14 @@ class Subscription extends Model
      */
     public function rules()
     {
-        $rules = array(
-            'plan_uid' => 'required',
-            'customer_uid' => 'required'
-        );
+        $rules = [];
+		
+		if(!isset($this->plan_id)) {
+			$rules['plan_uid'] = 'required';
+		}
+		if(!isset($this->customer_id)) {
+			$rules['customer_uid'] = 'required';
+		}
         
         return $rules;
     }

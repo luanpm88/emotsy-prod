@@ -29,7 +29,45 @@
 					{{ csrf_field() }}
 					<input type="hidden" name="_method" value="PATCH">
 					
-					@include('admin.subscriptions._form')
+					<div class="row">
+						<div class="col-md-6">
+							<div class="row">
+								<div class="col-md-6">
+									<div class="">
+										@include('helpers.form_control', [
+											'type' => 'date',
+											'name' => 'start_at',
+											'label' => trans('messages.start_at'),
+											'value' => $subscription->start_at ? \Acelle\Library\Tool::dateTime($subscription->start_at)->format('Y-m-d') : '',
+											'help_class' => 'subscription',
+											'rules' => $subscription->rules(),
+											'placeholder' => trans('messages.start_at')
+										])
+									</div>
+								</div>
+								<div class="col-md-6">
+									<div class="">
+										@include('helpers.form_control', [
+											'type' => 'date',
+											'name' => 'end_at',
+											'label' => trans('messages.end_at'),
+											'value' => $subscription->end_at ? \Acelle\Library\Tool::dateTime($subscription->end_at)->format('Y-m-d') : '',
+											'help_class' => 'subscription',
+											'rules' => $subscription->rules(),
+											'placeholder' => trans('messages.end_at')
+										])
+									</div>
+								</div>
+							</div>
+							<hr />
+							<div class="text-left">
+								<button type='submit' class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+							</div>
+						</div>
+						<div class="col-md-6 text-center">
+							@include('subscriptions._subscription', ['readonly' => true])
+						</div>
+					</div>
 					
 				</form>
 	

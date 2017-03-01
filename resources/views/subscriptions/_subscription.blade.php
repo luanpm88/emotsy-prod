@@ -34,7 +34,7 @@
                 </span>
             </li>
             <li>
-                <h4 class="text-semibold text-teal-800 mb-0">Options</h4>
+                <h4 class="text-semibold text-teal-800 mb-0">{{ trans('messages.options') }}</h4>
             </li>
             <li>
                 {!! trans('messages.sending_quota_intro', ["value" => $subscription->displayQuota()]) !!}
@@ -56,34 +56,36 @@
             </li>					
         </ul>
     </div>
-    <div class="panel-footer pt-10 pb-10 text-left">
-    
-        @if (Auth::user()->can('delete', $subscription)
-            || Auth::user()->can('pay', $subscription)
-        )
-            <div class="btn-group">										
-                <button type="button" class="btn bg-teal-800 dropdown-toggle" data-toggle="dropdown">
-                <i class="icon-loop4"></i> {{ trans('messages.actions') }} <span class="caret ml-0"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-left">
-                    @can('pay', $subscription)
-                        @foreach (\Acelle\Model\PaymentMethod::getAllActive() as $payment_method)
+    @if (!isset($readonly))
+        <div class="panel-footer pt-10 pb-10 text-left">
+        
+            @if (Auth::user()->can('delete', $subscription)
+                || Auth::user()->can('pay', $subscription)
+            )
+                <div class="btn-group">										
+                    <button type="button" class="btn bg-teal-800 dropdown-toggle" data-toggle="dropdown">
+                    <i class="icon-loop4"></i> {{ trans('messages.actions') }} <span class="caret ml-0"></span>
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-left">
+                        @can('pay', $subscription)
+                            @foreach (\Acelle\Model\PaymentMethod::getAllActive() as $payment_method)
+                                <li>														
+                                    <a href="{{ action('SubscriptionController@selectPaymentMethod', ["uid" => $subscription->uid, 'payment_method_id' => $payment_method->uid]) }}">
+                                        {!! trans('messages.payment_method_type_' . $payment_method->type . '_button') !!}
+                                    </a>
+                                </li>
+                            @endforeach
+                        @endcan
+                        @can('delete', $subscription)
                             <li>														
-                                <a href="{{ action('SubscriptionController@selectPaymentMethod', ["uid" => $subscription->uid, 'payment_method_id' => $payment_method->uid]) }}">
-                                    {!! trans('messages.payment_method_type_' . $payment_method->type . '_button') !!}
+                                <a delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('SubscriptionController@delete', ["uids" => $subscription->uid]) }}">
+                                    <i class="icon-trash"></i> {{ trans('messages.delete') }}
                                 </a>
                             </li>
-                        @endforeach
-                    @endcan
-                    @can('delete', $subscription)
-                        <li>														
-                            <a delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('SubscriptionController@delete', ["uids" => $subscription->uid]) }}">
-                                <i class="icon-trash"></i> {{ trans('messages.delete') }}
-                            </a>
-                        </li>
-                    @endcan
-                </ul>
-            </div>
-        @endcan
-    </div>
+                        @endcan
+                    </ul>
+                </div>
+            @endcan
+        </div>
+    @endif
 </div>

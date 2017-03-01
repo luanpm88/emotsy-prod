@@ -183,8 +183,6 @@ class SubscriptionController extends Controller
         if ($request->isMethod('patch')) {
             $this->validate($request, $subscription->rules());
             
-            $subscription->fillAttributes($request->all());
-            
             // Allow admin update end at date
             if(!empty($request->start_at)) {
                 $subscription->start_at = $request->start_at;

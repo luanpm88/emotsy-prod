@@ -1551,4 +1551,7 @@ return [
     'paypal_merchant_id' => 'PayPal merchant ID',
     'no_plan' => 'No plan yet!',
     'all_status' => 'All statuses',
+    'features' => 'Features',
+    'delete_plans_confirm' => 'You\'re about to disable :number plan(s).',
+    'delete_plan_confirm_warning' => 'You\'re about to delete all informations below:',
 ];

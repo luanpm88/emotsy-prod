@@ -27,24 +27,19 @@
         <div class="panel-body pt-0">
             <ul class="mt-0 mb-0 top-border-none plans-intro">
                 <li>
-                    {!! trans('messages.sending_quota_intro', ["value" => $plan->displayQuota()]) !!}
+                    {{ trans('messages.subscriptions') }}
+                    <span class="text-semibold">
+                        {{ $plan->subscriptionsCount() }}
+                    </span>
                 </li>
                 <li>
-                    {!! trans('messages.max_lists_intro', ["value" => $plan->displayMaxList()]) !!}
+                    {{ trans('messages.customers') }}
+                    <span class="text-semibold">
+                        {{ $plan->cutomersCount() }}
+                    </span>
                 </li>
-                <li>
-                    {!! trans('messages.max_subscribers_intro', ["value" => $plan->displayMaxSubscriber()]) !!}
-                </li>
-                <li>
-                    {!! trans('messages.max_campaigns_intro', ["value" => $plan->displayMaxCampaign()]) !!}
-                </li>
-                <li>
-                    {!! trans('messages.max_size_upload_total_intro', ["value" => $plan->displayMaxSizeUploadTotal()]) !!}
-                </li>
-                <li>
-                    {!! trans('messages.max_file_size_upload_intro', ["value" => $plan->displayFileSizeUpload()]) !!}
-                </li>
-            </ul>
+            </ul>            
+            @include('admin.plans._features')
         </div>
         @if (!isset($readonly))
             <div class="panel-footer pt-10 pb-10 text-center">												
@@ -52,7 +47,7 @@
                     <a href="{{ action('Admin\PlanController@edit', $plan->uid) }}" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-800 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
                 @endcan
                 @can('delete', $plan)
-                    <a delete-confirm="{{ trans('messages.delete_currencies_confirm') }}" href="{{ action('Admin\PlanController@delete', ['uids' => $plan->uid]) }}" title="{{ trans('messages.delete') }}" type="button" class="btn btn-danger btn-icon"><i class="icon icon-cross2"></i></a>
+                    <a list-delete-confirm="{{ action('Admin\PlanController@deleteConfirm', ['uids' => $plan->uid]) }}" href="{{ action('Admin\PlanController@delete', ['uids' => $plan->uid]) }}" title="{{ trans('messages.delete') }}" type="button" class="btn btn-danger btn-icon"><i class="icon icon-cross2"></i></a>
                 @endcan												
             </div>
         @endif
