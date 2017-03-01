@@ -717,7 +717,7 @@ return [
     'smtp_username' => 'SMTP username',
     'smtp_password' => 'SMTP password',
     'smtp_port' => 'SMTP port',
-    'smtp_protocol' => 'SMTP protocol',
+    'smtp_protocol' => 'Encryption method',
     'sent_times' => 'sent time(s)',
     'emails_quota' => 'emails sent',
     'email_quota' => 'email sent',
