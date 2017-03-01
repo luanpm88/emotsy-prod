@@ -183,6 +183,10 @@ class AdminGroup extends Model
             'plan_create' => 'yes',
             'plan_update' => 'own',
             'plan_delete' => 'own',
+            'payment_method_read' => 'own',
+            'payment_method_create' => 'yes',
+            'payment_method_update' => 'own',
+            'payment_method_delete' => 'own',
             'sending_server_read' => 'all',
             'sending_server_create' => 'yes',
             'sending_server_update' => 'own',
@@ -409,6 +413,35 @@ class AdminGroup extends Model
                 ],
             ],
             'plan' => [
+                'read' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'create' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                'update' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'delete' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+            ],
+            'payment_method' => [
                 'read' => [
                     'options' => [
                         ['value' => 'no', 'text' => trans('messages.no')],
@@ -759,10 +792,10 @@ class AdminGroup extends Model
             $saved_permissions = json_decode($this->permissions, true);
             foreach($defaul_permissions as $x => $permission) {
                 if(isset($saved_permissions[$x])) {
-                    $saved_permissions[$x] = $saved_permissions[$x];
+                    $defaul_permissions[$x] = $saved_permissions[$x];
                 }
             }
-            return $saved_permissions;
+            return $defaul_permissions;
         }
     }
 

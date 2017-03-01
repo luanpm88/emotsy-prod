@@ -701,7 +701,7 @@ input.error {
     border-color: #4CAF50;
     color: #fff;
 }
-.bg-spam-reported, .bg-pending, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-paused, .bg-done {
+.bg-past, .bg-spam-reported, .bg-pending, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-paused, .bg-done {
     background-color: #777;
     border-color: #777;
     color: #fff;
@@ -711,7 +711,7 @@ input.error {
     border-color: #ddd;
     color: #000;
 }
-.bg-new {
+.bg-future, .bg-new {
     background-color: #FF5722;
     border-color: #FF5722;
     color: #fff;
@@ -1825,7 +1825,7 @@ ul.automation-confirm li.child-row h5 {
     line-height: 44px;
 }
 .box-shadow {
-    box-shadow: 1px 1px 10px rgba(0,0,0,0.3);
+    box-shadow: 1px 1px 10px rgba(0,0,0,0.2);
 }
 .mt-30 {
     margin-top: 30px;
@@ -1868,6 +1868,9 @@ ul.plans-intro li span {
 .subscription-state.subscription-state-current {
     opacity: 1;
 }
+.panel-heading.subscription-state-current {
+    opacity: 1;
+}
 .mr-30 {
     margin-right: 30px;
 }
@@ -1878,3 +1881,6 @@ ul.plans-intro li span {
 .select2-selection--single .select2-selection__clear:after {
     font-size: 19px;
 }
+/*.border-dark {
+    border: solid 1px #777;
+}*/

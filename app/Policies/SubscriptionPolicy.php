@@ -87,9 +87,7 @@ class SubscriptionPolicy
         
         $customer = $user->customer;
         if (is_object($customer)) {
-            $can = $can ||
-                ( $subscription->status == \Acelle\Model\Subscription::STATUS_INACTIVE &&
-                 $customer->id == $subscription->customer_id );
+            $can = $can || false;
         }
         
         return $can;
@@ -158,5 +156,10 @@ class SubscriptionPolicy
         $can = $can && $subscription->status == \Acelle\Model\Subscription::STATUS_INACTIVE;
         
         return $can;
+    }
+    
+    public function pay(\Acelle\Model\User $user, \Acelle\Model\Subscription $subscription)
+    {
+        return !$subscription->isPaid();
     }
 }

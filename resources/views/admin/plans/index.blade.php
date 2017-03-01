@@ -52,7 +52,7 @@
 								</div>
 							@endif
 						</div>
-						@can('create', new Acelle\Model\Admin())
+						@can('create', new Acelle\Model\Plan())
 							<div class="col-md-2 text-right">
 								<a href="{{ action("Admin\PlanController@create") }}" type="button" class="btn bg-info-800">
 									<i class="icon icon-plus2"></i> {{ trans('messages.create_plan') }}

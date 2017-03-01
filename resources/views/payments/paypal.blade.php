@@ -6,6 +6,6 @@
     <input type="hidden" name="amount" value="{{ $subscription->price }}">   
     <input type="hidden" name="currency_code" value="{{ $subscription->currency_code }}">   
     <input type="hidden" name="cancel_return" value="{{ action('PaymentController@paymentCancel', $subscription->uid) }}"> 
-    <input type="hidden" name="return" value="{{ action('PaymentController@paymentInfo', $subscription->uid) }}">
+    <input type="hidden" name="return" value="{{ action('PaymentController@paymentStatus', $subscription->uid) }}">
 </form>
-<SCRIPT>document.frmTransaction.submizt();</SCRIPT> 
+<SCRIPT>document.frmTransaction.submit();</SCRIPT> 

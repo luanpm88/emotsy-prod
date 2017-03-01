@@ -11,10 +11,9 @@ class Subscription extends Model
 	const STATUS_INACTIVE = 'inactive';
 	
 	// Subscription state
-    const STATE_CURRENT = 'current'; // equiv. to 'queue'
-	const STATE_PENDING = 'pending';
-	const STATE_OUTDATED = 'outdated';
-	const STATE_READY = 'ready';
+    const TIME_STATUS_FUTURE = 'future'; // equiv. to 'queue'
+	const TIME_STATUS_CURRENT = 'current';
+	const TIME_STATUS_PAST = 'past';
     
     /**
      * The attributes that should be mutated to dates.
@@ -34,7 +33,7 @@ class Subscription extends Model
      * @var array
      */
     protected $fillable = [
-        'plan_id'
+        'plan_id', 'payment_method_id'
     ];
     
     /**
@@ -48,6 +47,10 @@ class Subscription extends Model
             'plan_uid' => 'required',
             'customer_uid' => 'required'
         );
+		
+		if (!$this->isFree()) {
+			$rules['payment_method_uid'] = 'required';
+		}
         
         return $rules;
     }
@@ -74,6 +77,10 @@ class Subscription extends Model
     public function customer()
     {
         return $this->belongsTo('Acelle\Model\Customer');
+    }
+	public function paymentMethod()
+    {
+        return $this->belongsTo('Acelle\Model\PaymentMethod');
     }
     
     /**
@@ -141,7 +148,7 @@ class Subscription extends Model
 			if (!empty($filters['plan_uid'])) {
 				$plan = \Acelle\Model\Plan::findByUid($filters['plan_uid']);
                 $query = $query->where('subscriptions.plan_id', '=', $plan->id);
-            }
+            }			
         }
 		
 		// Other filter
@@ -153,6 +160,10 @@ class Subscription extends Model
         if(!empty($request->customer_admin_id)) {
             $query = $query->where('customers.admin_id', '=', $request->customer_admin_id);
         }
+		
+		if (!empty($request->customer_list)) {
+			$query = $query->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
+		}
 
         return $query;
     }
@@ -184,6 +195,7 @@ class Subscription extends Model
     {
         $this->plan_id = $this->plan_id ? $this->plan_id : (isset($params['plan_uid']) ? \Acelle\Model\Plan::findByUid($params['plan_uid'])->id : null);
 		$this->customer_id = $this->customer_id ? $this->customer_id : (isset($params['customer_uid']) ? \Acelle\Model\Customer::findByUid($params['customer_uid'])->id : null);
+		$this->payment_method_id = $this->payment_method_id ? $this->payment_method_id : (isset($params['payment_method_uid']) ? \Acelle\Model\PaymentMethod::findByUid($params['payment_method_uid'])->id : null);
 		$this->start_at = $this->start_at ? $this->start_at : $this->customer->getNextScriptionStartAt();
 		
         $plan = $this->plan_id ? Plan::find($this->plan_id) : null;
@@ -460,16 +472,14 @@ class Subscription extends Model
      *
      * @return array
      */
-    public function getState()
+    public function timeStatus()
     {
-        if ($this->beingUsed()) {
-			return Subscription::STATE_CURRENT;
-		} elseif ($this->isOutdated()) {
-			return Subscription::STATE_OUTDATED;
-		} elseif ($this->isActive()) {
-			return Subscription::STATE_READY;
+        if ($this->start_at->startOfDay() > \Carbon\Carbon::now()) {
+			return Subscription::TIME_STATUS_FUTURE;
+		} elseif ($this->end_at->endOfDay() < \Carbon\Carbon::now()) {
+			return Subscription::TIME_STATUS_PAST;
 		} else {
-			return Subscription::STATE_PENDING;
+			return Subscription::TIME_STATUS_CURRENT;
 		}
     }
 	
@@ -489,5 +499,14 @@ class Subscription extends Model
      */
     public function getID() {
 		return $this->uid;
+	}
+	
+	/**
+     * Check if subscriptioon is paid
+     *
+     * @return array
+     */
+    public function isPaid() {
+		return $this->paid;
 	}
 }

@@ -237,21 +237,23 @@ $(document).ready(function() {
             }
         });
         
-        // sortable box
-        // Make list sortable        
-        form.sortable({
-            connectWith: '.boxes-plans',
-            items: '.plan-box-list',
-            helper: 'original',
-            cursor: 'move',
-            handle: '.panel-heading',
-            revert: 100,
-            containment: '.boxes-plans',
-            forceHelperSize: true,
-            placeholder: 'sortable-placeholder',
-            forcePlaceholderSize: true,
-            tolerance: 'pointer'
-        });
+        if (form.find('.boxes-plans').length) {
+            // sortable box
+            // Make list sortable        
+            form.sortable({
+                connectWith: '.boxes-plans',
+                items: '.plan-box-list',
+                helper: 'original',
+                cursor: 'move',
+                handle: '.panel-heading',
+                revert: 100,
+                containment: '.boxes-plans',
+                forceHelperSize: true,
+                placeholder: 'sortable-placeholder',
+                forcePlaceholderSize: true,
+                tolerance: 'pointer'
+            });
+        }
         
         // Render table
         tableFilter(form);

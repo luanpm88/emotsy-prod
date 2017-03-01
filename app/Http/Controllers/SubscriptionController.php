@@ -125,7 +125,7 @@ class SubscriptionController extends Controller
                 $subscription->status = \Acelle\Model\Subscription::STATUS_INACTIVE;
                 $subscription->save();
                 
-                return redirect()->action('PaymentController@payment', $subscription->uid);
+                return redirect()->action('PaymentController@paypal', $subscription->uid);
             }
         }
         
@@ -179,6 +179,7 @@ class SubscriptionController extends Controller
         $customer = $request->user()->customer;
         
         $request->merge(array("customer_id" => $customer->id));
+        $request->merge(array("customer_list" => true));
         $subscriptions = \Acelle\Model\Subscription::search($request);
 
         return view('subscriptions.index', [
@@ -196,6 +197,7 @@ class SubscriptionController extends Controller
         $customer = $request->user()->customer;
         
         $request->merge(array("customer_id" => $customer->id));
+        $request->merge(array("customer_list" => true));
         $subscriptions = \Acelle\Model\Subscription::search($request)->paginate($request->per_page);
 
         return view('subscriptions._list', [
@@ -250,11 +252,18 @@ class SubscriptionController extends Controller
         if ($request->isMethod('post')) {
             $this->validate($request, $subscription->frontendRules());            
             
-            $subscription->fillAttributes($request->all());            
+            $subscription->fillAttributes($request->all());
             $subscription->save();
             
-            $request->session()->flash('alert-success', trans('messages.subscription.created'));
-            return redirect()->action('SubscriptionController@index');
+            if ($subscription->isFree()) {
+                $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
+                $subscription->save();
+                
+                $request->session()->flash('alert-success', trans('messages.subscription.created'));
+                return redirect()->action('SubscriptionController@index');
+            } else {
+                return redirect()->action('SubscriptionController@checkout', $subscription->uid);
+            }
         }
     }
     
@@ -266,20 +275,7 @@ class SubscriptionController extends Controller
      */
     public function edit(Request $request, $uid)
     {
-        $subscription = \Acelle\Model\Subscription::findByUid($uid);
-
-        // authorize
-        if (\Gate::denies('update', $subscription)) {
-            return $this->notAuthorized();
-        }
         
-        if (!empty($request->old())) {
-            $subscription->fillAttributes($request->old());
-        }
-
-        return view('subscriptions.edit', [
-            'subscription' => $subscription
-        ]);
     }
 
     /**
@@ -291,28 +287,7 @@ class SubscriptionController extends Controller
      */
     public function update(Request $request, $uid)
     {
-        // Get current user
-        $user = $request->user();
-        $customer = $user->customer;
         
-        $subscription = \Acelle\Model\Subscription::findByUid($uid);
-
-        // authorize
-        if (\Gate::denies('update', $subscription)) {
-            return $this->notAuthorized();
-        }
-
-        // save posted data
-        if ($request->isMethod('patch')) {
-            $this->validate($request, $subscription->frontendRules());
-            
-            $subscription->fillAttributes($request->all());            
-            $subscription->customer_id = $customer->id;
-            $subscription->save();
-            
-            $request->session()->flash('alert-success', trans('messages.subscription.updated'));
-            return redirect()->action('SubscriptionController@index');
-        }
     }
     
     /**
@@ -335,5 +310,37 @@ class SubscriptionController extends Controller
 
         // Redirect to my lists page
         echo trans('messages.subscriptions.deleted');
+    }
+    
+    /**
+     * Subscription checkout.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function checkout(Request $request)
+    {
+        // Get current user
+        $subscription = \Acelle\Model\Subscription::findByUid($request->uid);
+        
+        if (is_object($subscription->paymentMethod)) {
+            return redirect()->action('PaymentController@' . $subscription->paymentMethod->type, $subscription->uid);
+        }
+    }
+    
+    /**
+     * Subscription select payment method.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function selectPaymentMethod(Request $request)
+    {
+        // Get current user
+        $subsciption = \Acelle\Model\Subscription::findByUid($request->uid);
+        $subsciption->payment_method_id = \Acelle\Model\PaymentMethod::findByUid($request->payment_method_uid)->id;
+        $subsciption->save();
+
+        return redirect()->action('SubscriptionController@checkout', $subsciption->uid);
     }
 }

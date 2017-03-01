@@ -74,12 +74,14 @@
 			<div class="row">				
 				@if (
 					Auth::user()->can("read", new Acelle\Model\Plan()) ||
-					Auth::user()->can("read", new Acelle\Model\Currency())
+					Auth::user()->can("read", new Acelle\Model\Currency()) ||
+					Auth::user()->can("read", new Acelle\Model\Subscription()) ||
+					Auth::user()->can("read", new Acelle\Model\PaymentMethod())
 				)
 					<div class="col-md-12">
 						<h2 class="">{{ trans('messages.plan') }}</h2>
-						@if (Auth::user()->can("read", new Acelle\Model\Plan()))
-							<a class="dashboard-box" href="{{ action('Admin\PlanController@index') }}">
+						@if (Auth::user()->can("read", new Acelle\Model\Subscription()))
+							<a class="dashboard-box" href="{{ action('Admin\SubscriptionController@index') }}">
 								<div class="dashboard-icon">
 									<i class="icon-quill4"></i>
 								</div>
@@ -100,6 +102,14 @@
 									<i class="icon-coins"></i>
 								</div>
 								<h4>{{ trans('messages.currencies') }}</h4>
+							</a>
+						@endif
+						@if (Auth::user()->can("read", new Acelle\Model\PaymentMethod()))
+							<a class="dashboard-box" href="{{ action('Admin\PaymentMethodController@index') }}">
+								<div class="dashboard-icon">
+									<i class="icon-credit-card2"></i>
+								</div>
+								<h4>{{ trans('messages.payment_methods') }}</h4>
 							</a>
 						@endif
 						<br style="clear:both" />

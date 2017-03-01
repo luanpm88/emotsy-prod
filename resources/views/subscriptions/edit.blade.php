@@ -29,7 +29,14 @@
 		{{ csrf_field() }}
 		<input type="hidden" name="_method" value="PATCH">
 		
-		@include('subscriptions._form')
+		<div class="row">
+			<div class="col-md-4">
+				
+			</div>
+			<div class="col-md-6">
+				@include('subscriptions._subscription')
+			</div>
+		</div>
 	</form>
 	
 @endsection

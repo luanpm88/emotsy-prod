@@ -91,8 +91,7 @@ Route::get('plans/select2', 'PlanController@select2');
 
 // Payments
 Route::get('payment-cancel/{subscription_uid}', 'PaymentController@paymentCancel');
-Route::get('payment-status/{subscription_uid}', 'PaymentController@paymentInfo');
-Route::get('payment/{subscription_uid}', 'PaymentController@payment');
+Route::get('payment-status/{subscription_uid}', 'PaymentController@paymentStatus');
 Route::get('payment-cancel', function () {
     return 'Payment has been canceled';
 });
@@ -337,6 +336,9 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('auto-events', 'AutoEventController');
     
     // Subscription
+    Route::get('subscriptions/{uid}/pay/method/{payment_method_uid}', 'SubscriptionController@selectPaymentMethod');
+    Route::get('subscriptions/checkout/paypal/{subscription_uid}', 'PaymentController@paypal');
+    Route::get('subscriptions/checkout/{uid}', 'SubscriptionController@checkout');
     Route::get('subscriptions/finish', 'SubscriptionController@finish');
     Route::post('subscriptions/subscription/{plan_uid?}', 'SubscriptionController@subscription');
     Route::get('subscriptions/subscription/{plan_uid?}', 'SubscriptionController@subscription');
@@ -364,6 +366,10 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('sending_domains/sort', 'SendingDomainController@sort');
     Route::get('sending_domains/delete', 'SendingDomainController@delete');
     Route::resource('sending_domains', 'SendingDomainController');
+    
+    // Payment
+    Route::get('payments/cash/{subscription_uid}', 'PaymentController@cash');
+    Route::get('payments/paypal/{subscription_uid}', 'PaymentController@paypal');
 });
 
 // ADMIN AREA
@@ -565,6 +571,15 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/subscriptions/sort', 'SubscriptionController@sort');
     Route::get('admin/subscriptions/delete', 'SubscriptionController@delete');    
     Route::resource('admin/subscriptions', 'SubscriptionController');
+    
+    // Payment method
+    Route::get('admin/payment_methods/select2', 'PaymentMethodController@select2');
+    Route::get('admin/payment_methods/listing/{page?}', 'PaymentMethodController@listing');
+    Route::get('admin/payment_methods/sort', 'PaymentMethodController@sort');
+    Route::get('admin/payment_methods/delete', 'PaymentMethodController@delete');
+    Route::get('admin/payment_methods/disable', 'PaymentMethodController@disable');
+    Route::get('admin/payment_methods/enable', 'PaymentMethodController@enable');
+    Route::resource('admin/payment_methods', 'PaymentMethodController');
 });
 
 

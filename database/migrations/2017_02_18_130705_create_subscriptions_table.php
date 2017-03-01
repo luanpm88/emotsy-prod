@@ -18,6 +18,7 @@ class CreateSubscriptionsTable extends Migration
             $table->integer('plan_id')->unsigned();
             $table->integer('customer_id')->unsigned();
             $table->integer('admin_id')->unsigned()->nullable();
+            $table->integer('payment_method_id')->unsigned()->nullable();
             $table->text('options');
             $table->decimal('price', 16, 2);
             $table->string('currency_code');
@@ -34,6 +35,7 @@ class CreateSubscriptionsTable extends Migration
             $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
+            $table->foreign('payment_method_id')->references('id')->on('payment_methods')->onDelete('cascade');
         });
     }
 

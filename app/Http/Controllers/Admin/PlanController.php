@@ -69,7 +69,7 @@ class PlanController extends Controller
             'frequency_amount' => 1,
             'frequency_unit' => 'month'
         ]);
-        $plan->status = 'active';
+        $plan->status = \Acelle\Model\Plan::STATUS_ACTIVE;
 
         // authorize
         if (\Gate::denies('create', $plan)) {
@@ -142,7 +142,7 @@ class PlanController extends Controller
             $plan->fill($request->all());
             $plan->options = json_encode($request->options);
             $plan->admin_id = $user->admin->id;
-            $plan->status = 'active';
+            $plan->status = \Acelle\Model\Plan::STATUS_ACTIVE;
             $plan->save();
             
             // For sending servers
@@ -363,7 +363,7 @@ class PlanController extends Controller
             $item->save();
         }
 
-        echo trans('messages.lists.custom_order.updated');
+        echo trans('messages.plans.custom_order.updated');
     }
     
     /**

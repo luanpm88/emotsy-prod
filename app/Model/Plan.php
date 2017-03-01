@@ -164,7 +164,9 @@ class Plan extends Model
     {
         $query = self::filter($request);
 
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        if (!empty($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
 
         return $query;
     }
@@ -176,7 +178,7 @@ class Plan extends Model
      */
     public function disable()
     {
-        $this->status = 'inactive';
+        $this->status = PaymentMethod::STATUS_INACTIVE;
         return $this->save();
     }
     
@@ -187,22 +189,8 @@ class Plan extends Model
      */
     public function enable()
     {
-        $this->status = 'active';
+        $this->status = PaymentMethod::STATUS_ACTIVE;
         return $this->save();
-    }
-    
-    /**
-     * Plan time type.
-     *
-     * @return array
-     */
-    public static function frequencySelectOptions()
-    {
-        return [
-            ['value' => 'monthly', 'text' => trans('messages.monthly')],
-            ['value' => 'yearly', 'text' => trans('messages.yearly')],
-            ['value' => 'daily', 'text' => trans('messages.daily')],
-        ];
     }
     
     /**

@@ -1250,4 +1250,11 @@ $(function() {
         });
     });
     
+    // Payment method button click
+    $(document).on('click', '.payment_method_type_button', function() {
+        var value = $(this).attr('data-value');
+        
+        $('input[name="payment_method_uid"]').val(value);
+    });
+    
 });

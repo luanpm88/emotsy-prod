@@ -58,10 +58,11 @@
                     <i class="icon-arrow-right7"></i></button>
                 </div>
             @else
+                <input type="hidden" name="payment_method_uid" value='' />
                 <div class="text-left">
-                    <button type='submit' class="btn bg-teal">
-                    {{ trans('messages.checkout') }}
-                    <i class="icon-arrow-right7"></i></button>
+                    @foreach (\Acelle\Model\PaymentMethod::getAllActive() as $payment_method)                        
+                        @include('payments._button_' . $payment_method->type)                        
+                    @endforeach
                 </div>
             @endif
         </div>

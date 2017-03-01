@@ -4,16 +4,28 @@ use Illuminate\Http\Request;
 use Acelle\Model\Payment;
 
 class PaymentController extends Controller {
-
-    public function payment(Request $request, $subscription_uid) {
+    
+    /**
+     * Subscription pay bay PayPal.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function paypal(Request $request, $subscription_uid) {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         
-        return view('payments.payment', [
+        return view('payments.paypal', [
             'subscription' => $subscription,
         ]);
     }
-
-    public function paymentInfo(Request $request) {        
+    
+    /**
+     * Subscription update paid status from Service.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function paymentStatus(Request $request) {        
         if($request->tx) {
             if($payment=Payment::where('transaction_id',$request->tx)->first()){
                 $payment_id=$payment->id;
@@ -32,5 +44,16 @@ class PaymentController extends Controller {
         }else{
             return 'Payment has failed';
         }
+    }
+    
+    /**
+     * Subscription pay bay cash.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function cash(Request $request, $subscription_uid) {
+        $request->session()->flash('alert-success', trans('messages.subscription.cash.created'));
+        return redirect()->action('SubscriptionController@index');
     }
 }
