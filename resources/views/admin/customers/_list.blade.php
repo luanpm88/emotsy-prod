@@ -12,6 +12,13 @@
 												<a class="kq_search" href="{{ action('Admin\CustomerController@edit', $item->uid) }}">{{ $item->displayName() }}</a>
 											</h5>
 											<span class="text-muted kq_search">{{ $item->user->email }}</span>
+											@if (is_object($item->getCurrentSubscription()))
+												<br />
+												<span><i class="icon-clipboard2"></i> {{ $item->getCurrentSubscription()->plan_name }}</span>
+											@else
+												<br />
+												<span><i class="icon-clipboard2"></i> {{ trans('messages.no_plan') }}</span>
+											@endif
 											<br />
 											<span class="text-muted2">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
@@ -23,11 +30,14 @@
 													</div>
 												</div>
 												<span class="text-muted"><strong>{{ $item->getSendingQuotaUsage() }}/{{ ($item->getSendingQuota() == -1) ? '∞' : $item->getSendingQuota() }}</strong>
-													@if(($item->getSendingQuota() != -1))
+													@if (($item->getSendingQuota() != -1))
 														{{ trans('messages.display_sending_quota', [
 															'number' => $item->getOption('sending_quota_time'),
 															'period' => trans('messages.' . $item->getOption('sending_quota_time_unit'))
 														]) }}
+													@else
+														<br />
+														{{ trans('messages.sending_quota') }}
 													@endif
 												</span>
 											</div>
@@ -83,6 +93,13 @@
 															<li>														
 																<a link-confirm="{{ trans('messages.disable_customers_confirm') }}" href="{{ action('Admin\CustomerController@disable', ["uids" => $item->uid]) }}">
 																	<i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
+																</a>
+															</li>
+														@endcan
+														@can('read', $item)
+															<li>														
+																<a href="{{ action('Admin\CustomerController@subscriptions', $item->uid) }}">
+																	<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
 																</a>
 															</li>
 														@endcan

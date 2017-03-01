@@ -24,7 +24,7 @@
 
 @section('content')
 	
-	<form enctype="multipart/form-data" action="{{ action('Admin\PaymentMethodController@store') }}" method="POST" class="form-validate-jqueryz">
+	<form enctype="multipart/form-data" action="{{ action('Admin\PaymentMethodController@store') }}" method="POST" class="form-validate-jqueryz payment-method-form">
 		{{ csrf_field() }}
 		
 		@include('admin.payment_methods._form')			

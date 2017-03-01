@@ -14,6 +14,7 @@
 		@include('helpers.form_control', ['type' => 'select',
 			'name' => 'type',
 			'value' => $payment_method->type,
+			'class' => 'hook',
 			'label' => trans('messages.payment_method_type'),
 			'options' => Acelle\Model\PaymentMethod::typeSelectOptions(),
 			'include_blank' => trans('messages.choose'),
@@ -21,6 +22,13 @@
 			'rules' => $payment_method->rules()
 		])
 	</div>	
+</div>
+<div class="row">
+	<div class="col-md-12 ajax-detail-box" data-url="{{ action('Admin\PaymentMethodController@options') }}" data-form=".payment-method-form">
+		@include('admin.payment_methods._options', [
+			'payment_method' => $payment_method
+		])
+	</div>
 </div>
 
 <hr />

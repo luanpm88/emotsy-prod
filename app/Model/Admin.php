@@ -338,4 +338,36 @@ class Admin extends Model
     {
         return $this->customers()->orderBy("created_at", "DESC")->limit(5)->get();
     }
+    
+    /**
+     * Get all admin's subcriptions.
+     *
+     * @return collect
+     */
+    public function getAllSubscriptions()
+    {
+        $query = \Acelle\Model\Subscription::leftJoin('customers', 'customers.id', '=', 'subscriptions.customer_id');
+        
+        $query = $query->where(function ($q) {
+            $q->orwhere('customers.admin_id', '=', $this->id)
+                ->orWhere('subscriptions.admin_id', '=', $this->id);
+        });
+        
+        return $query;
+    }
+    
+    /**
+     * Get subscription notification count.
+     *
+     * @return collect
+     */
+    public function subscriptionNotificationCount()
+    {
+        $query = $this->getAllSubscriptions()
+            ->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
+            ->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->endOfDay())
+            ->count();
+        
+        return $query == 0 ? '' : $query;
+    }
 }

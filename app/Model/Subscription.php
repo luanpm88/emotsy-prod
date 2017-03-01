@@ -47,10 +47,6 @@ class Subscription extends Model
             'plan_uid' => 'required',
             'customer_uid' => 'required'
         );
-		
-		if (!$this->isFree()) {
-			$rules['payment_method_uid'] = 'required';
-		}
         
         return $rules;
     }
@@ -88,7 +84,7 @@ class Subscription extends Model
      */
     public static function boot()
     {
-        parent::boot();
+        parent::boot();		
 
         // Create uid when creating list.
         static::creating(function ($subscription) {
@@ -148,7 +144,10 @@ class Subscription extends Model
 			if (!empty($filters['plan_uid'])) {
 				$plan = \Acelle\Model\Plan::findByUid($filters['plan_uid']);
                 $query = $query->where('subscriptions.plan_id', '=', $plan->id);
-            }			
+			}
+			if (!empty($filters['status'])) {
+                $query = $query->where('subscriptions.status', '=', $filters['status']);
+            }	
         }
 		
 		// Other filter
@@ -445,9 +444,9 @@ class Subscription extends Model
      *
      * @return array
      */
-    public function isOutdated()
+    public function isOld()
     {
-        return $this->end_at->endOfDay() < \Carbon\Carbon::now();
+        return isset($this->end_at) ? $this->end_at->endOfDay() < \Carbon\Carbon::now() : false;
     }
 	
 	/**
@@ -458,7 +457,7 @@ class Subscription extends Model
     public function beingUsed()
     {
         if($this->start_at->startOfDay() <= \Carbon\Carbon::now() &&
-		   !$this->isOutdated() &&
+		   !$this->isOld() &&
 		   $this->isActive()
 		) {
 			return true;
@@ -473,10 +472,10 @@ class Subscription extends Model
      * @return array
      */
     public function timeStatus()
-    {
+    {		
         if ($this->start_at->startOfDay() > \Carbon\Carbon::now()) {
 			return Subscription::TIME_STATUS_FUTURE;
-		} elseif ($this->end_at->endOfDay() < \Carbon\Carbon::now()) {
+		} elseif ($this->isOld()) {
 			return Subscription::TIME_STATUS_PAST;
 		} else {
 			return Subscription::TIME_STATUS_CURRENT;
@@ -508,5 +507,18 @@ class Subscription extends Model
      */
     public function isPaid() {
 		return $this->paid;
+	}
+	
+	/**
+     * When get status attribute
+     *
+     * @return array
+     */
+    public function getStatusAttribute($value) {
+		// Auto update status
+		if ($this->isOld()) {
+			$this->disable();
+		}
+		return $value;
 	}
 }

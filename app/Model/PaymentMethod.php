@@ -54,6 +54,10 @@ class PaymentMethod extends Model
             'name' => 'required',
 			'type' => 'required',
         );
+		
+		if($this->type == PaymentMethod::TYPE_PAYPAL) {
+			$rules['options.merchant_id'] = 'required';
+		}
         
         return $rules;
     }
@@ -195,7 +199,8 @@ class PaymentMethod extends Model
      */
     public function getOption($name)
     {
-        return $this->getOptions()[$name];
+		$options = $this->getOptions();
+        return isset($options[$name]) ? $options[$name] : NULL;
     }
     
     /**

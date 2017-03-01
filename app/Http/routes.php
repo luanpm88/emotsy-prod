@@ -573,6 +573,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/subscriptions', 'SubscriptionController');
     
     // Payment method
+    Route::get('admin/payment_methods/options/{uid?}', 'PaymentMethodController@options');
     Route::get('admin/payment_methods/select2', 'PaymentMethodController@select2');
     Route::get('admin/payment_methods/listing/{page?}', 'PaymentMethodController@listing');
     Route::get('admin/payment_methods/sort', 'PaymentMethodController@sort');

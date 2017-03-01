@@ -14,7 +14,7 @@
 			<div class="page-title">
 				<ul class="breadcrumb breadcrumb-caret position-right">
 					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li class="active">{{ trans('messages.profile') }}</li>
+					<li class="active">{{ trans('messages.activities') }}</li>
 				</ul>
 				<h1>
 					<span class="text-semibold"><i class="icon-profile"></i> {{ Auth::user()->customer->displayName() }}</span>

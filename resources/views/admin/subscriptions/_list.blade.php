@@ -9,7 +9,7 @@
 				</td>
 				<td>
 					<h5 class="no-margin text-bold">
-						<a class="kq_search" href="{{ action('SubscriptionController@edit', $subscription->uid) }}">
+						<a class="kq_search" href="{{ action('Admin\SubscriptionController@edit', $subscription->uid) }}">
 							{{ $subscription->customer->displayName() }}
 						</a>
 					</h5>

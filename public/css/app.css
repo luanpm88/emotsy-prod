@@ -1897,11 +1897,11 @@ ul.plans-intro li span {
 }
 .dashboard-box .badge {
     border-radius: 30px;
-    height: 31px;
-    min-width: 31px;
+    height: 30px;
+    min-width: 30px;
     font-weight: bold;
     margin-top: -10px;
     margin-right: -10px;
     font-size: 14px;
-    padding: 4px 0;
+    padding: 3px 0;
 }

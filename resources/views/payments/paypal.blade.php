@@ -1,5 +1,5 @@
 <form action="https://www.sandbox.paypal.com/cgi-bin/webscr" method="post" name="frmTransaction" id="frmTransaction">
-    <input type="hidden" name="business" value="luanpm88@gmail.com"> 
+    <input type="hidden" name="business" value="{{ $subscription->paymentMethod->getOption('merchant_id') }}"> 
     <input type="hidden" name="cmd" value="_xclick"> 
     <input type="hidden" name="item_name" value="{{ $subscription->getName() }}"> 
     <input type="hidden" name="item_number" value="{{ $subscription->getID() }}">

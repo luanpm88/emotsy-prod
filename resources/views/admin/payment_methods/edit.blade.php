@@ -25,7 +25,7 @@
 
 @section('content')
 	
-				<form enctype="multipart/form-data" action="{{ action('Admin\PaymentMethodController@update', $payment_method->uid) }}" method="POST" class="form-validate-jqueryx">
+				<form enctype="multipart/form-data" action="{{ action('Admin\PaymentMethodController@update', $payment_method->uid) }}" method="POST" class="form-validate-jqueryx payment-method-form">
 					{{ csrf_field() }}
 					<input type="hidden" name="_method" value="PATCH">
 					

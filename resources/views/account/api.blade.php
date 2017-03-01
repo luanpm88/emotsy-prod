@@ -13,8 +13,7 @@
 			<div class="page-title">
 				<ul class="breadcrumb breadcrumb-caret position-right">
 					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-					<li><a href="{{ action("AccountController@profile") }}">{{ trans('messages.profile') }}</a></li>
-					<li class="active">{{ trans('messages.settings') }}</li>
+					<li class="active">{{ trans('messages.api_token') }}</li>
 				</ul>
 				<h1>
 					<span class="text-semibold"><i class="icon-profile"></i> {{ Auth::user()->customer->displayName() }}</span>

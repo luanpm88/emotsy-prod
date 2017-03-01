@@ -107,9 +107,10 @@ class PaymentMethodController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, $payment_method->rules());
-            
             $payment_method->fill($request->all());
+            
+            $this->validate($request, $payment_method->rules());            
+            
             $payment_method->options = json_encode($request->options);
             $payment_method->admin_id = $user->admin->id;
             $payment_method->status = \Acelle\Model\PaymentMethod::STATUS_ACTIVE;
@@ -311,5 +312,21 @@ class PaymentMethodController extends Controller
     public function select2(Request $request)
     {        
         echo \Acelle\Model\PaymentMethod::select2($request);
+    }
+    
+    /**
+     * Payment method display options form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function options(Request $request, $uid=null)
+    {
+        $payment_method = $uid ? \Acelle\Model\PaymentMethod::findByUid($uid) : new \Acelle\Model\PaymentMethod($request->all());
+        
+        return view('admin.payment_methods._options', [
+            'payment_method' => $payment_method,
+        ]);
     }
 }

@@ -33,7 +33,6 @@
 						<div class="col-md-10">
 							@if ($customers->count() >= 0)					
 								<div class="filter-box">
-										
 									<span class="filter-group">
 										<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
 										<select class="select" name="sort-order">											
@@ -43,16 +42,7 @@
 										<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
 											<i class="icon-sort-amount-desc"></i>
 										</button>
-									</span>
-									<span class="filter-group">
-										<span class="title text-semibold text-muted">{{ trans('messages.group') }}</span>
-										<select class="select" name="customer_group_id">
-											<option value="">{{ trans('messages.all') }}</option>
-											@foreach (Acelle\Model\CustomerGroup::getAll()->get() as $group)
-												<option value="{{ $group->id }}">{{ $group->name }}</option>
-											@endforeach
-										</select>										
-									</span>
+									</span>									
 									<span class="text-nowrap">
 										<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 										<i class="icon-search4 keyword_search_button"></i>
