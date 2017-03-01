@@ -27,7 +27,7 @@ use Acelle\Library\Log as MailLog;
 class SendingServerSmtp extends SendingServer
 {
     protected $table = 'sending_servers';
-    
+
     /**
      * Send the provided message.
      *
@@ -40,6 +40,8 @@ class SendingServerSmtp extends SendingServer
             $transport = \Swift_SmtpTransport::newInstance($this->host, (int) $this->smtp_port, $this->smtp_protocol)
               ->setUsername($this->smtp_username)
               ->setPassword($this->smtp_password)
+              // in case of: stream_socket_enable_crypto(): SSL operation failed with code 1. OpenSSL Error messages: error:14090086:SSL routines:SSL3_GET_SERVER_CERTIFICATE:certificate verify failed
+              //->setStreamOptions(array('ssl' => array('allow_self_signed' => true, 'verify_peer' => false, 'verify_peer_name' => false)))
             ;
 
             // setup bounce handler: specify the Return-Path
