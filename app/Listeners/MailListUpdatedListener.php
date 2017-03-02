@@ -27,7 +27,7 @@ class MailListUpdatedListener
     public function handle(MailListUpdated $event)
     {
         if ($event->delayed) {
-            dispatch(new UpdateMailListJob($event->list));
+            dispatch(new \Acelle\Jobs\UpdateMailListJob($event->list));
         } else {
             $event->list->updateCache();
         }
