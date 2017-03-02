@@ -31,38 +31,40 @@ use DB;
 
 class AutoEvent extends Model
 {
-	// event status
-	const STATUS_DRAFT = 'draft';
+    // event status
+    const STATUS_DRAFT = 'draft';
     const STATUS_ACTIVE = 'active';
-	const STATUS_INACTIVE = 'inactive';
-	
+    const STATUS_INACTIVE = 'inactive';
+
     // event type
     const TYPE_SPECIFIC_DATETIME = 'specific-datetime';
-	const TYPE_MONTHLY_RECURRING = 'monthly-recurring';
-	const TYPE_WEEKLY_RECURRING = 'weekly-recurring';
-	const TYPE_LIST_SUBSCRIPTION = 'list-subscription';
-	const TYPE_LIST_UNSUBSCRIPTION = 'list-unsubscription';
-	const TYPE_SUBSCRIBER_EVENT = 'subscriber-event';
-	const TYPE_CUSTOM_CRITERIA = 'custom-criteria';
-	const TYPE_API_CALL = 'api-call';
-	const TYPE_FOLLOW_UP = 'follow-up';
-	const TYPE_FOLLOW_UP_OPENED = 'follow-up-opened';
-	const TYPE_FOLLOW_UP_CLICKED = 'follow-up-clicked';
-	
-	// operators
-    const OPERATOR_EQUAL = 'equal';
-	const OPERATOR_NOT_EQUAL = 'not_equal';
-	const OPERATOR_CONTAINS = 'contains';
-	const OPERATOR_NOT_CONTAINS = 'not_contains';
-	const OPERATOR_STARTS = 'starts';
-	const OPERATOR_ENDS = 'ends';
-	const OPERATOR_NOT_STARTS = 'not_starts';
-	const OPERATOR_NOT_ENDS = 'not_ends';
-	const OPERATOR_GREATOR = 'greater';
-	const OPERATOR_LESS = 'less';
-	const OPERATOR_BLANK = 'blank';
-	const OPERATOR_NOT_BLANK = 'not_blank';
-    
+    const TYPE_MONTHLY_RECURRING = 'monthly-recurring';
+    const TYPE_WEEKLY_RECURRING = 'weekly-recurring';
+    const TYPE_LIST_SUBSCRIPTION = 'list-subscription';
+    const TYPE_LIST_UNSUBSCRIPTION = 'list-unsubscription';
+    const TYPE_SUBSCRIBER_EVENT = 'subscriber-event';
+    const TYPE_CUSTOM_CRITERIA = 'custom-criteria';
+    const TYPE_API_CALL = 'api-call';
+    const TYPE_FOLLOW_UP = 'follow-up';
+    const TYPE_FOLLOW_UP_OPENED = 'follow-up-opened';
+    const TYPE_FOLLOW_UP_NOT_OPENED = 'follow-up-not-opened';
+    const TYPE_FOLLOW_UP_CLICKED = 'follow-up-clicked';
+    const TYPE_FOLLOW_UP_NOT_CLICKED = 'follow-up-not-clicked';
+
+    // operators
+        const OPERATOR_EQUAL = 'equal';
+    const OPERATOR_NOT_EQUAL = 'not_equal';
+    const OPERATOR_CONTAINS = 'contains';
+    const OPERATOR_NOT_CONTAINS = 'not_contains';
+    const OPERATOR_STARTS = 'starts';
+    const OPERATOR_ENDS = 'ends';
+    const OPERATOR_NOT_STARTS = 'not_starts';
+    const OPERATOR_NOT_ENDS = 'not_ends';
+    const OPERATOR_GREATOR = 'greater';
+    const OPERATOR_LESS = 'less';
+    const OPERATOR_BLANK = 'blank';
+    const OPERATOR_NOT_BLANK = 'not_blank';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -71,8 +73,8 @@ class AutoEvent extends Model
     protected $fillable = [
         'event_type'
     ];
-	
-	/**
+
+    /**
      * Associations.
      *
      * @var object | collect
@@ -93,13 +95,13 @@ class AutoEvent extends Model
         $relation->getQuery()->whereRaw(sprintf('id NOT IN (SELECT COALESCE(preceded_by, 0) FROM %s)', table('auto_triggers')));
         return $relation;
     }
-	
-	public function campaigns()
+
+    public function campaigns()
     {
         return $this->belongsToMany('Acelle\Model\AutomatedCampaign', 'auto_campaigns', 'auto_event_id', 'campaign_id');
     }
-	
-	public function originCampaigns()
+
+    public function originCampaigns()
     {
         return $this->belongsToMany('Acelle\Model\Campaign', 'auto_campaigns');
     }
@@ -123,8 +125,8 @@ class AutoEvent extends Model
     {
         return $this->status == self::STATUS_ACTIVE;
     }
-	
-	/**
+
+    /**
      * Set uid for resource.
      *
      * @var void
@@ -132,13 +134,13 @@ class AutoEvent extends Model
     public function createUid()
     {
         $uid = uniqid();
-		while (AutoEvent::where('uid', '=', $uid)->count() > 0) {
-			$uid = uniqid();
-		}
-		$this->uid = $uid;
+        while (AutoEvent::where('uid', '=', $uid)->count() > 0) {
+            $uid = uniqid();
+        }
+        $this->uid = $uid;
     }
-	
-	/**
+
+    /**
      * Create custom order for the resource.
      *
      * @var void
@@ -148,8 +150,8 @@ class AutoEvent extends Model
         AutoEvent::select('custom_order')->increment('custom_order', 1);
         $this->custom_order = 0;
     }
-	
-	/**
+
+    /**
      * Bootstrap any application services.
      */
     public static function boot()
@@ -164,28 +166,28 @@ class AutoEvent extends Model
             // Update custom order
             $event->createCustomOrder();
         });
-		
-		// Create first campaign when auto event created.
+
+        // Create first campaign when auto event created.
         static::created(function ($event) {
-			// Create first campaign
-			$event->createFirstCampaign();
+            // Create first campaign
+            $event->createFirstCampaign();
         });
-		
-		// when auto event is deleted
+
+        // when auto event is deleted
         static::deleting(function ($event) {
-			// Update auto campaign series
-			$next_event = $event->nextEvent;
-			if(is_object($next_event)) {
-				$next_event->previous_event_id = $event->previous_event_id;
-				$next_event->save();
-			}
-			
-			// Delete all campaigns
-			$event->campaigns()->delete();
+            // Update auto campaign series
+            $next_event = $event->nextEvent;
+            if(is_object($next_event)) {
+                $next_event->previous_event_id = $event->previous_event_id;
+                $next_event->save();
+            }
+
+            // Delete all campaigns
+            $event->campaigns()->delete();
         });
     }
-	
-	/**
+
+    /**
      * Create first campaign for the auto event.
      *
      * @var void
@@ -193,11 +195,11 @@ class AutoEvent extends Model
     public function createFirstCampaign()
     {
         if(!$this->campaigns()->count()) {
-			$this->addCampaign();
-		}
+            $this->addCampaign();
+        }
     }
-	
-	/**
+
+    /**
      * Find item by uid.
      *
      * @return object
@@ -206,7 +208,7 @@ class AutoEvent extends Model
     {
         return self::where('uid', '=', $uid)->first();
     }
-    
+
     /**
      * The validation rules for automation trigger.
      *
@@ -216,53 +218,53 @@ class AutoEvent extends Model
     {
         $rules = [];
         switch ($this->event_type) {
-			case AutoEvent::TYPE_SPECIFIC_DATETIME:
-				$rules = [
-					'specific_day' => 'required',
-					'specific_time' => 'required',
-				];
-				break;
-			case AutoEvent::TYPE_WEEKLY_RECURRING:
-				$rules = [
-					'weekly_recurring_weekdays' => 'required',
-					'weekly_recurring_weeks' => 'required',
-					'weekly_recurring_months' => 'required',
-					'weekly_recurring_time' => 'required',
-				];
-				break;
-			case AutoEvent::TYPE_MONTHLY_RECURRING:
-				$rules = [
-					'monthly_recurring_days' => 'required',
-					'monthly_recurring_months' => 'required',
-					'monthly_recurring_time' => 'required',
-				];
-				break;
-			case AutoEvent::TYPE_SUBSCRIBER_EVENT:
-				$rules = [
-					'subscriber_event' => 'required',
-					'delay_type' => 'required',
-					'delay_value' => 'required',
-					'delay_unit' => 'required',
-				];
-				break;
-			case AutoEvent::TYPE_CUSTOM_CRITERIA:
-				if (isset($request->custom_criteria)) {
-					foreach ($request->custom_criteria as $key => $param) {
-						$rules['custom_criteria.'.$key.'.field_uid'] = 'required';
-						$rules['custom_criteria.'.$key.'.operator'] = 'required';
-						if(!in_array($param['operator'], [AutoEvent::OPERATOR_BLANK, AutoEvent::OPERATOR_NOT_BLANK])) {
-							$rules['custom_criteria.'.$key.'.value'] = 'required';
-						}
-					}
-				} else {
-					$rules['custom_criteria_empty'] = 'required';
-				}
-				break;
+            case AutoEvent::TYPE_SPECIFIC_DATETIME:
+                $rules = [
+                    'specific_day' => 'required',
+                    'specific_time' => 'required',
+                ];
+                break;
+            case AutoEvent::TYPE_WEEKLY_RECURRING:
+                $rules = [
+                    'weekly_recurring_weekdays' => 'required',
+                    'weekly_recurring_weeks' => 'required',
+                    'weekly_recurring_months' => 'required',
+                    'weekly_recurring_time' => 'required',
+                ];
+                break;
+            case AutoEvent::TYPE_MONTHLY_RECURRING:
+                $rules = [
+                    'monthly_recurring_days' => 'required',
+                    'monthly_recurring_months' => 'required',
+                    'monthly_recurring_time' => 'required',
+                ];
+                break;
+            case AutoEvent::TYPE_SUBSCRIBER_EVENT:
+                $rules = [
+                    'subscriber_event' => 'required',
+                    'delay_type' => 'required',
+                    'delay_value' => 'required',
+                    'delay_unit' => 'required',
+                ];
+                break;
+            case AutoEvent::TYPE_CUSTOM_CRITERIA:
+                if (isset($request->custom_criteria)) {
+                    foreach ($request->custom_criteria as $key => $param) {
+                        $rules['custom_criteria.'.$key.'.field_uid'] = 'required';
+                        $rules['custom_criteria.'.$key.'.operator'] = 'required';
+                        if(!in_array($param['operator'], [AutoEvent::OPERATOR_BLANK, AutoEvent::OPERATOR_NOT_BLANK])) {
+                            $rules['custom_criteria.'.$key.'.value'] = 'required';
+                        }
+                    }
+                } else {
+                    $rules['custom_criteria_empty'] = 'required';
+                }
+                break;
         }
-        
+
         return $rules;
     }
-    
+
     /**
      * Tigger type name select option.
      *
@@ -273,15 +275,15 @@ class AutoEvent extends Model
         return [
             ['value' => self::TYPE_SPECIFIC_DATETIME, 'text' => trans('messages.Immediately_or_on_a_specific_date')],
             ['value' => self::TYPE_WEEKLY_RECURRING, 'text' => trans('messages.weekly_recurring')],
-			['value' => self::TYPE_MONTHLY_RECURRING, 'text' => trans('messages.monthly_recurring')],
+            ['value' => self::TYPE_MONTHLY_RECURRING, 'text' => trans('messages.monthly_recurring')],
             ['value' => self::TYPE_LIST_SUBSCRIPTION, 'text' => trans('messages.Event_based_list_subscription')],
             ['value' => self::TYPE_LIST_UNSUBSCRIPTION, 'text' => trans('messages.Event_based_list_unsubscription')],
             ['value' => self::TYPE_SUBSCRIBER_EVENT, 'text' => trans('messages.Event_based_custom_list_subscriber_event')],
             ['value' => self::TYPE_CUSTOM_CRITERIA, 'text' => trans('messages.Custom_criteria')],
             ['value' => self::TYPE_API_CALL, 'text' => trans('messages.API_call')],
         ];
-    }	
-	
+    }
+
     /**
      * Fill attributes from array.
      *
@@ -290,123 +292,125 @@ class AutoEvent extends Model
     public function fillAttributes($params)
     {
         $this->fill($params);
-		
-		$this->data = "[]";
-		
-		// set delay time
-		switch ($this->event_type) {
-			case self::TYPE_LIST_SUBSCRIPTION:
-			case self::TYPE_LIST_UNSUBSCRIPTION:
-			case self::TYPE_SUBSCRIBER_EVENT:
-			case self::TYPE_CUSTOM_CRITERIA:
-				// Delay time
-				$this->updateData([
-					'delay_type' => isset($params["delay_type"]) ? $params["delay_type"] : 'before',
-					'delay_value' => isset($params["delay_value"]) ? $params["delay_value"] : '0',
-					'delay_unit' => isset($params["delay_unit"]) ? $params["delay_unit"] : 'day',
-				]);
-				break;
-		}
-		
-		// fill other options
-		switch ($this->event_type) {
-			case self::TYPE_SPECIFIC_DATETIME:
-				// send at specific date
-				if(!empty($params["specific_day"]) && !empty($params["specific_time"])) {
-					$send_at = \Acelle\Library\Tool::systemTimeFromString($params["specific_day"].' '.$params["specific_time"], \Auth::user()->timezone);
-					$this->updateData([
-						'datetime' => $send_at->toAtomString()
-					]);
-				}
-				break;
-			case self::TYPE_WEEKLY_RECURRING:				
-				if(!empty($params["weekly_recurring_weekdays"])) {
-					$this->updateData([
-						'weekdays' => $params["weekly_recurring_weekdays"]
-					]);
-				}
-				if(!empty($params["weekly_recurring_weeks"])) {
-					$this->updateData([
-						'weeks' => $params["weekly_recurring_weeks"]
-					]);
-				}
-				if(!empty($params["weekly_recurring_months"])) {
-					$this->updateData([
-						'months' => $params["weekly_recurring_months"]
-					]);
-				}
-				if(!empty($params["weekly_recurring_time"])) {
-					$send_at = \Acelle\Library\Tool::systemTimeFromString('2000-01-01 '.$params["weekly_recurring_time"], \Auth::user()->timezone);
-					$this->updateData([
-						'time' => $send_at->toAtomString()
-					]);
-				}
-				break;
-			case self::TYPE_MONTHLY_RECURRING:
-				if(!empty($params["monthly_recurring_days"])) {
-					$this->updateData([
-						'days' => $params["monthly_recurring_days"]
-					]);
-				}
-				if(!empty($params["monthly_recurring_months"])) {
-					$this->updateData([
-						'months' => $params["monthly_recurring_months"]
-					]);
-				}
-				if(!empty($params["monthly_recurring_time"])) {
-					$send_at = \Acelle\Library\Tool::systemTimeFromString('2000-01-01 '.$params["monthly_recurring_time"], \Auth::user()->timezone);
-					$this->updateData([
-						'time' => $send_at->toAtomString()
-					]);
-				}
-				break;
-			case self::TYPE_SUBSCRIBER_EVENT:
-				$this->updateData([
-					'event' => isset($params["subscriber_event"]) ? $params["subscriber_event"] : ''
-				]);
-				break;
-			case self::TYPE_CUSTOM_CRITERIA:
-				if(!empty($params["custom_criteria"])) {
-					$this->updateData([
-						'criteria' => $params["custom_criteria"]
-					]);
-				}
-			case self::TYPE_FOLLOW_UP:
-			case self::TYPE_FOLLOW_UP_OPENED:
-			case self::TYPE_FOLLOW_UP_CLICKED:
-				// if(!isset($params["delay_value"]) && !isset($params["delay_unit"])) {
-					$this->updateData([
-						'delay_type' => 'after',
-						'delay_value' => $params["delay_value"],
-						'delay_unit' => $params["delay_unit"]
-					]);
-				// }
-				break;
-		}
-	}
-	
-	/**
+
+        $this->data = "[]";
+
+        // set delay time
+        switch ($this->event_type) {
+            case self::TYPE_LIST_SUBSCRIPTION:
+            case self::TYPE_LIST_UNSUBSCRIPTION:
+            case self::TYPE_SUBSCRIBER_EVENT:
+            case self::TYPE_CUSTOM_CRITERIA:
+                // Delay time
+                $this->updateData([
+                    'delay_type' => isset($params["delay_type"]) ? $params["delay_type"] : 'before',
+                    'delay_value' => isset($params["delay_value"]) ? $params["delay_value"] : '0',
+                    'delay_unit' => isset($params["delay_unit"]) ? $params["delay_unit"] : 'day',
+                ]);
+                break;
+        }
+
+        // fill other options
+        switch ($this->event_type) {
+            case self::TYPE_SPECIFIC_DATETIME:
+                // send at specific date
+                if(!empty($params["specific_day"]) && !empty($params["specific_time"])) {
+                    $send_at = \Acelle\Library\Tool::systemTimeFromString($params["specific_day"].' '.$params["specific_time"], \Auth::user()->timezone);
+                    $this->updateData([
+                        'datetime' => $send_at->toAtomString()
+                    ]);
+                }
+                break;
+            case self::TYPE_WEEKLY_RECURRING:
+                if(!empty($params["weekly_recurring_weekdays"])) {
+                    $this->updateData([
+                        'weekdays' => $params["weekly_recurring_weekdays"]
+                    ]);
+                }
+                if(!empty($params["weekly_recurring_weeks"])) {
+                    $this->updateData([
+                        'weeks' => $params["weekly_recurring_weeks"]
+                    ]);
+                }
+                if(!empty($params["weekly_recurring_months"])) {
+                    $this->updateData([
+                        'months' => $params["weekly_recurring_months"]
+                    ]);
+                }
+                if(!empty($params["weekly_recurring_time"])) {
+                    $send_at = \Acelle\Library\Tool::systemTimeFromString('2000-01-01 '.$params["weekly_recurring_time"], \Auth::user()->timezone);
+                    $this->updateData([
+                        'time' => $send_at->toAtomString()
+                    ]);
+                }
+                break;
+            case self::TYPE_MONTHLY_RECURRING:
+                if(!empty($params["monthly_recurring_days"])) {
+                    $this->updateData([
+                        'days' => $params["monthly_recurring_days"]
+                    ]);
+                }
+                if(!empty($params["monthly_recurring_months"])) {
+                    $this->updateData([
+                        'months' => $params["monthly_recurring_months"]
+                    ]);
+                }
+                if(!empty($params["monthly_recurring_time"])) {
+                    $send_at = \Acelle\Library\Tool::systemTimeFromString('2000-01-01 '.$params["monthly_recurring_time"], \Auth::user()->timezone);
+                    $this->updateData([
+                        'time' => $send_at->toAtomString()
+                    ]);
+                }
+                break;
+            case self::TYPE_SUBSCRIBER_EVENT:
+                $this->updateData([
+                    'event' => isset($params["subscriber_event"]) ? $params["subscriber_event"] : ''
+                ]);
+                break;
+            case self::TYPE_CUSTOM_CRITERIA:
+                if(!empty($params["custom_criteria"])) {
+                    $this->updateData([
+                        'criteria' => $params["custom_criteria"]
+                    ]);
+                }
+            case self::TYPE_FOLLOW_UP:
+            case self::TYPE_FOLLOW_UP_OPENED:
+            case self::TYPE_FOLLOW_UP_NOT_OPENED:
+            case self::TYPE_FOLLOW_UP_CLICKED:
+            case self::TYPE_FOLLOW_UP_NOT_CLICKED:
+                // if(!isset($params["delay_value"]) && !isset($params["delay_unit"])) {
+                    $this->updateData([
+                        'delay_type' => 'after',
+                        'delay_value' => $params["delay_value"],
+                        'delay_unit' => $params["delay_unit"]
+                    ]);
+                // }
+                break;
+        }
+    }
+
+    /**
      * Get data.
      *
      * @return array
      */
     public function getData()
     {
-		return ($this->data) ? json_decode($this->data, true) : [];
+        return ($this->data) ? json_decode($this->data, true) : [];
     }
-	
-	/**
+
+    /**
      * Get data value.
      *
      * @return array
      */
     public function getDataValue($name)
     {
-		$data = $this->getData();
-		return isset($data[$name]) ? $data[$name] : NULL;
+        $data = $this->getData();
+        return isset($data[$name]) ? $data[$name] : NULL;
     }
-	
-	/**
+
+    /**
      * Update data json.
      *
      * @return void
@@ -416,8 +420,8 @@ class AutoEvent extends Model
         $json = $this->getData();
         $this->data = json_encode(array_merge($json, $data));
     }
-	
-	/**
+
+    /**
      * Get operators.
      *
      * @return options
@@ -439,140 +443,142 @@ class AutoEvent extends Model
             ['text' => trans('messages.not_blank'), 'value' => self::OPERATOR_NOT_BLANK],
         ];
     }
-	
-	/**
+
+    /**
      * Display message about the auto event.
      *
      * @return array
      */
     public function displayMessage()
     {
-		if(empty($this->data)) {
-			return trans('messages.event_not_set_yet');
-		}
-		
-		$msg = '';
-		switch ($this->event_type) {
-			case self::TYPE_SPECIFIC_DATETIME:
-				$msg = trans('messages.on_the_specific_date', [
-					'date' => \Acelle\Library\Tool::dayStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('datetime'))),
-					'time' => \Acelle\Library\Tool::timeStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('datetime')))
-				]);
-				break;
-			case self::TYPE_WEEKLY_RECURRING:				
-				$msg = trans('messages.weekly_recurring_description', [
-					'weekdays' => implode(', ', \Acelle\Library\Tool::numberArrayToWeekdaysArray($this->getDataValue('weekdays'))),
-					'weeks' => implode(', ', \Acelle\Library\Tool::numberArrayToWeeksArray($this->getDataValue('weeks'))),
-					'months' => implode(', ', \Acelle\Library\Tool::numberArrayToMonthsArray($this->getDataValue('months'))),
-					'time' => \Acelle\Library\Tool::timeStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('time'))),
-				]);
-				break;
-			case self::TYPE_MONTHLY_RECURRING:
-				$msg = trans('messages.monthly_recurring_description', [
-					'days' => implode(', ', \Acelle\Library\Tool::getDayNamesFromArrayOfNumber($this->getDataValue('days'))),
-					'months' => implode(', ', \Acelle\Library\Tool::numberArrayToMonthsArray($this->getDataValue('months'))),
-					'time' => \Acelle\Library\Tool::timeStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('time'))),
-				]);
-				break;
-			case self::TYPE_LIST_SUBSCRIPTION:
-				if(!empty($this->getDataValue('delay_value'))) {
-					$msg = trans('messages.event_type_list_subscription_description_with_delay', [
-						'list_name' => $this->automation->defaultMailList->name,
-						'delay' => $this->getDelayMessage()
-					]);
-				} else {
-					$msg = trans('messages.event_type_list_subscription_description', [
-						'list_name' => $this->automation->defaultMailList->name
-					]);
-				}
-				break;
-			case self::TYPE_LIST_UNSUBSCRIPTION:
-				if(!empty($this->getDataValue('delay_value'))) {
-					$msg = trans('messages.event_type_list_unsubscription_description_with_delay', [
-						'list_name' => $this->automation->defaultMailList->name,
-						'delay' => $this->getDelayMessage()
-					]);
-				} else {
-					$msg = trans('messages.event_type_list_unsubscription_description', [
-						'list_name' => $this->automation->defaultMailList->name
-					]);
-				}
-				break;
-			case self::TYPE_SUBSCRIBER_EVENT:
-				$event = $this->getDataValue('event');
-				
-				// check if event with field uid
-				if($event != 'subscription_date') {
-					$field = \Acelle\Model\Field::findByUid($event);
-					$text = is_object($field) ? strtolower(trans('messages.subscriber_s_field', ['name' => $field->label])) : '';
-				} else {
-					$text = strtolower(trans('messages.subscriber_s_field', ['name' => trans('messages.' . $event)]));
-				}
-				if(!empty($this->getDataValue('delay_value'))) {
-					$msg = trans('messages.event_type_subscriber_event_description_with_delay', [
-						'event' => $text,
-						'delay' => $this->getDelayMessage()
-					]);
-				} else {
-					$msg = trans('messages.event_type_subscriber_event_description', [
-						'event' => $text
-					]);
-				}
-				break;
-			case self::TYPE_CUSTOM_CRITERIA:
-				$strings = [];
-				foreach($this->getDataValue('criteria') as $criteria) {
-					$field = Field::findByUid($criteria["field_uid"]);
-					if(in_array($criteria['operator'], [AutoEvent::OPERATOR_BLANK, AutoEvent::OPERATOR_NOT_BLANK])) {
-						$strings[] = trans('messages.event_type_custom_criteria_description_2', [
-							'field' => $field->label,
-							'operator' => trans('messages.' . $criteria["operator"]),
-							'value' => $criteria["value"],
-						]);
-					} else {
-						$strings[] = trans('messages.event_type_custom_criteria_description', [
-							'field' => $field->label,
-							'operator' => trans('messages.' . $criteria["operator"]),
-							'value' => $criteria["value"],
-						]);
-					}					
-				}
-				
-				if(!empty($this->getDataValue('delay_value'))) {
-					$msg = trans('messages.event_type_custom_criterias_description_with_delay', [
-						'conditions' => implode(' ' . trans('messages.criteria_and') . ' ', $strings),
-						'delay' => $this->getDelayMessage()
-					]);
-				} else {
-					$msg = trans('messages.event_type_custom_criterias_description', [
-						'conditions' => implode(' ' . trans('messages.criteria_and') . ' ', $strings)
-					]);
-				}
-				break;
-			case self::TYPE_FOLLOW_UP:
-			case self::TYPE_FOLLOW_UP_OPENED:
-			case self::TYPE_FOLLOW_UP_CLICKED:
-				if(empty($this->getDataValue('delay_value'))) {
-					$msg = trans('messages.follow_up_send_right_after', [						
-						'event' => trans('messages.follow_up_event_' . $this->event_type)
-					]);
-				} else {
-					$msg = trans('messages.follow_up_description', [
-						'value' => $this->getDataValue('delay_value'),
-						'unit' => \Acelle\Library\Tool::getPluralPrase($this->getDataValue('delay_unit'), $this->getDataValue('delay_value')),
-						'event' => trans('messages.follow_up_event_' . $this->event_type)
-					]);
-				}
-				break;
-			case self::TYPE_API_CALL:				
-				$msg = trans('messages.event_type_api_description');
-				break;
-		}
-		
-		return $msg;
+        if(empty($this->data)) {
+            return trans('messages.event_not_set_yet');
+        }
+
+        $msg = '';
+        switch ($this->event_type) {
+            case self::TYPE_SPECIFIC_DATETIME:
+                $msg = trans('messages.on_the_specific_date', [
+                    'date' => \Acelle\Library\Tool::dayStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('datetime'))),
+                    'time' => \Acelle\Library\Tool::timeStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('datetime')))
+                ]);
+                break;
+            case self::TYPE_WEEKLY_RECURRING:
+                $msg = trans('messages.weekly_recurring_description', [
+                    'weekdays' => implode(', ', \Acelle\Library\Tool::numberArrayToWeekdaysArray($this->getDataValue('weekdays'))),
+                    'weeks' => implode(', ', \Acelle\Library\Tool::numberArrayToWeeksArray($this->getDataValue('weeks'))),
+                    'months' => implode(', ', \Acelle\Library\Tool::numberArrayToMonthsArray($this->getDataValue('months'))),
+                    'time' => \Acelle\Library\Tool::timeStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('time'))),
+                ]);
+                break;
+            case self::TYPE_MONTHLY_RECURRING:
+                $msg = trans('messages.monthly_recurring_description', [
+                    'days' => implode(', ', \Acelle\Library\Tool::getDayNamesFromArrayOfNumber($this->getDataValue('days'))),
+                    'months' => implode(', ', \Acelle\Library\Tool::numberArrayToMonthsArray($this->getDataValue('months'))),
+                    'time' => \Acelle\Library\Tool::timeStringFromTimestamp(\Acelle\Library\Tool::dateTimeFromString($this->getDataValue('time'))),
+                ]);
+                break;
+            case self::TYPE_LIST_SUBSCRIPTION:
+                if(!empty($this->getDataValue('delay_value'))) {
+                    $msg = trans('messages.event_type_list_subscription_description_with_delay', [
+                        'list_name' => $this->automation->defaultMailList->name,
+                        'delay' => $this->getDelayMessage()
+                    ]);
+                } else {
+                    $msg = trans('messages.event_type_list_subscription_description', [
+                        'list_name' => $this->automation->defaultMailList->name
+                    ]);
+                }
+                break;
+            case self::TYPE_LIST_UNSUBSCRIPTION:
+                if(!empty($this->getDataValue('delay_value'))) {
+                    $msg = trans('messages.event_type_list_unsubscription_description_with_delay', [
+                        'list_name' => $this->automation->defaultMailList->name,
+                        'delay' => $this->getDelayMessage()
+                    ]);
+                } else {
+                    $msg = trans('messages.event_type_list_unsubscription_description', [
+                        'list_name' => $this->automation->defaultMailList->name
+                    ]);
+                }
+                break;
+            case self::TYPE_SUBSCRIBER_EVENT:
+                $event = $this->getDataValue('event');
+
+                // check if event with field uid
+                if($event != 'subscription_date') {
+                    $field = \Acelle\Model\Field::findByUid($event);
+                    $text = is_object($field) ? strtolower(trans('messages.subscriber_s_field', ['name' => $field->label])) : '';
+                } else {
+                    $text = strtolower(trans('messages.subscriber_s_field', ['name' => trans('messages.' . $event)]));
+                }
+                if(!empty($this->getDataValue('delay_value'))) {
+                    $msg = trans('messages.event_type_subscriber_event_description_with_delay', [
+                        'event' => $text,
+                        'delay' => $this->getDelayMessage()
+                    ]);
+                } else {
+                    $msg = trans('messages.event_type_subscriber_event_description', [
+                        'event' => $text
+                    ]);
+                }
+                break;
+            case self::TYPE_CUSTOM_CRITERIA:
+                $strings = [];
+                foreach($this->getDataValue('criteria') as $criteria) {
+                    $field = Field::findByUid($criteria["field_uid"]);
+                    if(in_array($criteria['operator'], [AutoEvent::OPERATOR_BLANK, AutoEvent::OPERATOR_NOT_BLANK])) {
+                        $strings[] = trans('messages.event_type_custom_criteria_description_2', [
+                            'field' => $field->label,
+                            'operator' => trans('messages.' . $criteria["operator"]),
+                            'value' => $criteria["value"],
+                        ]);
+                    } else {
+                        $strings[] = trans('messages.event_type_custom_criteria_description', [
+                            'field' => $field->label,
+                            'operator' => trans('messages.' . $criteria["operator"]),
+                            'value' => $criteria["value"],
+                        ]);
+                    }
+                }
+
+                if(!empty($this->getDataValue('delay_value'))) {
+                    $msg = trans('messages.event_type_custom_criterias_description_with_delay', [
+                        'conditions' => implode(' ' . trans('messages.criteria_and') . ' ', $strings),
+                        'delay' => $this->getDelayMessage()
+                    ]);
+                } else {
+                    $msg = trans('messages.event_type_custom_criterias_description', [
+                        'conditions' => implode(' ' . trans('messages.criteria_and') . ' ', $strings)
+                    ]);
+                }
+                break;
+            case self::TYPE_FOLLOW_UP:
+            case self::TYPE_FOLLOW_UP_OPENED:
+            case self::TYPE_FOLLOW_UP_NOT_OPENED:
+            case self::TYPE_FOLLOW_UP_CLICKED:
+            case self::TYPE_FOLLOW_UP_NOT_CLICKED:
+                if(empty($this->getDataValue('delay_value'))) {
+                    $msg = trans('messages.follow_up_send_right_after', [
+                        'event' => trans('messages.follow_up_event_' . $this->event_type)
+                    ]);
+                } else {
+                    $msg = trans('messages.follow_up_description', [
+                        'value' => $this->getDataValue('delay_value'),
+                        'unit' => \Acelle\Library\Tool::getPluralPrase($this->getDataValue('delay_unit'), $this->getDataValue('delay_value')),
+                        'event' => trans('messages.follow_up_event_' . $this->event_type)
+                    ]);
+                }
+                break;
+            case self::TYPE_API_CALL:
+                $msg = trans('messages.event_type_api_description');
+                break;
+        }
+
+        return $msg;
     }
-	
-	/**
+
+    /**
      * Get delay message.
      *
      * @return array
@@ -580,15 +586,15 @@ class AutoEvent extends Model
     public function getDelayMessage()
     {
         if($this->getDataValue('delay_value') !== NULL) {
-			return trans('messages.delay_message', [
-				'value' => $this->getDataValue('delay_value'),
-				'unit' =>  trans('messages.' . $this->getDataValue('delay_unit')),
-				'type' =>  trans('messages.' . $this->getDataValue('delay_type')),
-			]);
-		}
+            return trans('messages.delay_message', [
+                'value' => $this->getDataValue('delay_value'),
+                'unit' =>  trans('messages.' . $this->getDataValue('delay_unit')),
+                'type' =>  trans('messages.' . $this->getDataValue('delay_type')),
+            ]);
+        }
     }
-	
-	/**
+
+    /**
      * Time unit options.
      *
      * @return array
@@ -596,15 +602,15 @@ class AutoEvent extends Model
     public static function timeUnitOptions()
     {
         return [
-			['value' => 'hour', 'text' => trans('messages.hour_s')],
-			['value' => 'day', 'text' => trans('messages.day_s')],            
+            ['value' => 'hour', 'text' => trans('messages.hour_s')],
+            ['value' => 'day', 'text' => trans('messages.day_s')],
             ['value' => 'week', 'text' => trans('messages.week_s')],
-            ['value' => 'month', 'text' => trans('messages.month_s')],			
+            ['value' => 'month', 'text' => trans('messages.month_s')],
             ['value' => 'year', 'text' => trans('messages.year_s')],
         ];
     }
-	
-	/**
+
+    /**
      * Delay type options.
      *
      * @return array
@@ -612,12 +618,12 @@ class AutoEvent extends Model
     public static function delayTypeOptions()
     {
         return [
-			['value' => 'before', 'text' => trans('messages.before')],
-			['value' => 'after', 'text' => trans('messages.after')],
+            ['value' => 'before', 'text' => trans('messages.before')],
+            ['value' => 'after', 'text' => trans('messages.after')],
         ];
     }
-	
-	/**
+
+    /**
      * Email events.
      *
      * @return array
@@ -625,13 +631,15 @@ class AutoEvent extends Model
     public static function emailEventOptions()
     {
         return [
-			['value' => self::TYPE_FOLLOW_UP, 'text' => strtolower(trans('messages.sent'))],
-			['value' => self::TYPE_FOLLOW_UP_OPENED, 'text' => strtolower(trans('messages.opened'))],            
-            ['value' => self::TYPE_FOLLOW_UP_CLICKED, 'text' => strtolower(trans('messages.clicked'))],
+            ['value' => self::TYPE_FOLLOW_UP, 'text' => strtolower(trans('messages.sent'))],
+            ['value' => self::TYPE_FOLLOW_UP_OPENED, 'text' => strtolower(trans('messages.opened'))],
+            ['value' => self::TYPE_FOLLOW_UP_NOT_OPENED, 'text' => strtolower(trans('messages.not_opened'))],
+                        ['value' => self::TYPE_FOLLOW_UP_CLICKED, 'text' => strtolower(trans('messages.clicked'))],
+            ['value' => self::TYPE_FOLLOW_UP_NOT_CLICKED, 'text' => strtolower(trans('messages.not_clicked'))],
         ];
     }
-	
-	/**
+
+    /**
      * Add campaign.
      *
      * @return array
@@ -639,26 +647,26 @@ class AutoEvent extends Model
     public function addCampaign()
     {
         $campaign = new Campaign([
-			'name' => 'Untitled automation email',
+            'name' => 'Untitled automation email',
             'track_open' => true,
             'track_click' => true,
             'sign_dkim' => true,
-		]);
-		$campaign->user_id = $this->automation->user_id;
+        ]);
+        $campaign->user_id = $this->automation->user_id;
         $campaign->is_auto = true;
         $campaign->type = Campaign::TYPE_REGULAR;
-		$campaign->save();
-		
-		// Auto Campaign
-		$auto_campaign = new AutoCampaign();
-		$auto_campaign->campaign_id = $campaign->id;
-		$auto_campaign->auto_event_id = $this->id;
-		$auto_campaign->save();
-		
-		return $campaign;
+        $campaign->save();
+
+        // Auto Campaign
+        $auto_campaign = new AutoCampaign();
+        $auto_campaign->campaign_id = $campaign->id;
+        $auto_campaign->auto_event_id = $this->id;
+        $auto_campaign->save();
+
+        return $campaign;
     }
-	
-	/**
+
+    /**
      * Next event.
      *
      * @return object
@@ -667,8 +675,8 @@ class AutoEvent extends Model
     {
         return $this->hasOne('Acelle\Model\AutoEvent', 'previous_event_id');
     }
-	
-	/**
+
+    /**
      * Previous event.
      *
      * @return object
@@ -688,7 +696,7 @@ class AutoEvent extends Model
         $method = $this->camelize('check-for-' . $this->event_type);
         return $this->$method();
     }
-    
+
     /**
      * Check if the critera are met, then trigger the event
      *
@@ -721,7 +729,7 @@ class AutoEvent extends Model
 
         return false;
     }
-    
+
     /**
      * Check for specific-datetimetime events
      *
@@ -753,7 +761,7 @@ class AutoEvent extends Model
     public function checkForCustomCriteria()
     {
         $subscribers = $this->subscribers()
-                            ->whereRaw(sprintf(table('subscribers') . '.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();      
+                            ->whereRaw(sprintf(table('subscribers') . '.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
         foreach ($subscribers as $subscriber) {
             MailLog::info(sprintf('Trigger sending custom-criteria email for automation `%s`, subscriber ID: %s, event ID: %s', $this->automation->name, $subscriber->id, $this->id));
             $this->fire(collect([$subscriber]), null, $this->getDelayInSeconds());
@@ -827,7 +835,7 @@ class AutoEvent extends Model
             $this->fire();
         }
     }
-    
+
     /**
      * Check if the current date matches the scheduled month
      *
@@ -873,7 +881,7 @@ class AutoEvent extends Model
         $weekdays = $this->getDataValue('weekdays');
         return in_array(Carbon::now($this->automation->user->timezone)->dayOfWeek, $weekdays, false);
     }
-    
+
     /**
      * Check if the current date matches the scheduled week of month
      *
@@ -884,7 +892,7 @@ class AutoEvent extends Model
         $weeks = $this->getDataValue('weeks');
         return in_array(Carbon::now($this->automation->user->timezone)->weekOfMonth, $weeks, false);
     }
-    
+
     /**
      * Convert the delay setting to a human readable string compatible with Carbon interval
      * For example: "+1 day", "-2 hour"
@@ -914,7 +922,7 @@ class AutoEvent extends Model
         $unit = $delay['delay_unit'];
         return "INTERVAL {$modifier}{$base} {$unit}";
     }
-    
+
     /**
      * Convert the delay setting to interval (seconds)
      *
@@ -924,7 +932,7 @@ class AutoEvent extends Model
     {
         $now = Carbon::now();
         $delayed = $now->copy()->modify($this->getDelayInterval());
-        return $delayed->diffInSeconds($now);
+        return $delayed->diffInSeconds(`$now`);
     }
 
     /**
@@ -945,7 +953,7 @@ class AutoEvent extends Model
         if ($preceding->triggersToFollowUp->isEmpty()) {
             return;
         }
-        
+
         // One event may be triggered multiple times
         // For example: triggerd by birthday --> make sure to follow all these triggers
         foreach($preceding->triggersToFollowUp as $trigger) {
@@ -957,7 +965,7 @@ class AutoEvent extends Model
             }
         }
     }
-    
+
     /**
      * Check for follow-up-opened events
      *
@@ -975,7 +983,7 @@ class AutoEvent extends Model
             }
         }
     }
-    
+
     /**
      * Check for follow-up-clicked events
      *
@@ -1029,7 +1037,39 @@ class AutoEvent extends Model
             }
         }
     }
-    
+
+    /**
+     * Check for messages that have not been opened
+     *
+     * @return null
+     */
+    public function checkForFollowUpNotOpened()
+    {
+        $now = Carbon::now();
+        $logs = $this->getNotOpenedMessagesToFollow();
+        foreach($logs as $log) {
+            MailLog::info(sprintf('Trigger sending follow-up not opened email for automation `%s`, subscriber: %s, event ID: %s', $this->automation->name, $log->subscriber_id, $this->id));
+            $this->fire(collect([$log->subscriber]));
+            // a more verbal way is: fire(Subscriber::where('id', $log->subscriber_id)
+        }
+    }
+
+    /**
+     * Check for messages that have not been clicked
+     *
+     * @return null
+     */
+    public function checkForFollowUpNotClicked()
+    {
+        $now = Carbon::now();
+        $logs = $this->getNotClickedMessagesToFollow();
+        foreach($logs as $log) {
+            MailLog::info(sprintf('Trigger sending follow-up not clicked email for automation `%s`, subscriber: %s, event ID: %s', $this->automation->name, $log->subscriber_id, $this->id));
+            $this->fire(collect([$log->subscriber]));
+            // a more verbal way is: fire(Subscriber::where('id', $log->subscriber_id)
+        }
+    }
+
     /**
      * Actually send automation email
      *
@@ -1042,14 +1082,14 @@ class AutoEvent extends Model
         if (!is_null($preceding_trigger)) {
             $trigger->preceded_by = $preceding_trigger->id;
         }
-        
+
         // @todo: retrieve the first subscriber only, what if there are more than one subscribers?
         if (!empty($subscribers) && !is_null($subscribers)) {
             $trigger->subscriber_id = $subscribers[0]->id;
         }
 
         $this->autoTriggers()->save($trigger);
-        
+
         // schedule the corresponding job
         foreach($this->campaigns as $campaign) {
             $campaign->queue($subscribers, $trigger, $delay);
@@ -1078,10 +1118,67 @@ class AutoEvent extends Model
     public function getOpenedMessagesToFollow()
     {
         $messages = TrackingLog::select('tracking_logs.*')->join('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')->where('auto_event_id', $this->previousEvent->id)->whereRaw(sprintf(table('tracking_logs') . '.subscriber_id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))->get();
-        
+
         // one message could be opened more than one time
+        // @todo: use array_uniq_by() helper function for far better performance thant Collection::uniq()
         $unique = $messages->unique(function ($item) {
             return $item->message_id;
+        });
+
+        return $unique;
+    }
+
+    /**
+     * Get messages that have not been clicked for a specified time
+     *
+     * @return collection
+     */
+    public function getNotOpenedMessagesToFollow()
+    {
+        // no problem if one message is opened more than one time
+        $modifier = Carbon::now()->modify("-{$this->getDelayInterval()}");
+        $messages = TrackingLog::select('tracking_logs.*')
+            ->leftJoin('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
+            ->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')
+            ->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')
+            ->where('auto_event_id', $this->previousEvent->id)
+            ->whereRaw(sprintf('%s NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('tracking_logs.subscriber_id'), table('auto_triggers'), $this->id))
+            ->whereRaw(sprintf('%s IS NULL', table('open_logs.id')))
+            ->where('tracking_logs.created_at', '<=', $modifier)
+            ->get();
+
+        // one message could be opened more than one time
+        // @note: use array_uniq_by() helper function for far better performance thant Collection::uniq()
+        $unique = array_unique_by($messages, function ($message) {
+            return $message->message_id;
+        });
+
+        return $unique;
+    }
+
+    /**
+     * Get messages that have not been opened for a specified time
+     *
+     * @return collection
+     */
+    public function getNotClickedMessagesToFollow()
+    {
+        // no problem if one message is opened more than one time
+        $modifier = Carbon::now()->modify("-{$this->getDelayInterval()}");
+        $messages = TrackingLog::select('tracking_logs.*')
+            ->leftJoin('click_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
+            ->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')
+            ->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')
+            ->where('auto_event_id', $this->previousEvent->id)
+            ->whereRaw(sprintf('%s NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('tracking_logs.subscriber_id'), table('auto_triggers'), $this->id))
+            ->whereRaw(sprintf('%s IS NULL', table('click_logs.id')))
+            ->where('tracking_logs.created_at', '<=', $modifier)
+            ->get();
+
+        // one message could be clicked more than one time
+        // @note: use array_uniq_by() helper function for far better performance thant Collection::uniq()
+        $unique = array_unique_by($messages, function ($message) {
+            return $message->message_id;
         });
 
         return $unique;
@@ -1120,65 +1217,65 @@ class AutoEvent extends Model
                     ->where('unsubscribe_logs.created_at', '>=', $this->created_at)
                     ->get();
     }
-	
-	/**
+
+    /**
      * set event status to active.
      *
      * @return void
      */
     public function setActive()
     {
-        $this->status = AutoEvent::STATUS_ACTIVE;		
+        $this->status = AutoEvent::STATUS_ACTIVE;
         $this->save();
     }
-	
-	/**
+
+    /**
      * enable event.
      *
      * @return void
      */
     public function enable()
     {
-        $this->status = AutoEvent::STATUS_ACTIVE;		
+        $this->status = AutoEvent::STATUS_ACTIVE;
         $this->save();
     }
-	
-	/**
+
+    /**
      * disable event.
      *
      * @return void
      */
     public function disable()
     {
-        $this->status = AutoEvent::STATUS_INACTIVE;		
+        $this->status = AutoEvent::STATUS_INACTIVE;
         $this->save();
     }
-	
-	/**
+
+    /**
      * disable event.
      *
      * @return boolean
      */
     public function isValid()
     {
-		// return true if it is inactive
-		if($this->status == AutoEvent::STATUS_INACTIVE) {
-			return true;
-		}
-		
+        // return true if it is inactive
+        if($this->status == AutoEvent::STATUS_INACTIVE) {
+            return true;
+        }
+
         // check auto events emails empty
-		if($this->campaigns()->count() <= 0) {
-			return false;
-		}
-		
-		// check if email is not design
-		foreach($this->campaigns as $campaign) {
-			if(!$campaign->autoCampaignDesigned()) {
-				return false;
-			}
-		}
-		
-		return true;
+        if($this->campaigns()->count() <= 0) {
+            return false;
+        }
+
+        // check if email is not design
+        foreach($this->campaigns as $campaign) {
+            if(!$campaign->autoCampaignDesigned()) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -1218,85 +1315,85 @@ class AutoEvent extends Model
         $this->previous_event_id = $next_event->id;
         $this->save();
     }
-	
-	/**
+
+    /**
      * Subscribers.
      *
      * @return collect
      * @todo: sanitize the input
      */
     public function subscribers($params=[])
-    {        
+    {
         $query = $this->automation->subscribers();
-		
-		//if($this->event_type == AutoEvent::TYPE_CUSTOM_CRITERIA) {
-		//	$criteria = $this->getDataValue('criteria');
-		//	
-		//	// for custom cateria
-		//	$conditions = array();
-		//	foreach ($criteria as $condition) {
-		//		$keyword = $condition['value'];
-		//		$keyword = str_replace('[EMPTY]', '', $keyword);
-		//		$keyword = str_replace('[DATETIME]', date('Y-m-d H:i:s'), $keyword);
-		//		$keyword = str_replace('[DATE]', date('Y-m-d'), $keyword);
-		//	
-		//		$keyword = trim(strtolower($keyword));
-		//		switch ($condition['operator']) {
-		//			case AutoEvent::OPERATOR_EQUAL:
-		//				$cond = 'LOWER(' . table('subscriber_fields') . ".value) = '".$keyword."'";
-		//				break;
-		//			case AutoEvent::OPERATOR_NOT_EQUAL:
-		//				$cond = 'LOWER(' . table('subscriber_fields') . ".value) != '".$keyword."'";
-		//				break;
-		//			case AutoEvent::OPERATOR_CONTAINS:
-		//				$cond = 'LOWER(' . table('subscriber_fields') . ".value) LIKE '%".$keyword."%'";
-		//				break;
-		//			case AutoEvent::OPERATOR_NOT_CONTAINS:
-		//				$cond = 'LOWER(' . table('subscriber_fields') . ".value) NOT LIKE '%".$keyword."%'";
-		//				break;
-		//			case AutoEvent::OPERATOR_STARTS:
-		//				$cond = 'LOWER(' . table('subscriber_fields') . ".value) LIKE '".$keyword."%'";
-		//				break;
-		//			case AutoEvent::OPERATOR_ENDS:
-		//				$cond = 'LOWER(' . table('subscriber_fields') . ".value) LIKE '%".$keyword."'";
-		//				break;
-		//			case AutoEvent::OPERATOR_GREATOR:
-		//				$cond = table('subscriber_fields') . ".value > '".$keyword."'";
-		//				break;
-		//			case AutoEvent::OPERATOR_LESS:
-		//				$cond = table('subscriber_fields') . ".value < '".$keyword."'";
-		//				break;
-		//			case AutoEvent::OPERATOR_NOT_STARTS:
-		//				$cond = 'LOWER(' . table('subscriber_fields') . ".value) NOT LIKE '".$keyword."%'";
-		//				break;
-		//			case AutoEvent::OPERATOR_NOT_ENDS:
-		//				$cond = 'LOWER(' . table('subscriber_fields') . ".value) NOT LIKE '%".$keyword."'";
-		//				break;
-		//			case AutoEvent::OPERATOR_NOT_BLANK:
-		//				$cond = '(LOWER(' . table('subscriber_fields') . ".value) != '' AND LOWER(".table('subscriber_fields') . '.value) IS NOT NULL)';
-		//				break;
-		//			case AutoEvent::OPERATOR_BLANK:
-		//				$cond = '(LOWER(' . table('subscriber_fields') . ".value) = '' OR LOWER(".table('subscriber_fields') . '.value) IS NULL)';
-		//				break;
-		//			default:
-		//	
-		//		}
-		//	
-		//		$conditions[] = \DB::getTablePrefix().'subscribers.id IN (SELECT ' . table('subscriber_fields') .
-		//			'.subscriber_id FROM ' . table('subscriber_fields') .
-		//			' LEFT JOIN ' . table('fields') . ' ON ' . table('subscriber_fields') . '.field_id = ' . table('fields') . '.id' .
-		//			' WHERE (' . table('fields') .
-		//			'.uid = "'.$condition['field_uid'] . '" AND '.$cond.'))';
-		//	}
-		//	
-		//	//return $conditions;
-		//	$conditions = implode(' AND ', $conditions);
-		//	
-		//	if (!empty($conditions)) {
-		//		$query = $query->whereRaw($conditions);
-		//	}
-		//}
-		
-		return $query;
+
+        //if($this->event_type == AutoEvent::TYPE_CUSTOM_CRITERIA) {
+        //    $criteria = $this->getDataValue('criteria');
+        //
+        //    // for custom cateria
+        //    $conditions = array();
+        //    foreach ($criteria as $condition) {
+        //        $keyword = $condition['value'];
+        //        $keyword = str_replace('[EMPTY]', '', $keyword);
+        //        $keyword = str_replace('[DATETIME]', date('Y-m-d H:i:s'), $keyword);
+        //        $keyword = str_replace('[DATE]', date('Y-m-d'), $keyword);
+        //
+        //        $keyword = trim(strtolower($keyword));
+        //        switch ($condition['operator']) {
+        //            case AutoEvent::OPERATOR_EQUAL:
+        //                $cond = 'LOWER(' . table('subscriber_fields') . ".value) = '".$keyword."'";
+        //                break;
+        //            case AutoEvent::OPERATOR_NOT_EQUAL:
+        //                $cond = 'LOWER(' . table('subscriber_fields') . ".value) != '".$keyword."'";
+        //                break;
+        //            case AutoEvent::OPERATOR_CONTAINS:
+        //                $cond = 'LOWER(' . table('subscriber_fields') . ".value) LIKE '%".$keyword."%'";
+        //                break;
+        //            case AutoEvent::OPERATOR_NOT_CONTAINS:
+        //                $cond = 'LOWER(' . table('subscriber_fields') . ".value) NOT LIKE '%".$keyword."%'";
+        //                break;
+        //            case AutoEvent::OPERATOR_STARTS:
+        //                $cond = 'LOWER(' . table('subscriber_fields') . ".value) LIKE '".$keyword."%'";
+        //                break;
+        //            case AutoEvent::OPERATOR_ENDS:
+        //                $cond = 'LOWER(' . table('subscriber_fields') . ".value) LIKE '%".$keyword."'";
+        //                break;
+        //            case AutoEvent::OPERATOR_GREATOR:
+        //                $cond = table('subscriber_fields') . ".value > '".$keyword."'";
+        //                break;
+        //            case AutoEvent::OPERATOR_LESS:
+        //                $cond = table('subscriber_fields') . ".value < '".$keyword."'";
+        //                break;
+        //            case AutoEvent::OPERATOR_NOT_STARTS:
+        //                $cond = 'LOWER(' . table('subscriber_fields') . ".value) NOT LIKE '".$keyword."%'";
+        //                break;
+        //            case AutoEvent::OPERATOR_NOT_ENDS:
+        //                $cond = 'LOWER(' . table('subscriber_fields') . ".value) NOT LIKE '%".$keyword."'";
+        //                break;
+        //            case AutoEvent::OPERATOR_NOT_BLANK:
+        //                $cond = '(LOWER(' . table('subscriber_fields') . ".value) != '' AND LOWER(".table('subscriber_fields') . '.value) IS NOT NULL)';
+        //                break;
+        //            case AutoEvent::OPERATOR_BLANK:
+        //                $cond = '(LOWER(' . table('subscriber_fields') . ".value) = '' OR LOWER(".table('subscriber_fields') . '.value) IS NULL)';
+        //                break;
+        //            default:
+        //
+        //        }
+        //
+        //        $conditions[] = \DB::getTablePrefix().'subscribers.id IN (SELECT ' . table('subscriber_fields') .
+        //            '.subscriber_id FROM ' . table('subscriber_fields') .
+        //            ' LEFT JOIN ' . table('fields') . ' ON ' . table('subscriber_fields') . '.field_id = ' . table('fields') . '.id' .
+        //            ' WHERE (' . table('fields') .
+        //            '.uid = "'.$condition['field_uid'] . '" AND '.$cond.'))';
+        //    }
+        //
+        //    //return $conditions;
+        //    $conditions = implode(' AND ', $conditions);
+        //
+        //    if (!empty($conditions)) {
+        //        $query = $query->whereRaw($conditions);
+        //    }
+        //}
+
+        return $query;
     }
 }

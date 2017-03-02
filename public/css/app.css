@@ -1639,3 +1639,6 @@ ul.automation-confirm li.child-row h5 {
 .recaptcha-box .g-recaptcha > div {
     width: auto !important;
 }
+.select-medium .select2 {
+    min-width: 120px;
+}
