@@ -400,4 +400,60 @@ class CustomerController extends Controller
             'customer' => $customer
         ]);
     }
+    
+    /**
+     * Customers growth chart content.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function growthChart(Request $request)
+    {
+        // authorize
+        if (\Gate::denies('read', new \Acelle\Model\Customer())) {
+            return $this->notAuthorized();
+        }
+
+        $result = [
+            'columns' => [],
+            'data' => [],
+            'bar_names' => [trans('messages.customers_growth')],
+        ];
+
+        // columns
+        for ($i = 2; $i >= 0; --$i) {
+            $result['columns'][] = \Carbon\Carbon::now()->subMonthsNoOverflow($i)->format('m/Y');
+        }
+
+        // datas
+        foreach ($result['bar_names'] as $bar) {
+            $data = [];
+            for ($i = 2; $i >= 0; --$i) {
+                $data[] = \Acelle\Model\Customer::customersCountByTime(
+                    \Carbon\Carbon::now()->subMonthsNoOverflow($i)->startOfMonth(),
+                    \Carbon\Carbon::now()->subMonthsNoOverflow($i)->endOfMonth(),
+                    $request->user()->admin->id
+                );
+            }
+
+            $result['data'][] = [
+                'name' => $bar,
+                'type' => 'bar',
+                'data' => $data,
+                'itemStyle' => [
+                    'normal' => [
+                        'label' => [
+                            'show' => true,
+                            'textStyle' => [
+                                'fontWeight' => 500,
+                            ],
+                        ],
+                    ],
+                ],
+            ];
+        }
+
+        return json_encode($result);
+    }
 }

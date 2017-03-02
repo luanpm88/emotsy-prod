@@ -977,4 +977,23 @@ class Customer extends Model
     {
         return $this->hasMany('Acelle\Model\SendingServer');
     }
+	
+	/**
+     * Customers count by time.
+     *
+     * @return number
+     */
+    public static function customersCountByTime($begin, $end, $admin_id = null)
+    {
+        $query = \Acelle\Model\Customer::select('customers.*');
+    
+        if (isset($admin_id)) {
+            $query = $query->where('customers.admin_id', '=', $admin_id);
+        }
+    
+        $query = $query->where('customers.created_at', '>=', $begin)
+            ->where('customers.created_at', '<=', $end);
+    
+        return $query->count();
+    }
 }

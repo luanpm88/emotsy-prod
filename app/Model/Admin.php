@@ -346,7 +346,8 @@ class Admin extends Model
      */
     public function getAllSubscriptions()
     {
-        $query = \Acelle\Model\Subscription::leftJoin('customers', 'customers.id', '=', 'subscriptions.customer_id');
+        $query = \Acelle\Model\Subscription::select('subscriptions.*')
+            ->leftJoin('customers', 'customers.id', '=', 'subscriptions.customer_id');
         
         $query = $query->where(function ($q) {
             $q->orwhere('customers.admin_id', '=', $this->id)
@@ -369,5 +370,20 @@ class Admin extends Model
             ->count();
         
         return $query == 0 ? '' : $query;
+    }
+    
+    /**
+     * Get recent subscriptions.
+     *
+     * @return collect
+     */
+    public function recentSubscriptions($number=5)
+    {
+        $query = $this->getAllSubscriptions()
+            //->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
+            ->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->endOfDay())
+            ->orderBy('subscriptions.created_at', 'desc')->limit($number);
+        
+        return $query->get();
     }
 }

@@ -1564,4 +1564,7 @@ return [
     'allow_create_sending_servers_intro' => 'Create sending servers: <span class="text-semibold">:value</span>',
     'allow_create_sending_domains_intro' => 'Create sending domains: <span class="text-semibold">:value</span>',
     'feature_not_allow' => '<span class="text-warning">No</span>',
+    'recent_subscriptions' => 'Recent subscriptions',
+    'customers_growth' => 'Customers growth',
+    'plans_chart' => 'Plans chart',
 ];

@@ -166,7 +166,6 @@
 								</div>
 							</div>
 								
-							
 							<br />
 							<div class="row sending-servers">
 								@foreach (\Auth::user()->customer->sendingServers()->orderBy("name")->get() as $server)

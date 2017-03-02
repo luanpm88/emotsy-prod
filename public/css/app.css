@@ -1905,3 +1905,28 @@ ul.plans-intro li span {
     font-size: 14px;
     padding: 3px 0;
 }
+.dashboard-accordion .modern-listing.top-border-none li:last-child {
+    border-bottom: none;
+}
+.dashboard-accordion ul.modern-listing li i, .dashboard-accordion .table-row-icon {
+    height: 60px;
+}
+.dashboard-accordion .timeline-row {
+    margin-bottom: 15px;
+}
+.dashboard-accordion .timeline-row .panel-heading {
+    padding-top: 7px;
+    padding-bottom: 7px;
+}
+.dashboard-accordion .timeline-row .timeline-content {
+    padding-left: 7px;
+}
+.has-fixed-height-300 {
+    height: 300px;
+}
+.has-fixed-height-200 {
+    height: 200px;
+}
+.has-fixed-height-250 {
+    height: 250px;
+}

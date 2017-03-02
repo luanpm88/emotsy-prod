@@ -265,15 +265,80 @@
 			@endif
 		</div>
 		<div class="col-md-5">
-			<div class="panel-group content-group-lg" id="accordion1">
+			
+			<h5 class="text-semibold"><i class="icon-users"></i> {{ trans('messages.customers_growth') }}</h5>
+			@include('admin.customers._growth_chart')
+			
+			<h5 class="text-semibold"><i class="icon-clipboard2"></i> {{ trans('messages.plans_chart') }}</h5>
+					
+		
+			<div class="panel-group content-group-lg dashboard-accordion" id="accordion0">
 				<div class="panel panel-white panel-no-color">
 					<div class="panel-heading">
 						<h5 class="panel-title text-semibold">
-							<a data-toggle="collapse" data-parent="#accordion1" href="#accordion-group1">{{ trans('messages.recent_customers') }}</a>
+							<a data-toggle="collapse" data-parent="#accordion0" href="#accordion-group0">
+								<i class="icon-quill4"></i>
+								{{ trans('messages.recent_subscriptions') }}
+							</a>
 							<i class="icon-menu-open"></i>
 						</h5>
 					</div>
-					<div id="accordion-group1" class="panel-collapse collapse in">
+					<div id="accordion-group0" class="panel-collapse collapse in">
+						<div class="panel-body pb-0">
+							<ul class="modern-listing mt-0 mb-0 top-border-none">
+								@foreach(Auth::user()->admin->recentSubscriptions() as $subscription)
+									<li class="">
+										<div class="row">
+											<div class="col-sm-5 col-md-5">												
+												<h6 class="mt-0 mb-0 text-semibold">													
+													<a href="{{ action('Admin\CustomerController@subscriptions', $subscription->customer->uid) }}">
+														<i class="icon-clipboard2"></i>
+														{{ $subscription->plan_name }}
+													</a>
+												</h6>
+												<p class="mb-0">
+													<!--<img width="40" class="img-circle mr-10 pull-left" src="{{ action('CustomerController@avatar', $subscription->customer->uid) }}" alt="">-->
+													<i class="icon-user" style="
+														font-size: 14px;
+														padding: 0;
+														margin: 5px 0 0 -8px;
+														height: auto;"></i>
+													{{ $subscription->customer->displayName() }}
+												</p>
+											</div>
+											<div class="col-sm-4 col-md-4 text-left">
+												<h6 class="no-margin text-semibold">
+													{{ Tool::formatDateTime($subscription->created_at) }}
+												</h6>
+												<span class="">{{ trans('messages.created_at') }}</span>
+											</div>
+											<div class="col-sm-3 col-md-3 text-left">
+												<span class="text-muted2 list-status pull-left">
+													<span class="label label-flat bg-{{ $subscription->status }}">{{ trans('messages.subscription_status_' . $subscription->status) }}</span>
+												</span>
+												<!--<br/>
+												<span class="text-muted2 list-status pull-left">
+													<span class="label label-sub label-flat bg-{{ $subscription->timeStatus() }}">{{ trans('messages.subscription_time_status_' . $subscription->timeStatus()) }}</span>
+												</span>-->
+											</div>	
+										</div>
+									</li>
+								@endforeach
+							</ul>
+						</div>
+					</div>
+				</div>
+				<div class="panel panel-white panel-no-color">
+					<div class="panel-heading">
+						<h5 class="panel-title text-semibold">
+							<a data-toggle="collapse" data-parent="#accordion1" href="#accordion-group1">
+								<i class="icon-users"></i>
+								{{ trans('messages.recent_customers') }}
+							</a>
+							<i class="icon-menu-open"></i>
+						</h5>
+					</div>
+					<div id="accordion-group1" class="panel-collapse collapse">
 						<div class="panel-body pb-0">
 							<ul class="modern-listing mt-0 mb-0 top-border-none">
 								@foreach(Auth::user()->admin->recentCustomers() as $customer)
@@ -286,7 +351,7 @@
 														{{ $customer->displayName() }}
 													</a>
 												</h6>
-												<p>
+												<p class="mb-0">
 													{{ $customer->admin->displayName() }}
 												</p>
 											</div>
@@ -295,7 +360,12 @@
 													{{ Tool::formatDateTime($customer->created_at) }}
 												</h6>
 												<span class="">{{ trans('messages.created_at') }}</span>
-											</div>	
+											</div>
+											<div class="col-sm-3 col-md-3 text-left">
+												<span class="text-muted2 list-status pull-left">
+													<span class="label label-flat bg-{{ $subscription->status }}">{{ trans('messages.subscription_status_' . $subscription->status) }}</span>
+												</span>
+											</div>
 										</div>
 									</li>
 								@endforeach
@@ -306,14 +376,52 @@
 				<div class="panel panel-white panel-no-color">
 					<div class="panel-heading">
 						<h5 class="panel-title text-semibold">
-							<a class="collapsed" data-toggle="collapse" data-parent="#accordion1" href="#accordion-group3">{{ trans('messages.activities') }}</a>
+							<a class="collapsed" data-toggle="collapse" data-parent="#accordion1" href="#accordion-group3">
+								<i class="icon-history position-left"></i>
+								{{ trans('messages.activities') }}
+							</a>
 							<i class="icon-menu-open"></i>
 						</h5>
 					</div>
 					<div id="accordion-group3" class="panel-collapse collapse">
-						<div class="panel-body">
-							3 wolf moon officia aute, non cupidatat skateboard dolor brunch. Food truck quinoa nesciunt laborum eiusmod. Brunch 3 wolf moon tempor, sunt aliqua put a bird on it.
-						</div>
+						@if (Acelle\Model\Log::count() == 0)
+							<div class="empty-list">
+								<i class="icon-history"></i>
+								<span class="line-1">
+									{{ trans('messages.no_activity_logs') }}
+								</span>
+							</div>
+						@else
+							<div class="scrollbar-box action-log-box">
+								<!-- Timeline -->
+								<div class="timeline timeline-left content-group">
+									<div class="timeline-container">				
+											@foreach (Acelle\Model\Log::take(20)->get() as $log)
+												<!-- Sales stats -->
+												<div class="timeline-row">
+													<div class="timeline-icon">
+														<a href="#"><img src="{{ action('CustomerController@avatar', $log->customer->uid) }}" alt=""></a>
+													</div>
+						
+													<div class="panel panel-flat timeline-content">
+														<div class="panel-heading">
+															<h6 class="panel-title text-semibold">{{ $log->customer->displayName() }}</h6>
+															<div class="heading-elements">
+																<span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at->diffForHumans() }}</span>
+															</div>
+														</div>
+						
+														<div class="panel-body">
+															{!! $log->message() !!}
+														</div>
+													</div>
+												</div>
+												<!-- /sales stats -->
+											@endforeach								
+									</div>
+								</div>
+							</div>
+						@endif
 					</div>
 				</div>
 			</div>
