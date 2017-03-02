@@ -1150,7 +1150,7 @@ class Campaign extends Model
             
             $query = Subscriber::select("subscribers.*");
             if (!empty($conditions)) {
-                $query = $query->whereRaw(implode(' OR ', $conditions));
+                $query = $query->whereRaw('(' . implode(' OR ', $conditions) . ')');
             }
         }
         
@@ -1368,7 +1368,7 @@ class Campaign extends Model
      */
     public function clickedEmailsRate()
     {
-        $open_count = $this->openCount();
+        $open_count = $this->openUniqCount();
         
         if ($open_count == 0) {
             return 0;
