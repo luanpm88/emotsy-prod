@@ -1,3 +1,9 @@
+2.2.0-p13 / 2017-03-03
+===================
+
+ * Added: support follow-up messages that have not been opened/clicked
+ * Fixed: quota tracking issue for click-to-open rate
+
 2.2.0-p12 / 2017-02-27
 ===================
 
