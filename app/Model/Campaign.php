@@ -1150,7 +1150,7 @@ class Campaign extends Model
             
             $query = Subscriber::select("subscribers.*");
             if (!empty($conditions)) {
-                $query = $query->whereRaw(implode(' OR ', $conditions));
+                $query = $query->whereRaw('(' . implode(' OR ', $conditions) . ')');
             }
         }
         
