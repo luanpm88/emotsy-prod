@@ -1426,7 +1426,7 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $subscribers = $campaign->subscribers()->distinct();
+        $subscribers = $campaign->subscribers();
 
         return view('campaigns.subscribers', [
             'subscribers' => $subscribers,
@@ -1447,7 +1447,7 @@ class CampaignController extends Controller
             return;
         }
 
-        $subscribers = $campaign->subscribers($request->all())->distinct()
+        $subscribers = $campaign->subscribers($request->all())
                                 ->paginate($request->per_page);
         $fields = $campaign->defaultMailList->getFields->whereIn('uid', explode(',', $request->columns));
 
