@@ -1039,9 +1039,9 @@ class AutoEvent extends Model
     }
 
     /**
-     * Check for list-subscription events
+     * Check for messages that have not been opened
      *
-     * @return NULL
+     * @return null
      */
     public function checkForFollowUpNotOpened()
     {
@@ -1049,6 +1049,22 @@ class AutoEvent extends Model
         $logs = $this->getNotOpenedMessagesToFollow();
         foreach($logs as $log) {
             MailLog::info(sprintf('Trigger sending follow-up not opened email for automation `%s`, subscriber: %s, event ID: %s', $this->automation->name, $log->subscriber_id, $this->id));
+            $this->fire(collect([$log->subscriber]));
+            // a more verbal way is: fire(Subscriber::where('id', $log->subscriber_id)
+        }
+    }
+
+    /**
+     * Check for messages that have not been clicked
+     *
+     * @return null
+     */
+    public function checkForFollowUpNotClicked()
+    {
+        $now = Carbon::now();
+        $logs = $this->getNotClickedMessagesToFollow();
+        foreach($logs as $log) {
+            MailLog::info(sprintf('Trigger sending follow-up not clicked email for automation `%s`, subscriber: %s, event ID: %s', $this->automation->name, $log->subscriber_id, $this->id));
             $this->fire(collect([$log->subscriber]));
             // a more verbal way is: fire(Subscriber::where('id', $log->subscriber_id)
         }
@@ -1113,7 +1129,7 @@ class AutoEvent extends Model
     }
 
     /**
-     * Get previous event's opened messages to follow up.
+     * Get messages that have not been clicked for a specified time
      *
      * @return collection
      */
@@ -1132,6 +1148,34 @@ class AutoEvent extends Model
             ->get();
 
         // one message could be opened more than one time
+        // @note: use array_uniq_by() helper function for far better performance thant Collection::uniq()
+        $unique = array_unique_by($messages, function ($message) {
+            return $message->message_id;
+        });
+
+        return $unique;
+    }
+
+    /**
+     * Get messages that have not been opened for a specified time
+     *
+     * @return collection
+     */
+    public function getNotClickedMessagesToFollow()
+    {
+        // no problem if one message is opened more than one time
+        $modifier = Carbon::now()->modify("-{$this->getDelayInterval()}");
+        $messages = TrackingLog::select('tracking_logs.*')
+            ->leftJoin('click_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
+            ->join('auto_triggers', 'tracking_logs.auto_trigger_id', '=', 'auto_triggers.id')
+            ->join('auto_events', 'auto_triggers.auto_event_id', '=', 'auto_events.id')
+            ->where('auto_event_id', $this->previousEvent->id)
+            ->whereRaw(sprintf('%s NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('tracking_logs.subscriber_id'), table('auto_triggers'), $this->id))
+            ->whereRaw(sprintf('%s IS NULL', table('click_logs.id')))
+            ->where('tracking_logs.created_at', '<=', $modifier)
+            ->get();
+
+        // one message could be clicked more than one time
         // @note: use array_uniq_by() helper function for far better performance thant Collection::uniq()
         $unique = array_unique_by($messages, function ($message) {
             return $message->message_id;
