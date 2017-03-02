@@ -1368,7 +1368,7 @@ class Campaign extends Model
      */
     public function clickedEmailsRate()
     {
-        $open_count = $this->openCount();
+        $open_count = $this->openUniqCount();
         
         if ($open_count == 0) {
             return 0;
