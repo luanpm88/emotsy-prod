@@ -169,7 +169,7 @@
 							
 							<br />
 							<div class="row sending-servers">
-								@foreach (Acelle\Model\SendingServer::getAll()->orderBy("name")->get() as $server)
+								@foreach (\Auth::user()->customer->sendingServers()->orderBy("name")->get() as $server)
 									<div class="col-md-6">
 										<h5 class="mt-0 mb-5 text-semibold text-teal-600">{{ $server->name }}</h5>
 										<div class="row">											

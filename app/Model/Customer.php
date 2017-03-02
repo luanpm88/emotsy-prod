@@ -972,4 +972,9 @@ class Customer extends Model
 			return \Acelle\Library\Tool::customerDateTime(\Carbon\Carbon::now());
 		}
     }
+	
+	public function sendingServers()
+    {
+        return $this->hasMany('Acelle\Model\SendingServer');
+    }
 }
