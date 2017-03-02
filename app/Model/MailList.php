@@ -44,7 +44,7 @@ class MailList extends Model
         'name', 'default_subject', 'from_email', 'from_name',
         'remind_message', 'send_to', 'email_daily', 'email_subscribe',
         'email_unsubscribe', 'send_welcome_email', 'unsubscribe_notification',
-        'subscribe_confirmation'
+        'subscribe_confirmation', 'all_sending_servers'
     ];
 
     /**
@@ -1089,5 +1089,30 @@ class MailList extends Model
      */
     public function reload() {
         return self::find($this->id);
+    }
+    
+    public function mailListsSendingServers()
+    {
+        return $this->hasMany('Acelle\Model\MailListsSendingServer');
+    }
+    
+    /**
+     * Update sending servers.
+     *
+     * @return array
+     */
+    public function updateSendingServers($servers)
+    {
+        $this->mailListsSendingServers()->delete();
+        foreach ($servers as $key => $param) {
+            if ($param['check']) {
+                $server = SendingServer::findByUid($key);
+                $row = new MailListsSendingServer();
+                $row->mail_list_id = $this->id;
+                $row->sending_server_id = $server->id;
+                $row->fitness = $param['fitness'];
+                $row->save();
+            }
+        }
     }
 }

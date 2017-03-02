@@ -74,37 +74,5 @@
 			<button type='submit' class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 		</div>
 	</form>
-					
-	<script>
-		$(document).ready(function() {
-			// all sending servers checking
-			$(document).on("change", "input[name='options[all_sending_servers]']", function(e) {
-				if($("input[name='options[all_sending_servers]']:checked").length) {									
-					$(".sending-servers").find("input[type=checkbox]").each(function() {
-						if($(this).is(":checked")) {
-							$(this).parents(".form-group").find(".switchery").eq(1).click();
-						}
-					});
-					$(".sending-servers").hide();
-				} else {
-					$(".sending-servers").show();
-				}
-			});		
-			$("input[name='options[all_sending_servers]']").trigger("change");
-			
-			
-			// Sending servers checking setting
-			$(document).on("change", "input[name='options[create_sending_servers]']", function(e) {			
-				if($('input[name="options[create_sending_servers]"]:checked').val() == 'yes') {
-					$(".sending-servers-yes").show();
-					$(".sending-servers-no").hide();
-				} else {
-					$(".sending-servers-no").show();
-					$(".sending-servers-yes").hide();
-				}
-			});		
-			$('input[name="options[create_sending_servers]"]').trigger("change");
-		});
-	</script>
 	
 @endsection

@@ -13,7 +13,9 @@
         <li class="text-semibold"><a href="#top-tab4" data-toggle="tab">
             <i class="icon-server"></i> {{ trans('messages.sending_servers') }}</a>
         </li>
-        
+        <li class="text-semibold"><a href="#top-tab5" data-toggle="tab">
+            <i class="icon-earth"></i> {{ trans('messages.sending_domains') }}</a>
+        </li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="top-tab1">
@@ -333,5 +335,94 @@
                 </div>
             </div>
         </div>
+        <div class="tab-pane" id="top-tab5">
+            <h4 class="text-teal-800 text-semibold">{{ trans('messages.sending_domains_settings') }}</h4>
+            
+            <div class="row">
+                <div class="col-md-5">
+                    <span class="text-semibold">{{ trans('messages.allow_customer_create_sending_domains') }}</span> &nbsp;&nbsp;&nbsp;
+                    <span class="notoping">
+                        @include('helpers.form_control', ['type' => 'checkbox',
+                            'class' => '',
+                            'name' => 'options[create_sending_domains]',
+                            'value' => $options['create_sending_domains'],
+                            'label' => '',
+                            'options' => ['no','yes'],
+                            'help_class' => 'plan',
+                            'rules' => $plan->rules()
+                        ])
+                    </span>
+                </div>
+            </div>
+            <div class="sending-domains-yes">
+            <hr />
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="boxing">
+                            @include('helpers.form_control', [
+                                'type' => 'text',
+                                'class' => 'numeric',
+                                'name' => 'options[sending_domains_max]',
+                                'value' => $options['sending_domains_max'],
+                                'label' => trans('messages.max_sending_domains'),
+                                'help_class' => 'plan',
+                                'options' => ['true', 'false'],
+                                'rules' => $plan->rules()
+                            ])
+                            <div class="checkbox inline unlimited-check text-semibold">
+                                <label>
+                                    <input{{ $options['sending_domains_max']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
+                                    {{ trans('messages.unlimited') }}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>            
+        </div>
     </div>
 </div>
+    
+<script>	
+	$(document).ready(function() {
+		// all sending servers checking
+		$(document).on("change", "input[name='options[all_sending_servers]']", function(e) {
+			if($("input[name='options[all_sending_servers]']:checked").length) {									
+				$(".sending-servers").find("input[type=checkbox]").each(function() {
+					if($(this).is(":checked")) {
+						$(this).parents(".form-group").find(".switchery").eq(1).click();
+					}
+				});
+				$(".sending-servers").hide();
+			} else {
+				$(".sending-servers").show();
+			}
+		});		
+		$("input[name='options[all_sending_servers]']").trigger("change");
+		
+		
+		// Sending servers checking setting
+		$(document).on("change", "input[name='options[create_sending_servers]']", function(e) {			
+			if($('input[name="options[create_sending_servers]"]:checked').val() == 'yes') {
+				$(".sending-servers-yes").show();
+				$(".sending-servers-no").hide();
+			} else {
+				$(".sending-servers-no").show();
+				$(".sending-servers-yes").hide();
+			}
+		});		
+		$('input[name="options[create_sending_servers]"]').trigger("change");
+        
+        // Sending domains checking setting
+		$(document).on("change", "input[name='options[create_sending_domains]']", function(e) {			
+			if($('input[name="options[create_sending_domains]"]:checked').val() == 'yes') {
+				$(".sending-domains-yes").show();
+				$(".sending-domains-no").hide();
+			} else {
+				$(".sending-domains-no").show();
+				$(".sending-domains-yes").hide();
+			}
+		});		
+		$('input[name="options[create_sending_domains]"]').trigger("change");
+	});
+</script>

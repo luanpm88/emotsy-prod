@@ -252,7 +252,9 @@ class Plan extends Model
             'unsubscribe_url_required' => 'yes',
             'access_when_offline' => 'no',
             'create_sending_servers' => 'no',
+			'create_sending_domains' => 'no',
             'sending_servers_max' => '-1',
+			'sending_domains_max' => '-1',
         ];
     }
     
@@ -405,6 +407,42 @@ class Plan extends Model
             return trans('messages.unlimited');
         } else {
             return $this->getOption("max_file_size_upload");
+        }        
+    }
+	
+	/**
+     * Display sending ervers permission.
+     *
+     * @return array
+     */
+    public function displayAllowCreateSendingServer()
+    {
+		if ($this->getOption("create_sending_servers") == 'no') {
+			return trans('messages.feature_not_allow');
+		}
+		
+        if ($this->getOption("sending_servers_max") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("sending_servers_max");
+        }        
+    }
+	
+	/**
+     * Display sending domains permission.
+     *
+     * @return array
+     */
+    public function displayAllowCreateSendingDomain()
+    {
+		if ($this->getOption("create_sending_domains") == 'no') {
+			return trans('messages.feature_not_allow');
+		}
+		
+        if ($this->getOption("sending_domains_max") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("sending_domains_max");
         }        
     }
     

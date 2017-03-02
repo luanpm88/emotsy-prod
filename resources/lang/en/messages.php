@@ -1557,4 +1557,11 @@ return [
     'edit_plan_subsctiptions_warning' => '',
     'plan_update_all_subscriptions_yes' => '',
     'plan_update_all_subscriptions_no' => '',
+    'max_sending_domains' => 'Max sending domains per customer',
+    'sending_domains_settings' => 'Sending domain settings',
+    'use_all_sending_domains' => 'Use all sending domains',
+    'allow_customer_create_sending_domains' => 'Allows customer create sending domains',
+    'allow_create_sending_servers_intro' => 'Create sending servers: <span class="text-semibold">:value</span>',
+    'allow_create_sending_domains_intro' => 'Create sending domains: <span class="text-semibold">:value</span>',
+    'feature_not_allow' => '<span class="text-warning">No</span>',
 ];

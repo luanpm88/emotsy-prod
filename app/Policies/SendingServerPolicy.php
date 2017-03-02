@@ -63,7 +63,8 @@ class SendingServerPolicy
         
         $customer = $user->customer;
         if (is_object($customer)) {
-            $can = $can || true;
+            $ability = $customer->getOption('create_sending_servers') != 'no';
+            $can = $can || $ability;
         }
         
         return $can;

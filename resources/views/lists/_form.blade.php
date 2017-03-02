@@ -143,3 +143,83 @@
 							
 						</div>
 					</div>
+					
+					
+					@can ('create', new Acelle\Model\SendingServer())
+						<div class="sub_section">
+							<h2 class="text-semibold text-teal-800">{{ trans('messages.sending_servers') }}</h2>
+							<div class="row">
+								<div class="col-md-3">
+									{{ trans('messages.use_all_sending_servers') }}&nbsp;&nbsp;&nbsp;
+									<span class="notoping">												
+										@include('helpers.form_control', ['type' => 'checkbox',
+											'class' => '',
+											'name' => 'all_sending_servers',
+											'value' => $list->all_sending_servers,
+											'label' => '',
+											'options' => [false,true],
+											'help_class' => 'list',
+											'rules' => Acelle\Model\MailList::$rules
+										])
+									</span>
+									
+								</div>
+							</div>
+								
+							
+							<br />
+							<div class="row sending-servers">
+								@foreach (Acelle\Model\SendingServer::getAll()->orderBy("name")->get() as $server)
+									<div class="col-md-6">
+										<h5 class="mt-0 mb-5 text-semibold text-teal-600">{{ $server->name }}</h5>
+										<div class="row">											
+											<div class="col-md-2">
+												<div class="form-group">
+													<label class="mt-0 mb-5 text-semibold">{{ trans('messages.choose') }}</label>
+													@include('helpers.form_control', [
+														'type' => 'checkbox',
+														'name' => 'sending_servers[' . $server->uid . '][check]',
+														'value' => $list->mailListsSendingServers->contains('sending_server_id', $server->id),
+														'label' => '',
+														'options' => [false, true],
+														'help_class' => 'list',
+														'rules' => Acelle\Model\MailList::$rules
+													])
+												</div>
+												<br><br>
+											</div>
+											<div class="col-md-9">
+												@include('helpers.form_control', [
+													'type' => 'text',
+													'class' => 'numeric',
+													'name' => 'sending_servers[' . $server->uid . '][fitness]',
+													'label' => trans('messages.fitness'),
+													'value' => (is_object($list->mailListsSendingServers()->where('sending_server_id', $server->id)->first()) ? $list->mailListsSendingServers()->where('sending_server_id', $server->id)->first()->fitness : "100"),
+													'help_class' => 'list',
+													'rules' => Acelle\Model\MailList::$rules
+												])
+											</div>
+										</div>
+									</div>
+								@endforeach
+							</div>
+						</div>
+						<script>	
+							$(document).ready(function() {
+								// all sending servers checking
+								$(document).on("change", "input[name='all_sending_servers']", function(e) {
+									if($("input[name='all_sending_servers']:checked").length) {									
+										$(".sending-servers").find("input[type=checkbox]").each(function() {
+											if($(this).is(":checked")) {
+												$(this).parents(".form-group").find(".switchery").eq(1).click();
+											}
+										});
+										$(".sending-servers").hide();
+									} else {
+										$(".sending-servers").show();
+									}
+								});		
+								$("input[name='all_sending_servers']").trigger("change");
+							});
+						</script>
+					@endcan

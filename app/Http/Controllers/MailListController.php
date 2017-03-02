@@ -59,7 +59,7 @@ class MailListController extends Controller
     {
         // Generate info
         $customer = $request->user()->customer;
-        $list = new \Acelle\Model\MailList();
+        $list = new \Acelle\Model\MailList(['all_sending_servers' => true]);
         $list->contact = new \Acelle\Model\Contact();
 
         if (is_object($customer->contact)) {
@@ -85,6 +85,21 @@ class MailListController extends Controller
         }
         if (isset($request->old()['contact'])) {
             $list->contact->fill($request->old()['contact']);
+        }
+        
+        // Sending servers
+        if (isset($request->old()['sending_servers'])) {
+            $list->mailListsSendingServers = collect([]);
+            foreach ($request->old()['sending_servers'] as $key => $param) {
+                if ($param['check']) {
+                    $server = \Acelle\Model\SendingServer::findByUid($key);
+                    $row = new \Acelle\Model\MailListsSendingServer();
+                    $row->mail_list_id = $list->id;
+                    $row->sending_server_id = $server->id;
+                    $row->fitness = $param['fitness'];
+                    $list->mailListsSendingServers->push($row);
+                }
+            }
         }
 
         return view('lists.create', [
@@ -113,6 +128,16 @@ class MailListController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             $this->validate($request, \Acelle\Model\MailList::$rules);
+            
+            $rules = [];
+            if (isset($request->sending_servers)) {
+                foreach ($request->sending_servers as $key => $param) {
+                    if ($param['check']) {
+                        $rules['sending_servers.'.$key.'.fitness'] = 'required';
+                    }
+                }
+            }
+            $this->validate($request, $rules);
 
             // Save contact
             $contact = \Acelle\Model\Contact::create($request->all()['contact']);
@@ -120,6 +145,11 @@ class MailListController extends Controller
             $list->customer_id = $customer->id;
             $list->contact_id = $contact->id;
             $list->save();
+            
+            // For sending servers
+            if (isset($request->sending_servers)) {
+                $list->updateSendingServers($request->sending_servers);
+            }
 
             // Log
             $list->log('created', $request->user()->customer);
@@ -167,6 +197,21 @@ class MailListController extends Controller
         if (isset($request->old()['contact'])) {
             $list->contact->fill($request->old()['contact']);
         }
+        
+        // Sending servers
+        if (isset($request->old()['sending_servers'])) {
+            $list->mailListsSendingServers = collect([]);
+            foreach ($request->old()['sending_servers'] as $key => $param) {
+                if ($param['check']) {
+                    $server = \Acelle\Model\SendingServer::findByUid($key);
+                    $row = new \Acelle\Model\MailListsSendingServer();
+                    $row->mail_list_id = $list->id;
+                    $row->sending_server_id = $server->id;
+                    $row->fitness = $param['fitness'];
+                    $list->mailListsSendingServers->push($row);
+                }
+            }
+        }
 
         return view('lists.edit', [
             'list' => $list,
@@ -195,12 +240,27 @@ class MailListController extends Controller
         // validate and save posted data
         if ($request->isMethod('patch')) {
             $this->validate($request, \Acelle\Model\MailList::$rules);
+            
+            $rules = [];
+            if (isset($request->sending_servers)) {
+                foreach ($request->sending_servers as $key => $param) {
+                    if ($param['check']) {
+                        $rules['sending_servers.'.$key.'.fitness'] = 'required';
+                    }
+                }
+            }
+            $this->validate($request, $rules);
 
             // Save contact
             $list->contact->fill($request->all()['contact']);
             $list->contact->save();
             $list->fill($request->all());
             $list->save();
+            
+            // For sending servers
+            if (isset($request->sending_servers)) {
+                $list->updateSendingServers($request->sending_servers);
+            }
 
             // Log
             $list->log('updated', $request->user()->customer);

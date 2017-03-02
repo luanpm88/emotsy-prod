@@ -18,4 +18,10 @@
     <li>
         {!! trans('messages.max_file_size_upload_intro', ["value" => $plan->displayFileSizeUpload()]) !!}
     </li>
+    <li>
+        {!! trans('messages.allow_create_sending_servers_intro', ["value" => $plan->displayAllowCreateSendingServer()]) !!}
+    </li>
+    <li>
+        {!! trans('messages.allow_create_sending_domains_intro', ["value" => $plan->displayAllowCreateSendingDomain()]) !!}
+    </li>
 </ul>

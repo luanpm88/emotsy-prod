@@ -53,7 +53,13 @@
             </li>
             <li>
                 {!! trans('messages.max_file_size_upload_intro', ["value" => $subscription->displayFileSizeUpload()]) !!}
-            </li>					
+            </li>
+            <li>
+                {!! trans('messages.allow_create_sending_servers_intro', ["value" => $subscription->displayAllowCreateSendingServer()]) !!}
+            </li>
+            <li>
+                {!! trans('messages.allow_create_sending_domains_intro', ["value" => $subscription->displayAllowCreateSendingDomain()]) !!}
+            </li>
         </ul>
     </div>
     @if (!isset($readonly))
