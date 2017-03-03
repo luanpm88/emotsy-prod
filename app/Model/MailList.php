@@ -635,7 +635,7 @@ class MailList extends Model
      */
     public function copy($name)
     {
-        $copy = $this->replicate();
+        $copy = $this->replicate(['cache']);
         $copy->name = $name;
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
