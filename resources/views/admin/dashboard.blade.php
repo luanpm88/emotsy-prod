@@ -363,7 +363,7 @@
 											</div>
 											<div class="col-sm-3 col-md-3 text-left">
 												<span class="text-muted2 list-status pull-left">
-													<span class="label label-flat bg-{{ $subscription->status }}">{{ trans('messages.subscription_status_' . $subscription->status) }}</span>
+													<span class="label label-flat bg-{{ $customer->status }}">{{ trans('messages.subscription_status_' . $customer->status) }}</span>
 												</span>
 											</div>
 										</div>

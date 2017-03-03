@@ -1141,6 +1141,7 @@ class MailList extends Model
                 $row->fitness = $param['fitness'];
                 $row->save();
             }
+        }
     }
     
     /**
