@@ -68,7 +68,7 @@ class MailListController extends Controller
         } else {
             $list->send_to = $customer->user->email;
         }
-        
+
         // default values
         $list->subscribe_confirmation = true;
         $list->send_welcome_email = true;
@@ -150,6 +150,9 @@ class MailListController extends Controller
             if (isset($request->sending_servers)) {
                 $list->updateSendingServers($request->sending_servers);
             }
+
+            // Trigger updating related campaigns cache
+            $list->updateCachedInfo();
 
             // Log
             $list->log('created', $request->user()->customer);
@@ -333,12 +336,21 @@ class MailListController extends Controller
      */
     public function delete(Request $request)
     {
+        if (isSiteDemo()) {
+            echo trans('messages.operation_not_allowed_in_demo');
+            return;
+        }
+
         $lists = \Acelle\Model\MailList::whereIn('uid', explode(',', $request->uids));
 
         foreach ($lists->get() as $item) {
             // authorize
             if (\Gate::allows('delete', $item)) {
                 $item->delete();
+
+                // not needed as the related campaigns will be deleted as well
+                // $item->updateCachedInfo();
+
                 // Log
                 $item->log('deleted', $request->user()->customer);
             }
@@ -358,6 +370,8 @@ class MailListController extends Controller
     public function overview(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
+
+        event(new \Acelle\Events\MailListUpdated($list));
 
         // authorize
         if (\Gate::denies('read', $list)) {
@@ -435,7 +449,7 @@ class MailListController extends Controller
 
         return json_encode($result);
     }
-    
+
     /**
      * Chart statistics chart.
      *
@@ -446,7 +460,7 @@ class MailListController extends Controller
     public function statisticsChart(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
-        
+
         if (is_object($list)) {
             $list_id = $list->id;
         } else {
@@ -454,7 +468,7 @@ class MailListController extends Controller
             $list = new \Acelle\Model\MailList();
             $list->customer_id = $request->user()->customer->id;
         }
-        
+
         // authorize
         if (\Gate::denies('read', $list)) {
             return $this->notAuthorized();
@@ -466,7 +480,7 @@ class MailListController extends Controller
             'data' => [],
             'bar_names' => [],
         ];
-        
+
         $datas = [];
         if (isset($list->id)) {
             // create data
@@ -529,10 +543,10 @@ class MailListController extends Controller
             'radius' => '70%',
             'center' => ['50%', '57.5%'],
             'data' => $datas
-        ];        
-        
+        ];
+
         $result['pie'] = 1;
-        
+
         return json_encode($result);
     }
 
@@ -583,7 +597,7 @@ class MailListController extends Controller
 
         echo trans('messages.list.copied');
     }
-    
+
     /**
      * Embedded Forms.
      *
@@ -604,7 +618,7 @@ class MailListController extends Controller
             'list' => $list,
         ]);
     }
-    
+
     /**
      * Embedded Forms.
      *
@@ -625,7 +639,7 @@ class MailListController extends Controller
             'list' => $list,
         ]);
     }
-    
+
     /**
      * reCaptcha check.
      *
@@ -638,12 +652,12 @@ class MailListController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->uid);
 
         $request->session()->set('form_url', \URL::previous());
-        
+
         return view('lists.embedded_form_captcha', [
             'list' => $list,
         ]);
     }
-    
+
     /**
      * Subscribe user from embedded Forms.
      *
@@ -657,11 +671,11 @@ class MailListController extends Controller
             $success = \Acelle\Library\Tool::checkReCaptcha($request);
         } else {
             $success = true;
-        }        
-        
+        }
+
         $list = \Acelle\Model\MailList::findByUid($request->uid);
-        
-        if (!$success) {            
+
+        if (!$success) {
             $url = $request->session()->pull('form_url');
             $errs = [trans("messages.invalid_captcha")];
             return view('lists.embedded_form_captcha_invalid', [
@@ -680,7 +694,7 @@ class MailListController extends Controller
 
             // Validation
             $validator = \Validator::make($request->all(), $subscriber->getRules());
-            
+
             if ($validator->fails()) {
                 $url = $request->session()->pull('form_url');
                 // $validator->errors()
@@ -688,7 +702,7 @@ class MailListController extends Controller
                 foreach($validator->errors()->toArray() as $key => $error) {
                     $errs[] = $key . ": " . $error[0];
                 }
-                
+
                 if (strpos($url, '?') !== false) {
                     $url = $url . "&" . implode('&', $errs);
                 } else {
@@ -708,22 +722,22 @@ class MailListController extends Controller
             $subscriber->save();
             // Update field
             $subscriber->updateFields($request->all());
-            
+
             if($list->subscribe_confirmation) {
                 // SEND subscription confirmation email
                 $list->sendSubscriptionConfirmationEmail($subscriber);
-    
+
                 return redirect()->action('PageController@signUpThankyouPage', $list->uid);
             } else {
                 // change status to subscribed
                 $subscriber->updateStatus('subscribed');
-                
+
                 // Send welcome email
                 if($list->send_welcome_email) {
                     // SEND subscription confirmation email
                     $list->sendSubscriptionWelcomeEmail($subscriber);
                 }
-                
+
                 return redirect()->action('PageController@signUpConfirmationThankyou', [
                         'list_uid' => $list->uid,
                         'uid' => $subscriber->uid,

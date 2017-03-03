@@ -316,4 +316,14 @@ class Template extends Model
 
         return $tags;
     }
+    
+    /**
+     * Replace url from content.
+     *
+     * @return void
+     */
+    public function replaceHtmlUrl($template_path)
+    {
+        $this->content = \Acelle\Library\Tool::replaceHtmlUrl($this->content, $template_path);
+    }
 }

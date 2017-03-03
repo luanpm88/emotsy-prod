@@ -747,14 +747,14 @@ class Customer extends Model
     public function renewQuotaTracker() {
         $this->getQuotaTracker()->getExclusiveLock(function() {
             $start = $this->getQuotaStartingTime();
-    
+
             // recent tracking logs
             // @todo: potential issue here, application fails in case $start is NULL
             $recent = $this->trackingLogs()->where('created_at', '>=', $start);
-            
+
             // existing quota usage
             $stored = null;
- 
+
             // load the tracker from DB (if exists)
             // then merge with the current tracking log data
             if ($this->quota) {
@@ -762,10 +762,10 @@ class Customer extends Model
                     $stored = unserialize($this->quota);
                 } catch (\Exception $x) {
                     // @TODO logging here
-                    MailLog::warning('Cannot retrieve user quota');
+                    MailLog::warning('Cannot retrieve customer quota');
                 }
             }
-    
+
             // load the tracker from DB
             if (!is_null($stored) && !empty($stored)) {
                 // retrieve the stored quota usage and merge it with actual (newer) usage
@@ -773,14 +773,14 @@ class Customer extends Model
                 $series = $recent->get()->map(function($trackingLog) {
                     return $trackingLog->created_at->timestamp;
                 })->toArray();
-                
+
                 $series = array_merge($stored, $series);
             } else {
                 $series = $recent->get()->map(function($trackingLog) {
                     return $trackingLog->created_at->timestamp;
                 })->toArray();
             }
-            
+
             $this->getQuotaTracker()->reset($series);
         });
     }
@@ -995,5 +995,114 @@ class Customer extends Model
             ->where('customers.created_at', '<=', $end);
     
         return $query->count();
+    }
+	
+	/**
+     * The rules for validation via api.
+     *
+     * @var array
+     */
+    public function apiRules()
+    {
+        return array(
+            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'first_name' => 'required',
+            'last_name' => 'required',
+            'timezone' => 'required',
+            'language_id' => 'required',
+            'password' => 'required|min:5',
+        );
+    }
+
+    /**
+     * The rules for validation via api.
+     *
+     * @var array
+     */
+    public function apiUpdateRules($request)
+    {
+        $arr = [];
+
+        if(isset($request->email)) {
+            $arr['email'] = 'required|email|unique:users,email,'.$this->id.',id';
+        }
+        if(isset($request->first_name)) {
+            $arr['first_name'] = 'required';
+        }
+        if(isset($request->last_name)) {
+            $arr['last_name'] = 'required';
+        }
+        if(isset($request->timezone)) {
+            $arr['timezone'] = 'required';
+        }
+        if(isset($request->language_id)) {
+            $arr['language_id'] = 'required';
+        }
+        if(isset($request->password)) {
+            $arr['password'] = 'min:5';
+        }
+
+        return $arr;
+    }
+	
+	/**
+     * Update Campaign cached data
+     *
+     * @return void
+     */
+    public function updateCache($key = null)
+    {
+        // cache indexes
+        $index = [
+            'SubscriberCount' => function(&$customer) {
+                return $customer->subscribersCount();
+            },
+            'SubscriberUsage' => function(&$customer) {
+                return $customer->subscribersUsage();
+            },
+        ];
+
+        // retrieve cached data
+        $cache = json_decode($this->cache, true);
+        if (is_null($cache)) {
+            $cache = [];
+        }
+
+        if (is_null($key)) {
+            // update all cache
+            foreach($index as $key => $callback) {
+                $cache[$key] = $callback($this);
+            }
+        } else {
+            // update specific key
+            $callback = $index[$key];
+            $cache[$key] = $callback($this);
+        }
+
+        // write back to the DB
+        $this->cache = json_encode($cache);
+        $this->save();
+    }
+
+    /**
+     * Retrieve Campaign cached data
+     *
+     * @return mixed
+     */
+    public function readCache($key, $default = null)
+    {
+        $cache = json_decode($this->cache, true);
+        if (is_null($cache)) {
+            return $default;
+        }
+        if (array_key_exists($key, $cache)) {
+            if (is_null($cache[$key])) {
+                return $default;
+            } else {
+                return $cache[$key];
+            }
+        } else {
+            return null;
+        }
     }
 }

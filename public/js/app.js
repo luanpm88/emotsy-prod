@@ -1257,4 +1257,7 @@ $(function() {
         $('input[name="payment_method_uid"]').val(value);
     });
     
+    // load locale js
+    $.getScript(JVALIDATE_TRANSLATE_URL, function(){
+    });
 });

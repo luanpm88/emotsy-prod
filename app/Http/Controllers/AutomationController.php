@@ -315,6 +315,11 @@ class AutomationController extends Controller
      */
     public function delete(Request $request)
     {
+        if (isSiteDemo()) {
+            echo trans('messages.operation_not_allowed_in_demo');
+            return;
+        }
+        
         $automations = \Acelle\Model\Automation::whereIn('uid', explode(',', $request->uids));
 
         foreach ($automations->get() as $automation) {

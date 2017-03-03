@@ -46,65 +46,6 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
-    
-    /**
-     * The rules for validation via api.
-     *
-     * @var array
-     */
-    public function apiRules()
-    {
-        return array(
-            'user_group_id' => 'required',
-            'email' => 'required|email|unique:users,email,'.$this->id.',id',
-            'first_name' => 'required',
-            'last_name' => 'required',
-            'timezone' => 'required',
-            'language_id' => 'required',
-            'password' => 'required|min:5',
-        );
-    }
-    
-    /**
-     * The rules for validation via api.
-     *
-     * @var array
-     */
-    public function apiUpdateRules($request)
-    {
-        $arr = [];
-        
-        if(isset($request->email)) {
-            $arr['email'] = 'required|email|unique:users,email,'.$this->id.',id';
-        }
-        if(isset($request->first_name)) {
-            $arr['first_name'] = 'required';
-        }
-        if(isset($request->last_name)) {
-            $arr['last_name'] = 'required';
-        }
-        if(isset($request->timezone)) {
-            $arr['timezone'] = 'required';
-        }
-        if(isset($request->language_id)) {
-            $arr['language_id'] = 'required';
-        }
-        if(isset($request->password)) {
-            $arr['password'] = 'min:5';
-        }
-        
-        return $arr;
-    }
-
-    /**
-     * Find item by uid.
-     *
-     * @return object
-     */
-    public static function findByUid($uid)
-    {
-        return self::where('uid', '=', $uid)->first();
-    }
 
     /**
      * Associations.
@@ -125,31 +66,10 @@ class User extends Authenticatable
     {
         return $this->hasOne('Acelle\Model\Reseller');
     }
-    
+
     public function systemJobs()
     {
         return $this->hasMany('Acelle\Model\SystemJob')->orderBy('created_at', 'desc');
-    }
-
-    /**
-     * Bootstrap any application services.
-     */
-    public static function boot()
-    {
-        parent::boot();
-
-        // Create uid when creating list.
-        static::creating(function ($item) {
-            // Create new uid
-            $uid = uniqid();
-            while (User::where('uid', '=', $uid)->count() > 0) {
-                $uid = uniqid();
-            }
-            $item->uid = $uid;
-
-            // Add api token
-            $item->api_token = str_random(60);
-        });
     }
 
     /**
@@ -220,7 +140,7 @@ class User extends Authenticatable
 
         if (!is_object($userActivation)) {                      
             $userActivation = new \Acelle\Model\UserActivation();
-            $userActivation->user_id = $this->id;            
+            $userActivation->user_id = $this->id;
         }
         
         $userActivation->token = $token;

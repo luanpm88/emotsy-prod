@@ -39,9 +39,6 @@ class AutomationPolicy
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\Automation $automation)
     {
-        if (isSiteDemo()) {
-            return false;
-        }
         return $automation->customer_id == $user->customer->id && in_array($automation->status, [
                                                                 \Acelle\Model\Automation::STATUS_DRAFT,
                                                                 \Acelle\Model\Automation::STATUS_ACTIVE,

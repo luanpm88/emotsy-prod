@@ -97,7 +97,9 @@
 						<a href="{{ action("AutomationController@workflow", $automation->uid) }}" class="btn bg-grey-800">
 							<i class="icon-arrow-left7"></i> {{ trans('messages.back_to_workflow') }}
 						</a>
-						<button class="btn btn-lg bg-teal-800"><i class="icon-paperplane ml-5"></i> {{ trans('messages.send') }}</button>							
+						@if ($automation->isValid())
+							<button class="btn btn-lg bg-teal-800"><i class="icon-paperplane ml-5"></i> {{ trans('messages.send') }}</button>
+						@endif
 					</div>
                 </form>
                     

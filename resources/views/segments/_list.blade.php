@@ -35,7 +35,7 @@
 										<td class="text-right text-nowrap">
 											@if (\Gate::allows('update', $item))
 												<a href="{{ action('SegmentController@edit', ['list_uid' => $list->uid, "uids" => $item->uid]) }}" type="button" class="btn bg-grey btn-icon">
-													<i class="icon-pencil"></i> Edit
+													<i class="icon-pencil"></i> {{ trans('messages.edit') }}
 												</a>
 											@endif
 											<div class="btn-group">										

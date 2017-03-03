@@ -124,6 +124,9 @@ class SubscriberController extends Controller
             // Update field
             $subscriber->updateFields($request->all());
 
+            // update MailList cache
+            $subscriber->mailList->updateCachedInfo();
+
             // Log
             $subscriber->log('created', $customer);
 
@@ -243,6 +246,10 @@ class SubscriberController extends Controller
         $customer = $request->user()->customer;
         $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
 
+        // get related mail lists to update the cached information
+        $lists = $subscribers->get()->map(function($e) { return \Acelle\Model\MailList::find($e->mail_list_id); })->unique();
+
+        // actually delete the subscriber
         foreach ($subscribers->get() as $subscriber) {
             // authorize
             if (\Gate::denies('delete', $subscriber)) {
@@ -255,6 +262,10 @@ class SubscriberController extends Controller
 
             // Log
             $subscriber->log('deleted', $customer);
+        }
+
+        foreach ($lists as $list) {
+            $list->updateCachedInfo();
         }
 
         // Redirect to my lists page
@@ -334,22 +345,22 @@ class SubscriberController extends Controller
     {
         $customer = $request->user()->customer;
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        
+
         $system_jobs = $list->importJobs();
- 
+
         // authorize
         if (\Gate::denies('update', $list)) {
             return $this->notAuthorized();
         }
-        
+
         if ($request->isMethod('post')) {
-            if ($request->hasFile('file')) {                
+            if ($request->hasFile('file')) {
                 // Start system job
                 $job = new \Acelle\Jobs\ImportSubscribersJob($list, $request->user(), $request->file('file')->path());
                 $this->dispatch($job);
-                
+
                 // Action Log
-                $list->log('import_started', $request->user());                
+                $list->log('import_started', $request->user());
             } else {
                 echo "max_file_upload";
             }
@@ -372,19 +383,19 @@ class SubscriberController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->current_list_uid);
         $system_job = $list->getLastImportJob();
-        
+
         if(!is_object($system_job)) {
             return "none";
         }
-        
+
         // authorize
         if (\Gate::denies('update', $list)) {
             return $this->notAuthorized();
         }
-        
+
         // Messages
         $message = \Acelle\Helpers\ImportSubscribersHelper::getMessage($system_job);
-        
+
         return response()->json([
             "job" => $system_job,
             "data" => json_decode($system_job->data),
@@ -392,7 +403,7 @@ class SubscriberController extends Controller
             "message" => $message,
         ]);
     }
-    
+
     /**
      * Download import log.
      *
@@ -409,7 +420,7 @@ class SubscriberController extends Controller
         // @todo what if log does not exist (removed)?
         return response()->download($log);
     }
-    
+
     /**
      * Display a listing of subscriber import job.
      *
@@ -438,7 +449,7 @@ class SubscriberController extends Controller
     public function export(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        
+
         $system_jobs = $list->exportJobs();
 
         $customer = $request->user()->customer;
@@ -449,11 +460,11 @@ class SubscriberController extends Controller
         }
 
         if ($request->isMethod('post')) {
-                        
+
             // Start system job
             $job = new \Acelle\Jobs\ExportSubscribersJob($list, $request->user());
             $this->dispatch($job);
-            
+
             // Action Log
             $list->log('export_started', $request->user());
         } else {
@@ -475,16 +486,16 @@ class SubscriberController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->current_list_uid);
         $system_job = $list->getLastExportJob();
-        
+
         if(!is_object($system_job)) {
             return "none";
         }
-        
+
         // authorize
         if (\Gate::denies('update', $list)) {
             return $this->notAuthorized();
         }
-        
+
         return response()->json([
             "job" => $system_job,
             "data" => json_decode($system_job->data),
@@ -506,7 +517,7 @@ class SubscriberController extends Controller
 
         return response()->download(storage_path('job/'.$system_job->id.'/data.csv'));
     }
-    
+
     /**
      * Display a listing of subscriber import job.
      *

@@ -29,23 +29,23 @@
 										<td class="stat-fix-size-sm">
 											<div class="single-stat-box pull-left">
 												<a href="{{ action('SubscriberController@index', $item->uid) }}">
-													<span class="no-margin stat-num">{{ $item->subscribers()->count() }}</span>
+													<span class="no-margin stat-num">{{ $item->readCache('SubscriberCount', 0) }}</span>
 												</a>
 												<br />
-												<span class="text-muted">{{ trans("messages." . Acelle\Library\Tool::getPluralPrase('subscriber', $item->subscribers()->count())) }}</span>
+												<span class="text-muted">{{ trans("messages." . Acelle\Library\Tool::getPluralPrase('subscriber', $item->readCache('SubscriberCount', 0))) }}</span>
 											</div>
 											<div class="single-stat-box pull-left ml-20">
 												<span class="no-margin text-teal-800 stat-num">{{ $item->openUniqRate() }}%</span>
 												<div class="progress progress-xxs">
-													<div class="progress-bar progress-bar-info" style="width: {{ $item->openUniqRate() }}%">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('UniqOpenRate', 0) }}%">
 													</div>
 												</div>
 												<span class="text-muted">{{ trans('messages.open_rate') }}</span>
 											</div>
 											<div class="single-stat-box pull-left ml-20">
-												<span class="no-margin text-teal-800 stat-num">{{ $item->clickRate() }}%</span>
+												<span class="no-margin text-teal-800 stat-num">{{ $item->readCache('ClickedRate', 0) }}%</span>
 												<div class="progress progress-xxs">
-													<div class="progress-bar progress-bar-info" style="width: {{ $item->clickRate() }}%">
+													<div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('ClickedRate', 0) }}%">
 													</div>
 												</div>
 												<span class="text-muted">{{ trans('messages.click_rate') }}</span>
@@ -58,7 +58,7 @@
 											</span>
 											<a href="{{ action('SubscriberController@create', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.create_subscriber') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></a>
 											<a href="{{ action('MailListController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="icon-stats-growth mr-0 pr-0"></i></a>
-											<div class="btn-group">										
+											<div class="btn-group">
 												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 												<ul class="dropdown-menu dropdown-menu-right">
 													<li><a href="{{ action('SubscriberController@index', $item->uid) }}"><i class="icon-users4"></i> {{ trans("messages.subscribers") }}</a></li>
@@ -77,16 +77,16 @@
 													<li><a href="{{ action('MailListController@edit', $item->uid) }}"><i class="icon-pencil7"></i> {{ trans("messages.edit_list") }}</a></li>
 													<li><a href="{{ action('SubscriberController@import', $item->uid) }}"><i class="icon-download4"></i> {{ trans('messages.import') }}</a></li>
 													<li><a href="{{ action('SubscriberController@export', $item->uid) }}"><i class="icon-upload4"></i> {{ trans('messages.export') }}</a></li>
-													<li>														
+													<li>
 														<a data-uid="{{ $item->uid }}" data-name="{{ trans("messages.copy_of_list", ['name' => $item->name]) }}" class="copy-list-link">
 															<i class="icon-copy4"></i> {{ trans('messages.copy') }}
 														</a>
 													</li>
-													<li>														
+													<li>
 														<a list-delete-confirm="{{ action('MailListController@deleteConfirm', ['uids' => $item->uid]) }}" href="{{ action('MailListController@delete', ['uids' => $item->uid]) }}">
 															<i class="icon-trash"></i> {{ trans('messages.delete') }}
 														</a>
-													</li>													
+													</li>
 												</ul>
 											</div>
 										</td>
@@ -102,7 +102,7 @@
 									{{ trans('messages.no_search_result') }}
 								</span>
 							</div>
-						@else					
+						@else
 							<div class="empty-list">
 								<i class="icon-address-book2"></i>
 								<span class="line-1">

@@ -203,8 +203,8 @@ function rename_folder($old_path, $name, $transliteration)
 function create_img($imgfile, $imgthumb, $newwidth, $newheight = null, $option = "crop")
 {
 	$result = false;
-	if(file_exists($imgfile) || strpos($imgfile,'http')===0){
-		if (strpos($imgfile,'http')===0 || image_check_memory_usage($imgfile, $newwidth, $newheight))
+	if(file_exists($imgfile) || strpos($imgfile,'http')===false){
+		if (strpos($imgfile,'http')===false) // || image_check_memory_usage($imgfile, $newwidth, $newheight))
 		{
 			require_once('php_image_magician.php');
 			$magicianObj = new imageLib($imgfile);

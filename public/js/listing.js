@@ -1,3 +1,14 @@
+// Generate unique id
+function guid() {
+  function s4() {
+    return Math.floor((1 + Math.random()) * 0x10000)
+      .toString(16)
+      .substring(1);
+  }
+  return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+    s4() + '-' + s4() + s4() + s4();
+}
+
 function hiliter(word, element) {
     var rgxp = new RegExp(word, 'gi');
     var string = element.html().match(rgxp);
@@ -27,6 +38,7 @@ function tableFilterAll() {
 
 function tableFilter(form, custom_url) {
     var url = form.attr("data-url");
+    var id = form.attr('data-id');
     var per_page = form.attr("per-page")
     var sort_order = form.find("select[name='sort-order']").val();
     
@@ -61,7 +73,11 @@ function tableFilter(form, custom_url) {
     });
 
     // ajax update custom sort
-    $.ajax({
+    // ajax update custom sort
+	if(datalists[id] && datalists[id].readyState != 4){
+		datalists[id].abort();
+	}
+    datalists[id] = $.ajax({
         method: "GET",
         url: url,
         data: {
@@ -201,10 +217,16 @@ function updateCustomOrder(form) {
 }
 
 var drag_child;
+var datalists = {};
 $(document).ready(function() {
     
     $(".listing-form").each(function() {
         var form = $(this);
+        var id = form.attr('data-id');
+        
+        if(typeof(id) === 'undefined') {
+            form.attr('data-id', guid());
+        }
         
         // Make list sortable        
         form.sortable({

@@ -29,7 +29,7 @@
 											<span class="text-muted">{{ trans('messages.' . $item->type) }}</span>
 											
 											<div class="text-semibold" data-popup="tooltip" title="{{ $item->displayRecipients() }}">
-												{{ $item->subscribers()->count() }} {{ trans('messages.recipients') }}
+												{{ $item->readCache('SubscriberCount') }} {{ trans('messages.recipients') }}
 											</div>
 
 											@if ($item->status != 'new')
@@ -41,27 +41,27 @@
 										<td class="stat-fix-size-sm">
 											@if ($item->status != 'new')
 												<div class="single-stat-box pull-left ml-20">
-													<span class="no-margin text-teal-800 stat-num">{{ $item->deliveredRate() }}%</span>
+													<span class="no-margin text-teal-800 stat-num">{{ $item->isSending() ? $item->sentRate() : $item->readCache('SentRate') }}%</span>
 													<div class="progress progress-xxs">
-														<div class="progress-bar progress-bar-info" style="width: {{ $item->deliveredRate() }}%">
+														<div class="progress-bar progress-bar-info" style="width: {{ $item->isSending() ? $item->sentRate() : $item->readCache('SentRate') }}%">
 														</div>
 													</div>
-													<span class="text-semibold">{{ $item->deliveredCount() }} / {{ $item->subscribers()->count() }}</span>
+													<span class="text-semibold">{{ $item->isSending() ? $item->deliveredCount() : $item->readCache('DeliveredCount', 0) }} / {{ $item->readCache('SubscriberCount', 0)  }}</span>
 													<br />
 													<span class="text-muted">{{ trans('messages.sent') }}</span>
 												</div>
 												<div class="single-stat-box pull-left ml-20">
-													<span class="no-margin text-teal-800 stat-num">{{ $item->openUniqRate() }}%</span>
+													<span class="no-margin text-teal-800 stat-num">{{ $item->readCache('UniqOpenRate') }}%</span>
 													<div class="progress progress-xxs">
-														<div class="progress-bar progress-bar-info" style="width: {{ $item->openUniqRate() }}%">
+														<div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('UniqOpenRate') }}%">
 														</div>
 													</div>
 													<span class="text-muted">{{ trans('messages.open_rate') }}</span>
 												</div>
 												<div class="single-stat-box pull-left ml-20">
-													<span class="no-margin text-teal-800 stat-num">{{ $item->clickedEmailsRate() }}%</span>
+													<span class="no-margin text-teal-800 stat-num">{{ $item->readCache('ClickedRate') }}%</span>
 													<div class="progress progress-xxs">
-														<div class="progress-bar progress-bar-info" style="width: {{ $item->clickedEmailsRate() }}%">
+														<div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('ClickedRate') }}%">
 														</div>
 													</div>
 													<span class="text-muted">{{ trans('messages.click_rate') }}</span>

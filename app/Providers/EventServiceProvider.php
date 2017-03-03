@@ -13,8 +13,14 @@ class EventServiceProvider extends ServiceProvider
      * @var array
      */
     protected $listen = [
-        'Acelle\Events\SomeEvent' => [
-            'Acelle\Listeners\EventListener',
+        'Acelle\Events\CampaignUpdated' => [
+            'Acelle\Listeners\CampaignUpdatedListener',
+        ],
+        'Acelle\Events\MailListUpdated' => [
+            'Acelle\Listeners\MailListUpdatedListener',
+        ],
+        'Acelle\Events\UserUpdated' => [
+            'Acelle\Listeners\UserUpdatedListener',
         ],
     ];
 

@@ -1930,3 +1930,6 @@ ul.plans-intro li span {
 .has-fixed-height-250 {
     height: 250px;
 }
+.select-medium .select2 {
+    min-width: 120px;
+}

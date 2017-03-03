@@ -566,9 +566,13 @@ class Subscriber extends Model
      */
     public function move($list, $type = 'keep')
     {
+        $fromList = $this->mailList;
         $this->copy($list, $type);
-
         $this->delete();
+        
+        // update related campaign cache information
+        $fromList->updateCachedInfo();
+        $list->updateCachedInfo();
     }
     
     /**
@@ -579,7 +583,7 @@ class Subscriber extends Model
     public function trackingLog($campaign)
     {
         $query = \Acelle\Model\TrackingLog::where('tracking_logs.subscriber_id', '=', $this->id);
-        $query = $query->where('tracking_logs.campaign_id', '=', $campaign->id)->first();
+        $query = $query->where('tracking_logs.campaign_id', '=', $campaign->id)->orderBy('created_at', 'desc')->first();
 
         return $query;
     }
