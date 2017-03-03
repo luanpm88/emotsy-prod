@@ -660,6 +660,9 @@ class MailList extends Model
             $new_field->mail_list_id = $copy->id;
             $new_field->save();
         }
+
+        // update cache
+        $copy->updateCache();
     }
 
     /**

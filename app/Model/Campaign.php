@@ -1952,6 +1952,9 @@ class Campaign extends Model
             $new_lists_segment->campaign_id = $copy->id;
             $new_lists_segment->save();
         }
+
+        // update cache
+        $copy->updateCache();
     }
 
     /**
