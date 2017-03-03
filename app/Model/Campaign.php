@@ -1159,6 +1159,8 @@ class Campaign extends Model
 
         if(isset($filters) || $this->status == "done") {
             $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id');
+            $query = $query->where('tracking_logs.id', "!=", "NULL");
+            $query = $query->where('tracking_logs.campaign_id', "=", $this->id);
         }
 
         if(isset($filters)) {
@@ -1187,12 +1189,6 @@ class Campaign extends Model
                         ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
                 });
             }
-        }
-
-        // when status == done
-        if($this->status == "done") {
-            $query = $query->where('tracking_logs.campaign_id', "=", $this->id);
-            $query = $query->where('tracking_logs.id', "!=", "NULL");
         }
 
         return $query;

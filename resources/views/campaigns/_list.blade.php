@@ -41,9 +41,9 @@
 										<td class="stat-fix-size-sm">
 											@if ($item->status != 'new')
 												<div class="single-stat-box pull-left ml-20">
-													<span class="no-margin text-teal-800 stat-num">{{ $item->isSending() ? $item->sentRate() : $item->readCache('DeliveredRate') }}%</span>
+													<span class="no-margin text-teal-800 stat-num">{{ $item->isSending() ? $item->sentRate() : $item->readCache('SentRate') }}%</span>
 													<div class="progress progress-xxs">
-														<div class="progress-bar progress-bar-info" style="width: {{ $item->isSending() ? $item->sentRate() : $item->readCache('DeliveredRate') }}%">
+														<div class="progress-bar progress-bar-info" style="width: {{ $item->isSending() ? $item->sentRate() : $item->readCache('SentRate') }}%">
 														</div>
 													</div>
 													<span class="text-semibold">{{ $item->isSending() ? $item->deliveredCount() : $item->readCache('DeliveredCount', 0) }} / {{ $item->readCache('SubscriberCount', 0)  }}</span>
