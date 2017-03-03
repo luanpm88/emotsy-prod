@@ -256,7 +256,7 @@ class PlanController extends Controller
             }
             
             $request->session()->flash('alert-success', trans('messages.plan.updated'));
-            return redirect()->action('Admin\PlanController@index');
+            return redirect()->action('Admin\PlanController@edit', $plan->uid);
         }
     }
 

@@ -324,6 +324,11 @@
 										</div>
 									</li>
 								@endforeach
+								@if (!Auth::user()->admin->recentSubscriptions()->count())
+									<li class="text-center">
+										{{ trans('messages.subscription_empty_line_1') }}
+									</li>
+								@endif
 							</ul>
 						</div>
 					</div>
@@ -369,6 +374,11 @@
 										</div>
 									</li>
 								@endforeach
+								@if (!Auth::user()->admin->recentCustomers()->count())
+									<li class="text-center">
+										{{ trans('messages.customer_empty_line_1') }}
+									</li>
+								@endif
 							</ul>
 						</div>
 					</div>

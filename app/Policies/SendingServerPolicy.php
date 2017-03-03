@@ -27,7 +27,8 @@ class SendingServerPolicy
         
         $customer = $user->customer;
         if (is_object($customer)) {
-            $can = $can || true;
+            $ability = $customer->getOption('create_sending_servers') == 'yes';
+            $can = $can || $ability;
         }
         
         return $can;
@@ -63,7 +64,9 @@ class SendingServerPolicy
         
         $customer = $user->customer;
         if (is_object($customer)) {
-            $ability = $customer->getOption('create_sending_servers') != 'no';
+            $max = $customer->getOption('sending_servers_max');
+            $ability = $customer->getOption('create_sending_servers') == 'yes'
+                && ($customer->sendingServersCount() < $customer->getOption('create_sending_servers') || $max == -1);
             $can = $can || $ability;
         }
         
@@ -84,7 +87,8 @@ class SendingServerPolicy
         
         $customer = $user->customer;
         if (is_object($customer)) {
-            $can = $can || $customer->id == $item->customer_id;
+            $ability = $customer->getOption('create_sending_servers') == 'yes' && $customer->id == $item->customer_id;
+            $can = $can || $ability;
         }
         
         return $can;
@@ -104,7 +108,8 @@ class SendingServerPolicy
         
         $customer = $user->customer;
         if (is_object($customer)) {
-            $can = $can || $customer->id == $item->customer_id;
+            $ability = $customer->getOption('create_sending_servers') == 'yes' && $customer->id == $item->customer_id;
+            $can = $can || $ability;
         }
         
         return $can;
@@ -124,7 +129,8 @@ class SendingServerPolicy
         
         $customer = $user->customer;
         if (is_object($customer)) {
-            $can = $can || $customer->id == $item->customer_id;
+            $ability = $customer->getOption('create_sending_servers') == 'yes' && $customer->id == $item->customer_id;
+            $can = $can || $ability;
         }
         
         return ($can && $item->status != "inactive");
@@ -144,7 +150,8 @@ class SendingServerPolicy
         
         $customer = $user->customer;
         if (is_object($customer)) {
-            $can = $can || $customer->id == $item->customer_id;
+            $ability = $customer->getOption('create_sending_servers') == 'yes' && $customer->id == $item->customer_id;
+            $can = $can || $ability;
         }
         
         return ($can && $item->status != "active");

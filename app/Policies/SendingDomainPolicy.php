@@ -27,7 +27,8 @@ class SendingDomainPolicy
         
         $customer = $user->customer;
         if (is_object($customer)) {
-            $can = $can || true;
+            $ability = $customer->getOption('create_sending_domains') == 'yes';
+            $can = $can || $ability;
         }
         
         return $can;
@@ -63,7 +64,10 @@ class SendingDomainPolicy
         
         $customer = $user->customer;
         if (is_object($customer)) {
-            $can = $can || true;
+            $max = $customer->getOption('sending_domains_max');
+            $ability = $customer->getOption('create_sending_domains') == 'yes'
+                && ($customer->sendingDomainsCount() < $customer->getOption('create_sending_domains') || $max == -1);
+            $can = $can || $ability;
         }
         
         return $can;
@@ -83,7 +87,8 @@ class SendingDomainPolicy
         
         $customer = $user->customer;
         if (is_object($customer)) {
-            $can = $can || $customer->id == $item->customer_id;
+            $ability = $customer->getOption('create_sending_domains') == 'yes' && $customer->id == $item->customer_id;
+            $can = $can || $ability;
         }
         
         return $can;
@@ -103,7 +108,8 @@ class SendingDomainPolicy
         
         $customer = $user->customer;
         if (is_object($customer)) {
-            $can = $can || $customer->id == $item->customer_id;
+            $ability = $customer->getOption('create_sending_domains') == 'yes' && $customer->id == $item->customer_id;
+            $can = $can || $ability;
         }
         
         return $can;

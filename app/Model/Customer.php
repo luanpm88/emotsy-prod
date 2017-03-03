@@ -145,6 +145,11 @@ class Customer extends Model
     {
         return $this->hasMany('Acelle\Model\Subscription');
     }
+	
+	public function sendingDomains()
+    {
+        return $this->hasMany('Acelle\Model\SendingDomain');
+    }
 
     /**
      * Bootstrap any application services.
@@ -1104,5 +1109,123 @@ class Customer extends Model
         } else {
             return null;
         }
+    }
+	
+	/**
+     * Sending servers count.
+     *
+     * @var integer
+     */
+    public function sendingServersCount()
+    {
+        return $this->sendingServers() ->count();
+    }
+	
+	/**
+     * Sending domains count.
+     *
+     * @var integer
+     */
+    public function sendingDomainsCount()
+    {
+        return $this->sendingDomains() ->count();
+    }
+	
+	/**
+     * Get max sending server count.
+     *
+     * @var integer
+     */
+    public function maxSendingServers()
+    {
+		$count = $this->getOption('sending_servers_max');
+        if ($count == -1) {
+            return '∞';
+        } else {
+            return $count;
+        }
+    }
+	
+	/**
+     * Calculate subscibers usage.
+     *
+     * @return number
+     */
+    public function sendingServersUsage()
+    {
+		$max = $this->maxSendingServers();
+		$count = $this->sendingServersCount();
+		
+        if ($max == '∞') {
+            return 0;
+        }
+        if ($max == 0 || $count > $max) {
+            return 100;
+        }
+    
+        return round((($count / $max) * 100), 2);
+    }
+    
+    /**
+     * Calculate subscibers usage.
+     *
+     * @return number
+     */
+    public function displaySendingServersUsage()
+    {
+        if ($this->maxSendingServers() == '∞') {
+            return trans('messages.unlimited');
+        }
+    
+        return $this->sendingServersUsage().'%';
+    }
+	
+	/**
+     * Get max sending server count.
+     *
+     * @var integer
+     */
+    public function maxSendingDomains()
+    {
+		$count = $this->getOption('sending_domains_max');
+        if ($count == -1) {
+            return '∞';
+        } else {
+            return $count;
+        }
+    }
+	
+	/**
+     * Calculate subscibers usage.
+     *
+     * @return number
+     */
+    public function sendingDomainsUsage()
+    {
+		$max = $this->maxSendingDomains();
+		$count = $this->sendingDomainsCount();
+		
+        if ($max == '∞') {
+            return 0;
+        }
+        if ($max == 0 || $count > $max) {
+            return 100;
+        }
+    
+        return round((($count / $max) * 100), 2);
+    }
+    
+    /**
+     * Calculate subscibers usage.
+     *
+     * @return number
+     */
+    public function displaySendingDomainsUsage()
+    {
+        if ($this->maxSendingDomains() == '∞') {
+            return trans('messages.unlimited');
+        }
+    
+        return $this->sendingDomainsUsage().'%';
     }
 }

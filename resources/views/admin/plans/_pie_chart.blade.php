@@ -15,7 +15,7 @@
             <!-- /basic column chart -->
         @else
             <div class="empty-chart-pie">
-                <div class="empty-list">
+                <div class="empty-list has-fixed-height-250">
                     <i class="icon-file-text2"></i>
                     <span class="line-1">
                         {{ trans('messages.log_empty_line_1') }}

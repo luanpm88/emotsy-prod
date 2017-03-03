@@ -52,4 +52,36 @@
             </div>
         </div>
     </div>
+        
+    @can ("read", new Acelle\Model\SendingServer())
+        <div class="col-md-12">
+            <div class="content-group-sm">
+                <div class="pull-right text-teal-800 text-semibold">
+                    <span class="text-muted">{{ Auth::user()->customer->sendingServersCount() }}/{{ Auth::user()->customer->maxSendingServers() }}</span>
+                    &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingServersUsage() }}
+                </div>
+                <h5 class="text-semibold mb-5">{{ trans('messages.sending_server') }}</h5>
+                <div class="progress progress-xxs">
+                    <div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->sendingServersUsage() }}%">
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endcan
+    
+    @can ("read", new Acelle\Model\SendingDomain())
+        <div class="col-md-12">
+            <div class="content-group-sm">
+                <div class="pull-right text-teal-800 text-semibold">
+                    <span class="text-muted">{{ Auth::user()->customer->sendingDomainsCount() }}/{{ Auth::user()->customer->maxSendingDomains() }}</span>
+                    &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingDomainsUsage() }}
+                </div>
+                <h5 class="text-semibold mb-5">{{ trans('messages.sending_domain') }}</h5>
+                <div class="progress progress-xxs">
+                    <div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->sendingDomainsUsage() }}%">
+                    </div>
+                </div>
+            </div>
+        </div>
+    @endcan
 </div>

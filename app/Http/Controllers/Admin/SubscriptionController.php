@@ -233,7 +233,7 @@ class SubscriptionController extends Controller
             }
             
             $request->session()->flash('alert-success', trans('messages.subscription.updated'));
-            return redirect()->action('Admin\SubscriptionController@index');
+            return redirect()->action('Admin\SubscriptionController@edit', $subscription->uid);
         }
     }
 

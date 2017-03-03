@@ -1935,3 +1935,9 @@ ul.plans-intro li span {
 .select-medium .select2 {
     min-width: 120px;
 }
+.has-fixed-height-250.empty-list {
+    padding: 70px 20px;
+}
+.panel {
+    border-color: #aaa;
+}

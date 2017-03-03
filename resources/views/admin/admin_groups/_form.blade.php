@@ -1,6 +1,6 @@
           <div class="sub_section">
 						<div class="row">
-							<div class="col-md-12">									
+							<div class="col-md-6">									
 
 									@include('helpers.form_control', ['type' => 'text', 'name' => 'name', 'value' => $group->name, 'help_class' => 'admin_group', 'rules' => Acelle\Model\AdminGroup::$rules])
 
