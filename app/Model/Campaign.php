@@ -2396,4 +2396,20 @@ class Campaign extends Model
             return null;
         }
     }
+    
+    /**
+     * Count sent success rate (success / subscribers count).
+     *
+     * @return number
+     */
+    public function sentRate()
+    {
+        $subscribers_count = $this->subscribers()->count();
+        
+        if ($subscribers_count == 0) {
+            return 0;
+        }
+
+        return round(($this->deliveredCount() / $subscribers_count) * 100, 0);
+    }
 }
