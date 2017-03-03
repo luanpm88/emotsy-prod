@@ -1228,4 +1228,23 @@ class Customer extends Model
     
         return $this->sendingDomainsUsage().'%';
     }
+	
+	/**
+     * Subscriptions count.
+     *
+     * @return number
+     */
+    public function subscriptionsCount()
+    {
+        return $this->subscriptions()->count();
+    }
+	
+	/**
+     * Check if customer dosen't have any plan.
+     *
+     * @return boolean
+     */
+    public function notHaveAnyPlan() {
+		return $this->subscriptionsCount() == 0;
+	}
 }

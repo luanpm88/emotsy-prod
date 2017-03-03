@@ -149,7 +149,7 @@
 	</div>
 	<!-- /basic modal -->
 	
-	<div class="ui-pnotify bg-warning" style="background-color: rgba(255,87,34,0.5); width: auto; right: 20px; top: auto; bottom: 20px; opacity: 1; display: block; overflow: visible; cursor: auto;">
+	<div class="ui-pnotify bg-warning" style="background-color: rgba(255,87,34,0.7); width: auto; right: 20px; top: auto; bottom: 20px; opacity: 1; display: block; overflow: visible; cursor: auto;">
 		@if (null !== Session::get('orig_customer_id'))
 			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 				<h4 class="ui-pnotify-title text-nowrap">{!! trans('messages.current_login_as', ["name" => Auth::user()->customer->displayName()]) !!}</h4>
@@ -173,7 +173,32 @@
 				<h4 class="ui-pnotify-title text-nowrap">{!! trans('messages.site_is_offline') !!}</h4>
 				<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
 			</div>
-		@endif		
+		@endif
+		
+		@if (is_object(\Auth::user()->customer) && \Auth::user()->customer->notHaveAnyPlan())
+			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
+				<h4 class="ui-pnotify-title text-nowrap">
+				{!! trans('messages.not_have_any_plan_notification', [
+					'link' => action('SubscriptionController@selectPlan'),
+				]) !!}
+				</h4>
+				<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
+			</div>
+		@endif
+		
+		@if (is_object(\Auth::user()->customer)
+			&& !is_object(\Auth::user()->customer->getCurrentSubscription())
+			&& !\Auth::user()->customer->notHaveAnyPlan()
+		)
+			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
+				<h4 class="ui-pnotify-title text-nowrap">
+				{!! trans('messages.not_have_active_plan_notification', [
+					'link' => action('SubscriptionController@index'),
+				]) !!}
+				</h4>
+				<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
+			</div>
+		@endif
 	</div>
 		
 	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#copy_campaign"></a>

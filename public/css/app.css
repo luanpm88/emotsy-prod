@@ -1941,3 +1941,7 @@ ul.plans-intro li span {
 .panel {
     border-color: #aaa;
 }
+.ui-pnotify.bg-warning a {
+    color: #fff;
+    text-decoration: underline;
+}
