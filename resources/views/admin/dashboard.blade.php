@@ -270,7 +270,7 @@
 			@include('admin.customers._growth_chart')
 			
 			<h5 class="text-semibold"><i class="icon-clipboard2"></i> {{ trans('messages.plans_chart') }}</h5>
-					
+			@include('admin.plans._pie_chart')
 		
 			<div class="panel-group content-group-lg dashboard-accordion" id="accordion0">
 				<div class="panel panel-white panel-no-color">

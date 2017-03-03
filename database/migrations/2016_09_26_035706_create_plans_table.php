@@ -25,6 +25,7 @@ class CreatePlansTable extends Migration
             $table->string('status');
             $table->string('color');
             $table->integer('custom_order');
+            $table->integer('quota');
             
             $table->timestamps();
             

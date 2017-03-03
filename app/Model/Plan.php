@@ -36,7 +36,7 @@ class Plan extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'frequency_amount', 'frequency_unit', 'price', 'color', 'currency_id'
+        'name', 'frequency_amount', 'frequency_unit', 'price', 'color', 'currency_id', 'quota'
     ];
 
     /**
@@ -53,6 +53,7 @@ class Plan extends Model
             'frequency_unit' => 'required',
             'price' => 'required|min:0',
             'color' => 'required',
+			'quota' => 'required|numeric|min:0',
         );
     
         $options = self::defaultOptions();
@@ -338,6 +339,16 @@ class Plan extends Model
         } else {
             return $this->getOption("sending_quota") . " " . trans('messages.' . \Acelle\Library\Tool::getPluralPrase('email', $this->getOption("sending_quota"))) . ' / '.$this->getOption("sending_quota_time").' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption("sending_quota_time_unit"), $this->getOption("sending_quota")));
         }        
+    }
+	
+	/**
+     * Display total quota.
+     *
+     * @return array
+     */
+    public function displayTotalQuota()
+    {
+        return $this->quota;        
     }
     
     /**

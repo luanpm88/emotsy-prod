@@ -122,6 +122,7 @@ class SubscriptionController extends Controller
                 $request->session()->flash('alert-success', trans('messages.subscription.created'));
                 return redirect()->action('SubscriptionController@finish');
             } else {
+                $subscription->status = \Acelle\Model\Subscription::STATUS_INACTIVE;
                 $subscription->save();
                 
                 return redirect()->action('SubscriptionController@checkout', $subscription->uid);

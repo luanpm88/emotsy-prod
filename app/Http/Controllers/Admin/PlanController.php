@@ -393,4 +393,49 @@ class PlanController extends Controller
             'plans' => $plans,
         ]);
     }
+    
+    /**
+     * Chart pie chart.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function pieChart(Request $request)
+    {
+        // authorize
+        if (\Gate::denies('read', new \Acelle\Model\Plan())) {
+            return $this->notAuthorized();
+        }
+
+        $result = [
+            'title' => '', // trans('messages.statistics') . " (" . $list->subscribers()->count() ." " . trans('messages.subscribers') .")",
+            'columns' => [],
+            'data' => [],
+            'bar_names' => [],
+        ];
+
+        $datas = [];
+        foreach (\Acelle\Model\Plan::getAllActive()->get() as $plan) {
+            $count = $plan->subscriptionsCount();
+            // create data
+            if ($count) {
+                $result['bar_names'][] = $plan->name;
+                $datas[] = ['value' => $count, 'name' => $plan->name];
+            }
+        }
+
+        // datas
+        $result['data'][] = [
+            'name' => trans('messages.plan_pie_chart'),
+            'type' => 'pie',
+            'radius' => '70%',
+            'center' => ['50%', '57.5%'],
+            'data' => $datas
+        ];
+
+        $result['pie'] = 1;
+
+        return json_encode($result);
+    }
 }

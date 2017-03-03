@@ -368,6 +368,16 @@ class Subscription extends Model
             return $this->getOption("sending_quota") . " " . trans('messages.' . \Acelle\Library\Tool::getPluralPrase('email', $this->getOption("sending_quota"))) . ' / '.$this->getOption("sending_quota_time").' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption("sending_quota_time_unit"), $this->getOption("sending_quota")));
         }        
     }
+	
+	/**
+     * Display total quota.
+     *
+     * @return array
+     */
+    public function displayTotalQuota()
+    {
+        return $this->quota;        
+    }
     
     /**
      * Display max lists.

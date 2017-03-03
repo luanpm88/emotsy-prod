@@ -159,4 +159,25 @@ class User extends Authenticatable
         $this->activated = true;
         $this->save();
     }
+    
+    /**
+     * Bootstrap any application services.
+     */
+    public static function boot()
+    {
+        parent::boot();
+
+        // Create uid when creating list.
+        static::creating(function ($item) {
+            // Create new uid
+            $uid = uniqid();
+            while (User::where('uid', '=', $uid)->count() > 0) {
+                $uid = uniqid();
+            }
+            $item->uid = $uid;
+
+            // Add api token
+            $item->api_token = str_random(60);
+        });
+    }
 }

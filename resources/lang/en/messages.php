@@ -1021,6 +1021,7 @@ return [
     'max_size_upload_total_intro' => 'Maximum size of all files: <span class="text-semibold">:value MB</span>',
     'max_file_size_upload_intro' => 'Maximum upload file size: <span class="text-semibold">:value MB</span>',
     'sending_quota_intro' => 'Sending quota: <span class="text-semibold">:value</span>',
+    'sending_total_quota_intro' => 'Total sending quota: <span class="text-semibold">:value</span>',
     'frequency' => 'Frequency',
     'daily' => 'Daily',
     'monthly' => 'Monthly',

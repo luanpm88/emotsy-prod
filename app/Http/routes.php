@@ -547,6 +547,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/resellers', 'ResellerController');
     
     // Plan
+    Route::get('admin/plans/pieChart', 'PlanController@pieChart');
     Route::get('admin/plans/delete/confirm', 'PlanController@deleteConfirm');
     Route::get('admin/plans/select2', 'PlanController@select2');
     Route::get('admin/plans/listing/{page?}', 'PlanController@listing');
