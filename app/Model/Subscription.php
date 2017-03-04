@@ -306,6 +306,7 @@ class Subscription extends Model
             'subscriber_per_list_max' => '0',
             'segment_per_list_max' => '0',
             'campaign_max' => '0',
+			'automation_max' => '0',
             'sending_quota' => '0',
             'sending_quota_time' => '0',
             'sending_quota_time_unit' => 'month',

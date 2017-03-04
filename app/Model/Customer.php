@@ -1247,4 +1247,63 @@ class Customer extends Model
     public function notHaveAnyPlan() {
 		return $this->subscriptionsCount() == 0;
 	}
+	
+	/**
+     * Count customer automations.
+     *
+     * @return number
+     */
+    public function automationsCount()
+    {
+        return $this->automations()->count();
+    }
+	
+	/**
+     * Get max automation count.
+     *
+     * @var integer
+     */
+    public function maxAutomations()
+    {
+		$count = $this->getOption('automation_max');
+        if ($count == -1) {
+            return '∞';
+        } else {
+            return $count;
+        }
+    }
+	
+	/**
+     * Calculate subscibers usage.
+     *
+     * @return number
+     */
+    public function automationsUsage()
+    {
+		$max = $this->maxAutomations();
+		$count = $this->automationsCount();
+		
+        if ($max == '∞') {
+            return 0;
+        }
+        if ($max == 0 || $count > $max) {
+            return 100;
+        }
+    
+        return round((($count / $max) * 100), 2);
+    }
+    
+    /**
+     * Calculate subscibers usage.
+     *
+     * @return number
+     */
+    public function displayAutomationsUsage()
+    {
+        if ($this->maxAutomations() == '∞') {
+            return trans('messages.unlimited');
+        }
+    
+        return $this->automationsUsage().'%';
+    }
 }

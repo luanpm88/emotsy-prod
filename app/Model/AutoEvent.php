@@ -652,7 +652,7 @@ class AutoEvent extends Model
             'track_click' => true,
             'sign_dkim' => true,
         ]);
-        $campaign->user_id = $this->automation->user_id;
+        $campaign->customer_id = $this->automation->customer_id;
         $campaign->is_auto = true;
         $campaign->type = Campaign::TYPE_REGULAR;
         $campaign->save();

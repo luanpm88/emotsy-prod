@@ -52,7 +52,21 @@
             </div>
         </div>
     </div>
-        
+    
+    <div class="col-md-12">
+        <div class="content-group-sm mt-20">
+            <div class="pull-right text-teal-800 text-semibold">
+                <span class="text-muted progress-xxs">{{ Auth::user()->customer->automationsCount() }}/{{ Auth::user()->customer->maxAutomations() }}</span>
+                &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayAutomationsUsage() }}
+            </div>
+            <h5 class="text-semibold mb-5 mt-0">{{ trans('messages.automation') }}</h5>
+            <div class="progress progress-xxs">
+                <div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->automationsUsage() }}%">
+                </div>
+            </div>
+        </div>
+    </div>
+    
     @can ("read", new Acelle\Model\SendingServer())
         <div class="col-md-12">
             <div class="content-group-sm">

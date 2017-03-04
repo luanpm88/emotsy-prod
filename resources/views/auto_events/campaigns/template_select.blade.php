@@ -124,7 +124,6 @@
 			<div class="pml-table-container">
 				
 				
-				
 			</div>
 		</form>
 	</div>
@@ -137,7 +136,7 @@
 		>				
 			<div class="row top-list-controls">
 				<div class="col-md-9">
-					@if (Auth::user()->campaigns()->count() >= 0)
+					@if (Auth::user()->customer->campaigns()->count() >= 0)
 						<div class="filter-box">
 							<div class="btn-group list_actions hide">
 								<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">

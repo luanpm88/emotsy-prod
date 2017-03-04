@@ -243,6 +243,7 @@ class Plan extends Model
             'subscriber_per_list_max' => '-1',
             'segment_per_list_max' => '3',
             'campaign_max' => '-1',
+			'automation_max' => '-1',
             'sending_quota' => '-1',
             'sending_quota_time' => '-1',
             'sending_quota_time_unit' => 'month',

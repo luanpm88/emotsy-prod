@@ -20,30 +20,30 @@ class AutoEventPolicy
     
     public function disable(\Acelle\Model\User $user, \Acelle\Model\AutoEvent $event)
     {
-        return $event->automation->user_id == $user->id && in_array($event->status, [
+        return $event->automation->customer_id == $user->customer->id && in_array($event->status, [
                                                                 \Acelle\Model\AutoEvent::STATUS_ACTIVE
                                                             ]);
     }
     
     public function enable(\Acelle\Model\User $user, \Acelle\Model\AutoEvent $event)
     {
-        return $event->automation->user_id == $user->id && in_array($event->status, [
+        return $event->automation->customer_id == $user->customer->id && in_array($event->status, [
                                                                 \Acelle\Model\AutoEvent::STATUS_INACTIVE
                                                             ]);
     }
     
     public function update(\Acelle\Model\User $user, \Acelle\Model\AutoEvent $event)
     {
-        return $event->automation->user_id == $user->id;
+        return $event->automation->customer_id == $user->customer->id;
     }
     
     public function moveUp(\Acelle\Model\User $user, \Acelle\Model\AutoEvent $event)
     {
-        return $event->automation->user_id == $user->id && $event->previous_event_id != $event->automation->getInitEvent()->id;
+        return $event->automation->customer_id == $user->customer->id && $event->previous_event_id != $event->automation->getInitEvent()->id;
     }
     
     public function moveDown(\Acelle\Model\User $user, \Acelle\Model\AutoEvent $event)
     {
-        return $event->automation->user_id == $user->id && isset($event->nextEvent);
+        return $event->automation->customer_id == $user->customer->id && isset($event->nextEvent);
     }
 }

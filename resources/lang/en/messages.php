@@ -1577,4 +1577,8 @@ return [
     'follow_up_event_follow-up-not-clicked' => 'not clicked',
     'not_have_any_plan_notification' => 'You are not subscribed to any plan. <br /><a href=":link">Click here</a> to choose a plan and get started.',
     'not_have_active_plan_notification' => 'You are not subscribed to any plan. <br /><a href=":link">Click here</a> to check your subcriptions.',
+    'max_automations' => 'Max automations ',
+    'resources_quota' => 'Resources quota',
+    'automation' => 'Automation',
+    'created_by' => 'Created by',
 ];

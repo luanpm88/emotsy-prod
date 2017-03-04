@@ -326,4 +326,14 @@ class Template extends Model
     {
         $this->content = \Acelle\Library\Tool::replaceHtmlUrl($this->content, $template_path);
     }
+    
+    /**
+     * Display creator name.
+     *
+     * @return string
+     */
+    public function displayCreatorName()
+    {
+        return is_object($this->admin) ? $this->admin->displayName() : (is_object($this->customer) ? $this->customer->displayName() : '');
+    }
 }

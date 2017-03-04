@@ -2,7 +2,7 @@
 <div class="tabbable">
     <ul class="nav nav-tabs nav-tabs-top">
         <li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
-            <i class="icon-paperplane"></i> {{ trans('messages.list_or_subscriber_or_segment_or_campaign') }}</a>
+            <i class="icon-paperplane"></i> {{ trans('messages.resources_quota') }}</a>
         </li>
         <li class="text-semibold"><a href="#top-tab2" data-toggle="tab">
             <i class="icon-upload"></i> {{ trans('messages.file_upload') }}</a>
@@ -108,7 +108,22 @@
                             {{ trans('messages.unlimited') }}
                         </label>
                     </div>
-                                                
+                </div>
+                <div class="boxing col-md-3">
+                    @include('helpers.form_control', ['type' => 'text',
+                        'class' => 'numeric',
+                        'name' => 'options[automation_max]',
+                        'value' => $options['automation_max'],
+                        'label' => trans('messages.max_automations'),
+                        'help_class' => 'plan',
+                        'rules' => $plan->rules()
+                    ])
+                    <div class="checkbox inline unlimited-check text-semibold">
+                        <label>
+                            <input{{ $options['automation_max']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
+                            {{ trans('messages.unlimited') }}
+                        </label>
+                    </div>
                 </div>
                 <div class="boxing col-md-3">
                     <label class="text-semibold">{{ trans('messages.unsubscribe_url_required') }} <span class="text-danger">*</span></label>

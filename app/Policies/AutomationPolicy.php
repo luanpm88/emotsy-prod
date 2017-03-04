@@ -25,7 +25,10 @@ class AutomationPolicy
 
     public function create(\Acelle\Model\User $user, \Acelle\Model\Automation $automation)
     {
-        return true;
+        $customer = $user->customer;
+        $max = $customer->getOption('automation_max');
+
+        return $max > $customer->automationsCount() || $max == -1;
     }
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\Automation $automation)
