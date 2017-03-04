@@ -154,11 +154,9 @@ class Tool
      */
     public static function dateTime($datetime)
     {
-        $timezone = is_object(\Auth::user()) ? \Auth::user()->timezone : '';
+        $timezone = Tool::currentTimezone();
         $result = $datetime;
-        if (!empty($timezone)) {
-            $result = $result->timezone($timezone);
-        }
+        $result = $result->timezone($timezone);
 
         return $result;
     }
@@ -257,8 +255,9 @@ class Tool
      *
      * @return string
      */
-    public static function systemTimeFromString($string, $timezone)
+    public static function systemTimeFromString($string)
     {
+        $timezone = Tool::currentTimezone();
         $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $string, $timezone);            
         $time = self::systemTime($time);
         return $time;
@@ -878,5 +877,32 @@ class Tool
         $content = str_replace('&quot;', '', $content);
         
         return $content;
+    }
+    
+    /**
+     * Check current view if exist
+     *
+     * @return boolean
+     */
+    public static function currentView() {
+        return \Request::is('admin*') ? 'backend' : 'frontend';
+    }
+    
+    /**
+     * Get current timezone.
+     *
+     * @var string
+     */
+    public static function currentTimezone()
+    {
+        if (Tool::currentView() == 'frontend') {
+            $timezone = is_object(\Auth::user()) && is_object(\Auth::user()->customer) ? \Auth::user()->customer->timezone : '';
+        } elseif (Tool::currentView() == 'backend') {
+            $timezone = is_object(\Auth::user()) && is_object(\Auth::user()->admin) ? \Auth::user()->admin->timezone : '';
+        } else {
+            $timezone = '+00:00';
+        }
+        
+        return $timezone;
     }
 }

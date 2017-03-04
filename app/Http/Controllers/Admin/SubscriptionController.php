@@ -115,10 +115,10 @@ class SubscriptionController extends Controller
             
             // Allow admin update end at date
             if(!empty($request->start_at)) {
-                $subscription->start_at = $request->start_at;
+                $subscription->start_at = \Acelle\Library\Tool::systemTimeFromString($request->start_at);
             }
             if(!empty($request->end_at)) {
-                $subscription->end_at = $request->end_at;
+                $subscription->end_at = \Acelle\Library\Tool::systemTimeFromString($request->end_at);
             }
             
             $subscription->save();
@@ -217,10 +217,10 @@ class SubscriptionController extends Controller
             
             // Allow admin update end at date
             if(!empty($request->start_at)) {
-                $subscription->start_at = $request->start_at;
+                $subscription->start_at = \Acelle\Library\Tool::systemTimeFromString($request->start_at);
             }
             if(!empty($request->end_at)) {
-                $subscription->end_at = $request->end_at;
+                $subscription->end_at = \Acelle\Library\Tool::systemTimeFromString($request->end_at);
             }
             
             $subscription->options = json_encode($request->options);

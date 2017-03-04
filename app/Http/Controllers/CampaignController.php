@@ -521,11 +521,7 @@ class CampaignController extends Controller
             // $this->validate($request, $rules);
 
             //// Save campaign
-            $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i',
-                $request->delivery_date . ' ' . $request->delivery_time,
-                $request->user()->timezone);
-            $time = \Acelle\Library\Tool::systemTime($time);
-
+            $time = \Acelle\Library\Tool::systemTimeFromString($request->delivery_date . ' ' . $request->delivery_time);
             $campaign->run_at = $time;
             $campaign->save();
 

@@ -9,7 +9,7 @@
 @endsection
 
 @section('content')
-    <h1>{{ trans('messages.dashboard') }}</h1>    
+    <h1>{{ trans('messages.dashboard') }}</h1>
 	
 	<h2 class="text-teal-800"><i class="icon-stats-bars4"></i> {{ trans("messages.used_quota") }}</h2>
 	<div class="row quota_box">
