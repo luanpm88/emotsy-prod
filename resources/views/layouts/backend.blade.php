@@ -11,7 +11,9 @@
 	
 	@include('layouts._js')
 	
-	@include('layouts._user_script')
+	<script>
+		$.cookie('last_language_code', '{{ Auth::user()->admin->getLanguageCode() }}');
+	</script>
 	
 </head>
 

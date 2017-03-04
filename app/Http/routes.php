@@ -57,43 +57,45 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
     Route::resource('sending_servers', 'SendingServerController');
 });
 
-Route::auth();
-Route::get('user/activate/{token}', 'UserController@activate');
-
-Route::get('/offline', 'Controller@offline');
-Route::get('/not-authorized', 'Controller@notAuthorized');
-Route::get('/demo', 'Controller@demo');
-Route::get('/autologin/{api_token}', 'Controller@autoLogin');
-Route::get('/reload/cache', 'Controller@reloadCache');
-Route::get('/migrate/run', 'Controller@runMigration');
-Route::post('/remote-job/{remote_job_token}', 'Controller@remoteJob');
-
-// Customer avatar
-Route::get('assets/images/avatar/customer-{uid?}.jpg', 'CustomerController@avatar');
-
-// Admin avatar
-Route::get('assets/images/avatar/admin-{uid?}.jpg', 'AdminController@avatar');
-
-// Reseller avatar
-Route::get('assets/images/avatar/reseller-{uid?}.jpg', 'ResellerController@avatar');
-
-// Customer subscription
-Route::get('subscriptions/preview', 'SubscriptionController@preview');
-Route::post('subscriptions/register/{plan_uid?}', 'SubscriptionController@register');
-Route::get('subscriptions/register/{plan_uid?}', 'SubscriptionController@register');
-Route::get('subscriptions/select-plan', 'SubscriptionController@selectPlan');
-
-// User resend activation email
-Route::get('users/resend-activation-email', 'UserController@resendActivationEmail');
-
-// Plan
-Route::get('plans/select2', 'PlanController@select2');
-
-// Payments
-Route::get('payment-cancel/{subscription_uid}', 'PaymentController@paymentCancel');
-Route::get('payment-status/{subscription_uid}', 'PaymentController@paymentStatus');
-Route::get('payment-cancel', function () {
-    return 'Payment has been canceled';
+Route::group(['middleware' => ['not_logged_in']], function () {
+    Route::auth();
+    Route::get('user/activate/{token}', 'UserController@activate');
+    
+    Route::get('/offline', 'Controller@offline');
+    Route::get('/not-authorized', 'Controller@notAuthorized');
+    Route::get('/demo', 'Controller@demo');
+    Route::get('/autologin/{api_token}', 'Controller@autoLogin');
+    Route::get('/reload/cache', 'Controller@reloadCache');
+    Route::get('/migrate/run', 'Controller@runMigration');
+    Route::post('/remote-job/{remote_job_token}', 'Controller@remoteJob');
+    
+    // Customer avatar
+    Route::get('assets/images/avatar/customer-{uid?}.jpg', 'CustomerController@avatar');
+    
+    // Admin avatar
+    Route::get('assets/images/avatar/admin-{uid?}.jpg', 'AdminController@avatar');
+    
+    // Reseller avatar
+    Route::get('assets/images/avatar/reseller-{uid?}.jpg', 'ResellerController@avatar');
+    
+    // Customer subscription
+    Route::get('subscriptions/preview', 'SubscriptionController@preview');
+    Route::post('subscriptions/register/{plan_uid?}', 'SubscriptionController@register');
+    Route::get('subscriptions/register/{plan_uid?}', 'SubscriptionController@register');
+    Route::get('subscriptions/select-plan', 'SubscriptionController@selectPlan');
+    
+    // User resend activation email
+    Route::get('users/resend-activation-email', 'UserController@resendActivationEmail');
+    
+    // Plan
+    Route::get('plans/select2', 'PlanController@select2');
+    
+    // Payments
+    Route::get('payment-cancel/{subscription_uid}', 'PaymentController@paymentCancel');
+    Route::get('payment-status/{subscription_uid}', 'PaymentController@paymentStatus');
+    Route::get('payment-cancel', function () {
+        return 'Payment has been canceled';
+    });
 });
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {

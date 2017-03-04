@@ -294,11 +294,73 @@ class InstallController extends Controller
             $date = \Carbon\Carbon::now();
 
             // Insert default superuser
-            $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'users` WHERE 1');
-
-            $aaa = $mysqli->query('INSERT INTO `'.$database['tables_prefix']."users`
-                (`id`, `uid`, `api_token`, `contact_id`, `user_group_id`, `language_id`, `name`, `email`, `password`, `remember_token`, `image`, `timezone`, `status`, `created_at`, `updated_at`, `first_name`, `last_name`, `frontend_scheme`, `backend_scheme`) VALUES
-(1, '" .uniqid()."', '".str_random(60)."', NULL, 1, 1, '".$site_info['first_name'].' '.$site_info['last_name']."', '".$site_info['email']."', '".bcrypt($site_info['password'])."', '', '', '".$site_info['timezone']."', 'active', '".$date."', '".$date."', '".$site_info['first_name']."', '".$site_info['last_name']."', '', '');");
+            //$mysqli->query('DELETE FROM `'.$database['tables_prefix'].'users` WHERE 1');
+            //$mysqli->query('INSERT INTO `'.$database['tables_prefix']."users`
+            //    (
+            //        `id`,
+            //        `uid`,
+            //        `api_token`,
+            //        `email`,
+            //        `password`,
+            //        `remember_token`,
+            //        `status`,
+            //        `created_at`,
+            //        `updated_at`,
+            //        `activated`) VALUES
+            //    (
+            //        1,
+            //        '" .uniqid()."',
+            //        '".str_random(60)."',
+            //        '".$site_info['email']."',
+            //        '".bcrypt($site_info['password'])."',
+            //        '',
+            //        'active',
+            //        '".$date."',
+            //        '".$date."',
+            //        1
+            //    );"
+            //);
+            //
+            //$mysqli->query('DELETE FROM `'.$database['tables_prefix'].'admins` WHERE 1');
+            //$mysqli->query('INSERT INTO `'.$database['tables_prefix']."admins`
+            //    (
+            //        `id`,
+            //        `uid`,
+            //        `user_id`,
+            //        `creator_id`,
+            //        `contact_id`,
+            //        `admin_group_id`,
+            //        `language_id`,
+            //        `first_name`,
+            //        `last_name`,
+            //        `image`,
+            //        `timezone`,
+            //        `status`,
+            //        `color_scheme`,
+            //        `created_at`,
+            //        `updated_at`) VALUES
+            //    (
+            //        1,
+            //        '" .uniqid()."',
+            //        1,
+            //        1,
+            //        NULL,
+            //        1
+            //        '".$site_info['first_name'].' '.$site_info['last_name']."',
+            //        '".$site_info['email']."',
+            //        '".bcrypt($site_info['password'])."',
+            //        '',
+            //        '',
+            //        '".$site_info['timezone']."',
+            //        'active',
+            //        '".$date."',
+            //        '".$date."',
+            //        '".$site_info['first_name']."',
+            //        '".$site_info['last_name']."',
+            //        '',
+            //        ''
+            //    );"
+            //);
 
             // Insert system urls
             $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_delivery_handler'");
@@ -316,9 +378,6 @@ class InstallController extends Controller
             $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_update_profile'");
             $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
                             ('url_update_profile', '".action('PageController@profileUpdateForm', ['list_uid' => 'LIST_UID', 'uid' => 'SUBSCRIBER_UID', 'code' => 'SECURE_CODE'])."', '".$date."', '".$date."');");
-            //$mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='url_campaign_notification'");
-            //$mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-            //                ('url_campaign_notification', '".action('HomeController@index')."', '".$date."', '".$date."');");
             $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='site_name'");
             $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
                             ('site_name', '".$site_info['site_name']."', '".$date."', '".$date."');");

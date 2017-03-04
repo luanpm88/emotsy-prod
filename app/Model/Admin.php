@@ -101,6 +101,11 @@ class Admin extends Model
     {
         return $this->hasMany('Acelle\Model\Template');
     }
+    
+    public function language()
+    {
+        return $this->belongsTo('Acelle\Model\Language');
+    }
 
     /**
      * Bootstrap any application services.
@@ -385,5 +390,14 @@ class Admin extends Model
             ->orderBy('subscriptions.created_at', 'desc')->limit($number);
         
         return $query->get();
+    }
+    
+    /**
+     * Get admin language code
+     *
+     * @return string
+     */
+    public function getLanguageCode() {
+        return (is_object($this->language) ? $this->language->code : null);
     }
 }

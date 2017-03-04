@@ -57,7 +57,7 @@ class Customer extends Model
             'last_name' => 'required',
             'timezone' => 'required',
             'language_id' => 'required',
-            'password' => 'required|confirmed|min:5',
+            'password' => 'confirmed|min:5',
         );
     }
     
