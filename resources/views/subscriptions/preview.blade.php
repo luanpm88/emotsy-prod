@@ -40,7 +40,7 @@
                         <div class="text-left">											
                             <h3 class="mt-0 text-bold">
                                 @if ($subscription->price)
-                                    {{ Acelle\Library\Tool::format_price($subscription->price, $subscription->plan->currency->format) }}
+                                    {{ Acelle\Library\Tool::format_price($subscription->price, $subscription->currency_format) }}
                                 @else
                                     {{ trans('messages.free') }}
                                 @endif

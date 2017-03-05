@@ -14,6 +14,10 @@ class Subscription extends Model
     const TIME_STATUS_FUTURE = 'future'; // equiv. to 'queue'
 	const TIME_STATUS_CURRENT = 'current';
 	const TIME_STATUS_PAST = 'past';
+	
+	// Paid status
+	const PAID_STATUS_TRUE = 'paid';
+	const PAID_STATUS_FALSE = 'notpaid';
     
     /**
      * The attributes that should be mutated to dates.
@@ -85,6 +89,10 @@ class Subscription extends Model
 	public function subscriptionsSendingServers()
     {
         return $this->hasMany('Acelle\Model\SubscriptionsSendingServer');
+    }
+	public function payments()
+    {
+        return $this->hasMany('Acelle\Model\Payment');
     }
     
     /**
@@ -549,15 +557,6 @@ class Subscription extends Model
 	}
 	
 	/**
-     * Get id for payment
-     *
-     * @return array
-     */
-    public function getID() {
-		return $this->uid;
-	}
-	
-	/**
      * Check if subscriptioon is paid
      *
      * @return array
@@ -597,5 +596,71 @@ class Subscription extends Model
                 $row->save();
             }
         }
+    }
+	
+	/**
+     * Set active.
+     *
+     * @return void
+     */
+    public function setActive()
+    {
+        $this->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
+        $this->save();
+    }
+	
+	/**
+     * Set paid.
+     *
+     * @return void
+     */
+    public function setPaid()
+    {
+        $this->paid = true;
+        $this->save();
+    }
+	
+	/**
+     * Get paid status.
+     *
+     * @return string
+     */
+    public function getPaidStatus()
+    {
+        if ($this->isPaid()) {
+			return Subscription::PAID_STATUS_TRUE;
+		} else {
+			return Subscription::PAID_STATUS_FALSE;
+		}
+    }
+	
+	/**
+     * Payments count.
+     *
+     * @return string
+     */
+    public function getPayments()
+    {
+        return $this->payments()->orderBy('created_at', 'desc');
+    }
+	
+	/**
+     * Payments count.
+     *
+     * @return string
+     */
+    public function paymentsCount()
+    {
+        return $this->getPayments()->count();
+    }
+	
+	/**
+     * Get payment order id.
+     *
+     * @return string
+     */
+    public function getOrderID()
+    {
+        return $this->uid;
     }
 }

@@ -456,4 +456,58 @@ class CustomerController extends Controller
 
         return json_encode($result);
     }
+    
+    /**
+     * Update customer contact information.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function contact(Request $request, $uid)
+    {        
+        // Get current user
+        $customer = \Acelle\Model\Customer::findByUid($uid);
+        
+        // authorize
+        if (\Gate::denies('update', $customer)) {
+            return $this->notAuthorized();
+        }
+        
+        if (is_object($customer->contact)) {
+            $contact = $customer->contact;
+        } else {
+            $contact = new \Acelle\Model\Contact([
+                'first_name' => $customer->first_name,
+                'last_name' => $customer->last_name,
+                'email' => $customer->user->email,
+            ]);
+        }
+
+        // Create new company if null
+        if (!is_object($contact)) {
+            $contact = new \Acelle\Model\Contact();
+        }
+
+        // save posted data
+        if ($request->isMethod('post')) {
+            $this->validate($request, \Acelle\Model\Contact::$rules);
+
+            $contact->fill($request->all());
+
+            // Save current user info
+            if ($contact->save()) {
+                if (!is_object($contact)) {
+                    $customer->contact_id = $contact->id;
+                    $customer->save();
+                }
+                $request->session()->flash('alert-success', trans('messages.customer_contact.updated'));
+            }
+        }
+
+        return view('admin.customers.contact', [
+            'customer' => $customer,
+            'contact' => $contact->fill($request->old()),
+        ]);
+    }
 }

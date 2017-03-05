@@ -370,6 +370,11 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('sending_domains', 'SendingDomainController');
     
     // Payment
+    Route::post('payments/braintree/paypal/{subscription_uid}', 'PaymentController@braintree_paypal');
+    Route::get('payments/braintree/paypal/{subscription_uid}', 'PaymentController@braintree_paypal');
+    Route::get('payments/success/{subscription_uid}', 'PaymentController@success');
+    Route::post('payments/braintree/credit-card/{subscription_uid}', 'PaymentController@braintree_credit_card');
+    Route::get('payments/braintree/credit-card/{subscription_uid}', 'PaymentController@braintree_credit_card');
     Route::get('payments/cash/{subscription_uid}', 'PaymentController@cash');
     Route::get('payments/paypal/{subscription_uid}', 'PaymentController@paypal');
 });
@@ -499,6 +504,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/customer_groups', 'CustomerGroupController');
     
     // Customer
+    Route::post('admin/customers/{uid}/contact', 'CustomerController@contact');
+    Route::get('admin/customers/{id}/contact', 'CustomerController@contact');
     Route::get('admin/customers/growthChart', 'CustomerController@growthChart');
     Route::get('admin/customers/{id}/subscriptions', 'CustomerController@subscriptions');
     Route::get('admin/customers/select2', 'CustomerController@select2');
@@ -569,6 +576,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/currencies', 'CurrencyController');
     
     // Subscription
+    Route::get('admin/subscriptions/{uid}/payments', 'SubscriptionController@payments');
     Route::patch('admin/subscriptions/enable', 'SubscriptionController@enable');
     Route::patch('admin/subscriptions/disable', 'SubscriptionController@disable');
     Route::get('admin/subscriptions/preview', 'SubscriptionController@preview');

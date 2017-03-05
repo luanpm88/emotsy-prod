@@ -14,11 +14,16 @@ class CreatePaymentsTable extends Migration
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('item_number');
-            $table->string('transaction_id');
-            $table->string('currency_code');
-            $table->string('payment_status');
+            $table->integer('subscription_id')->unsigned();
+            $table->integer('payment_method_id')->unsigned();
+            $table->string('payment_method_name');
+            $table->string('order_id');
+            $table->text('data');
+            $table->string('status');
             $table->timestamps();
+            
+            $table->foreign('subscription_id')->references('id')->on('subscriptions')->onDelete('cascade');
+            $table->foreign('payment_method_id')->references('id')->on('payment_methods')->onDelete('cascade');
         });
     }
 

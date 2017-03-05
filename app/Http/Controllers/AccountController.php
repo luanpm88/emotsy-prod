@@ -82,7 +82,7 @@ class AccountController extends Controller
     }
 
     /**
-     * Update user contact information.
+     * Update customer contact information.
      *
      * @param \Illuminate\Http\Request $request
      *

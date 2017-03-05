@@ -613,9 +613,23 @@ class DatabaseSeeder extends Seeder
             'uid' => uniqid(),
             'name' => 'Pay with PayPal',
             'admin_id' => 1,
-            'type' => 'paypal',
-            'status' => 'active',
+            'type' => 'braintree_paypal',
+            'status' => 'inactive',
+            'options' => '{"environment":"sandbox","merchantId":"g3xq9gs9y9dvqqv6","publicKey":"c3xh5n9n2q8rkwct","privateKey":"14d2a2b3b337286f245c9976f2e4fe57"}',
             'custom_order' => 1,
+            'created_at' => $created_at,
+            'updated_at' => $updated_at,
+        ]);
+        
+        DB::table('payment_methods')->insert([
+            'id' => 3,
+            'uid' => uniqid(),
+            'name' => 'Pay by Credit card',
+            'admin_id' => 1,
+            'type' => 'braintree_credit_card',
+            'status' => 'inactive',
+            'options' => '{"environment":"sandbox","merchantId":"g3xq9gs9y9dvqqv6","publicKey":"c3xh5n9n2q8rkwct","privateKey":"14d2a2b3b337286f245c9976f2e4fe57"}',
+            'custom_order' => 2,
             'created_at' => $created_at,
             'updated_at' => $updated_at,
         ]);

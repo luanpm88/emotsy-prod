@@ -25,22 +25,30 @@
                     'Acelle\Http\Controllers\SubscriptionController@register']) ? 'current' : '' }}
                     {{ in_array(request()->route()->getActionName(), [
                     'Acelle\Http\Controllers\SubscriptionController@finish',
-                    'Acelle\Http\Controllers\SubscriptionController@subscription']) ? 'done' : '' }}
+                    'Acelle\Http\Controllers\SubscriptionController@subscription']) || strpos(request()->route()->getActionName(), 'Acelle\Http\Controllers\PaymentController@') !== false ? 'done' : '' }}
                     "
                         aria-disabled="true">
                         <a id="steps-uid-0-t-1" href="#steps-uid-0-h-1" aria-controls="steps-uid-0-p-1">
                         <span class="number">2</span>
                         {{ trans('messages.customer_account') }}
                     </a>
-                    <li role="tab" class="{{ request()->route()->getActionName() == 'Acelle\Http\Controllers\SubscriptionController@subscription' ? 'current' : '' }}
+                    <li role="tab" class="{{
+                        (request()->route()->getActionName() == 'Acelle\Http\Controllers\SubscriptionController@subscription'
+                            || strpos(request()->route()->getActionName(), 'Acelle\Http\Controllers\PaymentController@braintree') !== false
+                        ) ? 'current' : '' }}
                         {{ in_array(request()->route()->getActionName(), [
-                        'Acelle\Http\Controllers\SubscriptionController@finish']) ? 'done' : '' }}
+                        'Acelle\Http\Controllers\SubscriptionController@finish',
+                        'Acelle\Http\Controllers\PaymentController@success']) ? 'done' : '' }}
                     " aria-disabled="true">
                         <a id="steps-uid-0-t-1" href="#steps-uid-0-h-1" aria-controls="steps-uid-0-p-1">
                         <span class="number">3</span>
-                        {{ trans('messages.checkout') }}
+                        {{ trans('messages.subscription') }}
                     </a>
-                    <li role="tab" class="{{ request()->route()->getActionName() == 'Acelle\Http\Controllers\SubscriptionController@finish' ? 'current' : '' }}" aria-disabled="true">
+                    <li role="tab" class="{{
+                    in_array(request()->route()->getActionName(), [
+                        'Acelle\Http\Controllers\SubscriptionController@finish',
+                        'Acelle\Http\Controllers\PaymentController@success'])
+                    ? 'current' : '' }}" aria-disabled="true">
                         <a id="steps-uid-0-t-1" href="#steps-uid-0-h-1" aria-controls="steps-uid-0-p-1">
                         <span class="number">4</span>
                         {{ trans('messages.finish') }}

@@ -115,10 +115,10 @@ class SubscriptionController extends Controller
             
             // Allow admin update end at date
             if(!empty($request->start_at)) {
-                $subscription->start_at = \Acelle\Library\Tool::systemTimeFromString($request->start_at);
+                $subscription->start_at = \Acelle\Library\Tool::systemTimeFromString($request->start_at . ' 00:00');
             }
             if(!empty($request->end_at)) {
-                $subscription->end_at = \Acelle\Library\Tool::systemTimeFromString($request->end_at);
+                $subscription->end_at = \Acelle\Library\Tool::systemTimeFromString($request->end_at . ' 00:00');
             }
             
             $subscription->save();
@@ -336,5 +336,24 @@ class SubscriptionController extends Controller
 
         // Redirect to my lists page
         echo trans('messages.subscriptions.disabled');
+    }
+    
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function payments(Request $request, $uid)
+    {
+        $subscription = \Acelle\Model\Subscription::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('read', $subscription)) {
+            return $this->notAuthorized();
+        }
+
+        return view('admin.subscriptions.payments', [
+            'subscription' => $subscription
+        ]);
     }
 }

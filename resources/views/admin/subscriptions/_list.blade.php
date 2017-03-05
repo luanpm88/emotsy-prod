@@ -47,15 +47,32 @@
 						</h5>
 						<span class="text-muted">{!! trans_choice('messages.days_remain', 0) !!}</span>
 					@endif
+				</td>				
+				<td>
+					<span class="text-muted2 list-status pull-left">
+						<span class="label label-sub label-flat bg-{{ $subscription->timeStatus() }}">{{ trans('messages.subscription_time_status_' . $subscription->timeStatus()) }}</span>
+					</span>
+				</td>
+				<td>
+					@if ($subscription->paymentsCount())
+						<span class="text-muted2 list-status pull-left payments-button"
+							data-url="{{ action('Admin\SubscriptionController@payments', $subscription->uid) }}">
+							<span class="label label-sub label-flat bg-{{ $subscription->getPaidStatus() }}">
+								{{ trans('messages.subscription_paid_status_' . $subscription->getPaidStatus()) }}
+								<i class="icon-history"></i> 
+							</span>
+						</span>
+					@else
+						<span class="text-muted2 list-status pull-left">
+							<span class="label label-sub label-flat bg-{{ $subscription->getPaidStatus() }}">
+								{{ trans('messages.subscription_paid_status_' . $subscription->getPaidStatus()) }}
+							</span>
+						</span>
+					@endif
 				</td>
 				<td>
 					<span class="text-muted2 list-status pull-left">
 						<span class="label label-flat bg-{{ $subscription->status }}">{{ trans('messages.subscription_status_' . $subscription->status) }}</span>
-					</span>
-				</td>
-				<td>
-					<span class="text-muted2 list-status pull-left">
-						<span class="label label-sub label-flat bg-{{ $subscription->timeStatus() }}">{{ trans('messages.subscription_time_status_' . $subscription->timeStatus()) }}</span>
 					</span>
 				</td>
 				<td class="text-right">											

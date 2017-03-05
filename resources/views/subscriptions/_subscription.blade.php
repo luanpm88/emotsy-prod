@@ -76,15 +76,17 @@
                     <i class="icon-loop4"></i> {{ trans('messages.actions') }} <span class="caret ml-0"></span>
                     </button>
                     <ul class="dropdown-menu dropdown-menu-left">
-                        @can('pay', $subscription)
-                            @foreach (\Acelle\Model\PaymentMethod::getAllActive() as $payment_method)
-                                <li>														
-                                    <a href="{{ action('SubscriptionController@selectPaymentMethod', ["uid" => $subscription->uid, 'payment_method_id' => $payment_method->uid]) }}">
-                                        {!! trans('messages.payment_method_type_' . $payment_method->type . '_button') !!}
-                                    </a>
-                                </li>
-                            @endforeach
-                        @endcan
+                        @if (!$subscription->isPaid() && !$subscription->isActive())
+                            @can('pay', $subscription)
+                                @foreach (\Acelle\Model\PaymentMethod::getAllActive() as $payment_method)
+                                    <li>														
+                                        <a href="{{ action('SubscriptionController@selectPaymentMethod', ["uid" => $subscription->uid, 'payment_method_id' => $payment_method->uid]) }}">
+                                            {!! trans('messages.payment_method_type_' . $payment_method->type . '_button') !!}
+                                        </a>
+                                    </li>
+                                @endforeach
+                            @endcan
+                        @endif
                         @can('delete', $subscription)
                             <li>														
                                 <a delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('SubscriptionController@delete', ["uids" => $subscription->uid]) }}">

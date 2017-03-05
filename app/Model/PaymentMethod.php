@@ -33,6 +33,8 @@ class PaymentMethod extends Model
 	// PaymentMethod type
 	const TYPE_CASH = 'cash';
     const TYPE_PAYPAL = 'paypal';
+	const TYPE_BRAINTREE_PAYPAL = 'braintree_paypal';
+	const TYPE_BRAINTREE_CREDIT_CARD = 'braintree_credit_card';
     
     /**
      * The attributes that are mass assignable.
@@ -58,7 +60,14 @@ class PaymentMethod extends Model
 		if($this->type == PaymentMethod::TYPE_PAYPAL) {
 			$rules['options.merchant_id'] = 'required';
 		}
-        
+		
+		if($this->type == PaymentMethod::TYPE_BRAINTREE_PAYPAL || $this->type == PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD) {
+			$rules['options.environment'] = 'required';
+			$rules['options.merchantId'] = 'required';
+			$rules['options.publicKey'] = 'required';
+			$rules['options.privateKey'] = 'required';
+		}
+
         return $rules;
     }
 
@@ -246,7 +255,32 @@ class PaymentMethod extends Model
     {
         return [
             ['value' => PaymentMethod::TYPE_CASH, 'text' => trans('messages.' . PaymentMethod::TYPE_CASH)],
-            ['value' => PaymentMethod::TYPE_PAYPAL, 'text' => trans('messages.' . PaymentMethod::TYPE_PAYPAL)],
+			['value' => PaymentMethod::TYPE_BRAINTREE_PAYPAL, 'text' => trans('messages.' . PaymentMethod::TYPE_BRAINTREE_PAYPAL)],
+			['value' => PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD, 'text' => trans('messages.' . PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD)],
         ];
+    }
+	
+	/**
+     * Set Braintree auth info.
+     *
+     * @return void
+     */
+    public function setAuth()
+    {
+        \Braintree_Configuration::environment($this->getOption('environment'));
+        \Braintree_Configuration::merchantId($this->getOption('merchantId'));
+        \Braintree_Configuration::publicKey($this->getOption('publicKey'));
+        \Braintree_Configuration::privateKey($this->getOption('privateKey'));
+    }
+	
+	/**
+     * Get payment method by type.
+     *
+     * @return object
+     */
+    public static function getByType($type)
+    {
+        return PaymentMethod::where("payment_methods.type", "=", $type)
+			->first();
     }
 }

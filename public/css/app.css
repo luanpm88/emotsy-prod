@@ -1945,3 +1945,23 @@ ul.plans-intro li span {
     color: #fff;
     text-decoration: underline;
 }
+.hosted-field {
+    height: 36px;
+    border: solid 2px #ccc;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+.hosted-field:hover, .hosted-field:focus {
+    border-color: #aaa;
+}
+.payment_method_type_button {
+    margin-bottom: 5px;
+}
+.bg-notpaid {
+    background: #fff;
+    border: solid 1px #aaa;
+    color: #333;
+}
+.payments-button {
+    cursor: pointer;
+}

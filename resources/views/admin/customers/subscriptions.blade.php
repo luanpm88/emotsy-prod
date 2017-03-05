@@ -53,6 +53,17 @@
 							data-url="{{ action('Admin\PlanController@select2') }}">
 						</select>
 					</span>
+					<span class="filter-group">
+						<select class="select" name="status">
+							<option value="">{{ trans('messages.all_status') }}</option>
+							<option value="{{ \Acelle\Model\Subscription::STATUS_ACTIVE }}">
+								{{ trans('messages.subscription_status_' . \Acelle\Model\Subscription::STATUS_ACTIVE) }}
+							</option>
+							<option value="{{ \Acelle\Model\Subscription::STATUS_INACTIVE }}">
+								{{ trans('messages.subscription_status_' . \Acelle\Model\Subscription::STATUS_INACTIVE) }}
+							</option>
+						</select>										
+					</span>
                     <span class="text-nowrap">
                         <input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                         <i class="icon-search4 keyword_search_button"></i>

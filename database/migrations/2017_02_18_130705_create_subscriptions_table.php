@@ -26,6 +26,7 @@ class CreateSubscriptionsTable extends Migration
             $table->string('plan_name');
             $table->string('plan_color');            
             $table->string('status');
+            $table->boolean('paid')->default(false);
             
             $table->timestamps();
             

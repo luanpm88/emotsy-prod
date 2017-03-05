@@ -1260,4 +1260,21 @@ $(function() {
     // load locale js
     $.getScript(JVALIDATE_TRANSLATE_URL, function(){
     });
+    
+    // Campaign quickview dashboard
+    $(document).on('click', '.payments-button', function() {
+        var url = $(this).attr("data-url");
+        $.ajax({
+            method: "GET",
+            url: url,
+        })
+        .done(function( msg ) {
+            $('#quota_modal .modal-body').html(msg);
+            // Default tooltip
+            $('#quota_modal .modal-body').find('[data-popup=tooltip]').tooltip({
+                template: '<div class="tooltip"><div class="bg-teal-800"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div></div>'
+            });
+            $('a[data-target="#quota_modal"]').trigger("click");
+        });        
+    });
 });
