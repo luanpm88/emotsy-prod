@@ -1,4 +1,5 @@
-@if ($subscription->getPayments()->count() > 0)
+    <h2 class="mt-0"><i class="icon-history"></i>  {{ trans('messages.payments_history') }}</h2>
+    
     <table class="table table-box pml-table table-log">
         <tr>
             <th>{{ trans('messages.created_at') }}</th>
@@ -26,4 +27,3 @@
             </tr>
         @endforeach
     </table>
-@endif

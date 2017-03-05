@@ -1606,4 +1606,5 @@ return [
     'subscription_payment_status_failed' => 'Failed',
     'data' => 'Data',
     'order_id' => 'Order ID',
+    'payments_history' => 'Payments history',
 ];
