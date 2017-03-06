@@ -394,7 +394,7 @@
 						</h5>
 					</div>
 					<div id="accordion-group3" class="panel-collapse collapse">
-						@if (Acelle\Model\Log::count() == 0)
+						@if (\Auth::user()->admin->getLogs()->count() == 0)
 							<div class="empty-list">
 								<i class="icon-history"></i>
 								<span class="line-1">
@@ -406,7 +406,7 @@
 								<!-- Timeline -->
 								<div class="timeline timeline-left content-group">
 									<div class="timeline-container">				
-											@foreach (Acelle\Model\Log::take(20)->get() as $log)
+											@foreach (\Auth::user()->admin->getLogs()->take(20)->get() as $log)
 												<!-- Sales stats -->
 												<div class="timeline-row">
 													<div class="timeline-icon">

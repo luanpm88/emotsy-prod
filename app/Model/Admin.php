@@ -400,4 +400,15 @@ class Admin extends Model
     public function getLanguageCode() {
         return (is_object($this->language) ? $this->language->code : null);
     }
+    
+    /**
+     * Get admin logs of their customers
+     *
+     * @return string
+     */
+    public function getLogs() {
+        return \Acelle\Model\Log::leftJoin('customers', 'customers.id', '=', 'logs.customer_id')
+            ->leftJoin('admins', 'admins.id', '=', 'customers.admin_id')
+            ->where('admins.id', '=', $this->id);
+    }
 }
