@@ -164,10 +164,6 @@ class AdminGroup extends Model
             'admin_update' => 'own',
             'admin_delete' => 'own',
             'admin_login_as' => 'own',
-            'customer_group_read' => 'all',
-            'customer_group_create' => 'yes',
-            'customer_group_update' => 'all',
-            'customer_group_delete' => 'own',
             'customer_read' => 'own',
             'customer_create' => 'yes',
             'customer_update' => 'own',
@@ -297,35 +293,6 @@ class AdminGroup extends Model
                     ],
                 ],
                 'login_as' => [
-                    'options' => [
-                        ['value' => 'no', 'text' => trans('messages.no')],
-                        ['value' => 'own', 'text' => trans('messages.own')],
-                        ['value' => 'all', 'text' => trans('messages.all')],
-                    ],
-                ],
-            ],
-            'customer_group' => [
-                'read' => [
-                    'options' => [
-                        ['value' => 'no', 'text' => trans('messages.no')],
-                        ['value' => 'own', 'text' => trans('messages.own')],
-                        ['value' => 'all', 'text' => trans('messages.all')],
-                    ],
-                ],
-                'create' => [
-                    'options' => [
-                        ['value' => 'no', 'text' => trans('messages.no')],
-                        ['value' => 'yes', 'text' => trans('messages.yes')],
-                    ],
-                ],
-                'update' => [
-                    'options' => [
-                        ['value' => 'no', 'text' => trans('messages.no')],
-                        ['value' => 'own', 'text' => trans('messages.own')],
-                        ['value' => 'all', 'text' => trans('messages.all')],
-                    ],
-                ],                
-                'delete' => [
                     'options' => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
