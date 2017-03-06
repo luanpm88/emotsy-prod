@@ -354,8 +354,8 @@ class Subscription extends Model
             'max_file_size_upload' => '100',
             'unsubscribe_url_required' => 'yes',
             'access_when_offline' => 'yes',
-            'create_sending_servers' => 'no',
-			'create_sending_domains' => 'no',
+            'create_sending_servers' => 'yes',
+			'create_sending_domains' => 'yes',
             'sending_servers_max' => '-1',
 			'sending_domains_max' => '-1',
         ];

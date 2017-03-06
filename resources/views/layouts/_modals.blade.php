@@ -177,7 +177,9 @@
 		
 		@if (\Acelle\Library\Tool::currentView() == 'frontend')
 			<!-- Alert if customer don't have any subscription -->
-			@if (is_object(\Auth::user()->customer) && \Auth::user()->customer->notHaveAnyPlan())
+			@if (is_object(\Auth::user()->customer) &&
+				\Auth::user()->customer->notHaveAnyPlan() &&
+				!\Auth::user()->customer->hasAdminAccount())
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 					<h4 class="ui-pnotify-title text-nowrap">
 					{!! trans('messages.not_have_any_plan_notification', [
@@ -191,7 +193,8 @@
 			<!-- Alert if customer have any subscription but none of them is active -->
 			@if (is_object(\Auth::user()->customer)
 				&& !is_object(\Auth::user()->customer->getCurrentSubscription())
-				&& !\Auth::user()->customer->notHaveAnyPlan()
+				&& !\Auth::user()->customer->notHaveAnyPlan() &&
+				!\Auth::user()->customer->hasAdminAccount()
 			)
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 					<h4 class="ui-pnotify-title text-nowrap">
@@ -207,7 +210,8 @@
 			@if (
 				is_object(\Auth::user()->customer) &&
 				\Auth::user()->customer->getOption("create_sending_servers") == 'yes' &&
-				!\Auth::user()->customer->activeSendingServers()->count()
+				!\Auth::user()->customer->activeSendingServers()->count() &&
+				!\Auth::user()->customer->hasAdminAccount()
 			)
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 					<h4 class="ui-pnotify-title text-nowrap">

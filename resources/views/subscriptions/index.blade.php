@@ -24,15 +24,13 @@
 
 @section('content')
 	
-	<h4 class="mt-0">{{ trans('messages.these_are_your_current_plans') }}</h4>
-	
 	<form class="listing-form"
 		sort-url="{{ action('SubscriptionController@sort') }}"
 		data-url="{{ action('SubscriptionController@listing') }}"
 		per-page="{{ Acelle\Model\Subscription::$itemsPerPage }}"					
 	>				
 		<div class="row top-list-controls">
-			<div class="col-md-10">
+			<div class="col-md-9">
 				@if ($subscriptions->count() >= 0)					
 					<div class="filter-box">
 						<span class="filter-group">
@@ -53,13 +51,13 @@
 				@endif
 			</div>
 			@can('create', new Acelle\Model\Subscription())
-				<div class="col-md-2 text-right">
+				<div class="col-md-3 text-right">
 					<a href="{{ action("SubscriptionController@create") }}" type="button" class="btn bg-info-800">
 						<i class="icon icon-plus2"></i> {{ trans('messages.subscribe_a_new_plan') }}
 					</a>
 				</div>
 			@else
-				<div class="col-md-2 text-right" data-popup="tooltip" title="{{ trans('messages.you_have_inactive_subscription') }}">
+				<div class="col-md-3 text-right" data-popup="tooltip" title="{{ trans('messages.you_have_inactive_subscription') }}">
 					<a href="{{ action("SubscriptionController@create") }}" type="button" class="btn btn-default disabled">
 						<i class="icon icon-plus2"></i> {{ trans('messages.subscribe_a_new_plan') }}
 					</a>
