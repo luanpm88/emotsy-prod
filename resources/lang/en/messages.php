@@ -1614,4 +1614,5 @@ return [
     'log.sending_domain.updated' => 'The sending domain "<a href=":link">:name</a>" was updated!',
     'log.sending_domain.deleted' => 'The sending domain ":name" was deleted!',
     'plan_pie_chart' => 'Plan chart',
+    'not_have_any_customer_sending_server' => 'You haven\'t had any sending server. <br /><a href=":link">Click here</a> to create one.',
 ];

@@ -832,7 +832,11 @@ class MailList extends Model
     function send($message, $params = [])
     {
         // @todo code goes here
+        // \Swift_Message::newInstance
         var_dump($message);
+        
+        // Sending server has [['sending_server_id' => 1, 'fitness' => 100], ...]
+        var_dump($this->sendingServersHash());
     }
 
     /**
