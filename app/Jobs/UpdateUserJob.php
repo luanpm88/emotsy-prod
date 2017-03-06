@@ -43,6 +43,6 @@ class UpdateUserJob extends SystemJob
      */
     public function handle()
     {
-        $this->user->updateCache();
+        $this->user->customer->updateCache();
     }
 }

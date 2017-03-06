@@ -1132,7 +1132,7 @@ class MailList extends Model
         event(new \Acelle\Events\MailListUpdated($this, false));
 
         // Update list's cached information
-        event(new \Acelle\Events\UserUpdated($this->user, false));
+        event(new \Acelle\Events\UserUpdated($this->customer->user, false));
     }
 
     /**
