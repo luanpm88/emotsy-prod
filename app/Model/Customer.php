@@ -332,6 +332,8 @@ class Customer extends Model
 		$subscription = $this->getCurrentSubscription();
         if(is_object($subscription)) {
 			return $subscription->getOption($name);
+		} elseif ($this->hasAdminAccount()) {
+			return \Acelle\Model\Subscription::defaultUnlimitedOptions()[$name];
 		} else {
 			return \Acelle\Model\Subscription::defaultOptions()[$name];
 		}
@@ -1305,4 +1307,22 @@ class Customer extends Model
     
         return $this->automationsUsage().'%';
     }
+	
+	/**
+     * Check if customer has admin account
+     *
+     * @return boolean
+     */
+    public function hasAdminAccount() {
+        return is_object($this->user) && is_object($this->user->customer);
+    }
+	
+	/**
+     * Get all customer active sending servers
+     *
+     * @return collect
+     */
+    public function activeSendingServers() {
+		return $this->sendingServers()->where('status', '=', \Acelle\Model\SendingServer::STATUS_ACTIVE);
+	}
 }

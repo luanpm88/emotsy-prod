@@ -179,4 +179,9 @@ class User extends Authenticatable
             $item->api_token = str_random(60);
         });
     }
+    
+    public static function findByUid($uid)
+    {
+        return self::where('uid', '=', $uid)->first();
+    }
 }

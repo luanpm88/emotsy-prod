@@ -58,11 +58,24 @@
 								
 								@include('helpers.form_control', ['type' => 'select', 'name' => 'language_id', 'label' => trans('messages.language'), 'value' => $admin->language_id, 'options' => Acelle\Model\Language::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $admin->rules()])
 								
+								@if (!$admin->hasCustomerAccount())
+									<div class="form-group checkbox-right-switch">
+										@include('helpers.form_control', [
+											'type' => 'checkbox',
+											'name' => 'create_customer_account',
+											'label' => trans('messages.create_customer_account'),
+											'value' => 'no',
+											'options' => ['no', 'yes'],
+											'help_class' => 'customer',
+											'rules' => $admin->rules()
+										])
+									</div>
+								@endif
 							</div>
 						</div>
 											
 					</div>
-					
+					<hr />
 					<div class="text-right">
 						<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 					</div>

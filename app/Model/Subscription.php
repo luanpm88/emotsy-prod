@@ -330,6 +330,36 @@ class Subscription extends Model
 			'sending_domains_max' => '-1',
         ];
     }
+	
+	/**
+     * Default options for new plan.
+     *
+     * @return array
+     */
+    public static function defaultUnlimitedOptions()
+    {
+        return [
+            'list_max' => '-1',
+            'subscriber_max' => '-1',
+            'subscriber_per_list_max' => '-1',
+            'segment_per_list_max' => '-1',
+            'campaign_max' => '-1',
+			'automation_max' => '-1',
+            'sending_quota' => '-1',
+            'sending_quota_time' => '-1',
+            'sending_quota_time_unit' => 'month',
+            'max_process' => '10',
+            'all_sending_servers' => 'yes',
+            'max_size_upload_total' => '100000',
+            'max_file_size_upload' => '100',
+            'unsubscribe_url_required' => 'yes',
+            'access_when_offline' => 'yes',
+            'create_sending_servers' => 'no',
+			'create_sending_domains' => 'no',
+            'sending_servers_max' => '-1',
+			'sending_domains_max' => '-1',
+        ];
+    }
     
     /**
      * Get options.

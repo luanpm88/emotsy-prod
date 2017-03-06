@@ -411,4 +411,33 @@ class Admin extends Model
             ->leftJoin('admins', 'admins.id', '=', 'customers.admin_id')
             ->where('admins.id', '=', $this->id);
     }
+    
+    /**
+     * Create customer account
+     *
+     * @return void
+     */
+    public function createCustomerAccount() {
+        if (!$this->hasCustomerAccount()) {
+            $customer = new \Acelle\Model\Customer();
+            $customer->user_id = $this->user_id;
+            $customer->language_id = $this->language_id;
+            $customer->first_name = $this->first_name;
+            $customer->last_name = $this->last_name;
+            $customer->image = $this->image;
+            $customer->timezone = $this->timezone;
+            $customer->status = $this->status;
+            
+            $customer->save();
+        }
+    }
+    
+    /**
+     * Check if admin has customer account
+     *
+     * @return boolean
+     */
+    public function hasCustomerAccount() {
+        return is_object($this->user) && is_object($this->user->customer);
+    }
 }

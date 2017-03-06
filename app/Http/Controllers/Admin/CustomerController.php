@@ -322,7 +322,11 @@ class CustomerController extends Controller
         }
 
         foreach ($items->get() as $item) {
+            $user = $item->user;
             $item->delete();
+            if (!is_object($user->admin)) {
+                $user->delete();
+            }
         }
 
         // Redirect to my lists page

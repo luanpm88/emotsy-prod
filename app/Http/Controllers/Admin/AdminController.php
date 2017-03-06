@@ -114,6 +114,7 @@ class AdminController extends Controller
             // Create user account for admin
             $user = new \Acelle\Model\User();
             $user->email = $request->email;
+            $user->activated = true; 
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
@@ -124,8 +125,7 @@ class AdminController extends Controller
             $admin->user_id = $user->id;
             $admin->creator_id = $request->user()->id;
             $admin->fill($request->all());
-            $admin->admin_group_id = $request->admin_group_id;
-            $admin->activated = true;       
+            $admin->admin_group_id = $request->admin_group_id;                  
             $admin->status = 'active';
             
             if ($admin->save()) {
@@ -143,6 +143,11 @@ class AdminController extends Controller
                 if ($request->_remove_image == 'true') {
                     $admin->removeImage();
                     $admin->image = '';
+                }
+                
+                // create customer account
+                if (!empty($request->create_customer_account) && $request->create_customer_account == 'yes') {
+                    $admin->createCustomerAccount();
                 }
 
                 $request->session()->flash('alert-success', trans('messages.admin.created'));
@@ -248,6 +253,11 @@ class AdminController extends Controller
                 $admin->removeImage();
                 $admin->image = '';
             }
+            
+            // create customer account
+            if (!empty($request->create_customer_account) && $request->create_customer_account == 'yes') {
+                $admin->createCustomerAccount();
+            }
 
             if ($admin->save()) {
                 $request->session()->flash('alert-success', trans('messages.admin.updated'));
@@ -337,7 +347,9 @@ class AdminController extends Controller
         }
 
         foreach ($items->get() as $item) {
+            $user = $item->user;
             $item->delete();
+            $user->delete();
         }
 
         // Redirect to my lists page

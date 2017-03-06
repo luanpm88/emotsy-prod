@@ -691,7 +691,7 @@ class SendingServer extends Model
      */
     public static function getAllActive()
     {
-        return self::where('status', '=', 'active');
+        return self::where('status', '=', SendingServer::STATUS_ACTIVE);
     }
     
     /**
