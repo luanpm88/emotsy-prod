@@ -89,9 +89,9 @@ class MailList extends Model
         return $this->hasMany('Acelle\Model\Field');
     }
 
-    public function user()
+    public function customer()
     {
-        return $this->belongsTo('Acelle\Model\User');
+        return $this->belongsTo('Acelle\Model\Customer');
     }
 
     public function segments()
@@ -1216,5 +1216,64 @@ class MailList extends Model
         } else {
             return null;
         }
+    }
+    
+    /**
+     * Send mails of list.
+     *
+     * @param Subscriber $subscriber
+     * @param Page       $page
+     * @param string     $title
+     *
+     * @var void
+     */
+    public function sendMail($subscriber, $page, $title)
+    {
+        if ($this->isSendingServersAvailable()) {
+            $this->send([]);
+        } else {
+            // Sending email with system mailer
+            \Mail::send('pages._email_content', ['page' => $page], function ($m) use ($subscriber, $title) {
+                $m->from($subscriber->mailList->from_email, $subscriber->mailList->from_name);
+                $m->to($subscriber->email, trans('messages.to_email_name'))->subject($title);
+            });
+        }
+    }
+    
+    /**
+     * Check if list can send through it's sending servers.
+     *
+     * @var boolean
+     */
+    public function isSendingServersAvailable()
+    {
+        $result = false;
+        
+        // Check the customer has permissions using sending servers and has his own sending servers
+        if ($this->customer->getOption("create_sending_servers") == 'yes') {
+            if ($this->all_sending_servers) {
+                if ($this->customer->sendingServers()->count()) {
+                    $result = true;
+                }
+            } elseif ($this->mailListsSendingServers()->count() ) {
+                $result = true;
+            }
+        // If customer dont have permission creating sending servers
+        } else {
+            $subscription = $this->customer->getCurrentSubscription();
+            
+            // Check if has sending servers for current subscription
+            if (is_object($subscription)) {
+                if ($subscription->getOption("all_sending_servers") == 'yes') {
+                    if (\Acelle\Model\SendingServer::getAllActive()->count()) {
+                        $result = true;
+                    }
+                } elseif ($subscription->subscriptionsSendingServers()->count()) {
+                    $result = true;
+                }
+            }
+        }
+        
+        return $result;
     }
 }

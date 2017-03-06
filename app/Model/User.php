@@ -112,7 +112,6 @@ class User extends Authenticatable
         
         \Mail::send('users.registration_confirmation_email', ['content' => $layout->content], function ($m) {
             $m->from(config("mail.from")["address"], config("mail.from")["name"]);
-
             $m->to($this->email, trans('messages.to_email_name'))->subject(trans('messages.registration_confirmation_email_subject'));
         });
     }

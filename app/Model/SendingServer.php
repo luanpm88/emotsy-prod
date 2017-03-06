@@ -683,4 +683,14 @@ class SendingServer extends Model
     {
         return ( $this->type == 'smtp' || $this->type == 'sendmail' || $this->type == 'php-mail' );
     }
+    
+    /**
+     * Get all active items.
+     *
+     * @return collect
+     */
+    public static function getAllActive()
+    {
+        return self::where('status', '=', 'active');
+    }
 }
