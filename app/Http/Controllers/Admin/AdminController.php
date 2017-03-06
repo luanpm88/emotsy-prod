@@ -124,7 +124,8 @@ class AdminController extends Controller
             $admin->user_id = $user->id;
             $admin->creator_id = $request->user()->id;
             $admin->fill($request->all());
-            $admin->admin_group_id = $request->admin_group_id;            
+            $admin->admin_group_id = $request->admin_group_id;
+            $admin->activated = true;       
             $admin->status = 'active';
             
             if ($admin->save()) {

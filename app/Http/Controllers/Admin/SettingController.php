@@ -24,7 +24,16 @@ class SettingController extends Controller
      */
     public function index(Request $request)
     {
-        return redirect()->action('Admin\SettingController@general');
+        if ($request->user()->admin->getPermission('setting_general') == 'yes') {
+            return redirect()->action('Admin\SettingController@general');
+        } elseif ($request->user()->admin->getPermission('setting_sending') == 'yes') {
+           return redirect()->action('Admin\SettingController@sending');
+        } elseif ($request->user()->admin->getPermission('setting_system_urls') == 'yes') {
+            return redirect()->action('Admin\SettingController@urls');
+        } elseif ($request->user()->admin->getPermission('setting_background_job') == 'yes') {
+           return redirect()->action('Admin\SettingController@cronjob');
+        }
+        
     }
     
     /**
@@ -34,6 +43,10 @@ class SettingController extends Controller
      */
     public function general(Request $request)
     {
+        if ($request->user()->admin->getPermission('setting_general') != 'yes') {
+            return $this->notAuthorized();
+        }
+        
         // \Acelle\Model\Setting::updateAll();
         $settings = \Acelle\Model\Setting::getAll();
         if (null !== $request->old()) {
@@ -88,6 +101,10 @@ class SettingController extends Controller
      */
     public function sending(Request $request)
     {
+        if ($request->user()->admin->getPermission('setting_sending') != 'yes') {
+            return $this->notAuthorized();
+        }
+        
         // \Acelle\Model\Setting::updateAll();
         $settings = \Acelle\Model\Setting::getAll();
         if (null !== $request->old()) {
@@ -123,7 +140,7 @@ class SettingController extends Controller
                     }
                 }
             }
-
+            
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.setting.updated'));
             return redirect()->action('Admin\SettingController@sending');
@@ -141,6 +158,10 @@ class SettingController extends Controller
      */
     public function urls(Request $request)
     {
+        if ($request->user()->admin->getPermission('setting_system_urls') != 'yes') {
+            return $this->notAuthorized();
+        }
+        
         $settings = \Acelle\Model\Setting::getAll();
         return view('admin.settings.urls', [
             'settings' => $settings,
@@ -154,6 +175,10 @@ class SettingController extends Controller
      */
     public function cronjob(Request $request)
     {
+        if ($request->user()->admin->getPermission('setting_background_job') != 'yes') {
+            return $this->notAuthorized();
+        }
+        
         // Re-generate remote job url
         if($request->re_generate_remote_job_url) {
             $remote_job_token = str_random(60);
@@ -179,6 +204,10 @@ class SettingController extends Controller
      */
     public function mailer(Request $request)
     {
+        if ($request->user()->admin->getPermission('setting_general') != 'yes') {
+            return $this->notAuthorized();
+        }
+        
         // SMTP
         $env = [
             'MAIL_DRIVER' => config("mail.driver"),

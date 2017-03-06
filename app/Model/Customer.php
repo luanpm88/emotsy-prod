@@ -916,7 +916,6 @@ class Customer extends Model
             $this->status = 'active';
         }
         
-        $this->customer_group_id = 1;
         $this->fill($request->all());
         
         $this->save();

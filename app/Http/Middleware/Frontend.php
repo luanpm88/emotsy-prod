@@ -18,6 +18,11 @@ class Frontend
     {
         $user = $request->user();
         
+        // If user have no frontend access
+        if (isset($user) && !$user->can("customer_access", $user) && $user->can("admin_access", $user)) {
+            return redirect()->action('Admin\HomeController@index');
+        }
+        
         // check if user not authorized for customer access
         if (isset($user) && !$user->can("customer_access", $user)) {
             return redirect()->action('Controller@notAuthorized');

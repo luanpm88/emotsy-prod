@@ -19,7 +19,9 @@
                                 <a href="{{ action('Admin\SettingController@urls') }}">
 								<i class="icon-link"></i> {{ trans('messages.system_urls') }}</a></li>
 						@endif
+						@if (Auth::user()->admin->getPermission("setting_background_job") == 'yes')
 							<li class="{{ $action == "cronjob" ? "active" : "" }} text-semibold">
                                 <a href="{{ action('Admin\SettingController@cronjob') }}">
 								<i class="icon-alarm"></i> {{ trans('messages.background_job') }}</a></li>
+						@endif
 					</ul>

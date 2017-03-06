@@ -209,6 +209,7 @@ class AdminGroup extends Model
             'setting_sending' => 'yes',
             'setting_system_urls' => 'yes',
             'setting_access_when_offline' => 'yes',
+            'setting_background_job' => 'yes',            
             'language_read' => 'yes',
             'language_create' => 'yes',
             'language_update' => 'yes',
@@ -616,6 +617,12 @@ class AdminGroup extends Model
                     ],
                 ],
                 'access_when_offline' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                'background_job' => [
                     'options' => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'yes', 'text' => trans('messages.yes')],

@@ -146,15 +146,6 @@ class DatabaseSeeder extends Seeder
             'updated_at' => $updated_at,
         ]);
         
-        // Create default customer group
-        DB::table('customer_groups')->insert([
-            'id' => 1,
-            'name' => 'Customer Group 1',
-            'admin_id' => 1,
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-        
         // Create default customer for admin user
         DB::table('customers')->insert([
             'id' => 1,
@@ -162,7 +153,6 @@ class DatabaseSeeder extends Seeder
             'user_id' => 1,
             'admin_id' => 1,
             'contact_id' => 3,
-            'customer_group_id' => 1,
             'language_id' => 1,
             'first_name' => 'Luan',
             'last_name' => 'Pham',

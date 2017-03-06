@@ -198,11 +198,18 @@
                         <span class="caret"></span>
 					</a>
                     <ul class="dropdown-menu">
-						<li rel0="SettingController">
-                            <a href="{{ action('Admin\SettingController@index') }}">
-                                <i class="icon-equalizer2"></i> {{ trans('messages.all_settings') }}
-                            </a>
-                        </li>
+						@if (
+							Auth::user()->admin->getPermission("setting_general") != 'no' ||
+							Auth::user()->admin->getPermission("setting_sending") != 'no' ||
+							Auth::user()->admin->getPermission("setting_system_urls") != 'no' ||
+							Auth::user()->admin->getPermission("setting_background_job") != 'no'
+						)
+							<li rel0="SettingController">
+								<a href="{{ action('Admin\SettingController@index') }}">
+									<i class="icon-equalizer2"></i> {{ trans('messages.all_settings') }}
+								</a>
+							</li>
+						@endif
 						@if (Auth::user()->admin->getPermission("template_read") != 'no')
 							<li rel0="TemplateController">
 								<a href="{{ action('Admin\TemplateController@index') }}">

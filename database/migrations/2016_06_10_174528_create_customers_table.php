@@ -18,7 +18,6 @@ class CreateCustomersTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->integer('admin_id')->unsigned()->nullable();
             $table->integer('contact_id')->unsigned()->nullable();
-            $table->integer('customer_group_id')->unsigned();
             $table->integer('language_id')->unsigned()->nullable();
             $table->string('first_name');
             $table->string('last_name');
@@ -33,7 +32,6 @@ class CreateCustomersTable extends Migration
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('admin_id')->references('id')->on('admins');
             $table->foreign('contact_id')->references('id')->on('contacts');
-            $table->foreign('customer_group_id')->references('id')->on('customer_groups')->onDelete('cascade');
             $table->foreign('language_id')->references('id')->on('languages');
         });
     }
