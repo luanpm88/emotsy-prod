@@ -821,7 +821,7 @@ class MailList extends Model
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
         $send_page = \Acelle\Model\Page::findPage($list, $layout);
         $send_page->renderContent(null, $subscriber);
-        $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
+        $this->sendMail($subscriber, $send_page, trans('messages.'.$layout->alias.'.real'));
     }
 
     /**
@@ -832,6 +832,7 @@ class MailList extends Model
     function send($message, $params = [])
     {
         // @todo code goes here
+        var_dump($message);
     }
 
     /**
@@ -843,9 +844,8 @@ class MailList extends Model
         $list = $this;
 
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_welcome_email')->first();
-        $send_page = \Acelle\Model\Page::findPage($list, $layout);
-        $send_page->renderContent(null, $subscriber);
-        $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
+        $send_page = \Acelle\Model\Page::findPage($list, $layout);        
+        $this->sendMail($subscriber, $send_page, trans('messages.'.$layout->alias.'.real'));
     }
 
     /**
@@ -858,8 +858,20 @@ class MailList extends Model
 
         $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_goodbye_email')->first();
         $send_page = \Acelle\Model\Page::findPage($list, $layout);
-        $send_page->renderContent(null, $subscriber);
-        $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
+        $this->sendMail($subscriber, $send_page, trans('messages.'.$layout->alias.'.real'));
+    }
+    
+    /**
+     * Send unsubscription goodbye email to subscriber.
+     *
+     * @return void
+     */
+    public function sendProfileUpdateEmail($subscriber) {
+        $list = $this;
+
+        $layout = \Acelle\Model\Layout::where('alias', 'profile_update_email')->first();
+        $send_page = \Acelle\Model\Page::findPage($list, $layout);
+        $this->sendMail($subscriber, $send_page, trans('messages.'.$layout->alias.'.real'));
     }
 
     /**
@@ -1229,15 +1241,16 @@ class MailList extends Model
      */
     public function sendMail($subscriber, $page, $title)
     {
-        if ($this->isSendingServersAvailable()) {
-            $this->send([]);
-        } else {
-            // Sending email with system mailer
-            \Mail::send('pages._email_content', ['page' => $page], function ($m) use ($subscriber, $title) {
-                $m->from($subscriber->mailList->from_email, $subscriber->mailList->from_name);
-                $m->to($subscriber->email, trans('messages.to_email_name'))->subject($title);
-            });
-        }
+        $body = view('pages._email_content', ['page' => $page])->render();
+        $page->renderContent(null, $subscriber);
+        
+        // Create a message
+        $message = \Swift_Message::newInstance($title)
+          ->setFrom(array($subscriber->mailList->from_email => $subscriber->mailList->from_name))
+          ->setTo(array($subscriber->email, $subscriber->email => trans('messages.to_email_name')))
+          ->setBody($body);
+          
+        $this->send($message);
     }
     
     /**
@@ -1245,18 +1258,28 @@ class MailList extends Model
      *
      * @var boolean
      */
-    public function isSendingServersAvailable()
+    public function sendingServersHash()
     {
-        $result = false;
+        $result = [];
         
         // Check the customer has permissions using sending servers and has his own sending servers
         if ($this->customer->getOption("create_sending_servers") == 'yes') {
             if ($this->all_sending_servers) {
                 if ($this->customer->sendingServers()->count()) {
-                    $result = true;
+                    $result = $this->customer->sendingServers()->get()->map(function ($server) {
+                        return [
+                            'sending_server_id' => $server->id,
+                            'fitness' => '100',
+                        ];
+                    });
                 }
             } elseif ($this->mailListsSendingServers()->count() ) {
-                $result = true;
+                $result = $this->mailListsSendingServers()->get()->map(function ($server) {
+                    return [
+                        'sending_server_id' => $server->sending_server_id,
+                        'fitness' => $server->fitness,
+                    ];
+                });
             }
         // If customer dont have permission creating sending servers
         } else {
@@ -1266,10 +1289,20 @@ class MailList extends Model
             if (is_object($subscription)) {
                 if ($subscription->getOption("all_sending_servers") == 'yes') {
                     if (\Acelle\Model\SendingServer::getAllActive()->count()) {
-                        $result = true;
+                        $result = \Acelle\Model\SendingServer::getAllActive()->get()->map(function ($server) {
+                            return [
+                                'sending_server_id' => $server->id,
+                                'fitness' => '100',
+                            ];
+                        });
                     }
                 } elseif ($subscription->subscriptionsSendingServers()->count()) {
-                    $result = true;
+                    $result = $subscription->subscriptionsSendingServers()->get()->map(function ($server) {
+                        return [
+                            'sending_server_id' => $server->sending_server_id,
+                            'fitness' => $server->fitness,
+                        ];
+                    });
                 }
             }
         }

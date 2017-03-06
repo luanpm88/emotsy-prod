@@ -411,10 +411,7 @@ class PageController extends Controller
         $page->renderContent(null, $subscriber);
 
         // SEND EMAIL
-        $layout = \Acelle\Model\Layout::where('alias', 'profile_update_email')->first();
-        $send_page = \Acelle\Model\Page::findPage($list, $layout);
-        $send_page->renderContent(null, $subscriber);
-        $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
+        $list->sendProfileUpdateEmail($subscriber);
 
         return view('pages.default', [
             'list' => $list,
