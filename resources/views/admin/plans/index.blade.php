@@ -61,7 +61,7 @@
 						@endcan
 					</div>
 					
-					<div class="pml-table-container">
+					<div class="pml-table-container table-boxes">
 						
 						
 						

@@ -227,39 +227,7 @@ $(document).ready(function() {
         if(typeof(id) === 'undefined') {
             form.attr('data-id', guid());
         }
-        
-        // Make list sortable        
-        form.sortable({
-            connectWith: '.row-sortable',
-            items: 'tr',
-            helper: 'original',
-            cursor: 'move',
-            handle: '[data-action=move]',
-            revert: 100,
-            containment: 'tbody',
-            forceHelperSize: true,
-            placeholder: 'sortable-placeholder',
-            forcePlaceholderSize: true,
-            tolerance: 'pointer',
-            start: function(e, ui) {
-                drag_child = ui.item.next().next();
-                $("tr.child").hide();
-                ui.placeholder.height(ui.item.outerHeight());
-            },
-            update: function(e, ui) {
-                $("tr.child").each(function() {
-                    var rel = $(this).attr("parent");
-                    $(this).insertAfter($("tr[rel='"+rel+"']"));   
-                });
-                $("tr.child").fadeIn();
-                updateCustomOrder(form);
-            },
-            stop: function(event, ui) {
-                $("tr.child").fadeIn();
-            }
-        });
-        
-        if (form.find('.boxes-plans').length) {
+        if (form.find('.table-boxes').length) {
             // sortable box
             // Make list sortable        
             form.sortable({
@@ -275,6 +243,37 @@ $(document).ready(function() {
                 forcePlaceholderSize: true,
                 tolerance: 'pointer'
             });
+        } else {
+          // Make list sortable        
+          form.sortable({
+              connectWith: '.row-sortable',
+              items: 'tr',
+              helper: 'original',
+              cursor: 'move',
+              handle: '[data-action=move]',
+              revert: 100,
+              containment: 'tbody',
+              forceHelperSize: true,
+              placeholder: 'sortable-placeholder',
+              forcePlaceholderSize: true,
+              tolerance: 'pointer',
+              start: function(e, ui) {
+                  drag_child = ui.item.next().next();
+                  $("tr.child").hide();
+                  ui.placeholder.height(ui.item.outerHeight());
+              },
+              update: function(e, ui) {
+                  $("tr.child").each(function() {
+                      var rel = $(this).attr("parent");
+                      $(this).insertAfter($("tr[rel='"+rel+"']"));   
+                  });
+                  $("tr.child").fadeIn();
+                  updateCustomOrder(form);
+              },
+              stop: function(event, ui) {
+                  $("tr.child").fadeIn();
+              }
+          });
         }
         
         // Render table
