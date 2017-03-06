@@ -825,6 +825,16 @@ class MailList extends Model
     }
 
     /**
+     * Send Mail List related email
+     *
+     * @return void
+     */
+    function send($message, $params = [])
+    {
+        // @todo code goes here
+    }
+
+    /**
      * Send subscription confirmation email to subscriber.
      *
      * @return void
@@ -1118,12 +1128,12 @@ class MailList extends Model
     public function reload() {
         return self::find($this->id);
     }
-    
+
     public function mailListsSendingServers()
     {
         return $this->hasMany('Acelle\Model\MailListsSendingServer');
     }
-    
+
     /**
      * Update sending servers.
      *
@@ -1143,7 +1153,7 @@ class MailList extends Model
             }
         }
     }
-    
+
     /**
      * Update Campaign cached data
      *
