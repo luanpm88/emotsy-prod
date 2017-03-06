@@ -23,8 +23,8 @@
 					<input type="hidden" name="_method" value="PATCH">
 					
 					@include("lists._form")					
-					
-					<div class="text-right">
+					<hr>
+					<div class="text-left">
 						<button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 						<a href="{{ action('MailListController@index') }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
 					</div>

@@ -24,8 +24,8 @@
 					{{ csrf_field() }}
 					
 					@include("subscribers._form")
-					
-					<div class="text-right col-md-6">
+					<hr>
+					<div class="text-left">
 						<button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 						<a href="{{ action('SubscriberController@index', $list->uid) }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
 					</div>

@@ -63,7 +63,7 @@
 							])
 						</div>
 					</div>
-					
-					<div class="text-right">
+					<hr>
+					<div class="text-left">
 						<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 					</div>
