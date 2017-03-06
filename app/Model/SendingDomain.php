@@ -221,4 +221,24 @@ class SendingDomain extends Model
 
         return true;
     }
+    
+    /**
+     * Add customer action log.
+     */
+    public function log($name, $customer, $add_datas = [])
+    {
+        $data = [
+            'id' => $this->id,
+            'name' => $this->name,
+        ];
+
+        $data = array_merge($data, $add_datas);
+
+        Log::create([
+            'customer_id' => $customer->id,
+            'type' => 'sending_domain',
+            'name' => $name,
+            'data' => json_encode($data),
+        ]);
+    }
 }

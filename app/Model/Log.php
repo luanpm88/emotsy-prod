@@ -135,6 +135,18 @@ class Log extends Model
 
             $data['link'] = $link;
         }
+        // Sending server
+        elseif ($this->type == 'sending_server') {
+            $item = SendingServer::find($data['id']);
+            $link = is_object($item) ? action('SendingServerController@edit', ['id' => $item->uid, 'type' => $item->type]) : '#deleted';
+            $data['link'] = $link;
+        }
+        // Sending server
+        elseif ($this->type == 'sending_domain') {
+            $item = SendingDomain::find($data['id']);
+            $link = is_object($item) ? action('SendingDomainController@edit', $item->uid) : '#deleted';
+            $data['link'] = $link;
+        }
 
         $message = trans('messages.log.'.$this->type.'.'.$this->name, $data);
 

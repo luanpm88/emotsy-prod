@@ -1607,4 +1607,10 @@ return [
     'data' => 'Data',
     'order_id' => 'Order ID',
     'payments_history' => 'Payments history',
+    'log.sending_server.created' => 'The sending server "<a href=":link">:name</a>" was created!',
+    'log.sending_server.updated' => 'The sending server "<a href=":link">:name</a>" was updated!',
+    'log.sending_server.deleted' => 'The sending server ":name" was deleted!',
+    'log.sending_domain.created' => 'The sending domain "<a href=":link">:name</a>" was created!',
+    'log.sending_domain.updated' => 'The sending domain "<a href=":link">:name</a>" was updated!',
+    'log.sending_domain.deleted' => 'The sending domain ":name" was deleted!',
 ];

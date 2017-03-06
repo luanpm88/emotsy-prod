@@ -107,8 +107,10 @@ class SendingDomainController extends Controller
             $server->status = 'active';
 
             if ($server->save()) {
+                // Log
+                $server->log('created', $request->user()->customer);
+                
                 $request->session()->flash('alert-success', trans('messages.sending_domain.created'));
-
                 return redirect()->action('SendingDomainController@index');
             }
         }
@@ -175,8 +177,10 @@ class SendingDomainController extends Controller
             $server->fill($request->all());
 
             if ($server->save()) {
+                // Log
+                $server->log('updated', $request->user()->customer);
+                
                 $request->session()->flash('alert-success', trans('messages.sending_domain.updated'));
-
                 return redirect()->action('SendingDomainController@index');
             }
         }
@@ -231,13 +235,12 @@ class SendingDomainController extends Controller
 
         foreach ($items->get() as $item) {
             // authorize
-            if (\Gate::denies('delete', $item)) {
-                return;
+            if (\Gate::allows('delete', $item)) {
+                // Log
+                $item->log('deleted', $request->user()->customer);
+                
+                $item->delete();
             }
-        }
-
-        foreach ($items->get() as $item) {
-            $item->delete();
         }
 
         // Redirect to my lists page
