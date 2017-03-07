@@ -44,14 +44,8 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
     Route::delete('lists/{list_uid}/subscribers/{uid}/delete', 'SubscriberController@delete');
     Route::post('lists/{list_uid}/subscribers/store', 'SubscriberController@store');
     
-    // User
-    Route::resource('users', 'UserController');
-    
     // Automation
     Route::post('automations/{uid}/api/call', 'AutomationController@apiCall');
-    
-    // User group
-    Route::resource('user_groups', 'UserGroupController');
     
     // Sending server
     Route::resource('sending_servers', 'SendingServerController');

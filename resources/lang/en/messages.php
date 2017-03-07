@@ -1618,4 +1618,7 @@ return [
     'admin.create_customer_account.help' => 'Create a customer account with admin. Admin\'s customer account will have unlimmited access in customer view.',
     'create_customer_account' => 'Create customer account',
     'not_have_any_admin_sending_server' => 'The system haven\'t had any sending server. <br /><a href=":link">Click here</a> to create one.',
+    'add_a_new_list' => 'Add a new list',
+    'parameters' => 'Parameters',
+    'returns' => 'Returns',
 ];
