@@ -180,6 +180,12 @@ class Setting extends Model
                 'type' => 'checkbox',
                 'options' => ['no','yes'],
             ],
+            'enable_user_registration' => [
+                'cat' => 'general',
+                'value' => 'yes',
+                'type' => 'checkbox',
+                'options' => ['no','yes'],
+            ],
             'sending_campaigns_at_once' => [
                 'cat' => 'sending',
                 'value' => '10',

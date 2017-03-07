@@ -1628,4 +1628,6 @@ return [
     'subscriptions.paid' => 'Subscription was successfully paid',
     'subscriptions.unpaid' => 'Subscription was successfully un-paid',
     'your_account_is_disabled' => 'Your account is disabled. Please contact the provider for more information.',
+    'enable_user_registration' => 'Enable customer registration',
+    'setting.enable_user_registration.help' => 'Visitor can create new customer account and register for a plan.',
 ];

@@ -39,6 +39,10 @@ class SubscriptionController extends Controller
      */
     public function register(Request $request)
     {
+        if (\Acelle\Model\Setting::get('enable_user_registration') == 'no') {
+            return $this->notAuthorized();
+        }
+        
         // Customer account
         $user = $request->user();
         $is_customer_logged_in = is_object($user) && is_object($user->customer);

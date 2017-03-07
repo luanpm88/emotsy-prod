@@ -81,4 +81,12 @@ class CustomerPolicy
 
         return $can && $item->status != 'active';
     }
+    
+    public function register(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
+    {
+        $ability = \Acelle\Model\Setting::get('enable_user_registration') == 'yes';
+        $can = $ability;
+
+        return true;
+    }
 }
