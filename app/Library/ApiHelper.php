@@ -274,8 +274,7 @@ class ApiHelper
                     'method' => 'POST',
                     'uri' => '/api/v1/customers',
                     'description' => 'Add new customer',
-                    'parameters' => [
-                        ['name' => '$name', 'description' => 'List\'s name'],                        
+                    'parameters' => [                        
                     ],
                     'returns' => 'Creation messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
@@ -287,7 +286,39 @@ class ApiHelper
 -d timezone=America/Godthab \
 -d language_id=1 \
 -d password=123456',
-                ],                
+                ],
+                
+                [
+                    'method' => 'GET',
+                    'uri' => '/api/v1/customers/{uid}',
+                    'description' => 'Get information about a specific customer',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],                        
+                    ],
+                    'returns' => 'Customer information in json',
+                    'example' => 'curl -X GET -H "accept:application/json" -G \
+' . str_replace("-ID-", "<redbold>{uid}</redbold>", action("Api\CustomerController@update", "-ID-")) . '? \
+-d api_token=' . \Auth::user()->api_token,
+                ],
+                
+                [
+                    'method' => 'PATCH',
+                    'uri' => '/api/v1/customers',
+                    'description' => 'Update customer',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],                        
+                    ],
+                    'returns' => 'Creation messages in json',
+                    'example' => 'curl -X PATCH -H "accept:application/json" -G \
+' . str_replace("-ID-", "<redbold>{uid}</redbold>", action("Api\CustomerController@update", "-ID-")) . '? \
+-d api_token=' . \Auth::user()->api_token . '  \
+-d email=user_name@gmail.com \
+-d first_name=Luan \
+-d last_name=Pham \
+-d timezone=America/Godthab \
+-d language_id=1 \
+-d password=123456',
+                ],
             ],
         ];
         

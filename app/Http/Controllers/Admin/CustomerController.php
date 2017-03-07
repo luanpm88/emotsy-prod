@@ -225,6 +225,7 @@ class CustomerController extends Controller
             
             // Save current user info
             $customer->fill($request->all());
+            $customer->save();
             
             // Upload and save image
             if ($request->hasFile('image')) {
