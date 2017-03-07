@@ -142,18 +142,25 @@ class SubscriberController extends Controller
             return \Response::json(array('message' => trans('List not found')), 404);
         }
         
-        $item = \Acelle\Model\Subscriber::
-            where('uid', '=', $id)
-            ->first();
+        if (strpos($id, '@') !== false) {
+            $item = \Acelle\Model\Subscriber::
+                where('email', '=', $id)
+                ->where('mail_list_id', "=", $list->id)
+                ->first();
+        } else {
+            $item = \Acelle\Model\Subscriber::
+                where('uid', '=', $id)
+                ->first();
+        }
+        
+        // check if item exists
+        if (!is_object($item)) {
+            return \Response::json(array('message' => 'Item not found'), 404);
+        }
 
         // authorize
         if (!$user->can('read', $item)) {
             return \Response::json(array('message' => 'Unauthorized'), 401);
-        }
-
-        // check if item exists
-        if (!is_object($item)) {
-            return \Response::json(array('message' => 'Item not found'), 404);
         }
 
         // subscriber

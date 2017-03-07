@@ -68,6 +68,20 @@ class MailListController extends Controller
             'created_at' => $item->created_at,
             'updated_at' => $item->updated_at,
         ];
+        
+        // List fields
+        $list['fields'] = [];
+        foreach ($item->getFields as $key => $field) {
+            $list['fields'][] = [
+                'label' => $field->label,
+                'type' => $field->type,
+                'tag' => $field->tag,
+                'default_value' => $field->default_value,
+                'visible' => $field->visible,
+                'required' => $field->required,
+                'custom_order' => $field->custom_order,
+            ];
+        }
 
         // Contact information
         $contact = null;

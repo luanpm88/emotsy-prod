@@ -378,7 +378,7 @@
                   <h4>Parameters</h4>
                   <div class="list"><dl>
                     <dt><var>$uid</var></dt>
-                    <dd>Subsciber's uid</dd>                   
+                    <dd>Subsciber's uid or email</dd>                   
                   </dl></div>
           
                   <h4>Returns</h4>
