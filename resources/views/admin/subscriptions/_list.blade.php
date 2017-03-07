@@ -97,9 +97,23 @@
 										</a>
 									</li>
 								@endcan
+								@can('paid', $subscription)
+									<li>
+										<a data-method='PATCH' link-confirm="{{ trans('messages.paid_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@paid', ["uids" => $subscription->uid]) }}">
+											<i class="icon-checkmark-circle"></i> {{ trans('messages.paid') }}
+										</a>
+									</li>
+								@endcan
+								@can('unpaid', $subscription)
+									<li>														
+										<a data-method='PATCH' link-confirm="{{ trans('messages.unpaid_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@unpaid', ["uids" => $subscription->uid]) }}">
+											<i class="icon-radio-unchecked"></i> {{ trans('messages.unpaid') }}
+										</a>
+									</li>
+								@endcan
 								@can('delete', $subscription)
 									<li>														
-										<a delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@delete', ['uids' => $subscription->uid]) }}">
+										<a data-method='delete' delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@delete', ['uids' => $subscription->uid]) }}">
 											<i class="icon-trash"></i> {{ trans('messages.delete') }}
 										</a>
 									</li>

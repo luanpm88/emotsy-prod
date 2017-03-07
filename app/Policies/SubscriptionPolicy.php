@@ -162,4 +162,48 @@ class SubscriptionPolicy
     {
         return !$subscription->isPaid();
     }
+    
+    public function paid(\Acelle\Model\User $user, \Acelle\Model\Subscription $subscription)
+    {
+        $can = false;
+        
+        $admin = $user->admin;
+        if (is_object($admin)) {
+            $ability = $user->admin->getPermission('subscription_paid');
+            $ability = $ability == 'all'
+                    || ($ability == 'own' && $user->admin->id == $subscription->customer->admin_id);
+            $can = $can || $ability;
+        }
+        
+        $customer = $user->customer;
+        if (is_object($customer)) {
+            $can = $can || $customer->id == $subscription->customer_id;
+        }
+        
+        $can = $can && $subscription->paid == false;
+        
+        return $can;
+    }
+    
+    public function unpaid(\Acelle\Model\User $user, \Acelle\Model\Subscription $subscription)
+    {
+        $can = false;
+        
+        $admin = $user->admin;
+        if (is_object($admin)) {
+            $ability = $user->admin->getPermission('subscription_unpaid');
+            $ability = $ability == 'all'
+                    || ($ability == 'own' && $user->admin->id == $subscription->customer->admin_id);
+            $can = $can || $ability;
+        }
+        
+        $customer = $user->customer;
+        if (is_object($customer)) {
+            $can = $can || $customer->id == $subscription->customer_id;
+        }
+        
+        $can = $can && $subscription->paid == true;
+        
+        return $can;
+    }
 }

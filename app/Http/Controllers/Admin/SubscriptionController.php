@@ -356,4 +356,48 @@ class SubscriptionController extends Controller
             'subscription' => $subscription
         ]);
     }
+    
+    /**
+     * Set paid subscriptions.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function paid(Request $request)
+    {
+        $subscriptions = \Acelle\Model\Subscription::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($subscriptions->get() as $subscription) {
+            // authorize
+            if (\Gate::allows('paid', $subscription)) {
+                $subscription->setPaid();
+            }            
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.subscriptions.paid');
+    }
+    
+    /**
+     * Set un-paid subscriptions.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function unpaid(Request $request)
+    {
+        $subscriptions = \Acelle\Model\Subscription::whereIn('uid', explode(',', $request->uids));
+
+        foreach ($subscriptions->get() as $subscription) {
+            // authorize
+            if (\Gate::allows('unpaid', $subscription)) {
+                $subscription->setUnPaid();
+            }            
+        }
+
+        // Redirect to my lists page
+        echo trans('messages.subscriptions.unpaid');
+    }
 }

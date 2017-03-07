@@ -651,6 +651,17 @@ class Subscription extends Model
     }
 	
 	/**
+     * Set un-paid.
+     *
+     * @return void
+     */
+    public function setUnPaid()
+    {
+        $this->paid = false;
+        $this->save();
+    }
+	
+	/**
      * Get paid status.
      *
      * @return string

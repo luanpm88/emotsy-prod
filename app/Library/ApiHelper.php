@@ -33,7 +33,7 @@ class ApiHelper
     {
         $docs = [];
         
-        // List
+        // LIST
         $docs[] = [
             'title' => trans('messages.LISTS'),
             'functions' => [
@@ -109,7 +109,7 @@ class ApiHelper
             ],
         ];
         
-        // Campaigns
+        // CAMPAIGN
         $docs[] = [
             'title' => trans('messages.CAMPAIGNS'),
             'functions' => [
@@ -137,7 +137,7 @@ class ApiHelper
             ],
         ];
         
-        // Subscribers
+        // SUBSCRIBER
         $docs[] = [
             'title' => trans('messages.SUBSCRIBERS'),
             'functions' => [
@@ -232,7 +232,7 @@ class ApiHelper
             ],
         ];
         
-        // Sending server
+        // SENDING SERVER
         $docs[] = [
             'title' => trans('messages.SENDING_SERVERS'),
             'functions' => [

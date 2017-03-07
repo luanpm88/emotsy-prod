@@ -175,6 +175,8 @@ class AdminGroup extends Model
             'subscription_delete' => 'own',
             'subscription_disable' => 'own',
             'subscription_enable' => 'own',
+            'subscription_paid' => 'own',
+            'subscription_unpaid' => 'own',
             'plan_read' => 'own',
             'plan_create' => 'yes',
             'plan_update' => 'own',
@@ -373,6 +375,20 @@ class AdminGroup extends Model
                     ],
                 ],
                 'delete' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'paid' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'unpaid' => [
                     'options' => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],

@@ -1621,4 +1621,10 @@ return [
     'add_a_new_list' => 'Add a new list',
     'parameters' => 'Parameters',
     'returns' => 'Returns',
+    'paid' => 'Paid',
+    'unpaid' => 'Un-paid',
+    'paid_subscriptions_confirm' => 'You\'re about to set paid :number subscription(s).',
+    'unpaid_subscriptions_confirm' => 'You\'re about to set un-paid :number subscription(s).',
+    'subscriptions.paid' => 'Subscription was successfully paid',
+    'subscriptions.unpaid' => 'Subscription was successfully un-paid',
 ];

@@ -570,13 +570,15 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/currencies', 'CurrencyController');
     
     // Subscription
+    Route::patch('subscriptions/{uids}/unpaid', 'SubscriptionController@unpaid');
+    Route::patch('subscriptions/{uids}/paid', 'SubscriptionController@paid');
     Route::get('admin/subscriptions/{uid}/payments', 'SubscriptionController@payments');
     Route::patch('admin/subscriptions/enable', 'SubscriptionController@enable');
     Route::patch('admin/subscriptions/disable', 'SubscriptionController@disable');
     Route::get('admin/subscriptions/preview', 'SubscriptionController@preview');
     Route::get('admin/subscriptions/listing/{page?}', 'SubscriptionController@listing');
     Route::get('admin/subscriptions/sort', 'SubscriptionController@sort');
-    Route::get('admin/subscriptions/delete', 'SubscriptionController@delete');    
+    Route::delete('admin/subscriptions/delete', 'SubscriptionController@delete');    
     Route::resource('admin/subscriptions', 'SubscriptionController');
     
     // Payment method
