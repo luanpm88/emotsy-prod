@@ -309,4 +309,53 @@ class SubscriberController extends Controller
 
         return \Response::json(array('message' => 'Deleted'), 200);
     }
+    
+    /**
+     * Display the specified subscriber by email.
+     *
+     * GET /api/v1/lists/{list_id}/subscribers/{id}
+     *
+     * @param string $list_id List's id
+     * @param string $id      Subsciber's id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function showByEmail($email)
+    {
+        $user = \Auth::guard('api')->user();
+        
+        $subscribers = \Acelle\Model\Subscriber::where('email', '=', $email)->get();
+        
+        // check if item exists
+        if (empty($subscribers)) {
+            return \Response::json(array('message' => 'Subscriber not found'), 404);
+        }
+        
+        $rows = [];        
+        foreach ($subscribers as $subscriber) {
+            
+            // authorize
+            if ($user->can('read', $subscriber)) {
+                // subscriber
+                $row = [
+                    'uid' => $subscriber->uid,
+                    'list_uid' => $subscriber->mailList->uid,
+                    'email' => $subscriber->email,
+                    'status' => $subscriber->status,
+                    'source' => $subscriber->from,
+                    'ip_address' => $subscriber->ip
+                ];
+        
+                foreach ($subscriber->mailList->fields as $field) {
+                    if ($field->tag != 'EMAIL') {
+                        $row[$field->tag] = $subscriber->getValueByField($field);
+                    }
+                }
+                
+                $rows[] = $row;
+            }
+        }
+
+        return \Response::json(['subscribers' => $rows], 200);
+    }
 }

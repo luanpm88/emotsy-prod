@@ -396,6 +396,45 @@
 </code></pre>
             </td>
         </tr>
+            
+        
+        <tr>
+          <td>
+            <span class="label label-flat bg-info">{{ trans('messages.GET') }}</span>
+          </td>
+          <td>
+            <a href="#more" class="toogle-api">/api/v1/subscribers/{email}</a>
+          </td>
+          <td>
+            Find subscribers with email
+          </td>
+        </tr>
+        <tr style="display:none;background: #f6f6f6">
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">
+                  <h4>Parameters</h4>
+                  <div class="list"><dl>
+                    <dt><var>$email</var></dt>
+                    <dd>Subsciber's email</dd>                   
+                  </dl></div>
+          
+                  <h4>Returns</h4>
+                  <div class="list">
+                    All subscribers with the email
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+                <h4>Example:</h4>
+                <pre class=""><code>curl -X GET -H "accept:application/json" -G \
+{!! str_replace("-ID-", "<redbold>{email}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_uid}</redbold>", action("Api\SubscriberController@showByEmail", ["email" => "-ID-"]))) !!}? \
+-d api_token={{ Auth::user()->api_token }}
+</code></pre>
+            </td>
+        </tr>
           
           
         <tr>
