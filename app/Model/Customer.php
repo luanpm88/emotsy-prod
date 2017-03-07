@@ -1314,7 +1314,7 @@ class Customer extends Model
      * @return boolean
      */
     public function hasAdminAccount() {
-        return is_object($this->user) && is_object($this->user->customer);
+        return is_object($this->user) && is_object($this->user->admin);
     }
 	
 	/**

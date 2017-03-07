@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 
 /**
- * /api/v1/user-groups - API controller for managing user groups.
+ * /api/v1/sending_servers - API controller for managing sending servers.
  */
 class SendingServerController extends Controller
 {

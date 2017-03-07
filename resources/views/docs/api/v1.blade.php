@@ -8,7 +8,7 @@
         <p class="alert alert-info">{!! trans('messages.api_token_guide', ["link" => action("Api\MailListController@index", ["api_token" => "YOUR_API_TOKEN"])]) !!}</p>
         
         @foreach (\Acelle\Library\ApiHelper::docs() as $box)
-            <h2>{{ $box['title'] }}</h2>
+            <h2 style='text-transform: uppercase;'>{{ $box['title'] }}</h2>
             <table class="table table-box pml-table table-log">
                 <tr>
                     <th width="1%" class="text-nowrap">{{ trans('messages.HTTP_method') }}</th>

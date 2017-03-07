@@ -61,7 +61,7 @@ class CustomerPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
-        return $can && $user->admin->id != $item->admin_id;
+        return $can && $user->admin->user_id != $item->user_id;
     }
     
     public function disable(\Acelle\Model\User $user, \Acelle\Model\Customer $item)

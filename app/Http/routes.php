@@ -49,6 +49,15 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
     
     // Sending server
     Route::resource('sending_servers', 'SendingServerController');
+    
+    // Plan
+    Route::resource('plans', 'PlanController');
+    
+    // Customer
+    Route::resource('customers', 'CustomerController');
+    
+    // Subscription
+    Route::resource('subscriptions', 'SubscriptionController');
 });
 
 Route::group(['middleware' => ['not_logged_in']], function () {

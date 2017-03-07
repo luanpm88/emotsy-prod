@@ -232,6 +232,23 @@ class ApiHelper
             ],
         ];
         
+        // PLAN
+        $docs[] = [
+            'title' => trans('messages.plan'),
+            'functions' => [
+                [
+                    'method' => 'GET',
+                    'uri' => '/api/v1/plans',
+                    'description' => 'Get information about all plans',
+                    'parameters' => [],
+                    'returns' => 'List of all plans in json',
+                    'example' => 'curl -X GET -H "accept:application/json" -G \
+' . action("Api\PlanController@index") . '? \
+-d api_token=' . \Auth::user()->api_token,
+                ],
+            ],
+        ];
+        
         // SENDING SERVER
         $docs[] = [
             'title' => trans('messages.SENDING_SERVERS'),
@@ -246,6 +263,31 @@ class ApiHelper
 ' . action("Api\SendingServerController@index") . '? \
 -d api_token=' . \Auth::user()->api_token,
                 ],
+            ],
+        ];
+        
+        // CUSTOMER
+        $docs[] = [
+            'title' => trans('messages.customer'),
+            'functions' => [
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/customers',
+                    'description' => 'Add new customer',
+                    'parameters' => [
+                        ['name' => '$name', 'description' => 'List\'s name'],                        
+                    ],
+                    'returns' => 'Creation messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' . action("Api\CustomerController@store") . '? \
+-d api_token=' . \Auth::user()->api_token . '  \
+-d email=user_name@gmail.com \
+-d first_name=Luan \
+-d last_name=Pham \
+-d timezone=America/Godthab \
+-d language_id=1 \
+-d password=123456',
+                ],                
             ],
         ];
         
