@@ -440,4 +440,13 @@ class Admin extends Model
     public function hasCustomerAccount() {
         return is_object($this->user) && is_object($this->user->customer);
     }
+    
+    /**
+     * Check if customer is disabled
+     *
+     * @return boolean
+     */
+    public function isActive() {
+		return $this->status == Customer::STATUS_ACTIVE;
+	}
 }

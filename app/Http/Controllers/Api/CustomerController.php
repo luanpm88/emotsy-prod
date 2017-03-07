@@ -185,9 +185,111 @@ class CustomerController extends Controller
             'last_name' => $customer->last_name,
             'image' => $customer->image,
             'timezone' => $customer->timezone,
-            'status' => $customer->status
+            'status' => $customer->status,
+            'options' => $customer->getOptions(),
         ];
+        
+        // Customer contact
+        $contact = $customer->contact;
+        if (is_object($contact)) {
+            $result['contact'] = [
+                'first_name' => $contact->first_name,
+                'last_name' => $contact->last_name,
+                'company' => $contact->company,
+                'address_1' => $contact->address_1,
+                'address_2' => $contact->address_2,
+                'country' => $contact->countryName(),
+                'state' => $contact->state,
+                'city' => $contact->city,
+                'zip' => $contact->zip,
+                'phone' => $contact->phone,
+                'url' => $contact->url,
+                'email' => $contact->email,
+            ];
+        }
+        
+        // Current subscription
+        $subscription = $customer->getCurrentSubscription();
+        if (is_object($subscription)) {
+            $result['subscription'] = [
+                'uid' => $subscription->uid,
+                'plan_name' => $subscription->plan_name,
+                'price' => $subscription->price,
+                'currency_code' => $subscription->currency_code,
+                'start_at' => $subscription->start_at,
+                'end_at' => $subscription->end_at,
+                'status' => $subscription->status,
+                'paid' => $subscription->paid,
+                'time_status' => $subscription->timeStatus(),
+            ];
+        }
 
         return \Response::json(['customer' => $result], 200);
+    }
+    
+    /**
+     * Enable customer.
+     *
+     * PATCH /api/v1/customers/{uid}
+     *
+     * @param int $id customer's uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function enable($uid)
+    {
+        $user = \Auth::guard('api')->user();
+
+        $customer = \Acelle\Model\Customer::findByUid($uid);
+        
+        // check if item exists
+        if (!is_object($customer)) {
+            return \Response::json(array('message' => 'Customer not found'), 404);
+        }
+        
+        // authorize
+        if (!$user->can('enable', $customer)) {
+            return \Response::json(array('message' => 'Unauthorized'), 401);
+        }
+        
+        $customer->enable();
+        
+        return \Response::json(array(
+            'message' => trans('messages.customer.enabled'),
+            'customer_uid' => $customer->uid
+        ), 200);
+    }
+    
+    /**
+     * Disable customer.
+     *
+     * PATCH /api/v1/customers/{uid}
+     *
+     * @param int $id customer's uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function disable($uid)
+    {
+        $user = \Auth::guard('api')->user();
+
+        $customer = \Acelle\Model\Customer::findByUid($uid);
+        
+        // check if item exists
+        if (!is_object($customer)) {
+            return \Response::json(array('message' => 'Customer not found'), 404);
+        }
+        
+        // authorize
+        if (!$user->can('disable', $customer)) {
+            return \Response::json(array('message' => 'Unauthorized'), 401);
+        }
+        
+        $customer->disable();
+        
+        return \Response::json(array(
+            'message' => trans('messages.customer.disabled'),
+            'customer_uid' => $customer->uid
+        ), 200);
     }
 }

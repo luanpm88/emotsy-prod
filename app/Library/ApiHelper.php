@@ -319,6 +319,32 @@ class ApiHelper
 -d language_id=1 \
 -d password=123456',
                 ],
+                
+                [
+                    'method' => 'PATCH',
+                    'uri' => '/api/v1/customers/{uid}/enable',
+                    'description' => 'Enable customer',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],                        
+                    ],
+                    'returns' => 'Action messages in json',
+                    'example' => 'curl -X PATCH -H "accept:application/json" -G \
+' . str_replace("-ID-", "<redbold>{uid}</redbold>", action("Api\CustomerController@enable", "-ID-")) . '? \
+-d api_token=' . \Auth::user()->api_token,
+                ],
+                
+                [
+                    'method' => 'PATCH',
+                    'uri' => '/api/v1/customers/{uid}/disable',
+                    'description' => 'Disable customer',
+                    'parameters' => [
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],                        
+                    ],
+                    'returns' => 'Action messages in json',
+                    'example' => 'curl -X PATCH -H "accept:application/json" -G \
+' . str_replace("-ID-", "<redbold>{uid}</redbold>", action("Api\CustomerController@disable", "-ID-")) . '? \
+-d api_token=' . \Auth::user()->api_token,
+                ],
             ],
         ];
         

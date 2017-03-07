@@ -110,6 +110,7 @@ class CustomerController extends Controller
             // Create user account for customer
             $user = new \Acelle\Model\User();
             $user->email = $request->email;
+            $user->activated = true;
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
@@ -502,7 +503,7 @@ class CustomerController extends Controller
 
             // Save current user info
             if ($contact->save()) {
-                if (!is_object($contact)) {
+                if (is_object($contact)) {
                     $customer->contact_id = $contact->id;
                     $customer->save();
                 }

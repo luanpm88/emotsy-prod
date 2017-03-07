@@ -54,6 +54,8 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
     Route::resource('plans', 'PlanController');
     
     // Customer
+    Route::patch('customers/{uid}/disable', 'CustomerController@disable');
+    Route::patch('customers/{uid}/enable', 'CustomerController@enable');
     Route::resource('customers', 'CustomerController');
     
     // Subscription

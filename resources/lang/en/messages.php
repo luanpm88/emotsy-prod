@@ -1627,4 +1627,5 @@ return [
     'unpaid_subscriptions_confirm' => 'You\'re about to set un-paid :number subscription(s).',
     'subscriptions.paid' => 'Subscription was successfully paid',
     'subscriptions.unpaid' => 'Subscription was successfully un-paid',
+    'your_account_is_disabled' => 'Your account is disabled. Please contact the provider for more information.',
 ];

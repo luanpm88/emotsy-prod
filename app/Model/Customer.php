@@ -320,23 +320,34 @@ class Customer extends Model
     
         return $query->count();
     }
+	
+	/**
+     * Get customer options.
+     *
+     * @return string
+     */
+    public function getOptions()
+    {
+        //@todo how to get option from subscription/plan
+		$subscription = $this->getCurrentSubscription();
+        if(is_object($subscription)) {
+			return $subscription->getOptions();
+		} elseif ($this->hasAdminAccount()) {
+			return \Acelle\Model\Subscription::defaultUnlimitedOptions();
+		} else {
+			return \Acelle\Model\Subscription::defaultOptions();
+		}
+    }
     
     /**
-     * Get customer setting.
+     * Get customer option.
      *
      * @return string
      */
     public function getOption($name)
     {
-        //@todo how to get option from subscription/plan
-		$subscription = $this->getCurrentSubscription();
-        if(is_object($subscription)) {
-			return $subscription->getOption($name);
-		} elseif ($this->hasAdminAccount()) {
-			return \Acelle\Model\Subscription::defaultUnlimitedOptions()[$name];
-		} else {
-			return \Acelle\Model\Subscription::defaultOptions()[$name];
-		}
+		$options = $this->getOptions();
+        return isset($options[$name]) ? $options[$name] : '';
     }
     
     /**
@@ -1324,5 +1335,14 @@ class Customer extends Model
      */
     public function activeSendingServers() {
 		return $this->sendingServers()->where('status', '=', \Acelle\Model\SendingServer::STATUS_ACTIVE);
+	}
+	
+	/**
+     * Check if customer is disabled
+     *
+     * @return boolean
+     */
+    public function isActive() {
+		return $this->status == Customer::STATUS_ACTIVE;
 	}
 }

@@ -91,4 +91,14 @@ class Contact extends Model
     {
         return $this->first_name.' '.$this->last_name;
     }
+    
+    /**
+     * Display contact country name.
+     *
+     * @var string
+     */
+    public function countryName()
+    {
+        return is_object($this->country) ? $this->country->name : '';
+    }
 }
