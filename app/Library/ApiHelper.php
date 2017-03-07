@@ -172,6 +172,19 @@ class ApiHelper
                 ],
                 
                 [
+                    'method' => 'GET',
+                    'uri' => '/api/v1/subscribers/{email}',
+                    'description' => 'Find subscribers with email',
+                    'parameters' => [
+                        ['name' => '$email', 'description' => 'Subsciber\'s email'],
+                    ],
+                    'returns' => 'All subscribers with the email',
+                    'example' => 'curl -X GET -H "accept:application/json" -G \
+' . str_replace("-ID-", "<redbold>{email}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_uid}</redbold>", action("Api\SubscriberController@showByEmail", ["email" => "-ID-"]))) . '? \
+-d api_token=' . \Auth::user()->api_token,
+                ],
+                
+                [
                     'method' => 'POST',
                     'uri' => '/api/v1/lists/{list_uid}/subscribers/store',
                     'description' => 'Create subscriber for a mail list',

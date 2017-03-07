@@ -18,7 +18,7 @@ class SubscriberPolicy
     public function read(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)
     {
         $customer = $user->customer;
-        return $item->mailList->user_id == $customer->id;
+        return $item->mailList->customer_id == $customer->id;
     }
 
     public function create(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)
