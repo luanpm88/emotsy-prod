@@ -163,7 +163,7 @@ class ApiHelper
                     'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}',
                     'description' => 'Get information about a specific subscriber',
                     'parameters' => [
-                        ['name' => '$uid', 'description' => 'Subsciber\'s uid'],
+                        ['name' => '$uid', 'description' => 'Subsciber\'s uid or email'],
                     ],
                     'returns' => 'All subscriber information in json',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
