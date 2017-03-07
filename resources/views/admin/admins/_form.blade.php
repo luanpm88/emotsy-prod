@@ -66,7 +66,7 @@
 											'label' => trans('messages.create_customer_account'),
 											'value' => 'no',
 											'options' => ['no', 'yes'],
-											'help_class' => 'customer',
+											'help_class' => 'admin',
 											'rules' => $admin->rules()
 										])
 									</div>

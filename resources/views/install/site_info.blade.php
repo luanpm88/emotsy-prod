@@ -94,6 +94,19 @@
         <div class="col-md-6">
 			@include('helpers.form_control', ['type' => 'select', 'name' => 'timezone', 'value' => (isset($site_info["timezone"]) ? $site_info["timezone"] : ""), 'options' => Tool::getTimezoneSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => $rules])
         </div>
+		<div class="col-md-6">
+			<div class="form-group checkbox-right-switch">
+				@include('helpers.form_control', [
+					'type' => 'checkbox',
+					'name' => 'create_customer_account',
+					'label' => trans('messages.create_customer_account'),
+					'value' => (isset($site_info["create_customer_account"]) ? $site_info["create_customer_account"] : "yes"),
+					'options' => ['no', 'yes'],
+					'help_class' => 'admin',
+					'rules' => $rules
+				])
+			</div>
+        </div>
     </div>
 	
 	<hr />

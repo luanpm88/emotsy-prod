@@ -1615,7 +1615,7 @@ return [
     'log.sending_domain.deleted' => 'The sending domain ":name" was deleted!',
     'plan_pie_chart' => 'Plan chart',
     'not_have_any_customer_sending_server' => 'You haven\'t had any sending server. <br /><a href=":link">Click here</a> to create one.',
-    'customer.create_customer_account.help' => 'Create a customer account with admin. Admin\'s customer account will have unlimmited access in customer view.',
+    'admin.create_customer_account.help' => 'Create a customer account with admin. Admin\'s customer account will have unlimmited access in customer view.',
     'create_customer_account' => 'Create customer account',
     'not_have_any_admin_sending_server' => 'The system haven\'t had any sending server. <br /><a href=":link">Click here</a> to create one.',
 ];
