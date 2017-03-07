@@ -73,7 +73,7 @@ class CustomerController extends Controller
 
                 return \Response::json(array(
                     'message' => trans('messages.customer.created'),
-                    'list_uid' => $customer->uid
+                    'customer_uid' => $customer->uid
                 ), 200);
             }
         }
