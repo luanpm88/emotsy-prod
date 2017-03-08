@@ -407,9 +407,13 @@ class Admin extends Model
      * @return string
      */
     public function getLogs() {
-        return \Acelle\Model\Log::leftJoin('customers', 'customers.id', '=', 'logs.customer_id')
-            ->leftJoin('admins', 'admins.id', '=', 'customers.admin_id')
-            ->where('admins.id', '=', $this->id);
+        $query = \Acelle\Model\Log::select('logs.*')->leftJoin('customers', 'customers.id', '=', 'logs.customer_id')
+            ->leftJoin('admins', 'admins.id', '=', 'customers.admin_id');
+        
+        if (!$this->user->can('readAll', new \Acelle\Model\Customer())) {
+            $query = $query->where('admins.id', '=', $this->id);
+        }
+        return $query;
     }
     
     /**

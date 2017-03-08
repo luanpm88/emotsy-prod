@@ -417,7 +417,7 @@
 														<div class="panel-heading">
 															<h6 class="panel-title text-semibold">{{ $log->customer->displayName() }}</h6>
 															<div class="heading-elements">
-																<span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at->diffForHumans() }}</span>
+																<span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at ? $log->created_at->diffForHumans() : '' }}</span>
 															</div>
 														</div>
 						

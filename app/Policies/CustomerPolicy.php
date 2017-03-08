@@ -25,6 +25,13 @@ class CustomerPolicy
         return $can;
     }
     
+    public function readAll(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
+    {
+        $can = $user->admin->getPermission('customer_read') == 'all';
+
+        return $can;
+    }
+    
     public function create(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
         $can = $user->admin->getPermission('customer_create') == 'yes';
