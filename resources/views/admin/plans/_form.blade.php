@@ -66,20 +66,6 @@
 		</div>
 	</div>	
 </div>
-<div class="row">
-	<div class="col-md-4">
-		<div class="">
-			@include('helpers.form_control', [
-				'class' => 'numeric',
-				'type' => 'text',
-				'name' => 'quota',
-				'value' => $plan->quota,
-				'help_class' => 'plan',
-				'rules' => $plan->rules()
-			])
-		</div>
-	</div>
-</div>
 	
 
 <div class="">	

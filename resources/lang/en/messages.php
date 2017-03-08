@@ -935,7 +935,7 @@ return [
     'customer_groups.deleted' => 'One or more customer groups were successfully deleted',
     'customer_groups.custom_order.updated' => 'Customer groups order were successfully updated',
     'customer_group_empty_line_1' => 'You have no saved customer groups',
-    'create_customer' => 'Create customer',
+    'create_customer' => 'New customer',
     'customer.updated' => 'Customer was successfully updated',
     'customer.created' => 'Customer was successfully created',
     'customers.disabled' => 'Customer was successfully disabled',
@@ -1631,4 +1631,5 @@ return [
     'enable_user_registration' => 'Enable customer registration',
     'setting.enable_user_registration.help' => 'Visitor can create new customer account and register for a plan.',
     'payment_methods.custom_order.updated' => 'Payment methods order were successfully updated',
+    'max_emails' => 'Max emails',
 ];

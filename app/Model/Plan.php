@@ -36,7 +36,7 @@ class Plan extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'frequency_amount', 'frequency_unit', 'price', 'color', 'currency_id', 'quota'
+        'name', 'frequency_amount', 'frequency_unit', 'price', 'color', 'currency_id'
     ];
 
     /**
@@ -53,7 +53,6 @@ class Plan extends Model
             'frequency_unit' => 'required',
             'price' => 'required|min:0',
             'color' => 'required',
-			'quota' => 'required|numeric|min:0',
         );
     
         $options = self::defaultOptions();
@@ -238,6 +237,7 @@ class Plan extends Model
     public static function defaultOptions()
     {
         return [
+			'email_max' => '-1',
             'list_max' => '-1',
             'subscriber_max' => '-1',
             'subscriber_per_list_max' => '-1',
@@ -349,7 +349,11 @@ class Plan extends Model
      */
     public function displayTotalQuota()
     {
-        return $this->quota;        
+        if ($this->getOption("email_max") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("email_max");
+        }      
     }
     
     /**

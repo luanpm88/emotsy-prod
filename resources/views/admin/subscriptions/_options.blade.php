@@ -25,6 +25,24 @@
                     @include('helpers.form_control', [
                         'type' => 'text',
                         'class' => 'numeric',
+                        'name' => 'options[email_max]',
+                        'value' => $options['email_max'],
+                        'label' => trans('messages.max_emails'),
+                        'help_class' => 'subscription',
+                        'options' => ['true', 'false'],
+                        'rules' => $subscription->rules()
+                    ])
+                    <div class="checkbox inline unlimited-check text-semibold">
+                        <label>
+                            <input{{ $options['email_max']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
+                            {{ trans('messages.unlimited') }}
+                        </label>
+                    </div>
+                </div>
+                <div class="boxing col-md-3">
+                    @include('helpers.form_control', [
+                        'type' => 'text',
+                        'class' => 'numeric',
                         'name' => 'options[list_max]',
                         'value' => $options['list_max'],
                         'label' => trans('messages.max_lists'),
@@ -74,6 +92,8 @@
                         </label>
                     </div>
                 </div>
+            </div>
+            <div class="row">
                 <div class="boxing col-md-3">
                     @include('helpers.form_control', [
                         'type' => 'text',
@@ -90,9 +110,7 @@
                             {{ trans('messages.unlimited') }}
                         </label>
                     </div>
-                </div>										
-            </div>
-            <div class="row">
+                </div>            
                 <div class="boxing col-md-3">
                     @include('helpers.form_control', ['type' => 'text',
                         'class' => 'numeric',
@@ -140,6 +158,8 @@
                         ])
                     </span>
                 </div>
+            </div>
+            <div class="row">
                 <div class="boxing col-md-3">
                     <label class="text-semibold">{{ trans('messages.access_when_offline') }} <span class="text-danger">*</span></label>
                     <br />

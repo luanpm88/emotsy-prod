@@ -309,6 +309,7 @@ class Subscription extends Model
     public static function defaultOptions()
     {
         return [
+			'email_max' => '0',
             'list_max' => '0',
             'subscriber_max' => '0',
             'subscriber_per_list_max' => '0',
@@ -339,6 +340,7 @@ class Subscription extends Model
     public static function defaultUnlimitedOptions()
     {
         return [
+			'email_max' => '-1',
             'list_max' => '-1',
             'subscriber_max' => '-1',
             'subscriber_per_list_max' => '-1',
@@ -415,7 +417,11 @@ class Subscription extends Model
      */
     public function displayTotalQuota()
     {
-        return $this->quota;        
+        if ($this->getOption("email_max") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("email_max");
+        }           
     }
     
     /**
