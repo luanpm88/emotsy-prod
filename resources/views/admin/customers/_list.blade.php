@@ -12,13 +12,8 @@
 												<a class="kq_search" href="{{ action('Admin\CustomerController@edit', $item->uid) }}">{{ $item->displayName() }}</a>
 											</h5>
 											<span class="text-muted kq_search">{{ $item->user->email }}</span>
-											@if (is_object($item->getCurrentSubscription()))
 												<br />
-												<span><i class="icon-clipboard2"></i> {{ $item->getCurrentSubscription()->plan_name }}</span>
-											@else
-												<br />
-												<span><i class="icon-clipboard2"></i> {{ trans('messages.no_plan') }}</span>
-											@endif
+												<span><i class="icon-clipboard2"></i> {{ $item->currentPlanName() }}</span>
 											<br />
 											<span class="text-muted2">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>

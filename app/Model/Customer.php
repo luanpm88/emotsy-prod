@@ -1345,4 +1345,19 @@ class Customer extends Model
     public function isActive() {
 		return $this->status == Customer::STATUS_ACTIVE;
 	}
+	
+	/**
+     * Check if customer is disabled
+     *
+     * @return boolean
+     */
+    public function currentPlanName() {
+		$current_subscription = $this->getCurrentSubscription();
+		return is_object($this->user->admin) ?
+			trans('messages.admin_default_plan') :
+			(is_object($current_subscription) ?
+				$current_subscription->plan_name :
+				trans('messages.no_plan')
+			);
+	}
 }

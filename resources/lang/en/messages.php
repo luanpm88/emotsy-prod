@@ -1632,4 +1632,5 @@ return [
     'setting.enable_user_registration.help' => 'Visitor can create new customer account and register for a plan.',
     'payment_methods.custom_order.updated' => 'Payment methods order were successfully updated',
     'max_emails' => 'Max emails',
+    'admin_default_plan' => 'Default plan',
 ];
