@@ -323,7 +323,12 @@ class PaymentMethodController extends Controller
      */
     public function options(Request $request, $uid=null)
     {
-        $payment_method = $uid ? \Acelle\Model\PaymentMethod::findByUid($uid) : new \Acelle\Model\PaymentMethod($request->all());
+        if ($uid) {
+            $payment_method = \Acelle\Model\PaymentMethod::findByUid($uid);
+        } else {
+            $payment_method = new \Acelle\Model\PaymentMethod($request->all());
+            $payment_method->options = json_encode($request->options);
+        }
         
         return view('admin.payment_methods._options', [
             'payment_method' => $payment_method,

@@ -143,7 +143,7 @@ class Customer extends Model
 	
 	public function subscriptions()
     {
-        return $this->hasMany('Acelle\Model\Subscription');
+        return $this->hasMany('Acelle\Model\Subscription')->orderBy('created_at', 'desc');
     }
 	
 	public function sendingDomains()
@@ -960,7 +960,7 @@ class Customer extends Model
 			->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_ACTIVE)
 			->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
 			->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay())
-			->orderBy('subscriptions.created_at', 'desc')->first();
+			->first();
     }
 	
 	/**
@@ -971,7 +971,7 @@ class Customer extends Model
     public function getCurrentInactiveSubscription() {
         return $subsciption = $this->subscriptions()
 			->where('status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
-			->orderBy('created_at', 'desc')->first();
+			->first();
     }
 	
 	/**

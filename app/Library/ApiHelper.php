@@ -308,7 +308,7 @@ class ApiHelper
                     'parameters' => [
                         ['name' => '$uid', 'description' => 'Customer\'s uid'],                        
                     ],
-                    'returns' => 'Customer information in json',
+                    'returns' => 'Customer information in json (profile, contact, sunscriptions,... )',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
 ' . str_replace("-ID-", "<redbold>{uid}</redbold>", action("Api\CustomerController@update", "-ID-")) . '? \
 -d api_token=' . \Auth::user()->api_token,
@@ -358,6 +358,30 @@ class ApiHelper
 ' . str_replace("-ID-", "<redbold>{uid}</redbold>", action("Api\CustomerController@disable", "-ID-")) . '? \
 -d api_token=' . \Auth::user()->api_token,
                 ],
+            ],
+        ];
+        
+        // SUBSCRIPTION
+        $docs[] = [
+            'title' => trans('messages.subscription'),
+            'functions' => [
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/subscriptions',
+                    'description' => 'Subscribe customer to a plan',
+                    'parameters' => [
+                        ['name' => '$customer_uid', 'description' => 'Customer\'s uid'],
+                        ['name' => '$plan_uid', 'description' => 'Plan\'s uid'],
+                        ['name' => '$start_at', 'description' => 'Subscription\'s start date', 'optional' => true, 'default' => 'Next customer\'s subscription start date'],
+                        ['name' => '$end_at', 'description' => 'Subscription\'s end date', 'optional' => true, 'default' => 'End date of the plan from start_at date'],
+                    ],
+                    'returns' => 'Action messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' . action("Api\SubscriptionController@store") . '? \
+-d api_token=' . \Auth::user()->api_token . '  \
+-d customer_uid={customer_uid} \
+-d plan_uid={plan_uid}',
+                ],                
             ],
         ];
         

@@ -22,7 +22,7 @@
 				'type' => 'select',
 				'name' => 'options[environment]',
                 'label' => trans('messages.environment'),
-				'value' => $payment_method->getOption('merchant_id'),
+				'value' => $payment_method->getOption('environment'),
 				'options' => [
 					['value' => 'production', 'text' => trans('messages.production')],
 					['value' => 'sandbox', 'text' => trans('messages.sandbox')],

@@ -187,6 +187,7 @@ class CustomerController extends Controller
             'timezone' => $customer->timezone,
             'status' => $customer->status,
             'options' => $customer->getOptions(),
+            'next_subscription_start_at' => $customer->getNextScriptionStartAt(),
         ];
         
         // Customer contact
@@ -211,7 +212,24 @@ class CustomerController extends Controller
         // Current subscription
         $subscription = $customer->getCurrentSubscription();
         if (is_object($subscription)) {
-            $result['subscription'] = [
+            $result['current_subscription'] = [
+                'uid' => $subscription->uid,
+                'plan_name' => $subscription->plan_name,
+                'price' => $subscription->price,
+                'currency_code' => $subscription->currency_code,
+                'start_at' => $subscription->start_at,
+                'end_at' => $subscription->end_at,
+                'status' => $subscription->status,
+                'paid' => $subscription->paid,
+                'time_status' => $subscription->timeStatus(),
+            ];
+        }
+        
+        // All subscription
+        $subscriptions = $customer->subscriptions()->get();
+        $result['subscriptions'] = [];
+        foreach ($subscriptions as $subscription) {
+            $result['subscriptions'][] = [
                 'uid' => $subscription->uid,
                 'plan_name' => $subscription->plan_name,
                 'price' => $subscription->price,

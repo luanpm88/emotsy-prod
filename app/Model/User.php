@@ -184,4 +184,12 @@ class User extends Authenticatable
     {
         return self::where('uid', '=', $uid)->first();
     }
+    
+    /**
+     * Check if user has admin account.
+     */
+    public function isAdmin()
+    {
+        return is_object($this->admin);
+    }
 }

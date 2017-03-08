@@ -1246,6 +1246,11 @@ $(function() {
                 container.html(msg);
                 container.find('.pickadate').pickadate({format: 'yyyy-mm-dd', selectYears: 100});
                 updatePickadateDateMask(container.find('.pickadate'));
+                
+                // Select2
+                container.find('select').select2({
+                    minimumResultsForSearch: 101
+                });
             });
         });
     });
