@@ -216,7 +216,7 @@
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 					<h4 class="ui-pnotify-title text-nowrap">
 					{!! trans('messages.not_have_any_customer_sending_server', [
-						'link' => action('SendingServerController@index'),
+						'link' => action('SendingServerController@select'),
 					]) !!}
 					</h4>
 					<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
@@ -232,7 +232,7 @@
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 					<h4 class="ui-pnotify-title text-nowrap">
 					{!! trans('messages.not_have_any_admin_sending_server', [
-						'link' => action('Admin\SendingServerController@index'),
+						'link' => action('Admin\SendingServerController@select'),
 					]) !!}
 					</h4>
 					<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
