@@ -1630,4 +1630,5 @@ return [
     'your_account_is_disabled' => 'Your account is disabled. Please contact the provider for more information.',
     'enable_user_registration' => 'Enable customer registration',
     'setting.enable_user_registration.help' => 'Visitor can create new customer account and register for a plan.',
+    'payment_methods.custom_order.updated' => 'Payment methods order were successfully updated',
 ];

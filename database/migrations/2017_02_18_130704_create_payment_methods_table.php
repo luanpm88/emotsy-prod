@@ -15,7 +15,7 @@ class CreatePaymentMethodsTable extends Migration
         Schema::create('payment_methods', function (Blueprint $table) {
             $table->increments('id');
             $table->uuid('uid');
-            $table->integer('admin_id')->unsigned();
+            $table->integer('admin_id')->unsigned()->nullable();
             $table->string('name');
             $table->string('type');
             $table->text('options')->nullable();
