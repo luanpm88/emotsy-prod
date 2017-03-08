@@ -210,7 +210,7 @@ class Subscription extends Model
     {
         $this->plan_id = $this->plan_id ? $this->plan_id : (isset($params['plan_uid']) ? \Acelle\Model\Plan::findByUid($params['plan_uid'])->id : null);
 		$this->customer_id = $this->customer_id ? $this->customer_id : (isset($params['customer_uid']) ? \Acelle\Model\Customer::findByUid($params['customer_uid'])->id : null);
-		$this->payment_method_id = $this->payment_method_id ? $this->payment_method_id : (isset($params['payment_method_uid']) ? \Acelle\Model\PaymentMethod::findByUid($params['payment_method_uid'])->id : null);
+		$this->payment_method_id = $this->payment_method_id ? $this->payment_method_id : (!empty($params['payment_method_uid']) ? \Acelle\Model\PaymentMethod::findByUid($params['payment_method_uid'])->id : null);
 		$this->start_at = $this->start_at ? $this->start_at : $this->customer->getNextScriptionStartAt();
 		
         $plan = $this->plan_id ? Plan::find($this->plan_id) : null;
