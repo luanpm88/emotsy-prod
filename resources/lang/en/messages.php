@@ -1548,7 +1548,7 @@ return [
     'paypal' => 'PayPal',
     'payment_method_type_cash_button' => '<i class="icon-cash3"></i> Pay in Cash',
     'payment_method_type_paypal_button' => '<i class="icon-paypal"></i> Pay with PayPal',
-    'subscription.cash.created' => 'Subscription was successfully created. Please pay your subscription to starting using Acelle Mail',
+    'subscription.cash.created' => 'Subscription was successfully created. Please wait for the payment confirmation',
     'paypal_merchant_id' => 'PayPal merchant ID',
     'no_plan' => 'No plan yet!',
     'all_status' => 'All statuses',
