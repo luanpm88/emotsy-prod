@@ -105,7 +105,6 @@ class UserController extends Controller
         } catch (\Exception $e) {
             return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service')]);
         }
-        
             
         return view('users.registration_confirmation_sent');
     }
