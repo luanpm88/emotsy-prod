@@ -37,7 +37,7 @@
                 <h4 class="text-semibold text-teal-800 mb-0">{{ trans('messages.options') }}</h4>
             </li>
             <li>
-                {!! trans('messages.sending_total_quota_intro', ["value" => \Acelle\Library\Tool::format_number($subscription->displayTotalQuota())]) !!}
+                {!! trans('messages.sending_total_quota_intro', ["value" => $subscription->displayTotalQuota()]) !!}
             </li>
             <li>
                 {!! trans('messages.sending_quota_intro', ["value" => $subscription->displayQuota()]) !!}

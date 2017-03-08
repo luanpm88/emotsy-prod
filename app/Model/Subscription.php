@@ -420,7 +420,7 @@ class Subscription extends Model
         if ($this->getOption("email_max") == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("email_max");
+            return \Acelle\Library\Tool::format_number($this->getOption("email_max"));
         }           
     }
     
@@ -434,7 +434,7 @@ class Subscription extends Model
         if ($this->getOption("list_max") == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("list_max");
+            return \Acelle\Library\Tool::format_number($this->getOption("list_max"));
         }        
     }
     
@@ -448,7 +448,7 @@ class Subscription extends Model
         if ($this->getOption("subscriber_max") == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("subscriber_max");
+            return \Acelle\Library\Tool::format_number($this->getOption("subscriber_max"));
         }        
     }
     
@@ -462,7 +462,7 @@ class Subscription extends Model
         if ($this->getOption("campaign_max") == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("campaign_max");
+            return \Acelle\Library\Tool::format_number($this->getOption("campaign_max"));
         }        
     }
     
@@ -476,12 +476,12 @@ class Subscription extends Model
         if ($this->getOption("max_size_upload_total") == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("max_size_upload_total");
+            return \Acelle\Library\Tool::format_number($this->getOption("max_size_upload_total"));
         }        
     }
     
     /**
-     * Display max campaign.
+     * Display max file size upload.
      *
      * @return array
      */
@@ -490,7 +490,7 @@ class Subscription extends Model
         if ($this->getOption("max_file_size_upload") == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("max_file_size_upload");
+            return \Acelle\Library\Tool::format_number($this->getOption("max_file_size_upload"));
         }        
     }
 	
