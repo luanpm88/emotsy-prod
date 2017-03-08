@@ -40,41 +40,45 @@ class PaymentController extends Controller {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $result = NULL;
         
-        $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD);        
-        $payment_method->setAuth();        
+        $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD);
         
-        $clientToken = \Braintree_ClientToken::generate();
+        try {
+            $clientToken =  $payment_method->getBraintreeClientToken();
         
-        $order_id = $subscription->getOrderID();
-        
-        // validate and save posted data
-        if ($request->isMethod('post')) {
-            $nonceFromTheClient = $request->payment_method_nonce;
+            $order_id = $subscription->getOrderID();
             
-            $result = \Braintree_Transaction::sale([
-                'amount' => $subscription->price,
-                'paymentMethodNonce' => $nonceFromTheClient,
-                "orderId" => $order_id,
-                'options' => [
-                  'submitForSettlement' => True
-                ]
-            ]);
-            
-            $payment = new Payment();
-            $payment->subscription_id = $subscription->id;
-            $payment->payment_method_id = $payment_method->id;
-            $payment->data = serialize($result);
-            $payment->status = $result->success ? 'success' : 'failed';
-            $payment->payment_method_name = $payment_method->name;
-            $payment->order_id = $order_id;
-            $payment->save();
-
-            if ($result->success) {
-                $subscription->setActive();
-                $subscription->setPaid();
+            // validate and save posted data
+            if ($request->isMethod('post')) {
+                $nonceFromTheClient = $request->payment_method_nonce;
                 
-                return redirect()->action('PaymentController@success', $subscription->uid);
+                $result = \Braintree_Transaction::sale([
+                    'amount' => $subscription->price,
+                    'paymentMethodNonce' => $nonceFromTheClient,
+                    "orderId" => $order_id,
+                    'options' => [
+                      'submitForSettlement' => True
+                    ]
+                ]);
+                
+                $payment = new Payment();
+                $payment->subscription_id = $subscription->id;
+                $payment->payment_method_id = $payment_method->id;
+                $payment->data = serialize($result);
+                $payment->status = $result->success ? 'success' : 'failed';
+                $payment->payment_method_name = $payment_method->name;
+                $payment->order_id = $order_id;
+                $payment->save();
+    
+                if ($result->success) {
+                    $subscription->setActive();
+                    $subscription->setPaid();
+                    
+                    return redirect()->action('PaymentController@success', $subscription->uid);
+                }
             }
+            
+        } catch (\Exception $e) {
+            return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment')]);
         }
         
         return view('payments.braintree_credit_card', [
@@ -94,41 +98,45 @@ class PaymentController extends Controller {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $result = NULL;
         
-        $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_BRAINTREE_PAYPAL);        
-        $payment_method->setAuth();   
+        $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_BRAINTREE_PAYPAL);
         
-        $clientToken = \Braintree_ClientToken::generate();
+        try {
+            $clientToken =  $payment_method->getBraintreeClientToken();
         
-        $order_id = $subscription->getOrderID();
-        
-        // validate and save posted data
-        if ($request->isMethod('post')) {
-            $nonceFromTheClient = $request->payment_method_nonce;
+            $order_id = $subscription->getOrderID();
             
-            $result = \Braintree_Transaction::sale([
-                "amount" => $subscription->price,
-                "paymentMethodNonce" => $nonceFromTheClient,
-                "orderId" => $order_id,
-                'options' => [
-                  'submitForSettlement' => True
-                ]
-            ]);            
-            
-            $payment = new Payment();
-            $payment->subscription_id = $subscription->id;
-            $payment->data = serialize($result);
-            $payment->payment_method_id = $payment_method->id;
-            $payment->status = $result->success ? 'success' : 'failed';
-            $payment->payment_method_name = $payment_method->name;
-            $payment->order_id = $order_id;
-            $payment->save();
-
-            if ($result->success) {
-                $subscription->setActive();
-                $subscription->setPaid();
+            // validate and save posted data
+            if ($request->isMethod('post')) {
+                $nonceFromTheClient = $request->payment_method_nonce;
                 
-                return redirect()->action('PaymentController@success', $subscription->uid);
+                $result = \Braintree_Transaction::sale([
+                    "amount" => $subscription->price,
+                    "paymentMethodNonce" => $nonceFromTheClient,
+                    "orderId" => $order_id,
+                    'options' => [
+                      'submitForSettlement' => True
+                    ]
+                ]);            
+                
+                $payment = new Payment();
+                $payment->subscription_id = $subscription->id;
+                $payment->data = serialize($result);
+                $payment->payment_method_id = $payment_method->id;
+                $payment->status = $result->success ? 'success' : 'failed';
+                $payment->payment_method_name = $payment_method->name;
+                $payment->order_id = $order_id;
+                $payment->save();
+    
+                if ($result->success) {
+                    $subscription->setActive();
+                    $subscription->setPaid();
+                    
+                    return redirect()->action('PaymentController@success', $subscription->uid);
+                }
             }
+            
+        } catch (\Exception $e) {
+            return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment')]);
         }
         
         return view('payments.braintree_paypal', [

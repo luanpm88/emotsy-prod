@@ -77,7 +77,12 @@ class SubscriptionController extends Controller
             if($is_customer_logged_in) {
             } else {
                 $user = \Acelle\Model\User::find($customer->user_id);
-                $user->sendActivationMail($customer->displayName(), action('SubscriptionController@subscription', $request->plan_uid));
+                
+                try {
+                    $user->sendActivationMail($customer->displayName(), action('SubscriptionController@subscription', $request->plan_uid));
+                } catch (\Exception $e) {
+                    return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service')]);
+                }
                 
                 return view('subscriptions.register_confirmation_notice');
             }

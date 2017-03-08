@@ -265,12 +265,14 @@ class PaymentMethod extends Model
      *
      * @return void
      */
-    public function setAuth()
+    public function getBraintreeClientToken()
     {
         \Braintree_Configuration::environment($this->getOption('environment'));
         \Braintree_Configuration::merchantId($this->getOption('merchantId'));
         \Braintree_Configuration::publicKey($this->getOption('publicKey'));
         \Braintree_Configuration::privateKey($this->getOption('privateKey'));
+		
+		return \Braintree_ClientToken::generate();
     }
 	
 	/**

@@ -1633,4 +1633,7 @@ return [
     'payment_methods.custom_order.updated' => 'Payment methods order were successfully updated',
     'max_emails' => 'Max emails',
     'admin_default_plan' => 'Default plan',
+    'something_went_wrong_with_payment' => 'Something went wrong with the payment service. Please try again later.',
+    'something_went_wrong' => 'Something went wrong.',
+    'something_went_wrong_with_email_service' => 'Something went wrong with the email service. Please try again later.',
 ];

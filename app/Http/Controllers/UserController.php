@@ -100,7 +100,12 @@ class UserController extends Controller
     {
         $user = \Acelle\Model\User::findByUid($request->uid);
         
-        $user->sendActivationMail($user->email, action('HomeController@index'));
+        try {
+            $user->sendActivationMail($user->email, action('HomeController@index'));
+        } catch (\Exception $e) {
+            return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service')]);
+        }
+        
             
         return view('users.registration_confirmation_sent');
     }
