@@ -316,7 +316,7 @@ class SubscriberController extends Controller
         $subscriber->delete();
 
         return \Response::json(array('message' => 'Deleted'), 200);
-    }    
+    }
     
     /**
      * Display the specified subscriber by email.
@@ -340,7 +340,8 @@ class SubscriberController extends Controller
         }
         
         $rows = [];        
-        foreach ($subscribers as $subscriber) {            
+        foreach ($subscribers as $subscriber) {
+            
             // authorize
             if ($user->can('read', $subscriber)) {
                 // subscriber

@@ -174,6 +174,7 @@ class Segment extends Model
             $keyword = str_replace('[DATE]', date('Y-m-d'), $keyword);
 
             $keyword = trim(strtolower($keyword));
+            $in = 'IN';
             switch ($condition->operator) {
                 case 'equal':
                     $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) = '".$keyword."'";
@@ -209,13 +210,14 @@ class Segment extends Model
                     $cond = '(LOWER('.\DB::getTablePrefix()."subscriber_fields.value) != '' AND LOWER(".\DB::getTablePrefix().'subscriber_fields.value) IS NOT NULL)';
                     break;
                 case 'blank':
-                    $cond = '(LOWER('.\DB::getTablePrefix()."subscriber_fields.value) = '' OR LOWER(".\DB::getTablePrefix().'subscriber_fields.value) IS NULL)';
+                    $cond = '(LOWER('.\DB::getTablePrefix()."subscriber_fields.value) != '' AND LOWER(".\DB::getTablePrefix().'subscriber_fields.value) IS NOT NULL)';
+                    $in = 'NOT IN';
                     break;
                 default:
 
             }
 
-            $conditions[] = \DB::getTablePrefix().'subscribers.id IN (SELECT '.\DB::getTablePrefix().'subscriber_fields.subscriber_id FROM '.\DB::getTablePrefix().'subscriber_fields WHERE ('.\DB::getTablePrefix().'subscriber_fields.field_id = '.$condition->field_id.' AND '.$cond.'))';
+            $conditions[] = \DB::getTablePrefix().'subscribers.id ' . $in . ' (SELECT '.\DB::getTablePrefix().'subscriber_fields.subscriber_id FROM '.\DB::getTablePrefix().'subscriber_fields WHERE ('.\DB::getTablePrefix().'subscriber_fields.field_id = '.$condition->field_id.' AND '.$cond.'))';
         }
 
         //return $conditions;
