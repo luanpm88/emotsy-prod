@@ -834,7 +834,7 @@ class MailList extends Model
         // @todo code goes here
         // \Swift_Message::newInstance
         var_dump($message);
-        
+
         // Sending server has [['sending_server_id' => 1, 'fitness' => 100], ...]
         var_dump($this->sendingServersHash());
     }
@@ -848,7 +848,7 @@ class MailList extends Model
         $list = $this;
 
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_welcome_email')->first();
-        $send_page = \Acelle\Model\Page::findPage($list, $layout);        
+        $send_page = \Acelle\Model\Page::findPage($list, $layout);
         $this->sendMail($subscriber, $send_page, trans('messages.'.$layout->alias.'.real'));
     }
 
@@ -864,7 +864,7 @@ class MailList extends Model
         $send_page = \Acelle\Model\Page::findPage($list, $layout);
         $this->sendMail($subscriber, $send_page, trans('messages.'.$layout->alias.'.real'));
     }
-    
+
     /**
      * Send unsubscription goodbye email to subscriber.
      *
@@ -1233,7 +1233,7 @@ class MailList extends Model
             return null;
         }
     }
-    
+
     /**
      * Send mails of list.
      *
@@ -1245,18 +1245,19 @@ class MailList extends Model
      */
     public function sendMail($subscriber, $page, $title)
     {
-        $body = view('pages._email_content', ['page' => $page])->render();
         $page->renderContent(null, $subscriber);
-        
+
+        $body = view('pages._email_content', ['page' => $page])->render();
+
         // Create a message
         $message = \Swift_Message::newInstance($title)
           ->setFrom(array($subscriber->mailList->from_email => $subscriber->mailList->from_name))
           ->setTo(array($subscriber->email, $subscriber->email => trans('messages.to_email_name')))
           ->setBody($body);
-          
+
         $this->send($message);
     }
-    
+
     /**
      * Check if list can send through it's sending servers.
      *
@@ -1265,7 +1266,7 @@ class MailList extends Model
     public function sendingServersHash()
     {
         $result = [];
-        
+
         // Check the customer has permissions using sending servers and has his own sending servers
         if ($this->customer->getOption("create_sending_servers") == 'yes') {
             if ($this->all_sending_servers) {
@@ -1288,7 +1289,7 @@ class MailList extends Model
         // If customer dont have permission creating sending servers
         } else {
             $subscription = $this->customer->getCurrentSubscription();
-            
+
             // Check if has sending servers for current subscription
             if (is_object($subscription)) {
                 if ($subscription->getOption("all_sending_servers") == 'yes') {
@@ -1310,7 +1311,7 @@ class MailList extends Model
                 }
             }
         }
-        
+
         return $result;
     }
 }
