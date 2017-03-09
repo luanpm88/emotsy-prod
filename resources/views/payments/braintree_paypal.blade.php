@@ -1,19 +1,31 @@
-@extends('layouts.subscription')
+@extends('layouts.frontend')
 
 @section('title', trans('messages.subscription'))
 
 @section('page_script')    
 @endsection
 
+@section('page_header')
+
+	<div class="page-title">				
+		<ul class="breadcrumb breadcrumb-caret position-right">
+			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+		</ul>
+		<h1>
+			<span class="text-semibold"><i class="icon-quill4"></i> {{ trans('messages.your_subscriptions') }}</span>
+		</h1>				
+	</div>
+
+@endsection
+
 @section('content')
   
-@include('subscriptions._steps')
-
-
 <div class="row">
-  <div class="col-md-3"></div>
+  <div class="col-md-4">
+    @include('subscriptions._subscription')
+  </div>
   <div class="col-md-6">
-    <h2 class="mt-0"><i class="icon-paypal"></i> {{ trans('messages.pay_with_paypal') }}</h2>
+    <h2 class="mt-0">{!! trans('messages.pay_with_paypal') !!}</h2>
       
     @if (is_object($result) && count($result->errors->deepAll()) > 0)
         <!-- Form Error List -->
@@ -37,8 +49,8 @@
     <!-- Load the PayPal component. -->
     <script src="https://js.braintreegateway.com/web/3.9.0/js/paypal.min.js"></script>
     
-    <div class="panel">
-        <div class="panel-body text-center">
+    <div class="panels">
+        <div class="panels-body">
             <script src="https://www.paypalobjects.com/api/button.js?"
                 data-merchant="braintree"
                 data-id="paypal-button"

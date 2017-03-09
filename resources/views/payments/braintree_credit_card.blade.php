@@ -1,19 +1,31 @@
-@extends('layouts.subscription')
+@extends('layouts.frontend')
 
 @section('title', trans('messages.subscription'))
 
 @section('page_script')    
 @endsection
 
+@section('page_header')
+
+	<div class="page-title">				
+		<ul class="breadcrumb breadcrumb-caret position-right">
+			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+		</ul>
+		<h1>
+			<span class="text-semibold"><i class="icon-quill4"></i> {{ trans('messages.your_subscriptions') }}</span>
+		</h1>				
+	</div>
+
+@endsection
+
 @section('content')
   
-@include('subscriptions._steps')
-
-
 <div class="row">
-  <div class="col-md-3"></div>
+  <div class="col-md-4">
+    @include('subscriptions._subscription')
+  </div>
   <div class="col-md-6">
-    <h2 class="mt-0"><i class="icon-credit-card"></i> {{ trans('messages.pay_by_credit_card') }}</h2>
+    <h2 class="mt-0">{!! trans('messages.pay_by_credit_card') !!}</h2>
       
     @if (isset($result) && count($result->errors->deepAll()) > 0)
         <!-- Form Error List -->
@@ -31,8 +43,8 @@
         </div>
     @endif
     
-    <div class="panel">
-        <div class="panel-body">
+    <div class="panelz">
+        <div class="panel-bodyz">
             <form id="checkout-form" action="{{ action('PaymentController@braintree_credit_card', $subscription->uid) }}" method="post">
               <div id="error-message"></div>
               

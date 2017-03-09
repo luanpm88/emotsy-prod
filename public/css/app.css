@@ -1968,3 +1968,14 @@ ul.plans-intro li span {
 .ui-pnotify[class*=bg-] > .alert {
     border-bottom: solid 1px rgba(255,255,255,0.3);
 }
+.inlist-new-button {
+    float: right;
+    margin-top: -40px;
+}
+@media (max-width: 890px) {
+    .inlist-new-button {
+        float: none;
+        margin-top: 0;
+        margin-bottom: 10px;
+    }
+}

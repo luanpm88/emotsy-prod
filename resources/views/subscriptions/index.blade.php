@@ -11,14 +11,14 @@
 
 @section('page_header')
 
-			<div class="page-title">				
-				<ul class="breadcrumb breadcrumb-caret position-right">
-					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-				</ul>
-				<h1>
-					<span class="text-semibold"><i class="icon-quill4"></i> {{ trans('messages.your_subscriptions') }}</span>
-				</h1>				
-			</div>
+	<div class="page-title">				
+		<ul class="breadcrumb breadcrumb-caret position-right">
+			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+		</ul>
+		<h1>
+			<span class="text-semibold"><i class="icon-quill4"></i> {{ trans('messages.your_subscriptions') }}</span>
+		</h1>				
+	</div>
 
 @endsection
 
@@ -49,20 +49,7 @@
 						</span>
 					</div>
 				@endif
-			</div>
-			@can('create', new Acelle\Model\Subscription())
-				<div class="col-md-3 text-right">
-					<a href="{{ action("SubscriptionController@create") }}" type="button" class="btn bg-info-800">
-						<i class="icon icon-plus2"></i> {{ trans('messages.subscribe_a_new_plan') }}
-					</a>
-				</div>
-			@else
-				<div class="col-md-3 text-right" data-popup="tooltip" title="{{ trans('messages.you_have_inactive_subscription') }}">
-					<a href="{{ action("SubscriptionController@create") }}" type="button" class="btn btn-default disabled">
-						<i class="icon icon-plus2"></i> {{ trans('messages.subscribe_a_new_plan') }}
-					</a>
-				</div>
-			@endcan
+			</div>			
 		</div>
 		
 		<div class="pml-table-container">
