@@ -1636,4 +1636,5 @@ return [
     'something_went_wrong_with_payment' => 'Something went wrong with the payment service. Please try again later.',
     'something_went_wrong' => 'Something went wrong.',
     'something_went_wrong_with_email_service' => 'Something went wrong with the email service. Please try again later.',
+    'customers.deleted' => 'One or more customers were successfully deleted',
 ];

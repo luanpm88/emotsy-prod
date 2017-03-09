@@ -66,7 +66,7 @@ class SendingServerPolicy
         if (is_object($customer)) {
             $max = $customer->getOption('sending_servers_max');
             $ability = $customer->getOption('create_sending_servers') == 'yes'
-                && ($customer->sendingServersCount() < $customer->getOption('create_sending_servers') || $max == -1);
+                && ($customer->sendingServersCount() < $max || $max == -1);
             $can = $can || $ability;
         }
         
