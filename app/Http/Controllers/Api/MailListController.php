@@ -151,6 +151,9 @@ class MailListController extends Controller
             // Log
             $list->log('created', $user);
             
+            // Trigger updating related campaigns cache
+            $list->updateCachedInfo();
+            
             return \Response::json(array(
                 'message' => trans('messages.list.created'),
                 'list_uid' => $list->uid

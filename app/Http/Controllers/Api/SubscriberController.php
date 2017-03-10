@@ -113,6 +113,9 @@ class SubscriberController extends Controller
             // Log
             $subscriber->log('created', $user->customer);
             
+            // update MailList cache
+            $subscriber->mailList->updateCachedInfo();
+            
             return \Response::json(array(
                 'message' => trans('messages.subscriber.created'),
                 'subscriber_uid' => $subscriber->uid
@@ -365,5 +368,45 @@ class SubscriberController extends Controller
         }
 
         return \Response::json(['subscribers' => $rows], 200);
+    }
+    
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function update(Request $request, $id)
+    {
+        $user = \Auth::guard('api')->user();
+        $customer = $user->customer;
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+
+        // authorize
+        if (!$user->can('update', $subscriber)) {
+            return \Response::json(array('message' => trans('no_more_item')), 403);
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('patch')) {
+            $validator = \Validator::make($request->all(), $subscriber->getRules());    
+            if ($validator->fails()) {
+                return response()->json($validator->messages(), 403);
+            }
+
+            // Update field
+            $subscriber->updateFields($request->all());
+
+            // Log
+            $subscriber->log('updated', $customer);
+
+            return \Response::json(array(
+                'message' => trans('messages.subscriber.updated'),
+                'subscriber_uid' => $subscriber->uid
+            ), 200);
+        }
     }
 }

@@ -203,6 +203,23 @@ class ApiHelper
                 
                 [
                     'method' => 'PATCH',
+                    'uri' => '/api/v1/lists/{list_uid}/subscribers',
+                    'description' => 'Update subscriber for a mail list',
+                    'parameters' => [
+                        ['name' => '$EMAIL', 'description' => 'Subscriber\'s email'],
+                        ['name' => '$[OTHER_FIELDS...]', 'description' => 'All subscriber\'s other fields: FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)', 'optional' => true],
+                    ],
+                    'returns' => 'Update messages in json',
+                    'example' => 'curl -X PATCH -H "accept:application/json" -G \
+' . str_replace("-ID-", "<redbold>{uid}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_uid}</redbold>", action("Api\SubscriberController@update", ["list_uid" => "-LIST_ID-",  "uid" => "-ID-"]))) . '? \
+-d api_token=' . \Auth::user()->api_token . ' \
+-d EMAIL=test@gmail.com \
+-d FIRST_NAME=Marine \
+-d LAST_NAME=Joze',
+                ],
+                
+                [
+                    'method' => 'PATCH',
                     'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}/subscribe',
                     'description' => 'Subscribe a subscriber',
                     'parameters' => [

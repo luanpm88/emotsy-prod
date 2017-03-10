@@ -199,7 +199,7 @@ class SubscriberController extends Controller
     {
         $customer = $request->user()->customer;
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $subscriber = $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         // authorize
         if (\Gate::denies('update', $subscriber)) {
