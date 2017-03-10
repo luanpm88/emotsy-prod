@@ -289,7 +289,8 @@ class Campaign extends Model
         try {
             // make sure the same campaign is not started twice
             if (!$this->refreshStatus()->isReady()) {
-                throw new \Exception("Campaign ID: {$this->id} is not ready or already started");
+                MailLog::info("Campaign ID: {$this->id} is not ready or already started");
+                return;
             }
 
             // lock the campaign, marked as sending
