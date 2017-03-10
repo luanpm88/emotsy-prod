@@ -483,7 +483,7 @@
         
         <tr>
           <td>
-            <span class="label label-flat bg-info">{{ trans('messages.PATCH') }}</span>
+            <span class="label label-flat bg-success">{{ trans('messages.PATCH') }}</span>
           </td>
           <td>
             <a href="#more" class="toogle-api">/api/v1/lists/{list_uid}/subscribers/update</a>
