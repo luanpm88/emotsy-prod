@@ -38,6 +38,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
     
     // Subscriber
     Route::get('subscribers/email/{email}', 'SubscriberController@showByEmail');
+    Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@update');
     Route::get('lists/{list_uid}/subscribers', 'SubscriberController@index');
     Route::get('lists/{list_uid}/subscribers/{uid}', 'SubscriberController@show');
     Route::patch('lists/{list_uid}/subscribers/{uid}/subscribe', 'SubscriberController@subscribe');

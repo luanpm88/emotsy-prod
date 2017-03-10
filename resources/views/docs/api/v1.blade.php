@@ -479,6 +479,50 @@
 </code></pre>
             </td>
         </tr>
+            
+        
+        <tr>
+          <td>
+            <span class="label label-flat bg-info">{{ trans('messages.PATCH') }}</span>
+          </td>
+          <td>
+            <a href="#more" class="toogle-api">/api/v1/lists/{list_uid}/subscribers/update</a>
+          </td>
+          <td>
+            Update subscriber for a mail list
+          </td>
+        </tr>
+        <tr style="display:none;background: #f6f6f6">
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">
+                  <h4>Parameters</h4>
+                  <div class="list"><dl>
+                    <dt><var>$EMAIL</var></dt></dt>
+                    <dd>Subscriber's email</dd>
+                    <dt><var>$[OTHER_FIELDS...]</var></dt></dt>
+                    <dd>All subscriber's other fields: FIRST_NAME (?), LAST_NAME (?),... (depending on the list fields configuration)</dd>
+                  </dl></div>
+          
+                  <h4>Returns</h4>
+                  <div class="list">
+                    Update messages in json
+                  </div>
+                </div>
+              </div>
+            </td>
+            <td>
+                <h4>Example:</h4>
+                <pre class=""><code>curl -X PATCH -H "accept:application/json" -G \
+{!! str_replace("-ID-", "<redbold>{uid}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_uid}</redbold>", action("Api\SubscriberController@update", ["list_uid" => "-LIST_ID-",  "uid" => "-ID-"]))) !!}? \
+-d api_token={{ Auth::user()->api_token }} \
+-d EMAIL=test@gmail.com \
+-d FIRST_NAME=Marine \
+-d LAST_NAME=Joze
+</code></pre>
+            </td>
+        </tr>
           
           
         <tr>
