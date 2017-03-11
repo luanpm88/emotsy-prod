@@ -54,5 +54,9 @@
 
 	</div>
 	<!-- /page container -->
+	
+	<div class="ui-pnotify bg-warning" style="background-color: rgba(255,87,34,0.7); width: auto; right: 20px; top: auto; bottom: 20px; opacity: 1; display: block; overflow: visible; cursor: auto;">
+		@include('layouts._not_extended_license_notify')
+	</div>
 </body>
 </html>
