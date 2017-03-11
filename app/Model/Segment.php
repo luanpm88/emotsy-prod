@@ -258,7 +258,7 @@ class Segment extends Model
     /**
      * Add customer action log.
      */
-    public function log($name, $user, $add_datas = [])
+    public function log($name, $customer, $add_datas = [])
     {
         $data = [
             'id' => $this->id,
@@ -270,7 +270,7 @@ class Segment extends Model
         $data = array_merge($data, $add_datas);
 
         Log::create([
-            'user_id' => $user->id,
+            'customer_id' => $customer->id,
             'type' => 'segment',
             'name' => $name,
             'data' => json_encode($data),

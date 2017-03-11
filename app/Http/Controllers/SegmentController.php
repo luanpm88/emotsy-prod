@@ -140,7 +140,7 @@ class SegmentController extends Controller
             }
 
             // Log
-            $segment->log('created', $request->user());
+            $segment->log('created', $request->user()->customer);
 
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.segment.created'));
@@ -296,7 +296,7 @@ class SegmentController extends Controller
             }
 
             // Log
-            $segment->log('updated', $request->user());
+            $segment->log('updated', $request->user()->customer);
             
             // update cached information
             $segment->mailList->updateCachedInfo();
@@ -341,7 +341,7 @@ class SegmentController extends Controller
             $item->delete();
 
             // Log
-            $item->log('deleted', $request->user());
+            $item->log('deleted', $request->user()->customer);
         }
 
         // Redirect to my lists page

@@ -31,7 +31,7 @@
                 'type' => 'select',
                 'label' => trans('messages.which_list_send'),
                 'value' => (is_object($lists_segment_group['list']) ? $lists_segment_group['list']->uid : ""),
-                'options' => Acelle\Model\MailList::getSelectOptions(Auth::user()),
+                'options' => Acelle\Model\MailList::getSelectOptions(Auth::user()->customer),
                 'rules' => isset($rules) ? $rules : []
             ])
         </div>
