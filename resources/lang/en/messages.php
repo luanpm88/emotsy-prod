@@ -1638,4 +1638,9 @@ return [
     'something_went_wrong' => 'Something went wrong.',
     'something_went_wrong_with_email_service' => 'Something went wrong with the email service. Please try again later.',
     'customers.deleted' => 'One or more customers were successfully deleted',
+    'license_optional' => 'License (Purchased code)',
+    'license' => 'License (Purchased code)',
+    'install.license.help' => 'This is optional. You can update it later in setting page.',
+    'is_not_extended_license' => 'Some features require extended license. Please consider to<br /> purchase one.
+        Or If you have already purchased it,<br /> please enter it <a href=":link">here</a>',
 ];

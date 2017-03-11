@@ -4,7 +4,7 @@
 									<?php $count = 0; ?>
 									@foreach ($settings as $name => $setting)
 										@if ($setting['cat'] == 'general')
-											<div class="col-md-4">
+											<div class="col-md-6">
 												@if ($setting['type'] == 'checkbox')
 													<div class="form-group checkbox-right-switch">
 												@endif
@@ -22,7 +22,7 @@
 													</div>
 												@endif
 											</div>
-											@if ($count%3 == 2)
+											@if ($count%2 == 1)
 								</div><div class="row">
 											@endif
 											<?php ++$count; ?>

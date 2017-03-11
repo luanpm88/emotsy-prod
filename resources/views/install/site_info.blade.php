@@ -35,7 +35,18 @@
 		</div>
 	</div>
 	<div class="row">
-        <div class="col-md-12">
+		<div class="col-md-6">
+            @include('helpers.form_control', [
+                'type' => 'text',
+                'name' => 'license',
+				'label' => trans('messages.license_optional'),
+                'value' => (isset($site_info["license"]) ? $site_info["license"] : ""),
+                'help_class' => 'install',
+                'rules' => []
+            ])
+            
+        </div>
+        <div class="col-md-6">
             @include('helpers.form_control', [
                 'type' => 'textarea',
                 'name' => 'site_description',
@@ -43,7 +54,6 @@
                 'help_class' => 'install',
                 'rules' => ["site_description" => "required"]
             ])
-            
         </div>
     </div>
 	<hr />

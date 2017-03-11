@@ -105,6 +105,7 @@ class InstallController extends Controller
             'email' => 'required|email',
             'password' => 'required',
             'timezone' => 'required',
+            'license' => 'license',
         ];
         $smtp_rules = [
             'smtp_hostname' => 'required',
@@ -420,6 +421,8 @@ class InstallController extends Controller
             $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='site_description'");
             $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
                             ('site_description', '".$site_info['site_description']."', '".$date."', '".$date."');");
+            $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                            ('license', '".$site_info['license']."', '".$date."', '".$date."');");
 
             $request->session()->flash('alert-success', trans('messages.install.database_import.success'));
 

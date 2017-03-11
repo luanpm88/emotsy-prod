@@ -36,6 +36,11 @@ class AppServiceProvider extends ServiceProvider
         Validator::replacer('substring', function ($message, $attribute, $rule, $parameters) {
             return str_replace(':tag', $parameters[0], $message);
         });
+        
+        // License validator
+        Validator::extend('license', function($attribute, $value, $parameters, $validator) {
+            return $value == '' || \Acelle\Helpers\LicenseHelper::isValid($value);
+        });
     }
 
     /**

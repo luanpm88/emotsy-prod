@@ -132,6 +132,12 @@ class Setting extends Model
                 'value' => 'Email Marketing, Campaigns, Lists',
                 'type' => 'text',
             ],
+            'license' => [
+                'cat' => 'general',
+                'value' => '',
+                'type' => 'text',
+                'not_required' => true,
+            ],
             'site_online' => [
                 'cat' => 'general',
                 'value' => 'true',
@@ -185,7 +191,7 @@ class Setting extends Model
                 'value' => 'yes',
                 'type' => 'checkbox',
                 'options' => ['no','yes'],
-            ],
+            ],            
             'sending_campaigns_at_once' => [
                 'cat' => 'sending',
                 'value' => '10',

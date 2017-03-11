@@ -22,8 +22,7 @@
 
 @endsection
 
-@section('content')
-				
+@section('content') 
 				<form class="listing-form"
 					sort-url="{{ action('Admin\SubscriptionController@sort') }}"
 					data-url="{{ action('Admin\SubscriptionController@listing') }}"

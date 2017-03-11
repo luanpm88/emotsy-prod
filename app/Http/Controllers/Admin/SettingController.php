@@ -72,6 +72,7 @@ class SettingController extends Controller
                 'site_description' => 'required',
                 'frontend_scheme' => 'required',
                 'backend_scheme' => 'required',
+                'license' => 'license',
             ];
             $this->validate($request, $rules);
 
