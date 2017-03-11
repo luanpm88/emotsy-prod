@@ -29,6 +29,8 @@
 								'rules' => Acelle\Model\BounceHandler::rules()
 							])
 						</div>
+					</div>
+					<div class="row">
 						<div class="col-sm-6 col-md-4">
 							@include('helpers.form_control', [
 								'type' => 'text',
@@ -59,6 +61,8 @@
 								'rules' => Acelle\Model\BounceHandler::rules()
 							])
 						</div>
+					</div>
+					<div class="row">
 						<div class="col-sm-6 col-md-4">
 							@include('helpers.form_control', [
 								'type' => 'select',
