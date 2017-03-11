@@ -1266,13 +1266,13 @@ class Campaign extends Model
      */
     public function deliveredRate()
     {
-        $tracking_count = $this->trackingCount();
+        $subscribers_count = $this->subscribersCount();
 
-        if ($tracking_count == 0) {
+        if ($subscribers_count == 0) {
             return 0;
         }
 
-        return round(($this->deliveredCount() / $tracking_count) * 100, 0);
+        return round(($this->deliveredCount() / $subscribers_count) * 100, 0);
     }
 
     /**
@@ -2336,7 +2336,7 @@ class Campaign extends Model
         // cache indexes
         $index = [
             'SubscriberCount' => function(&$campaign) {
-                return $campaign->subscribers()->count();
+                return $campaign->subscribersCount();
             },
             'DeliveredRate' => function(&$campaign) {
                 return $campaign->deliveredRate();
@@ -2410,5 +2410,15 @@ class Campaign extends Model
         }
 
         return round(($this->deliveredCount() / $subscribers_count) * 100, 0);
+    }
+    
+    /**
+     * Count subscribers.
+     *
+     * @return integer
+     */
+    public function subscribersCount()
+    {
+        return $this->subscribers()->count();
     }
 }
