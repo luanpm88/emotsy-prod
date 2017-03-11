@@ -1006,7 +1006,7 @@ class CampaignController extends Controller
         // The second parameter of the constructor function is false, meanining immediate update
         try {
             event(new \Acelle\Events\CampaignUpdated($log->trackingLog->campaign, false));
-            event(new \Acelle\Events\MailListUpdated($log->trackingLog->mailList, false));
+            event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList, false));
         } catch (\Exception $ex) {
             // in case TrackingLog record does not exist yet (open before logged!)
         }
@@ -1034,7 +1034,7 @@ class CampaignController extends Controller
             // The second parameter of the constructor function is false, meanining immediate update
             try {
                 event(new \Acelle\Events\CampaignUpdated($log->trackingLog->campaign, false));
-                event(new \Acelle\Events\MailListUpdated($log->trackingLog->mailList, false));
+                event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList, false));
             } catch (\Exception $ex) {
                 // in case TrackingLog record does not exist yet (open before logged!)
             }
