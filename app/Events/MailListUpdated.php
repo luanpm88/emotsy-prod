@@ -9,8 +9,8 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 class MailListUpdated extends Event
 {
     use SerializesModels;
-    
-    public $list;
+
+    public $mailList;
     public $delayed;
 
     /**
@@ -18,9 +18,9 @@ class MailListUpdated extends Event
      *
      * @return void
      */
-    public function __construct($list, $delayed = true)
+    public function __construct($mailList, $delayed = true)
     {
-        $this->list = $list;
+        $this->mailList = $mailList;
         $this->delayed = $delayed;
     }
 
