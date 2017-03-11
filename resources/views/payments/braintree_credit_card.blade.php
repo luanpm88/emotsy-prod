@@ -21,7 +21,7 @@
 @section('content')
   
 <div class="row">
-  <div class="col-md-4">
+  <div class="col-md-4 text-center">
     @include('subscriptions._subscription')
   </div>
   <div class="col-md-6">
