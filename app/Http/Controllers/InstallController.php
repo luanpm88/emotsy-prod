@@ -254,27 +254,31 @@ class InstallController extends Controller
             $this->validate($request, $rules);
             
             // Drop all old table
-            try {
-                $delete_all_tables_query = "SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' )
-                                            AS statement FROM information_schema.tables
-                                            WHERE table_schema = '".$database['database_name']."'";
-                $result = $mysqli->query($delete_all_tables_query);
-                $result = $result->fetch_object();
-                if (isset($result->statement)) {
-                    $mysqli->query("SET FOREIGN_KEY_CHECKS = 0;");
-                    $mysqli->query($result->statement);
-                    $mysqli->query("SET FOREIGN_KEY_CHECKS = 1;");
+            // 1. Get all table names
+            $table_names_query = "SELECT GROUP_CONCAT(table_name)
+                                        AS table_names FROM information_schema.tables
+                                        WHERE table_schema = '".$database['database_name']."'";
+            $result = $mysqli->query($table_names_query);
+            $result = $result->fetch_object();
+            $table_names = explode(",", $result->table_names);
+            
+            // drop all tables
+            $mysqli->query("SET FOREIGN_KEY_CHECKS = 0;");
+            foreach ($table_names as $table_name) {
+                $mysqli->query("DROP TABLE $table_name;");
+            }
+            $mysqli->query("SET FOREIGN_KEY_CHECKS = 1;");
+            
+            // 2. Check if all table are dropped
+            foreach ($table_names as $table_name) {
+                $result = $mysqli->query("SELECT COUNT(*) FROM $table_name LIMIT 1;");
+                // Table deleted if result == false
+                if ($result) {
+                    $rules["can_not_empty_database"] = "required";
                 }
-            } catch (\Exception $e) {
-                $rules["mysql_connection"] = "required";
             }
             
-            // Re-check database empty for sure
-            $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database['database_name']."'");
-            $result = $result->fetch_object();
-            if ($result->count > 0) {
-                $rules['can_not_empty_database'] = 'required';
-            }
+            // 3. Validation
             $this->validate($request, $rules);
             
             $request->session()->set('database_imported', true);
