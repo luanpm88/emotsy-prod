@@ -112,7 +112,9 @@ class SegmentController extends Controller
                 foreach ($request->conditions as $key => $param) {
                     $rules['conditions.'.$key.'.field_id'] = 'required';
                     $rules['conditions.'.$key.'.operator'] = 'required';
-                    $rules['conditions.'.$key.'.value'] = 'required';
+                    if (!in_array($param['operator'], ['blank', 'not_blank'])) {
+                        $rules['conditions.'.$key.'.value'] = 'required';
+                    }
                 }
             } else {
                 $empty = true;

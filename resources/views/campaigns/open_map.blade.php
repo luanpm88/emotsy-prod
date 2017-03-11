@@ -49,21 +49,23 @@ $(function() {
 		
 		
 		@foreach ($campaign->locations()->get() as $key => $location)
-			infowindows[{{ $key }}] = new google.maps.InfoWindow({
-				content: '<table><tr><td><strong>{{ trans('messages.ip') }}&nbsp;&nbsp;</td><td></strong>{{ $location->ip_address }}</td></tr><tr><td><strong>{{ trans('messages.email') }} &nbsp;&nbsp;</td><td> </strong> {{ $location->email }}</td></tr><tr><td><strong>{{ trans('messages.opened_at') }} &nbsp;&nbsp;</td><td> </strong> {{ Acelle\Library\Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $location->open_at)) }}</td><tr><td><strong>{{ trans('messages.area') }}</strong>&nbsp;&nbsp;</td><td>{{ $location->name() }}</td></tr></tr><td/table>'
-			});
-			// Add marker
-			markers[{{ $key }}] = new google.maps.Marker({
-				position: new google.maps.LatLng({{ $location->latitude }},{{ $location->longitude }}),
-				map: map,
-				//title: '{{ trans('messages.opened_at') }}: {{ Acelle\Library\Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $location->open_at)) }}<br>{{ $location->name() }}'
-			});
-			markers[{{ $key }}].addListener('click', function() {
-				Object.keys(infowindows).forEach(function (key) { 
-					infowindows[key].close();
-				})
-				infowindows[{{ $key }}].open(map, markers[{{ $key }}]);
-			});
+			@if (!empty($location->latitude) && !empty($location->longitude))
+				infowindows[{{ $key }}] = new google.maps.InfoWindow({
+					content: '<table><tr><td><strong>{{ trans('messages.ip') }}&nbsp;&nbsp;</td><td></strong>{{ $location->ip_address }}</td></tr><tr><td><strong>{{ trans('messages.email') }} &nbsp;&nbsp;</td><td> </strong> {{ $location->email }}</td></tr><tr><td><strong>{{ trans('messages.opened_at') }} &nbsp;&nbsp;</td><td> </strong> {{ Acelle\Library\Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $location->open_at)) }}</td><tr><td><strong>{{ trans('messages.area') }}</strong>&nbsp;&nbsp;</td><td>{{ $location->name() }}</td></tr></tr><td/table>'
+				});
+				// Add marker
+				markers[{{ $key }}] = new google.maps.Marker({
+					position: new google.maps.LatLng({{ $location->latitude }},{{ $location->longitude }}),
+					map: map,
+					//title: '{{ trans('messages.opened_at') }}: {{ Acelle\Library\Tool::formatDateTime(\Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $location->open_at)) }}<br>{{ $location->name() }}'
+				});
+				markers[{{ $key }}].addListener('click', function() {
+					Object.keys(infowindows).forEach(function (key) { 
+						infowindows[key].close();
+					})
+					infowindows[{{ $key }}].open(map, markers[{{ $key }}]);
+				});
+			@endif
 		@endforeach
 
 	};

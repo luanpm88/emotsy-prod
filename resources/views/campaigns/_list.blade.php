@@ -19,7 +19,7 @@
 													<i data-action="move" class="icon icon-more2 list-drag-button"></i>
 												@endif
 											</div>
-										</td>										
+										</td>
 										<td>
 											<h5 class="no-margin text-bold">
 												<a class="kq_search" href="{{ action('CampaignController@show', $item->uid) }}">
@@ -27,7 +27,7 @@
 												</a>
 											</h5>
 											<span class="text-muted">{{ trans('messages.' . $item->type) }}</span>
-											
+
 											<div class="text-semibold" data-popup="tooltip" title="{{ $item->displayRecipients() }}">
 												{{ $item->readCache('SubscriberCount') }} {{ trans('messages.recipients') }}
 											</div>
@@ -67,11 +67,11 @@
 													<span class="text-muted">{{ trans('messages.click_rate') }}</span>
 												</div>
 											@endif
-										</td>										
+										</td>
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left" title='{{ $item->status == Acelle\Model\Campaign::STATUS_ERROR ? $item->last_error : '' }}' data-popup='tooltip'>
 												<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.campaign_status_' . $item->status) }}</span>
-											</span>											
+											</span>
 											@if (\Gate::allows('update', $item))
 												<a href="{{ action('CampaignController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 											@endif
@@ -79,7 +79,7 @@
 												<a href="{{ action('CampaignController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="icon-stats-growth"></i> {{ trans('messages.overview') }}</a>
 											@endif
 											@if (\Gate::allows('delete', $item) || \Gate::allows('pause', $item) || \Gate::allows('restart', $item))
-												<div class="btn-group">										
+												<div class="btn-group">
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 													<ul class="dropdown-menu dropdown-menu-right">
 														@if (\Gate::allows('pause', $item))
@@ -89,7 +89,7 @@
 															<li><a link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart', ["uids" => $item->uid]) }}"><i class="icon-history"></i> {{ trans("messages.restart") }}</a></li>
 														@endif
 														@if (\Gate::allows('copy', $item))
-															<li>														
+															<li>
 																<a data-uid="{{ $item->uid }}" data-name="{{ trans("messages.copy_of_campaign", ['name' => $item->name]) }}" class="copy-campaign-link">
 																	<i class="icon-copy4"></i> {{ trans('messages.copy') }}
 																</a>
@@ -114,7 +114,7 @@
 									{{ trans('messages.no_search_result') }}
 								</span>
 							</div>
-						@else					
+						@else
 							<div class="empty-list">
 								<i class="icon-paperplane"></i>
 								<span class="line-1">

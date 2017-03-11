@@ -1006,7 +1006,7 @@ class CampaignController extends Controller
         // The second parameter of the constructor function is false, meanining immediate update
         try {
             event(new \Acelle\Events\CampaignUpdated($log->trackingLog->campaign, false));
-            event(new \Acelle\Events\MailListUpdated($log->trackingLog->mailList, false));
+            event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList, false));
         } catch (\Exception $ex) {
             // in case TrackingLog record does not exist yet (open before logged!)
         }
@@ -1034,7 +1034,7 @@ class CampaignController extends Controller
             // The second parameter of the constructor function is false, meanining immediate update
             try {
                 event(new \Acelle\Events\CampaignUpdated($log->trackingLog->campaign, false));
-                event(new \Acelle\Events\MailListUpdated($log->trackingLog->mailList, false));
+                event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList, false));
             } catch (\Exception $ex) {
                 // in case TrackingLog record does not exist yet (open before logged!)
             }
@@ -1426,7 +1426,7 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $subscribers = $campaign->subscribers()->distinct();
+        $subscribers = $campaign->subscribers()->groupBy('subscribers.id');
 
         return view('campaigns.subscribers', [
             'subscribers' => $subscribers,
@@ -1447,7 +1447,7 @@ class CampaignController extends Controller
             return;
         }
 
-        $subscribers = $campaign->subscribers($request->all())->distinct()
+        $subscribers = $campaign->subscribers($request->all())->groupBy('subscribers.id')
                                 ->paginate($request->per_page);
         $fields = $campaign->defaultMailList->getFields->whereIn('uid', explode(',', $request->columns));
 

@@ -635,7 +635,7 @@ class MailList extends Model
      */
     public function copy($name)
     {
-        $copy = $this->replicate();
+        $copy = $this->replicate(['cache']);
         $copy->name = $name;
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
@@ -660,6 +660,9 @@ class MailList extends Model
             $new_field->mail_list_id = $copy->id;
             $new_field->save();
         }
+
+        // update cache
+        $copy->updateCache();
     }
 
     /**
@@ -1012,7 +1015,8 @@ class MailList extends Model
                 // @todo: hard-coded charset and COLLATE
                 $tmpFields = implode(',', array_map(function($field) { return "`{$field}` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci"; }, $availableFields));
                 DB::statement("DROP TEMPORARY TABLE IF EXISTS {$tmpTable};
-                               CREATE TEMPORARY TABLE {$tmpTable}({$tmpFields});");
+                               CREATE TEMPORARY TABLE {$tmpTable}({$tmpFields});
+                               CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`email`);");
 
                 // Insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
