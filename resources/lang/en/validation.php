@@ -134,7 +134,7 @@ return [
             'required' => 'Invalid PHP executable. Please check again.',
         ],
         'can_not_empty_database' => [
-            'required' => 'Cannot DROP certain tables, please cleanup your database and try again.',
+            'required' => 'Cannot DROP certain tables, please cleanup your database manually and try again.',
         ],
         'recaptcha_invalid' => [
             'required' => 'Invalid reCAPTCHA check.',
