@@ -84,6 +84,9 @@ class SettingController extends Controller
                     }
                 }
             }
+            
+            // Update license type
+            \Acelle\Model\Setting::updateLicenseType($request->license);
 
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.setting.updated'));

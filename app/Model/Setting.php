@@ -138,6 +138,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'license_type' => [
+                'cat' => 'system',
+                'value' => '',
+                'type' => 'text',
+                'not_required' => true,
+            ],
             'site_online' => [
                 'cat' => 'general',
                 'value' => 'true',
@@ -312,5 +318,16 @@ class Setting extends Model
         $env_file = fopen($file_path, 'w') or die('Unable to open file!');
         fwrite($env_file, implode($data, ""));
         fclose($env_file);
+    }
+    
+    /**
+     * Update license type.
+     *
+     * @return array
+     */
+    public static function updateLicenseType()
+    {
+        $license_type = \Acelle\Helpers\LicenseHelper::getLicenseType(Setting::get("license"));
+        Setting::set("license_type", $license_type);
     }
 }

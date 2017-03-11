@@ -1641,6 +1641,6 @@ return [
     'license_optional' => 'License (Purchased code)',
     'license' => 'License (Purchased code)',
     'install.license.help' => 'This is optional. You can update it later in setting page.',
-    'is_not_extended_license' => 'Some features require extended license. Please consider to<br /> purchase one.
-        Or If you have already purchased it,<br /> please enter it <a href=":link">here</a>',
+    'is_not_extended_license' => 'Extended license required for some features. Please consider <br /> purchasing one.
+        If you have already purchased an<br /> extended license, please enter it <a href=":link">here</a>',
 ];

@@ -3,7 +3,21 @@
 namespace Acelle\Helpers;
 
 class LicenseHelper
-{   
+{
+    // license type
+    const TYPE_NORMAL = 'normal';
+    const TYPE_EXTENDED = 'extended';
+    
+    /**
+     * Get license type: normal / extended.
+     *
+     * @var string
+     */
+    public static function getLicenseType($license)
+    {
+        return LicenseHelper::isValid($license) ? ($license == 'bbb' ? LicenseHelper::TYPE_EXTENDED : LicenseHelper::TYPE_NORMAL) : '';
+    }
+    
     /**
     * Check is valid extend license
     *
@@ -11,7 +25,7 @@ class LicenseHelper
     */
     public static function isExtended($license)
     {
-        return LicenseHelper::isValid($license) && $license == 'bbb';
+        return LicenseHelper::isValid($license) && LicenseHelper::getLicenseType($license) == LicenseHelper::TYPE_EXTENDED;
     }
     
     /**
@@ -31,6 +45,6 @@ class LicenseHelper
      */
     public static function showNotExtendedLicensePopup()
     {
-        return (\Request::is('*subscriptions*') && !LicenseHelper::isExtended(\Acelle\Model\Setting::get('license')));
+        return \Acelle\Model\Setting::get('license_type') != LicenseHelper::TYPE_EXTENDED;
     }
 }

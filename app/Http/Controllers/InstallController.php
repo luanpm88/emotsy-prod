@@ -126,6 +126,9 @@ class InstallController extends Controller
             $this->validate($request, $rules);
             
             $site_info = $request->all();
+            
+            // Get license type
+            $site_info["license_type"] = \Acelle\Helpers\LicenseHelper::getLicenseType($site_info["license"]);
 
             // Check SMTP connection
             if ($request->mail_driver == 'smtp') {
@@ -146,9 +149,7 @@ class InstallController extends Controller
                 $site_info["smtp_from_name"] = $site_info["site_name"];
                 $site_info["smtp_from_email"] = $site_info["email"];
             }
-
             
-
             $request->session()->set('site_info', $site_info);
 
             return redirect()->action('InstallController@database');
@@ -427,6 +428,8 @@ class InstallController extends Controller
                             ('site_description', '".$site_info['site_description']."', '".$date."', '".$date."');");
             $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
                             ('license', '".$site_info['license']."', '".$date."', '".$date."');");
+            $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                            ('license_type', '".$site_info['license_type']."', '".$date."', '".$date."');");
 
             $request->session()->flash('alert-success', trans('messages.install.database_import.success'));
 
