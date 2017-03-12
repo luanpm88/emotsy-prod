@@ -36,7 +36,7 @@ class SendingServerSendGrid extends SendingServer
     protected $table = 'sending_servers';
     public static $client = null;
     public static $isWebhookSetup = false;
-    
+
     /**
      * Get authenticated to Mailgun and return the session object.
      *
@@ -47,10 +47,10 @@ class SendingServerSendGrid extends SendingServer
         if (!self::$client) {
             self::$client = new \SendGrid($this->api_key);
         }
-        
+
         return self::$client;
     }
-    
+
     /**
      * Setup webhooks for processing bounce and feedback loop.
      *
@@ -81,7 +81,7 @@ class SendingServerSendGrid extends SendingServer
                 }'
             );
             $response = $this->client()->client->user()->webhooks()->event()->settings()->patch($request_body);
-            
+
             if($response->_status_code == '200') {
                 MailLog::info('Webhooks successfully set!');
             } else {
@@ -93,7 +93,7 @@ class SendingServerSendGrid extends SendingServer
             MailLog::warning($e->getMessage());
         }
     }
-    
+
     /**
      * Get Message Id
      * Extract the message id from SendGrid response
@@ -108,7 +108,7 @@ class SendingServerSendGrid extends SendingServer
             return NULL;
         }
     }
-    
+
     /**
      * Prepare the email object for sending
      *
@@ -123,15 +123,18 @@ class SendingServerSendGrid extends SendingServer
         $to = new Email(null, $subscriber->email);
         $plain = new Content("text/plain", $campaign->getPlainContent($subscriber, $msgId));
         $html = new Content("text/html", $campaign->getHtmlContent($subscriber, $msgId));
-                
+
         $mail = new Mail($from, $campaign->getSubject($subscriber, $msgId), $to, $plain);
         if ($campaign->type == Campaign::TYPE_REGULAR) {
             $mail->addContent($html);
         }
-        
+
         foreach($customHeaders as $key => $value) {
             $mail->addHeader($key, $value);
         }
+
+        // to track bounce/feedback notification
+        $mail->addCustomArg("runtime_message_id", $msgId);
 
         return $mail;
     }
