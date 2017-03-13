@@ -84,7 +84,7 @@ class StringHelper
      */
     public static function generateMessageId($domain)
     {
-        return time().'.'.uniqid().'@'.$domain;
+        return time().rand(100000, 999999).'.'.uniqid().'@'.$domain;
     }
 
     /**
@@ -103,7 +103,7 @@ class StringHelper
 
         return implode('/', $array);
     }
-    
+
     /**
      * Extract SendGrid X-Message-Id from Smtp-Id
      * For example, extract "GuUFV1znQTmkQyPXrPLyxA" from "<GuUFV1znQTmkQyPXrPLyxA@ismtpd0019p1sin1.sendgrid.net>"

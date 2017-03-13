@@ -1371,7 +1371,7 @@ class Campaign extends Model
             return 0;
         }
 
-        return round(($this->clickedEmailsCount() / $open_count) * 100, 0);
+        return round(($this->clickedEmailsCount() / $open_count) * 100, 2);
     }
 
     /**
@@ -1483,7 +1483,7 @@ class Campaign extends Model
             return 0;
         }
 
-        return round(($this->openUniqCount() / $delivered_count) * 100, 0);
+        return round(($this->openUniqCount() / $delivered_count) * 100, 2);
     }
 
     /**
@@ -2350,6 +2350,9 @@ class Campaign extends Model
             'UniqOpenRate' => function(&$campaign) {
                 return $campaign->openUniqRate();
             },
+            'UniqOpenCount' => function(&$campaign) {
+                return $campaign->openUniqCount();
+            },
         ];
 
         // retrieve cached data
@@ -2411,7 +2414,7 @@ class Campaign extends Model
 
         return round(($this->deliveredCount() / $subscribers_count) * 100, 0);
     }
-    
+
     /**
      * Count subscribers.
      *

@@ -1,8 +1,18 @@
-2.2.0-p13 / 2017-03-03
-===================
+2.2.0-p13 / 2017-03-15
+==================
 
- * Added: support follow-up messages that have not been opened/clicked
- * Fixed: quota tracking issue for click-to-open rate
+ * Added: support more caching to speed up page loading
+ * Added: better compatibility check
+ * Added: better Message-Id generation, to avoid conflict
+ * Added: improve list importing performance
+ * Added: more API support, allow retrieving list's fields
+ * Added: follow up campaign email when it is not opened/clicked
+ * Added: new quota tracking system that supports multi-process
+ * Fixed: inconsistent Open map
+ * Fixed: inconsistent SendGrid bounce report
+ * Fixed: inconsistent sending statistics
+ * Fixed: email header Return-Path not properly setup
+ * Fixed: campaign status not correctly set
 
 2.2.0-p12 / 2017-02-27
 ===================

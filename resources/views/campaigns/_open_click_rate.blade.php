@@ -2,18 +2,18 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="content-group-sm">
-                        <div class="pull-right progress-right-info text-teal-800">{{ $campaign->openUniqRate() }}%</div>
+                        <div class="pull-right progress-right-info text-teal-800">{{ $campaign->readCache('UniqOpenRate') }}%</div>
                         <h4 class="text-semibold mt-0">{{ trans('messages.open_rate') }}</h4>
                         <div class="progress progress-sm">
-                            <div class="progress-bar bg-teal-400" style="width: {{ $campaign->openUniqRate() }}%">
+                            <div class="progress-bar bg-teal-400" style="width: {{ $campaign->readCache('UniqOpenRate') }}%">
                             </div>
                         </div>
                     </div>
                     <div class="stat-table">
                         <div class="stat-row">
                             <div class="pull-right num">
-                                {{ $campaign->deliveredCount() }}
-                                <span class="text-muted2">{{ $campaign->deliveredRate() }}%</span>
+                                {{ $campaign->readCache('DeliveredCount') }}
+                                <span class="text-muted2">{{ $campaign->readCache('DeliveredRate') }}%</span>
                             </div>
                             <p class="text-muted">{{ trans('messages.successful_deliveries') }}</p>
                         </div>
@@ -25,7 +25,7 @@
                         </div>
                         <div class="stat-row">
                             <div class="pull-right num">
-                                {{ $campaign->openUniqCount() }}
+                                {{ $campaign->readCache('UniqOpenCount') }}
                             </div>
                             <p class="text-muted">{{ trans('messages.uniq_opens') }}</p>
                         </div>
@@ -43,14 +43,14 @@
                 </div>
                 <div class="col-md-6">
                     <div class="content-group-sm">
-                        <div class="pull-right progress-right-info text-teal-800">{{ $campaign->clickedEmailsRate() }}%</div>
+                        <div class="pull-right progress-right-info text-teal-800">{{ $campaign->readCache('ClickedRate') }}%</div>
                         <h4 class="text-semibold mt-0">{{ trans('messages.click_rate') }}</h4>
                         <div class="progress progress-sm">
-                            <div class="progress-bar bg-teal-400" style="width: {{ $campaign->clickedEmailsRate() }}%">
+                            <div class="progress-bar bg-teal-400" style="width: {{ $campaign->readCache('ClickedRate') }}%">
                             </div>
                         </div>
                     </div>
-                    <div class="stat-table">                        
+                    <div class="stat-table">
                         <div class="stat-row">
                             <div class="pull-right num">
                                 {{ $campaign->clickCount() }}

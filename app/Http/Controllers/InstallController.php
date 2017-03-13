@@ -51,7 +51,7 @@ class InstallController extends Controller
 
     // Starting installation
     public function starting(Request $request)
-    {        
+    {
         $next = action('InstallController@systemCompatibility');
         artisan_config_cache();
         return redirect()->away($next);
@@ -69,13 +69,13 @@ class InstallController extends Controller
                 $result = false;
             }
         }
-        
+
         // retry if something not work yet
         try {
             if ($result) {
                 $request->session()->set('compatibilities', $compatibilities);
-            }        
-        
+            }
+
             return view('install.compatibilities', [
                 'compatibilities' => $compatibilities,
                 'result' => $result,
@@ -123,7 +123,7 @@ class InstallController extends Controller
                 $rules = array_merge($rules, $smtp_rules);
             }
             $this->validate($request, $rules);
-            
+
             $site_info = $request->all();
 
             // Check SMTP connection
@@ -146,7 +146,7 @@ class InstallController extends Controller
                 $site_info["smtp_from_email"] = $site_info["email"];
             }
 
-            
+
 
             $request->session()->set('site_info', $site_info);
 
@@ -203,12 +203,12 @@ class InstallController extends Controller
             // Save database session
             $database = $request->all();
             $request->session()->set('database', $database);
-            
+
             $next_page = action('InstallController@databaseImport');
-            
+
             // write config file
             $this->writeEnv($request);
-            
+
             return redirect()->away($next_page);
         }
 
@@ -225,8 +225,7 @@ class InstallController extends Controller
         ]);
     }
 
-    // Import Database
-    public function databaseImport(Request $request)
+    public function import(Request $request)
     {
         if ($this->step($request) < 3) {
             return redirect()->action('InstallController@database');
@@ -234,10 +233,10 @@ class InstallController extends Controller
 
         $database = $request->session()->get('database');
         $site_info = $request->session()->get('site_info');
-        
+
         // connect mysql
         $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
-        
+
         // Check if database is not empty
         $rules = [];
         $tables_exist = false;
@@ -248,90 +247,116 @@ class InstallController extends Controller
             $tables_exist = true;
         }
 
-        if ($request->action == 'import') {
-            $request->session()->forget('database_imported');
+        $request->session()->forget('database_imported');
 
-            $this->validate($request, $rules);
-            
-            // Drop all old table
-            try {
-                $delete_all_tables_query = "SELECT CONCAT( 'DROP TABLE ', GROUP_CONCAT(table_name) , ';' )
-                                            AS statement FROM information_schema.tables
-                                            WHERE table_schema = '".$database['database_name']."'";
-                $result = $mysqli->query($delete_all_tables_query);
-                $result = $result->fetch_object();
-                if (isset($result->statement)) {
-                    $mysqli->query("SET FOREIGN_KEY_CHECKS = 0;");
-                    $mysqli->query($result->statement);
-                    $mysqli->query("SET FOREIGN_KEY_CHECKS = 1;");
-                }
-            } catch (\Exception $e) {
-                $rules["mysql_connection"] = "required";
+        $this->validate($request, $rules);
+
+        // Drop all old table
+        // 1. Get all table names
+        $table_names_query = "SELECT GROUP_CONCAT(table_name)
+                                    AS table_names FROM information_schema.tables
+                                    WHERE table_schema = '".$database['database_name']."'";
+        $result = $mysqli->query($table_names_query);
+        $result = $result->fetch_object();
+        $table_names = explode(",", $result->table_names);
+
+        // drop all tables
+        $mysqli->query("SET FOREIGN_KEY_CHECKS = 0;");
+        foreach ($table_names as $table_name) {
+            $mysqli->query("DROP TABLE $table_name;");
+        }
+        $mysqli->query("SET FOREIGN_KEY_CHECKS = 1;");
+
+        // 2. Check if all table are dropped
+        foreach ($table_names as $table_name) {
+            $result = $mysqli->query("SELECT COUNT(*) FROM $table_name LIMIT 1;");
+            // Table deleted if result == false
+            if ($result) {
+                $rules["can_not_empty_database"] = "required";
             }
-            
-            // Re-check database empty for sure
-            $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database['database_name']."'");
-            $result = $result->fetch_object();
-            if ($result->count > 0) {
-                $rules['can_not_empty_database'] = 'required';
-            }
-            $this->validate($request, $rules);
-            
-            $request->session()->set('database_imported', true);
-            $next_page = action('InstallController@cronJobs');
+        }
 
-            // Run migrate
-            artisan_migrate();
+        // 3. Validation
+        $this->validate($request, $rules);
 
-            // import database with prefix
-            $this->importDatabase($database);
-            
-            // get database connection
-            $database = $request->session()->get('database');
-            $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
+        $request->session()->set('database_imported', true);
+        $next_page = action('InstallController@cronJobs');
 
-            // default date
-            $date = \Carbon\Carbon::now();
+        // Run migrate
+        artisan_migrate();
 
-            // Insert default superuser
-            $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'users` WHERE 1');
+        // import database with prefix
+        $this->importDatabase($database);
 
-            $aaa = $mysqli->query('INSERT INTO `'.$database['tables_prefix']."users`
-                (`id`, `uid`, `api_token`, `contact_id`, `user_group_id`, `language_id`, `name`, `email`, `password`, `remember_token`, `image`, `timezone`, `status`, `created_at`, `updated_at`, `first_name`, `last_name`, `frontend_scheme`, `backend_scheme`) VALUES
+        // get database connection
+        $database = $request->session()->get('database');
+        $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
+
+        // default date
+        $date = '2017-01-01 00:00:00';
+
+        // Insert default superuser
+        $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'users` WHERE 1');
+
+        $aaa = $mysqli->query('INSERT INTO `'.$database['tables_prefix']."users`
+            (`id`, `uid`, `api_token`, `contact_id`, `user_group_id`, `language_id`, `name`, `email`, `password`, `remember_token`, `image`, `timezone`, `status`, `created_at`, `updated_at`, `first_name`, `last_name`, `frontend_scheme`, `backend_scheme`) VALUES
 (1, '" .uniqid()."', '".str_random(60)."', NULL, 1, 1, '".$site_info['first_name'].' '.$site_info['last_name']."', '".$site_info['email']."', '".bcrypt($site_info['password'])."', '', '', '".$site_info['timezone']."', 'active', '".$date."', '".$date."', '".$site_info['first_name']."', '".$site_info['last_name']."', '', '');");
 
-            // Insert system urls
-            $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_delivery_handler'");
-            $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                            ('url_delivery_handler', '".action('DeliveryController@notify', ['stype' => ''])."', '".$date."', '".$date."');");
-            $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_unsubscribe'");
-            $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                            ('url_unsubscribe', '".action('CampaignController@unsubscribe', ['message_id' => 'MESSAGE_ID'])."', '".$date."', '".$date."');");
-            $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_open_track'");
-            $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                            ('url_open_track', '".action('CampaignController@open', ['message_id' => 'MESSAGE_ID'])."', '".$date."', '".$date."');");
-            $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_click_track'");
-            $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                            ('url_click_track', '".action('CampaignController@click', ['message_id' => 'MESSAGE_ID', 'url' => 'URL'])."', '".$date."', '".$date."');");
-            $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_update_profile'");
-            $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                            ('url_update_profile', '".action('PageController@profileUpdateForm', ['list_uid' => 'LIST_UID', 'uid' => 'SUBSCRIBER_UID', 'code' => 'SECURE_CODE'])."', '".$date."', '".$date."');");
-            //$mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='url_campaign_notification'");
-            //$mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-            //                ('url_campaign_notification', '".action('HomeController@index')."', '".$date."', '".$date."');");
-            $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='site_name'");
-            $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                            ('site_name', '".$site_info['site_name']."', '".$date."', '".$date."');");
-            $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='site_keyword'");
-            $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                            ('site_keyword', '".$site_info['site_keyword']."', '".$date."', '".$date."');");
-            $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='site_description'");
-            $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
-                            ('site_description', '".$site_info['site_description']."', '".$date."', '".$date."');");
+        // Insert system urls
+        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_delivery_handler'");
+        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                        ('url_delivery_handler', '".action('DeliveryController@notify', ['stype' => ''])."', '".$date."', '".$date."');");
+        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_unsubscribe'");
+        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                        ('url_unsubscribe', '".action('CampaignController@unsubscribe', ['message_id' => 'MESSAGE_ID'])."', '".$date."', '".$date."');");
+        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_open_track'");
+        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                        ('url_open_track', '".action('CampaignController@open', ['message_id' => 'MESSAGE_ID'])."', '".$date."', '".$date."');");
+        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_click_track'");
+        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                        ('url_click_track', '".action('CampaignController@click', ['message_id' => 'MESSAGE_ID', 'url' => 'URL'])."', '".$date."', '".$date."');");
+        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='url_update_profile'");
+        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                        ('url_update_profile', '".action('PageController@profileUpdateForm', ['list_uid' => 'LIST_UID', 'uid' => 'SUBSCRIBER_UID', 'code' => 'SECURE_CODE'])."', '".$date."', '".$date."');");
+        //$mysqli->query("DELETE FROM `".$database["tables_prefix"]."settings` WHERE name='url_campaign_notification'");
+        //$mysqli->query("INSERT INTO `".$database["tables_prefix"]."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+        //                ('url_campaign_notification', '".action('HomeController@index')."', '".$date."', '".$date."');");
+        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='site_name'");
+        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                        ('site_name', '".$site_info['site_name']."', '".$date."', '".$date."');");
+        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='site_keyword'");
+        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                        ('site_keyword', '".$site_info['site_keyword']."', '".$date."', '".$date."');");
+        $mysqli->query('DELETE FROM `'.$database['tables_prefix']."settings` WHERE name='site_description'");
+        $mysqli->query('INSERT INTO `'.$database['tables_prefix']."settings` (`name`, `value`, `created_at`, `updated_at`) VALUES
+                        ('site_description', '".$site_info['site_description']."', '".$date."', '".$date."');");
 
-            $request->session()->flash('alert-success', trans('messages.install.database_import.success'));
+        $request->session()->flash('alert-success', trans('messages.install.database_import.success'));
 
-            return redirect()->away($next_page);
+        return redirect()->away($next_page);
+    }
+
+    // Import Database
+    public function databaseImport(Request $request)
+    {
+        if ($this->step($request) < 3) {
+            return redirect()->action('InstallController@database');
+        }
+
+        $database = $request->session()->get('database');
+        $site_info = $request->session()->get('site_info');
+
+        // connect mysql
+        $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
+
+        // Check if database is not empty
+        $rules = [];
+        $tables_exist = false;
+        $prefix_check = empty($database['tables_prefix']) ? '' : "  AND table_name LIKE '".$database['tables_prefix']."%'";
+        $result = $mysqli->query("SELECT COUNT(DISTINCT `table_name`) as count FROM `information_schema`.`columns` WHERE `table_schema` = '".$database['database_name']."'");
+        $result = $result->fetch_object();
+        if ($result->count > 0) {
+            $tables_exist = true;
         }
 
         return view('install.database_import', [
@@ -347,7 +372,7 @@ class InstallController extends Controller
         if ($this->step($request) < 5) {
             return redirect()->action('InstallController@database');
         }
-        
+
         // Re-generate remote job url
         if($request->re_generate_remote_job_url) {
             $remote_job_token = str_random(60);
@@ -355,15 +380,15 @@ class InstallController extends Controller
             echo action('Controller@remoteJob', ['remote_job_token' => $remote_job_token]);
             return;
         }
-        
-        $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);        
+
+        $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);
         if($respone == 'done' || $respone == 'remote') {
             return redirect()->action('InstallController@finishing');
         }
-        
+
         return view('install.cron_jobs', $respone);
     }
-    
+
     public function finishing(Request $request)
     {
         $next_page = action('InstallController@finish');
@@ -376,9 +401,9 @@ class InstallController extends Controller
         if ($this->step($request) < 6) {
             return redirect()->action('InstallController@database');
         }
-        
+
         $request->session()->set('install_finish', true);
-        
+
         $file_path = storage_path('installed');
         $file = fopen($file_path, 'w') or die('Unable to open file!');
         fwrite($file, '');
@@ -675,9 +700,9 @@ MAIL_FROM_NAME="'.(isset($smtp['smtp_from_name']) ? $smtp['smtp_from_name'] : ''
                 $templine = '';
             }
         }
-        
+
         unlink($file_path);
-        
+
         return true;
     }
 }

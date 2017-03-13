@@ -2,9 +2,9 @@
 
 @section('title', trans('messages.dashboard'))
 
-@section('page_script')    
+@section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/visualization/echarts/echarts.js') }}"></script>
-    
+
     <script type="text/javascript" src="{{ URL::asset('js/chart.js') }}"></script>
 @endsection
 
@@ -12,7 +12,7 @@
     <h1>{{ trans('messages.dashboard') }}</h1>
 
     <h2 class="text-teal-800"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h2>
-		
+
 	@if (Acelle\Model\Campaign::where("status", "=", "done")->count() == 0)
 		<div class="empty-list">
 			<i class="icon-paperplane"></i>
@@ -35,12 +35,12 @@
 		</div>
 		<div class="campaign-quickview-container" data-url="{{ action("CampaignController@quickView") }}"></div>
 	@endif
-    
+
     <br />
     <br />
-    
+
     <h2 class="text-teal-800"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h2>
-    
+
 	@if (Acelle\Model\MailList::count() == 0)
 		<div class="empty-list">
 			<i class="icon-address-book2"></i>
@@ -63,10 +63,10 @@
 		</div>
 		<div class="list-quickview-container" data-url="{{ action("MailListController@quickView") }}"></div>
 	@endif
-    
+
     <br />
     <br />
-    
+
     <h2 class="text-teal-800"><i class="icon-podium"></i> {{ trans('messages.top_5') }}</h2>
     <div class="tabbable">
 				<ul class="nav nav-tabs nav-tabs-top">
@@ -92,7 +92,7 @@
                                                 </a>
                                             </h6>
                                             <p>
-												{!! $item->displayRecipients() !!}                                          
+												{!! $item->displayRecipients() !!}
                                             </p>
                                         </div>
 										<div class="col-sm-2 col-md-2 text-left">
@@ -104,7 +104,7 @@
                                         </div>
                                         <div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
-												{{ $item->openUniqCount() }}
+												{{ $item->readCache('UniqOpenCount') }}
 											</h5>
 											<span class="text-muted">{{ trans('messages.uniq_opens') }}</span>
                                                 <br /><br />
@@ -115,7 +115,7 @@
 											</h5>
 											<span class="text-muted">{{ trans('messages.last_open') }}</span>
                                                 <br /><br />
-                                        </div>	
+                                        </div>
                                     </div>
 
                                 </li>
@@ -123,7 +123,7 @@
 						</ul>
 					</div>
 					<div class="tab-pane" id="top-tab2">
-						<ul class="modern-listing mt-0 top-border-none">							
+						<ul class="modern-listing mt-0 top-border-none">
 							@foreach (Acelle\Model\Campaign::topClicks(5, null)->get() as $num => $item)
 								<li>
                                     <div class="row">
@@ -135,7 +135,7 @@
                                                 </a>
                                             </h6>
                                             <p>
-												{!! $item->displayRecipients() !!}                                              
+												{!! $item->displayRecipients() !!}
                                             </p>
                                         </div>
                                         <div class="col-sm-2 col-md-2 text-left">
@@ -158,7 +158,7 @@
 											</h5>
 											<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
                                                 <br /><br />
-                                        </div>										
+                                        </div>
                                     </div>
 
                                 </li>
@@ -166,7 +166,7 @@
 						</ul>
 					</div>
 					<div class="tab-pane" id="top-tab3">
-						
+
 						<ul class="modern-listing mt-0 top-border-none">
 							@foreach (Acelle\Model\Campaign::topLinks(5, null)->get() as $num => $item)
 								<li>
@@ -179,7 +179,7 @@
                                                 </a>
                                             </h6>
                                             <p>
-												{{ $item->campaigns()->count() }} {{ trans('messages.campaigns') }}                                              
+												{{ $item->campaigns()->count() }} {{ trans('messages.campaigns') }}
                                             </p>
                                         </div>
                                         <div class="col-sm-2 col-md-2 text-left">
@@ -191,7 +191,7 @@
                                         </div>
 										<div class="col-sm-2 col-md-2 text-left">
 											<h5 class="no-margin text-bold">
-												{{ Acelle\Library\Tool::formatDateTime($item->lastClick()->created_at) }}          
+												{{ Acelle\Library\Tool::formatDateTime($item->lastClick()->created_at) }}
 											</h5>
 											<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
                                             <br /><br />
@@ -200,14 +200,14 @@
                                 </li>
 							@endforeach
 						</ul>
-					</div>					
+					</div>
 				</div>
 			</div>
 
 	<br />
     <br />
     <h2 class="text-teal-800"><i class="icon-history"></i> {{ trans('messages.users_activity_log') }}</h2>
-	
+
 	@if (Acelle\Model\Log::count() == 0)
 		<div class="empty-list">
 			<i class="icon-history"></i>
@@ -219,14 +219,14 @@
 		<div class="scrollbar-box action-log-box">
 			<!-- Timeline -->
 			<div class="timeline timeline-left content-group">
-				<div class="timeline-container">				
+				<div class="timeline-container">
 						@foreach (Acelle\Model\Log::take(20)->get() as $log)
 							<!-- Sales stats -->
 							<div class="timeline-row">
 								<div class="timeline-icon">
 									<a href="#"><img src="{{ action('UserController@avatar', $log->user->uid) }}" alt=""></a>
 								</div>
-	
+
 								<div class="panel panel-flat timeline-content">
 									<div class="panel-heading">
 										<h6 class="panel-title text-semibold">{{ $log->user->displayName() }}</h6>
@@ -234,20 +234,20 @@
 											<span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at->diffForHumans() }}</span>
 										</div>
 									</div>
-	
+
 									<div class="panel-body">
 										{!! $log->message() !!}
 									</div>
 								</div>
 							</div>
 							<!-- /sales stats -->
-						@endforeach								
+						@endforeach
 				</div>
 			</div>
 		</div>
 	@endif
-	
+
 	<br>
 	<br>
-    
+
 @endsection
