@@ -64,7 +64,7 @@ class QuotaTrackerFile extends QuotaTracker
 
                 // create the base directories for log files
                 if (!file_exists(dirname($this->file))) {
-                    mkdir(dirname($this->file), 0775, true);
+                    mkdir(dirname($this->file), 0777, true);
                 }
 
                 if (!file_exists($this->file)) {
@@ -72,7 +72,7 @@ class QuotaTrackerFile extends QuotaTracker
                     touch($this->file);
 
                     // change file permisson
-                    chmod($this->file, 0775);
+                    chmod($this->file, 0777);
                 }
 
                 // change umask back to its original value
