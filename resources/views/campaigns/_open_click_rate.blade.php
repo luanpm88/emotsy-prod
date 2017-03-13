@@ -12,7 +12,7 @@
                     <div class="stat-table">
                         <div class="stat-row">
                             <div class="pull-right num">
-                                {{ $campaign->deliveredCount() }}
+                                {{ $campaign->readCache('DeliveredCount') }}
                                 <span class="text-muted2">{{ $campaign->readCache('DeliveredRate') }}%</span>
                             </div>
                             <p class="text-muted">{{ trans('messages.successful_deliveries') }}</p>
