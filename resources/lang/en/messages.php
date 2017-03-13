@@ -1492,9 +1492,9 @@ return [
     'subscription.deleted' => 'Subscription server was successfully deleted',
     'registration_confirmation_email' => 'Registration confirmation email',
     'registration_confirmation_email_subject' => 'Acelle Mail - Registration confirmation',
-    'activation_email_sent_content' => '<p>We need to confirm your email address.</p>
+    'activation_email_sent_content' => '<p>We need to confirm your email address to complete the registration process.</p>
 <p>To complete the registration process, please click the link in the email we just sent you.</p>',
-    'activation_email_resent_content' => '<p>To complete the registration process, please click the link in the email we just sent you.</p>',
+    'activation_email_resent_content' => '<p>Please click the link in the email we just sent you.</p>',
     'activation_email_sent_title' => 'Registration confirmation',
     'you_are_not_activated' => 'Your account hasn\'t been activated. Please check your inbox for confirmation email or resend it again.',
     'resend_activation_email' => 'Resend activation email',

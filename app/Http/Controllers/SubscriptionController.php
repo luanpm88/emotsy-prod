@@ -102,6 +102,11 @@ class SubscriptionController extends Controller
         $user = $request->user();
         $customer = $user->customer;
         
+        // Check if customer has current inactive subscription
+        if ($customer->subscriptionsCount()) {
+            return redirect()->action('SubscriptionController@index');
+        }
+        
         // Subscription        
         $subscription = new \Acelle\Model\Subscription();
         $subscription->customer_id = $customer->id;
