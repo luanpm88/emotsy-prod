@@ -45,6 +45,7 @@ class LicenseHelper
      */
     public static function showNotExtendedLicensePopup()
     {
-        return \Request::is('*subscriptions*') && \Acelle\Model\Setting::get('license_type') != LicenseHelper::TYPE_EXTENDED;
+        return (\Request::is('*subscriptions*') || \Request::is('*payment_methods*') || \Request::is('*plans*') || \Request::is('*currencies*'))
+            && \Acelle\Model\Setting::get('license_type') != LicenseHelper::TYPE_EXTENDED;
     }
 }
