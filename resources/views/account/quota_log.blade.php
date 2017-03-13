@@ -47,7 +47,7 @@
             </div>
             <h5 class="text-semibold mb-5">{{ trans('messages.subscriber') }}</h5>
             <div class="progress progress-xxs">
-                <div class="progress-bar bg-warning" style="width: {{ Auth::user()->subscribersUsage() }}%">
+                <div class="progress-bar bg-warning" style="width: {{ Auth::user()->readCache('SubscriberUsage') }}%">
                 </div>
             </div>
         </div>
