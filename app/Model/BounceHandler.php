@@ -199,7 +199,7 @@ class BounceHandler extends DeliveryHandler
      * @var array
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'password', 'protocol', 'encryption'
+        'name', 'host', 'port', 'username', 'password', 'protocol', 'encryption', 'email'
     ];
 
     /**
@@ -217,6 +217,7 @@ class BounceHandler extends DeliveryHandler
             'password' => 'required',
             'protocol' => 'required',
             'encryption' => 'required',
+            'email' => 'required|email',
         ];
     }
 

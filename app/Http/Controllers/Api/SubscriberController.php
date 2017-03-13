@@ -116,6 +116,9 @@ class SubscriberController extends Controller
             // update MailList cache
             $subscriber->mailList->updateCachedInfo();
             
+            // update MailList cache
+            $subscriber->mailList->updateCachedInfo();
+            
             return \Response::json(array(
                 'message' => trans('messages.subscriber.created'),
                 'subscriber_uid' => $subscriber->uid

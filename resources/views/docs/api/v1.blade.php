@@ -75,7 +75,7 @@
         @endforeach
         
     </div>
-    
+
     <script>
       $(document).ready(function() {
         $(".toogle-api").click(function() {

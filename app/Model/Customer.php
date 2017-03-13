@@ -515,7 +515,7 @@ class Customer extends Model
             return trans('messages.unlimited');
         }
     
-        return $this->subscribersUsage().'%';
+        return $this->readCache('SubscriberUsage') . '%';
     }
     
     /**

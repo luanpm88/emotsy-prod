@@ -289,7 +289,8 @@ class Campaign extends Model
         try {
             // make sure the same campaign is not started twice
             if (!$this->refreshStatus()->isReady()) {
-                throw new \Exception("Campaign ID: {$this->id} is not ready or already started");
+                MailLog::info("Campaign ID: {$this->id} is not ready or already started");
+                return;
             }
 
             // lock the campaign, marked as sending
@@ -1267,13 +1268,13 @@ class Campaign extends Model
      */
     public function deliveredRate()
     {
-        $tracking_count = $this->trackingCount();
+        $subscribers_count = $this->subscribersCount();
 
-        if ($tracking_count == 0) {
+        if ($subscribers_count == 0) {
             return 0;
         }
 
-        return round(($this->deliveredCount() / $tracking_count) * 100, 0);
+        return round(($this->deliveredCount() / $subscribers_count) * 100, 0);
     }
 
     /**
@@ -1372,7 +1373,7 @@ class Campaign extends Model
             return 0;
         }
 
-        return round(($this->clickedEmailsCount() / $open_count) * 100, 0);
+        return round(($this->clickedEmailsCount() / $open_count) * 100, 2);
     }
 
     /**
@@ -1484,7 +1485,7 @@ class Campaign extends Model
             return 0;
         }
 
-        return round(($this->openUniqCount() / $delivered_count) * 100, 0);
+        return round(($this->openUniqCount() / $delivered_count) * 100, 2);
     }
 
     /**
@@ -2337,7 +2338,7 @@ class Campaign extends Model
         // cache indexes
         $index = [
             'SubscriberCount' => function(&$campaign) {
-                return $campaign->subscribers()->count();
+                return $campaign->subscribersCount();
             },
             'DeliveredRate' => function(&$campaign) {
                 return $campaign->deliveredRate();
@@ -2350,6 +2351,9 @@ class Campaign extends Model
             },
             'UniqOpenRate' => function(&$campaign) {
                 return $campaign->openUniqRate();
+            },
+            'UniqOpenCount' => function(&$campaign) {
+                return $campaign->openUniqCount();
             },
         ];
 
@@ -2411,5 +2415,15 @@ class Campaign extends Model
         }
 
         return round(($this->deliveredCount() / $subscribers_count) * 100, 0);
+    }
+
+    /**
+     * Count subscribers.
+     *
+     * @return integer
+     */
+    public function subscribersCount()
+    {
+        return $this->subscribers()->count();
     }
 }

@@ -20,6 +20,7 @@ Route::group(['middleware' => ['installed']], function () {
     Route::get('install/database', 'InstallController@database');
     Route::post('install/database', 'InstallController@database');
     Route::get('install/database_import', 'InstallController@databaseImport');
+    Route::get('install/import', 'InstallController@import');
     Route::get('install/cron-jobs', 'InstallController@cronJobs');
     Route::post('install/cron-jobs', 'InstallController@cronJobs');
     Route::get('install/finishing', 'InstallController@finishing');
@@ -29,26 +30,27 @@ Route::group(['middleware' => ['installed']], function () {
 Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:api'], function () {
     // Route::group(['namespace' => 'Api', 'prefix' => 'api/v1'], function () {
     Route::get('', 'HomeController@index');
-    
+
     // List
     Route::resource('lists', 'MailListController');
-    
+
     // Campaign
     Route::resource('campaigns', 'CampaignController');
-    
+
     // Subscriber
     Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@update');
     Route::get('subscribers/email/{email}', 'SubscriberController@showByEmail');
+    Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@update');
     Route::get('lists/{list_uid}/subscribers', 'SubscriberController@index');
     Route::get('lists/{list_uid}/subscribers/{uid}', 'SubscriberController@show');
     Route::patch('lists/{list_uid}/subscribers/{uid}/subscribe', 'SubscriberController@subscribe');
     Route::patch('lists/{list_uid}/subscribers/{uid}/unsubscribe', 'SubscriberController@unsubscribe');
     Route::delete('lists/{list_uid}/subscribers/{uid}/delete', 'SubscriberController@delete');
     Route::post('lists/{list_uid}/subscribers/store', 'SubscriberController@store');
-    
+
     // Automation
     Route::post('automations/{uid}/api/call', 'AutomationController@apiCall');
-    
+
     // Sending server
     Route::resource('sending_servers', 'SendingServerController');
     
@@ -108,7 +110,7 @@ Route::group(['middleware' => ['not_logged_in']], function () {
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('/', 'HomeController@index');
     Route::get('/docs/api/v1', 'Controller@docsApiV1');
-    
+
     Route::get('/current_user_uid', 'UserController@showUid');
 
     // Update current user profile
@@ -290,20 +292,21 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('campaigns/restart', 'CampaignController@restart');
     Route::resource('campaigns', 'CampaignController');
     Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
-    Route::patch('campaigns/{uid}/update', 'CampaignController@update');    
+    Route::patch('campaigns/{uid}/update', 'CampaignController@update');
     
     Route::get('customers/login-back', 'CustomerController@loginBack');
+
     Route::get('users/login-back', 'UserController@loginBack');
-    
+
     // System job
     Route::post('systems/jobs/cancel', 'SystemJobController@cancel');
     Route::get('systems/jobs/{type}/listing', 'SystemJobController@listing');
     Route::get('systems/jobs/delete', 'SystemJobController@delete');
     Route::get('systems/jobs/{id}/download/log', 'SystemJobController@downloadLog');
     Route::get('systems/jobs/{id}/download/csv', 'SystemJobController@downloadCsv');
-    
+
     // Automation
-    Route::get('automations/{uid}/list-segment-form', 'AutomationController@listSegmentForm');    
+    Route::get('automations/{uid}/list-segment-form', 'AutomationController@listSegmentForm');
     Route::patch('automations/disable', 'AutomationController@disable');
     Route::patch('automations/enable', 'AutomationController@enable');
     Route::get('automations/{uid}/overview/emails/list', 'AutomationController@overviewCampaignsList');
@@ -321,7 +324,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('automations/sort', 'AutomationController@sort');
     Route::get('automations/listing/{page?}', 'AutomationController@listing');
     Route::resource('automations', 'AutomationController');
-    
+
     // Auto event
     Route::get('auto-events/{uid}/emails/{campaign_uid}/template', 'AutoEventController@template'); //
     Route::post('auto-events/{uid}/emails/{campaign_uid}/template', 'AutoEventController@template'); //
@@ -331,7 +334,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('auto-events/{uid}/emails/{campaign_uid}/template/iframe', 'AutoEventController@templateIframe'); //
     Route::get('auto-events/{uid}/emails/{campaign_uid}/template/build/{style}', 'AutoEventController@templateBuild'); //
     Route::get('auto-events/{uid}/emails/{campaign_uid}/template/rebuild', 'AutoEventController@templateRebuild'); //
-    
+
     Route::patch('auto-events/{uid}/move/up', 'AutoEventController@moveUp');
     Route::patch('auto-events/{uid}/move/down', 'AutoEventController@moveDown');
     Route::patch('auto-events/{uid}/disable', 'AutoEventController@disable');
@@ -426,7 +429,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::post('admin/sending_servers/create/{type}', 'SendingServerController@store');
     Route::get('admin/sending_servers/{id}/edit/{type}', 'SendingServerController@edit');
     Route::patch('admin/sending_servers/{id}/update/{type}', 'SendingServerController@update');
-    
+
     // Bounce handlers
     Route::get('admin/bounce_handlers/listing/{page?}', 'BounceHandlerController@listing');
     Route::get('admin/bounce_handlers/sort', 'BounceHandlerController@sort');
@@ -473,7 +476,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/settings/{tab?}', 'SettingController@index');
     Route::post('admin/settings', 'SettingController@index');
     Route::get('admin/update-urls', 'SettingController@updateUrls');
-    
+
 
     // Tracking log
     Route::get('admin/tracking_log', 'TrackingLogController@index');

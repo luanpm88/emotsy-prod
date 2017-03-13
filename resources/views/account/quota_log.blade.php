@@ -42,12 +42,12 @@
     <div class="col-md-12">
         <div class="content-group-sm">
             <div class="pull-right text-teal-800 text-semibold">
-                <span class="text-muted">{{ Auth::user()->customer->subscribersCount() }}/{{ Auth::user()->customer->maxSubscribers() }}</span>
+                <span class="text-muted">{{ Auth::user()->customer->readCache('SubscriberCount') }}/{{ Auth::user()->customer->maxSubscribers() }}</span>
                 &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySubscribersUsage() }}
             </div>
             <h5 class="text-semibold mb-5">{{ trans('messages.subscriber') }}</h5>
             <div class="progress progress-xxs">
-                <div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->subscribersUsage() }}%">
+                <div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->readCache('SubscriberUsage') }}%">
                 </div>
             </div>
         </div>

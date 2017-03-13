@@ -2,15 +2,15 @@
 
 @section('title', trans('messages.dashboard'))
 
-@section('page_script')    
+@section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/visualization/echarts/echarts.js') }}"></script>
-    
+
     <script type="text/javascript" src="{{ URL::asset('js/chart.js') }}"></script>
 @endsection
 
 @section('content')
     <h1>{{ trans('messages.dashboard') }}</h1>
-	
+
 	<h2 class="text-teal-800"><i class="icon-stats-bars4"></i> {{ trans("messages.used_quota") }}</h2>
 	<div class="row quota_box">
 		<div class="col-sm-6 col-md-6">
@@ -55,20 +55,20 @@
 		<div class="col-sm-6 col-md-6">
 			<div class="content-group-sm">
 				<div class="pull-right text-teal-800 text-semibold">
-					<span class="text-muted">{{ Auth::user()->customer->subscribersCount() }}/{{ Auth::user()->customer->maxSubscribers() }}</span>
+					<span class="text-muted">{{ Auth::user()->customer->readCache('SubscriberCount') }}/{{ Auth::user()->customer->maxSubscribers() }}</span>
 					&nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySubscribersUsage() }}
 				</div>
 				<h5 class="text-semibold mb-5">{{ trans('messages.subscriber') }}</h5>
 				<div class="progress progress-xxs">
-					<div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->subscribersUsage() }}%">
+					<div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->readCache('SubscriberUsage') }}%">
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	
+
 	<hr />
-	
+
     <h2 class="text-teal-800"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h2>
 		
 	@if (Auth::user()->customer->sentCampaigns()->count() == 0)
@@ -121,10 +121,9 @@
 		</div>
 		<div class="list-quickview-container" data-url="{{ action("MailListController@quickView") }}"></div>
 	@endif
-	
-	<br />
+
     <br />
-    
+
     <h2 class="text-teal-800"><i class="icon-podium"></i> {{ trans('messages.top_5') }}</h2>
     <div class="tabbable">
 		<ul class="nav nav-tabs nav-tabs-top">
@@ -260,7 +259,6 @@
 		</div>
 	</div>
 		
-	
 	<br />
     <br />
     <h2 class="text-teal-800"><i class="icon-history"></i> {{ trans('messages.activity_log') }}</h2>
@@ -283,7 +281,7 @@
 								<div class="timeline-icon">
 									<a href="#"><img src="{{ action('CustomerController@avatar', $log->customer->uid) }}" alt=""></a>
 								</div>
-	
+
 								<div class="panel panel-flat timeline-content">
 									<div class="panel-heading">
 										<h6 class="panel-title text-semibold">{{ $log->customer->displayName() }}</h6>
@@ -291,21 +289,19 @@
 											<span class="heading-text"><i class="icon-history position-left text-success"></i> {{ Tool::dateTime($log->created_at)->diffForHumans() }}</span>
 										</div>
 									</div>
-	
+
 									<div class="panel-body">
 										{!! $log->message() !!}
 									</div>
 								</div>
 							</div>
 							<!-- /sales stats -->
-						@endforeach								
+						@endforeach
 				</div>
 			</div>
 		</div>
 	@endif
-	
+
 	<br>
 	<br>
-  
-    
 @endsection
