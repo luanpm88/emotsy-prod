@@ -43,10 +43,10 @@
                 </div>
                 <div class="col-md-6">
                     <div class="content-group-sm">
-                        <div class="pull-right progress-right-info text-teal-800">{{ $campaign->clickedEmailsRate() }}%</div>
+                        <div class="pull-right progress-right-info text-teal-800">{{ $campaign->readCache('ClickedRate') }}%</div>
                         <h4 class="text-semibold mt-0">{{ trans('messages.click_rate') }}</h4>
                         <div class="progress progress-sm">
-                            <div class="progress-bar bg-teal-400" style="width: {{ $campaign->clickedEmailsRate() }}%">
+                            <div class="progress-bar bg-teal-400" style="width: {{ $campaign->readCache('ClickedRate') }}%">
                             </div>
                         </div>
                     </div>
