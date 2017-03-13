@@ -42,7 +42,7 @@
     <div class="col-md-12">
         <div class="content-group-sm">
             <div class="pull-right text-teal-800 text-semibold">
-                <span class="text-muted">{{ Auth::user()->subscribersCount() }}/{{ Auth::user()->maxSubscribers() }}</span>
+                <span class="text-muted">{{ Auth::user()->readCache('SubscriberCount') }}/{{ Auth::user()->maxSubscribers() }}</span>
                 &nbsp;&nbsp;&nbsp;{{ Auth::user()->displaySubscribersUsage() }}
             </div>
             <h5 class="text-semibold mb-5">{{ trans('messages.subscriber') }}</h5>
