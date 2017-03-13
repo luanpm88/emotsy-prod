@@ -379,7 +379,7 @@ class MailList extends Model
             return '#';
         }
 
-        return round(($this->unsubscribeCount() / $this->subscribers()->count()) * 100, 1);
+        return round(($this->unsubscribeCount() / $this->subscribers()->count()) * 100, 2);
     }
 
     /**
@@ -403,7 +403,7 @@ class MailList extends Model
             return '#';
         }
 
-        return round(($this->subscribeCount() / $this->subscribers()->count()) * 100, 1);
+        return round(($this->subscribeCount() / $this->subscribers()->count()) * 100, 2);
     }
 
     /**
@@ -566,7 +566,7 @@ class MailList extends Model
             return 0;
         }
 
-        return round(($this->openCount() / $this->trackingCount()) * 100, 0);
+        return round(($this->openCount() / $this->trackingCount()) * 100, 2);
     }
 
     /**
@@ -580,7 +580,7 @@ class MailList extends Model
             return 0;
         }
 
-        return round(($this->openUniqCount() / $this->trackingCount()) * 100, 0);
+        return round(($this->openUniqCount() / $this->trackingCount()) * 100, 2);
     }
 
     /**
@@ -595,7 +595,7 @@ class MailList extends Model
             return 0;
         }
 
-        return round(($this->clickedEmailsCount() / $open_count) * 100, 0);
+        return round(($this->clickedEmailsCount() / $open_count) * 100, 2);
     }
 
     /**
