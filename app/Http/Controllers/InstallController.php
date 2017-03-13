@@ -252,20 +252,26 @@ class InstallController extends Controller
         $this->validate($request, $rules);
 
         // Drop all old table
-        // 1. Get all table names
-        $table_names_query = "SELECT GROUP_CONCAT(table_name)
-                                    AS table_names FROM information_schema.tables
-                                    WHERE table_schema = '".$database['database_name']."'";
-        $result = $mysqli->query($table_names_query);
-        $result = $result->fetch_object();
-        $table_names = explode(",", $result->table_names);
-
-        // drop all tables
-        $mysqli->query("SET FOREIGN_KEY_CHECKS = 0;");
-        foreach ($table_names as $table_name) {
-            $mysqli->query("DROP TABLE $table_name;");
+        // 1. Get & Drop all table names, try 4 times
+        $table_names = [];
+        $try = 5;        
+        while ($try > 0) {
+            $table_names_query = "SELECT GROUP_CONCAT(table_name)
+                                        AS table_names FROM information_schema.tables
+                                        WHERE table_schema = '".$database['database_name']."'";
+            $result = $mysqli->query($table_names_query);
+            $result = $result->fetch_object();
+            $table_names = explode(",", $result->table_names);
+    
+            // drop all tables
+            $mysqli->query("SET FOREIGN_KEY_CHECKS = 0;");
+            foreach ($table_names as $table_name) {
+                $mysqli->query("DROP TABLE $table_name;");
+            }
+            $mysqli->query("SET FOREIGN_KEY_CHECKS = 1;");
+            
+            $try--;
         }
-        $mysqli->query("SET FOREIGN_KEY_CHECKS = 1;");
 
         // 2. Check if all table are dropped
         foreach ($table_names as $table_name) {
