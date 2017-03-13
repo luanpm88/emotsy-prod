@@ -1371,7 +1371,7 @@ class Campaign extends Model
             return 0;
         }
 
-        return round(($this->clickedEmailsCount() / $open_count) * 100, 0);
+        return round(($this->clickedEmailsCount() / $open_count) * 100, 2);
     }
 
     /**
