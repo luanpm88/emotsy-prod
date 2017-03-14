@@ -9,7 +9,7 @@
                                 <a href="{{ action('Admin\SettingController@mailer') }}">
 								<i class="icon-envelop"></i> {{ trans('messages.system_email') }}</a></li>
 						@endif
-						@if (Auth::user()->admin->getPermission("setting_sending") == 'yes')
+						@if (Auth::user()->admin->getPermission("setting_sending") == 'yes' && false)
 							<li class="{{ $action == "sending" ? "active" : "" }} text-semibold">
                                 <a href="{{ action('Admin\SettingController@sending') }}">
 								<i class="icon-paperplane"></i> {{ trans('messages.sending') }}</a></li>
