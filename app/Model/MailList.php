@@ -1262,9 +1262,9 @@ class MailList extends Model
     }
 
     /**
-     * Check if list can send through it's sending servers.
+     * Pick one sending server associated to the Mail List
      *
-     * @var boolean
+     * @return Object SendingServer
      */
     public function pickSendingServer()
     {
