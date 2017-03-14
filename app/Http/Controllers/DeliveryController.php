@@ -32,7 +32,7 @@ class DeliveryController extends Controller
         ]);
     }
 
-    
+
     /**
      * Campaign notification.
      *
@@ -65,7 +65,7 @@ class DeliveryController extends Controller
             return;
         }
     }
-    
+
     /**
      * Handle SendGrid Event Notification
      *
@@ -82,13 +82,11 @@ class DeliveryController extends Controller
                 case 'dropped':
                 case 'bounce':
                     $bounceLog = new BounceLog();
-                    
+
                     // runtime-message_id is set by SendGrid SMTP API
                     // in case of SendGrid Web API, use sg_message_id instead
                     if (array_key_exists("runtime_message_id", $message)) {
                         $bounceLog->runtime_message_id = $message["runtime_message_id"];
-                    } else {
-                        $bounceLog->runtime_message_id = StringHelper::extractSendGridMessageId($message["smtp-id"]);
                     }
 
                     // retrieve the associated tracking log in Acelle
@@ -102,7 +100,7 @@ class DeliveryController extends Controller
                     $bounceLog->raw = json_encode($message);
                     $bounceLog->save();
                     MailLog::info('Bounce recorded for message '.$bounceLog->runtime_message_id);
-                    
+
                     // add subscriber's email to blacklist
                     $subscriber = $bounceLog->findSubscriberByRuntimeMessageId();
                     if ($subscriber) {
@@ -119,22 +117,20 @@ class DeliveryController extends Controller
                     // in case of SendGrid Web API, use sg_message_id instead
                     if (array_key_exists("runtime_message_id", $message)) {
                         $feedbackLog->runtime_message_id = $message["runtime_message_id"];
-                    } else {
-                        $feedbackLog->runtime_message_id = StringHelper::extractSendGridMessageId($message["smtp-id"]);
                     }
-                    
+
                     // retrieve the associated tracking log in Acelle
                     $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
                     if ($trackingLog) {
                         $feedbackLog->message_id = $trackingLog->message_id;
                     }
-                    
+
                     // SendGrid only notifies in case of SPAM reported
                     $feedbackLog->feedback_type = 'spam';
                     $feedbackLog->raw_feedback_content = json_encode($message);
                     $feedbackLog->save();
                     MailLog::info('Feedback recorded for message '.$feedbackLog->runtime_message_id);
-                    
+
                     // update the mail list, subscriber to be marked as 'spam-reported'
                     $subscriber = $feedbackLog->findSubscriberByRuntimeMessageId();
                     if ($subscriber) {

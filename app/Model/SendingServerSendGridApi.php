@@ -31,7 +31,7 @@ use SendGrid\Content;
 class SendingServerSendGridApi extends SendingServerSendGrid
 {
     protected $table = 'sending_servers';
-    
+
     /**
      * Send the provided message.
      *
@@ -43,16 +43,21 @@ class SendingServerSendGridApi extends SendingServerSendGrid
     {
         try {
             $this->setupWebhooks();
-            $mail = $this->prepareEmail($params['campaign'], $params['subscriber'], $params['msgId']);
+
+            $msgId = $message->getHeaders()->get('X-Acelle-Message-Id')->getFieldBody();
+
+            $mail = $this->prepareEmail($message);
             $response = $this->client()->client->mail()->send()->post($mail);
             $statusCode = $response->statusCode();
-            
+
             # if response from SendGrid is 200, 202, 2xx
             if (preg_match("/^2../i", $statusCode)) {
                 MailLog::info('Sent!');
 
                 return array(
-                    'runtime_message_id' => StringHelper::cleanupMessageId($this->getMessageId($response->headers())),
+                    // @deprecated
+                    // 'runtime_message_id' => StringHelper::cleanupMessageId($this->getMessageId($response->headers())),
+                    'runtime_message_id' => $msgId,
                     'status' => self::DELIVERY_STATUS_SENT,
                 );
             } else {
