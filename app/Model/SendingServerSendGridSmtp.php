@@ -28,7 +28,7 @@ use Smtpapi\Header;
 class SendingServerSendGridSmtp extends SendingServerSendGrid
 {
     protected $table = 'sending_servers';
-    
+
     /**
      * Send the provided message.
      *
@@ -41,8 +41,10 @@ class SendingServerSendGridSmtp extends SendingServerSendGrid
         try {
             $this->setupWebhooks();
 
+            $msgId = $message->getHeaders()->get('X-Acelle-Message-Id')->getFieldBody();
+
             $header = new \Smtpapi\Header();
-            $header->setUniqueArgs(array('runtime_message_id' => $params['msgId']));
+            $header->setUniqueArgs(array('runtime_message_id' => $msgId));
             $message->getHeaders()->addTextHeader(HEADER::NAME, $header->jsonString());
 
             $transport = \Swift_SmtpTransport::newInstance($this->host, (int) $this->smtp_port, $this->smtp_protocol)
@@ -60,7 +62,7 @@ class SendingServerSendGridSmtp extends SendingServerSendGrid
                 MailLog::info('Sent!');
 
                 return array(
-                    'runtime_message_id' => $params['msgId'],
+                    'runtime_message_id' => $msgId,
                     'status' => self::DELIVERY_STATUS_SENT,
                 );
             } else {
