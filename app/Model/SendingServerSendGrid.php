@@ -114,27 +114,52 @@ class SendingServerSendGrid extends SendingServer
      *
      * @return mixed
      */
-    public function prepareEmail($campaign, $subscriber, $msgId) {
-        $customHeaders = $campaign->getCustomHeaders($subscriber, $this);
-        // @TODO use a configurable name for Acelle Mail instead
-        $customHeaders['X-Acelle-Message-Id'] = $msgId; // retain the existing message-id, overwrite the newly generated one
+    public function prepareEmail($message)
+    {
+        $fromEmail = array_keys($message->getFrom())[0];
+        $fromName = array_values($message->getFrom())[0];
+        $toEmail = array_keys($message->getTo())[0];
+        $toName = array_values($message->getTo())[0];
 
-        $from = new Email($campaign->from_name, $campaign->from_email);
-        $to = new Email(null, $subscriber->email);
-        $plain = new Content("text/plain", $campaign->getPlainContent($subscriber, $msgId));
-        $html = new Content("text/html", $campaign->getHtmlContent($subscriber, $msgId));
+        // Following RFC 1341, section 7.2, if either text/html or text/plain are to be sent in your email: text/plain needs to be first
+        // So, use array_shift instead of array_pop
+        $parts = array_map(function ($part) {
+            return new Content($part->getContentType(), $part->getBody());
+        }, $message->getChildren());
 
-        $mail = new Mail($from, $campaign->getSubject($subscriber, $msgId), $to, $plain);
-        if ($campaign->type == Campaign::TYPE_REGULAR) {
-            $mail->addContent($html);
+        $mail = new Mail(
+            new Email($fromName, $fromEmail),
+            $message->getSubject(),
+            new Email($toName, $toEmail),
+            array_shift($parts)
+        );
+
+        foreach($parts as $part) {
+            $mail->addContent($part);
         }
 
-        foreach($customHeaders as $key => $value) {
-            $mail->addHeader($key, $value);
+        $preserved = [
+            "Content-Transfer-Encoding",
+            "Content-Type",
+            "MIME-Version",
+            "Date",
+            "Message-ID",
+            "From",
+            "Subject",
+            "To",
+            "Reply-To",
+            "Subject",
+            "From"
+        ];
+
+        foreach($message->getHeaders()->getAll() as $header) {
+            if (!in_array($header->getFieldName(), $preserved)) {
+                $mail->addHeader($header->getFieldName(), $header->getFieldBody());
+            }
         }
 
         // to track bounce/feedback notification
-        $mail->addCustomArg("runtime_message_id", $msgId);
+        $mail->addCustomArg("runtime_message_id", $message->getHeaders()->get('X-Acelle-Message-Id')->getFieldBody());
 
         return $mail;
     }

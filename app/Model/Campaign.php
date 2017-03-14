@@ -812,7 +812,7 @@ class Campaign extends Model
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
         $message->setEncoder(\Swift_Encoding::get8bitEncoding());
-        $message->setBody($this->getPlainContent($subscriber, $msgId), 'text/plain');
+        $message->addPart($this->getPlainContent($subscriber, $msgId), 'text/plain');
         if ($this->type == self::TYPE_REGULAR) {
             $message->addPart($this->getHtmlContent($subscriber, $msgId), 'text/html');
         }
