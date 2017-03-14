@@ -28,7 +28,7 @@ class BounceLog extends Model
 {
     const HARD = 'hard';
     const SOFT = 'soft';
-    
+
     /**
      * Associations.
      *
@@ -52,7 +52,7 @@ class BounceLog extends Model
     /**
      * Find corresponding subscriber by 'runtime_message_id'
      *
-     * @return mix
+     * @return mixed
      */
     public function findSubscriberByRuntimeMessageId()
     {

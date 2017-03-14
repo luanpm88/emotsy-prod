@@ -43,6 +43,9 @@ class SendingServerSendGridApi extends SendingServerSendGrid
     {
         try {
             $this->setupWebhooks();
+
+            $msgId = $message->getHeaders()->get('X-Acelle-Message-Id')->getFieldBody();
+
             $mail = $this->prepareEmail($message);
             $response = $this->client()->client->mail()->send()->post($mail);
             $statusCode = $response->statusCode();
@@ -52,7 +55,9 @@ class SendingServerSendGridApi extends SendingServerSendGrid
                 MailLog::info('Sent!');
 
                 return array(
-                    'runtime_message_id' => StringHelper::cleanupMessageId($this->getMessageId($response->headers())),
+                    // @deprecated
+                    // 'runtime_message_id' => StringHelper::cleanupMessageId($this->getMessageId($response->headers())),
+                    'runtime_message_id' => $msgId,
                     'status' => self::DELIVERY_STATUS_SENT,
                 );
             } else {
