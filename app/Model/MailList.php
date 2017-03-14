@@ -1256,7 +1256,9 @@ class MailList extends Model
           ->setTo(array($subscriber->email, $subscriber->email => trans('messages.to_email_name')))
           ->setBody($body);
 
-        $this->send($message);
+        $this->send($message, [
+            'subscriber' => $subscriber
+        ]);
     }
 
     /**
