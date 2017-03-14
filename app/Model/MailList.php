@@ -27,6 +27,9 @@ use Carbon\Carbon;
 use DB;
 use Illuminate\Support\Facades\Validator;
 use Acelle\Library\Log as MailLog;
+use Acelle\Library\RouletteWheel;
+use Acelle\Library\StringHelper;
+use Acelle\Model\SendingServer;
 
 class MailList extends Model
 {
@@ -825,18 +828,15 @@ class MailList extends Model
     }
 
     /**
-     * Send Mail List related email
+     * Send list related email
      *
      * @return void
      */
     function send($message, $params = [])
     {
-        // @todo code goes here
-        // \Swift_Message::newInstance
-        var_dump($message);
-
-        // Sending server has [['sending_server_id' => 1, 'fitness' => 100], ...]
-        var_dump($this->sendingServersHash());
+        $server = $this->pickSendingServer();
+        $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email)));
+        return $server->send($message, $params);
     }
 
     /**
@@ -1266,7 +1266,24 @@ class MailList extends Model
      *
      * @var boolean
      */
-    public function sendingServersHash()
+    public function pickSendingServer()
+    {
+        $selection = [];
+        foreach($this->getSendingServers() as $server) {
+            list($key, $fitness) = $server;
+            $selection[(int) $key] = $fitness;
+        }
+
+        $selected = RouletteWheel::generate($selection);
+        return SendingServer::mapServerType(SendingServer::find($selected));
+    }
+
+    /**
+     * Check if list can send through it's sending servers.
+     *
+     * @var boolean
+     */
+    public function getSendingServers()
     {
         $result = [];
 
@@ -1275,18 +1292,12 @@ class MailList extends Model
             if ($this->all_sending_servers) {
                 if ($this->customer->sendingServers()->count()) {
                     $result = $this->customer->sendingServers()->get()->map(function ($server) {
-                        return [
-                            'sending_server_id' => $server->id,
-                            'fitness' => '100',
-                        ];
+                        return [ $server->id, '100' ];
                     });
                 }
             } elseif ($this->mailListsSendingServers()->count() ) {
                 $result = $this->mailListsSendingServers()->get()->map(function ($server) {
-                    return [
-                        'sending_server_id' => $server->sending_server_id,
-                        'fitness' => $server->fitness,
-                    ];
+                    return [ $server->sending_server_id, $server->fitness ];
                 });
             }
         // If customer dont have permission creating sending servers
@@ -1298,18 +1309,12 @@ class MailList extends Model
                 if ($subscription->getOption("all_sending_servers") == 'yes') {
                     if (\Acelle\Model\SendingServer::getAllActive()->count()) {
                         $result = \Acelle\Model\SendingServer::getAllActive()->get()->map(function ($server) {
-                            return [
-                                'sending_server_id' => $server->id,
-                                'fitness' => '100',
-                            ];
+                            return [ $server->id, '100' ];
                         });
                     }
                 } elseif ($subscription->subscriptionsSendingServers()->count()) {
                     $result = $subscription->subscriptionsSendingServers()->get()->map(function ($server) {
-                        return [
-                            'sending_server_id' => $server->sending_server_id,
-                            'fitness' => $server->fitness,
-                        ];
+                        return [ $server->sending_server_id, $server->fitness ];
                     });
                 }
             }
