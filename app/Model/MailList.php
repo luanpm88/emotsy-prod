@@ -1150,6 +1150,13 @@ class MailList extends Model
     {
         return $this->hasMany('Acelle\Model\MailListsSendingServer');
     }
+    
+    public function activeMailListsSendingServers()
+    {
+        return $this->mailListsSendingServers()
+			->join('sending_servers', 'sending_servers.id', '=', 'mail_lists_sending_servers.sending_server_id')
+			->where('sending_servers.status', '=', SendingServer::STATUS_ACTIVE);
+    }
 
     /**
      * Update sending servers.
@@ -1254,7 +1261,7 @@ class MailList extends Model
         $message = \Swift_Message::newInstance($title)
           ->setFrom(array($subscriber->mailList->from_email => $subscriber->mailList->from_name))
           ->setTo(array($subscriber->email, $subscriber->email => trans('messages.to_email_name')))
-          ->setBody($body);
+          ->addPart($body, 'text/html');
 
         $this->send($message, [
             'subscriber' => $subscriber
@@ -1294,13 +1301,13 @@ class MailList extends Model
         // Check the customer has permissions using sending servers and has his own sending servers
         if ($this->customer->getOption("create_sending_servers") == 'yes') {
             if ($this->all_sending_servers) {
-                if ($this->customer->sendingServers()->count()) {
-                    $result = $this->customer->sendingServers()->get()->map(function ($server) {
+                if ($this->customer->activeSendingServers()->count()) {
+                    $result = $this->customer->activeSendingServers()->get()->map(function ($server) {
                         return [ $server->id, '100' ];
                     });
                 }
-            } elseif ($this->mailListsSendingServers()->count() ) {
-                $result = $this->mailListsSendingServers()->get()->map(function ($server) {
+            } elseif ($this->activeMailListsSendingServers()->count() ) {
+                $result = $this->activeMailListsSendingServers()->get()->map(function ($server) {
                     return [ $server->sending_server_id, $server->fitness ];
                 });
             }
@@ -1311,13 +1318,13 @@ class MailList extends Model
             // Check if has sending servers for current subscription
             if (is_object($subscription)) {
                 if ($subscription->getOption("all_sending_servers") == 'yes') {
-                    if (\Acelle\Model\SendingServer::getAllActive()->count()) {
-                        $result = \Acelle\Model\SendingServer::getAllActive()->get()->map(function ($server) {
+                    if (\Acelle\Model\SendingServer::getAllAdminActive()->count()) {
+                        $result = \Acelle\Model\SendingServer::getAllAdminActive()->get()->map(function ($server) {
                             return [ $server->id, '100' ];
                         });
                     }
-                } elseif ($subscription->subscriptionsSendingServers()->count()) {
-                    $result = $subscription->subscriptionsSendingServers()->get()->map(function ($server) {
+                } elseif ($subscription->activeSubscriptionsSendingServers()->count()) {
+                    $result = $subscription->activeSubscriptionsSendingServers()->get()->map(function ($server) {
                         return [ $server->sending_server_id, $server->fitness ];
                     });
                 }

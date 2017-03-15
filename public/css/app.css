@@ -1979,3 +1979,6 @@ ul.plans-intro li span {
         margin-bottom: 10px;
     }
 }
+.sending-servers h5.inactive {
+    color: #D84315 !important;
+}

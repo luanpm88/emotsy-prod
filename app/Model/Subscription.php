@@ -94,6 +94,13 @@ class Subscription extends Model
     {
         return $this->hasMany('Acelle\Model\Payment');
     }
+	
+	public function activeSubscriptionsSendingServers()
+    {
+        return $this->subscriptionsSendingServers()
+			->join('sending_servers', 'sending_servers.id', '=', 'subscriptions_sending_servers.sending_server_id')
+			->where('sending_servers.status', '=', SendingServer::STATUS_ACTIVE);
+    }
     
     /**
      * Bootstrap any application services.

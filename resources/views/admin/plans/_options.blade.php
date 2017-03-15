@@ -332,9 +332,17 @@
                         
                     </div>
                 </div>
+                @if(!Acelle\Model\SendingServer::getAllAdminActive()->count())
+                    <div class="empty-list">
+                        <i class="icon-server"></i>
+                        <span class="line-1">
+                            {{ trans('messages.sending_server_no_active') }}
+                        </span>
+                    </div>
+                @endif
                 <br />
                 <div class="row sending-servers">
-                    @foreach (Acelle\Model\SendingServer::getAll()->orderBy("name")->get() as $server)
+                    @foreach (Acelle\Model\SendingServer::getAllAdminActive()->orderBy("name")->get() as $server)
                         <div class="col-md-6">
                             <h5 class="mt-0 mb-5 text-semibold text-teal-600">{{ $server->name }}</h5>
                             <div class="row">											

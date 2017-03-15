@@ -695,6 +695,16 @@ class SendingServer extends Model
     }
     
     /**
+     * Get all active system items.
+     *
+     * @return collect
+     */
+    public static function getAllAdminActive()
+    {
+        return self::getAllActive()->whereNotNull('admin_id');
+    }
+    
+    /**
      * Add customer action log.
      */
     public function log($name, $customer, $add_datas = [])

@@ -1643,4 +1643,6 @@ return [
     'install.license.help' => 'This is optional. You can update it later in setting page.',
     'is_not_extended_license' => 'Extended license required for some features. Please consider <br /> purchasing one.
         If you have already purchased an<br /> extended license, please enter it <a href=":link">here</a>',
+    'sending_server_no_active' => 'You have no active sending servers',
+    'list_has_no_sending_server' => 'Have no sending server',
 ];

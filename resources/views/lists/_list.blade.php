@@ -25,6 +25,9 @@
 												<a class="kq_search" href="{{ action('MailListController@overview', ['uid' => $item->uid]) }}">{{ $item->name }}</a>
 											</h5>
 											<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
+											@if (empty($item->getSendingServers()))
+												<div class="text-danger"><i class="icon-alert"></i> {{ trans('messages.list_has_no_sending_server') }}</div>
+											@endif
 										</td>
 										<td class="stat-fix-size-sm">
 											<div class="single-stat-box pull-left">

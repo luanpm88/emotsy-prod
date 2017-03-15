@@ -165,12 +165,22 @@
 									
 								</div>
 							</div>
-								
+							@if(!\Auth::user()->customer->activeSendingServers()->count())
+								<div class="empty-list">
+									<i class="icon-server"></i>
+									<span class="line-1">
+										{{ trans('messages.sending_server_no_active') }}
+									</span>
+								</div>
+							@endif
 							<br />
-							<div class="row sending-servers">
-								@foreach (\Auth::user()->customer->sendingServers()->orderBy("name")->get() as $server)
+							<div class="row sending-servers">								
+								@foreach (\Auth::user()->customer->activeSendingServers()->orderBy("name")->get() as $server)
 									<div class="col-md-6">
-										<h5 class="mt-0 mb-5 text-semibold text-teal-600">{{ $server->name }}</h5>
+										<h5 class="mt-0 mb-5 text-semibold text-teal-600 {{ $server->status != \Acelle\Model\SendingServer::STATUS_ACTIVE ? 'inactive' : '' }}">
+											{{ $server->name }}
+											<span class="label label-flat bg-{{ $server->status }}">{{ trans('messages.sending_server_status_' . $server->status) }}</span>
+										</h5>
 										<div class="row">											
 											<div class="col-md-2">
 												<div class="form-group">
