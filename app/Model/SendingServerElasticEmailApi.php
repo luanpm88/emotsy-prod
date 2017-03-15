@@ -28,7 +28,7 @@ use Acelle\Library\StringHelper;
 class SendingServerElasticEmailApi extends SendingServerElasticEmail
 {
     protected $table = 'sending_servers';
-    
+
     /**
      * Send the provided message.
      *
@@ -42,7 +42,7 @@ class SendingServerElasticEmailApi extends SendingServerElasticEmail
             $this->setupWebhooks();
             $this->enableCustomHeaders();
 
-            $result = $this->sendElasticEmailV2($params['campaign'], $params['subscriber'], $params['msgId']);
+            $result = $this->sendElasticEmailV2($message);
 
             MailLog::info('Sent!');
 
