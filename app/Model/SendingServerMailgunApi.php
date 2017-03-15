@@ -28,7 +28,7 @@ use Acelle\Library\StringHelper;
 class SendingServerMailgunApi extends SendingServerMailgun
 {
     protected $table = 'sending_servers';
-    
+
     /**
      * Send the provided message.
      *
@@ -38,12 +38,15 @@ class SendingServerMailgunApi extends SendingServerMailgun
     public function send($message, $params = array())
     {
         try {
-            $this->setupWebhooks($this->domain);
+            $this->setupWebhooks();
+
+            $fromEmail = array_keys($message->getFrom())[0];
+            $toEmail = array_keys($message->getTo())[0];
+
             $result = $this->client()->sendMessage(
                 $this->domain, array(
-                    'from' => $params['from_email'],
-                    'to' => $params['to'],
-                    //'to' => 'em3ng0384304893@gmail.com'
+                    'from' => $fromEmail,
+                    'to' => $toEmail,
                 ),
                 $message->toString()
             );
