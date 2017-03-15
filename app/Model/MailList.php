@@ -1275,7 +1275,7 @@ class MailList extends Model
         }
 
         if (empty($selection)) {
-            throw new \Exception("No sending server available");
+            throw new \Exception(sprintf("No sending server available for Mail List ID %s", $this->id));
         }
 
         $selected = RouletteWheel::generate($selection);
