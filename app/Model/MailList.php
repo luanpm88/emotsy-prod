@@ -1274,6 +1274,10 @@ class MailList extends Model
             $selection[(int) $key] = $fitness;
         }
 
+        if (empty($selection)) {
+            throw new \Exception("No sending server available");
+        }
+
         $selected = RouletteWheel::generate($selection);
         return SendingServer::mapServerType(SendingServer::find($selected));
     }
