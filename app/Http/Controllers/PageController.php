@@ -162,7 +162,11 @@ class PageController extends Controller
             
             if($list->subscribe_confirmation) {
                 // SEND subscription confirmation email
-                $list->sendSubscriptionConfirmationEmail($subscriber);
+                try {
+                    $list->sendSubscriptionConfirmationEmail($subscriber);
+                } catch (\Exception $ex) {
+                    return view('somethingWentWrong', ['message' => $ex->getMessage()]);
+                }
                 
                 return redirect()->action('PageController@signUpThankyouPage', $list->uid);
             } else {
@@ -172,7 +176,11 @@ class PageController extends Controller
                 // Send welcome email
                 if($list->send_welcome_email) {
                     // SEND subscription confirmation email
-                    $list->sendSubscriptionWelcomeEmail($subscriber);
+                    try {
+                        $list->sendSubscriptionWelcomeEmail($subscriber);
+                    } catch (\Exception $ex) {
+                        return view('somethingWentWrong', ['message' => $ex->getMessage()]);
+                    }
                 }
                 
                 // find display thank you page
@@ -234,7 +242,11 @@ class PageController extends Controller
             // Send welcome email
             if($list->send_welcome_email) {
                 // SEND subscription confirmation email
-                $list->sendSubscriptionWelcomeEmail($subscriber);
+                try {
+                    $list->sendSubscriptionWelcomeEmail($subscriber);
+                } catch (\Exception $ex) {
+                    return view('somethingWentWrong', ['message' => $ex->getMessage()]);
+                }  
             }
         }
 
@@ -272,7 +284,11 @@ class PageController extends Controller
                 // Send goodbye email
                 if($list->unsubscribe_notification) {
                     // SEND subscription confirmation email
-                    $list->sendUnsubscriptionNotificationEmail($subscriber);
+                    try {
+                        $list->sendUnsubscriptionNotificationEmail($subscriber);
+                    } catch (\Exception $ex) {
+                        return view('somethingWentWrong', ['message' => $ex->getMessage()]);
+                    }                      
                 }                
             }
             return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'uid' => $subscriber->uid]);
@@ -411,7 +427,11 @@ class PageController extends Controller
         $page->renderContent(null, $subscriber);
 
         // SEND EMAIL
-        $list->sendProfileUpdateEmail($subscriber);
+        try {
+            $list->sendProfileUpdateEmail($subscriber);
+        } catch (\Exception $ex) {
+            return view('somethingWentWrong', ['message' => $ex->getMessage()]);
+        }        
 
         return view('pages.default', [
             'list' => $list,

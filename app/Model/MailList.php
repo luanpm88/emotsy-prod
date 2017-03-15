@@ -1262,10 +1262,16 @@ class MailList extends Model
           ->setFrom(array($subscriber->mailList->from_email => $subscriber->mailList->from_name))
           ->setTo(array($subscriber->email, $subscriber->email => trans('messages.to_email_name')))
           ->addPart($body, 'text/html');
-
-        $this->send($message, [
-            'subscriber' => $subscriber
-        ]);
+        
+        try {
+            $this->send($message, [
+                'subscriber' => $subscriber
+            ]);
+        } catch (\Exception $ex) {
+            $error = $ex->getMessage();
+            MailLog::error( $error );
+            throw new \Exception( $error );
+        }
     }
 
     /**
