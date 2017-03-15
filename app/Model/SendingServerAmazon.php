@@ -55,7 +55,7 @@ class SendingServerAmazon extends SendingServer
 
         return self::$snsClient;
     }
-    
+
     /**
      * Initiate a AWS SES session and return the session object (snsClient).
      *
@@ -76,13 +76,13 @@ class SendingServerAmazon extends SendingServer
 
         return self::$sesClient;
     }
-    
+
     /**
      * Setup AWS SNS for bounce and feedback loop.
      *
      * @return mixed
      */
-    public function setupSns($params)
+    public function setupSns($message)
     {
         if (self::$isSnsSetup) {
             return true;
@@ -90,7 +90,9 @@ class SendingServerAmazon extends SendingServer
 
         MailLog::info('Set up Amazon SNS for email delivery tracking');
 
-        $awsIdentity = $params['from_email'];
+        $fromEmail = array_keys($message->getFrom())[0];
+
+        $awsIdentity = $fromEmail;
         $verifyByDomain = false;
         try {
             $this->sesClient()->setIdentityFeedbackForwardingEnabled(array(
@@ -99,12 +101,12 @@ class SendingServerAmazon extends SendingServer
             ));
         } catch (\Exception $e) {
             $verifyByDomain = true;
-            MailLog::warning("From Email address {$params['from_email']} not verified by Amazon SES, using domain instead");
+            MailLog::warning("From Email address {$fromEmail} not verified by Amazon SES, using domain instead");
         }
 
         if ($verifyByDomain) {
             // Use domain name as Aws Identity
-            $awsIdentity = substr(strrchr($params['from_email'], '@'), 1); // extract domain from email
+            $awsIdentity = substr(strrchr($fromEmail, '@'), 1); // extract domain from email
             $this->sesClient()->setIdentityFeedbackForwardingEnabled(array(
                 'Identity' => $awsIdentity, // extract domain from email
                 'ForwardingEnabled' => true,
