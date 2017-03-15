@@ -131,11 +131,20 @@ class QuotaTrackerFile
 
         $this->getSharedLock(function() use (&$result, $timePoint) {
             $result = true;
+
+            # check quota
+            # the trick is that 2nd parameter is null, indicating a quota check
+            if (self::UNLIMITED != $this->quota['max'] && !is_null($this->quota) && $this->getUsage($timePoint) >= $this->quota['max']) {
+                $result = false;
+                return;
+            }
+
             foreach ($this->limits as $interval => $max) {
                 if (self::UNLIMITED == $max) {
                     continue;
                 }
 
+                # check limit
                 # there are 2 types of usage
                 # 1. usage within the last n hour/day/month
                 # 2. usage since the beginning (of the quota period)

@@ -31,7 +31,22 @@ class QuotaTrackerFileTest extends TestCase
         });
 
         $this->assertTrue($result);
-        return;
+
+        /**
+         * Suppose the quota setting is: {6 emails, every 5 seconds}
+         * Then we test with: send an email every 1 second and and expect it will NOT to exceed the quota
+         */
+        $tracker = new QuotaTrackerFile($file, ['5 seconds' => 6], ['start' => (new Carbon('first day of March 2016'))->timestamp, 'max' => 9, 'interval' => '1 month']);
+        $tracker->getExclusiveLock(function($tracker) {
+            $tracker->reset([]);
+        });
+
+        $result = $this->nTimes(9, $tracker, function($tracker) {
+            return $tracker->add(Carbon::now());
+        });
+
+        $this->assertTrue($result);
+        $this->assertFalse($tracker->add(Carbon::now()));
 
         /**
          * Suppose the quota setting is: {5 emails, every 4 seconds}
