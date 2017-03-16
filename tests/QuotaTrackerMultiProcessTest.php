@@ -18,7 +18,7 @@ class QuotaTrackerMultiProcessTest extends TestCase
     public function testRaceCondition()
     {
         $file = '/tmp/quotatest';
-        $tracker = new QuotaTrackerFile($file, '1 hour', 100000);
+        $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
         $tracker->getExclusiveLock(function(&$tracker) {
             // the getSeries() here is to ensure that lock is not set again if the current process already got it
             // for the sake of code coverage
@@ -37,7 +37,7 @@ class QuotaTrackerMultiProcessTest extends TestCase
             if (!$pid) {
                 sleep(1);
 
-                $tracker = new QuotaTrackerFile($file, '1 hour', 100000);
+                $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
 
                 $result = $this->nTimes(300, $tracker, function($tracker) {
                     return $tracker->add(Carbon::now());
@@ -67,7 +67,7 @@ class QuotaTrackerMultiProcessTest extends TestCase
     public function testResetWithTransactionSafe()
     {
         $file = '/tmp/quotatest';
-        $tracker = new QuotaTrackerFile($file, '1 hour', 100000);
+        $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
         $tracker->getExclusiveLock(function(&$tracker) {
             $tracker->reset();
         });
@@ -82,14 +82,14 @@ class QuotaTrackerMultiProcessTest extends TestCase
             // for child process only
             if (!$pid) {
                 if ($i > 2) {
-                    $tracker = new QuotaTrackerFile($file, '1 hour', 100000);
+                    $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
                     $result = $this->nTimes(500, $tracker, function($tracker) {
                         return $tracker->add(Carbon::now());
                     });
 
                     exit($i + 1);
                 } else {
-                    $tracker = new QuotaTrackerFile($file, '1 hour', 100000);
+                    $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
                     $tracker->getExclusiveLock(function(&$tracker) {
                         $s = $tracker->getSeries();
                         sleep(1);
@@ -121,7 +121,7 @@ class QuotaTrackerMultiProcessTest extends TestCase
     public function testResetWithoutTransactionSafe()
     {
         $file = '/tmp/quotatest';
-        $tracker = new QuotaTrackerFile($file, '1 hour', 100000);
+        $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
         $tracker->getExclusiveLock(function(&$tracker) {
             $tracker->reset();
         });
@@ -136,14 +136,14 @@ class QuotaTrackerMultiProcessTest extends TestCase
             // for child process only
             if (!$pid) {
                 if ($i > 2) {
-                    $tracker = new QuotaTrackerFile($file, '1 hour', 100000);
+                    $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
                     $result = $this->nTimes(500, $tracker, function($tracker) {
                         return $tracker->add(Carbon::now());
                     });
 
                     exit($i + 1);
                 } else {
-                    $tracker = new QuotaTrackerFile($file, '1 hour', 100000);
+                    $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
                     $s = $tracker->getSeries();  // not transaction safe: <--- other processes may jump into this point
                     sleep(1);                    // not transaction safe: <--- other processes may jump into this point
                     $tracker->getExclusiveLock(function(&$tracker) use ($s) {

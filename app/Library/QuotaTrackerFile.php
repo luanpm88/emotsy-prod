@@ -134,9 +134,11 @@ class QuotaTrackerFile
 
             # check quota
             # the trick is that 2nd parameter is null, indicating a quota check
-            if (self::UNLIMITED != $this->quota['max'] && !is_null($this->quota) && $this->getUsage($timePoint) >= $this->quota['max']) {
-                $result = false;
-                return;
+            if (!is_null($this->quota)) {
+                if (self::UNLIMITED != $this->quota['max'] && !is_null($this->quota) && $this->getUsage($timePoint) >= $this->quota['max']) {
+                    $result = false;
+                    return;
+                }
             }
 
             foreach ($this->limits as $interval => $max) {
@@ -171,8 +173,16 @@ class QuotaTrackerFile
             return [];
         }
 
+        # trick here:
+        # - $interval empty means get the series from the quota start date
+        # - $interval not empty means get the series from the interval
+        # - If both $interval and $quota empty --> for backward compatibility --> get quota from the first interval of $this->limit
         if (is_null($interval)) {
-            $cutOff = $this->quota['start'];
+            if (is_null($this->quota)) {
+                $cutOff = $timePoint->copy()->sub(\DateInterval::createFromDateString(array_keys($this->limits)[0]))->timestamp;
+            } else {
+                $cutOff = $this->quota['start'];
+            }
         } else {
             $cutOff = $timePoint->copy()->sub(\DateInterval::createFromDateString($interval))->timestamp;
         }

@@ -35,7 +35,7 @@ class SendingServer extends Model
 
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
-    
+
     protected $quotaTracker;
 
     /**
@@ -49,7 +49,7 @@ class SendingServer extends Model
         'bounce_handler_id', 'feedback_loop_handler_id', 'sendmail_path', 'domain', 'api_key',
         'user_id'
     ];
-    
+
     // Supported server types
     public static $serverMapping = array(
         'amazon-api' => 'SendingServerAmazonApi',
@@ -64,7 +64,7 @@ class SendingServer extends Model
         'elasticemail-api' => 'SendingServerElasticEmailApi',
         'elasticemail-smtp' => 'SendingServerElasticEmailSmtp',
     );
-    
+
     // Server pools
     public static $serverPools = array();
 
@@ -80,7 +80,7 @@ class SendingServer extends Model
         }
         self::$serverPools = array();
     }
-    
+
     /**
      * Tracking logs.
      *
@@ -125,7 +125,7 @@ class SendingServer extends Model
             if (empty($serverSelection)) {
                 throw new \Exception('No sending servers available or sending servers exceed sending limit');
             }
-            
+
             $id = (int) RouletteWheel::generate($serverSelection);
             if (empty(self::$serverPools[$id])) {
                 MailLog::info('Initialize delivery server `'.$server->name.'` (ID: '.$id.')');
@@ -134,7 +134,7 @@ class SendingServer extends Model
             } else {
                 MailLog::info('Pick up delivery server `'.self::$serverPools[$id]->name.'` (ID: '.$id.')');
             }
-            
+
             if (self::$serverPools[$id]->overQuota()) {
                 MailLog::warning(sprintf("Sending server `%s` exceeds sending quota", self::$serverPools[$id]->name));
                 self::$serverPools[$id]->saveQuotaUsageInfo();
@@ -142,11 +142,11 @@ class SendingServer extends Model
                 unset($serverSelection[$id]);
                 continue;
             }
-            
+
             return self::$serverPools[$id];
         }
     }
-    
+
     /**
      * Map a server to its class type and initiate an instance.
      *
@@ -172,14 +172,14 @@ class SendingServer extends Model
                 ['email' => $this->bounceHandler->username],
                 ['email' => 'required|email']
             );
-    
+
             if ($validator->passes()) {
                 // @todo disable VERP as it is not supported by all mailbox
                 // return str_replace('@', '+'.str_replace('@', '=', $recipient).'@', $this->bounceHandler->username);
                 return $this->bounceHandler->username;
             }
         }
-        
+
         return null;
     }
 
@@ -511,7 +511,7 @@ class SendingServer extends Model
             ['value' => 'eu-west-1', 'text' => 'EU (Ireland)'],
         ];
     }
-    
+
     /**
      * Disable sending server
      *
@@ -522,7 +522,7 @@ class SendingServer extends Model
         $this->status = "inactive";
         $this->save();
     }
-    
+
     /**
      * Enable sending server
      *
@@ -533,7 +533,7 @@ class SendingServer extends Model
         $this->status = "active";
         $this->save();
     }
-    
+
     /**
      * Get sending server's QuotaTracker
      *
@@ -546,18 +546,18 @@ class SendingServer extends Model
 
         return $this->quotaTracker;
     }
-    
+
     /**
      * Initialize the quota tracker
      *
      * @return void
      */
     public function initQuotaTracker() {
-        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $this->getQuotaIntervalString(), $this->getSendingQuota());
+        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), [$this->getQuotaIntervalString() => $this->getSendingQuota()]);
         // @note: in case of multi-process, the following command must be issued manually
         //     $this->renewQuotaTracker();
     }
-    
+
     /**
      * Get sending quota lock file
      *
@@ -566,7 +566,7 @@ class SendingServer extends Model
     public function getSendingQuotaLockFile() {
         return storage_path("app/server/quota/{$this->uid}");
     }
-    
+
     /**
      * Get quota starting time
      *
@@ -575,7 +575,7 @@ class SendingServer extends Model
     public function getQuotaIntervalString() {
         return "{$this->quota_base} {$this->quota_unit}";
     }
-    
+
     /**
      * Initialize the quota tracker
      *
@@ -584,14 +584,14 @@ class SendingServer extends Model
     public function renewQuotaTracker() {
         $this->getQuotaTracker()->getExclusiveLock(function() {
             $start = $this->getQuotaStartingTime();
-        
+
             // recent tracking logs
             // @todo: potential issue here, application fails in case $start is NULL
             $recent = $this->trackingLogs()->where('created_at', '>=', $start);
-            
+
             // existing quota usage
             $stored = null;
-    
+
             // load the tracker from DB (if exists)
             // then merge with the current tracking log data
             if ($this->quota) {
@@ -602,7 +602,7 @@ class SendingServer extends Model
                     MailLog::warning('Cannot retrieve sending server quota');
                 }
             }
-    
+
             // load the tracker from DB
             if (!is_null($stored) && !empty($stored)) {
                 // retrieve the stored quota usage and merge it with actual (newer) usage
@@ -610,18 +610,18 @@ class SendingServer extends Model
                 $series = $recent->get()->map(function($trackingLog) {
                     return $trackingLog->created_at->timestamp;
                 })->toArray();
-                
+
                 $series = array_merge($stored, $series);
             } else {
                 $series = $recent->get()->map(function($trackingLog) {
                     return $trackingLog->created_at->timestamp;
                 })->toArray();
             }
-            
+
             $this->getQuotaTracker()->reset($series);
         });
     }
-    
+
     /**
      * Get quota starting time
      *
@@ -630,7 +630,7 @@ class SendingServer extends Model
     public function getQuotaStartingTime() {
         return "{$this->getQuotaIntervalString()} ago";
     }
-    
+
     /**
      * Store the current quota usage info to DB
      *
@@ -640,7 +640,7 @@ class SendingServer extends Model
         $this->quota = serialize($this->getQuotaTracker()->getSeries());
         $this->save();
     }
-    
+
     /**
      * Increment quota usage
      *
@@ -650,7 +650,7 @@ class SendingServer extends Model
     {
         return $this->getQuotaTracker($timePoint)->add();
     }
-    
+
     /**
      * Check if user has used up all quota allocated.
      *
@@ -660,7 +660,7 @@ class SendingServer extends Model
     {
         return !$this->getQuotaTracker()->check();
     }
-    
+
     /**
      * Check if sending server supports custom ReturnPath header (used for bounced/feedback handling)
      *
