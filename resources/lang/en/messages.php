@@ -1546,7 +1546,7 @@ return [
     'payment_method_type' => 'Payment method type',
     'cash' => 'Cash',
     'paypal' => 'PayPal',
-    'payment_method_type_cash_button' => '<i class="icon-cash3"></i> Pay by Cash',
+    'payment_method_type_cash_button' => '<i class="icon-cash3"></i> Pay in Cash',
     'payment_method_type_paypal_button' => '<i class="icon-paypal"></i> Pay with PayPal',
     'subscription.cash.created' => 'Subscription was successfully created. Please wait for the payment confirmation',
     'paypal_merchant_id' => 'PayPal merchant ID',
