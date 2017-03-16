@@ -84,6 +84,8 @@ class StringHelper
      */
     public static function generateMessageId($domain)
     {
+        // @note: be careful when changing the message format, it may impact some other parts of the application
+        // For example, see the DeliveryHandler::getMessageId()
         return time().rand(100000, 999999).'.'.uniqid().'@'.$domain;
     }
 
