@@ -79,7 +79,7 @@ class SettingController extends Controller
             // Save settings
             foreach ($request->all() as $name => $value) {
                 if ($name != '_token' && isset($settings[$name])) {
-                    if ($settings[$name]['cat'] == 'general' && $request->user()->admin->getPermission('setting_system_urls') == 'yes') {
+                    if ($settings[$name]['cat'] == 'general' && $request->user()->admin->getPermission('setting_general') == 'yes') {
                         \Acelle\Model\Setting::set($name, $value);
                     }
                 }
