@@ -135,7 +135,7 @@ class QuotaTrackerFile
             # check quota
             # the trick is that 2nd parameter is null, indicating a quota check
             if (!is_null($this->quota)) {
-                if (self::UNLIMITED != $this->quota['max'] && !is_null($this->quota) && $this->getUsage($timePoint) >= $this->quota['max']) {
+                if (self::UNLIMITED != $this->quota['max'] && $this->getUsage($timePoint) >= $this->quota['max']) {
                     $result = false;
                     return;
                 }
