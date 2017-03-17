@@ -809,7 +809,7 @@ class Customer extends Model
      * @return array
      */
     public function initQuotaTracker() {
-        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $this->getQuotaIntervalString(), $this->getSendingQuota());
+        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), [$this->getQuotaIntervalString() => $this->getSendingQuota()]);
         // @note: in case of multi-process, the following command must be issued manually
         //     $this->renewQuotaTracker();
     }

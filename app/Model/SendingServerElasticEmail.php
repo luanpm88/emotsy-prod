@@ -37,7 +37,7 @@ class SendingServerElasticEmail extends SendingServer
     public static $client = null;
     public static $isWebhookSetup = false;
     public static $isCustomHeadersEnabled = false;
-    
+
     /**
      * Get authenticated to Mailgun and return the session object.
      *
@@ -59,16 +59,10 @@ class SendingServerElasticEmail extends SendingServer
      * @return mixed
      */
     public static function handleNotification($params) {
-        MailLog::info('requested');
-
-        foreach($params as $key => $value){
-            MailLog::info("$key:$value");
-        }
-
         // bounce
         if (strcasecmp($params['status'], 'Error') == 0) {
             $bounceLog = new BounceLog();
-            
+
             // use Elastic Email transaction id as runtime-message-id
             $bounceLog->runtime_message_id = $params['transaction'];
             $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
@@ -94,19 +88,19 @@ class SendingServerElasticEmail extends SendingServer
 
             // use Elastic Email transaction id as runtime-message-id
             $feedbackLog->runtime_message_id = $params['transaction'];
-            
+
             // retrieve the associated tracking log in Acelle
             $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
             if ($trackingLog) {
                 $feedbackLog->message_id = $trackingLog->message_id;
             }
-            
+
             // ElasticEmail only notifies in case of SPAM reported
             $feedbackLog->feedback_type = 'spam';
             $feedbackLog->raw_feedback_content = json_encode($params);
             $feedbackLog->save();
             MailLog::info('Feedback recorded for message '.$feedbackLog->runtime_message_id);
-            
+
             // update the mail list, subscriber to be marked as 'spam-reported'
             // @todo: the following lines of code should be wrapped up in one single method: $feedbackLog->markSubscriberAsSpamReported();
             $subscriber = $feedbackLog->findSubscriberByRuntimeMessageId();
@@ -120,7 +114,7 @@ class SendingServerElasticEmail extends SendingServer
     }
 
     /**
-     * Enable custom headers. 
+     * Enable custom headers.
      * By default, customers headers are suppressed by Elastic Email
      *
      * @return mixed
@@ -134,8 +128,8 @@ class SendingServerElasticEmail extends SendingServer
         try {
             $response = file_get_contents(self::API_ENDPOINT."/account/updatehttpnotification?apikey=".$this->api_key."&allowCustomHeaders=true");
             $responseJson = json_decode($response);
-            
-            
+
+
             if ($responseJson->success == true) {
                 MailLog::info("Custom headers enabled");
                 self::$isCustomHeadersEnabled = true;
@@ -146,7 +140,7 @@ class SendingServerElasticEmail extends SendingServer
             MailLog::warning($e->getMessage());
         }
     }
-    
+
     /**
      * Setup webhooks for processing bounce and feedback loop.
      *
@@ -161,7 +155,7 @@ class SendingServerElasticEmail extends SendingServer
         try {
             $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
 
-            $response = file_get_contents(self::API_ENDPOINT."/account/updatehttpnotification?apikey=".$this->api_key."&url=".$subscribeUrl."&settings={sent:true,opened:true,clicked:true,unsubscribed:true,complaints:true,error:true}");
+            $response = file_get_contents(self::API_ENDPOINT."/account/updatehttpnotification?apikey=".$this->api_key."&url=".$subscribeUrl."&settings={sent:false,opened:false,clicked:false,unsubscribed:false,complaints:true,error:true}");
             if ($response == '{"success":true}') {
                 MailLog::info("webhook set!");
                 self::$isWebhookSetup = true;
@@ -173,23 +167,29 @@ class SendingServerElasticEmail extends SendingServer
         }
     }
 
-    public function sendElasticEmailV2($campaign, $subscriber, $msgId) {
-        $body_html = $campaign->getHtmlContent($subscriber, $msgId);
-        $body_text = $campaign->getPlainContent($subscriber, $msgId);
-
-        $customHeaders = $campaign->getCustomHeaders($subscriber, $this);
-        // @TODO use a configurable name for Acelle Mail instead
-        // retain the existing message-id, overwrite the newly generated one
-        $customHeaders['X-Acelle-Message-Id'] = $msgId;
+    public function sendElasticEmailV2($message) {
+        // @todo: what if there are more than 2 parts?
+        foreach($message->getChildren() as $part) {
+            $contentType = $part->getContentType();
+            if ($contentType == 'text/html') {
+                $html = $part->getBody();
+            } else if ($contentType == 'text/plain') {
+                $plain = $part->getBody();
+            }
+        }
 
         // @todo: custom headers not correctly supported by Elastic Email API v2
+        $fromEmail = array_keys($message->getFrom())[0];
+        $fromName = array_values($message->getFrom())[0];
+        $toEmail = array_keys($message->getTo())[0];
+
         $result = $this->client()->email()->send([
-            'to' => $subscriber->email,
-            'subject' => $campaign->getSubject($subscriber, $msgId),
-            'from' => $campaign->from_email,
-            'fromName' => $campaign->from_name,
-            'bodyHtml' => $campaign->getHtmlContent($subscriber, $msgId),
-            'bodyText' => $campaign->getPlainContent($subscriber, $msgId),
+            'to' => $toEmail,
+            'subject' => $message->getSubject(),
+            'from' => $fromEmail,
+            'fromName' => $fromName,
+            'bodyHtml' => $html,
+            'bodyText' => $plain,
             'charset' => 'utf-8',
         ]);
 
@@ -197,72 +197,5 @@ class SendingServerElasticEmail extends SendingServer
 
         // Use transactionid returned from ElasticEmail as runtime_message_id
         return $jsonResponse->data->transactionid;
-    }
-        
-    
-    /**
-     * Implematation of Elastic mail/send API
-     * @deprecated API v1 is supported but no longer developed
-     *
-     * @param mixed $campaign
-     * @param mixed $subscriber
-     * @param string $msgId
-     *
-     */
-    public function sendElasticEmail($campaign, $subscriber, $msgId)
-    {
-        $res = "";
-        $body_html = $campaign->getHtmlContent($subscriber, $msgId);
-        $body_text = $campaign->getPlainContent($subscriber, $msgId);
-
-        $customHeaders = $campaign->getCustomHeaders($subscriber, $this);
-        // @TODO use a configurable name for Acelle Mail instead
-        // retain the existing message-id, overwrite the newly generated one
-        $customHeaders['X-Acelle-Message-Id'] = $msgId;
-
-        $data = "api_key=".urlencode($this->api_key);
-        $data .= "&from=".urlencode($campaign->from_email);
-        $data .= "&from_name=".urlencode($campaign->from_name);
-        $data .= "&to=".urlencode($subscriber->email);
-        $data .= "&subject=".urlencode($campaign->getSubject($subscriber, $msgId));
-        
-        if($body_html) {
-            $data .= "&body_html=".urlencode($body_html);
-        }
-        
-        if($body_text) {
-            $data .= "&body_text=".urlencode($body_text);
-        }
-
-        foreach(array_keys($customHeaders) as $i => $key) {
-            $data .= "&header" . ($i+1) . "=" . $key . ": " . $customHeaders[$key];
-        }
-
-        var_dump($data);
-
-        $header = "POST /mailer/send HTTP/1.0\r\n";
-        $header .= "Content-Type: application/x-www-form-urlencoded\r\n";
-        $header .= "Content-Length: " . strlen($data) . "\r\n\r\n";
-        $fp = fsockopen('ssl://api.elasticemail.com', 443, $errno, $errstr, 30);
-
-        if(!$fp)
-          throw new \Exception("Could not open connection with ssl://api.elasticemail.com");
-        else {
-          fputs ($fp, $header.$data);
-          while (!feof($fp)) {
-            $res .= fread ($fp, 1024);
-          }
-          fclose($fp);
-        }
-
-        // extract the transaction ID from socket responses
-        // which is something like: f74b9f96-f89a-4cfe-813f-5f86df1cb37f
-        preg_match('/[a-z0-9]{8}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{12}$/', $res, $matches);
-
-        if (array_key_exists(0, $matches)) {
-          return $matches[0];
-        } else {
-          throw new \Exception("Sending failed: \n".$res);
-        }
     }
 }

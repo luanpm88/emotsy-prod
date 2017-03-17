@@ -824,7 +824,7 @@ class MailList extends Model
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
         $send_page = \Acelle\Model\Page::findPage($list, $layout);
         $send_page->renderContent(null, $subscriber);
-        $this->sendMail($subscriber, $send_page, trans('messages.'.$layout->alias.'.real'));
+        $this->sendMail($subscriber, $send_page, $send_page->subject);
     }
 
     /**
@@ -849,7 +849,7 @@ class MailList extends Model
 
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_welcome_email')->first();
         $send_page = \Acelle\Model\Page::findPage($list, $layout);
-        $this->sendMail($subscriber, $send_page, trans('messages.'.$layout->alias.'.real'));
+        $this->sendMail($subscriber, $send_page, $send_page->subject);
     }
 
     /**
@@ -862,7 +862,7 @@ class MailList extends Model
 
         $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_goodbye_email')->first();
         $send_page = \Acelle\Model\Page::findPage($list, $layout);
-        $this->sendMail($subscriber, $send_page, trans('messages.'.$layout->alias.'.real'));
+        $this->sendMail($subscriber, $send_page, $send_page->subject);
     }
 
     /**

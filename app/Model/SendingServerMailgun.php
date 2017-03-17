@@ -33,13 +33,13 @@ class SendingServerMailgun extends SendingServer
     protected $table = 'sending_servers';
     public static $client = null;
     public static $isWebhookSetup = false;
-    
+
     // Inherit class to implementation of this method
     public function send($message, $params = array())
     {
         // for overwriting
     }
-    
+
     /**
      * Get authenticated to Mailgun and return the session object.
      *
@@ -53,13 +53,13 @@ class SendingServerMailgun extends SendingServer
 
         return self::$client;
     }
-    
+
     /**
      * Setup webhooks for processing bounce and feedback loop.
      *
      * @return mixed
      */
-    public function setupWebhooks($domain)
+    public function setupWebhooks()
     {
         if (self::$isWebhookSetup) {
             return true;
@@ -67,6 +67,7 @@ class SendingServerMailgun extends SendingServer
 
         MailLog::info('Setting up webhooks for bounce/complaints');
 
+        $domain = $this->domain;
         $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
 
         MailLog::info('Webhook set to: '.$subscribeUrl);
@@ -82,7 +83,7 @@ class SendingServerMailgun extends SendingServer
         } catch (\Exception $e) {
             // just ignore
         }
-        
+
         try {
             $result = $this->client()->post("domains/$domain/webhooks", array(
                 'id' => 'bounce',

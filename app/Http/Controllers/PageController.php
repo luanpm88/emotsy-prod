@@ -58,6 +58,7 @@ class PageController extends Controller
             $rules = array(
                 'content' => $validate,
             );
+            $rules['subject'] = 'required';
 
             $this->validate($request, $rules);
 
@@ -431,7 +432,7 @@ class PageController extends Controller
             $list->sendProfileUpdateEmail($subscriber);
         } catch (\Exception $ex) {
             return view('somethingWentWrong', ['message' => $ex->getMessage()]);
-        }        
+        }
 
         return view('pages.default', [
             'list' => $list,

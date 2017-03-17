@@ -27,7 +27,7 @@ use Acelle\Library\Log as MailLog;
 class SendingServerMailgunSmtp extends SendingServerMailgun
 {
     protected $table = 'sending_servers';
-    
+
     /**
      * Send the provided message.
      *
@@ -37,7 +37,7 @@ class SendingServerMailgunSmtp extends SendingServerMailgun
     public function send($message, $params = array())
     {
         try {
-            $this->setupWebhooks($this->domain);
+            $this->setupWebhooks();
 
             $transport = \Swift_SmtpTransport::newInstance($this->host, (int) $this->smtp_port, $this->smtp_protocol)
               ->setUsername($this->smtp_username)

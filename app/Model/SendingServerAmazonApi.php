@@ -27,7 +27,7 @@ use Acelle\Library\Log as MailLog;
 class SendingServerAmazonApi extends SendingServerAmazon
 {
     protected $table = 'sending_servers';
-    
+
     /**
      * Send the provided message.
      *
@@ -37,7 +37,7 @@ class SendingServerAmazonApi extends SendingServerAmazon
     public function send($message, $params = array())
     {
         try {
-            $this->setupSns($params);
+            $this->setupSns($message);
             $sent = $this->sesClient()->sendRawEmail(array(
                 'RawMessage' => array(
                     'Data' => $message->toString(),

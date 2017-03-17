@@ -139,6 +139,7 @@ class LayoutController extends Controller
         if ($request->isMethod('patch')) {
             $rules = array(
                 'content' => 'required',
+                'subject' => 'required',
             );
 
             $this->validate($request, $rules);

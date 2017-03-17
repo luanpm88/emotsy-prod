@@ -1,7 +1,7 @@
 @extends('layouts.page')
 
-@section('title', trans('messages.' . $page->layout->alias . '.real'))
+@section('title', $page->subject)
 
 @section('content')
-                {!! $page->content !!}
+    {!! $page->content !!}
 @endsection

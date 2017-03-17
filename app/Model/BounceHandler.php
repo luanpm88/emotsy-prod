@@ -27,7 +27,7 @@ use Acelle\Library\Log;
 class BounceHandler extends DeliveryHandler
 {
     protected $table = 'bounce_handlers';
-    
+
     /**
      * Process bounce message, extract the bounce information.
      *
@@ -38,7 +38,7 @@ class BounceHandler extends DeliveryHandler
         try {
             $header = imap_headerinfo($mbox, $msgNo);
             $body = imap_body($mbox, $msgNo, FT_PEEK);
-            
+
             /* The following check is now deprecated
              * and will be removed
                  $bouncedAddress = $this->getBouncedAddress($header->toaddress);
@@ -59,7 +59,7 @@ class BounceHandler extends DeliveryHandler
 
             $trackingLog = TrackingLog::where('message_id', $msgId)->first();
             if (empty($trackingLog)) {
-                throw new \Exception('not a bounce message, skipped');
+                throw new \Exception('cannot find message with such Message-Id');
             }
 
             // record a bounce log, one message may have more than one
@@ -77,7 +77,7 @@ class BounceHandler extends DeliveryHandler
             Log::warning($ex->getMessage());
         }
     }
-    
+
     /**
      * Extract bounced email address from email.
      *
@@ -236,7 +236,7 @@ class BounceHandler extends DeliveryHandler
 
         return $options;
     }
-    
+
     /**
      * Protocol select options.
      *
@@ -248,7 +248,7 @@ class BounceHandler extends DeliveryHandler
             ['value' => 'imap', 'text' => 'imap']
         ];
     }
-    
+
     /**
      * Encryption select options.
      *

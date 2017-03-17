@@ -24,25 +24,30 @@
 namespace Acelle\Library;
 use Carbon\Carbon;
 
-class QuotaTrackerFile extends QuotaTracker
+class QuotaTrackerFile
 {
     protected $file;
     protected $reader;
     protected $hasLock = false;
+    protected $limits;
+    protected $quota;
 
     const TIMEOUT = 60;
+    const UNLIMITED = -1;
 
     /**
      * Constructor, modeling data from a JSON array
      *
-     * @param Array $series
-     *
+     * @param String $file
+     * @param Array $limit, for example $limit = ['1 hour' => 50000, '1 minute' => 2000]
+     * @param Array $quota, for example $quota = ['start' => 'Jan 1, 2016', 'interval' => '1 month', 'max' => ]
      * @return void
      */
-    public function __construct($file, $interval, $quota)
+    public function __construct($file, $limits = [], $quota = null)
     {
-        parent::__construct($interval, $quota);
         $this->file = $file;
+        $this->limits = $limits;
+        $this->quota = $quota;
         $this->createLogFile();
     }
 
@@ -125,7 +130,31 @@ class QuotaTrackerFile extends QuotaTracker
         }
 
         $this->getSharedLock(function() use (&$result, $timePoint) {
-            $result = (self::UNLIMITED == $this->quota || $this->getUsage($timePoint) < $this->quota);
+            $result = true;
+
+            # check quota
+            # the trick is that 2nd parameter is null, indicating a quota check
+            if (!is_null($this->quota)) {
+                if (self::UNLIMITED != $this->quota['max'] && !is_null($this->quota) && $this->getUsage($timePoint) >= $this->quota['max']) {
+                    $result = false;
+                    return;
+                }
+            }
+
+            foreach ($this->limits as $interval => $max) {
+                if (self::UNLIMITED == $max) {
+                    continue;
+                }
+
+                # check limit
+                # there are 2 types of usage
+                # 1. usage within the last n hour/day/month
+                # 2. usage since the beginning (of the quota period)
+                if ($this->getUsage($timePoint, $interval) >= $max) {
+                    $result = false;
+                    break;
+                }
+            }
         });
 
         return $result;
@@ -138,13 +167,25 @@ class QuotaTrackerFile extends QuotaTracker
      *
      * @return void
      */
-    private function shiftBy(Carbon $timePoint)
+    private function shiftBy(Carbon $timePoint, $interval)
     {
         if (empty($this->series)) {
-            return;
+            return [];
         }
 
-        $cutOff = $timePoint->copy()->sub($this->interval)->timestamp;
+        # trick here:
+        # - $interval empty means get the series from the quota start date
+        # - $interval not empty means get the series from the interval
+        # - If both $interval and $quota empty --> for backward compatibility --> get quota from the first interval of $this->limit
+        if (is_null($interval)) {
+            if (is_null($this->quota)) {
+                $cutOff = $timePoint->copy()->sub(\DateInterval::createFromDateString(array_keys($this->limits)[0]))->timestamp;
+            } else {
+                $cutOff = $this->quota['start'];
+            }
+        } else {
+            $cutOff = $timePoint->copy()->sub(\DateInterval::createFromDateString($interval))->timestamp;
+        }
 
         // cut off the series from the point
         $offset = null;
@@ -156,9 +197,9 @@ class QuotaTrackerFile extends QuotaTracker
         }
 
         if (is_null($offset)) {
-            $this->series = [];
+            return [];
         } else {
-            $this->series = array_slice($this->series, $offset);
+            return array_slice($this->series, $offset);
         }
     }
 
@@ -181,7 +222,7 @@ class QuotaTrackerFile extends QuotaTracker
      */
     private function first()
     {
-        return (empty($this->series)) ? null : $this->series[self::START_POINT];
+        return (empty($this->series)) ? null : $this->series[0];
     }
 
     /**
@@ -200,9 +241,9 @@ class QuotaTrackerFile extends QuotaTracker
      *
      * @return Integer count
      */
-    public function getUsage($timePoint = null)
+    public function getUsage($timePoint = null, $interval = null)
     {
-        return sizeof($this->getSeries($timePoint));
+        return sizeof($this->getSeries($timePoint, $interval));
     }
 
     /**
@@ -221,15 +262,14 @@ class QuotaTrackerFile extends QuotaTracker
      *
      * @return Array data series
      */
-    public function getSeries(Carbon $timePoint = null)
+    public function getSeries(Carbon $timePoint = null, $interval = null)
     {
         if (is_null($timePoint)) {
             $timePoint = Carbon::now();
         }
 
-        $this->getSharedLock(function() use (&$series, $timePoint) {
-            $this->shiftBy($timePoint);
-            $series = $this->series;
+        $this->getSharedLock(function() use (&$series, $timePoint, $interval) {
+            $series = $this->shiftBy($timePoint, $interval);
         });
 
         return $series;

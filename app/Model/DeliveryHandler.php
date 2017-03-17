@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Log;
 use Acelle\Library\StringHelper;
 
 class DeliveryHandler extends Model
@@ -41,7 +40,7 @@ class DeliveryHandler extends Model
 
             // try to connect
             $inbox = @imap_open($imapPath, $this->username, $this->password);
-            
+
             if ($inbox == false) {
                 throw new \Exception("Cannot connect to the server: $imapPath");
             }
@@ -66,7 +65,7 @@ class DeliveryHandler extends Model
             Log::error('Cannot connect to handler '.$e->getMessage());
         }
     }
-    
+
     /**
      * Extract message ID from email .
      *
@@ -74,14 +73,14 @@ class DeliveryHandler extends Model
      */
     public function getMessageId($message)
     {
-        preg_match('/(?<=X-Acelle-Message-Id: )[^\s]*/', $message, $matched);
-        if (sizeof($matched) == 0) {
-            return;
+        preg_match('/(?<=X-Acelle-Message-Id:)\s{0,1}<{0,1}(?<id>[a-zA-Z0-9\.]+[a-zA-Z0-9]+@[a-zA-Z0-9\.\-]+[a-zA-Z0-9]+)/', $message, $matched);
+        if (array_key_exists('id', $matched)) {
+            return StringHelper::cleanupMessageId($matched['id']);
         } else {
-            return StringHelper::cleanupMessageId($matched[0]);
+            return null;
         }
     }
-    
+
     /**
      * Process bounced / feedback loop messages.
      *

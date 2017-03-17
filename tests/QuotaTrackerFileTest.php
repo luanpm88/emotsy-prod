@@ -21,7 +21,7 @@ class QuotaTrackerFileTest extends TestCase
          * Suppose the quota setting is: {6 emails, every 5 seconds}
          * Then we test with: send an email every 1 second and and expect it will NOT to exceed the quota
          */
-        $tracker = new QuotaTrackerFile($file, '5 seconds', 6);
+        $tracker = new QuotaTrackerFile($file, ['5 seconds' => 6]);
         $tracker->getExclusiveLock(function($tracker) {
             $tracker->reset([]);
         });
@@ -33,10 +33,26 @@ class QuotaTrackerFileTest extends TestCase
         $this->assertTrue($result);
 
         /**
+         * Suppose the quota setting is: {6 emails, every 5 seconds}
+         * Then we test with: send an email every 1 second and and expect it will NOT to exceed the quota
+         */
+        $tracker = new QuotaTrackerFile($file, ['5 seconds' => 6], ['start' => (new Carbon('first day of March 2016'))->timestamp, 'max' => 9, 'interval' => '1 month']);
+        $tracker->getExclusiveLock(function($tracker) {
+            $tracker->reset([]);
+        });
+
+        $result = $this->nTimes(9, $tracker, function($tracker) {
+            return $tracker->add(Carbon::now());
+        });
+
+        $this->assertTrue($result);
+        $this->assertFalse($tracker->add(Carbon::now()));
+
+        /**
          * Suppose the quota setting is: {5 emails, every 4 seconds}
          * Then we test with: send an email every 1 second and and expect it will exceed the quota
          */
-        $tracker = new QuotaTrackerFile($file, '5 second', 4);
+        $tracker = new QuotaTrackerFile($file, ['5 second' => 4]);
         $tracker->getExclusiveLock(function($tracker) {
             $tracker->reset([]);
         });
@@ -49,7 +65,7 @@ class QuotaTrackerFileTest extends TestCase
          * Suppose the quota setting is: {0 emails, every 1 hours}
          * Then we test with: send an email every 1 second and and expect it to fail immediately at first try
          */
-        $tracker = new QuotaTrackerFile($file, '1 hour', 0);
+        $tracker = new QuotaTrackerFile($file, ['1 hour' => 0]);
         $tracker->getExclusiveLock(function($tracker) {
             $tracker->reset([]);
         });
@@ -62,7 +78,7 @@ class QuotaTrackerFileTest extends TestCase
          * Suppose the quota setting is: {1 emails, every 1 day}
          * Then we test with: send an email every 1 second and and expect it NOT to fail after 1st try
          */
-        $tracker = new QuotaTrackerFile($file, '1 days', 1);
+        $tracker = new QuotaTrackerFile($file, ['1 days' => 1]);
         $tracker->getExclusiveLock(function($tracker) {
             $tracker->reset([]);
         });
@@ -75,7 +91,7 @@ class QuotaTrackerFileTest extends TestCase
          * Suppose the quota setting is: {1 emails, every 1 day}
          * Then we test with: send an email every 1 second and and expect it to fail after 2nd try
          */
-        $tracker = new QuotaTrackerFile($file, '1 days', 1);
+        $tracker = new QuotaTrackerFile($file, ['1 days' => 1]);
         $tracker->getExclusiveLock(function($tracker) {
             $tracker->reset([]);
         });

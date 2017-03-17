@@ -28,7 +28,7 @@ use Acelle\Library\AmazonSmtpTransport;
 class SendingServerAmazonSmtp extends SendingServerAmazon
 {
     protected $table = 'sending_servers';
-    
+
     /**
      * Send the provided message.
      *
@@ -38,7 +38,7 @@ class SendingServerAmazonSmtp extends SendingServerAmazon
     public function send($message, $params = array())
     {
         try {
-            $this->setupSns($params);
+            $this->setupSns($message);
 
             $transport = AmazonSmtpTransport::newInstance($this->host, (int) $this->smtp_port, $this->smtp_protocol)
               ->setUsername($this->smtp_username)

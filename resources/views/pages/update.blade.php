@@ -32,6 +32,13 @@
 					
                     
 					<br />
+					
+					@include('helpers.form_control', [
+						'type' => 'text',
+						'name' => 'subject',
+						'value' => $page->subject,
+						'rules' => ['subject' => 'subject']])
+					
                     @include('helpers.form_control', ['class' => ($layout->type == 'page' ? 'full-editor' : 'email-editor'), 'type' => 'textarea', 'name' => 'content', 'value' => $page->content, 'rules' => $list->getFieldRules()])
                     
 					@if (count($layout->tags()) > 0)                                
