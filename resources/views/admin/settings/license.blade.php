@@ -31,10 +31,25 @@
             @include("admin.settings._tabs")
 
             <div class="tab-content">                
-                <div class="row license-line">
-                    <div class="col-md-6">
-                        @foreach ($settings as $name => $setting)
-                            @if ($setting['cat'] == 'license')
+                @foreach ($settings as $name => $setting)
+                    @if ($setting['cat'] == 'license')
+                        @if ($current_license && $setting['value'] == $current_license)
+                            <h4>{{ trans('messages.your_current_license') }}</h4>
+                            <h5 class="text-info-800 text-bold">
+                                <i class="icon-file-check"></i>
+                                {{ trans('messages.license_label_' . \Acelle\Model\Setting::get('license_type')) }}
+                                ({{ $current_license }})
+                            </h5>
+                            <hr>
+                        @endif
+                        
+                        @if (!$current_license)
+                            <h4>{{ trans('messages.verify_license') }}</h4>
+                        @else
+                            <h4>{{ trans('messages.change_license') }}</h4>
+                        @endif
+                        <div class="row license-line">
+                            <div class="col-md-6">
                                 @include('helpers.form_control', [
                                     'type' => $setting['type'],
                                     'class' => (isset($setting['class']) ? $setting['class'] : "" ),
@@ -45,28 +60,21 @@
                                     'options' => (isset($setting['options']) ? $setting['options'] : "" ),
                                     'rules' => Acelle\Model\Setting::rules(),
                                 ])
-                                
-                                @if (\Acelle\Model\Setting::get('license') && $setting['value'] == \Acelle\Model\Setting::get('license'))
-                                    <div class="text-info-800 text-bold">
-                                        <i class="icon-file-check"></i> {{ trans('messages.license_name_' . \Acelle\Model\Setting::get('license_type')) }}
-                                    </div>
-                                @endif
-                            @endif
-                        @endforeach
-                        
-                        
-                    </div>
-                    <div class="col-md-6">
-                        <br />
-                        <div class="text-left">
-                            @if (\Acelle\Model\Setting::get('license'))
-                                <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.change_license') }}</button>
-                            @else
-                                <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.verify') }}</button>
-                            @endif
+                                                        </div>
+                            <div class="col-md-6">
+                                <br />
+                                <div class="text-left">
+                                    @if ($current_license)
+                                        <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.change_license') }}</button>
+                                    @else
+                                        <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.verify') }}</button>
+                                    @endif
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                </div>
+                    @endif
+                @endforeach
+                
                 <hr>
                 {!! trans('messages.license_guide') !!}
             </div>

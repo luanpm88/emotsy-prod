@@ -1647,9 +1647,9 @@ return [
     'sending_server_no_active' => 'You have no active sending servers',
     'list_has_no_sending_server' => 'Have no sending server',
     'verify' => 'Verify',
-    'enter_license_and_click_verify' => 'Please enter the licence key (purchase code) then hit the Verify/Change button',
+    'enter_license_and_click_verify' => 'Enter the licence key (purchase code) then hit the Verify/Change button',
     'license.updated' => 'App license was successfully updated',
-    'change_license' => 'Change',
+    'change_license' => 'Change license',
     'license_guide' => '<h5 class="text-semibold text-info-800"><i class="icon-help"></i> Choose an appropriate license:</h5>
         <p>
             <strong>* Regular License</strong><br/>
@@ -1660,6 +1660,8 @@ return [
             All features are available, for a single end product which end users can be charged for (software as a service)
         </p>
     ',
-    'license_name_extended' => 'Extended license',
-    'license_name_normal' => 'Normal license',
+    'license_label_extended' => 'Extended',
+    'license_label_normal' => 'Normal',
+    'your_current_license' => 'Your current license: ',
+    'verify_license' => 'Verify license',
 ];

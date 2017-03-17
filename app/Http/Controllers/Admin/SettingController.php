@@ -400,6 +400,7 @@ class SettingController extends Controller
 
         return view('admin.settings.license', [
             'settings' => $settings,
+            'current_license' => \Acelle\Model\Setting::get('license'),
         ]);
     }
 }
