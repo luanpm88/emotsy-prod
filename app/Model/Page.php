@@ -32,7 +32,7 @@ class Page extends Model
      * @var array
      */
     protected $fillable = [
-        'content',
+        'content', 'subject'
     ];
 
     /**
@@ -84,6 +84,7 @@ class Page extends Model
             $page->layout_id = $layout->id;
             $page->mail_list_id = $list->id;
             $page->content = $layout->content;
+            $page->subject = $layout->subject;
         }
 
         return $page;

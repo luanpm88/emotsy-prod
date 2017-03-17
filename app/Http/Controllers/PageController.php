@@ -58,6 +58,7 @@ class PageController extends Controller
             $rules = array(
                 'content' => $validate,
             );
+            $rules['subject'] = 'required';
 
             $this->validate($request, $rules);
 
@@ -414,7 +415,7 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'profile_update_email')->first();
         $send_page = \Acelle\Model\Page::findPage($list, $layout);
         $send_page->renderContent(null, $subscriber);
-        $send_page->sendMail($subscriber, trans('messages.'.$layout->alias.'.real'));
+        $send_page->sendMail($subscriber, $send_page->subject);
 
         return view('pages.default', [
             'list' => $list,

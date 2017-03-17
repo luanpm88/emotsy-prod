@@ -1,6 +1,6 @@
 @extends('layouts.page')
 
-@section('title', trans('messages.' . $page->layout->alias))
+@section('title', $page->subject)
 	
 @section('page_script')
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
@@ -13,10 +13,11 @@
 
 @section('content')
 
-                <form action="" method="POST" class="form-validate-jqueryz">
-					{{ csrf_field() }}
-                    
-                    {!! $page->content !!}
-                
-                </form>
+	<form action="" method="POST" class="form-validate-jqueryz">
+		{{ csrf_field() }}
+		
+		{!! $page->content !!}
+	
+	</form>
+		
 @endsection

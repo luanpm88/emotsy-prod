@@ -32,7 +32,7 @@ class Layout extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'alias', 'content',
+        'name', 'alias', 'content', 'subject'
     ];
 
     /**
