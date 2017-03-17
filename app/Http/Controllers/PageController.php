@@ -67,7 +67,7 @@ class PageController extends Controller
             $page->save();
 
             // Log
-            $page->log('updated', $request->user());
+            $page->log('updated', $request->user()->customer);
 
             $request->session()->flash('alert-success', trans('messages.page.updated'));
 

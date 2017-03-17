@@ -210,7 +210,7 @@ class Page extends Model
     /**
      * Add customer action log.
      */
-    public function log($name, $user, $add_datas = [])
+    public function log($name, $customer, $add_datas = [])
     {
         $data = [
             'id' => $this->id,
@@ -222,7 +222,7 @@ class Page extends Model
         $data = array_merge($data, $add_datas);
 
         Log::create([
-            'user_id' => $user->id,
+            'customer_id' => $customer->id,
             'type' => 'page',
             'name' => $name,
             'data' => json_encode($data),

@@ -110,9 +110,9 @@ class User extends Authenticatable
         $layout->content = str_replace('{ACTIVATION_URL}', action('UserController@activate', ['token' => $token, 'redirect' => $redirect_url]), $layout->content);
         $layout->content = str_replace('{CUSTOMER_NAME}', $name, $layout->content);        
         
-        \Mail::send('users.registration_confirmation_email', ['content' => $layout->content], function ($m) {
+        \Mail::send('users.registration_confirmation_email', ['content' => $layout->content], function ($m) use ($layout) {
             $m->from(config("mail.from")["address"], config("mail.from")["name"]);
-            $m->to($this->email, trans('messages.to_email_name'))->subject(trans('messages.registration_confirmation_email_subject'));
+            $m->to($this->email, trans('messages.to_email_name'))->subject($layout->subject);
         });
     }
     

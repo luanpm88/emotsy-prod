@@ -3,6 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Acelle\Library\Log as MailLog;
 
 class SubscriptionController extends Controller
 {
@@ -81,7 +82,9 @@ class SubscriptionController extends Controller
                 try {
                     $user->sendActivationMail($customer->displayName(), action('SubscriptionController@subscription', $request->plan_uid));
                 } catch (\Exception $e) {
-                    return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service')]);
+                    $error = $e->getMessage();
+                    MailLog::error( $error );
+                    return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service') . ": " . $error]);
                 }
                 
                 return view('subscriptions.register_confirmation_notice');

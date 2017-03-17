@@ -875,7 +875,7 @@ class MailList extends Model
 
         $layout = \Acelle\Model\Layout::where('alias', 'profile_update_email')->first();
         $send_page = \Acelle\Model\Page::findPage($list, $layout);
-        $this->sendMail($subscriber, $send_page, trans('messages.'.$layout->alias.'.real'));
+        $this->sendMail($subscriber, $send_page, $send_page->subject);
     }
 
     /**
