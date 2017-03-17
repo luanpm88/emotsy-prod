@@ -17,7 +17,7 @@
 					<li class="active">{{ trans('messages.update') }}</li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-profile"></i> {{ $subscription->created_at }}</span>
+					<span class="text-semibold"><i class="icon-profile"></i> {{ $subscription->customer->displayName() }}: {{ $subscription->plan_name }}</span>
 				</h1>
 			</div>
 				

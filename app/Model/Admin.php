@@ -354,10 +354,12 @@ class Admin extends Model
         $query = \Acelle\Model\Subscription::select('subscriptions.*')
             ->leftJoin('customers', 'customers.id', '=', 'subscriptions.customer_id');
         
-        $query = $query->where(function ($q) {
-            $q->orwhere('customers.admin_id', '=', $this->id)
-                ->orWhere('subscriptions.admin_id', '=', $this->id);
-        });
+        if (!$this->user->can('readAll', new \Acelle\Model\Customer())) {
+            $query = $query->where(function ($q) {            
+                $q->orwhere('customers.admin_id', '=', $this->id)
+                    ->orWhere('subscriptions.admin_id', '=', $this->id);
+            });
+        }
         
         return $query;
     }
