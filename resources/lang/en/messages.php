@@ -1643,6 +1643,23 @@ return [
     'install.license.help' => 'This is optional. You can update it later in setting page.',
     'is_not_extended_license' => 'Extended license required for some features. Please consider <br /> purchasing one.
         If you have already purchased an<br /> extended license, please enter it <a href=":link">here</a>',
+    'not_have_license' => 'A valid license key is required to register your installation. You can enter it <a href=":link">here</a>',
     'sending_server_no_active' => 'You have no active sending servers',
     'list_has_no_sending_server' => 'Have no sending server',
+    'verify' => 'Verify',
+    'enter_license_and_click_verify' => 'Please enter the licence key (purchase code) then hit the Verify/Change button',
+    'license.updated' => 'App license was successfully updated',
+    'change_license' => 'Change',
+    'license_guide' => '<h5 class="text-semibold text-info-800"><i class="icon-help"></i> Choose an appropriate license:</h5>
+        <p>
+            <strong>* Regular License</strong><br/>
+            All features are available, for a single end product which end users are NOT charged for.
+        </p>
+        <p>
+            <strong>* Extended License</strong><br/>
+            All features are available, for a single end product which end users can be charged for (software as a service)
+        </p>
+    ',
+    'license_name_extended' => 'Extended license',
+    'license_name_normal' => 'Normal license',
 ];

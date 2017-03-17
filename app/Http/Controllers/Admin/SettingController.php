@@ -84,9 +84,6 @@ class SettingController extends Controller
                     }
                 }
             }
-            
-            // Update license type
-            \Acelle\Model\Setting::updateLicenseType($request->license);
 
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.setting.updated'));
@@ -351,5 +348,58 @@ class SettingController extends Controller
         $path = storage_path("logs/" . $request->file);
         
         return response()->download($path);
+    }
+    
+    /**
+     * License settings.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function license(Request $request)
+    {
+        if ($request->user()->admin->getPermission('setting_general') != 'yes') {
+            return $this->notAuthorized();
+        }
+        
+        // \Acelle\Model\Setting::updateAll();
+        $settings = \Acelle\Model\Setting::getAll();
+        if (null !== $request->old()) {
+            foreach ($request->old() as $name => $value) {
+                if (isset($settings[$name])) {
+                    $settings[$name]['value'] = $value;
+                }
+            }
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            
+            if($this->isDemoMode()) {
+                return $this->notAuthorized();
+            }
+            
+            $rules = [
+                'license' => 'license',
+            ];
+            $this->validate($request, $rules);
+
+            // Save settings
+            foreach ($request->all() as $name => $value) {
+                if ($name != '_token' && isset($settings[$name])) {
+                    \Acelle\Model\Setting::set($name, $value);
+                }
+            }
+            
+            // Update license type
+            \Acelle\Model\Setting::updateLicenseType($request->license);
+
+            // Redirect to my lists page
+            $request->session()->flash('alert-success', trans('messages.license.updated'));
+            return redirect()->action('Admin\SettingController@license');
+        }
+
+        return view('admin.settings.license', [
+            'settings' => $settings,
+        ]);
     }
 }

@@ -1982,3 +1982,6 @@ ul.plans-intro li span {
 .sending-servers h5.inactive {
     color: #D84315 !important;
 }
+.license-line .btn {
+    margin-top: 7px;
+}

@@ -462,6 +462,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/languages', 'LanguageController');
 
     // Setting
+    Route::post('admin/settings/license', 'SettingController@license');
+    Route::get('admin/settings/license', 'SettingController@license');
     Route::get('admin/settings/mailer', 'SettingController@mailer');
     Route::post('admin/settings/mailer', 'SettingController@mailer');
     Route::get('admin/settings/cronjob', 'SettingController@cronjob');

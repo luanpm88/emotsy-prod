@@ -133,7 +133,7 @@ class Setting extends Model
                 'type' => 'text',
             ],
             'license' => [
-                'cat' => 'general',
+                'cat' => 'license',
                 'value' => '',
                 'type' => 'text',
                 'not_required' => true,

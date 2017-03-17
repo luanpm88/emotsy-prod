@@ -24,4 +24,9 @@
                                 <a href="{{ action('Admin\SettingController@cronjob') }}">
 								<i class="icon-alarm"></i> {{ trans('messages.background_job') }}</a></li>
 						@endif
+						@if (Auth::user()->admin->getPermission("setting_general") == 'yes')
+							<li class="{{ $action == "license" ? "active" : "" }} text-semibold">
+                                <a href="{{ action('Admin\SettingController@license') }}">
+								<i class="icon-key"></i> {{ trans('messages.license') }}</a></li>
+						@endif
 					</ul>
