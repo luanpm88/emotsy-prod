@@ -334,11 +334,15 @@ class MailList extends Model
      *
      * @return array
      */
-    public static function getSelectOptions($customer = null)
+    public static function getSelectOptions($customer=null, $options=[])
     {
         $query = self::getAll();
         if (is_object($customer)) {
             $query = $query->where('customer_id', '=', $customer->id);
+        }
+        # Other list
+        if (isset($options['other_list_of'])) {
+            $query = $query->where('id', '!=', $options['other_list_of']);
         }
         $options = $query->orderBy('name')->get()->map(function ($item) {
             return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribers()->count().' '.strtolower(trans('messages.subscribers')).')'];
@@ -1047,7 +1051,12 @@ class MailList extends Model
                 // Insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
                 $data = collect($batch)->map(function($r) use ($availableFields) {
-                    return array_only($r, $availableFields);
+                    $record = array_only($r, $availableFields);
+                    if (!is_null($record['email'])) {
+                        // replace the non-break space (not a normal space) as well as all other spaces
+                        $record['email'] = preg_replace('/[ \s*]*/', '', trim($record['email']));
+                    }
+                    return $record;
                 })->toArray();
 
                 // make the import data table unique by email
