@@ -657,4 +657,17 @@ class Subscriber extends Model
         $this->status = $status;
         $this->save();
     }
+    
+    /**
+     * Is overide copy/move subscriber.
+     *
+     * return array
+     */
+    public static function copyMoveExistSelectOptions()
+    {
+        return [
+            ['text' => trans('messages.update_if_subscriber_exists'), 'value' => 'update'],
+            ['text' => trans('messages.keep_if_subscriber_exists'), 'value' => 'keep'],
+        ];
+    }
 }

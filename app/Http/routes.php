@@ -120,8 +120,9 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('lists/{list_uid}/fields/{uid}/delete', 'FieldController@delete');
 
     // Subscriber
-    Route::get('subscribers/move/{list_uid}/{type}', 'SubscriberController@move');
-    Route::get('subscribers/copy/{list_uid}/{type}', 'SubscriberController@copy');
+    Route::get('subscribers/copy-move-from/{list_uid}/{action}', 'SubscriberController@copyMoveForm');
+    Route::post('subscribers/move', 'SubscriberController@move');
+    Route::post('subscribers/copy', 'SubscriberController@copy');
     Route::get('lists/{list_uid}/subscribers', 'SubscriberController@index');
     Route::get('lists/{list_uid}/subscribers/create', 'SubscriberController@create');
     Route::get('lists/{list_uid}/subscribers/listing', 'SubscriberController@listing');

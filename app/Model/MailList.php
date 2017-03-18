@@ -331,11 +331,15 @@ class MailList extends Model
      *
      * @return array
      */
-    public static function getSelectOptions($user = null)
+    public static function getSelectOptions($user=null, $options=[])
     {
         $query = self::getAll();
         if (is_object($user)) {
             $query = $query->where('user_id', '=', $user->id);
+        }
+        # Other list
+        if (isset($options['other_list_of'])) {
+            $query = $query->where('id', '!=', $options['other_list_of']);
         }
         $options = $query->orderBy('name')->get()->map(function ($item) {
             return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribers()->count().' '.strtolower(trans('messages.subscribers')).')'];

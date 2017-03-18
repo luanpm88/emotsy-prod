@@ -603,4 +603,22 @@ class SubscriberController extends Controller
         // Redirect to my lists page
         echo trans('messages.subscribers.moved');
     }
+    
+    /**
+     * Copy Move subscribers form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function copyMoveForm(Request $request)
+    {
+        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        
+        return view('subscribers.copy_move_form', [
+            'subscribers' => $subscribers,
+            'list' => $list
+        ]);
+    }
 }

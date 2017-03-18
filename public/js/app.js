@@ -1207,4 +1207,72 @@ $(function() {
     // load locale js
     $.getScript(JVALIDATE_TRANSLATE_URL, function(){
     });
+    
+    // Copy Move subscribers
+    $(document).on('click', '.copy_move_subscriber', function() {
+        var url = $(this).attr('data-url');
+        var data = {};
+        // Data list action
+        if ($(this).parents('.list_actions').length) {
+            var form = $(this).parents(".listing-form");
+            var vals = form.find("input[name='ids[]']:checked").map(function () {
+                return this.value;
+            }).get();
+            
+            data = {
+                uids: vals.join(",")
+            };
+        }
+        
+        $.ajax({
+            method: 'GET',
+            url: url,
+            data: data
+        })
+        .done(function(data) {
+            $('#copy-move-subscribers-form').remove();
+            $('body').append(data);
+            $('#copy-move-subscribers-form').modal('show');
+            $('#copy-move-subscribers-form').find('select').select2({
+                minimumResultsForSearch: 101
+            });
+            $('#copy-move-subscribers-form').find('.styled').uniform({
+                radioClass: 'choice'
+            });
+            $('#copy-move-subscribers-form').find('form').validate();
+        });
+    });
+    
+    // Ajax copy list
+    $(document).on('submit', '#copy-move-subscribers-form form', function(e) {
+        var form = $(this);
+        var url = form.attr("action");        
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: form.serialize(), // serializes the form's elements.
+            success: function(msg)
+            {
+                tableFilter($(".listing-form"));
+                if(msg != '') {
+                    swal({
+                        title: msg,
+                        text: "",
+                        confirmButtonColor: "#00695C",
+                        type: "success",
+                        allowOutsideClick: true,
+                        confirmButtonText: LANG_OK,
+                        customClass: "swl-success",
+                        html: true
+                    });
+                }
+                $('#copy-move-subscribers-form').modal('hide');
+            }
+        });
+        
+        $(".copy-list-close").trigger("click");
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+    
 });
