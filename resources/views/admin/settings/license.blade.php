@@ -37,8 +37,8 @@
                             <h4>{{ trans('messages.your_current_license') }}</h4>
                             <h5 class="text-info-800 text-bold">
                                 <i class="icon-file-check"></i>
-                                {{ trans('messages.license_label_' . \Acelle\Model\Setting::get('license_type')) }}
-                                ({{ $current_license }})
+                                {{ $current_license }}
+                                ({{ trans('messages.license_label_' . \Acelle\Model\Setting::get('license_type')) }})
                             </h5>
                             <hr>
                         @endif

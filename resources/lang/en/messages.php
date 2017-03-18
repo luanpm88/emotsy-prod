@@ -1664,4 +1664,5 @@ return [
     'license_label_normal' => 'Normal',
     'your_current_license' => 'Your current license: ',
     'verify_license' => 'Verify license',
+    'license_tab' => 'License',
 ];

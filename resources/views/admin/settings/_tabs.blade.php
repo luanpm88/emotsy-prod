@@ -27,6 +27,6 @@
 						@if (Auth::user()->admin->getPermission("setting_general") == 'yes')
 							<li class="{{ $action == "license" ? "active" : "" }} text-semibold">
                                 <a href="{{ action('Admin\SettingController@license') }}">
-								<i class="icon-key"></i> {{ trans('messages.license') }}</a></li>
+								<i class="icon-key"></i> {{ trans('messages.license_tab') }}</a></li>
 						@endif
 					</ul>
