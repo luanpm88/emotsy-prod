@@ -1021,7 +1021,12 @@ class MailList extends Model
                 // Insert subscriber fields from the batch to the temporary table
                 // extract only fields whose name matches TAG NAME of MailList
                 $data = collect($batch)->map(function($r) use ($availableFields) {
-                    return array_only($r, $availableFields);
+                    $record = array_only($r, $availableFields);
+                    if (!is_null($record['email'])) {
+                        // replace the non-break space (not a normal space) as well as all other spaces
+                        $record['email'] = preg_replace('/[ \s*]*/', '', trim($record['email']));
+                    }
+                    return $record;
                 })->toArray();
 
                 // make the import data table unique by email
