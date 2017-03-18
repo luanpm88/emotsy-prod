@@ -26,7 +26,7 @@
 						'label' => trans('messages.select_the_target_list'),
 						'value' => '',
                         'include_blank' => trans('messages.choose'),
-						'options' => Acelle\Model\MailList::getSelectOptions(\Auth::user()->id, ['other_list_of' => $list->id]),
+						'options' => Acelle\Model\MailList::getSelectOptions(\Auth::user(), ['other_list_of' => $list->id]),
 						'rules' => []
 					])
 					
