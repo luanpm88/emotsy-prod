@@ -559,7 +559,11 @@ class SubscriberController extends Controller
         foreach (\Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids))->get() as $subscriber) {
             $subscriber->copy($list, $request->type);
         }
-
+        
+        // Trigger updating related campaigns cache
+        $from_list->updateCachedInfo();
+        $list->updateCachedInfo();
+        
         // Log
         $list->log('copied', $request->user(), [
             'count' => $subscribers->count(),
@@ -596,6 +600,10 @@ class SubscriberController extends Controller
         foreach (\Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids))->get() as $subscriber) {
             $subscriber->move($list, $request->type);
         }
+        
+        // Trigger updating related campaigns cache
+        $from_list->updateCachedInfo();
+        $list->updateCachedInfo();
 
         // Log
         $list->log('moved', $request->user(), [
