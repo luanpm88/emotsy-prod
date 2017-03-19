@@ -4,8 +4,8 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        
-        
+
+
         <link rel="canonical" href="http://acellemail.com/">
         <link rel="shortcut icon" href="./img/favicon.ico">
 
@@ -23,7 +23,7 @@
             <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
 
-        
+
     </head>
 
     <body class="homepage">
@@ -33,7 +33,7 @@
 
         <!-- Collapsed navigation -->
         <div class="navbar-header">
-            
+
             <!-- Expander button -->
             <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
                 <span class="sr-only">Toggle navigation</span>
@@ -41,7 +41,7 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            
+
 
             <!-- Main title -->
             <a class="navbar-brand" href=".">Acelle Mail 2.2</a>
@@ -49,24 +49,24 @@
 
         <!-- Expanded navigation -->
         <div class="navbar-collapse collapse">
-            
+
                 <!-- Main navigation -->
                 <ul class="nav navbar-nav">
-                
-                
+
+
                     <li class="active">
                         <a href=".">Getting Started</a>
                     </li>
-                
-                
-                
+
+
+
                     <li >
                         <a href="api/">API Reference</a>
                     </li>
-                
-                
+
+
                 </ul>
-            
+
 
             <ul class="nav navbar-nav navbar-right">
                 <li>
@@ -74,7 +74,7 @@
                         <i class="fa fa-search"></i> Search
                     </a>
                 </li>
-                
+
                     <li class="disabled">
                         <a rel="next" >
                             <i class="fa fa-arrow-left"></i> Previous
@@ -85,38 +85,38 @@
                             Next <i class="fa fa-arrow-right"></i>
                         </a>
                     </li>
-                
-                
+
+
             </ul>
         </div>
     </div>
 </div>
 
         <div class="container">
-            
+
                 <div class="col-md-3"><div class="bs-sidebar hidden-print affix well" role="complementary">
     <ul class="nav bs-sidenav">
-    
+
         <li class="main active"><a href="#1-introduction">1. Introduction</a></li>
-        
-    
+
+
         <li class="main "><a href="#2-installation">2. Installation</a></li>
-        
+
             <li><a href="#21-installation-with-cpanel">2.1. Installation with cPanel</a></li>
-        
+
             <li><a href="#22-installation-with-apache-24-without-cpanel">2.2. Installation with Apache 2.4 (without Cpanel)</a></li>
-        
-    
+
+
         <li class="main "><a href="#3-configuration-wizard">3. Configuration wizard</a></li>
-        
-    
+
+
         <li class="main "><a href="#4-getting-started">4. Getting started</a></li>
-        
+
             <li><a href="#41-user-roles">4.1. User roles</a></li>
-        
+
             <li><a href="#42-create-your-first-campaign">4.2. Create your first campaign</a></li>
-        
-    
+
+
     </ul>
 </div></div>
                 <div class="col-md-9" role="main">
@@ -180,9 +180,9 @@
 <li>Add a subdomain named <strong>marketing</strong></li>
 <li>By default, cPanel will then create a webroot folder (document root) for your subdomain at <code>/marketing.mydomain.com/</code></li>
 <li>Upload Acelle Mail source files to the subdomain webroot folder. The file structure should look like this:
-<img alt="Change domain webroot" src="https://dl.dropboxusercontent.com/u/47371140/acellemail-guideline-dir-structure.png" title="Directory Structure" /></li>
+<img alt="Change domain webroot" src="https://s3.amazonaws.com/acellemail/acellemail-guideline-dir-structure.png" title="Directory Structure" /></li>
 <li>After you have uploaded the source files, it is important to change the subdomain's document root to the <code>public</code> folder of Acelle Mail
-<img alt="Change domain webroot" src="https://dl.dropboxusercontent.com/u/47371140/acellemail-guideline-change-subdomain-webroot.png" title="Change domain webroot" /></li>
+<img alt="Change domain webroot" src="https://s3.amazonaws.com/acellemail/acellemail-guideline-change-subdomain-webroot.png" title="Change domain webroot" /></li>
 <li>Now you can access Acelle Mail at: <code>http://marketing.mydomain.com</code>. Follow the web installation wizard and you will get Acelle installed on your own host.</li>
 </ul>
 <p><strong>Note</strong>: if you are on other web hosting manager like Plesk, DirectAdmin, Kloxo... the same rules apply. The key is to set Acelle Mail's <code>public</code> folder as the document root of your domain or subdomain.</p>
@@ -329,12 +329,12 @@ sudo chmod 775 -R /home/user/Acelle
 <p>As a Campaign Manager, the first step is to create a mail list of all your subscribers. <em>Go to <strong>Lists</strong> &gt; <strong>Create List</strong> to create a Mail List</em>. Then you can add subscribers to your list (or potential subscribers can subscribe to your list through Acelle Mail supscription form). You can also import subscribers from a CSV file.</p>
 <p>Once your mail list is ready, you can create an email campaign to send to your list. <em>Go to <strong>Campaigns</strong> &gt; <strong>Create Campaign</strong>, choose the mail list to send and follow the steps to setup and send your campaign.</em></p>
 <p>That's it! You can always track your Campaign's email delivery status (Sent/Bounced/Open) in the Campaign statistics page.</p></div>
-            
+
         </div>
 
         <footer class="col-md-12">
             <hr>
-            
+
             <p>Documentation built with <a href="http://www.mkdocs.org/">MkDocs</a>.</p>
         </footer>
 
