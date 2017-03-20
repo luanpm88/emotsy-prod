@@ -5,8 +5,35 @@ namespace Acelle\Helpers;
 class LicenseHelper
 {
     // license type
-    const TYPE_NORMAL = 'normal';
+    const TYPE_REGULAR = 'regular';
     const TYPE_EXTENDED = 'extended';
+    
+    /**
+     * Get license type: normal / extended.
+     *
+     * @var string
+     */
+    public static function getLicense($license)
+    {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL,"http://verify.acellemail.com/");
+        curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS,
+            http_build_query(array(
+                'purchase-code' => $license,
+                'item-id' => '17796082'
+            )
+        ));
+        curl_setopt($ch,CURLOPT_USERAGENT,md5($license));
+        
+        // receive server response ...
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        
+        $server_output = curl_exec($ch);
+        
+        return json_decode($server_output, true);
+    }
     
     /**
      * Get license type: normal / extended.
@@ -15,7 +42,8 @@ class LicenseHelper
      */
     public static function getLicenseType($license)
     {
-        return LicenseHelper::isValid($license) ? ($license == 'bbb' ? LicenseHelper::TYPE_EXTENDED : LicenseHelper::TYPE_NORMAL) : '';
+        $result = self::getLicense($license);
+        return $result['data']['verify-purchase']['licence'] == 'Regular License' ? self::TYPE_REGULAR : self::TYPE_EXTENDED;
     }
     
     /**
@@ -35,7 +63,9 @@ class LicenseHelper
     */
     public static function isValid($license)
     {
-        return $license == 'aaa' || $license == 'bbb';
+        $result = self::getLicense($license);
+        
+        return $result['status'] == 'valid';
     }
     
     /**
