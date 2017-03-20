@@ -814,7 +814,7 @@ class Customer extends Model
             'max' => $current->getOption('email_max')
         ];
 
-        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), null, $quota);
+        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $quota);
         // @note: in case of multi-process, the following command must be issued manually
         //     $this->renewQuotaTracker();
     }
