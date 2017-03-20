@@ -4,7 +4,7 @@
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">									
-                        <label>{{ trans('messages.end_at') }}</label>
+                        <label>{{ trans('messages.start_at') }}</label>
                         <div class="text-left">											
                             <h3 class="mt-0 text-bold">{{
                             $subscription->start_at ? \Acelle\Library\Tool::dateTime($subscription->start_at)->format(trans('messages.date_format')) : '' }}
