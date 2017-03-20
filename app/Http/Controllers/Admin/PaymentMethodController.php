@@ -108,12 +108,12 @@ class PaymentMethodController extends Controller
         // save posted data
         if ($request->isMethod('post')) {
             $payment_method->fill($request->all());
-            
-            $this->validate($request, $payment_method->rules());            
-            
             $payment_method->options = json_encode($request->options);
             $payment_method->admin_id = $user->admin->id;
             $payment_method->status = \Acelle\Model\PaymentMethod::STATUS_ACTIVE;
+            
+            $this->validate($request, $payment_method->rules());            
+            
             $payment_method->save();            
             
             $request->session()->flash('alert-success', trans('messages.payment_method.created'));
@@ -185,10 +185,11 @@ class PaymentMethodController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, $payment_method->rules());
-
             $payment_method->fill($request->all());
             $payment_method->options = json_encode($request->options);
+            
+            $this->validate($request, $payment_method->rules());
+
             $payment_method->save();
             
             $request->session()->flash('alert-success', trans('messages.payment_method.updated'));
@@ -221,8 +222,12 @@ class PaymentMethodController extends Controller
         foreach ($items->get() as $item) {
             // authorize
             if (\Gate::allows('update', $item)) {
+                if (!$item->isValid()) {
+                    echo '<span class="is-error">' . trans('messages.payment_methods.not_valid', ['link' => action('Admin\PaymentMethodController@edit', $item->uid)]) . '</span>';
+                    return;
+                }
                 $item->enable();
-            }            
+            }
         }
 
         // Redirect to my lists page

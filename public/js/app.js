@@ -536,13 +536,18 @@ $(function() {
             }
         })
         .done(function( msg ) {
+            var type = 'success';
+            if(msg.indexOf('is-error') !== -1) {
+                type = 'error';
+            }
+            
             tableFilter($(".listing-form"));
             if(msg != '') {
                 swal({
                     title: msg,
                     text: "",
                     confirmButtonColor: "#00695C",
-                    type: "success",
+                    type: type,
                     allowOutsideClick: true,
                     confirmButtonText: LANG_OK,
                     customClass: "swl-success",

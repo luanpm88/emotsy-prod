@@ -6,14 +6,12 @@
 			<tr>
 				<td width="1%">
 					<div class="text-nowrap">
-						<div class="checkbox inline">
-							<label>
-								<input type="checkbox" class="node styled"
-									custom-order="{{ $payment_method->custom_order }}"
-									name="ids[]"
-									value="{{ $payment_method->uid }}"
-								/>								
-							</label>
+						<div class="checkbox inline">							
+							<input type="hidden" class="node styled"
+								custom-order="{{ $payment_method->custom_order }}"
+								name="ids[]"
+								value="{{ $payment_method->uid }}"
+							/>							
 						</div>
 						@if (request()->sort_order == 'custom_order' && empty(request()->keyword))
 							<i data-action="move" class="icon icon-more2 list-drag-button"></i>

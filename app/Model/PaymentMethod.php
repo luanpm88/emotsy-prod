@@ -67,6 +67,11 @@ class PaymentMethod extends Model
 			$rules['options.publicKey'] = 'required';
 			$rules['options.privateKey'] = 'required';
 		}
+		
+		# Check if payment method is valid
+        if (!$this->isValid()) {
+            $rules['payment_method_not_valid'] = 'required';
+		}
 
         return $rules;
     }
@@ -284,5 +289,21 @@ class PaymentMethod extends Model
     {
         return PaymentMethod::where("payment_methods.type", "=", $type)
 			->first();
+    }
+	
+	/**
+     * Check payment method setting is valid.
+     *
+     * @return boolean
+     */
+    public function isValid()
+    {
+        try {
+            $this->getBraintreeClientToken();
+		} catch (\Exception $e) {
+			return false;
+		}
+		
+		return true;
     }
 }

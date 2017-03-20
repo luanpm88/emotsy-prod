@@ -139,6 +139,9 @@ return [
         'recaptcha_invalid' => [
             'required' => 'Invalid reCAPTCHA check.',
         ],
+        'payment_method_not_valid' => [
+            'required' => 'Something went wrong with payment method setting. Please check again.',
+        ],
     ],
 
     /*

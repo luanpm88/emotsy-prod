@@ -1,3 +1,6 @@
+@if ($errors->has('payment_method_not_valid'))
+	<div class="alert alert-danger">{{ $errors->first('payment_method_not_valid') }}</div>
+@endif
 <div class="row">						
 	<div class="col-md-4">
 		<div class="">

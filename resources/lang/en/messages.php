@@ -1675,4 +1675,5 @@ return [
     'move_subscriber' => 'Move subscriber(s)',
     'subscribers_copy_message' => 'You\'re about to copy :number subscriber(s)',
     'subscribers_move_message' => 'You\'re about to move :number subscriber(s)',
+    'payment_methods.not_valid' => 'Payment method\'s setting is not valid. Click <a href=":link">here</a> to update.',
 ];
