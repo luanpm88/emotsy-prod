@@ -30,11 +30,11 @@ use Acelle\Library\Log as MailLog;
 class Customer extends Model
 {
     protected $quotaTracker;
-    
+
     // Plan status
-	const STATUS_INACTIVE = 'inactive';
+    const STATUS_INACTIVE = 'inactive';
     const STATUS_ACTIVE = 'active';
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -60,7 +60,7 @@ class Customer extends Model
             'password' => 'confirmed|min:5',
         );
     }
-    
+
     /**
      * Customer email.
      *
@@ -95,7 +95,7 @@ class Customer extends Model
     {
         return $this->belongsTo('Acelle\Model\User');
     }
-    
+
     public function admin()
     {
         return $this->belongsTo('Acelle\Model\Admin');
@@ -120,33 +120,33 @@ class Customer extends Model
     {
         return $this->hasMany('Acelle\Model\Campaign')->where('status', '=', 'done')->orderBy('created_at', 'desc');
     }
-    
+
     public function subscribers()
     {
         return $this->hasManyThrough('Acelle\Model\Subscriber', 'Acelle\Model\MailList');
     }
-    
+
     public function logs()
     {
         return $this->hasMany('Acelle\Model\Log')->orderBy('created_at', 'desc');
     }
-    
+
     public function trackingLogs()
     {
         return $this->hasMany('Acelle\Model\TrackingLog')->orderBy('created_at', 'asc');
     }
-    
+
     public function automations()
     {
         return $this->hasMany('Acelle\Model\Automation');
     }
-	
-	public function subscriptions()
+
+    public function subscriptions()
     {
         return $this->hasMany('Acelle\Model\Subscription')->orderBy('created_at', 'desc');
     }
-	
-	public function sendingDomains()
+
+    public function sendingDomains()
     {
         return $this->hasMany('Acelle\Model\SendingDomain');
     }
@@ -168,7 +168,7 @@ class Customer extends Model
             $item->uid = $uid;
         });
     }
-    
+
     /**
      * Display customer name: first_name last_name.
      *
@@ -188,11 +188,11 @@ class Customer extends Model
     {
         $path = 'app/customers/';
         $upload_path = storage_path($path);
-        
+
         if (!file_exists($upload_path)) {
             mkdir($upload_path, 0777, true);
         }
-        
+
         $filename = 'avatar-'.$this->id.'.'.$file->getClientOriginalExtension();
 
         // save to server
@@ -263,7 +263,7 @@ class Customer extends Model
     {
         $query = self::select('customers.*')
             ->leftJoin('users', 'users.id', '=', 'customers.user_id');
-        
+
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
@@ -278,7 +278,7 @@ class Customer extends Model
         // filters
         $filters = $request->filters;
         if (!empty($filters)) {
-            
+
         }
 
         return $query;
@@ -307,21 +307,21 @@ class Customer extends Model
     {
         $query = \Acelle\Model\Subscriber::leftJoin('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
                                 ->leftJoin('customers', 'customers.id', '=', 'mail_lists.customer_id');
-    
+
         if (isset($list_id)) {
             $query = $query->where('subscribers.mail_list_id', '=', $list_id);
         }
         if (isset($customer_id)) {
             $query = $query->where('customers.id', '=', $customer_id);
         }
-    
+
         $query = $query->where('subscribers.created_at', '>=', $begin)
                         ->where('subscribers.created_at', '<=', $end);
-    
+
         return $query->count();
     }
-	
-	/**
+
+    /**
      * Get customer options.
      *
      * @return string
@@ -329,16 +329,16 @@ class Customer extends Model
     public function getOptions()
     {
         //@todo how to get option from subscription/plan
-		$subscription = $this->getCurrentSubscription();
+        $subscription = $this->getCurrentSubscription();
         if(is_object($subscription)) {
-			return $subscription->getOptions();
-		} elseif ($this->hasAdminAccount()) {
-			return \Acelle\Model\Subscription::defaultUnlimitedOptions();
-		} else {
-			return \Acelle\Model\Subscription::defaultOptions();
-		}
+            return $subscription->getOptions();
+        } elseif ($this->hasAdminAccount()) {
+            return \Acelle\Model\Subscription::defaultUnlimitedOptions();
+        } else {
+            return \Acelle\Model\Subscription::defaultOptions();
+        }
     }
-    
+
     /**
      * Get customer option.
      *
@@ -346,10 +346,10 @@ class Customer extends Model
      */
     public function getOption($name)
     {
-		$options = $this->getOptions();
+        $options = $this->getOptions();
         return isset($options[$name]) ? $options[$name] : '';
     }
-    
+
     /**
      * Get max list quota.
      *
@@ -364,7 +364,7 @@ class Customer extends Model
             return $count;
         }
     }
-    
+
     /**
      * Count customer lists.
      *
@@ -374,7 +374,7 @@ class Customer extends Model
     {
         return $this->lists()->count();
     }
-    
+
     /**
      * Calculate list usage.
      *
@@ -388,10 +388,10 @@ class Customer extends Model
         if ($this->maxLists() == 0) {
             return 100;
         }
-    
+
         return round((($this->listsCount() / $this->maxLists()) * 100), 2);
     }
-    
+
     /**
      * Display calculate list usage.
      *
@@ -402,10 +402,10 @@ class Customer extends Model
         if ($this->maxLists() == '∞') {
             return trans('messages.unlimited');
         }
-    
+
         return $this->listsUsage().'%';
     }
-    
+
     /**
      * Get campaigns quota.
      *
@@ -420,7 +420,7 @@ class Customer extends Model
             return $count;
         }
     }
-    
+
     /**
      * Count customer's campaigns.
      *
@@ -430,7 +430,7 @@ class Customer extends Model
     {
         return $this->campaigns()->count();
     }
-    
+
     /**
      * Calculate campaign usage.
      *
@@ -444,10 +444,10 @@ class Customer extends Model
         if ($this->maxCampaigns() == 0) {
             return 100;
         }
-    
+
         return round((($this->campaignsCount() / $this->maxCampaigns()) * 100), 2);
     }
-    
+
     /**
      * Calculate campaign usage.
      *
@@ -458,10 +458,10 @@ class Customer extends Model
         if ($this->maxCampaigns() == '∞') {
             return trans('messages.unlimited');
         }
-    
+
         return $this->campaignsUsage().'%';
     }
-    
+
     /**
      * Get subscriber quota.
      *
@@ -476,7 +476,7 @@ class Customer extends Model
             return $count;
         }
     }
-    
+
     /**
      * Count customer's subscribers.
      *
@@ -486,7 +486,7 @@ class Customer extends Model
     {
         return $this->subscribers()->count();
     }
-    
+
     /**
      * Calculate subscibers usage.
      *
@@ -500,10 +500,10 @@ class Customer extends Model
         if ($this->maxSubscribers() == 0 || $this->subscribersCount() > $this->maxSubscribers()) {
             return 100;
         }
-    
+
         return round((($this->subscribersCount() / $this->maxSubscribers()) * 100), 2);
     }
-    
+
     /**
      * Calculate subscibers usage.
      *
@@ -514,10 +514,10 @@ class Customer extends Model
         if ($this->maxSubscribers() == '∞') {
             return trans('messages.unlimited');
         }
-    
+
         return $this->readCache('SubscriberUsage') . '%';
     }
-    
+
     /**
      * Get customer's quota.
      *
@@ -532,7 +532,7 @@ class Customer extends Model
             return $quota;
         }
     }
-    
+
     /**
      * Check if customer has access to ALL sending servers.
      *
@@ -543,7 +543,7 @@ class Customer extends Model
         $check = $this->getOption('all_sending_servers');
         return ($check == 'yes');
     }
-    
+
     /**
      * Get customer's sending quota.
      *
@@ -553,7 +553,7 @@ class Customer extends Model
     {
         $time_value = $this->getOption('sending_quota_time');
         $time_unit = $this->getOption('sending_quota_time_unit');
-    
+
         if ($time_value == '-1') {
             $begin = null;
         } else {
@@ -571,18 +571,18 @@ class Customer extends Model
                 $begin = \Carbon\Carbon::now()->subMinute($time_value);
             }
         }
-    
+
         $query = \Acelle\Model\TrackingLog::leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
         $query = $query->where('campaigns.customer_id', '=', $this->id);
         if (isset($begin)) {
             $query = $query->where('tracking_logs.created_at', '>=', $begin);
         }
-    
+
         $count = $query->count();
-    
+
         return $count;
     }
-    
+
     /**
      * Get customer's sending quota rate.
      *
@@ -595,10 +595,10 @@ class Customer extends Model
         } elseif ($this->maxQuota() == '0' || $this->sendingQuota() >= $this->maxQuota()) {
             return '100';
         }
-    
+
         return round((($this->sendingQuota() / $this->maxQuota()) * 100), 2);
     }
-    
+
     /**
      * Check if customer has used up all quota allocated.
      *
@@ -608,7 +608,7 @@ class Customer extends Model
     {
         return !$this->getQuotaTracker()->check();
     }
-    
+
     /**
      * Increment quota usage
      *
@@ -618,7 +618,7 @@ class Customer extends Model
     {
         return $this->getQuotaTracker($timePoint)->add();
     }
-    
+
     /**
      * Get customer's sending quota rate.
      *
@@ -632,7 +632,7 @@ class Customer extends Model
         // @todo use percentage helper here
         return $this->getSendingQuotaUsagePercentage().'%';
     }
-    
+
     /**
      * Get customer's color scheme.
      *
@@ -646,7 +646,7 @@ class Customer extends Model
             return \Acelle\Model\Setting::get('frontend_scheme');
         }
     }
-    
+
     /**
      * Color array.
      *
@@ -664,7 +664,7 @@ class Customer extends Model
             ['value' => 'white', 'text' => trans('messages.white')],
         ];
     }
-    
+
     /**
      * Disable customer.
      *
@@ -675,7 +675,7 @@ class Customer extends Model
         $this->status = 'inactive';
         return $this->save();
     }
-    
+
     /**
      * Enable customer.
      *
@@ -686,7 +686,7 @@ class Customer extends Model
         $this->status = 'active';
         return $this->save();
     }
-    
+
     /**
      * Get customer's quota.
      *
@@ -697,7 +697,7 @@ class Customer extends Model
         // -1 indicate unlimited
         return $this->getOption('sending_quota');
     }
-    
+
     /**
      * Get customer's sending quota.
      *
@@ -705,10 +705,14 @@ class Customer extends Model
      */
     public function getSendingQuotaUsage()
     {
+        $current = $this->getCurrentSubscription();
+        if (is_null($current)) {
+            return 0;
+        }
         $tracker = $this->getQuotaTracker();
         return $tracker->getUsage();
     }
-    
+
     /**
      * Get customer's sending quota rate.
      *
@@ -716,6 +720,11 @@ class Customer extends Model
      */
     public function getSendingQuotaUsagePercentage()
     {
+        $current = $this->getCurrentSubscription();
+        if (is_null($current)) {
+            return 0;
+        }
+
         // @todo magic number
         if ($this->getSendingQuota() == -1) {
             return '0';
@@ -725,7 +734,7 @@ class Customer extends Model
 
         return round(($this->getQuotaTracker()->getUsagePercentage() * 100), 2);
     }
-    
+
     /**
      * Get quota starting time
      *
@@ -734,7 +743,7 @@ class Customer extends Model
     public function getQuotaStartingTime() {
         $timeValue = $this->getOption('sending_quota_time');
         $timeUnit = $this->getOption('sending_quota_time_unit');
-        
+
         // @todo: magic number here
         // @todo: why $timeValue == -1?
         // @todo: configuration setting for default Quota Starting Time
@@ -744,17 +753,6 @@ class Customer extends Model
             $start = \Carbon\Carbon::parse("{$timeValue} {$timeUnit} ago");
         }
         return $start;
-    }
-
-    /**
-     * Get quota starting time
-     *
-     * @return array
-     */
-    public function getQuotaIntervalString() {
-        $timeValue = $this->getOption('sending_quota_time');
-        $timeUnit = $this->getOption('sending_quota_time_unit');
-        return "{$timeValue} {$timeUnit}";
     }
 
     /**
@@ -809,11 +807,18 @@ class Customer extends Model
      * @return array
      */
     public function initQuotaTracker() {
-        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), [$this->getQuotaIntervalString() => $this->getSendingQuota()]);
+        $current = $this->getCurrentSubscription();
+
+        $quota = [
+            'start' => $current->start_date,
+            'max' => $current->getOption('email_max')
+        ];
+
+        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), null, $quota);
         // @note: in case of multi-process, the following command must be issued manually
         //     $this->renewQuotaTracker();
     }
-    
+
     /**
      * Get sending quota lock file
      *
@@ -829,6 +834,12 @@ class Customer extends Model
      * @return array
      */
     public function getQuotaTracker() {
+        $current = $this->getCurrentSubscription();
+
+        if (is_null($current)) {
+            throw new \Exception("User not subscribed to any active plan");
+        }
+
         if(!$this->quotaTracker) {
             $this->initQuotaTracker();
         }
@@ -846,15 +857,6 @@ class Customer extends Model
         $this->save();
     }
 
-    public function quotaDebug() {
-        echo "During the last " . $this->getQuotaIntervalString() . ", Count: " . $this->getSendingQuotaUsage() . " / Total: " . $this->getSendingQuota() . "\n";
-        echo "Now " . \Carbon\Carbon::now()->toDateTimeString() . "\n";
-        foreach($this->getQuotaTracker()->getSeries() as $t) {
-            echo \Carbon\Carbon::createFromTimestamp($t)->toDateTimeString() . " <-> " ;
-        }
-        echo "\n" . env('REDIS_ENABLED') . "\n";
-    }
-    
     /**
      * Get not auto campaign.
      *
@@ -864,7 +866,7 @@ class Customer extends Model
     {
         return $this->campaigns()->where('is_auto', '=', false);
     }
-    
+
     /**
      * Get customer timezone
      *
@@ -873,7 +875,7 @@ class Customer extends Model
     public function getTimezone() {
         return $this->timezone;
     }
-    
+
     /**
      * Get customer language code
      *
@@ -882,7 +884,7 @@ class Customer extends Model
     public function getLanguageCode() {
         return (is_object($this->language) ? $this->language->code : null);
     }
-    
+
     /**
      * Get customer select2 select options
      *
@@ -890,7 +892,7 @@ class Customer extends Model
      */
     public static function select2($request) {
         $data = ['items' => [], 'more' => true];
-        
+
         $query = \Acelle\Model\Customer::getAll()->leftJoin('users', 'users.id', '=', 'customers.user_id');
         if (isset($request->q)) {
             $keyword = $request->q;
@@ -903,10 +905,10 @@ class Customer extends Model
         foreach ($query->limit(20)->get() as $customer) {
             $data['items'][] = ['id' => $customer->uid, 'text' => $customer->displayName()];
         }
-        
+
         return json_encode($data);
     }
-    
+
     /**
      * Create/Update customer information
      *
@@ -928,11 +930,11 @@ class Customer extends Model
             $this->admin_id = is_object($request->user()) ? $request->user()->admin->id : null;
             $this->status = 'active';
         }
-        
+
         $this->fill($request->all());
-        
+
         $this->save();
-        
+
         // Upload and save image
         if ($request->hasFile('image')) {
             if ($request->file('image')->isValid()) {
@@ -949,53 +951,53 @@ class Customer extends Model
             $this->image = '';
         }
     }
-	
-	/**
+
+    /**
      * Get customer current subscription
      *
      * @return Subscription
      */
     public function getCurrentSubscription() {
         return $subsciption = $this->subscriptions()
-			->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_ACTIVE)
-			->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
-			->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay())
-			->first();
+            ->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_ACTIVE)
+            ->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
+            ->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay())
+            ->first();
     }
-	
-	/**
+
+    /**
      * Get customer current pending subscription
      *
      * @return Subscription
      */
     public function getCurrentInactiveSubscription() {
         return $subsciption = $this->subscriptions()
-			->where('status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
-			->first();
+            ->where('status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
+            ->first();
     }
-	
-	/**
+
+    /**
      * Get next subscription start at
      *
      * @return Date
      */
     public function getNextScriptionStartAt() {
         $last_subscription = $this->subscriptions()
-			->orderBy('created_at', 'desc')->first();
-		
-		if(is_object($last_subscription)) {
-			return $last_subscription->end_at->addDay(1);
-		} else {
-			return \Acelle\Library\Tool::customerDateTime(\Carbon\Carbon::now());
-		}
+            ->orderBy('created_at', 'desc')->first();
+
+        if(is_object($last_subscription)) {
+            return $last_subscription->end_at->addDay(1);
+        } else {
+            return \Acelle\Library\Tool::customerDateTime(\Carbon\Carbon::now());
+        }
     }
-	
-	public function sendingServers()
+
+    public function sendingServers()
     {
         return $this->hasMany('Acelle\Model\SendingServer');
     }
-	
-	/**
+
+    /**
      * Customers count by time.
      *
      * @return number
@@ -1003,18 +1005,18 @@ class Customer extends Model
     public static function customersCountByTime($begin, $end, $admin_id = null)
     {
         $query = \Acelle\Model\Customer::select('customers.*');
-    
+
         if (isset($admin_id)) {
             $query = $query->where('customers.admin_id', '=', $admin_id);
         }
-    
+
         $query = $query->where('customers.created_at', '>=', $begin)
             ->where('customers.created_at', '<=', $end);
-    
+
         return $query->count();
     }
-	
-	/**
+
+    /**
      * The rules for validation via api.
      *
      * @var array
@@ -1061,8 +1063,8 @@ class Customer extends Model
 
         return $arr;
     }
-	
-	/**
+
+    /**
      * Update Campaign cached data
      *
      * @return void
@@ -1122,8 +1124,8 @@ class Customer extends Model
             return null;
         }
     }
-	
-	/**
+
+    /**
      * Sending servers count.
      *
      * @var integer
@@ -1132,8 +1134,8 @@ class Customer extends Model
     {
         return $this->sendingServers() ->count();
     }
-	
-	/**
+
+    /**
      * Sending domains count.
      *
      * @var integer
@@ -1142,42 +1144,42 @@ class Customer extends Model
     {
         return $this->sendingDomains() ->count();
     }
-	
-	/**
+
+    /**
      * Get max sending server count.
      *
      * @var integer
      */
     public function maxSendingServers()
     {
-		$count = $this->getOption('sending_servers_max');
+        $count = $this->getOption('sending_servers_max');
         if ($count == -1) {
             return '∞';
         } else {
             return $count;
         }
     }
-	
-	/**
+
+    /**
      * Calculate subscibers usage.
      *
      * @return number
      */
     public function sendingServersUsage()
     {
-		$max = $this->maxSendingServers();
-		$count = $this->sendingServersCount();
-		
+        $max = $this->maxSendingServers();
+        $count = $this->sendingServersCount();
+
         if ($max == '∞') {
             return 0;
         }
         if ($max == 0 || $count > $max) {
             return 100;
         }
-    
+
         return round((($count / $max) * 100), 2);
     }
-    
+
     /**
      * Calculate subscibers usage.
      *
@@ -1188,45 +1190,45 @@ class Customer extends Model
         if ($this->maxSendingServers() == '∞') {
             return trans('messages.unlimited');
         }
-    
+
         return $this->sendingServersUsage().'%';
     }
-	
-	/**
+
+    /**
      * Get max sending server count.
      *
      * @var integer
      */
     public function maxSendingDomains()
     {
-		$count = $this->getOption('sending_domains_max');
+        $count = $this->getOption('sending_domains_max');
         if ($count == -1) {
             return '∞';
         } else {
             return $count;
         }
     }
-	
-	/**
+
+    /**
      * Calculate subscibers usage.
      *
      * @return number
      */
     public function sendingDomainsUsage()
     {
-		$max = $this->maxSendingDomains();
-		$count = $this->sendingDomainsCount();
-		
+        $max = $this->maxSendingDomains();
+        $count = $this->sendingDomainsCount();
+
         if ($max == '∞') {
             return 0;
         }
         if ($max == 0 || $count > $max) {
             return 100;
         }
-    
+
         return round((($count / $max) * 100), 2);
     }
-    
+
     /**
      * Calculate subscibers usage.
      *
@@ -1237,11 +1239,11 @@ class Customer extends Model
         if ($this->maxSendingDomains() == '∞') {
             return trans('messages.unlimited');
         }
-    
+
         return $this->sendingDomainsUsage().'%';
     }
-	
-	/**
+
+    /**
      * Subscriptions count.
      *
      * @return number
@@ -1250,17 +1252,17 @@ class Customer extends Model
     {
         return $this->subscriptions()->count();
     }
-	
-	/**
+
+    /**
      * Check if customer dosen't have any plan.
      *
      * @return boolean
      */
     public function notHaveAnyPlan() {
-		return $this->subscriptionsCount() == 0;
-	}
-	
-	/**
+        return $this->subscriptionsCount() == 0;
+    }
+
+    /**
      * Count customer automations.
      *
      * @return number
@@ -1269,42 +1271,42 @@ class Customer extends Model
     {
         return $this->automations()->count();
     }
-	
-	/**
+
+    /**
      * Get max automation count.
      *
      * @var integer
      */
     public function maxAutomations()
     {
-		$count = $this->getOption('automation_max');
+        $count = $this->getOption('automation_max');
         if ($count == -1) {
             return '∞';
         } else {
             return $count;
         }
     }
-	
-	/**
+
+    /**
      * Calculate subscibers usage.
      *
      * @return number
      */
     public function automationsUsage()
     {
-		$max = $this->maxAutomations();
-		$count = $this->automationsCount();
-		
+        $max = $this->maxAutomations();
+        $count = $this->automationsCount();
+
         if ($max == '∞') {
             return 0;
         }
         if ($max == 0 || $count > $max) {
             return 100;
         }
-    
+
         return round((($count / $max) * 100), 2);
     }
-    
+
     /**
      * Calculate subscibers usage.
      *
@@ -1315,11 +1317,11 @@ class Customer extends Model
         if ($this->maxAutomations() == '∞') {
             return trans('messages.unlimited');
         }
-    
+
         return $this->automationsUsage().'%';
     }
-	
-	/**
+
+    /**
      * Check if customer has admin account
      *
      * @return boolean
@@ -1327,37 +1329,37 @@ class Customer extends Model
     public function hasAdminAccount() {
         return is_object($this->user) && is_object($this->user->admin);
     }
-	
-	/**
+
+    /**
      * Get all customer active sending servers
      *
      * @return collect
      */
     public function activeSendingServers() {
-		return $this->sendingServers()->where('status', '=', \Acelle\Model\SendingServer::STATUS_ACTIVE);
-	}
-	
-	/**
+        return $this->sendingServers()->where('status', '=', \Acelle\Model\SendingServer::STATUS_ACTIVE);
+    }
+
+    /**
      * Check if customer is disabled
      *
      * @return boolean
      */
     public function isActive() {
-		return $this->status == Customer::STATUS_ACTIVE;
-	}
-	
-	/**
+        return $this->status == Customer::STATUS_ACTIVE;
+    }
+
+    /**
      * Check if customer is disabled
      *
      * @return boolean
      */
     public function currentPlanName() {
-		$current_subscription = $this->getCurrentSubscription();
-		return is_object($this->user->admin) ?
-			trans('messages.admin_default_plan') :
-			(is_object($current_subscription) ?
-				$current_subscription->plan_name :
-				trans('messages.no_plan')
-			);
-	}
+        $current_subscription = $this->getCurrentSubscription();
+        return is_object($this->user->admin) ?
+            trans('messages.admin_default_plan') :
+            (is_object($current_subscription) ?
+                $current_subscription->plan_name :
+                trans('messages.no_plan')
+            );
+    }
 }

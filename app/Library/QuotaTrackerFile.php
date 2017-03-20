@@ -43,11 +43,11 @@ class QuotaTrackerFile
      * @param Array $quota, for example $quota = ['start' => 'Jan 1, 2016', 'interval' => '1 month', 'max' => ]
      * @return void
      */
-    public function __construct($file, $limits = [], $quota = null)
+    public function __construct($file, $quota = null, $limits = [])
     {
         $this->file = $file;
-        $this->limits = $limits;
         $this->quota = $quota;
+        $this->limits = $limits;
         $this->createLogFile();
     }
 
@@ -254,7 +254,7 @@ class QuotaTrackerFile
     public function getUsagePercentage()
     {
         if (is_null($this->quota)) {
-            return $this->getUsage() / (\DateInterval::createFromDateString(array_values($this->limits)[0]));
+            return $this->getUsage() / array_values($this->limits)[0];
         }
         return (float) $this->getUsage() / $this->quota;
     }
