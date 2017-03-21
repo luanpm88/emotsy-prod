@@ -1626,7 +1626,7 @@ ul.automation-confirm li.child-row h5 {
     margin-top: -29px;
     font-size: 15px;
     padding-left: 11px;
-    background: #fff;
+    background: rgba(0,0,0,0);
     margin-left: 2px;
     float: left;
     font-weight: 600;
