@@ -14,8 +14,8 @@ class UserQuotaTest extends TestCase
     public function testUserQuotaUsage()
     {
         // setup assumptions
-        $user = $this->getMockBuilder(User::class)
-                     ->setMethods(['getQuotaIntervalString', 'getSendingQuota', 'renewQuotaTracker', 'getSendingQuotaLockFile'])
+        $user = $this->getMockBuilder(Customer::class)
+                     ->setMethods(['getQuotaIntervalString', 'getSendingQuota', 'renewQuotaTracker', 'getSendingQuotaLockFile', 'getCurrentSubscription'])
                      ->disableOriginalConstructor()
                      ->disableOriginalClone()
                      ->disableArgumentCloning()
@@ -32,6 +32,8 @@ class UserQuotaTest extends TestCase
         $user->method('getQuotaIntervalString')->willReturn('1 minute');
         $user->method('getSendingQuota')->willReturn('3');
         $user->method('getSendingQuotaLockFile')->willReturn('/tmp/' . uniqid());
+        $user->method('getCurrentSubscription')
+             ->willReturn(json_decode(json_encode(['start' => (new Carbon('3 days ago'))->timestamp, 'max' => 50000)));
 
         // TEST IF QUOTA IS CORRECTLY ENFORCED
         // no usage yet

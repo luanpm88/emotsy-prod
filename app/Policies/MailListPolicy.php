@@ -3,6 +3,7 @@
 namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Illuminate\Support\Facades\Log;
 
 class MailListPolicy
 {
@@ -45,8 +46,7 @@ class MailListPolicy
     {
         $max = $user->customer->getOption('subscriber_max');
         $maxPerList = $user->customer->getOption('subscriber_per_list_max');
-
-        return $user->customer->id == $mailList->user_id &&
+        return $user->customer->id == $mailList->customer_id &&
             ($max >= $user->customer->subscribers()->count() + $numberOfSubscribers || $max == -1) &&
             ($maxPerList >= $mailList->subscribers()->count() + $numberOfSubscribers || $maxPerList == -1);
     }

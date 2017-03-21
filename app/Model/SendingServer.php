@@ -65,9 +65,6 @@ class SendingServer extends Model
         'elasticemail-smtp' => 'SendingServerElasticEmailSmtp',
     );
 
-    // Server pools
-    public static $serverPools = array();
-
     /**
      * Reset the sending server pool.
      *
@@ -97,55 +94,6 @@ class SendingServer extends Model
     public function bounceHandler()
     {
         return $this->belongsTo('Acelle\Model\BounceHandler');
-    }
-
-    /**
-     * Pick up a sending server for the provided campaign.
-     *
-     * @return mixed
-     * @param campaign
-     */
-    public static function pickServer($campaign)
-    {
-        // retrieve all sending servers associated to user's group
-        // @todo: the following code is breaking the Law of Demeter
-        if ($campaign->user->allSendingServer()) {
-            $servers = self::where('status', self::STATUS_ACTIVE)->selectRaw('*, 100 AS fitness')->get();
-        } else {
-            // @todo: customerneedcheck
-            $servers = self::where('status', self::STATUS_ACTIVE)->select('sending_servers.*', 'customer_group_sending_servers.fitness')->join('customer_group_sending_servers', 'customer_group_sending_servers.sending_server_id', '=', 'sending_servers.id')->where('customer_group_id', $campaign->customer->customer_group_id)->get();
-        }
-
-        $serverSelection = array();
-        foreach ($servers as $server) {
-            $serverSelection[$server->id] = (float) $server->fitness;
-        }
-
-        while (true) {
-            // check if there is at least one sending server available
-            if (empty($serverSelection)) {
-                throw new \Exception('No sending servers available or sending servers exceed sending limit');
-            }
-
-            $id = (int) RouletteWheel::generate($serverSelection);
-            if (empty(self::$serverPools[$id])) {
-                MailLog::info('Initialize delivery server `'.$server->name.'` (ID: '.$id.')');
-                $server = self::find($id);
-                self::$serverPools[$id] = self::mapServerType($server);
-            } else {
-                MailLog::info('Pick up delivery server `'.self::$serverPools[$id]->name.'` (ID: '.$id.')');
-            }
-
-            if (self::$serverPools[$id]->overQuota()) {
-                MailLog::warning(sprintf("Sending server `%s` exceeds sending quota", self::$serverPools[$id]->name));
-                self::$serverPools[$id]->saveQuotaUsageInfo();
-                unset(self::$serverPools[$id]);
-                unset($serverSelection[$id]);
-                continue;
-            }
-
-            return self::$serverPools[$id];
-        }
     }
 
     /**
@@ -203,7 +151,7 @@ class SendingServer extends Model
     {
         return $this->belongsTo('Acelle\Model\Customer');
     }
-    
+
     public function admin()
     {
         return $this->belongsTo('Acelle\Model\Admin');
@@ -237,12 +185,12 @@ class SendingServer extends Model
                 $query = $query->where('sending_servers.type', '=', $filters['type']);
             }
         }
-        
+
         // Other filter
         if(!empty($request->customer_id)) {
             $query = $query->where('sending_servers.customer_id', '=', $request->customer_id);
         }
-        
+
         if(!empty($request->admin_id)) {
             $query = $query->where('sending_servers.admin_id', '=', $request->admin_id);
         }
@@ -566,7 +514,7 @@ class SendingServer extends Model
      * @return void
      */
     public function initQuotaTracker() {
-        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), [$this->getQuotaIntervalString() => $this->getSendingQuota()]);
+        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), null, [$this->getQuotaIntervalString() => $this->getSendingQuota()]);
         // @note: in case of multi-process, the following command must be issued manually
         //     $this->renewQuotaTracker();
     }
@@ -683,7 +631,7 @@ class SendingServer extends Model
     {
         return ( $this->type == 'smtp' || $this->type == 'sendmail' || $this->type == 'php-mail' );
     }
-    
+
     /**
      * Get all active items.
      *
@@ -693,7 +641,7 @@ class SendingServer extends Model
     {
         return self::where('status', '=', SendingServer::STATUS_ACTIVE);
     }
-    
+
     /**
      * Get all active system items.
      *
@@ -703,7 +651,7 @@ class SendingServer extends Model
     {
         return self::getAllActive()->whereNotNull('admin_id');
     }
-    
+
     /**
      * Add customer action log.
      */

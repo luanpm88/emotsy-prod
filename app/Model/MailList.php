@@ -75,6 +75,9 @@ class MailList extends Model
         'email_daily' => 'regex:"^[\W]*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4}[\W]*,{1}[\W]*)*([\w+\-.%]+@[\w\-.]+\.[A-Za-z]{2,4})[\W]*$"',
     );
 
+    // Server pools
+    public static $serverPools = array();
+
     /**
      * Items per page.
      *
@@ -1075,8 +1078,8 @@ class MailList extends Model
                 DB::table('__tmp_subscribers')->insert($data);
 
                 // Insert new subscribers from temp table to the main table
-                DB::statement("INSERT INTO " . table('subscribers') . "(uid, mail_list_id, user_id, email, status, subscription_type, created_at, updated_at)
-                               SELECT UUID_SHORT(), " . $this->id . ", " . $user->id . ", uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", " . db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED) . ", NOW(), NOW()
+                DB::statement("INSERT INTO " . table('subscribers') . "(uid, mail_list_id, email, status, subscription_type, created_at, updated_at)
+                               SELECT UUID_SHORT(), " . $this->id . ", uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", " . db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED) . ", NOW(), NOW()
                                FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN " . table('subscribers') . " main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL) uniq");
 
                 // Insert subscribers' custom fields to the fields table
@@ -1159,7 +1162,7 @@ class MailList extends Model
     {
         return $this->hasMany('Acelle\Model\MailListsSendingServer');
     }
-    
+
     public function activeMailListsSendingServers()
     {
         return $this->mailListsSendingServers()
@@ -1271,7 +1274,7 @@ class MailList extends Model
           ->setFrom(array($subscriber->mailList->from_email => $subscriber->mailList->from_name))
           ->setTo(array($subscriber->email, $subscriber->email => trans('messages.to_email_name')))
           ->addPart($body, 'text/html');
-        
+
         try {
             $this->send($message, [
                 'subscriber' => $subscriber
@@ -1296,9 +1299,33 @@ class MailList extends Model
             $selection[(int) $key] = $fitness;
         }
 
-        if (empty($selection)) {
-            throw new \Exception(sprintf("No sending server available for Mail List ID %s", $this->id));
+        while (true) {
+            // check if there is at least one sending server available
+            if (empty($selection)) {
+                throw new \Exception(sprintf("No sending server available or sending servers exceed sending limit for Mail List ID %s", $this->id));
+            }
+
+            $id = RouletteWheel::generate($selection);
+            if (empty(self::$serverPools[$id])) {
+                $server = SendingServer::find($id);
+                MailLog::info(sprintf('Initialize delivery server `%s` (ID: %s)', $server->name, $id));
+                self::$serverPools[$id] = SendingServer::mapServerType($server);
+            } else {
+                MailLog::info(sprintf('Pick up delivery server `%s` (ID: %s)', self::$serverPools[$id]->name, $id));
+            }
+
+            if (self::$serverPools[$id]->overQuota()) {
+                MailLog::warning(sprintf("Sending server `%s` exceeds sending quota", self::$serverPools[$id]->name));
+                self::$serverPools[$id]->saveQuotaUsageInfo();
+                unset(self::$serverPools[$id]);
+                unset($selection[$id]);
+                continue;
+            }
+
+            return self::$serverPools[$id];
         }
+
+
 
         $selected = RouletteWheel::generate($selection);
         return SendingServer::mapServerType(SendingServer::find($selected));
