@@ -1488,8 +1488,8 @@ return [
     'customer_account' => 'Customer account',
     'update_subscription' => 'Update subscription',
     'subscription.created' => 'Subscription was successfully created',
-    'subscription.updated' => 'Subscription server was successfully updated',
-    'subscription.deleted' => 'Subscription server was successfully deleted',
+    'subscription.updated' => 'Subscription was successfully updated',
+    'subscription.deleted' => 'Subscription was successfully deleted',
     'registration_confirmation_email' => 'Registration confirmation email',
     'registration_confirmation_email_subject' => 'Acelle Mail - Registration confirmation',
     'activation_email_sent_content' => '<p>We need to confirm your email address to complete the registration process.</p>
