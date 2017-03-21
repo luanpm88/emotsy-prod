@@ -13,7 +13,7 @@ class QuotaTrackerFileTest extends TestCase
      *
      * @return void
      */
-    private function testOverQuota()
+    public function testOverQuota()
     {
         $file = '/tmp/quotatest';
 
@@ -101,6 +101,11 @@ class QuotaTrackerFileTest extends TestCase
         $this->assertFalse($result);
     }
 
+    /**
+     * Test cleanupSeries() function
+     *
+     * @return void
+     */
     public function testQuotaCleanup()
     {
         $file = '/tmp/quotatest';
