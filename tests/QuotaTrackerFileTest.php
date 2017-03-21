@@ -13,7 +13,7 @@ class QuotaTrackerFileTest extends TestCase
      *
      * @return void
      */
-    public function testOverQuota()
+    private function testOverQuota()
     {
         $file = '/tmp/quotatest';
 
@@ -36,7 +36,7 @@ class QuotaTrackerFileTest extends TestCase
          * Suppose the quota setting is: {6 emails, every 5 seconds}
          * Then we test with: send an email every 1 second and and expect it will NOT to exceed the quota
          */
-        $tracker = new QuotaTrackerFile($file, ['start' => (new Carbon('first day of March 2016'))->timestamp, 'max' => 9, 'interval' => '1 month'], ['5 seconds' => 6]);
+        $tracker = new QuotaTrackerFile($file, ['start' => (new Carbon('first day of March 2016'))->timestamp, 'max' => 9], ['5 seconds' => 6]);
         $tracker->getExclusiveLock(function($tracker) {
             $tracker->reset([]);
         });
@@ -99,6 +99,38 @@ class QuotaTrackerFileTest extends TestCase
             return $tracker->add(Carbon::now());
         });
         $this->assertFalse($result);
+    }
+
+    public function testQuotaCleanup()
+    {
+        $file = '/tmp/quotatest';
+
+        $tracker = new QuotaTrackerFile($file, ['start' => (new Carbon('1 month ago'))->timestamp, 'max' => 1000]);
+        $tracker->getExclusiveLock(function($tracker) {
+            $tracker->reset();
+        });
+
+        $tracker->add();
+        $tracker->add();
+
+        $this->assertTrue(sizeof($tracker->getRawSeries()) == 2);
+        sleep(2);
+        $tracker = new QuotaTrackerFile($file, ['start' => (new Carbon('1 month ago'))->timestamp, 'max' => 1000]);
+        $this->assertTrue($tracker->getUsage() == 2);
+        $this->assertTrue(sizeof($tracker->getRawSeries()) == 2);
+        $tracker->cleanupSeries();
+        $this->assertTrue($tracker->getUsage() == 2);
+        $this->assertTrue(sizeof($tracker->getRawSeries()) == 2);
+        $tracker = new QuotaTrackerFile($file, ['start' => Carbon::now()->timestamp, 'max' => 1000]);
+        sleep(2);
+        $this->assertTrue($tracker->getUsage() == 0);
+        $this->assertTrue(sizeof($tracker->getRawSeries()) == 2);
+        $tracker->add();
+        $this->assertTrue($tracker->getUsage() == 1);
+        $this->assertTrue(sizeof($tracker->getRawSeries()) == 3);
+        $tracker->cleanupSeries();
+        $this->assertTrue($tracker->getUsage() == 1);
+        $this->assertTrue(sizeof($tracker->getRawSeries()) == 1);
     }
 
     /**

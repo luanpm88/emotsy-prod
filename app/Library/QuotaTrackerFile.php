@@ -279,6 +279,19 @@ class QuotaTrackerFile
     }
 
     /**
+     * Clean up the series data that are older than quota['max']
+     * @transaction-safe
+     *
+     * @return void
+     */
+    public function cleanupSeries($timePoint = null, $interval = null)
+    {
+        $this->getExclusiveLock(function() use (&$series, $timePoint, $interval) {
+            $this->series = $this->getSeries($timePoint, $interval);
+        });
+    }
+
+    /**
      * Get exclusive lock, preparing to read/write quota data
      *
      * @return void
@@ -301,7 +314,7 @@ class QuotaTrackerFile
                 $this->hasLock = true;
 
                 // retrieve the series data
-                $this->series = array_map('intval', array_values(array_filter(explode(',', file_get_contents($this->file)))));
+                $this->series = $this->load();
 
                 // execute the callback
                 $callback($this);
@@ -379,4 +392,15 @@ class QuotaTrackerFile
             throw new \Exception("Timeout getting lock");
         }
     }
+
+    /**
+     * Get the raw series data (for testing only)
+     *
+     * @return Array series
+     */
+    public function getRawSeries()
+    {
+        return $this->load();
+    }
+
 }
