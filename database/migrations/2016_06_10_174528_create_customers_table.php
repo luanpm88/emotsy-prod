@@ -25,9 +25,10 @@ class CreateCustomersTable extends Migration
             $table->string('timezone');
             $table->string('status')->nullable();
             $table->string('color_scheme')->nullable();
-            
+            $table->binary('quota')->nullable();
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('admin_id')->references('id')->on('admins');

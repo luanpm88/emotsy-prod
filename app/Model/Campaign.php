@@ -514,7 +514,7 @@ class Campaign extends Model
 
                 // Pick up an available sending server
                 // Throw exception in case no server available
-                $server = $this->pickServer($this);
+                $server = $this->pickSendingServer($this);
 
                 list($message, $msgId) = $this->prepareEmail($subscriber, $server);
 
@@ -547,7 +547,7 @@ class Campaign extends Model
             // but SNS is only made once when the server is initiated
             // UPDATE: this is no longer the case as one process now only deals with one campaign
             //         however, the method is still needed to save sending servers''
-            SendingServer::resetServerPools();
+            MailList::resetServerPools();
 
             // store customer quota usage
             $this->customer->saveQuotaUsageInfo();
@@ -600,9 +600,9 @@ class Campaign extends Model
      *
      * @return mixed
      */
-    public function pickServer($campaign)
+    public function pickSendingServer()
     {
-        return SendingServer::pickServer($campaign);
+        return $this->defaultMailList->pickSendingServer();
     }
 
     /**
@@ -1090,7 +1090,7 @@ class Campaign extends Model
     {
         $customer = $request->user()->customer;
         $query = self::where('customer_id', '=', $customer->id);
-        
+
         // Get campaign from ... (all|normal|automated)
         if($request->source == 'template') {
             $query = $query->where('html', '!=', null);
@@ -1995,7 +1995,7 @@ class Campaign extends Model
 
             // Pick up an available sending server
             // Throw exception in case no server available
-            $server = $this->pickServer($this);
+            $server = $this->pickSendingServer();
 
             // build the message from campaign information
             list($message, $msgId) = $this->prepareEmail($subscriber, $server);

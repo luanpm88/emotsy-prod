@@ -317,6 +317,19 @@ class MailList extends Model
     }
 
     /**
+     * Reset the sending server pool.
+     *
+     * @return mixed
+     */
+    public static function resetServerPools()
+    {
+        foreach(self::$serverPools as $server) {
+            $server->saveQuotaUsageInfo();
+        }
+        self::$serverPools = array();
+    }
+
+    /**
      * Check if a email is exsit.
      *
      * @param string the email

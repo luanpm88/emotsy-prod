@@ -66,19 +66,6 @@ class SendingServer extends Model
     );
 
     /**
-     * Reset the sending server pool.
-     *
-     * @return mixed
-     */
-    public static function resetServerPools()
-    {
-        foreach(self::$serverPools as $server) {
-            $server->saveQuotaUsageInfo();
-        }
-        self::$serverPools = array();
-    }
-
-    /**
      * Tracking logs.
      *
      * @return collection

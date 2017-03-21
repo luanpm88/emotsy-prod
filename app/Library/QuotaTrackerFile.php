@@ -251,12 +251,12 @@ class QuotaTrackerFile
      *
      * @return float
      */
-    public function getUsagePercentage()
+    public function getUsagePercentage($timePoint = null, $interval = null)
     {
         if (is_null($this->quota)) {
-            return $this->getUsage() / array_values($this->limits)[0];
+            return $this->getUsage($timePoint, $interval) / array_values($this->limits)[0];
         }
-        return (float) $this->getUsage() / $this->quota;
+        return (float) $this->getUsage($timePoint, $interval) / $this->quota['max'];
     }
 
     /**
