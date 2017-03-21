@@ -9,6 +9,7 @@ class Subscription extends Model
     // Subscription status
     const STATUS_ACTIVE = 'active'; // equiv. to 'queue'
 	const STATUS_INACTIVE = 'inactive';
+	const STATUS_DISABLED = 'disabled';
 	
 	// Subscription state
     const TIME_STATUS_FUTURE = 'future'; // equiv. to 'queue'
@@ -271,7 +272,7 @@ class Subscription extends Model
      */
     public function disable()
     {
-        $this->status = Subscription::STATUS_INACTIVE;
+        $this->status = Subscription::STATUS_DISABLED;
         return $this->save();
     }
     

@@ -66,7 +66,7 @@ class SubscriptionPolicy
         
         $customer = $user->customer;
         if (is_object($customer)) {
-            $ability = !is_object($customer->getCurrentInactiveSubscription());
+            $ability = $customer->getNotOutdatedInactiveSubscriptions()->count() == 0;
             $can = $can || $ability;
         }
 
@@ -108,7 +108,7 @@ class SubscriptionPolicy
         $customer = $user->customer;
         if (is_object($customer)) {
             $can = $can ||
-                ( $customer->id == $subscription->customer_id );
+                ( $customer->id == $subscription->customer_id && $subscription->status == \Acelle\Model\Subscription::STATUS_INACTIVE );
         }
         
         return $can;

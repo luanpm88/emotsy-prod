@@ -1373,4 +1373,15 @@ class Customer extends Model
 				trans('messages.no_plan')
 			);
 	}
+	
+	/**
+     * Get customer current pending subscription not include old one
+     *
+     * @return Subscription
+     */
+    public function getNotOutdatedInactiveSubscriptions() {
+        return $subsciption = $this->subscriptions()
+			->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
+			->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
+    }
 }
