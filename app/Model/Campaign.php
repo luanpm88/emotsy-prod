@@ -31,6 +31,7 @@ use DB;
 use Carbon\Carbon;
 use Acelle\Model\SystemJob;
 use Acelle\Exceptions\CampaignPausedException;
+use Acelle\Exceptions\CampaignErrorException;
 
 class Campaign extends Model
 {
@@ -502,7 +503,7 @@ class Campaign extends Model
 
                 // randomly check for campaign PAUSED status after 10 emails
                 // @todo wrap up the probability checking here
-                if (($i % 10) == 0) {
+                if (($i % 50) == 0) {
                     if ($this->refreshStatus()->isPaused()) {
                         throw new CampaignPausedException();
                     }
@@ -536,7 +537,10 @@ class Campaign extends Model
 
         } catch (CampaignPausedException $e) {
             // just finish
-            MailLog::info('Campaign paused');
+            MailLog::warning('Campaign paused');
+        } catch (CampaignErrorException $e) {
+            // just finish
+            MailLog::warning('Campaign terminated: ' . $e->getMessage());
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
             $this->error($e->getMessage());

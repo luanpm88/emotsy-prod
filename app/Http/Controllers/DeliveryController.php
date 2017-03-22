@@ -14,6 +14,7 @@ use Acelle\Model\SendingServer;
 use Acelle\Model\SendingServerMailgun;
 use Acelle\Model\SendingServerSendGrid;
 use Acelle\Model\SendingServerElasticEmail;
+use Acelle\Model\SendingServerSparkPost;
 use Acelle\Model\FeedbackLog;
 
 class DeliveryController extends Controller
@@ -61,6 +62,9 @@ class DeliveryController extends Controller
         } elseif ($type == SendingServerElasticEmail::WEBHOOK) {
             MailLog::configure(storage_path().'/logs/handler-elasticemail.log');
             SendingServerElasticEmail::handleNotification($_GET);
+        } elseif ($type == SendingServerSparkPost::WEBHOOK) {
+            MailLog::configure(storage_path().'/logs/handler-sparkpost.log');
+            SendingServerSparkPost::handleNotification($_GET);
         } else {
             return;
         }

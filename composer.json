@@ -25,7 +25,10 @@
         "symfony/yaml": "^3.1",
         "chumper/zipper": "^0.6.1",
         "predis/predis": "^1.1",
-        "league/csv": "^8.0"
+        "league/csv": "^8.0",
+        "guzzlehttp/guzzle": "^6.2",
+        "php-http/guzzle6-adapter": "^1.1",
+        "sparkpost/sparkpost": "^2.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

@@ -63,6 +63,8 @@ class SendingServer extends Model
         'sendgrid-smtp' => 'SendingServerSendGridSmtp',
         'elasticemail-api' => 'SendingServerElasticEmailApi',
         'elasticemail-smtp' => 'SendingServerElasticEmailSmtp',
+        'sparkpost-api' => 'SendingServerSparkPostApi',
+        'sparkpost-smtp' => 'SendingServerSparkPostSmtp',
     );
 
     // Server pools
@@ -370,6 +372,23 @@ class SendingServer extends Model
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
+                ],
+            ],
+            'sparkpost-api' => [
+                'cols' => [
+                    'name' => 'required',
+                    'api_key' => 'required',
+                ],
+            ],
+            'sparkpost-smtp' => [
+                'cols' => [
+                    'name' => 'required',
+                    'api_key' => 'required',
+                    'host' => 'required',
+                    'smtp_username' => 'required',
+                    'smtp_password' => 'required',
+                    'smtp_port' => 'required',
+                    'smtp_protocol' => '',
                 ],
             ],
             'smtp' => [
