@@ -6,6 +6,10 @@ use Illuminate\Database\Eloquent\Model;
 
 class Payment extends Model
 {
+    // Paid status
+	const PAID_STATUS_TRUE = 'paid';
+	const PAID_STATUS_FALSE = 'notpaid';
+    
     public $fillable = ['item_number','transaction_id','currency_code','payment_status'];
     
     public function paymentMethod()
@@ -25,7 +29,7 @@ class Payment extends Model
      */
     public function getPaymentMethodName()
     {
-        return $this->payment_method_name;
+        return $this->payment_method_name ? $this->payment_method_name : trans('messages.payment_manual');
     }
     
     /**

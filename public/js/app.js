@@ -1354,4 +1354,53 @@ $(function() {
         $(".copy-list-close").trigger("click");
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
+    
+    // Copy Move subscribers
+    $(document).on('click', '.list-form-button', function() {
+        var form = $('#list-form-modal').find('form');
+        var message = $(this).attr('message');
+        var uids = $(this).attr('data-uids');
+        var action = $(this).attr('data-url');
+        var method = $(this).attr('data-method');
+        var input = form.find('input[name=uids]');
+        
+        form.attr('action', action);
+        form.attr('method', method);
+        input.val(uids);
+        
+        message = message.replace(":number", "<span class='text-bold text-info-800'>1</span>");
+        
+        form.find('h4').html(message);
+    });
+    // Ajax copy list
+    $(document).on('submit', '#list-form-modal form', function(e) {
+        var form = $(this);
+        var url = form.attr("action");
+        var method = form.attr("method");       
+
+        $.ajax({
+            type: method,
+            url: url,
+            data: form.serialize(), // serializes the form's elements.
+            success: function(msg)
+            {
+                tableFilter($(".listing-form"));
+                if(msg != '') {
+                    swal({
+                        title: msg,
+                        text: "",
+                        confirmButtonColor: "#00695C",
+                        type: "success",
+                        allowOutsideClick: true,
+                        confirmButtonText: LANG_OK,
+                        customClass: "swl-success",
+                        html: true
+                    });
+                }
+                $('#list-form-modal').modal('hide');
+            }
+        });
+
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
 });

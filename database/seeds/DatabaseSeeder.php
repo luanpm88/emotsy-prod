@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
     {
         // Insert from file
         $query = File::get(storage_path('install/database_init.sql'));
-        $query = str_replace('<<prefix>>', env('DB_TABLES_PREFIX', ''), $query);        
+        $query = str_replace('<<prefix>>', config('database.connections.mysql.prefix'), $query);        
         DB::statement($query);
         
         $created_at = Carbon\Carbon::now();
@@ -121,14 +121,14 @@ class DatabaseSeeder extends Seeder
             'updated_at' => $updated_at,
         ]);
         
-        // Create default customer group
-        DB::table('admin_groups')->insert([
-            'id' => 1,
-            'name' => 'Admin Group 1',
-            'creator_id' => 1,
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
+        //// Create default customer group
+        //DB::table('admin_groups')->insert([
+        //    'id' => 1,
+        //    'name' => 'Admin Group 1',
+        //    'creator_id' => 1,
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
         
         // Create default customer for admin user
         DB::table('admins')->insert([
@@ -537,91 +537,91 @@ class DatabaseSeeder extends Seeder
             'updated_at' => $updated_at,
         ]);
         
-        DB::table('currencies')->insert([
-            'id' => 1,
-            'uid' => uniqid(),
-            'admin_id' => 1,
-            'name' => 'USD',
-            'code' => 'USD',
-            'format' => '${PRICE}',
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
+        //DB::table('currencies')->insert([
+        //    'id' => 1,
+        //    'uid' => uniqid(),
+        //    'admin_id' => 1,
+        //    'name' => 'USD',
+        //    'code' => 'USD',
+        //    'format' => '${PRICE}',
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
         
-        DB::table('plans')->insert([
-            'id' => 1,
-            'uid' => uniqid(),
-            'admin_id' => 1,
-            'currency_id' => 1,
-            'name' => 'Free',
-            'price' => 0.0,
-            'quota' => 500000,
-            'frequency_amount' => 1,
-            'frequency_unit' => 'month',
-            'frequency_amount' => 1,
-            'options' => '',
-            'status' => 'active',
-            'color' => 'rgb(20,130,160)',
-            'custom_order' => 0,
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-        
-        DB::table('plans')->insert([
-            'id' => 2,
-            'uid' => uniqid(),
-            'admin_id' => 1,
-            'currency_id' => 1,
-            'name' => 'Advanced',
-            'price' => 500.0,
-            'quota' => 1000000,
-            'frequency_amount' => 1,
-            'frequency_unit' => 'month',
-            'frequency_amount' => 1,
-            'options' => '',
-            'status' => 'active',
-            'color' => '#E91E63',
-            'custom_order' => 1,
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-        
-        DB::table('payment_methods')->insert([
-            'id' => 1,
-            'uid' => uniqid(),
-            'name' => 'Pay in Cash',
-            'admin_id' => 1,
-            'type' => 'cash',
-            'status' => 'active',
-            'custom_order' => 0,
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-        
-        DB::table('payment_methods')->insert([
-            'id' => 2,
-            'uid' => uniqid(),
-            'name' => 'Pay with PayPal',
-            'admin_id' => 1,
-            'type' => 'braintree_paypal',
-            'status' => 'inactive',
-            'options' => '{"environment":"sandbox","merchantId":"g3xq9gs9y9dvqqv6","publicKey":"c3xh5n9n2q8rkwct","privateKey":"14d2a2b3b337286f245c9976f2e4fe57"}',
-            'custom_order' => 1,
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
-        
-        DB::table('payment_methods')->insert([
-            'id' => 3,
-            'uid' => uniqid(),
-            'name' => 'Pay by Credit card',
-            'admin_id' => 1,
-            'type' => 'braintree_credit_card',
-            'status' => 'inactive',
-            'options' => '{"environment":"sandbox","merchantId":"g3xq9gs9y9dvqqv6","publicKey":"c3xh5n9n2q8rkwct","privateKey":"14d2a2b3b337286f245c9976f2e4fe57"}',
-            'custom_order' => 2,
-            'created_at' => $created_at,
-            'updated_at' => $updated_at,
-        ]);
+        //DB::table('plans')->insert([
+        //    'id' => 1,
+        //    'uid' => uniqid(),
+        //    'admin_id' => 1,
+        //    'currency_id' => 1,
+        //    'name' => 'Free',
+        //    'price' => 0.0,
+        //    'quota' => 500000,
+        //    'frequency_amount' => 1,
+        //    'frequency_unit' => 'month',
+        //    'frequency_amount' => 1,
+        //    'options' => '',
+        //    'status' => 'active',
+        //    'color' => 'rgb(20,130,160)',
+        //    'custom_order' => 0,
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
+        //
+        //DB::table('plans')->insert([
+        //    'id' => 2,
+        //    'uid' => uniqid(),
+        //    'admin_id' => 1,
+        //    'currency_id' => 1,
+        //    'name' => 'Advanced',
+        //    'price' => 500.0,
+        //    'quota' => 1000000,
+        //    'frequency_amount' => 1,
+        //    'frequency_unit' => 'month',
+        //    'frequency_amount' => 1,
+        //    'options' => '',
+        //    'status' => 'active',
+        //    'color' => '#E91E63',
+        //    'custom_order' => 1,
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
+        //
+        //DB::table('payment_methods')->insert([
+        //    'id' => 1,
+        //    'uid' => uniqid(),
+        //    'name' => 'Pay in Cash',
+        //    'admin_id' => 1,
+        //    'type' => 'cash',
+        //    'status' => 'active',
+        //    'custom_order' => 0,
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
+        //
+        //DB::table('payment_methods')->insert([
+        //    'id' => 2,
+        //    'uid' => uniqid(),
+        //    'name' => 'Pay with PayPal',
+        //    'admin_id' => 1,
+        //    'type' => 'braintree_paypal',
+        //    'status' => 'inactive',
+        //    'options' => '{"environment":"sandbox","merchantId":"g3xq9gs9y9dvqqv6","publicKey":"c3xh5n9n2q8rkwct","privateKey":"14d2a2b3b337286f245c9976f2e4fe57"}',
+        //    'custom_order' => 1,
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
+        //
+        //DB::table('payment_methods')->insert([
+        //    'id' => 3,
+        //    'uid' => uniqid(),
+        //    'name' => 'Pay by Credit card',
+        //    'admin_id' => 1,
+        //    'type' => 'braintree_credit_card',
+        //    'status' => 'inactive',
+        //    'options' => '{"environment":"sandbox","merchantId":"g3xq9gs9y9dvqqv6","publicKey":"c3xh5n9n2q8rkwct","privateKey":"14d2a2b3b337286f245c9976f2e4fe57"}',
+        //    'custom_order' => 2,
+        //    'created_at' => $created_at,
+        //    'updated_at' => $updated_at,
+        //]);
     }
 }

@@ -658,10 +658,22 @@ class Subscription extends Model
      *
      * @return void
      */
-    public function setPaid()
+    public function setPaid($description='')
     {
         $this->paid = true;
         $this->save();
+		
+		// description
+		if (!empty($description)) {
+			$payment = new \Acelle\Model\Payment();
+			$payment->subscription_id = $this->id;
+			$payment->data = '';
+			$payment->payment_method_id = NULL;
+			$payment->status = 'success';
+			$payment->payment_method_name = '';
+			$payment->order_id = $this->getOrderID();
+			$payment->save();
+		}
     }
 	
 	/**
@@ -669,10 +681,22 @@ class Subscription extends Model
      *
      * @return void
      */
-    public function setUnPaid()
+    public function setUnPaid($description='')
     {
         $this->paid = false;
         $this->save();
+		
+		// description
+		if (!empty($description)) {
+			$payment = new \Acelle\Model\Payment();
+			$payment->subscription_id = $this->id;
+			$payment->data = '';
+			$payment->payment_method_id = NULL;
+			$payment->status = 'success';
+			$payment->payment_method_name = '';
+			$payment->order_id = $this->getOrderID();
+			$payment->save();
+		}
     }
 	
 	/**

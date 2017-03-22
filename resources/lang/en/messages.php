@@ -1678,4 +1678,8 @@ return [
     'payment_methods.not_valid' => 'Payment method\'s setting is not valid. Click <a href=":link">here</a> to update.',
     'license_label_regular' => 'Regular',
     'subscription_status_disabled' => 'Disabled',
+    'paid_description' => 'Paid description',
+    'description' => 'Description',
+    'payment_note' => 'Payment note',
+    'payment_manual' => 'Manual',
 ];

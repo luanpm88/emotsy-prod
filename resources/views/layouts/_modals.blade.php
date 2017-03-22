@@ -393,3 +393,38 @@
 		</div>
 	</div>
 	<!-- /basic modal -->
+	
+	<!-- Basic modal -->
+	<div id="list-form-modal" class="modal fade">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-header bg-teal">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+			</div>
+			<div class="modal-content">
+				<form action="" method="POST" class="ajax_upload_form form-validate-jquery">
+					{{ csrf_field() }}
+					<input type="hidden" name="_method" value="">					
+					<input type="hidden" name="uids" value="">
+					
+					<div class="modal-body">
+						<h4></h4>
+						@include('helpers.form_control', [
+							'type' => 'textarea',
+							'class' => '',
+							'label' => trans('messages.description'),
+							'name' => 'description',
+							'value' => '',
+							'help_class' => 'payment',
+							'rules' => []
+						])						
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
+						<button type="submit" class="btn btn-primary bg-teal">{{ trans('messages.submit') }}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- /basic modal -->

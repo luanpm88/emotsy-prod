@@ -99,13 +99,19 @@
 								@endcan
 								@can('paid', $subscription)
 									<li>
-										<a data-method='PATCH' link-confirm="{{ trans('messages.paid_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@paid', ["uids" => $subscription->uid]) }}">
+										<a
+											message="{{ trans('messages.paid_subscriptions_confirm') }}" data-toggle="modal" data-target="#list-form-modal" href="#paid"
+											class="list-form-button"
+											data-uids="{{ $subscription->uid }}"
+											data-method="PATCH"
+											data-url="{{ action('Admin\SubscriptionController@paid') }}"
+										>											
 											<i class="icon-checkmark-circle"></i> {{ trans('messages.paid') }}
 										</a>
 									</li>
 								@endcan
 								@can('unpaid', $subscription)
-									<li>														
+									<li>
 										<a data-method='PATCH' link-confirm="{{ trans('messages.unpaid_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@unpaid', ["uids" => $subscription->uid]) }}">
 											<i class="icon-radio-unchecked"></i> {{ trans('messages.unpaid') }}
 										</a>

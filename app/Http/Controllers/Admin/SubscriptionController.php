@@ -371,7 +371,7 @@ class SubscriptionController extends Controller
         foreach ($subscriptions->get() as $subscription) {
             // authorize
             if (\Gate::allows('paid', $subscription)) {
-                $subscription->setPaid();
+                $subscription->setPaid($request->description);
             }            
         }
 
@@ -393,7 +393,7 @@ class SubscriptionController extends Controller
         foreach ($subscriptions->get() as $subscription) {
             // authorize
             if (\Gate::allows('unpaid', $subscription)) {
-                $subscription->setUnPaid();
+                $subscription->setUnPaid($request->description);
             }            
         }
 
