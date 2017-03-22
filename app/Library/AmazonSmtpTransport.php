@@ -30,7 +30,7 @@ class AmazonSmtpTransport extends \Swift_SmtpTransport
      *
      */
     private $rawResponses = array();
-    
+
     /**
      * Overwrite the execute method.
      *
@@ -40,7 +40,6 @@ class AmazonSmtpTransport extends \Swift_SmtpTransport
     {
         $response = parent::executeCommand($command, $codes, $failures);
         $this->rawResponses[] = $response;
-
         return $response;
     }
 
@@ -53,7 +52,7 @@ class AmazonSmtpTransport extends \Swift_SmtpTransport
     {
         return new self($host, $port, $security);
     }
-    
+
     /**
      * Get Amazon message ID from the last SMTP response.
      *
@@ -70,5 +69,15 @@ class AmazonSmtpTransport extends \Swift_SmtpTransport
         }
 
         return $messageId;
+    }
+
+    /**
+     * Get an array of SMTP raw responses
+     *
+     * @return Array SMTP messages
+     */
+    public function getRawResponses()
+    {
+        return $this->rawResponses;
     }
 }
