@@ -22,6 +22,7 @@
 
 namespace Acelle\Model;
 
+use Acelle\Model\Setting;
 use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
@@ -278,7 +279,7 @@ class Setting extends Model
             ['value' => 'white', 'text' => trans('messages.white')],
         ];
     }
-    
+
     /**
      * Update setting one line.
      *
@@ -295,7 +296,7 @@ class Setting extends Model
                 return stristr($data, $key) ? "$key=$value\n" : $data;
             }
         }, $data);
-        
+
         // Write file
         $env_file = fopen($file_path, 'w') or die('Unable to open file!');
         fwrite($env_file, implode($data, ""));

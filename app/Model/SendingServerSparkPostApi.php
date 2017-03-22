@@ -22,9 +22,7 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log;
-use SparkPost\SparkPostException;
-use Acelle\Exceptions\CampaignErrorException;
+use Acelle\Library\Log as MailLog;
 
 class SendingServerSparkPostApi extends SendingServerSparkPost
 {
@@ -39,13 +37,13 @@ class SendingServerSparkPostApi extends SendingServerSparkPost
     public function send($message, $params = array())
     {
         try {
-            $this->setupWebhooks();
+            $this->setupWebhook();
 
             $response = $this->client()->transmissions->post($this->prepareEmail($message));
 
             if ($response->getStatusCode() == 200) {
                 $body = $response->getBody();
-
+                MailLog::info("Sent!");
                 return array(
                     'runtime_message_id' => $body['results']['id'],
                     'status' => self::DELIVERY_STATUS_SENT,
@@ -54,12 +52,8 @@ class SendingServerSparkPostApi extends SendingServerSparkPost
                 // throw the exception with body string
                 throw new \Exception($response->getBody(true));
             }
-        } catch (SparkPostException $e) {
-            // terminate the entire campaign in case of Spark Post error
-            throw new CampaignErrorException($e->getMessage());
         } catch (\Exception $e) {
-            Log::warning('SparkPost failed to send');
-            Log::warning($e->getMessage());
+            MailLog::warning('SparkPost failed to send' . $e->getMessage());
 
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,

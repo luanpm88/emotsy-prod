@@ -69,19 +69,20 @@ class SendingServerSparkPost extends SendingServer
      *
      * @return mixed
      */
-    public function setupWebhooks()
+    public function setupWebhook()
     {
         if (self::$isWebhookSetup) {
             return true;
         }
 
-        // @TODO 03 get the URL listening for bounce/feedback notification
-        // @responsible: Acelle Mail team
+        MailLog::info('Cleaning up SparkPost webhook');
         $webhookUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
 
+        MailLog::info('Setting up SparkPost webhook');
         try {
-            $promise = $this->client()->request('POST', 'webhooks', [
-                "name" => "Acelle Mail Webhook",
+            $this->cleanupWebhook($webhookUrl);
+            $response = $this->client()->request('POST', 'webhooks', [
+                "name" => 'Acelle Mail Webhook',
                 "target" => $webhookUrl,
                 "auth_type" => "none",
                 "events" => [
@@ -92,10 +93,132 @@ class SendingServerSparkPost extends SendingServer
                 ]
             ]);
 
-            self::$isWebhookSetup = true;
+            if ($response->getStatusCode() == 200) {
+                self::$isWebhookSetup = true;
+                MailLog::info('SparkPost webhook set!');
+            } else {
+                // throw the exception with body string
+                throw new \Exception($response->getBody(true));
+            }
         } catch (\Exception $e) {
+            // just ignore the error
             self::$isWebhookSetup = true;
-            MailLog::warning('Cannot setup Spark Post webhook, ignored!');
+            MailLog::warning('Cannot setup Spark Post webhook. Error: ' . $e->getMessage());
+        }
+    }
+
+    public function cleanupWebhook($webhookUrl)
+    {
+        $response = $this->client()->request('GET', 'webhooks', []);
+
+        if ($response->getStatusCode() == 200) {
+            $webhooks = $response->getBody();
+            foreach($webhooks['results'] as $webhook) {
+                if ($webhook['target'] == $webhookUrl) {
+                    $this->deleteWebhook($webhook['id']);
+                }
+            }
+        } else {
+            // throw the exception with body string
+            throw new \Exception($response->getBody(true));
+        }
+    }
+
+    public function deleteWebhook($id)
+    {
+        MailLog::info("Deleting SparkPost webhook {$id}");
+        $response = $this->client()->request('DELETE', "webhooks/{$id}", []);
+
+        // 204 --> DELETE OK
+        if ($response->getStatusCode() == 204) {
+            MailLog::info("SparkPost webhook {$id} deleted");
+        } else {
+            var_dump($response->getStatusCode());
+            // throw the exception with body string
+            throw new \Exception($response->getBody(true));
+        }
+    }
+
+    public static function handleNotification()
+    {
+        MailLog::info(file_get_contents('php://input'));
+        $messages = json_decode(file_get_contents('php://input'), true);
+
+        if ($messages == [['msys' => []]]) {
+            MailLog::info('Webhook verified OK');
+            return response('Webhook verified OK', 200);
+        }
+
+        foreach($messages as $message) {
+            $type = $message['msys']['message_event']['type'];
+            switch ($type) {
+                case 'bounce':
+                case 'out_of_band':
+                case 'policy_rejection':
+                    self::handleBounce($message);
+                    break;
+                case 'spam_complaint':
+                    self::handleSpamComplaint($message);
+                    break;
+                default:
+                    MailLog::warning('Unknown notification type: ' . $type);
+            }
+        }
+    }
+
+    private static function handleBounce($message)
+    {
+        $bounceLog = new BounceLog();
+
+        // use Elastic Email transaction id as runtime-message-id
+        $bounceLog->runtime_message_id = $message['msys']['message_event']['message_id'];
+        $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
+        if ($trackingLog) {
+            $bounceLog->message_id = $trackingLog->message_id;
+        }
+
+        $bounceLog->bounce_type = BounceLog::HARD;
+        $bounceLog->raw = json_encode($message);
+        $bounceLog->save();
+        MailLog::info('Bounce recorded for message '.$bounceLog->runtime_message_id);
+
+        // add subscriber's email to blacklist
+        $subscriber = $bounceLog->findSubscriberByRuntimeMessageId();
+        if ($subscriber) {
+            $subscriber->sendToBlacklist($bounceLog->raw);
+            MailLog::info('Email added to blacklist');
+        } else {
+            MailLog::warning('Cannot find associated tracking log for message '.$bounceLog->runtime_message_id);
+        }
+    }
+
+    private static function handleSpamComplaint($message)
+    {
+        $feedbackLog = new FeedbackLog();
+
+        // use Elastic Email transaction id as runtime-message-id
+        $feedbackLog->runtime_message_id = $message['msys']['message_event']['message_id'];
+
+        // retrieve the associated tracking log in Acelle
+        $trackingLog = TrackingLog::where('runtime_message_id', $feedbackLog->runtime_message_id)->first();
+        if ($trackingLog) {
+            $feedbackLog->message_id = $trackingLog->message_id;
+        }
+
+        // ElasticEmail only notifies in case of SPAM reported
+        $feedbackLog->feedback_type = 'spam';
+        $feedbackLog->raw_feedback_content = json_encode($message);
+        $feedbackLog->save();
+        MailLog::info('Feedback recorded for message '.$feedbackLog->runtime_message_id);
+
+        // update the mail list, subscriber to be marked as 'spam-reported'
+        // @todo: the following lines of code should be wrapped up in one single method: $feedbackLog->markSubscriberAsSpamReported();
+        $subscriber = $feedbackLog->findSubscriberByRuntimeMessageId();
+        if ($subscriber) {
+            $subscriber->markAsSpamReported();
+            MailLog::info('Subscriber marked as spam-reported');
+        } else {
+            MailLog::warning('Cannot find associated tracking log for message '.$feedbackLog->runtime_message_id);
         }
     }
 }
