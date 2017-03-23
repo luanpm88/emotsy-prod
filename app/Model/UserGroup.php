@@ -660,14 +660,14 @@ class UserGroup extends Model
     {
         $this->user_group_sending_servers()->delete();
         foreach ($servers as $key => $param) {
-            //if ($param['check']) {
+            if ($param['check']) {
                 $server = SendingServer::findByUid($key);
                 $row = new UserGroupSendingServer();
                 $row->user_group_id = $this->id;
                 $row->sending_server_id = $server->id;
                 $row->fitness = $param['fitness'];
                 $row->save();
-            //}
+            }
         }
     }
 
