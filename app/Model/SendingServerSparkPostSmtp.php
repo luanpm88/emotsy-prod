@@ -44,7 +44,9 @@ class SendingServerSparkPostSmtp extends SendingServerSparkPost
               ->setPassword($this->smtp_password)
             ;
 
-            $message->getHeaders()->addTextHeader('X-MSYS-API', json_encode(['metadata' => ['runtime_message_id' => '32423434324']]));
+            // tracking bounce/feedback
+            $msgId = $message->getHeaders()->get('X-Acelle-Message-Id')->getFieldBody();
+            $message->getHeaders()->addTextHeader('X-MSYS-API', json_encode(['metadata' => ['runtime_message_id' => $msgId]]));
 
             // Create the Mailer using your created Transport
             $mailer = \Swift_Mailer::newInstance($transport);
@@ -56,7 +58,6 @@ class SendingServerSparkPostSmtp extends SendingServerSparkPost
                 MailLog::info('Sent!');
 
                 return array(
-                    'runtime_message_id' => $transport->getMessageId(),
                     'status' => self::DELIVERY_STATUS_SENT,
                 );
             } else {

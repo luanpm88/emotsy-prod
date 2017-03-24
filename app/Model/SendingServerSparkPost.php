@@ -107,6 +107,11 @@ class SendingServerSparkPost extends SendingServer
         }
     }
 
+    /**
+     * Clean up any existing webhook for this webapp
+     *
+     * @return void
+     */
     public function cleanupWebhook($webhookUrl)
     {
         $response = $this->client()->request('GET', 'webhooks', []);
@@ -124,6 +129,11 @@ class SendingServerSparkPost extends SendingServer
         }
     }
 
+    /**
+     * Delete a particular webhook
+     *
+     * @return void
+     */
     public function deleteWebhook($id)
     {
         MailLog::info("Deleting SparkPost webhook {$id}");
@@ -139,6 +149,11 @@ class SendingServerSparkPost extends SendingServer
         }
     }
 
+    /**
+     * Hanle delivery notification requested through the webhook
+     *
+     * @return void
+     */
     public static function handleNotification()
     {
         MailLog::info(file_get_contents('php://input'));
@@ -146,6 +161,7 @@ class SendingServerSparkPost extends SendingServer
 
         if ($messages == [['msys' => []]]) {
             MailLog::info('Webhook verified OK');
+            // return 200, it just does not work
             return response('Webhook verified OK', 200);
         }
 
@@ -174,12 +190,23 @@ class SendingServerSparkPost extends SendingServer
         }
     }
 
+    /**
+     * Process bounce notification
+     *
+     * @return void
+     */
     private static function handleBounce($message)
     {
         $bounceLog = new BounceLog();
 
         // use Elastic Email transaction id as runtime-message-id
-        $bounceLog->runtime_message_id = $message['msys']['message_event']['rcpt_meta']['runtime_message_id'];
+        try {
+            $bounceLog->runtime_message_id = $message['msys']['message_event']['rcpt_meta']['runtime_message_id'];
+        } catch (\Exception $e) {
+            MailLog::warning('Cannot retrive runtime_message_id');
+            return response('', 200);
+        }
+
         $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
         if ($trackingLog) {
             $bounceLog->message_id = $trackingLog->message_id;
@@ -200,12 +227,22 @@ class SendingServerSparkPost extends SendingServer
         }
     }
 
+    /**
+     * Process feedbac notification
+     *
+     * @return void
+     */
     private static function handleSpamComplaint($message)
     {
         $feedbackLog = new FeedbackLog();
 
-        // use Elastic Email transaction id as runtime-message-id
-        $feedbackLog->runtime_message_id = $message['msys']['message_event']['rcpt_meta']['runtime_message_id'];
+        try {
+            // use Elastic Email transaction id as runtime-message-id
+            $feedbackLog->runtime_message_id = $message['msys']['message_event']['rcpt_meta']['runtime_message_id'];
+        } catch (\Exception $e) {
+            MailLog::warning('Cannot retrive runtime_message_id');
+            return response('', 200);
+        }
 
         // retrieve the associated tracking log in Acelle
         $trackingLog = TrackingLog::where('runtime_message_id', $feedbackLog->runtime_message_id)->first();
