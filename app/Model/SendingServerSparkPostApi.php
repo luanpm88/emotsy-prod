@@ -45,7 +45,6 @@ class SendingServerSparkPostApi extends SendingServerSparkPost
                 $body = $response->getBody();
                 MailLog::info("Sent!");
                 return array(
-                    'runtime_message_id' => $body['results']['id'],
                     'status' => self::DELIVERY_STATUS_SENT,
                 );
             } else {
@@ -73,6 +72,9 @@ class SendingServerSparkPostApi extends SendingServerSparkPost
         $toEmail = array_keys($message->getTo())[0];
         $toName = array_values($message->getTo())[0];
 
+        // to track bounce/feedback notification
+        $msgId = $message->getHeaders()->get('X-Acelle-Message-Id')->getFieldBody();
+
         return [
             'content' => [
                 'email_rfc822' => $message->toString()
@@ -85,7 +87,9 @@ class SendingServerSparkPostApi extends SendingServerSparkPost
                     ],
                 ],
             ],
-
+            'metadata' => [
+                'runtime_message_id' => $msgId
+            ]
         ];
     }
 }

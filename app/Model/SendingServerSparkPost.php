@@ -150,6 +150,14 @@ class SendingServerSparkPost extends SendingServer
         }
 
         foreach($messages as $message) {
+            if (!array_key_exists('message_event', $message['msys'])) {
+                MailLog::warning('Unknown notification type');
+                continue;
+
+                // Sample of 'unknown notification type'
+                // [{"msys":{"track_event":{"rcpt_meta":{},"event_id":"84559159220532969","transmission_id":"30515955248391749","template_id":"template_30515955248391749","template_version":"0","rcpt_tags":[],"user_agent":"Mozilla/5.0 (Windows NT 5.1; rv:11.0) Gecko Firefox/11.0 (via ggpht.com GoogleImageProxy)","delv_method":"esmtp","rcpt_to":"louisitvn@gmail.com","type":"open","sending_ip":"35.160.182.156","message_id":"0001a195d458e5216b36","customer_id":"9187","ip_address":"66.249.84.222","timestamp":"1490326971","ip_pool":"shared","msg_size":"8956","routing_domain":"gmail.com","subject":"Welcome to test Mail List","num_retries":"0","msg_from":"msprvs1=172565Byap5t2=bounces-9187@spmailt.com","queue_time":"394","friendly_from":"test@sender.com","geo_ip":{"country":"US","region":"CA","city":"Mountain View","latitude":37.4192,"longitude":-122.0574},"raw_rcpt_to":"test@example.com"}}}]
+            }
+
             $type = $message['msys']['message_event']['type'];
             switch ($type) {
                 case 'bounce':
@@ -171,7 +179,7 @@ class SendingServerSparkPost extends SendingServer
         $bounceLog = new BounceLog();
 
         // use Elastic Email transaction id as runtime-message-id
-        $bounceLog->runtime_message_id = $message['msys']['message_event']['message_id'];
+        $bounceLog->runtime_message_id = $message['msys']['message_event']['rcpt_meta']['runtime_message_id'];
         $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
         if ($trackingLog) {
             $bounceLog->message_id = $trackingLog->message_id;
@@ -197,7 +205,7 @@ class SendingServerSparkPost extends SendingServer
         $feedbackLog = new FeedbackLog();
 
         // use Elastic Email transaction id as runtime-message-id
-        $feedbackLog->runtime_message_id = $message['msys']['message_event']['message_id'];
+        $feedbackLog->runtime_message_id = $message['msys']['message_event']['rcpt_meta']['runtime_message_id'];
 
         // retrieve the associated tracking log in Acelle
         $trackingLog = TrackingLog::where('runtime_message_id', $feedbackLog->runtime_message_id)->first();
