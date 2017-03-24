@@ -64,7 +64,7 @@ class DeliveryController extends Controller
             SendingServerElasticEmail::handleNotification($_GET);
         } elseif ($type == SendingServerSparkPost::WEBHOOK) {
             MailLog::configure(storage_path().'/logs/handler-sparkpost.log');
-            SendingServerSparkPost::handleNotification($_GET);
+            return SendingServerSparkPost::handleNotification($_GET);
         } else {
             return;
         }
