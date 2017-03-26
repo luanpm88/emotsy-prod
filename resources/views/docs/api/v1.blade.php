@@ -1063,7 +1063,7 @@
           <!-- SENDING SERVERS -->          
           <tr>
             <td>
-              <span class="label label-flat bg-info">{{ trans('messages.POST') }}</span>
+              <span class="label label-flat bg-primary">{{ trans('messages.POST') }}</span>
             </td>
             <td>
               <a href="#more" class="toogle-api">/api/v1/file/upload</a>
