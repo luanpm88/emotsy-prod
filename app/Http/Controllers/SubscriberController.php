@@ -349,6 +349,7 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
 
+        // @note: code xấu quá
         if ($request->isMethod('post')) {
             if ($request->hasFile('file')) {
                 // Start system job
@@ -553,11 +554,11 @@ class SubscriberController extends Controller
         foreach (\Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids))->get() as $subscriber) {
             $subscriber->copy($list, $request->type);
         }
-        
+
         // Trigger updating related campaigns cache
         $from_list->updateCachedInfo();
         $list->updateCachedInfo();
-        
+
         // Log
         $list->log('copied', $request->user(), [
             'count' => $subscribers->count(),
@@ -594,7 +595,7 @@ class SubscriberController extends Controller
         foreach (\Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids))->get() as $subscriber) {
             $subscriber->move($list, $request->type);
         }
-        
+
         // Trigger updating related campaigns cache
         $from_list->updateCachedInfo();
         $list->updateCachedInfo();
@@ -611,7 +612,7 @@ class SubscriberController extends Controller
         // Redirect to my lists page
         echo trans('messages.subscribers.moved');
     }
-    
+
     /**
      * Copy Move subscribers form.
      *
@@ -623,7 +624,7 @@ class SubscriberController extends Controller
     {
         $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        
+
         return view('subscribers.copy_move_form', [
             'subscribers' => $subscribers,
             'list' => $list
