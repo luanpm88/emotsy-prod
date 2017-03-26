@@ -212,6 +212,7 @@ class SubscriptionController extends Controller
     public function listing(Request $request)
     {
         $customer = $request->user()->customer;
+        $currentSubscription = $customer->getCurrentSubscription();
         
         $request->merge(array("customer_id" => $customer->id));
         $request->merge(array("customer_list" => true));
@@ -219,6 +220,7 @@ class SubscriptionController extends Controller
 
         return view('subscriptions._list', [
             'subscriptions' => $subscriptions,
+            'currentSubscription' => $currentSubscription
         ]);
     }
     

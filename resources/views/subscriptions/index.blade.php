@@ -29,7 +29,7 @@
 		data-url="{{ action('SubscriptionController@listing') }}"
 		per-page="{{ Acelle\Model\Subscription::$itemsPerPage }}"					
 	>				
-		<div class="row top-list-controls">
+		<!--<div class="row top-list-controls">
 			<div class="col-md-9">
 				@if ($subscriptions->count() >= 0)					
 					<div class="filter-box">
@@ -50,7 +50,7 @@
 					</div>
 				@endif
 			</div>			
-		</div>
+		</div>-->
 		
 		<div class="pml-table-container">
 			

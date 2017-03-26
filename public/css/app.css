@@ -1985,3 +1985,12 @@ ul.plans-intro li span {
 .license-line .btn {
     margin-top: 7px;
 }
+.inlist-new-button-tabs {
+    margin-top: -120px;
+}
+.num-medium {
+    font-size: 16px;
+}
+.quota_box h5 {
+    font-size: 15px;
+}

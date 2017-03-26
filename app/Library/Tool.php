@@ -842,7 +842,7 @@ class Tool
      */
     public static function formatDate($datetime)
     {
-        $result = !isset($datetime) ? '' : $datetime->format(trans('messages.date_format'));
+        $result = !isset($datetime) ? '' : self::dateTime($datetime)->format(trans('messages.date_format'));
 
         return $result;
     }
@@ -904,5 +904,21 @@ class Tool
         }
         
         return $timezone;
+    }
+    
+    /**
+     * Get Directory Size.
+     *
+     * @var string
+     */
+    public static function getDirectorySize($path){
+        $bytestotal = 0;
+        $path = realpath($path);
+        if($path!==false){
+            foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS)) as $object){
+                $bytestotal += $object->getSize();
+            }
+        }
+        return $bytestotal;
     }
 }

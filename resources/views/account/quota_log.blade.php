@@ -1,4 +1,4 @@
-<h3 class="mt-0 mb-10"><i class="icon-stats-bars4"></i> {{ trans("messages.used_quota") }}</h3>
+<h3 class="mt-0 mb-0"><i class="icon-stats-bars4"></i> {{ trans("messages.used_quota") }}</h3>
 <div class="row quota_box">
     <div class="col-md-12">
         <div class="content-group-sm mt-20">
@@ -66,8 +66,22 @@
             </div>
         </div>
     </div>
+        
+    <div class="col-md-12">
+        <div class="content-group-sm mt-20">
+            <div class="pull-right text-teal-800 text-semibold">
+                <span class="text-muted progress-xxs">{{ round(Auth::user()->customer->totalUploadSize(),2) }}/{{ Auth::user()->customer->maxTotalUploadSize() }} (MB)</span>
+                &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->totalUploadSizeUsage() }}%
+            </div>
+            <h5 class="text-semibold mb-5 mt-0">{{ trans('messages.total_upload_size') }}</h5>
+            <div class="progress progress-xxs">
+                <div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->totalUploadSizeUsage() }}%">
+                </div>
+            </div>
+        </div>
+    </div>
     
-    @can ("read", new Acelle\Model\SendingServer())
+    @can ("create", new Acelle\Model\SendingServer())
         <div class="col-md-12">
             <div class="content-group-sm">
                 <div class="pull-right text-teal-800 text-semibold">
@@ -83,7 +97,7 @@
         </div>
     @endcan
     
-    @can ("read", new Acelle\Model\SendingDomain())
+    @can ("create", new Acelle\Model\SendingDomain())
         <div class="col-md-12">
             <div class="content-group-sm">
                 <div class="pull-right text-teal-800 text-semibold">

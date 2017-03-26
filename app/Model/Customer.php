@@ -1384,4 +1384,45 @@ class Customer extends Model
 			->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
 			->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
     }
+	
+	/**
+     * Get total file size usage
+     *
+     * @return number
+     */
+	public function totalUploadSize() {
+		return \Acelle\Library\Tool::getDirectorySize(base_path("public/source/" . $this->user->uid)) / 1048576;
+	}
+	
+	/**
+     * Get max upload size quota.
+     *
+     * @return number
+     */
+    public function maxTotalUploadSize()
+    {
+        $count = $this->getOption('max_size_upload_total');
+        if ($count == -1) {
+            return '∞';
+        } else {
+            return $count;
+        }
+    }
+
+    /**
+     * Calculate campaign usage.
+     *
+     * @return number
+     */
+    public function totalUploadSizeUsage()
+    {
+        if ($this->maxTotalUploadSize() == '∞') {
+            return 0;
+        }
+        if ($this->maxTotalUploadSize() == 0) {
+            return 100;
+        }
+
+        return round((($this->totalUploadSize() / $this->maxTotalUploadSize()) * 100), 2);
+    }
 }
