@@ -144,7 +144,7 @@
 	<div class="empty-list">
 		<i class="icon-quill4"></i>
 		<span class="line-1">
-			{{ trans('messages.subscription_empty_line_1') }}
+			{{ trans('messages.subscription_empty_line_1_admin') }}
 		</span>
 	</div>
 @endif

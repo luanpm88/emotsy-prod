@@ -1503,7 +1503,7 @@ return [
     'user_group.deleted' => 'User group was successfully deleted',
     'subscriptions.deleted' => 'One or more subscriptions were successfully deleted',
     'delete_subscriptions_confirm' => 'You\'re about to delete :number subscription(s).',
-    'subscription_empty_line_1' => 'You doesn\'t have any subscription',
+    'subscription_empty_line_1' => 'you are NOT currently subscribed to any plan',
     'subscription_status_active' => 'Active',
     'subscription_status_inactive' => 'Inactive',
     'subscriptions.disabled' => 'One or more subscriptions were successfully disabled',
@@ -1697,4 +1697,5 @@ return [
     'allow_create_sending_domains_label' => 'Create sending domains',
     'plan_actions' => 'Plan Actions',
     'total_upload_size' => 'Storage',
+    'subscription_empty_line_1_admin' => 'There are no subscriptions',
 ];
