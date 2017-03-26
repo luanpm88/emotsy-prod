@@ -58,6 +58,9 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
 
     // Sending server
     Route::resource('sending_servers', 'SendingServerController');
+    
+    // File
+    Route::post('file/upload', 'FileController@upload');
 });
 
 Route::auth();

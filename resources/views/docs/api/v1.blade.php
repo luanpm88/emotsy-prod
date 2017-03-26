@@ -1051,6 +1051,57 @@
               </td>
           </tr>
         </table>
+            
+        <h2>{{ trans('messages.file') }}</h2>
+        <table class="table table-box pml-table table-log">
+          <tr>
+            <th width="1%" class="text-nowrap">{{ trans('messages.HTTP_method') }}</th>
+            <th width="40%">{{ trans('messages.Endpoint') }}</th>
+            <th>{{ trans('messages.Function') }}</th>
+          </tr>
+          
+          <!-- SENDING SERVERS -->          
+          <tr>
+            <td>
+              <span class="label label-flat bg-info">{{ trans('messages.POST') }}</span>
+            </td>
+            <td>
+              <a href="#more" class="toogle-api">/api/v1/file/upload</a>
+            </td>
+            <td>
+                Upload a file to customer's storage
+            </td>
+          </tr>
+          <tr style="display:none;background: #f6f6f6">
+            <td></td>
+            <td>
+              <div>
+                <div class="description detailed">
+                <h4>Parameters</h4>
+                    <div class="list"><dl>
+                      <dt><var>$file_url</var></dt></dt>
+                      <dd>File url</dd>
+                        <dt><var>$subdirectory &nbsp;&nbsp;<span class="text-muted2 text-normal">{{ trans('messages.optional') }} - Default: user root directory</span></var></dt></dt>
+                      <dd>Custom subdirectory</dd>           
+                  </dl></div>
+                  <h4>Returns</h4>
+                  <div class="list">
+                        Upload result message
+                  </div>
+                </div>
+              </div>
+            </td>
+              <td>
+                  <h4>Example:</h4>
+                  <pre class=""><code>curl -X POST -H "accept:application/json" -G \
+{{ action("Api\FileController@upload") }}? \
+-d api_token={{ Auth::user()->api_token }} \
+-d file_url=http://demo.acellemail.com/images/logo_big.png \
+-d subdirectory='path/to/file'
+</code></pre>
+              </td>
+          </tr>
+        </table>
       
   </div>
     

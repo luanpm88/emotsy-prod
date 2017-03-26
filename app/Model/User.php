@@ -954,4 +954,14 @@ class User extends Authenticatable
             return null;
         }
     }
+    
+    /**
+     * Get storage path
+     *
+     * @return string
+     */
+    public function storagePath()
+    {
+        return base_path('public/source/' . $this->uid . "/");
+    }
 }

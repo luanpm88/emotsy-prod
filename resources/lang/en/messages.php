@@ -1349,4 +1349,6 @@ return [
     'move_subscriber' => 'Move subscriber(s)',
     'subscribers_copy_message' => 'You\'re about to copy :number subscriber(s)',
     'subscribers_move_message' => 'You\'re about to move :number subscriber(s)',
+    'file' => 'FILE',
+    'file.uploaded' => 'File was successfully uploaded.',
 ];
