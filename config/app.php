@@ -160,7 +160,6 @@ return [
         Acelle\Providers\EventServiceProvider::class,
         Acelle\Providers\RouteServiceProvider::class,
         Acelle\Providers\JobServiceProvider::class,
-
     ],
 
     /*
@@ -210,12 +209,11 @@ return [
         'Tool' => Acelle\Library\Tool::class,
         'Yaml' => Symfony\Component\Yaml\Yaml::class,
         'Zipper' => Chumper\Zipper\Zipper::class,
-        
     ],
-    
+
     /*
      * Custom application settings of Acelle Mail go here
      */
     'redis_enabled' => env('REDIS_ENABLED', false),
-    'import_batch_size' => env('IMPORT_BATCH_SIZE', 5000),
+    'import_batch_size' => env('IMPORT_BATCH_SIZE', 10000),
 ];
