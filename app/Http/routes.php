@@ -64,6 +64,9 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
     
     // Subscription
     Route::resource('subscriptions', 'SubscriptionController');
+
+    // File
+    Route::post('file/upload', 'FileController@upload');
 });
 
 Route::group(['middleware' => ['not_logged_in']], function () {

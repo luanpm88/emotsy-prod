@@ -94,37 +94,49 @@ return [
 
     'custom' => [
         'miss_main_field_tag' => [
-            'required' => 'Missing EMAIL field tag',
+            'required' => 'Falta la etiqueta de campo EMAIL',
         ],
         'conflict_field_tags' => [
-            'required' => 'The field tags cannot be the same',
+            'required' => 'Las etiquetas de campo no pueden ser las mismas',
         ],
         'segment_conditions_empty' => [
-            'required' => 'Conditions list cannot be empty',
+            'required' => 'La lista de condiciones no puede estar vacía',
         ],
         'mysql_connection' => [
-            'required' => 'Can\'t connect to MySQL server',
+            'required' => 'No se puede conectar al servidor MySQL',
         ],
         'database_not_empty' => [
-            'required' => 'The database is not empty',
+            'required' => 'La base de datos no está vacía',
         ],
         'promo_code_not_valid' => [
-            'required' => 'The promo code is not valid',
+            'required' => 'El código promocional no es válido',
         ],
         'smtp_valid' => [
-            'required' => 'Can\'t connect to SMTP server',
+            'required' => 'No se puede conectar al servidor SMTP',
         ],
         'yaml_parse_error' => [
-            'required' => 'Can\'t parse yaml. Please check the syntax',
+            'required' => 'No se puede analizar yaml. Compruebe la sintaxis',
         ],
         'file_not_found' => [
-            'required' => 'File not found.',
+            'required' => 'Archivo no encontrado.',
         ],
         'not_zip_archive' => [
-            'required' => 'The file is not a zip package.',
+            'required' => 'El archivo no es un paquete zip.',
         ],
         'zip_archive_unvalid' => [
-            'required' => 'Cannot read the package.',
+            'required' => 'No se puede leer el paquete.',
+        ],
+        'custom_criteria_empty' => [
+            'required' => 'Los criterios personalizados no pueden estar vacíos',
+        ],
+        'php_bin_path_invalid' => [
+            'required' => 'Ejecutable PHP no válido. Por favor revise de nuevo.',
+        ],
+        'can_not_empty_database' => [
+            'required' => 'No puede eliminar determinadas tablas, por favor, limpie su base de datos y vuelva a intentarlo.',
+        ],
+        'recaptcha_invalid' => [
+            'required' => 'Comprobación reCAPTCHA no válida.',
         ],
     ],
 

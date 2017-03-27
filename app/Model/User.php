@@ -192,4 +192,14 @@ class User extends Authenticatable
     {
         return is_object($this->admin);
     }
+    
+    /**
+     * Get storage path
+     *
+     * @return string
+     */
+    public function storagePath()
+    {
+        return base_path('public/source/' . $this->uid . "/");
+    }
 }

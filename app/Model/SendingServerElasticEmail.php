@@ -90,7 +90,7 @@ class SendingServerElasticEmail extends SendingServer
             $feedbackLog->runtime_message_id = $params['transaction'];
 
             // retrieve the associated tracking log in Acelle
-            $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
+            $trackingLog = TrackingLog::where('runtime_message_id', $feedbackLog->runtime_message_id)->first();
             if ($trackingLog) {
                 $feedbackLog->message_id = $trackingLog->message_id;
             }
