@@ -25,7 +25,7 @@
                 
         </div>
         <div class="panel-body pt-0">
-            <ul class="mt-0 mb-0 top-border-none plans-intro">
+            <!--<ul class="mt-0 mb-0 top-border-none plans-intro">
                 <li>
                     {{ trans('messages.subscriptions') }}
                     <span class="text-semibold">
@@ -38,7 +38,7 @@
                         {{ $plan->cutomersCount() }}
                     </span>
                 </li>
-            </ul>            
+            </ul>-->           
             @include('admin.plans._features')
         </div>
         @if (!isset($readonly))

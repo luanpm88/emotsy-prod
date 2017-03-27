@@ -141,6 +141,7 @@ class DatabaseSeeder extends Seeder
             'language_id' => 1,
             'first_name' => 'Luan',
             'last_name' => 'Pham',
+            'status' => 'active',
             'timezone' => 'Atlantic/Cape_Verde',
             'created_at' => $created_at,
             'updated_at' => $updated_at,
