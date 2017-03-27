@@ -40,9 +40,8 @@
                                 {{ $current_license }}
                                 ({{ trans('messages.license_label_' . \Acelle\Model\Setting::get('license_type')) }})
                             </h5>
+							<hr />
                         @endif
-
-						<hr />
 
 						{!! trans('messages.license_guide') !!}
 
