@@ -559,14 +559,29 @@ class Subscription extends Model
     }
 	
 	/**
+     * Check if subscription is current.
+     *
+     * @return array
+     */
+    public function isCurrent()
+    {
+        if($this->start_at->startOfDay() <= \Carbon\Carbon::now() &&
+		   !$this->isOld()
+		) {
+			return true;
+		}
+		
+		return false;
+    }
+	
+	/**
      * Check if subscription is current used.
      *
      * @return array
      */
     public function beingUsed()
     {
-        if($this->start_at->startOfDay() <= \Carbon\Carbon::now() &&
-		   !$this->isOld() &&
+        if($this->isCurrent() &&
 		   $this->isActive()
 		) {
 			return true;

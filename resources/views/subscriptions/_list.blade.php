@@ -18,13 +18,9 @@
 			<li class="{{ $key == 0 ? 'active' : '' }} text-semibold">
 				<a href="#subscription-{{ $subscription->uid }}" data-toggle="tab">
 					<i class="icon-clipboard2"></i> {{ $subscription->plan_name }}&nbsp;&nbsp;
-					<span class="label label-flat bg-{{  $subscription->timeStatus() == \Acelle\Model\Subscription::TIME_STATUS_CURRENT ? 'info-800' : 'grey' }}">
-                        {{ trans('messages.subscription_time_status_' . $subscription->timeStatus()) }}
-					</span>&nbsp;
-					<span class="label label-flat bg-{{ $subscription->status }}">
-					{{ trans('messages.subscription_status_' . $subscription->status) }}</span>
-					
-					
+					@if ($subscription->isCurrent())
+						- <span class="text-muted2">{{ trans('messages.subscription_time_status_' . $subscription->timeStatus()) }}</span>
+					@endif
 				</a>
 			</li>
 		@endforeach
@@ -34,7 +30,7 @@
 		@foreach ($subscriptions as $key => $subscription)
 			<div class="tab-pane pt-10 {{ $key == 0 ? 'active' : '' }}" id="subscription-{{ $subscription->uid }}">
 				<h2 class="text-info-800 text-semibold mt-0 mb-10">{{ trans('messages.plan_overview') }}</h2>
-				@if ($currentSubscription == $subscription)
+				@if ($subscription->isCurrent())
 					{{ trans('messages.you_are_currently_subscribed_to_plan', [
 						'plan' => $subscription->plan_name,
 						'end_at' => \Acelle\Library\Tool::formatDate($subscription->end_at),
@@ -48,8 +44,15 @@
 						'remain' => \Acelle\Library\Tool::dateTime($subscription->start_at)->diffForHumans(null, true),
 					]) }}
 				@endif
-				<br><br>
-				<h4 class="text-semibold mt-20 mb-0">{{ trans('messages.plan_detail') }}</h4>
+				<div class="mt-10">
+					<span class="label label-flat bg-{{  $subscription->timeStatus() == \Acelle\Model\Subscription::TIME_STATUS_CURRENT ? 'info-800' : 'grey' }}">
+                        {{ trans('messages.subscription_time_status_' . $subscription->timeStatus()) }}
+					</span>&nbsp;
+					<span class="label label-flat bg-{{ $subscription->status }}">
+					{{ trans('messages.subscription_status_' . $subscription->status) }}</span>
+				</div>
+
+				<h4 class="text-semibold mt-40 mb-0">{{ trans('messages.plan_detail') }}</h4>
 				<div class="row">
 					<div class="col-md-6">
 						<div class="stat-table">
@@ -88,9 +91,10 @@
 							</div>
 						</div>
 							
-						@if ($currentSubscription == $subscription)
-							<br><br>
-							@include('account.quota_log')
+						@if ($subscription->isCurrent())
+							<div class="mt-40">
+								@include('account.quota_log')
+							</div>
 						@else
 							<div class="stat-table">
 								<div class="stat-row">
@@ -173,8 +177,7 @@
 				@if (Auth::user()->can('delete', $subscription)
 					|| Auth::user()->can('pay', $subscription)
 				)
-					<br>
-					<h4 class="text-semibold mt-20">{{ trans('messages.plan_actions') }}</h4>
+					<h4 class="text-semibold mt-40">{{ trans('messages.plan_actions') }}</h4>
 					@if (!$subscription->isPaid() && !$subscription->isActive())
 						@can('pay', $subscription)
 							<span class="mr-10">

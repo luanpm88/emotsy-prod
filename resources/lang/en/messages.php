@@ -1684,7 +1684,7 @@ return [
     'payment_manual' => 'Manual',
     'plan_overview' => 'Plan Overview',
     'you_are_currently_subscribed_to_plan' => 'You are currently subscribed to the ":plan" plan, your subscription will expire in :remain on :end_at',
-    'you_are_subscribed_to_plan_future' => 'You are subscribed to the ":plan" plan, your subscription will begin in the next :remain, on :start_at',
+    'you_are_subscribed_to_plan_future' => 'You are subscribed to the ":plan" plan, your subscription will start in the next :remain, on :start_at',
     'plan_detail' => 'Plan Detail',
     'max_lists_label' => 'Max lists',
     'max_subscribers_label' => 'Max subscribers',
