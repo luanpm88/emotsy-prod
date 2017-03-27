@@ -1997,3 +1997,6 @@ ul.plans-intro li span {
 .mt-40 {
     margin-top: 40px;
 }
+.form-groups-bottom-0 .form-group {
+    margin-bottom: 0;
+}

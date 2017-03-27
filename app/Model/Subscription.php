@@ -757,4 +757,20 @@ class Subscription extends Model
     {
         return $this->uid;
     }
+	
+	/**
+     * Get long title.
+     *
+     * @return string
+     */
+    public function longTitle()
+    {
+        $strs = [$this->plan_name];
+		$strs[] = '(' . \Acelle\Library\Tool::formatDate($this->start_at);
+		$strs[] = ' - ' . \Acelle\Library\Tool::formatDate($this->end_at) . ')';		
+		if ($this->isCurrent()) {
+			$strs[] = ' / ' . trans('messages.subscription_time_status_' . $this->timeStatus());
+		}
+		return implode(' ', $strs);
+    }
 }

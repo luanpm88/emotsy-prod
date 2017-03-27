@@ -220,7 +220,7 @@ class SubscriptionController extends Controller
 
         return view('subscriptions._list', [
             'subscriptions' => $subscriptions,
-            'currentSubscription' => $currentSubscription
+            'currentSubscription' => $currentSubscription,
         ]);
     }
     
