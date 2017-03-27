@@ -691,7 +691,9 @@ class Campaign extends Model
         $subscribers = $this->subscribers()
                 ->whereRaw(sprintf(table('subscribers').'.id NOT IN (SELECT subscriber_id FROM %s WHERE campaign_id = %s)', table('tracking_logs'), $this->id))
                 ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
-                ->select('subscribers.*')
+                ->select('subscribers.email')
+                ->addSelect('subscribers.uid')
+                ->addSelect('subscribers.id')
                 ->get();
 
         // the array_unique_by functions out-perform the Collection::unique of Laravel!!!
@@ -2004,13 +2006,7 @@ class Campaign extends Model
 
             // actually send
             // @todo consider using queue here
-            $result = $server->send($message, array(
-                'from_email' => $this->from_email,
-                'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly (not in MIME message)
-                'campaign' => $this,
-                'subscriber' => $subscriber,
-                'msgId' => $msgId
-            ));
+            $result = $server->send($message);
 
             // examine the result from sending server
             if(array_has($result, 'error')) {
@@ -2178,7 +2174,7 @@ class Campaign extends Model
      *
      * @var array
      */
-    public function recipientsRules($params=[])
+    public function recipientsRules($params = [])
     {
         $rules = [
             'lists_segments' => 'required'
