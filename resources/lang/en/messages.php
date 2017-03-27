@@ -1647,11 +1647,10 @@ return [
     'sending_server_no_active' => 'You have no active sending servers',
     'list_has_no_sending_server' => 'Have no sending server',
     'verify' => 'Verify',
-    'enter_license_and_click_verify' => 'Enter the licence key (purchase code) then hit the Verify/Change button',
+    'enter_license_and_click_verify' => 'Enter the licence key (purchase code) then hit the Verify/Update button',
     'license.updated' => 'App license was successfully updated',
-    'change_license' => 'Change license',
-    'license_guide' => '<h5 class="text-semibold text-info-800"><i class="icon-help"></i> Choose an appropriate license:</h5>
-        <p>
+    'change_license' => 'Update your license',
+    'license_guide' => '<p>
             <strong>* Regular License</strong><br/>
             All features are available, for a single end product which end users are NOT charged for.
         </p>
@@ -1662,8 +1661,8 @@ return [
     ',
     'license_label_extended' => 'Extended',
     'license_label_normal' => 'Normal',
-    'your_current_license' => 'Your current license: ',
-    'verify_license' => 'Verify license',
+    'your_current_license' => 'Your current license key: ',
+    'verify_license' => 'Verify',
     'license_tab' => 'License',
     'submit' => 'Submit',
     'copy_move_subscriber' => 'Copy / Move subscribers',
