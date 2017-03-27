@@ -181,16 +181,20 @@
 				<h4 class="text-semibold mt-40">{{ trans('messages.plan_actions') }}</h4>
 				@if (!$subscription->isPaid() && !$subscription->isActive())
 					@can('pay', $subscription)
-						<span class="mr-10">
-							@foreach (\Acelle\Model\PaymentMethod::getAllActive() as $payment_method)
-								<a
-									href="{{ action('SubscriptionController@selectPaymentMethod', ["uid" => $subscription->uid, 'payment_method_id' => $payment_method->uid]) }}"
-									class="btn btn-primary bg-info-800"
-								>
-									{!! trans('messages.payment_method_type_' . $payment_method->type . '_button') !!}
-								</a>
-							@endforeach
-						</span>
+						
+						@foreach (\Acelle\Model\PaymentMethod::getAllActive() as $payment_method)
+							@if ($payment_method->type != \Acelle\Model\PaymentMethod::TYPE_CASH)
+								<span class="mr-10">
+									<a
+										href="{{ action('SubscriptionController@selectPaymentMethod', ["uid" => $subscription->uid, 'payment_method_id' => $payment_method->uid]) }}"
+										class="btn btn-primary bg-info-800"
+									>
+										{!! trans('messages.payment_method_type_' . $payment_method->type . '_button') !!}
+									</a>
+								</span>
+							@endif
+						@endforeach
+						
 					@endcan
 				@endif
 				@can('delete', $subscription)
