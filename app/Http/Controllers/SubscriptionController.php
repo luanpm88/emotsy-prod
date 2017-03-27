@@ -211,16 +211,22 @@ class SubscriptionController extends Controller
      */
     public function listing(Request $request)
     {
-        $customer = $request->user()->customer;
-        $currentSubscription = $customer->getCurrentSubscription();
+        $customer = $request->user()->customer;        
         
         $request->merge(array("customer_id" => $customer->id));
         $request->merge(array("customer_list" => true));
         $subscriptions = \Acelle\Model\Subscription::search($request)->paginate($request->per_page);
+        
+        if ($request->filters["subscription_uid"]) {
+            $subscription = \Acelle\Model\Subscription::findByUid($request->filters["subscription_uid"]);
+        }
+        if (!isset($subscription)) {
+            $subscription = $subscriptions->first();
+        }
 
         return view('subscriptions._list', [
             'subscriptions' => $subscriptions,
-            'currentSubscription' => $currentSubscription,
+            'subscription' => $subscription,
         ]);
     }
     
