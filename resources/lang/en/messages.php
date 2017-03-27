@@ -1652,7 +1652,7 @@ return [
     'change_license' => 'Update your license',
     'license_guide' => '<p>
             <strong>* Regular License</strong><br/>
-            All features are available, for a single end product which end users are NOT charged for.
+            All features are available, for a single end product which end users are NOT charged for
         </p>
         <p>
             <strong>* Extended License</strong><br/>
