@@ -68,9 +68,6 @@
                         </div>
                     </li>
                 </ul>
-
-                <a class="btn bg-grey-300" href="{{ action("AccountController@renewToken") }}">Renew</a>
-                <a class="btn bg-primary-300" href="{{ action("AccountController@renewToken") }}">Renew Plan</a>
             </div>
 
             <div class="sub-section">
@@ -88,7 +85,7 @@
                     ])
                 </div>
                 <br>
-                <p><a class="btn bg-grey-300" href="{{ action("AccountController@renewToken") }}">Plan details & checkout</a></p>
+                <p><a class="btn bg-primary-400" href="{{ action("AccountController@renewToken") }}">Plan details & checkout</a></p>
 
             </div>
         </div>

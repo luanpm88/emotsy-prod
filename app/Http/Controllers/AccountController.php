@@ -174,7 +174,14 @@ class AccountController extends Controller
      */
     public function subscription(Request $request)
     {
-        return view('account.subscription');
+        if ($request->input('page') == 'new') {
+            return view('account.subscription_new');
+        } else if ($request->input('page') == 'renew') {
+            return view('account.subscription_renew');
+        } else {
+            return view('account.subscription');
+        }
+
     }
 
     /**
