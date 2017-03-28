@@ -1275,4 +1275,11 @@ $(function() {
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
     
+    // Default list auto recheck if empty
+    $(document).on('click', '.list-segment-container .btn', function() {
+        if (!$('.list-segment-container input[type=radio]:checked').length) {
+            $('.list-segment-container input[type=radio]').eq(0).click();
+        }
+    });
+    
 });
