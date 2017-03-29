@@ -79,7 +79,7 @@
 					@can('update', $subscription)
 						<a href="{{ action('Admin\SubscriptionController@edit', $subscription->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
 					@endcan
-					@if (Auth::user()->can('delete', $subscription) || Auth::user()->can('enable', $subscription) || Auth::user()->can('disable', $subscription))
+					@if (\Auth::user()->admin->can('delete', $subscription) || Auth::user()->can('enable', $subscription) || Auth::user()->can('disable', $subscription))
 						<div class="btn-group">										
 							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
@@ -117,13 +117,13 @@
 										</a>
 									</li>
 								@endcan
-								@can('delete', $subscription)
+								@if (\Auth::user()->admin->can('delete', $subscription))
 									<li>														
 										<a data-method='delete' delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@delete', ['uids' => $subscription->uid]) }}">
 											<i class="icon-trash"></i> {{ trans('messages.delete') }}
 										</a>
 									</li>
-								@endcan
+								@endif
 							</ul>
 						</div>
 					@endcan

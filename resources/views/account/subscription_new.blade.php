@@ -27,26 +27,36 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6">
-            <h2 class="text-semibold">Subscription</h2>
+            <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
 
             <div class="sub-section">
-                <h3 class="text-semibold">Subscribe to a plan</h3>
-
-                <p>Thank you for signing up with Acelle Mail. You are not currently subscribed to the any plan yet. Below are the available plans for you to choose from:</p>
-                <div class="form-groups-bottom-0">
+                <h3 class="text-semibold">{{ trans('messages.subscribe_to_a_plan') }}</h3>
+                
+                <p>{!! trans('messages.subscribe_to_a_plan_intro') !!}</p>
+                    
+                <form enctype="multipart/form-data" action="{{ action('SubscriptionController@store') }}" method="POST" class="form-validate-jqueryz subscription-form">
+                    {{ csrf_field() }}
+                    
                     @include('helpers.form_control', [
-                        'type' => 'select',
-                        'class' => '',
-                        'name' => 'subscription_uid',
-                        'value' => '$subscription->uid',
+                        'type' => 'select_ajax',
+                        'class' => 'subsciption-plan-select hook',
+                        'name' => 'plan_uid',
+                        'label' => trans('messages.plan'),
+                        'selected' => [
+                            'value' => is_object($subscription->plan) ? $subscription->plan->uid : '',
+                            'text' => is_object($subscription->plan) ? $subscription->plan->name : ''
+                        ],
                         'help_class' => 'subscription',
-                        'options' => collect([ ['value' => 1, 'text' => 'Premium Plan'], ['value' => 2, 'text' => 'Super PRO Plan'] ]),
-                        'rules' => []
+                        'rules' => $subscription->rules(),
+                        'url' => action('PlanController@select2'),
+                        'placeholder' => trans('messages.select_plan')
                     ])
-                </div>
-                <br>
-                <p><a class="btn bg-grey-300" href="{{ action("AccountController@renewToken") }}">Plan details & checkout</a></p>
-
+                    <div class="ajax-detail-box" data-url="{{ action('SubscriptionController@preview') }}" data-form=".subscription-form">
+                        @include('subscriptions.preview', [
+                            'subscription' => $subscription
+                        ])
+                    </div>
+                </form>
             </div>
         </div>
     </div>

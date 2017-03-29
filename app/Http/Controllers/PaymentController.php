@@ -85,6 +85,7 @@ class PaymentController extends Controller {
             'subscription' => $subscription,
             'clientToken' => $clientToken,
             'result' => $result,
+            'payment_method' => $payment_method,
         ]);
     }
     
@@ -143,6 +144,7 @@ class PaymentController extends Controller {
             'subscription' => $subscription,
             'clientToken' => $clientToken,
             'result' => $result,
+            'payment_method' => $payment_method,
         ]);
     }
     
@@ -195,6 +197,6 @@ class PaymentController extends Controller {
      */
     public function cash(Request $request, $subscription_uid) {
         $request->session()->flash('alert-success', trans('messages.subscription.cash.created'));
-        return redirect()->action('SubscriptionController@index');
+        return redirect()->action('AccountController@subscription');
     }
 }

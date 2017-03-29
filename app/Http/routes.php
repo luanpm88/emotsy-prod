@@ -127,6 +127,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('account/logs/listing', 'AccountController@logsListing');
     Route::get('account/quota_log', 'AccountController@quotaLog');
     Route::get('account/subscription', 'AccountController@subscription');
+    Route::get('account/subscription/new', 'AccountController@subscriptionNew');
 
     // Translation data
     Route::get('/datatable_locale', 'Controller@datatable_locale');
@@ -362,7 +363,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('subscriptions/preview', 'SubscriptionController@preview');
     Route::get('subscriptions/listing/{page?}', 'SubscriptionController@listing');
     Route::get('subscriptions/sort', 'SubscriptionController@sort');
-    Route::get('subscriptions/delete', 'SubscriptionController@delete');
+    Route::delete('subscriptions/delete', 'SubscriptionController@delete');
     Route::resource('subscriptions', 'SubscriptionController');
 
     // Sending servers

@@ -962,6 +962,17 @@ class Customer extends Model
             $this->image = '';
         }
     }
+	
+	/**
+     * Get customer current subscriptions
+     *
+     * @return Subscription
+     */
+    public function getCurrentSubscriptions() {
+        return $subsciption = $this->subscriptions()
+			->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
+			->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
+    }
 
 	/**
      * Get customer current subscription
@@ -969,10 +980,29 @@ class Customer extends Model
      * @return Subscription
      */
     public function getCurrentSubscription() {
-        return $subsciption = $this->subscriptions()
+        return $subsciption = $this->getCurrentSubscriptions()
 			->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_ACTIVE)
-			->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
-			->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay())
+			->first();
+    }
+	
+	/**
+     * Get customer next subscriptions
+     *
+     * @return Subscription
+     */
+    public function getNextSubscription() {
+        return $subsciption = $this->subscriptions()
+			->where('subscriptions.start_at', '>', \Carbon\Carbon::now()->endOfDay())
+			->first();
+    }
+	
+	/**
+     * Get customer current subscription
+     *
+     * @return Subscription
+     */
+    public function getCurrentSubscriptionIgnoreStatus() {
+        return $subsciption = $this->getCurrentSubscriptions()
 			->first();
     }
 
@@ -1375,14 +1405,23 @@ class Customer extends Model
 	}
 	
 	/**
+     * Get customer subscription not include old one
+     *
+     * @return Subscription
+     */
+    public function getNotOutdatedSubscriptions() {
+        return $subsciption = $this->subscriptions()
+			->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
+    }
+	
+	/**
      * Get customer current pending subscription not include old one
      *
      * @return Subscription
      */
     public function getNotOutdatedInactiveSubscriptions() {
-        return $subsciption = $this->subscriptions()
-			->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
-			->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
+        return $subsciption = $this->getNotOutdatedSubscriptions()
+			->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE);
     }
 	
 	/**
@@ -1424,5 +1463,15 @@ class Customer extends Model
         }
 
         return round((($this->totalUploadSize() / $this->maxTotalUploadSize()) * 100), 2);
+    }
+	
+	/**
+     * Custom can for customer.
+     *
+     * @return boolean
+     */
+    public function can($action, $item)
+    {
+        return $this->user->can($action, [$item, 'customer']);
     }
 }

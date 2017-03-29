@@ -174,14 +174,47 @@ class AccountController extends Controller
      */
     public function subscription(Request $request)
     {
-        if ($request->input('page') == 'new') {
-            return view('account.subscription_new');
-        } else if ($request->input('page') == 'renew') {
-            return view('account.subscription_renew');
-        } else {
-            return view('account.subscription');
+        $customer = $request->user()->customer;
+        
+        // Get current subscription
+        $subscription = $customer->getCurrentSubscriptionIgnoreStatus();
+        
+        // Get next subscription
+        $nextSubscription = $customer->getNextSubscription();
+        
+        // If has no subscription
+        if (!$subscription) {
+            return redirect()->action('AccountController@subscriptionNew');
+        }
+        
+        return view('account.subscription', [
+            'subscription' => $subscription,
+            'nextSubscription' => $nextSubscription,
+        ]);
+    }
+    
+    /**
+     * Api token.
+     */
+    public function subscriptionNew(Request $request)
+    {
+        $customer = $request->user()->customer;
+        
+        $subscription = new \Acelle\Model\Subscription();
+        $subscription->customer_id = $customer->id;
+
+        // authorize
+        if (\Gate::denies('create', $subscription)) {
+            return $this->notAuthorized();
+        }
+        
+        if (!empty($request->old())) {
+            $subscription->fillAttributes($request->old());
         }
 
+        return view('account.subscription_new', [
+            'subscription' => $subscription
+        ]);
     }
 
     /**

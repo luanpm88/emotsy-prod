@@ -455,4 +455,14 @@ class Admin extends Model
     public function isActive() {
 		return $this->status == Customer::STATUS_ACTIVE;
 	}
+    
+    /**
+     * Custom can for admin.
+     *
+     * @return boolean
+     */
+    public function can($action, $item)
+    {
+        return $this->user->can($action, [$item, 'admin']);
+    }
 }

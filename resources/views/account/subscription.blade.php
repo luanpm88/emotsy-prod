@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', trans('messages.api_token'))
+@section('title', trans('messages.subscription'))
 
 @section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
@@ -15,7 +15,7 @@
             <li class="active">{{ trans('messages.api_token') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-profile"></i> {{ Auth::user()->customer->displayName() }}</span>
+            <span class="text-semibold"><i class="icon-quill4"></i> {{ Auth::user()->customer->displayName() }}</span>
         </h1>
     </div>
 
@@ -27,66 +27,263 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6">
-            <h2 class="text-semibold">Subscription</h2>
+            <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
 
             <div class="sub-section">
-                <h3 class="text-semibold">Current plan</h3>
-
-                <p>Thank you for doing your email marketing with Acelle Mail. You are currently subscribed to the <strong>Basic</strong> plan. Your subscription will expire in <strong>20 days</strong>, on <strong>April 20th, 2017</strong></p>
-                <p>Please find your current account details below</p>
-                <ul class="dotted-list topborder section">
-                    <li>
-                        <div class="unit size1of2">
-                            <strong>Plan name</strong>
-                        </div>
-                        <div class="lastUnit size1of2">
-                            <mc:flag>Basic XXX</mc:flag>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="unit size1of2">
-                            <strong>Start at</strong>
-                        </div>
-                        <div class="lastUnit size1of2">
-                            <mc:flag>March, 1st 2017</mc:flag>
-                        </div>
-                    </li>
-                    <li class="selfclear">
-                        <div class="unit size1of2">
-                            <strong>Next bill date</strong>
-                        </div>
-                        <div class="lastUnit size1of2">
-                            <mc:flag>March, 30th 2017</mc:flag>
-                        </div>
-                    </li>
-                    <li class="selfclear">
-                        <div class="unit size1of2">
-                            <strong>Days remaining</strong>
-                        </div>
-                        <div class="lastUnit size1of2">
-                            <mc:flag><a href="mailto:minhnghivn@yahoo.com" target="_blank" rel="noopener noreferrer">minhnghivn@yahoo.com</a></mc:flag>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
+                <h3 class="text-semibold">{{ trans('messages.current_plan') }}</h3>
+                
+                @if (!$subscription->isActive())
+                    
+                    @if (!$subscription->isPaid())
+                        {!! trans('messages.current_plan_notactive_intro', [
+                            'plan' => $subscription->plan_name,
+                            'remain' => \Acelle\Library\Tool::dateTime($subscription->end_at)->diffForHumans(null, true),
+                            'start_at' => \Acelle\Library\Tool::formatDate($subscription->start_at)
+                        ]) !!}   
+                        
+                        @if (!$subscription->isPaid() && !$subscription->isActive())
+                            @can('pay', $subscription)
+                                
+                                @foreach (\Acelle\Model\PaymentMethod::getAllActive() as $payment_method)
+                                    @if ($payment_method->type != \Acelle\Model\PaymentMethod::TYPE_CASH)
+                                        <span class="">
+                                            <a
+                                                href="{{ action('SubscriptionController@selectPaymentMethod', ["uid" => $subscription->uid, 'payment_method_id' => $payment_method->uid]) }}"
+                                                class="btn bg-teal"
+                                            >
+                                                {!! trans('messages.payment_method_type_' . $payment_method->type . '_button') !!}
+                                            </a>
+                                        </span>
+                                    @endif
+                                @endforeach
+                                
+                            @endcan
+                        @endif
+                    @endif
+                    
+                    @if ($subscription->isDisabled())
+                        {!! trans('messages.current_plan_disabled_intro', [
+                            'plan' => $subscription->plan_name,
+                            'remain' => \Acelle\Library\Tool::dateTime($subscription->end_at)->diffForHumans(null, true),
+                            'start_at' => \Acelle\Library\Tool::formatDate($subscription->start_at)
+                        ]) !!}
+                    @endif
+                    
+                    @if (\Auth::user()->customer->can('delete', $subscription))
+                        <a data-method="DELETE" delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('SubscriptionController@delete', ["uids" => $subscription->uid]) }}"
+                            class="btn bg-grey-300 link-method"
+                        >
+                            <i class="icon-trash"></i> {{ trans('messages.cancel') }}
+                        </a>
+                    @endif                    
+                @else
+                    {!! trans('messages.current_plan_intro', [
+                        'plan' => $subscription->plan_name,
+                        'remain' => \Acelle\Library\Tool::dateTime($subscription->end_at)->diffForHumans(null, true),
+                        'end_at' => \Acelle\Library\Tool::formatDate($subscription->end_at)
+                    ]) !!}                
+                    
+                    <ul class="dotted-list topborder section">
+                        <li>
+                            <div class="unit size1of2">
+                                <strong>{{ trans('messages.plan_name') }}</strong>
+                            </div>
+                            <div class="lastUnit size1of2">
+                                <mc:flag>{{ $subscription->plan_name }}</mc:flag>
+                            </div>
+                        </li>                    
+                        <li class="selfclear">
+                            <div class="unit size1of2">
+                                <strong>{{ trans('messages.start_at') }}</strong>
+                            </div>
+                            <div class="lastUnit size1of2">
+                                <mc:flag>{{ $subscription->start_at ? \Acelle\Library\Tool::dateTime($subscription->start_at)->format(trans('messages.date_format')) : '' }}</mc:flag>
+                            </div>
+                        </li>
+                        <li class="selfclear">
+                            <div class="unit size1of2">
+                                <strong>{{ trans('messages.end_at') }}</strong>
+                            </div>
+                            <div class="lastUnit size1of2">
+                                <mc:flag>{{ $subscription->end_at ? \Acelle\Library\Tool::dateTime($subscription->end_at)->format(trans('messages.date_format')) : '' }}</mc:flag>
+                            </div>
+                        </li>
+                        <li>
+                            <div class="unit size1of2">
+                                <strong>{{ trans_choice('messages.days_remain', $subscription->daysRemainCount()) }}</strong>
+                            </div>
+                            <div class="lastUnit size1of2">
+                                <mc:flag>{{ $subscription->daysRemainCount() }}</mc:flag>
+                            </div>
+                        </li>
+                        <li class="more">
+                            <a href="#more">{{ trans('messages.more_details') }}</a>
+                        </li>
+                        <li class="hide">
+                            <div class="unit size1of2">
+                                <strong>{{ trans('messages.sending_total_quota_label') }}</strong>
+                            </div>
+                            <div class="lastUnit size1of2">
+                                <mc:flag><span class="">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->getSendingQuotaUsage()) }}/{{ (Auth::user()->customer->getSendingQuota() == -1) ? '∞' : \Acelle\Library\Tool::format_number(Auth::user()->customer->getSendingQuota()) }}</span>
+                                &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingQuotaUsage() }}</mc:flag>
+                            </div>
+                        </li>
+                        <li class="hide">
+                            <div class="unit size1of2">
+                                <strong>{{ trans('messages.sending_quota_label') }}</strong>
+                            </div>
+                            <div class="lastUnit size1of2">
+                                <mc:flag>{{ $subscription->displayQuota() }}</mc:flag>
+                            </div>
+                        </li>
+                        <li class="hide">
+                            <div class="unit size1of2">
+                                <strong>{{ trans('messages.max_lists_label') }}</strong>
+                            </div>
+                            <div class="lastUnit size1of2">
+                                <mc:flag><span class="">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->listsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxLists()) }}</span>
+                                &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayListsUsage() }}</mc:flag>
+                            </div>
+                        </li>
+                        <li class="hide">
+                            <div class="unit size1of2">
+                                <strong>{{ trans('messages.max_subscribers_label') }}</strong>
+                            </div>
+                            <div class="lastUnit size1of2">
+                                <mc:flag><span class="">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->readCache('SubscriberCount')) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSubscribers()) }}</span>
+                                &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySubscribersUsage() }}</mc:flag>
+                            </div>
+                        </li>
+                        <li class="hide">
+                            <div class="unit size1of2">
+                                <strong>{{ trans('messages.max_campaigns_label') }}</strong>
+                            </div>
+                            <div class="lastUnit size1of2">
+                                <mc:flag><span class="">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->campaignsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxCampaigns()) }}</span>
+                                &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayCampaignsUsage() }}</mc:flag>
+                            </div>
+                        </li>
+                        <li class="hide">
+                            <div class="unit size1of2">
+                                <strong>{{ trans('messages.max_automations_label') }}</strong>
+                            </div>
+                            <div class="lastUnit size1of2">
+                                <mc:flag><span class="">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->automationsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxAutomations()) }}</span>
+                                &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayAutomationsUsage() }}</mc:flag>
+                            </div>
+                        </li>
+                        <li class="hide">
+                            <div class="unit size1of2">
+                                <strong>{{ trans('messages.max_size_upload_total_label') }}</strong>
+                            </div>
+                            <div class="lastUnit size1of2">
+                                <mc:flag><span class="text-muted progress-xxs">{{ \Acelle\Library\Tool::format_number(round(Auth::user()->customer->totalUploadSize(),2)) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxTotalUploadSize()) }} (MB)</span>
+                                &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->totalUploadSizeUsage() }}%</mc:flag>
+                            </div>
+                        </li>
+                        <li class="hide">
+                            <div class="unit size1of2">
+                                <strong>{{ trans('messages.max_file_size_upload_label') }}</strong>
+                            </div>
+                            <div class="lastUnit size1of2">
+                                <mc:flag>{{ $subscription->displayFileSizeUpload() }} MB</mc:flag>
+                            </div>
+                        </li>
+                        @can ("create", new Acelle\Model\SendingServer())
+                            <li class="hide">
+                                <div class="unit size1of2">
+                                    <strong>{{ trans('messages.allow_create_sending_servers_label') }}</strong>
+                                </div>
+                                <div class="lastUnit size1of2">
+                                    <mc:flag><span class="">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->sendingServersCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSendingServers()) }}</span>
+                                    &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingServersUsage() }}</mc:flag>
+                                </div>
+                            </li>
+                        @endcan
+                        @can ("create", new Acelle\Model\SendingDomain())
+                            <li class="hide">
+                                <div class="unit size1of2">
+                                    <strong>{{ trans('messages.allow_create_sending_domains_label') }}</strong>
+                                </div>
+                                <div class="lastUnit size1of2">
+                                    <mc:flag><span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->sendingDomainsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSendingDomains()) }}</span>
+                                    &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingDomainsUsage() }}</mc:flag>
+                                </div>
+                            </li>
+                        @endcan
+                    </ul>
+                @endif
+            </div>            
+            
             <div class="sub-section">
-                <h3>Available plans</h3>
-                <p>You can renew your current plan or subscribe to a new one. Below are the available plans for you to choose from:</p>
-                <div class="form-groups-bottom-0">
-                    @include('helpers.form_control', [
-                        'type' => 'select',
-                        'class' => '',
-                        'name' => 'subscription_uid',
-                        'value' => '$subscription->uid',
-                        'help_class' => 'subscription',
-                        'options' => collect([ ['value' => 1, 'text' => 'Premium Plan'] ]),
-                        'rules' => []
-                    ])
-                </div>
-                <br>
-                <p><a class="btn bg-primary-400" href="{{ action("AccountController@renewToken") }}">Plan details & checkout</a></p>
-
+                @if (!$nextSubscription)
+                    @if (\Auth::user()->customer->can('create', new Acelle\Model\Subscription()))
+                        <h3>{{ trans('messages.available_plans') }}</h3>
+                        <p>You can renew your current plan or subscribe to a new one. Below are the available plans for you to choose from:</p>
+                        <form enctype="multipart/form-data" action="{{ action('SubscriptionController@store') }}" method="POST" class="form-validate-jqueryz subscription-form">
+                            {{ csrf_field() }}
+                            
+                            @include('helpers.form_control', [
+                                'type' => 'select_ajax',
+                                'class' => 'subsciption-plan-select hook',
+                                'name' => 'plan_uid',
+                                'label' => trans('messages.plan'),
+                                'selected' => [],
+                                'help_class' => 'subscription',
+                                'rules' => $subscription->rules(),
+                                'url' => action('PlanController@select2'),
+                                'placeholder' => trans('messages.select_plan')
+                            ])
+                            <div class="ajax-detail-box" data-url="{{ action('SubscriptionController@preview') }}" data-form=".subscription-form">
+                            </div>
+                        </form>
+                    @endif
+                @elseif (!$nextSubscription->isActive())
+                    <h3>{{ trans('messages.next_plan') }}</h3>
+                        
+                    {!! trans('messages.current_plan_notactive_intro', [
+                        'plan' => $nextSubscription->plan_name,
+                        'remain' => \Acelle\Library\Tool::dateTime($nextSubscription->end_at)->diffForHumans(null, true),
+                        'start_at' => \Acelle\Library\Tool::formatDate($nextSubscription->start_at)
+                    ]) !!}   
+                    
+                    @if (!$nextSubscription->isPaid() && !$nextSubscription->isActive())
+                        @can('pay', $nextSubscription)
+                            
+                            @foreach (\Acelle\Model\PaymentMethod::getAllActive() as $payment_method)
+                                @if ($payment_method->type != \Acelle\Model\PaymentMethod::TYPE_CASH)
+                                    <span class="">
+                                        <a
+                                            href="{{ action('SubscriptionController@selectPaymentMethod', ["uid" => $nextSubscription->uid, 'payment_method_id' => $payment_method->uid]) }}"
+                                            class="btn bg-teal"
+                                        >
+                                            {!! trans('messages.payment_method_type_' . $payment_method->type . '_button') !!}
+                                        </a>
+                                    </span>
+                                @endif
+                            @endforeach
+                            
+                        @endcan
+                    @endif
+                    @if (\Auth::user()->customer->can('delete', $nextSubscription))
+                        <a data-method="DELETE" delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('SubscriptionController@delete', ["uids" => $nextSubscription->uid]) }}"
+                            class="btn bg-grey-300 link-method"
+                        >
+                            <i class="icon-trash"></i> {{ trans('messages.cancel') }}
+                        </a>
+                    @endif
+                @else
+                    <h3>{{ trans('messages.next_plan') }}</h3>
+                        
+                    {!! trans('messages.next_plan_active_intro', [
+                        'plan' => $nextSubscription->plan_name,
+                        'remain' => \Acelle\Library\Tool::dateTime($nextSubscription->end_at)->diffForHumans(null, true),
+                        'start_at' => \Acelle\Library\Tool::formatDate($nextSubscription->start_at)
+                    ]) !!}
+                    
+                    @include('subscriptions._details', ['subscription' => $nextSubscription])                            
+                    
+                @endif
             </div>
         </div>
     </div>

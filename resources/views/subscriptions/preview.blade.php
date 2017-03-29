@@ -1,6 +1,6 @@
 @if (is_object($subscription->plan))
     <div class="row">        
-        <div class="col-md-6 plan-left">
+        <div class="col-md-12 plan-left">
             <div class="row">
                 <div class="col-md-6">
                     <div class="form-group">									
@@ -66,11 +66,11 @@
                 </div>
             @endif
         </div>
-        <div class="col-md-6 plan-right text-center plan-top-80">
+        <!--<div class="col-md-6 plan-right text-center plan-top-80">
             @include('admin/plans/_plan', [
                 'plan' => $subscription->plan,
                 'readonly' => true,
             ])
-        </div>
+        </div>-->
     </div>
 @endif

@@ -271,6 +271,9 @@ $(function() {
         
         if(typeof($(this).attr("no-ajax")) != "undefined") {
             $(".delete-confirm-button").removeClass("ajax_link");
+        } else if ($(this).hasClass('link-method')) {
+            $(".delete-confirm-button").removeClass("ajax_link");
+            $(".delete-confirm-button").attr("link-method", method);
         } else {
             if(!$(".delete-confirm-button").hasClass("ajax_link")) {
                 $(".delete-confirm-button").addClass("ajax_link");
@@ -1402,5 +1405,13 @@ $(function() {
         });
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+    
+    // Dotted list more/less
+    $(document).on('click', '.dotted-list > li.more a', function() {
+        var box = $(this).parents('.dotted-list');
+        
+        box.find('li').removeClass('hide');
+        $(this).parents('li').hide();
     });
 });

@@ -269,7 +269,7 @@ class SubscriptionController extends Controller
         $subscription->customer_id = $customer->id;
 
         // authorize
-        if (\Gate::denies('create', $subscription)) {
+        if (!$customer->can('create', $subscription)) {
             return $this->notAuthorized();
         }
 
@@ -278,6 +278,7 @@ class SubscriptionController extends Controller
             $this->validate($request, $subscription->frontendRules());            
             
             $subscription->fillAttributes($request->all());
+            
             $subscription->save();
             
             if ($subscription->isFree()) {
@@ -285,7 +286,7 @@ class SubscriptionController extends Controller
                 $subscription->save();
                 
                 $request->session()->flash('alert-success', trans('messages.subscription.created'));
-                return redirect()->action('SubscriptionController@index');
+                return redirect()->action('AccountController@subscription');
             } else {
                 return redirect()->action('SubscriptionController@checkout', $subscription->uid);
             }
@@ -328,13 +329,14 @@ class SubscriptionController extends Controller
 
         foreach ($subscriptions->get() as $subscription) {
             // authorize
-            if (\Gate::allows('delete', $subscription)) {
+            if ($request->user()->admin->can('delete', $subscription)) {
                 $subscription->delete();
             }
         }
 
-        // Redirect to my lists page
-        echo trans('messages.subscriptions.deleted');
+        // Redirect to my subscription page        
+        $request->session()->flash('alert-success', trans('messages.subscriptions.deleted'));
+        return redirect()->action('AccountController@subscription');
     }
     
     /**

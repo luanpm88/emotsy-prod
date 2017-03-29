@@ -1593,7 +1593,7 @@ return [
     'cvv' => 'CVV',
     'pay_by_credit_card' => '<i class="icon-credit-card"></i> Pay by credit card',
     'subscription_paid_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">Congratulation!</h2>
-        <p>You are successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is activated.</p><p>Let choose an action below for next step.</p>',
+        <p>You are successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is activated.<br />Let choose an action below for next step.</p>',
     'something_error_accur' => 'An unexpected error occurred. Please check again.',
     'payment_method_type_braintree_credit_card_button' => '<i class="icon-credit-card"></i> Pay by Credit card',
     'payment_method_type_cashe_button' => '<i class="fa fa-money"></i> Pay in Cash',
@@ -1703,4 +1703,29 @@ return [
     'subscription_empty_line_1_admin' => 'There are no subscriptions',
     'file' => 'FILE',
     'file.uploaded' => 'File was successfully uploaded.',
+    'current_plan' => 'Current plan',
+    'current_plan_intro' => '<p>Thank you for doing your email marketing with Acelle Mail.
+        You are currently subscribed to the <strong>:plan</strong> plan.
+        Your subscription will expire in <strong>:remain</strong>, on <strong>:end_at</strong></p>
+        <p>Please find your current plan details below</p>',
+    'plan_name' => 'Plan name',
+    'more_details' => 'More details',
+    'max_automations_label' => 'Max automations',
+    'current_plan_active_intro' => '<p>You have successfully subscribed to the <a><strong>:plan plan</strong></a>.
+        Your subscription will start in <strong>:remain</strong>, from <strong>:start_at</strong></p>',
+    'current_plan_notactive_intro' => '<p>You have a pending subscription for <a><strong>:plan plan</strong></a>.
+        Please finish the payment to activate your subscription</p>',
+    'purchasing_intro_braintree_credit_card' => '<p>Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
+				. Your plan price is: <a><strong>:price</strong></a></p>',
+    'subscribe_to_a_plan' => 'Subscribe to a plan',
+    'subscribe_to_a_plan_intro' => 'Thank you for signing up with Acelle Mail. You are not currently subscribed to the any plan yet. Below are the available plans for you to choose from:',
+    'subscribe_plan' => 'Subscribe',
+    'purchasing_intro_braintree_paypal' => '<p>Please click to PayPal Checkout button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
+				. Your plan price is: <a><strong>:price</strong></a></p>',
+    'next_plan' => 'Next plan',
+    'available_plans' => 'Available plans',
+    'next_plan_active_intro' => '<p>You have successfully subscribed to the <a><strong>:plan plan</strong></a>.
+        Your subscription will start in <strong>:remain</strong>, from <strong>:start_at</strong>.</p><p>Please find your next plan details below</p>',
+    'current_plan_disabled_intro' => '<p>Your current subscription for <a><strong>:plan plan</strong></a> was disabled.
+        Please contact provider for more information</p>',
 ];

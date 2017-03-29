@@ -54,22 +54,18 @@ class SubscriptionPolicy
         return $can;
     }
     
-    public function create(\Acelle\Model\User $user, \Acelle\Model\Subscription $item)
+    public function create(\Acelle\Model\User $user, \Acelle\Model\Subscription $item, $role)
     {
-        $can = false;
-        
-        $admin = $user->admin;
-        if (is_object($admin)) {
-            $ability = $user->admin->getPermission('subscription_create') == 'yes';
-            $can = $can || $ability;
+        switch ($role) {
+            case 'admin':
+                $can = $user->admin->getPermission('subscription_create') == 'yes';
+                break;
+            case 'customer':
+                $can = ($user->customer->getCurrentSubscription() && !$user->customer->getNextSubscription()) ||
+                    $user->customer->getNotOutdatedSubscriptions()->count() == 0;
+                break;
         }
         
-        $customer = $user->customer;
-        if (is_object($customer)) {
-            $ability = $customer->getNotOutdatedInactiveSubscriptions()->count() == 0;
-            $can = $can || $ability;
-        }
-
         return $can;
     }
 
@@ -93,22 +89,18 @@ class SubscriptionPolicy
         return $can;
     }
 
-    public function delete(\Acelle\Model\User $user, \Acelle\Model\Subscription $subscription)
+    public function delete(\Acelle\Model\User $user, \Acelle\Model\Subscription $subscription, $role)
     {
-        $can = false;
-        
-        $admin = $user->admin;
-        if (is_object($admin)) {
-            $ability = $user->admin->getPermission('subscription_delete');
-            $ability = $ability == 'all'
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('subscription_delete');
+                $can = $ability == 'all'
                     || ($ability == 'own' && $user->admin->id == $subscription->customer->admin_id);
-            $can = $can || $ability;
-        }
-        
-        $customer = $user->customer;
-        if (is_object($customer)) {
-            $can = $can ||
-                ( $customer->id == $subscription->customer_id && $subscription->status == \Acelle\Model\Subscription::STATUS_INACTIVE );
+                break;
+            case 'customer':
+                $can = $user->customer->id == $subscription->customer_id &&
+                    $subscription->status == \Acelle\Model\Subscription::STATUS_INACTIVE;
+                break;
         }
         
         return $can;
@@ -153,7 +145,7 @@ class SubscriptionPolicy
             $can = $can || false;
         }
         
-        $can = $can && $subscription->status == \Acelle\Model\Subscription::STATUS_INACTIVE;
+        $can = $can && in_array($subscription->status, [\Acelle\Model\Subscription::STATUS_INACTIVE, \Acelle\Model\Subscription::STATUS_DISABLED]);
         
         return $can;
     }

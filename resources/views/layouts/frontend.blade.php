@@ -137,8 +137,8 @@
 							</a>
 						</li>
 						@if (Auth::user()->can("read", new Acelle\Model\Subscription()))
-							<li rel0="SubscriptionController">
-								<a href="{{ action('SubscriptionController@index') }}">
+							<li rel0="AccountController\subscription">
+								<a href="{{ action('AccountController@subscription') }}">
 									<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
 								</a>
 							</li>
