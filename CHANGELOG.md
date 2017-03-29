@@ -5,6 +5,7 @@
  * Added: reduce memory usage by 40% for sending to 1M subscribers
  * Added: support file update via API
  * Added: better built-in  Spanish translation
+ * Changed: suppress error messages in laravel.log
  * Fixed: check/uncheck sending server in Group Edit page
  * Fixed: feedback handling with ElasticEmail
  * Fixed: reduce subscribers list request size
