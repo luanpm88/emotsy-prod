@@ -1,7 +1,7 @@
 2.2.0-p14 / 2017-03-30
 ==================
 
- * Added: support for SparkPost API
+ * Added: support sending email through SparkPost API
  * Added: reduce memory usage by 40% for sending to 1M subscribers
  * Added: support file update via API
  * Added: better built-in  Spanish translation
