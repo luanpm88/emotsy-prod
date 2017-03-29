@@ -1,3 +1,15 @@
+2.2.0-p14 / 2017-03-30
+==================
+
+ * Added: support for SparkPost API
+ * Added: reduce memory usage by 40% for sending to 1M subscribers
+ * Added: support file update via API
+ * Added: better built-in  Spanish translation
+ * Fixed: check/uncheck sending server in Group Edit page
+ * Fixed: feedback handling with ElasticEmail
+ * Fixed: reduce subscribers list request size
+ * Fixed: bounce handling issue: cannot retrieve message ID in certain cases
+
 2.2.0-p13 / 2017-03-15
 ==================
 
