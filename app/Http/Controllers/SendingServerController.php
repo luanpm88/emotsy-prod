@@ -24,10 +24,10 @@ class SendingServerController extends Controller
      */
     public function index(Request $request)
     {
-        if (\Gate::denies('read', new \Acelle\Model\SendingServer())) {
+        if (!$request->user()->customer->can('read', new \Acelle\Model\SendingServer())) {
             return $this->notAuthorized();
         }
-        
+
         $request->merge(array("customer_id" => $request->user()->customer->id));
         $items = \Acelle\Model\SendingServer::search($request);
 
@@ -43,10 +43,10 @@ class SendingServerController extends Controller
      */
     public function listing(Request $request)
     {
-        if (\Gate::denies('read', new \Acelle\Model\SendingServer())) {
+        if (!$request->user()->customer->can('read', new \Acelle\Model\SendingServer())) {
             return $this->notAuthorized();
         }
-        
+
         $request->merge(array("customer_id" => $request->user()->customer->id));
         $items = \Acelle\Model\SendingServer::search($request)->paginate($request->per_page);
 
@@ -54,7 +54,7 @@ class SendingServerController extends Controller
             'items' => $items,
         ]);
     }
-    
+
     /**
      * Select sending server type.
      *
@@ -78,7 +78,7 @@ class SendingServerController extends Controller
         $server->fill($request->old());
 
         // authorize
-        if (\Gate::denies('create', $server)) {
+        if (!$request->user()->customer->can('create', $server)) {
             return $this->notAuthorized();
         }
 
@@ -101,7 +101,7 @@ class SendingServerController extends Controller
         $server = new \Acelle\Model\SendingServer();
 
         // authorize
-        if (\Gate::denies('create', $server)) {
+        if (!$request->user()->customer->can('create', $server)) {
             return $this->notAuthorized();
         }
 
@@ -126,7 +126,7 @@ class SendingServerController extends Controller
             if ($server->save()) {
                 // Log
                 $server->log('created', $request->user()->customer);
-            
+
                 $request->session()->flash('alert-success', trans('messages.sending_server.created'));
                 return redirect()->action('SendingServerController@index');
             }
@@ -156,7 +156,7 @@ class SendingServerController extends Controller
         $server = \Acelle\Model\SendingServer::findByUid($id);
 
         // authorize
-        if (\Gate::denies('update', $server)) {
+        if (!$request->user()->customer->can('update', $server)) {
             return $this->notAuthorized();
         }
 
@@ -182,7 +182,7 @@ class SendingServerController extends Controller
         $server = \Acelle\Model\SendingServer::findByUid($id);
 
         // authorize
-        if (\Gate::denies('update', $server)) {
+        if (!$request->user()->customer->can('update', $server)) {
             return $this->notAuthorized();
         }
 
@@ -204,7 +204,7 @@ class SendingServerController extends Controller
             if ($server->save()) {
                 // Log
                 $server->log('updated', $request->user()->customer);
-                
+
                 $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
                 return redirect()->action('SendingServerController@index');
             }
@@ -236,7 +236,7 @@ class SendingServerController extends Controller
             $item = \Acelle\Model\SendingServer::findByUid($row[0]);
 
             // authorize
-            if (\Gate::denies('update', $item)) {
+            if (!$request->user()->customer->can('update', $item)) {
                 return $this->notAuthorized();
             }
 
@@ -260,18 +260,18 @@ class SendingServerController extends Controller
 
         foreach ($items->get() as $item) {
             // authorize
-            if (\Gate::allows('delete', $item)) {
+            if ($request->user()->customer->can('delete', $item)) {
                 // Log
                 $item->log('deleted', $request->user()->customer);
-                
-                $item->delete();                
+
+                $item->delete();
             }
         }
 
         // Redirect to my lists page
         echo trans('messages.sending_servers.deleted');
     }
-    
+
     /**
      * Disable sending server.
      *
@@ -285,7 +285,7 @@ class SendingServerController extends Controller
 
         foreach ($items->get() as $item) {
             // authorize
-            if (\Gate::allows('disable', $item)) {
+            if ($request->user()->customer->can('disable', $item)) {
                 $item->disable();
             }
         }
@@ -293,7 +293,7 @@ class SendingServerController extends Controller
         // Redirect to my lists page
         echo trans('messages.sending_servers.disabled');
     }
-    
+
     /**
      * Disable sending server.
      *
@@ -307,7 +307,7 @@ class SendingServerController extends Controller
 
         foreach ($items->get() as $item) {
             // authorize
-            if (\Gate::allows('enable', $item)) {
+            if ($request->user()->customer->can('enable', $item)) {
                 $item->enable();
             }
         }

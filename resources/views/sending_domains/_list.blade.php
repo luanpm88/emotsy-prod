@@ -34,21 +34,21 @@
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.sending_domain_status_' . $item->status) }}</span>
 											</span>
-											@can('update', $item)
+											@if (Auth::user()->customer->can('update', $item))
 												<a href="{{ action('SendingDomainController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
-											@endcan
-											@can('delete', $item)
-												<div class="btn-group">										
+											@endif
+											@if (Auth::user()->customer->can('delete', $item))
+												<div class="btn-group">
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-													<ul class="dropdown-menu dropdown-menu-right">													
-														<li>														
+													<ul class="dropdown-menu dropdown-menu-right">
+														<li>
 															<a delete-confirm="{{ trans('messages.delete_sending_domains_confirm') }}" href="{{ action('SendingDomainController@delete', ["uids" => $item->uid]) }}">
 																<i class="icon-trash"></i> {{ trans('messages.delete') }}
 															</a>
 														</li>
 													</ul>
 												</div>
-											@endcan
+											@endif
 										</td>
 									</tr>
 								@endforeach
@@ -62,7 +62,7 @@
 									{{ trans('messages.no_search_result') }}
 								</span>
 							</div>
-						@else					
+						@else
 							<div class="empty-list">
 								<i class="icon-earth"></i>
 								<span class="line-1">

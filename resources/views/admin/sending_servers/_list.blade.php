@@ -14,7 +14,7 @@
 															value="{{ $item->uid }}"
 														/>
 													</label>
-												</div>												
+												</div>
 											</div>
 										</td>
 										<td>
@@ -41,19 +41,19 @@
 											</div>
 										</td>
 										<td>
-											@if (!empty($item->host))										
+											@if (!empty($item->host))
 												<div class="single-stat-box pull-left ml-20">
 													<span title="{{ $item->host }}" class="no-margin stat-num kq_search domain-truncate">{{ $item->host }}</span>
 													<br />
 													<span class="text-muted">{{ trans('messages.host') }}</span>
 												</div>
-											@elseif (!empty($item->aws_region))										
+											@elseif (!empty($item->aws_region))
 												<div class="single-stat-box pull-left ml-20">
 													<span title="{{ $item->aws_region }}" class="no-margin stat-num kq_search domain-truncate">{{ $item->aws_region }}</span>
 													<br />
 													<span class="text-muted">{{ trans('messages.aws_region') }}</span>
 												</div>
-											@elseif (!empty($item->domain))										
+											@elseif (!empty($item->domain))
 												<div class="single-stat-box pull-left ml-20">
 													<span title="{{ $item->domain }}" class="no-margin stat-num kq_search domain-truncate">{{ $item->domain }}</span>
 													<br />
@@ -78,38 +78,38 @@
 												<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.sending_server_status_' . $item->status) }}</span>
 											</span>
 										</td>
-										<td class="text-right text-nowrap">											
-											@can('update', $item)
+										<td class="text-right text-nowrap">
+											@if (Auth::user()->admin->can('update', $item))
 												<a href="{{ action('Admin\SendingServerController@edit', ["uid" => $item->uid, "type" => $item->type]) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
-											@endcan
-											@if (Auth::user()->can('delete', $item) || Auth::user()->can('disable', $item) || Auth::user()->can('enable', $item))
-												<div class="btn-group">										
+											@endif
+											@if (Auth::user()->admin->can('delete', $item) || Auth::user()->admin->can('disable', $item) || Auth::user()->admin->can('enable', $item))
+												<div class="btn-group">
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 													<ul class="dropdown-menu dropdown-menu-right">
-														@can('enable', $item)
-															<li>														
+														@if (Auth::user()->admin->can('enable', $item))
+															<li>
 																<a link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@enable', ["uids" => $item->uid]) }}">
 																	<i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
 																</a>
 															</li>
-														@endcan
-														@can('disable', $item)
-															<li>														
+														@endif
+														@if (Auth::user()->admin->can('disable', $item))
+															<li>
 																<a link-confirm="{{ trans('messages.disable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@disable', ["uids" => $item->uid]) }}">
 																	<i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
 																</a>
 															</li>
-														@endcan
-														@can('delete', $item)
-															<li>														
+														@endif
+														@if (Auth::user()->admin->can('delete', $item))
+															<li>
 																<a delete-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete', ["uids" => $item->uid]) }}">
 																	<i class="icon-trash"></i> {{ trans('messages.delete') }}
 																</a>
 															</li>
-														@endcan
+														@endif
 													</ul>
 												</div>
-											@endcan
+											@endif
 										</td>
 									</tr>
 								@endforeach
@@ -123,7 +123,7 @@
 									{{ trans('messages.no_search_result') }}
 								</span>
 							</div>
-						@else					
+						@else
 							<div class="empty-list">
 								<i class="icon-server"></i>
 								<span class="line-1">

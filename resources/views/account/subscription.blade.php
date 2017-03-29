@@ -189,28 +189,38 @@
                                 <mc:flag>{{ $subscription->displayFileSizeUpload() }} MB</mc:flag>
                             </div>
                         </li>
-                        @can ("create", new Acelle\Model\SendingServer())
-                            <li class="hide">
-                                <div class="unit size1of2">
-                                    <strong>{{ trans('messages.allow_create_sending_servers_label') }}</strong>
-                                </div>
-                                <div class="lastUnit size1of2">
-                                    <mc:flag><span class="">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->sendingServersCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSendingServers()) }}</span>
-                                    &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingServersUsage() }}</mc:flag>
-                                </div>
-                            </li>
-                        @endcan
-                        @can ("create", new Acelle\Model\SendingDomain())
-                            <li class="hide">
-                                <div class="unit size1of2">
-                                    <strong>{{ trans('messages.allow_create_sending_domains_label') }}</strong>
-                                </div>
-                                <div class="lastUnit size1of2">
-                                    <mc:flag><span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->sendingDomainsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSendingDomains()) }}</span>
-                                    &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingDomainsUsage() }}</mc:flag>
-                                </div>
-                            </li>
-                        @endcan
+
+                        <li class="hide">
+                            <div class="unit size1of2">
+                                <strong>{{ trans('messages.allow_create_sending_servers_label') }}</strong>
+                            </div>
+                            <div class="lastUnit size1of2">
+                                <mc:flag>
+                                    @if (Auth::user()->customer->can("create", new Acelle\Model\SendingServer()))
+                                        <span class="">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->sendingServersCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSendingServers()) }}</span>
+                                        &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingServersUsage() }}
+                                    @else
+                                        {!! $subscription->displayAllowCreateSendingServer() !!}
+                                    @endif
+                                </mc:flag>
+                            </div>
+                        </li>
+                        <li class="hide">
+                            <div class="unit size1of2">
+                                <strong>{{ trans('messages.allow_create_sending_domains_label') }}</strong>
+                            </div>
+                            <div class="lastUnit size1of2">
+                                <mc:flag>
+                                    @if (Auth::user()->customer->can("create", new Acelle\Model\SendingDomain()))
+                                        <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->sendingDomainsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSendingDomains()) }}</span>
+                                        &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingDomainsUsage() }}
+                                    @else
+                                        {!! $subscription->displayAllowCreateSendingDomain() !!}
+                                    @endif
+                                </mc:flag>
+                            </div>
+                        </li>
+
                     </ul>
                 @endif
             </div>

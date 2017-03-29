@@ -62,8 +62,8 @@
 					</a>
 				</li>
 				@if(
-					Auth::user()->can("read", new Acelle\Model\SendingServer()) ||
-					Auth::user()->can("read", new Acelle\Model\SendingDomain())
+					Auth::user()->customer->can("read", new Acelle\Model\SendingServer()) ||
+					Auth::user()->customer->can("read", new Acelle\Model\SendingDomain())
 				)
 					<li class="dropdown language-switch"
 						rel0="SendingServerController"
@@ -74,14 +74,14 @@
 							<span class="caret"></span>
 						</a>
 						<ul class="dropdown-menu">
-							@if (Auth::user()->can("read", new Acelle\Model\SendingServer()))
+							@if (Auth::user()->customer->can("read", new Acelle\Model\SendingServer()))
 								<li rel0="SendingServerController">
 									<a href="{{ action('SendingServerController@index') }}">
 										<i class="icon-server"></i> {{ trans('messages.sending_servers') }}
 									</a>
 								</li>
 							@endif
-							@if (Auth::user()->can("read", new Acelle\Model\SendingDomain()))
+							@if (Auth::user()->customer->can("read", new Acelle\Model\SendingDomain()))
 								<li rel0="SendingDomainController">
 									<a href="{{ action('SendingDomainController@index') }}">
 										<i class="icon-earth"></i> {{ trans('messages.sending_domains') }}

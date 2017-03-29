@@ -24,15 +24,15 @@ class SendingDomainController extends Controller
      */
     public function index(Request $request)
     {
-        if (\Gate::denies('read', new \Acelle\Model\SendingDomain())) {
+        if (!$request->user()->admin->can('read', new \Acelle\Model\SendingDomain())) {
             return $this->notAuthorized();
         }
-        
+
         // If admin can view all sending domains
-        if (\Gate::denies("read_all", new \Acelle\Model\SendingDomain())) {
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\SendingDomain())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
-        
+
         $items = \Acelle\Model\SendingDomain::search($request);
 
         return view('admin.sending_domains.index', [
@@ -47,12 +47,12 @@ class SendingDomainController extends Controller
      */
     public function listing(Request $request)
     {
-        if (\Gate::denies('read', new \Acelle\Model\SendingDomain())) {
+        if (!$request->user()->admin->can('read', new \Acelle\Model\SendingDomain())) {
             return $this->notAuthorized();
         }
-        
+
         // If admin can view all sending domains
-        if (\Gate::denies("read_all", new \Acelle\Model\SendingDomain())) {
+        if (!$request->user()->admin->can("read_all", new \Acelle\Model\SendingDomain())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
@@ -78,7 +78,7 @@ class SendingDomainController extends Controller
         $server->fill($request->old());
 
         // authorize
-        if (\Gate::denies('create', $server)) {
+        if (!$request->user()->admin->can('create', $server)) {
             return $this->notAuthorized();
         }
 
@@ -101,7 +101,7 @@ class SendingDomainController extends Controller
         $server = new \Acelle\Model\SendingDomain();
 
         // authorize
-        if (\Gate::denies('create', $server)) {
+        if (!$request->user()->admin->can('create', $server)) {
             return $this->notAuthorized();
         }
 
@@ -145,7 +145,7 @@ class SendingDomainController extends Controller
         $server = \Acelle\Model\SendingDomain::findByUid($id);
 
         // authorize
-        if (\Gate::denies('update', $server)) {
+        if (!$request->user()->admin->can('update', $server)) {
             return $this->notAuthorized();
         }
 
@@ -171,7 +171,7 @@ class SendingDomainController extends Controller
         $server = \Acelle\Model\SendingDomain::findByUid($id);
 
         // authorize
-        if (\Gate::denies('update', $server)) {
+        if (!$request->user()->admin->can('update', $server)) {
             return $this->notAuthorized();
         }
 
@@ -215,7 +215,7 @@ class SendingDomainController extends Controller
             $item = \Acelle\Model\SendingDomain::findByUid($row[0]);
 
             // authorize
-            if (\Gate::denies('update', $item)) {
+            if (!$request->user()->admin->can('update', $item)) {
                 return $this->notAuthorized();
             }
 
@@ -239,13 +239,9 @@ class SendingDomainController extends Controller
 
         foreach ($items->get() as $item) {
             // authorize
-            if (\Gate::denies('delete', $item)) {
-                return;
+            if ($request->user()->admin->can('delete', $item)) {
+                $item->delete();
             }
-        }
-
-        foreach ($items->get() as $item) {
-            $item->delete();
         }
 
         // Redirect to my lists page

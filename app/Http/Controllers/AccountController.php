@@ -30,7 +30,7 @@ class AccountController extends Controller
         $customer->getColorScheme();
 
         // Authorize
-        if (\Gate::denies('profile', $customer)) {
+        if (!$request->user()->customer->can('profile', $customer)) {
             return $this->notAuthorized();
         }
 
@@ -175,39 +175,39 @@ class AccountController extends Controller
     public function subscription(Request $request)
     {
         $customer = $request->user()->customer;
-        
+
         // Get current subscription
         $subscription = $customer->getCurrentSubscriptionIgnoreStatus();
-        
+
         // Get next subscription
         $nextSubscription = $customer->getNextSubscription();
-        
+
         // If has no subscription
         if (!$subscription) {
             return redirect()->action('AccountController@subscriptionNew');
         }
-        
+
         return view('account.subscription', [
             'subscription' => $subscription,
             'nextSubscription' => $nextSubscription,
         ]);
     }
-    
+
     /**
      * Api token.
      */
     public function subscriptionNew(Request $request)
     {
         $customer = $request->user()->customer;
-        
+
         $subscription = new \Acelle\Model\Subscription();
         $subscription->customer_id = $customer->id;
 
         // authorize
-        if (\Gate::denies('create', $subscription)) {
+        if (!$request->user()->customer->can('create', $subscription)) {
             return $this->notAuthorized();
         }
-        
+
         if (!empty($request->old())) {
             $subscription->fillAttributes($request->old());
         }
