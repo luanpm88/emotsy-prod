@@ -6,6 +6,7 @@
  * Added: support file update via API
  * Added: better built-in  Spanish translation
  * Changed: suppress error messages in laravel.log
+ * Fixed: import issue with non-break spaces
  * Fixed: check/uncheck sending server in Group Edit page
  * Fixed: feedback handling with ElasticEmail
  * Fixed: reduce subscribers list request size
