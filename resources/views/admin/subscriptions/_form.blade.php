@@ -49,9 +49,9 @@
 				])
 			</div>
 		</div>
-			
+
 		<hr />
-		<div class="text-right">
+		<div class="text-left">
 			<button type='submit' class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 		</div>
 	</div>

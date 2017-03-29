@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
 	<title>@yield('title') - {{ \Acelle\Model\Setting::get("site_name") }}</title>
-	
+
 	@include('layouts._favicon')
-	
+
 	@include('layouts._head')
 
 	@include('layouts._css')
-	
+
 	@include('layouts._js')
-	
+
 	<script>
 		$.cookie('last_language_code', '{{ Auth::user()->admin->getLanguageCode() }}');
 	</script>
-	
+
 </head>
 
 <body class="navbar-top  color-scheme-{{ Auth::user()->admin->getColorScheme() }}">
@@ -38,9 +38,9 @@
 						<i class="icon-home"></i> {{ trans('messages.dashboard') }}
 					</a>
 				</li>
-				
+
 				@if (Auth::user()->can("read", new Acelle\Model\Customer())
-					|| Auth::user()->can("read", new Acelle\Model\Subscription())
+					|| Auth::user()->admin->can("read", new Acelle\Model\Subscription())
 				)
 					<li class="dropdown language-switch"
 						rel0="CustomerGroupController"
@@ -58,7 +58,7 @@
 									</a>
 								</li>
 							@endif
-							@if (Auth::user()->can("read", new Acelle\Model\Subscription()))
+							@if (Auth::user()->admin->can("read", new Acelle\Model\Subscription()))
 								<li rel0="SubscriptionController">
 									<a href="{{ action('Admin\SubscriptionController@index') }}">
 										<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
@@ -68,10 +68,10 @@
 						</ul>
 					</li>
 				@endif
-				
+
 				@if (
 					Auth::user()->can("read", new Acelle\Model\Plan())
-					|| Auth::user()->can("read", new Acelle\Model\Currency())					
+					|| Auth::user()->can("read", new Acelle\Model\Currency())
 					|| Auth::user()->can("read", new Acelle\Model\PaymentMethod())
 				)
 					<li class="dropdown language-switch"
@@ -82,7 +82,7 @@
 							<i class="icon-credit-card2"></i> {{ trans('messages.plan') }}
 							<span class="caret"></span>
 						</a>
-						<ul class="dropdown-menu">							
+						<ul class="dropdown-menu">
 							@if (Auth::user()->can("read", new Acelle\Model\Plan()))
 								<li rel0="PlanController">
 									<a href="{{ action('Admin\PlanController@index') }}">
@@ -107,7 +107,7 @@
 						</ul>
 					</li>
 				@endif
-				
+
 				@if (
 					Auth::user()->admin->getPermission("admin_read") != 'no'
 					|| Auth::user()->admin->getPermission("admin_group_read") != 'no'
@@ -138,7 +138,7 @@
 						</ul>
 					</li>
 				@endif
-				
+
 				@if (
 					Auth::user()->admin->getPermission("sending_domain_read") != 'no'
 					|| Auth::user()->admin->getPermission("sending_server_read") != 'no'
@@ -233,7 +233,7 @@
 						@endif
                     </ul>
 				</li>
-				
+
 				@if (
 					Auth::user()->admin->getPermission("report_blacklist") != 'no'
 					|| Auth::user()->admin->getPermission("report_tracking_log") != 'no'
@@ -332,13 +332,13 @@
 		</div>
 	</div>
 	<!-- /main navbar -->
-	
+
 	<!-- Page header -->
 	<div class="page-header">
 		<div class="page-header-content">
-			
+
 			@yield('page_header')
-			
+
 		</div>
 	</div>
 	<!-- /page header -->
@@ -351,13 +351,13 @@
 
 			<!-- Main content -->
 			<div class="content-wrapper">
-			
+
 				<!-- display flash message -->
 				@include('common.errors')
-				
+
 				<!-- main inner content -->
 				@yield('content')
-                
+
 			</div>
 			<!-- /main content -->
 
@@ -372,8 +372,8 @@
 		<!-- /footer -->
 
 	</div>
-	<!-- /page container -->	
-	
+	<!-- /page container -->
+
 	@include("layouts._modals")
 </body>
 </html>

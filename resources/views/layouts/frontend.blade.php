@@ -2,19 +2,19 @@
 <html lang="en">
 <head>
 	<title>@yield('title') - {{ \Acelle\Model\Setting::get("site_name") }}</title>
-	
+
 	@include('layouts._favicon')
-	
+
 	@include('layouts._head')
-	
+
 	@include('layouts._css')
-	
+
 	@include('layouts._js')
-	
+
 	<script>
 		$.cookie('last_language_code', '{{ Auth::user()->customer->getLanguageCode() }}');
 	</script>
-	
+
 </head>
 
 <body class="navbar-top color-scheme-{{ Auth::user()->customer->getColorScheme() }}">
@@ -108,16 +108,16 @@
 						@endforeach
 					</ul>
                 </li>-->
-				
+
 				<!--<li class="dropdown">
 					<a href="#" class="dropdown-toggle top-quota-button" data-toggle="dropdown" data-url="{{ action("AccountController@quotaLog") }}">
 						<i class="icon-stats-bars4"></i>
 						<span class="visible-xs-inline-block position-right">{{ trans('messages.used_quota') }}</span>
 					</a>
 				</li>-->
-				
+
 				@include('layouts._top_activity_log')
-				
+
 				<li class="dropdown dropdown-user">
 					<a class="dropdown-toggle" data-toggle="dropdown">
 						<img src="{{ action('CustomerController@avatar', Auth::user()->customer->uid) }}" alt="">
@@ -136,7 +136,7 @@
 								<span class="">{{ trans('messages.used_quota') }}</span>
 							</a>
 						</li>
-						@if (Auth::user()->can("read", new Acelle\Model\Subscription()))
+						@if (Auth::user()->customer->can("read", new Acelle\Model\Subscription()))
 							<li rel0="AccountController\subscription">
 								<a href="{{ action('AccountController@subscription') }}">
 									<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
@@ -156,13 +156,13 @@
 		</div>
 	</div>
 	<!-- /main navbar -->
-	
+
 	<!-- Page header -->
 	<div class="page-header">
 		<div class="page-header-content">
-			
+
 			@yield('page_header')
-			
+
 		</div>
 	</div>
 	<!-- /page header -->
@@ -175,13 +175,13 @@
 
 			<!-- Main content -->
 			<div class="content-wrapper">
-			
+
 				<!-- display flash message -->
 				@include('common.errors')
-				
+
 				<!-- main inner content -->
 				@yield('content')
-                
+
 			</div>
 			<!-- /main content -->
 
@@ -197,8 +197,8 @@
 
 	</div>
 	<!-- /page container -->
-	
+
 	@include("layouts._modals")
-	
+
 </body>
 </html>

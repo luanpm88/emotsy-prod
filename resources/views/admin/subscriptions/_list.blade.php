@@ -47,7 +47,7 @@
 						</h5>
 						<span class="text-muted">{!! trans_choice('messages.days_remain', 0) !!}</span>
 					@endif
-				</td>				
+				</td>
 				<td>
 					<span class="text-muted2 list-status pull-left">
 						<span class="label label-sub label-flat bg-{{ $subscription->timeStatus() }}">{{ trans('messages.subscription_time_status_' . $subscription->timeStatus()) }}</span>
@@ -59,7 +59,7 @@
 							data-url="{{ action('Admin\SubscriptionController@payments', $subscription->uid) }}">
 							<span class="label label-sub label-flat bg-{{ $subscription->getPaidStatus() }}">
 								{{ trans('messages.subscription_paid_status_' . $subscription->getPaidStatus()) }}
-								<i class="icon-history"></i> 
+								<i class="icon-history"></i>
 							</span>
 						</span>
 					@else
@@ -75,29 +75,29 @@
 						<span class="label label-flat bg-{{ $subscription->status }}">{{ trans('messages.subscription_status_' . $subscription->status) }}</span>
 					</span>
 				</td>
-				<td class="text-right">											
-					@can('update', $subscription)
+				<td class="text-right">
+					@if (Auth::user()->admin->can('update', $subscription))
 						<a href="{{ action('Admin\SubscriptionController@edit', $subscription->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
-					@endcan
-					@if (\Auth::user()->admin->can('delete', $subscription) || Auth::user()->can('enable', $subscription) || Auth::user()->can('disable', $subscription))
-						<div class="btn-group">										
+					@endif
+					@if (\Auth::user()->admin->can('delete', $subscription) || Auth::user()->admin->can('enable', $subscription) || Auth::user()->admin->can('disable', $subscription))
+						<div class="btn-group">
 							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
-								@can('enable', $subscription)
-									<li>														
+								@if (Auth::user()->admin->can('enable', $subscription))
+									<li>
 										<a data-method='PATCH' link-confirm="{{ trans('messages.enable_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@enable', ["uids" => $subscription->uid]) }}">
 											<i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
 										</a>
 									</li>
-								@endcan
-								@can('disable', $subscription)
-									<li>														
+								@endif
+								@if (Auth::user()->admin->can('disable', $subscription))
+									<li>
 										<a data-method='PATCH' link-confirm="{{ trans('messages.disable_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@disable', ["uids" => $subscription->uid]) }}">
 											<i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
 										</a>
 									</li>
-								@endcan
-								@can('paid', $subscription)
+								@endif
+								@if (Auth::user()->admin->can('paid', $subscription))
 									<li>
 										<a
 											message="{{ trans('messages.paid_subscriptions_confirm') }}" data-toggle="modal" data-target="#list-form-modal" href="#paid"
@@ -105,20 +105,20 @@
 											data-uids="{{ $subscription->uid }}"
 											data-method="PATCH"
 											data-url="{{ action('Admin\SubscriptionController@paid') }}"
-										>											
+										>
 											<i class="icon-checkmark-circle"></i> {{ trans('messages.paid') }}
 										</a>
 									</li>
-								@endcan
-								@can('unpaid', $subscription)
+								@endif
+								@if (Auth::user()->admin->can('unpaid', $subscription))
 									<li>
 										<a data-method='PATCH' link-confirm="{{ trans('messages.unpaid_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@unpaid', ["uids" => $subscription->uid]) }}">
 											<i class="icon-radio-unchecked"></i> {{ trans('messages.unpaid') }}
 										</a>
 									</li>
-								@endcan
+								@endif
 								@if (\Auth::user()->admin->can('delete', $subscription))
-									<li>														
+									<li>
 										<a data-method='delete' delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@delete', ['uids' => $subscription->uid]) }}">
 											<i class="icon-trash"></i> {{ trans('messages.delete') }}
 										</a>
@@ -140,7 +140,7 @@
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
-@else					
+@else
 	<div class="empty-list">
 		<i class="icon-quill4"></i>
 		<span class="line-1">

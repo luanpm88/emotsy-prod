@@ -18,23 +18,23 @@ class SubscriptionController extends Controller
             'except' => [
                 'selectPlan',
                 'register',
-                'preview',                
+                'preview',
             ]
         ]);
     }
-    
+
     /**
      * Select a plan.
      */
     public function selectPlan()
     {
         $plans = \Acelle\Model\Plan::getAllActive()->get();
-        
+
         return view('subscriptions.select_plan', [
             'plans' => $plans
         ]);
     }
-    
+
     /**
      * Customer registration.
      */
@@ -43,7 +43,7 @@ class SubscriptionController extends Controller
         if (\Acelle\Model\Setting::get('enable_user_registration') == 'no') {
             return $this->notAuthorized();
         }
-        
+
         // Customer account
         $user = $request->user();
         $is_customer_logged_in = is_object($user) && is_object($user->customer);
@@ -60,7 +60,7 @@ class SubscriptionController extends Controller
                 $customer->user->fill($request->old());
             }
         }
-        
+
          // save posted data
         if ($request->isMethod('post')) {
             // Validation
@@ -68,17 +68,17 @@ class SubscriptionController extends Controller
             } else {
                 $this->validate($request, array_merge($customer->rules()));
             }
-            
-            // Save customer            
+
+            // Save customer
             if(!$is_customer_logged_in) {
                 $customer->updateInformation($request);
             }
-            
+
             // Send registration confirmation email
             if($is_customer_logged_in) {
             } else {
                 $user = \Acelle\Model\User::find($customer->user_id);
-                
+
                 try {
                     $user->sendActivationMail($customer->displayName(), action('SubscriptionController@subscription', $request->plan_uid));
                 } catch (\Exception $e) {
@@ -86,17 +86,17 @@ class SubscriptionController extends Controller
                     MailLog::error( $error );
                     return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_email_service') . ": " . $error]);
                 }
-                
+
                 return view('subscriptions.register_confirmation_notice');
             }
         }
-        
+
         return view('subscriptions.register', [
             'customer' => $customer,
             'is_customer_logged_in' => $is_customer_logged_in
         ]);
     }
-    
+
     /**
      * Customer subscription.
      */
@@ -104,53 +104,53 @@ class SubscriptionController extends Controller
     {
         $user = $request->user();
         $customer = $user->customer;
-        
+
         // Check if customer has current inactive subscription
         if ($customer->subscriptionsCount()) {
             return redirect()->action('SubscriptionController@index');
         }
-        
-        // Subscription        
+
+        // Subscription
         $subscription = new \Acelle\Model\Subscription();
         $subscription->customer_id = $customer->id;
-        
+
         if($request->plan_uid) {
             $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
             $subscription->plan_id = $plan->id;
         }
-        
+
         $subscription->fillAttributes($request->all());
         if (!empty($request->old())) {
             $subscription->fillAttributes($request->old());
         }
-        
+
          // save posted data
         if ($request->isMethod('post')) {
             // Validation
             $this->validate($request, $subscription->frontendRules());
-            
-            // Save current user info            
-            $subscription->fillAttributes($request->all());            
-            
+
+            // Save current user info
+            $subscription->fillAttributes($request->all());
+
             if ($subscription->isFree()) {
                 $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
                 $subscription->save();
-                
+
                 $request->session()->flash('alert-success', trans('messages.subscription.created'));
                 return redirect()->action('SubscriptionController@finish');
             } else {
                 $subscription->status = \Acelle\Model\Subscription::STATUS_INACTIVE;
                 $subscription->save();
-                
+
                 return redirect()->action('SubscriptionController@checkout', $subscription->uid);
             }
         }
-        
+
         return view('subscriptions.subscription', [
             'subscription' => $subscription
         ]);
     }
-    
+
     /**
      * Subscription preview.
      *
@@ -161,15 +161,15 @@ class SubscriptionController extends Controller
     {
         // Get current user
         $subscription = new \Acelle\Model\Subscription();
-        
+
         $subscription->customer_id = $request->user()->customer->id;
         $subscription->fillAttributes($request->all());
-        
+
         return view('subscriptions.preview', [
             'subscription' => $subscription
         ]);
     }
-    
+
     /**
      * Finish page.
      *
@@ -180,12 +180,12 @@ class SubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->getCurrentSubscription();
-        
+
         return view('subscriptions.finish', [
             'subscription' => $subscription
         ]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -194,7 +194,7 @@ class SubscriptionController extends Controller
     public function index(Request $request)
     {
         $customer = $request->user()->customer;
-        
+
         $request->merge(array("customer_id" => $customer->id));
         $request->merge(array("customer_list" => true));
         $subscriptions = \Acelle\Model\Subscription::search($request);
@@ -203,7 +203,7 @@ class SubscriptionController extends Controller
             'subscriptions' => $subscriptions,
         ]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -211,12 +211,12 @@ class SubscriptionController extends Controller
      */
     public function listing(Request $request)
     {
-        $customer = $request->user()->customer;        
-        
+        $customer = $request->user()->customer;
+
         $request->merge(array("customer_id" => $customer->id));
         $request->merge(array("customer_list" => true));
         $subscriptions = \Acelle\Model\Subscription::search($request)->paginate($request->per_page);
-        
+
         if ($request->filters["subscription_uid"]) {
             $subscription = \Acelle\Model\Subscription::findByUid($request->filters["subscription_uid"]);
         }
@@ -229,7 +229,7 @@ class SubscriptionController extends Controller
             'subscription' => $subscription,
         ]);
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -237,13 +237,13 @@ class SubscriptionController extends Controller
      */
     public function create(Request $request)
     {
-        $subscription = new \Acelle\Model\Subscription();        
+        $subscription = new \Acelle\Model\Subscription();
 
         // authorize
-        if (\Gate::denies('create', $subscription)) {
+        if (!$request->user()->customer->can('create', $subscription)) {
             return $this->notAuthorized();
         }
-        
+
         if (!empty($request->old())) {
             $subscription->fillAttributes($request->old());
         }
@@ -275,16 +275,16 @@ class SubscriptionController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, $subscription->frontendRules());            
-            
+            $this->validate($request, $subscription->frontendRules());
+
             $subscription->fillAttributes($request->all());
-            
+
             $subscription->save();
-            
+
             if ($subscription->isFree()) {
                 $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
                 $subscription->save();
-                
+
                 $request->session()->flash('alert-success', trans('messages.subscription.created'));
                 return redirect()->action('AccountController@subscription');
             } else {
@@ -292,7 +292,7 @@ class SubscriptionController extends Controller
             }
         }
     }
-    
+
     /**
      * Show the form for editing the specified resource.
      *
@@ -301,7 +301,7 @@ class SubscriptionController extends Controller
      */
     public function edit(Request $request, $uid)
     {
-        
+
     }
 
     /**
@@ -313,9 +313,9 @@ class SubscriptionController extends Controller
      */
     public function update(Request $request, $uid)
     {
-        
+
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -334,11 +334,11 @@ class SubscriptionController extends Controller
             }
         }
 
-        // Redirect to my subscription page        
+        // Redirect to my subscription page
         $request->session()->flash('alert-success', trans('messages.subscriptions.deleted'));
         return redirect()->action('AccountController@subscription');
     }
-    
+
     /**
      * Subscription checkout.
      *
@@ -349,12 +349,12 @@ class SubscriptionController extends Controller
     {
         // Get current user
         $subscription = \Acelle\Model\Subscription::findByUid($request->uid);
-        
+
         if (is_object($subscription->paymentMethod)) {
             return redirect()->action('PaymentController@' . $subscription->paymentMethod->type, $subscription->uid);
         }
     }
-    
+
     /**
      * Subscription select payment method.
      *

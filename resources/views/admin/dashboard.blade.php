@@ -11,25 +11,25 @@
 @section('content')
 	<h6 class="h1-subtitle">{{ trans('messages.admin') }}</h6>
     <h1 class="mt-0 mb-0">{{ trans('messages.dashboard') }}</h1>
-	
+
 	<div class="row admin-dashboard-container">
 		<div class="col-md-7">
 			<div class="row">
 				@if (
-					Auth::user()->can("read", new Acelle\Model\Subscription()) ||
+					Auth::user()->admin->can("read", new Acelle\Model\Subscription()) ||
 					Auth::user()->can("read", new Acelle\Model\Customer())
 				)
 					<div class="col-md-6">
 						<h2 class="">{{ trans('messages.customer') }}</h2>
 						@if (Auth::user()->can("read", new Acelle\Model\Customer()))
-							<a class="dashboard-box" href="{{ action('Admin\CustomerController@index') }}">								
+							<a class="dashboard-box" href="{{ action('Admin\CustomerController@index') }}">
 								<div class="dashboard-icon">
 									<i class="icon-users2"></i>
 								</div>
 								<h4>{{ trans('messages.customers') }}</h4>
 							</a>
 						@endif
-						@if (Auth::user()->can("read", new Acelle\Model\Subscription()))
+						@if (Auth::user()->admin->can("read", new Acelle\Model\Subscription()))
 							<a class="dashboard-box" href="{{ action('Admin\SubscriptionController@index') }}">
 								<span class="badge badge-danger">{{ Auth::user()->admin->subscriptionNotificationCount() }}</span>
 								<div class="dashboard-icon">
@@ -41,13 +41,13 @@
 						<br style="clear:both" />
 					</div>
 				@endif
-				
+
 				@if (
 					Auth::user()->can("read", new Acelle\Model\Admin()) ||
 					Auth::user()->can("read", new Acelle\Model\AdminGroup())
 				)
 					<div class="col-md-6">
-						<h2 class="">{{ trans('messages.admin') }}</h2>						
+						<h2 class="">{{ trans('messages.admin') }}</h2>
 						@if (Auth::user()->can("read", new Acelle\Model\Admin()))
 							<a class="dashboard-box" href="{{ action('Admin\AdminController@index') }}">
 								<div class="dashboard-icon">
@@ -64,21 +64,21 @@
 								<h4>{{ trans('messages.admin_groups') }}</h4>
 							</a>
 						@endif
-						
+
 						<br style="clear:both" />
 					</div>
-				@endif		
-				
+				@endif
+
 			</div>
-			
-			<div class="row">				
+
+			<div class="row">
 				@if (
 					Auth::user()->can("read", new Acelle\Model\Plan()) ||
-					Auth::user()->can("read", new Acelle\Model\Currency()) ||					
+					Auth::user()->can("read", new Acelle\Model\Currency()) ||
 					Auth::user()->can("read", new Acelle\Model\PaymentMethod())
 				)
 					<div class="col-md-12">
-						<h2 class="">{{ trans('messages.plan') }}</h2>						
+						<h2 class="">{{ trans('messages.plan') }}</h2>
 						@if (Auth::user()->can("read", new Acelle\Model\Plan()))
 							<a class="dashboard-box" href="{{ action('Admin\PlanController@index') }}">
 								<div class="dashboard-icon">
@@ -107,7 +107,7 @@
 					</div>
 				@endif
 			</div>
-			
+
 			@if (
 				Auth::user()->admin->getPermission("sending_domain_read") != 'no'
 				|| Auth::user()->admin->getPermission("sending_server_read") != 'no'
@@ -153,7 +153,7 @@
 					</div>
 				</div>
 			@endif
-				
+
 			<div class="row">
 				<div class="col-md-12">
 					<h2 class="">{{ trans('messages.setting') }}</h2>
@@ -190,7 +190,7 @@
 					<br style="clear:both" />
 				</div>
 			</div>
-			
+
 			@if (
 				Auth::user()->admin->getPermission("report_blacklist") != 'no'
 				|| Auth::user()->admin->getPermission("report_tracking_log") != 'no'
@@ -265,13 +265,13 @@
 			@endif
 		</div>
 		<div class="col-md-5">
-			
+
 			<h5 class="text-semibold"><i class="icon-users"></i> {{ trans('messages.customers_growth') }}</h5>
 			@include('admin.customers._growth_chart')
-			
+
 			<h5 class="text-semibold"><i class="icon-clipboard2"></i> {{ trans('messages.plans_chart') }}</h5>
 			@include('admin.plans._pie_chart')
-		
+
 			<div class="panel-group content-group-lg dashboard-accordion" id="accordion0">
 				<div class="panel panel-white panel-no-color">
 					<div class="panel-heading">
@@ -289,8 +289,8 @@
 								@foreach(Auth::user()->admin->recentSubscriptions() as $subscription)
 									<li class="">
 										<div class="row">
-											<div class="col-sm-5 col-md-5">												
-												<h6 class="mt-0 mb-0 text-semibold">													
+											<div class="col-sm-5 col-md-5">
+												<h6 class="mt-0 mb-0 text-semibold">
 													<a href="{{ action('Admin\CustomerController@subscriptions', $subscription->customer->uid) }}">
 														<i class="icon-clipboard2"></i>
 														{{ $subscription->plan_name }}
@@ -320,7 +320,7 @@
 												<span class="text-muted2 list-status pull-left">
 													<span class="label label-sub label-flat bg-{{ $subscription->timeStatus() }}">{{ trans('messages.subscription_time_status_' . $subscription->timeStatus()) }}</span>
 												</span>-->
-											</div>	
+											</div>
 										</div>
 									</li>
 								@endforeach
@@ -351,7 +351,7 @@
 										<div class="row">
 											<div class="col-sm-5 col-md-5">
 												<img width="40" class="img-circle mr-10 pull-left" src="{{ action('CustomerController@avatar', $customer->uid) }}" alt="">
-												<h6 class="mt-0 mb-0 text-semibold">													
+												<h6 class="mt-0 mb-0 text-semibold">
 													<a href="{{ action('Admin\CustomerController@edit', $customer->uid) }}">
 														{{ $customer->displayName() }}
 													</a>
@@ -405,14 +405,14 @@
 							<div class="scrollbar-box action-log-box">
 								<!-- Timeline -->
 								<div class="timeline timeline-left content-group">
-									<div class="timeline-container">				
+									<div class="timeline-container">
 											@foreach (\Auth::user()->admin->getLogs()->take(20)->get() as $log)
 												<!-- Sales stats -->
 												<div class="timeline-row">
 													<div class="timeline-icon">
 														<a href="#"><img src="{{ action('CustomerController@avatar', $log->customer->uid) }}" alt=""></a>
 													</div>
-						
+
 													<div class="panel panel-flat timeline-content">
 														<div class="panel-heading">
 															<h6 class="panel-title text-semibold">{{ $log->customer->displayName() }}</h6>
@@ -420,14 +420,14 @@
 																<span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at ? $log->created_at->diffForHumans() : '' }}</span>
 															</div>
 														</div>
-						
+
 														<div class="panel-body">
 															{!! $log->message() !!}
 														</div>
 													</div>
 												</div>
 												<!-- /sales stats -->
-											@endforeach								
+											@endforeach
 									</div>
 								</div>
 							</div>
