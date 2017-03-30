@@ -2056,3 +2056,24 @@ ul.dotted-list {
     height: 20px;
     margin-right: 10px;
 }
+.empty-li {
+    font-size: 16px;
+    padding: 10px 0 30px 0 !important;
+    text-align: center;
+    border-bottom: 0 !important;
+}
+.has-fixed-height-300 {
+    height: 292px;
+}
+.has-fixed-height-300.empty-list {
+    padding: 70px 20px;
+}
+.empty-list {
+    border-radius: 5px;
+}
+ul.type2 li {
+    padding-bottom: 20px;
+}
+ul.type2 li i {
+    height: 30px;
+}

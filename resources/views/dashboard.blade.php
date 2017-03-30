@@ -9,9 +9,9 @@
 @endsection
 
 @section('content')
-    <h1>{{ trans('messages.dashboard') }}</h1>
+    {!! trans('messages.frontend_dashboard_welcome', ['name' => Auth::user()->customer->displayName()]) !!}
 
-	<h2 class="text-teal-800"><i class="icon-stats-bars4"></i> {{ trans("messages.used_quota") }}</h2>
+	<h3 class="text-teal-800 mb-10 mt-40"><i class="icon-stats-bars4"></i> {{ trans("messages.used_quota") }}</h3>
 	<div class="row quota_box">
 		<div class="col-sm-6 col-md-6">
 			<div class="content-group-sm">
@@ -67,9 +67,7 @@
 		</div>
 	</div>
 
-	<hr />
-
-    <h2 class="text-teal-800"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h2>
+    <h3 class="text-teal-800 mt-40"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h3>
 		
 	@if (Auth::user()->customer->sentCampaigns()->count() == 0)
 		<div class="empty-list">
@@ -93,10 +91,8 @@
 		</div>
 		<div class="campaign-quickview-container" data-url="{{ action("CampaignController@quickView") }}"></div>
 	@endif
-
-    <hr />
     
-    <h2 class="text-teal-800"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h2>
+    <h3 class="text-teal-800 mt-40"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h3>
     
 	@if (Auth::user()->customer->lists()->count() == 0)
 		<div class="empty-list">
@@ -121,10 +117,8 @@
 		</div>
 		<div class="list-quickview-container" data-url="{{ action("MailListController@quickView") }}"></div>
 	@endif
-
-    <br />
-
-    <h2 class="text-teal-800"><i class="icon-podium"></i> {{ trans('messages.top_5') }}</h2>
+	
+    <h3 class="text-teal-800 mt-40"><i class="icon-podium"></i> {{ trans('messages.top_5') }}</h3>
     <div class="tabbable">
 		<ul class="nav nav-tabs nav-tabs-top">
 			<li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
@@ -137,7 +131,7 @@
 		<div class="tab-content">
 			<div class="tab-pane active" id="top-tab1">
 				<ul class="modern-listing mt-0 top-border-none">
-					@foreach (Acelle\Model\Campaign::topOpens(5, Auth::user()->customer)->get() as $num => $item)
+					@forelse (Acelle\Model\Campaign::topOpens(5, Auth::user()->customer)->get() as $num => $item)
 						<li>
 							<div class="row">
 								<div class="col-sm-5 col-md-5">
@@ -175,12 +169,16 @@
 							</div>
 	
 						</li>
-					@endforeach
+					@empty
+						<li class="empty-li">
+							{{ trans('messages.empty_record_message') }}
+						</li>
+					@endforelse
 				</ul>
 			</div>
 			<div class="tab-pane" id="top-tab2">
 				<ul class="modern-listing mt-0 top-border-none">
-					@foreach (Acelle\Model\Campaign::topClicks(5, Auth::user()->customer)->get() as $num => $item)
+					@forelse (Acelle\Model\Campaign::topClicks(5, Auth::user()->customer)->get() as $num => $item)
 						<li>
 							<div class="row">
 								<div class="col-sm-5 col-md-5">
@@ -217,13 +215,16 @@
 								</div>										
 							</div>
 						</li>
-					@endforeach
+					@empty
+						<li class="empty-li">
+							{{ trans('messages.empty_record_message') }}
+						</li>
+					@endforelse
 				</ul>
 			</div>
-			<div class="tab-pane" id="top-tab3">
-				
+			<div class="tab-pane" id="top-tab3">				
 				<ul class="modern-listing mt-0 top-border-none">
-					@foreach (Acelle\Model\Campaign::topLinks(5, Auth::user()->customer)->get() as $num => $item)
+					@forelse (Acelle\Model\Campaign::topLinks(5, Auth::user()->customer)->get() as $num => $item)
 						<li>
 							<div class="row">
 								<div class="col-sm-6 col-md-6">
@@ -253,15 +254,17 @@
 								</div>
 							</div>
 						</li>
-					@endforeach
+					@empty
+						<li class="empty-li">
+							{{ trans('messages.empty_record_message') }}
+						</li>
+					@endforelse
 				</ul>
 			</div>					
 		</div>
 	</div>
-		
-	<br />
-    <br />
-    <h2 class="text-teal-800"><i class="icon-history"></i> {{ trans('messages.activity_log') }}</h2>
+
+    <h3 class="text-teal-800 mt-40"><i class="icon-history"></i> {{ trans('messages.activity_log') }}</h3>
 	
 	@if (Auth::user()->customer->logs()->count() == 0)
 		<div class="empty-list">

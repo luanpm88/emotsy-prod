@@ -1732,4 +1732,10 @@ return [
     'plan_status_inactive' => 'inactive',
     'registration_recaptcha' => 'Registration captcha',
     'setting.registration_recaptcha.help' => 'Enable captcha for registration to block spammers and bots from accessing the webapp.',
+    'frontend_dashboard_welcome' => '<h1 class="mb-10">Hello, :name!</h1>
+        <p>Welcome back to your account dashboard. Check out these performance statistics and personalized tips from Acelle Mail.</p>',
+    'empty_record_message' => 'There are no records yet!',
+    'backend_dashboard_welcome' => '<h1 class="mb-10">Hello, :name!</h1>
+        <p>Welcome back to admin dashboard. Check out these system statistics and notifications from Acelle Mail.</p>',
+    'resources_statistics' => 'Resources statistics',
 ];
