@@ -27,7 +27,7 @@
 				<form class="listing-form"
 					sort-url="{{ action('Admin\PlanController@sort') }}"
 					data-url="{{ action('Admin\PlanController@listing') }}"
-					per-page="{{ Acelle\Model\Plan::$itemsPerPage }}"					
+					per-page="{{ Acelle\Model\Plan::$itemsPerPage }}"
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-10">
@@ -61,7 +61,7 @@
 						@endcan
 					</div>
 					
-					<div class="pml-table-container table-boxes">
+					<div class="pml-table-container">
 						
 						
 						

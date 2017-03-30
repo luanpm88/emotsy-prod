@@ -1728,4 +1728,6 @@ return [
         Your subscription will start in <strong>:remain</strong>, from <strong>:start_at</strong>.</p><p>Please find your next plan details below</p>',
     'current_plan_disabled_intro' => '<p>Your current subscription for <a><strong>:plan plan</strong></a> was disabled.
         Please contact provider for more information</p>',
+    'plan_status_active' => 'active',
+    'plan_status_inactive' => 'inactive',
 ];
