@@ -29,7 +29,7 @@ class Plan extends Model
     // Plan status
 	const STATUS_INACTIVE = 'inactive';
     const STATUS_ACTIVE = 'active';
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -54,12 +54,12 @@ class Plan extends Model
             'price' => 'required|min:0',
             'color' => 'required',
         );
-    
+
         $options = self::defaultOptions();
         foreach ($options as $type => $option) {
             $rules['options.' . $type] = 'required';
         }
-        
+
         return $rules;
     }
 
@@ -72,22 +72,22 @@ class Plan extends Model
     {
         return self::where('uid', '=', $uid)->first();
     }
-    
+
     public function admin()
     {
         return $this->belongsTo('Acelle\Model\Admin');
     }
-    
+
     public function plansSendingServers()
     {
         return $this->hasMany('Acelle\Model\PlansSendingServer');
     }
-    
+
     public function currency()
     {
         return $this->belongsTo('Acelle\Model\Currency');
     }
-	
+
 	public function subscriptions()
     {
         return $this->hasMany('Acelle\Model\Subscription');
@@ -108,13 +108,13 @@ class Plan extends Model
                 $uid = uniqid();
             }
             $item->uid = $uid;
-            
+
             // Update custom order
             Plan::getAll()->increment('custom_order', 1);
             $item->custom_order = 0;
         });
     }
-    
+
     /**
      * Get all items.
      *
@@ -140,11 +140,7 @@ class Plan extends Model
     public static function filter($request)
     {
         $query = self::select('plans.*');
-        
-        if ($request->user()->admin->getPermission('plan_read') == 'own') {
-            $query = $query->where('plans.admin_id', '=', $request->user()->admin->id);
-        }
-        
+
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
@@ -156,6 +152,10 @@ class Plan extends Model
 
         // filters
         $filters = $request->filters;
+
+		if(!empty($request->admin_id)) {
+            $query = $query->where('plans.admin_id', '=', $request->admin_id);
+        }
 
         return $query;
     }
@@ -175,7 +175,7 @@ class Plan extends Model
 
         return $query;
     }
-    
+
     /**
      * Disable plan.
      *
@@ -186,7 +186,7 @@ class Plan extends Model
         $this->status = PaymentMethod::STATUS_INACTIVE;
         return $this->save();
     }
-    
+
     /**
      * Enable plan.
      *
@@ -197,7 +197,7 @@ class Plan extends Model
         $this->status = PaymentMethod::STATUS_ACTIVE;
         return $this->save();
     }
-    
+
     /**
      * Color array.
      *
@@ -213,7 +213,7 @@ class Plan extends Model
             ['value' => '#555', 'text' => trans('messages.grey')],
         ];
     }
-    
+
     /**
      * Frequency time unit options.
      *
@@ -228,7 +228,7 @@ class Plan extends Model
             ['value' => 'year', 'text' => trans('messages.year')],
         ];
     }
-    
+
     /**
      * Default options for new plan.
      *
@@ -259,7 +259,7 @@ class Plan extends Model
 			'sending_domains_max' => '-1',
         ];
     }
-    
+
     /**
      * Get options.
      *
@@ -325,7 +325,7 @@ class Plan extends Model
 
         return $options;
     }
-    
+
     /**
      * Display group quota.
      *
@@ -339,9 +339,9 @@ class Plan extends Model
             return $this->getOption("sending_quota");
         } else {
             return strtolower(\Acelle\Library\Tool::format_number($this->getOption("sending_quota")) . " " . trans('messages.' . \Acelle\Library\Tool::getPluralPrase('email', $this->getOption("sending_quota"))) . ' / '.$this->getOption("sending_quota_time").' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption("sending_quota_time_unit"), $this->getOption("sending_quota"))));
-        }        
+        }
     }
-	
+
 	/**
      * Display total quota.
      *
@@ -353,9 +353,9 @@ class Plan extends Model
             return trans('messages.unlimited');
         } else {
             return \Acelle\Library\Tool::format_number($this->getOption("email_max"));
-        }      
+        }
     }
-    
+
     /**
      * Display max lists.
      *
@@ -367,9 +367,9 @@ class Plan extends Model
             return trans('messages.unlimited');
         } else {
             return \Acelle\Library\Tool::format_number($this->getOption("list_max"));
-        }        
+        }
     }
-    
+
     /**
      * Display max subscribers.
      *
@@ -381,9 +381,9 @@ class Plan extends Model
             return trans('messages.unlimited');
         } else {
             return \Acelle\Library\Tool::format_number($this->getOption("subscriber_max"));
-        }        
+        }
     }
-    
+
     /**
      * Display max campaign.
      *
@@ -395,9 +395,9 @@ class Plan extends Model
             return trans('messages.unlimited');
         } else {
             return \Acelle\Library\Tool::format_number($this->getOption("campaign_max"));
-        }        
+        }
     }
-    
+
     /**
      * Display max campaign.
      *
@@ -409,9 +409,9 @@ class Plan extends Model
             return trans('messages.unlimited');
         } else {
             return \Acelle\Library\Tool::format_number($this->getOption("max_size_upload_total"));
-        }        
+        }
     }
-    
+
     /**
      * Display max campaign.
      *
@@ -423,9 +423,9 @@ class Plan extends Model
             return trans('messages.unlimited');
         } else {
             return $this->getOption("max_file_size_upload");
-        }        
+        }
     }
-	
+
 	/**
      * Display sending ervers permission.
      *
@@ -436,14 +436,14 @@ class Plan extends Model
 		if ($this->getOption("create_sending_servers") == 'no') {
 			return trans('messages.feature_not_allow');
 		}
-		
+
         if ($this->getOption("sending_servers_max") == -1) {
             return trans('messages.unlimited');
         } else {
             return $this->getOption("sending_servers_max");
-        }        
+        }
     }
-	
+
 	/**
      * Display sending domains permission.
      *
@@ -454,14 +454,14 @@ class Plan extends Model
 		if ($this->getOption("create_sending_domains") == 'no') {
 			return trans('messages.feature_not_allow');
 		}
-		
+
         if ($this->getOption("sending_domains_max") == -1) {
             return trans('messages.unlimited');
         } else {
             return $this->getOption("sending_domains_max");
-        }        
+        }
     }
-    
+
     /**
      * Get customer select2 select options
      *
@@ -469,7 +469,7 @@ class Plan extends Model
      */
     public static function select2($request) {
         $data = ['items' => [], 'more' => true];
-        
+
         $query = \Acelle\Model\Plan::getAll()->orderBy('custom_order', 'asc');
         if (isset($request->q)) {
             $keyword = $request->q;
@@ -477,13 +477,19 @@ class Plan extends Model
                 $q->orwhere('plans.name', 'like', '%'.$keyword.'%');
             });
         }
+
+		// Read all check
+		if (!$request->user()->admin->can('readAll', new \Acelle\Model\Plan())) {
+			$query = $query->where('plans.admin_id', '=', $request->user()->admin->id);
+		}
+
         foreach ($query->limit(20)->get() as $plan) {
             $data['items'][] = ['id' => $plan->uid, 'text' => $plan->name];
         }
-        
+
         return json_encode($data);
     }
-    
+
     /**
      * Get all items.
      *
@@ -495,7 +501,7 @@ class Plan extends Model
 			->where("plans.status", "=", Plan::STATUS_ACTIVE)
 			->orderBy('custom_order', 'asc');
     }
-	
+
 	/**
      * Display plan time.
      *
@@ -505,7 +511,7 @@ class Plan extends Model
     {
         return $this->frequency_amount . ' ' . \Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount);
     }
-	
+
 	/**
      * Subscriptions count.
      *
@@ -515,7 +521,7 @@ class Plan extends Model
     {
         return $this->subscriptions()->count();
     }
-	
+
 	/**
      * Customers count.
      *

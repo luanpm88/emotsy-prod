@@ -16,6 +16,10 @@
 					<span class="text-muted kq_search">{{ $subscription->customer->user->email }}</span>
 					<br />
 					<span><i class="icon-clipboard2"></i> {{ $subscription->plan->name }}</span>
+					@if (Auth::user()->admin->can('readAll', $subscription))
+						<br />
+						@include ('admin.modules.admin_line', ['admin' => $subscription->customer->admin])
+					@endif
 				</td>
 				<td>
 					<h5 class="no-margin text-bold">

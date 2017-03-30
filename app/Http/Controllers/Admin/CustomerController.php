@@ -29,7 +29,12 @@ class CustomerController extends Controller
             return $this->notAuthorized();
         }
 
-        $customers = \Acelle\Model\Customer::getAll();
+        // If admin can view all customer
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\Customer())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
+        }
+
+        $customers = \Acelle\Model\Customer::search($request);
 
         return view('admin.customers.index', [
             'customers' => $customers,
@@ -46,6 +51,11 @@ class CustomerController extends Controller
         // authorize
         if (\Gate::denies('read', new \Acelle\Model\Customer())) {
             return $this->notAuthorized();
+        }
+
+        // If admin can view all customer
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\Customer())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
         $customers = \Acelle\Model\Customer::search($request)->paginate($request->per_page);
@@ -65,7 +75,7 @@ class CustomerController extends Controller
         $customer = new \Acelle\Model\Customer();
         $customer->status = 'active';
         $customer->uid = '0';
-        
+
         if (!empty($request->old())) {
             $customer->fill($request->old());
             // User info
@@ -106,7 +116,7 @@ class CustomerController extends Controller
         if ($request->isMethod('post')) {
             $rules = $customer->rules();
             $this->validate($request, $rules);
-            
+
             // Create user account for customer
             $user = new \Acelle\Model\User();
             $user->email = $request->email;
@@ -114,7 +124,7 @@ class CustomerController extends Controller
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
-            }            
+            }
             $user->save();
 
             // Save current user info
@@ -122,7 +132,7 @@ class CustomerController extends Controller
             $customer->admin_id = $request->user()->admin->id;
             $customer->fill($request->all());
             $customer->status = 'active';
-            
+
             if ($customer->save()) {
                 // Upload and save image
                 if ($request->hasFile('image')) {
@@ -206,28 +216,28 @@ class CustomerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            
+
             if($this->isDemoMode()) {
                 return $this->notAuthorized();
             }
-            
+
             $rules = $customer->rules();
 
             $this->validate($request, $rules);
-            
+
             // Update user account for customer
             $user = $customer->user;
             $user->email = $request->email;
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
-            }            
+            }
             $user->save();
-            
+
             // Save current user info
             $customer->fill($request->all());
             $customer->save();
-            
+
             // Upload and save image
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
@@ -236,7 +246,7 @@ class CustomerController extends Controller
                     $customer->image = $customer->uploadImage($request->file('image'));
                 }
             }
-            
+
             // Remove image
             if ($request->_remove_image == 'true') {
                 $customer->removeImage();
@@ -276,7 +286,7 @@ class CustomerController extends Controller
             // authorize
             if (\Gate::allows('update', $item)) {
                 $item->enable();
-            }            
+            }
         }
 
         // Redirect to my lists page
@@ -350,7 +360,7 @@ class CustomerController extends Controller
         if (\Gate::denies('loginAs', $customer)) {
             return $this->notAuthorized();
         }
-        
+
         $orig_id = $request->user()->uid;
         \Auth::login($customer->user);
         \Session::put('orig_customer_id', $orig_id);
@@ -369,12 +379,12 @@ class CustomerController extends Controller
     {
         $id = \Session::pull('orig_customer_id');
         $orig_user = \Acelle\Model\Customer::findByUid($id);
-        
+
         \Auth::login($orig_user);
-        
+
         return redirect()->action('Admin\UserController@index');
     }
-    
+
     /**
      * Select2 customer.
      *
@@ -383,10 +393,10 @@ class CustomerController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function select2(Request $request)
-    {        
+    {
         echo \Acelle\Model\Customer::select2($request);
     }
-    
+
     /**
      * User's subscriptions.
      *
@@ -406,7 +416,7 @@ class CustomerController extends Controller
             'customer' => $customer
         ]);
     }
-    
+
     /**
      * Customers growth chart content.
      *
@@ -462,7 +472,7 @@ class CustomerController extends Controller
 
         return json_encode($result);
     }
-    
+
     /**
      * Update customer contact information.
      *
@@ -471,15 +481,15 @@ class CustomerController extends Controller
      * @return \Illuminate\Http\Response
      **/
     public function contact(Request $request, $uid)
-    {        
+    {
         // Get current user
         $customer = \Acelle\Model\Customer::findByUid($uid);
-        
+
         // authorize
         if (\Gate::denies('update', $customer)) {
             return $this->notAuthorized();
         }
-        
+
         if (is_object($customer->contact)) {
             $contact = $customer->contact;
         } else {

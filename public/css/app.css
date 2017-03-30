@@ -2054,7 +2054,7 @@ ul.dotted-list {
     float: left;
     margin-top: 8px;
     height: 20px;
-    margin-right: 10px;
+    margin-right: 15px;
 }
 .empty-li {
     font-size: 16px;
@@ -2076,4 +2076,7 @@ ul.type2 li {
 }
 ul.type2 li i {
     height: 30px;
+}
+.text-small {
+    font-size: 12px;
 }

@@ -56,15 +56,15 @@ class Customer extends Model
             'first_name' => 'required',
             'last_name' => 'required',
             'timezone' => 'required',
-            'language_id' => 'required',            
+            'language_id' => 'required',
         );
-	
+
 		if (isset($this->id)) {
 			$rules['password'] = 'confirmed|min:5';
 		} else {
 			$rules['password'] = 'required|confirmed|min:5';
 		}
-		
+
 		return $rules;
     }
 
@@ -288,6 +288,11 @@ class Customer extends Model
 
         }
 
+		// Admin filter
+		if(!empty($request->admin_id)) {
+            $query = $query->where('customers.admin_id', '=', $request->admin_id);
+        }
+
         return $query;
     }
 
@@ -300,7 +305,9 @@ class Customer extends Model
     {
         $query = self::filter($request);
 
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        if(!empty($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
 
         return $query;
     }
@@ -920,8 +927,14 @@ class Customer extends Model
                     ->orWhere('users.email', 'like', '%'.$keyword.'%');
             });
         }
+
+		// Read all check
+		if (!$request->user()->admin->can('readAll', new \Acelle\Model\Customer())) {
+			$query = $query->where('customers.admin_id', '=', $request->user()->admin->id);
+		}
+
         foreach ($query->limit(20)->get() as $customer) {
-            $data['items'][] = ['id' => $customer->uid, 'text' => $customer->displayName()];
+            $data['items'][] = ['id' => $customer->uid, 'text' => $customer->displayNameEmail()];
         }
 
         return json_encode($data);
@@ -969,7 +982,7 @@ class Customer extends Model
             $this->image = '';
         }
     }
-	
+
 	/**
      * Get customer current subscriptions
      *
@@ -991,7 +1004,7 @@ class Customer extends Model
 			->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_ACTIVE)
 			->first();
     }
-	
+
 	/**
      * Get customer next subscriptions
      *
@@ -1002,7 +1015,7 @@ class Customer extends Model
 			->where('subscriptions.start_at', '>', \Carbon\Carbon::now()->endOfDay())
 			->first();
     }
-	
+
 	/**
      * Get customer current subscription
      *
@@ -1410,7 +1423,7 @@ class Customer extends Model
 				trans('messages.no_plan')
 			);
 	}
-	
+
 	/**
      * Get customer subscription not include old one
      *
@@ -1420,7 +1433,7 @@ class Customer extends Model
         return $subsciption = $this->subscriptions()
 			->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
     }
-	
+
 	/**
      * Get customer current pending subscription not include old one
      *
@@ -1430,7 +1443,7 @@ class Customer extends Model
         return $subsciption = $this->getNotOutdatedSubscriptions()
 			->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE);
     }
-	
+
 	/**
      * Get total file size usage
      *
@@ -1439,7 +1452,7 @@ class Customer extends Model
 	public function totalUploadSize() {
 		return \Acelle\Library\Tool::getDirectorySize(base_path("public/source/" . $this->user->uid)) / 1048576;
 	}
-	
+
 	/**
      * Get max upload size quota.
      *
@@ -1471,7 +1484,7 @@ class Customer extends Model
 
         return round((($this->totalUploadSize() / $this->maxTotalUploadSize()) * 100), 2);
     }
-	
+
 	/**
      * Custom can for customer.
      *
@@ -1480,5 +1493,15 @@ class Customer extends Model
     public function can($action, $item)
     {
         return $this->user->can($action, [$item, 'customer']);
+    }
+
+	/**
+     * Custom name + email.
+     *
+     * @return string
+     */
+    public function displayNameEmail()
+    {
+        return $this->displayName() . " (" . $this->user->email . ")";
     }
 }

@@ -29,13 +29,13 @@ class PaymentMethod extends Model
     // PaymentMethod status
 	const STATUS_INACTIVE = 'inactive';
     const STATUS_ACTIVE = 'active';
-	
+
 	// PaymentMethod type
 	const TYPE_CASH = 'cash';
     const TYPE_PAYPAL = 'paypal';
 	const TYPE_BRAINTREE_PAYPAL = 'braintree_paypal';
 	const TYPE_BRAINTREE_CREDIT_CARD = 'braintree_credit_card';
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -56,18 +56,18 @@ class PaymentMethod extends Model
             'name' => 'required',
 			'type' => 'required',
         );
-		
+
 		if($this->type == PaymentMethod::TYPE_PAYPAL) {
 			$rules['options.merchant_id'] = 'required';
 		}
-		
+
 		if($this->type == PaymentMethod::TYPE_BRAINTREE_PAYPAL || $this->type == PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD) {
 			$rules['options.environment'] = 'required';
 			$rules['options.merchantId'] = 'required';
 			$rules['options.publicKey'] = 'required';
 			$rules['options.privateKey'] = 'required';
 		}
-		
+
 		# Check if payment method is valid
         if (!$this->isValid()) {
             $rules['payment_method_not_valid'] = 'required';
@@ -85,7 +85,7 @@ class PaymentMethod extends Model
     {
         return self::where('uid', '=', $uid)->first();
     }
-    
+
     public function admin()
     {
         return $this->belongsTo('Acelle\Model\Admin');
@@ -106,13 +106,13 @@ class PaymentMethod extends Model
                 $uid = uniqid();
             }
             $item->uid = $uid;
-            
+
             // Update custom order
             PaymentMethod::getAll()->increment('custom_order', 1);
             $item->custom_order = 0;
         });
     }
-    
+
     /**
      * Get all items.
      *
@@ -138,11 +138,7 @@ class PaymentMethod extends Model
     public static function filter($request)
     {
         $query = self::select('payment_methods.*');
-        
-        if ($request->user()->admin->getPermission('payment_method_read') == 'own') {
-            $query = $query->where('payment_methods.admin_id', '=', $request->user()->admin->id);
-        }
-        
+
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
@@ -155,6 +151,10 @@ class PaymentMethod extends Model
         // filters
         $filters = $request->filters;
 
+		if(!empty($request->admin_id)) {
+            $query = $query->where('payment_methods.admin_id', '=', $request->admin_id);
+        }
+
         return $query;
     }
 
@@ -166,14 +166,14 @@ class PaymentMethod extends Model
     public static function search($request)
     {
         $query = self::filter($request);
-        
+
         if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
         return $query;
     }
-    
+
     /**
      * Disable payment_method.
      *
@@ -184,7 +184,7 @@ class PaymentMethod extends Model
         $this->status = PaymentMethod::STATUS_INACTIVE;
         return $this->save();
     }
-    
+
     /**
      * Enable payment_method.
      *
@@ -195,7 +195,7 @@ class PaymentMethod extends Model
         $this->status = PaymentMethod::STATUS_ACTIVE;
         return $this->save();
     }
-    
+
     /**
      * Get options.
      *
@@ -216,7 +216,7 @@ class PaymentMethod extends Model
 		$options = $this->getOptions();
         return isset($options[$name]) ? $options[$name] : NULL;
     }
-    
+
     /**
      * Get customer select2 select options
      *
@@ -224,7 +224,7 @@ class PaymentMethod extends Model
      */
     public static function select2($request) {
         $data = ['items' => [], 'more' => true];
-        
+
         $query = \Acelle\Model\PaymentMethod::getAll()->orderBy('custom_order', 'asc');
         if (isset($request->q)) {
             $keyword = $request->q;
@@ -235,10 +235,10 @@ class PaymentMethod extends Model
         foreach ($query->limit(20)->get() as $payment_method) {
             $data['items'][] = ['id' => $payment_method->uid, 'text' => $payment_method->name];
         }
-        
+
         return json_encode($data);
     }
-    
+
     /**
      * Get all items.
      *
@@ -250,7 +250,7 @@ class PaymentMethod extends Model
 			->where("payment_methods.status", "=", PaymentMethod::STATUS_ACTIVE)
 			->orderBy('custom_order', 'asc')->get();
     }
-	
+
 	/**
      * Payment methos types select options.
      *
@@ -264,7 +264,7 @@ class PaymentMethod extends Model
 			['value' => PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD, 'text' => trans('messages.' . PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD)],
         ];
     }
-	
+
 	/**
      * Set Braintree auth info.
      *
@@ -276,10 +276,10 @@ class PaymentMethod extends Model
         \Braintree_Configuration::merchantId($this->getOption('merchantId'));
         \Braintree_Configuration::publicKey($this->getOption('publicKey'));
         \Braintree_Configuration::privateKey($this->getOption('privateKey'));
-		
+
 		return \Braintree_ClientToken::generate();
     }
-	
+
 	/**
      * Get payment method by type.
      *
@@ -290,7 +290,7 @@ class PaymentMethod extends Model
         return PaymentMethod::where("payment_methods.type", "=", $type)
 			->first();
     }
-	
+
 	/**
      * Check payment method setting is valid.
      *
@@ -299,11 +299,13 @@ class PaymentMethod extends Model
     public function isValid()
     {
         try {
-            $this->getBraintreeClientToken();
+            if($this->type == PaymentMethod::TYPE_BRAINTREE_PAYPAL || $this->type == PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD) {
+				$this->getBraintreeClientToken();
+			}
 		} catch (\Exception $e) {
 			return false;
 		}
-		
+
 		return true;
     }
 }

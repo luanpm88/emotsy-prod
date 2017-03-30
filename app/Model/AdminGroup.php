@@ -41,6 +41,11 @@ class AdminGroup extends Model
         'name' => 'required',
     );
 
+    public function creator()
+    {
+        return $this->belongsTo('Acelle\Model\User', 'creator_id');
+    }
+
     /**
      * Rules.
      *
@@ -56,7 +61,7 @@ class AdminGroup extends Model
         foreach ($options as $type => $option) {
             $rules['options.' . $type] = 'required';
         }
-        
+
         $permissions = self::defaultPermissions();
         foreach ($permissions as $type => $value) {
             $rules['permissions.' . $type] = 'required';
@@ -90,6 +95,11 @@ class AdminGroup extends Model
             $query = $query->where('name', 'like', '%'.$request->keyword.'%');
         }
 
+        if(!empty($request->creator_id)) {
+            $query = $query->where('admin_groups.creator_id', '=', $request->creator_id);
+        }
+
+
         return $query;
     }
 
@@ -102,7 +112,9 @@ class AdminGroup extends Model
     {
         $query = self::filter($request);
 
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        if(!empty($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
 
         return $query;
     }
@@ -127,9 +139,15 @@ class AdminGroup extends Model
      *
      * @return array
      */
-    public static function getSelectOptions()
+    public static function getSelectOptions($admin = NULL)
     {
-        $options = self::getAll()->get()->map(function ($item) {
+        $query = self::getAll();
+
+        if ($admin && !$admin->can('readAll', new AdminGroup())) {
+            $query = $query->where('admin_groups.creator_id', '=', $admin->user_id);
+        }
+
+        $options = $query->get()->map(function ($item) {
             return ['value' => $item->id, 'text' => $item->name];
         });
 
@@ -146,7 +164,7 @@ class AdminGroup extends Model
         return [
         ];
     }
-    
+
     /**
      * Default permissions for new groups.
      *
@@ -211,7 +229,7 @@ class AdminGroup extends Model
             'setting_sending' => 'yes',
             'setting_system_urls' => 'yes',
             'setting_access_when_offline' => 'yes',
-            'setting_background_job' => 'yes',            
+            'setting_background_job' => 'yes',
             'language_read' => 'yes',
             'language_create' => 'yes',
             'language_update' => 'yes',
@@ -229,7 +247,7 @@ class AdminGroup extends Model
             'report_unsubscribe_log' => 'yes',
         ];
     }
-    
+
     /**
      * Backend roles.
      *
@@ -746,7 +764,7 @@ class AdminGroup extends Model
             ],
         ];
     }
-    
+
     /**
      * Get options.
      *
@@ -767,7 +785,7 @@ class AdminGroup extends Model
             return $defaul_options;
         }
     }
-    
+
     /**
      * Get options.
      *
@@ -798,7 +816,7 @@ class AdminGroup extends Model
     {
         return $this->getOptions()[$name];
     }
-    
+
     /**
      * Get permissions.
      *

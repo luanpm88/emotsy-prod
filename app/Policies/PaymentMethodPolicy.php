@@ -17,14 +17,21 @@ class PaymentMethodPolicy
     {
         //
     }
-    
+
     public function read(\Acelle\Model\User $user, \Acelle\Model\PaymentMethod $payment_method)
     {
         $can = $user->admin->getPermission('payment_method_read') != 'no';
 
         return $can;
     }
-    
+
+    public function readAll(\Acelle\Model\User $user, \Acelle\Model\PaymentMethod $item)
+    {
+        $can = $user->admin->getPermission('payment_method_read') == 'all';
+
+        return $can;
+    }
+
     public function create(\Acelle\Model\User $user, \Acelle\Model\PaymentMethod $payment_method)
     {
         $can = $user->admin->getPermission('payment_method_create') == 'yes';
@@ -54,7 +61,7 @@ class PaymentMethodPolicy
 
         return $can;
     }
-    
+
     public function disable(\Acelle\Model\User $user, \Acelle\Model\PaymentMethod $payment_method)
     {
         $ability = $user->admin->getPermission('payment_method_update');
@@ -63,7 +70,7 @@ class PaymentMethodPolicy
 
         return $can && $payment_method->status != 'inactive';
     }
-    
+
     public function enable(\Acelle\Model\User $user, \Acelle\Model\PaymentMethod $payment_method)
     {
         $ability = $user->admin->getPermission('payment_method_update');

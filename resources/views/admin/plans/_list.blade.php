@@ -12,7 +12,7 @@
 								name="ids[]"
 								value="{{ $plan->uid }}"
 							/>
-						</div>						
+						</div>
 						@if (request()->sort_order == 'custom_order' && empty(request()->keyword))
 							<i data-action="move" class="icon icon-more2 list-drag-button"></i>
 						@endif
@@ -25,7 +25,9 @@
 							{{ $plan->name }}
 						</span>
 					</h5>
-					<span class="text-muted">{{ trans('messages.created_at') }} {{ \Acelle\Library\Tool::formatDate($plan->created_at) }}</span>
+					@if (Auth::user()->can('readAll', $plan))
+						@include ('admin.modules.admin_line', ['admin' => $plan->admin])
+					@endif
 				</td>
 				<td>
 					<h5 class="no-margin text-bold kq_search">
@@ -40,15 +42,21 @@
 					<span class="text-muted">{{ trans('messages.sending_total_quota_label') }}</span>
 				</td>
 				<td>
+					<h5 class="no-margin text-bold kq_search">
+						{{ \Acelle\Library\Tool::formatDate($plan->updated_at) }}
+					</h5>
+					<span class="text-muted">{{ trans('messages.updated_at') }}</span>
+				</td>
+				<td>
 					<span class="text-muted2 list-status pull-left">
 						<span class="label label-flat bg-{{ $plan->status }}">{{ trans('messages.plan_status_' . $plan->status) }}</span>
 					</span>
 				</td>
-				<td class="text-right text-nowrap" width="5%">										
+				<td class="text-right text-nowrap" width="5%">
 					@can('update', $plan)
 						<a href="{{ action('Admin\PlanController@edit', $plan->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 					@endcan
-					<div class="btn-group">										
+					<div class="btn-group">
 						<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-right">
 							@if (Auth::user()->admin->can('enable', $plan))

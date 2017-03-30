@@ -51,7 +51,7 @@ class Admin extends Model
             'password' => 'confirmed|min:5',
         );
     }
-    
+
     /**
      * Admin email.
      *
@@ -91,20 +91,25 @@ class Admin extends Model
     {
         return $this->belongsTo('Acelle\Model\AdminGroup');
     }
-    
+
     public function customers()
     {
         return $this->hasMany('Acelle\Model\Customer');
     }
-    
+
     public function templates()
     {
         return $this->hasMany('Acelle\Model\Template');
     }
-    
+
     public function language()
     {
         return $this->belongsTo('Acelle\Model\Language');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo('Acelle\Model\User', 'creator_id');
     }
 
     /**
@@ -124,7 +129,7 @@ class Admin extends Model
             $item->uid = $uid;
         });
     }
-    
+
     /**
      * Display admin name: first_name last_name.
      *
@@ -144,11 +149,11 @@ class Admin extends Model
     {
         $path = 'app/admins/';
         $upload_path = storage_path($path);
-        
+
         if (!file_exists($upload_path)) {
             mkdir($upload_path, 0777, true);
         }
-        
+
         $filename = 'avatar-'.$this->id.'.'.$file->getClientOriginalExtension();
 
         // save to server
@@ -219,11 +224,7 @@ class Admin extends Model
     {
         $query = self::select('admins.*')
                         ->leftJoin('admin_groups', 'admin_groups.id', '=', 'admins.admin_group_id');
-        
-        //if ($request->user()->admin->getPermission('admin_read') == 'own') {
-        //    $query = $query->where('admins.admin_id', '=', $request->user()->admin->id);
-        //}
-        
+
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
@@ -243,6 +244,10 @@ class Admin extends Model
             }
         }
 
+        if(!empty($request->creator_id)) {
+            $query = $query->where('admins.creator_id', '=', $request->creator_id);
+        }
+
         return $query;
     }
 
@@ -255,11 +260,13 @@ class Admin extends Model
     {
         $query = self::filter($request);
 
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        if(!empty($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
 
         return $query;
     }
-    
+
     /**
      * Get admin setting.
      *
@@ -269,7 +276,7 @@ class Admin extends Model
     {
         return $this->adminGroup->getOption($name);
     }
-    
+
     /**
      * Get admin permission.
      *
@@ -278,8 +285,8 @@ class Admin extends Model
     public function getPermission($name)
     {
         return $this->adminGroup->getPermission($name);
-    }    
-    
+    }
+
     /**
      * Get user's color scheme.
      *
@@ -293,7 +300,7 @@ class Admin extends Model
             return \Acelle\Model\Setting::get('backend_scheme');
         }
     }
-    
+
     /**
      * Color array.
      *
@@ -311,7 +318,7 @@ class Admin extends Model
             ['value' => 'white', 'text' => trans('messages.white')],
         ];
     }
-    
+
     /**
      * Disable admin.
      *
@@ -322,7 +329,7 @@ class Admin extends Model
         $this->status = 'inactive';
         return $this->save();
     }
-    
+
     /**
      * Enable admin.
      *
@@ -333,7 +340,7 @@ class Admin extends Model
         $this->status = 'active';
         return $this->save();
     }
-    
+
     /**
      * Get recent resellers.
      *
@@ -343,7 +350,7 @@ class Admin extends Model
     {
         return $this->customers()->orderBy("created_at", "DESC")->limit(5)->get();
     }
-    
+
     /**
      * Get all admin's subcriptions.
      *
@@ -353,17 +360,17 @@ class Admin extends Model
     {
         $query = \Acelle\Model\Subscription::select('subscriptions.*')
             ->leftJoin('customers', 'customers.id', '=', 'subscriptions.customer_id');
-        
+
         if (!$this->user->can('readAll', new \Acelle\Model\Customer())) {
-            $query = $query->where(function ($q) {            
+            $query = $query->where(function ($q) {
                 $q->orwhere('customers.admin_id', '=', $this->id)
                     ->orWhere('subscriptions.admin_id', '=', $this->id);
             });
         }
-        
+
         return $query;
     }
-    
+
     /**
      * Get subscription notification count.
      *
@@ -375,10 +382,10 @@ class Admin extends Model
             ->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
             ->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->endOfDay())
             ->count();
-        
+
         return $query == 0 ? '' : $query;
     }
-    
+
     /**
      * Get recent subscriptions.
      *
@@ -390,10 +397,10 @@ class Admin extends Model
             //->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
             ->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->endOfDay())
             ->orderBy('subscriptions.created_at', 'desc')->limit($number);
-        
+
         return $query->get();
     }
-    
+
     /**
      * Get admin language code
      *
@@ -402,7 +409,7 @@ class Admin extends Model
     public function getLanguageCode() {
         return (is_object($this->language) ? $this->language->code : null);
     }
-    
+
     /**
      * Get admin logs of their customers
      *
@@ -411,13 +418,13 @@ class Admin extends Model
     public function getLogs() {
         $query = \Acelle\Model\Log::select('logs.*')->leftJoin('customers', 'customers.id', '=', 'logs.customer_id')
             ->leftJoin('admins', 'admins.id', '=', 'customers.admin_id');
-        
+
         if (!$this->user->can('readAll', new \Acelle\Model\Customer())) {
             $query = $query->where('admins.id', '=', $this->id);
         }
         return $query;
     }
-    
+
     /**
      * Create customer account
      *
@@ -433,11 +440,11 @@ class Admin extends Model
             $customer->image = $this->image;
             $customer->timezone = $this->timezone;
             $customer->status = $this->status;
-            
+
             $customer->save();
         }
     }
-    
+
     /**
      * Check if admin has customer account
      *
@@ -446,7 +453,7 @@ class Admin extends Model
     public function hasCustomerAccount() {
         return is_object($this->user) && is_object($this->user->customer);
     }
-    
+
     /**
      * Check if customer is disabled
      *
@@ -455,7 +462,7 @@ class Admin extends Model
     public function isActive() {
 		return $this->status == Customer::STATUS_ACTIVE;
 	}
-    
+
     /**
      * Custom can for admin.
      *
@@ -464,5 +471,21 @@ class Admin extends Model
     public function can($action, $item)
     {
         return $this->user->can($action, [$item, 'admin']);
+    }
+
+    /**
+     * Destroy admin.
+     *
+     * @return boolean
+     */
+    public function deleteRecursive()
+    {
+        // unset all customers
+        $this->customers()->update(['admin_id' => NULL]);
+
+        // Delete admin and user
+        $user = $this->user;
+        $this->delete();
+        $user->delete();
     }
 }

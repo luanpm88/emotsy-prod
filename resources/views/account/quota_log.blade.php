@@ -52,7 +52,7 @@
             </div>
         </div>
     </div>
-    
+
     <div class="col-md-12">
         <div class="content-group-sm mt-20">
             <div class="pull-right text-teal-800 text-semibold">
@@ -66,7 +66,7 @@
             </div>
         </div>
     </div>
-        
+
     <div class="col-md-12">
         <div class="content-group-sm mt-20">
             <div class="pull-right text-teal-800 text-semibold">
@@ -80,8 +80,8 @@
             </div>
         </div>
     </div>
-    
-    @can ("create", new Acelle\Model\SendingServer())
+
+    @if (Auth::user()->customer->can("create", new Acelle\Model\SendingServer()))
         <div class="col-md-12">
             <div class="content-group-sm">
                 <div class="pull-right text-teal-800 text-semibold">
@@ -95,9 +95,9 @@
                 </div>
             </div>
         </div>
-    @endcan
-    
-    @can ("create", new Acelle\Model\SendingDomain())
+    @endif
+
+    @if (Auth::user()->customer->can("create", new Acelle\Model\SendingDomain()))
         <div class="col-md-12">
             <div class="content-group-sm">
                 <div class="pull-right text-teal-800 text-semibold">
@@ -111,5 +111,5 @@
                 </div>
             </div>
         </div>
-    @endcan
+    @endif
 </div>

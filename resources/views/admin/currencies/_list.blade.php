@@ -20,6 +20,10 @@
 					<h5 class="no-margin text-bold">
 						<a class="kq_search" href="{{ action('Admin\CurrencyController@edit', $item->uid) }}">{{ $item->name }}</a>
 					</h5>
+					@if (Auth::user()->can('readAll', $item))
+						@include ('admin.modules.admin_line', ['admin' => $item->admin])
+						<br />
+					@endif
 					<span class="text-muted">
 						{{ trans('messages.updated_at') }}
 						{{ Acelle\Library\Tool::formatDateTime($item->updated_at) }}
@@ -44,29 +48,29 @@
 						<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
 					</span>
 				</td>
-				<td class="text-right text-nowrap" width="5%">											
+				<td class="text-right text-nowrap" width="5%">
 					@can('update', $item)
 						<a href="{{ action('Admin\CurrencyController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-pencil pr-0 mr-0"></i></a>
 					@endcan
 					@if (Auth::user()->can('delete', $item) || Auth::user()->can('enable', $item) || Auth::user()->can('disable', $item) || Auth::user()->can('delete', $item))
-						<div class="btn-group">										
+						<div class="btn-group">
 							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
 								@can('enable', $item)
-									<li>														
+									<li>
 										<a link-confirm="{{ trans('messages.enable_admins_confirm') }}" href="{{ action('Admin\CurrencyController@enable', ["uids" => $item->uid]) }}">
 											<i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
 										</a>
 									</li>
 								@endcan
 								@can('disable', $item)
-									<li>														
+									<li>
 										<a link-confirm="{{ trans('messages.disable_admins_confirm') }}" href="{{ action('Admin\CurrencyController@disable', ["uids" => $item->uid]) }}">
 											<i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
 										</a>
 									</li>
 								@endcan
-								<li>														
+								<li>
 									<a delete-confirm="{{ trans('messages.delete_currencies_confirm') }}" href="{{ action('Admin\CurrencyController@delete', ['uids' => $item->uid]) }}">
 										<i class="icon-trash"></i> {{ trans('messages.delete') }}
 									</a>
@@ -87,7 +91,7 @@
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
-@else					
+@else
 	<div class="empty-list">
 		<i class="icon-currencies"></i>
 		<span class="line-1">

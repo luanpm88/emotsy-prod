@@ -12,7 +12,7 @@
 								'label' => trans('messages.customer'),
 								'selected' => [
 									'value' => is_object($subscription->customer) ? $subscription->customer->uid : '',
-									'text' => is_object($subscription->customer) ? $subscription->customer->displayName() : ''
+									'text' => is_object($subscription->customer) ? $subscription->customer->displayNameEmail() : ''
 								],
 								'help_class' => 'subscription',
 								'rules' => $subscription->rules(),

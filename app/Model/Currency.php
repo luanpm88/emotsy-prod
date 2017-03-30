@@ -66,7 +66,7 @@ class Currency extends Model
             $item->uid = $uid;
         });
     }
-    
+
     /**
      * Get all items.
      *
@@ -92,11 +92,7 @@ class Currency extends Model
     public static function filter($request)
     {
         $query = self::select('currencies.*');
-        
-        if ($request->user()->admin->getPermission('currency_read') == 'own') {
-            $query = $query->where('currencies.admin_id', '=', $request->user()->admin->id);
-        }
-        
+
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
@@ -105,6 +101,10 @@ class Currency extends Model
                         ->orWhere('currencies.code', 'like', '%'.$keyword.'%');
                 });
             }
+        }
+
+        if(!empty($request->admin_id)) {
+            $query = $query->where('currencies.admin_id', '=', $request->admin_id);
         }
 
         return $query;
@@ -119,11 +119,13 @@ class Currency extends Model
     {
         $query = self::filter($request);
 
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        if (!empty($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
 
         return $query;
     }
-    
+
     /**
      * Disable customer.
      *
@@ -134,7 +136,7 @@ class Currency extends Model
         $this->status = 'inactive';
         return $this->save();
     }
-    
+
     /**
      * Enable customer.
      *
@@ -145,7 +147,7 @@ class Currency extends Model
         $this->status = 'active';
         return $this->save();
     }
-    
+
     /**
      * Get customer select2 select options
      *
@@ -153,7 +155,7 @@ class Currency extends Model
      */
     public static function select2($request) {
         $data = ['items' => [], 'more' => true];
-        
+
         $query = Currency::getAll();
         if (isset($request->q)) {
             $keyword = $request->q;
@@ -162,13 +164,19 @@ class Currency extends Model
                     ->orwhere('currencies.code', 'like', '%'.$keyword.'%');
             });
         }
+
+        // Read all check
+		if (!$request->user()->admin->can('readAll', new \Acelle\Model\Currency())) {
+			$query = $query->where('currencies.admin_id', '=', $request->user()->admin->id);
+		}
+
         foreach ($query->limit(20)->get() as $currency) {
             $data['items'][] = ['id' => $currency->id, 'text' => $currency->displayName()];
         }
-        
+
         return json_encode($data);
     }
-    
+
     /**
      * Display currency name.
      *
