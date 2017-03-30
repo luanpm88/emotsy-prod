@@ -31,6 +31,11 @@
 													{{ $item->name }}
 												</a>
 											</h5>
+											<span class="text-muted">
+												{!! is_object($item->admin) ? '<i class="icon-user-tie"></i>' . $item->admin->displayName() : '' !!}
+												{!! is_object($item->customer) ? '<i class="icon-user"></i>' . $item->customer->displayName() : '' !!}
+											</span>
+											<br>
 											<span class="text-muted">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
 										
@@ -43,20 +48,20 @@
 										</td>
 										
 										<td class="text-right">										
-											@can('update', $item)
+											@if (Auth::user()->customer->can('update', $item))
 												@if ($item->source == 'builder')
 													<a href="{{ action('TemplateController@rebuild', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 												@else
 													<a href="{{ action('TemplateController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 												@endif
-											@endcan
+											@endif
 											<div class="btn-group">										
 												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 												<ul class="dropdown-menu dropdown-menu-right">
-													@if (\Gate::allows('preview', $item))
+													@if (Auth::user()->customer->can('preview', $item))
 														<li><a href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a></li>
 													@endif
-													@if (\Gate::allows('delete', $item))
+													@if (Auth::user()->customer->can('delete', $item))
 														<li><a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('TemplateController@delete', ["uids" => $item->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
 													@endif
 												</ul>

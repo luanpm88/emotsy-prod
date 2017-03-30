@@ -117,11 +117,10 @@ class Template extends Model
                 if ($filters['from'] == 'mine') {
                     $query = $query->where('customer_id', '=', $request->customer_id);
                 } elseif ($filters['from'] == 'gallery') {
-                    $query = $query->where('customer_id', '=', NULL)
-                                    ->where('customer_id', '!=', $request->customer_id);
+                    $query = $query->where('customer_id', '=', NULL);
                 } else {
                     $query = $query->where('customer_id', '=', NULL)
-                                    ->orWhere('customer_id', '=', $request->customer_id);
+                        ->orWhere('customer_id', '=', $request->customer_id);
                 }
             }
         }
@@ -288,7 +287,7 @@ class Template extends Model
         }
 
         $tags = array_merge($tags, [
-            ['name' => 'UNSUBSCRIBE_URL', 'required' => (\Auth::user()->customer->getOption('unsubscribe_url_required') == 'yes' ? true : false)],
+            ['name' => 'UNSUBSCRIBE_URL', 'required' => (\Auth::user()->customer && \Auth::user()->customer->getOption('unsubscribe_url_required') == 'yes' ? true : false)],
             ['name' => 'SUBSCRIBER_UID', 'required' => false],
             ['name' => 'CAMPAIGN_NAME', 'required' => false],
             ['name' => 'CAMPAIGN_UID', 'required' => false],

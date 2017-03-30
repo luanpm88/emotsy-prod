@@ -22,7 +22,7 @@ class FeedbackLoopHandlerPolicy
         return $can;
     }
     
-    public function read_all(\Acelle\Model\User $user, \Acelle\Model\FeedbackLoopHandler $item)
+    public function readAll(\Acelle\Model\User $user, \Acelle\Model\FeedbackLoopHandler $item)
     {
         $can = $user->admin->getPermission('fbl_handler_read') == 'all';
 

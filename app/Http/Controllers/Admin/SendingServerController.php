@@ -52,7 +52,7 @@ class SendingServerController extends Controller
         }
 
         // If admin can view all sending domains
-        if (!$request->user()->admin->can("read_all", new \Acelle\Model\SendingServer())) {
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\SendingServer())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 

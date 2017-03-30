@@ -107,10 +107,6 @@ class FeedbackLoopHandler extends DeliveryHandler
         $user = $request->user();
         $query = self::select('feedback_loop_handlers.*');
 
-        if (!$request->user()->can("read_all", new FeedbackLoopHandler())) {
-            $query = $query->where('feedback_loop_handlers.admin_id', '=', $request->user()->admin->id);
-        }
-
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
@@ -129,6 +125,10 @@ class FeedbackLoopHandler extends DeliveryHandler
                 $query = $query->where('feedback_loop_handlers.type', '=', $filters['type']);
             }
         }
+        
+        if(!empty($request->admin_id)) {
+            $query = $query->where('feedback_loop_handlers.admin_id', '=', $request->admin_id);
+        }
 
         return $query;
     }
@@ -142,7 +142,9 @@ class FeedbackLoopHandler extends DeliveryHandler
     {
         $query = self::filter($request);
 
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        if(!empty($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
 
         return $query;
     }

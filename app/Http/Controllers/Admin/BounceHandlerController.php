@@ -27,8 +27,13 @@ class BounceHandlerController extends Controller
         if (\Gate::denies('read', new \Acelle\Model\BounceHandler())) {
             return $this->notAuthorized();
         }
+        
+        // If admin can view all sending domains
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\BounceHandler())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
+        }
 
-        $items = \Acelle\Model\BounceHandler::getAll();
+        $items = \Acelle\Model\BounceHandler::search($request);
 
         return view('admin.bounce_handlers.index', [
             'items' => $items,
@@ -44,6 +49,11 @@ class BounceHandlerController extends Controller
     {
         if (\Gate::denies('read', new \Acelle\Model\BounceHandler())) {
             return $this->notAuthorized();
+        }
+        
+        // If admin can view all sending domains
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\BounceHandler())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
         $items = \Acelle\Model\BounceHandler::search($request)->paginate($request->per_page);

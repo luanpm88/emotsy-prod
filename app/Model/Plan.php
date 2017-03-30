@@ -479,7 +479,7 @@ class Plan extends Model
         }
 
 		// Read all check
-		if (!$request->user()->admin->can('readAll', new \Acelle\Model\Plan())) {
+		if ($request->user()->admin && !$request->user()->admin->can('readAll', new \Acelle\Model\Plan())) {
 			$query = $query->where('plans.admin_id', '=', $request->user()->admin->id);
 		}
 

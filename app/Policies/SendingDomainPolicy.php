@@ -63,7 +63,9 @@ class SendingDomainPolicy
     {
         switch ($role) {
             case 'admin':
-                $can = $user->admin->getPermission('sending_domain_update');
+                $ability = $user->admin->getPermission('sending_domain_update');
+                $can = $ability == 'all'
+                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
                 $can = $user->customer->getOption('create_sending_domains') == 'yes'

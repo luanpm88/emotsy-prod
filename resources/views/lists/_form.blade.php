@@ -145,7 +145,7 @@
 					</div>
 					
 					
-					@can ('create', new Acelle\Model\SendingServer())
+					@if (Auth::user()->customer->can('create', new Acelle\Model\SendingServer()))
 						<div class="sub_section">
 							<h2 class="text-semibold text-teal-800">{{ trans('messages.sending_servers') }}</h2>
 							<div class="row">
@@ -231,4 +231,4 @@
 								$("input[name='all_sending_servers']").trigger("change");
 							});
 						</script>
-					@endcan
+					@endif
