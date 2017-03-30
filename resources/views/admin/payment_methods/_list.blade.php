@@ -24,6 +24,10 @@
 							{{ $payment_method->name }}
 						</a>
 					</h5>
+					<span class="text-muted">
+						{{ trans('messages.updated_at') }}
+						{{ Acelle\Library\Tool::formatDateTime($payment_method->updated_at) }}
+					</span>
 				</td>
 				<td>
 					<div class="single-stat-box pull-left ml-20">

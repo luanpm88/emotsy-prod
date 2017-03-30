@@ -1031,7 +1031,7 @@ return [
     'currency.updated' => 'Currency was successfully updated',
     'currency.created' => 'Currency was successfully created',
     'currencies.disabled' => 'Currency was successfully disabled',
-    'currencies.anabled' => 'Currency was successfully anabled',
+    'currencies.enabled' => 'Currency was successfully enabled',
     'enable_currencies_confirm' => 'You\'re about to enable :number currency(ies).',
     'delete_currencies_confirm' => 'You\'re about to delete :number currency(ies).',
     'disable_currencies_confirm' => 'You\'re about to disable :number currency(ies).',
