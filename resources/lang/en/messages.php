@@ -1730,4 +1730,6 @@ return [
         Please contact provider for more information</p>',
     'plan_status_active' => 'active',
     'plan_status_inactive' => 'inactive',
+    'registration_recaptcha' => 'Registration captcha',
+    'setting.registration_recaptcha.help' => 'Enable captcha for registration to block spammers and bots from accessing the webapp.',
 ];

@@ -66,7 +66,17 @@ class SubscriptionController extends Controller
             // Validation
             if($is_customer_logged_in) {
             } else {
-                $this->validate($request, array_merge($customer->rules()));
+                $rules = $customer->rules();
+                
+                // Captcha check
+                if (\Acelle\Model\Setting::get('registration_recaptcha') == 'yes') {
+                    $success = \Acelle\Library\Tool::checkReCaptcha($request);
+                    if (!$success) {
+                        $rules['recaptcha_invalid'] = 'required';
+                    }
+                }
+                
+                $this->validate($request, $rules);
             }
 
             // Save customer

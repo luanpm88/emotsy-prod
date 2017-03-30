@@ -198,7 +198,13 @@ class Setting extends Model
                 'value' => 'yes',
                 'type' => 'checkbox',
                 'options' => ['no','yes'],
-            ],            
+            ],
+            'registration_recaptcha' => [
+                'cat' => 'general',
+                'value' => 'yes',
+                'type' => 'checkbox',
+                'options' => ['no','yes'],
+            ],     
             'sending_campaigns_at_once' => [
                 'cat' => 'sending',
                 'value' => '10',
