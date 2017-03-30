@@ -254,7 +254,7 @@ class QuotaTrackerFile
     public function getUsagePercentage()
     {
         if (is_null($this->quota)) {
-            return $this->getUsage() / (\DateInterval::createFromDateString(array_values($this->limits)[0]));
+            return $this->getUsage() / array_values($this->limits)[0];
         }
         return (float) $this->getUsage() / $this->quota;
     }
