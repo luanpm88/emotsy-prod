@@ -495,11 +495,18 @@ class Plan extends Model
      *
      * @return collect
      */
-    public static function getAllActive()
+    public static function getAllActive($admin = NULL)
     {
-        return Plan::getAll()
-			->where("plans.status", "=", Plan::STATUS_ACTIVE)
-			->orderBy('custom_order', 'asc');
+        $query = Plan::getAll()
+			->where("plans.status", "=", Plan::STATUS_ACTIVE);
+
+		if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\Plan())) {
+            $query = $query->where('plans.admin_id', '=', $admin->id);
+        }
+
+		$query = $query->orderBy('custom_order', 'asc');
+
+		return $query;
     }
 
 	/**

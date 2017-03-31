@@ -413,6 +413,8 @@ class PlanController extends Controller
      */
     public function pieChart(Request $request)
     {
+        $admin = $request->user()->admin;
+
         // authorize
         if (\Gate::denies('read', new \Acelle\Model\Plan())) {
             return $this->notAuthorized();
@@ -427,7 +429,7 @@ class PlanController extends Controller
 
         $datas = [];
         foreach (\Acelle\Model\Plan::getAllActive()->get() as $plan) {
-            $count = $plan->subscriptionsCount();
+            $count = $admin->getAllSubscriptionsByPlan($plan)->count();
             // create data
             if ($count) {
                 $result['bar_names'][] = $plan->name;

@@ -1739,4 +1739,5 @@ return [
         <p>Welcome back to admin dashboard. Check out these system statistics and notifications from Acelle Mail.</p>',
     'resources_statistics' => 'Resources statistics',
     'sending_limit' => 'Sending limit',
+    'resources_statistics_intro' => 'An overview of system resource usage',
 ];

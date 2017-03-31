@@ -449,7 +449,7 @@ class CustomerController extends Controller
                 $data[] = \Acelle\Model\Customer::customersCountByTime(
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->startOfMonth(),
                     \Carbon\Carbon::now()->subMonthsNoOverflow($i)->endOfMonth(),
-                    $request->user()->admin->id
+                    $request->user()->admin
                 );
             }
 

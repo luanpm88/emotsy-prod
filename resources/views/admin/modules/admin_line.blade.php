@@ -1,5 +1,5 @@
 @if ($admin)
-    <span class="text-muted"><i class="icon-user-tie"></i> {{ $admin->displayName() }}</span>
+    <span class="text-muted admin-line"><i class="icon-user-tie"></i> {{ $admin->displayName() }}</span>
 @else
-    <span class="text-muted"><i class="icon-user-tie"></i> {{ trans('messages.none') }}</span>
+    <span class="text-muted admin-line"><i class="icon-user-tie"></i> {{ trans('messages.none') }}</span>
 @endif

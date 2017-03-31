@@ -2083,3 +2083,9 @@ ul.type2 li i {
 .border-bottom-0 {
     border-bottom: 0 !important;
 }
+ul.modern-listing li .admin-line i {
+    font-size: 14px;
+    padding: 0;
+    margin: 5px 0 0 -8px;
+    height: auto;
+}

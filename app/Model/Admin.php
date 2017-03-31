@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Admin extends Model
 {
+	const STATUS_ACTIVE = 'active';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -49,7 +51,7 @@ class Admin extends Model
             'timezone' => 'required',
             'language_id' => 'required',
         );
-        
+
         if (isset($this->id)) {
 			$rules['password'] = 'confirmed|min:5';
 		} else {
@@ -348,6 +350,22 @@ class Admin extends Model
         return $this->save();
     }
 
+	/**
+     * Get recent resellers.
+     *
+     * @return collect
+     */
+    public function getAllCustomers()
+    {
+        $query = \Acelle\Model\Customer::getAll();
+
+		if (!$this->user->can('readAll', new \Acelle\Model\Customer())) {
+            $query = $query->where('customers.admin_id', '=', $this->id);
+        }
+
+		return $query;
+    }
+
     /**
      * Get recent resellers.
      *
@@ -355,7 +373,7 @@ class Admin extends Model
      */
     public function recentCustomers()
     {
-        return $this->customers()->orderBy("created_at", "DESC")->limit(5)->get();
+        return $this->getAllCustomers()->orderBy("created_at", "DESC")->limit(5)->get();
     }
 
     /**
@@ -494,5 +512,107 @@ class Admin extends Model
         $user = $this->user;
         $this->delete();
         $user->delete();
+    }
+
+	/**
+     * Get all subscription count by plan.
+     *
+     * @return integer
+     */
+    public function getAllSubscriptionsByPlan($plan)
+    {
+		return $this->getAllSubscriptions()->where('subscriptions.plan_id', '=', $plan->id);
+    }
+
+	/**
+     * Get all plans.
+     *
+     * @return integer
+     */
+    public function getAllPlans()
+    {
+		return \Acelle\Model\Plan::getAllActive($this);
+    }
+
+	/**
+     * Get all payment methods.
+     *
+     * @return integer
+     */
+    public function getAllPaymentMethods()
+    {
+		$query = \Acelle\Model\PaymentMethod::getAll()
+			->where("payment_methods.status", "=", \Acelle\Model\PaymentMethod::STATUS_ACTIVE);
+
+		if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\PaymentMethod())) {
+            $query = $query->where('payment_methods.admin_id', '=', $admin->id);
+        }
+
+		return $query;
+    }
+
+	/**
+     * Get all admin.
+     *
+     * @return integer
+     */
+    public function getAllAdmins()
+    {
+		$query = \Acelle\Model\Admin::getAll()
+			->where("admins.status", "=", \Acelle\Model\Admin::STATUS_ACTIVE);
+
+		if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\Admin())) {
+            $query = $query->where('admins.creator_id', '=', $admin->user_id);
+        }
+
+		return $query;
+    }
+
+	/**
+     * Get all admin.
+     *
+     * @return integer
+     */
+    public function getAllAdminGroups()
+    {
+		$query = \Acelle\Model\AdminGroup::getAll();
+
+		if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\AdminGroup())) {
+            $query = $query->where('admin_groups.creator_id', '=', $admin->user_id);
+        }
+
+		return $query;
+    }
+
+	/**
+     * Get all sending servers.
+     *
+     * @return integer
+     */
+    public function getAllSendingServers()
+    {
+		$query = \Acelle\Model\SendingServer::getAll();
+
+		if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\SendingServer())) {
+            $query = $query->where('sending_servers.admin_id', '=', $admin->id);
+        }
+
+		return $query;
+    }
+
+	/**
+     * Get all sending servers.
+     *
+     * @return integer
+     */
+    public function getAllSendingDomains()
+    {
+		$query = \Acelle\Model\SendingDomain::getAll();
+
+		if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\SendingDomain())) {
+            $query = $query->where('sending_domains.admin_id', '=', $admin->id);
+        }
+
+		return $query;
     }
 }

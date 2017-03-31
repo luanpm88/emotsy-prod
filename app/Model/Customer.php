@@ -1063,12 +1063,12 @@ class Customer extends Model
      *
      * @return number
      */
-    public static function customersCountByTime($begin, $end, $admin_id = null)
+    public static function customersCountByTime($begin, $end, $admin = null)
     {
         $query = \Acelle\Model\Customer::select('customers.*');
 
-        if (isset($admin_id)) {
-            $query = $query->where('customers.admin_id', '=', $admin_id);
+        if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\Customer())) {
+            $query = $query->where('customers.admin_id', '=', $admin->id);
         }
 
         $query = $query->where('customers.created_at', '>=', $begin)
