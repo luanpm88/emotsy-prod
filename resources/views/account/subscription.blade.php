@@ -130,7 +130,7 @@
                         </li>
                         <li class="hide">
                             <div class="unit size1of2">
-                                <strong>{{ trans('messages.sending_quota_label') }}</strong>
+                                <strong>{{ trans('messages.sending_limit') }}</strong>
                             </div>
                             <div class="lastUnit size1of2">
                                 <mc:flag>{{ $subscription->displayQuota() }}</mc:flag>

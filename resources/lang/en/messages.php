@@ -438,7 +438,7 @@ return [
     'emails_per_minute' => 'Emails per minute',
     'change_server_time' => 'Change server time',
     'conditions_max' => 'Max conditions per segment',
-    'sending_quota' => 'Sending limit',
+    'sending_quota' => 'Sending quota',
     'quota_time' => 'Quota time value',
     'quota_time_unit' => 'Quota time unit',
     'user_group_options' => 'Options',
@@ -1738,4 +1738,5 @@ return [
     'backend_dashboard_welcome' => '<h1 class="mb-10">Hello, :name!</h1>
         <p>Welcome back to admin dashboard. Check out these system statistics and notifications from Acelle Mail.</p>',
     'resources_statistics' => 'Resources statistics',
+    'sending_limit' => 'Sending limit',
 ];
