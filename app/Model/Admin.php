@@ -544,8 +544,8 @@ class Admin extends Model
 		$query = \Acelle\Model\PaymentMethod::getAll()
 			->where("payment_methods.status", "=", \Acelle\Model\PaymentMethod::STATUS_ACTIVE);
 
-		if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\PaymentMethod())) {
-            $query = $query->where('payment_methods.admin_id', '=', $admin->id);
+		if (!$this->can('readAll', new \Acelle\Model\PaymentMethod())) {
+            $query = $query->where('payment_methods.admin_id', '=', $this->id);
         }
 
 		return $query;
@@ -561,8 +561,8 @@ class Admin extends Model
 		$query = \Acelle\Model\Admin::getAll()
 			->where("admins.status", "=", \Acelle\Model\Admin::STATUS_ACTIVE);
 
-		if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\Admin())) {
-            $query = $query->where('admins.creator_id', '=', $admin->user_id);
+		if (!$this->can('readAll', new \Acelle\Model\Admin())) {
+            $query = $query->where('admins.creator_id', '=', $this->user_id);
         }
 
 		return $query;
@@ -577,8 +577,8 @@ class Admin extends Model
     {
 		$query = \Acelle\Model\AdminGroup::getAll();
 
-		if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\AdminGroup())) {
-            $query = $query->where('admin_groups.creator_id', '=', $admin->user_id);
+		if (!$this->can('readAll', new \Acelle\Model\AdminGroup())) {
+            $query = $query->where('admin_groups.creator_id', '=', $this->user_id);
         }
 
 		return $query;
@@ -593,8 +593,8 @@ class Admin extends Model
     {
 		$query = \Acelle\Model\SendingServer::getAll();
 
-		if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\SendingServer())) {
-            $query = $query->where('sending_servers.admin_id', '=', $admin->id);
+		if (!$this->can('readAll', new \Acelle\Model\SendingServer())) {
+            $query = $query->where('sending_servers.admin_id', '=', $this->id);
         }
 
 		return $query;
@@ -609,8 +609,8 @@ class Admin extends Model
     {
 		$query = \Acelle\Model\SendingDomain::getAll();
 
-		if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\SendingDomain())) {
-            $query = $query->where('sending_domains.admin_id', '=', $admin->id);
+		if (!$this->can('readAll', new \Acelle\Model\SendingDomain())) {
+            $query = $query->where('sending_domains.admin_id', '=', $this->id);
         }
 
 		return $query;
