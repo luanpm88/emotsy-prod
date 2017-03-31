@@ -31,17 +31,17 @@
 
             <div class="sub-section">
                 <h3 class="text-semibold">{{ trans('messages.subscribe_to_a_plan') }}</h3>
-                
+
                 <p>{!! trans('messages.subscribe_to_a_plan_intro') !!}</p>
-                    
+
                 <form enctype="multipart/form-data" action="{{ action('SubscriptionController@store') }}" method="POST" class="form-validate-jqueryz subscription-form">
                     {{ csrf_field() }}
-                    
+
                     @include('helpers.form_control', [
                         'type' => 'select_ajax',
                         'class' => 'subsciption-plan-select hook',
                         'name' => 'plan_uid',
-                        'label' => trans('messages.plan'),
+                        'label' => trans('messages.select_plan'),
                         'selected' => [
                             'value' => is_object($subscription->plan) ? $subscription->plan->uid : '',
                             'text' => is_object($subscription->plan) ? $subscription->plan->name : ''

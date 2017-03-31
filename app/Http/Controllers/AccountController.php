@@ -202,6 +202,10 @@ class AccountController extends Controller
 
         $subscription = new \Acelle\Model\Subscription();
         $subscription->customer_id = $customer->id;
+        
+        if ($request->plan_uid) {
+            $subscription->fillAttributes($request->all());
+        }
 
         // authorize
         if (!$request->user()->customer->can('create', $subscription)) {

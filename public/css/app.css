@@ -2080,3 +2080,6 @@ ul.type2 li i {
 .text-small {
     font-size: 12px;
 }
+.border-bottom-0 {
+    border-bottom: 0 !important;
+}

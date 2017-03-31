@@ -67,7 +67,7 @@ class SubscriptionController extends Controller
             if($is_customer_logged_in) {
             } else {
                 $rules = $customer->rules();
-                
+
                 // Captcha check
                 if (\Acelle\Model\Setting::get('registration_recaptcha') == 'yes') {
                     $success = \Acelle\Library\Tool::checkReCaptcha($request);
@@ -75,7 +75,7 @@ class SubscriptionController extends Controller
                         $rules['recaptcha_invalid'] = 'required';
                     }
                 }
-                
+
                 $this->validate($request, $rules);
             }
 
@@ -90,7 +90,7 @@ class SubscriptionController extends Controller
                 $user = \Acelle\Model\User::find($customer->user_id);
 
                 try {
-                    $user->sendActivationMail($customer->displayName(), action('SubscriptionController@subscription', $request->plan_uid));
+                    $user->sendActivationMail($customer->displayName(), action('AccountController@subscriptionNew', ['plan_uid' => $request->plan_uid]));
                 } catch (\Exception $e) {
                     $error = $e->getMessage();
                     MailLog::error( $error );
@@ -339,7 +339,7 @@ class SubscriptionController extends Controller
 
         foreach ($subscriptions->get() as $subscription) {
             // authorize
-            if ($request->user()->admin->can('delete', $subscription)) {
+            if ($request->user()->customer->can('delete', $subscription)) {
                 $subscription->delete();
             }
         }
