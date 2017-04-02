@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\StringHelper;
+use Acelle\Library\Log as MailLog;
 
 class DeliveryHandler extends Model
 {
@@ -62,7 +63,7 @@ class DeliveryHandler extends Model
             // see http://stackoverflow.com/questions/5422405/cant-silence-imap-open-error-notices-in-php
             imap_errors();
             imap_alerts();
-            Log::error('Cannot connect to handler '.$e->getMessage());
+            MailLog::error('Cannot connect to handler '.$e->getMessage());
         }
     }
 
