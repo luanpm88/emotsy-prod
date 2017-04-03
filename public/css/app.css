@@ -548,6 +548,7 @@ h2 [class^="icon-"] {
 }
 .select2-selection--single .select2-selection__rendered {
     padding-right: 32px;
+    line-height: 23px; /* equal to the inner height of the parent element - to make it vertically middle  */
 }
 .filter-box .checkbox.inline {
     margin-top: 6px;
