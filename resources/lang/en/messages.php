@@ -1613,6 +1613,7 @@ return [
     'data' => 'Data',
     'order_id' => 'Order ID',
     'payments_history' => 'Payments history',
+    'sending_server.wording' => 'This feature allows you to add a sending server which will actually send out your campaign emails. You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES, SendGrid, Mailgun, ElasticEmail, SparkPost... You can also take advantage of the the hosting server\'s email capability by creating a "PHP Mail" or "Sendmail" sending server',
     'log.sending_server.created' => 'The sending server "<a href=":link">:name</a>" was created!',
     'log.sending_server.updated' => 'The sending server "<a href=":link">:name</a>" was updated!',
     'log.sending_server.deleted' => 'The sending server ":name" was deleted!',
