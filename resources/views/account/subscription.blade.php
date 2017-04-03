@@ -150,7 +150,7 @@
                                 <strong>{{ trans('messages.max_subscribers_label') }}</strong>
                             </div>
                             <div class="lastUnit size1of2">
-                                <mc:flag><span class="">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->readCache('SubscriberCount')) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSubscribers()) }}</span>
+                                <mc:flag><span class="">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->readCache('SubscriberCount', 0)) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSubscribers()) }}</span>
                                 &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySubscribersUsage() }}</mc:flag>
                             </div>
                         </li>
