@@ -19,9 +19,10 @@ class CreatePaymentsTable extends Migration
             $table->string('payment_method_name')->nullable();
             $table->string('order_id');
             $table->text('data')->nullable();
+            $table->text('description')->nullable();
             $table->string('status');
             $table->timestamps();
-            
+
             $table->foreign('subscription_id')->references('id')->on('subscriptions')->onDelete('cascade');
             $table->foreign('payment_method_id')->references('id')->on('payment_methods')->onDelete('cascade');
         });

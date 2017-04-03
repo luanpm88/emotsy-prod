@@ -117,7 +117,7 @@ class SubscriptionController extends Controller
 
         // Check if customer has current inactive subscription
         if ($customer->subscriptionsCount()) {
-            return redirect()->action('SubscriptionController@index');
+            return redirect()->action('AccountController@subscription');
         }
 
         // Subscription

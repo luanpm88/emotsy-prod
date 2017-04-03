@@ -1,9 +1,10 @@
     <h2 class="mt-0"><i class="icon-history"></i>  {{ trans('messages.payments_history') }}</h2>
-    
+
     <table class="table table-box pml-table table-log">
         <tr>
             <th>{{ trans('messages.created_at') }}</th>
             <th>{{ trans('messages.payment_method') }}</th>
+			<th>{{ trans('messages.payment_note') }}</th>
             <th>{{ trans('messages.order_id') }}</th>
             <th>{{ trans('messages.status') }}</th>
         </tr>
@@ -14,8 +15,9 @@
                     <span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
                 </td>
                 <td>{{ $payment->getPaymentMethodName() }}</td>
+				<td>{{ $payment->description }}</td>
                 <td>{{ $payment->getOrderID() }}</td>
-                <td>                
+                <td>
 					<span class="text-muted2 list-status pull-left">
 						<span
                             @if ($payment->status == 'failed')
