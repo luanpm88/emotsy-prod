@@ -233,7 +233,7 @@ class PaymentMethod extends Model
             });
         }
         foreach ($query->limit(20)->get() as $payment_method) {
-            $data['items'][] = ['id' => $payment_method->uid, 'text' => $payment_method->name];
+            $data['items'][] = ['id' => $payment_method->uid, 'text' => trans('messages.payment_method_type_' . $payment_method->type)];
         }
 
         return json_encode($data);
