@@ -1649,7 +1649,8 @@ return [
     'install.license.help' => 'This is optional. You can update it later in setting page.',
     'is_not_extended_license' => 'Extended license required for some features. Please consider <br /> purchasing one.
         If you have already purchased an<br /> extended license, please enter it <a href=":link">here</a>',
-    'not_have_license' => 'A valid license key is required to register your installation. You can enter it <a href=":link">here</a>',
+    'frontend_not_have_license' => 'A valid license key is required to register your installation.',
+    'backend_not_have_license' => 'A valid license key is required to register your installation.<br>You can enter it <a href=":link">here</a>',
     'sending_server_no_active' => 'You have no active sending servers',
     'list_has_no_sending_server' => 'Have no sending server',
     'verify' => 'Verify',
@@ -1718,28 +1719,28 @@ return [
         Your subscription will start in <strong>:remain</strong>, from <strong>:start_at</strong></p>',
     'current_plan_notactive_intro' => '<p>You have a pending subscription for <a><strong>:plan plan</strong></a>.
         Please finish the payment or wait for the payment confirmation to activate your subscription</p>',
-    'purchasing_intro_braintree_credit_card' => '<p>Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
-				. Your plan price is: <a><strong>:price</strong></a></p>',
+    'purchasing_intro_braintree_credit_card' => 'Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
+				. Your plan price is: <a><strong>:price</strong></a>',
     'subscribe_to_a_plan' => 'Subscribe to a plan',
     'subscribe_to_a_plan_intro' => 'Thank you for signing up with Acelle Mail. You are not currently subscribed to any plan yet. Below are the available plans for you to choose from:',
     'subscribe_plan' => 'Subscribe',
-    'purchasing_intro_braintree_paypal' => '<p>Please click to PayPal Checkout button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
-				. Your plan price is: <a><strong>:price</strong></a></p>',
+    'purchasing_intro_braintree_paypal' => 'Please click to PayPal Checkout button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
+				. Your plan price is: <a><strong>:price</strong></a>',
     'next_plan' => 'Next plan',
     'available_plans' => 'Available plans',
-    'next_plan_active_intro' => '<p>You have successfully subscribed to the <a><strong>:plan plan</strong></a>.
+    'next_plan_active_intro' => '<p>You have successfully subscribed to the <a><strong>:plan plan</strong>.
         Your subscription will start in <strong>:remain</strong>, from <strong>:start_at</strong>.</p><p>Please find your next plan details below</p>',
-    'current_plan_disabled_intro' => '<p>Your current subscription for <a><strong>:plan plan</strong></a> was disabled.
-        Please contact your service provider for more information</p>',
+    'current_plan_disabled_intro' => 'Your current subscription for <a><strong>:plan plan</strong></a> was disabled.
+        Please contact your service provider for more information',
     'plan_status_active' => 'active',
     'plan_status_inactive' => 'inactive',
     'registration_recaptcha' => 'Registration captcha',
     'setting.registration_recaptcha.help' => 'Enable captcha for registration to block spammers and bots from accessing the webapp.',
-    'frontend_dashboard_welcome' => '<h1 class="mb-10">Hello, :name!</h1>
-        <p>Welcome back to your account dashboard. Check out your email campaigns\' performance statistics and personalized tips from Acelle Mail.</p>',
+    'frontend_dashboard_hello' => 'Hello, :name!',
+    'frontend_dashboard_welcome' => 'Welcome back to your account dashboard. Check out your email campaigns\' performance statistics and personalized tips from Acelle Mail.',
     'empty_record_message' => 'There are no records yet!',
-    'backend_dashboard_welcome' => '<h1 class="mb-10">Hello, :name!</h1>
-        <p>Welcome back to admin dashboard. Check out these system statistics and notifications from Acelle Mail.</p>',
+    'backend_dashboard_hello' => 'Hello, :name!',
+    'backend_dashboard_welcome' => 'Welcome back to admin dashboard. Check out these system statistics and notifications from Acelle Mail.',
     'resources_statistics' => 'Resources statistics',
     'sending_limit' => 'Sending limit',
     'resources_statistics_intro' => 'An overview of system resource usage',

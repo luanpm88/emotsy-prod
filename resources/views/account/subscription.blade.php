@@ -62,11 +62,13 @@
                     @endif
 
                     @if ($subscription->isDisabled())
+                        <p>
                         {!! trans('messages.current_plan_disabled_intro', [
                             'plan' => $subscription->plan_name,
                             'remain' => \Acelle\Library\Tool::dateTime($subscription->end_at)->diffForHumans(null, true),
                             'start_at' => \Acelle\Library\Tool::formatDate($subscription->start_at)
                         ]) !!}
+                        </p>
                     @endif
 
                     @if (\Auth::user()->customer->can('delete', $subscription))
@@ -284,12 +286,13 @@
                     @endif
                 @else
                     <h3>{{ trans('messages.next_plan') }}</h3>
-
-                    {!! trans('messages.next_plan_active_intro', [
-                        'plan' => $nextSubscription->plan_name,
-                        'remain' => \Acelle\Library\Tool::dateTime($nextSubscription->end_at)->diffForHumans(null, true),
-                        'start_at' => \Acelle\Library\Tool::formatDate($nextSubscription->start_at)
-                    ]) !!}
+                    <p>
+                        {!! trans('messages.next_plan_active_intro', [
+                            'plan' => $nextSubscription->plan_name,
+                            'remain' => \Acelle\Library\Tool::dateTime($nextSubscription->end_at)->diffForHumans(null, true),
+                            'start_at' => \Acelle\Library\Tool::formatDate($nextSubscription->start_at)
+                        ]) !!}
+                    </p>
 
                     @include('subscriptions._details', ['subscription' => $nextSubscription])
 

@@ -9,7 +9,8 @@
 @endsection
 
 @section('content')
-	{!! trans('messages.backend_dashboard_welcome', ['name' => Auth::user()->admin->displayName()]) !!}
+	<h1 class="mb-10">{{ trans('messages.backend_dashboard_hello', ['name' => Auth::user()->admin->displayName()]) }}</h1>
+	<p>{{ trans('messages.backend_dashboard_welcome') }}</p>
 
 	<div class="row">
 		<div class="col-md-6">

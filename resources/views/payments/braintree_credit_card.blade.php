@@ -2,18 +2,18 @@
 
 @section('title', trans('messages.subscription'))
 
-@section('page_script')    
+@section('page_script')
 @endsection
 
 @section('page_header')
 
-	<div class="page-title">				
+	<div class="page-title">
 		<ul class="breadcrumb breadcrumb-caret position-right">
 			<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		</ul>
 		<h1>
 			<span class="text-semibold"><i class="icon-quill4"></i> {{ trans('messages.your_subscriptions') }}</span>
-		</h1>				
+		</h1>
 	</div>
 
 @endsection
@@ -21,27 +21,28 @@
 @section('content')
 
 	@include("account._menu")
-	
+
 	<div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6">
             <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
 
             <div class="sub-section">
                 <h3 class="text-semibold">{!! trans('messages.pay_by_credit_card') !!}</h3>
-				
-				{!! trans('messages.purchasing_intro_' . $payment_method->type, [
-					'plan' => $subscription->plan_name,
-					'price' => Acelle\Library\Tool::format_price($subscription->price, $subscription->currency_format)
-				]) !!}				
-					
+				<p>
+                    {!! trans('messages.purchasing_intro_' . $payment_method->type, [
+                        'plan' => $subscription->plan_name,
+                        'price' => Acelle\Library\Tool::format_price($subscription->price, $subscription->currency_format)
+                    ]) !!}
+                </p>
+
 				@if (isset($result) && count($result->errors->deepAll()) > 0)
 					<!-- Form Error List -->
 					<div class="alert alert-danger alert-noborder">
 						<button data-dismiss="alert" class="close" type="button"><span>×</span><span class="sr-only">Close</span></button>
 						<strong>{{ trans('messages.something_error_accur') }}</strong>
-				
+
 						<br><br>
-				
+
 						<ul>
 							@foreach ($result->errors->deepAll() AS $error)
 							  <li>{!! $error->code . ": " . $error->message . "<br />" !!}</li>
@@ -49,27 +50,27 @@
 						</ul>
 					</div>
 				@endif
-				
+
 				<div class="panelz">
 					<div class="panel-bodyz">
 						<form id="checkout-form" action="{{ action('PaymentController@braintree_credit_card', $subscription->uid) }}" method="post">
 						  <div id="error-message"></div>
-						  
+
 						  <div class="form-group">
 							<label for="card-number">{{ trans('messages.card_number') }}</label>
 							<div class="hosted-field" id="card-number"></div>
 						  </div>
-						  
+
 						  <div class="form-group">
 							<label for="cvv">{{ trans('messages.cvv') }}</label>
 							<div class="hosted-field" id="cvv"></div>
 						  </div>
-						
+
 						  <div class="form-group">
 							<label for="expiration-date">{{ trans('messages.expiration_date') }}</label>
 							<div class="hosted-field" id="expiration-date"></div>
 						  </div>
-						
+
 						  <input type="hidden" name="payment_method_nonce">
 						  <input type="submit" value="Pay {{ Acelle\Library\Tool::format_price($subscription->price, $subscription->currency_format) }}" class="btn btn-primary bg-teal-800" />
 						</form>
@@ -78,13 +79,13 @@
 			</div>
 		</div>
 	</div>
-		
+
 	<!-- Load the Client component. -->
 	<script src="https://js.braintreegateway.com/web/3.9.0/js/client.min.js"></script>
-	
+
 	<!-- Load the Hosted Fields component. -->
 	<script src="https://js.braintreegateway.com/web/3.9.0/js/hosted-fields.min.js"></script>
-	
+
 	<script>
 	// We generated a client token for you so you can test out this code
 	// immediately. In a production-ready integration, you will need to
@@ -92,7 +93,7 @@
 	var authorization = '{{ $clientToken }}';
 	var form = document.querySelector('#checkout-form');
 	var submit = document.querySelector('input[type="submit"]');
-	
+
 	braintree.client.create({
 	  // Replace this with your own authorization.
 	  authorization: authorization
@@ -101,7 +102,7 @@
 		// Handle error in client creation
 		return;
 	  }
-	
+
 	  braintree.hostedFields.create({
 		client: clientInstance,
 		styles: {
@@ -134,19 +135,19 @@
 		  // Handle error in Hosted Fields creation
 		  return;
 		}
-	
+
 		submit.removeAttribute('disabled');
-	
+
 		form.addEventListener('submit', function (event) {
 		  event.preventDefault();
-	
+
 		  hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
 			if (tokenizeErr) {
 			  console.log(tokenizeErr);
 			  // Handle error in Hosted Fields tokenization
 			  return;
 			}
-	
+
 			// Put `payload.nonce` into the `payment-method-nonce` input, and then
 			// submit the form. Alternatively, you could send the nonce to your server
 			// with AJAX.
@@ -157,5 +158,5 @@
 	  });
 	});
 	</script>
-  
+
 @endsection

@@ -9,7 +9,8 @@
 @endsection
 
 @section('content')
-    {!! trans('messages.frontend_dashboard_welcome', ['name' => Auth::user()->customer->displayName()]) !!}
+	<h1 class="mb-10">{{ trans('messages.frontend_dashboard_hello', ['name' => Auth::user()->customer->displayName()]) }}</h1>
+	<p>{{ trans('messages.frontend_dashboard_welcome') }}</p>
 
 	<h3 class="text-teal-800 mb-10 mt-40"><i class="icon-stats-bars4"></i> {{ trans("messages.used_quota") }}</h3>
 	<div class="row quota_box">
