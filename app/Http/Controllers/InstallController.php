@@ -254,22 +254,28 @@ class InstallController extends Controller
         // Drop all old table
         // 1. Get & Drop all table names, try 4 times
         $table_names = [];
-        $try = 5;        
+        $try = 5;
         while ($try > 0) {
+            // extend query max setting
+            $mysqli->query('FLUSH TABLES;');
+            $mysqli->query('SET group_concat_max_len=9999999;');
+
             $table_names_query = "SELECT GROUP_CONCAT(table_name)
                                         AS table_names FROM information_schema.tables
                                         WHERE table_schema = '".$database['database_name']."'";
             $result = $mysqli->query($table_names_query);
             $result = $result->fetch_object();
-            $table_names = explode(",", $result->table_names);
-    
+            $table_names = array_merge($table_names, explode(",", $result->table_names));
+
             // drop all tables
             $mysqli->query("SET FOREIGN_KEY_CHECKS = 0;");
             foreach ($table_names as $table_name) {
                 $mysqli->query("DROP TABLE $table_name;");
             }
             $mysqli->query("SET FOREIGN_KEY_CHECKS = 1;");
-            
+
+            $mysqli->query('FLUSH TABLES;');
+
             $try--;
         }
 
