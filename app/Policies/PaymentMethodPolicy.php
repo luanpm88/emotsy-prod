@@ -36,7 +36,7 @@ class PaymentMethodPolicy
     {
         $can = $user->admin->getPermission('payment_method_create') == 'yes';
 
-        return $can;
+        return false;
     }
 
     public function profile(\Acelle\Model\User $user, \Acelle\Model\PaymentMethod $payment_method)
@@ -59,7 +59,7 @@ class PaymentMethodPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $payment_method->admin_id);
 
-        return $can;
+        return false;
     }
 
     public function disable(\Acelle\Model\User $user, \Acelle\Model\PaymentMethod $payment_method)

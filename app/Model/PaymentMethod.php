@@ -42,7 +42,7 @@ class PaymentMethod extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'type', 'options'
+        'type', 'options', 'status'
     ];
 
     /**
@@ -53,7 +53,7 @@ class PaymentMethod extends Model
     public function rules()
     {
         $rules = array(
-            'name' => 'required',
+			'status' => 'required',
 			'type' => 'required',
         );
 
@@ -307,5 +307,18 @@ class PaymentMethod extends Model
 		}
 
 		return true;
+    }
+
+	/**
+     * Payment methos status select options.
+     *
+     * @return array
+     */
+    public static function statusSelectOptions()
+    {
+        return [
+            ['value' => PaymentMethod::STATUS_ACTIVE, 'text' => trans('messages.payment_method_status_' . PaymentMethod::STATUS_ACTIVE)],
+			['value' => PaymentMethod::STATUS_INACTIVE, 'text' => trans('messages.payment_method_status_' . PaymentMethod::STATUS_INACTIVE)],
+        ];
     }
 }

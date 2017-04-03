@@ -1743,4 +1743,5 @@ return [
     'resources_statistics' => 'Resources statistics',
     'sending_limit' => 'Sending limit',
     'resources_statistics_intro' => 'An overview of system resource usage',
+    'payment_method_status' => 'status',
 ];

@@ -19,25 +19,19 @@
 					</div>
 				</td>
 				<td>
-					<h5 class="no-margin text-bold">
+					<div class="single-stat-box pull-left ml-20">
 						<a class="kq_search" href="{{ action('Admin\PaymentMethodController@edit', $payment_method->uid) }}">
-							{{ $payment_method->name }}
+							<span class="no-margin stat-num kq_search">{{ trans('messages.' . $payment_method->type) }}</span>
 						</a>
-					</h5>
-					@if (Auth::user()->can('readAll', $payment_method))
-						@include ('admin.modules.admin_line', ['admin' => $payment_method->admin])
 						<br />
-					@endif
-					<span class="text-muted">
-						{{ trans('messages.updated_at') }}
-						{{ Acelle\Library\Tool::formatDateTime($payment_method->updated_at) }}
-					</span>
+						<span class="text-muted">{{ trans('messages.type') }}</span>
+					</div>
 				</td>
 				<td>
 					<div class="single-stat-box pull-left ml-20">
-						<span class="no-margin stat-num kq_search">{{ trans('messages.' . $payment_method->type) }}</span>
+						<span class="no-margin stat-num kq_search">{{ Acelle\Library\Tool::formatDateTime($payment_method->updated_at) }}</span>
 						<br />
-						<span class="text-muted">{{ trans('messages.type') }}</span>
+						<span class="text-muted">{{ trans('messages.updated_at') }}</span>
 					</div>
 				</td>
 				<td>
