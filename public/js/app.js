@@ -1421,4 +1421,9 @@ $(function() {
             $('.list-segment-container input[type=radio]').eq(0).click();
         }
     });
+
+    // Close notify
+    $(document).on('click', '.btn-close-pnotify', function() {
+        $(this).parents('.ui-pnotify').remove();
+    });
 });

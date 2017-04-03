@@ -2090,3 +2090,22 @@ ul.modern-listing li .admin-line i {
     margin: 5px 0 0 -8px;
     height: auto;
 }
+.btn-close-pnotify {
+    position: absolute;
+    right: 0;
+    background: rgba(255,255,255, 1);
+    color: #aaa;
+    padding: 3px 6px;
+    border-radius: 30px;
+    border: solid 1px #aaa;
+    height: 30px;
+    width: 30px;
+    margin: -5px;
+    cursor: pointer;
+    z-index: 10;
+}
+.btn-close-pnotify:hover {
+    background: rgba(255,255,255, 1);
+    color: #555;
+    border-color: #555;
+}
