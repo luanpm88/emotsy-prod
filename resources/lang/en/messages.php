@@ -1686,6 +1686,7 @@ return [
     'payment_note' => 'Payment note',
     'payment_manual' => 'Manual',
     'plan_overview' => 'Plan Overview',
+    'plan_create_message' => 'This feature allows you to create/edit a service plan (or service package) which will be available for your customers to subscribe to. Service plans represent a particular business offer. It defines the allocation of your resources, such as how much sending/list/subscriber/campaign... credits, and other features are offered to your customer',
     'you_are_currently_subscribed_to_plan' => 'You are currently subscribed to the ":plan" plan, your subscription will expire in :remain on :end_at',
     'you_are_subscribed_to_plan_future' => 'You are subscribed to the ":plan" plan, your subscription will start in the next :remain, on :start_at',
     'plan_detail' => 'Plan Detail',
