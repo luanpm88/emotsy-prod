@@ -424,6 +424,7 @@ return [
     'user.updated' => 'User was successfully updated',
     'user.created' => 'User was successfully created',
     'options' => 'Options',
+    'options.wording' => 'The configuration setting below allows you to set a limit on email sending speed. For example, to limit sending speed to <strong>2,000 emails every 5 minutes</strong>, you can set <strong>Sending limit = 2000</strong>, <strong>Time value = 5</strong>, and <strong>Time unit = minute</strong> accordingly',
     'permissions' => 'Permissions',
     'backend_access' => 'Admin view access',
     'frontend_access' => 'Campaign view access',
