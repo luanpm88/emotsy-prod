@@ -1718,7 +1718,7 @@ return [
     'purchasing_intro_braintree_credit_card' => '<p>Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
 				. Your plan price is: <a><strong>:price</strong></a></p>',
     'subscribe_to_a_plan' => 'Subscribe to a plan',
-    'subscribe_to_a_plan_intro' => 'Thank you for signing up with Acelle Mail. You are not currently subscribed to the any plan yet. Below are the available plans for you to choose from:',
+    'subscribe_to_a_plan_intro' => 'Thank you for signing up with Acelle Mail. You are not currently subscribed to any plan yet. Below are the available plans for you to choose from:',
     'subscribe_plan' => 'Subscribe',
     'purchasing_intro_braintree_paypal' => '<p>Please click to PayPal Checkout button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
 				. Your plan price is: <a><strong>:price</strong></a></p>',
