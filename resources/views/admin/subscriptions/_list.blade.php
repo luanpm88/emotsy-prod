@@ -116,7 +116,13 @@
 								@endif
 								@if (Auth::user()->admin->can('unpaid', $subscription))
 									<li>
-										<a data-method='PATCH' link-confirm="{{ trans('messages.unpaid_subscriptions_confirm') }}" href="{{ action('Admin\SubscriptionController@unpaid', ["uids" => $subscription->uid]) }}">
+										<a
+											message="{{ trans('messages.unpaid_subscriptions_confirm') }}" data-toggle="modal" data-target="#list-form-modal" href="#paid"
+											class="list-form-button"
+											data-uids="{{ $subscription->uid }}"
+											data-method="PATCH"
+											data-url="{{ action('Admin\SubscriptionController@unpaid') }}"
+										>
 											<i class="icon-radio-unchecked"></i> {{ trans('messages.unpaid') }}
 										</a>
 									</li>

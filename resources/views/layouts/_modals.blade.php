@@ -377,10 +377,10 @@
 	</div>
 	<!-- /basic modal -->
 
-	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#medium_modal"></a>
+	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#full_modal"></a>
 	<!-- Basic modal -->
-	<div id="medium_modal" class="modal fade">
-		<div class="modal-dialog modal-lg">
+	<div id="full_modal" class="modal fade">
+		<div class="modal-dialog modal-full width100">
 			<div class="modal-content">
 
 				<div class="modal-body">

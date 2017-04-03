@@ -1597,7 +1597,10 @@ return [
         <p>You are successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is activated.<br />Let choose an action below for next step.</p>',
     'something_error_accur' => 'An unexpected error occurred. Please check again.',
     'payment_method_type_braintree_credit_card_button' => '<i class="icon-credit-card"></i> Pay by Credit card',
-    'payment_method_type_cashe_button' => '<i class="fa fa-money"></i> Pay in Cash',
+    'payment_method_type_cash_button' => '<i class="fa fa-money"></i> Pay in Cash',
+    'payment_method_type_braintree_credit_card' => 'Pay by Credit card',
+    'payment_method_type_braintree_paypal' => 'Pay with Paypal',
+    'payment_method_type_cash' => 'Pay in Cash',
     'subscription_paid_status_paid' => 'Paid',
     'subscription_paid_status_notpaid' => 'Not-Paid',
     'customer_contact.updated' => 'Contact information was successfully updated!',
@@ -1746,4 +1749,7 @@ return [
     'current_plan_notactive_paid_intro' => 'You have a pending subscription for <a><strong>:plan plan</strong></a>.
         Please wait for the confirmation to activate your subscription',
     'no_admin' => 'system',
+    'payment_action_paid' => 'Paid',
+    'payment_action_unpaid' => 'Un-Paid',
+    'payment_action_method' => 'Action/Method',
 ];

@@ -267,11 +267,13 @@
                 @elseif (!$nextSubscription->isActive())
                     <h3>{{ trans('messages.next_plan') }}</h3>
 
-                    {!! trans('messages.current_plan_notactive_intro', [
-                        'plan' => $nextSubscription->plan_name,
-                        'remain' => \Acelle\Library\Tool::dateTime($nextSubscription->end_at)->diffForHumans(null, true),
-                        'start_at' => \Acelle\Library\Tool::formatDate($nextSubscription->start_at)
-                    ]) !!}
+                    <p>
+                        {!! trans('messages.current_plan_notactive_intro', [
+                            'plan' => $nextSubscription->plan_name,
+                            'remain' => \Acelle\Library\Tool::dateTime($nextSubscription->end_at)->diffForHumans(null, true),
+                            'start_at' => \Acelle\Library\Tool::formatDate($nextSubscription->start_at)
+                        ]) !!}
+                    </p>
 
                     @if (!$nextSubscription->isPaid() && !$nextSubscription->isActive())
                         @if (Auth::user()->customer->can('pay', $nextSubscription))

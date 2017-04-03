@@ -1282,12 +1282,12 @@ $(function() {
             url: url,
         })
         .done(function( msg ) {
-            $('#medium_modal .modal-body').html(msg);
+            $('#full_modal .modal-body').html(msg);
             // Default tooltip
-            $('#medium_modal .modal-body').find('[data-popup=tooltip]').tooltip({
+            $('#full_modal .modal-body').find('[data-popup=tooltip]').tooltip({
                 template: '<div class="tooltip"><div class="bg-teal-800"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div></div>'
             });
-            $('a[data-target="#medium_modal"]').trigger("click");
+            $('a[data-target="#full_modal"]').trigger("click");
         });
     });
 

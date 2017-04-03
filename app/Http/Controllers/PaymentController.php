@@ -65,7 +65,8 @@ class PaymentController extends Controller {
                 $payment->payment_method_id = $payment_method->id;
                 $payment->data = serialize($result);
                 $payment->status = $result->success ? 'success' : 'failed';
-                $payment->payment_method_name = $payment_method->name;
+                $payment->action = \Acelle\Model\Payment::ACTION_PAID;
+                $payment->payment_method_name = trans('messages.payment_method_type_' . $payment_method->type);
                 $payment->order_id = $order_id;
                 $payment->save();
 
@@ -124,7 +125,8 @@ class PaymentController extends Controller {
                 $payment->data = serialize($result);
                 $payment->payment_method_id = $payment_method->id;
                 $payment->status = $result->success ? 'success' : 'failed';
-                $payment->payment_method_name = $payment_method->name;
+                $payment->action = \Acelle\Model\Payment::ACTION_PAID;
+                $payment->payment_method_name = trans('messages.payment_method_type_' . $payment_method->type);
                 $payment->order_id = $order_id;
                 $payment->save();
 

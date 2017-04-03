@@ -689,15 +689,18 @@ class Subscription extends Model
         $this->save();
 
 		// description
-		$payment = new \Acelle\Model\Payment();
-		$payment->subscription_id = $this->id;
-		$payment->data = '';
-		$payment->description = $description;
-		$payment->payment_method_id = NULL;
-		$payment->status = 'success';
-		$payment->payment_method_name = '';
-		$payment->order_id = $this->getOrderID();
-		$payment->save();
+		if (!empty($description)) {
+			$payment = new \Acelle\Model\Payment();
+			$payment->subscription_id = $this->id;
+			$payment->data = '';
+            $payment->description = $description;
+			$payment->payment_method_id = NULL;
+			$payment->status = \Acelle\Model\Payment::STATUS_SUCCESS;
+            $payment->action = \Acelle\Model\Payment::ACTION_PAID;
+			$payment->payment_method_name = '';
+			$payment->order_id = $this->getOrderID();
+			$payment->save();
+		}
     }
 
 	/**
@@ -715,8 +718,10 @@ class Subscription extends Model
 			$payment = new \Acelle\Model\Payment();
 			$payment->subscription_id = $this->id;
 			$payment->data = '';
+            $payment->description = $description;
 			$payment->payment_method_id = NULL;
-			$payment->status = 'success';
+			$payment->status = \Acelle\Model\Payment::STATUS_SUCCESS;
+            $payment->action = \Acelle\Model\Payment::ACTION_UNPAID;
 			$payment->payment_method_name = '';
 			$payment->order_id = $this->getOrderID();
 			$payment->save();
