@@ -35,11 +35,13 @@
                 @if (!$subscription->isActive())
 
                     @if (!$subscription->isPaid())
-                        {!! trans('messages.current_plan_notactive_intro', [
-                            'plan' => $subscription->plan_name,
-                            'remain' => \Acelle\Library\Tool::dateTime($subscription->end_at)->diffForHumans(null, true),
-                            'start_at' => \Acelle\Library\Tool::formatDate($subscription->start_at)
-                        ]) !!}
+                        <p>
+                            {!! trans('messages.current_plan_notactive_intro', [
+                                'plan' => $subscription->plan_name,
+                                'remain' => \Acelle\Library\Tool::dateTime($subscription->end_at)->diffForHumans(null, true),
+                                'start_at' => \Acelle\Library\Tool::formatDate($subscription->start_at)
+                            ]) !!}
+                        </p>
 
                         @if (!$subscription->isPaid() && !$subscription->isActive())
                             @if (Auth::user()->customer->can('pay', $subscription))

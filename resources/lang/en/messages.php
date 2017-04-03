@@ -1715,10 +1715,8 @@ return [
     'plan_name' => 'Plan name',
     'more_details' => 'More details',
     'max_automations_label' => 'Max automations',
-    'current_plan_active_intro' => '<p>You have successfully subscribed to the <a><strong>:plan plan</strong></a>.
-        Your subscription will start in <strong>:remain</strong>, from <strong>:start_at</strong></p>',
-    'current_plan_notactive_intro' => '<p>You have a pending subscription for <a><strong>:plan plan</strong></a>.
-        Please finish the payment or wait for the payment confirmation to activate your subscription</p>',
+    'current_plan_notactive_intro' => 'You have a pending subscription for <a><strong>:plan plan</strong></a>.
+        Please finish the payment or wait for the payment confirmation to activate your subscription',
     'purchasing_intro_braintree_credit_card' => 'Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
 				. Your plan price is: <a><strong>:price</strong></a>',
     'subscribe_to_a_plan' => 'Subscribe to a plan',
@@ -1728,8 +1726,8 @@ return [
 				. Your plan price is: <a><strong>:price</strong></a>',
     'next_plan' => 'Next plan',
     'available_plans' => 'Available plans',
-    'next_plan_active_intro' => '<p>You have successfully subscribed to the <a><strong>:plan plan</strong>.
-        Your subscription will start in <strong>:remain</strong>, from <strong>:start_at</strong>.</p><p>Please find your next plan details below</p>',
+    'next_plan_active_intro' => 'You have successfully subscribed to the <a><strong>:plan plan</strong></a>.
+        Your subscription will start in <strong>:remain</strong>, from <strong>:start_at</strong>. Please find your next plan details below',
     'current_plan_disabled_intro' => 'Your current subscription for <a><strong>:plan plan</strong></a> was disabled.
         Please contact your service provider for more information',
     'plan_status_active' => 'active',
