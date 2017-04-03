@@ -59,15 +59,11 @@
                         <span class="filter-group">
                             <select class="select" name="status">
                                 <option value="">{{ trans('messages.all_status') }}</option>
-                                <option value="{{ \Acelle\Model\Subscription::STATUS_ACTIVE }}">
-                                    {{ trans('messages.subscription_status_' . \Acelle\Model\Subscription::STATUS_ACTIVE) }}
-                                </option>
-                                <option value="{{ \Acelle\Model\Subscription::STATUS_INACTIVE }}">
-                                    {{ trans('messages.subscription_status_' . \Acelle\Model\Subscription::STATUS_INACTIVE) }}
-                                </option>
-								<option value="{{ \Acelle\Model\Subscription::STATUS_DISABLED }}">
-                                    {{ trans('messages.subscription_status_' . \Acelle\Model\Subscription::STATUS_DISABLED) }}
-                                </option>
+								@foreach (Acelle\Model\Subscription::statusSelectOptions() as $option)
+									<option value="{{ $option['value'] }}">
+										{{ $option['text'] }}
+									</option>
+								@endforeach
                             </select>
                         </span>
                         <span class="text-nowrap">

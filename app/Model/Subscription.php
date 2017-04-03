@@ -782,4 +782,18 @@ class Subscription extends Model
 		}
 		return implode(' ', $strs);
     }
+
+	/**
+     * Subscription status select options.
+     *
+     * @return array
+     */
+    public static function statusSelectOptions()
+    {
+        return [
+            ['value' => Subscription::STATUS_ACTIVE, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_ACTIVE)],
+			['value' => Subscription::STATUS_INACTIVE, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_INACTIVE)],
+			['value' => Subscription::STATUS_DISABLED, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_DISABLED)],
+        ];
+    }
 }

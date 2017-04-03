@@ -310,7 +310,7 @@ class PaymentMethod extends Model
     }
 
 	/**
-     * Payment methos status select options.
+     * Payment methods status select options.
      *
      * @return array
      */

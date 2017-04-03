@@ -1745,4 +1745,5 @@ return [
     'payment_method_status' => 'status',
     'current_plan_notactive_paid_intro' => 'You have a pending subscription for <a><strong>:plan plan</strong></a>.
         Please wait for the confirmation to activate your subscription',
+    'no_admin' => 'system',
 ];
