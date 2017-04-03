@@ -1714,7 +1714,7 @@ return [
     'current_plan_active_intro' => '<p>You have successfully subscribed to the <a><strong>:plan plan</strong></a>.
         Your subscription will start in <strong>:remain</strong>, from <strong>:start_at</strong></p>',
     'current_plan_notactive_intro' => '<p>You have a pending subscription for <a><strong>:plan plan</strong></a>.
-        Please finish the payment to activate your subscription</p>',
+        Please finish the payment or wait for the payment confirmation to activate your subscription</p>',
     'purchasing_intro_braintree_credit_card' => '<p>Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
 				. Your plan price is: <a><strong>:price</strong></a></p>',
     'subscribe_to_a_plan' => 'Subscribe to a plan',
@@ -1733,7 +1733,7 @@ return [
     'registration_recaptcha' => 'Registration captcha',
     'setting.registration_recaptcha.help' => 'Enable captcha for registration to block spammers and bots from accessing the webapp.',
     'frontend_dashboard_welcome' => '<h1 class="mb-10">Hello, :name!</h1>
-        <p>Welcome back to your account dashboard. Check out these performance statistics and personalized tips from Acelle Mail.</p>',
+        <p>Welcome back to your account dashboard. Check out your email campaigns\' performance statistics and personalized tips from Acelle Mail.</p>',
     'empty_record_message' => 'There are no records yet!',
     'backend_dashboard_welcome' => '<h1 class="mb-10">Hello, :name!</h1>
         <p>Welcome back to admin dashboard. Check out these system statistics and notifications from Acelle Mail.</p>',
