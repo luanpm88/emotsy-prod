@@ -1743,4 +1743,6 @@ return [
     'sending_limit' => 'Sending limit',
     'resources_statistics_intro' => 'An overview of system resource usage',
     'payment_method_status' => 'status',
+    'current_plan_notactive_paid_intro' => 'You have a pending subscription for <a><strong>:plan plan</strong></a>.
+        Please wait for the confirmation to activate your subscription',
 ];

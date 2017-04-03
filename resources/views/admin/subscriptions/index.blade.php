@@ -65,6 +65,9 @@
                                 <option value="{{ \Acelle\Model\Subscription::STATUS_INACTIVE }}">
                                     {{ trans('messages.subscription_status_' . \Acelle\Model\Subscription::STATUS_INACTIVE) }}
                                 </option>
+								<option value="{{ \Acelle\Model\Subscription::STATUS_DISABLED }}">
+                                    {{ trans('messages.subscription_status_' . \Acelle\Model\Subscription::STATUS_DISABLED) }}
+                                </option>
                             </select>
                         </span>
                         <span class="text-nowrap">
