@@ -31,7 +31,6 @@
     }
     
     function insertElement(name) {
-        console.log($('.'+name));
         $("content table.outer").append($('.'+name).clone());
         $('content .'+name).removeClass(name);
         

@@ -1358,6 +1358,7 @@ $(function() {
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
     
+<<<<<<< HEAD
     // Copy Move subscribers
     $(document).on('click', '.list-form-button', function() {
         var form = $('#list-form-modal').find('form');
@@ -1414,4 +1415,13 @@ $(function() {
         box.find('li').removeClass('hide');
         $(this).parents('li').hide();
     });
+=======
+    // Default list auto recheck if empty
+    $(document).on('click', '.list-segment-container .btn', function() {
+        if (!$('.list-segment-container input[type=radio]:checked').length) {
+            $('.list-segment-container input[type=radio]').eq(0).click();
+        }
+    });
+    
+>>>>>>> heroku/develop
 });

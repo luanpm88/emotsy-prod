@@ -1684,7 +1684,7 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        if (!empty($campaign->image)) {
+        if (!empty($campaign->image) && file_exists(storage_path($campaign->image).'.thumb.jpg')) {
             $img = \Image::make(storage_path($campaign->image).'.thumb.jpg');
         } else {
             $img = \Image::make(public_path('assets/images/placeholder.jpg'));
