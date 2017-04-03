@@ -400,7 +400,7 @@ class Customer extends Model
             return 0;
         }
         if ($this->maxLists() == 0) {
-            return 100;
+            return 0;
         }
 
         return round((($this->listsCount() / $this->maxLists()) * 100), 2);
@@ -455,8 +455,9 @@ class Customer extends Model
         if ($this->maxCampaigns() == '∞') {
             return 0;
         }
+
         if ($this->maxCampaigns() == 0) {
-            return 100;
+            return 0;
         }
 
         return round((($this->campaignsCount() / $this->maxCampaigns()) * 100), 2);
@@ -529,7 +530,9 @@ class Customer extends Model
             return trans('messages.unlimited');
         }
 
-        return $this->readCache('SubscriberUsage') . '%';
+		// @todo: avoid using cached value in a function
+		//        cache value must be called directly from view only
+        return $this->readCache('SubscriberUsage', 0) . '%';
     }
 
     /**
