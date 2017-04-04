@@ -359,6 +359,7 @@ class Customer extends Model
     public function getOption($name)
     {
 		$options = $this->getOptions();
+		// @todo: chỗ này cần raise 1 cái exception chứ ko phải là trả về rỗng (trả vể rỗng để "dìm" lỗi đi à?)
         return isset($options[$name]) ? $options[$name] : '';
     }
 
@@ -568,65 +569,6 @@ class Customer extends Model
     }
 
     /**
-     * Get customer's sending quota.
-     *
-     * @return string
-     */
-    public function sendingQuota()
-    {
-        $time_value = $this->getOption('sending_quota_time');
-        $time_unit = $this->getOption('sending_quota_time_unit');
-
-        if ($time_value == '-1') {
-            $begin = null;
-        } else {
-            if ($time_unit == 'year') {
-                $begin = \Carbon\Carbon::now()->subYear($time_value);
-            } elseif ($time_unit == 'month') {
-                $begin = \Carbon\Carbon::now()->subMonth($time_value);
-            } elseif ($time_unit == 'week') {
-                $begin = \Carbon\Carbon::now()->subWeek($time_value);
-            } elseif ($time_unit == 'day') {
-                $begin = \Carbon\Carbon::now()->subDay($time_value);
-            } elseif ($time_unit == 'hour') {
-                $begin = \Carbon\Carbon::now()->subHour($time_value);
-            } elseif ($time_unit == 'minute') {
-                $begin = \Carbon\Carbon::now()->subMinute($time_value);
-            }
-        }
-
-        $query = \Acelle\Model\TrackingLog::leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
-        $query = $query->where('campaigns.customer_id', '=', $this->id);
-        if (isset($begin)) {
-            $query = $query->where('tracking_logs.created_at', '>=', $begin);
-        }
-
-        $count = $query->count();
-
-        return $count;
-    }
-
-    /**
-     * Get customer's sending quota rate.
-     *
-     * @return string
-     */
-    public function sendingQuotaUsage()
-    {
-        $max = $this->maxQuota();
-		$count = $this->sendingQuota();
-
-        if ($max == '∞') {
-            return 0;
-        }
-        if ($max == 0 || $count > $max) {
-            return 100;
-        }
-
-        return round((($count / $max) * 100), 2);
-    }
-
-    /**
      * Check if customer has used up all quota allocated.
      *
      * @return string
@@ -722,7 +664,7 @@ class Customer extends Model
     public function getSendingQuota()
     {
         // -1 indicate unlimited
-        return $this->getOption('sending_quota');
+        return $this->getOption('email_max');
     }
 
     /**
@@ -766,40 +708,10 @@ class Customer extends Model
     }
 
     /**
-     * Get quota starting time
-     *
-     * @return array
-     */
-    public function getQuotaStartingTime() {
-        $timeValue = $this->getOption('sending_quota_time');
-        $timeUnit = $this->getOption('sending_quota_time_unit');
-
-        // @todo: magic number here
-        // @todo: why $timeValue == -1?
-        // @todo: configuration setting for default Quota Starting Time
-        if ($timeValue == '-1') {
-            $start = \Carbon\Carbon::parse("1 month ago");
-        } else {
-            $start = \Carbon\Carbon::parse("{$timeValue} {$timeUnit} ago");
-        }
-        return $start;
-    }
-
-    /**
-     * Get quota starting time
-     *
-     * @return array
-     */
-    public function getQuotaIntervalString() {
-        $timeValue = $this->getOption('sending_quota_time');
-        $timeUnit = $this->getOption('sending_quota_time_unit');
-        return "{$timeValue} {$timeUnit}";
-    }
-
-    /**
      * Initialize the quota tracker
      *
      * @return array
+     * @deprecated
      */
     public function renewQuotaTracker() {
         $this->getQuotaTracker()->getExclusiveLock(function() {
@@ -855,10 +767,18 @@ class Customer extends Model
 			'max' => $current->getOption('email_max')
 		];
 
-		$this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $quota, [$this->getQuotaIntervalString() => $this->getSendingQuota()]);
+		$this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $quota, $this->getSendingLimits());
         // @note: in case of multi-process, the following command must be issued manually
         //     $this->renewQuotaTracker();
     }
+
+	public function getSendingLimits()
+	{
+		$timeValue = $this->getOption('sending_quota_time');
+        $timeUnit = $this->getOption('sending_quota_time_unit');
+		$limit = $this->getOption('sending_quota');
+        return ["{$timeValue} {$timeUnit}" => $limit];
+	}
 
     /**
      * Get sending quota lock file
