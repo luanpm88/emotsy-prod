@@ -175,6 +175,19 @@
                         ])
                     </span>
                 </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="mt-0 mb-5 text-semibold">{{ trans('messages.max_number_of_processes') }}</label>
+                        @include('helpers.form_control', ['type' => 'select',
+                            'name' => 'options[max_process]',
+                            'value' => $options['max_process'],
+                            'label' => '',
+                            'options' => \Acelle\Model\Plan::multiProcessSelectOptions(),
+                            'help_class' => 'subscription',
+                            'rules' => $subscription->rules()
+                        ])
+                    </div>
+                </div>
             </div>
         </div>
         <div class="tab-pane" id="top-tab2">
@@ -207,7 +220,7 @@
         <div class="tab-pane" id="top-tab3">
             <p>{!! trans('messages.options.wording') !!}</p>
             <div class="row">
-                <div class="boxing col-md-3">
+                <div class="boxing col-md-4">
                     @include('helpers.form_control', [
                         'type' => 'text',
                         'class' => 'numeric',
@@ -224,7 +237,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="boxing col-md-3">
+                <div class="boxing col-md-4">
                     @include('helpers.form_control', [
                         'type' => 'text',
                         'class' => 'numeric',
@@ -241,7 +254,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     @include('helpers.form_control', ['type' => 'select',
                         'name' => 'options[sending_quota_time_unit]',
                         'value' => $options['sending_quota_time_unit'],
@@ -251,19 +264,6 @@
                         'help_class' => 'subscription',
                         'rules' => $subscription->rules()
                     ])
-                </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label class="mt-0 mb-5 text-semibold">{{ trans('messages.max_number_of_processes') }}</label>
-                        @include('helpers.form_control', ['type' => 'select',
-                            'name' => 'options[max_process]',
-                            'value' => $options['max_process'],
-                            'label' => '',
-                            'options' => \Acelle\Model\Plan::multiProcessSelectOptions(),
-                            'help_class' => 'subscription',
-                            'rules' => $subscription->rules()
-                        ])
-                    </div>
                 </div>
             </div>
         </div>

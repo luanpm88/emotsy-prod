@@ -110,7 +110,7 @@
                             {{ trans('messages.unlimited') }}
                         </label>
                     </div>
-                </div>            
+                </div>
                 <div class="boxing col-md-3">
                     @include('helpers.form_control', ['type' => 'text',
                         'class' => 'numeric',
@@ -175,6 +175,19 @@
                         ])
                     </span>
                 </div>
+                <div class="col-md-3">
+                    <div class="form-group">
+                        <label class="mt-0 mb-5 text-semibold">{{ trans('messages.max_number_of_processes') }}</label>
+                        @include('helpers.form_control', ['type' => 'select',
+                            'name' => 'options[max_process]',
+                            'value' => $options['max_process'],
+                            'label' => '',
+                            'options' => \Acelle\Model\Plan::multiProcessSelectOptions(),
+                            'help_class' => 'plan',
+                            'rules' => $plan->rules()
+                        ])
+                    </div>
+                </div>
             </div>
         </div>
         <div class="tab-pane" id="top-tab2">
@@ -201,13 +214,13 @@
                         'help_class' => 'plan',
                         'rules' => $plan->rules()
                     ])
-                </div>		
+                </div>
             </div>
         </div>
         <div class="tab-pane" id="top-tab3">
             <!--<h3 class="text-teal-800">{{ trans('messages.sending_quota') }}</h3>-->
             <div class="row">
-                <div class="boxing col-md-3">
+                <div class="boxing col-md-4">
                     @include('helpers.form_control', [
                         'type' => 'text',
                         'class' => 'numeric',
@@ -224,7 +237,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="boxing col-md-3">
+                <div class="boxing col-md-4">
                     @include('helpers.form_control', [
                         'type' => 'text',
                         'class' => 'numeric',
@@ -241,7 +254,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="col-md-3">
+                <div class="col-md-4">
                     @include('helpers.form_control', ['type' => 'select',
                         'name' => 'options[sending_quota_time_unit]',
                         'value' => $options['sending_quota_time_unit'],
@@ -252,24 +265,11 @@
                         'rules' => $plan->rules()
                     ])
                 </div>
-                <div class="col-md-3">
-                    <div class="form-group">
-                        <label class="mt-0 mb-5 text-semibold">{{ trans('messages.max_number_of_processes') }}</label>
-                        @include('helpers.form_control', ['type' => 'select',
-                            'name' => 'options[max_process]',
-                            'value' => $options['max_process'],
-                            'label' => '',
-                            'options' => \Acelle\Model\Plan::multiProcessSelectOptions(),
-                            'help_class' => 'plan',
-                            'rules' => $plan->rules()
-                        ])
-                    </div>
-                </div>
             </div>
         </div>
         <div class="tab-pane" id="top-tab4">
             <h4 class="text-teal-800 text-semibold">{{ trans('messages.sending_servers_settings') }}</h4>
-            
+
             <div class="row">
                 <div class="col-md-5">
                     <span class="text-semibold">{{ trans('messages.allow_customer_create_sending_servers') }}</span> &nbsp;&nbsp;&nbsp;
@@ -287,7 +287,7 @@
                 </div>
             </div>
             <hr>
-            
+
             <div class="sending-servers-yes">
                 <div class="row">
                     <div class="col-md-4">
@@ -312,13 +312,13 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="sending-servers-no">
                 <h5 class="text-semibold">{{ trans('messages.setting_up_sending_servers_for_plan') }}</h5>
                 <div class="row">
                     <div class="col-md-3">
                         {{ trans('messages.use_all_sending_servers') }}&nbsp;&nbsp;&nbsp;
-                        <span class="notoping">												
+                        <span class="notoping">
                             @include('helpers.form_control', ['type' => 'checkbox',
                                 'class' => '',
                                 'name' => 'options[all_sending_servers]',
@@ -329,7 +329,7 @@
                                 'rules' => $plan->rules()
                             ])
                         </span>
-                        
+
                     </div>
                 </div>
                 @if(!Acelle\Model\SendingServer::getAllAdminActive()->count())
@@ -345,7 +345,7 @@
                     @foreach (Acelle\Model\SendingServer::getAllAdminActive()->orderBy("name")->get() as $server)
                         <div class="col-md-6">
                             <h5 class="mt-0 mb-5 text-semibold text-teal-600">{{ $server->name }}</h5>
-                            <div class="row">											
+                            <div class="row">
                                 <div class="col-md-2">
                                     <div class="form-group">
                                         <label class="mt-0 mb-5 text-semibold">{{ trans('messages.choose') }}</label>
@@ -380,7 +380,7 @@
         </div>
         <div class="tab-pane" id="top-tab5">
             <h4 class="text-teal-800 text-semibold">{{ trans('messages.sending_domains_settings') }}</h4>
-            
+
             <div class="row">
                 <div class="col-md-5">
                     <span class="text-semibold">{{ trans('messages.allow_customer_create_sending_domains') }}</span> &nbsp;&nbsp;&nbsp;
@@ -421,16 +421,16 @@
                         </div>
                     </div>
                 </div>
-            </div>            
+            </div>
         </div>
     </div>
 </div>
-    
-<script>	
+
+<script>
 	$(document).ready(function() {
 		// all sending servers checking
 		$(document).on("change", "input[name='options[all_sending_servers]']", function(e) {
-			if($("input[name='options[all_sending_servers]']:checked").length) {									
+			if($("input[name='options[all_sending_servers]']:checked").length) {
 				$(".sending-servers").find("input[type=checkbox]").each(function() {
 					if($(this).is(":checked")) {
 						$(this).parents(".form-group").find(".switchery").eq(1).click();
@@ -440,12 +440,12 @@
 			} else {
 				$(".sending-servers").show();
 			}
-		});		
+		});
 		$("input[name='options[all_sending_servers]']").trigger("change");
-		
-		
+
+
 		// Sending servers checking setting
-		$(document).on("change", "input[name='options[create_sending_servers]']", function(e) {			
+		$(document).on("change", "input[name='options[create_sending_servers]']", function(e) {
 			if($('input[name="options[create_sending_servers]"]:checked').val() == 'yes') {
 				$(".sending-servers-yes").show();
 				$(".sending-servers-no").hide();
@@ -453,11 +453,11 @@
 				$(".sending-servers-no").show();
 				$(".sending-servers-yes").hide();
 			}
-		});		
+		});
 		$('input[name="options[create_sending_servers]"]').trigger("change");
-        
+
         // Sending domains checking setting
-		$(document).on("change", "input[name='options[create_sending_domains]']", function(e) {			
+		$(document).on("change", "input[name='options[create_sending_domains]']", function(e) {
 			if($('input[name="options[create_sending_domains]"]:checked').val() == 'yes') {
 				$(".sending-domains-yes").show();
 				$(".sending-domains-no").hide();
@@ -465,7 +465,7 @@
 				$(".sending-domains-no").show();
 				$(".sending-domains-yes").hide();
 			}
-		});		
+		});
 		$('input[name="options[create_sending_domains]"]').trigger("change");
 	});
 </script>
