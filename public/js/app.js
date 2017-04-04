@@ -1426,4 +1426,16 @@ $(function() {
     $(document).on('click', '.btn-close-pnotify', function() {
         $(this).parents('.ui-pnotify').remove();
     });
+
+    // Plan time unit unlimited selection
+    $(document).on('change', 'select[name=frequency_unit]', function() {
+        var val = $(this).val();
+
+        if (val == 'unlimited') {
+            $('input[name=frequency_amount]').val(-1).addClass('text-trans').prop('readonly', true);
+        } else {
+            $('input[name=frequency_amount]').val(1).removeClass('text-trans').prop('readonly', false);
+        }
+    });
+    $('select[name=frequency_unit]').trigger('change');
 });

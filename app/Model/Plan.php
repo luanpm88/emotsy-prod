@@ -226,6 +226,7 @@ class Plan extends Model
             ['value' => 'week', 'text' => trans('messages.week')],
             ['value' => 'month', 'text' => trans('messages.month')],
             ['value' => 'year', 'text' => trans('messages.year')],
+			['value' => 'unlimited', 'text' => trans('messages.unlimited')],
         ];
     }
 
@@ -246,7 +247,7 @@ class Plan extends Model
 			'automation_max' => '-1',
             'sending_quota' => '-1',
             'sending_quota_time' => '-1',
-            'sending_quota_time_unit' => 'month',
+            'sending_quota_time_unit' => 'day',
             'max_process' => '1',
             'all_sending_servers' => 'yes',
             'max_size_upload_total' => '500',
@@ -551,5 +552,15 @@ class Plan extends Model
             ['value' => 'hour', 'text' => trans('messages.hour')],
             ['value' => 'day', 'text' => trans('messages.day')],
         ];
+    }
+
+	/**
+     * Check if plan time is unlimited.
+     *
+     * @return boolean
+     */
+    public function isUnlimited()
+    {
+        return $this->getOption('frequency_unit') == 'unlimited';
     }
 }
