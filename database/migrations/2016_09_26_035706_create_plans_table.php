@@ -25,9 +25,10 @@ class CreatePlansTable extends Migration
             $table->string('status');
             $table->string('color');
             $table->integer('custom_order');
-            
+            $table->boolean('is_default')->default(false);
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
             $table->foreign('currency_id')->references('id')->on('currencies')->onDelete('cascade');

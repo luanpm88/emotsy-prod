@@ -1690,10 +1690,15 @@ return [
         You are currently subscribed to the <strong>:plan</strong> plan.
         Your subscription will expire in <strong>:remain</strong>, on <strong>:end_at</strong></p>
         <p>Please find your current plan details below</p>',
+    'current_plan_intro_unlimited' => '<p>Thank you for doing your email marketing with Acelle Mail.
+        You are currently subscribed to the <strong>:plan</strong> plan.</p>
+        <p>Please find your current plan details below</p>',
     'plan_name' => 'Plan name',
     'more_details' => 'More details',
     'max_automations_label' => 'Max automations',
     'current_plan_notactive_intro' => 'You have a pending subscription for <a><strong>:plan plan</strong></a>.
+        Please finish the payment or wait for the payment confirmation to activate your subscription',
+    'next_plan_notactive_intro' => 'You have a pending subscription for <a><strong>:plan plan</strong></a>.
         Please finish the payment or wait for the payment confirmation to activate your subscription',
     'purchasing_intro_braintree_credit_card' => 'Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
 				. Your plan price is: <a><strong>:price</strong></a>',
@@ -1727,4 +1732,5 @@ return [
     'payment_action_paid' => 'Paid',
     'payment_action_unpaid' => 'Un-Paid',
     'payment_action_method' => 'Action/Method',
+    'plan_time_unlimited' => 'Unlimited',
 ];

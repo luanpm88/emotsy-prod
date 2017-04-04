@@ -126,7 +126,7 @@ class InstallController extends Controller
             $this->validate($request, $rules);
 
             $site_info = $request->all();
-            
+
             // Get license type
             $site_info["license_type"] = \Acelle\Helpers\LicenseHelper::getLicenseType($site_info["license"]);
 
@@ -306,10 +306,10 @@ class InstallController extends Controller
         // get database connection
         $database = $request->session()->get('database');
         $mysqli = new \mysqli($database['hostname'], $database['username'], $database['password'], $database['database_name'], $database['port']);
-        
+
         // default date
         $date = '2017-01-01 00:00:00';
-        
+
         // Insert default superuser
         $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'users` WHERE 1');
         $mysqli->query('INSERT INTO `'.$database['tables_prefix']."users`
@@ -337,7 +337,7 @@ class InstallController extends Controller
                 1
             );"
         );
-        
+
         $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'admins` WHERE 1');
         $mysqli->query('INSERT INTO `'.$database['tables_prefix']."admins`
             (
@@ -374,7 +374,7 @@ class InstallController extends Controller
                 '".$date."'
             );"
         );
-        
+
         if ($site_info['create_customer_account'] == 'yes') {
             $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'customers` WHERE 1');
             $mysqli->query('INSERT INTO `'.$database['tables_prefix']."customers`
@@ -393,7 +393,8 @@ class InstallController extends Controller
                     `color_scheme`,
                     `cache`,
                     `created_at`,
-                    `updated_at`) VALUES
+                    `updated_at`,
+                    `is_default`) VALUES
                 (
                     1,
                     '" .uniqid()."',
@@ -409,7 +410,8 @@ class InstallController extends Controller
                     NULL,
                     '{\"SubscriberCount\":0,\"SubscriberUsage\":0}',
                     '".$date."',
-                    '".$date."'
+                    '".$date."',
+                    1
                 );"
             );
         }

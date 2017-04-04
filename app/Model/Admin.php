@@ -455,8 +455,9 @@ class Admin extends Model
      *
      * @return void
      */
-    public function createCustomerAccount() {
+    public function createCustomerAccount($admin) {
         if (!$this->hasCustomerAccount()) {
+            // Create customer
             $customer = new \Acelle\Model\Customer();
             $customer->user_id = $this->user_id;
             $customer->language_id = $this->language_id;
@@ -465,8 +466,19 @@ class Admin extends Model
             $customer->image = $this->image;
             $customer->timezone = $this->timezone;
             $customer->status = $this->status;
-
             $customer->save();
+
+            // Add plan
+            $plan = \Acelle\Model\Plan::getDefaultPlan();
+            $subscription = new \Acelle\Model\Subscription();
+            $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
+            $subscription->admin_id = $admin->id;
+            $subscription->plan_id = $plan->id;
+            $subscription->customer_id = $customer->id;
+
+            $subscription->fillAttributes([]);
+
+            $subscription->save();
         }
     }
 

@@ -157,7 +157,7 @@ class AdminController extends Controller
 
                 // create customer account
                 if (!empty($request->create_customer_account) && $request->create_customer_account == 'yes') {
-                    $admin->createCustomerAccount();
+                    $admin->createCustomerAccount($current_user->admin);
                 }
 
                 $request->session()->flash('alert-success', trans('messages.admin.created'));
@@ -266,7 +266,7 @@ class AdminController extends Controller
 
             // create customer account
             if (!empty($request->create_customer_account) && $request->create_customer_account == 'yes') {
-                $admin->createCustomerAccount();
+                $admin->createCustomerAccount($current_user->admin);
             }
 
             if ($admin->save()) {

@@ -247,6 +247,10 @@ class Subscription extends Model
                 case 'year':
                     $this->end_at = $this->start_at->addYears($plan->frequency_amount)->subDays(1);
                     break;
+                case 'unlimited':
+                    $this->start_at = NULL;
+                    $this->end_at = NULL;
+                    break;
             }
         }
     }
@@ -304,7 +308,7 @@ class Subscription extends Model
      */
     public function daysRemainCount()
     {
-        $count = $this->end_at->diffInDays(\Carbon\Carbon::now());
+        $count = isset($this->end_at) ? $this->end_at->diffInDays(\Carbon\Carbon::now()) : NULL;
 
 		return $count;
     }
@@ -568,6 +572,16 @@ class Subscription extends Model
         return isset($this->end_at) ? $this->end_at->endOfDay() < \Carbon\Carbon::now() : false;
     }
 
+    /**
+     * Check if subscription is started.
+     *
+     * @return array
+     */
+    public function isStarted()
+    {
+        return isset($this->start_at) ? $this->start_at->startOfDay() <= \Carbon\Carbon::now() : true;
+    }
+
 	/**
      * Check if subscription is current.
      *
@@ -575,7 +589,7 @@ class Subscription extends Model
      */
     public function isCurrent()
     {
-        if($this->start_at->startOfDay() <= \Carbon\Carbon::now() &&
+        if($this->isStarted() &&
 		   !$this->isOld()
 		) {
 			return true;
@@ -607,7 +621,7 @@ class Subscription extends Model
      */
     public function timeStatus()
     {
-        if ($this->start_at->startOfDay() > \Carbon\Carbon::now()) {
+        if (!$this->isStarted()) {
 			return Subscription::TIME_STATUS_FUTURE;
 		} elseif ($this->isOld()) {
 			return Subscription::TIME_STATUS_PAST;
@@ -800,5 +814,15 @@ class Subscription extends Model
 			['value' => Subscription::STATUS_INACTIVE, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_INACTIVE)],
 			['value' => Subscription::STATUS_DISABLED, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_DISABLED)],
         ];
+    }
+
+    /**
+     * Check if plan time is unlimited.
+     *
+     * @return boolean
+     */
+    public function isTimeUnlimited()
+    {
+        return !$this->start_at && !$this->end_at;
     }
 }

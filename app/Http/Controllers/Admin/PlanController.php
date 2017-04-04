@@ -428,7 +428,7 @@ class PlanController extends Controller
         ];
 
         $datas = [];
-        foreach (\Acelle\Model\Plan::getAllActive()->get() as $plan) {
+        foreach (\Acelle\Model\Plan::getAllActiveWithDefault()->get() as $plan) {
             $count = $admin->getAllSubscriptionsByPlan($plan)->count();
             // create data
             if ($count) {

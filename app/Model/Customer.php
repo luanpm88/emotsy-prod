@@ -346,8 +346,6 @@ class Customer extends Model
 		$subscription = $this->getCurrentSubscription();
         if(is_object($subscription)) {
 			return $subscription->getOptions();
-		} elseif ($this->hasAdminAccount()) {
-			return \Acelle\Model\Subscription::defaultUnlimitedOptions();
 		} else {
 			return \Acelle\Model\Subscription::defaultOptions();
 		}
@@ -396,14 +394,17 @@ class Customer extends Model
      */
     public function listsUsage()
     {
-        if ($this->maxLists() == '∞') {
+        $max = $this->maxLists();
+		$count = $this->listsCount();
+
+        if ($max == '∞') {
             return 0;
         }
-        if ($this->maxLists() == 0) {
-            return 0;
+        if ($max == 0 || $count > $max) {
+            return 100;
         }
 
-        return round((($this->listsCount() / $this->maxLists()) * 100), 2);
+        return round((($count / $max) * 100), 2);
     }
 
     /**
@@ -452,15 +453,17 @@ class Customer extends Model
      */
     public function campaignsUsage()
     {
-        if ($this->maxCampaigns() == '∞') {
+        $max = $this->maxCampaigns();
+		$count = $this->campaignsCount();
+
+        if ($max == '∞') {
             return 0;
         }
-
-        if ($this->maxCampaigns() == 0) {
-            return 0;
+        if ($max == 0 || $count > $max) {
+            return 100;
         }
 
-        return round((($this->campaignsCount() / $this->maxCampaigns()) * 100), 2);
+        return round((($count / $max) * 100), 2);
     }
 
     /**
@@ -509,14 +512,17 @@ class Customer extends Model
      */
     public function subscribersUsage()
     {
-        if ($this->maxSubscribers() == '∞') {
+        $max = $this->maxSubscribers();
+		$count = $this->subscribersCount();
+
+        if ($max == '∞') {
             return 0;
         }
-        if ($this->maxSubscribers() == 0 || $this->subscribersCount() > $this->maxSubscribers()) {
+        if ($max == 0 || $count > $max) {
             return 100;
         }
 
-        return round((($this->subscribersCount() / $this->maxSubscribers()) * 100), 2);
+        return round((($count / $max) * 100), 2);
     }
 
     /**
@@ -607,13 +613,17 @@ class Customer extends Model
      */
     public function sendingQuotaUsage()
     {
-        if ($this->maxQuota() == '∞') {
-            return '0';
-        } elseif ($this->maxQuota() == '0' || $this->sendingQuota() >= $this->maxQuota()) {
-            return '100';
+        $max = $this->maxQuota();
+		$count = $this->sendingQuota();
+
+        if ($max == '∞') {
+            return 0;
+        }
+        if ($max == 0 || $count > $max) {
+            return 100;
         }
 
-        return round((($this->sendingQuota() / $this->maxQuota()) * 100), 2);
+        return round((($count / $max) * 100), 2);
     }
 
     /**
@@ -739,17 +749,20 @@ class Customer extends Model
     {
         $current = $this->getCurrentSubscription();
 		if (is_null($current)) {
-			return 0;
+			return 100;
 		}
 
-		// @todo magic number
-        if ($this->getSendingQuota() == -1) {
-            return '0';
-        } elseif ($this->getSendingQuota() == '0' || $this->getSendingQuotaUsage() >= $this->getSendingQuota()) {
-            return '100';
+        $max = $this->getSendingQuotaUsage();
+		$count = $this->getSendingQuota();
+
+        if ($max == '∞') {
+            return 0;
+        }
+        if ($max == 0 || $count > $max) {
+            return 100;
         }
 
-        return round(($this->getQuotaTracker()->getUsagePercentage() * 100), 2);
+        return round((($count / $max) * 100), 2);
     }
 
     /**
@@ -993,8 +1006,13 @@ class Customer extends Model
      */
     public function getCurrentSubscriptions() {
         return $subsciption = $this->subscriptions()
-			->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
-			->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
+            ->where(function($query) {
+                $query->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
+                    ->orWhereNull('subscriptions.start_at');
+            })->where(function($query) {
+                $query->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->endOfDay())
+                    ->orWhereNull('subscriptions.end_at');
+            });
     }
 
 	/**

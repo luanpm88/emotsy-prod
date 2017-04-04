@@ -53,8 +53,10 @@ class SubscriptionPolicy
                 $can = $user->admin->getPermission('subscription_create') == 'yes';
                 break;
             case 'customer':
-                $can = ($user->customer->getCurrentSubscription() && !$user->customer->getNextSubscription()) ||
+                $current_subscription = $user->customer->getCurrentSubscription();
+                $can = ($current_subscription && !$user->customer->getNextSubscription()) ||
                     $user->customer->getNotOutdatedSubscriptions()->count() == 0;
+                $can = $can && (!$current_subscription || !$current_subscription->isTimeUnlimited());
                 break;
         }
 

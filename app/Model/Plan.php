@@ -226,7 +226,7 @@ class Plan extends Model
             ['value' => 'week', 'text' => trans('messages.week')],
             ['value' => 'month', 'text' => trans('messages.month')],
             ['value' => 'year', 'text' => trans('messages.year')],
-			['value' => 'unlimited', 'text' => trans('messages.unlimited')],
+			['value' => 'unlimited', 'text' => trans('messages.plan_time_unlimited')],
         ];
     }
 
@@ -491,12 +491,12 @@ class Plan extends Model
         return json_encode($data);
     }
 
-    /**
+     /**
      * Get all items.
      *
      * @return collect
      */
-    public static function getAllActive($admin = NULL)
+    public static function getAllActiveWithDefault($admin = NULL)
     {
         $query = Plan::getAll()
 			->where("plans.status", "=", Plan::STATUS_ACTIVE);
@@ -510,6 +510,18 @@ class Plan extends Model
 		return $query;
     }
 
+    /**
+     * Get all items.
+     *
+     * @return collect
+     */
+    public static function getAllActive($admin = NULL)
+    {
+        $query = Plan::getAllActiveWithDefault()->where("plans.is_default", "=", false);
+
+		return $query;
+    }
+
 	/**
      * Display plan time.
      *
@@ -517,6 +529,11 @@ class Plan extends Model
      */
     public function displayFrequencyTime()
     {
+        // unlimited
+        if ($this->isTimeUnlimited()) {
+            return trans('messages.plan_time_unlimited');
+        }
+
         return $this->frequency_amount . ' ' . \Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount);
     }
 
@@ -559,8 +576,18 @@ class Plan extends Model
      *
      * @return boolean
      */
-    public function isUnlimited()
+    public function isTimeUnlimited()
     {
-        return $this->getOption('frequency_unit') == 'unlimited';
+        return $this->frequency_unit == 'unlimited';
+    }
+
+    /**
+     * Get default-system plan.
+     *
+     * @return Plan
+     */
+    public static function getDefaultPlan()
+    {
+        return Plan::where('is_default', '=', true)->first();
     }
 }

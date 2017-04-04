@@ -36,9 +36,7 @@
                     @if ($subscription->isDisabled())
                         <p>
                             {!! trans('messages.current_plan_disabled_intro', [
-                                'plan' => $subscription->plan_name,
-                                'remain' => \Acelle\Library\Tool::dateTime($subscription->end_at)->diffForHumans(null, true),
-                                'start_at' => \Acelle\Library\Tool::formatDate($subscription->start_at)
+                                'plan' => $subscription->plan_name
                             ]) !!}
                         </p>
 
@@ -46,11 +44,7 @@
 
                     @elseif (!$subscription->isPaid())
                         <p>
-                            {!! trans('messages.current_plan_notactive_intro', [
-                                'plan' => $subscription->plan_name,
-                                'remain' => \Acelle\Library\Tool::dateTime($subscription->end_at)->diffForHumans(null, true),
-                                'start_at' => \Acelle\Library\Tool::formatDate($subscription->start_at)
-                            ]) !!}
+                            {!! trans('messages.current_plan_notactive_intro') !!}
                         </p>
 
                         @include('subscriptions._details', ['subscription' => $subscription])
@@ -75,11 +69,7 @@
                         @endif
                     @else
                         <p>
-                            {!! trans('messages.current_plan_notactive_paid_intro', [
-                                'plan' => $subscription->plan_name,
-                                'remain' => \Acelle\Library\Tool::dateTime($subscription->end_at)->diffForHumans(null, true),
-                                'start_at' => \Acelle\Library\Tool::formatDate($subscription->start_at)
-                            ]) !!}
+                            {!! trans('messages.current_plan_notactive_paid_intro' . ($subscription->isTimeUnlimited() ? '_unlimited' : '')) !!}
                         </p>
 
                         @include('subscriptions._details', ['subscription' => $subscription])
@@ -93,9 +83,9 @@
                         </a>
                     @endif
                 @else
-                    {!! trans('messages.current_plan_intro', [
+                    {!! trans('messages.current_plan_intro' . ($subscription->isTimeUnlimited() ? '_unlimited' : ''), [
                         'plan' => $subscription->plan_name,
-                        'remain' => \Acelle\Library\Tool::dateTime($subscription->end_at)->diffForHumans(null, true),
+                        'remain' => ($subscription->end_at ? \Acelle\Library\Tool::dateTime(\Acelle\Library\Tool::dateTime($subscription->end_at)->diffForHumans(null, true))->diffForHumans(null, true) : 0),
                         'end_at' => \Acelle\Library\Tool::formatDate($subscription->end_at)
                     ]) !!}
 
@@ -108,30 +98,32 @@
                                 <mc:flag>{{ $subscription->plan_name }}</mc:flag>
                             </div>
                         </li>
-                        <li class="selfclear">
-                            <div class="unit size1of2">
-                                <strong>{{ trans('messages.start_at') }}</strong>
-                            </div>
-                            <div class="lastUnit size1of2">
-                                <mc:flag>{{ $subscription->start_at ? \Acelle\Library\Tool::dateTime($subscription->start_at)->format(trans('messages.date_format')) : '' }}</mc:flag>
-                            </div>
-                        </li>
-                        <li class="selfclear">
-                            <div class="unit size1of2">
-                                <strong>{{ trans('messages.end_at') }}</strong>
-                            </div>
-                            <div class="lastUnit size1of2">
-                                <mc:flag>{{ $subscription->end_at ? \Acelle\Library\Tool::dateTime($subscription->end_at)->format(trans('messages.date_format')) : '' }}</mc:flag>
-                            </div>
-                        </li>
-                        <li>
-                            <div class="unit size1of2">
-                                <strong>{{ trans_choice('messages.days_remain', $subscription->daysRemainCount()) }}</strong>
-                            </div>
-                            <div class="lastUnit size1of2">
-                                <mc:flag>{{ $subscription->daysRemainCount() }}</mc:flag>
-                            </div>
-                        </li>
+                        @if (!$subscription->isTimeUnlimited())
+                            <li class="selfclear">
+                                <div class="unit size1of2">
+                                    <strong>{{ trans('messages.start_at') }}</strong>
+                                </div>
+                                <div class="lastUnit size1of2">
+                                    <mc:flag>{{ $subscription->start_at ? \Acelle\Library\Tool::dateTime($subscription->start_at)->format(trans('messages.date_format')) : '' }}</mc:flag>
+                                </div>
+                            </li>
+                            <li class="selfclear">
+                                <div class="unit size1of2">
+                                    <strong>{{ trans('messages.end_at') }}</strong>
+                                </div>
+                                <div class="lastUnit size1of2">
+                                    <mc:flag>{{ $subscription->end_at ? \Acelle\Library\Tool::dateTime($subscription->end_at)->format(trans('messages.date_format')) : '' }}</mc:flag>
+                                </div>
+                            </li>
+                            <li>
+                                <div class="unit size1of2">
+                                    <strong>{{ trans_choice('messages.days_remain', $subscription->daysRemainCount()) }}</strong>
+                                </div>
+                                <div class="lastUnit size1of2">
+                                    <mc:flag>{{ $subscription->daysRemainCount() }}</mc:flag>
+                                </div>
+                            </li>
+                        @endif
                         <li class="more">
                             <a href="#more">{{ trans('messages.more_details') }}</a>
                         </li>
@@ -240,80 +232,77 @@
                     </ul>
                 @endif
             </div>
+            @if (!$subscription->isTimeUnlimited())
+                    <div class="sub-section">
+                    @if (!$nextSubscription)
+                        @if (\Auth::user()->customer->can('create', new Acelle\Model\Subscription()))
+                            <h3>{{ trans('messages.available_plans') }}</h3>
+                            <p>You can renew your current plan or subscribe to a new one. Below are the available plans for you to choose from:</p>
+                            <form enctype="multipart/form-data" action="{{ action('SubscriptionController@store') }}" method="POST" class="form-validate-jqueryz subscription-form">
+                                {{ csrf_field() }}
 
-            <div class="sub-section">
-                @if (!$nextSubscription)
-                    @if (\Auth::user()->customer->can('create', new Acelle\Model\Subscription()))
-                        <h3>{{ trans('messages.available_plans') }}</h3>
-                        <p>You can renew your current plan or subscribe to a new one. Below are the available plans for you to choose from:</p>
-                        <form enctype="multipart/form-data" action="{{ action('SubscriptionController@store') }}" method="POST" class="form-validate-jqueryz subscription-form">
-                            {{ csrf_field() }}
-
-                            @include('helpers.form_control', [
-                                'type' => 'select_ajax',
-                                'class' => 'subsciption-plan-select hook',
-                                'name' => 'plan_uid',
-                                'label' => trans('messages.plan'),
-                                'selected' => [],
-                                'help_class' => 'subscription',
-                                'rules' => $subscription->rules(),
-                                'url' => action('PlanController@select2'),
-                                'placeholder' => trans('messages.select_plan')
-                            ])
-                            <div class="ajax-detail-box" data-url="{{ action('SubscriptionController@preview') }}" data-form=".subscription-form">
-                            </div>
-                        </form>
-                    @endif
-                @elseif (!$nextSubscription->isActive())
-                    <h3>{{ trans('messages.next_plan') }}</h3>
-
-                    <p>
-                        {!! trans('messages.current_plan_notactive_intro', [
-                            'plan' => $nextSubscription->plan_name,
-                            'remain' => \Acelle\Library\Tool::dateTime($nextSubscription->end_at)->diffForHumans(null, true),
-                            'start_at' => \Acelle\Library\Tool::formatDate($nextSubscription->start_at)
-                        ]) !!}
-                    </p>
-
-                    @if (!$nextSubscription->isPaid() && !$nextSubscription->isActive())
-                        @if (Auth::user()->customer->can('pay', $nextSubscription))
-
-                            @foreach (\Acelle\Model\PaymentMethod::getAllActive() as $payment_method)
-                                @if ($payment_method->type != \Acelle\Model\PaymentMethod::TYPE_CASH)
-                                    <span class="">
-                                        <a
-                                            href="{{ action('SubscriptionController@selectPaymentMethod', ["uid" => $nextSubscription->uid, 'payment_method_id' => $payment_method->uid]) }}"
-                                            class="btn bg-teal"
-                                        >
-                                            {!! trans('messages.payment_method_type_' . $payment_method->type . '_button') !!}
-                                        </a>
-                                    </span>
-                                @endif
-                            @endforeach
-
+                                @include('helpers.form_control', [
+                                    'type' => 'select_ajax',
+                                    'class' => 'subsciption-plan-select hook',
+                                    'name' => 'plan_uid',
+                                    'label' => trans('messages.plan'),
+                                    'selected' => [],
+                                    'help_class' => 'subscription',
+                                    'rules' => $subscription->rules(),
+                                    'url' => action('PlanController@select2'),
+                                    'placeholder' => trans('messages.select_plan')
+                                ])
+                                <div class="ajax-detail-box" data-url="{{ action('SubscriptionController@preview') }}" data-form=".subscription-form">
+                                </div>
+                            </form>
                         @endif
-                    @endif
-                    @if (\Auth::user()->customer->can('delete', $nextSubscription))
-                        <a data-method="DELETE" delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('SubscriptionController@delete', ["uids" => $nextSubscription->uid]) }}"
-                            class="btn bg-grey-300 link-method"
-                        >
-                            <i class="icon-trash"></i> {{ trans('messages.cancel') }}
-                        </a>
-                    @endif
-                @else
-                    <h3>{{ trans('messages.next_plan') }}</h3>
-                    <p>
-                        {!! trans('messages.next_plan_active_intro', [
-                            'plan' => $nextSubscription->plan_name,
-                            'remain' => \Acelle\Library\Tool::dateTime($nextSubscription->end_at)->diffForHumans(null, true),
-                            'start_at' => \Acelle\Library\Tool::formatDate($nextSubscription->start_at)
-                        ]) !!}
-                    </p>
+                    @elseif (!$nextSubscription->isActive())
+                        <h3>{{ trans('messages.next_plan') }}</h3>
 
-                    @include('subscriptions._details', ['subscription' => $nextSubscription])
+                        <p>
+                            {!! trans('messages.next_plan_notactive_intro') !!}
+                        </p>
 
-                @endif
-            </div>
+                        @if (!$nextSubscription->isPaid() && !$nextSubscription->isActive())
+                            @if (Auth::user()->customer->can('pay', $nextSubscription))
+
+                                @foreach (\Acelle\Model\PaymentMethod::getAllActive() as $payment_method)
+                                    @if ($payment_method->type != \Acelle\Model\PaymentMethod::TYPE_CASH)
+                                        <span class="">
+                                            <a
+                                                href="{{ action('SubscriptionController@selectPaymentMethod', ["uid" => $nextSubscription->uid, 'payment_method_id' => $payment_method->uid]) }}"
+                                                class="btn bg-teal"
+                                            >
+                                                {!! trans('messages.payment_method_type_' . $payment_method->type . '_button') !!}
+                                            </a>
+                                        </span>
+                                    @endif
+                                @endforeach
+
+                            @endif
+                        @endif
+                        @if (\Auth::user()->customer->can('delete', $nextSubscription))
+                            <a data-method="DELETE" delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('SubscriptionController@delete', ["uids" => $nextSubscription->uid]) }}"
+                                class="btn bg-grey-300 link-method"
+                            >
+                                <i class="icon-trash"></i> {{ trans('messages.cancel') }}
+                            </a>
+                        @endif
+                    @else
+                        <h3>{{ trans('messages.next_plan') }}</h3>
+                        <p>
+                            {!! trans('messages.next_plan_active_intro', [
+                                'plan' => $nextSubscription->plan_name,
+                                'remain' => \Acelle\Library\Tool::dateTime($nextSubscription->end_at)->diffForHumans(null, true),
+                                'start_at' => \Acelle\Library\Tool::formatDate($nextSubscription->start_at)
+                            ]) !!}
+                        </p>
+
+                        @include('subscriptions._details', ['subscription' => $nextSubscription])
+
+                    @endif
+                </div>
+            @endif
         </div>
     </div>
 

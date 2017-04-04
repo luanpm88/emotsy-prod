@@ -7,33 +7,35 @@
             <mc:flag>{{ $subscription->plan_name }}</mc:flag>
         </div>
     </li>
-    <li class="selfclear">
-        <div class="unit size1of2">
-            <strong>{{ trans('messages.start_at') }}</strong>
-        </div>
-        <div class="lastUnit size1of2">
-            <mc:flag>{{ $subscription->start_at ? \Acelle\Library\Tool::dateTime($subscription->start_at)->format(trans('messages.date_format')) : '' }}</mc:flag>
-        </div>
-    </li>
-    <li class="selfclear">
-        <div class="unit size1of2">
-            <strong>{{ trans('messages.end_at') }}</strong>
-        </div>
-        <div class="lastUnit size1of2">
-            <mc:flag>{{ $subscription->end_at ? \Acelle\Library\Tool::dateTime($subscription->end_at)->format(trans('messages.date_format')) : '' }}</mc:flag>
-        </div>
-    </li>
-    @if ($subscription->beingUsed())
-        <li>
+    @if (!$subscription->isTimeUnlimited())
+        <li class="selfclear">
             <div class="unit size1of2">
-                <strong>{{ trans_choice('messages.days_remain', $subscription->daysRemainCount()) }}</strong>
+                <strong>{{ trans('messages.start_at') }}</strong>
             </div>
             <div class="lastUnit size1of2">
-                <mc:flag>
-                     {{ $subscription->daysRemainCount() }}
-                </mc:flag>
+                <mc:flag>{{ $subscription->start_at ? \Acelle\Library\Tool::dateTime($subscription->start_at)->format(trans('messages.date_format')) : '' }}</mc:flag>
             </div>
         </li>
+        <li class="selfclear">
+            <div class="unit size1of2">
+                <strong>{{ trans('messages.end_at') }}</strong>
+            </div>
+            <div class="lastUnit size1of2">
+                <mc:flag>{{ $subscription->end_at ? \Acelle\Library\Tool::dateTime($subscription->end_at)->format(trans('messages.date_format')) : '' }}</mc:flag>
+            </div>
+        </li>
+        @if ($subscription->beingUsed())
+            <li>
+                <div class="unit size1of2">
+                    <strong>{{ trans_choice('messages.days_remain', $subscription->daysRemainCount()) }}</strong>
+                </div>
+                <div class="lastUnit size1of2">
+                    <mc:flag>
+                         {{ $subscription->daysRemainCount() }}
+                    </mc:flag>
+                </div>
+            </li>
+        @endif
     @endif
     <li class="more">
         <a href="#more">{{ trans('messages.more_details') }}</a>
