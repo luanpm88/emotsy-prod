@@ -2093,20 +2093,22 @@ ul.modern-listing li .admin-line i {
 .btn-close-pnotify {
     position: absolute;
     right: 0;
-    background: rgba(255,255,255, 1);
-    color: #aaa;
-    padding: 3px 6px;
-    border-radius: 30px;
-    border: solid 1px #aaa;
-    height: 30px;
-    width: 30px;
-    margin: -10px;
+    background: rgba(255,255,255, 0.2);
+    color: rgba(255,255,255, 0.9);
+    padding: 3px 3px;
+    height: 20px;
+    line-height: 16px;
+    width: 20px;
+    margin: 0;
     cursor: pointer;
     z-index: 10;
 }
+.btn-close-pnotify i {
+    font-size: 14px;
+}
 .btn-close-pnotify:hover {
-    background: rgba(255,255,255, 1);
-    color: #555;
+    background: rgba(255,255,255, 0.6);
+    color: #888;
     border-color: #555;
 }
 .boxing {
