@@ -87,9 +87,6 @@ Route::group(['middleware' => ['not_logged_in']], function () {
     // Admin avatar
     Route::get('assets/images/avatar/admin-{uid?}.jpg', 'AdminController@avatar');
 
-    // Reseller avatar
-    Route::get('assets/images/avatar/reseller-{uid?}.jpg', 'ResellerController@avatar');
-
     // Customer subscription
     Route::get('subscriptions/preview', 'SubscriptionController@preview');
     Route::post('subscriptions/register/{plan_uid?}', 'SubscriptionController@register');
@@ -561,21 +558,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/account/contact', 'AccountController@contact');
     Route::post('admin/account/contact', 'AccountController@contact');
 
-    // Reseller Group
-    Route::get('admin/reseller_groups/listing/{page?}', 'ResellerGroupController@listing');
-    Route::get('admin/reseller_groups/sort', 'ResellerGroupController@sort');
-    Route::get('admin/reseller_groups/delete', 'ResellerGroupController@delete');
-    Route::resource('admin/reseller_groups', 'ResellerGroupController');
-
-    // Reseller
-    Route::get('admin/resellers/login-as/{uid}', 'ResellerController@loginAs');
-    Route::get('admin/resellers/listing/{page?}', 'ResellerController@listing');
-    Route::get('admin/resellers/sort', 'ResellerController@sort');
-    Route::get('admin/resellers/delete', 'ResellerController@delete');
-    Route::get('admin/resellers/disable', 'ResellerController@disable');
-    Route::get('admin/resellers/enable', 'ResellerController@enable');
-    Route::resource('admin/resellers', 'ResellerController');
-
     // Plan
     Route::get('admin/plans/pieChart', 'PlanController@pieChart');
     Route::get('admin/plans/delete/confirm', 'PlanController@deleteConfirm');
@@ -617,26 +599,4 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/payment_methods/disable', 'PaymentMethodController@disable');
     Route::get('admin/payment_methods/enable', 'PaymentMethodController@enable');
     Route::resource('admin/payment_methods', 'PaymentMethodController');
-});
-
-
-// RESELLER AREA
-Route::group(['namespace' => 'Reseller', 'middleware' => ['not_installed', 'reseller']], function () {
-    Route::get('reseller', 'HomeController@index');
-
-    // Account
-    Route::get('reseller/account/profile', 'AccountController@profile');
-    Route::post('reseller/account/profile', 'AccountController@profile');
-    Route::get('reseller/account/contact', 'AccountController@contact');
-    Route::post('reseller/account/contact', 'AccountController@contact');
-
-    // Customer
-    Route::get('reseller/customers/login-as/{uid}', 'CustomerController@loginAs');
-    Route::get('reseller/customers/listing/{page?}', 'CustomerController@listing');
-    Route::get('reseller/customers/sort', 'CustomerController@sort');
-    Route::get('reseller/customers/delete', 'CustomerController@delete');
-    Route::get('reseller/customers/disable', 'CustomerController@disable');
-    Route::get('reseller/customers/enable', 'CustomerController@enable');
-    Route::resource('reseller/customers', 'CustomerController');
-
 });

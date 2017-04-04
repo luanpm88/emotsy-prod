@@ -2093,8 +2093,7 @@ ul.modern-listing li .admin-line i {
 .btn-close-pnotify {
     position: absolute;
     right: 0;
-    background: rgba(255,255,255, 0.2);
-    color: rgba(255,255,255, 0.9);
+    color: rgba(255,255,255, 0.5);
     padding: 3px 3px;
     height: 20px;
     line-height: 16px;

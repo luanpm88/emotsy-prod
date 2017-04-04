@@ -56,15 +56,10 @@ class User extends Authenticatable
     {
         return $this->hasOne('Acelle\Model\Customer');
     }
-    
+
     public function admin()
     {
         return $this->hasOne('Acelle\Model\Admin');
-    }
-    
-    public function reseller()
-    {
-        return $this->hasOne('Acelle\Model\Reseller');
     }
 
     public function systemJobs()
@@ -96,7 +91,7 @@ class User extends Authenticatable
 
         return ['email' => '', 'password' => ''];
     }
-    
+
     /**
      * Send regitration activation email.
      *
@@ -106,16 +101,16 @@ class User extends Authenticatable
         $layout = \Acelle\Model\Layout::where('alias', 'registration_confirmation_email')->first();
         $token = $this->getToken();
         $redirect_url = urlencode($redirect_url);
-        
+
         $layout->content = str_replace('{ACTIVATION_URL}', action('UserController@activate', ['token' => $token, 'redirect' => $redirect_url]), $layout->content);
-        $layout->content = str_replace('{CUSTOMER_NAME}', $name, $layout->content);        
-        
+        $layout->content = str_replace('{CUSTOMER_NAME}', $name, $layout->content);
+
         \Mail::send('users.registration_confirmation_email', ['content' => $layout->content], function ($m) use ($layout) {
             $m->from(config("mail.from")["address"], config("mail.from")["name"]);
             $m->to($this->email, trans('messages.to_email_name'))->subject($layout->subject);
         });
     }
-    
+
     /**
      * User activation.
      *
@@ -125,7 +120,7 @@ class User extends Authenticatable
     {
         return $this->hasOne('Acelle\Model\userActivation');
     }
-    
+
     /**
      * Create activation token for user.
      *
@@ -134,20 +129,20 @@ class User extends Authenticatable
     public function getToken()
     {
         $token = \Acelle\Model\UserActivation::getToken();
-        
+
         $userActivation = $this->userActivation;
 
-        if (!is_object($userActivation)) {                      
+        if (!is_object($userActivation)) {
             $userActivation = new \Acelle\Model\UserActivation();
             $userActivation->user_id = $this->id;
         }
-        
+
         $userActivation->token = $token;
-        $userActivation->save();        
-        
+        $userActivation->save();
+
         return $token;
     }
-    
+
     /**
      * Set user is activated.
      *
@@ -158,7 +153,7 @@ class User extends Authenticatable
         $this->activated = true;
         $this->save();
     }
-    
+
     /**
      * Bootstrap any application services.
      */
@@ -179,12 +174,12 @@ class User extends Authenticatable
             $item->api_token = str_random(60);
         });
     }
-    
+
     public static function findByUid($uid)
     {
         return self::where('uid', '=', $uid)->first();
     }
-    
+
     /**
      * Check if user has admin account.
      */
@@ -192,7 +187,7 @@ class User extends Authenticatable
     {
         return is_object($this->admin);
     }
-    
+
     /**
      * Get storage path
      *
