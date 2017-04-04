@@ -42,4 +42,14 @@ class AutoTrigger extends Model
     {
         return $this->belongsTo('Acelle\Model\AutoEvent');
     }
+
+    /**
+     * Associations
+     *
+     * @return the associated subscriber, in case of FollowUp trigger
+     */
+    public function subscriber()
+    {
+        return $this->belongsTo('Acelle\Model\Subscriber');
+    }
 }
