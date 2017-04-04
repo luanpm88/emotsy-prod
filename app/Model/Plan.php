@@ -538,4 +538,18 @@ class Plan extends Model
     {
         return $this->subscriptions()->distinct('customer_id')->count('customer_id');
     }
+
+	/**
+     * Frequency time unit options.
+     *
+     * @return array
+     */
+    public static function quotaTimeUnitOptions()
+    {
+        return [
+            ['value' => 'minute', 'text' => trans('messages.minute')],
+            ['value' => 'hour', 'text' => trans('messages.hour')],
+            ['value' => 'day', 'text' => trans('messages.day')],
+        ];
+    }
 }
