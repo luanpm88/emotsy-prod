@@ -609,7 +609,7 @@ return [
     'total_items_count' => 'From <span class="text-teal-600">:from</span> to <span class="text-teal-600">:to</span>. Total <span class="text-teal-600">:count</span> records',
     'clicked_at' => 'Clicked at',
     'sending_logs' => 'Sending logs',
-    'used_quota' => 'Used quota',
+    'used_quota' => 'Credits used',
     'unsubscribe_log' => 'Unsubscribe log',
     'open_map' => 'Opens - Map',
     'last_open' => 'Last open',
