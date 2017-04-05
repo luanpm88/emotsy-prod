@@ -12,10 +12,13 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, AuthorizesResources, DispatchesJobs, ValidatesRequests;
 
+    /**
+     * Create a new controller instance.
+     */
     public function __construct()
     {
     }
-    
+
     /**
      * Check if the site is in demo mode.
      *
@@ -55,7 +58,7 @@ class Controller extends BaseController
     {
         return view('offline');
     }
-    
+
     /**
      * Show demo home page.
      *
@@ -65,7 +68,7 @@ class Controller extends BaseController
     {
         return view('demo');
     }
-    
+
     /**
      * Docs for api v1.
      *
@@ -75,7 +78,7 @@ class Controller extends BaseController
     {
         return view('docs.api.v1');
     }
-    
+
     /**
      * Login from outsite.
      *
@@ -86,7 +89,7 @@ class Controller extends BaseController
         $user = \Acelle\Model\User::where('api_token', $api_token)->first();
 
         \Auth::login($user);
-        
+
         return redirect()->action('HomeController@index');
     }
 
@@ -113,7 +116,7 @@ class Controller extends BaseController
                 "sPrevious": "'.trans('messages.datatable_sPrevious').'",
                 "sNext":     "'.trans('messages.datatable_sNext').'",
                 "sLast":     "'.trans('messages.datatable_sLast').'"
-            },            
+            },
             "oAria": {
                 "sSortAscending":  "'.trans('messages.datatable_sSortAscending').'",
                 "sSortDescending": "'.trans('messages.datatable_sSortDescending').'"
@@ -148,7 +151,7 @@ class Controller extends BaseController
                 min: jQuery.validator.format("'.trans('messages.jvalidate_min').'")
             });';
     }
-    
+
     /**
      * Reload application settings
      *
@@ -161,7 +164,7 @@ class Controller extends BaseController
         sleep(5);
         return redirect()->away($next);
     }
-    
+
     /**
      * Reload application settings
      *
@@ -173,7 +176,7 @@ class Controller extends BaseController
         sleep(5);
         echo "migrated!";
     }
-    
+
     /**
      * Run remote cronjob
      *

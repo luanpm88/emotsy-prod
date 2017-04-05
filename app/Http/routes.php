@@ -105,6 +105,10 @@ Route::group(['middleware' => ['not_logged_in']], function () {
     Route::get('payment-cancel', function () {
         return 'Payment has been canceled';
     });
+
+    // Translation data
+    Route::get('/datatable_locale', 'Controller@datatable_locale');
+    Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
 });
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
@@ -125,10 +129,6 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('account/quota_log', 'AccountController@quotaLog');
     Route::get('account/subscription', 'AccountController@subscription');
     Route::get('account/subscription/new', 'AccountController@subscriptionNew');
-
-    // Translation data
-    Route::get('/datatable_locale', 'Controller@datatable_locale');
-    Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
 
     // User avatar
     Route::get('assets/images/avatar/user-{uid?}.jpg', 'UserController@avatar');
