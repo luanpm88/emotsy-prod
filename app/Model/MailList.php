@@ -1308,10 +1308,12 @@ class MailList extends Model
     {
         $selection = $this->getSendingServers();
 
+        // raise an exception if no sending servers are available
         if (empty($selection)) {
             throw new \Exception(sprintf("No sending server available for Mail List ID %s", $this->id));
         }
 
+        // do not raise an exception, just wait if sending servers are available but exceeding sending limit
         $blacklisted = [];
 
         while (true) {
