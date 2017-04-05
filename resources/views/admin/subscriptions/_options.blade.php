@@ -237,7 +237,7 @@
                         </label>
                     </div>
                 </div>
-                <div class="boxing col-md-4">
+                <div class="col-md-4">
                     @include('helpers.form_control', [
                         'type' => 'text',
                         'class' => 'numeric',
@@ -247,12 +247,6 @@
                         'help_class' => 'subscription',
                         'rules' => $subscription->rules()
                     ])
-                    <div class="checkbox inline unlimited-check text-semibold">
-                        <label>
-                            <input{{ $options['sending_quota_time']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
-                            {{ trans('messages.unlimited') }}
-                        </label>
-                    </div>
                 </div>
                 <div class="col-md-4">
                     @include('helpers.form_control', ['type' => 'select',
