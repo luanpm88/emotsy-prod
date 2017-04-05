@@ -184,6 +184,11 @@ class SendingServer extends Model
             $query = $query->where('sending_servers.admin_id', '=', $request->admin_id);
         }
 
+        // remove customer sending servers
+        if(!empty($request->no_customer)) {
+            $query = $query->whereNull('customer_id');
+        }
+
         return $query;
     }
 

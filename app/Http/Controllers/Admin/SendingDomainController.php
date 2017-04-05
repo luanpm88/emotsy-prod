@@ -33,6 +33,9 @@ class SendingDomainController extends Controller
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
+        // exlude customer seding domain
+        $request->merge(array("no_customer" => true));
+
         $items = \Acelle\Model\SendingDomain::search($request);
 
         return view('admin.sending_domains.index', [
@@ -55,6 +58,9 @@ class SendingDomainController extends Controller
         if (!$request->user()->admin->can("readAll", new \Acelle\Model\SendingDomain())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
+
+        // exlude customer seding domain
+        $request->merge(array("no_customer" => true));
 
         $items = \Acelle\Model\SendingDomain::search($request)->paginate($request->per_page);
 

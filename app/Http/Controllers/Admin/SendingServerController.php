@@ -33,6 +33,9 @@ class SendingServerController extends Controller
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
+        // exlude customer seding servers
+        $request->merge(array("no_customer" => true));
+
         $items = \Acelle\Model\SendingServer::search($request);
 
         return view('admin.sending_servers.index', [
@@ -55,6 +58,9 @@ class SendingServerController extends Controller
         if (!$request->user()->admin->can("readAll", new \Acelle\Model\SendingServer())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
+
+        // exlude customer seding servers
+        $request->merge(array("no_customer" => true));
 
         $items = \Acelle\Model\SendingServer::search($request)->paginate($request->per_page);
 

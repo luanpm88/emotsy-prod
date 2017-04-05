@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
 class SendingDomain extends Model
 {
     const DKIM_FULL_SELECTOR = 'mailer._domainkey';
-    
+
     /**
      * Associations.
      *
@@ -37,12 +37,12 @@ class SendingDomain extends Model
     {
         return $this->belongsTo('Acelle\Model\Customer');
     }
-    
+
     public function admin()
     {
         return $this->belongsTo('Acelle\Model\Admin');
     }
-    
+
     /**
      * Get all items.
      *
@@ -81,14 +81,19 @@ class SendingDomain extends Model
                 $query = $query->where('sending_domains.type', '=', $filters['type']);
             }
         }
-        
+
         // Other filter
         if(!empty($request->customer_id)) {
             $query = $query->where('sending_domains.customer_id', '=', $request->customer_id);
         }
-        
+
         if(!empty($request->admin_id)) {
             $query = $query->where('sending_domains.admin_id', '=', $request->admin_id);
+        }
+
+        // remove customer sending servers
+        if(!empty($request->no_customer)) {
+            $query = $query->whereNull('customer_id');
         }
 
         return $query;
@@ -102,7 +107,7 @@ class SendingDomain extends Model
     public static function search($request)
     {
         $query = self::filter($request);
-        
+
         if(!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
@@ -221,7 +226,7 @@ class SendingDomain extends Model
 
         return true;
     }
-    
+
     /**
      * Add customer action log.
      */
