@@ -24,15 +24,15 @@ class CreateSubscriptionsTable extends Migration
             $table->string('currency_code');
             $table->string('currency_format');
             $table->string('plan_name');
-            $table->string('plan_color');            
+            $table->string('plan_color');
             $table->string('status');
             $table->boolean('paid')->default(false);
-            
+
             $table->timestamps();
-            
-            $table->timestamp('start_at');
-            $table->timestamp('end_at');
-            
+
+            $table->timestamp('start_at')->nullable();
+            $table->timestamp('end_at')->nullable();
+
             $table->foreign('plan_id')->references('id')->on('plans')->onDelete('cascade');
             $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
             $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');

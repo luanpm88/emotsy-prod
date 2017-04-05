@@ -377,43 +377,45 @@ class InstallController extends Controller
 
         if ($site_info['create_customer_account'] == 'yes') {
             $mysqli->query('DELETE FROM `'.$database['tables_prefix'].'customers` WHERE 1');
-            $mysqli->query('INSERT INTO `'.$database['tables_prefix']."customers`
-                (
-                    `id`,
-                    `uid`,
-                    `user_id`,
-                    `admin_id`,
-                    `contact_id`,
-                    `language_id`,
-                    `first_name`,
-                    `last_name`,
-                    `image`,
-                    `timezone`,
-                    `status`,
-                    `color_scheme`,
-                    `cache`,
-                    `created_at`,
-                    `updated_at`,
-                    `is_default`) VALUES
-                (
-                    1,
-                    '" .uniqid()."',
-                    1,
-                    NULL,
-                    NULL,
-                    1,
-                    '".$site_info['first_name']."',
-                    '".$site_info['last_name']."',
-                    NULL,
-                    '".$site_info['timezone']."',
-                    'active',
-                    NULL,
-                    '{\"SubscriberCount\":0,\"SubscriberUsage\":0}',
-                    '".$date."',
-                    '".$date."',
-                    1
-                );"
-            );
+            //$mysqli->query('INSERT INTO `'.$database['tables_prefix']."customers`
+            //    (
+            //        `id`,
+            //        `uid`,
+            //        `user_id`,
+            //        `admin_id`,
+            //        `contact_id`,
+            //        `language_id`,
+            //        `first_name`,
+            //        `last_name`,
+            //        `image`,
+            //        `timezone`,
+            //        `status`,
+            //        `color_scheme`,
+            //        `cache`,
+            //        `created_at`,
+            //        `updated_at`) VALUES
+            //    (
+            //        1,
+            //        '" .uniqid()."',
+            //        1,
+            //        NULL,
+            //        NULL,
+            //        1,
+            //        '".$site_info['first_name']."',
+            //        '".$site_info['last_name']."',
+            //        NULL,
+            //        '".$site_info['timezone']."',
+            //        'active',
+            //        NULL,
+            //        '{\"SubscriberCount\":0,\"SubscriberUsage\":0}',
+            //        '".$date."',
+            //        '".$date."'
+            //    );"
+            //);
+
+            // Subscribe to default plan
+            $admin = \Acelle\Model\Admin::find(1);
+            $admin->createCustomerAccount($admin);
         }
 
         // Insert system urls

@@ -54,7 +54,6 @@ class PaymentMethod extends Model
     {
         $rules = array(
 			'status' => 'required',
-			'type' => 'required',
         );
 
 		if($this->type == PaymentMethod::TYPE_PAYPAL) {

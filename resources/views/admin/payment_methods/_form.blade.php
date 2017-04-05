@@ -4,18 +4,6 @@
 <div class="row">
 	<div class="col-md-4">
 		@include('helpers.form_control', ['type' => 'select',
-			'name' => 'type',
-			'value' => $payment_method->type,
-			'class' => 'hook',
-			'label' => trans('messages.payment_method_type'),
-			'options' => Acelle\Model\PaymentMethod::typeSelectOptions(),
-			'include_blank' => trans('messages.choose'),
-			'help_class' => 'payment_method',
-			'rules' => $payment_method->rules()
-		])
-	</div>
-	<div class="col-md-4">
-		@include('helpers.form_control', ['type' => 'select',
 			'name' => 'status',
 			'value' => $payment_method->status,
 			'class' => '',
