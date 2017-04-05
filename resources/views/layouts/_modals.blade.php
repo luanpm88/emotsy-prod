@@ -228,7 +228,7 @@
 		@if (\Acelle\Library\Tool::currentView() == 'backend')
 			<!-- Alert if system haven't had any sending servers -->
 			@if (
-				!\Acelle\Model\SendingServer::getAllActive()->count()
+				!\Acelle\Model\SendingServer::getAllAdminActive()->count()
 			)
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 					<h4 class="ui-pnotify-title text-nowrap">
