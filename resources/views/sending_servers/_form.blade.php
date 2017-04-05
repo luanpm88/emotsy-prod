@@ -149,6 +149,9 @@
 <h4 class="text-semibold text-teal-800">{{ trans('messages.sending_quota') }}</h4>
 
 <div class="row">
+	<div class="col-md-12">
+		<p>{!! trans('messages.options.wording') !!}</p>
+	</div>
 	<div class="col-md-4">
 		@include('helpers.form_control', [
 			'type' => 'text',

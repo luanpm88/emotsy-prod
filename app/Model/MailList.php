@@ -1138,7 +1138,7 @@ class MailList extends Model
             ]);
 
             // Action Log
-            $this->log('import_max_error', $user, ['count' => $processed_count]);
+            $this->log('import_max_error', $user->customer, ['count' => $processed_count]);
         }
     }
 
@@ -1306,42 +1306,42 @@ class MailList extends Model
      */
     public function pickSendingServer()
     {
-        $selection = [];
-        foreach($this->getSendingServers() as $server) {
-            list($key, $fitness) = $server;
-            $selection[(int) $key] = $fitness;
+        $selection = $this->getSendingServers();
+
+        if (empty($selection)) {
+            throw new \Exception(sprintf("No sending server available for Mail List ID %s", $this->id));
         }
 
-        while (true) {
-            // check if there is at least one sending server available
-            if (empty($selection)) {
-                throw new \Exception(sprintf("No sending server available or sending servers exceed sending limit for Mail List ID %s", $this->id));
-            }
+        $blacklisted = [];
 
+        while (true) {
             $id = RouletteWheel::generate($selection);
             if (empty(self::$serverPools[$id])) {
                 $server = SendingServer::find($id);
                 MailLog::info(sprintf('Initialize delivery server `%s` (ID: %s)', $server->name, $id));
                 self::$serverPools[$id] = SendingServer::mapServerType($server);
-            } else {
-                MailLog::info(sprintf('Pick up delivery server `%s` (ID: %s)', self::$serverPools[$id]->name, $id));
             }
 
             if (self::$serverPools[$id]->overQuota()) {
-                MailLog::warning(sprintf("Sending server `%s` exceeds sending quota", self::$serverPools[$id]->name));
-                self::$serverPools[$id]->saveQuotaUsageInfo();
-                unset(self::$serverPools[$id]);
-                unset($selection[$id]);
+                // just wait until it is okie to go
+                // log every 60 seconds
+                if (!array_key_exists($id, $blacklisted) || time() - $blacklisted[$id] >= 60) {
+                    $blacklisted[$id] = time();
+                    MailLog::warning(sprintf("Sending server `%s` exceeds sending limit, skipped", self::$serverPools[$id]->name));
+                }
+
+                // if all sending servers are blacklisted
+                if (sizeof($blacklisted) == sizeof($selection)) {
+                    MailLog::warning("All sending servers exceed sending limit, waiting...");
+                    sleep(60);
+                }
+
                 continue;
             }
 
+            MailLog::info(sprintf('Pick up delivery server `%s` (ID: %s)', self::$serverPools[$id]->name, $id));
             return self::$serverPools[$id];
         }
-
-
-
-        $selected = RouletteWheel::generate($selection);
-        return SendingServer::mapServerType(SendingServer::find($selected));
     }
 
     /**
@@ -1386,6 +1386,12 @@ class MailList extends Model
             }
         }
 
-        return $result;
+        $assoc = [];
+        foreach($result as $server) {
+            list($key, $fitness) = $server;
+            $assoc[(int) $key] = $fitness;
+        }
+
+        return $assoc;
     }
 }
