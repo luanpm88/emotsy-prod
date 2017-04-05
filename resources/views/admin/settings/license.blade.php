@@ -33,7 +33,7 @@
             <div class="tab-content">
                 @foreach ($settings as $name => $setting)
                     @if ($setting['cat'] == 'license')
-                        @if ($current_license && $setting['value'] == $current_license)
+                        @if ($current_license)
 							<div class="sub-section">
 								<h3>{{ trans('messages.license.your_license') }}</h3>
 								<p>{{ trans('messages.your_current_license') }} <strong>{{ trans('messages.license_label_' . \Acelle\Model\Setting::get('license_type')) }}</strong></p>
