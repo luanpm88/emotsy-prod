@@ -1635,18 +1635,23 @@ return [
     'enter_license_and_click_verify' => 'Enter the licence key (purchase code) then hit the Verify/Update button',
     'license.updated' => 'App license was successfully updated',
     'change_license' => 'Update your license',
-    'license_guide' => '<p>
-            <strong>* Regular License</strong><br/>
+    'license.your_license' => 'Your current license',
+    'license.license_types' => 'License types',
+    'license.no_license' => 'You do not enter a valid license yet. Please purchase a license and enter it in the form below to continue using the product',
+    'license_guide' => '
+        <p>When you purchase Acelle Mail from Envato website, you are actually purchasing a license to use the product.<br>There are 2 types of license that are issued</p>
+        <h4>Regular License</h4>
+        <p>
             All features are available, for a single end product which end users are NOT charged for
         </p>
+        <h4>Extended License</h4>
         <p>
-            <strong>* Extended License</strong><br/>
             All features are available, for a single end product which end users can be charged for (software as a service)
         </p>
     ',
     'license_label_extended' => 'Extended',
     'license_label_normal' => 'Normal',
-    'your_current_license' => 'Your current license key: ',
+    'your_current_license' => 'Thank you for purchasing Acelle Mail! Below is your license key, also known as Purchase Code. Your license type is',
     'verify_license' => 'Verify',
     'license_tab' => 'License',
     'submit' => 'Submit',
