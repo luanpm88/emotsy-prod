@@ -85,7 +85,7 @@
                 @else
                     {!! trans('messages.current_plan_intro' . ($subscription->isTimeUnlimited() ? '_unlimited' : ''), [
                         'plan' => $subscription->plan_name,
-                        'remain' => ($subscription->end_at ? \Acelle\Library\Tool::dateTime(\Acelle\Library\Tool::dateTime($subscription->end_at)->diffForHumans(null, true))->diffForHumans(null, true) : 0),
+                        'remain' => ($subscription->end_at ? \Acelle\Library\Tool::dateTime($subscription->end_at)->diffForHumans(null, true) : 0),
                         'end_at' => \Acelle\Library\Tool::formatDate($subscription->end_at)
                     ]) !!}
 

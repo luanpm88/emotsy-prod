@@ -160,7 +160,7 @@ class Tool
 
         return $result;
     }
-    
+
     /**
      * Format display datetime.
      *
@@ -176,14 +176,14 @@ class Tool
 
         return $result;
     }
-    
+
     /**
      * Format display datetime.
      *
      * @var string
      */
     public static function dateTimeFromString($time_string)
-    {        
+    {
         return self::dateTime(\Carbon\Carbon::parse($time_string));
     }
 
@@ -235,7 +235,7 @@ class Tool
     {
         return substr(sprintf('%o', fileperms($path)), -4);
     }
-    
+
     /**
      * Get system time conversion.
      *
@@ -247,7 +247,7 @@ class Tool
     {
         return $time->setTimezone(config('app.timezone'));
     }
-    
+
     /**
      * Get system time conversion.
      *
@@ -258,11 +258,11 @@ class Tool
     public static function systemTimeFromString($string)
     {
         $timezone = Tool::currentTimezone();
-        $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $string, $timezone);            
+        $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $string, $timezone);
         $time = self::systemTime($time);
         return $time;
     }
-    
+
     /**
      * Get bytes from string.
      *
@@ -273,7 +273,7 @@ class Tool
     public static function returnBytes($val) {
         //$val = trim($val);
         //$last = strtolower($val[strlen($val)-1]);
-        //switch($last) 
+        //switch($last)
         //{
         //    case 'g':
         //    $val *= 1024;
@@ -284,7 +284,7 @@ class Tool
         //}
         return $val;
     }
-    
+
     /**
      * Get max upload file.
      *
@@ -302,7 +302,7 @@ class Tool
         // return the smallest of them, this defines the real limit
         return min($max_upload, $max_post);
     }
-    
+
     /**
      * Day of week select options.
      *
@@ -321,7 +321,7 @@ class Tool
             ['value' => '7', 'text' => trans('messages.Sunday')],
         ];
     }
-    
+
     /**
      * Day of week arrays.
      *
@@ -334,10 +334,10 @@ class Tool
         foreach(self::dayOfWeekSelectOptions() as $day) {
             $array[$day['value']] = $day['text'];
         }
-        
+
         return $array;
     }
-    
+
     /**
      * Month select options.
      *
@@ -360,8 +360,8 @@ class Tool
             ['value' => '11', 'text' => trans('messages.November')],
             ['value' => '12', 'text' => trans('messages.December')],
         ];
-    }    
-    
+    }
+
     /**
      * Month array.
      *
@@ -374,10 +374,10 @@ class Tool
         foreach(self::monthSelectOptions() as $day) {
             $array[$day['value']] = $day['text'];
         }
-        
+
         return $array;
     }
-    
+
     /**
      * Week select options.
      *
@@ -394,7 +394,7 @@ class Tool
             ['value' => '5', 'text' => trans('messages.5th_week')],
         ];
     }
-    
+
     /**
      * Week array.
      *
@@ -407,10 +407,10 @@ class Tool
         foreach(self::weekSelectOptions() as $day) {
             $array[$day['value']] = $day['text'];
         }
-        
+
         return $array;
     }
-    
+
     /**
      * Month select options.
      *
@@ -425,7 +425,7 @@ class Tool
         }
         return $arr;
     }
-    
+
     /**
      * Get day string from timestamp.
      *
@@ -439,10 +439,10 @@ class Tool
             $result = \Acelle\Library\Tool::dateTime($timestamp)->format('Y-m-d');
         } else {
             $result = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
-        }        
+        }
         return $result;
     }
-    
+
     /**
      * Get time string from timestamp.
      *
@@ -456,10 +456,10 @@ class Tool
             $result = \Acelle\Library\Tool::dateTime($timestamp)->format('H:i');
         } else {
             $result = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
-        }        
+        }
         return $result;
     }
-    
+
     /**
      * Convert numbers array to weekdays array.
      *
@@ -473,10 +473,10 @@ class Tool
         foreach($numbers as $number) {
             $weekdays[] = $weekdays_texts[$number];
         }
-        
+
         return $weekdays;
     }
-    
+
     /**
      * Convert numbers array to weeks array.
      *
@@ -490,10 +490,10 @@ class Tool
         foreach($numbers as $number) {
             $weeks[] = $weeks_texts[$number];
         }
-        
+
         return $weeks;
     }
-    
+
     /**
      * Convert numbers array to months array.
      *
@@ -507,10 +507,10 @@ class Tool
         foreach($numbers as $number) {
             $months[] = $month_texts[$number];
         }
-        
+
         return $months;
     }
-    
+
     /**
      * Get day names from array of numbers.
      *
@@ -520,18 +520,18 @@ class Tool
      */
     public static function getDayNamesFromArrayOfNumber($numbers) {
         $names = [];
-        
+
         $ends = array('th','st','nd','rd','th','th','th','th','th','th');
-        foreach($numbers as $number) {            
+        foreach($numbers as $number) {
             if (($number %100) >= 11 && ($number%100) <= 13)
                $names[] = $number. 'th';
             else
                $names[] = $number. $ends[$number % 10];
         }
-        
+
         return $names;
     }
-    
+
     /**
      * Quota time unit options.
      *
@@ -558,22 +558,22 @@ class Tool
      */
     public static function phpPathsSelectOptions($paths) {
         $options = [];
-        
+
         foreach($paths as $path) {
             $options[] = [
                 'text' => $path,
                 'value' => $path
             ];
         }
-        
+
         $options[] = [
             'text' => trans('messages.php_bin_manual'),
             'value' => 'manual'
         ];
-        
+
         return $options;
     }
-    
+
     /**
      * Check php bin path is valid.
      *
@@ -583,21 +583,21 @@ class Tool
      */
     public static function checkPHPBinPath($path) {
         $result = '';
-        
+
         if (!file_exists($path) || !is_executable($path)) {
             return $result;
         }
-        
+
         if(exec_enabled()) {
             $exec_script = $path . " " . base_path() . "/php_bin_test.php";
             $result = exec($exec_script);
         } else {
             $result = 'ok';
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Get available System Background Methods Select Options.
      *
@@ -613,7 +613,7 @@ class Tool
                 'description' => trans('messages.database_job_type_desc'),
             ]
         ];
-        
+
         if(true) {
             $options[] = [
                 'text' => trans('messages.async_job_type'),
@@ -623,10 +623,10 @@ class Tool
                 'tooltip' => (!exec_enabled() ? 'Your server does not support async' : ''),
             ];
         }
-        
+
         return $options;
     }
-    
+
     /**
      * Control cronjob update request.
      *
@@ -652,7 +652,7 @@ class Tool
             '/opt/plesk/php/7.0/bin/php',
             '/opt/plesk/php/7.1/bin/php',
         ];
-        
+
         // try to detect system's PHP CLI
         if(exec_enabled()) {
             try {
@@ -662,20 +662,20 @@ class Tool
                 echo $e->getMessage();
             }
         }
-                
+
         // validate detected / default PHP CLI
         // Because array_filter() preserves keys, you should consider the resulting array to be an associative array even if the original array had integer keys for there may be holes in your sequence of keys. This means that, for example, json_encode() will convert your result array into an object instead of an array. Call array_values() on the result array to guarantee json_encode() gives you an array.
         $paths = array_values(array_filter($paths, function($path) {
             return is_executable($path) && preg_match("/php[0-9\.a-z]{0,3}$/i", $path);
         }));
-        
+
         $rules = [];
-        
+
         // Current path
         $queue_driver = config('queue.default');
         $php_bin_path = empty($paths) ? 'manual' : $paths[0];
         $php_bin_path_value = empty($paths) ? '' : $paths[0];
-        
+
         $setting_php_bin_path = \Acelle\Model\Setting::get('php_bin_path');
         if(!empty($setting_php_bin_path)) {
             if(in_array($setting_php_bin_path, $paths)) {
@@ -685,18 +685,18 @@ class Tool
             }
             $php_bin_path_value = $setting_php_bin_path;
         }
-        
+
         if (!empty($request->old())) {
             $php_bin_path = $request->old()["php_bin_path"];
             $php_bin_path_value = $request->old()["php_bin_path_value"];
             $queue_driver = $request->old()["queue_driver"];
         }
-        
+
         // create remote token if empty
         if(empty(\Acelle\Model\Setting::get('remote_job_token'))) {
             \Acelle\Model\Setting::set('remote_job_token', str_random(60));
         }
-        
+
         $request->session()->forget('cron_jobs');
         $error = '';
         $valid = false;
@@ -704,38 +704,38 @@ class Tool
             $php_bin_path = $request->php_bin_path;
             $php_bin_path_value = $request->php_bin_path_value;
             $queue_driver = $request->queue_driver;
-            
+
             // If type == database
             if($request->queue_driver == 'database') {
                 $rules = [
                     'php_bin_path_value' => 'required',
                     'queue_driver' => 'required',
                 ];
-            
+
                 // Check valid path
-                $check = \Acelle\Library\Tool::checkPHPBinPath($php_bin_path_value);                
+                $check = \Acelle\Library\Tool::checkPHPBinPath($php_bin_path_value);
                 if($check != 'ok') {
                     $rules['php_bin_path_invalid'] = 'required';
                 }
-                
+
                 $controller->validate($request, $rules);
-                
+
                 \Acelle\Model\Setting::set('php_bin_path', $php_bin_path_value);
-                
+
                 $valid = true;
             }
-            
+
             $request->session()->set('cron_jobs', true);
-            
+
             // Update .env
             if(in_array($queue_driver, ['database', 'async']) && config('queue.default') != $queue_driver) {
-                \Acelle\Model\Setting::setEnv('QUEUE_DRIVER', $queue_driver);                
+                \Acelle\Model\Setting::setEnv('QUEUE_DRIVER', $queue_driver);
             }
-            
+
             if($request->queue_driver == 'async') {
                 return 'done';
             }
-            
+
             $request->session()->flash('alert-success', trans('messages.setting.updated'));
         }
 
@@ -751,7 +751,7 @@ class Tool
             'valid' => $valid,
         ];
     }
-    
+
     /**
      * Show re-captcha in views.
      *
@@ -770,7 +770,7 @@ class Tool
             </div>
         <?php
     }
-    
+
     /**
      * Check re-captcha success.
      *
@@ -780,7 +780,7 @@ class Tool
         if(!isset($request->all()["g-recaptcha-response"])) {
             return false;
         }
-        
+
         // Check recaptch
         $client = new \GuzzleHttp\Client();
         $res = $client->post('https://www.google.com/recaptcha/api/siteverify', ['form_params' => [
@@ -788,10 +788,10 @@ class Tool
             'remoteip' => $request->ip(),
             'response' => $request->all()["g-recaptcha-response"]
         ]]);
-    
+
         return json_decode($res->getBody(), true)["success"];
     }
-    
+
     /**
      * Number select options.
      *
@@ -801,14 +801,14 @@ class Tool
      */
     public static function numberSelectOptions($min=1, $max=100) {
         $options = [];
-        
+
         for($i = $min; $i <= $max; $i++) {
             $options[] = ['value' => $i, 'text' => $i];
         }
-        
+
         return $options;
     }
-    
+
     /**
      * Format price.
      *
@@ -819,7 +819,7 @@ class Tool
     public static function format_price($price, $format='{PRICE}') {
         return str_replace('{PRICE}', Tool::format_number($price), $format);
     }
-    
+
     /**
      * Format price.
      *
@@ -836,7 +836,7 @@ class Tool
             return $number;
         }
     }
-    
+
     /**
      * Format display date.
      *
@@ -848,7 +848,7 @@ class Tool
 
         return $result;
     }
-    
+
     /**
      * Replace HTML url
      *
@@ -858,29 +858,29 @@ class Tool
         // find all link in html content
         preg_match_all('/(?<=src=|background=|href=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $content, $matches);
         $srcs = array_unique($matches['url']);
-        
+
         foreach($srcs as $key => $src) {
             $srcs[$key] = htmlspecialchars_decode($src);
             $srcs[$key] = str_replace('"', '', $srcs[$key]);
             $srcs[$key] = str_replace('\'', '', $srcs[$key]);
         }
-        
+
         foreach ($srcs as $src) {
             if (preg_match('/https?/i', $src) || preg_match('/^\{/i', $src) || preg_match('/^\%/i', $src) || preg_match('/^https?/i', $src) || preg_match('/^#/i', $src) || strpos($src, '//') === 0) {
                 continue;
             }
-        
+
             $new_src = $path.$src;
-            
+
             // replace image url
-            $content = str_replace($src, $new_src, $content);            
+            $content = str_replace($src, $new_src, $content);
         }
-        
+
         $content = str_replace('&quot;', '', $content);
-        
+
         return $content;
     }
-    
+
     /**
      * Check current view if exist
      *
@@ -889,7 +889,7 @@ class Tool
     public static function currentView() {
         return \Request::is('admin*') ? 'backend' : 'frontend';
     }
-    
+
     /**
      * Get current timezone.
      *
@@ -904,10 +904,10 @@ class Tool
         } else {
             $timezone = '+00:00';
         }
-        
+
         return $timezone;
     }
-    
+
     /**
      * Get Directory Size.
      *
