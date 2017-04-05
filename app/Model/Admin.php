@@ -460,6 +460,7 @@ class Admin extends Model
             // Create customer
             $customer = new \Acelle\Model\Customer();
             $customer->user_id = $this->user_id;
+			$customer->admin_id = $this->id;
             $customer->language_id = $this->language_id;
             $customer->first_name = $this->first_name;
             $customer->last_name = $this->last_name;
@@ -623,6 +624,75 @@ class Admin extends Model
 
 		if (!$this->can('readAll', new \Acelle\Model\SendingDomain())) {
             $query = $query->where('sending_domains.admin_id', '=', $this->id);
+        }
+
+		return $query;
+    }
+
+	/**
+     * Get all campaigns.
+     *
+     * @return collect
+     */
+    public function getAllCampaigns()
+    {
+		$query = \Acelle\Model\Campaign::getAll();
+
+		if (!$this->can('readAll', new \Acelle\Model\Customer())) {
+            $query = $query->leftJoin('customers', 'customers.id', '=', 'campaigns.customer_id')
+				->where('customers.admin_id', '=', $this->id);
+        }
+
+		return $query;
+    }
+
+	/**
+     * Get all lists.
+     *
+     * @return collect
+     */
+    public function getAllLists()
+    {
+		$query = \Acelle\Model\MailList::getAll();
+
+		if (!$this->can('readAll', new \Acelle\Model\Customer())) {
+            $query = $query->leftJoin('customers', 'customers.id', '=', 'mail_lists.customer_id')
+				->where('customers.admin_id', '=', $this->id);
+        }
+
+		return $query;
+    }
+
+	/**
+     * Get all automations.
+     *
+     * @return collect
+     */
+    public function getAllAutomations()
+    {
+		$query = \Acelle\Model\Automation::getAll();
+
+		if (!$this->can('readAll', new \Acelle\Model\Customer())) {
+            $query = $query->leftJoin('customers', 'customers.id', '=', 'automations.customer_id')
+				->where('customers.admin_id', '=', $this->id);
+        }
+
+		return $query;
+    }
+
+	/**
+     * Get all automations.
+     *
+     * @return collect
+     */
+    public function getAllSubscribers()
+    {
+		$query = \Acelle\Model\Subscriber::getAll();
+
+		if (!$this->can('readAll', new \Acelle\Model\Customer())) {
+            $query = $query->leftJoin('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
+				->leftJoin('customers', 'customers.id', '=', 'mail_lists.customer_id')
+				->where('customers.admin_id', '=', $this->id);
         }
 
 		return $query;

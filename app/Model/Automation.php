@@ -667,4 +667,14 @@ class Automation extends Model
 
         return $rules;
     }
+
+	/**
+     * Get all items.
+     *
+     * @return collect
+     */
+    public static function getAll()
+    {
+        return self::select('*');
+    }
 }

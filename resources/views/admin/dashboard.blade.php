@@ -197,6 +197,22 @@
                             <mc:flag>{{ Auth::user()->admin->getAllPaymentMethods()->count() }}</mc:flag>
                         </div>
                     </li>
+                    <li>
+                        <div class="unit size1of2">
+                            <strong><i class="icon-address-book2"></i> {{ trans('messages.lists') }}</strong>
+                        </div>
+                        <div class="lastUnit size1of2">
+                            <mc:flag>{{ Auth::user()->admin->getAllLists()->count() }}</mc:flag>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="unit size1of2">
+                            <strong><i class="icon-users"></i> {{ trans('messages.subscribers') }}</strong>
+                        </div>
+                        <div class="lastUnit size1of2">
+                            <mc:flag>{{ Auth::user()->admin->getAllSubscribers()->count() }}</mc:flag>
+                        </div>
+                    </li>
                 </ul>
             </div>
             <div class="col-md-6">
@@ -231,6 +247,22 @@
                         </div>
                         <div class="lastUnit size1of2">
                             <mc:flag>{{ Auth::user()->admin->getAllSendingDomains()->count() }}</mc:flag>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="unit size1of2">
+                            <strong><i class="icon-paperplane"></i> {{ trans('messages.campaigns') }}</strong>
+                        </div>
+                        <div class="lastUnit size1of2">
+                            <mc:flag>{{ Auth::user()->admin->getAllCampaigns()->count() }}</mc:flag>
+                        </div>
+                    </li>
+                    <li>
+                        <div class="unit size1of2">
+                            <strong><i class="icon-alarm-check"></i> {{ trans('messages.automations') }}</strong>
+                        </div>
+                        <div class="lastUnit size1of2">
+                            <mc:flag>{{ Auth::user()->admin->getAllAutomations()->count() }}</mc:flag>
                         </div>
                     </li>
                 </ul>

@@ -78,7 +78,7 @@ class Subscriber extends Model
     {
         return $this->hasMany('Acelle\Model\SubscriberField');
     }
-    
+
     public function trackingLogs()
     {
         return $this->hasMany('Acelle\Model\TrackingLog');
@@ -167,13 +167,13 @@ class Subscriber extends Model
                     $fv->value = $value;
                 }
                 $fv->save();
-                
+
                 // update email attribute of subscriber
                 if($field->tag == 'EMAIL') {
                     $this->email = $fv->value;
                     $this->save();
                 }
-            }            
+            }
         }
     }
 
@@ -388,7 +388,7 @@ class Subscriber extends Model
                     }
 
                     ++$success;
-                    $error_detail = trans('messages.email_imported', ['time' => \Carbon\Carbon::now()->timezone($user->customer->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);                    
+                    $error_detail = trans('messages.email_imported', ['time' => \Carbon\Carbon::now()->timezone($user->customer->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);
                 } else {
                     ++$error;
                     $error_detail = trans('messages.email_existed_invalid', ['time' => \Carbon\Carbon::now()->timezone($user->customer->timezone)->format(trans('messages.datetime_format_2')), 'email' => $email]);
@@ -404,7 +404,7 @@ class Subscriber extends Model
                     $str = "processing\n".$content_cache;
                     $str .= "\n".$count.'';
                     $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
-                    
+
                     // Details
                     $myfile = file_put_contents($directory.$list->uid.'-detail.log', $error_detail."\r\n".PHP_EOL , FILE_APPEND | LOCK_EX);
                 }
@@ -569,12 +569,12 @@ class Subscriber extends Model
         $fromList = $this->mailList;
         $this->copy($list, $type);
         $this->delete();
-        
+
         // update related campaign cache information
         $fromList->updateCachedInfo();
         $list->updateCachedInfo();
     }
-    
+
     /**
      * Get tracking log.
      *
@@ -587,7 +587,7 @@ class Subscriber extends Model
 
         return $query;
     }
-    
+
     /**
      * Get all subscriber's open logs.
      *
@@ -597,14 +597,14 @@ class Subscriber extends Model
     {
         $query = \Acelle\Model\OpenLog::leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
             ->where('tracking_logs.subscriber_id', '=', $this->id);
-            
+
         if(isset($campaign)) {
             $query = $query->where('tracking_logs.campaign_id', '=', $campaign->id);
         }
-        
+
         return $query;
     }
-    
+
     /**
      * Get last open.
      *
@@ -613,12 +613,12 @@ class Subscriber extends Model
     public function lastOpenLog($campaign=null)
     {
         $query = $this->openLogs($campaign);
-        
+
         $query = $query->orderBy('open_logs.created_at', 'desc')->first();
-        
+
         return $query;
     }
-    
+
     /**
      * Get all subscriber's click logs.
      *
@@ -628,14 +628,14 @@ class Subscriber extends Model
     {
         $query = \Acelle\Model\ClickLog::leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
             ->where('tracking_logs.subscriber_id', '=', $this->id);
-            
+
         if(isset($campaign)) {
             $query = $query->where('tracking_logs.campaign_id', '=', $campaign->id);
         }
-        
+
         return $query;
     }
-    
+
     /**
      * Get last click.
      *
@@ -647,7 +647,7 @@ class Subscriber extends Model
         $query = $query->orderBy('click_logs.created_at', 'desc')->first();
         return $query;
     }
-    
+
     /**
      * Update subscriber status.
      *
@@ -658,7 +658,7 @@ class Subscriber extends Model
         $this->status = $status;
         $this->save();
     }
-    
+
     /**
      * Is overide copy/move subscriber.
      *
@@ -670,5 +670,15 @@ class Subscriber extends Model
             ['text' => trans('messages.update_if_subscriber_exists'), 'value' => 'update'],
             ['text' => trans('messages.keep_if_subscriber_exists'), 'value' => 'keep'],
         ];
+    }
+
+    /**
+     * Get all items.
+     *
+     * @return collect
+     */
+    public static function getAll()
+    {
+        return self::select('*');
     }
 }
