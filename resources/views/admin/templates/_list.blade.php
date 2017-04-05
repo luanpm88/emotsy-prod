@@ -21,13 +21,13 @@
 											</div>
 										</td>
 										<td width="1%">
-											<a href="#"  onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)">
-												<img width="100" height="120" src="{{ action('TemplateController@image', $item->uid) }}?v={{ rand(0,10) }}" />
+											<a href="#"  onclick="popupwindow('{{ action('Admin\TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)">
+												<img width="100" height="120" src="{{ action('Admin\TemplateController@image', $item->uid) }}?v={{ rand(0,10) }}" />
 											</a>
 										</td>
 										<td>
 											<h5 class="no-margin text-bold">
-												<a class="kq_search" href="#" onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)">
+												<a class="kq_search" href="#" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)">
 													{{ $item->name }}
 												</a>
 											</h5>
@@ -46,24 +46,24 @@
 											</div>
 										</td>
 										<td class="text-right">
-											@can('preview', $item)
+											@if (Auth::user()->admin->can('preview', $item))
 												<a href="#preview" class="btn bg-teal-600 btn-icon" onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a>
-											@endcan
-											@can('update', $item)
+											@endif
+											@if (Auth::user()->admin->can('update', $item))
 												@if ($item->source == 'builder')
 													<a href="{{ action('Admin\TemplateController@rebuild', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 												@else
 													<a href="{{ action('Admin\TemplateController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 												@endif
-											@endcan
-											@can('delete', $item)
+											@endif
+											@if (Auth::user()->admin->can('delete', $item))
 												<div class="btn-group">										
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 													<ul class="dropdown-menu dropdown-menu-right">														
 														<li><a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('Admin\TemplateController@delete', ["uids" => $item->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
 													</ul>
 												</div>
-											@endcan
+											@endif
 										</td>
 									</tr>
 								@endforeach

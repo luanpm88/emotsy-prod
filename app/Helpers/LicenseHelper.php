@@ -43,6 +43,12 @@ class LicenseHelper
     public static function getLicenseType($license)
     {
         $result = self::getLicense($license);
+        
+        # return '' if not valid
+        if ($result['status'] != 'valid') {
+            return '';
+        }
+        
         return $result['data']['verify-purchase']['licence'] == 'Regular License' ? self::TYPE_REGULAR : self::TYPE_EXTENDED;
     }
     

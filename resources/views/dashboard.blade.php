@@ -9,9 +9,10 @@
 @endsection
 
 @section('content')
-    <h1>{{ trans('messages.dashboard') }}</h1>
+	<h1 class="mb-10">{{ trans('messages.frontend_dashboard_hello', ['name' => Auth::user()->customer->displayName()]) }}</h1>
+	<p>{{ trans('messages.frontend_dashboard_welcome') }}</p>
 
-	<h2 class="text-teal-800"><i class="icon-stats-bars4"></i> {{ trans("messages.used_quota") }}</h2>
+	<h3 class="text-teal-800 mb-10 mt-40"><i class="icon-stats-bars4"></i> {{ trans("messages.used_quota") }}</h3>
 	<div class="row quota_box">
 		<div class="col-sm-6 col-md-6">
 			<div class="content-group-sm">
@@ -55,22 +56,20 @@
 		<div class="col-sm-6 col-md-6">
 			<div class="content-group-sm">
 				<div class="pull-right text-teal-800 text-semibold">
-					<span class="text-muted">{{ Auth::user()->customer->readCache('SubscriberCount') }}/{{ Auth::user()->customer->maxSubscribers() }}</span>
+					<span class="text-muted">{{ Auth::user()->customer->readCache('SubscriberCount', 0) }}/{{ Auth::user()->customer->maxSubscribers() }}</span>
 					&nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySubscribersUsage() }}
 				</div>
 				<h5 class="text-semibold mb-5">{{ trans('messages.subscriber') }}</h5>
 				<div class="progress progress-xxs">
-					<div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->readCache('SubscriberUsage') }}%">
+					<div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->readCache('SubscriberUsage', 0) }}%">
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<hr />
+    <h3 class="text-teal-800 mt-40"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h3>
 
-    <h2 class="text-teal-800"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h2>
-		
 	@if (Auth::user()->customer->sentCampaigns()->count() == 0)
 		<div class="empty-list">
 			<i class="icon-paperplane"></i>
@@ -94,10 +93,8 @@
 		<div class="campaign-quickview-container" data-url="{{ action("CampaignController@quickView") }}"></div>
 	@endif
 
-    <hr />
-    
-    <h2 class="text-teal-800"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h2>
-    
+    <h3 class="text-teal-800 mt-40"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h3>
+
 	@if (Auth::user()->customer->lists()->count() == 0)
 		<div class="empty-list">
 			<i class="icon-address-book2"></i>
@@ -122,9 +119,7 @@
 		<div class="list-quickview-container" data-url="{{ action("MailListController@quickView") }}"></div>
 	@endif
 
-    <br />
-
-    <h2 class="text-teal-800"><i class="icon-podium"></i> {{ trans('messages.top_5') }}</h2>
+    <h3 class="text-teal-800 mt-40"><i class="icon-podium"></i> {{ trans('messages.top_5') }}</h3>
     <div class="tabbable">
 		<ul class="nav nav-tabs nav-tabs-top">
 			<li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
@@ -137,7 +132,7 @@
 		<div class="tab-content">
 			<div class="tab-pane active" id="top-tab1">
 				<ul class="modern-listing mt-0 top-border-none">
-					@foreach (Acelle\Model\Campaign::topOpens(5, Auth::user()->customer)->get() as $num => $item)
+					@forelse (Acelle\Model\Campaign::topOpens(5, Auth::user()->customer)->get() as $num => $item)
 						<li>
 							<div class="row">
 								<div class="col-sm-5 col-md-5">
@@ -171,16 +166,20 @@
 									</h5>
 									<span class="text-muted">{{ trans('messages.last_open') }}</span>
 										<br /><br />
-								</div>	
+								</div>
 							</div>
-	
+
 						</li>
-					@endforeach
+					@empty
+						<li class="empty-li">
+							{{ trans('messages.empty_record_message') }}
+						</li>
+					@endforelse
 				</ul>
 			</div>
 			<div class="tab-pane" id="top-tab2">
 				<ul class="modern-listing mt-0 top-border-none">
-					@foreach (Acelle\Model\Campaign::topClicks(5, Auth::user()->customer)->get() as $num => $item)
+					@forelse (Acelle\Model\Campaign::topClicks(5, Auth::user()->customer)->get() as $num => $item)
 						<li>
 							<div class="row">
 								<div class="col-sm-5 col-md-5">
@@ -214,16 +213,19 @@
 									</h5>
 									<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
 										<br /><br />
-								</div>										
+								</div>
 							</div>
 						</li>
-					@endforeach
+					@empty
+						<li class="empty-li">
+							{{ trans('messages.empty_record_message') }}
+						</li>
+					@endforelse
 				</ul>
 			</div>
 			<div class="tab-pane" id="top-tab3">
-				
 				<ul class="modern-listing mt-0 top-border-none">
-					@foreach (Acelle\Model\Campaign::topLinks(5, Auth::user()->customer)->get() as $num => $item)
+					@forelse (Acelle\Model\Campaign::topLinks(5, Auth::user()->customer)->get() as $num => $item)
 						<li>
 							<div class="row">
 								<div class="col-sm-6 col-md-6">
@@ -234,7 +236,7 @@
 										</a>
 									</h6>
 									<p>
-										{{ $item->campaigns()->count() }} {{ trans('messages.campaigns') }}                                              
+										{{ $item->campaigns()->count() }} {{ trans('messages.campaigns') }}
 									</p>
 								</div>
 								<div class="col-sm-2 col-md-2 text-left">
@@ -246,23 +248,25 @@
 								</div>
 								<div class="col-sm-2 col-md-2 text-left">
 									<h5 class="no-margin text-bold">
-										{{ (null !== $item->lastClick(Auth::user()->customer)) ? Acelle\Library\Tool::formatDateTime($item->lastClick(Auth::user()->customer)->created_at) : "" }}          
+										{{ (null !== $item->lastClick(Auth::user()->customer)) ? Acelle\Library\Tool::formatDateTime($item->lastClick(Auth::user()->customer)->created_at) : "" }}
 									</h5>
 									<span class="text-muted">{{ trans('messages.last_clicked') }}</span>
 									<br /><br />
 								</div>
 							</div>
 						</li>
-					@endforeach
+					@empty
+						<li class="empty-li">
+							{{ trans('messages.empty_record_message') }}
+						</li>
+					@endforelse
 				</ul>
-			</div>					
+			</div>
 		</div>
 	</div>
-		
-	<br />
-    <br />
-    <h2 class="text-teal-800"><i class="icon-history"></i> {{ trans('messages.activity_log') }}</h2>
-	
+
+    <h3 class="text-teal-800 mt-40"><i class="icon-history"></i> {{ trans('messages.activity_log') }}</h3>
+
 	@if (Auth::user()->customer->logs()->count() == 0)
 		<div class="empty-list">
 			<i class="icon-history"></i>
@@ -274,7 +278,7 @@
 		<div class="scrollbar-box action-log-box">
 			<!-- Timeline -->
 			<div class="timeline timeline-left content-group">
-				<div class="timeline-container">				
+				<div class="timeline-container">
 						@foreach (Auth::user()->customer->logs()->take(20)->get() as $log)
 							<!-- Sales stats -->
 							<div class="timeline-row">

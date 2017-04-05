@@ -102,6 +102,19 @@
                 @endif
                 
                 <br />
+                
+                @if (Acelle\Model\Setting::get('registration_recaptcha') == 'yes')
+                    <div class="row">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6">
+                            @if ($errors->has('recaptcha_invalid'))
+                                <div class="text-danger text-center">{{ $errors->first('recaptcha_invalid') }}</div>
+                            @endif
+                            {!! Acelle\Library\Tool::showReCaptcha() !!}
+                        </div>
+                    </div>
+                @endif
+                
                 <div class="text-center">
                     <button type='submit' class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.register') }}</button>
                 </div>

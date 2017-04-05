@@ -31,6 +31,7 @@ use DB;
 use Carbon\Carbon;
 use Acelle\Model\SystemJob;
 use Acelle\Exceptions\CampaignPausedException;
+use Acelle\Exceptions\CampaignErrorException;
 
 class Campaign extends Model
 {
@@ -503,7 +504,7 @@ class Campaign extends Model
 
                 // randomly check for campaign PAUSED status after 10 emails
                 // @todo wrap up the probability checking here
-                if (($i % 10) == 0) {
+                if (($i % 50) == 0) {
                     if ($this->refreshStatus()->isPaused()) {
                         throw new CampaignPausedException();
                     }
@@ -537,7 +538,10 @@ class Campaign extends Model
 
         } catch (CampaignPausedException $e) {
             // just finish
-            MailLog::info('Campaign paused');
+            MailLog::warning('Campaign paused');
+        } catch (CampaignErrorException $e) {
+            // just finish
+            MailLog::warning('Campaign terminated: ' . $e->getMessage());
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
             $this->error($e->getMessage());
@@ -689,7 +693,9 @@ class Campaign extends Model
         $subscribers = $this->subscribers()
                 ->whereRaw(sprintf(table('subscribers').'.id NOT IN (SELECT subscriber_id FROM %s WHERE campaign_id = %s)', table('tracking_logs'), $this->id))
                 ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
-                ->select('subscribers.*')
+                ->select('subscribers.email')
+                ->addSelect('subscribers.uid')
+                ->addSelect('subscribers.id')
                 ->get();
 
         // the array_unique_by functions out-perform the Collection::unique of Laravel!!!
@@ -2002,13 +2008,7 @@ class Campaign extends Model
 
             // actually send
             // @todo consider using queue here
-            $result = $server->send($message, array(
-                'from_email' => $this->from_email,
-                'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly (not in MIME message)
-                'campaign' => $this,
-                'subscriber' => $subscriber,
-                'msgId' => $msgId
-            ));
+            $result = $server->send($message);
 
             // examine the result from sending server
             if(array_has($result, 'error')) {
@@ -2176,7 +2176,7 @@ class Campaign extends Model
      *
      * @var array
      */
-    public function recipientsRules($params=[])
+    public function recipientsRules($params = [])
     {
         $rules = [
             'lists_segments' => 'required'

@@ -271,6 +271,9 @@ $(function() {
         
         if(typeof($(this).attr("no-ajax")) != "undefined") {
             $(".delete-confirm-button").removeClass("ajax_link");
+        } else if ($(this).hasClass('link-method')) {
+            $(".delete-confirm-button").removeClass("ajax_link");
+            $(".delete-confirm-button").attr("link-method", method);
         } else {
             if(!$(".delete-confirm-button").hasClass("ajax_link")) {
                 $(".delete-confirm-button").addClass("ajax_link");
@@ -1403,4 +1406,36 @@ $(function() {
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });
+    
+    // Dotted list more/less
+    $(document).on('click', '.dotted-list > li.more a', function() {
+        var box = $(this).parents('.dotted-list');
+        
+        box.find('li').removeClass('hide');
+        $(this).parents('li').hide();
+    });
+
+    // Default list auto recheck if empty
+    $(document).on('click', '.list-segment-container .btn', function() {
+        if (!$('.list-segment-container input[type=radio]:checked').length) {
+            $('.list-segment-container input[type=radio]').eq(0).click();
+        }
+    });
+
+    // Close notify
+    $(document).on('click', '.btn-close-pnotify', function() {
+        $(this).parents('.ui-pnotify').remove();
+    });
+
+    // Plan time unit unlimited selection
+    $(document).on('change', 'select[name=frequency_unit]', function() {
+        var val = $(this).val();
+
+        if (val == 'unlimited') {
+            $('input[name=frequency_amount]').val(-1).addClass('text-trans').prop('readonly', true);
+        } else {
+            $('input[name=frequency_amount]').val(1).removeClass('text-trans').prop('readonly', false);
+        }
+    });
+    $('select[name=frequency_unit]').trigger('change');
 });

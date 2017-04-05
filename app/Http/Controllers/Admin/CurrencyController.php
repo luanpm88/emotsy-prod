@@ -31,7 +31,12 @@ class CurrencyController extends Controller
             return $this->notAuthorized();
         }
 
-        $currencies = \Acelle\Model\Currency::getAll();
+        // If admin can view all sending domains
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\Currency())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
+        }
+
+        $currencies = \Acelle\Model\Currency::search($request);
 
         return view('admin.currencies.index', [
             'currencies' => $currencies,
@@ -48,6 +53,11 @@ class CurrencyController extends Controller
         // authorize
         if (\Gate::denies('read', new \Acelle\Model\Currency())) {
             return $this->notAuthorized();
+        }
+
+        // If admin can view all sending domains
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\Currency())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
         $currencies = \Acelle\Model\Currency::search($request)->paginate($request->per_page);
@@ -71,7 +81,7 @@ class CurrencyController extends Controller
         if (\Gate::denies('create', $currency)) {
             return $this->notAuthorized();
         }
-        
+
         if (!empty($request->old())) {
             $currency->fill($request->old());
         }
@@ -109,8 +119,8 @@ class CurrencyController extends Controller
             $currency->admin_id = $user->admin->id;
             $currency->fill($request->all());
             $currency->status = 'active';
-            
-            if ($currency->save()) {                
+
+            if ($currency->save()) {
                 $request->session()->flash('alert-success', trans('messages.currency.created'));
                 return redirect()->action('Admin\CurrencyController@index');
             }
@@ -177,7 +187,7 @@ class CurrencyController extends Controller
             $rules = $currency->rules();
 
             $this->validate($request, $rules);
-            
+
             // Save currency
             $currency->fill($request->all());
 
@@ -214,7 +224,7 @@ class CurrencyController extends Controller
             // authorize
             if (\Gate::allows('update', $item)) {
                 $item->enable();
-            }            
+            }
         }
 
         // Redirect to my lists page
@@ -268,7 +278,7 @@ class CurrencyController extends Controller
         // Redirect to my lists page
         echo trans('messages.currencies.deleted');
     }
-    
+
     /**
      * Select2 plan.
      *
@@ -277,7 +287,7 @@ class CurrencyController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function select2(Request $request)
-    {        
+    {
         echo \Acelle\Model\Currency::select2($request);
     }
 }

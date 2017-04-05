@@ -17,14 +17,21 @@ class AdminPolicy
     {
         //
     }
-    
+
     public function read(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
     {
         $can = $user->admin->getPermission('admin_read') != 'no';
 
         return $can;
     }
-    
+
+    public function readAll(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
+    {
+        $can = $user->admin->getPermission('admin_read') == 'all';
+
+        return $can;
+    }
+
     public function create(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
     {
         $can = $user->admin->getPermission('admin_create') == 'yes';
@@ -41,7 +48,7 @@ class AdminPolicy
     {
         $ability = $user->admin->getPermission('admin_update');
         $can = $ability == 'all'
-                || ($ability == 'own' && $user->id == $item->creator_id);
+            || ($ability == 'own' && $user->id == $item->creator_id);
 
         return $can;
     }
@@ -52,7 +59,7 @@ class AdminPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->creator_id);
 
-        return $can;
+        return $can && $item->customers()->count() == 0;
     }
 
     public function loginAs(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
@@ -63,7 +70,7 @@ class AdminPolicy
 
         return $can && $user->admin->id != $item->id;
     }
-    
+
     public function disable(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
     {
         $ability = $user->admin->getPermission('admin_update');
@@ -72,7 +79,7 @@ class AdminPolicy
 
         return $can && $item->status != 'inactive';
     }
-    
+
     public function enable(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
     {
         $ability = $user->admin->getPermission('admin_update');

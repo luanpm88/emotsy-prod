@@ -114,10 +114,6 @@ class BounceHandler extends DeliveryHandler
         $admin = $user->admin;
         $query = self::select('bounce_handlers.*');
 
-        if (!$request->user()->can("read_all", new BounceHandler())) {
-            $query = $query->where('bounce_handlers.admin_id', '=', $admin->id);
-        }
-
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
@@ -136,6 +132,10 @@ class BounceHandler extends DeliveryHandler
                 $query = $query->where('bounce_handlers.type', '=', $filters['type']);
             }
         }
+        
+        if(!empty($request->admin_id)) {
+            $query = $query->where('bounce_handlers.admin_id', '=', $request->admin_id);
+        }
 
         return $query;
     }
@@ -149,7 +149,9 @@ class BounceHandler extends DeliveryHandler
     {
         $query = self::filter($request);
 
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        if(!empty($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
 
         return $query;
     }

@@ -19,13 +19,13 @@ class CreateAdminGroupsTable extends Migration
             $table->text('permissions');
             $table->integer('custom_order')->default(0);
             $table->integer('creator_id')->unsigned()->nullable();
-            
+
             $table->timestamps();
-            
+
             // foreign
             $table->foreign('creator_id')->references('id')->on('users')->onDelete('cascade');
-            
-            
+
+
         });
     }
 

@@ -402,6 +402,28 @@ class ApiHelper
             ],
         ];
         
+        // File
+        $docs[] = [
+            'title' => trans('messages.file'),
+            'functions' => [
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/file/upload',
+                    'description' => 'Upload a file to customer\'s storage',
+                    'parameters' => [
+                        ['name' => '$file_url', 'description' => 'File url'],
+                        ['name' => '$subdirectory', 'description' => 'Custom subdirectory', 'optional' => true, 'default' => 'user root directory']
+                    ],
+                    'returns' => 'Upload result message',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' . action("Api\FileController@upload") . '? \
+-d api_token=' . \Auth::user()->api_token . '  \
+-d file_url=http://demo.acellemail.com/images/logo_big.png \
+-d subdirectory=\'path/to/file\'',
+                ],                
+            ],
+        ];
+        
         return $docs;
     }
 }

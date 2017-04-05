@@ -51,14 +51,21 @@ class Customer extends Model
      */
     public function rules()
     {
-        return array(
+        $rules = array(
             'email' => 'required|email|unique:users,email,'.$this->user_id.',id',
             'first_name' => 'required',
             'last_name' => 'required',
             'timezone' => 'required',
             'language_id' => 'required',
-            'password' => 'confirmed|min:5',
         );
+
+		if (isset($this->id)) {
+			$rules['password'] = 'confirmed|min:5';
+		} else {
+			$rules['password'] = 'required|confirmed|min:5';
+		}
+
+		return $rules;
     }
 
     /**
@@ -281,6 +288,11 @@ class Customer extends Model
 
         }
 
+		// Admin filter
+		if(!empty($request->admin_id)) {
+            $query = $query->where('customers.admin_id', '=', $request->admin_id);
+        }
+
         return $query;
     }
 
@@ -293,7 +305,9 @@ class Customer extends Model
     {
         $query = self::filter($request);
 
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        if(!empty($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
 
         return $query;
     }
@@ -332,8 +346,6 @@ class Customer extends Model
 		$subscription = $this->getCurrentSubscription();
         if(is_object($subscription)) {
 			return $subscription->getOptions();
-		} elseif ($this->hasAdminAccount()) {
-			return \Acelle\Model\Subscription::defaultUnlimitedOptions();
 		} else {
 			return \Acelle\Model\Subscription::defaultOptions();
 		}
@@ -347,6 +359,7 @@ class Customer extends Model
     public function getOption($name)
     {
 		$options = $this->getOptions();
+		// @todo: chỗ này cần raise 1 cái exception chứ ko phải là trả về rỗng (trả vể rỗng để "dìm" lỗi đi à?)
         return isset($options[$name]) ? $options[$name] : '';
     }
 
@@ -382,14 +395,17 @@ class Customer extends Model
      */
     public function listsUsage()
     {
-        if ($this->maxLists() == '∞') {
+        $max = $this->maxLists();
+		$count = $this->listsCount();
+
+        if ($max == '∞') {
             return 0;
         }
-        if ($this->maxLists() == 0) {
+        if ($max == 0 || $count > $max) {
             return 100;
         }
 
-        return round((($this->listsCount() / $this->maxLists()) * 100), 2);
+        return round((($count / $max) * 100), 2);
     }
 
     /**
@@ -438,14 +454,17 @@ class Customer extends Model
      */
     public function campaignsUsage()
     {
-        if ($this->maxCampaigns() == '∞') {
+        $max = $this->maxCampaigns();
+		$count = $this->campaignsCount();
+
+        if ($max == '∞') {
             return 0;
         }
-        if ($this->maxCampaigns() == 0) {
+        if ($max == 0 || $count > $max) {
             return 100;
         }
 
-        return round((($this->campaignsCount() / $this->maxCampaigns()) * 100), 2);
+        return round((($count / $max) * 100), 2);
     }
 
     /**
@@ -494,14 +513,17 @@ class Customer extends Model
      */
     public function subscribersUsage()
     {
-        if ($this->maxSubscribers() == '∞') {
+        $max = $this->maxSubscribers();
+		$count = $this->subscribersCount();
+
+        if ($max == '∞') {
             return 0;
         }
-        if ($this->maxSubscribers() == 0 || $this->subscribersCount() > $this->maxSubscribers()) {
+        if ($max == 0 || $count > $max) {
             return 100;
         }
 
-        return round((($this->subscribersCount() / $this->maxSubscribers()) * 100), 2);
+        return round((($count / $max) * 100), 2);
     }
 
     /**
@@ -515,7 +537,9 @@ class Customer extends Model
             return trans('messages.unlimited');
         }
 
-        return $this->readCache('SubscriberUsage') . '%';
+		// @todo: avoid using cached value in a function
+		//        cache value must be called directly from view only
+        return $this->readCache('SubscriberUsage', 0) . '%';
     }
 
     /**
@@ -542,61 +566,6 @@ class Customer extends Model
     {
         $check = $this->getOption('all_sending_servers');
         return ($check == 'yes');
-    }
-
-    /**
-     * Get customer's sending quota.
-     *
-     * @return string
-     */
-    public function sendingQuota()
-    {
-        $time_value = $this->getOption('sending_quota_time');
-        $time_unit = $this->getOption('sending_quota_time_unit');
-
-        if ($time_value == '-1') {
-            $begin = null;
-        } else {
-            if ($time_unit == 'year') {
-                $begin = \Carbon\Carbon::now()->subYear($time_value);
-            } elseif ($time_unit == 'month') {
-                $begin = \Carbon\Carbon::now()->subMonth($time_value);
-            } elseif ($time_unit == 'week') {
-                $begin = \Carbon\Carbon::now()->subWeek($time_value);
-            } elseif ($time_unit == 'day') {
-                $begin = \Carbon\Carbon::now()->subDay($time_value);
-            } elseif ($time_unit == 'hour') {
-                $begin = \Carbon\Carbon::now()->subHour($time_value);
-            } elseif ($time_unit == 'minute') {
-                $begin = \Carbon\Carbon::now()->subMinute($time_value);
-            }
-        }
-
-        $query = \Acelle\Model\TrackingLog::leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
-        $query = $query->where('campaigns.customer_id', '=', $this->id);
-        if (isset($begin)) {
-            $query = $query->where('tracking_logs.created_at', '>=', $begin);
-        }
-
-        $count = $query->count();
-
-        return $count;
-    }
-
-    /**
-     * Get customer's sending quota rate.
-     *
-     * @return string
-     */
-    public function sendingQuotaUsage()
-    {
-        if ($this->maxQuota() == '∞') {
-            return '0';
-        } elseif ($this->maxQuota() == '0' || $this->sendingQuota() >= $this->maxQuota()) {
-            return '100';
-        }
-
-        return round((($this->sendingQuota() / $this->maxQuota()) * 100), 2);
     }
 
     /**
@@ -695,7 +664,7 @@ class Customer extends Model
     public function getSendingQuota()
     {
         // -1 indicate unlimited
-        return $this->getOption('sending_quota');
+        return $this->getOption('email_max');
     }
 
     /**
@@ -722,54 +691,27 @@ class Customer extends Model
     {
         $current = $this->getCurrentSubscription();
 		if (is_null($current)) {
-			return 0;
+			return 100;
 		}
 
-		// @todo magic number
-        if ($this->getSendingQuota() == -1) {
-            return '0';
-        } elseif ($this->getSendingQuota() == '0' || $this->getSendingQuotaUsage() >= $this->getSendingQuota()) {
-            return '100';
+        $max = $this->getSendingQuotaUsage();
+		$count = $this->getSendingQuota();
+
+        if ($max == '∞') {
+            return 0;
+        }
+        if ($max == 0 || $count > $max) {
+            return 100;
         }
 
-        return round(($this->getQuotaTracker()->getUsagePercentage() * 100), 2);
-    }
-
-    /**
-     * Get quota starting time
-     *
-     * @return array
-     */
-    public function getQuotaStartingTime() {
-        $timeValue = $this->getOption('sending_quota_time');
-        $timeUnit = $this->getOption('sending_quota_time_unit');
-
-        // @todo: magic number here
-        // @todo: why $timeValue == -1?
-        // @todo: configuration setting for default Quota Starting Time
-        if ($timeValue == '-1') {
-            $start = \Carbon\Carbon::parse("1 month ago");
-        } else {
-            $start = \Carbon\Carbon::parse("{$timeValue} {$timeUnit} ago");
-        }
-        return $start;
-    }
-
-    /**
-     * Get quota starting time
-     *
-     * @return array
-     */
-    public function getQuotaIntervalString() {
-        $timeValue = $this->getOption('sending_quota_time');
-        $timeUnit = $this->getOption('sending_quota_time_unit');
-        return "{$timeValue} {$timeUnit}";
+        return round((($count / $max) * 100), 2);
     }
 
     /**
      * Initialize the quota tracker
      *
      * @return array
+     * @deprecated
      */
     public function renewQuotaTracker() {
         $this->getQuotaTracker()->getExclusiveLock(function() {
@@ -825,10 +767,18 @@ class Customer extends Model
 			'max' => $current->getOption('email_max')
 		];
 
-		$this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $quota, [$this->getQuotaIntervalString() => $this->getSendingQuota()]);
+		$this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $quota, $this->getSendingLimits());
         // @note: in case of multi-process, the following command must be issued manually
         //     $this->renewQuotaTracker();
     }
+
+	public function getSendingLimits()
+	{
+		$timeValue = $this->getOption('sending_quota_time');
+        $timeUnit = $this->getOption('sending_quota_time_unit');
+		$limit = $this->getOption('sending_quota');
+        return ["{$timeValue} {$timeUnit}" => $limit];
+	}
 
     /**
      * Get sending quota lock file
@@ -913,8 +863,14 @@ class Customer extends Model
                     ->orWhere('users.email', 'like', '%'.$keyword.'%');
             });
         }
+
+		// Read all check
+		if (!$request->user()->admin->can('readAll', new \Acelle\Model\Customer())) {
+			$query = $query->where('customers.admin_id', '=', $request->user()->admin->id);
+		}
+
         foreach ($query->limit(20)->get() as $customer) {
-            $data['items'][] = ['id' => $customer->uid, 'text' => $customer->displayName()];
+            $data['items'][] = ['id' => $customer->uid, 'text' => $customer->displayNameEmail()];
         }
 
         return json_encode($data);
@@ -964,15 +920,50 @@ class Customer extends Model
     }
 
 	/**
+     * Get customer current subscriptions
+     *
+     * @return Subscription
+     */
+    public function getCurrentSubscriptions() {
+        return $subsciption = $this->subscriptions()
+            ->where(function($query) {
+                $query->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
+                    ->orWhereNull('subscriptions.start_at');
+            })->where(function($query) {
+                $query->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->endOfDay())
+                    ->orWhereNull('subscriptions.end_at');
+            });
+    }
+
+	/**
      * Get customer current subscription
      *
      * @return Subscription
      */
     public function getCurrentSubscription() {
-        return $subsciption = $this->subscriptions()
+        return $subsciption = $this->getCurrentSubscriptions()
 			->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_ACTIVE)
-			->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
-			->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay())
+			->first();
+    }
+
+	/**
+     * Get customer next subscriptions
+     *
+     * @return Subscription
+     */
+    public function getNextSubscription() {
+        return $subsciption = $this->subscriptions()
+			->where('subscriptions.start_at', '>', \Carbon\Carbon::now()->endOfDay())
+			->first();
+    }
+
+	/**
+     * Get customer current subscription
+     *
+     * @return Subscription
+     */
+    public function getCurrentSubscriptionIgnoreStatus() {
+        return $subsciption = $this->getCurrentSubscriptions()
 			->first();
     }
 
@@ -1013,12 +1004,12 @@ class Customer extends Model
      *
      * @return number
      */
-    public static function customersCountByTime($begin, $end, $admin_id = null)
+    public static function customersCountByTime($begin, $end, $admin = null)
     {
         $query = \Acelle\Model\Customer::select('customers.*');
 
-        if (isset($admin_id)) {
-            $query = $query->where('customers.admin_id', '=', $admin_id);
+        if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\Customer())) {
+            $query = $query->where('customers.admin_id', '=', $admin->id);
         }
 
         $query = $query->where('customers.created_at', '>=', $begin)
@@ -1373,18 +1364,27 @@ class Customer extends Model
 				trans('messages.no_plan')
 			);
 	}
-	
+
+	/**
+     * Get customer subscription not include old one
+     *
+     * @return Subscription
+     */
+    public function getNotOutdatedSubscriptions() {
+        return $subsciption = $this->subscriptions()
+			->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
+    }
+
 	/**
      * Get customer current pending subscription not include old one
      *
      * @return Subscription
      */
     public function getNotOutdatedInactiveSubscriptions() {
-        return $subsciption = $this->subscriptions()
-			->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
-			->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
+        return $subsciption = $this->getNotOutdatedSubscriptions()
+			->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE);
     }
-	
+
 	/**
      * Get total file size usage
      *
@@ -1393,7 +1393,7 @@ class Customer extends Model
 	public function totalUploadSize() {
 		return \Acelle\Library\Tool::getDirectorySize(base_path("public/source/" . $this->user->uid)) / 1048576;
 	}
-	
+
 	/**
      * Get max upload size quota.
      *
@@ -1424,5 +1424,25 @@ class Customer extends Model
         }
 
         return round((($this->totalUploadSize() / $this->maxTotalUploadSize()) * 100), 2);
+    }
+
+	/**
+     * Custom can for customer.
+     *
+     * @return boolean
+     */
+    public function can($action, $item)
+    {
+        return $this->user->can($action, [$item, 'customer']);
+    }
+
+	/**
+     * Custom name + email.
+     *
+     * @return string
+     */
+    public function displayNameEmail()
+    {
+        return $this->displayName() . " (" . $this->user->email . ")";
     }
 }

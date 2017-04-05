@@ -14,146 +14,115 @@ class SendingServerPolicy
     public function __construct()
     {
     }
-    
-    public function read(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
+
+    public function read(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item, $role)
     {
-        $can = false;
-        
-        $admin = $user->admin;
-        if (is_object($admin)) {
-            $ability = $admin->getPermission('sending_server_read') != 'no';
-            $can = $can || $ability;
+        switch ($role) {
+            case 'admin':
+                $can = $user->admin->getPermission('sending_server_read') != 'no';
+                break;
+            case 'customer':
+                $can = $user->customer->getOption('create_sending_servers') == 'yes';
+                break;
         }
-        
-        $customer = $user->customer;
-        if (is_object($customer)) {
-            $ability = $customer->getOption('create_sending_servers') == 'yes';
-            $can = $can || $ability;
-        }
-        
-        return $can;
-    }
-    
-    public function read_all(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
-    {    
-        $can = false;
-        
-        $admin = $user->admin;
-        if (is_object($admin)) {
-            $ability = $admin->getPermission('sending_server_read') == 'all';
-            $can = $can || $ability;
-        }
-        
-        $customer = $user->customer;
-        if (is_object($customer)) {
-            $can = $can || false;
-        }
-        
+
         return $can;
     }
 
-    public function create(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
-    {    
-        $can = false;
-        
-        $admin = $user->admin;
-        if (is_object($admin)) {
-            $ability = $admin->getPermission('sending_server_create') == 'yes';
-            $can = $can || $ability;
+    public function readAll(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = $user->admin->getPermission('sending_server_read') == 'all';
+                break;
+            case 'customer':
+                $can = false;
+                break;
         }
-        
-        $customer = $user->customer;
-        if (is_object($customer)) {
-            $max = $customer->getOption('sending_servers_max');
-            $ability = $customer->getOption('create_sending_servers') == 'yes'
-                && ($customer->sendingServersCount() < $max || $max == -1);
-            $can = $can || $ability;
-        }
-        
+
         return $can;
     }
 
-    public function update(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
+    public function create(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item, $role)
     {
-        $can = false;
-        
-        $admin = $user->admin;
-        if (is_object($admin)) {
-            $ability = $admin->getPermission('sending_server_update');
-            $ability = $ability == 'all'
-                || ($ability == 'own' && $user->admin->id == $item->admin_id);
-            $can = $can || $ability;
+        switch ($role) {
+            case 'admin':
+                $can = $user->admin->getPermission('sending_server_create') == 'yes';
+                break;
+            case 'customer':
+                $max = $user->customer->getOption('sending_servers_max');
+                $can = $user->customer->getOption('create_sending_servers') == 'yes'
+                    && ($user->customer->sendingServersCount() < $max || $max == -1);
+                break;
         }
-        
-        $customer = $user->customer;
-        if (is_object($customer)) {
-            $ability = $customer->getOption('create_sending_servers') == 'yes' && $customer->id == $item->customer_id;
-            $can = $can || $ability;
-        }
-        
+
         return $can;
     }
 
-    public function delete(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
+    public function update(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item, $role)
     {
-        $can = false;
-        
-        $admin = $user->admin;
-        if (is_object($admin)) {
-            $ability = $admin->getPermission('sending_server_delete');
-            $ability = $ability == 'all'
-                || ($ability == 'own' && $user->admin->id == $item->admin_id);
-            $can = $can || $ability;
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('sending_server_update');
+                $can = $ability == 'all'
+                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                break;
+            case 'customer':
+                $can = $user->customer->getOption('create_sending_servers') == 'yes' && $user->customer->id == $item->customer_id;
+                break;
         }
-        
-        $customer = $user->customer;
-        if (is_object($customer)) {
-            $ability = $customer->getOption('create_sending_servers') == 'yes' && $customer->id == $item->customer_id;
-            $can = $can || $ability;
-        }
-        
+
         return $can;
     }
-    
-    public function disable(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
+
+    public function delete(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item, $role)
     {
-        $can = false;
-        
-        $admin = $user->admin;
-        if (is_object($admin)) {
-            $ability = $admin->getPermission('sending_server_update');
-            $ability = $ability == 'all'
-                || ($ability == 'own' && $user->admin->id == $item->admin_id);
-            $can = $can || $ability;
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('sending_server_delete');
+                $can = $ability == 'all'
+                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                break;
+            case 'customer':
+                $can = $user->customer->getOption('create_sending_servers') == 'yes'
+                    && $user->customer->id == $item->customer_id;
+                break;
         }
-        
-        $customer = $user->customer;
-        if (is_object($customer)) {
-            $ability = $customer->getOption('create_sending_servers') == 'yes' && $customer->id == $item->customer_id;
-            $can = $can || $ability;
-        }
-        
-        return ($can && $item->status != "inactive");
+
+        return $can;
     }
-    
-    public function enable(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item)
+
+    public function disable(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item, $role)
     {
-        $can = false;
-        
-        $admin = $user->admin;
-        if (is_object($admin)) {
-            $ability = $admin->getPermission('sending_server_update');
-            $ability = $ability == 'all'
-                || ($ability == 'own' && $user->admin->id == $item->admin_id);
-            $can = $can || $ability;
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('sending_server_update');
+                $can = $ability == 'all'
+                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                break;
+            case 'customer':
+                $can = $user->customer->getOption('create_sending_servers') == 'yes'
+                    && $user->customer->id == $item->customer_id;
+                break;
         }
-        
-        $customer = $user->customer;
-        if (is_object($customer)) {
-            $ability = $customer->getOption('create_sending_servers') == 'yes' && $customer->id == $item->customer_id;
-            $can = $can || $ability;
+
+        return $can && $item->status != "inactive";
+    }
+
+    public function enable(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('sending_server_update');
+                $can = $ability == 'all'
+                    || ($ability == 'own' && $user->admin->id == $item->admin_id);
+                break;
+            case 'customer':
+                $can = $user->customer->getOption('create_sending_servers') == 'yes'
+                    && $user->customer->id == $item->customer_id;
+                break;
         }
-        
-        return ($can && $item->status != "active");
+
+        return $can && $item->status != "active";
     }
 }

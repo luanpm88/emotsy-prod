@@ -31,7 +31,12 @@ class PlanController extends Controller
             return $this->notAuthorized();
         }
 
-        $plans = \Acelle\Model\Plan::getAll();
+        // If admin can view all sending domains
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\Plan())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
+        }
+
+        $plans = \Acelle\Model\Plan::search($request);
 
         return view('admin.plans.index', [
             'plans' => $plans,
@@ -48,6 +53,11 @@ class PlanController extends Controller
         // authorize
         if (\Gate::denies('read', new \Acelle\Model\Plan())) {
             return $this->notAuthorized();
+        }
+
+        // If admin can view all sending domains
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\Plan())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
         $plans = \Acelle\Model\Plan::search($request)->paginate($request->per_page);
@@ -75,17 +85,17 @@ class PlanController extends Controller
         if (\Gate::denies('create', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         if (!empty($request->old())) {
             $plan->fill($request->old());
         }
-        
+
         // For options
         if (isset($request->old()['options'])) {
             $plan->options = json_encode($request->old()['options']);
         }
         $options = $plan->getOptions();
-        
+
         // Sending servers
         if (isset($request->old()['sending_servers'])) {
             $plan->plansSendingServers = collect([]);
@@ -128,7 +138,7 @@ class PlanController extends Controller
         // save posted data
         if ($request->isMethod('post')) {
             $this->validate($request, $plan->rules());
-            
+
             $rules = [];
             if (isset($request->sending_servers)) {
                 foreach ($request->sending_servers as $key => $param) {
@@ -138,18 +148,18 @@ class PlanController extends Controller
                 }
             }
             $this->validate($request, $rules);
-            
+
             $plan->fill($request->all());
             $plan->options = json_encode($request->options);
             $plan->admin_id = $user->admin->id;
             $plan->status = \Acelle\Model\Plan::STATUS_ACTIVE;
             $plan->save();
-            
+
             // For sending servers
             if (isset($request->sending_servers)) {
                 $plan->updateSendingServers($request->sending_servers);
             }
-            
+
             $request->session()->flash('alert-success', trans('messages.plan.created'));
             return redirect()->action('Admin\PlanController@index');
         }
@@ -185,13 +195,13 @@ class PlanController extends Controller
         if (!empty($request->old())) {
             $plan->fill($request->old());
         }
-        
+
         // For options
         if (isset($request->old()['options'])) {
             $plan->options = json_encode($request->old()['options']);
         }
         $options = $plan->getOptions();
-        
+
         // Sending servers
         if (isset($request->old()['sending_servers'])) {
             $plan->plansSendingServers = collect([]);
@@ -254,7 +264,7 @@ class PlanController extends Controller
             if (isset($request->sending_servers)) {
                 $plan->updateSendingServers($request->sending_servers);
             }
-            
+
             $request->session()->flash('alert-success', trans('messages.plan.updated'));
             return redirect()->action('Admin\PlanController@edit', $plan->uid);
         }
@@ -286,7 +296,7 @@ class PlanController extends Controller
             // authorize
             if (\Gate::allows('update', $item)) {
                 $item->enable();
-            }            
+            }
         }
 
         // Redirect to my lists page
@@ -340,7 +350,7 @@ class PlanController extends Controller
         // Redirect to my lists page
         echo trans('messages.plans.deleted');
     }
-    
+
     /**
      * Custom sort items.
      *
@@ -365,7 +375,7 @@ class PlanController extends Controller
 
         echo trans('messages.plans.custom_order.updated');
     }
-    
+
     /**
      * Select2 plan.
      *
@@ -374,10 +384,10 @@ class PlanController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function select2(Request $request)
-    {        
+    {
         echo \Acelle\Model\Plan::select2($request);
     }
-    
+
     /**
      * Delete confirm message.
      *
@@ -393,7 +403,7 @@ class PlanController extends Controller
             'plans' => $plans,
         ]);
     }
-    
+
     /**
      * Chart pie chart.
      *
@@ -403,6 +413,8 @@ class PlanController extends Controller
      */
     public function pieChart(Request $request)
     {
+        $admin = $request->user()->admin;
+
         // authorize
         if (\Gate::denies('read', new \Acelle\Model\Plan())) {
             return $this->notAuthorized();
@@ -416,8 +428,8 @@ class PlanController extends Controller
         ];
 
         $datas = [];
-        foreach (\Acelle\Model\Plan::getAllActive()->get() as $plan) {
-            $count = $plan->subscriptionsCount();
+        foreach (\Acelle\Model\Plan::getAllActiveWithDefault()->get() as $plan) {
+            $count = $admin->getAllSubscriptionsByPlan($plan)->count();
             // create data
             if ($count) {
                 $result['bar_names'][] = $plan->name;

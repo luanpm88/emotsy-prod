@@ -17,14 +17,21 @@ class CurrencyPolicy
     {
         //
     }
-    
+
     public function read(\Acelle\Model\User $user, \Acelle\Model\Currency $item)
     {
         $can = $user->admin->getPermission('currency_read') != 'no';
 
         return $can;
     }
-    
+
+    public function readAll(\Acelle\Model\User $user, \Acelle\Model\Currency $item)
+    {
+        $can = $user->admin->getPermission('currency_read') == 'all';
+
+        return $can;
+    }
+
     public function create(\Acelle\Model\User $user, \Acelle\Model\Currency $item)
     {
         $can = $user->admin->getPermission('currency_create') == 'yes';
@@ -54,7 +61,7 @@ class CurrencyPolicy
 
         return $can;
     }
-    
+
     public function disable(\Acelle\Model\User $user, \Acelle\Model\Currency $item)
     {
         $ability = $user->admin->getPermission('currency_update');
@@ -63,7 +70,7 @@ class CurrencyPolicy
 
         return $can && $item->status != 'inactive';
     }
-    
+
     public function enable(\Acelle\Model\User $user, \Acelle\Model\Currency $item)
     {
         $ability = $user->admin->getPermission('currency_update');

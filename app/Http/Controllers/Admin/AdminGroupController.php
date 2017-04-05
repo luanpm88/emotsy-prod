@@ -28,8 +28,13 @@ class AdminGroupController extends Controller
         if (\Gate::denies('read', new \Acelle\Model\AdminGroup())) {
             return $this->notAuthorized();
         }
-        
-        $groups = \Acelle\Model\AdminGroup::getAll();
+
+        // If admin can view all sending domains
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\AdminGroup())) {
+            $request->merge(array("creator_id" => $request->user()->id));
+        }
+
+        $groups = \Acelle\Model\AdminGroup::search($request);
 
         return view('admin.admin_groups.index', [
             'groups' => $groups,
@@ -47,7 +52,12 @@ class AdminGroupController extends Controller
         if (\Gate::denies('read', new \Acelle\Model\AdminGroup())) {
             return $this->notAuthorized();
         }
-        
+
+        // If admin can view all sending domains
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\AdminGroup())) {
+            $request->merge(array("creator_id" => $request->user()->id));
+        }
+
         $groups = \Acelle\Model\AdminGroup::search($request)->paginate($request->per_page);
 
         return view('admin.admin_groups._list', [
@@ -70,7 +80,7 @@ class AdminGroupController extends Controller
                                 'frontend_access' => true,
                             ]);
         $group->fill($request->old());
-        
+
         // authorize
         if (\Gate::denies('create', $group)) {
             return $this->notAuthorized();
@@ -100,7 +110,7 @@ class AdminGroupController extends Controller
         // Generate info
         $user = $request->user();
         $group = new \Acelle\Model\AdminGroup(array());
-        
+
         // authorize
         if (\Gate::denies('create', $group)) {
             return $this->notAuthorized();
@@ -193,7 +203,7 @@ class AdminGroupController extends Controller
 
             $request->session()->flash('alert-success', trans('messages.admin_group.updated'));
 
-            return redirect()->action('Admin\AdminGroupController@index');
+            return redirect()->action('Admin\AdminGroupController@edit', $group->id);
         }
     }
 

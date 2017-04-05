@@ -1,6 +1,6 @@
 <div class="row">
 	@if (array_key_exists("name", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
-		<div class="col-sm-6 col-md-4">							
+		<div class="col-sm-6 col-md-4">
 			@include('helpers.form_control', [
 				'type' => 'text',
 				'class' => '',
@@ -143,7 +143,7 @@
 				'rules' => Acelle\Model\SendingServer::rules(request()->type)
 			])
 		</div>
-	@endif						
+	@endif
 </div>
 
 <h4 class="text-semibold text-teal-800">{{ trans('messages.sending_quota') }}</h4>
@@ -174,7 +174,7 @@
 			'name' => 'quota_unit',
 			'value' => $server->quota_unit,
 			'label' => trans('messages.quota_time_unit'),
-			'options' => Acelle\Model\CustomerGroup::timeUnitOptions(),
+			'options' => Acelle\Model\Plan::quotaTimeUnitOptions(),
 			'include_blank' => trans('messages.choose'),
 			'help_class' => 'sending_server',
 			'rules' => Acelle\Model\SendingServer::rules(request()->type)

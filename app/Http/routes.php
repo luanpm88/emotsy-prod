@@ -53,23 +53,26 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
 
     // Sending server
     Route::resource('sending_servers', 'SendingServerController');
-    
+
     // Plan
     Route::resource('plans', 'PlanController');
-    
+
     // Customer
     Route::patch('customers/{uid}/disable', 'CustomerController@disable');
     Route::patch('customers/{uid}/enable', 'CustomerController@enable');
     Route::resource('customers', 'CustomerController');
-    
+
     // Subscription
     Route::resource('subscriptions', 'SubscriptionController');
+
+    // File
+    Route::post('file/upload', 'FileController@upload');
 });
 
 Route::group(['middleware' => ['not_logged_in']], function () {
     Route::auth();
     Route::get('user/activate/{token}', 'UserController@activate');
-    
+
     Route::get('/offline', 'Controller@offline');
     Route::get('/not-authorized', 'Controller@notAuthorized');
     Route::get('/demo', 'Controller@demo');
@@ -77,28 +80,25 @@ Route::group(['middleware' => ['not_logged_in']], function () {
     Route::get('/reload/cache', 'Controller@reloadCache');
     Route::get('/migrate/run', 'Controller@runMigration');
     Route::post('/remote-job/{remote_job_token}', 'Controller@remoteJob');
-    
+
     // Customer avatar
     Route::get('assets/images/avatar/customer-{uid?}.jpg', 'CustomerController@avatar');
-    
+
     // Admin avatar
     Route::get('assets/images/avatar/admin-{uid?}.jpg', 'AdminController@avatar');
-    
-    // Reseller avatar
-    Route::get('assets/images/avatar/reseller-{uid?}.jpg', 'ResellerController@avatar');
-    
+
     // Customer subscription
     Route::get('subscriptions/preview', 'SubscriptionController@preview');
     Route::post('subscriptions/register/{plan_uid?}', 'SubscriptionController@register');
     Route::get('subscriptions/register/{plan_uid?}', 'SubscriptionController@register');
     Route::get('subscriptions/select-plan', 'SubscriptionController@selectPlan');
-    
+
     // User resend activation email
     Route::get('users/resend-activation-email', 'UserController@resendActivationEmail');
-    
+
     // Plan
     Route::get('plans/select2', 'PlanController@select2');
-    
+
     // Payments
     Route::get('payment-cancel/{subscription_uid}', 'PaymentController@paymentCancel');
     Route::get('payment-status/{subscription_uid}', 'PaymentController@paymentStatus');
@@ -123,6 +123,8 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('account/logs', 'AccountController@logs');
     Route::get('account/logs/listing', 'AccountController@logsListing');
     Route::get('account/quota_log', 'AccountController@quotaLog');
+    Route::get('account/subscription', 'AccountController@subscription');
+    Route::get('account/subscription/new', 'AccountController@subscriptionNew');
 
     // Translation data
     Route::get('/datatable_locale', 'Controller@datatable_locale');
@@ -294,7 +296,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('campaigns', 'CampaignController');
     Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
     Route::patch('campaigns/{uid}/update', 'CampaignController@update');
-    
+
     Route::get('customers/login-back', 'CustomerController@loginBack');
 
     Route::get('users/login-back', 'UserController@loginBack');
@@ -347,7 +349,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('auto-events/{uid}/campaigns/add', 'AutoEventController@addCampaign');
     Route::get('auto-events/{uid}/campaigns', 'AutoEventController@campaigns');
     Route::resource('auto-events', 'AutoEventController');
-    
+
     // Subscription
     Route::get('subscriptions/{uid}/pay/method/{payment_method_uid}', 'SubscriptionController@selectPaymentMethod');
     Route::get('subscriptions/checkout/paypal/{subscription_uid}', 'PaymentController@paypal');
@@ -358,9 +360,9 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('subscriptions/preview', 'SubscriptionController@preview');
     Route::get('subscriptions/listing/{page?}', 'SubscriptionController@listing');
     Route::get('subscriptions/sort', 'SubscriptionController@sort');
-    Route::get('subscriptions/delete', 'SubscriptionController@delete');
+    Route::delete('subscriptions/delete', 'SubscriptionController@delete');
     Route::resource('subscriptions', 'SubscriptionController');
-    
+
     // Sending servers
     Route::get('sending_servers/select', 'SendingServerController@select');
     Route::get('sending_servers/listing/{page?}', 'SendingServerController@listing');
@@ -373,13 +375,13 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('sending_servers/create/{type}', 'SendingServerController@store');
     Route::get('sending_servers/{id}/edit/{type}', 'SendingServerController@edit');
     Route::patch('sending_servers/{id}/update/{type}', 'SendingServerController@update');
-    
+
     // Sending domain
     Route::get('sending_domains/listing/{page?}', 'SendingDomainController@listing');
     Route::get('sending_domains/sort', 'SendingDomainController@sort');
     Route::get('sending_domains/delete', 'SendingDomainController@delete');
     Route::resource('sending_domains', 'SendingDomainController');
-    
+
     // Payment
     Route::post('payments/braintree/paypal/{subscription_uid}', 'PaymentController@braintree_paypal');
     Route::get('payments/braintree/paypal/{subscription_uid}', 'PaymentController@braintree_paypal');
@@ -394,7 +396,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
 Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend']], function () {
     Route::get('admin', 'HomeController@index');
 
-    // User    
+    // User
     Route::get('admin/users/switch/{uid}', 'UserController@switch_user');
     Route::get('admin/users/listing/{page?}', 'UserController@listing');
     Route::get('admin/users/sort', 'UserController@sort');
@@ -402,6 +404,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/users', 'UserController');
 
     // Template
+    Route::get('admin/templates/{uid}/image', 'TemplateController@image');
+    Route::post('admin/templates/{uid}/saveImage', 'TemplateController@saveImage');
+    Route::get('admin/templates/{uid}/preview', 'TemplateController@preview');
     Route::get('admin/templates/listing/{page?}', 'TemplateController@listing');
     Route::get('admin/templates/upload', 'TemplateController@upload');
     Route::post('admin/templates/upload', 'TemplateController@upload');
@@ -509,13 +514,13 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/blacklist', 'BlacklistController@index');
     Route::get('admin/blacklist/listing', 'BlacklistController@listing');
     Route::get('admin/blacklist/delete', 'BlacklistController@delete');
-    
+
     // Customer Group
     Route::get('admin/customer_groups/listing/{page?}', 'CustomerGroupController@listing');
     Route::get('admin/customer_groups/sort', 'CustomerGroupController@sort');
     Route::get('admin/customer_groups/delete', 'CustomerGroupController@delete');
     Route::resource('admin/customer_groups', 'CustomerGroupController');
-    
+
     // Customer
     Route::post('admin/customers/{uid}/contact', 'CustomerController@contact');
     Route::get('admin/customers/{id}/contact', 'CustomerController@contact');
@@ -529,14 +534,14 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/customers/disable', 'CustomerController@disable');
     Route::get('admin/customers/enable', 'CustomerController@enable');
     Route::resource('admin/customers', 'CustomerController');
-    
+
     // Admin Group
     Route::get('admin/admin_groups/listing/{page?}', 'AdminGroupController@listing');
     Route::get('admin/admin_groups/sort', 'AdminGroupController@sort');
     Route::get('admin/admin_groups/delete', 'AdminGroupController@delete');
     Route::resource('admin/admin_groups', 'AdminGroupController');
-    
-    // Admin    
+
+    // Admin
     Route::get('admin/admins/login-as/{uid}', 'AdminController@loginAs');
     Route::get('admin/admins/listing/{page?}', 'AdminController@listing');
     Route::get('admin/admins/sort', 'AdminController@sort');
@@ -545,29 +550,14 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/admins/enable', 'AdminController@enable');
     Route::get('admin/admins/login-back', 'AdminController@loginBack');
     Route::resource('admin/admins', 'AdminController');
-    
-    
+
+
     // Account
     Route::get('admin/account/profile', 'AccountController@profile');
     Route::post('admin/account/profile', 'AccountController@profile');
     Route::get('admin/account/contact', 'AccountController@contact');
     Route::post('admin/account/contact', 'AccountController@contact');
-    
-    // Reseller Group
-    Route::get('admin/reseller_groups/listing/{page?}', 'ResellerGroupController@listing');
-    Route::get('admin/reseller_groups/sort', 'ResellerGroupController@sort');
-    Route::get('admin/reseller_groups/delete', 'ResellerGroupController@delete');
-    Route::resource('admin/reseller_groups', 'ResellerGroupController');
-    
-    // Reseller    
-    Route::get('admin/resellers/login-as/{uid}', 'ResellerController@loginAs');
-    Route::get('admin/resellers/listing/{page?}', 'ResellerController@listing');
-    Route::get('admin/resellers/sort', 'ResellerController@sort');
-    Route::get('admin/resellers/delete', 'ResellerController@delete');
-    Route::get('admin/resellers/disable', 'ResellerController@disable');
-    Route::get('admin/resellers/enable', 'ResellerController@enable');
-    Route::resource('admin/resellers', 'ResellerController');
-    
+
     // Plan
     Route::get('admin/plans/pieChart', 'PlanController@pieChart');
     Route::get('admin/plans/delete/confirm', 'PlanController@deleteConfirm');
@@ -578,7 +568,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/plans/disable', 'PlanController@disable');
     Route::get('admin/plans/enable', 'PlanController@enable');
     Route::resource('admin/plans', 'PlanController');
-    
+
     // Currency
     Route::get('admin/currencies/select2', 'CurrencyController@select2');
     Route::get('admin/currencies/listing/{page?}', 'CurrencyController@listing');
@@ -587,7 +577,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/currencies/disable', 'CurrencyController@disable');
     Route::get('admin/currencies/enable', 'CurrencyController@enable');
     Route::resource('admin/currencies', 'CurrencyController');
-    
+
     // Subscription
     Route::patch('admin/subscriptions/unpaid', 'SubscriptionController@unpaid');
     Route::patch('admin/subscriptions/paid', 'SubscriptionController@paid');
@@ -597,9 +587,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/subscriptions/preview', 'SubscriptionController@preview');
     Route::get('admin/subscriptions/listing/{page?}', 'SubscriptionController@listing');
     Route::get('admin/subscriptions/sort', 'SubscriptionController@sort');
-    Route::delete('admin/subscriptions/delete', 'SubscriptionController@delete');    
+    Route::delete('admin/subscriptions/delete', 'SubscriptionController@delete');
     Route::resource('admin/subscriptions', 'SubscriptionController');
-    
+
     // Payment method
     Route::get('admin/payment_methods/options/{uid?}', 'PaymentMethodController@options');
     Route::get('admin/payment_methods/select2', 'PaymentMethodController@select2');
@@ -609,26 +599,4 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/payment_methods/disable', 'PaymentMethodController@disable');
     Route::get('admin/payment_methods/enable', 'PaymentMethodController@enable');
     Route::resource('admin/payment_methods', 'PaymentMethodController');
-});
-
-
-// RESELLER AREA
-Route::group(['namespace' => 'Reseller', 'middleware' => ['not_installed', 'reseller']], function () {
-    Route::get('reseller', 'HomeController@index');
-    
-    // Account
-    Route::get('reseller/account/profile', 'AccountController@profile');
-    Route::post('reseller/account/profile', 'AccountController@profile');
-    Route::get('reseller/account/contact', 'AccountController@contact');
-    Route::post('reseller/account/contact', 'AccountController@contact');
-    
-    // Customer
-    Route::get('reseller/customers/login-as/{uid}', 'CustomerController@loginAs');
-    Route::get('reseller/customers/listing/{page?}', 'CustomerController@listing');
-    Route::get('reseller/customers/sort', 'CustomerController@sort');
-    Route::get('reseller/customers/delete', 'CustomerController@delete');
-    Route::get('reseller/customers/disable', 'CustomerController@disable');
-    Route::get('reseller/customers/enable', 'CustomerController@enable');
-    Route::resource('reseller/customers', 'CustomerController');
-    
 });

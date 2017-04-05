@@ -22,7 +22,7 @@ class BounceHandlerPolicy
         return $can;
     }
     
-    public function read_all(\Acelle\Model\User $user, \Acelle\Model\BounceHandler $item)
+    public function readAll(\Acelle\Model\User $user, \Acelle\Model\BounceHandler $item)
     {
         $can = $user->admin->getPermission('bounce_handler_read') == 'all';
 

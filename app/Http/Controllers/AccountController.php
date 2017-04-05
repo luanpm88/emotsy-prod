@@ -30,26 +30,26 @@ class AccountController extends Controller
         $customer->getColorScheme();
 
         // Authorize
-        if (\Gate::denies('profile', $customer)) {
+        if (!$request->user()->customer->can('profile', $customer)) {
             return $this->notAuthorized();
         }
 
         // Save posted data
         if ($request->isMethod('post')) {
             $this->validate($request, $customer->rules());
-            
+
             // Update user account for customer
             $user = $customer->user;
             $user->email = $request->email;
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
-            }            
+            }
             $user->save();
-            
+
             // Save current user info
             $customer->fill($request->all());
-            
+
             // Upload and save image
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
@@ -58,7 +58,7 @@ class AccountController extends Controller
                     $customer->image = $customer->uploadImage($request->file('image'));
                 }
             }
-            
+
             // Remove image
             if ($request->_remove_image == 'true') {
                 $customer->removeImage();
@@ -69,13 +69,13 @@ class AccountController extends Controller
                 $request->session()->flash('alert-success', trans('messages.profile.updated'));
             }
         }
-        
+
         if (!empty($request->old())) {
             $customer->fill($request->old());
             // User info
             $customer->user->fill($request->old());
         }
-        
+
         return view('account.profile', [
             'customer' => $customer,
         ]);
@@ -89,7 +89,7 @@ class AccountController extends Controller
      * @return \Illuminate\Http\Response
      **/
     public function contact(Request $request)
-    {        
+    {
         // Get current user
         $customer = $request->user()->customer;
         if (is_object($customer->contact)) {
@@ -167,6 +167,58 @@ class AccountController extends Controller
     public function api(Request $request)
     {
         return view('account.api');
+    }
+
+    /**
+     * Api token.
+     */
+    public function subscription(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        // Get current subscription
+        $subscription = $customer->getCurrentSubscriptionIgnoreStatus();
+
+        // Get next subscription
+        $nextSubscription = $customer->getNextSubscription();
+
+        // If has no subscription
+        if (!$subscription) {
+            return redirect()->action('AccountController@subscriptionNew');
+        }
+
+        return view('account.subscription', [
+            'subscription' => $subscription,
+            'nextSubscription' => $nextSubscription,
+        ]);
+    }
+
+    /**
+     * Api token.
+     */
+    public function subscriptionNew(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        $subscription = new \Acelle\Model\Subscription();
+        $subscription->customer_id = $customer->id;
+        
+        if ($request->plan_uid) {
+            $subscription->fillAttributes($request->all());
+        }
+
+        // authorize
+        if (!$request->user()->customer->can('create', $subscription)) {
+            return $this->notAuthorized();
+        }
+
+        if (!empty($request->old())) {
+            $subscription->fillAttributes($request->old());
+        }
+
+        return view('account.subscription_new', [
+            'subscription' => $subscription
+        ]);
     }
 
     /**

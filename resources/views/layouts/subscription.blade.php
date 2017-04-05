@@ -5,28 +5,28 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<title>@yield('title')</title>
-	
+
 	@include('layouts._favicon')
-	
+
 	@include('layouts._head')
-	
+
 	@include('layouts._css')
-	
+
 	@include('layouts._js')
 </head>
 
 <body class="bg-slate-800 color-scheme-{{ isset($list) && is_object($list) ? $list->user->getFrontendScheme() : '' }}">
 	<!-- Page container -->
 	<div class="page-container login-container">
-		
+
 		<div class="text-right user-top-right">
-			@if (is_object(\Auth::user()))						
+			@if (is_object(\Auth::user()))
 				<a class="dropdown-toggle" data-toggle="dropdown">
 					<img src="{{ action('CustomerController@avatar', Auth::user()->customer->uid) }}" alt="">
 					<span>{{ Auth::user()->customer->displayName() }}</span>
 				</a>
 				/
-				<a href="{{ url("/logout") }}"><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a>						
+				<a href="{{ url("/logout") }}"><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a>
 			@else
 				<a class="text-semibold" href="{{ url("/login") }}"><i class="icon-user"></i> {{ trans('messages.login') }}</a>
 			@endif
@@ -34,12 +34,12 @@
 
 		<!-- Page content -->
 		<div class="page-content">
-		
+
 			<!-- Main content -->
 			<div class="content-wrapper">
-            
+
                 @yield('content')
-            
+
             </div>
 			<!-- /main content -->
 
@@ -48,14 +48,15 @@
 
 		<!-- Footer -->
 		<div class="footer text-white">
-			{!! trans('messages.copy_right_light') !!}			
+			{!! trans('messages.copy_right_light') !!}
 		</div>
 		<!-- /footer -->
 
 	</div>
 	<!-- /page container -->
-	
+
 	<div class="ui-pnotify bg-warning" style="background-color: rgba(255,87,34,0.7); width: auto; right: 20px; top: auto; bottom: 20px; opacity: 1; display: block; overflow: visible; cursor: auto;">
+		<div class="btn-close-pnotify"><i class="icon-cross2"></i></div>
 		@include('layouts._not_extended_license_notify')
 	</div>
 </body>

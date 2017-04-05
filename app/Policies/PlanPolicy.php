@@ -17,14 +17,21 @@ class PlanPolicy
     {
         //
     }
-    
+
     public function read(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
     {
         $can = $user->admin->getPermission('plan_read') != 'no';
 
         return $can;
     }
-    
+
+    public function readAll(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
+    {
+        $can = $user->admin->getPermission('plan_read') == 'all';
+
+        return $can;
+    }
+
     public function create(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
     {
         $can = $user->admin->getPermission('plan_create') == 'yes';
@@ -54,7 +61,7 @@ class PlanPolicy
 
         return $can;
     }
-    
+
     public function disable(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
     {
         $ability = $user->admin->getPermission('plan_update');
@@ -63,7 +70,7 @@ class PlanPolicy
 
         return $can && $item->status != 'inactive';
     }
-    
+
     public function enable(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
     {
         $ability = $user->admin->getPermission('plan_update');

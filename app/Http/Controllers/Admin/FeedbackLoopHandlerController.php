@@ -27,8 +27,13 @@ class FeedbackLoopHandlerController extends Controller
         if (\Gate::denies('read', new \Acelle\Model\FeedbackLoopHandler())) {
             return $this->notAuthorized();
         }
+        
+        // If admin can view all sending domains
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\FeedbackLoopHandler())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
+        }
 
-        $items = \Acelle\Model\FeedbackLoopHandler::getAll();
+        $items = \Acelle\Model\FeedbackLoopHandler::search($request);
 
         return view('admin.feedback_loop_handlers.index', [
             'items' => $items,
@@ -44,6 +49,11 @@ class FeedbackLoopHandlerController extends Controller
     {
         if (\Gate::denies('read', new \Acelle\Model\FeedbackLoopHandler())) {
             return $this->notAuthorized();
+        }
+        
+        // If admin can view all sending domains
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\FeedbackLoopHandler())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
         $items = \Acelle\Model\FeedbackLoopHandler::search($request)->paginate($request->per_page);

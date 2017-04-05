@@ -73,7 +73,7 @@ class TemplateController extends Controller
         $template = \Acelle\Model\Template::findByUid($request->uid);
 
         // authorize
-        if (\Gate::denies('view', $template)) {
+        if (!$request->user()->customer->can('view', $template)) {
             return $this->notAuthorized();
         }
 
@@ -92,7 +92,7 @@ class TemplateController extends Controller
         $template = new \Acelle\Model\Template();
 
         // authorize
-        if (\Gate::denies('create', $template)) {
+        if (!$request->user()->customer->can('create', $template)) {
             return $this->notAuthorized();
         }
 
@@ -123,7 +123,7 @@ class TemplateController extends Controller
         $template->customer_id = $customer->id;
 
         // authorize
-        if (\Gate::denies('update', $template)) {
+        if (!$request->user()->customer->can('update', $template)) {
             return $this->notAuthorized();
         }
 
@@ -181,7 +181,7 @@ class TemplateController extends Controller
         $template = \Acelle\Model\Template::findByUid($uid);
 
         // authorize
-        if (\Gate::denies('update', $template)) {
+        if (!$request->user()->customer->can('update', $template)) {
             return $this->notAuthorized();
         }
 
@@ -210,7 +210,7 @@ class TemplateController extends Controller
         $template = \Acelle\Model\Template::findByUid($request->uid);
 
         // authorize
-        if (\Gate::denies('update', $template)) {
+        if (!$request->user()->customer->can('update', $template)) {
             return $this->notAuthorized();
         }
 
@@ -264,7 +264,7 @@ class TemplateController extends Controller
             $item = \Acelle\Model\Template::findByUid($row[0]);
 
             // authorize
-            if (\Gate::denies('update', $item)) {
+            if (!$request->user()->customer->can('update', $item)) {
                 return $this->notAuthorized();
             }
 
@@ -292,7 +292,7 @@ class TemplateController extends Controller
         $template->customer_id = $customer->id;
 
         // authorize
-        if (\Gate::denies('create', $template)) {
+        if (!$request->user()->customer->can('create', $template)) {
             return $this->notAuthorized();
         }
 
@@ -445,11 +445,11 @@ class TemplateController extends Controller
         $template = \Acelle\Model\Template::findByUid($request->uid);
 
         // authorize
-        if (\Gate::denies('image', $template)) {
+        if (!$request->user()->customer->can('image', $template)) {
             return $this->notAuthorized();
         }
 
-        if (!empty($template->image)) {
+        if (!empty($template->image) && file_exists(storage_path($template->image).'.thumb.jpg')) {
             $img = \Image::make(storage_path($template->image).'.thumb.jpg');
         } else {
             $img = \Image::make(public_path('assets/images/placeholder.jpg'));
@@ -471,13 +471,9 @@ class TemplateController extends Controller
 
         foreach ($items->get() as $item) {
             // authorize
-            if (\Gate::denies('delete', $item)) {
-                return;
+            if ($request->user()->customer->can('delete', $item)) {
+                $item->delete();
             }
-        }
-
-        foreach ($items->get() as $item) {
-            $item->delete();
         }
 
         // Redirect to my lists page
@@ -491,12 +487,12 @@ class TemplateController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function preview($id)
+    public function preview(Request $request, $id)
     {        
         $template = \Acelle\Model\Template::findByUid($id);
         
         // authorize
-        if (\Gate::denies('preview', $template)) {
+        if (!$request->user()->customer->can('preview', $template)) {
             return $this->not_authorized();
         }
         
@@ -531,7 +527,7 @@ class TemplateController extends Controller
         $template = \Acelle\Model\Template::findByUid($id);
 
         // authorize
-        if (\Gate::denies('saveImage', $template)) {
+        if (!$request->user()->customer->can('saveImage', $template)) {
             return $this->not_authorized();
         }
 
@@ -570,7 +566,7 @@ class TemplateController extends Controller
         $template->name = trans('messages.untitled_template');
         
         // authorize
-        if (\Gate::denies('create', $template)) {
+        if (!$request->user()->customer->can('create', $template)) {
             return $this->notAuthorized();
         }
         
@@ -599,7 +595,7 @@ class TemplateController extends Controller
         $template = \Acelle\Model\Template::findByUid($request->uid);
 
         // authorize
-        if (\Gate::denies('update', $template)) {
+        if (!$request->user()->customer->can('update', $template)) {
             return $this->notAuthorized();
         }
 

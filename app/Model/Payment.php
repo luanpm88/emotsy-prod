@@ -7,21 +7,24 @@ use Illuminate\Database\Eloquent\Model;
 class Payment extends Model
 {
     // Paid status
-	const PAID_STATUS_TRUE = 'paid';
-	const PAID_STATUS_FALSE = 'notpaid';
-    
+	const ACTION_PAID = 'paid';
+	const ACTION_UNPAID = 'unpaid';
+
+    // Status
+    const STATUS_SUCCESS = 'success';
+
     public $fillable = ['item_number','transaction_id','currency_code','payment_status'];
-    
+
     public function paymentMethod()
     {
         return $this->belongsTo('Acelle\Model\PaymentMethod');
     }
-    
+
     public function subscription()
     {
         return $this->belongsTo('Acelle\Model\Subscription');
     }
-    
+
     /**
      * Get payment method name.
      *
@@ -31,7 +34,7 @@ class Payment extends Model
     {
         return $this->payment_method_name ? $this->payment_method_name : trans('messages.payment_manual');
     }
-    
+
     /**
      * Get payment method name.
      *
@@ -41,7 +44,7 @@ class Payment extends Model
     {
         return $this->order_id;
     }
-    
+
     /**
      * Get errors messages.
      *
@@ -56,7 +59,7 @@ class Payment extends Model
                 $messages[] = $error->code . ": " . $error->message;
             }
         }
-        
+
         return $messages;
     }
 }

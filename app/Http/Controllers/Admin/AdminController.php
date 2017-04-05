@@ -29,7 +29,12 @@ class AdminController extends Controller
             return $this->notAuthorized();
         }
 
-        $admins = \Acelle\Model\Admin::getAll();
+        // If admin can view all sending domains
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\Admin())) {
+            $request->merge(array("creator_id" => $request->user()->id));
+        }
+
+        $admins = \Acelle\Model\Admin::search($request);
 
         return view('admin.admins.index', [
             'admins' => $admins,
@@ -46,6 +51,11 @@ class AdminController extends Controller
         // authorize
         if (\Gate::denies('read', new \Acelle\Model\Admin())) {
             return $this->notAuthorized();
+        }
+
+        // If admin can view all sending domains
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\Admin())) {
+            $request->merge(array("creator_id" => $request->user()->id));
         }
 
         $admins = \Acelle\Model\Admin::search($request)->paginate($request->per_page);
@@ -65,7 +75,7 @@ class AdminController extends Controller
         $admin = new \Acelle\Model\Admin();
         $admin->status = 'active';
         $admin->uid = '0';
-        
+
         if (!empty($request->old())) {
             $admin->fill($request->old());
             $admin->admin_group_id = $request->old()["admin_group_id"];
@@ -110,24 +120,24 @@ class AdminController extends Controller
                 'admin_group_id' => 'required',
             ]);
             $this->validate($request, $rules);
-            
+
             // Create user account for admin
             $user = new \Acelle\Model\User();
             $user->email = $request->email;
-            $user->activated = true; 
+            $user->activated = true;
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
-            }            
+            }
             $user->save();
 
             // Save current user info
             $admin->user_id = $user->id;
             $admin->creator_id = $request->user()->id;
             $admin->fill($request->all());
-            $admin->admin_group_id = $request->admin_group_id;                  
+            $admin->admin_group_id = $request->admin_group_id;
             $admin->status = 'active';
-            
+
             if ($admin->save()) {
                 // Upload and save image
                 if ($request->hasFile('image')) {
@@ -144,10 +154,10 @@ class AdminController extends Controller
                     $admin->removeImage();
                     $admin->image = '';
                 }
-                
+
                 // create customer account
                 if (!empty($request->create_customer_account) && $request->create_customer_account == 'yes') {
-                    $admin->createCustomerAccount();
+                    $admin->createCustomerAccount($current_user->admin);
                 }
 
                 $request->session()->flash('alert-success', trans('messages.admin.created'));
@@ -223,22 +233,22 @@ class AdminController extends Controller
                 'admin_group_id' => 'required',
             ]);
             $this->validate($request, $rules);
-            
+
             // Update user account for admin
             $user = $admin->user;
             $user->email = $request->email;
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
-            }            
+            }
             $user->save();
-            
+
             // Save current user info
             $admin->fill($request->all());
-            
+
             // Change group
             $admin->admin_group_id = $request->admin_group_id;
-            
+
             // Upload and save image
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
@@ -247,16 +257,16 @@ class AdminController extends Controller
                     $admin->image = $admin->uploadImage($request->file('image'));
                 }
             }
-            
+
             // Remove image
             if ($request->_remove_image == 'true') {
                 $admin->removeImage();
                 $admin->image = '';
             }
-            
+
             // create customer account
             if (!empty($request->create_customer_account) && $request->create_customer_account == 'yes') {
-                $admin->createCustomerAccount();
+                $admin->createCustomerAccount($current_user->admin);
             }
 
             if ($admin->save()) {
@@ -299,7 +309,7 @@ class AdminController extends Controller
             // authorize
             if (\Gate::allows('update', $item)) {
                 $item->enable();
-            }            
+            }
         }
 
         // Redirect to my lists page
@@ -347,9 +357,7 @@ class AdminController extends Controller
         }
 
         foreach ($items->get() as $item) {
-            $user = $item->user;
-            $item->delete();
-            $user->delete();
+            $item->deleteRecursive();
         }
 
         // Redirect to my lists page
@@ -371,7 +379,7 @@ class AdminController extends Controller
         if (\Gate::denies('loginAs', $admin)) {
             return;
         }
-        
+
         $orig_id = $request->user()->uid;
         \Auth::login($admin->user);
         \Session::put('orig_admin_id', $orig_id);
@@ -391,9 +399,9 @@ class AdminController extends Controller
         echo "ddd";
         $id = \Session::pull('orig_admin_id');
         $orig_user = \Acelle\Model\User::findByUid($id);
-        
+
         \Auth::login($orig_user);
-        
+
         return redirect()->action('Admin\AdminController@index');
     }
 

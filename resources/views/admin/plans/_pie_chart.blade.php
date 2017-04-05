@@ -15,13 +15,13 @@
             <!-- /basic column chart -->
         @else
             <div class="empty-chart-pie">
-                <div class="empty-list has-fixed-height-250">
+                <div class="empty-list has-fixed-height-300">
                     <i class="icon-file-text2"></i>
                     <span class="line-1">
                         {{ trans('messages.log_empty_line_1') }}
                     </span>
                 </div>
             </div>
-        @endif            
+        @endif
     </div>
 </div>

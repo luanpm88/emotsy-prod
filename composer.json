@@ -27,7 +27,10 @@
         "predis/predis": "^1.1",
         "league/csv": "^8.0",
         "paypal/rest-api-sdk-php": "^1.11",
-        "braintree/braintree_php": "^3.22"
+        "braintree/braintree_php": "^3.22",
+        "guzzlehttp/guzzle": "^6.2",
+        "php-http/guzzle6-adapter": "^1.1",
+        "sparkpost/sparkpost": "^2.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

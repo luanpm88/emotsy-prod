@@ -4,6 +4,7 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 
 class TemplateController extends Controller
 {
@@ -24,12 +25,12 @@ class TemplateController extends Controller
      */
     public function index(Request $request)
     {
-        if (\Gate::denies('read', new \Acelle\Model\Template())) {
+        if (!$request->user()->admin->can('read', new \Acelle\Model\Template())) {
             return $this->notAuthorized();
         }
         
         // If admin can view all sending domains
-        if (\Gate::denies("read_all", new \Acelle\Model\Template())) {
+        if (!$request->user()->admin->can("read_all", new \Acelle\Model\Template())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
@@ -47,12 +48,12 @@ class TemplateController extends Controller
      */
     public function listing(Request $request)
     {
-        if (\Gate::denies('read', new \Acelle\Model\Template())) {
+        if (!$request->user()->admin->can('read', new \Acelle\Model\Template())) {
             return $this->notAuthorized();
         }
         
         // If admin can view all sending domains
-        if (\Gate::denies("read_all", new \Acelle\Model\Template())) {
+        if (!$request->user()->admin->can("read_all", new \Acelle\Model\Template())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
@@ -75,7 +76,7 @@ class TemplateController extends Controller
         $template = new \Acelle\Model\Template();
 
         // authorize
-        if (\Gate::denies('create', $template)) {
+        if (!$request->user()->admin->can('create', $template)) {
             return $this->notAuthorized();
         }
 
@@ -104,7 +105,7 @@ class TemplateController extends Controller
         $template->admin_id = $request->user()->admin->id;
 
         // authorize
-        if (\Gate::denies('create', $template)) {
+        if (!$request->user()->admin->can('create', $template)) {
             return $this->notAuthorized();
         }
 
@@ -146,7 +147,7 @@ class TemplateController extends Controller
         $template = \Acelle\Model\Template::findByUid($uid);
 
         // authorize
-        if (\Gate::denies('update', $template)) {
+        if (!$request->user()->admin->can('update', $template)) {
             return $this->notAuthorized();
         }
 
@@ -175,7 +176,7 @@ class TemplateController extends Controller
         $template = \Acelle\Model\Template::findByUid($request->uid);
 
         // authorize
-        if (\Gate::denies('update', $template)) {
+        if (!$request->user()->admin->can('update', $template)) {
             return $this->notAuthorized();
         }
 
@@ -215,7 +216,7 @@ class TemplateController extends Controller
         $template->admin_id = $request->user()->admin->id;
 
         // authorize
-        if (\Gate::denies('create', new \Acelle\Model\Template())) {
+        if (!$request->user()->admin->can('create', new \Acelle\Model\Template())) {
             return $this->notAuthorized();
         }
 
@@ -367,7 +368,7 @@ class TemplateController extends Controller
 
         foreach ($items->get() as $item) {
             // authorize
-            if (\Gate::allows('delete', $item)) {
+            if ($request->user()->admin->can('delete', $item)) {
                 $item->delete();
             }
         }
@@ -389,7 +390,7 @@ class TemplateController extends Controller
         $template->name = trans('messages.untitled_template');
         
         // authorize
-        if (\Gate::denies('create', $template)) {
+        if (!$request->user()->admin->can('create', $template)) {
             return $this->notAuthorized();
         }
         
@@ -418,7 +419,7 @@ class TemplateController extends Controller
         $template = \Acelle\Model\Template::findByUid($request->uid);
 
         // authorize
-        if (\Gate::denies('update', $template)) {
+        if (!$request->user()->admin->can('update', $template)) {
             return $this->notAuthorized();
         }
 
@@ -441,5 +442,104 @@ class TemplateController extends Controller
         return view('admin.templates.build_start', [
             'template' => $template,
         ]);
+    }
+    
+    /**
+     * Preview template.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function preview(Request $request, $id)
+    {        
+        $template = \Acelle\Model\Template::findByUid($id);
+        
+        // authorize
+        if (!$request->user()->admin->can('preview', $template)) {
+            return $this->not_authorized();
+        }
+        
+        // Convert to inline css if template source is builder
+        if ($template->source == 'builder') {
+            $cssToInlineStyles = new CssToInlineStyles();
+            $html = $template->content;
+            $css = file_get_contents(public_path("css/res_email.css"));
+            
+            // output
+            $template->content = $cssToInlineStyles->convert(
+                $html,
+                $css
+            );
+        }
+
+        return view('admin.templates.preview', [
+            'template' => $template,
+        ]);
+    }
+
+    /**
+     * Save template screenshot.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function saveImage(Request $request, $id)
+    {
+        $template = \Acelle\Model\Template::findByUid($id);
+
+        // authorize
+        if (!$request->user()->admin->can('saveImage', $template)) {
+            return $this->not_authorized();
+        }
+
+        $upload_loca = 'app/email_templates/';
+        $upload_path = storage_path($upload_loca);
+        if (!file_exists($upload_path)) {
+            mkdir($upload_path, 0777, true);
+        }
+        $filename = 'screenshot-'.$id.'.png';
+
+        // remove "data:image/png;base64,"
+        $uri = substr($request->data, strpos($request->data, ',') + 1);
+
+        // save to file
+        file_put_contents($upload_path.$filename, base64_decode($uri));
+
+        // create thumbnails
+        $img = \Image::make($upload_path.$filename);
+        $img->fit(178, 200)->save($upload_path.$filename.'.thumb.jpg');
+
+        // save
+        $template->image = $upload_loca.$filename;
+        $template->save();
+    }
+    
+    /**
+     * Template screenshot.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function image(Request $request)
+    {
+        // Get current user
+        $template = \Acelle\Model\Template::findByUid($request->uid);
+
+        // authorize
+        if (!$request->user()->admin->can('image', $template)) {
+            return $this->notAuthorized();
+        }
+
+        if (!empty($template->image)) {
+            $img = \Image::make(storage_path($template->image).'.thumb.jpg');
+        } else {
+            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
+        }
+
+        return $img->response();
     }
 }

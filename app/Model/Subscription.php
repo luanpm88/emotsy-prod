@@ -10,16 +10,16 @@ class Subscription extends Model
     const STATUS_ACTIVE = 'active'; // equiv. to 'queue'
 	const STATUS_INACTIVE = 'inactive';
 	const STATUS_DISABLED = 'disabled';
-	
+
 	// Subscription state
     const TIME_STATUS_FUTURE = 'future'; // equiv. to 'queue'
 	const TIME_STATUS_CURRENT = 'current';
 	const TIME_STATUS_PAST = 'past';
-	
+
 	// Paid status
 	const PAID_STATUS_TRUE = 'paid';
 	const PAID_STATUS_FALSE = 'notpaid';
-    
+
     /**
      * The attributes that should be mutated to dates.
      *
@@ -31,7 +31,7 @@ class Subscription extends Model
         'start_at',
         'end_at'
     ];
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -40,7 +40,7 @@ class Subscription extends Model
     protected $fillable = [
         'plan_id', 'payment_method_id'
     ];
-    
+
     /**
      * The rules for validation.
      *
@@ -49,17 +49,17 @@ class Subscription extends Model
     public function rules()
     {
         $rules = [];
-		
+
 		if(!isset($this->plan_id)) {
 			$rules['plan_uid'] = 'required';
 		}
 		if(!isset($this->customer_id)) {
 			$rules['customer_uid'] = 'required';
 		}
-        
+
         return $rules;
     }
-    
+
     /**
      * Find item by uid.
      *
@@ -69,7 +69,7 @@ class Subscription extends Model
     {
         return self::where('uid', '=', $uid)->first();
     }
-    
+
     /**
      * Associations.
      *
@@ -95,20 +95,20 @@ class Subscription extends Model
     {
         return $this->hasMany('Acelle\Model\Payment');
     }
-	
+
 	public function activeSubscriptionsSendingServers()
     {
         return $this->subscriptionsSendingServers()
 			->join('sending_servers', 'sending_servers.id', '=', 'subscriptions_sending_servers.sending_server_id')
 			->where('sending_servers.status', '=', SendingServer::STATUS_ACTIVE);
     }
-    
+
     /**
      * Bootstrap any application services.
      */
     public static function boot()
     {
-        parent::boot();		
+        parent::boot();
 
         // Create uid when creating list.
         static::creating(function ($subscription) {
@@ -120,7 +120,7 @@ class Subscription extends Model
             $subscription->uid = $uid;
         });
     }
-    
+
     /**
      * Get all items.
      *
@@ -130,14 +130,14 @@ class Subscription extends Model
     {
         return Plan::select('*');
     }
-    
+
     /**
      * Items per page.
      *
      * @var array
      */
     public static $itemsPerPage = 25;
-    
+
     /**
      * Filter items.
      *
@@ -147,7 +147,7 @@ class Subscription extends Model
     {
         $query = self::select('subscriptions.*')
 			->join('customers', 'customers.id', '=', 'subscriptions.customer_id');
-        
+
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
@@ -160,7 +160,7 @@ class Subscription extends Model
 
         // filters
         $filters = $request->filters;
-		
+
 		if (!empty($filters)) {
             if (!empty($filters['customer_uid'])) {
                 $query = $query->where('customers.uid', '=', $filters['customer_uid']);
@@ -171,19 +171,19 @@ class Subscription extends Model
 			}
 			if (!empty($filters['status'])) {
                 $query = $query->where('subscriptions.status', '=', $filters['status']);
-            }	
+            }
         }
-		
+
 		// Other filter
         if(!empty($request->customer_id)) {
             $query = $query->where('subscriptions.customer_id', '=', $request->customer_id);
         }
-		
+
 		// Other filter
         if(!empty($request->customer_admin_id)) {
             $query = $query->where('customers.admin_id', '=', $request->customer_admin_id);
         }
-		
+
 		if (!empty($request->customer_list)) {
 			$query = $query->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
 		}
@@ -208,7 +208,7 @@ class Subscription extends Model
 
         return $query;
     }
-    
+
     /**
      * Fill attributes.
      *
@@ -216,15 +216,15 @@ class Subscription extends Model
      */
     public function fillAttributes($params)
     {
-        $this->plan_id = $this->plan_id ? $this->plan_id : (isset($params['plan_uid']) ? \Acelle\Model\Plan::findByUid($params['plan_uid'])->id : null);
+        $this->plan_id = $this->plan_id ? $this->plan_id : (!empty($params['plan_uid']) ? \Acelle\Model\Plan::findByUid($params['plan_uid'])->id : null);
 		$this->customer_id = $this->customer_id ? $this->customer_id : (isset($params['customer_uid']) ? \Acelle\Model\Customer::findByUid($params['customer_uid'])->id : null);
 		$this->payment_method_id = $this->payment_method_id ? $this->payment_method_id : (!empty($params['payment_method_uid']) ? \Acelle\Model\PaymentMethod::findByUid($params['payment_method_uid'])->id : null);
 		$this->start_at = $this->start_at ? $this->start_at : $this->customer->getNextScriptionStartAt();
-		
+
         $plan = $this->plan_id ? Plan::find($this->plan_id) : null;
-        
+
         $this->fill($params);
-        
+
         if(isset($this->plan_id)) {
 			// Save info from plan
             $this->price = $plan->price;
@@ -233,7 +233,7 @@ class Subscription extends Model
 			$this->currency_code = $plan->currency->code;
 			$this->currency_format = $plan->currency->format;
 			$this->options = json_encode($plan->getOptions());
-            
+
             switch ($plan->frequency_unit) {
                 case 'day':
                     $this->end_at = $this->start_at->addDays($plan->frequency_amount)->subDays(1);
@@ -247,10 +247,14 @@ class Subscription extends Model
                 case 'year':
                     $this->end_at = $this->start_at->addYears($plan->frequency_amount)->subDays(1);
                     break;
+                case 'unlimited':
+                    $this->start_at = NULL;
+                    $this->end_at = NULL;
+                    break;
             }
         }
     }
-    
+
     /**
      * The rules for validation.
      *
@@ -261,10 +265,10 @@ class Subscription extends Model
         $rules = array(
             'plan_uid' => 'required',
         );
-        
+
         return $rules;
     }
-	
+
 	/**
      * Disable subscription.
      *
@@ -275,7 +279,7 @@ class Subscription extends Model
         $this->status = Subscription::STATUS_DISABLED;
         return $this->save();
     }
-    
+
     /**
      * Enable subscription.
      *
@@ -286,7 +290,7 @@ class Subscription extends Model
         $this->status = Subscription::STATUS_ACTIVE;
         return $this->save();
     }
-	
+
 	/**
      * Check if subscription is free.
      *
@@ -296,7 +300,7 @@ class Subscription extends Model
     {
         return $this->price == 0;
     }
-	
+
 	/**
      * Count remaining days.
      *
@@ -304,11 +308,11 @@ class Subscription extends Model
      */
     public function daysRemainCount()
     {
-        $count = $this->end_at->diffInDays(\Carbon\Carbon::now());
-		
+        $count = isset($this->end_at) ? $this->end_at->diffInDays(\Carbon\Carbon::now()) : NULL;
+
 		return $count;
     }
-	
+
 	/**
      * Default options for new plan.
      *
@@ -326,7 +330,7 @@ class Subscription extends Model
 			'automation_max' => '0',
             'sending_quota' => '0',
             'sending_quota_time' => '0',
-            'sending_quota_time_unit' => 'month',
+            'sending_quota_time_unit' => 'day',
             'max_process' => '0',
             'all_sending_servers' => 'no',
             'max_size_upload_total' => '0',
@@ -339,7 +343,7 @@ class Subscription extends Model
 			'sending_domains_max' => '-1',
         ];
     }
-	
+
 	/**
      * Default options for new plan.
      *
@@ -357,7 +361,7 @@ class Subscription extends Model
 			'automation_max' => '-1',
             'sending_quota' => '-1',
             'sending_quota_time' => '-1',
-            'sending_quota_time_unit' => 'month',
+            'sending_quota_time_unit' => 'day',
             'max_process' => '10',
             'all_sending_servers' => 'yes',
             'max_size_upload_total' => '100000',
@@ -370,7 +374,7 @@ class Subscription extends Model
 			'sending_domains_max' => '-1',
         ];
     }
-    
+
     /**
      * Get options.
      *
@@ -401,7 +405,7 @@ class Subscription extends Model
     {
         return $this->getOptions()[$name];
     }
-	
+
 	/**
      * Display group quota.
      *
@@ -415,9 +419,9 @@ class Subscription extends Model
             return $this->getOption("sending_quota");
         } else {
             return strtolower(\Acelle\Library\Tool::format_number($this->getOption("sending_quota")) . " " . trans('messages.' . \Acelle\Library\Tool::getPluralPrase('email', $this->getOption("sending_quota"))) . ' / '.$this->getOption("sending_quota_time").' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption("sending_quota_time_unit"), $this->getOption("sending_quota"))));
-        }        
+        }
     }
-	
+
 	/**
      * Display total quota.
      *
@@ -429,9 +433,9 @@ class Subscription extends Model
             return trans('messages.unlimited');
         } else {
             return \Acelle\Library\Tool::format_number($this->getOption("email_max"));
-        }           
+        }
     }
-    
+
     /**
      * Display max lists.
      *
@@ -443,9 +447,9 @@ class Subscription extends Model
             return trans('messages.unlimited');
         } else {
             return \Acelle\Library\Tool::format_number($this->getOption("list_max"));
-        }        
+        }
     }
-    
+
     /**
      * Display max subscribers.
      *
@@ -457,9 +461,9 @@ class Subscription extends Model
             return trans('messages.unlimited');
         } else {
             return \Acelle\Library\Tool::format_number($this->getOption("subscriber_max"));
-        }        
+        }
     }
-    
+
     /**
      * Display max campaign.
      *
@@ -471,9 +475,9 @@ class Subscription extends Model
             return trans('messages.unlimited');
         } else {
             return \Acelle\Library\Tool::format_number($this->getOption("campaign_max"));
-        }        
+        }
     }
-    
+
     /**
      * Display max campaign.
      *
@@ -485,9 +489,9 @@ class Subscription extends Model
             return trans('messages.unlimited');
         } else {
             return \Acelle\Library\Tool::format_number($this->getOption("max_size_upload_total"));
-        }        
+        }
     }
-    
+
     /**
      * Display max file size upload.
      *
@@ -499,9 +503,9 @@ class Subscription extends Model
             return trans('messages.unlimited');
         } else {
             return \Acelle\Library\Tool::format_number($this->getOption("max_file_size_upload"));
-        }        
+        }
     }
-	
+
 	/**
      * Display sending ervers permission.
      *
@@ -512,14 +516,14 @@ class Subscription extends Model
 		if ($this->getOption("create_sending_servers") == 'no') {
 			return trans('messages.feature_not_allow');
 		}
-		
+
         if ($this->getOption("sending_servers_max") == -1) {
             return trans('messages.unlimited');
         } else {
             return $this->getOption("sending_servers_max");
-        }        
+        }
     }
-	
+
 	/**
      * Display sending domains permission.
      *
@@ -530,14 +534,14 @@ class Subscription extends Model
 		if ($this->getOption("create_sending_domains") == 'no') {
 			return trans('messages.feature_not_allow');
 		}
-		
+
         if ($this->getOption("sending_domains_max") == -1) {
             return trans('messages.unlimited');
         } else {
             return $this->getOption("sending_domains_max");
-        }        
+        }
     }
-	
+
 	/**
      * Check if subscription is active.
      *
@@ -547,7 +551,17 @@ class Subscription extends Model
     {
         return $this->status == Subscription::STATUS_ACTIVE;
     }
-	
+
+	/**
+     * Check if subscription is disabled.
+     *
+     * @return array
+     */
+    public function isDisabled()
+    {
+        return $this->status == Subscription::STATUS_DISABLED;
+    }
+
 	/**
      * Check if subscription is outdated.
      *
@@ -557,7 +571,17 @@ class Subscription extends Model
     {
         return isset($this->end_at) ? $this->end_at->endOfDay() < \Carbon\Carbon::now() : false;
     }
-	
+
+    /**
+     * Check if subscription is started.
+     *
+     * @return array
+     */
+    public function isStarted()
+    {
+        return isset($this->start_at) ? $this->start_at->startOfDay() <= \Carbon\Carbon::now() : true;
+    }
+
 	/**
      * Check if subscription is current.
      *
@@ -565,15 +589,15 @@ class Subscription extends Model
      */
     public function isCurrent()
     {
-        if($this->start_at->startOfDay() <= \Carbon\Carbon::now() &&
+        if($this->isStarted() &&
 		   !$this->isOld()
 		) {
 			return true;
 		}
-		
+
 		return false;
     }
-	
+
 	/**
      * Check if subscription is current used.
      *
@@ -586,18 +610,18 @@ class Subscription extends Model
 		) {
 			return true;
 		}
-		
+
 		return false;
     }
-	
+
 	/**
      * Check current state
      *
      * @return array
      */
     public function timeStatus()
-    {		
-        if ($this->start_at->startOfDay() > \Carbon\Carbon::now()) {
+    {
+        if (!$this->isStarted()) {
 			return Subscription::TIME_STATUS_FUTURE;
 		} elseif ($this->isOld()) {
 			return Subscription::TIME_STATUS_PAST;
@@ -605,7 +629,7 @@ class Subscription extends Model
 			return Subscription::TIME_STATUS_CURRENT;
 		}
     }
-	
+
 	/**
      * Get subsciption display name
      *
@@ -614,7 +638,7 @@ class Subscription extends Model
     public function getName() {
 		return $this->plan->name;
 	}
-	
+
 	/**
      * Check if subscriptioon is paid
      *
@@ -623,7 +647,7 @@ class Subscription extends Model
     public function isPaid() {
 		return $this->paid;
 	}
-	
+
 	/**
      * When get status attribute
      *
@@ -656,7 +680,7 @@ class Subscription extends Model
             }
         }
     }
-	
+
 	/**
      * Set active.
      *
@@ -667,7 +691,7 @@ class Subscription extends Model
         $this->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
         $this->save();
     }
-	
+
 	/**
      * Set paid.
      *
@@ -677,20 +701,22 @@ class Subscription extends Model
     {
         $this->paid = true;
         $this->save();
-		
+
 		// description
 		if (!empty($description)) {
 			$payment = new \Acelle\Model\Payment();
 			$payment->subscription_id = $this->id;
 			$payment->data = '';
+            $payment->description = $description;
 			$payment->payment_method_id = NULL;
-			$payment->status = 'success';
+			$payment->status = \Acelle\Model\Payment::STATUS_SUCCESS;
+            $payment->action = \Acelle\Model\Payment::ACTION_PAID;
 			$payment->payment_method_name = '';
 			$payment->order_id = $this->getOrderID();
 			$payment->save();
 		}
     }
-	
+
 	/**
      * Set un-paid.
      *
@@ -700,20 +726,22 @@ class Subscription extends Model
     {
         $this->paid = false;
         $this->save();
-		
+
 		// description
 		if (!empty($description)) {
 			$payment = new \Acelle\Model\Payment();
 			$payment->subscription_id = $this->id;
 			$payment->data = '';
+            $payment->description = $description;
 			$payment->payment_method_id = NULL;
-			$payment->status = 'success';
+			$payment->status = \Acelle\Model\Payment::STATUS_SUCCESS;
+            $payment->action = \Acelle\Model\Payment::ACTION_UNPAID;
 			$payment->payment_method_name = '';
 			$payment->order_id = $this->getOrderID();
 			$payment->save();
 		}
     }
-	
+
 	/**
      * Get paid status.
      *
@@ -727,7 +755,7 @@ class Subscription extends Model
 			return Subscription::PAID_STATUS_FALSE;
 		}
     }
-	
+
 	/**
      * Payments count.
      *
@@ -737,7 +765,7 @@ class Subscription extends Model
     {
         return $this->payments()->orderBy('created_at', 'desc');
     }
-	
+
 	/**
      * Payments count.
      *
@@ -747,7 +775,7 @@ class Subscription extends Model
     {
         return $this->getPayments()->count();
     }
-	
+
 	/**
      * Get payment order id.
      *
@@ -756,5 +784,45 @@ class Subscription extends Model
     public function getOrderID()
     {
         return $this->uid;
+    }
+
+	/**
+     * Get long title.
+     *
+     * @return string
+     */
+    public function longTitle()
+    {
+        $strs = [$this->plan_name];
+		$strs[] = '(' . \Acelle\Library\Tool::formatDate($this->start_at);
+		$strs[] = ' - ' . \Acelle\Library\Tool::formatDate($this->end_at) . ')';
+		if ($this->isCurrent()) {
+			$strs[] = ' / ' . trans('messages.subscription_time_status_' . $this->timeStatus());
+		}
+		return implode(' ', $strs);
+    }
+
+	/**
+     * Subscription status select options.
+     *
+     * @return array
+     */
+    public static function statusSelectOptions()
+    {
+        return [
+            ['value' => Subscription::STATUS_ACTIVE, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_ACTIVE)],
+			['value' => Subscription::STATUS_INACTIVE, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_INACTIVE)],
+			['value' => Subscription::STATUS_DISABLED, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_DISABLED)],
+        ];
+    }
+
+    /**
+     * Check if plan time is unlimited.
+     *
+     * @return boolean
+     */
+    public function isTimeUnlimited()
+    {
+        return !$this->start_at && !$this->end_at;
     }
 }

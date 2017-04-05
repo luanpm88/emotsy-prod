@@ -20,6 +20,10 @@
 											<h5 class="no-margin text-bold">
 												<a class="kq_search" href="{{ action('Admin\AdminGroupController@edit', $item->id) }}">{{ $item->name }}</a>
 											</h5>
+											@if (Auth::user()->can('readAll', $item) && $item->creator)
+												@include ('admin.modules.admin_line', ['admin' => $item->creator->admin])
+												<br />
+											@endif
 											<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
 										<td>
@@ -28,7 +32,7 @@
 												<br />
 												<span class="text-muted">{{ trans("messages.admins") }}</span>
 											</div>
-										</td>										
+										</td>
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ $item->status }}</span>
@@ -39,8 +43,8 @@
 											@can('delete', $item)
 												<div class="btn-group">
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-													<ul class="dropdown-menu dropdown-menu-right">													
-														<li>														
+													<ul class="dropdown-menu dropdown-menu-right">
+														<li>
 															<a delete-confirm="{{ trans('messages.delete_admin_groups_confirm') }}" href="{{ action('Admin\AdminGroupController@delete', ['ids' => $item->id]) }}">
 																<i class="icon-trash"></i> {{ trans('messages.delete') }}
 															</a>
@@ -61,7 +65,7 @@
 									{{ trans('messages.no_search_result') }}
 								</span>
 							</div>
-						@else					
+						@else
 							<div class="empty-list">
 								<i class="icon-users4"></i>
 								<span class="line-1">

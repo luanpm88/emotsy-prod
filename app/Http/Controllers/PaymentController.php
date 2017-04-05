@@ -15,7 +15,7 @@ class PaymentController extends Controller {
             'avatar'
         ]]);
     }
-    
+
     /**
      * Subscription pay by PayPal.
      *
@@ -24,12 +24,12 @@ class PaymentController extends Controller {
      */
     public function paypal(Request $request, $subscription_uid) {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
-        
+
         return view('payments.paypal', [
             'subscription' => $subscription,
         ]);
     }
-    
+
     /**
      * Subscription pay by Braintree credit card.
      *
@@ -39,18 +39,18 @@ class PaymentController extends Controller {
     public function braintree_credit_card(Request $request, $subscription_uid) {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $result = NULL;
-        
+
         $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD);
-        
+
         try {
             $clientToken =  $payment_method->getBraintreeClientToken();
-        
+
             $order_id = $subscription->getOrderID();
-            
+
             // validate and save posted data
             if ($request->isMethod('post')) {
                 $nonceFromTheClient = $request->payment_method_nonce;
-                
+
                 $result = \Braintree_Transaction::sale([
                     'amount' => $subscription->price,
                     'paymentMethodNonce' => $nonceFromTheClient,
@@ -59,35 +59,37 @@ class PaymentController extends Controller {
                       'submitForSettlement' => True
                     ]
                 ]);
-                
+
                 $payment = new Payment();
                 $payment->subscription_id = $subscription->id;
                 $payment->payment_method_id = $payment_method->id;
                 $payment->data = serialize($result);
                 $payment->status = $result->success ? 'success' : 'failed';
-                $payment->payment_method_name = $payment_method->name;
+                $payment->action = \Acelle\Model\Payment::ACTION_PAID;
+                $payment->payment_method_name = trans('messages.payment_method_type_' . $payment_method->type);
                 $payment->order_id = $order_id;
                 $payment->save();
-    
+
                 if ($result->success) {
                     $subscription->setActive();
                     $subscription->setPaid();
-                    
+
                     return redirect()->action('PaymentController@success', $subscription->uid);
                 }
             }
-            
+
         } catch (\Exception $e) {
             return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment')]);
         }
-        
+
         return view('payments.braintree_credit_card', [
             'subscription' => $subscription,
             'clientToken' => $clientToken,
             'result' => $result,
+            'payment_method' => $payment_method,
         ]);
     }
-    
+
     /**
      * Subscription pay by Braintree credit card.
      *
@@ -97,18 +99,18 @@ class PaymentController extends Controller {
     public function braintree_paypal(Request $request, $subscription_uid) {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $result = NULL;
-        
+
         $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_BRAINTREE_PAYPAL);
-        
+
         try {
             $clientToken =  $payment_method->getBraintreeClientToken();
-        
+
             $order_id = $subscription->getOrderID();
-            
+
             // validate and save posted data
             if ($request->isMethod('post')) {
                 $nonceFromTheClient = $request->payment_method_nonce;
-                
+
                 $result = \Braintree_Transaction::sale([
                     "amount" => $subscription->price,
                     "paymentMethodNonce" => $nonceFromTheClient,
@@ -116,36 +118,38 @@ class PaymentController extends Controller {
                     'options' => [
                       'submitForSettlement' => True
                     ]
-                ]);            
-                
+                ]);
+
                 $payment = new Payment();
                 $payment->subscription_id = $subscription->id;
                 $payment->data = serialize($result);
                 $payment->payment_method_id = $payment_method->id;
                 $payment->status = $result->success ? 'success' : 'failed';
-                $payment->payment_method_name = $payment_method->name;
+                $payment->action = \Acelle\Model\Payment::ACTION_PAID;
+                $payment->payment_method_name = trans('messages.payment_method_type_' . $payment_method->type);
                 $payment->order_id = $order_id;
                 $payment->save();
-    
+
                 if ($result->success) {
                     $subscription->setActive();
                     $subscription->setPaid();
-                    
+
                     return redirect()->action('PaymentController@success', $subscription->uid);
                 }
             }
-            
+
         } catch (\Exception $e) {
             return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment')]);
         }
-        
+
         return view('payments.braintree_paypal', [
             'subscription' => $subscription,
             'clientToken' => $clientToken,
             'result' => $result,
+            'payment_method' => $payment_method,
         ]);
     }
-    
+
     /**
      * Payment success page.
      *
@@ -154,19 +158,19 @@ class PaymentController extends Controller {
      */
     public function success(Request $request, $subscription_uid) {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
-        
+
         return view('payments.success', [
             'subscription' => $subscription
         ]);
     }
-    
+
     /**
      * Subscription update paid status from Service.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function paymentStatus(Request $request) {        
+    public function paymentStatus(Request $request) {
         if($request->tx) {
             if($payment=Payment::where('transaction_id',$request->tx)->first()){
                 $payment_id=$payment->id;
@@ -177,16 +181,16 @@ class PaymentController extends Controller {
                 $payment->currency_code = $request->cc;
                 $payment->payment_status = $request->st;
                 $payment->save();
-                
+
                 $payment_id=$payment->id;
             }
-            
-            return 'Pyament has been done and your payment id is : '.$payment_id;        
+
+            return 'Pyament has been done and your payment id is : ' . $payment_id;
         }else{
             return 'Payment has failed';
         }
     }
-    
+
     /**
      * Subscription pay bay cash.
      *
@@ -195,6 +199,6 @@ class PaymentController extends Controller {
      */
     public function cash(Request $request, $subscription_uid) {
         $request->session()->flash('alert-success', trans('messages.subscription.cash.created'));
-        return redirect()->action('SubscriptionController@index');
+        return redirect()->action('AccountController@subscription');
     }
 }

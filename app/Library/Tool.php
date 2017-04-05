@@ -830,9 +830,11 @@ class Tool
     public static function format_number($number) {
         if(is_numeric( $number ) && floor( $number ) != $number) {
             return number_format($number, 2, trans('messages.dec_point'), trans('messages.thousands_sep'));
-        } else {
+        } elseif (is_numeric( $number )) {
             return number_format($number, 0, trans('messages.dec_point'), trans('messages.thousands_sep'));
-        }        
+        } else {
+            return $number;
+        }
     }
     
     /**
@@ -864,7 +866,7 @@ class Tool
         }
         
         foreach ($srcs as $src) {
-            if (preg_match('/https?/i', $src) || preg_match('/^https?/i', $src) || preg_match('/^#/i', $src) || strpos($src, '//') === 0) {
+            if (preg_match('/https?/i', $src) || preg_match('/^\{/i', $src) || preg_match('/^\%/i', $src) || preg_match('/^https?/i', $src) || preg_match('/^#/i', $src) || strpos($src, '//') === 0) {
                 continue;
             }
         

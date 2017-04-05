@@ -17,21 +17,21 @@ class AdminGroupPolicy
     {
         //
     }
-    
+
     public function read(\Acelle\Model\User $user, \Acelle\Model\AdminGroup $item)
     {
         $can = $user->admin->getPermission('admin_group_read') != 'no';
 
         return $can;
     }
-    
-    public function read_all(\Acelle\Model\User $user, \Acelle\Model\AdminGroup $item)
+
+    public function readAll(\Acelle\Model\User $user, \Acelle\Model\AdminGroup $item)
     {
         $can = $user->admin->getPermission('admin_group_read') == 'all';
 
         return $can;
     }
-    
+
     public function create(\Acelle\Model\User $user, \Acelle\Model\AdminGroup $item)
     {
         $can = $user->admin->getPermission('admin_group_create') == 'yes';

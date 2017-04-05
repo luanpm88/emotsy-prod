@@ -5,6 +5,7 @@ namespace Acelle\Http\Controllers;
 use Illuminate\Http\Request;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Acelle\Library\Log as MailLog;
+use Illuminate\Support\Facades\Log as LaravelLog;
 
 class CampaignController extends Controller
 {
@@ -1016,15 +1017,17 @@ class CampaignController extends Controller
         $location = \Acelle\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
-        $log->save();
 
         // Trigger the CampaignUpdate event to update the campaign cache information
         // The second parameter of the constructor function is false, meanining immediate update
         try {
+            $log->save();
+
             event(new \Acelle\Events\CampaignUpdated($log->trackingLog->campaign, false));
             event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList, false));
         } catch (\Exception $ex) {
             // in case TrackingLog record does not exist yet (open before logged!)
+            LaravelLog::warning('Cannot save open tracking log for message: ' . $log->message_id);
         }
         # Just return a blank image
         return response()->file(public_path('images/transparent.gif'));
@@ -1044,15 +1047,16 @@ class CampaignController extends Controller
             $log->ip_address = $location->ip_address;
             $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
             $log->url = $decoded_url;
-            $log->save();
 
             // Trigger the CampaignUpdate event to update the campaign cache information
             // The second parameter of the constructor function is false, meanining immediate update
             try {
+                $log->save();
                 event(new \Acelle\Events\CampaignUpdated($log->trackingLog->campaign, false));
                 event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList, false));
             } catch (\Exception $ex) {
                 // in case TrackingLog record does not exist yet (open before logged!)
+                LaravelLog::warning('Cannot save click tracking log for message: ' . $log->message_id);
             }
         } catch (\Exception $e) {
             // Allow click from a test email
@@ -1680,7 +1684,7 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        if (!empty($campaign->image)) {
+        if (!empty($campaign->image) && file_exists(storage_path($campaign->image).'.thumb.jpg')) {
             $img = \Image::make(storage_path($campaign->image).'.thumb.jpg');
         } else {
             $img = \Image::make(public_path('assets/images/placeholder.jpg'));

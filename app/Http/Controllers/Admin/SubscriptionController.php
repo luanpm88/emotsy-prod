@@ -18,7 +18,7 @@ class SubscriptionController extends Controller
 
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -27,12 +27,12 @@ class SubscriptionController extends Controller
     public function index(Request $request)
     {
         // authorize
-        if (\Gate::denies('read', new \Acelle\Model\Subscription())) {
+        if (!$request->user()->admin->can('read', new \Acelle\Model\Subscription())) {
             return $this->notAuthorized();
         }
-        
+
         // If admin can view all subscriptions of their customer
-        if (\Gate::denies('readAll', new \Acelle\Model\Subscription())) {
+        if (!$request->user()->admin->can('readAll', new \Acelle\Model\Subscription())) {
             $request->merge(array("customer_admin_id" => $request->user()->admin->id));
         }
         $subscriptions = \Acelle\Model\Subscription::getAll();
@@ -41,7 +41,7 @@ class SubscriptionController extends Controller
             'subscriptions' => $subscriptions,
         ]);
     }
-    
+
     /**
      * Display a listing of the resource.
      *
@@ -50,12 +50,12 @@ class SubscriptionController extends Controller
     public function listing(Request $request)
     {
         // authorize
-        if (\Gate::denies('read', new \Acelle\Model\Subscription())) {
+        if (!$request->user()->admin->can('read', new \Acelle\Model\Subscription())) {
             return $this->notAuthorized();
         }
-        
+
         // If admin can view all subscriptions of their customer
-        if (\Gate::denies('readAll', new \Acelle\Model\Subscription())) {
+        if (!$request->user()->admin->can('readAll', new \Acelle\Model\Subscription())) {
             $request->merge(array("customer_admin_id" => $request->user()->admin->id));
         }
         $subscriptions = \Acelle\Model\Subscription::search($request)->paginate($request->per_page);
@@ -75,10 +75,10 @@ class SubscriptionController extends Controller
         $subscription = new \Acelle\Model\Subscription();
 
         // authorize
-        if (\Gate::denies('create', $subscription)) {
+        if (!$request->user()->admin->can('create', $subscription)) {
             return $this->notAuthorized();
         }
-        
+
         if (!empty($request->old())) {
             $subscription->fillAttributes($request->old());
         }
@@ -102,17 +102,17 @@ class SubscriptionController extends Controller
         $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
 
         // authorize
-        if (\Gate::denies('create', $subscription)) {
+        if (!$request->user()->admin->can('create', $subscription)) {
             return $this->notAuthorized();
         }
 
         // save posted data
         if ($request->isMethod('post')) {
             $this->validate($request, $subscription->rules());
-            
+
             $subscription->fillAttributes($request->all());
             $subscription->admin_id = $user->admin->id;
-            
+
             // Allow admin update end at date
             if(!empty($request->start_at)) {
                 $subscription->start_at = \Acelle\Library\Tool::systemTimeFromString($request->start_at . ' 00:00');
@@ -120,9 +120,9 @@ class SubscriptionController extends Controller
             if(!empty($request->end_at)) {
                 $subscription->end_at = \Acelle\Library\Tool::systemTimeFromString($request->end_at . ' 00:00');
             }
-            
+
             $subscription->save();
-            
+
             $request->session()->flash('alert-success', trans('messages.subscription.created'));
             return redirect()->action('Admin\SubscriptionController@index');
         }
@@ -150,14 +150,14 @@ class SubscriptionController extends Controller
         $subscription = \Acelle\Model\Subscription::findByUid($uid);
 
         // authorize
-        if (\Gate::denies('update', $subscription)) {
+        if (!$request->user()->admin->can('update', $subscription)) {
             return $this->notAuthorized();
         }
-        
+
         if (!empty($request->old())) {
             $subscription->fillAttributes($request->old());
         }
-        
+
         // Sending servers
         if (isset($request->old()['sending_servers'])) {
             $subscription->subscriptionsSendingServers = collect([]);
@@ -172,7 +172,7 @@ class SubscriptionController extends Controller
                 }
             }
         }
-        
+
         // For options
         if (isset($request->old()['options'])) {
             $subscription->options = json_encode($request->old()['options']);
@@ -197,14 +197,14 @@ class SubscriptionController extends Controller
         $subscription = \Acelle\Model\Subscription::findByUid($uid);
 
         // authorize
-        if (\Gate::denies('update', $subscription)) {
+        if (!$request->user()->admin->can('update', $subscription)) {
             return $this->notAuthorized();
         }
 
         // save posted data
         if ($request->isMethod('patch')) {
             $this->validate($request, $subscription->rules());
-            
+
             $rules = [];
             if (isset($request->sending_servers)) {
                 foreach ($request->sending_servers as $key => $param) {
@@ -222,16 +222,16 @@ class SubscriptionController extends Controller
             if(!empty($request->end_at)) {
                 $subscription->end_at = \Acelle\Library\Tool::systemTimeFromString($request->end_at . ' 00:00');
             }
-            
+
             $subscription->options = json_encode($request->options);
-            
+
             $subscription->save();
-            
+
             // For sending servers
             if (isset($request->sending_servers)) {
                 $subscription->updateSendingServers($request->sending_servers);
             }
-            
+
             $request->session()->flash('alert-success', trans('messages.subscription.updated'));
             return redirect()->action('Admin\SubscriptionController@edit', $subscription->uid);
         }
@@ -247,7 +247,7 @@ class SubscriptionController extends Controller
     {
         //
     }
-    
+
     /**
      * Subscription preview.
      *
@@ -261,17 +261,17 @@ class SubscriptionController extends Controller
         $subscription->customer_id = $request->customer_id;
 
         // authorize
-        if (\Gate::denies('read', $subscription)) {
+        if (!$request->user()->admin->can('read', $subscription)) {
             return $this->notAuthorized();
         }
 
         $subscription->fillAttributes($request->all());
-        
+
         return view('admin.subscriptions.preview', [
             'subscription' => $subscription
         ]);
     }
-    
+
     /**
      * Remove the specified resource from storage.
      *
@@ -285,7 +285,7 @@ class SubscriptionController extends Controller
 
         foreach ($subscriptions->get() as $subscription) {
             // authorize
-            if (\Gate::allows('delete', $subscription)) {
+            if ($request->user()->admin->can('delete', $subscription)) {
                 $subscription->delete();
             }
         }
@@ -293,7 +293,7 @@ class SubscriptionController extends Controller
         // Redirect to my lists page
         echo trans('messages.subscriptions.deleted');
     }
-    
+
     /**
      * Enable subscriptions.
      *
@@ -307,9 +307,9 @@ class SubscriptionController extends Controller
 
         foreach ($subscriptions->get() as $subscription) {
             // authorize
-            if (\Gate::allows('enable', $subscription)) {
+            if ($request->user()->admin->can('enable', $subscription)) {
                 $subscription->enable();
-            }            
+            }
         }
 
         // Redirect to my lists page
@@ -329,15 +329,15 @@ class SubscriptionController extends Controller
 
         foreach ($subscriptions->get() as $subscription) {
             // authorize
-            if (\Gate::allows('disable', $subscription)) {
+            if ($request->user()->admin->can('disable', $subscription)) {
                 $subscription->disable();
-            }            
+            }
         }
 
         // Redirect to my lists page
         echo trans('messages.subscriptions.disabled');
     }
-    
+
     /**
      * Show the form for creating a new resource.
      *
@@ -348,7 +348,7 @@ class SubscriptionController extends Controller
         $subscription = \Acelle\Model\Subscription::findByUid($uid);
 
         // authorize
-        if (\Gate::denies('read', $subscription)) {
+        if (!$request->user()->admin->can('read', $subscription)) {
             return $this->notAuthorized();
         }
 
@@ -356,7 +356,7 @@ class SubscriptionController extends Controller
             'subscription' => $subscription
         ]);
     }
-    
+
     /**
      * Set paid subscriptions.
      *
@@ -370,15 +370,15 @@ class SubscriptionController extends Controller
 
         foreach ($subscriptions->get() as $subscription) {
             // authorize
-            if (\Gate::allows('paid', $subscription)) {
+            if ($request->user()->admin->can('paid', $subscription)) {
                 $subscription->setPaid($request->description);
-            }            
+            }
         }
 
         // Redirect to my lists page
         echo trans('messages.subscriptions.paid');
     }
-    
+
     /**
      * Set un-paid subscriptions.
      *
@@ -392,9 +392,9 @@ class SubscriptionController extends Controller
 
         foreach ($subscriptions->get() as $subscription) {
             // authorize
-            if (\Gate::allows('unpaid', $subscription)) {
+            if ($request->user()->admin->can('unpaid', $subscription)) {
                 $subscription->setUnPaid($request->description);
-            }            
+            }
         }
 
         // Redirect to my lists page

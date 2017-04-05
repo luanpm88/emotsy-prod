@@ -31,7 +31,12 @@ class PaymentMethodController extends Controller
             return $this->notAuthorized();
         }
 
-        $payment_methods = \Acelle\Model\PaymentMethod::getAll();
+        // If admin can view all sending domains
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\PaymentMethod())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
+        }
+
+        $payment_methods = \Acelle\Model\PaymentMethod::search($request);
 
         return view('admin.payment_methods.index', [
             'payment_methods' => $payment_methods,
@@ -48,6 +53,11 @@ class PaymentMethodController extends Controller
         // authorize
         if (\Gate::denies('read', new \Acelle\Model\PaymentMethod())) {
             return $this->notAuthorized();
+        }
+
+        // If admin can view all sending domains
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\PaymentMethod())) {
+            $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
         $payment_methods = \Acelle\Model\PaymentMethod::search($request)->paginate($request->per_page);
@@ -70,11 +80,11 @@ class PaymentMethodController extends Controller
         if (\Gate::denies('create', $payment_method)) {
             return $this->notAuthorized();
         }
-        
+
         if (!empty($request->old())) {
             $payment_method->fill($request->old());
         }
-        
+
         // For options
         if (isset($request->old()['options'])) {
             $payment_method->options = json_encode($request->old()['options']);
@@ -111,11 +121,11 @@ class PaymentMethodController extends Controller
             $payment_method->options = json_encode($request->options);
             $payment_method->admin_id = $user->admin->id;
             $payment_method->status = \Acelle\Model\PaymentMethod::STATUS_ACTIVE;
-            
-            $this->validate($request, $payment_method->rules());            
-            
-            $payment_method->save();            
-            
+
+            $this->validate($request, $payment_method->rules());
+
+            $payment_method->save();
+
             $request->session()->flash('alert-success', trans('messages.payment_method.created'));
             return redirect()->action('Admin\PaymentMethodController@index');
         }
@@ -151,12 +161,12 @@ class PaymentMethodController extends Controller
         if (!empty($request->old())) {
             $payment_method->fill($request->old());
         }
-        
+
         // For options
         if (isset($request->old()['options'])) {
             $payment_method->options = json_encode($request->old()['options']);
         }
-        $options = $payment_method->getOptions();        
+        $options = $payment_method->getOptions();
 
         return view('admin.payment_methods.edit', [
             'payment_method' => $payment_method,
@@ -187,11 +197,11 @@ class PaymentMethodController extends Controller
         if ($request->isMethod('patch')) {
             $payment_method->fill($request->all());
             $payment_method->options = json_encode($request->options);
-            
+
             $this->validate($request, $payment_method->rules());
 
             $payment_method->save();
-            
+
             $request->session()->flash('alert-success', trans('messages.payment_method.updated'));
             return redirect()->action('Admin\PaymentMethodController@index');
         }
@@ -281,7 +291,7 @@ class PaymentMethodController extends Controller
         // Redirect to my lists page
         echo trans('messages.payment_methods.deleted');
     }
-    
+
     /**
      * Custom sort items.
      *
@@ -306,7 +316,7 @@ class PaymentMethodController extends Controller
 
         echo trans('messages.payment_methods.custom_order.updated');
     }
-    
+
     /**
      * Select2 payment_method.
      *
@@ -315,10 +325,10 @@ class PaymentMethodController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function select2(Request $request)
-    {        
+    {
         echo \Acelle\Model\PaymentMethod::select2($request);
     }
-    
+
     /**
      * Payment method display options form.
      *
@@ -334,7 +344,7 @@ class PaymentMethodController extends Controller
             $payment_method = new \Acelle\Model\PaymentMethod($request->all());
             $payment_method->options = json_encode($request->options);
         }
-        
+
         return view('admin.payment_methods._options', [
             'payment_method' => $payment_method,
         ]);
