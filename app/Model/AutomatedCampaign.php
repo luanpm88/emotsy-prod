@@ -36,13 +36,13 @@ class AutomatedCampaign extends Campaign
 
     /**
      * Start the auto campaign
-     * 
+     *
      */
     public function start($trigger = null, $subscribers = null) {
         if (is_null($trigger)) {
             throw new \Exception("Trigger must not be null for Automated Campaign");
         }
-        
+
         // set the trigger
         $this->trigger = $trigger;
 
@@ -67,13 +67,13 @@ class AutomatedCampaign extends Campaign
     {
         try {
             $i = 0;
-            
+
             if (is_null($subscribers)) {
                 $subscribers = $this->trigger->autoEvent->automation->subscribers()->get();
             }
             foreach ($subscribers as $subscriber) {
-                if ($this->user->overQuota()) {
-                    throw new \Exception("Customer (ID: {$this->user->id}) has reached sending quota");
+                if ($this->customer->overQuota()) {
+                    throw new \Exception("Customer (ID: {$this->customer->id}) has reached sending quota");
                 }
 
                 $i += 1;
@@ -92,16 +92,16 @@ class AutomatedCampaign extends Campaign
                     'subscriber' => $subscriber,
                     'msgId' => $msgId
                 ));
-                
+
                 // track the auto trigger id
                 $response['auto_trigger_id'] = $this->trigger->id;
-                
+
                 // record to tracking log
                 $this->trackMessage($response, $subscriber, $server, $msgId);
             }
-            
+
             // record quota usage
-            $this->user->saveQuotaUsageInfo();
+            $this->customer->saveQuotaUsageInfo();
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
             $this->error($e->getMessage());
