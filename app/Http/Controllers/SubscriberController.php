@@ -357,7 +357,7 @@ class SubscriberController extends Controller
         if ($request->isMethod('post')) {
             if ($request->hasFile('file')) {
                 // Start system job
-                $job = new \Acelle\Jobs\ImportSubscribersJob($list, $request->user(), $request->file('file')->path());
+                $job = new \Acelle\Jobs\ImportSubscribersJob($list, $request->user()->customer, $request->file('file')->path());
                 $this->dispatch($job);
 
                 // Action Log

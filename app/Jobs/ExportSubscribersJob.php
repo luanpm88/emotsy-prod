@@ -11,10 +11,10 @@ class ExportSubscribersJob extends ImportExportJob
      *
      * @return void
      */
-    public function __construct($mailList, $user)
+    public function __construct($mailList, $customer)
     {
         // call parent's constructor
-        parent::__construct($mailList, $user);
+        parent::__construct($mailList, $customer);
         
         
         $systemJob = $this->getSystemJob();
@@ -40,7 +40,7 @@ class ExportSubscribersJob extends ImportExportJob
     {
         try {
             $job = $this;
-            \Acelle\Model\MailList::export($job->mailList, $job->user, $job);
+            \Acelle\Model\MailList::export($job->mailList, $job->customer, $job);
         } catch (\Exception $e) {
             $systemJob = $this->getSystemJob();
         
