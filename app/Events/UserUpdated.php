@@ -10,7 +10,7 @@ class UserUpdated extends Event
 {
     use SerializesModels;
 
-    public $user;
+    public $customer;
     public $delayed;
 
     /**
@@ -18,9 +18,9 @@ class UserUpdated extends Event
      *
      * @return void
      */
-    public function __construct($user, $delayed = true)
+    public function __construct($customer, $delayed = true)
     {
-        $this->user = $user;
+        $this->customer = $customer;
         $this->delayed = $delayed;
     }
 

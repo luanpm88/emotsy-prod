@@ -29,7 +29,7 @@ class UserUpdatedListener
         if ($event->delayed) {
             dispatch(new \Acelle\Jobs\UpdateUserJob($event->customer));
         } else {
-            $event->user->customer->updateCache();
+            $event->customer->updateCache();
         }
     }
 }
