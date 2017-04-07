@@ -401,9 +401,15 @@ class Customer extends Model
         if ($max == '∞') {
             return 0;
         }
-        if ($max == 0 || $count > $max) {
+
+        if ($max == 0) {
+            return 0;
+        }
+
+		if ($count > $max) {
             return 100;
         }
+
 
         return round((($count / $max) * 100), 2);
     }
@@ -460,7 +466,10 @@ class Customer extends Model
         if ($max == '∞') {
             return 0;
         }
-        if ($max == 0 || $count > $max) {
+        if ($max == 0) {
+            return 0;
+        }
+		if ($count > $max) {
             return 100;
         }
 
@@ -519,7 +528,10 @@ class Customer extends Model
         if ($max == '∞') {
             return 0;
         }
-        if ($max == 0 || $count > $max) {
+        if ($max == 0) {
+            return 0;
+        }
+		if ($count > $max) {
             return 100;
         }
 
@@ -691,7 +703,7 @@ class Customer extends Model
     {
         $current = $this->getCurrentSubscription();
 		if (is_null($current)) {
-			return 100;
+			return 0;
 		}
 
         $max = $this->getSendingQuotaUsage();
@@ -700,7 +712,10 @@ class Customer extends Model
         if ($max == '∞') {
             return 0;
         }
-        if ($max == 0 || $count > $max) {
+        if ($max == 0) {
+            return 0;
+        }
+		if ($count > $max) {
             return 100;
         }
 
@@ -1175,7 +1190,10 @@ class Customer extends Model
         if ($max == '∞') {
             return 0;
         }
-        if ($max == 0 || $count > $max) {
+        if ($max == 0) {
+            return 0;
+        }
+		if ($count > $max) {
             return 100;
         }
 
@@ -1224,7 +1242,10 @@ class Customer extends Model
         if ($max == '∞') {
             return 0;
         }
-        if ($max == 0 || $count > $max) {
+        if ($max == 0) {
+            return 0;
+        }
+		if ($count > $max) {
             return 100;
         }
 
@@ -1302,7 +1323,10 @@ class Customer extends Model
         if ($max == '∞') {
             return 0;
         }
-        if ($max == 0 || $count > $max) {
+        if ($max == 0) {
+            return 0;
+        }
+		if ($count > $max) {
             return 100;
         }
 
