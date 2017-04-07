@@ -73,7 +73,7 @@ class AutomatedCampaign extends Campaign
             }
             foreach ($subscribers as $subscriber) {
                 if ($this->customer->overQuota()) {
-                    throw new \Exception("Customer (ID: {$this->customer->id}) has reached sending quota");
+                    throw new \Exception("Customer (UID: {$this->customer->uid}) has reached sending quota");
                 }
 
                 $i += 1;
