@@ -932,11 +932,11 @@ class MailList extends Model
      */
     public function getRemainingAddSubscribersQuota()
     {
-        $max = $this->user->getOption('frontend', 'subscriber_max');
-        $maxPerList = $this->user->getOption('frontend', 'subscriber_per_list_max');
+        $max = $this->customer->getOption('subscriber_max');
+        $maxPerList = $this->customer->getOption('subscriber_per_list_max');
 
         $remainingForList = $maxPerList - $this->reload()->subscribers->count();
-        $remaining = $max - $this->reload()->user->subscribers->count();
+        $remaining = $max - $this->reload()->customer->subscribers->count();
 
         $result = ($remainingForList > $remaining) ? $remaining : $remainingForList;
         return ($result > 0) ? $result : 0;
