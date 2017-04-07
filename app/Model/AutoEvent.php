@@ -719,7 +719,7 @@ class AutoEvent extends Model
      */
     public function hasTriggeredToday()
     {
-        $zone = $this->automation->user->timezone;
+        $zone = $this->automation->customer->getTimezone();
         $today = Carbon::now($zone)->toDateString();
         foreach($this->autoTriggers as $trigger) {
             if ($trigger->start_at->tz($zone)->toDateString() == $today) {
@@ -789,16 +789,16 @@ class AutoEvent extends Model
 
         if ($field == 'subscription_date') {
             $subscribers = Subscriber::select('subscribers.id')
-                         ->whereRaw(sprintf('DATE(CONVERT_TZ(' . table('subscribers') . '.created_at, %1$s, %2$s) + %3$s) = DATE(CONVERT_TZ(NOW(), %1$s, %2$s)) AND DATE(CONVERT_TZ(' . table('subscribers') . '.created_at, %1$s, %2$s)) + %3$s <= CONVERT_TZ(NOW(), %1$s, %2$s)', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), $this->getDelayIntervalMySql()))
-                         ->whereRaw(sprintf('' . table('subscribers') . '.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %3$s WHERE auto_event_id = %4$s AND EXTRACT(YEAR FROM CONVERT_TZ(NOW(), %1$s, %2$s)) = EXTRACT(YEAR FROM CONVERT_TZ(created_at, %1$s, %2$s)) )', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), table('auto_triggers'), $this->id))
+                         ->whereRaw(sprintf('DATE(CONVERT_TZ(' . table('subscribers') . '.created_at, %1$s, %2$s) + %3$s) = DATE(CONVERT_TZ(NOW(), %1$s, %2$s)) AND DATE(CONVERT_TZ(' . table('subscribers') . '.created_at, %1$s, %2$s)) + %3$s <= CONVERT_TZ(NOW(), %1$s, %2$s)', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->customer->getTimezone())), $this->getDelayIntervalMySql()))
+                         ->whereRaw(sprintf('' . table('subscribers') . '.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %3$s WHERE auto_event_id = %4$s AND EXTRACT(YEAR FROM CONVERT_TZ(NOW(), %1$s, %2$s)) = EXTRACT(YEAR FROM CONVERT_TZ(created_at, %1$s, %2$s)) )', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->customer->getTimezone())), table('auto_triggers'), $this->id))
                          ->get();
         } else {
             $subscribers = Subscriber::select('subscribers.id')
                          ->join('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
                          ->join('fields', 'subscriber_fields.field_id', '=', 'fields.id')
                          ->where('fields.uid', $field)
-                         ->whereRaw(sprintf('DATE(CONVERT_TZ(' . table('subscriber_fields') . '.value, %1$s, %2$s) + %3$s) = DATE(CONVERT_TZ(NOW(), %1$s, %2$s)) AND DATE(CONVERT_TZ(' . table('subscriber_fields') . '.value, %1$s, %2$s)) + %3$s <= CONVERT_TZ(NOW(), %1$s, %2$s)', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), $this->getDelayIntervalMySql()))
-                         ->whereRaw(sprintf('' . table('subscribers') . '.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %3$s WHERE auto_event_id = %4$s AND EXTRACT(YEAR FROM CONVERT_TZ(NOW(), %1$s, %2$s)) = EXTRACT(YEAR FROM CONVERT_TZ(created_at, %1$s, %2$s)) )', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->user->timezone)), table('auto_triggers'), $this->id))
+                         ->whereRaw(sprintf('DATE(CONVERT_TZ(' . table('subscriber_fields') . '.value, %1$s, %2$s) + %3$s) = DATE(CONVERT_TZ(NOW(), %1$s, %2$s)) AND DATE(CONVERT_TZ(' . table('subscriber_fields') . '.value, %1$s, %2$s)) + %3$s <= CONVERT_TZ(NOW(), %1$s, %2$s)', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->customer->getTimezone())), $this->getDelayIntervalMySql()))
+                         ->whereRaw(sprintf('' . table('subscribers') . '.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %3$s WHERE auto_event_id = %4$s AND EXTRACT(YEAR FROM CONVERT_TZ(NOW(), %1$s, %2$s)) = EXTRACT(YEAR FROM CONVERT_TZ(created_at, %1$s, %2$s)) )', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->customer->getTimezone())), table('auto_triggers'), $this->id))
                          ->get();
         }
 
@@ -843,7 +843,7 @@ class AutoEvent extends Model
      */
     public function matchTime()
     {
-        $zone = $this->automation->user->timezone;
+        $zone = $this->automation->customer->getTimezone();
         $today = Carbon::now($zone)->toTimeString();
         $time = Carbon::parse($this->getDataValue('time'))->tz($zone)->toTimeString();
         return $today >= $time;
@@ -857,7 +857,7 @@ class AutoEvent extends Model
     public function matchMonth()
     {
         $months = $this->getDataValue('months');
-        return in_array(Carbon::now($this->automation->user->timezone)->month, $months, false);
+        return in_array(Carbon::now($this->automation->customer->getTimezone())->month, $months, false);
     }
 
     /**
@@ -868,7 +868,7 @@ class AutoEvent extends Model
     public function matchDayOfMonth()
     {
         $days = $this->getDataValue('days');
-        return in_array(Carbon::now($this->automation->user->timezone)->day, $days, false);
+        return in_array(Carbon::now($this->automation->customer->getTimezone())->day, $days, false);
     }
 
     /**
@@ -879,7 +879,7 @@ class AutoEvent extends Model
     public function matchDayOfWeek()
     {
         $weekdays = $this->getDataValue('weekdays');
-        return in_array(Carbon::now($this->automation->user->timezone)->dayOfWeek, $weekdays, false);
+        return in_array(Carbon::now($this->automation->customer->getTimezone())->dayOfWeek, $weekdays, false);
     }
 
     /**
@@ -890,7 +890,7 @@ class AutoEvent extends Model
     public function matchWeekOfMonth()
     {
         $weeks = $this->getDataValue('weeks');
-        return in_array(Carbon::now($this->automation->user->timezone)->weekOfMonth, $weeks, false);
+        return in_array(Carbon::now($this->automation->customer->getTimezone())->weekOfMonth, $weeks, false);
     }
 
     /**

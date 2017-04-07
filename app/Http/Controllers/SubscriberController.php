@@ -361,7 +361,7 @@ class SubscriberController extends Controller
                 $this->dispatch($job);
 
                 // Action Log
-                $list->log('import_started', $request->user());
+                $list->log('import_started', $request->user()->customer);
             } else {
                 echo "max_file_upload";
             }
@@ -467,7 +467,7 @@ class SubscriberController extends Controller
             $this->dispatch($job);
 
             // Action Log
-            $list->log('export_started', $request->user());
+            $list->log('export_started', $request->user()->customer);
         } else {
             return view('subscribers.export', [
                 'list' => $list,
@@ -566,7 +566,7 @@ class SubscriberController extends Controller
         $list->updateCachedInfo();
 
         // Log
-        $list->log('copied', $request->user(), [
+        $list->log('copied', $request->user()->customer, [
             'count' => $subscribers->count(),
             'from_uid' => $from_list->uid,
             'to_uid' => $list->uid,
@@ -607,7 +607,7 @@ class SubscriberController extends Controller
         $list->updateCachedInfo();
 
         // Log
-        $list->log('moved', $request->user(), [
+        $list->log('moved', $request->user()->customer, [
             'count' => $subscribers->count(),
             'from_uid' => $from_list->uid,
             'to_uid' => $list->uid,
