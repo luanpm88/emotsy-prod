@@ -8,34 +8,34 @@ class ImportSubscribersJob extends ImportExportJob
 {
     // @todo this should better be a constant
     protected $file;
-    
+
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($mailList, $user, $file)
+    public function __construct($mailList, $customer, $file)
     {
         // call parent's constructor
-        parent::__construct($mailList, $user);
-        
+        parent::__construct($mailList, $customer);
+
         // Upload csv
         $this->file = join_paths($this->path, 'data.csv');
         rename($file, $this->file);
         chmod($this->file, 0775);
-        
+
         // Update system job status
         // init the status
         $this->updateStatus([
             'mail_list_uid' => $mailList->uid,
-            'user_id' => $user->id,
+            'customer_id' => $customer->id,
             'status' => \Acelle\Model\MailList::IMPORT_STATUS_NEW,
             'error_message' => '',
             'total' => 0,
             'processed' => 0,
         ]);
     }
-    
+
     /**
      * Get import file name.
      *
@@ -76,7 +76,7 @@ class ImportSubscribersJob extends ImportExportJob
      */
     public function handle()
     {
-        $this->mailList->import2($this->file, $this->user, $this);
+        $this->mailList->import2($this->file, $this->customer, $this);
     }
 
     /**

@@ -6,7 +6,7 @@ use Acelle\Library\Log as MailLog;
 
 class UpdateUserJob extends SystemJob
 {
-    protected $user;
+    protected $customer;
 
     /**
      * Create a new job instance.
@@ -15,9 +15,9 @@ class UpdateUserJob extends SystemJob
      *
      * @return void
      */
-    public function __construct($user)
+    public function __construct($customer)
     {
-        $this->user = $user;
+        $this->customer = $customer;
         parent::__construct();
 
         // This line must go after the constructor
@@ -32,7 +32,7 @@ class UpdateUserJob extends SystemJob
     public function linkJobToUser()
     {
         $systemJob = $this->getSystemJob();
-        $systemJob->data = $this->user->id;
+        $systemJob->data = $this->customer->id;
         $systemJob->save();
     }
 
@@ -43,6 +43,6 @@ class UpdateUserJob extends SystemJob
      */
     public function handle()
     {
-        $this->user->customer->updateCache();
+        $this->customer->updateCache();
     }
 }

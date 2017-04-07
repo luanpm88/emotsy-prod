@@ -27,7 +27,7 @@ class UserUpdatedListener
     public function handle(UserUpdated $event)
     {
         if ($event->delayed) {
-            dispatch(new \Acelle\Jobs\UpdateUserJob($event->user));
+            dispatch(new \Acelle\Jobs\UpdateUserJob($event->customer));
         } else {
             $event->user->customer->updateCache();
         }
