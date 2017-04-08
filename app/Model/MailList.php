@@ -798,7 +798,7 @@ class MailList extends Model
             // update system job
             $systemJob->data = json_encode([
                 "mail_list_uid" => $list->uid,
-                "user_id" => $user->id,
+                "customer_id" => $customer->id,
                 "status" => "running",
                 "message" => $content_cache,
                 "total" => $total,
@@ -819,7 +819,7 @@ class MailList extends Model
         // update system job
         $systemJob->data = json_encode([
             "mail_list_uid" => $list->uid,
-            "user_id" => $user->id,
+            "customer_id" => $customer->id,
             "status" => "done",
             "message" => $content_cache,
             "total" => $total,
@@ -830,7 +830,7 @@ class MailList extends Model
         $systemJob->save();
 
         // Action Log
-        $list->log('export_success', $user, ['count' => $success, 'error' => $error]);
+        $list->log('export_success', $customer, ['count' => $success, 'error' => $error]);
     }
 
     /**
@@ -938,8 +938,15 @@ class MailList extends Model
         $remainingForList = $maxPerList - $this->reload()->subscribers->count();
         $remaining = $max - $this->reload()->customer->subscribers->count();
 
-        $result = ($remainingForList > $remaining) ? $remaining : $remainingForList;
-        return ($result > 0) ? $result : 0;
+        if ($maxPerList == -1) {
+            return ($max == -1) ? -1 : $remaining;
+        }
+
+        if ($max == -1) {
+            return ($maxPerList == -1) ? -1 : $remainingForList;
+        }
+
+        return ($remainingForList > $remaining) ? $remaining : $remainingForList;
     }
 
     /**
@@ -1015,7 +1022,7 @@ class MailList extends Model
      * @return string quoted value
      * @todo: use MySQL escape function to correctly escape string with astrophe
      */
-    public function import2($file, $user, $system_job)
+    public function import2($file, $customer, $system_job)
     {
         $processed_count = 0;
         $logger = $system_job->getLogger();
@@ -1038,17 +1045,20 @@ class MailList extends Model
             $system_job->updateStatus([ 'total' => $lineCount ]);
 
             // process by batches
-            each_batch($results, config('app.import_batch_size'), true, function($batch) use ($logger, $availableFields, &$user, &$processed_count, &$system_job) {
+            each_batch($results, config('app.import_batch_size'), true, function($batch) use ($logger, $availableFields, &$customer, &$processed_count, &$system_job) {
                 // increment count
                 $processed_count += sizeof($batch);
 
                 // authorization
-                if (!$user->can('addMoreSubscribers', [$this, config('app.import_batch_size')])) {
+                if (!$customer->user->can('addMoreSubscribers', [$this, config('app.import_batch_size')])) {
                     // If use cannot create ANY other subscribers
-                    if (!$user->can('addMoreSubscribers', [$this, 1])) {
+                    if (!$customer->user->can('addMoreSubscribers', [$this, 1])) {
                         throw new \Exception(trans('messages.error_add_max_quota'));
                     } else {
-                        $batch = array_slice($batch, 0, $this->getRemainingAddSubscribersQuota());
+                        $remaining = $this->getRemainingAddSubscribersQuota();
+                        if ($remaining != -1) {
+                            $batch = array_slice($batch, 0, $remaining);
+                        }
                     }
                 }
 
@@ -1122,11 +1132,13 @@ class MailList extends Model
             $this->updateCachedInfo();
 
             // Action Log
-            $this->log('import_success', $user, ['count' => $processed_count, 'error' => '']);
+            $this->log('import_success', $customer, ['count' => $processed_count, 'error' => '']);
             $logger->info(trans('messages.Finish_importing_for_list_uid', ['uid' => $this->uid]));
         } catch (\Exception $e) {
             // finish the transaction
             DB::rollBack();
+
+            $this->updateCachedInfo();
 
             // write to job's logger
             $logger->error($e->getMessage());
@@ -1138,7 +1150,7 @@ class MailList extends Model
             ]);
 
             // Action Log
-            $this->log('import_max_error', $user->customer, ['count' => $processed_count]);
+            $this->log('import_max_error', $customer, ['count' => $processed_count]);
         }
     }
 
@@ -1149,13 +1161,13 @@ class MailList extends Model
      */
     public function updateCachedInfo()
     {
+        // Update list's cached information
+        event(new \Acelle\Events\MailListUpdated($this, false));
+
         // Trigger the CampaignUpdate event to update the campaign cache information
         foreach ($this->campaigns as $campaign) {
             event(new \Acelle\Events\CampaignUpdated($campaign));
         }
-
-        // Update list's cached information
-        event(new \Acelle\Events\MailListUpdated($this, false));
 
         // Update list's cached information
         event(new \Acelle\Events\UserUpdated($this->customer, false));

@@ -178,6 +178,7 @@ class CustomerController extends Controller
     public function edit(Request $request, $id)
     {
         $customer = \Acelle\Model\Customer::findByUid($id);
+        event(new \Acelle\Events\UserUpdated($customer));
 
         // authorize
         if (\Gate::denies('update', $customer)) {
