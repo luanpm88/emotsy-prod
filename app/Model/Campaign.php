@@ -304,9 +304,10 @@ class Campaign extends Model
             // Only run multi-process if pcntl is enabled
             $processes = (int) $this->customer->getOption('max_process');
             if (extension_loaded('pcntl') && $processes > 1) {
+                MailLog::info('Run in multi-process mode');
                 $this->runMultiProcesses();
             } else {
-                MailLog::warning('Cannot fork processes');
+                MailLog::info('Run in single-process mode');
                 $this->run($subscribers);
             }
             MailLog::info('Finish campaign `'.$this->name.'`');
