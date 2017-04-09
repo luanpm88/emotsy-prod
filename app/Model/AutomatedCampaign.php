@@ -81,17 +81,11 @@ class AutomatedCampaign extends Campaign
 
                 // Pick up an available sending server
                 // Throw exception in case no server available
-                $server = $this->pickServer($this);
+                $server = $this->pickSendingServer();
 
                 list($message, $msgId) = $this->prepareEmail($subscriber, $server);
 
-                $response = $server->send($message, array(
-                    'from_email' => $this->from_email,
-                    'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly as parameter (not in MIME message)
-                    'campaign' => $this,
-                    'subscriber' => $subscriber,
-                    'msgId' => $msgId
-                ));
+                $response = $server->send($message);
 
                 // track the auto trigger id
                 $response['auto_trigger_id'] = $this->trigger->id;
@@ -99,18 +93,27 @@ class AutomatedCampaign extends Campaign
                 // record to tracking log
                 $this->trackMessage($response, $subscriber, $server, $msgId);
             }
-
-            // record quota usage
-            $this->customer->saveQuotaUsageInfo();
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
             $this->error($e->getMessage());
         } finally {
+            // record quota usage
+            $this->customer->saveQuotaUsageInfo();
             // reset server pools: just in case DeliveryServerAmazonSesWebApi
             // --> setup SNS requires using from_email of the corresponding campaign
             // but SNS is only made once when the server is initiated
             //     SendingServer::resetServerPools();
         }
+    }
+
+    /**
+     * Pick up a delivery server for the campaign.
+     *
+     * @return mixed
+     */
+    public function pickSendingServer()
+    {
+        return $this->trigger->autoEvent->automation->defaultMailList->pickSendingServer();
     }
 
     /**

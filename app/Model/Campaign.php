@@ -519,13 +519,7 @@ class Campaign extends Model
 
                 list($message, $msgId) = $this->prepareEmail($subscriber, $server);
 
-                $sent = $server->send($message, array(
-                    'from_email' => $this->from_email,
-                    'to' => $subscriber->email, // workaround: some sending engine requires the TO explicitly (not in MIME message)
-                    'campaign' => $this,
-                    'subscriber' => $subscriber,
-                    'msgId' => $msgId
-                ));
+                $sent = $server->send($message);
 
                 $this->trackMessage($sent, $subscriber, $server, $msgId);
             }
