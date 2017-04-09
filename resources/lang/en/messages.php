@@ -281,7 +281,7 @@ return [
     'import_file_help' => 'Acceptable file type is CSV, please checkout the <a target="_blank" href=":csv_link"><strong>Sample.csv</strong></a>',
     'uploading' => 'Uploading...',
     'complete' => 'Complete',
-    'error_add_max_quota' => 'Error! Could not add more, reached the maximum quota!',
+    'error_add_max_quota' => 'Error! Exceeding quota!',
     'import_export_statistics_line' => 'Processed: <span class="processed">:processed</span> / <span class="total">:total</span> subscribers<br />Success: <span class="success">:success</span><br /> Error: <span class="error">:error</span>',
     'invalid_csv_file' => 'Error! Invalid csv file. Please check the import file again.',
     'import_another' => 'Import another',
