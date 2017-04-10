@@ -260,7 +260,9 @@
                         <h3>{{ trans('messages.next_plan') }}</h3>
 
                         <p>
-                            {!! trans('messages.next_plan_notactive_intro') !!}
+                            {!! trans('messages.next_plan_notactive_intro', [
+                                'plan' => $nextSubscription->plan_name
+                            ]) !!}
                         </p>
 
                         @if (!$nextSubscription->isPaid() && !$nextSubscription->isActive())

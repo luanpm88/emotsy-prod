@@ -2,6 +2,7 @@
 namespace Acelle\Http\Controllers;
 use Illuminate\Http\Request;
 use Acelle\Model\Payment;
+use Acelle\Library\Log as PaymentLog;
 
 class PaymentController extends Controller {
     /**
@@ -79,6 +80,7 @@ class PaymentController extends Controller {
             }
 
         } catch (\Exception $e) {
+            PaymentLog::error(trans('messages.something_went_wrong_with_payment') . ': ' .$e->getMessage());
             return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment')]);
         }
 
@@ -139,6 +141,7 @@ class PaymentController extends Controller {
             }
 
         } catch (\Exception $e) {
+            PaymentLog::error(trans('messages.something_went_wrong_with_payment') . ': ' .$e->getMessage());
             return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment')]);
         }
 
