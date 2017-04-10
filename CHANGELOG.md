@@ -1,3 +1,18 @@
+3.0.0-p1 / 2017-04-11
+==================
+
+ * Added: service plan management
+ * Added: registration for visitor
+ * Added: payment integration with Braintree (for Paypal and credit card)
+ * Added: sending throttling setting
+ * Added: subscription management
+ * Added: customer management
+ * Added: more flexible role based access control
+ * Added: license verification
+ * Added: clean up sending server's send() function
+ * Added: more intuitive description on the UI
+ * Fixed: automation sending duplicate follow-up email
+
 2.2.0-p14 / 2017-03-30
 ==================
 
