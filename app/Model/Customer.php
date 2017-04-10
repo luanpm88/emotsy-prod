@@ -709,7 +709,7 @@ class Customer extends Model
         $max = $this->getSendingQuota();
         $count = $this->getSendingQuotaUsage();
 
-        if ($max == '∞') {
+        if ($max == -1) {
             return 0;
         }
         if ($max == 0) {
