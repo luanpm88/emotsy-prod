@@ -123,10 +123,12 @@
 
 				// Stop if there was an error.
 				if (tokenizeErr) {
-				  if (tokenizeErr.type !== 'CUSTOMER') {
-					console.error('Error tokenizing:', tokenizeErr);
-				  }
-				  return;
+					// Handle error in Hosted Fields tokenization
+					if (tokenizeErr.message) {
+						swalError(tokenizeErr.message);
+					}
+
+					return;
 				}
 
 				// Tokenization succeeded!

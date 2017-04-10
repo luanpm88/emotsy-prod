@@ -139,21 +139,23 @@
 		submit.removeAttribute('disabled');
 
 		form.addEventListener('submit', function (event) {
-		  event.preventDefault();
+			event.preventDefault();
 
-		  hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
-			if (tokenizeErr) {
-			  console.log(tokenizeErr);
-			  // Handle error in Hosted Fields tokenization
-			  return;
-			}
+			hostedFieldsInstance.tokenize(function (tokenizeErr, payload) {
+				if (tokenizeErr) {
+					// Handle error in Hosted Fields tokenization
+					if (tokenizeErr.message) {
+						swalError(tokenizeErr.message);
+					}
+					return;
+				}
 
-			// Put `payload.nonce` into the `payment-method-nonce` input, and then
-			// submit the form. Alternatively, you could send the nonce to your server
-			// with AJAX.
-			document.querySelector('input[name="payment_method_nonce"]').value = payload.nonce;
-			form.submit();
-		  });
+				// Put `payload.nonce` into the `payment-method-nonce` input, and then
+				// submit the form. Alternatively, you could send the nonce to your server
+				// with AJAX.
+				document.querySelector('input[name="payment_method_nonce"]').value = payload.nonce;
+				form.submit();
+			});
 		}, false);
 	  });
 	});
