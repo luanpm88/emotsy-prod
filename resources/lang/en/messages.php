@@ -1745,4 +1745,5 @@ return [
     'subscription_status_pending_active' => 'Pending & Active',
     'subscription_status_pending_inactive' => 'Pending & Inactive',
     'subscription_status_pending_disabled' => 'Pending & Disabled',
+    'all_times' => 'All times',
 ];

@@ -165,13 +165,15 @@ class Subscription extends Model
     public static function filter($request)
     {
         $query = self::select('subscriptions.*')
-			->join('customers', 'customers.id', '=', 'subscriptions.customer_id');
+			->join('customers', 'customers.id', '=', 'subscriptions.customer_id')
+            ->join('users', 'users.id', '=', 'customers.user_id');
 
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
                     $q->orwhere('customers.first_name', 'like', '%'.$keyword.'%')
+                        ->orwhere('users.email', 'like', '%'.$keyword.'%')
 						->orwhere('customers.last_name', 'like', '%'.$keyword.'%');
                 });
             }
@@ -190,6 +192,20 @@ class Subscription extends Model
 			}
 			if (!empty($filters['status'])) {
                 $query = $query->where('subscriptions.status', '=', $filters['status']);
+            }
+            if (!empty($filters['time_status'])) {
+                switch ($filters['time_status']) {
+                    case Subscription::TIME_STATUS_PAST:
+                        $query = $query->where('subscriptions.end_at', '<', \Carbon\Carbon::now()->startOfDay());
+                        break;
+                    case Subscription::TIME_STATUS_CURRENT:
+                        $query = $query->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
+                            ->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
+                        break;
+                    case Subscription::TIME_STATUS_FUTURE:
+                        $query = $query->where('subscriptions.start_at', '>', \Carbon\Carbon::now()->endOfDay());
+                        break;
+                }
             }
         }
 
@@ -222,7 +238,7 @@ class Subscription extends Model
         if(isset($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         } else {
-			$query = $query->orderBy('subscriptions.created_at', 'asc');
+			$query = $query->orderBy('subscriptions.created_at', 'desc');
 		}
 
         return $query;
@@ -832,6 +848,20 @@ class Subscription extends Model
             ['value' => Subscription::STATUS_ACTIVE, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_ACTIVE)],
 			['value' => Subscription::STATUS_INACTIVE, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_INACTIVE)],
 			['value' => Subscription::STATUS_DISABLED, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_DISABLED)],
+        ];
+    }
+
+    /**
+     * Subscription status select options.
+     *
+     * @return array
+     */
+    public static function timeStatusSelectOptions()
+    {
+        return [
+            ['value' => Subscription::TIME_STATUS_PAST, 'text' => trans('messages.subscription_time_status_' . Subscription::TIME_STATUS_PAST)],
+            ['value' => Subscription::TIME_STATUS_CURRENT, 'text' => trans('messages.subscription_time_status_' . Subscription::TIME_STATUS_CURRENT)],
+            ['value' => Subscription::TIME_STATUS_FUTURE, 'text' => trans('messages.subscription_time_status_' . Subscription::TIME_STATUS_FUTURE)],
         ];
     }
 

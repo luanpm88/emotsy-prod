@@ -317,6 +317,7 @@ h3 {
     display: inline-block;
     height: 33px;
     margin-left: 0;
+    padding-right: 32px;
 }
 .filter-box .btn {
     font-size: 13px;
@@ -2120,4 +2121,7 @@ ul.modern-listing li .admin-line i {
 }
 .boxing {
     padding-bottom: 20px;
+}
+input.mini-input {
+    width: 150px !important;
 }
