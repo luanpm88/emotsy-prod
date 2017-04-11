@@ -58,9 +58,9 @@
                     <td></td>
                     <td></td>
                 @endif
-				<td>
+                <td>
 					<span class="text-muted2 list-status pull-left">
-						<span class="label label-sub label-flat bg-{{ $subscription->timeStatus() }}">{{ trans('messages.subscription_time_status_' . $subscription->timeStatus()) }}</span>
+						<span class="label label-flat bg-{{ $subscription->getStatus() }}">{{ trans('messages.subscription_status_' . $subscription->getStatus()) }}</span>
 					</span>
 				</td>
 				<td>
@@ -79,11 +79,6 @@
                             </span>
                         </span>
                     @endif
-				</td>
-				<td>
-					<span class="text-muted2 list-status pull-left">
-						<span class="label label-flat bg-{{ $subscription->status }}">{{ trans('messages.subscription_status_' . $subscription->status) }}</span>
-					</span>
 				</td>
 				<td class="text-right">
 					@if (Auth::user()->admin->can('update', $subscription))

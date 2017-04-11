@@ -20,6 +20,25 @@ class Subscription extends Model
 	const PAID_STATUS_TRUE = 'paid';
 	const PAID_STATUS_FALSE = 'notpaid';
 
+    // STATUS
+    const STATUSES = [
+        Subscription::STATUS_ACTIVE => [
+            Subscription::TIME_STATUS_PAST => 'expired',
+            Subscription::TIME_STATUS_CURRENT => 'current_active',
+            Subscription::TIME_STATUS_FUTURE => 'pending_active'
+        ],
+        Subscription::STATUS_INACTIVE => [
+            Subscription::TIME_STATUS_PAST => 'expired',
+            Subscription::TIME_STATUS_CURRENT => 'current_inactive',
+            Subscription::TIME_STATUS_FUTURE => 'pending_inactive'
+        ],
+        Subscription::STATUS_DISABLED => [
+            Subscription::TIME_STATUS_PAST => 'expired',
+            Subscription::TIME_STATUS_CURRENT => 'current_disabled',
+            Subscription::TIME_STATUS_FUTURE => 'pending_disabled'
+        ],
+    ];
+
     /**
      * The attributes that should be mutated to dates.
      *
@@ -824,5 +843,15 @@ class Subscription extends Model
     public function isTimeUnlimited()
     {
         return !$this->start_at && !$this->end_at;
+    }
+
+    /**
+     * Get subscription status.
+     *
+     * @return string
+     */
+    public function getStatus()
+    {
+        return Subscription::STATUSES[$this->status][$this->timeStatus()];
     }
 }

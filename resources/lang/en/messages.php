@@ -1738,4 +1738,11 @@ return [
     'payment_action_unpaid' => 'Un-Paid',
     'payment_action_method' => 'Action/Method',
     'plan_time_unlimited' => 'Unlimited',
+    'subscription_status_expired' => 'expired',
+    'subscription_status_current_active' => 'Current & Active',
+    'subscription_status_current_inactive' => 'Current & Inactive',
+    'subscription_status_current_disabled' => 'Current & Disabled',
+    'subscription_status_pending_active' => 'Pending & Active',
+    'subscription_status_pending_inactive' => 'Pending & Inactive',
+    'subscription_status_pending_disabled' => 'Pending & Disabled',
 ];
