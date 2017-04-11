@@ -34,13 +34,14 @@
     >
         <input type="hidden" name="customer_uid" value="{{ $customer->uid }}" />
         <div class="row top-list-controls">
-            <div class="col-md-10">
+            <div class="col-md-11">
                 <div class="filter-box">
                     <span class="filter-group">
                         <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
                         <select class="select" name="sort-order">
                             <option value="subscriptions.created_at">{{ trans('messages.created_at') }}</option>
-                            <option value="subscriptions.updated_at">{{ trans('messages.updated_at') }}</option>
+                            <option value="subscriptions.start_at">{{ trans('messages.start_at') }}</option>
+                            <option value="subscriptions.end_at">{{ trans('messages.end_at') }}</option>
                         </select>
                         <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
                             <i class="icon-sort-amount-desc"></i>
@@ -63,6 +64,16 @@
 							@endforeach
 						</select>
 					</span>
+                    <span class="filter-group">
+                        <select class="select" name="time_status">
+                            <option value="">{{ trans('messages.all_times') }}</option>
+                            @foreach (Acelle\Model\Subscription::timeStatusSelectOptions() as $option)
+                                <option value="{{ $option['value'] }}">
+                                    {{ $option['text'] }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </span>
                     <span class="text-nowrap">
                         <input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                         <i class="icon-search4 keyword_search_button"></i>
@@ -70,7 +81,7 @@
                 </div>
             </div>
             @if(Auth::user()->admin->can('create', new Acelle\Model\Subscription()))
-                <div class="col-md-2 text-right">
+                <div class="col-md-1 text-right">
                     <a href="{{ action("Admin\SubscriptionController@create") }}" type="button" class="btn bg-info-800">
                         <i class="icon icon-plus2"></i> {{ trans('messages.create_subscription') }}
                     </a>
