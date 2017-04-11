@@ -109,7 +109,7 @@ class SubscriptionPolicy
                 break;
         }
 
-        return $can && $subscription->status == \Acelle\Model\Subscription::STATUS_ACTIVE;
+        return $can && $subscription->status == \Acelle\Model\Subscription::STATUS_ACTIVE && !$subscription->isOld();
     }
 
     public function enable(\Acelle\Model\User $user, \Acelle\Model\Subscription $subscription, $role)
@@ -125,7 +125,7 @@ class SubscriptionPolicy
                 break;
         }
 
-        return $can && in_array($subscription->status, [\Acelle\Model\Subscription::STATUS_INACTIVE, \Acelle\Model\Subscription::STATUS_DISABLED]);
+        return $can && in_array($subscription->status, [\Acelle\Model\Subscription::STATUS_INACTIVE, \Acelle\Model\Subscription::STATUS_DISABLED]) && !$subscription->isOld();
     }
 
     public function pay(\Acelle\Model\User $user, \Acelle\Model\Subscription $subscription, $role)
@@ -139,7 +139,7 @@ class SubscriptionPolicy
                 break;
         }
 
-        return $can && $subscription->paid == false;
+        return $can && $subscription->paid == false && !$subscription->isOld();
     }
 
     public function paid(\Acelle\Model\User $user, \Acelle\Model\Subscription $subscription, $role)
@@ -155,7 +155,7 @@ class SubscriptionPolicy
                 break;
         }
 
-        return $can && $subscription->paid == false;
+        return $can && $subscription->paid == false && !$subscription->isOld();
     }
 
     public function unpaid(\Acelle\Model\User $user, \Acelle\Model\Subscription $subscription, $role)
@@ -171,6 +171,6 @@ class SubscriptionPolicy
                 break;
         }
 
-        return $can && $subscription->paid == true;
+        return $can && $subscription->paid == true && !$subscription->isOld();
     }
 }
