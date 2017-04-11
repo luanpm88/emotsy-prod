@@ -2123,5 +2123,8 @@ ul.modern-listing li .admin-line i {
     padding-bottom: 20px;
 }
 input.mini-input {
-    width: 150px !important;
+    width: 200px !important;
+}
+.filter-group {
+    margin-bottom: 10px;
 }

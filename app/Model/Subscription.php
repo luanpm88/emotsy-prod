@@ -207,6 +207,9 @@ class Subscription extends Model
                         break;
                 }
             }
+            if (!empty($filters['paid_status'])) {
+                $query = $query->where('subscriptions.paid', '=', $filters['paid_status']);
+            }
         }
 
 		// Other filter
@@ -862,6 +865,19 @@ class Subscription extends Model
             ['value' => Subscription::TIME_STATUS_PAST, 'text' => trans('messages.subscription_time_status_' . Subscription::TIME_STATUS_PAST)],
             ['value' => Subscription::TIME_STATUS_CURRENT, 'text' => trans('messages.subscription_time_status_' . Subscription::TIME_STATUS_CURRENT)],
             ['value' => Subscription::TIME_STATUS_FUTURE, 'text' => trans('messages.subscription_time_status_' . Subscription::TIME_STATUS_FUTURE)],
+        ];
+    }
+
+    /**
+     * Subscription status select options.
+     *
+     * @return array
+     */
+    public static function paidStatusSelectOptions()
+    {
+        return [
+            ['value' => 'true', 'text' => trans('messages.subscription_paid_status_' . Subscription::PAID_STATUS_FALSE)],
+            ['value' => 1, 'text' => trans('messages.subscription_paid_status_' . Subscription::PAID_STATUS_TRUE)],
         ];
     }
 

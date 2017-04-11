@@ -1746,4 +1746,5 @@ return [
     'subscription_status_pending_inactive' => 'Pending & Inactive',
     'subscription_status_pending_disabled' => 'Pending & Disabled',
     'all_times' => 'All times',
+    'all_payments' => 'All payments',
 ];

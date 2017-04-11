@@ -265,6 +265,8 @@
                             ]) !!}
                         </p>
 
+                        @include('subscriptions._details', ['subscription' => $nextSubscription])
+
                         @if (!$nextSubscription->isPaid() && !$nextSubscription->isActive())
                             @if (Auth::user()->customer->can('pay', $nextSubscription))
 

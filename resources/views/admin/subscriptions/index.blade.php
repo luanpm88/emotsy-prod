@@ -33,7 +33,7 @@
                 @if ($subscriptions->count() >= 0)
                     <div class="filter-box">
                         <span class="filter-group">
-                            <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
+                            <!--<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>-->
                             <select class="select" name="sort-order">
                                 <option value="subscriptions.created_at">{{ trans('messages.created_at') }}</option>
                                 <option value="subscriptions.start_at">{{ trans('messages.start_at') }}</option>
@@ -77,8 +77,18 @@
 								@endforeach
                             </select>
                         </span>
-                        <span class="text-nowrap pull-right">
-                            <input name="search_keyword" class="form-control search mini-input" placeholder="{{ trans('messages.type_to_search') }}" />
+                        <span class="filter-group">
+                            <select class="select" name="paid_status">
+                                <option value="">{{ trans('messages.all_payments') }}</option>
+                                @foreach (Acelle\Model\Subscription::paidStatusSelectOptions() as $option)
+                                    <option value="{{ $option['value'] }}">
+                                        {{ $option['text'] }}
+                                    </option>
+                                @endforeach
+                            </select>
+                        </span>
+                        <span class="text-nowrap">
+                            <input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
                             <i class="icon-search4 keyword_search_button"></i>
                         </span>
                     </div>
