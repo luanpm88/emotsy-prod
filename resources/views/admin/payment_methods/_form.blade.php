@@ -1,6 +1,3 @@
-@if (!Acelle\Helpers\LicenseHelper::systemLicenseIsExtended())
-	<div class="alert alert-warning">{!! trans('messages.is_not_extended_license', ['link' => action('Admin\SettingController@license')]) !!}</div>
-@endif
 @if ($errors->has('payment_method_not_valid'))
 	<div class="alert alert-danger">{{ $errors->first('payment_method_not_valid') }}</div>
 @endif
