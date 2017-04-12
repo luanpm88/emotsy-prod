@@ -1625,8 +1625,8 @@ return [
     'license_optional' => 'License (Purchased code)',
     'license' => 'License (Purchased code)',
     'install.license.help' => 'This is optional. You can update it later in setting page.',
-    'is_not_extended_license' => 'Extended license required for some features. Please consider <br /> purchasing one.
-        If you have already purchased an<br /> extended license, please enter it <a href=":link">here</a>',
+    'is_not_extended_license' => 'Extended license required for some features. Please consider purchasing one.
+        <br />If you have already purchased an extended license, please enter it <a href=":link">here</a>',
     'frontend_not_have_license' => 'A valid license key is required to register your installation.',
     'backend_not_have_license' => 'A valid license key is required to register your installation.<br>You can enter it <a href=":link">here</a>',
     'sending_server_no_active' => 'You have no active sending servers',

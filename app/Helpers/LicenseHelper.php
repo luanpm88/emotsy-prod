@@ -7,7 +7,7 @@ class LicenseHelper
     // license type
     const TYPE_REGULAR = 'regular';
     const TYPE_EXTENDED = 'extended';
-    
+
     /**
      * Get license type: normal / extended.
      *
@@ -26,15 +26,15 @@ class LicenseHelper
             )
         ));
         curl_setopt($ch,CURLOPT_USERAGENT,md5($license));
-        
+
         // receive server response ...
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        
+
         $server_output = curl_exec($ch);
-        
+
         return json_decode($server_output, true);
     }
-    
+
     /**
      * Get license type: normal / extended.
      *
@@ -43,15 +43,15 @@ class LicenseHelper
     public static function getLicenseType($license)
     {
         $result = self::getLicense($license);
-        
+
         # return '' if not valid
         if ($result['status'] != 'valid') {
             return '';
         }
-        
+
         return $result['data']['verify-purchase']['licence'] == 'Regular License' ? self::TYPE_REGULAR : self::TYPE_EXTENDED;
     }
-    
+
     /**
     * Check is valid extend license
     *
@@ -61,7 +61,7 @@ class LicenseHelper
     {
         return LicenseHelper::isValid($license) && LicenseHelper::getLicenseType($license) == LicenseHelper::TYPE_EXTENDED;
     }
-    
+
     /**
     * Check license is valid
     *
@@ -70,10 +70,20 @@ class LicenseHelper
     public static function isValid($license)
     {
         $result = self::getLicense($license);
-        
+
         return $result['status'] == 'valid';
     }
-    
+
+    /**
+     * Check license is extended not remote.
+     *
+     * @var boolean
+     */
+    public static function systemLicenseIsExtended()
+    {
+        return \Acelle\Model\Setting::get('license_type') == LicenseHelper::TYPE_EXTENDED;
+    }
+
     /**
      * Check when show not extended popup.
      *
@@ -82,6 +92,6 @@ class LicenseHelper
     public static function showNotExtendedLicensePopup()
     {
         return (\Request::is('*subscriptions*') || \Request::is('*payment_methods*') || \Request::is('*plans*') || \Request::is('*currencies*'))
-            && \Acelle\Model\Setting::get('license_type') != LicenseHelper::TYPE_EXTENDED;
+            && !LicenseHelper::systemLicenseIsExtended();
     }
 }
