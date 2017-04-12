@@ -240,8 +240,6 @@
 				</div>
 			@endif
 		@endif
-
-		@include('layouts._not_extended_license_notify')
 	</div>
 
 	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#copy_campaign"></a>
