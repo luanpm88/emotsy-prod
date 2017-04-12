@@ -91,7 +91,7 @@ class LicenseHelper
      */
     public static function showNotExtendedLicensePopup()
     {
-        return (\Request::is('*subscriptions*') || \Request::is('*payment_methods*') || \Request::is('*plans*') || \Request::is('*currencies*'))
+        return (\Request::is('*payment_methods*'))
             && !LicenseHelper::systemLicenseIsExtended();
     }
 }
