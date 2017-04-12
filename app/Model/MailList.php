@@ -1347,7 +1347,7 @@ class MailList extends Model
                 // if all sending servers are blacklisted
                 if (sizeof($blacklisted) == sizeof($selection)) {
                     MailLog::warning("All sending servers exceed sending limit, waiting...");
-                    sleep(60);
+                    sleep(30);
                 }
 
                 continue;

@@ -1709,16 +1709,15 @@ return [
     'subscribe_to_a_plan' => 'Subscribe to a plan',
     'subscribe_to_a_plan_intro' => 'Thank you for signing up with Acelle Mail. You are not currently subscribed to any plan yet. Below are the available plans for you to choose from:',
     'subscribe_plan' => 'Subscribe',
-    'purchasing_intro_braintree_paypal' => 'Please click to PayPal Checkout button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
-				. Your plan price is: <a><strong>:price</strong></a>',
+    'purchasing_intro_braintree_paypal' => 'Please click the PayPal checkout button below to proceed with the payment for your subscription to <a><strong>:plan plan</strong></a>, the price is <a><strong>:price</strong></a>',
     'next_plan' => 'Next plan',
     'available_plans' => 'Available plans',
     'next_plan_active_intro' => 'You have successfully subscribed to the <a><strong>:plan plan</strong></a>.
         Your subscription will start in <strong>:remain</strong>, from <strong>:start_at</strong>. Please find your next plan details below',
     'current_plan_disabled_intro' => 'Your current subscription for <a><strong>:plan plan</strong></a> was disabled.
         Please contact your service provider for more information',
-    'plan_status_active' => 'active',
-    'plan_status_inactive' => 'inactive',
+    'plan_status_active' => 'Active',
+    'plan_status_inactive' => 'Inactive',
     'registration_recaptcha' => 'Registration captcha',
     'setting.registration_recaptcha.help' => 'Enable captcha for registration to block spammers and bots from accessing the webapp.',
     'frontend_dashboard_hello' => 'Hello, :name!',
