@@ -39,11 +39,6 @@ class PlanPolicy
         return $can;
     }
 
-    public function profile(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
-    {
-        return $user->id == $item->user_id;
-    }
-
     public function update(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
     {
         $ability = $user->admin->getPermission('plan_update');

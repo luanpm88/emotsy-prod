@@ -1041,7 +1041,7 @@ class Customer extends Model
     public function apiRules()
     {
         return array(
-            'email' => 'required|email|unique:users,email,'.$this->id.',id',
+            'email' => 'required|email|unique:users,email,'.$this->user_id.',id',
             'first_name' => 'required',
             'last_name' => 'required',
             'timezone' => 'required',
@@ -1060,7 +1060,7 @@ class Customer extends Model
         $arr = [];
 
         if(isset($request->email)) {
-            $arr['email'] = 'required|email|unique:users,email,'.$this->id.',id';
+            $arr['email'] = 'required|email|unique:users,email,'.$this->user_id.',id';
         }
         if(isset($request->first_name)) {
             $arr['first_name'] = 'required';

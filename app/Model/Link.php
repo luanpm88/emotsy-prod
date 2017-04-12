@@ -34,15 +34,15 @@ class Link extends Model
         return $this->belongsToMany('Acelle\Model\Campaign', 'campaign_links');
     }
 
-    public function clicks($user = null, $campaign = null)
+    public function clicks($customer = null, $campaign = null)
     {
         $query = ClickLog::select('click_logs.*')
             ->where('click_logs.url', '=', $this->url);
 
-        if (isset($user)) {
+        if (isset($customer)) {
             $query = $query->join('tracking_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
                 ->join('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id')
-                ->where('campaigns.user_id', '=', $user->id);
+                ->where('campaigns.customer_id', '=', $customer->id);
         }
 
         if (isset($campaign)) {
@@ -53,9 +53,9 @@ class Link extends Model
         return $query;
     }
 
-    public function lastClick($user = null, $campaign = null)
+    public function lastClick($customer = null, $campaign = null)
     {
-        $query = $this->clicks($user, $campaign)->orderBy('created_at', 'desc')->first();
+        $query = $this->clicks($customer, $campaign)->orderBy('created_at', 'desc')->first();
 
         return $query;
     }

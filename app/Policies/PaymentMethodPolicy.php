@@ -39,11 +39,6 @@ class PaymentMethodPolicy
         return false;
     }
 
-    public function profile(\Acelle\Model\User $user, \Acelle\Model\PaymentMethod $payment_method)
-    {
-        return $user->id == $payment_method->user_id;
-    }
-
     public function update(\Acelle\Model\User $user, \Acelle\Model\PaymentMethod $payment_method)
     {
         $ability = $user->admin->getPermission('payment_method_update');

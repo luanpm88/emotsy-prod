@@ -39,11 +39,6 @@ class CurrencyPolicy
         return $can;
     }
 
-    public function profile(\Acelle\Model\User $user, \Acelle\Model\Currency $item)
-    {
-        return $user->id == $item->user_id;
-    }
-
     public function update(\Acelle\Model\User $user, \Acelle\Model\Currency $item)
     {
         $ability = $user->admin->getPermission('currency_update');

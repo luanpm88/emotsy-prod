@@ -17,7 +17,7 @@ class SystemJobController extends Controller
 
         $this->middleware('auth');
     }
-    
+
     /**
      * Display a listing of subscriber import job.
      *
@@ -31,7 +31,7 @@ class SystemJobController extends Controller
             'system_jobs' => $system_jobs,
         ]);
     }
-    
+
     /**
      * Download log.
      *
@@ -42,7 +42,7 @@ class SystemJobController extends Controller
     public function downloadLog(Request $request)
     {
         $job = \Acelle\Model\ImportSubscribersSystemJob::find($request->id);
-        
+
         // authorize
         // @todo: redundant find() here
         if (\Gate::denies('downloadImportLog', \Acelle\Model\SystemJob::find($request->id))) {
@@ -51,7 +51,7 @@ class SystemJobController extends Controller
 
         return response()->download($job->getLog());
     }
-    
+
     /**
      * Delete job.
      *
@@ -69,10 +69,10 @@ class SystemJobController extends Controller
                 $job->delete();
             }
         }
-        
+
         echo trans('messages.system_jobs.deleted');
     }
-    
+
     /**
      * Download log.
      *
@@ -83,7 +83,7 @@ class SystemJobController extends Controller
     public function downloadCsv(Request $request)
     {
         $job = \Acelle\Model\SystemJob::find($request->id);
-        
+
         // authorize
         if (\Gate::denies('downloadExportCsv', $job)) {
             return $this->notAuthorized();
@@ -91,7 +91,7 @@ class SystemJobController extends Controller
 
         return response()->download(storage_path('job/'.$job->id.'/data.csv'));
     }
-    
+
     /**
      * Cancel stukced running import job.
      *
@@ -107,9 +107,12 @@ class SystemJobController extends Controller
             // authorize
             if (\Gate::allows('cancel', $job)) {
                 $job->setCancelled();
+            } else {
+                echo "dddd";
+                return;
             }
         }
-        
+
         echo trans('messages.system_jobs.cancelled');
     }
 }
