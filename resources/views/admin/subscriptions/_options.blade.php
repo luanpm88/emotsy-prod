@@ -219,8 +219,8 @@
         </div>
         <div class="tab-pane" id="top-tab3">
             <p>{!! trans('messages.options.wording') !!}</p>
-            <div class="row">
-                <div class="boxing col-md-4">
+            <div class="row boxing">
+                <div class="col-md-4">
                     @include('helpers.form_control', [
                         'type' => 'text',
                         'class' => 'numeric',

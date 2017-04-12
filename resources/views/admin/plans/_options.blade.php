@@ -219,11 +219,11 @@
         </div>
         <div class="tab-pane" id="top-tab3">
             <!--<h3 class="text-teal-800">{{ trans('messages.sending_quota') }}</h3>-->
-            <div class="row">
+            <div class="row boxing">
                 <div class="col-md-12">
                     <p>{!! trans('messages.options.wording') !!}</p>
                 </div>
-                <div class="boxing col-md-4">
+                <div class="col-md-4">
                     @include('helpers.form_control', [
                         'type' => 'text',
                         'class' => 'numeric',
