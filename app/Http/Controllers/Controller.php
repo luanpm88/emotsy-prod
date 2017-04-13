@@ -2,6 +2,7 @@
 
 namespace Acelle\Http\Controllers;
 
+use Illuminate\Http\Request;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -67,6 +68,24 @@ class Controller extends BaseController
     public function demo()
     {
         return view('demo');
+    }
+
+    /**
+     * Go to demo admin/campaign page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function demoGo(Request $request)
+    {
+        \Auth::logout();
+
+        if ($request->view == 'backend') {
+            session()->set('demo', 'backend');
+            return redirect()->action('Admin\HomeController@index');
+        } else {
+            session()->set('demo', 'frontend');
+            return redirect()->action('HomeController@index');
+        }
     }
 
     /**
