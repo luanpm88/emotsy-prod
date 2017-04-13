@@ -196,6 +196,11 @@ class SubscriptionController extends Controller
     {
         $subscription = \Acelle\Model\Subscription::findByUid($uid);
 
+        // prevent action from demo mod
+        if($this->isDemoMode()) {
+            return $this->notAuthorized();
+        }
+
         // authorize
         if (!$request->user()->admin->can('update', $subscription)) {
             return $this->notAuthorized();

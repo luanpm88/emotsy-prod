@@ -396,7 +396,6 @@ class AdminController extends Controller
      */
     public function loginBack(Request $request)
     {
-        echo "ddd";
         $id = \Session::pull('orig_admin_id');
         $orig_user = \Acelle\Model\User::findByUid($id);
 

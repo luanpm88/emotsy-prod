@@ -177,6 +177,11 @@ class CurrencyController extends Controller
         $current_user = $request->user();
         $currency = \Acelle\Model\Currency::findByUid($id);
 
+        // prevent action from demo mod
+        if($this->isDemoMode()) {
+            return $this->notAuthorized();
+        }
+
         // authorize
         if (\Gate::denies('update', $currency)) {
             return $this->notAuthorized();

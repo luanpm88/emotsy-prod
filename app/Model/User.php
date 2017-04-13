@@ -81,10 +81,10 @@ class User extends Authenticatable
             $lines = explode("\n", $content);
             if (count($lines) > 1) {
                 $demo = session()->get('demo');
-                if (!isset($demo) || $demo == 'admin') {
+                if (!isset($demo) || $demo == 'backend') {
                     return ['email' => $lines[0], 'password' => $lines[1]];
                 } else {
-                    return ['email' => $lines[0], 'password' => $lines[1]];
+                    return ['email' => $lines[2], 'password' => $lines[3]];
                 }
             }
         }

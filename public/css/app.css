@@ -718,9 +718,14 @@ input.error {
     border-color: #4CAF50;
     color: #fff;
 }
-.bg-expired, .bg-past, .bg-spam-reported, .bg-pending, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-paused, .bg-done {
+.bg-expired, .bg-past, .bg-spam-reported, .bg-pending, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done {
     background-color: #777;
     border-color: #777;
+    color: #fff;
+}
+.bg-paused {
+    background-color: #E91E63;
+    border-color: #E91E63;
     color: #fff;
 }
 .bg-expired {
