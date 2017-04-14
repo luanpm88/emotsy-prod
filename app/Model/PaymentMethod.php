@@ -35,6 +35,7 @@ class PaymentMethod extends Model
     const TYPE_PAYPAL = 'paypal';
 	const TYPE_BRAINTREE_PAYPAL = 'braintree_paypal';
 	const TYPE_BRAINTREE_CREDIT_CARD = 'braintree_credit_card';
+    const TYPE_STRIPE_CREDIT_CARD = 'stripe_credit_card';
 
     /**
      * The attributes that are mass assignable.
@@ -65,6 +66,10 @@ class PaymentMethod extends Model
 			$rules['options.merchantId'] = 'required';
 			$rules['options.publicKey'] = 'required';
 			$rules['options.privateKey'] = 'required';
+		}
+
+        if($this->type == PaymentMethod::TYPE_STRIPE_CREDIT_CARD) {
+			$rules['options.api_key'] = 'required';
 		}
 
 		# Check if payment method is valid

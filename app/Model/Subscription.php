@@ -900,4 +900,14 @@ class Subscription extends Model
     {
         return Subscription::STATUSES[$this->status][$this->timeStatus()];
     }
+
+    /**
+     * Get stripe price.
+     *
+     * @return string
+     */
+    public function stripePrice()
+    {
+        return $this->price*100;
+    }
 }

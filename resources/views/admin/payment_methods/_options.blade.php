@@ -65,3 +65,18 @@
         </div>
     </div>
 @endif
+
+@if ($payment_method->type == \Acelle\Model\PaymentMethod::TYPE_STRIPE_CREDIT_CARD)
+    <div class="row">
+		<div class="col-md-4">
+            @include('helpers.form_control', [
+				'type' => 'text',
+				'name' => 'options[api_key]',
+                'label' => trans('messages.stripe_api_key'),
+				'value' => $payment_method->getOption('api_key'),
+				'help_class' => 'payment_method',
+				'rules' => $payment_method->rules()
+			])
+        </div>
+	</div>
+@endif

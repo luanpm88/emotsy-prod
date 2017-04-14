@@ -67,7 +67,7 @@ class PaymentController extends Controller {
                 $payment->data = serialize($result);
                 $payment->status = $result->success ? 'success' : 'failed';
                 $payment->action = \Acelle\Model\Payment::ACTION_PAID;
-                $payment->payment_method_name = trans('messages.payment_method_type_' . $payment_method->type);
+                $payment->payment_method_name = trans('messages.' . $payment_method->type);
                 $payment->order_id = $order_id;
                 $payment->save();
 
@@ -81,7 +81,7 @@ class PaymentController extends Controller {
 
         } catch (\Exception $e) {
             PaymentLog::error(trans('messages.something_went_wrong_with_payment') . ': ' .$e->getMessage());
-            return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment')]);
+            return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment', ['error' => $e->getMessage()])]);
         }
 
         return view('payments.braintree_credit_card', [
@@ -128,7 +128,7 @@ class PaymentController extends Controller {
                 $payment->payment_method_id = $payment_method->id;
                 $payment->status = $result->success ? 'success' : 'failed';
                 $payment->action = \Acelle\Model\Payment::ACTION_PAID;
-                $payment->payment_method_name = trans('messages.payment_method_type_' . $payment_method->type);
+                $payment->payment_method_name = trans('messages.' . $payment_method->type);
                 $payment->order_id = $order_id;
                 $payment->save();
 
@@ -142,7 +142,7 @@ class PaymentController extends Controller {
 
         } catch (\Exception $e) {
             PaymentLog::error(trans('messages.something_went_wrong_with_payment') . ': ' .$e->getMessage());
-            return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment')]);
+            return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment', ['error' => $e->getMessage()])]);
         }
 
         return view('payments.braintree_paypal', [
@@ -203,5 +203,96 @@ class PaymentController extends Controller {
     public function cash(Request $request, $subscription_uid) {
         $request->session()->flash('alert-success', trans('messages.subscription.cash.created'));
         return redirect()->action('AccountController@subscription');
+    }
+
+    /**
+     * Subscription pay by Stripe credit card.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function stripe_credit_card(Request $request, $subscription_uid) {
+        $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
+        $order_id = $subscription->getOrderID();
+        $result = NULL;
+
+        $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_STRIPE_CREDIT_CARD);
+        $apiKey = $payment_method->getOption('api_key');
+
+
+        try {
+            \Stripe\Stripe::setApiKey('sk_test_BQokikJOvBiI2HlWgH4olfQ2');
+
+            // validate and save posted data
+            if ($request->isMethod('post')) {
+
+                // Token is created using Stripe.js or Checkout!
+                // Get the payment token submitted by the form:
+                $token = $request->stripeToken;
+
+                // Charge the user's card:
+                $result = \Stripe\Charge::create(array(
+                    "amount" => $subscription->stripePrice(),
+                    "currency" => $subscription->currency_code,
+                    "description" => trans('messages.stripe_checkout_description', ['order' => $order_id]),
+                    "source" => $token,
+                ));
+
+                $payment = new Payment();
+                $payment->subscription_id = $subscription->id;
+                $payment->payment_method_id = $payment_method->id;
+                $payment->data = serialize($result);
+                $payment->status = 'success';
+                $payment->action = \Acelle\Model\Payment::ACTION_PAID;
+                $payment->payment_method_name = trans('messages.' . $payment_method->type);
+                $payment->order_id = $order_id;
+                $payment->save();
+
+                $subscription->setActive();
+                $subscription->setPaid();
+
+                return redirect()->action('PaymentController@success', $subscription->uid);
+            }
+
+        } catch(\Stripe_CardError $e) {
+            $error_message = "";
+            // Since it's a decline, Stripe_CardError will be caught
+            $body = $e->getJsonBody();
+            $err  = $body['error'];
+
+            $error_message .= 'Status is:' . $e->getHttpStatus() . "\n";
+            $error_message .= 'Type is:' . $err['type'] . "\n";
+            $error_message .= 'Code is:' . $err['code'] . "\n";
+            // param is '' in this case
+            $error_message .= 'Param is:' . $err['param'] . "\n";
+            $error_message .= 'Message is:' . $err['message'] . "\n";
+        } catch (\Stripe_InvalidRequestError $e) {
+            $error_message = $e->getMessage();
+        } catch (\Stripe_AuthenticationError $e) {
+            // Authentication with Stripe's API failed
+            // (maybe you changed API keys recently)
+            $error_message = $e->getMessage();
+        } catch (\Stripe_ApiConnectionError $e) {
+            // Network communication with Stripe failed
+        } catch (\Stripe_Error $e) {
+            // Display a very generic error to the user, and maybe send
+            // yourself an email
+            $error_message = $e->getMessage();
+        } catch (\Exception $e) {
+            // Something else happened, completely unrelated to Stripe
+            $error_message = $e->getMessage();
+        }
+
+        if (isset($error_message)) {
+            PaymentLog::error(trans('messages.something_went_wrong_with_payment') . ': ' .$error_message);
+            return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment', ['error' => $error_message])]);
+        }
+
+        return view('payments.stripe_credit_card', [
+            'subscription' => $subscription,
+            'apiKey' => $apiKey,
+            'result' => $result,
+            'payment_method' => $payment_method,
+        ]);
     }
 }

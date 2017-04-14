@@ -75,6 +75,7 @@ class PaymentMethodController extends Controller
     public function create(Request $request)
     {
         $payment_method = new \Acelle\Model\PaymentMethod();
+        $payment_method->type = \Acelle\Model\PaymentMethod::TYPE_STRIPE_CREDIT_CARD;
 
         // authorize
         if (\Gate::denies('create', $payment_method)) {
