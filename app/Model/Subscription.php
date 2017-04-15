@@ -908,6 +908,24 @@ class Subscription extends Model
      */
     public function stripePrice()
     {
-        return $this->price*100;
+        $currency_rates = [
+            'CLP' => 1,
+            'DJF' => 1,
+            'JPY' => 1,
+            'KMF' => 1,
+            'RWF' => 1,
+            'VUV' => 1,
+            'XAF' => 1,
+            'XOF' => 1,
+            'BIF' => 1,
+            'GNF' => 1,
+            'KRW' => 1,
+            'MGA' => 1,
+            'PYG' => 1,
+            'VND' => 1,
+            'XPF' => 1
+        ];
+        $rate = isset($currency_rates[$this->currency_code]) ? $currency_rates[$this->currency_code] : 100;
+        return $this->price*$rate;
     }
 }

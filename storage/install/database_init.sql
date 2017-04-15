@@ -267,4 +267,5 @@ INSERT INTO `<<prefix>>plans` (`id`, `uid`, `admin_id`, `currency_id`, `name`, `
 INSERT INTO `<<prefix>>payment_methods` (`id`, `uid`, `admin_id`, `name`, `type`, `options`, `status`, `custom_order`, `created_at`, `updated_at`) VALUES
 (1, '58bf6e250782f', NULL, 'Pay in Cash', 'cash', 'null', 'active', 0, '2017-03-08 02:36:21', '2017-03-08 02:56:29'),
 (2, '58bf724e9789b', NULL, 'Pay with PayPal', 'braintree_paypal', '{"environment":"production","merchantId":"","publicKey":"","privateKey":""}', 'inactive', 2, '2017-03-08 02:54:06', '2017-03-08 02:55:20'),
-(3, '58bf7298565d0', NULL, 'Pay by Credit Card', 'braintree_credit_card', '{"environment":"production","merchantId":"","publicKey":"","privateKey":""}', 'inactive', 1, '2017-03-08 02:55:20', '2017-03-08 02:56:37');
+(3, '58bf7298565d0', NULL, 'Pay by Credit Card', 'braintree_credit_card', '{"environment":"production","merchantId":"","publicKey":"","privateKey":""}', 'inactive', 1, '2017-03-08 02:55:20', '2017-03-08 02:56:37'),
+(4, '58f0a900c19d3', NULL, 'Pay by Credit Card', 'stripe_credit_card', '{"api_key":"pk_test_6pRNASCoBOKtIshFeQd4XMUh"}', 'inactive', 0, '2017-04-14 10:48:32', '2017-04-14 12:17:00');
