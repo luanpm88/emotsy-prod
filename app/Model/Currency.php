@@ -24,7 +24,7 @@ class Currency extends Model
     {
         return array(
             'name' => 'required',
-            'code' => 'required',
+            'code' => 'required|alpha|size:3',
             'format' => 'required|substring:{PRICE}',
         );
     }
@@ -64,6 +64,15 @@ class Currency extends Model
                 $uid = uniqid();
             }
             $item->uid = $uid;
+
+            // uppercase for currency code
+            $item->code = strtoupper($item->code);
+        });
+
+        static::updating(function($item)
+        {
+            // uppercase for currency code
+            $item->code = strtoupper($item->code);
         });
     }
 
