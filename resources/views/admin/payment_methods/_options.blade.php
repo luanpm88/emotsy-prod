@@ -2,15 +2,43 @@
     <div class="row">
         <div class="col-md-4">
             @include('helpers.form_control', [
-				'type' => 'text',
-				'name' => 'options[merchant_id]',
-                'label' => trans('messages.paypal_merchant_id'),
-				'value' => $payment_method->getOption('merchant_id'),
+				'type' => 'select',
+				'name' => 'options[environment]',
+                'label' => trans('messages.environment'),
+				'value' => $payment_method->getOption('environment'),
+				'options' => [
+					['value' => 'sandbox', 'text' => trans('messages.sandbox')],
+					['value' => 'production', 'text' => trans('messages.production')],
+				],
 				'help_class' => 'payment_method',
 				'rules' => $payment_method->rules()
 			])
         </div>
-    </div>
+	</div>
+	<div class="row">
+		<div class="col-md-8">
+            @include('helpers.form_control', [
+				'type' => 'text',
+				'name' => 'options[clientID]',
+                'label' => trans('messages.paypal_client_id'),
+				'value' => $payment_method->getOption('clientID'),
+				'help_class' => 'payment_method',
+				'rules' => $payment_method->rules()
+			])
+        </div>
+	</div>
+	<div class="row">
+		<div class="col-md-8">
+            @include('helpers.form_control', [
+				'type' => 'text',
+				'name' => 'options[secret]',
+                'label' => trans('messages.paypal_secret'),
+				'value' => $payment_method->getOption('secret'),
+				'help_class' => 'payment_method',
+				'rules' => $payment_method->rules()
+			])
+        </div>
+	</div>
 @endif
 
 @if ($payment_method->type == \Acelle\Model\PaymentMethod::TYPE_BRAINTREE_PAYPAL ||
@@ -24,8 +52,8 @@
                 'label' => trans('messages.environment'),
 				'value' => $payment_method->getOption('environment'),
 				'options' => [
-					['value' => 'production', 'text' => trans('messages.production')],
 					['value' => 'sandbox', 'text' => trans('messages.sandbox')],
+					['value' => 'production', 'text' => trans('messages.production')],
 				],
 				'help_class' => 'payment_method',
 				'rules' => $payment_method->rules()

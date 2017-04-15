@@ -32,24 +32,26 @@ class PaymentController extends Controller {
         // validate and save posted data
         if ($request->isMethod('post')) {
             try {
-                $access_token = $payment_method->getPayPalAccessToken();
-                $result = $payment_method->checkPayPalPaymentSuccess($request->paymentID, $request->payerID, $access_token);
+                $access_token = $payment_method->getPayPalAccessToken()["token"];
+                $result = $payment_method->checkPayPalPaymentSuccess($request->paymentID, $request->payerID, $access_token, $subscription);
 
                 $payment = new Payment();
                 $payment->subscription_id = $subscription->id;
                 $payment->payment_method_id = $payment_method->id;
                 $payment->data = serialize($result);
-                $payment->status = $result['success'] ? 'success' : 'failed';
+                $payment->status = $result->success ? 'success' : 'failed';
                 $payment->action = \Acelle\Model\Payment::ACTION_PAID;
                 $payment->payment_method_name = trans('messages.' . $payment_method->type);
                 $payment->order_id = $order_id;
                 $payment->save();
 
-                if ($result['success']) {
+                if ($result->success) {
                     $subscription->setActive();
                     $subscription->setPaid();
 
                     return redirect()->action('PaymentController@success', $subscription->uid);
+                } else {
+                    throw new \Exception($result->error);
                 }
             } catch (\Exception $e) {
                 PaymentLog::error(trans('messages.something_went_wrong_with_payment') . ': ' .$e->getMessage());

@@ -64,14 +64,14 @@
 
                         // Set your environment
 
-                        env: 'sandbox', // sandbox | production
+                        env: '{{ $payment_method->getOption('environment') }}', // sandbox | production
 
                         // PayPal Client IDs - replace with your own
                         // Create a PayPal app: https://developer.paypal.com/developer/applications/create
 
                         client: {
-                            sandbox:    'AdGlUijDyfxH2mKbKUXtxbJqA6MXlikHYXIj3wdwq3CZirg7N72Gz0OZh12opSogVHidVsopYlaKbb3B',
-                            production: 'AdGlUijDyfxH2mKbKUXtxbJqA6MXlikHYXIj3wdwq3CZirg7N72Gz0OZh12opSogVHidVsopYlaKbb3B'
+                            sandbox:    '{{ $payment_method->getOption('clientID') }}',
+                            production: '{{ $payment_method->getOption('clientID') }}'
                         },
 
                         // Wait for the PayPal button to be clicked
@@ -83,7 +83,7 @@
                             return paypal.rest.payment.create(this.props.env, this.props.client, {
                                 transactions: [
                                     {
-                                        amount: { total: '0.01', currency: 'USD' }
+                                        amount: { total: '{{ $subscription->price }}', currency: '{{ $subscription->currency_code }}' }
                                     }
                                 ]
                             });
@@ -136,4 +136,3 @@
 	</div>
 
 @endsection
-

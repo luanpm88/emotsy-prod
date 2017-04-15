@@ -54,11 +54,21 @@ class Payment extends Model
     {
         $messages = [];
         $result = unserialize($this->data);
-        if (count($result->errors->deepAll()) > 0) {
-            foreach ($result->errors->deepAll() AS $error) {
-                $messages[] = $error->code . ": " . $error->message;
-            }
-        }
+
+		if ($this->paymentMethod->type == \Acelle\Model\PaymentMethod::TYPE_BRAINTREE_PAYPAL ||
+			$this->paymentMethod->type == \Acelle\Model\PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD) {
+			if (count($result->errors->deepAll()) > 0) {
+				foreach ($result->errors->deepAll() AS $error) {
+					$messages[] = $error->code . ": " . $error->message;
+				}
+			}
+		}
+
+		if ($this->paymentMethod->type == \Acelle\Model\PaymentMethod::TYPE_PAYPAL) {
+			if (isset($result->error)) {
+				$messages[] = $result->error;
+			}
+		}
 
         return $messages;
     }

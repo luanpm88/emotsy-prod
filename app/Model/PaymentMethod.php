@@ -62,7 +62,9 @@ class PaymentMethod extends Model
 		}
 
 		if($this->type == PaymentMethod::TYPE_PAYPAL) {
-			$rules['options.merchant_id'] = 'required';
+			$rules['options.environment'] = 'required';
+			$rules['options.clientID'] = 'required';
+			$rules['options.secret'] = 'required';
 		}
 
 		if($this->type == PaymentMethod::TYPE_BRAINTREE_PAYPAL || $this->type == PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD) {
@@ -177,7 +179,9 @@ class PaymentMethod extends Model
 
         if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        }
+        } else {
+			$query = $query->orderBy("payment_methods.type", "asc");
+		}
 
         return $query;
     }
@@ -338,10 +342,13 @@ class PaymentMethod extends Model
      */
     function getPayPalAccessToken() {
         $ch = curl_init();
-        $clientId = "AdGlUijDyfxH2mKbKUXtxbJqA6MXlikHYXIj3wdwq3CZirg7N72Gz0OZh12opSogVHidVsopYlaKbb3B";
-        $secret = "EH92nB-6ivrIlQBAJ0NB54A87cHolNP2rZ15qfBBpeAb898KkfIpDatDM9beCWF5krUsgx187rHxcIdn";
 
-        curl_setopt($ch, CURLOPT_URL, "https://api.sandbox.paypal.com/v1/oauth2/token");
+		// Get options from payment method PayPal
+        $clientId = $this->getOption('clientID');
+        $secret = $this->getOption('secret');
+
+		// Request to PayPal enpoint
+        curl_setopt($ch, CURLOPT_URL, "https://api" . ( $this->getOption('environment') == 'sandbox' ? ".sandbox" : '' ). ".paypal.com/v1/oauth2/token");
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_POST, true);
@@ -351,14 +358,20 @@ class PaymentMethod extends Model
 
         $result = curl_exec($ch);
 
+		// Check the result
         if(!empty($result)) {
             $json = json_decode($result);
+
+			// Token success
             if (isset($json->access_token)) {
-                return $json->access_token;
-            }
+                return ['success' => true, 'token' => $json->access_token];
+			// Check if has any error
+            } elseif (isset($json->error)) {
+				throw new \Exception($json->error . ': ' . $json->error_description);
+			}
         }
 
-        return false;
+        throw new \Exception(trans("messages.paypal_error_cannot_get_access_token"));
     }
 
     /**
@@ -366,28 +379,39 @@ class PaymentMethod extends Model
      *
      * @return array
      */
-    function checkPayPalPaymentSuccess($paymentID, $payerID, $access_token) {
+    function checkPayPalPaymentSuccess($paymentID, $payerID, $access_token, $subscription) {
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL, "https://api.sandbox.paypal.com/v1/payments/payment/$paymentID/execute/");
+		// Request to PayPal enpoint
+        curl_setopt($ch, CURLOPT_URL, "https://api" . ( $this->getOption('environment') == 'sandbox' ? ".sandbox" : '' ). ".paypal.com/v1/payments/payment/$paymentID");
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type:application/json',
             'Authorization: Bearer ' . $access_token
         ]);
         curl_setopt($ch, CURLOPT_HEADER, false);
-        curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, '{"payer_id": "' . $payerID . '"}');
 
         $result = curl_exec($ch);
 
+		// Check the result
         if(!empty($result)) {
-            $json = json_decode($result);
-            if($json->name == "PAYMENT_ALREADY_DONE") {
-                return ['success' => true, 'data' => $result];
+			$json = json_decode($result);
+
+			// Check if payment state is not approved
+			if (!isset($json->state) || $json->state != 'approved') {
+				return (object) ['success' => false, 'data' => $json, 'error' => trans("messages.paypal_error_payment_not_approved")];
+			}
+
+			// Check if payment amount is not equal to the subscription amount
+            if((float) $json->transactions[0]->amount->details->subtotal != (float) $subscription->price) {
+                return (object) ['success' => false, 'data' => $json, 'error' => trans("messages.paypal_error_amount_not_equal")];
             }
+
+			// Return success if nothing wrong
+			return (object) ['success' => true, 'data' => $result];
         }
 
-        return ['success' => false, 'data' => $result];
+		// Uncatchable error
+        throw new \Exception(trans("messages.paypal_error_unknown"));
     }
 }

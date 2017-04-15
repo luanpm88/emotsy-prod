@@ -1755,4 +1755,9 @@ return [
     'payment_method_type_stripe_credit_card' => 'Pay by Stripe / Credit card',
     'purchasing_intro_paypal' => 'Please click the button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
 		. Your plan price is: <a><strong>:price</strong></a>',
+    'paypal_client_id' => 'PayPal Client ID',
+    'paypal_secret' => 'PayPal Secret',
+    'paypal_error_amount_not_equal' => 'Payment amount is not valid. Please contact the provider for more infomation.',
+    'paypal_error_cannot_get_access_token' => 'Cannot retrieve PayPal access token',
+    'paypal_error_unknown' => 'Unknown',
 ];
