@@ -61,11 +61,12 @@
 							@endif
 							<div class="row license-line">
 								<div class="col-md-6">
+									<?php $olds = request()->old(); ?>
 									@include('helpers.form_control', [
 										'type' => $setting['type'],
 										'class' => (isset($setting['class']) ? $setting['class'] : "" ),
 										'name' => $name,
-										'value' => (isset(request()->old()['license']) && $current_license != request()->old()['license'] ? request()->old()['license'] : ''),
+										'value' => (isset($olds['license']) && $current_license != $olds['license'] ? $olds['license'] : ''),
 										'label' => trans('messages.enter_license_and_click_verify'),
 										'help_class' => 'setting',
 										'options' => (isset($setting['options']) ? $setting['options'] : "" ),
