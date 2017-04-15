@@ -12,8 +12,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        if ( config('app.env') === 'local' ) {
+            \DB::connection()->enableQueryLog();
+        }
+
+        if ( config('app.env') === 'local' ) {
+            \DB::connection()->enableQueryLog();
+        }
+
         ini_set('memory_limit', '-1');
-        
+
         app('view')->composer('*', function ($view) {
             $action = app('request')->route()->getAction();
 
@@ -36,6 +44,15 @@ class AppServiceProvider extends ServiceProvider
         Validator::replacer('substring', function ($message, $attribute, $rule, $parameters) {
             return str_replace(':tag', $parameters[0], $message);
         });
+
+        if ( config('app.env') === 'local' ) {
+            \Event::listen('kernel.handled', function ( $request, $response ) {
+                if ( $request->has('sql-debug') ) {
+                    $queries = \DB::getQueryLog();
+                    dd($queries);
+                }
+            });
+        }
     }
 
     /**
