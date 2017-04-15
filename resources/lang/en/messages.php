@@ -1760,4 +1760,5 @@ return [
     'paypal_error_amount_not_equal' => 'Payment amount is not valid. Please contact the provider for more infomation.',
     'paypal_error_cannot_get_access_token' => 'Cannot retrieve PayPal access token',
     'paypal_error_unknown' => 'Unknown',
+    'added_by' => 'Added by',
 ];

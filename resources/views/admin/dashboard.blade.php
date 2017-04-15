@@ -90,8 +90,8 @@
                                         {{ $customer->displayName() }}
                                     </a>
                                 </h6>
-                                <p class="mb-0">
-                                    @include ('admin.modules.admin_line', ['admin' => $customer->admin])
+                                <p class="mb-0 admin-line">
+                                    {{ $customer->user->email }}
                                 </p>
                             </div>
                             <div class="col-sm-4 col-md-4 text-left">
