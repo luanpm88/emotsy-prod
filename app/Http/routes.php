@@ -101,9 +101,9 @@ Route::group(['middleware' => ['not_logged_in']], function () {
     Route::get('plans/select2', 'PlanController@select2');
 
     // Payments
-    Route::get('payment-cancel/{subscription_uid}', 'PaymentController@paymentCancel');
-    Route::get('payment-status/{subscription_uid}', 'PaymentController@paymentStatus');
-    Route::get('payment-cancel', function () {
+    Route::get('paypal-payment-cancel/{subscription_uid}', 'PaymentController@paypalCancel');
+    Route::get('paypal-payment-status/{subscription_uid}', 'PaymentController@paypalStatus');
+    Route::get('paypal-payment-cancel', function () {
         return 'Payment has been canceled';
     });
 

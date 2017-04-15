@@ -25,9 +25,34 @@ class PaymentController extends Controller {
      */
     public function paypal(Request $request, $subscription_uid) {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
+        $order_id = $subscription->getOrderID();
+
+        $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_PAYPAL);
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+            $payment = new Payment();
+            $payment->subscription_id = $subscription->id;
+            $payment->payment_method_id = $payment_method->id;
+            $payment->data = serialize($result);
+            $payment->status = $result->success ? 'success' : 'failed';
+            $payment->action = \Acelle\Model\Payment::ACTION_PAID;
+            $payment->payment_method_name = trans('messages.' . $payment_method->type);
+            $payment->order_id = $order_id;
+            $payment->save();
+
+            if ($result->success) {
+                $subscription->setActive();
+                $subscription->setPaid();
+
+                return redirect()->action('PaymentController@success', $subscription->uid);
+            }
+        }
 
         return view('payments.paypal', [
             'subscription' => $subscription,
+            'order_id' => $order_id,
+            'payment_method' => $payment_method,
         ]);
     }
 
