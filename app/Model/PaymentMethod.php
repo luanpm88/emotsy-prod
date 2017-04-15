@@ -330,4 +330,64 @@ class PaymentMethod extends Model
 			['value' => PaymentMethod::STATUS_INACTIVE, 'text' => trans('messages.payment_method_status_' . PaymentMethod::STATUS_INACTIVE)],
         ];
     }
+
+    /**
+     * Get PayPal Api Access token
+     *
+     * @return array
+     */
+    function getPayPalAccessToken() {
+        $ch = curl_init();
+        $clientId = "AdGlUijDyfxH2mKbKUXtxbJqA6MXlikHYXIj3wdwq3CZirg7N72Gz0OZh12opSogVHidVsopYlaKbb3B";
+        $secret = "EH92nB-6ivrIlQBAJ0NB54A87cHolNP2rZ15qfBBpeAb898KkfIpDatDM9beCWF5krUsgx187rHxcIdn";
+
+        curl_setopt($ch, CURLOPT_URL, "https://api.sandbox.paypal.com/v1/oauth2/token");
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_USERPWD, $clientId.":".$secret);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
+
+        $result = curl_exec($ch);
+
+        if(!empty($result)) {
+            $json = json_decode($result);
+            if (isset($json->access_token)) {
+                return $json->access_token;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check PayPal Payment success
+     *
+     * @return array
+     */
+    function checkPayPalPaymentSuccess($paymentID, $payerID, $access_token) {
+        $ch = curl_init();
+
+        curl_setopt($ch, CURLOPT_URL, "https://api.sandbox.paypal.com/v1/payments/payment/$paymentID/execute/");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type:application/json',
+            'Authorization: Bearer ' . $access_token
+        ]);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, '{"payer_id": "' . $payerID . '"}');
+
+        $result = curl_exec($ch);
+
+        if(!empty($result)) {
+            $json = json_decode($result);
+            if($json->name == "PAYMENT_ALREADY_DONE") {
+                return ['success' => true, 'data' => $result];
+            }
+        }
+
+        return ['success' => false, 'data' => $result];
+    }
 }

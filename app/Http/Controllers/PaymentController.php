@@ -31,21 +31,29 @@ class PaymentController extends Controller {
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $payment = new Payment();
-            $payment->subscription_id = $subscription->id;
-            $payment->payment_method_id = $payment_method->id;
-            $payment->data = serialize($result);
-            $payment->status = $result->success ? 'success' : 'failed';
-            $payment->action = \Acelle\Model\Payment::ACTION_PAID;
-            $payment->payment_method_name = trans('messages.' . $payment_method->type);
-            $payment->order_id = $order_id;
-            $payment->save();
+            try {
+                $access_token = $payment_method->getPayPalAccessToken();
+                $result = $payment_method->checkPayPalPaymentSuccess($request->paymentID, $request->payerID, $access_token);
 
-            if ($result->success) {
-                $subscription->setActive();
-                $subscription->setPaid();
+                $payment = new Payment();
+                $payment->subscription_id = $subscription->id;
+                $payment->payment_method_id = $payment_method->id;
+                $payment->data = serialize($result);
+                $payment->status = $result['success'] ? 'success' : 'failed';
+                $payment->action = \Acelle\Model\Payment::ACTION_PAID;
+                $payment->payment_method_name = trans('messages.' . $payment_method->type);
+                $payment->order_id = $order_id;
+                $payment->save();
 
-                return redirect()->action('PaymentController@success', $subscription->uid);
+                if ($result['success']) {
+                    $subscription->setActive();
+                    $subscription->setPaid();
+
+                    return redirect()->action('PaymentController@success', $subscription->uid);
+                }
+            } catch (\Exception $e) {
+                PaymentLog::error(trans('messages.something_went_wrong_with_payment') . ': ' .$e->getMessage());
+                return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment', ['error' => $e->getMessage()])]);
             }
         }
 

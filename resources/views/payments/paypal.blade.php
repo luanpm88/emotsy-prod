@@ -93,12 +93,38 @@
 
                         onAuthorize: function(data, actions) {
 
-                            // Execute the payment
-                            console.log(data.paymentID);
-                            console.log(data.payerID);
                             return actions.payment.execute().then(function() {
-                                document.querySelector('#paypal-button-container').innerText = 'Payment Complete!';
+                                //// Execute the payment
+                                //$.post('{{ action('PaymentController@paypal', $subscription->uid) }}', {
+                                //    paymentID: data.paymentID,
+                                //    payerID: data.payerID
+                                //}).done(function (res) {
+                                //
+                                //});
+
+                                var newForm = jQuery('<form>', {
+                                    'action': '{{ action('PaymentController@paypal', $subscription->uid) }}',
+                                    'method': 'POST'
+                                });
+                                newForm.append(jQuery('<input>', {
+                                    'name': '_token',
+                                    'value': CSRF_TOKEN,
+                                    'type': 'hidden'
+                                }));
+                                newForm.append(jQuery('<input>', {
+                                    'name': 'paymentID',
+                                    'value': data.paymentID,
+                                    'type': 'hidden'
+                                }));
+                                newForm.append(jQuery('<input>', {
+                                    'name': 'payerID',
+                                    'value': data.payerID,
+                                    'type': 'hidden'
+                                }));
+                                $(document.body).append(newForm);
+                                newForm.submit();
                             });
+
                         }
 
                     }, '#paypal-button-container');

@@ -392,6 +392,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('payments/braintree/credit-card/{subscription_uid}', 'PaymentController@braintree_credit_card');
     Route::get('payments/braintree/credit-card/{subscription_uid}', 'PaymentController@braintree_credit_card');
     Route::get('payments/cash/{subscription_uid}', 'PaymentController@cash');
+    Route::post('payments/paypal/{subscription_uid}', 'PaymentController@paypal');
     Route::get('payments/paypal/{subscription_uid}', 'PaymentController@paypal');
 });
 
