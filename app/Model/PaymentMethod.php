@@ -57,6 +57,10 @@ class PaymentMethod extends Model
 			'status' => 'required',
         );
 
+        if(\Auth::user()->can('create', $this)) {
+			$rules['type'] = 'required';
+		}
+
 		if($this->type == PaymentMethod::TYPE_PAYPAL) {
 			$rules['options.merchant_id'] = 'required';
 		}
@@ -266,6 +270,7 @@ class PaymentMethod extends Model
             ['value' => PaymentMethod::TYPE_CASH, 'text' => trans('messages.' . PaymentMethod::TYPE_CASH)],
 			['value' => PaymentMethod::TYPE_BRAINTREE_PAYPAL, 'text' => trans('messages.' . PaymentMethod::TYPE_BRAINTREE_PAYPAL)],
 			['value' => PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD, 'text' => trans('messages.' . PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD)],
+            ['value' => PaymentMethod::TYPE_STRIPE_CREDIT_CARD, 'text' => trans('messages.' . PaymentMethod::TYPE_STRIPE_CREDIT_CARD)],
         ];
     }
 

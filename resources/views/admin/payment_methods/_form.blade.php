@@ -2,6 +2,19 @@
 	<div class="alert alert-danger">{{ $errors->first('payment_method_not_valid') }}</div>
 @endif
 <div class="row">
+    @if (Auth::user()->can('create', $payment_method))
+        <div class="col-md-4">
+            @include('helpers.form_control', ['type' => 'select',
+                'name' => 'type',
+                'value' => $payment_method->type,
+                'class' => 'hook',
+                'label' => trans('messages.payment_method_status'),
+                'options' => Acelle\Model\PaymentMethod::typeSelectOptions(),
+                'help_class' => 'payment_method',
+                'rules' => $payment_method->rules()
+            ])
+        </div>
+    @endif
 	<div class="col-md-4">
 		@include('helpers.form_control', ['type' => 'select',
 			'name' => 'status',
