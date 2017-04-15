@@ -36,7 +36,7 @@ class PaymentMethodPolicy
     {
         $can = $user->admin->getPermission('payment_method_create') == 'yes';
 
-        return $can;
+        return false;
     }
 
     public function update(\Acelle\Model\User $user, \Acelle\Model\PaymentMethod $payment_method)
