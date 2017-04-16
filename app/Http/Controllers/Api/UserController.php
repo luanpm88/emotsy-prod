@@ -43,6 +43,11 @@ class UserController extends Controller
             $user->user_id = $current_user->id;
             $user->status = 'active';
 
+            // Update status
+            if (!empty($request->status)) {
+                $user->status = $request->status;
+            }
+
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
@@ -114,6 +119,11 @@ class UserController extends Controller
                 $user->password = bcrypt($request->password);
             }
 
+            // Update status
+            if (!empty($request->status)) {
+                $user->status = $request->status;
+            }
+
             // Upload and save image
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
@@ -131,7 +141,7 @@ class UserController extends Controller
 
             if ($user->save()) {
                 return \Response::json([
-                    'message' => trans('messages.user.created'),
+                    'message' => trans('messages.user.updated'),
                     'api_token' => $user->api_token
                 ], 200);
             }
