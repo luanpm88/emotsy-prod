@@ -614,7 +614,7 @@ return [
     'open_map' => 'Opens - Map',
     'last_open' => 'Last open',
     'login_as_this_user' => 'Login as this user',
-    'current_login_as' => 'You currently logged in as <span class="text-semibold">:name</span>',
+    'current_login_as' => 'You are currently logged in as <span class="text-semibold">:name</span>',
     'click_to_return_to_origin_user' => 'Click <a href=":link" class="text-semibold text-white">here</a> to return to your account',
     'no_activity_logs' => 'You haven\'t had any activities recently',
     'activity_log' => 'Activity log',
