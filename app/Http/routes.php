@@ -114,7 +114,7 @@ Route::group(['middleware' => ['not_logged_in']], function () {
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('/', 'HomeController@index');
-    Route::get('/docs/api/v1', 'Controller@docsApiV1');
+    Route::get('{view}/docs/api/v1', 'Controller@docsApiV1');
 
     Route::get('/current_user_uid', 'UserController@showUid');
 
@@ -557,6 +557,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
 
 
     // Account
+    Route::get('admin/account/api/renew', 'AccountController@renewToken');
+    Route::get('admin/account/api', 'AccountController@api');
     Route::get('admin/account/profile', 'AccountController@profile');
     Route::post('admin/account/profile', 'AccountController@profile');
     Route::get('admin/account/contact', 'AccountController@contact');

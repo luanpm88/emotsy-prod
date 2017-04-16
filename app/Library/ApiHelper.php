@@ -23,7 +23,7 @@
 namespace Acelle\Library;
 
 class ApiHelper
-{    
+{
     /**
      * Docs content.
      *
@@ -32,9 +32,10 @@ class ApiHelper
     public static function docs()
     {
         $docs = [];
-        
+
         // LIST
         $docs[] = [
+            'view' => 'frontend',
             'title' => trans('messages.LISTS'),
             'functions' => [
                 [
@@ -84,7 +85,7 @@ class ApiHelper
 -d send_welcome_email=1 \
 -d unsubscribe_notification=1',
                 ],
-                
+
                 [
                     'method' => 'GET',
                     'uri' => '/api/v1/lists',
@@ -95,7 +96,7 @@ class ApiHelper
 ' . action("Api\MailListController@index") . '? \
 -d api_token=' . \Auth::user()->api_token,
                 ],
-                
+
                 [
                     'method' => 'GET',
                     'uri' => '/api/v1/lists/{uid}',
@@ -108,9 +109,10 @@ class ApiHelper
                 ],
             ],
         ];
-        
+
         // CAMPAIGN
         $docs[] = [
+            'view' => 'frontend',
             'title' => trans('messages.CAMPAIGNS'),
             'functions' => [
                 [
@@ -123,7 +125,7 @@ class ApiHelper
 ' . action("Api\CampaignController@index") . '? \
 -d api_token=' . \Auth::user()->api_token,
                 ],
-                
+
                 [
                     'method' => 'GET',
                     'uri' => '/api/v1/campaigns/{uid}',
@@ -136,9 +138,10 @@ class ApiHelper
                 ],
             ],
         ];
-        
+
         // SUBSCRIBER
         $docs[] = [
+            'view' => 'frontend',
             'title' => trans('messages.SUBSCRIBERS'),
             'functions' => [
                 [
@@ -157,7 +160,7 @@ class ApiHelper
 -d per_page=20 \
 -d page=2',
                 ],
-                
+
                 [
                     'method' => 'GET',
                     'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}',
@@ -170,7 +173,7 @@ class ApiHelper
 ' . str_replace("-ID-", "<redbold>{uid}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_uid}</redbold>", action("Api\SubscriberController@show", ["list_id" => "-LIST_ID-",  "id" => "-ID-"]))) . '? \
 -d api_token=' . \Auth::user()->api_token,
                 ],
-                
+
                 [
                     'method' => 'GET',
                     'uri' => '/api/v1/subscribers/{email}',
@@ -183,7 +186,7 @@ class ApiHelper
 ' . str_replace("-ID-", "<redbold>{email}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_uid}</redbold>", action("Api\SubscriberController@showByEmail", ["email" => "-ID-"]))) . '? \
 -d api_token=' . \Auth::user()->api_token,
                 ],
-                
+
                 [
                     'method' => 'POST',
                     'uri' => '/api/v1/lists/{list_uid}/subscribers/store',
@@ -200,7 +203,7 @@ class ApiHelper
 -d FIRST_NAME=Marine \
 -d LAST_NAME=Joze',
                 ],
-                
+
                 [
                     'method' => 'PATCH',
                     'uri' => '/api/v1/lists/{list_uid}/subscribers',
@@ -217,7 +220,7 @@ class ApiHelper
 -d FIRST_NAME=Marine \
 -d LAST_NAME=Joze',
                 ],
-                
+
                 [
                     'method' => 'PATCH',
                     'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}/subscribe',
@@ -231,7 +234,7 @@ class ApiHelper
 ' . str_replace("-ID-", "<redbold>{uid}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_uid}</redbold>", action("Api\SubscriberController@subscribe", ["list_id" => "-LIST_ID-",  "id" => "-ID-"]))) . '? \
 -d api_token=' . \Auth::user()->api_token,
                 ],
-                
+
                 [
                     'method' => 'PATCH',
                     'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}/unsubscribe',
@@ -245,7 +248,7 @@ class ApiHelper
 ' . str_replace("-ID-", "<redbold>{uid}</redbold>", str_replace("-LIST_ID-", "<redbold>{list_uid}</redbold>", action("Api\SubscriberController@unsubscribe", ["list_id" => "-LIST_ID-",  "id" => "-ID-"]))) . '? \
 -d api_token=' . \Auth::user()->api_token,
                 ],
-                
+
                 [
                     'method' => 'DELETE',
                     'uri' => '/api/v1/lists/{list_uid}/subscribers/{uid}/delete',
@@ -261,9 +264,10 @@ class ApiHelper
                 ],
             ],
         ];
-        
+
         // PLAN
         $docs[] = [
+            'view' => 'backend',
             'title' => trans('messages.plan'),
             'functions' => [
                 [
@@ -278,9 +282,10 @@ class ApiHelper
                 ],
             ],
         ];
-        
+
         // SENDING SERVER
         $docs[] = [
+            'view' => 'backend',
             'title' => trans('messages.SENDING_SERVERS'),
             'functions' => [
                 [
@@ -295,16 +300,17 @@ class ApiHelper
                 ],
             ],
         ];
-        
+
         // CUSTOMER
         $docs[] = [
+            'view' => 'backend',
             'title' => trans('messages.customer'),
             'functions' => [
                 [
                     'method' => 'POST',
                     'uri' => '/api/v1/customers',
                     'description' => 'Add new customer',
-                    'parameters' => [                        
+                    'parameters' => [
                     ],
                     'returns' => 'Creation messages in json',
                     'example' => 'curl -X POST -H "accept:application/json" -G \
@@ -317,26 +323,27 @@ class ApiHelper
 -d language_id=1 \
 -d password=123456',
                 ],
-                
+
                 [
+                    'view' => 'backend',
                     'method' => 'GET',
                     'uri' => '/api/v1/customers/{uid}',
                     'description' => 'Get information about a specific customer',
                     'parameters' => [
-                        ['name' => '$uid', 'description' => 'Customer\'s uid'],                        
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],
                     ],
                     'returns' => 'Customer information in json (profile, contact, sunscriptions,... )',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
 ' . str_replace("-ID-", "<redbold>{uid}</redbold>", action("Api\CustomerController@update", "-ID-")) . '? \
 -d api_token=' . \Auth::user()->api_token,
                 ],
-                
+
                 [
                     'method' => 'PATCH',
                     'uri' => '/api/v1/customers',
                     'description' => 'Update customer',
                     'parameters' => [
-                        ['name' => '$uid', 'description' => 'Customer\'s uid'],                        
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],
                     ],
                     'returns' => 'Creation messages in json',
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
@@ -349,26 +356,26 @@ class ApiHelper
 -d language_id=1 \
 -d password=123456',
                 ],
-                
+
                 [
                     'method' => 'PATCH',
                     'uri' => '/api/v1/customers/{uid}/enable',
                     'description' => 'Enable customer',
                     'parameters' => [
-                        ['name' => '$uid', 'description' => 'Customer\'s uid'],                        
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
 ' . str_replace("-ID-", "<redbold>{uid}</redbold>", action("Api\CustomerController@enable", "-ID-")) . '? \
 -d api_token=' . \Auth::user()->api_token,
                 ],
-                
+
                 [
                     'method' => 'PATCH',
                     'uri' => '/api/v1/customers/{uid}/disable',
                     'description' => 'Disable customer',
                     'parameters' => [
-                        ['name' => '$uid', 'description' => 'Customer\'s uid'],                        
+                        ['name' => '$uid', 'description' => 'Customer\'s uid'],
                     ],
                     'returns' => 'Action messages in json',
                     'example' => 'curl -X PATCH -H "accept:application/json" -G \
@@ -377,9 +384,10 @@ class ApiHelper
                 ],
             ],
         ];
-        
+
         // SUBSCRIPTION
         $docs[] = [
+            'view' => 'backend',
             'title' => trans('messages.subscription'),
             'functions' => [
                 [
@@ -398,12 +406,13 @@ class ApiHelper
 -d api_token=' . \Auth::user()->api_token . '  \
 -d customer_uid={customer_uid} \
 -d plan_uid={plan_uid}',
-                ],                
+                ],
             ],
         ];
-        
+
         // File
         $docs[] = [
+            'view' => 'frontend',
             'title' => trans('messages.file'),
             'functions' => [
                 [
@@ -420,10 +429,10 @@ class ApiHelper
 -d api_token=' . \Auth::user()->api_token . '  \
 -d file_url=http://demo.acellemail.com/images/logo_big.png \
 -d subdirectory=\'path/to/file\'',
-                ],                
+                ],
             ],
         ];
-        
+
         return $docs;
     }
 }

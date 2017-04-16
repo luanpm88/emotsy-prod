@@ -325,6 +325,11 @@
 							<li class="divider"></li>
 						@endif
 						<li><a href="{{ action("Admin\AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.account') }}</a></li>
+						<li rel0="AccountController/api">
+							<a href="{{ action("Admin\AccountController@api") }}" class="level-1">
+								<i class="icon-key position-left"></i> {{ trans('messages.api') }}
+							</a>
+						</li>
 						<li><a href="{{ url("/logout") }}"><i class="icon-switch2"></i> {{ trans('messages.logout') }}</a></li>
 					</ul>
 				</li>
