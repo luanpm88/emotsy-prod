@@ -9,7 +9,7 @@ use Acelle\Http\Controllers\Controller;
  * /api/v1/users - API controller for managing users.
  */
 class UserController extends Controller
-{        
+{
     /**
      * Create new user.
      *
@@ -22,17 +22,17 @@ class UserController extends Controller
     public function store(Request $request)
     {
         $current_user = \Auth::guard('api')->user();
-        
+
         $user = new \Acelle\Model\User();
 
         // authorize
         if (!$current_user->can('create', $user)) {
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
-        
+
         // save posted data
         if ($request->isMethod('post')) {
-            $validator = \Validator::make($request->all(), $user->apiRules());    
+            $validator = \Validator::make($request->all(), $user->apiRules());
             if ($validator->fails()) {
                 return response()->json($validator->messages(), 403);
             }
@@ -67,12 +67,13 @@ class UserController extends Controller
 
                 return \Response::json([
                     'message' => trans('messages.user.created'),
+                    'user_uid' => $user->uid,
                     'api_token' => $user->api_token
                 ], 200);
             }
         }
     }
-    
+
     /**
      * Update user information.
      *
@@ -85,24 +86,24 @@ class UserController extends Controller
     public function update(Request $request, $id)
     {
         $current_user = \Auth::guard('api')->user();
-        
+
         $user = \Acelle\Model\User::findByUid($id);
 
         // authorize
         if (!$current_user->can('update', $user)) {
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
-        
+
         // save posted data
         if ($request->isMethod('patch')) {
-            $validator = \Validator::make($request->all(), $user->apiUpdateRules($request));    
+            $validator = \Validator::make($request->all(), $user->apiUpdateRules($request));
             if ($validator->fails()) {
                 return response()->json($validator->messages(), 403);
             }
-            
+
             // Save current user info
             $user->fill($request->all());
-            
+
             // Change group
             if(isset($request->user_group_id) && $current_user->can('change_group', $user)) {
                 $user->user_group_id = $request->user_group_id;
