@@ -33,19 +33,19 @@ class CustomerController extends Controller
         // save posted data
         if ($request->isMethod('post')) {
             $rules = $customer->apiRules();
-            
-            $validator = \Validator::make($request->all(), $rules);    
+
+            $validator = \Validator::make($request->all(), $rules);
             if ($validator->fails()) {
                 return response()->json($validator->messages(), 403);
             }
-            
+
             // Create user account for customer
             $user = new \Acelle\Model\User();
             $user->email = $request->email;
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
-            }            
+            }
             $user->save();
 
             // Save current user info
@@ -53,7 +53,7 @@ class CustomerController extends Controller
             $customer->admin_id = $current_user->admin->id;
             $customer->fill($request->all());
             $customer->status = 'active';
-            
+
             if ($customer->save()) {
                 // Upload and save image
                 if ($request->hasFile('image')) {
@@ -73,12 +73,13 @@ class CustomerController extends Controller
 
                 return \Response::json(array(
                     'message' => trans('messages.customer.created'),
-                    'customer_uid' => $customer->uid
+                    'customer_uid' => $customer->uid,
+                    'api_token' => $customer->user->api_token
                 ), 200);
             }
         }
     }
-    
+
     /**
      * Update customer.
      *
@@ -93,7 +94,7 @@ class CustomerController extends Controller
         // Get current user
         $current_user = \Auth::guard('api')->user();
         $customer = \Acelle\Model\Customer::findByUid($uid);
-        
+
         // check if item exists
         if (!is_object($customer)) {
             return \Response::json(array('message' => 'Item not found'), 404);
@@ -106,31 +107,31 @@ class CustomerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            
+
             if($this->isDemoMode()) {
                 return $this->notAuthorized();
             }
-            
+
             $rules = $customer->apiRules();
 
-            $validator = \Validator::make($request->all(), $rules);    
+            $validator = \Validator::make($request->all(), $rules);
             if ($validator->fails()) {
                 return response()->json($validator->messages(), 403);
             }
-            
+
             // Update user account for customer
             $user = $customer->user;
             $user->email = $request->email;
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);
-            }            
+            }
             $user->save();
-            
+
             // Save current user info
             $customer->fill($request->all());
             $customer->save();
-            
+
             // Upload and save image
             if ($request->hasFile('image')) {
                 if ($request->file('image')->isValid()) {
@@ -139,7 +140,7 @@ class CustomerController extends Controller
                     $customer->image = $customer->uploadImage($request->file('image'));
                 }
             }
-            
+
             // Remove image
             if ($request->_remove_image == 'true') {
                 $customer->removeImage();
@@ -152,7 +153,7 @@ class CustomerController extends Controller
             ), 200);
         }
     }
-    
+
     /**
      * Display the specified customer information.
      *
@@ -167,7 +168,7 @@ class CustomerController extends Controller
         $user = \Auth::guard('api')->user();
 
         $customer = \Acelle\Model\Customer::findByUid($uid);
-        
+
         // check if item exists
         if (!is_object($customer)) {
             return \Response::json(array('message' => 'Customer not found'), 404);
@@ -189,7 +190,7 @@ class CustomerController extends Controller
             'options' => $customer->getOptions(),
             'next_subscription_start_at' => $customer->getNextScriptionStartAt(),
         ];
-        
+
         // Customer contact
         $contact = $customer->contact;
         if (is_object($contact)) {
@@ -208,7 +209,7 @@ class CustomerController extends Controller
                 'email' => $contact->email,
             ];
         }
-        
+
         // Current subscription
         $subscription = $customer->getCurrentSubscription();
         if (is_object($subscription)) {
@@ -224,7 +225,7 @@ class CustomerController extends Controller
                 'time_status' => $subscription->timeStatus(),
             ];
         }
-        
+
         // All subscription
         $subscriptions = $customer->subscriptions()->get();
         $result['subscriptions'] = [];
@@ -244,7 +245,7 @@ class CustomerController extends Controller
 
         return \Response::json(['customer' => $result], 200);
     }
-    
+
     /**
      * Enable customer.
      *
@@ -259,25 +260,25 @@ class CustomerController extends Controller
         $user = \Auth::guard('api')->user();
 
         $customer = \Acelle\Model\Customer::findByUid($uid);
-        
+
         // check if item exists
         if (!is_object($customer)) {
             return \Response::json(array('message' => 'Customer not found'), 404);
         }
-        
+
         // authorize
         if (!$user->can('enable', $customer)) {
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
-        
+
         $customer->enable();
-        
+
         return \Response::json(array(
             'message' => trans('messages.customer.enabled'),
             'customer_uid' => $customer->uid
         ), 200);
     }
-    
+
     /**
      * Disable customer.
      *
@@ -292,19 +293,19 @@ class CustomerController extends Controller
         $user = \Auth::guard('api')->user();
 
         $customer = \Acelle\Model\Customer::findByUid($uid);
-        
+
         // check if item exists
         if (!is_object($customer)) {
             return \Response::json(array('message' => 'Customer not found'), 404);
         }
-        
+
         // authorize
         if (!$user->can('disable', $customer)) {
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
-        
+
         $customer->disable();
-        
+
         return \Response::json(array(
             'message' => trans('messages.customer.disabled'),
             'customer_uid' => $customer->uid
