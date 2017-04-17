@@ -20,30 +20,24 @@ class Subscription extends Model
 	const PAID_STATUS_TRUE = 'paid';
 	const PAID_STATUS_FALSE = 'notpaid';
 
-    /**
-     * The rules for validation.
-     *
-     * @var array
-     */
-    public static function statuses() {
-        return [
-            Subscription::STATUS_ACTIVE => [
-                Subscription::TIME_STATUS_PAST => 'expired',
-                Subscription::TIME_STATUS_CURRENT => 'current_active',
-                Subscription::TIME_STATUS_FUTURE => 'pending_active'
-            ],
-            Subscription::STATUS_INACTIVE => [
-                Subscription::TIME_STATUS_PAST => 'expired',
-                Subscription::TIME_STATUS_CURRENT => 'current_inactive',
-                Subscription::TIME_STATUS_FUTURE => 'pending_inactive'
-            ],
-            Subscription::STATUS_DISABLED => [
-                Subscription::TIME_STATUS_PAST => 'expired',
-                Subscription::TIME_STATUS_CURRENT => 'current_disabled',
-                Subscription::TIME_STATUS_FUTURE => 'pending_disabled'
-            ],
-        ];
-    }
+    // Subscription statuses
+    public $statuses = [
+        Subscription::STATUS_ACTIVE => [
+            Subscription::TIME_STATUS_PAST => 'expired',
+            Subscription::TIME_STATUS_CURRENT => 'current_active',
+            Subscription::TIME_STATUS_FUTURE => 'pending_active'
+        ],
+        Subscription::STATUS_INACTIVE => [
+            Subscription::TIME_STATUS_PAST => 'expired',
+            Subscription::TIME_STATUS_CURRENT => 'current_inactive',
+            Subscription::TIME_STATUS_FUTURE => 'pending_inactive'
+        ],
+        Subscription::STATUS_DISABLED => [
+            Subscription::TIME_STATUS_PAST => 'expired',
+            Subscription::TIME_STATUS_CURRENT => 'current_disabled',
+            Subscription::TIME_STATUS_FUTURE => 'pending_disabled'
+        ],
+    ];
 
     /**
      * The attributes that should be mutated to dates.
@@ -904,8 +898,7 @@ class Subscription extends Model
      */
     public function getStatus()
     {
-        $statuses = Subscription::statuses();
-        return $statuses[$this->status][$this->timeStatus()];
+        return $this->statuses[$this->status][$this->timeStatus()];
     }
 
     /**
