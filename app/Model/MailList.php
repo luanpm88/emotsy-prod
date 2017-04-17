@@ -1408,4 +1408,23 @@ class MailList extends Model
 
         return $assoc;
     }
+
+    /**
+     * Queue for list verification
+     *
+     */
+    public function queueVerifying()
+    {
+        $job = (new \Acelle\Jobs\VerifyMailListJob($this->id));
+        dispatch($job);
+    }
+
+    /**
+     * Run list verification process
+     *
+     */
+    public function runVerifying()
+    {
+
+    }
 }
