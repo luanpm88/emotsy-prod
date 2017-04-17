@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Model\EmailVerification;
 
 class Subscriber extends Model
 {
@@ -67,6 +68,11 @@ class Subscriber extends Model
     public function mailList()
     {
         return $this->belongsTo('Acelle\Model\MailList');
+    }
+
+    public function emailVerifications()
+    {
+        return $this->hasMany('Acelle\Model\EmailVerification');
     }
 
     public function campaign()
@@ -680,5 +686,20 @@ class Subscriber extends Model
     public static function getAll()
     {
         return self::select('*');
+    }
+
+    /**
+     * Verify subscriber email address using a given service
+     *
+     * @return EmailVerification object
+     */
+    public function verify($verifier)
+    {
+        // $result = $verifier->verify($this->email);
+        $result = new EmailVerification();
+        $result->result = EmailVerification::RESULT_DELIVERABLE;
+        $result->details = 'Hello world';
+        $result->email_verification_server_id = $verifier->id;
+        $this->emailVerifications()->save($result);
     }
 }

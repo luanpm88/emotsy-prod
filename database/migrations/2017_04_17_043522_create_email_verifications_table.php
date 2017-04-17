@@ -14,10 +14,10 @@ class CreateEmailVerificationsTable extends Migration
     {
         Schema::create('email_verifications', function (Blueprint $table) {
             $table->increments('id');
-            $table->text('email');
+            $table->string('result', 20);
+            $table->text('details');
             $table->integer('subscriber_id')->unsigned();
             $table->integer('email_verification_server_id')->unsigned();
-
             $table->timestamps();
 
             $table->foreign('subscriber_id')->references('id')->on('subscribers')->onDelete('cascade');

@@ -17,8 +17,8 @@ class CreateEmailVerificationServersTable extends Migration
             $table->text('name');
             $table->text('endpoint');
             $table->text('api_key');
-            $table->text('api_key_secret');
-            $table->text('options');
+            $table->text('api_key_secret')->nullable();
+            $table->text('options')->nullable();
 
             $table->boolean('enabled')->default(true);
 

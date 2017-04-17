@@ -30,6 +30,8 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
 use Acelle\Model\SendingServer;
+use Acelle\Model\EmailVerification;
+use Acelle\Model\EmailVerificationServer;
 
 class MailList extends Model
 {
@@ -1413,7 +1415,7 @@ class MailList extends Model
      * Queue for list verification
      *
      */
-    public function queueVerifying()
+    public function queueForVerification()
     {
         $job = (new \Acelle\Jobs\VerifyMailListJob($this->id));
         dispatch($job);
@@ -1423,8 +1425,23 @@ class MailList extends Model
      * Run list verification process
      *
      */
-    public function runVerifying()
+    public function runVerification()
     {
+        $subscribers = $this->getUnverifiedSubscribers();
+        $verifier = EmailVerificationServer::first();
+        foreach($subscribers as $subscriber) {
+            $subscriber->verify($verifier);
+        }
+    }
 
+    /**
+     * Get unverified subscribers
+     *
+     */
+    public function getUnverifiedSubscribers()
+    {
+        return $this->subscribers()->whereNotIn('id', function($q){
+            $q->select('subscriber_id')->from('email_verifications');
+        })->get();
     }
 }
