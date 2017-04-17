@@ -2424,4 +2424,45 @@ class Campaign extends Model
     {
         return $this->subscribers()->count();
     }
+
+    /**
+     * Count unique open by hour.
+     *
+     * @return number
+     */
+    public function openUniqHours($start = null, $end = null)
+    {
+        $query = $this->openLogs()->select('open_logs.created_at');
+        if (isset($start)) {
+            $query = $query->where('open_logs.created_at', '>=', $start);
+        }
+        if (isset($end)) {
+            $query = $query->where('open_logs.created_at', '<=', $end);
+        }
+
+        return $query->distinct('subscriber_id')->orderBy('open_logs.created_at', 'asc')->get()->groupBy(function($date) {
+            return \Acelle\Library\Tool::dateTime($date->created_at)->format('H'); // grouping by hours
+        });
+    }
+
+    /**
+     * Count click group by hour.
+     *
+     * @return number
+     */
+    public function clickHours($start = null, $end = null)
+    {
+        $query = $this->clickLogs()->select('click_logs.created_at');
+
+        if (isset($start)) {
+            $query = $query->where('click_logs.created_at', '>=', $start);
+        }
+        if (isset($end)) {
+            $query = $query->where('click_logs.created_at', '<=', $end);
+        }
+
+        return $query->orderBy('click_logs.created_at', 'asc')->get()->groupBy(function($date) {
+            return \Acelle\Library\Tool::dateTime($date->created_at)->format('H'); // grouping by hours
+        });
+    }
 }

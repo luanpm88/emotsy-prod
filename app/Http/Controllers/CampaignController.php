@@ -663,27 +663,30 @@ class CampaignController extends Controller
             'bar_names' => [trans('messages.opened'), trans('messages.clicked')],
         ];
 
+        $hours = [];
+
         // columns
         for ($i = 23; $i >= 0; --$i) {
             $result['columns'][] = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i)->format('h:A');
+            $hours[] = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i)->format('H');
         }
+
+        // 24h collection
+        $openData24h = $campaign->openUniqHours(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours(24), \Carbon\Carbon::now());
+        $clickData24h = $campaign->clickHours(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours(24), \Carbon\Carbon::now());
 
         // datas
         foreach ($result['bar_names'] as $key => $bar) {
             $data = [];
             if ($key == 0) {
-                for ($i = 23; $i >= 0; --$i) {
-                    $data[] = $campaign->openUniqCount(
-                        \Acelle\Library\Tool::systemTime(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i + 1)),
-                        \Acelle\Library\Tool::systemTime(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i))
-                    );
+                foreach ($hours as $ohour) {
+                    $num = isset($openData24h[$ohour]) ? count($openData24h[$ohour]) : 0;
+                    $data[] = $num;
                 }
             } else {
-                for ($i = 23; $i >= 0; --$i) {
-                    $data[] = $campaign->clickCount(
-                        \Acelle\Library\Tool::systemTime(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i + 1)),
-                        \Acelle\Library\Tool::systemTime(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours($i))
-                    );
+                foreach ($hours as $chour) {
+                    $num = isset($clickData24h[$chour]) ? count($clickData24h[$chour]) : 0;
+                    $data[] = $num;
                 }
             }
 
