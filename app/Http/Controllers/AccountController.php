@@ -36,6 +36,11 @@ class AccountController extends Controller
 
         // Save posted data
         if ($request->isMethod('post')) {
+            // Prenvent save from demo mod
+            if ($this->isDemoMode()) {
+                return $this->notAuthorized();
+            }
+
             $this->validate($request, $customer->rules());
 
             // Update user account for customer
@@ -109,6 +114,11 @@ class AccountController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
+            // Prenvent save contact
+            if (isset($contact->id) && $this->isDemoMode()) {
+                return $this->notAuthorized();
+            }
+
             $this->validate($request, \Acelle\Model\Contact::$rules);
 
             $contact->fill($request->all());
@@ -202,7 +212,7 @@ class AccountController extends Controller
 
         $subscription = new \Acelle\Model\Subscription();
         $subscription->customer_id = $customer->id;
-        
+
         if ($request->plan_uid) {
             $subscription->fillAttributes($request->all());
         }
