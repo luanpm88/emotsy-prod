@@ -904,7 +904,8 @@ class Subscription extends Model
      */
     public function getStatus()
     {
-        return Subscription::statuses()[$this->status][$this->timeStatus()];
+        $statuses = Subscription::statuses();
+        return $statuses[$this->status][$this->timeStatus()];
     }
 
     /**
