@@ -1,13 +1,13 @@
                     <div class="sub_section">
 						<div class="row">
-							<div class="col-md-12">									
+							<div class="col-md-12">
 
 									@include('helpers.form_control', ['type' => 'text', 'name' => 'name', 'value' => $group->name, 'help_class' => 'user_group', 'rules' => Acelle\Model\UserGroup::$rules])
 
 							</div>
 						</div>
 						<div class="row">
-							<div class="col-md-6">									
+							<div class="col-md-6">
 								<div class="form-group checkbox-right-switch">
 									@include('helpers.form_control', [
 										'type' => 'checkbox',
@@ -19,7 +19,7 @@
 									])
 								</div>
 							</div>
-							<div class="col-md-6">									
+							<div class="col-md-6">
 								<div class="form-group checkbox-right-switch">
 									@include('helpers.form_control', [
 										'type' => 'checkbox',
@@ -33,10 +33,10 @@
 							</div>
 						</div>
 					</div>
-					
+
 					<div class="options-container">
 						<h2><i class="icon-gear"></i> {{ trans('messages.user_group_options') }}</h2>
-							
+
 						<div class="tabbable">
 							<ul class="nav nav-tabs nav-tabs-top">
 								<li class="active text-semibold frontend-box"><a href="#top-tab1" data-toggle="tab">
@@ -44,7 +44,7 @@
 								<li class="text-semibold backend-box"><a href="#top-tab2" data-toggle="tab">
 									<i class="icon-user-tie"></i> {{ trans('messages.backend') }}</a></li>
 							</ul>
-	
+
 							<div class="tab-content">
 								<div class="tab-pane active frontend-box" id="top-tab1">
 									<h3 class="text-teal-800">{{ trans('messages.list_or_subscriber_or_segment_or_campaign') }}</h3>
@@ -118,7 +118,7 @@
 													{{ trans('messages.unlimited') }}
 												</label>
 											</div>
-										</div>										
+										</div>
 									</div>
 									<div class="row">
 										<div class="boxing col-md-3">
@@ -136,7 +136,7 @@
 													{{ trans('messages.unlimited') }}
 												</label>
 											</div>
-																		
+
 										</div>
 										<div class="boxing col-md-3">
 											<label class="text-semibold">{{ trans('messages.unsubscribe_url_required') }} <span class="text-danger">*</span></label>
@@ -153,8 +153,38 @@
 												])
 											</span>
 										</div>
+                                        <div class="boxing col-md-3">
+											<label class="text-semibold">{{ trans('messages.can_import_list') }} <span class="text-danger">*</span></label>
+											<br />
+											<span class="notoping">
+												@include('helpers.form_control', ['type' => 'checkbox',
+													'class' => '',
+													'name' => 'options[frontend][import_list]',
+													'value' => $options['frontend']['import_list'],
+													'label' => '',
+													'options' => ['no','yes'],
+													'help_class' => 'user_group',
+													'rules' => Acelle\Model\UserGroup::rules()
+												])
+											</span>
+										</div>
+                                        <div class="boxing col-md-3">
+											<label class="text-semibold">{{ trans('messages.can_export_list') }} <span class="text-danger">*</span></label>
+											<br />
+											<span class="notoping">
+												@include('helpers.form_control', ['type' => 'checkbox',
+													'class' => '',
+													'name' => 'options[frontend][export_list]',
+													'value' => $options['frontend']['export_list'],
+													'label' => '',
+													'options' => ['no','yes'],
+													'help_class' => 'user_group',
+													'rules' => Acelle\Model\UserGroup::rules()
+												])
+											</span>
+										</div>
 									</div>
-										
+
 									<h3 class="text-teal-800">{{ trans('messages.file_upload') }}</h3>
 									<div class="row">
 										<div class="boxing col-md-3">
@@ -178,10 +208,10 @@
 												'help_class' => 'user_group',
 												'rules' => Acelle\Model\UserGroup::rules()
 											])
-										</div>		
+										</div>
 									</div>
-									
-										
+
+
 									<h3 class="text-teal-800">{{ trans('messages.sending_quota') }}</h3>
 									<div class="row">
 										<div class="boxing col-md-3">
@@ -237,12 +267,12 @@
 											</div>
 										</div>
 									</div>
-										
+
 									<h3 class="text-teal-800">{{ trans('messages.sending_servers') }}</h3>
 									<div class="row">
 										<div class="col-md-3">
 											{{ trans('messages.all_sending_servers') }}&nbsp;&nbsp;&nbsp;
-											<span class="notoping">												
+											<span class="notoping">
 												@include('helpers.form_control', ['type' => 'checkbox',
 													'class' => '',
 													'name' => 'options[frontend][all_sending_servers]',
@@ -253,16 +283,16 @@
 													'rules' => Acelle\Model\UserGroup::rules()
 												])
 											</span>
-											
+
 										</div>
 									</div>
 									<br />
 									<div class="row sending-servers">
 										@foreach (Acelle\Model\SendingServer::getAll()->orderBy("name")->get() as $server)
-																					
+
 											<div class="col-md-6">
 												<h5 class="mt-0 mb-5 text-semibold text-teal-600">{{ $server->name }}</h5>
-												<div class="row">											
+												<div class="row">
 													<div class="col-md-2">
 														<div class="form-group">
 															<label class="mt-0 mb-5 text-semibold">{{ trans('messages.choose') }}</label>
@@ -291,14 +321,14 @@
 													</div>
 												</div>
 											</div>
-												
+
 										@endforeach
 									</div>
-										
+
 								</div>
-								
+
 								<div class="tab-pane backend-box" id="top-tab2">
-									
+
 									@foreach (Acelle\Model\UserGroup::backendPermissions() as $key => $items)
 										<h3 class="text-teal-800">{{ trans('messages.' . $key) }}</h3>
 										<div class="row">
@@ -332,14 +362,14 @@
 											@endforeach
 										</div>
 									@endforeach
-									
+
 								</div>
-	
+
 							</div>
 						</div>
 					</div>
-					
-					@if ($group->users()->count() && false)						
+
+					@if ($group->users()->count() && false)
 						<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#group_check_confirm_model">aa</a>
 						<!-- Basic modal -->
 						<div id="group_check_confirm_model" class="modal fade">
@@ -350,13 +380,13 @@
 											<button type="button" class="close" data-dismiss="modal">&times;</button>
 											<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
 										</div>
-						
+
 										<div class="modal-body">
-											
+
 											<div class="alert alert-danger text-semibold">
 												{{ trans('messages.uncheck_frontend_confirm') }}
 											</div>
-											
+
 											<div class="content">
 												<ul class="modern-listing">
 													@foreach ($group->users as $user)
@@ -373,14 +403,14 @@
 																@if ($user->lists()->count())
 																	<span class="text-bold text-danger">{{ $user->lists()->count() }}</span> {{ trans('messages.lists') }}<pp>,</pp>
 																@endif
-															</p>                        
+															</p>
 														</li>
 													@endforeach
 												</ul>
 											</div>
-												
+
 										</div>
-						
+
 										<div class="modal-footer">
 											<button type="button" class="btn btn-link cancel-frontend-uncheck" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
 											<a class="btn btn-danger" data-dismiss="modal">{{ trans('messages.confirm') }}</a>
@@ -390,10 +420,10 @@
 							</div>
 						</div>
 						<!-- /basic modal -->
-						
-						
+
+
 					@endif
-					
+
 					<script>
 						$(document).ready(function() {
 							////// add segment condition
@@ -406,10 +436,10 @@
 							////$(document).on("click", ".cancel-frontend-uncheck", function(e) {
 							////	$("input[name=frontend_access]").last().next().click();
 							////});
-							
+
 							// all sending servers checking
 							$(document).on("change", "input[name='options[frontend][all_sending_servers]']", function(e) {
-								if($("input[name='options[frontend][all_sending_servers]']:checked").length) {									
+								if($("input[name='options[frontend][all_sending_servers]']:checked").length) {
 									$(".sending-servers").find("input[type=checkbox]").each(function() {
 										if($(this).is(":checked")) {
 											$(this).parents(".form-group").find(".switchery").eq(1).click();
@@ -420,8 +450,7 @@
 									$(".sending-servers").show();
 								}
 							});
-							
+
 							$("input[name='options[frontend][all_sending_servers]']").trigger("change");
 						});
 					</script>
-					

@@ -1351,4 +1351,6 @@ return [
     'subscribers_move_message' => 'You\'re about to move :number subscriber(s)',
     'file' => 'FILE',
     'file.uploaded' => 'File was successfully uploaded.',
+    'can_import_list' => 'Import list',
+    'can_export_list' => 'Export list',
 ];

@@ -79,7 +79,7 @@ class UserGroup extends Model
                     $rules['options.'.$type.'.'.$name] = 'required|numeric|min:1';
                 } else {
                     $rules['options.'.$type.'.'.$name] = 'required';
-                }                
+                }
             }
         }
 
@@ -193,6 +193,8 @@ class UserGroup extends Model
                 'max_size_upload_total' => '500',
                 'max_file_size_upload' => '5',
                 'unsubscribe_url_required' => 'yes',
+                'import_list' => 'yes',
+                'export_list' => 'yes',
             ],
             'backend' => [
                 'user_group_read' => 'all',
@@ -679,14 +681,14 @@ class UserGroup extends Model
     public static function multiProcessSelectOptions()
     {
         $options = [['value' => 1, 'text' => trans('messages.one_single_process')]];
-        
+
         for ($i = 2; $i < 101; ++$i) {
             $options[] = ['value' => $i, 'text' => $i];
         }
 
         return $options;
     }
-    
+
     /**
      * Display sending servers count
      *
@@ -700,7 +702,7 @@ class UserGroup extends Model
             return $this->user_group_sending_servers()->count();
         }
     }
-    
+
     /**
      * Api rules.
      *
@@ -714,7 +716,7 @@ class UserGroup extends Model
 
         return $rules;
     }
-    
+
     /**
      * Update options from request.
      *

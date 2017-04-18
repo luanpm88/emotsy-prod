@@ -46,4 +46,18 @@ class MailListPolicy
             ($max >= $user->subscribers()->count() + $numberOfSubscribers || $max == -1) &&
             ($maxPerList >= $mailList->subscribers()->count() + $numberOfSubscribers || $maxPerList == -1);
     }
+
+    public function import(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
+    {
+        $can = $user->getOption('frontend', 'import_list');
+
+        return ($can == 'yes' && $item->user_id == $user->id);
+    }
+
+    public function export(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
+    {
+        $can = $user->getOption('frontend', 'export_list');
+
+        return ($can == 'yes' && $item->user_id == $user->id);
+    }
 }
