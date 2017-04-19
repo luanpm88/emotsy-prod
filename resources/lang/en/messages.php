@@ -1763,4 +1763,13 @@ return [
     'added_by' => 'Added by',
     'can_import_list' => 'Import list',
     'can_export_list' => 'Export list',
+    'cash.wording' => 'Enable the cash payment option to allow payment to take place outside of the system. i.e. user can somehow make the payment for the subscription and then click on the "Pay In Cash" button to claim the payment.
+        As the administrator, you can then go to the Subscription dashboard to review and confirm the payment.',
+    'braintree_credit_card.wording' => 'Enter your Braintree merchant account\'s information to accept payments by credit card',
+    'braintree_paypal.wording' => 'Enter your Braintree merchant account\'s information to accept PayPal payments.
+        Please make sure you also have a PayPal business account and link it with your Braintree account.
+        See the Braintree documentation <a target="_blank" href="https://articles.braintreepayments.com/support/guides/payment-methods/paypal/setup-guide">here</a>.',
+    'paypal.wording' => 'Setup your PayPal account to receive PayPal payments.',
+    'stripe_credit_card.wording' => 'Setup your Stripe account to receive payments by credit cards.',
+
 ];

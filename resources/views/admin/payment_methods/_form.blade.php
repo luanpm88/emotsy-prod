@@ -1,3 +1,6 @@
+<p>
+	{!! trans('messages.' . $payment_method->type . '.wording') !!}
+</p>
 @if ($errors->has('payment_method_not_valid'))
 	<div class="alert alert-danger">{{ $errors->first('payment_method_not_valid') }}</div>
 @endif
