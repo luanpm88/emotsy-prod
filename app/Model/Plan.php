@@ -242,7 +242,7 @@ class Plan extends Model
             'list_max' => '-1',
             'subscriber_max' => '-1',
             'subscriber_per_list_max' => '-1',
-            'segment_per_list_max' => '3',
+            'segment_per_list_max' => '-1',
             'campaign_max' => '-1',
 			'automation_max' => '-1',
             'sending_quota' => '-1',
