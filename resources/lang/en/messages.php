@@ -1761,4 +1761,6 @@ return [
     'paypal_error_cannot_get_access_token' => 'Cannot retrieve PayPal access token',
     'paypal_error_unknown' => 'Unknown',
     'added_by' => 'Added by',
+    'can_import_list' => 'Import list',
+    'can_export_list' => 'Export list',
 ];

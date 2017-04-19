@@ -188,6 +188,36 @@
                         ])
                     </div>
                 </div>
+                <div class="col-md-3">
+                    <label class="text-semibold">{{ trans('messages.can_import_list') }} <span class="text-danger">*</span></label>
+                    <br />
+                    <span class="notoping">
+                        @include('helpers.form_control', ['type' => 'checkbox',
+                            'class' => '',
+                            'name' => 'options[list_import]',
+                            'value' => $options['list_import'],
+                            'label' => '',
+                            'options' => ['no','yes'],
+                            'help_class' => 'plan',
+                            'rules' => $plan->rules()
+                        ])
+                    </span>
+                </div>
+                <div class="col-md-3">
+                    <label class="text-semibold">{{ trans('messages.can_export_list') }} <span class="text-danger">*</span></label>
+                    <br />
+                    <span class="notoping">
+                        @include('helpers.form_control', ['type' => 'checkbox',
+                            'class' => '',
+                            'name' => 'options[list_export]',
+                            'value' => $options['list_export'],
+                            'label' => '',
+                            'options' => ['no','yes'],
+                            'help_class' => 'plan',
+                            'rules' => $plan->rules()
+                        ])
+                    </span>
+                </div>
             </div>
         </div>
         <div class="tab-pane" id="top-tab2">

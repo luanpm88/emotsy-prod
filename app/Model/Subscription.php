@@ -379,6 +379,8 @@ class Subscription extends Model
 			'create_sending_domains' => 'no',
             'sending_servers_max' => '-1',
 			'sending_domains_max' => '-1',
+            'list_import' => 'no',
+            'list_export' => 'no',
         ];
     }
 
@@ -410,6 +412,8 @@ class Subscription extends Model
 			'create_sending_domains' => 'yes',
             'sending_servers_max' => '-1',
 			'sending_domains_max' => '-1',
+            'list_import' => 'yes',
+            'list_export' => 'yes',
         ];
     }
 

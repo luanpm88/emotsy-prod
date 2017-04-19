@@ -50,4 +50,20 @@ class MailListPolicy
             ($max >= $user->customer->subscribers()->count() + $numberOfSubscribers || $max == -1) &&
             ($maxPerList >= $mailList->subscribers()->count() + $numberOfSubscribers || $maxPerList == -1);
     }
+
+    public function import(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
+    {
+        $customer = $user->customer;
+        $can = $customer->getOption('list_import');
+
+        return ($can == 'yes' && $item->customer_id == $customer->id);
+    }
+
+    public function export(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
+    {
+        $customer = $user->customer;
+        $can = $customer->getOption('list_export');
+
+        return ($can == 'yes' && $item->customer_id == $customer->id);
+    }
 }

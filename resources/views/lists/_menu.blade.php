@@ -10,7 +10,7 @@
 													<a class="level-1" href="{{ action('MailListController@edit', $list->uid) }}">
 														<i class="icon-pencil7"></i> {{ trans('messages.list_information') }}
 													</a>
-												</li> 
+												</li>
 												<li rel0="SubscriberController" class="dropdown">
 													<a href="{{ action("AccountController@contact") }}" class="level-1" data-toggle="dropdown">
 														<i class="icon-users4 position-left"></i> {{ trans('messages.subscribers') }}
@@ -28,16 +28,20 @@
                                                             </a>
                                                         </li>
                                                         <li class="divider"></li>
-                                                        <li rel0="SubscriberController/import">
-                                                            <a href="{{ action('SubscriberController@import', $list->uid) }}">
-                                                                <i class="icon-download4"></i> {{ trans('messages.import') }}
-                                                            </a>
-                                                        </li>
-                                                        <li rel0="SubscriberController/export">
-                                                            <a href="{{ action('SubscriberController@export', $list->uid) }}">
-                                                                <i class="icon-upload4"></i> {{ trans('messages.export') }}
-                                                            </a>
-                                                        </li>
+                                                        @if (\Auth::user()->can('import', $list))
+                                                            <li rel0="SubscriberController/import">
+                                                                <a href="{{ action('SubscriberController@import', $list->uid) }}">
+                                                                    <i class="icon-download4"></i> {{ trans('messages.import') }}
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                        @if (\Auth::user()->can('export', $list))
+                                                            <li rel0="SubscriberController/export">
+                                                                <a href="{{ action('SubscriberController@export', $list->uid) }}">
+                                                                    <i class="icon-upload4"></i> {{ trans('messages.export') }}
+                                                                </a>
+                                                            </li>
+                                                        @endif
                                                     </ul>
 												</li>
                                                 <li rel0="SegmentController" class="dropdown">
@@ -81,7 +85,7 @@
                                                             <a  href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_thankyou_page']) }}">
                                                                 {{ trans('messages.sign_up_thankyou_page') }}
                                                             </a>
-                                                        </li>															
+                                                        </li>
 														<li>
                                                             <a  href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'sign_up_confirmation_email']) }}">
                                                                 {{ trans('messages.sign_up_confirmation_email') }}
@@ -137,14 +141,14 @@
                                                             <a href="{{ action('PageController@update', ['list_uid' => $list->uid, 'alias' => 'profile_update_success_page']) }}">
                                                                 {{ trans('messages.profile_update_success_page') }}
                                                             </a>
-                                                        </li>                                                        
+                                                        </li>
                                                     </ul>
 												</li>
 												<li rel0="FieldController/index">
 													<a class="level-1" href="{{ action('FieldController@index', $list->uid) }}">
 														<i class="icon-list3"></i> {{ trans('messages.manage_list_fields') }}
 													</a>
-												</li>												                                               
+												</li>
 											</ul>
 										</div>
 									</div>
