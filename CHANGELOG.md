@@ -1,3 +1,13 @@
+3.0.0-p3 / 2017-04-20
+==================
+
+ * Added: payment integration with PayPal
+ * Added: payment integration with Stripe
+ * Added: preview campaign email before sending
+ * Changed: change the API response format for CREATE USER, including api_token
+ * Fixed: licence page error on certain systems
+ * Fixed: duplicate queries generated for campaign statistics view
+
 3.0.0-p1 / 2017-04-11
 ==================
 
