@@ -55,8 +55,8 @@
 
 				<!-- Load the PayPal component. -->
 				<script src="https://js.braintreegateway.com/web/3.9.0/js/paypal.min.js"></script>
-
-				<div class="panels">
+				<p class="loading_paypal text-small">{{ trans('messages.loading_paypal') }}</p>
+				<div class="panels paypal_button" style="display:none">
 					<div class="panels-body">
 						<script src="https://www.paypalobjects.com/api/button.js?"
 							data-merchant="braintree"
@@ -142,6 +142,8 @@
 
 		  });
 
+			$('.paypal_button').show();
+			$('.loading_paypal').hide();
 		});
 	</script>
 

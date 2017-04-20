@@ -1771,5 +1771,5 @@ return [
         See the Braintree documentation <a target="_blank" href="https://articles.braintreepayments.com/support/guides/payment-methods/paypal/setup-guide">here</a>.',
     'paypal.wording' => 'Setup your PayPal account to receive PayPal payments.',
     'stripe_credit_card.wording' => 'Setup your Stripe account to receive payments by credit cards.',
-
+    'loading_paypal' => 'loading PayPal button... Please wait.',
 ];
