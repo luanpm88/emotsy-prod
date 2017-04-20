@@ -29,7 +29,7 @@
                     <div class="col-md-8">
 					
 						<div class="alert alert-info">
-							{!! trans('messages.template_upload_guide', ["link" => 'https://dl.dropboxusercontent.com/u/47371140/newsletter_promotion_template.zip']) !!}
+							{!! trans('messages.template_upload_guide', ["link" => 'https://s3.amazonaws.com/acellemail/newsletter-template-green.zip']) !!}
 						</div>
 					
                         <form enctype="multipart/form-data" action="{{ action('Admin\TemplateController@upload') }}" method="POST" class="ajax_upload_form form-validate-jquery">
