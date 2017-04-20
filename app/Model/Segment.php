@@ -158,7 +158,7 @@ class Segment extends Model
             ['text' => trans('messages.not_blank'), 'value' => 'not_blank'],
         ];
     }
-    
+
     /**
      * Get subscribers conditions.
      *
@@ -226,7 +226,7 @@ class Segment extends Model
         } else {
             $conditions = implode(' AND ', $conditions);
         }
-        
+
         return $conditions;
     }
 
