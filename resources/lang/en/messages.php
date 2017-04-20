@@ -1772,4 +1772,5 @@ return [
     'paypal.wording' => 'Setup your PayPal account to receive PayPal payments.',
     'stripe_credit_card.wording' => 'Setup your Stripe account to receive payments by credit cards.',
     'loading_paypal' => 'loading PayPal button... Please wait.',
+    'domain_name' => 'Domain name',
 ];
