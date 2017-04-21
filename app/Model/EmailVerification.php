@@ -10,6 +10,4 @@ class EmailVerification extends Model
     const RESULT_UNDELIVERABLE = 'undeliverable';
     const RESULT_UNKNOWN = 'unknown';
     const RESULT_RISKY = 'risky';
-
-
 }

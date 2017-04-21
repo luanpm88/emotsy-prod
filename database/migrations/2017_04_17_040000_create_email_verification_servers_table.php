@@ -15,9 +15,8 @@ class CreateEmailVerificationServersTable extends Migration
         Schema::create('email_verification_servers', function (Blueprint $table) {
             $table->increments('id');
             $table->text('name');
-            $table->text('endpoint');
             $table->text('api_key');
-            $table->text('api_key_secret')->nullable();
+            $table->text('api_secret_key')->nullable();
             $table->text('options')->nullable();
 
             $table->boolean('enabled')->default(true);
