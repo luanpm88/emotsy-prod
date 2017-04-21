@@ -142,6 +142,7 @@ class UserController extends Controller
             if ($user->save()) {
                 return \Response::json([
                     'message' => trans('messages.user.updated'),
+                    'user_uid' => $user->uid,
                     'api_token' => $user->api_token
                 ], 200);
             }
