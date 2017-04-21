@@ -292,7 +292,7 @@ class InstallController extends Controller
         // 2. Check if all table are dropped
         foreach ($table_names as $table_name) {
             $result = $mysqli->query("SELECT COUNT(*) FROM $table_name LIMIT 1;");
-            echo "SELECT COUNT(*) FROM $table_name LIMIT 1;";
+
             // Table deleted if result == false
             if ($result) {
                 $rules["can_not_empty_database"] = "required";
