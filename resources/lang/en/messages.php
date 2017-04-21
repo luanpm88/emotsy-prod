@@ -1353,4 +1353,5 @@ return [
     'file.uploaded' => 'File was successfully uploaded.',
     'can_import_list' => 'Import list',
     'can_export_list' => 'Export list',
+    'file_uploaded' => 'File uploaded',
 ];

@@ -1084,10 +1084,8 @@
                 <div class="description detailed">
                 <h4>Parameters</h4>
                     <div class="list"><dl>
-                      <dt><var>$file_url</var></dt></dt>
-                      <dd>File url</dd>
-                        <dt><var>$subdirectory &nbsp;&nbsp;<span class="text-muted2 text-normal">{{ trans('messages.optional') }} - Default: user root directory</span></var></dt></dt>
-                      <dd>Custom subdirectory</dd>
+                      <dt><var>$files</var></dt></dt>
+                      <dd>All files information in json</dd>
                   </dl></div>
                   <h4>Returns</h4>
                   <div class="list">
@@ -1101,8 +1099,7 @@
                   <pre class=""><code>curl -X POST -H "accept:application/json" -G \
 {{ action("Api\FileController@upload") }}? \
 -d api_token={{ Auth::user()->api_token }} \
--d file_url=http://demo.acellemail.com/images/logo_big.png \
--d subdirectory='path/to/file'
+-d files='[{"url":"http://xxxxxx/file1.jpg","subdirectory":"/pathtofile"},{"url":"http://xxxxxx/file2.pdf","subdirectory":"/pathtofile"},{"url":"http://xxxxxx/file3.pdf","subdirectory":"/pathtofile"}]'
 </code></pre>
               </td>
           </tr>
