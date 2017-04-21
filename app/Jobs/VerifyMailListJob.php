@@ -46,6 +46,6 @@ class VerifyMailListJob extends SystemJob
     {
         // start campaign
         $list = MailList::find($this->mailListId);
-        $list->runVerifying();
+        $list->runVerification();
     }
 }

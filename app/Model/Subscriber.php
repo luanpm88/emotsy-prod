@@ -696,10 +696,11 @@ class Subscriber extends Model
     public function verify($verifier)
     {
         // $result = $verifier->verify($this->email);
-        $result = new EmailVerification();
-        $result->result = EmailVerification::RESULT_DELIVERABLE;
-        $result->details = 'Hello world';
-        $result->email_verification_server_id = $verifier->id;
-        $this->emailVerifications()->save($result);
+        $log = new EmailVerification();
+        list($result, $details) = $verifier->verify($this->email);
+        $log->result = $result;
+        $log->details = $details;
+        $log->email_verification_server_id = $verifier->id;
+        $this->emailVerifications()->save($log);
     }
 }
