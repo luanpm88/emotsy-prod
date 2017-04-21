@@ -19,6 +19,7 @@ class LicenseHelper
 
         curl_setopt($ch, CURLOPT_URL,"http://verify.acellemail.com/");
         curl_setopt($ch, CURLOPT_POST, 1);
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 10000);
         curl_setopt($ch, CURLOPT_POSTFIELDS,
             http_build_query(array(
                 'purchase-code' => $license,
@@ -32,7 +33,17 @@ class LicenseHelper
 
         $server_output = curl_exec($ch);
 
-        return json_decode($server_output, true);
+        // Get error
+        $curl_errno = curl_errno($ch);
+        $curl_error = curl_error($ch);
+        curl_close($ch);
+
+        if ($curl_errno > 0) {
+            // Uncatchable error
+            throw new \Exception($curl_error);
+        } else {
+            return json_decode($server_output, true);
+        }
     }
 
     /**
@@ -46,7 +57,8 @@ class LicenseHelper
 
         # return '' if not valid
         if ($result['status'] != 'valid') {
-            return '';
+            // License is not valid
+            throw new \Exception(trans('messages.license_is_not_valid'));
         }
 
         return $result['data']['verify-purchase']['licence'] == 'Regular License' ? self::TYPE_REGULAR : self::TYPE_EXTENDED;

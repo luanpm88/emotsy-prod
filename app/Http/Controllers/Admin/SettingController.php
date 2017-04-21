@@ -33,9 +33,9 @@ class SettingController extends Controller
         } elseif ($request->user()->admin->getPermission('setting_background_job') == 'yes') {
            return redirect()->action('Admin\SettingController@cronjob');
         }
-        
+
     }
-    
+
     /**
      * General settings.
      *
@@ -46,7 +46,7 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_general') != 'yes') {
             return $this->notAuthorized();
         }
-        
+
         // \Acelle\Model\Setting::updateAll();
         $settings = \Acelle\Model\Setting::getAll();
         if (null !== $request->old()) {
@@ -59,11 +59,11 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            
+
             if($this->isDemoMode()) {
                 return $this->notAuthorized();
             }
-            
+
             $rules = [
                 'site_name' => 'required',
                 'site_keyword' => 'required',
@@ -94,7 +94,7 @@ class SettingController extends Controller
             'settings' => $settings,
         ]);
     }
-    
+
     /**
      * Sending settings.
      *
@@ -105,7 +105,7 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_sending') != 'yes') {
             return $this->notAuthorized();
         }
-        
+
         // \Acelle\Model\Setting::updateAll();
         $settings = \Acelle\Model\Setting::getAll();
         if (null !== $request->old()) {
@@ -118,11 +118,11 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            
+
             if($this->isDemoMode()) {
                 return $this->notAuthorized();
             }
-            
+
             $rules = [
                 'sending_campaigns_at_once' => 'required',
                 'sending_change_server_time' => 'required',
@@ -141,7 +141,7 @@ class SettingController extends Controller
                     }
                 }
             }
-            
+
             // Redirect to my lists page
             $request->session()->flash('alert-success', trans('messages.setting.updated'));
             return redirect()->action('Admin\SettingController@sending');
@@ -151,7 +151,7 @@ class SettingController extends Controller
             'settings' => $settings,
         ]);
     }
-    
+
     /**
      * Url settings.
      *
@@ -162,13 +162,13 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_system_urls') != 'yes') {
             return $this->notAuthorized();
         }
-        
+
         $settings = \Acelle\Model\Setting::getAll();
         return view('admin.settings.urls', [
             'settings' => $settings,
         ]);
     }
-    
+
     /**
      * Cronjob list.
      *
@@ -179,7 +179,7 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_background_job') != 'yes') {
             return $this->notAuthorized();
         }
-        
+
         // Re-generate remote job url
         if($request->re_generate_remote_job_url) {
             $remote_job_token = str_random(60);
@@ -187,17 +187,17 @@ class SettingController extends Controller
             echo action('Controller@remoteJob', ['remote_job_token' => $remote_job_token]);
             return;
         }
-        
-        $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);        
+
+        $respone = \Acelle\Library\Tool::cronjobUpdateController($request, $this);
         if($respone == 'done' || $respone['valid'] == true) {
             $next = action('Admin\SettingController@cronjob');
             artisan_config_cache();
             return redirect()->away($next);
         }
-        
+
         return view('admin.settings.cronjob', $respone);
     }
-    
+
     /**
      * Mailer settings.
      *
@@ -208,7 +208,7 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_general') != 'yes') {
             return $this->notAuthorized();
         }
-        
+
         // SMTP
         $env = [
             'MAIL_DRIVER' => config("mail.driver"),
@@ -226,7 +226,7 @@ class SettingController extends Controller
                 $env[$name] = $value;
             }
         }
-        
+
         $env_rules = [
             'env.MAIL_DRIVER' => 'required',
             'env.MAIL_HOST' => 'required',
@@ -240,19 +240,19 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            
+
             if($this->isDemoMode()) {
                 return $this->notAuthorized();
             }
-            
+
             $env = $request->env;
-            
+
             if ($env["MAIL_DRIVER"] == 'smtp') {
                 $this->validate($request, $env_rules);
-            }            
-            
+            }
+
             // Check SMTP connection
-            $site_info = $request->all();            
+            $site_info = $request->all();
             if ($env["MAIL_DRIVER"] == 'smtp') {
                 $rules = [];
                 try {
@@ -268,7 +268,7 @@ class SettingController extends Controller
                 }
                 $this->validate($request, $rules);
             }
-            
+
             foreach($env as $key => $value) {
                 if(empty($value)) {
                     $value = "null";
@@ -300,7 +300,7 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_system_urls') != 'yes') {
             return $this->notAuthorized();
         }
-        
+
         \Acelle\Model\Setting::set('url_unsubscribe', action('CampaignController@unsubscribe', ['message_id' => 'MESSAGE_ID']));
         \Acelle\Model\Setting::set('url_open_track', action('CampaignController@open', ['message_id' => 'MESSAGE_ID']));
         \Acelle\Model\Setting::set('url_click_track', action('CampaignController@click', ['message_id' => 'MESSAGE_ID', 'url' => 'URL']));
@@ -316,7 +316,7 @@ class SettingController extends Controller
 
         return redirect()->action('Admin\SettingController@urls');
     }
-    
+
     /**
      * View system logs.
      *
@@ -326,18 +326,18 @@ class SettingController extends Controller
     {
         $path = base_path("artisan");
         $lines = 300;
-        
+
         $error_logs = "";
         $file = file($path);
         for ($i = max(0, count($file)-$lines); $i < count($file); $i++) {
           $error_logs .= $file[$i];
         }
-        
+
         return view('admin.settings.logs', [
             'error_logs' => $error_logs,
         ]);
     }
-    
+
     /**
      * View system logs.
      *
@@ -346,10 +346,10 @@ class SettingController extends Controller
     public function download_log(Request $request)
     {
         $path = storage_path("logs/" . $request->file);
-        
+
         return response()->download($path);
     }
-    
+
     /**
      * License settings.
      *
@@ -360,7 +360,7 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_general') != 'yes') {
             return $this->notAuthorized();
         }
-        
+
         // \Acelle\Model\Setting::updateAll();
         $settings = \Acelle\Model\Setting::getAll();
         if (null !== $request->old()) {
@@ -373,34 +373,34 @@ class SettingController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            
+
             if($this->isDemoMode()) {
                 return $this->notAuthorized();
             }
-            
-            $rules = [
-                'license' => 'license',
-            ];
-            $this->validate($request, $rules);
 
-            // Save settings
-            foreach ($request->all() as $name => $value) {
-                if ($name != '_token' && isset($settings[$name])) {
-                    \Acelle\Model\Setting::set($name, $value);
+            try {
+                // Update license type
+                \Acelle\Model\Setting::updateLicense($request->license);
+
+                // Save settings
+                foreach ($request->all() as $name => $value) {
+                    if ($name != '_token' && isset($settings[$name])) {
+                        \Acelle\Model\Setting::set($name, $value);
+                    }
                 }
-            }
-            
-            // Update license type
-            \Acelle\Model\Setting::updateLicenseType($request->license);
 
-            // Redirect to my lists page
-            $request->session()->flash('alert-success', trans('messages.license.updated'));
-            return redirect()->action('Admin\SettingController@license');
+                // Redirect to my lists page
+                $request->session()->flash('alert-success', trans('messages.license.updated'));
+                return redirect()->action('Admin\SettingController@license');
+            } catch (\Exception $ex) {
+                $license_error = trans("messages.something_wrong_with_license_check", ['error' => $ex->getMessage()]);
+            }
         }
 
         return view('admin.settings.license', [
             'settings' => $settings,
             'current_license' => \Acelle\Model\Setting::get('license'),
+            'license_error' => isset($license_error) ? $license_error : '',
         ]);
     }
 }

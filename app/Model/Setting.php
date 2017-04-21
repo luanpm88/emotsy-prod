@@ -204,7 +204,7 @@ class Setting extends Model
                 'value' => 'yes',
                 'type' => 'checkbox',
                 'options' => ['no','yes'],
-            ],     
+            ],
             'sending_campaigns_at_once' => [
                 'cat' => 'sending',
                 'value' => '10',
@@ -326,15 +326,21 @@ class Setting extends Model
         fwrite($env_file, implode($data, ""));
         fclose($env_file);
     }
-    
+
     /**
      * Update license type.
      *
      * @return array
      */
-    public static function updateLicenseType()
+    public static function updateLicense($license)
     {
-        $license_type = \Acelle\Helpers\LicenseHelper::getLicenseType(Setting::get("license"));
+        if (empty($license)) {
+            Setting::set("license", '');
+            Setting::set("license_type", '');
+            return;
+        }
+        $license_type = \Acelle\Helpers\LicenseHelper::getLicenseType($license);
+        Setting::set("license", $license);
         Setting::set("license_type", $license_type);
     }
 }

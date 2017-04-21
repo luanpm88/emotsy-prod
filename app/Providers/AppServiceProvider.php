@@ -13,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         ini_set('memory_limit', '-1');
-        
+
         app('view')->composer('*', function ($view) {
             $action = app('request')->route()->getAction();
 
@@ -36,10 +36,18 @@ class AppServiceProvider extends ServiceProvider
         Validator::replacer('substring', function ($message, $attribute, $rule, $parameters) {
             return str_replace(':tag', $parameters[0], $message);
         });
-        
+
         // License validator
         Validator::extend('license', function($attribute, $value, $parameters, $validator) {
-            return $value == '' || \Acelle\Helpers\LicenseHelper::isValid($value);
+            return $value == '' || true;
+        });
+
+        // License error validator
+        Validator::extend('license_error', function($attribute, $value, $parameters, $validator) {
+            return false;
+        });
+        Validator::replacer('license_error', function ($message, $attribute, $rule, $parameters) {
+            return str_replace(':error', $parameters[0], $message);
         });
     }
 

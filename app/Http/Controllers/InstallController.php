@@ -105,7 +105,6 @@ class InstallController extends Controller
             'email' => 'required|email',
             'password' => 'required',
             'timezone' => 'required',
-            'license' => 'license',
         ];
         $smtp_rules = [
             'smtp_hostname' => 'required',
@@ -127,8 +126,17 @@ class InstallController extends Controller
 
             $site_info = $request->all();
 
-            // Get license type
-            $site_info["license_type"] = \Acelle\Helpers\LicenseHelper::getLicenseType($site_info["license"]);
+            // Check license
+            if (!empty($request->license)) {
+                try {
+                    $site_info["license_type"] = \Acelle\Helpers\LicenseHelper::getLicenseType($request->license);
+                } catch (\Exception $ex) {
+                    $this->validate($request, ['license' => 'license_error:' . $ex->getMessage()]);
+                }
+            } else {
+                $site_info["license_type"] = '';
+                $site_info["license"] = '';
+            }
 
             // Check SMTP connection
             if ($request->mail_driver == 'smtp') {
