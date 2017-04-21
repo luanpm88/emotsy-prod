@@ -32,16 +32,8 @@
 							<div class="progress-bar progress-bar-info" style="width: {{ $item->getSendingQuotaUsagePercentage() }}%">
 							</div>
 						</div>
-						<span class="text-muted"><strong>{{ $item->getSendingQuotaUsage() }}/{{ ($item->getSendingQuota() == -1) ? '∞' : $item->getSendingQuota() }}</strong>
-							@if (($item->getSendingQuota() != -1))
-								{{ trans('messages.display_sending_quota', [
-									'number' => $item->getOption('sending_quota_time'),
-									'period' => trans('messages.' . $item->getOption('sending_quota_time_unit'))
-								]) }}
-							@else
-								<br />
-								{{ trans('messages.sending_quota') }}
-							@endif
+						<span class="text-muted"><strong>{{ \Acelle\Library\Tool::format_number($item->getSendingQuotaUsage()) }}/{{ ($item->getSendingQuota() == -1) ? '∞' : \Acelle\Library\Tool::format_number($item->getSendingQuota()) }}</strong>
+							<div class="text-nowrap">{{ trans('messages.sending_credits_used') }}</div>
 						</span>
 					</div>
 					<div class="single-stat-box pull-left ml-20">

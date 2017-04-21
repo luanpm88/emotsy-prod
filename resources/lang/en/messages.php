@@ -1773,4 +1773,7 @@ return [
     'stripe_credit_card.wording' => 'Setup your Stripe account to receive payments by credit cards.',
     'loading_paypal' => 'loading PayPal button... Please wait.',
     'domain_name' => 'Domain name',
+    'something_wrong_with_license_check' => ':error',
+    'license_is_not_valid' => 'License check failed: License is not valid. Please try again.',
+    'sending_credits_used' => 'Sending credits',
 ];
