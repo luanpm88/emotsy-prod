@@ -158,7 +158,7 @@ class Segment extends Model
             ['text' => trans('messages.not_blank'), 'value' => 'not_blank'],
         ];
     }
-    
+
     /**
      * Get subscribers conditions.
      *
@@ -166,8 +166,11 @@ class Segment extends Model
      */
     public function getSubscribersConditions()
     {
-        $conditions = array();
-        foreach ($this->segmentConditions as $condition) {
+        $conditions = [];
+        $joins = [];
+        foreach ($this->segmentConditions as $index => $condition) {
+            $number = uniqid();
+
             $keyword = $condition->value;
             $keyword = str_replace('[EMPTY]', '', $keyword);
             $keyword = str_replace('[DATETIME]', date('Y-m-d H:i:s'), $keyword);
@@ -177,47 +180,55 @@ class Segment extends Model
             $in = 'IN';
             switch ($condition->operator) {
                 case 'equal':
-                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) = '".$keyword."'";
+                    $cond = 'LOWER(sf'.$number.".value) = '".$keyword."'";
                     break;
                 case 'not_equal':
-                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) != '".$keyword."'";
+                    $cond = 'LOWER(sf'.$number.".value) != '".$keyword."'";
                     break;
                 case 'contains':
-                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) LIKE '%".$keyword."%'";
+                    $cond = 'LOWER(sf'.$number.".value) LIKE '%".$keyword."%'";
                     break;
                 case 'not_contains':
-                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) NOT LIKE '%".$keyword."%'";
+                    $cond = 'LOWER(sf'.$number.".value) NOT LIKE '%".$keyword."%'";
                     break;
                 case 'starts':
-                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) LIKE '".$keyword."%'";
+                    $cond = 'LOWER(sf'.$number.".value) LIKE '".$keyword."%'";
                     break;
                 case 'ends':
-                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) LIKE '%".$keyword."'";
+                    $cond = 'LOWER(sf'.$number.".value) LIKE '%".$keyword."'";
                     break;
                 case 'greater':
-                    $cond = \DB::getTablePrefix()."subscriber_fields.value > '".$keyword."'";
+                    $cond = 'sf'.$number.".value > '".$keyword."'";
                     break;
                 case 'less':
-                    $cond = \DB::getTablePrefix()."subscriber_fields.value < '".$keyword."'";
+                    $cond = 'sf'.$number.".value < '".$keyword."'";
                     break;
                 case 'not_starts':
-                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) NOT LIKE '".$keyword."%'";
+                    $cond = 'sf'.$number.".value) NOT LIKE '".$keyword."%'";
                     break;
                 case 'not_ends':
-                    $cond = 'LOWER('.\DB::getTablePrefix()."subscriber_fields.value) NOT LIKE '%".$keyword."'";
+                    $cond = 'LOWER(sf'.$number.".value) NOT LIKE '%".$keyword."'";
                     break;
                 case 'not_blank':
-                    $cond = '(LOWER('.\DB::getTablePrefix()."subscriber_fields.value) != '' AND LOWER(".\DB::getTablePrefix().'subscriber_fields.value) IS NOT NULL)';
+                    $cond = '(LOWER(sf'.$number.".value) != '' AND LOWER(sf".$number.'.value) IS NOT NULL)';
                     break;
                 case 'blank':
-                    $cond = '(LOWER('.\DB::getTablePrefix()."subscriber_fields.value) != '' AND LOWER(".\DB::getTablePrefix().'subscriber_fields.value) IS NOT NULL)';
+                    $cond = '(LOWER(sf'.$number.".value) = '' OR LOWER(sf".$number.'.value) IS NULL)';
                     $in = 'NOT IN';
                     break;
                 default:
 
             }
 
-            $conditions[] = \DB::getTablePrefix().'subscribers.id ' . $in . ' (SELECT '.\DB::getTablePrefix().'subscriber_fields.subscriber_id FROM '.\DB::getTablePrefix().'subscriber_fields WHERE ('.\DB::getTablePrefix().'subscriber_fields.field_id = '.$condition->field_id.' AND '.$cond.'))';
+            // new
+            $joins[] = [
+                'table' => \DB::raw('subscriber_fields as sf'.$number),
+                'ons' => [
+                    [\DB::raw('sf'.$number.'.subscriber_id'), \DB::raw(\DB::getTablePrefix().'subscribers.id')],
+                    [\DB::raw('sf'.$number.'.field_id'), \DB::raw($condition->field_id)]
+                ]
+            ];
+            $conditions[] = $cond;
         }
 
         //return $conditions;
@@ -226,8 +237,11 @@ class Segment extends Model
         } else {
             $conditions = implode(' AND ', $conditions);
         }
-        
-        return $conditions;
+
+        return [
+            "joins" => $joins,
+            "conditions" => $conditions
+        ];
     }
 
     /**
@@ -237,13 +251,26 @@ class Segment extends Model
      */
     public function subscribers($request = null)
     {
-        $query = \Acelle\Model\Subscriber::select('subscribers.*')
-                    ->where('subscribers.mail_list_id', $this->mail_list_id);
+        $query = \Acelle\Model\Subscriber::select('subscribers.*');
+
 
         $conditions = $this->getSubscribersConditions();
 
-        if (!empty($conditions)) {
-            $query = $query->whereRaw($conditions);
+        // JOINS...
+        if (!empty($conditions['joins'])) {
+            foreach ($conditions['joins'] as $joining) {
+                $query = $query->leftJoin($joining['table'], function($join) use ($joining)
+                {
+                    $join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
+                    $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
+                });
+            }
+        }
+
+        // WHERE...
+        $query = $query->where('subscribers.mail_list_id', $this->mail_list_id);
+        if (!empty($conditions['conditions'])) {
+            $query = $query->whereRaw($conditions['conditions']);
         }
 
         // filters
