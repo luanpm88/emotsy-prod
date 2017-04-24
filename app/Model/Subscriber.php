@@ -691,11 +691,10 @@ class Subscriber extends Model
     /**
      * Verify subscriber email address using a given service
      *
-     * @return EmailVerification object
+     * @return void
      */
     public function verify($verifier)
     {
-        // $result = $verifier->verify($this->email);
         $log = new EmailVerification();
         list($result, $details) = $verifier->verify($this->email);
         $log->result = $result;
