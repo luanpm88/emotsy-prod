@@ -24,7 +24,7 @@ editor {
     left: 0;
 }
 editor iframe {
-    
+
 }
 leftbar .tool-box {
     padding: 20px;
@@ -38,7 +38,7 @@ content {
     overflow: auto;
 }
 .left-box {
-    
+
 }
 .tool-item {
     float: left;
@@ -155,12 +155,12 @@ leftbar .container {
 }*/
 .remove_block {
     position: absolute;
-    z-index: 12;    
+    z-index: 12;
     background: #ddd;
     cursor: pointer;
     display: none;
 }
-.remove_block i {    
+.remove_block i {
     padding: 5px;
 }
 table.outer {
@@ -217,7 +217,7 @@ topbar .right {
     padding-right: 20px;
 }
 .tab {
-    
+
 }
 .tab ul {
     padding: 0;
@@ -233,7 +233,7 @@ topbar .right {
     float: left;
     padding: 9px 35px 8px 35px;
     text-decoration: none;
-    font-weight: 600;    
+    font-weight: 600;
     color: #666;
     border: solid 1px #ccc;
 }
@@ -297,4 +297,11 @@ tr.block {
 }
 tr .one-column {
     width: 600px;
+}
+tr .button-row {
+    width: 600px;
+    padding: 25px 0;
+}
+.builder-page content {
+
 }
