@@ -222,7 +222,7 @@ class Segment extends Model
 
             // new
             $joins[] = [
-                'table' => \DB::raw('subscriber_fields as sf'.$number),
+                'table' => \DB::raw(\DB::getTablePrefix().'subscriber_fields as sf'.$number),
                 'ons' => [
                     [\DB::raw('sf'.$number.'.subscriber_id'), \DB::raw(\DB::getTablePrefix().'subscribers.id')],
                     [\DB::raw('sf'.$number.'.field_id'), \DB::raw($condition->field_id)]

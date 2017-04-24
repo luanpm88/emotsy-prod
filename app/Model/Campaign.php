@@ -1166,7 +1166,7 @@ class Campaign extends Model
 
                     // WHERE...
                     if (!empty($conds['conditions'])) {
-                        $query = $query->whereRaw($conds['conditions']);
+                        $conditions[] = $conds['conditions'];
                     }
 
                 } else {
