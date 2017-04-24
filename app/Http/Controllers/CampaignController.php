@@ -690,7 +690,7 @@ class CampaignController extends Controller
         // 24h collection
         $openData24h = $campaign->openUniqHours(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours(24), \Carbon\Carbon::now());
         $clickData24h = $campaign->clickHours(\Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->subHours(24), \Carbon\Carbon::now());
-
+        var_dump($openData24h[11]);
         // datas
         foreach ($result['bar_names'] as $key => $bar) {
             $data = [];
