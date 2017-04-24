@@ -11,6 +11,9 @@ class EmailVerificationServer extends Model
     // set the table name
     protected $table = 'email_verification_servers';
 
+    const STATUS_ACTIVE = 'active';
+    const STATUS_INACTIVE = 'inactive';
+
     /**
      * Verify email address
      *

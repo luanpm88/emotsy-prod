@@ -14,7 +14,10 @@ class CreateEmailVerificationServersTable extends Migration
     {
         Schema::create('email_verification_servers', function (Blueprint $table) {
             $table->increments('id');
+            $table->uuid('uid');
+            $table->integer('admin_id')->unsigned()->nullable();
             $table->text('name');
+            $table->text('type');
             $table->text('api_key');
             $table->text('api_secret_key')->nullable();
             $table->text('options')->nullable();
@@ -22,6 +25,9 @@ class CreateEmailVerificationServersTable extends Migration
             $table->boolean('enabled')->default(true);
 
             $table->timestamps();
+
+            // foreign
+            $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
         });
     }
 
