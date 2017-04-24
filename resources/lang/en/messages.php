@@ -1778,4 +1778,5 @@ return [
     'sending_credits_used' => 'Sending credits',
     'something_wrong_with_license_check' => ':error',
     'license_is_not_valid' => 'License check failed: License is not valid. Please try again.',
+    'file_uploaded' => 'File uploaded',
 ];

@@ -395,7 +395,7 @@ class SubscriberController extends Controller
         }
 
         // authorize
-        if (\Gate::denies('update', $list)) {
+        if (\Gate::denies('import', $list)) {
             return $this->notAuthorized();
         }
 
@@ -428,8 +428,7 @@ class SubscriberController extends Controller
         }
 
         // @todo: should be the exact MailList here
-        $log = \Acelle\Model\MailList::findByUid($request->list_uid)
-            ->getLastImportLog();
+        $log = $list->getLastImportLog();
         // @todo what if log does not exist (removed)?
         return response()->download($log);
     }
@@ -479,7 +478,7 @@ class SubscriberController extends Controller
         $customer = $request->user()->customer;
 
         // authorize
-        if (\Gate::denies('update', $list)) {
+        if (\Gate::denies('export', $list)) {
             return $this->notAuthorized();
         }
 
@@ -521,7 +520,7 @@ class SubscriberController extends Controller
         }
 
         // authorize
-        if (\Gate::denies('update', $list)) {
+        if (\Gate::denies('export', $list)) {
             return $this->notAuthorized();
         }
 
@@ -548,8 +547,7 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
 
-        $system_job = \Acelle\Model\MailList::findByUid($request->list_uid)
-            ->getLastExportJob();
+        $system_job = $list->getLastExportJob();
 
         return response()->download(storage_path('job/'.$system_job->id.'/data.csv'));
     }
