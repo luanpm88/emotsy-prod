@@ -138,6 +138,17 @@ class Subscription extends Model
             }
             $subscription->uid = $uid;
         });
+
+		static::created(function ($subscription) {
+			// get sending server from plan.
+            foreach($subscription->plan->plansSendingServers as $planServer) {
+                $row = new SubscriptionsSendingServer();
+                $row->subscription_id = $subscription->id;
+                $row->sending_server_id = $planServer->sending_server_id;
+                $row->fitness = $planServer->fitness;
+                $row->save();
+			}
+        });
     }
 
     /**
