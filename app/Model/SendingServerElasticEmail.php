@@ -169,6 +169,7 @@ class SendingServerElasticEmail extends SendingServer
 
     public function sendElasticEmailV2($message) {
         // @todo: what if there are more than 2 parts?
+        $html = null;
         foreach($message->getChildren() as $part) {
             $contentType = $part->getContentType();
             if ($contentType == 'text/html') {
