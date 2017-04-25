@@ -296,4 +296,24 @@ class EmailVerificationServer extends Model
     {
         return self::getAllActive()->whereNotNull('admin_id');
     }
+
+    /**
+     * Add customer action log.
+     */
+    public function log($name, $customer, $add_datas = [])
+    {
+        $data = [
+            'id' => $this->id,
+            'name' => $this->name,
+        ];
+
+        $data = array_merge($data, $add_datas);
+
+        Log::create([
+            'customer_id' => $customer->id,
+            'type' => 'email_verification_server',
+            'name' => $name,
+            'data' => json_encode($data),
+        ]);
+    }
 }

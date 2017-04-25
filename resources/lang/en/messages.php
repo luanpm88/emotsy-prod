@@ -1800,4 +1800,5 @@ return [
     'email_verification_servers_settings' => 'Email verification server settings',
     'use_all_email_verification_servers' => 'Use all email verification servers',
     'email_verification_server_no_active' => 'You have no active email verification servers',
+    'allow_create_email_verification_servers_intro' => 'Create email verification servers: <span class="text-semibold">:value</span>',
 ];

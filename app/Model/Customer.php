@@ -1016,7 +1016,7 @@ class Customer extends Model
 
     public function emailVerificationServers()
     {
-        return $this->hasMany('Acelle\Model\SendingServer');
+        return $this->hasMany('Acelle\Model\EmailVerificationServer');
     }
 
     /**
@@ -1183,7 +1183,59 @@ class Customer extends Model
     }
 
     /**
-     * Calculate subscibers usage.
+     * Get max email verification server count.
+     *
+     * @var integer
+     */
+    public function maxEmailVerificationServers()
+    {
+        $count = $this->getOption('email_verification_servers_max');
+        if ($count == -1) {
+            return '∞';
+        } else {
+            return $count;
+        }
+    }
+
+    /**
+     * Calculate email verification server usage.
+     *
+     * @return number
+     */
+    public function emailVerificationServersUsage()
+    {
+        $max = $this->maxEmailVerificationServers();
+        $count = $this->emailVerificationServersCount();
+
+        if ($max == '∞') {
+            return 0;
+        }
+        if ($max == 0) {
+            return 0;
+        }
+        if ($count > $max) {
+            return 100;
+        }
+
+        return round((($count / $max) * 100), 2);
+    }
+
+    /**
+     * Calculate email verigfication servers usage.
+     *
+     * @return number
+     */
+    public function displayEmailVerificationServersUsage()
+    {
+        if ($this->maxEmailVerificationServers() == '∞') {
+            return trans('messages.unlimited');
+        }
+
+        return $this->emailVerificationServersUsage().'%';
+    }
+
+    /**
+     * Calculate sending servers usage.
      *
      * @return number
      */
@@ -1206,7 +1258,7 @@ class Customer extends Model
     }
 
     /**
-     * Calculate subscibers usage.
+     * Calculate sending servers usage.
      *
      * @return number
      */

@@ -636,4 +636,22 @@ class Plan extends Model
             }
         }
     }
+
+    /**
+     * Display sending ervers permission.
+     *
+     * @return array
+     */
+    public function displayAllowCreateEmailVerificationServer()
+    {
+		if ($this->getOption("create_email_verification_servers") == 'no') {
+			return trans('messages.feature_not_allow');
+		}
+
+        if ($this->getOption("email_verification_servers_max") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("email_verification_servers_max");
+        }
+    }
 }

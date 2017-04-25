@@ -124,6 +124,9 @@ class EmailVerificationServerController extends Controller
             $server->options = json_encode($request->options);
 
             if ($server->save()) {
+                // Log
+                $server->log('created', $request->user()->customer);
+
                 $request->session()->flash('alert-success', trans('messages.email_verification_server.created'));
                 return redirect()->action('EmailVerificationServerController@index');
             }
@@ -198,6 +201,9 @@ class EmailVerificationServerController extends Controller
             $server->options = json_encode($request->options);
 
             if ($server->save()) {
+                // Log
+                $server->log('updated', $request->user()->customer);
+
                 $request->session()->flash('alert-success', trans('messages.email_verification_server.updated'));
                 return redirect()->action('EmailVerificationServerController@index');
             }
@@ -229,6 +235,9 @@ class EmailVerificationServerController extends Controller
         foreach ($items->get() as $item) {
             // authorize
             if ($request->user()->customer->can('delete', $item)) {
+                // Log
+                $item->log('deleted', $request->user()->customer);
+
                 $item->delete();
             }
         }

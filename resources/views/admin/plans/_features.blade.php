@@ -27,4 +27,7 @@
     <li>
         {!! trans('messages.allow_create_sending_domains_intro', ["value" => $plan->displayAllowCreateSendingDomain()]) !!}
     </li>
+    <li>
+        {!! trans('messages.allow_create_email_verification_servers_intro', ["value" => $plan->displayAllowCreateEmailVerificationServer()]) !!}
+    </li>
 </ul>
