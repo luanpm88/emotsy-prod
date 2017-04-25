@@ -570,7 +570,7 @@
         // all email verification servers checking
 		$(document).on("change", "input[name='options[all_email_verification_servers]']", function(e) {
 			if($("input[name='options[all_email_verification_servers]']:checked").length) {
-				$(".sending-servers").find("input[type=checkbox]").each(function() {
+				$(".email-verification-servers").find("input[type=checkbox]").each(function() {
 					if($(this).is(":checked")) {
 						$(this).parents(".form-group").find(".switchery").eq(1).click();
 					}
@@ -583,7 +583,7 @@
 		$("input[name='options[all_email_verification_servers]']").trigger("change");
 
 
-		// Sending servers checking setting
+		// Email verification servers checking setting
 		$(document).on("change", "input[name='options[create_email_verification_servers]']", function(e) {
 			if($('input[name="options[create_email_verification_servers]"]:checked').val() == 'yes') {
 				$(".email-verification-servers-yes").show();

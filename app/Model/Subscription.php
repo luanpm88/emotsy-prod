@@ -114,12 +114,33 @@ class Subscription extends Model
     {
         return $this->hasMany('Acelle\Model\Payment');
     }
+	public function subscriptionsEmailVerificationServers()
+    {
+        return $this->hasMany('Acelle\Model\SubscriptionsEmailVerificationServer');
+    }
 
+	/**
+     * Get all active subscription sending servers.
+     *
+     * @return collect
+     */
 	public function activeSubscriptionsSendingServers()
     {
         return $this->subscriptionsSendingServers()
 			->join('sending_servers', 'sending_servers.id', '=', 'subscriptions_sending_servers.sending_server_id')
 			->where('sending_servers.status', '=', SendingServer::STATUS_ACTIVE);
+    }
+
+	/**
+     * Get all active subscription email verification servers.
+     *
+     * @return collect
+     */
+	public function activeSubscriptionsEmailVerificationServers()
+    {
+        return $this->subscriptionsEmailVerificationServers()
+			->join('email_verification_servers', 'email_verification_servers.id', '=', 'subscriptions_email_verification_servers.server_id')
+			->where('email_verification_servers.status', '=', EmailVerificationServer::STATUS_ACTIVE);
     }
 
     /**
@@ -137,7 +158,28 @@ class Subscription extends Model
                 $uid = uniqid();
             }
             $subscription->uid = $uid;
+		});
+
+		static::created(function ($subscription) {
+			// get sending server from plan.
+            foreach($subscription->plan->plansSendingServers as $planServer) {
+                $row = new SubscriptionsSendingServer();
+                $row->subscription_id = $subscription->id;
+                $row->sending_server_id = $planServer->sending_server_id;
+                $row->fitness = $planServer->fitness;
+                $row->save();
+			}
+
+			// get email verification server from plan.
+            foreach($subscription->plan->plansEmailVerificationServers as $planServer) {
+                $row = new SubscriptionsEmailVerificationServer();
+                $row->subscription_id = $subscription->id;
+                $row->server_id = $planServer->server_id;
+                $row->save();
+			}
         });
+
+
     }
 
     /**
@@ -377,8 +419,11 @@ class Subscription extends Model
             'access_when_offline' => 'no',
             'create_sending_servers' => 'no',
 			'create_sending_domains' => 'no',
-            'sending_servers_max' => '-1',
-			'sending_domains_max' => '-1',
+            'sending_servers_max' => '0',
+			'sending_domains_max' => '0',
+			'all_email_verification_servers' => 'no',
+			'create_email_verification_servers' => 'no',
+			'email_verification_servers_max' => '0',
         ];
     }
 
@@ -410,6 +455,9 @@ class Subscription extends Model
 			'create_sending_domains' => 'yes',
             'sending_servers_max' => '-1',
 			'sending_domains_max' => '-1',
+			'all_email_verification_servers' => 'yes',
+			'create_email_verification_servers' => 'yes',
+			'email_verification_servers_max' => '-1',
         ];
     }
 
@@ -559,6 +607,24 @@ class Subscription extends Model
             return trans('messages.unlimited');
         } else {
             return $this->getOption("sending_servers_max");
+        }
+    }
+
+	/**
+     * Display email verification ervers permission.
+     *
+     * @return array
+     */
+    public function displayAllowCreateEmailVerificationServer()
+    {
+		if ($this->getOption("create_email_verification_servers") == 'no') {
+			return trans('messages.feature_not_allow');
+		}
+
+        if ($this->getOption("email_verification_servers_max") == -1) {
+            return trans('messages.unlimited');
+        } else {
+            return $this->getOption("email_verification_servers_max");
         }
     }
 
@@ -717,6 +783,44 @@ class Subscription extends Model
                 $row->save();
             }
         }
+    }
+
+	/**
+     * Update email verification servers.
+     *
+     * @return array
+     */
+    public function updateEmailVerificationServers($servers)
+    {
+        $this->subscriptionsEmailVerificationServers()->delete();
+        foreach ($servers as $key => $param) {
+            if ($param['check']) {
+                $server = \Acelle\Model\EmailVerificationServer::findByUid($key);
+                $row = new \Acelle\Model\SubscriptionsEmailVerificationServer();
+                $row->subscription_id = $this->id;
+                $row->server_id = $server->id;
+                $row->save();
+            }
+        }
+    }
+
+	/**
+     * Fill email verification servers.
+     *
+     * @return void
+     */
+    public function fillEmailVerificationServers($params)
+    {
+        $this->subscriptionsEmailVerificationServers = collect([]);
+		foreach ($params as $key => $param) {
+			if ($param['check']) {
+				$server = \Acelle\Model\EmailVerificationServer::findByUid($key);
+				$row = new \Acelle\Model\SubscriptionsEmailVerificationServer();
+				$row->plan_id = $this->id;
+				$row->server_id = $server->id;
+				$this->subscriptionsEmailVerificationServers->push($row);
+			}
+		}
     }
 
 	/**
