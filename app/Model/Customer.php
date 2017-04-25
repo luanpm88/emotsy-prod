@@ -1014,6 +1014,11 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\SendingServer');
     }
 
+    public function emailVerificationServers()
+    {
+        return $this->hasMany('Acelle\Model\SendingServer');
+    }
+
     /**
      * Customers count by time.
      *
@@ -1149,7 +1154,7 @@ class Customer extends Model
      */
     public function sendingServersCount()
     {
-        return $this->sendingServers() ->count();
+        return $this->sendingServers()->count();
     }
 
     /**
@@ -1159,7 +1164,7 @@ class Customer extends Model
      */
     public function sendingDomainsCount()
     {
-        return $this->sendingDomains() ->count();
+        return $this->sendingDomains()->count();
     }
 
     /**
@@ -1468,5 +1473,15 @@ class Customer extends Model
     public function displayNameEmail()
     {
         return $this->displayName() . " (" . $this->user->email . ")";
+    }
+
+    /**
+     * Email verification servers count.
+     *
+     * @var integer
+     */
+    public function emailVerificationServersCount()
+    {
+        return $this->emailVerificationServers()->count();
     }
 }

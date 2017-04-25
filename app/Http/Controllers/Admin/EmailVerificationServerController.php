@@ -230,31 +230,6 @@ class EmailVerificationServerController extends Controller
     }
 
     /**
-     * Custom sort items.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function sort(Request $request)
-    {
-        $sort = json_decode($request->sort);
-        foreach ($sort as $row) {
-            $item = \Acelle\Model\EmailVerificationServer::findByUid($row[0]);
-
-            // authorize
-            if (!$request->user()->admin->can('update', $item)) {
-                return $this->notAuthorized();
-            }
-
-            $item->custom_order = $row[1];
-            $item->save();
-        }
-
-        echo trans('messages.email_verification_server.custom_order.updated');
-    }
-
-    /**
      * Remove the specified resource from storage.
      *
      * @param int $id

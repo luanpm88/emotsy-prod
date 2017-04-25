@@ -496,7 +496,7 @@
                 <br />
                 <div class="row email-verification-servers">
                     @foreach (Acelle\Model\EmailVerificationServer::getAllAdminActive()->orderBy("name")->get() as $server)
-                        <div class="col-md-6">
+                        <div class="col-md-3">
                             <div class="row">
                                 <div class="col-md-12">
                                     <div class="form-group">

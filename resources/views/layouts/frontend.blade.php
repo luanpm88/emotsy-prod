@@ -63,11 +63,13 @@
 				</li>
 				@if(
 					Auth::user()->customer->can("read", new Acelle\Model\SendingServer()) ||
-					Auth::user()->customer->can("read", new Acelle\Model\SendingDomain())
+					Auth::user()->customer->can("read", new Acelle\Model\SendingDomain()) ||
+                    Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer())
 				)
 					<li class="dropdown language-switch"
 						rel0="SendingServerController"
 						rel1="SendingDomainController"
+                        rel2="EmailVerificationServerController"
 					>
 						<a class="dropdown-toggle" data-toggle="dropdown">
 							<i class="glyphicon glyphicon-transfer"></i> {{ trans('messages.sending') }}
@@ -85,6 +87,13 @@
 								<li rel0="SendingDomainController">
 									<a href="{{ action('SendingDomainController@index') }}">
 										<i class="icon-earth"></i> {{ trans('messages.sending_domains') }}
+									</a>
+								</li>
+							@endif
+                            @if (Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer()))
+								<li rel0="EmailVerificationServerController">
+									<a href="{{ action('EmailVerificationServerController@index') }}">
+										<i class="icon-database-check"></i> {{ trans('messages.email_verification_servers') }}
 									</a>
 								</li>
 							@endif

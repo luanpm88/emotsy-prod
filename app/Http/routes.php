@@ -394,6 +394,14 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('payments/cash/{subscription_uid}', 'PaymentController@cash');
     Route::post('payments/paypal/{subscription_uid}', 'PaymentController@paypal');
     Route::get('payments/paypal/{subscription_uid}', 'PaymentController@paypal');
+
+    // Email verification servers
+    Route::get('email_verification_servers/listing/{page?}', 'EmailVerificationServerController@listing');
+    Route::get('email_verification_servers/sort', 'EmailVerificationServerController@sort');
+    Route::get('email_verification_servers/delete', 'EmailVerificationServerController@delete');
+    Route::get('email_verification_servers/disable', 'EmailVerificationServerController@disable');
+    Route::get('email_verification_servers/enable', 'EmailVerificationServerController@enable');
+    Route::resource('email_verification_servers', 'EmailVerificationServerController');
 });
 
 // ADMIN AREA
