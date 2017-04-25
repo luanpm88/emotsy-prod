@@ -1,6 +1,6 @@
 @extends('layouts.backend')
 
-@section('title', trans('messages.sending_servers'))
+@section('title', trans('messages.email_verification_servers'))
 
 @section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
@@ -16,32 +16,32 @@
 			<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 		</ul>
 		<h1>
-			<span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.sending_servers') }}</span>
+			<span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.email_verification_servers') }}</span>
 		</h1>
 	</div>
 
 @endsection
 
 @section('content')
-	<p>{{ trans('messages.sending_server.wording') }}</p>
+	<p>{{ trans('messages.email_verification_server.wording') }}</p>
 
 	<form class="listing-form"
-		sort-url="{{ action('Admin\SendingServerController@sort') }}"
-		data-url="{{ action('Admin\SendingServerController@listing') }}"
-		per-page="{{ Acelle\Model\SendingServer::$itemsPerPage }}"
+		sort-url="{{ action('Admin\EmailVerificationServerController@sort') }}"
+		data-url="{{ action('Admin\EmailVerificationServerController@listing') }}"
+		per-page="{{ Acelle\Model\EmailVerificationServer::$itemsPerPage }}"
 	>
 		<div class="row top-list-controls">
 			<div class="col-md-10">
-				@if ($items->count() >= 0)
+				@if ($servers->count() >= 0)
 					<div class="filter-box">
 						<div class="btn-group list_actions hide">
 							<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
 								{{ trans('messages.actions') }} <span class="caret"></span>
 							</button>
 							<ul class="dropdown-menu">
-								<li><a link-confirm="{{ trans('messages.enable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@enable') }}"><i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}</a></li>
-								<li><a link-confirm="{{ trans('messages.disable_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@disable') }}"><i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}</a></li>
-								<li><a delete-confirm="{{ trans('messages.delete_sending_servers_confirm') }}" href="{{ action('Admin\SendingServerController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
+								<li><a link-confirm="{{ trans('messages.enable_email_verification_servers_confirm') }}" href="{{ action('Admin\EmailVerificationServerController@enable') }}"><i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}</a></li>
+								<li><a link-confirm="{{ trans('messages.disable_email_verification_servers_confirm') }}" href="{{ action('Admin\EmailVerificationServerController@disable') }}"><i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}</a></li>
+								<li><a delete-confirm="{{ trans('messages.delete_email_verification_servers_confirm') }}" href="{{ action('Admin\EmailVerificationServerController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
 							</ul>
 						</div>
 						<div class="checkbox inline check_all_list">
@@ -52,9 +52,9 @@
 						<span class="filter-group">
 							<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
 							<select class="select" name="sort-order">
-								<option value="sending_servers.name">{{ trans('messages.name') }}</option>
-								<option value="sending_servers.created_at">{{ trans('messages.created_at') }}</option>
-								<option value="sending_servers.updated_at">{{ trans('messages.updated_at') }}</option>
+								<option value="email_verification_servers.name">{{ trans('messages.name') }}</option>
+								<option value="email_verification_servers.created_at">{{ trans('messages.created_at') }}</option>
+								<option value="email_verification_servers.updated_at">{{ trans('messages.updated_at') }}</option>
 							</select>
 							<button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
 								<i class="icon-sort-amount-asc"></i>
@@ -64,8 +64,8 @@
 							<span class="title text-semibold text-muted">{{ trans('messages.type') }}</span>
 							<select class="select" name="type">
 								<option value="">{{ trans('messages.all') }}</option>
-								@foreach (Acelle\Model\SendingServer::types() as $key => $type)
-									<option value="{{ $key }}">{{ trans('messages.' . $key) }}</option>
+								@foreach (Acelle\Model\EmailVerificationServer::typeSelectOptions() as $service)
+									<option value="{{ $service['value'] }}">{{ $service['text'] }}</option>
 								@endforeach
 							</select>
 						</span>
@@ -76,10 +76,10 @@
 					</div>
 				@endif
 			</div>
-			@if (Auth::user()->admin->can('create', new Acelle\Model\SendingServer()))
+			@if (Auth::user()->admin->can('create', new Acelle\Model\EmailVerificationServer()))
 				<div class="col-md-2 text-right">
-					<a href="{{ action('Admin\SendingServerController@select') }}" type="button" class="btn bg-info-800">
-						<i class="icon icon-plus2"></i> {{ trans('messages.create_sending_server') }}
+					<a href="{{ action("Admin\EmailVerificationServerController@create") }}" type="button" class="btn bg-info-800">
+						<i class="icon icon-plus2"></i> {{ trans('messages.create_email_verification_server') }}
 					</a>
 				</div>
 			@endif
@@ -88,45 +88,4 @@
 		<div class="pml-table-container">
 		</div>
 	</form>
-
-
-	<!-- Basic modal -->
-	<div id="server_types" class="modal fade">
-		<div class="modal-dialog">
-			<div class="modal-content">
-					<div class="modal-header bg-teal">
-						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h2 class="modal-title">{{ trans('messages.select_server_type') }}</h2>
-					</div>
-
-					<div class="modal-body">
-
-						<ul class="modern-listing big-icon no-top-border-list mt-0">
-
-							@foreach (Acelle\Model\SendingServer::types() as $key => $type)
-
-								<li>
-									<a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-info bg-info-800">{{ trans('messages.choose') }}</a>
-									<span class="server-avatar server-avatar-{{ $key }}">
-										<i class="icon-server"></i>
-									</span>
-									<h4><a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
-									<p>
-										{{ trans('messages.sending_server_intro_' . $key) }}
-									</p>
-								</li>
-
-							@endforeach
-
-						</ul>
-
-					</div>
-
-					<div class="modal-footer">
-						<button type="button" class="btn btn-white" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
-					</div>
-			</div>
-		</div>
-	</div>
-	<!-- /basic modal -->
 @endsection

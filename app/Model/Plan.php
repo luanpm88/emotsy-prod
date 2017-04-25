@@ -93,6 +93,11 @@ class Plan extends Model
         return $this->hasMany('Acelle\Model\Subscription');
     }
 
+	public function plansEmailVerificationServers()
+    {
+        return $this->hasMany('Acelle\Model\PlansEmailVerificationServer');
+    }
+
     /**
      * Bootstrap any application services.
      */
@@ -258,6 +263,9 @@ class Plan extends Model
 			'create_sending_domains' => 'no',
             'sending_servers_max' => '-1',
 			'sending_domains_max' => '-1',
+			'all_email_verification_servers' => 'yes',
+			'create_email_verification_servers' => 'no',
+			'email_verification_servers_max' => '-1',
         ];
     }
 
@@ -589,5 +597,43 @@ class Plan extends Model
     public static function getDefaultPlan()
     {
         return Plan::where('is_default', '=', true)->first();
+    }
+
+	/**
+     * Fill email verification servers.
+     *
+     * @return void
+     */
+    public function fillPlansEmailVerificationServers($params)
+    {
+        $this->plansEmailVerificationServers = collect([]);
+		foreach ($params as $key => $param) {
+			if ($param['check']) {
+				$server = \Acelle\Model\EmailVerificationServer::findByUid($key);
+				$row = new \Acelle\Model\PlansEmailVerificationServer();
+				$row->plan_id = $this->id;
+				$row->server_id = $server->id;
+				$this->plansEmailVerificationServers->push($row);
+			}
+		}
+    }
+
+	/**
+     * Update email verification servers.
+     *
+     * @return array
+     */
+    public function updateEmailVerificationServers($servers)
+    {
+        $this->plansEmailVerificationServers()->delete();
+        foreach ($servers as $key => $param) {
+            if ($param['check']) {
+                $server = \Acelle\Model\EmailVerificationServer::findByUid($key);
+                $row = new \Acelle\Model\PlansEmailVerificationServer();
+                $row->plan_id = $this->id;
+                $row->server_id = $server->id;
+                $row->save();
+            }
+        }
     }
 }

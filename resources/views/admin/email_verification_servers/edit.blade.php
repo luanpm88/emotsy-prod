@@ -12,6 +12,7 @@
             <div class="page-title">
                 <ul class="breadcrumb breadcrumb-caret position-right">
                     <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+                    <li><a href="{{ action("Admin\EmailVerificationServerController@index") }}">{{ trans('messages.email_verification_servers') }}</a></li>
                 </ul>
                 <h1>
                     <span class="text-semibold"><i class="icon-pencil"></i> {{ $server->name }}</span>
@@ -22,10 +23,10 @@
 
 @section('content')
 
-    <form enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', ["uid" => $server->uid, "type" => request()->type]) }}" method="POST" class="form-validate-jqueryz">
+    <form enctype="multipart/form-data" action="{{ action('Admin\EmailVerificationServerController@update', $server->uid) }}" method="POST" class="form-validate-jqueryz">
         {{ csrf_field() }}
         <input type="hidden" name="_method" value="PATCH">
-        @include('admin.sending_servers._form')
+        @include('admin.email_verification_servers._form')
     <form>
 
 @endsection

@@ -605,4 +605,12 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/payment_methods/disable', 'PaymentMethodController@disable');
     Route::get('admin/payment_methods/enable', 'PaymentMethodController@enable');
     Route::resource('admin/payment_methods', 'PaymentMethodController');
+
+    // Email verification servers
+    Route::get('admin/email_verification_servers/listing/{page?}', 'EmailVerificationServerController@listing');
+    Route::get('admin/email_verification_servers/sort', 'EmailVerificationServerController@sort');
+    Route::get('admin/email_verification_servers/delete', 'EmailVerificationServerController@delete');
+    Route::get('admin/email_verification_servers/disable', 'EmailVerificationServerController@disable');
+    Route::get('admin/email_verification_servers/enable', 'EmailVerificationServerController@enable');
+    Route::resource('admin/email_verification_servers', 'EmailVerificationServerController');
 });

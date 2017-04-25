@@ -24,19 +24,19 @@ class EmailVerificationServerController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->user()->admin->can('read', new \Acelle\Model\EmailVertificationServer())) {
+        if (!$request->user()->admin->can('read', new \Acelle\Model\EmailVerificationServer())) {
             return $this->notAuthorized();
         }
 
         // If admin can view all sending domains
-        if (!$request->user()->admin->can("readAll", new \Acelle\Model\EmailVertificationServer())) {
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\EmailVerificationServer())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
         // exlude customer seding servers
         $request->merge(array("no_customer" => true));
 
-        $items = \Acelle\Model\EmailVertificationServer::search($request);
+        $servers = \Acelle\Model\EmailVerificationServer::search($request);
 
         return view('admin.email_verification_servers.index', [
             'servers' => $servers,
@@ -50,19 +50,19 @@ class EmailVerificationServerController extends Controller
      */
     public function listing(Request $request)
     {
-        if (!$request->user()->admin->can('read', new \Acelle\Model\EmailVertificationServer())) {
+        if (!$request->user()->admin->can('read', new \Acelle\Model\EmailVerificationServer())) {
             return $this->notAuthorized();
         }
 
         // If admin can view all sending domains
-        if (!$request->user()->admin->can("readAll", new \Acelle\Model\EmailVertificationServer())) {
+        if (!$request->user()->admin->can("readAll", new \Acelle\Model\EmailVerificationServer())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
         }
 
         // exlude customer seding servers
         $request->merge(array("no_customer" => true));
 
-        $items = \Acelle\Model\EmailVertificationServer::search($request)->paginate($request->per_page);
+        $servers = \Acelle\Model\EmailVerificationServer::search($request)->paginate($request->per_page);
 
         return view('admin.email_verification_servers._list', [
             'servers' => $servers,
@@ -86,8 +86,8 @@ class EmailVerificationServerController extends Controller
      */
     public function create(Request $request)
     {
-        $server = new \Acelle\Model\EmailVertificationServer();
-        $server->status = \Acelle\Model\EmailVertificationServer::STATUS_ACTIVE;
+        $server = new \Acelle\Model\EmailVerificationServer();
+        $server->status = \Acelle\Model\EmailVerificationServer::STATUS_ACTIVE;
         $server->uid = '0';
         $server->fill($request->old());
 
@@ -96,8 +96,16 @@ class EmailVerificationServerController extends Controller
             return $this->notAuthorized();
         }
 
+        $server->fill($request->old());
+
+        $options = [];
+        if (!empty($request->old()['options'])) {
+            $options = $request->old()['options'];
+        }
+
         return view('admin.email_verification_servers.create', [
             'server' => $server,
+            'options' => $options,
         ]);
     }
 
@@ -112,7 +120,7 @@ class EmailVerificationServerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $server = new \Acelle\Model\EmailVertificationServer();
+        $server = new \Acelle\Model\EmailVerificationServer();
 
         // authorize
         if (!$request->user()->admin->can('create', $server)) {
@@ -121,26 +129,17 @@ class EmailVerificationServerController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Acelle\Model\EmailVertificationServer::rules($request->type));
+            $this->validate($request, $server->rules());
 
             // Save current user info
             $server->fill($request->all());
             $server->admin_id = $request->user()->admin->id;
-            $server->type = $request->type;
-            $server->status = \Acelle\Model\EmailVertificationServer::STATUS_ACTIVE;
-
-            // bounce / feedback hanlder nullable
-            if (empty($request->bounce_handler_id)) {
-                $server->bounce_handler_id = null;
-            }
-            if (empty($request->feedback_loop_handler_id)) {
-                $server->feedback_loop_handler_id = null;
-            }
+            $server->status = \Acelle\Model\EmailVerificationServer::STATUS_ACTIVE;
+            $server->options = json_encode($request->options);
 
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.email_verification_server.created'));
-
-                return redirect()->action('Admin\EmailVertificationServerController@index');
+                return redirect()->action('Admin\EmailVerificationServerController@index');
             }
         }
     }
@@ -165,7 +164,7 @@ class EmailVerificationServerController extends Controller
      */
     public function edit(Request $request, $id)
     {
-        $server = \Acelle\Model\EmailVertificationServer::findByUid($id);
+        $server = \Acelle\Model\EmailVerificationServer::findByUid($id);
 
         // authorize
         if (!$request->user()->admin->can('update', $server)) {
@@ -174,8 +173,14 @@ class EmailVerificationServerController extends Controller
 
         $server->fill($request->old());
 
+        $options = $server->getOptions();
+        if (!empty($request->old()['options'])) {
+            $options = $request->old()['options'];
+        }
+
         return view('admin.email_verification_servers.edit', [
             'server' => $server,
+            'options' => $options,
         ]);
     }
 
@@ -191,7 +196,7 @@ class EmailVerificationServerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $server = \Acelle\Model\EmailVertificationServer::findByUid($id);
+        $server = \Acelle\Model\EmailVerificationServer::findByUid($id);
 
         // authorize
         if (!$request->user()->admin->can('update', $server)) {
@@ -200,23 +205,15 @@ class EmailVerificationServerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, \Acelle\Model\EmailVertificationServer::rules($request->type));
+            $this->validate($request, $server->rules());
 
             // Save current user info
             $server->fill($request->all());
-
-            // bounce / feedback hanlder nullable
-            if (empty($request->bounce_handler_id)) {
-                $server->bounce_handler_id = null;
-            }
-            if (empty($request->feedback_loop_handler_id)) {
-                $server->feedback_loop_handler_id = null;
-            }
+            $server->options = json_encode($request->options);
 
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.email_verification_server.updated'));
-
-                return redirect()->action('Admin\EmailVertificationServerController@index');
+                return redirect()->action('Admin\EmailVerificationServerController@index');
             }
         }
     }
@@ -243,7 +240,7 @@ class EmailVerificationServerController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $item = \Acelle\Model\EmailVertificationServer::findByUid($row[0]);
+            $item = \Acelle\Model\EmailVerificationServer::findByUid($row[0]);
 
             // authorize
             if (!$request->user()->admin->can('update', $item)) {
@@ -266,7 +263,7 @@ class EmailVerificationServerController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\EmailVertificationServer::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\EmailVerificationServer::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize
@@ -288,7 +285,7 @@ class EmailVerificationServerController extends Controller
      */
     public function disable(Request $request)
     {
-        $items = \Acelle\Model\EmailVertificationServer::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\EmailVerificationServer::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize
@@ -310,7 +307,7 @@ class EmailVerificationServerController extends Controller
      */
     public function enable(Request $request)
     {
-        $items = \Acelle\Model\EmailVertificationServer::whereIn('uid', explode(',', $request->uids));
+        $items = \Acelle\Model\EmailVerificationServer::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize

@@ -16,18 +16,17 @@ class CreateEmailVerificationServersTable extends Migration
             $table->increments('id');
             $table->uuid('uid');
             $table->integer('admin_id')->unsigned()->nullable();
+            $table->integer('customer_id')->unsigned()->nullable();
             $table->text('name');
             $table->text('type');
-            $table->text('api_key');
-            $table->text('api_secret_key')->nullable();
             $table->text('options')->nullable();
-
-            $table->boolean('enabled')->default(true);
+            $table->string('status');
 
             $table->timestamps();
 
             // foreign
             $table->foreign('admin_id')->references('id')->on('admins')->onDelete('cascade');
+            $table->foreign('customer_id')->references('id')->on('customers')->onDelete('cascade');
         });
     }
 
