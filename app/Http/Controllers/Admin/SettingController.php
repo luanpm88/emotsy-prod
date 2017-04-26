@@ -310,6 +310,7 @@ class SettingController extends Controller
             'uid' => 'SUBSCRIBER_UID',
             'code' => 'SECURE_CODE'))
         );
+        \Acelle\Model\Setting::set('url_web_view', action('CampaignController@webView', ['message_id' => 'MESSAGE_ID']));
 
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.setting.updated'));

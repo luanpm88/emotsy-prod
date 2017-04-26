@@ -271,6 +271,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'url_web_view' => [
+                'cat' => 'url',
+                'value' => '',
+                'type' => 'text',
+                'not_required' => true,
+            ],
             'php_bin_path' => [
                 'cat' => 'cronjob',
                 'value' => '',

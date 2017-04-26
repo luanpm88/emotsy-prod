@@ -20,6 +20,7 @@ class CampaignController extends Controller
             'open',
             'click',
             'unsubscribe',
+            'webView'
         ]]);
     }
 
@@ -1750,5 +1751,37 @@ class CampaignController extends Controller
                 'is_default' => false
             ]
         ]);
+    }
+
+    /**
+     * Email web view.
+     */
+    public function webView(Request $request)
+    {
+        $message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
+        $tracking_log = \Acelle\Model\TrackingLog::where('message_id', '=', $message_id)->first();
+
+        try {
+            if (!is_object($tracking_log)) {
+                throw new \Exception(trans("messages.web_view_can_not_find_tracking_log_with_message_id"));
+            }
+
+            $subscriber = $tracking_log->subscriber;
+            $campaign = $tracking_log->campaign;
+
+            if (!is_object($campaign) || !is_object($subscriber)) {
+                throw new \Exception(trans("messages.web_view_can_not_find_campaign_or_subscriber"));
+            }
+
+            return view('campaigns.web_view', [
+                'campaign' => $campaign,
+                'subscriber' => $subscriber,
+                'message_id' => $message_id,
+            ]);
+
+        } catch (\Exception $e) {
+            MailLog::error($e->getMessage());
+            return view('somethingWentWrong', ['message' => $e->getMessage()]);
+        }
     }
 }

@@ -1780,4 +1780,9 @@ return [
     'license_is_not_valid' => 'License check failed: License is not valid. Please try again.',
     'file_uploaded' => 'File uploaded',
     'button' => 'button',
+    'url_web_view' => 'Email web view',
+    'web_view_can_not_find_tracking_log_with_message_id' => 'Can not retrieve email content (missing tracking log)',
+    'web_view_can_not_find_campaign_or_subscriber' => 'Can not retrieve email content (missing subscriber or campaign)',
+    'web_view_html_tab' => 'HTML',
+    'web_view_plain_tab' => 'Plain text',
 ];
