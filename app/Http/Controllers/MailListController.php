@@ -86,7 +86,7 @@ class MailListController extends Controller
         if (isset($request->old()['contact'])) {
             $list->contact->fill($request->old()['contact']);
         }
-        
+
         // Sending servers
         if (isset($request->old()['sending_servers'])) {
             $list->mailListsSendingServers = collect([]);
@@ -128,7 +128,7 @@ class MailListController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             $this->validate($request, \Acelle\Model\MailList::$rules);
-            
+
             $rules = [];
             if (isset($request->sending_servers)) {
                 foreach ($request->sending_servers as $key => $param) {
@@ -145,7 +145,7 @@ class MailListController extends Controller
             $list->customer_id = $customer->id;
             $list->contact_id = $contact->id;
             $list->save();
-            
+
             // For sending servers
             if (isset($request->sending_servers)) {
                 $list->updateSendingServers($request->sending_servers);
@@ -200,7 +200,7 @@ class MailListController extends Controller
         if (isset($request->old()['contact'])) {
             $list->contact->fill($request->old()['contact']);
         }
-        
+
         // Sending servers
         if (isset($request->old()['sending_servers'])) {
             $list->mailListsSendingServers = collect([]);
@@ -243,7 +243,7 @@ class MailListController extends Controller
         // validate and save posted data
         if ($request->isMethod('patch')) {
             $this->validate($request, \Acelle\Model\MailList::$rules);
-            
+
             $rules = [];
             if (isset($request->sending_servers)) {
                 foreach ($request->sending_servers as $key => $param) {
@@ -259,7 +259,7 @@ class MailListController extends Controller
             $list->contact->save();
             $list->fill($request->all());
             $list->save();
-            
+
             // For sending servers
             if (isset($request->sending_servers)) {
                 $list->updateSendingServers($request->sending_servers);
@@ -746,5 +746,21 @@ class MailListController extends Controller
                 );
             }
         }
+    }
+
+    /**
+     * Mail list emails verification main page.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function verification(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+
+        return view('lists.email_verification', [
+            'list' => $list,
+        ]);
     }
 }
