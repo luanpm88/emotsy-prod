@@ -56,32 +56,34 @@
                     @can('update', $plan)
                         <a href="{{ action('Admin\PlanController@edit', $plan->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endcan
-                    <div class="btn-group">
-                        <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-                        <ul class="dropdown-menu dropdown-menu-right">
-                            @if (Auth::user()->admin->can('enable', $plan))
-                                <li>
-                                    <a link-confirm="{{ trans('messages.enable_plans_confirm') }}" href="{{ action('Admin\PlanController@enable', ["uids" => $plan->uid]) }}">
-                                        <i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
-                                    </a>
-                                </li>
-                            @endif
-                            @if (Auth::user()->admin->can('disable', $plan))
-                                <li>
-                                    <a link-confirm="{{ trans('messages.disable_plans_confirm') }}" href="{{ action('Admin\PlanController@disable', ["uids" => $plan->uid]) }}">
-                                        <i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
-                                    </a>
-                                </li>
-                            @endif
-                            @can('delete', $plan)
-                                <li>
-                                    <a list-delete-confirm="{{ action('Admin\PlanController@deleteConfirm', ['uids' => $plan->uid]) }}" href="{{ action('Admin\PlanController@delete', ['uids' => $plan->uid]) }}" title="{{ trans('messages.delete') }}" class="">
-                                        <i class="icon icon-trash"></i> {{ trans('messages.delete') }}
-                                    </a>
-                                </li>
-                            @endcan
-                        </ul>
-                    </div>
+                    @if (\Auth::user()->can('delete', $plan) || \Auth::user()->can('disable', $plan) || \Auth::user()->can('enable', $plan))
+                        <div class="btn-group">
+                            <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+                            <ul class="dropdown-menu dropdown-menu-right">
+                                @if (Auth::user()->admin->can('enable', $plan))
+                                    <li>
+                                        <a link-confirm="{{ trans('messages.enable_plans_confirm') }}" href="{{ action('Admin\PlanController@enable', ["uids" => $plan->uid]) }}">
+                                            <i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
+                                        </a>
+                                    </li>
+                                @endif
+                                @if (Auth::user()->admin->can('disable', $plan))
+                                    <li>
+                                        <a link-confirm="{{ trans('messages.disable_plans_confirm') }}" href="{{ action('Admin\PlanController@disable', ["uids" => $plan->uid]) }}">
+                                            <i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
+                                        </a>
+                                    </li>
+                                @endif
+                                @can('delete', $plan)
+                                    <li>
+                                        <a list-delete-confirm="{{ action('Admin\PlanController@deleteConfirm', ['uids' => $plan->uid]) }}" href="{{ action('Admin\PlanController@delete', ['uids' => $plan->uid]) }}" title="{{ trans('messages.delete') }}" class="">
+                                            <i class="icon icon-trash"></i> {{ trans('messages.delete') }}
+                                        </a>
+                                    </li>
+                                @endcan
+                            </ul>
+                        </div>
+                    @endif
                 </td>
             </tr>
         @endforeach

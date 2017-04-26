@@ -473,7 +473,7 @@ class Plan extends Model
     public static function select2($request) {
         $data = ['items' => [], 'more' => true];
 
-        $query = \Acelle\Model\Plan::getAll()->orderBy('custom_order', 'asc');
+        $query = \Acelle\Model\Plan::getAllActive()->orderBy('custom_order', 'asc');
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {
@@ -591,5 +591,15 @@ class Plan extends Model
     public static function getDefaultPlan()
     {
         return Plan::where('is_default', '=', true)->first();
+    }
+
+    /**
+     * Check if plan is default.
+     *
+     * @return boolean
+     */
+    public function isDefault()
+    {
+        return $this->is_default;
     }
 }
