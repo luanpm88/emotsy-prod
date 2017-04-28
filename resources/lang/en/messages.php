@@ -1746,6 +1746,8 @@ return [
     'all_times' => 'All times',
     'all_payments' => 'All payments',
     'stripe_api_key' => 'API Key',
+    'stripe_api_publishable_key' => 'API Publishable Key',
+    'stripe_api_secret_key' => 'API Secret Key',
     'stripe_credit_card' => 'Stripe / Credit Card',
     'payment_method_type_stripe_credit_card_button' => '<i class="icon-credit-card"></i> Pay by Credit card',
     'purchasing_intro_stripe_credit_card' => 'Please click the button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
