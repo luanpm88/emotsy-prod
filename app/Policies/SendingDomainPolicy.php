@@ -52,7 +52,7 @@ class SendingDomainPolicy
             case 'customer':
                 $max = $user->customer->getOption('sending_domains_max');
                 $can = $user->customer->getOption('create_sending_domains') == 'yes'
-                    && ($user->customer->sendingDomainsCount() < $user->customer->getOption('create_sending_domains') || $max == -1);
+                    && ($user->customer->sendingDomainsCount() < $max || $max == -1);
                 break;
         }
 
