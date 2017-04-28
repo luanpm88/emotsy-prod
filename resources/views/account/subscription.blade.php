@@ -44,7 +44,9 @@
 
                     @elseif (!$subscription->isPaid())
                         <p>
-                            {!! trans('messages.current_plan_notactive_intro') !!}
+                            {!! trans('messages.current_plan_notactive_intro', [
+                                'plan' => $subscription->plan_name,
+                            ]) !!}
                         </p>
 
                         @include('subscriptions._details', ['subscription' => $subscription])

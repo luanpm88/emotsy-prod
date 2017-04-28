@@ -1750,12 +1750,12 @@ return [
     'stripe_api_secret_key' => 'API Secret Key',
     'stripe_credit_card' => 'Stripe / Credit Card',
     'payment_method_type_stripe_credit_card_button' => '<i class="icon-credit-card"></i> Pay by Credit card',
-    'purchasing_intro_stripe_credit_card' => 'Please click the button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
+    'purchasing_intro_stripe_credit_card' => 'Please click the button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the Pay by Credit Card option
 				. Your plan price is: <a><strong>:price</strong></a>',
     'pay_with_strip_label_button' => 'Click to pay',
     'stripe_checkout_description' => 'Pay for order #:order',
     'payment_method_type_stripe_credit_card' => 'Pay by Stripe / Credit card',
-    'purchasing_intro_paypal' => 'Please click the button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
+    'purchasing_intro_paypal' => 'Please click the button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the Pay with PayPal option
 		. Your plan price is: <a><strong>:price</strong></a>',
     'paypal_client_id' => 'PayPal Client ID',
     'paypal_secret' => 'PayPal Secret',
