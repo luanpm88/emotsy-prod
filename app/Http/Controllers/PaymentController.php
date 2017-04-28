@@ -18,6 +18,26 @@ class PaymentController extends Controller {
     }
 
     /**
+     * Subscription billing information.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function billingInformation(Request $request, $subscription_uid) {
+        $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
+
+        $rules = [
+            'tax_number' => 'required',
+            'billing_address' => 'required',
+        ];
+
+        return view('payments.billing_information', [
+            'subscription' => $subscription,
+            'rules' => $rules,
+        ]);
+    }
+
+    /**
      * Subscription pay by PayPal.
      *
      * @param  \Illuminate\Http\Request  $request

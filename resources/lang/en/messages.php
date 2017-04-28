@@ -1782,4 +1782,8 @@ return [
     'license_is_not_valid' => 'License check failed: License is not valid. Please try again.',
     'file_uploaded' => 'File uploaded',
     'button' => 'button',
+    'billing_information' => 'Billing information',
+    'tax_number' => 'Tax number',
+    'billing_address' => 'Billing address',
+    'please_fill_billing_information' => 'Please fill the billing information below to continue to the payment for <a><strong>:plan plan</strong></a>.',
 ];

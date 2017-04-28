@@ -33,6 +33,7 @@ class Contact extends Model
      */
     protected $fillable = [
         'email', 'first_name', 'last_name', 'address_1', 'address_2', 'city', 'zip', 'url', 'company', 'phone', 'state', 'country_id',
+        'tax_number', 'billing_address'
     ];
 
     /**
@@ -47,10 +48,8 @@ class Contact extends Model
         'address_1' => 'required',
         'city' => 'required',
         'zip' => 'required',
-        'url' => 'required|url',
+        'url' => 'url',
         'company' => 'required',
-        'phone' => 'required',
-        'state' => 'required',
         'country_id' => 'required',
     );
 
@@ -91,7 +90,7 @@ class Contact extends Model
     {
         return $this->first_name.' '.$this->last_name;
     }
-    
+
     /**
      * Display contact country name.
      *

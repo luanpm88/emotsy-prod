@@ -384,6 +384,8 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('sending_domains', 'SendingDomainController');
 
     // Payment
+    Route::post('payments/billing-information/{subscription_uid}', 'PaymentController@billingInformation');
+    Route::get('payments/billing-information/{subscription_uid}', 'PaymentController@billingInformation');
     Route::post('payments/stripe/credit-card/{subscription_uid}', 'PaymentController@stripe_credit_card');
     Route::get('payments/stripe/credit-card/{subscription_uid}', 'PaymentController@stripe_credit_card');
     Route::post('payments/braintree/paypal/{subscription_uid}', 'PaymentController@braintree_paypal');
