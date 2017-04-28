@@ -55,10 +55,11 @@ class IpLocation extends Model
 
         // Get info
         try {
-            $location_tables = \DB::select('SHOW TABLES LIKE "ip2location_db11"');
+            $location_table = 'ip2location_db11';
+            $location_tables = \DB::select('SHOW TABLES LIKE "'.$location_table.'"');
             // Local service
             if (count($location_tables)) {
-                $records = \DB::select("SELECT * FROM `ip2location_db11` WHERE INET_ATON(?) <= ip_to LIMIT 1", [$ip]);
+                $records = \DB::select("SELECT * FROM `".$location_table."` WHERE INET_ATON(?) <= ip_to LIMIT 1", [$ip]);
                 if (count($records)) {
                     $record = $records[0];
                     $location->country_code = $record->country_code;
