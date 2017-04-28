@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log as LaravelLog;
 
 class IpLocation extends Model
 {
@@ -57,6 +58,8 @@ class IpLocation extends Model
 
             $location->fill($values);
         } catch (\Exception $e) {
+            // Note log
+            LaravelLog::warning('Cannot get IP location info: ' . $e->getMessage());
         }
 
         $location->save();
