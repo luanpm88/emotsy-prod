@@ -45,6 +45,8 @@ class IpLocation extends Model
      */
     public static function add($ip)
     {
+        //SELECT * FROM `ip2location_db11` WHERE INET_ATON('116.109.245.204') <= ip_to LIMIT 1
+
         $location = self::where('ip_address', '=', $ip)->first();
         if (!is_object($location)) {
             $location = new self();
@@ -53,10 +55,27 @@ class IpLocation extends Model
 
         // Get info
         try {
-            $result = file_get_contents('http://freegeoip.net/json/'.$ip);
-            $values = json_decode($result, true);
+            $location_tables = \DB::select('SHOW TABLES LIKE "ip2location_db11"');
+            // Local service
+            if (count($location_tables)) {
+                $records = \DB::select("SELECT * FROM `ip2location_db11` WHERE INET_ATON(?) <= ip_to LIMIT 1", [$ip]);
+                if (count($records)) {
+                    $record = $records[0];
+                    $location->country_code = $record->country_code;
+                    $location->country_name = $record->country_name;
+                    $location->region_name = $record->region_name;
+                    $location->city = $record->city_name;
+                    $location->zipcode = $record->zip_code;
+                    $location->latitude = $record->latitude;
+                    $location->longitude = $record->longitude;
+                }
+            // Remote service
+            } else {
+                $result = file_get_contents('http://freegeoip.net/json/'.$ip);
+                $values = json_decode($result, true);
 
-            $location->fill($values);
+                $location->fill($values);
+            }
         } catch (\Exception $e) {
             // Note log
             LaravelLog::warning('Cannot get IP location info: ' . $e->getMessage());
