@@ -25,15 +25,37 @@ class PaymentController extends Controller {
      */
     public function billingInformation(Request $request, $subscription_uid) {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
+        $billing_information = [];
+
+        // Get information from contact
+        $contact = $request->user()->customer->contact;
+        if (is_object($contact)) {
+            $billing_information['tax_number'] = $contact->tax_number;
+            $billing_information['billing_address'] = $contact->billing_address;
+        }
+
+        // Get old post values
+        if (!empty($request->old())) {
+            $billing_information = $request->old();
+        }
 
         $rules = [
             'tax_number' => 'required',
             'billing_address' => 'required',
         ];
 
+        // validate and save billing information to session
+        if ($request->isMethod('post')) {
+            $this->validate($request, $rules);
+
+            $billing_information = $request->all();
+            $request->session()->set('billing_information', $billing_information);
+        }
+
         return view('payments.billing_information', [
             'subscription' => $subscription,
             'rules' => $rules,
+            'billing_information' => $billing_information
         ]);
     }
 

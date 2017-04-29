@@ -44,7 +44,7 @@
                             @include('helpers.form_control', [
                                 'type' => 'text',
                                 'name' => 'tax_number',
-                                'value' => '',
+                                'value' => (isset($billing_information['tax_number']) ? $billing_information['tax_number'] : ''),
                                 'help_class' => 'billing_information',
                                 'rules' => $rules,
                             ])
@@ -52,14 +52,25 @@
                             @include('helpers.form_control', [
                                 'type' => 'text',
                                 'name' => 'billing_address',
-                                'value' => '',
+                                'value' => (isset($billing_information['billing_address']) ? $billing_information['billing_address'] : ''),
                                 'help_class' => 'billing_information',
                                 'rules' => $rules,
                             ])
 
+							@include('helpers.form_control', [
+								'multiple' => true,
+								'type' => 'checkboxes',
+								'name' => '',
+								'label' => '',
+								'value' => '',
+								'options' => [['value' => '', 'text' => trans('messages.update_customer_contact_billing_information_too')]],
+								'rules' => $rules
+							])
+
                         </div>
                     </div>
 
+					<hr>
 					<div class="">
 						<button class="btn bg-teal">{{ trans('messages.next') }} <i class="icon-arrow-right7"></i></button>
 					</div>

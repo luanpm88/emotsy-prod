@@ -1786,4 +1786,5 @@ return [
     'tax_number' => 'Tax number',
     'billing_address' => 'Billing address',
     'please_fill_billing_information' => 'Please fill the billing information below to continue to the payment for <a><strong>:plan plan</strong></a>.',
+    'update_customer_contact_billing_information_too' => 'Also update your billing information in contact information too',
 ];
