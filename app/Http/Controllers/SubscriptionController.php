@@ -361,7 +361,12 @@ class SubscriptionController extends Controller
         $subscription = \Acelle\Model\Subscription::findByUid($request->uid);
 
         if (is_object($subscription->paymentMethod)) {
-            return redirect()->action('PaymentController@' . $subscription->paymentMethod->type, $subscription->uid);
+            $action = action('PaymentController@' . $subscription->paymentMethod->type, $subscription->uid);
+
+            // save current checkout link
+            $request->session()->set('current_payment_link', $action);
+
+            return redirect()->away($action);
         }
     }
 

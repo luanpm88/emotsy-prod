@@ -60,10 +60,10 @@
 							@include('helpers.form_control', [
 								'multiple' => true,
 								'type' => 'checkboxes',
-								'name' => '',
+								'name' => 'update_customer_billing_information',
 								'label' => '',
-								'value' => '',
-								'options' => [['value' => '', 'text' => trans('messages.update_customer_contact_billing_information_too')]],
+								'value' => (isset($billing_information['update_customer_billing_information']) ? $billing_information['update_customer_billing_information'] : ''),
+								'options' => [['value' => 'true', 'text' => trans('messages.update_customer_contact_billing_information_too')]],
 								'rules' => $rules
 							])
 

@@ -18,12 +18,28 @@ class PaymentController extends Controller {
     }
 
     /**
+     * Check billing information exists.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function checkBillingInformation(Request $request, $subscription)
+    {
+        if (null == $request->session()->get('billing_information')) {
+            return action('PaymentController@billingInformation', $subscription->uid);
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Subscription billing information.
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function billingInformation(Request $request, $subscription_uid) {
+        $customer = $request->user()->customer;
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $billing_information = [];
 
@@ -32,6 +48,11 @@ class PaymentController extends Controller {
         if (is_object($contact)) {
             $billing_information['tax_number'] = $contact->tax_number;
             $billing_information['billing_address'] = $contact->billing_address;
+        }
+
+        // From session if exist
+        if (null !== $request->session()->get('billing_information')) {
+            $billing_information = $request->session()->get('billing_information');
         }
 
         // Get old post values
@@ -50,6 +71,14 @@ class PaymentController extends Controller {
 
             $billing_information = $request->all();
             $request->session()->set('billing_information', $billing_information);
+
+            if ($request->update_customer_billing_information == 'true') {
+                $contact = $customer->getContact();
+                $customer->contact->fill($request->all());
+                $customer->contact->save();
+            }
+
+            return redirect()->away($request->session()->get('current_payment_link'));
         }
 
         return view('payments.billing_information', [
@@ -69,6 +98,11 @@ class PaymentController extends Controller {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $order_id = $subscription->getOrderID();
 
+        // Check billing information
+        if( $this->checkBillingInformation($request, $subscription) !== true ) {
+            return redirect()->away($this->checkBillingInformation($request, $subscription));
+        }
+
         $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_PAYPAL);
 
         // validate and save posted data
@@ -81,10 +115,19 @@ class PaymentController extends Controller {
                 $payment->subscription_id = $subscription->id;
                 $payment->payment_method_id = $payment_method->id;
                 $payment->data = serialize($result);
-                $payment->status = $result->success ? 'success' : 'failed';
+                $payment->status = $result->success ? \Acelle\Model\Payment::STATUS_SUCCESS : \Acelle\Model\Payment::STATUS_FAILED;
                 $payment->action = \Acelle\Model\Payment::ACTION_PAID;
                 $payment->payment_method_name = trans('messages.' . $payment_method->type);
                 $payment->order_id = $order_id;
+
+                // billing information
+                $billing_information = $request->session()->get('billing_information');
+                if (isset($billing_information)) {
+                    $payment->tax_number = $billing_information['tax_number'];
+                    $payment->billing_address = $billing_information['billing_address'];
+                    $request->session()->forget('billing_information');
+                }
+
                 $payment->save();
 
                 if ($result->success) {
@@ -118,6 +161,11 @@ class PaymentController extends Controller {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $result = NULL;
 
+        // Check billing information
+        if( $this->checkBillingInformation($request, $subscription) !== true ) {
+            return redirect()->away($this->checkBillingInformation($request, $subscription));
+        }
+
         $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD);
 
         try {
@@ -142,10 +190,19 @@ class PaymentController extends Controller {
                 $payment->subscription_id = $subscription->id;
                 $payment->payment_method_id = $payment_method->id;
                 $payment->data = serialize($result);
-                $payment->status = $result->success ? 'success' : 'failed';
+                $payment->status = $result->success ? \Acelle\Model\Payment::STATUS_SUCCESS : \Acelle\Model\Payment::STATUS_FAILED;
                 $payment->action = \Acelle\Model\Payment::ACTION_PAID;
                 $payment->payment_method_name = trans('messages.' . $payment_method->type);
                 $payment->order_id = $order_id;
+
+                // billing information
+                $billing_information = $request->session()->get('billing_information');
+                if (isset($billing_information)) {
+                    $payment->tax_number = $billing_information['tax_number'];
+                    $payment->billing_address = $billing_information['billing_address'];
+                    $request->session()->forget('billing_information');
+                }
+
                 $payment->save();
 
                 if ($result->success) {
@@ -179,6 +236,11 @@ class PaymentController extends Controller {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $result = NULL;
 
+        // Check billing information
+        if( $this->checkBillingInformation($request, $subscription) !== true ) {
+            return redirect()->away($this->checkBillingInformation($request, $subscription));
+        }
+
         $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_BRAINTREE_PAYPAL);
 
         try {
@@ -203,10 +265,19 @@ class PaymentController extends Controller {
                 $payment->subscription_id = $subscription->id;
                 $payment->data = serialize($result);
                 $payment->payment_method_id = $payment_method->id;
-                $payment->status = $result->success ? 'success' : 'failed';
+                $payment->status = $result->success ? \Acelle\Model\Payment::STATUS_SUCCESS : \Acelle\Model\Payment::STATUS_FAILED;
                 $payment->action = \Acelle\Model\Payment::ACTION_PAID;
                 $payment->payment_method_name = trans('messages.' . $payment_method->type);
                 $payment->order_id = $order_id;
+
+                // billing information
+                $billing_information = $request->session()->get('billing_information');
+                if (isset($billing_information)) {
+                    $payment->tax_number = $billing_information['tax_number'];
+                    $payment->billing_address = $billing_information['billing_address'];
+                    $request->session()->forget('billing_information');
+                }
+
                 $payment->save();
 
                 if ($result->success) {
@@ -260,6 +331,15 @@ class PaymentController extends Controller {
                 $payment->transaction_id = $request->tx;
                 $payment->currency_code = $request->cc;
                 $payment->payment_status = $request->st;
+
+                // billing information
+                $billing_information = $request->session()->get('billing_information');
+                if (isset($billing_information)) {
+                    $payment->tax_number = $billing_information['tax_number'];
+                    $payment->billing_address = $billing_information['billing_address'];
+                    $request->session()->forget('billing_information');
+                }
+
                 $payment->save();
 
                 $payment_id=$payment->id;
@@ -278,6 +358,32 @@ class PaymentController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function cash(Request $request, $subscription_uid) {
+        $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
+        $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_CASH);
+
+        // Check billing information
+        if( $this->checkBillingInformation($request, $subscription) !== true ) {
+            return redirect()->away($this->checkBillingInformation($request, $subscription));
+        }
+
+        $payment = new Payment();
+        $payment->subscription_id = $subscription->id;
+        $payment->payment_method_id = $payment_method->id;
+        $payment->status = \Acelle\Model\Payment::STATUS_CASH;
+        $payment->action = \Acelle\Model\Payment::ACTION_PAID;;
+        $payment->payment_method_name = trans('messages.' . $payment_method->type);
+        $payment->order_id = $subscription->getOrderID();
+
+        // billing information
+        $billing_information = $request->session()->get('billing_information');
+        if (isset($billing_information)) {
+            $payment->tax_number = $billing_information['tax_number'];
+            $payment->billing_address = $billing_information['billing_address'];
+            $request->session()->forget('billing_information');
+        }
+
+        $payment->save();
+
         $request->session()->flash('alert-success', trans('messages.subscription.cash.created'));
         return redirect()->action('AccountController@subscription');
     }
@@ -292,6 +398,11 @@ class PaymentController extends Controller {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $order_id = $subscription->getOrderID();
         $result = NULL;
+
+        // Check billing information
+        if( $this->checkBillingInformation($request, $subscription) !== true ) {
+            return redirect()->away($this->checkBillingInformation($request, $subscription));
+        }
 
         $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_STRIPE_CREDIT_CARD);
         $apiSecretKey = $payment_method->getOption('api_secret_key');
@@ -324,6 +435,15 @@ class PaymentController extends Controller {
                 $payment->action = \Acelle\Model\Payment::ACTION_PAID;
                 $payment->payment_method_name = trans('messages.' . $payment_method->type);
                 $payment->order_id = $order_id;
+
+                // billing information
+                $billing_information = $request->session()->get('billing_information');
+                if (isset($billing_information)) {
+                    $payment->tax_number = $billing_information['tax_number'];
+                    $payment->billing_address = $billing_information['billing_address'];
+                    $request->session()->forget('billing_information');
+                }
+
                 $payment->save();
 
                 $subscription->setActive();

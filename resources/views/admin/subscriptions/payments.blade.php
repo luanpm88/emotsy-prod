@@ -4,7 +4,7 @@
         <tr>
             <th>{{ trans('messages.created_at') }}</th>
             <th>{{ trans('messages.payment_action_method') }}</th>
-			<th width="35%">{{ trans('messages.payment_note') }}</th>
+			<th width="35%">{{ trans('messages.payment_description') }}</th>
             <th>{{ trans('messages.order_id') }}</th>
             <th>{{ trans('messages.status') }}</th>
         </tr>
@@ -19,7 +19,15 @@
                     <br>
                     {{ $payment->getPaymentMethodName() }}
                 </td>
-				<td>{{ $payment->description }}</td>
+				<td>
+					{{ $payment->description }}
+					@if ($payment->tax_number)
+						<div><span class="text-semibold">{{ trans('messages.tax_number') }}:</span> {{ $payment->tax_number }}</div>
+					@endif
+					@if ($payment->billing_address)
+						<div><span class="text-semibold">{{ trans('messages.billing_address') }}:</span> {{ $payment->billing_address }}</div>
+					@endif
+				</td>
                 <td>{{ $payment->getOrderID() }}</td>
                 <td>
 					<span class="text-muted2 list-status pull-left">

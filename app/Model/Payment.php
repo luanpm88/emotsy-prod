@@ -12,6 +12,8 @@ class Payment extends Model
 
     // Status
     const STATUS_SUCCESS = 'success';
+	const STATUS_FAILED = 'failed';
+	const STATUS_CASH = 'cash';
 
     public $fillable = ['item_number','transaction_id','currency_code','payment_status'];
 

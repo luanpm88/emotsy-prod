@@ -1732,7 +1732,7 @@ return [
     'current_plan_notactive_paid_intro' => 'You have a pending subscription for <a><strong>:plan plan</strong></a>.
         Please wait for the confirmation to activate your subscription',
     'no_admin' => 'system',
-    'payment_action_paid' => 'Paid',
+    'payment_action_paid' => 'Pay',
     'payment_action_unpaid' => 'Un-Paid',
     'payment_action_method' => 'Action/Method',
     'plan_time_unlimited' => 'Unlimited',
@@ -1787,4 +1787,8 @@ return [
     'billing_address' => 'Billing address',
     'please_fill_billing_information' => 'Please fill the billing information below to continue to the payment for <a><strong>:plan plan</strong></a>.',
     'update_customer_contact_billing_information_too' => 'Also update your billing information in contact information too',
+    'billing_information_info' => 'You are about to subscribe the <a><strong>:plan plan</strong></a> with billing information bellow:',
+    'change_billing_information' => 'Change',
+    'payment_description' => 'Description',
+    'subscription_payment_status_cash' => 'Cash',
 ];

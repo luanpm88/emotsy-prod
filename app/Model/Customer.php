@@ -1002,7 +1002,7 @@ class Customer extends Model
         $last_subscription = $this->subscriptions()
             ->orderBy('created_at', 'desc')->first();
 
-        if(is_object($last_subscription)) {
+        if(is_object($last_subscription) && $last_subscription->end_at->addDay(1) >= \Carbon\Carbon::now()) {
             return $last_subscription->end_at->addDay(1);
         } else {
             return \Acelle\Library\Tool::customerDateTime(\Carbon\Carbon::now());
@@ -1468,5 +1468,25 @@ class Customer extends Model
     public function displayNameEmail()
     {
         return $this->displayName() . " (" . $this->user->email . ")";
+    }
+
+    /**
+     * Get customer contact
+     *
+     * @return Contact
+     */
+    public function getContact()
+    {
+        if (is_object($this->contact)) {
+            $contact = $this->contact;
+        } else {
+            $contact = new \Acelle\Model\Contact([
+                'first_name' => $this->first_name,
+                'last_name' => $this->last_name,
+                'email' => $this->user->email,
+            ]);
+        }
+
+        return $contact;
     }
 }
