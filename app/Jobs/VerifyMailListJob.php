@@ -47,8 +47,13 @@ class VerifyMailListJob extends SystemJob
      */
     public function handle()
     {
-        // start campaign
-        $list = MailList::find($this->mailListId);
-        $list->runVerification($this->serverId);
+        try {
+            // start verification process
+            $list = MailList::find($this->mailListId);
+            $list->runVerification($this->serverId);
+        } catch (\Exception $e) {
+            MailLog::warning(sprintf('Verification process for list `%s` failed. %s', $list->id, $e->getMessage()));
+        }
+
     }
 }

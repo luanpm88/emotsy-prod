@@ -32,6 +32,10 @@
                 'verified' => $list->countVerifiedSubscribers(),
                 'total' => \Acelle\Library\Tool::format_number($list->readCache('SubscriberCount')),
             ]) !!}</p>
+
+            @if ($list->getRunningVerificationJob()->isFailed())
+                <p>{!! trans('messages.verification.process_failed') !!}</p>
+            @endif
             <p>
                 <a class="btn bg-grey-300"
                      link-confirm="{{ trans('messages.stop_list_verification_confirm') }}" link-method="POST"
@@ -40,8 +44,6 @@
                 </a>
             </p>
         </div>
-
-        <hr>
     @else
         <div class="sub-section">
             <h3 class="text-semibold">{{ trans('messages.verification_status') }}</h3>

@@ -1421,8 +1421,14 @@ class MailList extends Model
      */
     public function queueForVerification($serverId)
     {
-        $job = (new \Acelle\Jobs\VerifyMailListJob($this->id, $serverId));
-        dispatch($job);
+        $job = $this->getRunningVerificationJob();
+
+        if (is_null($job)) {
+            $job = (new \Acelle\Jobs\VerifyMailListJob($this->id, $serverId));
+            dispatch($job);
+        } else {
+            MailLog::info(sprintf('Verification process for list `%` already running', $this->id));
+        }
     }
 
     /**
@@ -1486,12 +1492,13 @@ class MailList extends Model
 
     /**
      * Get current verification process
+     * Note that FAILED is also considered "current"
      *
      */
     public function getRunningVerificationJob()
     {
         $job = SystemJob::where('name', 'Acelle\Jobs\VerifyMailListJob')
-                        ->whereIn('status', [SystemJob::STATUS_NEW, SystemJob::STATUS_RUNNING])
+                        ->whereIn('status', [SystemJob::STATUS_NEW, SystemJob::STATUS_RUNNING, SystemJob::STATUS_FAILED])
                         ->where('data', $this->id)
                         ->first();
         return $job;

@@ -1631,7 +1631,7 @@ return [
     'backend_not_have_license' => 'A valid license key is required to register your installation.<br>You can enter it <a href=":link">here</a>',
     'sending_server_no_active' => 'You have no active sending servers',
     'list_has_no_sending_server' => 'no sending server available',
-    'verify' => 'Verify',
+    'verify' => 'Start',
     'enter_license_and_click_verify' => 'Enter the licence key (purchase code) then hit the Verify/Update button',
     'license.updated' => 'App license was successfully updated',
     'change_license' => 'Update your license',
@@ -1812,4 +1812,5 @@ return [
     'select_email_verification_server' => 'Select email verification server',
     'reset_list_verification_confirm' => 'You\'re about to reset email verification state of all list\'s subscribers.',
     'stop_list_verification_confirm' => 'You\'re about to stop email verification proccess for this list',
+    'verification.process_failed' => 'Verification process failed'
 ];

@@ -175,6 +175,16 @@ class SystemJob extends Model
     }
 
     /**
+    * Check if system job is failed
+    *
+    * @return boolean
+    */
+    function isFailed()
+    {
+        return $this->status == SystemJob::STATUS_FAILED;
+    }
+
+    /**
     * Check if system job is new
     *
     * @return boolean
