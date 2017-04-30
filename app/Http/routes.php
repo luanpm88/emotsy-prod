@@ -154,6 +154,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('lists/{uid}/embedded-form-subscribe', 'MailListController@embeddedFormSubscribe');
     Route::post('lists/{uid}/embedded-form-subscribe-captcha', 'MailListController@embeddedFormCaptcha');
     Route::get('lists/{uid}/embedded-form-frame', 'MailListController@embeddedFormFrame');
+    Route::post('lists/{uid}/verify', 'MailListController@verify');
 
     // Field
     Route::get('lists/{list_uid}/fields', 'FieldController@index');
