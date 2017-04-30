@@ -8,6 +8,7 @@ use Acelle\Model\MailList;
 class VerifyMailListJob extends SystemJob
 {
     protected $mailListId;
+    protected $serverId;
 
     /**
      * Create a new job instance.
@@ -16,9 +17,11 @@ class VerifyMailListJob extends SystemJob
      *
      * @return void
      */
-    public function __construct($mailListId)
+    public function __construct($mailListId, $serverId)
     {
         $this->mailListId = $mailListId;
+        $this->serverId = $serverId;
+
         parent::__construct();
 
         // This line must go after the constructor
@@ -46,6 +49,6 @@ class VerifyMailListJob extends SystemJob
     {
         // start campaign
         $list = MailList::find($this->mailListId);
-        $list->runVerification();
+        $list->runVerification($this->serverId);
     }
 }

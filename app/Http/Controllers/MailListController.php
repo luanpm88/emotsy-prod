@@ -769,11 +769,35 @@ class MailListController extends Controller
      * Start the verification process
      *
      */
-    public function verify(Request $request)
+    public function startVerification(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
+
+        $serverId = 1;
         Log::info("Trying to start verification process for list " . $list->uid);
-        $list->queueForVerification();
+        $list->queueForVerification($serverId);
+        return redirect()->action('MailListController@verification', $list->uid);
+    }
+
+    /**
+     * Stop the verification process
+     *
+     */
+    public function stopVerification(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+        $list->stopVerification();
+        return redirect()->action('MailListController@verification', $list->uid);
+    }
+
+    /**
+     * Reset the verification data
+     *
+     */
+    public function resetVerification(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+        $list->resetVerification();
         return redirect()->action('MailListController@verification', $list->uid);
     }
 }

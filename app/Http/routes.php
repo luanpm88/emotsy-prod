@@ -135,9 +135,10 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('assets/images/avatar/user-{uid?}.jpg', 'UserController@avatar');
 
     // Mail list
-    Route::post('lists/{uid}/verification/reset', 'MailListController@resetVerification');
-    Route::post('lists/{uid}/verification/stop', 'MailListController@stopVerification');
     Route::get('lists/{uid}/verification', 'MailListController@verification');
+    Route::post('lists/{uid}/verification/start', 'MailListController@startVerification');
+    Route::post('lists/{uid}/verification/stop', 'MailListController@stopVerification');
+    Route::post('lists/{uid}/verification/reset', 'MailListController@resetVerification');
     Route::post('lists/copy', 'MailListController@copy');
     Route::get('lists/quick-view', 'MailListController@quickView');
     Route::get('lists/{uid}/list-growth', 'MailListController@listGrowthChart');
@@ -154,7 +155,6 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('lists/{uid}/embedded-form-subscribe', 'MailListController@embeddedFormSubscribe');
     Route::post('lists/{uid}/embedded-form-subscribe-captcha', 'MailListController@embeddedFormCaptcha');
     Route::get('lists/{uid}/embedded-form-frame', 'MailListController@embeddedFormFrame');
-    Route::post('lists/{uid}/verify', 'MailListController@verify');
 
     // Field
     Route::get('lists/{list_uid}/fields', 'FieldController@index');

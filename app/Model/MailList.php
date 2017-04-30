@@ -32,6 +32,7 @@ use Acelle\Library\StringHelper;
 use Acelle\Model\SendingServer;
 use Acelle\Model\EmailVerification;
 use Acelle\Model\EmailVerificationServer;
+use Acelle\Model\SystemJob;
 
 class MailList extends Model
 {
@@ -1229,6 +1230,9 @@ class MailList extends Model
             'SubscriberCount' => function(&$list) {
                 return $list->subscribers()->count();
             },
+            'VerifiedSubscriberCount' => function(&$list) {
+                return $list->countVerifiedSubscribers();
+            },
             'ClickedRate' => function(&$list) {
                 return $list->clickRate();
             },
@@ -1415,9 +1419,9 @@ class MailList extends Model
      * Queue for list verification
      *
      */
-    public function queueForVerification()
+    public function queueForVerification($serverId)
     {
-        $job = (new \Acelle\Jobs\VerifyMailListJob($this->id));
+        $job = (new \Acelle\Jobs\VerifyMailListJob($this->id, $serverId));
         dispatch($job);
     }
 
@@ -1425,13 +1429,72 @@ class MailList extends Model
      * Run list verification process
      *
      */
-    public function runVerification()
+    public function runVerification($serverId)
     {
         $subscribers = $this->getUnverifiedSubscribers();
-        $verifier = EmailVerificationServer::first();
+        $verifier = EmailVerificationServer::find($serverId);
+
         foreach($subscribers as $subscriber) {
+            $job = $this->getRunningVerificationJob();
+            if (is_null($job)) {
+                MailLog::warning(sprintf('Mail list `%s`: verification process terminated', $this->id));
+                return;
+            } elseif ($job->isCancelled()) {
+                MailLog::warning(sprintf('Mail list `%s`: verification process cancelled', $this->id));
+                return;
+            }
+
             $subscriber->verify($verifier);
         }
+    }
+
+    /**
+     * Stop list verification process (if any)
+     *
+     */
+    public function stopVerification()
+    {
+        $job = $this->getRunningVerificationJob();
+        if (is_null($job)) {
+            MailLog::warning(sprintf('Mail list `%s`: verification process already terminated', $this->id));
+        } else {
+            $job->setCancelled();
+            $job->clearJobs();
+        }
+    }
+
+    /**
+     * Reset verification data for list
+     *
+     */
+    public function resetVerification()
+    {
+        EmailVerification::join('subscribers', 'subscribers.id', '=', 'email_verifications.subscriber_id')
+                         ->where('mail_list_id', $this->id)
+                         ->delete();
+    }
+
+    /**
+     * Check if the verification process is running
+     *
+     */
+    public function isVerificationRunning()
+    {
+        $job = $this->getRunningVerificationJob();
+        return !is_null($job);
+    }
+
+    /**
+     * Get current verification process
+     *
+     */
+    public function getRunningVerificationJob()
+    {
+        $job = SystemJob::where('name', 'Acelle\Jobs\VerifyMailListJob')
+                        ->whereIn('status', [SystemJob::STATUS_NEW, SystemJob::STATUS_RUNNING])
+                        ->where('data', $this->id)
+                        ->first();
+        return $job;
     }
 
     /**
@@ -1443,5 +1506,30 @@ class MailList extends Model
         return $this->subscribers()->whereNotIn('id', function($q){
             $q->select('subscriber_id')->from('email_verifications');
         })->get();
+    }
+
+    /**
+     * Count verified subscribers
+     *
+     */
+    public function countVerifiedSubscribers()
+    {
+        return $this->subscribers()->whereIn('id', function($q){
+            $q->select('subscriber_id')->from('email_verifications');
+        })->count();
+    }
+
+    /**
+     * get verified subscribers percentage
+     *
+     */
+    public function getVerifiedSubscribersPercentage()
+    {
+        $count = $this->subscribers()->count();
+        if ($count == 0) {
+            return 0.0;
+        } else {
+            return (float)$this->countVerifiedSubscribers() / $count;
+        }
     }
 }

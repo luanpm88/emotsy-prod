@@ -39,13 +39,14 @@ class EmailVerificationServer extends Model
     public function verify($email)
     {
         $config = $this->getConfig();
+        $options = $this->getOptions();
         $client = new Client();
 
         // build the uri
         $uri = $config['uri'];
         $uri = str_replace('{EMAIL}', $email, $uri);
-        $uri = str_replace('{API_KEY}', $this->api_key, $uri);
-        $uri = str_replace('{API_SECRET_KEY}', $this->api_secret_key, $uri);
+        $uri = str_replace('{API_KEY}', $options['api_key'], $uri);
+        $uri = str_replace('{API_SECRET_KEY}', $options['api_secret_key'], $uri);
 
         // actually request to the service
         $response = $client->request($config['request_type'], $uri);
@@ -72,12 +73,12 @@ class EmailVerificationServer extends Model
     {
         $configs = \Config::get('verification.services');
         foreach($configs as $config) {
-            if ($config['id'] == $this->options) {
+            if ($config['id'] == $this->type) {
                 return $config;
             }
         }
 
-        throw new \Exception('Cannot find settings for verification service ' . $this->options);
+        throw new \Exception('Cannot find settings for verification service ' . $this->type);
     }
 
     /**
