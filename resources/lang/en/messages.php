@@ -1814,7 +1814,7 @@ return [
     'select_email_verification_server' => 'Select email verification server',
     'reset_list_verification_confirm' => 'You\'re about to reset email verification state of all list\'s subscribers.',
     'stop_list_verification_confirm' => 'You\'re about to stop email verification proccess for this list',
-    'verification.process_failed' => 'Verification process failed'
+    'verification.process_failed' => 'Verification process failed',
     'can_import_list' => 'Import list',
     'can_export_list' => 'Export list',
     'cash.wording' => 'Enable the cash payment option to allow payment to take place outside of the system. i.e. user can somehow make the payment for the subscription and then click on the "Pay In Cash" button to claim the payment.
