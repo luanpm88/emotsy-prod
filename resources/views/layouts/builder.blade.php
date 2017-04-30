@@ -7,42 +7,42 @@
     <!--<![endif]-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title') - {{ \Acelle\Model\Setting::get("site_name") }}</title>
-    <link href="{{ URL::asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">    
-    
+    <link href="{{ URL::asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
+
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/builder.css') }}" />
     <!--[if (gte mso 9)|(IE)]>
     <style type="text/css">
         table {border-collapse: collapse;}
     </style>
     <![endif]-->
-    
+
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-    
+
     <script type="text/javascript" src="{{ URL::asset('tinymce/tinymce.min.js') }}"></script>
-        
+
     <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/validation/validate.min.js') }}"></script>
 
     <script type="text/javascript" src="{{ URL::asset('js/colorpicker/js/colorpicker.js') }}"></script>
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('js/colorpicker/css/colorpicker.css') }}" />
-    
+
     <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/builder.js') }}"></script>
-    
+
     @include('layouts._script_vars')
 
 </head>
-<body>
+<body class="builder-page">
     <topbar>
-        @yield('content')        
+        @yield('content')
     </topbar>
-    
+
     <div title="{{ trans('messages.remove_row') }}" class="remove_block">
         <i class="icon-cross2"></i>
     </div>
-    
+
     <table class="hide">
         <tr class="block full_width_banner">
             <td>
@@ -322,13 +322,13 @@
                 </div>
                 <!--[if (gte mso 9)|(IE)]>
                 </td>
-                </tr>                
+                </tr>
                 </table>
                 <![endif]-->
             </td>
         </tr>
         <tr class="block footer">
-            <td class="one-column">                
+            <td class="one-column">
                 <table width="100%">
                     <tr>
                         <td class="inner contents">
@@ -420,8 +420,13 @@
                 <![endif]-->
             </td>
         </tr>
+        <tr class="block button">
+            <td class="button-row">
+                <a href="#no-link" style="padding-top:15px; padding-right:30px; padding-bottom:15px; padding-left:30px;border-radius:3px; background-color:#6DC6DD;color:#FFFFFF; font-family:Helvetica, Arial, sans-serif; font-size:16px; font-weight:bold; text-decoration:none;">Button Text</a>
+            </td>
+        </tr>
     </table>
-    
+
     <toolbox>
         <div class="left-box">
             <div class="block tool-item" template="full_width_banner">
@@ -470,14 +475,18 @@
                 <i class="icon-newspaper"></i>
                 <label>{{ trans('messages.image_left') }}</label>
             </div>
+            <!--<div class="block tool-item" template="button">
+                <i class="icon-newspaper"></i>
+                <label>{{ trans('messages.button') }}</label>
+            </div>-->
         </div>
     </toolbox>
-    
+
     <editor>
         <div style="float: right">
-            <button class="btn bg-slate close-editor"><i class="icon-cross2"></i></button>            
+            <button class="btn bg-slate close-editor"><i class="icon-cross2"></i></button>
         </div>
-        
+
         <div class="tab">
             <ul>
                 <li class="active">
@@ -487,7 +496,7 @@
                     <a href="#design"><i class="icon-toggle"></i> {{ trans('messages.row_style') }}</a>
                 </li>
             </ul>
-            
+
             <div class="tab-container">
                 <div class="tab-pane active" id="builder">
                     <textarea class="builder-editor pull-right"></textarea>
@@ -527,19 +536,19 @@
                     </div>
                 </div>
             </div>
-        </div>      
+        </div>
     </editor>
-    
+
     <leftbar>
         <div class="container">
             <h1>{{ trans('messages.elements') }}</h1>
             <div class="toolbox-container">
-                
+
             </div>
         </div>
     </leftbar>
-    
+
     @yield('template_content')
-    
+
 </body>
 </html>

@@ -349,7 +349,7 @@ class SubscriberController extends Controller
         $system_jobs = $list->importJobs();
 
         // authorize
-        if (\Gate::denies('update', $list)) {
+        if (\Gate::denies('import', $list)) {
             return $this->notAuthorized();
         }
 
@@ -385,12 +385,17 @@ class SubscriberController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->current_list_uid);
         $system_job = $list->getLastImportJob();
 
+        // authorize
+        if (\Gate::denies('import', $list)) {
+            return $this->notAuthorized();
+        }
+
         if(!is_object($system_job)) {
             return "none";
         }
 
         // authorize
-        if (\Gate::denies('update', $list)) {
+        if (\Gate::denies('import', $list)) {
             return $this->notAuthorized();
         }
 
@@ -415,9 +420,15 @@ class SubscriberController extends Controller
      */
     public function downloadImportLog(Request $request)
     {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('import', $list)) {
+            return $this->notAuthorized();
+        }
+
         // @todo: should be the exact MailList here
-        $log = \Acelle\Model\MailList::findByUid($request->list_uid)
-            ->getLastImportLog();
+        $log = $list->getLastImportLog();
         // @todo what if log does not exist (removed)?
         return response()->download($log);
     }
@@ -430,6 +441,12 @@ class SubscriberController extends Controller
     public function importList(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('import', $list)) {
+            return $this->notAuthorized();
+        }
+
         $system_jobs = $list->importJobs();
         $system_jobs = $system_jobs->orderBy($request->sort_order, $request->sort_direction);
         $system_jobs = $system_jobs->paginate($request->per_page);
@@ -451,12 +468,17 @@ class SubscriberController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
+        // authorize
+        if (\Gate::denies('export', $list)) {
+            return $this->notAuthorized();
+        }
+
         $system_jobs = $list->exportJobs();
 
         $customer = $request->user()->customer;
 
         // authorize
-        if (\Gate::denies('update', $list)) {
+        if (\Gate::denies('export', $list)) {
             return $this->notAuthorized();
         }
 
@@ -488,12 +510,17 @@ class SubscriberController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->current_list_uid);
         $system_job = $list->getLastExportJob();
 
+        // authorize
+        if (\Gate::denies('export', $list)) {
+            return $this->notAuthorized();
+        }
+
         if(!is_object($system_job)) {
             return "none";
         }
 
         // authorize
-        if (\Gate::denies('update', $list)) {
+        if (\Gate::denies('export', $list)) {
             return $this->notAuthorized();
         }
 
@@ -513,8 +540,14 @@ class SubscriberController extends Controller
      */
     public function downloadExportedCsv(Request $request)
     {
-        $system_job = \Acelle\Model\MailList::findByUid($request->list_uid)
-            ->getLastExportJob();
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('export', $list)) {
+            return $this->notAuthorized();
+        }
+
+        $system_job = $list->getLastExportJob();
 
         return response()->download(storage_path('job/'.$system_job->id.'/data.csv'));
     }
@@ -527,6 +560,12 @@ class SubscriberController extends Controller
     public function exportList(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('export', $list)) {
+            return $this->notAuthorized();
+        }
+
         $system_jobs = $list->exportJobs();
         $system_jobs = $system_jobs->orderBy($request->sort_order, $request->sort_direction);
         $system_jobs = $system_jobs->paginate($request->per_page);

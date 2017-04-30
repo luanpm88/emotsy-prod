@@ -75,7 +75,8 @@ class PaymentMethod extends Model
 		}
 
         if($this->type == PaymentMethod::TYPE_STRIPE_CREDIT_CARD) {
-			$rules['options.api_key'] = 'required';
+			$rules['options.api_secret_key'] = 'required';
+			$rules['options.api_publishable_key'] = 'required';
 		}
 
 		# Check if payment method is valid

@@ -752,7 +752,7 @@ class MailList extends Model
      *
      * @return void
      */
-    public static function export($list, $user, $job)
+    public static function export($list, $customer, $job)
     {
         // Info from job
         $systemJob = $job->getSystemJob();

@@ -31,6 +31,14 @@
             @include("admin.settings._tabs")
 
             <div class="tab-content">
+
+				@if ($license_error)
+					<div class="alert alert-danger">
+						{{ $license_error }}
+					</div>
+				@endif
+
+
                 @foreach ($settings as $name => $setting)
                     @if ($setting['cat'] == 'license')
                         @if ($current_license)
@@ -61,12 +69,11 @@
 							@endif
 							<div class="row license-line">
 								<div class="col-md-6">
-									<?php $olds = request()->old(); ?>
 									@include('helpers.form_control', [
 										'type' => $setting['type'],
 										'class' => (isset($setting['class']) ? $setting['class'] : "" ),
 										'name' => $name,
-										'value' => (isset($olds['license']) && $current_license != $olds['license'] ? $olds['license'] : ''),
+										'value' => (request()->license ? request()->license : ''),
 										'label' => trans('messages.enter_license_and_click_verify'),
 										'help_class' => 'setting',
 										'options' => (isset($setting['options']) ? $setting['options'] : "" ),

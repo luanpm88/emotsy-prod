@@ -54,7 +54,7 @@ class PlanPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
-        return $can;
+        return $can && !$item->isDefault();
     }
 
     public function disable(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
@@ -63,7 +63,7 @@ class PlanPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
-        return $can && $item->status != 'inactive';
+        return $can && $item->status != 'inactive' && !$item->isDefault();
     }
 
     public function enable(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
@@ -72,6 +72,6 @@ class PlanPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
-        return $can && $item->status != 'active';
+        return $can && $item->status != 'active' && !$item->isDefault();
     }
 }

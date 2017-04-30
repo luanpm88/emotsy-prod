@@ -27,7 +27,7 @@ use Illuminate\Database\Eloquent\Model;
 class Plan extends Model
 {
     // Plan status
-	const STATUS_INACTIVE = 'inactive';
+    const STATUS_INACTIVE = 'inactive';
     const STATUS_ACTIVE = 'active';
 
     /**
@@ -88,12 +88,12 @@ class Plan extends Model
         return $this->belongsTo('Acelle\Model\Currency');
     }
 
-	public function subscriptions()
+    public function subscriptions()
     {
         return $this->hasMany('Acelle\Model\Subscription');
     }
 
-	public function plansEmailVerificationServers()
+    public function plansEmailVerificationServers()
     {
         return $this->hasMany('Acelle\Model\PlansEmailVerificationServer');
     }
@@ -158,7 +158,7 @@ class Plan extends Model
         // filters
         $filters = $request->filters;
 
-		if(!empty($request->admin_id)) {
+        if(!empty($request->admin_id)) {
             $query = $query->where('plans.admin_id', '=', $request->admin_id);
         }
 
@@ -231,7 +231,7 @@ class Plan extends Model
             ['value' => 'week', 'text' => trans('messages.week')],
             ['value' => 'month', 'text' => trans('messages.month')],
             ['value' => 'year', 'text' => trans('messages.year')],
-			['value' => 'unlimited', 'text' => trans('messages.plan_time_unlimited')],
+            ['value' => 'unlimited', 'text' => trans('messages.plan_time_unlimited')],
         ];
     }
 
@@ -243,13 +243,13 @@ class Plan extends Model
     public static function defaultOptions()
     {
         return [
-			'email_max' => '-1',
+            'email_max' => '-1',
             'list_max' => '-1',
             'subscriber_max' => '-1',
             'subscriber_per_list_max' => '-1',
-            'segment_per_list_max' => '3',
+            'segment_per_list_max' => '-1',
             'campaign_max' => '-1',
-			'automation_max' => '-1',
+            'automation_max' => '-1',
             'sending_quota' => '-1',
             'sending_quota_time' => '-1',
             'sending_quota_time_unit' => 'day',
@@ -260,12 +260,14 @@ class Plan extends Model
             'unsubscribe_url_required' => 'yes',
             'access_when_offline' => 'no',
             'create_sending_servers' => 'no',
-			'create_sending_domains' => 'no',
+            'create_sending_domains' => 'no',
             'sending_servers_max' => '-1',
-			'sending_domains_max' => '-1',
-			'all_email_verification_servers' => 'yes',
-			'create_email_verification_servers' => 'no',
-			'email_verification_servers_max' => '-1',
+            'sending_domains_max' => '-1',
+            'all_email_verification_servers' => 'yes',
+            'create_email_verification_servers' => 'no',
+            'email_verification_servers_max' => '-1',
+            'list_import' => 'yes',
+            'list_export' => 'yes',
         ];
     }
 
@@ -351,7 +353,7 @@ class Plan extends Model
         }
     }
 
-	/**
+    /**
      * Display total quota.
      *
      * @return array
@@ -435,16 +437,16 @@ class Plan extends Model
         }
     }
 
-	/**
+    /**
      * Display sending ervers permission.
      *
      * @return array
      */
     public function displayAllowCreateSendingServer()
     {
-		if ($this->getOption("create_sending_servers") == 'no') {
-			return trans('messages.feature_not_allow');
-		}
+        if ($this->getOption("create_sending_servers") == 'no') {
+            return trans('messages.feature_not_allow');
+        }
 
         if ($this->getOption("sending_servers_max") == -1) {
             return trans('messages.unlimited');
@@ -453,16 +455,16 @@ class Plan extends Model
         }
     }
 
-	/**
+    /**
      * Display sending domains permission.
      *
      * @return array
      */
     public function displayAllowCreateSendingDomain()
     {
-		if ($this->getOption("create_sending_domains") == 'no') {
-			return trans('messages.feature_not_allow');
-		}
+        if ($this->getOption("create_sending_domains") == 'no') {
+            return trans('messages.feature_not_allow');
+        }
 
         if ($this->getOption("sending_domains_max") == -1) {
             return trans('messages.unlimited');
@@ -479,7 +481,7 @@ class Plan extends Model
     public static function select2($request) {
         $data = ['items' => [], 'more' => true];
 
-        $query = \Acelle\Model\Plan::getAll()->orderBy('custom_order', 'asc');
+        $query = \Acelle\Model\Plan::getAllActive()->orderBy('custom_order', 'asc');
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {
@@ -487,10 +489,10 @@ class Plan extends Model
             });
         }
 
-		// Read all check
-		if ($request->user()->admin && !$request->user()->admin->can('readAll', new \Acelle\Model\Plan())) {
-			$query = $query->where('plans.admin_id', '=', $request->user()->admin->id);
-		}
+        // Read all check
+        if ($request->user()->admin && !$request->user()->admin->can('readAll', new \Acelle\Model\Plan())) {
+            $query = $query->where('plans.admin_id', '=', $request->user()->admin->id);
+        }
 
         foreach ($query->limit(20)->get() as $plan) {
             $data['items'][] = ['id' => $plan->uid, 'text' => $plan->name];
@@ -507,15 +509,15 @@ class Plan extends Model
     public static function getAllActiveWithDefault($admin = NULL)
     {
         $query = Plan::getAll()
-			->where("plans.status", "=", Plan::STATUS_ACTIVE);
+            ->where("plans.status", "=", Plan::STATUS_ACTIVE);
 
-		if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\Plan())) {
+        if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\Plan())) {
             $query = $query->where('plans.admin_id', '=', $admin->id);
         }
 
-		$query = $query->orderBy('custom_order', 'asc');
+        $query = $query->orderBy('custom_order', 'asc');
 
-		return $query;
+        return $query;
     }
 
     /**
@@ -527,10 +529,10 @@ class Plan extends Model
     {
         $query = Plan::getAllActiveWithDefault()->where("plans.is_default", "=", false);
 
-		return $query;
+        return $query;
     }
 
-	/**
+    /**
      * Display plan time.
      *
      * @return collect
@@ -545,7 +547,7 @@ class Plan extends Model
         return $this->frequency_amount . ' ' . \Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount);
     }
 
-	/**
+    /**
      * Subscriptions count.
      *
      * @return integer
@@ -555,7 +557,7 @@ class Plan extends Model
         return $this->subscriptions()->count();
     }
 
-	/**
+    /**
      * Customers count.
      *
      * @return integer
@@ -565,7 +567,7 @@ class Plan extends Model
         return $this->subscriptions()->distinct('customer_id')->count('customer_id');
     }
 
-	/**
+    /**
      * Frequency time unit options.
      *
      * @return array
@@ -579,7 +581,7 @@ class Plan extends Model
         ];
     }
 
-	/**
+    /**
      * Check if plan time is unlimited.
      *
      * @return boolean
@@ -599,7 +601,7 @@ class Plan extends Model
         return Plan::where('is_default', '=', true)->first();
     }
 
-	/**
+    /**
      * Fill email verification servers.
      *
      * @return void
@@ -607,18 +609,18 @@ class Plan extends Model
     public function fillPlansEmailVerificationServers($params)
     {
         $this->plansEmailVerificationServers = collect([]);
-		foreach ($params as $key => $param) {
-			if ($param['check']) {
-				$server = \Acelle\Model\EmailVerificationServer::findByUid($key);
-				$row = new \Acelle\Model\PlansEmailVerificationServer();
-				$row->plan_id = $this->id;
-				$row->server_id = $server->id;
-				$this->plansEmailVerificationServers->push($row);
-			}
-		}
+        foreach ($params as $key => $param) {
+            if ($param['check']) {
+                $server = \Acelle\Model\EmailVerificationServer::findByUid($key);
+                $row = new \Acelle\Model\PlansEmailVerificationServer();
+                $row->plan_id = $this->id;
+                $row->server_id = $server->id;
+                $this->plansEmailVerificationServers->push($row);
+            }
+        }
     }
 
-	/**
+    /**
      * Update email verification servers.
      *
      * @return array
@@ -644,14 +646,24 @@ class Plan extends Model
      */
     public function displayAllowCreateEmailVerificationServer()
     {
-		if ($this->getOption("create_email_verification_servers") == 'no') {
-			return trans('messages.feature_not_allow');
-		}
+        if ($this->getOption("create_email_verification_servers") == 'no') {
+            return trans('messages.feature_not_allow');
+        }
 
         if ($this->getOption("email_verification_servers_max") == -1) {
             return trans('messages.unlimited');
         } else {
             return $this->getOption("email_verification_servers_max");
         }
+	}
+
+    /**
+     * Check if plan is default.
+     *
+     * @return boolean
+     */
+    public function isDefault()
+    {
+        return $this->is_default;
     }
 }

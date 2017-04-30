@@ -99,9 +99,19 @@
 		<div class="col-md-4">
             @include('helpers.form_control', [
 				'type' => 'text',
-				'name' => 'options[api_key]',
-                'label' => trans('messages.stripe_api_key'),
-				'value' => $payment_method->getOption('api_key'),
+				'name' => 'options[api_publishable_key]',
+                'label' => trans('messages.stripe_api_publishable_key'),
+				'value' => $payment_method->getOption('api_publishable_key'),
+				'help_class' => 'payment_method',
+				'rules' => $payment_method->rules()
+			])
+        </div>
+		<div class="col-md-4">
+            @include('helpers.form_control', [
+				'type' => 'text',
+				'name' => 'options[api_secret_key]',
+                'label' => trans('messages.stripe_api_secret_key'),
+				'value' => $payment_method->getOption('api_secret_key'),
 				'help_class' => 'payment_method',
 				'rules' => $payment_method->rules()
 			])

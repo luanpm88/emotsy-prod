@@ -174,7 +174,7 @@ class SendingDomain extends Model
     public static function rules()
     {
         return [
-            'name' => 'required',
+            'name' => 'required|regex:/^([a-z0-9A-Z]+(-[a-z0-9A-Z]+)*\.)+[a-zA-Z]{2,}$/',
             'signing_enabled' => 'required',
         ];
     }

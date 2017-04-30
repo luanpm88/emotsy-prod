@@ -8,20 +8,20 @@ class Subscription extends Model
 {
     // Subscription status
     const STATUS_ACTIVE = 'active'; // equiv. to 'queue'
-	const STATUS_INACTIVE = 'inactive';
-	const STATUS_DISABLED = 'disabled';
+    const STATUS_INACTIVE = 'inactive';
+    const STATUS_DISABLED = 'disabled';
 
-	// Subscription state
+    // Subscription state
     const TIME_STATUS_FUTURE = 'future'; // equiv. to 'queue'
-	const TIME_STATUS_CURRENT = 'current';
-	const TIME_STATUS_PAST = 'past';
+    const TIME_STATUS_CURRENT = 'current';
+    const TIME_STATUS_PAST = 'past';
 
-	// Paid status
-	const PAID_STATUS_TRUE = 'paid';
-	const PAID_STATUS_FALSE = 'notpaid';
+    // Paid status
+    const PAID_STATUS_TRUE = 'paid';
+    const PAID_STATUS_FALSE = 'notpaid';
 
-    // STATUS
-    const STATUSES = [
+    // Subscription statuses
+    public $statuses = [
         Subscription::STATUS_ACTIVE => [
             Subscription::TIME_STATUS_PAST => 'expired',
             Subscription::TIME_STATUS_CURRENT => 'current_active',
@@ -69,12 +69,12 @@ class Subscription extends Model
     {
         $rules = [];
 
-		if(!isset($this->plan_id)) {
-			$rules['plan_uid'] = 'required';
-		}
-		if(!isset($this->customer_id)) {
-			$rules['customer_uid'] = 'required';
-		}
+        if(!isset($this->plan_id)) {
+            $rules['plan_uid'] = 'required';
+        }
+        if(!isset($this->customer_id)) {
+            $rules['customer_uid'] = 'required';
+        }
 
         return $rules;
     }
@@ -102,45 +102,45 @@ class Subscription extends Model
     {
         return $this->belongsTo('Acelle\Model\Customer');
     }
-	public function paymentMethod()
+    public function paymentMethod()
     {
         return $this->belongsTo('Acelle\Model\PaymentMethod');
     }
-	public function subscriptionsSendingServers()
+    public function subscriptionsSendingServers()
     {
         return $this->hasMany('Acelle\Model\SubscriptionsSendingServer');
     }
-	public function payments()
+    public function payments()
     {
         return $this->hasMany('Acelle\Model\Payment');
     }
-	public function subscriptionsEmailVerificationServers()
+    public function subscriptionsEmailVerificationServers()
     {
         return $this->hasMany('Acelle\Model\SubscriptionsEmailVerificationServer');
     }
 
-	/**
+    /**
      * Get all active subscription sending servers.
      *
      * @return collect
      */
-	public function activeSubscriptionsSendingServers()
+    public function activeSubscriptionsSendingServers()
     {
         return $this->subscriptionsSendingServers()
-			->join('sending_servers', 'sending_servers.id', '=', 'subscriptions_sending_servers.sending_server_id')
-			->where('sending_servers.status', '=', SendingServer::STATUS_ACTIVE);
+            ->join('sending_servers', 'sending_servers.id', '=', 'subscriptions_sending_servers.sending_server_id')
+            ->where('sending_servers.status', '=', SendingServer::STATUS_ACTIVE);
     }
 
-	/**
+    /**
      * Get all active subscription email verification servers.
      *
      * @return collect
      */
-	public function activeSubscriptionsEmailVerificationServers()
+    public function activeSubscriptionsEmailVerificationServers()
     {
         return $this->subscriptionsEmailVerificationServers()
-			->join('email_verification_servers', 'email_verification_servers.id', '=', 'subscriptions_email_verification_servers.server_id')
-			->where('email_verification_servers.status', '=', EmailVerificationServer::STATUS_ACTIVE);
+            ->join('email_verification_servers', 'email_verification_servers.id', '=', 'subscriptions_email_verification_servers.server_id')
+            ->where('email_verification_servers.status', '=', EmailVerificationServer::STATUS_ACTIVE);
     }
 
     /**
@@ -158,28 +158,37 @@ class Subscription extends Model
                 $uid = uniqid();
             }
             $subscription->uid = $uid;
-		});
+        });
 
-		static::created(function ($subscription) {
-			// get sending server from plan.
+        static::created(function ($subscription) {
+            // get sending server from plan.
             foreach($subscription->plan->plansSendingServers as $planServer) {
                 $row = new SubscriptionsSendingServer();
                 $row->subscription_id = $subscription->id;
                 $row->sending_server_id = $planServer->sending_server_id;
                 $row->fitness = $planServer->fitness;
                 $row->save();
-			}
+            }
 
-			// get email verification server from plan.
+            // get email verification server from plan.
             foreach($subscription->plan->plansEmailVerificationServers as $planServer) {
                 $row = new SubscriptionsEmailVerificationServer();
                 $row->subscription_id = $subscription->id;
                 $row->server_id = $planServer->server_id;
                 $row->save();
-			}
+            }
         });
 
-
+        static::created(function ($subscription) {
+            // get sending server from plan.
+            foreach($subscription->plan->plansSendingServers as $planServer) {
+                $row = new SubscriptionsSendingServer();
+                $row->subscription_id = $subscription->id;
+                $row->sending_server_id = $planServer->sending_server_id;
+                $row->fitness = $planServer->fitness;
+                $row->save();
+            }
+        });
     }
 
     /**
@@ -207,7 +216,7 @@ class Subscription extends Model
     public static function filter($request)
     {
         $query = self::select('subscriptions.*')
-			->join('customers', 'customers.id', '=', 'subscriptions.customer_id')
+            ->join('customers', 'customers.id', '=', 'subscriptions.customer_id')
             ->join('users', 'users.id', '=', 'customers.user_id');
 
         // Keyword
@@ -216,7 +225,7 @@ class Subscription extends Model
                 $query = $query->where(function ($q) use ($keyword) {
                     $q->orwhere('customers.first_name', 'like', '%'.$keyword.'%')
                         ->orwhere('users.email', 'like', '%'.$keyword.'%')
-						->orwhere('customers.last_name', 'like', '%'.$keyword.'%');
+                        ->orwhere('customers.last_name', 'like', '%'.$keyword.'%');
                 });
             }
         }
@@ -224,15 +233,15 @@ class Subscription extends Model
         // filters
         $filters = $request->filters;
 
-		if (!empty($filters)) {
+        if (!empty($filters)) {
             if (!empty($filters['customer_uid'])) {
                 $query = $query->where('customers.uid', '=', $filters['customer_uid']);
             }
-			if (!empty($filters['plan_uid'])) {
-				$plan = \Acelle\Model\Plan::findByUid($filters['plan_uid']);
+            if (!empty($filters['plan_uid'])) {
+                $plan = \Acelle\Model\Plan::findByUid($filters['plan_uid']);
                 $query = $query->where('subscriptions.plan_id', '=', $plan->id);
-			}
-			if (!empty($filters['status'])) {
+            }
+            if (!empty($filters['status'])) {
                 $query = $query->where('subscriptions.status', '=', $filters['status']);
             }
             if (!empty($filters['time_status'])) {
@@ -254,19 +263,19 @@ class Subscription extends Model
             }
         }
 
-		// Other filter
+        // Other filter
         if(!empty($request->customer_id)) {
             $query = $query->where('subscriptions.customer_id', '=', $request->customer_id);
         }
 
-		// Other filter
+        // Other filter
         if(!empty($request->customer_admin_id)) {
             $query = $query->where('customers.admin_id', '=', $request->customer_admin_id);
         }
 
-		if (!empty($request->customer_list)) {
-			$query = $query->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
-		}
+        if (!empty($request->customer_list)) {
+            $query = $query->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
+        }
 
         return $query;
     }
@@ -283,8 +292,8 @@ class Subscription extends Model
         if(isset($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         } else {
-			$query = $query->orderBy('subscriptions.created_at', 'desc');
-		}
+            $query = $query->orderBy('subscriptions.created_at', 'desc');
+        }
 
         return $query;
     }
@@ -297,22 +306,22 @@ class Subscription extends Model
     public function fillAttributes($params)
     {
         $this->plan_id = $this->plan_id ? $this->plan_id : (!empty($params['plan_uid']) ? \Acelle\Model\Plan::findByUid($params['plan_uid'])->id : null);
-		$this->customer_id = $this->customer_id ? $this->customer_id : (isset($params['customer_uid']) ? \Acelle\Model\Customer::findByUid($params['customer_uid'])->id : null);
-		$this->payment_method_id = $this->payment_method_id ? $this->payment_method_id : (!empty($params['payment_method_uid']) ? \Acelle\Model\PaymentMethod::findByUid($params['payment_method_uid'])->id : null);
-		$this->start_at = $this->start_at ? $this->start_at : $this->customer->getNextScriptionStartAt();
+        $this->customer_id = $this->customer_id ? $this->customer_id : (isset($params['customer_uid']) ? \Acelle\Model\Customer::findByUid($params['customer_uid'])->id : null);
+        $this->payment_method_id = $this->payment_method_id ? $this->payment_method_id : (!empty($params['payment_method_uid']) ? \Acelle\Model\PaymentMethod::findByUid($params['payment_method_uid'])->id : null);
+        $this->start_at = $this->start_at ? $this->start_at : $this->customer->getNextScriptionStartAt();
 
         $plan = $this->plan_id ? Plan::find($this->plan_id) : null;
 
         $this->fill($params);
 
         if(isset($this->plan_id)) {
-			// Save info from plan
+            // Save info from plan
             $this->price = $plan->price;
-			$this->plan_name = $plan->name;
-			$this->plan_color = $plan->color;
-			$this->currency_code = $plan->currency->code;
-			$this->currency_format = $plan->currency->format;
-			$this->options = json_encode($plan->getOptions());
+            $this->plan_name = $plan->name;
+            $this->plan_color = $plan->color;
+            $this->currency_code = $plan->currency->code;
+            $this->currency_format = $plan->currency->format;
+            $this->options = json_encode($plan->getOptions());
 
             switch ($plan->frequency_unit) {
                 case 'day':
@@ -349,7 +358,7 @@ class Subscription extends Model
         return $rules;
     }
 
-	/**
+    /**
      * Disable subscription.
      *
      * @return boolean
@@ -371,7 +380,7 @@ class Subscription extends Model
         return $this->save();
     }
 
-	/**
+    /**
      * Check if subscription is free.
      *
      * @return boolean
@@ -381,7 +390,7 @@ class Subscription extends Model
         return $this->price == 0;
     }
 
-	/**
+    /**
      * Count remaining days.
      *
      * @return integer
@@ -390,10 +399,10 @@ class Subscription extends Model
     {
         $count = isset($this->end_at) ? $this->end_at->diffInDays(\Carbon\Carbon::now()) : NULL;
 
-		return $count;
+        return $count;
     }
 
-	/**
+    /**
      * Default options for new plan.
      *
      * @return array
@@ -401,13 +410,13 @@ class Subscription extends Model
     public static function defaultOptions()
     {
         return [
-			'email_max' => '0',
+            'email_max' => '0',
             'list_max' => '0',
             'subscriber_max' => '0',
             'subscriber_per_list_max' => '0',
             'segment_per_list_max' => '0',
             'campaign_max' => '0',
-			'automation_max' => '0',
+            'automation_max' => '0',
             'sending_quota' => '0',
             'sending_quota_time' => '0',
             'sending_quota_time_unit' => 'day',
@@ -418,16 +427,20 @@ class Subscription extends Model
             'unsubscribe_url_required' => 'yes',
             'access_when_offline' => 'no',
             'create_sending_servers' => 'no',
-			'create_sending_domains' => 'no',
+            'create_sending_domains' => 'no',
             'sending_servers_max' => '0',
-			'sending_domains_max' => '0',
-			'all_email_verification_servers' => 'no',
-			'create_email_verification_servers' => 'no',
-			'email_verification_servers_max' => '0',
+            'sending_domains_max' => '0',
+            'all_email_verification_servers' => 'no',
+            'create_email_verification_servers' => 'no',
+            'email_verification_servers_max' => '0',
+            'sending_servers_max' => '-1',
+            'sending_domains_max' => '-1',
+            'list_import' => 'no',
+            'list_export' => 'no',
         ];
     }
 
-	/**
+    /**
      * Default options for new plan.
      *
      * @return array
@@ -435,13 +448,13 @@ class Subscription extends Model
     public static function defaultUnlimitedOptions()
     {
         return [
-			'email_max' => '-1',
+            'email_max' => '-1',
             'list_max' => '-1',
             'subscriber_max' => '-1',
             'subscriber_per_list_max' => '-1',
             'segment_per_list_max' => '-1',
             'campaign_max' => '-1',
-			'automation_max' => '-1',
+            'automation_max' => '-1',
             'sending_quota' => '-1',
             'sending_quota_time' => '-1',
             'sending_quota_time_unit' => 'day',
@@ -452,12 +465,14 @@ class Subscription extends Model
             'unsubscribe_url_required' => 'yes',
             'access_when_offline' => 'yes',
             'create_sending_servers' => 'yes',
-			'create_sending_domains' => 'yes',
+            'create_sending_domains' => 'yes',
             'sending_servers_max' => '-1',
-			'sending_domains_max' => '-1',
-			'all_email_verification_servers' => 'yes',
-			'create_email_verification_servers' => 'yes',
-			'email_verification_servers_max' => '-1',
+            'sending_domains_max' => '-1',
+            'all_email_verification_servers' => 'yes',
+            'create_email_verification_servers' => 'yes',
+            'email_verification_servers_max' => '-1',
+            'list_import' => 'yes',
+            'list_export' => 'yes',
         ];
     }
 
@@ -492,7 +507,7 @@ class Subscription extends Model
         return $this->getOptions()[$name];
     }
 
-	/**
+    /**
      * Display group quota.
      *
      * @return array
@@ -508,7 +523,7 @@ class Subscription extends Model
         }
     }
 
-	/**
+    /**
      * Display total quota.
      *
      * @return array
@@ -592,16 +607,16 @@ class Subscription extends Model
         }
     }
 
-	/**
+    /**
      * Display sending ervers permission.
      *
      * @return array
      */
     public function displayAllowCreateSendingServer()
     {
-		if ($this->getOption("create_sending_servers") == 'no') {
-			return trans('messages.feature_not_allow');
-		}
+        if ($this->getOption("create_sending_servers") == 'no') {
+            return trans('messages.feature_not_allow');
+        }
 
         if ($this->getOption("sending_servers_max") == -1) {
             return trans('messages.unlimited');
@@ -610,16 +625,16 @@ class Subscription extends Model
         }
     }
 
-	/**
+    /**
      * Display email verification ervers permission.
      *
      * @return array
      */
     public function displayAllowCreateEmailVerificationServer()
     {
-		if ($this->getOption("create_email_verification_servers") == 'no') {
-			return trans('messages.feature_not_allow');
-		}
+        if ($this->getOption("create_email_verification_servers") == 'no') {
+            return trans('messages.feature_not_allow');
+        }
 
         if ($this->getOption("email_verification_servers_max") == -1) {
             return trans('messages.unlimited');
@@ -628,16 +643,16 @@ class Subscription extends Model
         }
     }
 
-	/**
+    /**
      * Display sending domains permission.
      *
      * @return array
      */
     public function displayAllowCreateSendingDomain()
     {
-		if ($this->getOption("create_sending_domains") == 'no') {
-			return trans('messages.feature_not_allow');
-		}
+        if ($this->getOption("create_sending_domains") == 'no') {
+            return trans('messages.feature_not_allow');
+        }
 
         if ($this->getOption("sending_domains_max") == -1) {
             return trans('messages.unlimited');
@@ -646,7 +661,7 @@ class Subscription extends Model
         }
     }
 
-	/**
+    /**
      * Check if subscription is active.
      *
      * @return array
@@ -656,7 +671,7 @@ class Subscription extends Model
         return $this->status == Subscription::STATUS_ACTIVE;
     }
 
-	/**
+    /**
      * Check if subscription is disabled.
      *
      * @return array
@@ -666,7 +681,7 @@ class Subscription extends Model
         return $this->status == Subscription::STATUS_DISABLED;
     }
 
-	/**
+    /**
      * Check if subscription is outdated.
      *
      * @return array
@@ -686,7 +701,7 @@ class Subscription extends Model
         return isset($this->start_at) ? $this->start_at->startOfDay() <= \Carbon\Carbon::now() : true;
     }
 
-	/**
+    /**
      * Check if subscription is current.
      *
      * @return array
@@ -694,15 +709,15 @@ class Subscription extends Model
     public function isCurrent()
     {
         if($this->isStarted() &&
-		   !$this->isOld()
-		) {
-			return true;
-		}
+           !$this->isOld()
+        ) {
+            return true;
+        }
 
-		return false;
+        return false;
     }
 
-	/**
+    /**
      * Check if subscription is current used.
      *
      * @return array
@@ -710,15 +725,15 @@ class Subscription extends Model
     public function beingUsed()
     {
         if($this->isCurrent() &&
-		   $this->isActive()
-		) {
-			return true;
-		}
+           $this->isActive()
+        ) {
+            return true;
+        }
 
-		return false;
+        return false;
     }
 
-	/**
+    /**
      * Check current state
      *
      * @return array
@@ -726,44 +741,44 @@ class Subscription extends Model
     public function timeStatus()
     {
         if (!$this->isStarted()) {
-			return Subscription::TIME_STATUS_FUTURE;
-		} elseif ($this->isOld()) {
-			return Subscription::TIME_STATUS_PAST;
-		} else {
-			return Subscription::TIME_STATUS_CURRENT;
-		}
+            return Subscription::TIME_STATUS_FUTURE;
+        } elseif ($this->isOld()) {
+            return Subscription::TIME_STATUS_PAST;
+        } else {
+            return Subscription::TIME_STATUS_CURRENT;
+        }
     }
 
-	/**
+    /**
      * Get subsciption display name
      *
      * @return array
      */
     public function getName() {
-		return $this->plan->name;
-	}
+        return $this->plan->name;
+    }
 
-	/**
+    /**
      * Check if subscriptioon is paid
      *
      * @return array
      */
     public function isPaid() {
-		return $this->paid;
-	}
+        return $this->paid;
+    }
 
-	/**
+    /**
      * When get status attribute
      *
      * @return array
      */
     public function getStatusAttribute($value) {
-		// Auto update status
-		if ($this->isOld()) {
-			$this->disable();
-		}
-		return $value;
-	}
+        // Auto update status
+        if ($this->isOld()) {
+            $this->disable();
+        }
+        return $value;
+    }
 
     /**
      * Update sending servers.
@@ -785,7 +800,7 @@ class Subscription extends Model
         }
     }
 
-	/**
+    /**
      * Update email verification servers.
      *
      * @return array
@@ -804,7 +819,7 @@ class Subscription extends Model
         }
     }
 
-	/**
+    /**
      * Fill email verification servers.
      *
      * @return void
@@ -812,18 +827,18 @@ class Subscription extends Model
     public function fillEmailVerificationServers($params)
     {
         $this->subscriptionsEmailVerificationServers = collect([]);
-		foreach ($params as $key => $param) {
-			if ($param['check']) {
-				$server = \Acelle\Model\EmailVerificationServer::findByUid($key);
-				$row = new \Acelle\Model\SubscriptionsEmailVerificationServer();
-				$row->plan_id = $this->id;
-				$row->server_id = $server->id;
-				$this->subscriptionsEmailVerificationServers->push($row);
-			}
-		}
+        foreach ($params as $key => $param) {
+            if ($param['check']) {
+                $server = \Acelle\Model\EmailVerificationServer::findByUid($key);
+                $row = new \Acelle\Model\SubscriptionsEmailVerificationServer();
+                $row->plan_id = $this->id;
+                $row->server_id = $server->id;
+                $this->subscriptionsEmailVerificationServers->push($row);
+            }
+        }
     }
 
-	/**
+    /**
      * Set active.
      *
      * @return void
@@ -834,7 +849,7 @@ class Subscription extends Model
         $this->save();
     }
 
-	/**
+    /**
      * Set paid.
      *
      * @return void
@@ -844,22 +859,22 @@ class Subscription extends Model
         $this->paid = true;
         $this->save();
 
-		// description
-		if (!empty($description)) {
-			$payment = new \Acelle\Model\Payment();
-			$payment->subscription_id = $this->id;
-			$payment->data = '';
+        // description
+        if (!empty($description)) {
+            $payment = new \Acelle\Model\Payment();
+            $payment->subscription_id = $this->id;
+            $payment->data = '';
             $payment->description = $description;
-			$payment->payment_method_id = NULL;
-			$payment->status = \Acelle\Model\Payment::STATUS_SUCCESS;
+            $payment->payment_method_id = NULL;
+            $payment->status = \Acelle\Model\Payment::STATUS_SUCCESS;
             $payment->action = \Acelle\Model\Payment::ACTION_PAID;
-			$payment->payment_method_name = '';
-			$payment->order_id = $this->getOrderID();
-			$payment->save();
-		}
+            $payment->payment_method_name = '';
+            $payment->order_id = $this->getOrderID();
+            $payment->save();
+        }
     }
 
-	/**
+    /**
      * Set un-paid.
      *
      * @return void
@@ -869,22 +884,22 @@ class Subscription extends Model
         $this->paid = false;
         $this->save();
 
-		// description
-		if (!empty($description)) {
-			$payment = new \Acelle\Model\Payment();
-			$payment->subscription_id = $this->id;
-			$payment->data = '';
+        // description
+        if (!empty($description)) {
+            $payment = new \Acelle\Model\Payment();
+            $payment->subscription_id = $this->id;
+            $payment->data = '';
             $payment->description = $description;
-			$payment->payment_method_id = NULL;
-			$payment->status = \Acelle\Model\Payment::STATUS_SUCCESS;
+            $payment->payment_method_id = NULL;
+            $payment->status = \Acelle\Model\Payment::STATUS_SUCCESS;
             $payment->action = \Acelle\Model\Payment::ACTION_UNPAID;
-			$payment->payment_method_name = '';
-			$payment->order_id = $this->getOrderID();
-			$payment->save();
-		}
+            $payment->payment_method_name = '';
+            $payment->order_id = $this->getOrderID();
+            $payment->save();
+        }
     }
 
-	/**
+    /**
      * Get paid status.
      *
      * @return string
@@ -892,13 +907,13 @@ class Subscription extends Model
     public function getPaidStatus()
     {
         if ($this->isPaid()) {
-			return Subscription::PAID_STATUS_TRUE;
-		} else {
-			return Subscription::PAID_STATUS_FALSE;
-		}
+            return Subscription::PAID_STATUS_TRUE;
+        } else {
+            return Subscription::PAID_STATUS_FALSE;
+        }
     }
 
-	/**
+    /**
      * Payments count.
      *
      * @return string
@@ -908,7 +923,7 @@ class Subscription extends Model
         return $this->payments()->orderBy('created_at', 'desc');
     }
 
-	/**
+    /**
      * Payments count.
      *
      * @return string
@@ -918,7 +933,7 @@ class Subscription extends Model
         return $this->getPayments()->count();
     }
 
-	/**
+    /**
      * Get payment order id.
      *
      * @return string
@@ -928,7 +943,7 @@ class Subscription extends Model
         return $this->uid;
     }
 
-	/**
+    /**
      * Get long title.
      *
      * @return string
@@ -936,15 +951,15 @@ class Subscription extends Model
     public function longTitle()
     {
         $strs = [$this->plan_name];
-		$strs[] = '(' . \Acelle\Library\Tool::formatDate($this->start_at);
-		$strs[] = ' - ' . \Acelle\Library\Tool::formatDate($this->end_at) . ')';
-		if ($this->isCurrent()) {
-			$strs[] = ' / ' . trans('messages.subscription_time_status_' . $this->timeStatus());
-		}
-		return implode(' ', $strs);
+        $strs[] = '(' . \Acelle\Library\Tool::formatDate($this->start_at);
+        $strs[] = ' - ' . \Acelle\Library\Tool::formatDate($this->end_at) . ')';
+        if ($this->isCurrent()) {
+            $strs[] = ' / ' . trans('messages.subscription_time_status_' . $this->timeStatus());
+        }
+        return implode(' ', $strs);
     }
 
-	/**
+    /**
      * Subscription status select options.
      *
      * @return array
@@ -953,8 +968,8 @@ class Subscription extends Model
     {
         return [
             ['value' => Subscription::STATUS_ACTIVE, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_ACTIVE)],
-			['value' => Subscription::STATUS_INACTIVE, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_INACTIVE)],
-			['value' => Subscription::STATUS_DISABLED, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_DISABLED)],
+            ['value' => Subscription::STATUS_INACTIVE, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_INACTIVE)],
+            ['value' => Subscription::STATUS_DISABLED, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_DISABLED)],
         ];
     }
 
@@ -1002,7 +1017,7 @@ class Subscription extends Model
      */
     public function getStatus()
     {
-        return Subscription::STATUSES[$this->status][$this->timeStatus()];
+        return $this->statuses[$this->status][$this->timeStatus()];
     }
 
     /**

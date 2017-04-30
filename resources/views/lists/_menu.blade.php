@@ -28,16 +28,20 @@
                                                             </a>
                                                         </li>
                                                         <li class="divider"></li>
-                                                        <li rel0="SubscriberController/import">
-                                                            <a href="{{ action('SubscriberController@import', $list->uid) }}">
-                                                                <i class="icon-download4"></i> {{ trans('messages.import') }}
-                                                            </a>
-                                                        </li>
-                                                        <li rel0="SubscriberController/export">
-                                                            <a href="{{ action('SubscriberController@export', $list->uid) }}">
-                                                                <i class="icon-upload4"></i> {{ trans('messages.export') }}
-                                                            </a>
-                                                        </li>
+                                                        @if (\Auth::user()->can('import', $list))
+                                                            <li rel0="SubscriberController/import">
+                                                                <a href="{{ action('SubscriberController@import', $list->uid) }}">
+                                                                    <i class="icon-download4"></i> {{ trans('messages.import') }}
+                                                                </a>
+                                                            </li>
+                                                        @endif
+                                                        @if (\Auth::user()->can('export', $list))
+                                                            <li rel0="SubscriberController/export">
+                                                                <a href="{{ action('SubscriberController@export', $list->uid) }}">
+                                                                    <i class="icon-upload4"></i> {{ trans('messages.export') }}
+                                                                </a>
+                                                            </li>
+                                                        @endif
                                                     </ul>
 												</li>
                                                 <li rel0="SegmentController" class="dropdown">

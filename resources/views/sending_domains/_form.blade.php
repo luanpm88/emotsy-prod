@@ -1,9 +1,10 @@
 					<div class="row">
-						<div class="col-sm-6 col-md-6">							
+						<div class="col-sm-6 col-md-6">
 							@include('helpers.form_control', [
 								'type' => 'text',
 								'class' => '',
 								'name' => 'name',
+								'label' => trans('messages.domain_name'),
 								'value' => $server->name,
 								'help_class' => 'sending_server',
 								'rules' => Acelle\Model\SendingDomain::rules()
@@ -46,7 +47,7 @@
 									'help_class' => 'sending_domain',
 									'rules' => Acelle\Model\SendingDomain::rules()
 								])
-							</div>						
+							</div>
 						</div>
 					@endif
 					<hr >

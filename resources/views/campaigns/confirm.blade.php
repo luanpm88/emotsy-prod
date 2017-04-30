@@ -1,16 +1,16 @@
 @extends('layouts.frontend')
 
 @section('title', trans('messages.campaigns') . " - " . trans('messages.confirm'))
-	
+
 @section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/anytime.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-		
+
     <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
 @endsection
 
 @section('page_header')
-	
+
 			<div class="page-title">
 				<ul class="breadcrumb breadcrumb-caret position-right">
 					<li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
@@ -26,16 +26,16 @@
 @endsection
 
 @section('content')
-    
+
         <div class="confirm-campaign-box">
                 <form action="{{ action('CampaignController@confirm', $campaign->uid) }}" method="POST" class="form-validate-jqueryz">
                     {{ csrf_field() }}
-                    
+
                     <div class="head">
                         <h2 class="text-semibold mb-5">{{ trans('messages.you_are_all_send') }}</h2>
                         <p>{{ trans('messages.review_campaign_feeback') }}</p>
                     </div>
-                    
+
                     <ul class="modern-listing">
                         <li>
                             <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
@@ -47,7 +47,7 @@
                             <h4>{{ $campaign->subscribers()->count() }} {{ trans('messages.recipients') }}</h4>
                             <p>
                                 {!! $campaign->displayRecipients() !!}
-                            </p>                        
+                            </p>
                         </li>
                         <li>
                             <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
@@ -55,7 +55,7 @@
                             <h4>{{ trans('messages.email_subject') }}</h4>
                             <p>
                                 {{ $campaign->subject }}
-                            </p>                        
+                            </p>
                         </li>
                         <li>
                             <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
@@ -63,7 +63,7 @@
                             <h4>{{ trans('messages.reply_to') }}</h4>
                             <p>
                                 {{ $campaign->reply_to }}
-                            </p>                        
+                            </p>
                         </li>
                         <li>
                             <a href="{{ action('CampaignController@setup', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
@@ -76,7 +76,7 @@
                                 @if ($campaign->track_click)
                                     {{ trans('messages.clicks') }}<pp>,</pp>
                                 @endif
-                            </p>                        
+                            </p>
                         </li>
                         <li>
                             <a href="{{ action('CampaignController@schedule', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
@@ -84,18 +84,23 @@
                             <h4>{{ trans('messages.run_at') }}</h4>
                             <p>
                                 {{ isset($campaign->run_at) ? Acelle\Library\Tool::formatDateTime($campaign->run_at) : "" }}
-                            </p>                        
+                            </p>
                         </li>
                     </ul>
-                    
+
 					@if ($campaign->step() >= 5)
 						<br />
 						<div class="text-right">
+							<span
+								onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', '{{ $campaign->name }}', 800, 800)"
+								href="#preview" class="btn btn-lg bg-grey mr-5" data-uid="{{ $campaign->uid }}">
+								{{ trans('messages.preview') }} <i class="icon-eye"></i>
+							</span>
 							<button class="btn btn-lg bg-grey mr-5 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
-							<button class="btn btn-lg bg-teal-800">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>							
+							<button class="btn btn-lg bg-teal-800">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
 						</div>
 					@endif
                 </form>
-                    
+
             </div>
 @endsection

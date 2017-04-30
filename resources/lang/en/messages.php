@@ -1706,7 +1706,7 @@ return [
     'next_plan_notactive_intro' => 'You have a pending subscription for <a><strong>:plan plan</strong></a>.
         Please finish the payment or wait for the payment confirmation to activate your subscription',
     'purchasing_intro_braintree_credit_card' => 'Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
-				. Your plan price is: <a><strong>:price</strong></a>',
+                . Your plan price is: <a><strong>:price</strong></a>',
     'subscribe_to_a_plan' => 'Subscribe to a plan',
     'subscribe_to_a_plan_intro' => 'Thank you for signing up with Acelle Mail. You are not currently subscribed to any plan yet. Below are the available plans for you to choose from:',
     'subscribe_plan' => 'Subscribe',
@@ -1747,15 +1747,17 @@ return [
     'all_times' => 'All times',
     'all_payments' => 'All payments',
     'stripe_api_key' => 'API Key',
+    'stripe_api_publishable_key' => 'API Publishable Key',
+    'stripe_api_secret_key' => 'API Secret Key',
     'stripe_credit_card' => 'Stripe / Credit Card',
     'payment_method_type_stripe_credit_card_button' => '<i class="icon-credit-card"></i> Pay by Credit card',
-    'purchasing_intro_stripe_credit_card' => 'Please click the button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
-				. Your plan price is: <a><strong>:price</strong></a>',
+    'purchasing_intro_stripe_credit_card' => 'Please click the button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the Pay by Credit Card option
+                . Your plan price is: <a><strong>:price</strong></a>',
     'pay_with_strip_label_button' => 'Click to pay',
     'stripe_checkout_description' => 'Pay for order #:order',
     'payment_method_type_stripe_credit_card' => 'Pay by Stripe / Credit card',
-    'purchasing_intro_paypal' => 'Please click the button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
-		. Your plan price is: <a><strong>:price</strong></a>',
+    'purchasing_intro_paypal' => 'Please click the button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the Pay with PayPal option
+        . Your plan price is: <a><strong>:price</strong></a>',
     'paypal_client_id' => 'PayPal Client ID',
     'paypal_secret' => 'PayPal Secret',
     'paypal_error_amount_not_equal' => 'Payment amount is not valid. Please contact the provider for more infomation.',
@@ -1813,4 +1815,23 @@ return [
     'reset_list_verification_confirm' => 'You\'re about to reset email verification state of all list\'s subscribers.',
     'stop_list_verification_confirm' => 'You\'re about to stop email verification proccess for this list',
     'verification.process_failed' => 'Verification process failed'
+    'can_import_list' => 'Import list',
+    'can_export_list' => 'Export list',
+    'cash.wording' => 'Enable the cash payment option to allow payment to take place outside of the system. i.e. user can somehow make the payment for the subscription and then click on the "Pay In Cash" button to claim the payment.
+        As the administrator, you can then go to the Subscription dashboard to review and confirm the payment.',
+    'braintree_credit_card.wording' => 'Enter your Braintree merchant account\'s information to accept payments by credit card',
+    'braintree_paypal.wording' => 'Enter your Braintree merchant account\'s information to accept PayPal payments.
+        Please make sure you also have a PayPal business account and link it with your Braintree account.
+        See the Braintree documentation <a target="_blank" href="https://articles.braintreepayments.com/support/guides/payment-methods/paypal/setup-guide">here</a>.',
+    'paypal.wording' => 'Setup your PayPal account to receive PayPal payments.',
+    'stripe_credit_card.wording' => 'Setup your Stripe account to receive payments by credit cards.',
+    'loading_paypal' => 'loading PayPal button... Please wait.',
+    'domain_name' => 'Domain name',
+    'something_wrong_with_license_check' => ':error',
+    'license_is_not_valid' => 'License check failed: License is not valid. Please try again.',
+    'sending_credits_used' => 'Sending credits',
+    'something_wrong_with_license_check' => ':error',
+    'license_is_not_valid' => 'License check failed: License is not valid. Please try again.',
+    'file_uploaded' => 'File uploaded',
+    'button' => 'button',
 ];

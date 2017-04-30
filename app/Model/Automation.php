@@ -301,17 +301,34 @@ class Automation extends Model
             return collect([]);
         }
 
+		$query = Subscriber::select("subscribers.*");
+
         // Get subscriber from mailist and segment
 		$conditions = [];
 		foreach($this->listsSegments as $lists_segment) {
 			if(!empty($lists_segment->segment_id)) {
-				$conditions[] = '(' . $lists_segment->segment->getSubscribersConditions() . ')';
+				$conds = $lists_segment->segment->getSubscribersConditions();
+
+				// JOINS...
+				if (!empty($conds['joins'])) {
+					foreach ($conds['joins'] as $joining) {
+						$query = $query->leftJoin($joining['table'], function($join) use ($joining)
+						{
+							$join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
+							$join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
+						});
+					}
+				}
+
+				// WHERE...
+				if (!empty($conds['conditions'])) {
+					$conditions[] = $conds['conditions'];
+				}
 			} else {
 				$conditions[] = '(' . table('subscribers') . '.mail_list_id = ' . $lists_segment->mail_list_id . ')';
 			}
 		}
 
-		$query = Subscriber::select("subscribers.*");
 		if (!empty($conditions)) {
 			$query = $query->whereRaw(implode(' OR ', $conditions));
 		}

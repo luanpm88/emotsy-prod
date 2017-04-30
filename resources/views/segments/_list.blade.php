@@ -20,25 +20,25 @@
 											<h5 class="no-margin text-bold">
 												<a class="kq_search" href="{{ action('SegmentController@subscribers', ['list_uid' => $list->uid, 'uid' => $item->uid]) }}">{{ $item->name }}</a>
 											</h5>
-											<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>									
+											<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
 										<td>
 											<div class="single-stat-box pull-left">
-												
+
 												<span class="no-margin stat-num">{{ $item->subscribers()->count() }}</span>
 												<br />
 												<span class="text-muted">{{ trans("messages.subscribers") }}</span>
 											</div>
 											<br style="clear:both" />
 										</td>
-										
+
 										<td class="text-right text-nowrap">
 											@if (\Gate::allows('update', $item))
 												<a href="{{ action('SegmentController@edit', ['list_uid' => $list->uid, "uids" => $item->uid]) }}" type="button" class="btn bg-grey btn-icon">
 													<i class="icon-pencil"></i> {{ trans('messages.edit') }}
 												</a>
 											@endif
-											<div class="btn-group">										
+											<div class="btn-group">
 												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 												<ul class="dropdown-menu dropdown-menu-right">
 													@if (\Gate::allows('delete', $item))
@@ -47,7 +47,7 @@
 												</ul>
 											</div>
 										</td>
-										
+
 									</tr>
 								@endforeach
 							</table>
@@ -60,7 +60,7 @@
 									{{ trans('messages.no_search_result') }}
 								</span>
 							</div>
-						@else					
+						@else
 							<div class="empty-list">
 								<i class="icon-make-group"></i>
 								<span class="line-1">
