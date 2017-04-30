@@ -1426,7 +1426,7 @@ class MailList extends Model
     }
 
     /**
-     * Run list verification process
+     * Run list verification process, triggered by a daemon
      *
      */
     public function runVerification($serverId)

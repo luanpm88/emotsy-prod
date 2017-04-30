@@ -774,7 +774,7 @@ class MailListController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->uid);
 
         $serverId = 1;
-        Log::info("Trying to start verification process for list " . $list->uid);
+        Log::info("Trying to start verification process for list " . $list->id);
         $list->queueForVerification($serverId);
         return redirect()->action('MailListController@verification', $list->uid);
     }
