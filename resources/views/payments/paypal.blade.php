@@ -26,6 +26,8 @@
         <div class="col-sm-12 col-md-6 col-lg-6">
             <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
 
+			@include("payments._billing_information")
+
             <div class="sub-section">
                 <h3 class="text-semibold">{!! trans('messages.pay_with_paypal') !!}</h3>
 				<p>
