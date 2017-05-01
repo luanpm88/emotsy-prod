@@ -23,7 +23,7 @@
 
 @section('content')
 
-    <form enctype="multipart/form-data" action="{{ action('Admin\EmailVerificationServerController@update', $server->uid) }}" method="POST" class="form-validate-jqueryz">
+    <form enctype="multipart/form-data" action="{{ action('Admin\EmailVerificationServerController@update', $server->uid) }}" method="POST" class="form-validate-jqueryz email-verification-server-form">
         {{ csrf_field() }}
         <input type="hidden" name="_method" value="PATCH">
         @include('admin.email_verification_servers._form')

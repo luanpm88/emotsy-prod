@@ -69,7 +69,7 @@ class EmailVerificationServer extends Model
      *
      * @return mixed
      */
-    private function getConfig()
+    public function getConfig()
     {
         $configs = \Config::get('verification.services');
         foreach($configs as $config) {
