@@ -82,11 +82,29 @@ class StringHelper
      *
      * @return string
      */
-    public static function generateMessageId($domain)
+    public static function generateMessageId($domain, $test = false)
     {
         // @note: be careful when changing the message format, it may impact some other parts of the application
         // For example, see the DeliveryHandler::getMessageId()
-        return time().rand(100000, 999999).'.'.uniqid().'@'.$domain;
+        if ($test) {
+            // generate a test MessageId for a test email
+            // then replace the uniqid() with 0*13
+            return time().rand(100000, 999999).'.0000000000000@'.$domain;
+        } else {
+            return time().rand(100000, 999999).'.'.uniqid().'@'.$domain;
+        }
+    }
+
+    /**
+     * Check if a given string is a test Message Id
+     *
+     * @param string $messageId
+     *
+     * @return boolean
+     */
+    public static function isTestMessageId($messageId)
+    {
+        return (strpos($messageId, '.0000000000000@') !== false);
     }
 
     /**
