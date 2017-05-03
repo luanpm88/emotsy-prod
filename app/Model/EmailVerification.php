@@ -50,4 +50,19 @@ class EmailVerification extends Model
     {
         return $this->result == self::RESULT_UNKNOWN;
     }
+
+    /**
+     * Email verification result types select options.
+     *
+     * @return array
+     */
+    public static function resultSelectOptions()
+    {
+        return [
+            ['value' => self::RESULT_DELIVERABLE, 'text' => trans('messages.email_verification_result_' . self::RESULT_DELIVERABLE)],
+			['value' => self::RESULT_UNDELIVERABLE, 'text' => trans('messages.email_verification_result_' . self::RESULT_UNDELIVERABLE)],
+			['value' => self::RESULT_UNKNOWN, 'text' => trans('messages.email_verification_result_' . self::RESULT_UNKNOWN)],
+            ['value' => self::RESULT_RISKY, 'text' => trans('messages.email_verification_result_' . self::RESULT_RISKY)],
+        ];
+    }
 }

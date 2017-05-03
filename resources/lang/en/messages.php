@@ -1834,4 +1834,10 @@ return [
     'license_is_not_valid' => 'License check failed: License is not valid. Please try again.',
     'file_uploaded' => 'File uploaded',
     'button' => 'button',
+    'email_verification_result_deliverable' => 'Deliverable',
+    'email_verification_result_undeliverable' => 'Undeliverable',
+    'email_verification_result_unknown' => 'Unknown',
+    'email_verification_result_risky' => 'Risky',
+    'email_verification_result_' => '',
+    'all_verification' => 'All verification',
 ];

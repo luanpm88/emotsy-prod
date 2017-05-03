@@ -5,8 +5,8 @@
 @section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
-		
-	<script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>		
+
+	<script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
 @endsection
 
 @section('page_header')
@@ -16,24 +16,24 @@
 @endsection
 
 @section('content')
-				
+
 				@include("lists._menu")
-				
+
 				<h2 class="text-bold text-teal-800 mb-10"><i class="icon-users4"></i> {{ trans('messages.subscribers') }}</h2>
 
 				<form class="listing-form"
 					data-url="{{ action('SubscriberController@listing', $list->uid) }}"
-					per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"					
-				>				
+					per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
+				>
 					<div class="row top-list-controls">
 						<div class="col-md-10">
-							@if ($subscribers->count() >= 0)					
+							@if ($subscribers->count() >= 0)
 								<div class="filter-box">
 									<div class="btn-group list_actions hide mr-10">
 										<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
 											{{ trans('messages.actions') }} <span class="caret"></span>
 										</button>
-										<ul class="dropdown-menu">											
+										<ul class="dropdown-menu">
 											<li>
 												<a link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@subscribe', $list->uid) }}">
 													<i class="icon-enter"></i> {{ trans('messages.subscribe') }}
@@ -73,19 +73,19 @@
 										<label>
 											<input type="checkbox" class="styled check_all">
 										</label>
-									</div>				
+									</div>
 									<span class="filter-group">
 										<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
-										<select class="select" name="sort-order">											
+										<select class="select" name="sort-order">
 											<option value="subscribers.created_at">{{ trans('messages.created_at') }}</option>
 											<option value="subscribers.updated_at">{{ trans('messages.updated_at') }}</option>
 											<option value="subscribers.email">{{ trans('messages.email') }}</option>
-										</select>										
+										</select>
 										<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
 											<i class="icon-sort-amount-desc"></i>
 										</button>
 									</span>
-									<span class="">										
+									<span class="">
 										<select class="select" name="status">
 											<option value="">{{ trans('messages.all_subscribers') }}</option>
 											<option value="subscribed">{{ trans('messages.subscribed') }}</option>
@@ -93,9 +93,19 @@
 											<option value="unconfirmed">{{ trans('messages.unconfirmed') }}</option>
 											<option value="spam-reported">{{ trans('messages.spam-reported') }}</option>
 											<option value="blacklisted">{{ trans('messages.blacklisted') }}</option>
-										</select>										
+										</select>
 									</span>
-									<div class="btn-group list_columns ml-10">
+									<span class="filter-group ml-10">
+										<select class="select" name="verification_result">
+											<option value="">{{ trans('messages.all_verification') }}</option>
+											@foreach (Acelle\Model\EmailVerification::resultSelectOptions() as $option)
+												<option value="{{ $option['value'] }}">
+													{{ $option['text'] }}
+												</option>
+											@endforeach
+										</select>
+									</span>
+									<div class="btn-group list_columns">
 										<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
 											{{ trans('messages.columns') }} <span class="caret"></span>
 										</button>
@@ -108,8 +118,8 @@
 																<input {{ (true ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
 																{{ $field->label }}
 															</label>
-														</div>															
-													</li>	
+														</div>
+													</li>
 												@endif
 											@endforeach
 											<li>
@@ -118,7 +128,7 @@
 														<input checked="checked" type="checkbox" id="created_at" name="columns[]" value="created_at" class="styled">
 														{{ trans('messages.created_at') }}
 													</label>
-												</div>															
+												</div>
 											</li>
 											<li>
 												<div class="checkbox">
@@ -126,7 +136,7 @@
 														<input checked="checked" type="checkbox" id="updated_at" name="columns[]" value="updated_at" class="styled">
 														{{ trans('messages.updated_at') }}
 													</label>
-												</div>															
+												</div>
 											</li>
 										</ul>
 									</div>
@@ -143,11 +153,11 @@
 							</a>
 						</div>
 					</div>
-					
+
 					<div class="pml-table-container">
-						
-						
-						
+
+
+
 					</div>
 				</form>
 @endsection
