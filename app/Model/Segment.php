@@ -292,8 +292,7 @@ class Segment extends Model
      */
     public function subscribers($request = null)
     {
-        $query = \Acelle\Model\Subscriber::select('subscribers.*');
-
+        $query = \Acelle\Model\Subscriber::select('subscribers.*', 'email_verifications.result AS verify_result');
 
         $conditions = $this->getSubscribersConditions();
 
@@ -322,7 +321,7 @@ class Segment extends Model
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
-        return $query->distinct();
+        return $query->groupBy('subscribers.id');
     }
 
     /**
