@@ -167,7 +167,8 @@ class Segment extends Model
     public static function verificationOperators()
     {
         return [
-            ['text' => trans('messages.equal'), 'value' => 'verification']
+            ['text' => trans('messages.equal'), 'value' => 'verification_equal'],
+            ['text' => trans('messages.not_equal'), 'value' => 'verification_not_equal']
         ];
     }
 
@@ -180,6 +181,7 @@ class Segment extends Model
     {
         $conditions = [];
         $joins = [];
+        $joined_tables = [];
         foreach ($this->segmentConditions as $index => $condition) {
             $number = uniqid();
 
@@ -244,18 +246,26 @@ class Segment extends Model
                 // add condition
                 $conditions[] = $cond;
             } else {
-                switch ($condition->operator) {
-                    case 'verification':
-                        // add to joins array
-                        $joins[] = [
-                            'table' => \DB::raw(\DB::getTablePrefix().'email_verifications as email_verifications'),
-                            'ons' => [
-                                [\DB::raw('email_verifications.subscriber_id'), \DB::raw(\DB::getTablePrefix().'subscribers.id')]
-                            ]
-                        ];
+                // join email verification table once
+                if (strpos($condition->operator, 'verification') !== false && !in_array(\DB::getTablePrefix().'email_verifications', $joined_tables)) {
+                    // add to joins array
+                    $joins[] = [
+                        'table' => \DB::raw(\DB::getTablePrefix().'email_verifications as email_verifications'),
+                        'ons' => [
+                            [\DB::raw('email_verifications.subscriber_id'), \DB::raw(\DB::getTablePrefix().'subscribers.id')]
+                        ]
+                    ];
+                    $joined_tables[] = \DB::getTablePrefix().'email_verifications';
+                }
 
+                switch ($condition->operator) {
+                    case 'verification_equal':
                         // add condition
                         $conditions[] = "(email_verifications.result = '".$condition->value."')";
+                        break;
+                    case 'verification_not_equal':
+                        // add condition
+                        $conditions[] = "(email_verifications.result IS NULL OR email_verifications.result != '".$condition->value."')";
                         break;
                     default:
                 }

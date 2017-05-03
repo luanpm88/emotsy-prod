@@ -1,4 +1,4 @@
-@if ($operator == 'verification')
+@if (strpos($operator, 'verification') !== false)
     <div class="row">
         <div class="col-md-6 operator-col">
             @include('helpers.form_control', [

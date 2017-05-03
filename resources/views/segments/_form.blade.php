@@ -29,7 +29,7 @@
 															@endforeach
 														</optgroup>
 														<optgroup label="{{ trans('messages.email_verification') }}">
-															<option{{ $condition->operator == 'verification' ? " selected" : "" }} value="other">{{ trans('messages.verification_result') }}</option>
+															<option{{ strpos($condition->operator, 'verification') !== false ? " selected" : "" }} value="verification">{{ trans('messages.verification_result') }}</option>
 														</optgroup>
 													</select>
 												</div>
