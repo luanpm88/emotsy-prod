@@ -675,4 +675,41 @@ class SubscriberController extends Controller
             'list' => $list
         ]);
     }
+
+    /**
+     * Verify subscriber.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function verify(Request $request)
+    {
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        $verifier = \Acelle\Model\EmailVerificationServer::findByUid($request->email_verification_server_uid);
+
+        // Verify
+        $subscriber->verify($verifier);
+
+        // return back to subscriber edit
+        return redirect()->action('SubscriberController@edit', ['list_uid' => $subscriber->mailList->uid, 'uid' => $subscriber->uid]);
+    }
+
+    /**
+     * Rest verification of a subscriber.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function resetVerification(Request $request)
+    {
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+
+        // Verify
+        $subscriber->resetVerification();
+
+        // return back to subscriber edit
+        return redirect()->action('SubscriberController@edit', ['list_uid' => $subscriber->mailList->uid, 'uid' => $subscriber->uid]);
+    }
 }

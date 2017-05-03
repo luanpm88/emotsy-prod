@@ -1841,4 +1841,9 @@ return [
     'email_verification_result_' => '',
     'all_verification' => 'All verification',
     'verification_result' => 'Verification result',
+    'email_not_verified_intro' => 'The email address <strong>:email</strong> has not been verified yet. Choose a verification service below and click Verify button',
+    'verify_subscriber' => 'Verify',
+    'email_verified_intro' => 'The email address <strong>minhnghivn@gmail.com</strong> has been verified by <strong>EVerify.com</strong> at <strong>11:00 AM Jan 2017</strong>. The result is:',
+    'reset_subscriber_verification_status' => 'Reset Verification Status',
+    'reset_subscriber_verification_confirm' => 'You\'re about to reset email verification state of :number subscriber(s).',
 ];

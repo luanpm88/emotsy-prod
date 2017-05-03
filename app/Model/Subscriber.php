@@ -708,4 +708,47 @@ class Subscriber extends Model
         $log->email_verification_server_id = $verifier->id;
         $this->emailVerifications()->save($log);
     }
+
+    /**
+     * Get email verification of a subcriber
+     *
+     * @return EmailVerification
+     */
+    public function getEmailVerification()
+    {
+        return $this->emailVerifications()->orderBy('created_at', 'desc')->first();
+    }
+
+    /**
+     * Get email verification of a subcriber
+     *
+     * @return EmailVerification
+     */
+    public function getVerificationResult()
+    {
+        if (!$this->isVerifed()) {
+            return '';
+        }
+        return $this->getEmailVerification()->result;
+    }
+
+    /**
+     * Check if subscriber is verified
+     *
+     * @return boolean
+     */
+    public function isVerifed()
+    {
+        return is_object($this->getEmailVerification());
+    }
+
+    /**
+     * Reset subscriber verification
+     *
+     * @return void
+     */
+    public function resetVerification()
+    {
+        return $this->emailVerifications()->delete();
+    }
 }

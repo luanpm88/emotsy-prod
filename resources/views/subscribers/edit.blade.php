@@ -30,48 +30,55 @@
                     <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
                     <a href="{{ action('SubscriberController@index', $list->uid) }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
 
-                <form>
-            </div>
-
-            <div class="sub-section">
-                <h3 class="text-semibold">Email Verification</h2>
-                <p>The email address <strong>minhnghivn@gmail.com</strong> has not been verified yet. Choose a verification service below and click Verify button</p>
-                <form enctype="multipart/form-data" action="{{ action('SubscriptionController@store') }}" method="POST" class="form-validate-jqueryz subscription-form">
-                    {{ csrf_field() }}
-
-                    @include('helpers.form_control', [
-                        'type' => 'select_ajax',
-                        'class' => 'subsciption-plan-select hook',
-                        'name' => 'plan_uid',
-                        'selected' => [],
-                        'help_class' => 'subscription',
-                        'rules' => [],
-                        'url' => action('PlanController@select2'),
-                        'placeholder' => trans('messages.select_plan')
-                    ])
-                    <div class="ajax-detail-box" data-url="{{ action('SubscriptionController@preview') }}" data-form=".subscription-form">
-                    </div>
                 </form>
-                <p>
-                    <a class="btn bg-grey-300" href="{{ action("AccountController@renewToken") }}">Verify Email</a>
-                </p>
             </div>
+            <hr>
+            @if (!$subscriber->isVerifed())
+                <div class="sub-section">
+                    <h3 class="text-semibold">{{ trans('messages.email_verification') }}</h2>
+                    <p>
+                        {!! trans('messages.email_not_verified_intro', [
+                            'email' => $subscriber->email
+                        ]) !!}
+                    </p>
+                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@verify', $subscriber->uid) }}" method="POST" class="form-validate-jquery">
+                        {{ csrf_field() }}
 
-			<div class="sub-section">
-                <h3 class="text-semibold">Email Verification</h2>
-                <p>The email address <strong>minhnghivn@gmail.com</strong> has been verified by <strong>EVerify.com</strong> at <strong>11:00 AM Jan 2017</strong></p>
-                <p>
-                    <a class="btn bg-grey-300" href="{{ action("AccountController@renewToken") }}">Reset Verification Status</a>
-                </p>
-            </div>
+                        @include('helpers.form_control', [
+                            'type' => 'select',
+                            'name' => 'email_verification_server_uid',
+                            'label' => '',
+                            'value' => '',
+                            'options' => \Auth::user()->customer->emailVerificationServerSelectOptions(),
+                            'help_class' => 'verification',
+                            'rules' => ['email_verification_server_uid' => 'required'],
+                            'include_blank' => trans('messages.select_email_verification_server')
+                        ])
 
-			<div class="sub-section">
-                <h3 class="text-semibold">Email Verification</h2>
-                <p>Warning: <strong>minhnghivn@gmail.com</strong> is NOT a valid email address, as verified by <strong>gaugau.com</strong></p>
-                <p>
-                    <a class="btn bg-grey-300" href="{{ action("AccountController@renewToken") }}">Reset Verification Status</a>
-                </p>
-            </div>
+                        <p>
+                            <button class="btn bg-grey-300" type="submit">{{ trans('messages.verify_subscriber') }}</button>
+                        </p>
+                    </form>
+
+                </div>
+            @else
+                <div class="sub-section">
+                    <h3 class="text-semibold">{{ trans('messages.email_verification') }}</h2>
+                    <p>
+                        {!! trans('messages.email_verified_intro', [
+                            'email' => $subscriber->email
+                        ]) !!}
+                        <?php $result = $subscriber->getVerificationResult() ?>
+                        <span class="label label-flat bg-{{ $result }}">{{ trans('messages.email_verification_result_' . $result) }}</span>
+                    </p>
+                    <p>
+                        <a link-confirm="{{ trans('messages.reset_subscriber_verification_confirm') }}" link-method="POST" class="btn bg-grey-600"
+                            href="{{ action("SubscriberController@resetVerification", $subscriber->uid) }}">
+                            {{ trans('messages.reset_subscriber_verification_status') }}
+                        </a>
+                    </p>
+                </div>
+            @endif
         </div>
     </div>
 
