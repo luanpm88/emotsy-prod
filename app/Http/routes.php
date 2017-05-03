@@ -192,6 +192,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('delivery/notify/{stype}', 'DeliveryController@notify');
 
     // Segment
+    Route::get('segments/condition-value-control', 'SegmentController@conditionValueControl');
     Route::get('segments/select_box', 'SegmentController@selectBox');
     Route::get('lists/{list_uid}/segments', 'SegmentController@index');
     Route::get('lists/{list_uid}/segments/{uid}/subscribers', 'SegmentController@subscribers');

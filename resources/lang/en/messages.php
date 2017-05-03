@@ -1840,4 +1840,5 @@ return [
     'email_verification_result_risky' => 'Risky',
     'email_verification_result_' => '',
     'all_verification' => 'All verification',
+    'verification_result' => 'Verification result',
 ];
