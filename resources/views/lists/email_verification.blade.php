@@ -20,12 +20,7 @@
 
     @if ($list->isVerificationRunning())
         <div class="sub-section">
-            @if ($list->getRunningVerificationJob()->isFailed())
-                <div class="alert alert-danger alert-noborder">
-                    <button data-dismiss="alert" class="close" type="button"><span>×</span><span class="sr-only">Close</span></button>
-                    <strong>{{ trans('messages.verification.error.job_failed') }}</strong>
-                </div>
-            @endif
+
             <h3 class="text-semibold">{{ trans('messages.verification_status') }}</h3>
 
             <div class="progress-box" data-url="{{ action('MailListController@verificationProgress', $list->uid) }}">
@@ -49,31 +44,33 @@
             </p>
             @endif
         </div>
-        <div class="sub-section">
-            <h3 class="text-semibold">{{ trans('messages.list_verification') }}</h3>
-            <form enctype="multipart/form-data" action="{{ action('MailListController@startVerification', $list->uid) }}" method="POST" class="form-validate-jquery">
-                {{ csrf_field() }}
 
-                <div class="row">
-                    <div class="col-md-6">
-                        @include('helpers.form_control', [
-                            'type' => 'select',
-                            'name' => 'email_verification_server_id',
-                            'label' => trans('messages.verify_your_list'),
-                            'value' => '',
-                            'options' => \Auth::user()->customer->emailVerificationServerSelectOptions(),
-                            'help_class' => 'verification',
-                            'rules' => ['email_verification_server_id' => 'required'],
-                            'include_blank' => trans('messages.select_email_verification_server')
-                        ])
+        @if ($list->getVerifiedSubscribersPercentage() != 1)
+            <div class="sub-section">
+                <h3 class="text-semibold">{{ trans('messages.list_verification') }}</h3>
+                <form enctype="multipart/form-data" action="{{ action('MailListController@startVerification', $list->uid) }}" method="POST" class="form-validate-jquery">
+                    {{ csrf_field() }}
 
-                        <div class="text-left">
-                            <button class="btn bg-teal mr-10"> {{ trans('messages.verification.button.start') }}</button>
+                    <div class="row">
+                        <div class="col-md-6">
+                            @include('helpers.form_control', [
+                                'type' => 'select',
+                                'name' => 'email_verification_server_id',
+                                'label' => trans('messages.verify_your_list'),
+                                'value' => '',
+                                'options' => \Auth::user()->customer->emailVerificationServerSelectOptions(),
+                                'help_class' => 'verification',
+                                'rules' => ['email_verification_server_id' => 'required'],
+                                'include_blank' => trans('messages.select_email_verification_server')
+                            ])
+
+                            <div class="text-left">
+                                <button class="btn bg-teal mr-10"> {{ trans('messages.verification.button.start') }}</button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </form>
-
-        </div>
+                </form>
+            </div>
+        @endif
     @endif
 @endsection
