@@ -46,7 +46,9 @@ class EmailVerificationServer extends Model
         $uri = $config['uri'];
         $uri = str_replace('{EMAIL}', $email, $uri);
         $uri = str_replace('{API_KEY}', $options['api_key'], $uri);
-        $uri = str_replace('{API_SECRET_KEY}', $options['api_secret_key'], $uri);
+        if (array_key_exists('api_secret_key', $options)) {
+            $uri = str_replace('{API_SECRET_KEY}', $options['api_secret_key'], $uri);
+        }
 
         // actually request to the service
         $response = $client->request($config['request_type'], $uri);
