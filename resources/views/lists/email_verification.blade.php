@@ -20,6 +20,12 @@
 
     @if ($list->isVerificationRunning())
         <div class="sub-section">
+            @if ($list->getRunningVerificationJob()->isFailed())
+                <div class="alert alert-danger alert-noborder">
+                    <button data-dismiss="alert" class="close" type="button"><span>×</span><span class="sr-only">Close</span></button>
+                    <strong>{{ trans('messages.verification.error.job_failed') }}</strong>
+                </div>
+            @endif
             <h3 class="text-semibold">{{ trans('messages.verification_status') }}</h3>
 
             @include('helpers._progress_bar', [
@@ -32,14 +38,11 @@
                 'total' => \Acelle\Library\Tool::format_number($list->readCache('SubscriberCount')),
             ]) !!}</p>
 
-            @if ($list->getRunningVerificationJob()->isFailed())
-                <p>{!! trans('messages.verification.process_failed') !!}</p>
-            @endif
             <p>
                 <a class="btn bg-grey-300"
                      link-confirm="{{ trans('messages.stop_list_verification_confirm') }}" link-method="POST"
                     href="{{ action("MailListController@stopVerification", $list->uid) }}">
-                    {{ trans('messages.stop_verification') }}
+                    {{ trans('messages.verification.button.stop') }}
                 </a>
             </p>
         </div>
@@ -51,12 +54,14 @@
                 'verified' => $list->countVerifiedSubscribers(),
                 'total' => \Acelle\Library\Tool::format_number($list->readCache('SubscriberCount')),
             ]) !!}</p>
+            @if (!$list->countVerifiedSubscribers() == 0)
             <p>
                 <a link-confirm="{{ trans('messages.reset_list_verification_confirm') }}" link-method="POST" class="btn bg-grey-600"
                     href="{{ action("MailListController@resetVerification", $list->uid) }}">
-                        {{ trans('messages.reset_verification') }}
+                        {{ trans('messages.verification.button.reset') }}
                 </a>
             </p>
+            @endif
         </div>
         <div class="sub-section">
             <h3 class="text-semibold">{{ trans('messages.list_verification') }}</h3>
@@ -77,7 +82,7 @@
                         ])
 
                         <div class="text-left">
-                            <button class="btn bg-teal mr-10"> {{ trans('messages.verify') }}</button>
+                            <button class="btn bg-teal mr-10"> {{ trans('messages.verification.button.start') }}</button>
                         </div>
                     </div>
                 </div>

@@ -4,6 +4,8 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Acelle\Model\MailList;
+use Acelle\Model\EmailVerificationServer;
 
 class MailListController extends Controller
 {
@@ -771,11 +773,10 @@ class MailListController extends Controller
      */
     public function startVerification(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->uid);
-
-        $serverId = 1;
+        $list = MailList::findByUid($request->uid);
+        $server = EmailVerificationServer::findByUid($request->email_verification_server_id);
         Log::info("Trying to start verification process for list " . $list->id);
-        $list->queueForVerification($serverId);
+        $list->queueForVerification($server->id);
         return redirect()->action('MailListController@verification', $list->uid);
     }
 
@@ -785,7 +786,7 @@ class MailListController extends Controller
      */
     public function stopVerification(Request $request)
     {
-        $list = \Acelle\Model\MailList::findByUid($request->uid);
+        $list = MailList::findByUid($request->uid);
         $list->stopVerification();
         return redirect()->action('MailListController@verification', $list->uid);
     }

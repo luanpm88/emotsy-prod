@@ -1440,7 +1440,11 @@ class MailList extends Model
         $subscribers = $this->getUnverifiedSubscribers();
         $verifier = EmailVerificationServer::find($serverId);
 
-        foreach($subscribers as $subscriber) {
+        if (is_null($verifier)) {
+            throw new \Exception(sprintf('Cannot find verification server with such ID: %s', $serverId));
+        }
+
+        foreach($subscribers as $index => $subscriber) {
             $job = $this->getRunningVerificationJob();
             if (is_null($job)) {
                 MailLog::warning(sprintf('Mail list `%s`: verification process terminated', $this->id));
