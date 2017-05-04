@@ -3,6 +3,9 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Acelle\Model\Subscriber;
+use Acelle\Model\EmailVerificationServer;
+use Acelle\Library\Log as MailLog;
 
 class SubscriberController extends Controller
 {
@@ -674,5 +677,30 @@ class SubscriberController extends Controller
             'subscribers' => $subscribers,
             'list' => $list
         ]);
+    }
+
+    /**
+     * Start the verification process
+     *
+     */
+    public function startVerification(Request $request)
+    {
+        $subscriber = Subscriber::findByUid($request->uid);
+        $server = EmailVerificationServer::findByUid($request->email_verification_server_id);
+        $subscriber->verify($server);
+        return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'uid' => $subscriber->uid]);
+    }
+
+    /**
+     * Reset the verification data
+     *
+     */
+    public function resetVerification(Request $request)
+    {
+        $subscriber = Subscriber::findByUid($request->uid);
+        MailLog::info(sprintf("Cleaning up verification data for %s (%s)", $subscriber->email, $subscriber->id));
+        $subscriber->emailVerification->delete();
+        MailLog::info(sprintf("Finish cleaning up verification data for %s (%s)", $subscriber->email, $subscriber->id));
+        return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'uid' => $subscriber->uid]);
     }
 }

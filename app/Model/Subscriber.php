@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Model\EmailVerification;
+use Acelle\Library\Log as MailLog;
 
 class Subscriber extends Model
 {
@@ -73,6 +74,11 @@ class Subscriber extends Model
     public function emailVerifications()
     {
         return $this->hasMany('Acelle\Model\EmailVerification');
+    }
+
+    public function emailVerification()
+    {
+        return $this->hasOne('Acelle\Model\EmailVerification');
     }
 
     public function campaign()
@@ -695,11 +701,13 @@ class Subscriber extends Model
      */
     public function verify($verifier)
     {
+        MailLog::info(sprintf("Start verifying %s (%s)", $this->email, $this->id));
         $log = new EmailVerification();
         list($result, $details) = $verifier->verify($this->email);
         $log->result = $result;
         $log->details = $details;
         $log->email_verification_server_id = $verifier->id;
         $this->emailVerifications()->save($log);
+        MailLog::info(sprintf("Finish verifying %s (%s)", $this->email, $this->id));
     }
 }
