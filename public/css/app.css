@@ -2133,3 +2133,6 @@ input.mini-input {
 .filter-group {
     margin-bottom: 10px;
 }
+.alert-noborder {
+    border: none !important;
+}
