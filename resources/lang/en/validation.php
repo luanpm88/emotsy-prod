@@ -156,6 +156,12 @@ return [
     |
     */
 
-    'attributes' => [],
+    'attributes' => [
+        'options' => [
+            'limit_value' => 'Limit value',
+            'limit_base' => 'Limit base',
+            'limit_unit' => 'Limit time unit',
+        ]
+    ],
 
 ];

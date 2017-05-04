@@ -1849,4 +1849,5 @@ return [
     'email_verification_result_' => '',
     'all_verification' => 'All verification',
     'verification_result' => 'Verification result',
+    'verification.done' => 'Verification process finished',
 ];

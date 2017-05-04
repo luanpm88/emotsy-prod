@@ -21,9 +21,8 @@ function startProgress(box) {
         url: url
     })
     .done(function( data ) {
-        box.html(data);
-
         if (data != 'done') {
+            box.html(data);
             setTimeout (function() {
                 startProgress(box);
             }, 1000);

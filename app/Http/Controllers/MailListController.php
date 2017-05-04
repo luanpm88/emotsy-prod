@@ -813,6 +813,7 @@ class MailListController extends Controller
 
         if (!$list->isVerificationRunning()) {
             echo 'done';
+            $request->session()->flash('alert-success', trans('messages.verification.done'));
             return;
         }
 
