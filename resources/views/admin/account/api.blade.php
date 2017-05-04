@@ -16,7 +16,7 @@
 					<li class="active">{{ trans('messages.api_token') }}</li>
 				</ul>
 				<h1>
-					<span class="text-semibold"><i class="icon-profile"></i> {{ Auth::user()->customer->displayName() }}</span>
+					<span class="text-semibold"><i class="icon-profile"></i> {{ Auth::user()->admin->displayName() }}</span>
 				</h1>
 			</div>
 
