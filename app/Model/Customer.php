@@ -885,7 +885,7 @@ class Customer extends Model
         }
 
         foreach ($query->limit(20)->get() as $customer) {
-            $data['items'][] = ['id' => $customer->uid, 'text' => $customer->displayNameEmail()];
+            $data['items'][] = ['id' => $customer->uid, 'text' => $customer->displayNameEmailOption()];
         }
 
         return json_encode($data);
@@ -1468,5 +1468,15 @@ class Customer extends Model
     public function displayNameEmail()
     {
         return $this->displayName() . " (" . $this->user->email . ")";
+    }
+
+    /**
+     * Custom name + email.
+     *
+     * @return string
+     */
+    public function displayNameEmailOption()
+    {
+        return $this->displayName() . "|||" . $this->user->email;
     }
 }

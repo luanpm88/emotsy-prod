@@ -487,7 +487,7 @@ class Plan extends Model
 		}
 
         foreach ($query->limit(20)->get() as $plan) {
-            $data['items'][] = ['id' => $plan->uid, 'text' => $plan->name];
+            $data['items'][] = ['id' => $plan->uid, 'text' => $plan->name."|||".\Acelle\Library\Tool::format_price($plan->price, $plan->currency->format)];
         }
 
         return json_encode($data);

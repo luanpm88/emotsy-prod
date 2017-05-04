@@ -8,6 +8,25 @@
 *  Latest update: Aug 1, 2015
 *
 * ---------------------------------------------------------------------------- */
+
+function formatSelect2TextSelected(d) {
+    var text = d.text;
+    var parts = text.split('|||');
+
+    return parts[0];
+}
+
+function formatSelect2TextOption(d) {
+    var text = d.text;
+    var parts = text.split('|||');
+
+    if (parts.length == 1) {
+        return parts[0];
+    } else {
+        return '<div class="select2_title">' + parts[0] + '</div>' + '<div class="select2_sub_line">' + parts[1] + '</div>';
+    }
+}
+
 function swalError(msg) {
     swal({
         title: msg,
@@ -741,6 +760,8 @@ $(function() {
             },
             escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
             minimumInputLength: 0,
+            templateResult: formatSelect2TextOption,
+            templateSelection: formatSelect2TextSelected,
         });
     });
 
