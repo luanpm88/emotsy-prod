@@ -315,7 +315,9 @@ class Automation extends Model
 						$query = $query->leftJoin($joining['table'], function($join) use ($joining)
 						{
 							$join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
-							$join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
+							if (isset($joining['ons'][1])) {
+								$join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
+							}
 						});
 					}
 				}

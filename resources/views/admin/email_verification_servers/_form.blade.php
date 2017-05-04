@@ -12,7 +12,7 @@
 		@include('helpers.form_control', ['type' => 'select',
 			'name' => 'type',
 			'value' => $server->type,
-			'class' => '',
+			'class' => 'hook',
 			'label' => trans('messages.verification_server_type'),
 			'options' => Acelle\Model\EmailVerificationServer::typeSelectOptions(),
 			'include_blank' => trans('messages.choose'),
@@ -23,26 +23,9 @@
 </div>
 
 <div class="row">
-	<div class="col-md-4">
-		@include('helpers.form_control', [
-			'type' => 'text',
-			'class' => '',
-			'name' => 'options[api_key]',
-			'value' => isset($options['api_key']) ? $options['api_key'] : '',
-			'label' => trans('messages.verification_api_key'),
-			'help_class' => 'email_verification_server',
-			'rules' => $server->rules()
-		])
-	</div>
-	<div class="col-md-4">
-		@include('helpers.form_control', [
-			'type' => 'text',
-			'class' => '',
-			'name' => 'options[api_secret_key]',
-			'value' => isset($options['api_secret_key']) ? $options['api_secret_key'] : '',
-			'label' => trans('messages.verification_api_secret_key'),
-			'help_class' => 'email_verification_server',
-			'rules' => $server->rules()
+	<div class="col-md-12 ajax-detail-box" data-url="{{ action('Admin\EmailVerificationServerController@options') }}" data-form=".email-verification-server-form">
+		@include('admin.email_verification_servers._options', [
+			'options' => $options
 		])
 	</div>
 </div>

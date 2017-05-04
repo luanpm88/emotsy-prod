@@ -24,7 +24,7 @@
 
 @section('content')
 
-	<form action="{{ action('Admin\EmailVerificationServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jqueryz">
+	<form action="{{ action('Admin\EmailVerificationServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jqueryz email-verification-server-form">
 		{{ csrf_field() }}
 
 		@include('admin.email_verification_servers._form')

@@ -294,4 +294,26 @@ class EmailVerificationServerController extends Controller
         // Redirect to my lists page
         echo trans('messages.email_verification_servers.enabled');
     }
+
+    /**
+     * Email verification server display options form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function options(Request $request, $uid=null)
+    {
+        if ($uid) {
+            $server = \Acelle\Model\EmailVerificationServer::findByUid($uid);
+        } else {
+            $server = new \Acelle\Model\EmailVerificationServer($request->all());
+            $options = $server->getOptions();
+        }
+
+        return view('admin.email_verification_servers._options', [
+            'server' => $server,
+            'options' => $options,
+        ]);
+    }
 }

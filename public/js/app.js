@@ -525,6 +525,7 @@ $(function() {
 
             var new_line = $('.segment-conditions-container .condition-line').last();
             new_line.find('select').select2();
+            new_line.find('select').trigger('change');
         });
     });
 
@@ -1459,4 +1460,36 @@ $(function() {
         }
     });
     $('select[name=frequency_unit]').trigger('change');
+
+    // Segment condition field type select
+    $(document).on('change', '.condition-field-select', function() {
+        var line = $(this).parents('.condition-line');
+        var field_uid = $(this).val();
+        var value_col = line.find('.operator_value_col');
+        var url = value_col.attr('data-url');
+        var index = line.attr('rel');
+        var operator = line.find('.operator-col select').val();
+
+        value_col.html('');
+
+        if (field_uid != '') {
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: {
+                    field_uid: field_uid,
+                    index: index,
+                    operator: field_uid
+                }, // serializes the form's elements.
+                success: function(data)
+                {
+                    value_col.html(data);
+                    value_col.find('select').select2();
+                }
+            });
+        }
+    });
+    // $('.condition-field-select').trigger('change');
+
+    $('.operator-col select').trigger('change');
 });

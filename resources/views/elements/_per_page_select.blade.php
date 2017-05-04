@@ -1,4 +1,4 @@
-<div class="num_per_page">    
+<div class="num_per_page">
     <select class="select">
         <option{{ request()->per_page == "2" ? " selected" : "" }} value="2">2</option>
         <option{{ request()->per_page == "10" ? " selected" : "" }} value="10">10</option>

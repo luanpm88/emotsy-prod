@@ -22,11 +22,10 @@
         <div class="sub-section">
             <h3 class="text-semibold">{{ trans('messages.verification_status') }}</h3>
 
-            <div class="progress progress-lg mb-10">
-                <div class="progress-bar progress-total active" style="width: {!! number_to_percentage($list->getVerifiedSubscribersPercentage()) !!}">
-                    <span><span class="number">{!! number_to_percentage($list->getVerifiedSubscribersPercentage(), 0) !!}</span> {{ trans('messages.complete') }}</span>
-                </div>
-            </div>
+            @include('helpers._progress_bar', [
+                'percent' => $list->getVerifiedSubscribersPercentage()
+            ])
+
 
             <p>{!! trans('messages.verification_process_running', [
                 'verified' => $list->countVerifiedSubscribers(),

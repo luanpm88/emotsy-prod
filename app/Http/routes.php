@@ -194,6 +194,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('delivery/notify/{stype}', 'DeliveryController@notify');
 
     // Segment
+    Route::get('segments/condition-value-control', 'SegmentController@conditionValueControl');
     Route::get('segments/select_box', 'SegmentController@selectBox');
     Route::get('lists/{list_uid}/segments', 'SegmentController@index');
     Route::get('lists/{list_uid}/segments/{uid}/subscribers', 'SegmentController@subscribers');
@@ -621,6 +622,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/payment_methods', 'PaymentMethodController');
 
     // Email verification servers
+    Route::get('admin/email_verification_servers/options', 'EmailVerificationServerController@options');
     Route::get('admin/email_verification_servers/listing/{page?}', 'EmailVerificationServerController@listing');
     Route::get('admin/email_verification_servers/sort', 'EmailVerificationServerController@sort');
     Route::get('admin/email_verification_servers/delete', 'EmailVerificationServerController@delete');
