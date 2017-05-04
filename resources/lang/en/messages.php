@@ -143,7 +143,7 @@ return [
     'sending_server.custom_order.updated' => 'Sending servers order were successfully updated',
     'user_groups.custom_order.updated' => 'User groups order were successfully updated',
     'fields.custom_order.updated' => 'Fields order were successfully updated',
-    'check_entry_try_again' => 'Please check your entry and try again.',
+    'check_entry_try_again' => 'Something went wrong! Please check your entry and try again.',
     'num_per_page' => 'items per page',
     'information' => 'Information',
     'manage_subscribers' => 'Manage subscribers',
