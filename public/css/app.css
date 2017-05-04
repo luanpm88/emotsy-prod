@@ -2136,3 +2136,22 @@ input.mini-input {
 .alert-noborder {
     border: none !important;
 }
+.modal-header[class*=bg-] {
+    padding: 10px;
+    text-align: center;
+}
+.modal-header .close[type=button] {
+    background: rgba(255,255,255,0.3);
+    width: 25px;
+    height: 25px;
+    display: block;
+    border-radius: 20px;
+    color: #fff;
+    font-weight: bold;
+    margin-top: -12px;
+    margin-right: -10px;
+}
+.modal-content {
+    border: 0;
+    border-radius: 0;
+}
