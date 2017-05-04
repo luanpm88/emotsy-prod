@@ -687,8 +687,17 @@ class SubscriberController extends Controller
     {
         $subscriber = Subscriber::findByUid($request->uid);
         $server = EmailVerificationServer::findByUid($request->email_verification_server_id);
-        $subscriber->verify($server);
-        return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'uid' => $subscriber->uid]);
+        try {
+            $subscriber->verify($server);
+
+            // success message
+            $request->session()->flash('alert-success', trans('messages.verification.finish'));
+
+            return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'uid' => $subscriber->uid]);
+        } catch (\Exception $e) {
+            MailLog::error(sprintf("Something went wrong while verifying %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage()));
+            return view('somethingWentWrong', ['message' => sprintf("Something went wrong while verifying %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage())]);
+        }
     }
 
     /**
@@ -698,9 +707,18 @@ class SubscriberController extends Controller
     public function resetVerification(Request $request)
     {
         $subscriber = Subscriber::findByUid($request->uid);
-        MailLog::info(sprintf("Cleaning up verification data for %s (%s)", $subscriber->email, $subscriber->id));
-        $subscriber->emailVerification->delete();
-        MailLog::info(sprintf("Finish cleaning up verification data for %s (%s)", $subscriber->email, $subscriber->id));
-        return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'uid' => $subscriber->uid]);
+
+        try {
+            MailLog::info(sprintf("Cleaning up verification data for %s (%s)", $subscriber->email, $subscriber->id));
+            $subscriber->emailVerification->delete();
+            // success message
+            $request->session()->flash('alert-success', trans('messages.verification.reset'));
+
+            MailLog::info(sprintf("Finish cleaning up verification data for %s (%s)", $subscriber->email, $subscriber->id));
+            return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'uid' => $subscriber->uid]);
+        } catch (\Exception $e) {
+            MailLog::error(sprintf("Something went wrong while cleaning up verification data for %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage()));
+            return view('somethingWentWrong', ['message' => sprintf("Something went wrong while cleaning up verification data for %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage())]);
+        }
     }
 }
