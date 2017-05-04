@@ -801,4 +801,23 @@ class MailListController extends Controller
         $list->resetVerification();
         return redirect()->action('MailListController@verification', $list->uid);
     }
+
+    /**
+     * Check verification progress
+     *
+     */
+    public function verificationProgress(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+        $percent = $list->getVerifiedSubscribersPercentage();
+
+        if (!$list->isVerificationRunning()) {
+            echo 'done';
+            return;
+        }
+
+        return view('lists.email_verification_progress', [
+            'list' => $list,
+        ]);
+    }
 }

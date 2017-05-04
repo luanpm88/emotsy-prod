@@ -28,23 +28,9 @@
             @endif
             <h3 class="text-semibold">{{ trans('messages.verification_status') }}</h3>
 
-            @include('helpers._progress_bar', [
-                'percent' => $list->getVerifiedSubscribersPercentage()
-            ])
+            <div class="progress-box" data-url="{{ action('MailListController@verificationProgress', $list->uid) }}">
 
-
-            <p>{!! trans('messages.verification_process_running', [
-                'verified' => $list->countVerifiedSubscribers(),
-                'total' => \Acelle\Library\Tool::format_number($list->readCache('SubscriberCount')),
-            ]) !!}</p>
-
-            <p>
-                <a class="btn bg-grey-300"
-                     link-confirm="{{ trans('messages.stop_list_verification_confirm') }}" link-method="POST"
-                    href="{{ action("MailListController@stopVerification", $list->uid) }}">
-                    {{ trans('messages.verification.button.stop') }}
-                </a>
-            </p>
+            </div>
         </div>
     @else
         <div class="sub-section">
@@ -65,7 +51,7 @@
         </div>
         <div class="sub-section">
             <h3 class="text-semibold">{{ trans('messages.list_verification') }}</h3>
-            <form enctype="multipart/form-data" action="{{ action('MailListController@startVerification', $list->uid) }}" method="POST" class="form-validate-jqueryz subscription-form">
+            <form enctype="multipart/form-data" action="{{ action('MailListController@startVerification', $list->uid) }}" method="POST" class="form-validate-jquery">
                 {{ csrf_field() }}
 
                 <div class="row">
@@ -77,7 +63,7 @@
                             'value' => '',
                             'options' => \Auth::user()->customer->emailVerificationServerSelectOptions(),
                             'help_class' => 'verification',
-                            'rules' => [],
+                            'rules' => ['email_verification_server_id' => 'required'],
                             'include_blank' => trans('messages.select_email_verification_server')
                         ])
 

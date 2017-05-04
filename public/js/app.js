@@ -8,6 +8,31 @@
 *  Latest update: Aug 1, 2015
 *
 * ---------------------------------------------------------------------------- */
+
+function startProgress(box) {
+    var url = box.attr('data-url');
+
+    if (typeof(url) == 'undefined') {
+        return;
+    }
+
+    $.ajax({
+        method: "GET",
+        url: url
+    })
+    .done(function( data ) {
+        box.html(data);
+
+        if (data != 'done') {
+            setTimeout (function() {
+                startProgress(box);
+            }, 1000);
+        } else {
+            location.reload();
+        }
+    });
+}
+
 function swalError(msg) {
     swal({
         title: msg,
@@ -1492,4 +1517,9 @@ $(function() {
     // $('.condition-field-select').trigger('change');
 
     $('.operator-col select').trigger('change');
+
+    // progress bar ajax reload
+    $('.progress-box').each(function() {
+        startProgress($(this));
+    });
 });

@@ -39,7 +39,7 @@
 
                 @if (is_null($subscriber->emailVerification))
                     <p>{!! trans('messages.verification.wording.verify', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email) ]) !!}</p>
-                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@startVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jqueryz subscription-form">
+                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@startVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
                         {{ csrf_field() }}
 
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
@@ -50,7 +50,7 @@
                             'value' => '',
                             'options' => \Auth::user()->customer->emailVerificationServerSelectOptions(),
                             'help_class' => 'verification',
-                            'rules' => [],
+                            'rules' => ['email_verification_server_id' => 'required'],
                             'include_blank' => trans('messages.select_email_verification_server')
                         ])
                         <div class="text-left">
@@ -59,7 +59,7 @@
                     </form>
                 @elseif ($subscriber->emailVerification->isDeliverable())
                     <p>{!! trans('messages.verification.wording.deliverable', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email), 'at' => sprintf("<strong>%s</strong>", $subscriber->emailVerification->created_at) ]) !!}</p>
-                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jqueryz subscription-form">
+                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
                         <div class="text-left">
@@ -68,7 +68,7 @@
                     </form>
                 @elseif ($subscriber->emailVerification->isUndeliverable())
                     <p>{!! trans('messages.verification.wording.undeliverable', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email)]) !!}</p>
-                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jqueryz subscription-form">
+                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
                         <div class="text-left">
@@ -77,7 +77,7 @@
                     </form>
                 @else
                     <p>{!! trans('messages.verification.wording.risky_or_unknown', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email), 'at' => sprintf("<strong>%s</strong>", $subscriber->emailVerification->created_at), 'result' => sprintf("<strong>%s</strong>", $subscriber->emailVerification->result)]) !!}</p>
-                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jqueryz subscription-form">
+                    <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
                         <div class="text-left">

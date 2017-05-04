@@ -135,6 +135,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('assets/images/avatar/user-{uid?}.jpg', 'UserController@avatar');
 
     // Mail list
+    Route::get('lists/{uid}/verification/progress', 'MailListController@verificationProgress');
     Route::get('lists/{uid}/verification', 'MailListController@verification');
     Route::post('lists/{uid}/verification/start', 'MailListController@startVerification');
     Route::post('lists/{uid}/verification/stop', 'MailListController@stopVerification');
