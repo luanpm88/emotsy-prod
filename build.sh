@@ -9,6 +9,7 @@ then
   echo "Error: directory does not exist" && exit 1
 fi
 
+RELEASED="April, 20th 2017"
 APPNAME="acellemail"
 APPVERSION="3.0.0"
 APPDIR="$APPNAME-$APPVERSION"
@@ -16,6 +17,7 @@ BUILDVERSION=$(git tag --points-at HEAD)
 BUILDVERSION=${BUILDVERSION:-"v$APPVERSION-latest"}
 APPZIP="$APPDIR$(echo $BUILDVERSION | grep -o '\-.*').zip"
 OUTPUT="$1/$APPDIR"
+CURDIR=$(pwd)
 
 if [ -d "$OUTPUT" ]; then
   echo "Error: director [$OUTPUT] already exists" && exit 1
@@ -28,7 +30,7 @@ cd $OUTPUT
 
 # create version file
 touch VERSION
-echo "$BUILDVERSION" > VERSION
+echo "$BUILDVERSION $RELEASED" > VERSION
 
 # create default env file
 cp .env.example .env
@@ -41,16 +43,16 @@ rm -fr storage/import/*
 rm -fr storage/export/*
 rm -fr storage/installed
 touch storage/recache
+touch storage/logs/mail.log
+touch storage/logs/laravel.log
 rm -fr .authenticate
 rm -fr .git*
-rm -fr run
 rm -fr database/seeds/DatabaseSeeder.php
 rm -fr public/source
 rm -fr public/thumb
 rm -fr build.sh
 rm -fr public/upload/templates/*
 rm -fr bootstrap/cache/config.php
-rm -fr generate-upgrade-script.sh
 rm -fr php-cs-fixer
 
 # copy default lang
@@ -60,6 +62,11 @@ cp -r resources/lang/en resources/lang/default
 # run artisan
 php artisan config:cache
 php artisan key:generate
+
+# Generate the upgrade patch file
+ruby patch.rb /tmp/acellepatch "$CURDIR"
+mkdir upgrade
+cp /tmp/acellepatch/*.zip upgrade/
 
 cd ..
 zip -r "$APPZIP" "$APPDIR" > /dev/null

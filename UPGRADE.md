@@ -1,10 +1,7 @@
-# Version: Acelle Mail v3.0.0-p1
+# UPGRADE GUIDELINE
 
-This is the first release of an entirely new version of Acelle Mail
-which comes with lots of new features as well as refractoring of the application structure
+If you are already on an older version of Acelle Mail, you can do an upgrade (without doing a fresh installation)
+through the Upgrade Dashboard at Admin view > Setting > All Settings > Upgrade
 
-As a result, we are regret that we cannot support migrating from the older version (v2.2.0)
-and it is required that you do a fresh installation
-
-Thank you for going with Acelle Mail
-Acelle Mail Team
+Then you can upload the patch file which is located at `upgrade/patch-3.x.x.zip`
+and upgrade your system to the latest version of Acelle Mail.

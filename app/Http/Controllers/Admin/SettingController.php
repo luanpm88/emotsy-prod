@@ -403,4 +403,16 @@ class SettingController extends Controller
             'license_error' => isset($license_error) ? $license_error : '',
         ]);
     }
+
+    /**
+     * Upgrade manager page
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function upgrade(Request $request)
+    {
+        return view('admin.settings.upgrade', [
+            'any' => 'any',
+        ]);
+    }
 }
