@@ -321,7 +321,7 @@ class Segment extends Model
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
-        return $query->groupBy('subscribers.id');
+        return $query;
     }
 
     /**
