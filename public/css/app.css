@@ -2173,3 +2173,13 @@ input.mini-input {
 .select2-container--open .select2-dropdown--below {
     margin-top: -3px;
 }
+.sweet-alert h2 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+.sweet-alert {
+    padding: 10px 10px 20px 10px
+}
+.sweet-alert p {
+    margin: 0;
+}
