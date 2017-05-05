@@ -139,5 +139,21 @@
                 </div>
             </div>
         @endif
+
+        @if (Auth::user()->customer->can("create", new Acelle\Model\EmailVerificationServer()))
+            <div class="col-md-12">
+                <div class="content-group-sm">
+                    <div class="pull-right text-teal-800 text-semibold">
+                        <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->emailVerificationServersCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxEmailVerificationServers()) }}</span>
+                        &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayEmailVerificationServersUsage() }}
+                    </div>
+                    <h5 class="text-semibold mb-5">{{ trans('messages.email_verification_server') }}</h5>
+                    <div class="progress progress-xxs">
+                        <div class="progress-bar bg-warning" style="width: {{ Auth::user()->customer->emailVerificationServersUsage() }}%">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        @endif
     </div>
 @endif

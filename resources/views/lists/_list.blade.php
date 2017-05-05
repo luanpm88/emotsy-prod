@@ -77,6 +77,7 @@
 															<i class="icon-list3"></i> {{ trans('messages.manage_list_fields') }}
 														</a>
 													</li>
+													<li><a href="{{ action('MailListController@verification', $item->uid) }}"><i class="icon-envelop5"></i> {{ trans("messages.email_verification") }}</a></li>
 													<li><a href="{{ action('MailListController@edit', $item->uid) }}"><i class="icon-pencil7"></i> {{ trans("messages.edit_list") }}</a></li>
 													@if (\Auth::user()->can('import', $item))
                                                         <li><a href="{{ action('SubscriberController@import', $item->uid) }}"><i class="icon-download4"></i> {{ trans('messages.import') }}</a></li>

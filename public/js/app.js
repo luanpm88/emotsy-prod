@@ -27,6 +27,29 @@ function formatSelect2TextOption(d) {
     }
 }
 
+function startProgress(box) {
+    var url = box.attr('data-url');
+
+    if (typeof(url) == 'undefined') {
+        return;
+    }
+
+    $.ajax({
+        method: "GET",
+        url: url
+    })
+    .done(function( data ) {
+        if (data != 'done') {
+            box.html(data);
+            setTimeout (function() {
+                startProgress(box);
+            }, 1000);
+        } else {
+            location.reload();
+        }
+    });
+}
+
 function swalError(msg) {
     swal({
         title: msg,
@@ -428,6 +451,15 @@ $(function() {
             $(".link-confirm-button").removeAttr("data-method");
         }
 
+        // Link confirm
+        if (typeof($(this).attr('link-method')) !== 'undefined') {
+            $(".link-confirm-button").attr("link-method", $(this).attr('link-method'));
+            $(".link-confirm-button").removeClass("ajax_link");
+        } else {
+            $(".link-confirm-button").removeClass("ajax_link");
+            $(".link-confirm-button").removeAttr("link-method");
+        }
+
         e.stopImmediatePropagation();
         e.preventDefault();
     });
@@ -538,10 +570,15 @@ $(function() {
             $('.segment-conditions-container').append(msg);
 
             var new_line = $('.segment-conditions-container .condition-line').last();
+<<<<<<< HEAD
             new_line.find('select').select2({
                 templateResult: formatSelect2TextOption,
                 templateSelection: formatSelect2TextSelected
             });
+=======
+            new_line.find('select').select2();
+            new_line.find('select').trigger('change');
+>>>>>>> heroku/feature-verify-core
         });
     });
 
@@ -1488,4 +1525,41 @@ $(function() {
         }
     });
     $('select[name=frequency_unit]').trigger('change');
+
+    // Segment condition field type select
+    $(document).on('change', '.condition-field-select', function() {
+        var line = $(this).parents('.condition-line');
+        var field_uid = $(this).val();
+        var value_col = line.find('.operator_value_col');
+        var url = value_col.attr('data-url');
+        var index = line.attr('rel');
+        var operator = line.find('.operator-col select').val();
+
+        value_col.html('');
+
+        if (field_uid != '') {
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: {
+                    field_uid: field_uid,
+                    index: index,
+                    operator: field_uid
+                }, // serializes the form's elements.
+                success: function(data)
+                {
+                    value_col.html(data);
+                    value_col.find('select').select2();
+                }
+            });
+        }
+    });
+    // $('.condition-field-select').trigger('change');
+
+    $('.operator-col select').trigger('change');
+
+    // progress bar ajax reload
+    $('.progress-box').each(function() {
+        startProgress($(this));
+    });
 });

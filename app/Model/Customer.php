@@ -158,6 +158,16 @@ class Customer extends Model
         return $this->hasMany('Acelle\Model\SendingDomain');
     }
 
+    public function emailVerificationServers()
+    {
+        return $this->hasMany('Acelle\Model\EmailVerificationServer');
+    }
+
+    public function activeEmailVerificationServers()
+    {
+        return $this->emailVerificationServers()->where("status", "=", EmailVerificationServer::STATUS_ACTIVE);
+    }
+
     /**
      * Bootstrap any application services.
      */
@@ -1149,7 +1159,7 @@ class Customer extends Model
      */
     public function sendingServersCount()
     {
-        return $this->sendingServers() ->count();
+        return $this->sendingServers()->count();
     }
 
     /**
@@ -1159,7 +1169,7 @@ class Customer extends Model
      */
     public function sendingDomainsCount()
     {
-        return $this->sendingDomains() ->count();
+        return $this->sendingDomains()->count();
     }
 
     /**
@@ -1178,7 +1188,59 @@ class Customer extends Model
     }
 
     /**
-     * Calculate subscibers usage.
+     * Get max email verification server count.
+     *
+     * @var integer
+     */
+    public function maxEmailVerificationServers()
+    {
+        $count = $this->getOption('email_verification_servers_max');
+        if ($count == -1) {
+            return '∞';
+        } else {
+            return $count;
+        }
+    }
+
+    /**
+     * Calculate email verification server usage.
+     *
+     * @return number
+     */
+    public function emailVerificationServersUsage()
+    {
+        $max = $this->maxEmailVerificationServers();
+        $count = $this->emailVerificationServersCount();
+
+        if ($max == '∞') {
+            return 0;
+        }
+        if ($max == 0) {
+            return 0;
+        }
+        if ($count > $max) {
+            return 100;
+        }
+
+        return round((($count / $max) * 100), 2);
+    }
+
+    /**
+     * Calculate email verigfication servers usage.
+     *
+     * @return number
+     */
+    public function displayEmailVerificationServersUsage()
+    {
+        if ($this->maxEmailVerificationServers() == '∞') {
+            return trans('messages.unlimited');
+        }
+
+        return $this->emailVerificationServersUsage().'%';
+    }
+
+    /**
+     * Calculate sending servers usage.
      *
      * @return number
      */
@@ -1201,7 +1263,7 @@ class Customer extends Model
     }
 
     /**
-     * Calculate subscibers usage.
+     * Calculate sending servers usage.
      *
      * @return number
      */
@@ -1478,5 +1540,66 @@ class Customer extends Model
     public function displayNameEmailOption()
     {
         return $this->displayName() . "|||" . $this->user->email;
+    }
+
+    /**
+     * Email verification servers count.
+     *
+     * @var integer
+     */
+    public function emailVerificationServersCount()
+    {
+        return $this->emailVerificationServers()->count();
+    }
+
+    /**
+     * Get list of available email verification servers.
+     *
+     * @var boolean
+     */
+    public function getEmailVerificaionServers()
+    {
+        $result = [];
+
+        // Check the customer has permissions using email verification servers and has his own email verification servers
+        if ($this->getOption("create_email_verification_servers") == 'yes') {
+            $result = $this->activeEmailVerificationServers()->get()->map(function ($server) {
+                return $server;
+            });
+        // If customer dont have permission creating sending servers
+        } else {
+            $subscription = $this->getCurrentSubscription();
+
+            // Check if has sending servers for current subscription
+            if (is_object($subscription)) {
+                if ($subscription->getOption("all_email_verification_servers") == 'yes') {
+                    $result = \Acelle\Model\EmailVerificationServer::getAllAdminActive()->get()->map(function ($server) {
+                        return $server;
+                    });
+                } else {
+                    $result = $subscription->activeSubscriptionsEmailVerificationServers()->get()->map(function ($server) {
+                        return $server->emailVerificationServer;
+                    });
+                }
+            }
+        }
+
+        return $result;
+    }
+
+    /**
+     * Get email verification servers select options.
+     *
+     * @return array
+     */
+    public function emailVerificationServerSelectOptions()
+    {
+        $servers = $this->getEmailVerificaionServers();
+        $options = [];
+        foreach ($servers as $server) {
+            $options[] = ['text' => $server->name, 'value' => $server->uid];
+        }
+
+        return $options;
     }
 }

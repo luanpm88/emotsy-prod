@@ -199,7 +199,6 @@
                                 <mc:flag>{{ $subscription->displayFileSizeUpload() }} MB</mc:flag>
                             </div>
                         </li>
-
                         <li class="hide">
                             <div class="unit size1of2">
                                 <strong>{{ trans('messages.allow_create_sending_servers_label') }}</strong>
@@ -230,7 +229,21 @@
                                 </mc:flag>
                             </div>
                         </li>
-
+                        <li class="hide">
+                            <div class="unit size1of2">
+                                <strong>{{ trans('messages.allow_create_email_verification_servers_label') }}</strong>
+                            </div>
+                            <div class="lastUnit size1of2">
+                                <mc:flag>
+                                    @if (Auth::user()->customer->can("create", new Acelle\Model\EmailVerificationServer()))
+                                        <span class="">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->emailVerificationServersCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxEmailVerificationServers()) }}</span>
+                                        &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayEmailVerificationServersUsage() }}
+                                    @else
+                                        {!! $subscription->displayAllowCreateEmailVerificationServer() !!}
+                                    @endif
+                                </mc:flag>
+                            </div>
+                        </li>
                     </ul>
                 @endif
             </div>

@@ -135,6 +135,11 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('assets/images/avatar/user-{uid?}.jpg', 'UserController@avatar');
 
     // Mail list
+    Route::get('lists/{uid}/verification/progress', 'MailListController@verificationProgress');
+    Route::get('lists/{uid}/verification', 'MailListController@verification');
+    Route::post('lists/{uid}/verification/start', 'MailListController@startVerification');
+    Route::post('lists/{uid}/verification/stop', 'MailListController@stopVerification');
+    Route::post('lists/{uid}/verification/reset', 'MailListController@resetVerification');
     Route::post('lists/copy', 'MailListController@copy');
     Route::get('lists/quick-view', 'MailListController@quickView');
     Route::get('lists/{uid}/list-growth', 'MailListController@listGrowthChart');
@@ -160,6 +165,8 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('lists/{list_uid}/fields/{uid}/delete', 'FieldController@delete');
 
     // Subscriber
+    Route::post('subscriber/{uid}/verification/start', 'SubscriberController@startVerification');
+    Route::post('subscriber/{uid}/verification/reset', 'SubscriberController@resetVerification');
     Route::get('subscribers/copy-move-from/{list_uid}/{action}', 'SubscriberController@copyMoveForm');
     Route::post('subscribers/move', 'SubscriberController@move');
     Route::post('subscribers/copy', 'SubscriberController@copy');
@@ -188,6 +195,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('delivery/notify/{stype}', 'DeliveryController@notify');
 
     // Segment
+    Route::get('segments/condition-value-control', 'SegmentController@conditionValueControl');
     Route::get('segments/select_box', 'SegmentController@selectBox');
     Route::get('lists/{list_uid}/segments', 'SegmentController@index');
     Route::get('lists/{list_uid}/segments/{uid}/subscribers', 'SegmentController@subscribers');
@@ -394,6 +402,14 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('payments/cash/{subscription_uid}', 'PaymentController@cash');
     Route::post('payments/paypal/{subscription_uid}', 'PaymentController@paypal');
     Route::get('payments/paypal/{subscription_uid}', 'PaymentController@paypal');
+
+    // Email verification servers
+    Route::get('email_verification_servers/listing/{page?}', 'EmailVerificationServerController@listing');
+    Route::get('email_verification_servers/sort', 'EmailVerificationServerController@sort');
+    Route::get('email_verification_servers/delete', 'EmailVerificationServerController@delete');
+    Route::get('email_verification_servers/disable', 'EmailVerificationServerController@disable');
+    Route::get('email_verification_servers/enable', 'EmailVerificationServerController@enable');
+    Route::resource('email_verification_servers', 'EmailVerificationServerController');
 });
 
 // ADMIN AREA
@@ -605,4 +621,13 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/payment_methods/disable', 'PaymentMethodController@disable');
     Route::get('admin/payment_methods/enable', 'PaymentMethodController@enable');
     Route::resource('admin/payment_methods', 'PaymentMethodController');
+
+    // Email verification servers
+    Route::get('admin/email_verification_servers/options', 'EmailVerificationServerController@options');
+    Route::get('admin/email_verification_servers/listing/{page?}', 'EmailVerificationServerController@listing');
+    Route::get('admin/email_verification_servers/sort', 'EmailVerificationServerController@sort');
+    Route::get('admin/email_verification_servers/delete', 'EmailVerificationServerController@delete');
+    Route::get('admin/email_verification_servers/disable', 'EmailVerificationServerController@disable');
+    Route::get('admin/email_verification_servers/enable', 'EmailVerificationServerController@enable');
+    Route::resource('admin/email_verification_servers', 'EmailVerificationServerController');
 });

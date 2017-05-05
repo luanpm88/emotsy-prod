@@ -3,6 +3,9 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Acelle\Model\MailList;
+use Acelle\Model\EmailVerificationServer;
 
 class MailListController extends Controller
 {
@@ -86,7 +89,7 @@ class MailListController extends Controller
         if (isset($request->old()['contact'])) {
             $list->contact->fill($request->old()['contact']);
         }
-        
+
         // Sending servers
         if (isset($request->old()['sending_servers'])) {
             $list->mailListsSendingServers = collect([]);
@@ -128,7 +131,7 @@ class MailListController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             $this->validate($request, \Acelle\Model\MailList::$rules);
-            
+
             $rules = [];
             if (isset($request->sending_servers)) {
                 foreach ($request->sending_servers as $key => $param) {
@@ -145,7 +148,7 @@ class MailListController extends Controller
             $list->customer_id = $customer->id;
             $list->contact_id = $contact->id;
             $list->save();
-            
+
             // For sending servers
             if (isset($request->sending_servers)) {
                 $list->updateSendingServers($request->sending_servers);
@@ -200,7 +203,7 @@ class MailListController extends Controller
         if (isset($request->old()['contact'])) {
             $list->contact->fill($request->old()['contact']);
         }
-        
+
         // Sending servers
         if (isset($request->old()['sending_servers'])) {
             $list->mailListsSendingServers = collect([]);
@@ -243,7 +246,7 @@ class MailListController extends Controller
         // validate and save posted data
         if ($request->isMethod('patch')) {
             $this->validate($request, \Acelle\Model\MailList::$rules);
-            
+
             $rules = [];
             if (isset($request->sending_servers)) {
                 foreach ($request->sending_servers as $key => $param) {
@@ -259,7 +262,7 @@ class MailListController extends Controller
             $list->contact->save();
             $list->fill($request->all());
             $list->save();
-            
+
             // For sending servers
             if (isset($request->sending_servers)) {
                 $list->updateSendingServers($request->sending_servers);
@@ -746,5 +749,76 @@ class MailListController extends Controller
                 );
             }
         }
+    }
+
+    /**
+     * Mail list emails verification main page.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function verification(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+
+        return view('lists.email_verification', [
+            'list' => $list,
+        ]);
+    }
+
+    /**
+     * Start the verification process
+     *
+     */
+    public function startVerification(Request $request)
+    {
+        $list = MailList::findByUid($request->uid);
+        $server = EmailVerificationServer::findByUid($request->email_verification_server_id);
+        Log::info("Trying to start verification process for list " . $list->id);
+        $list->queueForVerification($server->id);
+        return redirect()->action('MailListController@verification', $list->uid);
+    }
+
+    /**
+     * Stop the verification process
+     *
+     */
+    public function stopVerification(Request $request)
+    {
+        $list = MailList::findByUid($request->uid);
+        $list->stopVerification();
+        return redirect()->action('MailListController@verification', $list->uid);
+    }
+
+    /**
+     * Reset the verification data
+     *
+     */
+    public function resetVerification(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+        $list->resetVerification();
+        return redirect()->action('MailListController@verification', $list->uid);
+    }
+
+    /**
+     * Check verification progress
+     *
+     */
+    public function verificationProgress(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+        $percent = $list->getVerifiedSubscribersPercentage();
+
+        if (!$list->isVerificationRunning()) {
+            echo 'done';
+            $request->session()->flash('alert-success', trans('messages.verification.done'));
+            return;
+        }
+
+        return view('lists.email_verification_progress', [
+            'list' => $list,
+        ]);
     }
 }

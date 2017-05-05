@@ -23,9 +23,10 @@
 						</a>
 						<br />
 						<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.' . $item->status) }}</span>
-					</div>											
+						<span class="label label-flat bg-{{ $item->verify_result }}">{{ trans('messages.email_verification_result_' . $item->verify_result) }}</span>
+					</div>
 				</td>
-				
+
 				@foreach ($fields as $field)
 					<td>
 						<span class="no-margin stat-num kq_search">{{ empty($item->getValueByField($field)) ? "--" : $item->getValueByField($field) }}</span>
@@ -33,7 +34,7 @@
 						<span class="text-muted2">{{ $field->label }}</span>
 					</td>
 				@endforeach
-				
+
 				@if (in_array("created_at", explode(",", request()->columns)))
 					<td>
 						<span class="no-margin stat-num">{{ Tool::formatDateTime($item->created_at) }}</span>
@@ -41,7 +42,7 @@
 						<span class="text-muted2">{{ trans('messages.created_at') }}</span>
 					</td>
 				@endif
-				
+
 				@if (in_array("updated_at", explode(",", request()->columns)))
 					<td>
 						<span class="no-margin stat-num">{{ Tool::formatDateTime($item->updated_at) }}</span>
@@ -49,14 +50,14 @@
 						<span class="text-muted2">{{ trans('messages.updated_at') }}</span>
 					</td>
 				@endif
-				
+
 				<td class="text-right text-nowrap">
 					@if (\Gate::allows('update', $item))
 						<a href="{{ action('SubscriberController@edit', ['list_uid' => $list->uid, "uids" => $item->uid]) }}" type="button" class="btn bg-grey btn-icon">
 							<i class="icon-pencil"></i>
 						</a>
 					@endif
-					<div class="btn-group">										
+					<div class="btn-group">
 						<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-right">
 							@if (\Gate::allows('subscribe', $item))
@@ -65,7 +66,7 @@
 							@if (\Gate::allows('unsubscribe', $item))
 								<li><a class="ajax_link" href="{{ action('SubscriberController@unsubscribe', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><i class="icon-exit"></i> {{ trans('messages.unsubscribe') }}</a></li>
 							@endif
-							
+
 							<li>
 								<a href="#copy" class="copy_move_subscriber"
 									data-url="{{ action('SubscriberController@copyMoveForm', [
@@ -84,16 +85,16 @@
 										'action' => 'move',
 									]) }}">
 									<i class="icon-move-right"></i> {{ trans('messages.move_to') }}
-								</a>											
+								</a>
 							</li>
-							
+
 							@if (\Gate::allows('delete', $item))
 								<li><a delete-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
 							@endif
 						</ul>
 					</div>
 				</td>
-					
+
 			</tr>
 		@endforeach
 	</table>
@@ -106,7 +107,7 @@
 			{{ trans('messages.no_search_result') }}
 		</span>
 	</div>
-@else					
+@else
 	<div class="empty-list">
 		<i class="icon-users4"></i>
 		<span class="line-1">

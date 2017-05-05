@@ -149,6 +149,11 @@
 														<i class="icon-list3"></i> {{ trans('messages.manage_list_fields') }}
 													</a>
 												</li>
+												<li rel0="MailListController/verification">
+													<a class="level-1" href="{{ action('MailListController@verification', $list->uid) }}">
+														<i class="icon-envelop5"></i> {{ trans('messages.email_verification') }}
+													</a>
+												</li>
 											</ul>
 										</div>
 									</div>

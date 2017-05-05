@@ -5,13 +5,13 @@
 													@if (!empty($label))
 														{!! $label !!}
 													@endif
-													
+
 													@if (isset($help_class) && Lang::has('messages.' . $help_class . '.' . $name . '.help'))
 														<span class="checkbox-description">
 															{!! trans('messages.' . $help_class . '.' . $name . '.help') !!}
 														</span>
 													@endif
-													
+
 												</label>
 
-											
+
