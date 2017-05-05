@@ -981,6 +981,7 @@ ul.modern-listing li .btn {
 }
 .nav-tabs {
     border-bottom: 1px dashed #26A69A;
+    margin-bottom: 40px;
 }
 .table-icon-big {
     font-size: 40px;
