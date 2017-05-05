@@ -208,12 +208,16 @@ $(function() {
 
     // Default initialization
     $('.select').select2({
-        minimumResultsForSearch: 101
+        minimumResultsForSearch: 101,
+        templateResult: formatSelect2TextOption,
+        templateSelection: formatSelect2TextSelected
     });
 
     // Select with search
     $('.select-search').select2({
-        minimumResultsForSearch: 101
+        minimumResultsForSearch: 101,
+        templateResult: formatSelect2TextOption,
+        templateSelection: formatSelect2TextSelected
     });
 
 
@@ -534,7 +538,10 @@ $(function() {
             $('.segment-conditions-container').append(msg);
 
             var new_line = $('.segment-conditions-container .condition-line').last();
-            new_line.find('select').select2();
+            new_line.find('select').select2({
+                templateResult: formatSelect2TextOption,
+                templateSelection: formatSelect2TextSelected
+            });
         });
     });
 
@@ -651,7 +658,10 @@ $(function() {
                 box.html(msg);
 
                 // Select with search
-                $('.select-search').select2();
+                $('.select-search').select2({
+                    templateResult: formatSelect2TextOption,
+                    templateSelection: formatSelect2TextSelected
+                });
             });
         } else {
             box.html('');
@@ -1017,7 +1027,10 @@ $(function() {
             container.append(msg);
 
             var new_line = container.find('.condition-line').last();
-            new_line.find('select').select2();
+            new_line.find('select').select2({
+                templateResult: formatSelect2TextOption,
+                templateSelection: formatSelect2TextSelected
+            });
             new_line.find('.styled').uniform({
                 radioClass: 'choice'
             });
@@ -1290,7 +1303,9 @@ $(function() {
 
                 // Select2
                 container.find('select').select2({
-                    minimumResultsForSearch: 101
+                    minimumResultsForSearch: 101,
+                    templateResult: formatSelect2TextOption,
+                    templateSelection: formatSelect2TextSelected
                 });
             });
         });
@@ -1350,7 +1365,9 @@ $(function() {
             $('body').append(data);
             $('#copy-move-subscribers-form').modal('show');
             $('#copy-move-subscribers-form').find('select').select2({
-                minimumResultsForSearch: 101
+                minimumResultsForSearch: 101,
+                templateResult: formatSelect2TextOption,
+                templateSelection: formatSelect2TextSelected
             });
             $('#copy-move-subscribers-form').find('.styled').uniform({
                 radioClass: 'choice'
