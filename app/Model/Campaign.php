@@ -1948,8 +1948,12 @@ class Campaign extends Model
     public static function types()
     {
         return [
-            'regular' => [],
-            'plain-text' => [],
+            'regular' => [
+                'icon' => 'icon-magazine'
+            ],
+            'plain-text' => [
+                'icon' => 'icon-file-text2'
+            ],
         ];
     }
 
