@@ -47,7 +47,9 @@ class EmailVerificationServer extends Model
         while ($this->isOverQuota()) {
             if (!$logged) {
                 $logged = true;
-                MailLog::warning(sprintf("Verification server `%s` (%s) is exceeding speed limit of , waiting...", $this->name, $this->id));
+                $options = $this->getOptions();
+                $limit = "[{$options['limit_value']} / {$options['limit_base']} {$options['limit_unit']}]";
+                MailLog::warning(sprintf("Verification server `%s` (%s) is exceeding speed limit of %s, waiting...", $this->name, $this->id, $limit));
             }
             sleep(self::WAIT);
         }
