@@ -161,7 +161,10 @@ return [
             'limit_value' => 'Limit value',
             'limit_base' => 'Limit base',
             'limit_unit' => 'Limit time unit',
-        ]
+        ],
+        'quota_value' => 'Sending limit',
+        'quota_base' => 'Time base',
+        'quota_unit' => 'Time unit',
     ],
 
 ];
