@@ -173,7 +173,7 @@ class QuotaTrackerFile
             return [];
         }
 
-        # trick here:
+        # Note:
         # - $interval empty means get the series from the quota start date
         # - $interval not empty means get the series from the interval
         # - If both $interval and $quota empty --> for backward compatibility --> get quota from the first interval of $this->limit

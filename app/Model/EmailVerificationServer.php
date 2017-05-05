@@ -5,14 +5,18 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use GuzzleHttp\Client;
 use JsonPath\JsonObject;
+use Acelle\Library\QuotaTrackerFile;
+use Acelle\Library\Log as MailLog;
 
 class EmailVerificationServer extends Model
 {
     // set the table name
     protected $table = 'email_verification_servers';
+    protected $quotaTracker;
 
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
+    const WAIT = 30;
 
     protected $fillable = ['type', 'name'];
 
@@ -38,11 +42,22 @@ class EmailVerificationServer extends Model
      */
     public function verify($email)
     {
+        // enforce the verification speed limit
+        $logged = false;
+        while ($this->isOverQuota()) {
+            if (!$logged) {
+                $logged = true;
+                MailLog::warning(sprintf("Verification server `%s` (%s) is exceeding speed limit of , waiting...", $this->name, $this->id));
+            }
+            sleep(self::WAIT);
+        }
+
+        // retrieve the service settings
         $config = $this->getConfig();
         $options = $this->getOptions();
         $client = new Client();
 
-        // build the uri
+        // build the request URI
         $uri = $config['uri'];
         $uri = str_replace('{EMAIL}', $email, $uri);
         $uri = str_replace('{API_KEY}', $options['api_key'], $uri);
@@ -53,11 +68,9 @@ class EmailVerificationServer extends Model
         // actually request to the service
         $response = $client->request($config['request_type'], $uri);
 
-        // obtain the result
+        // fetch the result
         $raw = (string)$response->getBody();
         $jsonObject = new JsonObject($raw);
-
-        // retrieve the result
         $result = $jsonObject->get($config['result_xpath'])[0];
 
         // map the result value to those of Acelle Mail
@@ -65,7 +78,7 @@ class EmailVerificationServer extends Model
             throw new \Exception('Unexpected result from verification service: ' . $raw);
         }
         $mapped = $config['result_map'][$result];
-
+        $this->countUsage();
         return [$mapped, $raw];
     }
 
@@ -321,5 +334,62 @@ class EmailVerificationServer extends Model
             'name' => $name,
             'data' => json_encode($data),
         ]);
+    }
+
+    /**
+     * Get sending server's QuotaTracker
+     *
+     * @return array
+     */
+    public function getQuotaTracker() {
+        if(!$this->quotaTracker) {
+            $this->initQuotaTracker();
+        }
+
+        return $this->quotaTracker;
+    }
+
+    /**
+     * Initialize the quota tracker
+     *
+     * @return void
+     */
+    public function initQuotaTracker() {
+        $options = $this->getOptions();
+        $base = "{$options['limit_base']} {$options['limit_unit']}";
+        $limit = [
+            "{$base}" =>$options['limit_value']
+        ];
+
+        $this->quotaTracker = new QuotaTrackerFile($this->getQuotaLockFile(), null, $limit);
+    }
+
+    /**
+     * Get sending quota lock file
+     *
+     * @return string file path
+     */
+    public function getQuotaLockFile() {
+        return storage_path("app/server/quota/{$this->uid}");
+    }
+
+    /**
+     * Increment quota usage
+     *
+     * @return mixed
+     */
+    public function countUsage(Carbon $timePoint = null)
+    {
+        return $this->getQuotaTracker($timePoint)->add();
+    }
+
+    /**
+     * Check if user has used up all quota allocated.
+     *
+     * @return boolean
+     */
+    public function isOverQuota()
+    {
+        return !$this->getQuotaTracker()->check();
     }
 }
