@@ -570,15 +570,11 @@ $(function() {
             $('.segment-conditions-container').append(msg);
 
             var new_line = $('.segment-conditions-container .condition-line').last();
-<<<<<<< HEAD
             new_line.find('select').select2({
                 templateResult: formatSelect2TextOption,
                 templateSelection: formatSelect2TextSelected
             });
-=======
-            new_line.find('select').select2();
             new_line.find('select').trigger('change');
->>>>>>> heroku/feature-verify-core
         });
     });
 
