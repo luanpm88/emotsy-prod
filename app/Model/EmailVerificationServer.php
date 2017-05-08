@@ -394,4 +394,19 @@ class EmailVerificationServer extends Model
     {
         return !$this->getQuotaTracker()->check();
     }
+
+    /**
+     * Get service type name
+     *
+     * @return string
+     */
+    public function getTypeName()
+    {
+        try {
+            $service = $this->getConfig();
+            return $service['name'];
+        } catch (\Exception $ex) {
+            return 'Error: Config missing!';
+        }
+    }
 }
