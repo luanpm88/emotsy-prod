@@ -1,14 +1,15 @@
 <?php
 
 function join_paths()
-    {
-        $paths = array();
-        foreach (func_get_args() as $arg) {
-            if ($arg !== '') { $paths[] = $arg; }
-        }
-
-        return preg_replace('#/+#','/',join('/', $paths));
+{
+    $paths = array();
+    foreach (func_get_args() as $arg) {
+        if ($arg !== '') { $paths[] = $arg; }
     }
+
+    return preg_replace('#/+#','/',join('/', $paths));
+}
+
 class UpgradeManager
 {
     protected $source;
@@ -48,6 +49,35 @@ class UpgradeManager
         return json_decode(file_get_contents($path), true);
     }
 
+    public function run()
+    {
+        $errors = [];
+        $updates = $this->meta['updated'];
+        $deletes = $this->meta['deleted'];
+        $packages = $this->meta['packages'];
+
+        foreach($updates as $file) {
+            $source = join_paths($this->source, $file);
+            $target = join_paths($this->target, $file);
+            if (!copy($source, $target)) {
+                throw new \Exception("Cannot replace file {$target}");
+            }
+        }
+
+        foreach($deletes as $file) {
+            $target = join_paths($this->target, $file);
+            @unlink($target);
+        }
+
+        foreach($packages as $dir) {
+            $source = join_paths($this->source, 'vendor', $dir);
+            $target = join_paths($this->target, 'vendor', $dir);
+            $this->rm($target);
+
+            $this->copy($source, $target);
+        }
+    }
+
     public function test()
     {
         $errors = [];
@@ -62,7 +92,7 @@ class UpgradeManager
             }
         }
 
-        foreach ($updates as $file) {
+        foreach ($deletes as $file) {
             $path = join_paths($this->target, $file);
             if (!$this->isWritable($path)) {
                 $errors[] = $path;
@@ -71,7 +101,6 @@ class UpgradeManager
 
         foreach ($packages as $dir) {
             $path = join_paths($this->target, 'vendor', $dir);
-            echo "$path\n";
             if (!$this->isWritable($path)) {
                 $errors[] = $path;
             }
@@ -113,8 +142,56 @@ class UpgradeManager
 
         return is_writable($parent);
     }
+
+    private function rm($src)
+    {
+        if (!file_exists($src)) {
+            return;
+        }
+
+        if (!is_dir($src)) {
+            unlink($src);
+            return;
+        }
+
+        $dir = opendir($src);
+        while(false !== ( $file = readdir($dir)) ) {
+            if (( $file != '.' ) && ( $file != '..' )) {
+                $full = $src . '/' . $file;
+                if ( is_dir($full) ) {
+                    $this->rm($full);
+                }
+                else {
+                    unlink($full);
+                }
+            }
+        }
+        closedir($dir);
+        rmdir($src);
+    }
+
+    private function copy($src, $dst)
+    {
+        if (!is_dir($src)) {
+            copy($src, $dst);
+            return;
+        }
+
+        $dir = opendir($src);
+        mkdir($dst);
+        while(false !== ( $file = readdir($dir)) ) {
+            if (( $file != '.' ) && ( $file != '..' )) {
+                if ( is_dir(join_paths($src, $file)) ) {
+                    $this->copy(join_paths($src,  $file), join_paths($dst, $file));
+                } else {
+                    copy(join_paths($src, $file), join_paths($dst,  $file));
+                }
+            }
+        }
+        closedir($dir);
+    }
 }
 
 $manager = new UpgradeManager('/tmp/acellemail-3.0.0/upgrade/patch-v3.0.0-p3', '/tmp/oldme/');
-$result = $manager->test();
+$result = $manager->run();
 var_dump($result);
