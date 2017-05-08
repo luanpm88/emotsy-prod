@@ -1,4 +1,8 @@
 #!/bin/bash
+
+# Step 1: make sure you are at the correct tag/version
+# Step 2: configure the patch.rb file
+
 if [ -z "$1" ]
 then
   echo "Error: please specify the output path" && exit 1
@@ -54,6 +58,8 @@ rm -fr build.sh
 rm -fr public/upload/templates/*
 rm -fr bootstrap/cache/config.php
 rm -fr php-cs-fixer
+rm -fr composer.phar
+rm -fr patch.rb
 
 # copy default lang
 rm -fr resources/lang/default
@@ -64,9 +70,10 @@ php artisan config:cache
 php artisan key:generate
 
 # Generate the upgrade patch file
-ruby patch.rb /tmp/acellepatch "$CURDIR"
+ruby patch.rb /tmp/tmpbuild "$CURDIR"
 mkdir upgrade
-cp /tmp/acellepatch/*.zip upgrade/
+mv /tmp/tmpbuild/*.zip upgrade/
+rm -fr /tmp/tmpbuild
 
 cd ..
 zip -r "$APPZIP" "$APPDIR" > /dev/null
