@@ -455,9 +455,6 @@ $(function() {
         if (typeof($(this).attr('link-method')) !== 'undefined') {
             $(".link-confirm-button").attr("link-method", $(this).attr('link-method'));
             $(".link-confirm-button").removeClass("ajax_link");
-        } else {
-            $(".link-confirm-button").removeClass("ajax_link");
-            $(".link-confirm-button").removeAttr("link-method");
         }
 
         e.stopImmediatePropagation();
