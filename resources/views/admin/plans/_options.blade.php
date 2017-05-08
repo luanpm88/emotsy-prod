@@ -2,7 +2,7 @@
 <div class="tabbable">
     <ul class="nav nav-tabs nav-tabs-top">
         <li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
-            <i class="icon-paperplane"></i> {{ trans('messages.resources_quota') }}</a>
+            <i class="icon-database"></i> {{ trans('messages.resources_quota') }}</a>
         </li>
         <li class="text-semibold"><a href="#top-tab2" data-toggle="tab">
             <i class="icon-upload"></i> {{ trans('messages.file_upload') }}</a>
