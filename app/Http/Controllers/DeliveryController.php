@@ -263,6 +263,12 @@ class DeliveryController extends Controller
             $feedbackLog->raw_feedback_content = $message['Message'];
             $feedbackLog->save();
             MailLog::info('Feedback recorded for message '.$feedbackLog->runtime_message_id);
+            try {
+                MailLog::info('Adding email to abuse list');
+                $feedbackLog->findSubscriberByRuntimeMessageId()->markAsSpamReported();
+            } catch (\Exception $e) {
+                MailLog::warning('Cannot mark subscriber as Abuse-Reported. ' . $e->getMessage());
+            }
         }
     }
 }
