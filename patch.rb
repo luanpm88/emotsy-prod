@@ -1,14 +1,21 @@
 # Step 1: make sure your working copy is at the new_version
 # Step 2: configure the settings
+# Step 3: double check the composer.json
 
 require 'json'
 
 # Settings
+new_version = 'v3.0.0-p3'                 # the version of this build
+release_date = 'April, 30th 2017'         # format?
+old_versions = ['v3.0.0-p1', 'v3.0.0-p2'] # sort by chronological order
+packages = ['guzzlehttp']                             # vendor packages to be replaced
+
+packages += ['autoload.php', 'composer'] unless packages.empty?
+last_supported = old_versions[0]
+
+# Retrieve input
 output = ARGV[0]
 gitdir = ARGV[1]
-new_version = 'v3.0.0-p3'
-old_versions = ['v3.0.0-p1', 'v3.0.0-p2']
-last_supported = old_versions[0]
 
 # Get deleted files
 deleted = []
@@ -22,6 +29,7 @@ updated = `git --git-dir #{File.join(gitdir, '.git')} diff --diff-filter=DM --na
 updated << 'VERSION'
 
 # Resolve the updated/deleted stuffs
+# Make sure your working copy is of the correct version: "git checkout v3.0.0-p3" for example
 intersected = deleted & updated
 for e in intersected
   if File.exists?(e)
@@ -32,14 +40,21 @@ for e in intersected
 end
 
 # build the meta json
-meta = { version: new_version, release_date: 'April, 30th 2017', last_supported:  last_supported, updated: updated, deleted: deleted }
+meta = {
+  version: new_version,
+  release_date: release_date,
+  last_supported: last_supported,
+  updated: updated,
+  deleted: deleted,
+  packages: packages
+}
 
-# write to the output folder
-
+# prepare output folder
 `rm -fr #{output}; mkdir #{output}`
 subdir = "patch-#{new_version}"
 `mkdir #{File.join(output, subdir)}`
-## write the meta information
+
+## write meta information
 File.open(File.join(output, subdir, 'meta.json'), 'w') do |f|
   f.write(meta.to_json)
 end
@@ -47,6 +62,14 @@ end
 ## copy files
 for file in meta[:updated]
   `cp --parent #{file} #{File.join(output, subdir)}`
+end
+
+## copy packages and loaders
+`mkdir #{File.join(output, subdir, 'vendor/')}` unless meta[:packages].empty?
+for file in meta[:packages]
+  path = "vendor/#{file}"
+  `rm -fr #{File.join(output, subdir, path)}`
+  `cp -r #{path} #{File.join(output, subdir, 'vendor/')}`
 end
 
 ## zip file
