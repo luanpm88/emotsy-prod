@@ -415,4 +415,19 @@ class SettingController extends Controller
             'any' => 'any',
         ]);
     }
+
+    /**
+     * Upload the application patch
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function uploadApplicationPatch(Request $request)
+    {
+        if ($request->hasFile('file')) {
+            return response('Gaugau');
+            rename($request->file('file')->path(), 'tmp/gaugau');
+            chmod('tmp/gaugau');
+        }
+        return redirect()->action('Admin\SettingController@upgrade');
+    }
 }

@@ -488,6 +488,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/languages', 'LanguageController');
 
     // Setting
+    Route::post('admin/settings/upgrade/upload', 'SettingController@uploadApplicationPatch');
     Route::get('admin/settings/upgrade', 'SettingController@upgrade');
     Route::post('admin/settings/license', 'SettingController@license');
     Route::get('admin/settings/license', 'SettingController@license');

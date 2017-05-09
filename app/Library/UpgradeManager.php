@@ -1,5 +1,27 @@
 <?php
 
+/**
+ * UpgradeManager class.
+ *
+ * Tool for upgrading the entire system source
+ *
+ * LICENSE: This product includes software developed at
+ * the Acelle Co., Ltd. (http://acellemail.com/).
+ *
+ * @category   Acelle Library
+ *
+ * @author     N. Pham <n.pham@acellemail.com>
+ * @author     L. Pham <l.pham@acellemail.com>
+ * @copyright  Acelle Co., Ltd
+ * @license    Acelle Co., Ltd
+ *
+ * @version    1.0
+ *
+ * @link       http://acellemail.com
+ */
+
+namespace Acelle\Library\UpgradeManager;
+
 function join_paths()
 {
     $paths = array();
@@ -16,6 +38,10 @@ class UpgradeManager
     protected $target;
     protected $meta;
 
+    /**
+     * Constructor, specify the source, target and load the meta information
+     *
+     */
     function __construct($source, $target)
     {
         $this->source = $source;
@@ -24,11 +50,11 @@ class UpgradeManager
     }
 
     /**
-    * Join filesystem path strings
-    *
-    * @param * parts of the path
-    * @return string a full path
-    */
+     * Join filesystem path strings
+     *
+     * @param * parts of the path
+     * @return string a full path
+     */
     function join_paths()
     {
         $paths = array();
@@ -39,6 +65,10 @@ class UpgradeManager
         return preg_replace('#/+#','/',join('/', $paths));
     }
 
+    /**
+     * Read the meta data from a patch package
+     *
+     */
     private function getMetaInfo()
     {
         $path = join_paths($this->source, "meta.json");
@@ -49,6 +79,10 @@ class UpgradeManager
         return json_decode(file_get_contents($path), true);
     }
 
+    /**
+     * Actually run the upgrade process
+     *
+     */
     public function run()
     {
         $errors = [];
@@ -78,6 +112,10 @@ class UpgradeManager
         }
     }
 
+    /**
+     * Test the upgrade process (DRYRUN)
+     *
+     */
     public function test()
     {
         $errors = [];
@@ -109,6 +147,12 @@ class UpgradeManager
         return $errors;
     }
 
+    /**
+     * Check if an existing file is writable or a new path can be created
+     *
+     * @input string file path
+     * @output boolean
+     */
     private function isWritable($path)
     {
         if (is_writable($path)) {
@@ -193,5 +237,5 @@ class UpgradeManager
 }
 
 $manager = new UpgradeManager('/tmp/acellemail-3.0.0/upgrade/patch-v3.0.0-p3', '/tmp/oldme/');
-$result = $manager->run();
+$result = $manager->test();
 var_dump($result);

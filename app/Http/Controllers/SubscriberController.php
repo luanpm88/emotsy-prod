@@ -356,7 +356,6 @@ class SubscriberController extends Controller
             return $this->notAuthorized();
         }
 
-        // @note: code xấu quá
         if ($request->isMethod('post')) {
             if ($request->hasFile('file')) {
                 // Start system job
@@ -366,6 +365,7 @@ class SubscriberController extends Controller
                 // Action Log
                 $list->log('import_started', $request->user()->customer);
             } else {
+                // @note: use try/catch instead
                 echo "max_file_upload";
             }
         } else {

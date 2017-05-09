@@ -32,8 +32,11 @@
                     <div class="sub-section">
                         <h3>Your current version</h3>
                         <p>Your are running on Acelle Mail <strong>v3.0.0-p13</strong>, released on <strong>Jan, 10th, 2017</strong>. You can upload the latest patch and upgrade to the latest version of Acelle Mail</p>
-                        <form>
-                            <button class="btn bg-teal">Upload new version</button>
+                        <form action="{{ action('Admin\SettingController@uploadApplicationPatch') }}" method="POST">
+                            {{ csrf_field() }}
+
+							@include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => '', 'name' => 'file', 'value' => 'Upload'])
+							<button class="btn bg-teal">Upload new version</button>
                         </form>
                     </div>
 
