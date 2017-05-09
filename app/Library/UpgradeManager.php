@@ -20,7 +20,10 @@
  * @link       http://acellemail.com
  */
 
-namespace Acelle\Library\UpgradeManager;
+namespace Acelle\Library;
+
+use ZipArchive;
+use Illuminate\Support\Facades\Log;
 
 function join_paths()
 {
@@ -36,33 +39,85 @@ class UpgradeManager
 {
     protected $source;
     protected $target;
-    protected $meta;
+
+    const META_FILE = 'meta.json';
 
     /**
      * Constructor, specify the source, target and load the meta information
      *
      */
-    function __construct($source, $target)
+    function __construct()
     {
-        $this->source = $source;
-        $this->target = $target;
-        $this->meta = $this->getMetaInfo();
+        $this->source = storage_path('tmp/patch');
+        $this->target = base_path();
     }
 
     /**
-     * Join filesystem path strings
+     * Constructor, specify the source, target and load the meta information
      *
-     * @param * parts of the path
-     * @return string a full path
      */
-    function join_paths()
+    public function load($path)
     {
-        $paths = array();
-        foreach (func_get_args() as $arg) {
-            if ($arg !== '') { $paths[] = $arg; }
+        // Check WRITE permission
+        if (!$this->isWritable($this->source)) {
+            throw new \Exception("Cannot write to folder {$this->source}");
+        } else {
+            // Clean up the target folder
+            $this->rm($this->source);
         }
 
-        return preg_replace('#/+#','/',join('/', $paths));
+        try {
+            // Extract the zip file
+            $old = umask(0);
+            $zip = new ZipArchive();
+            $res = $zip->open($path);
+            if ($res === true) {
+                $zip->extractTo($this->source);
+                $zip->close();
+                umask($old);
+
+                // test the patch, throw an exception in case meta.json does not exist
+                $this->validate();
+            } else {
+                umask($old);
+                throw new \Exception("Invalid zip file");
+            }
+        } catch (\Exception $e) {
+            Log::info("GOES HERE");
+            $this->rm($this->source);
+            throw $e;
+        }
+
+    }
+
+    /**
+     * Read the meta data from a patch package
+     *
+     */
+    public function getNewVersion()
+    {
+        if ($this->isNewVersionAvailable()) {
+            return $this->getMetaInfo()['version'];
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Read the meta data from a patch package
+     *
+     */
+    public function validate()
+    {
+        $meta = $this->getMetaInfo();
+        if (version_compare($this->getNewVersion(), $this->getCurrentVersion(), '=')) {
+            throw new \Exception(sprintf('The version you uploaded is the same as the current one (%s)', $this->getNewVersion()));
+        } elseif (version_compare($this->getNewVersion(), $this->getCurrentVersion(), '<')) {
+            throw new \Exception(sprintf('The version you uploaded (%s) is older than the current one (%s)', $this->getNewVersion(), $this->getCurrentVersion()));
+        }
+
+        // DRYRUN to see if there is any error
+        $this->test();
     }
 
     /**
@@ -71,7 +126,7 @@ class UpgradeManager
      */
     private function getMetaInfo()
     {
-        $path = join_paths($this->source, "meta.json");
+        $path = join_paths($this->source, self::META_FILE);
         if (!file_exists($path)) {
             throw new \Exception("Cannot find meta file: {$path}");
         }
@@ -86,9 +141,10 @@ class UpgradeManager
     public function run()
     {
         $errors = [];
-        $updates = $this->meta['updated'];
-        $deletes = $this->meta['deleted'];
-        $packages = $this->meta['packages'];
+        $meta = $this->getMetaInfo();
+        $updates = $meta['updated'];
+        $deletes = $meta['deleted'];
+        $packages = $meta['packages'];
 
         foreach($updates as $file) {
             $source = join_paths($this->source, $file);
@@ -119,15 +175,18 @@ class UpgradeManager
     public function test()
     {
         $errors = [];
-        $updates = $this->meta['updated'];
-        $deletes = $this->meta['deleted'];
-        $packages = $this->meta['packages'];
+        $meta = $this->getMetaInfo();
+        $updates = $meta['updated'];
+        $deletes = $meta['deleted'];
+        $packages = $meta['packages'];
 
         foreach ($updates as $file) {
             $path = join_paths($this->target, $file);
             if (!$this->isWritable($path)) {
                 $errors[] = $path;
+                Log::info("$path x");
             }
+            Log::info("$path okie");
         }
 
         foreach ($deletes as $file) {
@@ -148,6 +207,24 @@ class UpgradeManager
     }
 
     /**
+     * Get current app version
+     *
+     */
+    public function getCurrentVersion()
+    {
+        return trim(file_get_contents(base_path('VERSION')));
+    }
+
+    /**
+     * Check if new version is available
+     *
+     */
+    public function isNewVersionAvailable()
+    {
+        return file_exists($this->source);
+    }
+
+    /**
      * Check if an existing file is writable or a new path can be created
      *
      * @input string file path
@@ -155,6 +232,7 @@ class UpgradeManager
      */
     private function isWritable($path)
     {
+        Log::info(is_writable($path));
         if (is_writable($path)) {
             return true;
         } elseif (!file_exists($path) && $this->canCreateFile($path)) {
@@ -173,7 +251,7 @@ class UpgradeManager
         for ($i = 0; $i < sizeof($a); $i += 1) {
             $tmppath = implode(DIRECTORY_SEPARATOR, array_slice($a, 0, $i));
 
-            if (strpos("/" . $tmppath . "/", $this->target) === false) {
+            if (empty($tmppath)) {
                 continue;
             }
 
@@ -236,6 +314,8 @@ class UpgradeManager
     }
 }
 
+/*
 $manager = new UpgradeManager('/tmp/acellemail-3.0.0/upgrade/patch-v3.0.0-p3', '/tmp/oldme/');
 $result = $manager->test();
 var_dump($result);
+*/

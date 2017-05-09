@@ -4,6 +4,8 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use Acelle\Library\UpgradeManager;
+use Illuminate\Support\Facades\Log;
 
 class SettingController extends Controller
 {
@@ -411,9 +413,35 @@ class SettingController extends Controller
      */
     public function upgrade(Request $request)
     {
+        $manager = new UpgradeManager();
         return view('admin.settings.upgrade', [
             'any' => 'any',
+            'manager' => $manager,
         ]);
+    }
+
+    /**
+     * Upgrade manager page
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function doUpgrade(Request $request)
+    {
+        $manager = new UpgradeManager();
+        $failed = $manager->test();
+        if (empty($failed)) {
+            $request->session()->flash('alert-success', 'Congratulation! You\'ve successfully upgraded to the new version of Acelle Mail.');
+            return view('admin.settings.upgrade', [
+                'any' => 'any',
+                'manager' => $manager
+            ]);
+        } else {
+            return view('admin.settings.upgrade', [
+                'any' => 'any',
+                'manager' => $manager,
+                'failed' => $failed,
+            ]);
+        }
     }
 
     /**
@@ -423,11 +451,14 @@ class SettingController extends Controller
      */
     public function uploadApplicationPatch(Request $request)
     {
-        if ($request->hasFile('file')) {
-            return response('Gaugau');
-            rename($request->file('file')->path(), 'tmp/gaugau');
-            chmod('tmp/gaugau');
+        try {
+            $manager = new UpgradeManager();
+            $manager->load($request->file('file')->path());
+        } catch (\Exception $e) {
+            Log::info("OG NGOAI" . $e->getMessage());
+            $request->session()->flash('alert-error', $e->getMessage());
         }
+
         return redirect()->action('Admin\SettingController@upgrade');
     }
 }

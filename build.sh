@@ -1,7 +1,9 @@
 #!/bin/bash
 
 # Step 1: make sure you are at the correct tag/version
+# Step 2: make sure you run php "composer.phar install" without error
 # Step 2: configure the patch.rb file
+
 
 if [ -z "$1" ]
 then
@@ -59,14 +61,15 @@ rm -fr public/upload/templates/*
 rm -fr bootstrap/cache/config.php
 rm -fr php-cs-fixer
 rm -fr composer.phar
-rm -fr patch.rb
 
 # copy default lang
 rm -fr resources/lang/default
 cp -r resources/lang/en resources/lang/default
 
+echo "AAAAAAAAAAAAAA"
+
 # run artisan
-php artisan config:cache
+#php artisan config:cache
 php artisan key:generate
 
 # Generate the upgrade patch file
@@ -74,6 +77,7 @@ ruby patch.rb /tmp/tmpbuild "$CURDIR"
 mkdir upgrade
 mv /tmp/tmpbuild/*.zip upgrade/
 rm -fr /tmp/tmpbuild
+rm -fr patch.rb
 
 cd ..
 zip -r "$APPZIP" "$APPDIR" > /dev/null
