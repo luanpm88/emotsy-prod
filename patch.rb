@@ -6,7 +6,7 @@ require 'json'
 
 # Settings
 old_versions = ['3.0.2']      # sort by chronological order
-packages = ['guzzlehttp']     # vendor packages to be replaced
+packages = []     # vendor packages to be replaced
 
 # Auto setting
 release_date = Time.now.to_s
