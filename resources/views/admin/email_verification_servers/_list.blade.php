@@ -30,7 +30,7 @@
 				</td>
 				<td>
 					<div class="single-stat-box pull-left ml-20">
-						<span class="no-margin stat-num kq_search">{{ trans('messages.email_verification_server_' . $server->type) }}</span>
+						<span class="no-margin stat-num kq_search">{{ $server->getTypeName() }}</span>
 						<br />
 						<span class="text-muted">{{ trans('messages.email_verification_server_type') }}</span>
 					</div>

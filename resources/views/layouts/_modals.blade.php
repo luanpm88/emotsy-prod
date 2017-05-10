@@ -397,7 +397,7 @@
 
 	<!-- Basic modal -->
 	<div id="list-form-modal" class="modal fade">
-		<div class="modal-dialog modal-lg">
+		<div class="modal-dialog modal-md">
 			<div class="modal-header bg-teal">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
 				<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>

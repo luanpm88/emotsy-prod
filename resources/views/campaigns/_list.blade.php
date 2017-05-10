@@ -28,9 +28,11 @@
 					</h5>
 					<span class="text-muted">{{ trans('messages.' . $item->type) }}</span>
 
-					<div class="text-semibold" data-popup="tooltip" title="{{ $item->displayRecipients() }}">
-						{{ $item->readCache('SubscriberCount') }} {{ trans('messages.recipients') }}
-					</div>
+					@if ($item->readCache('SubscriberCount'))
+						<div class="text-semibold" data-popup="tooltip" title="{{ $item->displayRecipients() }}">
+							{{ $item->readCache('SubscriberCount') }} {{ trans('messages.recipients') }}
+						</div>
+					@endif
 
 					@if ($item->status != 'new')
 						<span class="text-muted2">{{ trans('messages.run_at') }}: &nbsp;&nbsp;<i class="icon-alarm mr-0"></i> {{ isset($item->run_at) ? Tool::formatDateTime($item->run_at) : "" }}</span>

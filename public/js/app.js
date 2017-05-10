@@ -322,7 +322,7 @@ $(function() {
             count = $(this).attr("items-count");
         }
 
-        $('a[data-target="#delete_confirm_model"]').trigger("click");
+        $('#delete_confirm_model').modal("show");
         $("#delete_confirm_model h6").html(mgs.replace(":number", "<span class='text-bold text-danger'>" + count + "</span>"));
         $(".delete-confirm-button").attr("href", $(this).attr("new-href"));
         $(".delete-confirm-button").attr("data-method", method);
@@ -383,7 +383,7 @@ $(function() {
             curl = curl + "?uids=" + vals.join(",");
         }
 
-        $('a[data-target="#list_delete_confirm_model"]').trigger("click");
+        $('#list_delete_confirm_model').modal("show");
         $(".list-delete-confirm-button").attr("href", url);
         $(".list-delete-confirm-button").attr("data-method", method);
 
@@ -435,7 +435,7 @@ $(function() {
             count = $(this).attr("items-count");
         }
 
-        $('a[data-target="#link_confirm_model"]').trigger("click");
+        $('#link_confirm_model').modal("show");
 
         mgs = mgs.replace(":number", "<span class='text-bold text-teal-800'>" + count + "</span>");
         mgs = mgs.replace(":name", "<span class='text-bold text-teal-800'>" + $(this).html() + "</span>");
@@ -455,9 +455,6 @@ $(function() {
         if (typeof($(this).attr('link-method')) !== 'undefined') {
             $(".link-confirm-button").attr("link-method", $(this).attr('link-method'));
             $(".link-confirm-button").removeClass("ajax_link");
-        } else {
-            $(".link-confirm-button").removeClass("ajax_link");
-            $(".link-confirm-button").removeAttr("link-method");
         }
 
         e.stopImmediatePropagation();
@@ -817,7 +814,7 @@ $(function() {
         })
         .done(function( msg ) {
             $('#quota_modal .modal-body').html(msg);
-            $('a[data-target="#quota_modal"]').trigger("click");
+            $('#quota_modal').modal("show");
         });
     });
 
@@ -877,7 +874,7 @@ $(function() {
 
         $('input[name=copy_list_uid]').val(uid);
         $('input[name=copy_list_name]').val(name);
-        $('a[data-target="#copy_list"]').trigger("click");
+        $('#copy_list').modal("show");
     });
 
     // Ajax copy list
@@ -917,7 +914,7 @@ $(function() {
 
         $('input[name=copy_campaign_uid]').val(uid);
         $('input[name=copy_campaign_name]').val(name);
-        $('a[data-target="#copy_campaign"]').trigger("click");
+        $('#copy_campaign').modal("show");
     });
 
     // Ajax copy campaign
@@ -977,7 +974,7 @@ $(function() {
         var uid = $(this).attr("data-uid");
 
         $('input[name=send_test_email_campaign_uid]').val(uid);
-        $('a[data-target="#send_a_test_email"]').trigger("click");
+        $('#send_a_test_email').modal("show");
 
         e.preventDefault();
     });
@@ -1368,7 +1365,7 @@ $(function() {
             $('#full_modal .modal-body').find('[data-popup=tooltip]').tooltip({
                 template: '<div class="tooltip"><div class="bg-teal-800"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div></div>'
             });
-            $('a[data-target="#full_modal"]').trigger("click");
+            $('#full_modal').modal("show");
         });
     });
 

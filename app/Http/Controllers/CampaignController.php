@@ -1784,4 +1784,21 @@ class CampaignController extends Controller
             return view('somethingWentWrong', ['message' => $e->getMessage()]);
         }
     }
+
+    /*
+     * Select campaign type page.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function selectType(Request $request)
+    {
+        // authorize
+        if (\Gate::denies('create', new \Acelle\Model\Campaign())) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.select_type');
+    }
 }

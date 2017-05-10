@@ -2140,6 +2140,7 @@ input.mini-input {
 .modal-header[class*=bg-] {
     padding: 10px;
     text-align: center;
+    border-radius: 0;
 }
 .modal-header .close[type=button] {
     background: rgba(255,255,255,0.3);
@@ -2169,4 +2170,17 @@ input.mini-input {
 .select2-dropdown {
     border: 1px solid #d0d0d0;
     box-shadow: 0 2px 3px 0 rgba(0,0,0,0.25);
+}
+.select2-container--open .select2-dropdown--below {
+    margin-top: -3px;
+}
+.sweet-alert h2 {
+    font-size: 16px;
+    margin-bottom: 10px;
+}
+.sweet-alert {
+    padding: 10px 10px 20px 10px
+}
+.sweet-alert p {
+    margin: 0;
 }

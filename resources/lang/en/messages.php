@@ -1873,4 +1873,6 @@ return [
     'upgrade.alert.cancel_success' => 'Upgrade has been canceled',
     'upgrade.alert.upload_success' => 'A new version of Acelle Mail was successfully uploaded. You can now review the changes and proceed with the upgrade',
     'upgrade_manager' => 'Upgrade Manager',
+    'campaign_intro_regular' => 'Campaign with HTML email content as well as images, links. This is the most common type.',
+    'campaign_intro_plain-text' => 'Send a plain-text email without link tracking, images, or HTML.',
 ];
