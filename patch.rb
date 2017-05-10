@@ -73,4 +73,4 @@ for file in meta[:packages]
 end
 
 ## zip file
-`cd #{File.join(output, subdir)}; zip -r ../#{subdir}.zip .; cd ..; rm -fr #{subdir}`
+`cd #{File.join(output, subdir)}; zip -r ../#{subdir}.acm .; cd ..; rm -fr #{subdir}`

@@ -438,6 +438,8 @@ class SettingController extends Controller
         $manager = new UpgradeManager();
         $failed = $manager->test();
         if (empty($failed)) {
+            $manager->run();
+
             $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
             Log::info('System successfully upgraded to the new version');
             return view('admin.settings.upgrade', [

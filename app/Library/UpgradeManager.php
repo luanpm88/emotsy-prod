@@ -25,16 +25,6 @@ namespace Acelle\Library;
 use ZipArchive;
 use Illuminate\Support\Facades\Log;
 
-function join_paths()
-{
-    $paths = array();
-    foreach (func_get_args() as $arg) {
-        if ($arg !== '') { $paths[] = $arg; }
-    }
-
-    return preg_replace('#/+#','/',join('/', $paths));
-}
-
 class UpgradeManager
 {
     protected $source;
@@ -168,7 +158,7 @@ class UpgradeManager
      */
     public function run()
     {
-        $errors = [];
+        Log::info('Start upgrading');
         $meta = $this->getMetaInfo();
         $updates = $meta['updated'];
         $deletes = $meta['deleted'];
@@ -177,30 +167,36 @@ class UpgradeManager
         foreach($updates as $file) {
             $source = join_paths($this->source, $file);
             $target = join_paths($this->target, $file);
+            Log::info("Replacing {$target}");
             if (!copy($source, $target)) {
+                Log::error("Cannot replace file {$target}");
                 throw new \Exception("Cannot replace file {$target}");
             }
         }
 
         foreach($deletes as $file) {
             $target = join_paths($this->target, $file);
+            Log::info("Deleting {$target}");
             @unlink($target);
         }
 
         foreach($packages as $dir) {
             $source = join_paths($this->source, 'vendor', $dir);
             $target = join_paths($this->target, 'vendor', $dir);
+            Log::info("Replacing {$target}");
             $this->rm($target);
-
             $this->copy($source, $target);
         }
 
+        Log::info("Cleaning up");
         // cleanup
         $this->cleanup();
 
         // reload the config & run migration
+        Log::info("Start caching & migrating");
         artisan_config_cache();
         artisan_migrate();
+        Log::info("All done!");
     }
 
     /**
@@ -276,6 +272,11 @@ class UpgradeManager
         }
     }
 
+    /**
+     * Check if the specified path can be created
+     *
+     * @output boolean
+     */
     private function canCreateFile($path)
     {
         $a = explode(DIRECTORY_SEPARATOR, $path);
@@ -297,6 +298,10 @@ class UpgradeManager
         return is_writable($parent);
     }
 
+    /**
+     * Delete a directory recursively
+     *
+     */
     private function rm($src)
     {
         if (!file_exists($src)) {
@@ -324,6 +329,10 @@ class UpgradeManager
         rmdir($src);
     }
 
+    /**
+     * Copy a directory recursively
+     *
+     */
     private function copy($src, $dst)
     {
         if (!is_dir($src)) {
@@ -345,9 +354,3 @@ class UpgradeManager
         closedir($dir);
     }
 }
-
-/*
-$manager = new UpgradeManager('/tmp/acellemail-3.0.0/upgrade/patch-v3.0.0-p3', '/tmp/oldme/');
-$result = $manager->test();
-var_dump($result);
-*/
