@@ -98,6 +98,19 @@ class UpgradeManager
     }
 
     /**
+     * Get last supported version for upgrade
+     *
+     */
+    public function getLastSupportedVersion()
+    {
+        if ($this->isNewVersionAvailable()) {
+            return $this->getMetaInfo()['last_supported'];
+        } else {
+            return null;
+        }
+    }
+
+    /**
      * Read the meta data from a patch package
      *
      */
@@ -121,8 +134,14 @@ class UpgradeManager
         $meta = $this->getMetaInfo();
         if (version_compare($this->getNewVersion(), $this->getCurrentVersion(), '=')) {
             throw new \Exception(sprintf('The version you uploaded is the same as the current one (%s)', $this->getNewVersion()));
-        } elseif (version_compare($this->getNewVersion(), $this->getCurrentVersion(), '<')) {
+        }
+
+        if (version_compare($this->getNewVersion(), $this->getCurrentVersion(), '<')) {
             throw new \Exception(sprintf('The version you uploaded (%s) is older than the current one (%s)', $this->getNewVersion(), $this->getCurrentVersion()));
+        }
+
+        if (version_compare($this->getLastSupportedVersion(), $this->getCurrentVersion(), '>')) {
+            throw new \Exception(sprintf('You are on a version that is not supported by this update, last supported version is %s', $this->getLastSupportedVersion() ));
         }
 
         // DRYRUN to see if there is any error
@@ -175,6 +194,13 @@ class UpgradeManager
 
             $this->copy($source, $target);
         }
+
+        // cleanup
+        $this->cleanup();
+
+        // reload the config & run migration
+        artisan_config_cache();
+        artisan_migrate();
     }
 
     /**
