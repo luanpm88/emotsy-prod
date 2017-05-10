@@ -638,6 +638,7 @@ class Campaign extends Model
             'LIST_SUBJECT' => $this->defaultMailList->default_subject,
             'LIST_FROM_NAME' => $this->defaultMailList->from_name,
             'LIST_FROM_EMAIL' => $this->defaultMailList->from_email,
+            'WEB_VIEW_URL' => str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), Setting::get('url_web_view')),
         );
 
         // UPDATE_PROFILE_URL
