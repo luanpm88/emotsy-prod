@@ -160,6 +160,19 @@ class Segment extends Model
     }
 
     /**
+     * Get verification operators.
+     *
+     * @return options
+     */
+    public static function verificationOperators()
+    {
+        return [
+            ['text' => trans('messages.equal'), 'value' => 'verification_equal'],
+            ['text' => trans('messages.not_equal'), 'value' => 'verification_not_equal']
+        ];
+    }
+
+    /**
      * Get subscribers conditions.
      *
      * @return collect
@@ -168,6 +181,7 @@ class Segment extends Model
     {
         $conditions = [];
         $joins = [];
+        $joined_tables = [];
         foreach ($this->segmentConditions as $index => $condition) {
             $number = uniqid();
 
@@ -177,58 +191,85 @@ class Segment extends Model
             $keyword = str_replace('[DATE]', date('Y-m-d'), $keyword);
 
             $keyword = trim(strtolower($keyword));
-            $in = 'IN';
-            switch ($condition->operator) {
-                case 'equal':
-                    $cond = 'LOWER(sf'.$number.".value) = '".$keyword."'";
-                    break;
-                case 'not_equal':
-                    $cond = 'LOWER(sf'.$number.".value) != '".$keyword."'";
-                    break;
-                case 'contains':
-                    $cond = 'LOWER(sf'.$number.".value) LIKE '%".$keyword."%'";
-                    break;
-                case 'not_contains':
-                    $cond = 'LOWER(sf'.$number.".value) NOT LIKE '%".$keyword."%'";
-                    break;
-                case 'starts':
-                    $cond = 'LOWER(sf'.$number.".value) LIKE '".$keyword."%'";
-                    break;
-                case 'ends':
-                    $cond = 'LOWER(sf'.$number.".value) LIKE '%".$keyword."'";
-                    break;
-                case 'greater':
-                    $cond = 'sf'.$number.".value > '".$keyword."'";
-                    break;
-                case 'less':
-                    $cond = 'sf'.$number.".value < '".$keyword."'";
-                    break;
-                case 'not_starts':
-                    $cond = 'sf'.$number.".value) NOT LIKE '".$keyword."%'";
-                    break;
-                case 'not_ends':
-                    $cond = 'LOWER(sf'.$number.".value) NOT LIKE '%".$keyword."'";
-                    break;
-                case 'not_blank':
-                    $cond = '(LOWER(sf'.$number.".value) != '' AND LOWER(sf".$number.'.value) IS NOT NULL)';
-                    break;
-                case 'blank':
-                    $cond = '(LOWER(sf'.$number.".value) = '' OR LOWER(sf".$number.'.value) IS NULL)';
-                    $in = 'NOT IN';
-                    break;
-                default:
 
+            // If conditions with fields
+            if (isset($condition->field_id)) {
+                switch ($condition->operator) {
+                    case 'equal':
+                        $cond = 'LOWER(sf'.$number.".value) = '".$keyword."'";
+                        break;
+                    case 'not_equal':
+                        $cond = 'LOWER(sf'.$number.".value) != '".$keyword."'";
+                        break;
+                    case 'contains':
+                        $cond = 'LOWER(sf'.$number.".value) LIKE '%".$keyword."%'";
+                        break;
+                    case 'not_contains':
+                        $cond = 'LOWER(sf'.$number.".value) NOT LIKE '%".$keyword."%'";
+                        break;
+                    case 'starts':
+                        $cond = 'LOWER(sf'.$number.".value) LIKE '".$keyword."%'";
+                        break;
+                    case 'ends':
+                        $cond = 'LOWER(sf'.$number.".value) LIKE '%".$keyword."'";
+                        break;
+                    case 'greater':
+                        $cond = 'sf'.$number.".value > '".$keyword."'";
+                        break;
+                    case 'less':
+                        $cond = 'sf'.$number.".value < '".$keyword."'";
+                        break;
+                    case 'not_starts':
+                        $cond = 'sf'.$number.".value) NOT LIKE '".$keyword."%'";
+                        break;
+                    case 'not_ends':
+                        $cond = 'LOWER(sf'.$number.".value) NOT LIKE '%".$keyword."'";
+                        break;
+                    case 'not_blank':
+                        $cond = '(LOWER(sf'.$number.".value) != '' AND LOWER(sf".$number.'.value) IS NOT NULL)';
+                        break;
+                    case 'blank':
+                        $cond = '(LOWER(sf'.$number.".value) = '' OR LOWER(sf".$number.'.value) IS NULL)';
+                        break;
+                    default:
+                }
+
+                // add to joins array
+                $joins[] = [
+                    'table' => \DB::raw(\DB::getTablePrefix().'subscriber_fields as sf'.$number),
+                    'ons' => [
+                        [\DB::raw('sf'.$number.'.subscriber_id'), \DB::raw(\DB::getTablePrefix().'subscribers.id')],
+                        [\DB::raw('sf'.$number.'.field_id'), \DB::raw($condition->field_id)]
+                    ]
+                ];
+
+                // add condition
+                $conditions[] = $cond;
+            } else {
+                // join email verification table once
+                if (strpos($condition->operator, 'verification') !== false && !in_array(\DB::getTablePrefix().'email_verifications', $joined_tables)) {
+                    // add to joins array
+                    $joins[] = [
+                        'table' => \DB::raw(\DB::getTablePrefix().'email_verifications as email_verifications'),
+                        'ons' => [
+                            [\DB::raw('email_verifications.subscriber_id'), \DB::raw(\DB::getTablePrefix().'subscribers.id')]
+                        ]
+                    ];
+                    $joined_tables[] = \DB::getTablePrefix().'email_verifications';
+                }
+
+                switch ($condition->operator) {
+                    case 'verification_equal':
+                        // add condition
+                        $conditions[] = "(email_verifications.result = '".$condition->value."')";
+                        break;
+                    case 'verification_not_equal':
+                        // add condition
+                        $conditions[] = "(email_verifications.result IS NULL OR email_verifications.result != '".$condition->value."')";
+                        break;
+                    default:
+                }
             }
-
-            // new
-            $joins[] = [
-                'table' => \DB::raw(\DB::getTablePrefix().'subscriber_fields as sf'.$number),
-                'ons' => [
-                    [\DB::raw('sf'.$number.'.subscriber_id'), \DB::raw(\DB::getTablePrefix().'subscribers.id')],
-                    [\DB::raw('sf'.$number.'.field_id'), \DB::raw($condition->field_id)]
-                ]
-            ];
-            $conditions[] = $cond;
         }
 
         //return $conditions;
@@ -251,8 +292,7 @@ class Segment extends Model
      */
     public function subscribers($request = null)
     {
-        $query = \Acelle\Model\Subscriber::select('subscribers.*');
-
+        $query = \Acelle\Model\Subscriber::select('subscribers.*', 'email_verifications.result AS verify_result');
 
         $conditions = $this->getSubscribersConditions();
 
@@ -262,7 +302,9 @@ class Segment extends Model
                 $query = $query->leftJoin($joining['table'], function($join) use ($joining)
                 {
                     $join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
-                    $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
+                    if (isset($joining['ons'][1])) {
+                        $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
+                    }
                 });
             }
         }
@@ -279,7 +321,7 @@ class Segment extends Model
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
-        return $query->distinct();
+        return $query;
     }
 
     /**

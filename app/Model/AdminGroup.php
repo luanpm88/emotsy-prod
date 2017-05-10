@@ -219,6 +219,10 @@ class AdminGroup extends Model
             'sending_domain_create' => 'yes',
             'sending_domain_update' => 'own',
             'sending_domain_delete' => 'own',
+            'email_verification_server_read' => 'all',
+            'email_verification_server_create' => 'yes',
+            'email_verification_server_update' => 'own',
+            'email_verification_server_delete' => 'own',
             'template_read' => 'own',
             'template_create' => 'yes',
             'template_update' => 'own',
@@ -230,6 +234,7 @@ class AdminGroup extends Model
             'setting_system_urls' => 'yes',
             'setting_access_when_offline' => 'yes',
             'setting_background_job' => 'yes',
+            'setting_upgrade_manager' => 'no',
             'language_read' => 'yes',
             'language_create' => 'yes',
             'language_update' => 'yes',
@@ -588,6 +593,35 @@ class AdminGroup extends Model
                     ],
                 ],
             ],
+            'email_verification_server' => [
+                'read' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'create' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                'update' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'delete' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+            ],
             'template' => [
                 'read' => [
                     'options' => [
@@ -657,6 +691,12 @@ class AdminGroup extends Model
                     ],
                 ],
                 'background_job' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
+                'upgrade_manager' => [
                     'options' => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'yes', 'text' => trans('messages.yes')],
@@ -761,7 +801,7 @@ class AdminGroup extends Model
                         ['value' => 'yes', 'text' => trans('messages.yes')],
                     ],
                 ],
-            ],
+            ]
         ];
     }
 

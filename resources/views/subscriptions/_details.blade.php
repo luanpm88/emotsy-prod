@@ -120,4 +120,12 @@
             <mc:flag><span class="text-muted">{!! $subscription->displayAllowCreateSendingDomain() !!}</mc:flag>
         </div>
     </li>
+    <li class="hide">
+        <div class="unit size1of2">
+            <strong>{{ trans('messages.allow_create_email_verification_servers_label') }}</strong>
+        </div>
+        <div class="lastUnit size1of2">
+            <mc:flag><span class="">{!! $subscription->displayAllowCreateEmailVerificationServer() !!}</mc:flag>
+        </div>
+    </li>
 </ul>

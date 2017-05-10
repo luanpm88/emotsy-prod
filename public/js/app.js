@@ -8,6 +8,48 @@
 *  Latest update: Aug 1, 2015
 *
 * ---------------------------------------------------------------------------- */
+
+function formatSelect2TextSelected(d) {
+    var text = d.text;
+    var parts = text.split('|||');
+
+    return parts[0];
+}
+
+function formatSelect2TextOption(d) {
+    var text = d.text;
+    var parts = text.split('|||');
+
+    if (parts.length == 1) {
+        return parts[0];
+    } else {
+        return '<div class="select2_title">' + parts[0] + '</div>' + '<div class="select2_sub_line">' + parts[1] + '</div>';
+    }
+}
+
+function startProgress(box) {
+    var url = box.attr('data-url');
+
+    if (typeof(url) == 'undefined') {
+        return;
+    }
+
+    $.ajax({
+        method: "GET",
+        url: url
+    })
+    .done(function( data ) {
+        if (data != 'done') {
+            box.html(data);
+            setTimeout (function() {
+                startProgress(box);
+            }, 1000);
+        } else {
+            location.reload();
+        }
+    });
+}
+
 function swalError(msg) {
     swal({
         title: msg,
@@ -189,12 +231,16 @@ $(function() {
 
     // Default initialization
     $('.select').select2({
-        minimumResultsForSearch: 101
+        minimumResultsForSearch: 101,
+        templateResult: formatSelect2TextOption,
+        templateSelection: formatSelect2TextSelected
     });
 
     // Select with search
     $('.select-search').select2({
-        minimumResultsForSearch: 101
+        minimumResultsForSearch: 101,
+        templateResult: formatSelect2TextOption,
+        templateSelection: formatSelect2TextSelected
     });
 
 
@@ -405,6 +451,15 @@ $(function() {
             $(".link-confirm-button").removeAttr("data-method");
         }
 
+        // Link confirm
+        if (typeof($(this).attr('link-method')) !== 'undefined') {
+            $(".link-confirm-button").attr("link-method", $(this).attr('link-method'));
+            $(".link-confirm-button").removeClass("ajax_link");
+        } else {
+            $(".link-confirm-button").removeClass("ajax_link");
+            $(".link-confirm-button").removeAttr("link-method");
+        }
+
         e.stopImmediatePropagation();
         e.preventDefault();
     });
@@ -515,7 +570,11 @@ $(function() {
             $('.segment-conditions-container').append(msg);
 
             var new_line = $('.segment-conditions-container .condition-line').last();
-            new_line.find('select').select2();
+            new_line.find('select').select2({
+                templateResult: formatSelect2TextOption,
+                templateSelection: formatSelect2TextSelected
+            });
+            new_line.find('select').trigger('change');
         });
     });
 
@@ -632,7 +691,10 @@ $(function() {
                 box.html(msg);
 
                 // Select with search
-                $('.select-search').select2();
+                $('.select-search').select2({
+                    templateResult: formatSelect2TextOption,
+                    templateSelection: formatSelect2TextSelected
+                });
             });
         } else {
             box.html('');
@@ -741,6 +803,8 @@ $(function() {
             },
             escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
             minimumInputLength: 0,
+            templateResult: formatSelect2TextOption,
+            templateSelection: formatSelect2TextSelected,
         });
     });
 
@@ -996,7 +1060,10 @@ $(function() {
             container.append(msg);
 
             var new_line = container.find('.condition-line').last();
-            new_line.find('select').select2();
+            new_line.find('select').select2({
+                templateResult: formatSelect2TextOption,
+                templateSelection: formatSelect2TextSelected
+            });
             new_line.find('.styled').uniform({
                 radioClass: 'choice'
             });
@@ -1269,7 +1336,9 @@ $(function() {
 
                 // Select2
                 container.find('select').select2({
-                    minimumResultsForSearch: 101
+                    minimumResultsForSearch: 101,
+                    templateResult: formatSelect2TextOption,
+                    templateSelection: formatSelect2TextSelected
                 });
             });
         });
@@ -1329,7 +1398,9 @@ $(function() {
             $('body').append(data);
             $('#copy-move-subscribers-form').modal('show');
             $('#copy-move-subscribers-form').find('select').select2({
-                minimumResultsForSearch: 101
+                minimumResultsForSearch: 101,
+                templateResult: formatSelect2TextOption,
+                templateSelection: formatSelect2TextSelected
             });
             $('#copy-move-subscribers-form').find('.styled').uniform({
                 radioClass: 'choice'
@@ -1450,4 +1521,41 @@ $(function() {
         }
     });
     $('select[name=frequency_unit]').trigger('change');
+
+    // Segment condition field type select
+    $(document).on('change', '.condition-field-select', function() {
+        var line = $(this).parents('.condition-line');
+        var field_uid = $(this).val();
+        var value_col = line.find('.operator_value_col');
+        var url = value_col.attr('data-url');
+        var index = line.attr('rel');
+        var operator = line.find('.operator-col select').val();
+
+        value_col.html('');
+
+        if (field_uid != '') {
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: {
+                    field_uid: field_uid,
+                    index: index,
+                    operator: field_uid
+                }, // serializes the form's elements.
+                success: function(data)
+                {
+                    value_col.html(data);
+                    value_col.find('select').select2();
+                }
+            });
+        }
+    });
+    // $('.condition-field-select').trigger('change');
+
+    $('.operator-col select').trigger('change');
+
+    // progress bar ajax reload
+    $('.progress-box').each(function() {
+        startProgress($(this));
+    });
 });

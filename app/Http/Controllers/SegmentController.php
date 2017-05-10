@@ -129,12 +129,18 @@ class SegmentController extends Controller
             // Save segment
             $segment->fill($request->all());
             $segment->save();
+
             // save conditions
             foreach ($request->conditions as $key => $param) {
                 $condition = new \Acelle\Model\SegmentCondition();
                 $condition->fill($param);
                 $condition->segment_id = $segment->id;
-                $condition->field_id = \Acelle\Model\Field::findByUid($param['field_id'])->id;
+                $field = \Acelle\Model\Field::findByUid($param['field_id']);
+                if (is_object($field)) {
+                    $condition->field_id = $field->id;
+                } else {
+                    $condition->field_id = NULL;
+                }
 
                 $condition->save();
             }
@@ -290,14 +296,19 @@ class SegmentController extends Controller
                 $condition = new \Acelle\Model\SegmentCondition();
                 $condition->fill($param);
                 $condition->segment_id = $segment->id;
-                $condition->field_id = \Acelle\Model\Field::findByUid($param['field_id'])->id;
+                $field = \Acelle\Model\Field::findByUid($param['field_id']);
+                if (is_object($field)) {
+                    $condition->field_id = $field->id;
+                } else {
+                    $condition->field_id = NULL;
+                }
 
                 $condition->save();
             }
 
             // Log
             $segment->log('updated', $request->user()->customer);
-            
+
             // update cached information
             $segment->mailList->updateCachedInfo();
 
@@ -378,6 +389,25 @@ class SegmentController extends Controller
 
         return view('segments._select_box', [
             'options' => $list->getSegmentSelectOptions(),
+            'index' => $request->index,
+        ]);
+    }
+
+    /**
+     * Segment condition value control.
+     *
+     * @param int $field_uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function conditionValueControl(Request $request)
+    {
+        $field = \Acelle\Model\Field::findByUid($request->field_uid);
+
+        return view('segments._condition_value_control', [
+            'operator' => $request->operator,
+            'field_uid' => $request->field_uid,
+            'field' => $field,
             'index' => $request->index,
         ]);
     }

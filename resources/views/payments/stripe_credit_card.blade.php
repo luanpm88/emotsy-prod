@@ -54,7 +54,7 @@
                 <form action="{{ action('PaymentController@stripe_credit_card', $subscription->uid) }}" method="POST">
                     <script
                       src="https://checkout.stripe.com/checkout.js" class="stripe-button"
-                      data-key="{{ $apiKey }}"
+                      data-key="{{ $apiPublishableKey }}"
                       data-amount="{{ $subscription->stripePrice() }}"
                       data-currency="{{ $subscription->currency_code }}"
                       data-name="{{ \Acelle\Model\Setting::get('site_name') }}"

@@ -6,7 +6,7 @@
 				<form class="confirm-delete-form form-validate-jquery" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header bg-danger">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
 					<div class="modal-body">
@@ -38,7 +38,7 @@
 				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header bg-info-800">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
 					<div class="modal-body">
@@ -65,7 +65,7 @@
 				<form class="list-confirm-delete-form form-validate-jquery" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header bg-danger">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
 					<div class="modal-body">
@@ -115,7 +115,7 @@
 		<div class="modal-dialog">
 			<div class="modal-header bg-teal">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h2 class="modal-title">{{ trans('messages.name_new_list') }}</h2>
+				<h4 class="modal-title">{{ trans('messages.name_new_list') }}</h4>
 			</div>
 			<div class="modal-content">
 				<form action="{{ action('MailListController@copy') }}" method="POST" class="ajax_copy_list_form form-validate-jqueryz">
@@ -250,7 +250,7 @@
 		<div class="modal-dialog">
 			<div class="modal-header bg-teal">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h2 class="modal-title">{{ trans('messages.name_new_campaign') }}</h2>
+				<h4 class="modal-title">{{ trans('messages.name_new_campaign') }}</h4>
 			</div>
 			<div class="modal-content">
 				<form action="{{ action('CampaignController@copy') }}" method="POST" class="ajax_copy_campaign_form form-validate-jquery">
@@ -290,7 +290,7 @@
 		<div class="modal-dialog">
 			<div class="modal-header bg-teal">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h2 class="modal-title">{{ trans('messages.send_a_test_email') }}</h2>
+				<h4 class="modal-title">{{ trans('messages.send_a_test_email') }}</h4>
 			</div>
 			<div class="modal-content">
 				<form sending-text='<i class="icon-spinner10 spinner position-left"></i> {{ trans('messages.sending_please_wait') }}' action="{{ action('CampaignController@sendTestEmail') }}" method="POST" class="ajax_send_a_test_email_form form-validate-jquery">
@@ -332,7 +332,7 @@
 				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header bg-danger">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
 					<div class="modal-body">
@@ -358,7 +358,7 @@
 				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header bg-danger">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
 					<div class="modal-body">
@@ -400,7 +400,7 @@
 		<div class="modal-dialog modal-lg">
 			<div class="modal-header bg-teal">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+				<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 			</div>
 			<div class="modal-content">
 				<form action="" method="POST" class="ajax_upload_form form-validate-jquery">

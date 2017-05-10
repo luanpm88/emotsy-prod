@@ -252,11 +252,12 @@ class PaymentController extends Controller {
         $result = NULL;
 
         $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_STRIPE_CREDIT_CARD);
-        $apiKey = $payment_method->getOption('api_key');
+        $apiSecretKey = $payment_method->getOption('api_secret_key');
+        $apiPublishableKey = $payment_method->getOption('api_publishable_key');
 
 
         try {
-            \Stripe\Stripe::setApiKey('sk_test_BQokikJOvBiI2HlWgH4olfQ2');
+            \Stripe\Stripe::setApiKey($apiSecretKey);
 
             // validate and save posted data
             if ($request->isMethod('post')) {
@@ -325,7 +326,7 @@ class PaymentController extends Controller {
 
         return view('payments.stripe_credit_card', [
             'subscription' => $subscription,
-            'apiKey' => $apiKey,
+            'apiPublishableKey' => $apiPublishableKey,
             'result' => $result,
             'payment_method' => $payment_method,
         ]);

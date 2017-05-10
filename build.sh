@@ -1,4 +1,10 @@
 #!/bin/bash
+
+# Step 1: make sure you are at the correct tag/version
+# Step 2: make sure you run php "composer.phar install" without error
+# Step 2: configure the patch.rb file
+
+
 if [ -z "$1" ]
 then
   echo "Error: please specify the output path" && exit 1
@@ -10,12 +16,18 @@ then
 fi
 
 APPNAME="acellemail"
-APPVERSION="3.0.0"
-APPDIR="$APPNAME-$APPVERSION"
-BUILDVERSION=$(git tag --points-at HEAD)
-BUILDVERSION=${BUILDVERSION:-"v$APPVERSION-latest"}
-APPZIP="$APPDIR$(echo $BUILDVERSION | grep -o '\-.*').zip"
+VERSION=$(git tag --points-at HEAD)
+# VERSION=${VERSION:-"-latest"}
+
+if [ -z "$VERSION" ]
+then
+  echo "Error: no version (tag) found" && exit 1
+fi
+
+APPDIR="$APPNAME"
+APPZIP="$APPNAME-$VERSION.zip"
 OUTPUT="$1/$APPDIR"
+CURDIR=$(pwd)
 
 if [ -d "$OUTPUT" ]; then
   echo "Error: director [$OUTPUT] already exists" && exit 1
@@ -28,7 +40,7 @@ cd $OUTPUT
 
 # create version file
 touch VERSION
-echo "$BUILDVERSION" > VERSION
+echo "$VERSION" > VERSION
 
 # create default env file
 cp .env.example .env
@@ -39,19 +51,23 @@ rm -fr storage/jobs/*
 rm -fr storage/tmp/*
 rm -fr storage/import/*
 rm -fr storage/export/*
+rm -fr storage/framework/views/*
+rm -fr storage/framework/cache/*
+rm -fr storage/framework/sessions/*
 rm -fr storage/installed
 touch storage/recache
+touch storage/logs/mail.log
+touch storage/logs/laravel.log
 rm -fr .authenticate
 rm -fr .git*
-rm -fr run
 rm -fr database/seeds/DatabaseSeeder.php
 rm -fr public/source
 rm -fr public/thumb
 rm -fr build.sh
 rm -fr public/upload/templates/*
 rm -fr bootstrap/cache/config.php
-rm -fr generate-upgrade-script.sh
 rm -fr php-cs-fixer
+rm -fr composer.phar
 
 # copy default lang
 rm -fr resources/lang/default
@@ -60,6 +76,13 @@ cp -r resources/lang/en resources/lang/default
 # run artisan
 php artisan config:cache
 php artisan key:generate
+
+# Generate the upgrade patch file
+ruby patch.rb /tmp/tmpbuild "$CURDIR" "$VERSION"
+mkdir upgrade
+mv /tmp/tmpbuild/* upgrade/
+rm -fr /tmp/tmpbuild
+rm -fr patch.rb
 
 cd ..
 zip -r "$APPZIP" "$APPDIR" > /dev/null

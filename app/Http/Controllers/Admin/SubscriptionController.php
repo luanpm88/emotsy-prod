@@ -173,6 +173,11 @@ class SubscriptionController extends Controller
             }
         }
 
+        // Email verification servers
+        if (isset($request->old()['email_verification_servers'])) {
+            $subscription->fillEmailVerificationServers($request->old()['email_verification_servers']);
+        }
+
         // For options
         if (isset($request->old()['options'])) {
             $subscription->options = json_encode($request->old()['options']);
@@ -235,6 +240,11 @@ class SubscriptionController extends Controller
             // For sending servers
             if (isset($request->sending_servers)) {
                 $subscription->updateSendingServers($request->sending_servers);
+            }
+
+            // For email verification servers
+            if (isset($request->email_verification_servers)) {
+                $subscription->updateEmailVerificationServers($request->email_verification_servers);
             }
 
             $request->session()->flash('alert-success', trans('messages.subscription.updated'));

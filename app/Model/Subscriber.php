@@ -23,6 +23,8 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Model\EmailVerification;
+use Acelle\Library\Log as MailLog;
 
 class Subscriber extends Model
 {
@@ -67,6 +69,16 @@ class Subscriber extends Model
     public function mailList()
     {
         return $this->belongsTo('Acelle\Model\MailList');
+    }
+
+    public function emailVerifications()
+    {
+        return $this->hasMany('Acelle\Model\EmailVerification');
+    }
+
+    public function emailVerification()
+    {
+        return $this->hasOne('Acelle\Model\EmailVerification');
     }
 
     public function campaign()
@@ -187,6 +199,9 @@ class Subscriber extends Model
         $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
                         ->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
 
+        // Email verification join
+        $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
+
         // Keyword
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
@@ -203,6 +218,9 @@ class Subscriber extends Model
             if (!empty($filters['status'])) {
                 $query = $query->where('subscribers.status', '=', $filters['status']);
             }
+            if (!empty($filters['verification_result'])) {
+                $query = $query->where('email_verifications.result', '=', $filters['verification_result']);
+            }
         }
 
         return $query;
@@ -218,7 +236,7 @@ class Subscriber extends Model
         if (!isset($customer)) {
             $customer = $request->user()->customer;
         }
-        $query = self::select('subscribers.*');
+        $query = self::select('subscribers.*', 'email_verifications.result as verify_result');
         $query = $query->where('mail_lists.customer_id', '=', $customer->id);
 
         $query = self::filter($query, $request);
@@ -680,5 +698,65 @@ class Subscriber extends Model
     public static function getAll()
     {
         return self::select('*');
+    }
+
+    /**
+     * Verify subscriber email address using a given service
+     *
+     * @return void
+     */
+    public function verify($verifier)
+    {
+        MailLog::info(sprintf("Start verifying %s (%s)", $this->email, $this->id));
+        $log = new EmailVerification();
+        list($result, $details) = $verifier->verify($this->email);
+        $log->result = $result;
+        $log->details = $details;
+        $log->email_verification_server_id = $verifier->id;
+        $this->emailVerifications()->save($log);
+        MailLog::info(sprintf("Finish verifying %s (%s)", $this->email, $this->id));
+    }
+
+    /**
+     * Get email verification of a subcriber
+     *
+     * @return EmailVerification
+     */
+    public function getEmailVerification()
+    {
+        return $this->emailVerifications()->orderBy('created_at', 'desc')->first();
+    }
+
+    /**
+     * Get email verification of a subcriber
+     *
+     * @return EmailVerification
+     */
+    public function getVerificationResult()
+    {
+        if (!$this->isVerifed()) {
+            return '';
+        }
+        return $this->getEmailVerification()->result;
+    }
+
+    /**
+     * Check if subscriber is verified
+     *
+     * @return boolean
+     */
+    public function isVerifed()
+    {
+        return is_object($this->getEmailVerification());
+    }
+
+    /**
+     * Reset subscriber verification
+     *
+     * @return void
+     */
+    public function resetVerification()
+    {
+        return $this->emailVerifications()->delete();
     }
 }
