@@ -487,7 +487,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::post('admin/languages/{id}/upload', 'LanguageController@upload');
     Route::resource('admin/languages', 'LanguageController');
 
-    // Setting
+    // Settings
     Route::post('admin/settings/upgrade/cancel', 'SettingController@cancelUpgrade');
     Route::post('admin/settings/upgrade', 'SettingController@doUpgrade');
     Route::post('admin/settings/upgrade/upload', 'SettingController@uploadApplicationPatch');
