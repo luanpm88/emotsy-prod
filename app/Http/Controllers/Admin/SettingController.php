@@ -413,6 +413,10 @@ class SettingController extends Controller
      */
     public function upgrade(Request $request)
     {
+        if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
+            return $this->notAuthorized();
+        }
+
         $manager = new UpgradeManager();
         return view('admin.settings.upgrade', [
             'any' => 'any',
@@ -427,6 +431,10 @@ class SettingController extends Controller
      */
     public function doUpgrade(Request $request)
     {
+        if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
+            return $this->notAuthorized();
+        }
+
         $manager = new UpgradeManager();
         $failed = $manager->test();
         if (empty($failed)) {
@@ -453,6 +461,10 @@ class SettingController extends Controller
      */
     public function cancelUpgrade(Request $request)
     {
+        if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
+            return $this->notAuthorized();
+        }
+
         try {
             $manager = new UpgradeManager();
             $manager->cleanup();
@@ -472,6 +484,10 @@ class SettingController extends Controller
      */
     public function uploadApplicationPatch(Request $request)
     {
+        if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
+            return $this->notAuthorized();
+        }
+
         try {
             $manager = new UpgradeManager();
             $manager->load($request->file('file')->path());

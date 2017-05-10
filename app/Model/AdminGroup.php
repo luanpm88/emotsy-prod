@@ -234,6 +234,7 @@ class AdminGroup extends Model
             'setting_system_urls' => 'yes',
             'setting_access_when_offline' => 'yes',
             'setting_background_job' => 'yes',
+            'setting_upgrade_manager' => 'no',
             'language_read' => 'yes',
             'language_create' => 'yes',
             'language_update' => 'yes',
@@ -695,6 +696,12 @@ class AdminGroup extends Model
                         ['value' => 'yes', 'text' => trans('messages.yes')],
                     ],
                 ],
+                'upgrade_manager' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'yes', 'text' => trans('messages.yes')],
+                    ],
+                ],
             ],
             'language' => [
                 'read' => [
@@ -794,7 +801,7 @@ class AdminGroup extends Model
                         ['value' => 'yes', 'text' => trans('messages.yes')],
                     ],
                 ],
-            ],
+            ]
         ];
     }
 

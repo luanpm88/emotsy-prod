@@ -1867,4 +1867,5 @@ return [
     'upgrade.alert.upgrade_success' => 'Congratulations! You\'ve successfully upgraded to the new version of Acelle Mail.',
     'upgrade.alert.cancel_success' => 'Upgrade has been cancelled',
     'upgrade.alert.upload_success' => 'A new version of Acelle Mail was successfully uploaded. You can now review the changes and proceed with the upgrade',
+    'upgrade_manager' => 'Upgrade Manager',
 ];

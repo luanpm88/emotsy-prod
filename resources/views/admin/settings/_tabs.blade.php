@@ -29,7 +29,9 @@
 			<a href="{{ action('Admin\SettingController@license') }}">
 			<i class="icon-key"></i> {{ trans('messages.license_tab') }}</a></li>
 	@endif
-	<li class="{{ $action == "upgrade" ? "active" : "" }} text-semibold">
+	@if (Auth::user()->admin->getPermission("setting_upgrade_manager") == 'yes')
+		<li class="{{ $action == "upgrade" ? "active" : "" }} text-semibold">
 			<a href="{{ action('Admin\SettingController@upgrade') }}">
 			<i class="icon-wrench"></i> {{ trans('messages.upgrade.title.upgrade') }}</a></li>
+	@endif
 </ul>

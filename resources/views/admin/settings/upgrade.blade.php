@@ -6,6 +6,8 @@
     <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
+
+	<script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
 @endsection
 
 @section('page_header')
@@ -61,7 +63,7 @@
 					@else
 						<h3>{{ trans('messages.upgrade.title.current') }}</h3>
 						<p>{!! trans('messages.upgrade.wording.upload', [ 'current' => "<code>{$manager->getCurrentVersion()}</code>" ]) !!}</p>
-						<form action="{{ action('Admin\SettingController@uploadApplicationPatch') }}" method="POST"  enctype="multipart/form-data">
+						<form action="{{ action('Admin\SettingController@uploadApplicationPatch') }}" class="form-validate-jquery" method="POST"  enctype="multipart/form-data">
 							{{ csrf_field() }}
 
 							@include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => '', 'name' => 'file', 'value' => 'Upload'])
