@@ -29,6 +29,13 @@ end
 updated = `git --git-dir #{File.join(gitdir, '.git')} diff --diff-filter=DM --name-only #{last_supported} #{new_version}`.split("\n")
 updated << 'VERSION'
 
+for f in updated
+  unless File.exists?(f)
+    updated.delete_if { |i| i == f }
+    puts "* Warning: File #{f} skipped!"
+  end
+end
+
 # Resolve the updated/deleted stuffs
 # Make sure your working copy is of the correct version: "git checkout v3.0.0-p3" for example
 intersected = deleted & updated
