@@ -65,7 +65,7 @@ class UpgradeManager
                 $this->validate();
             } else {
                 umask($old);
-                throw new \Exception("Invalid zip file");
+                throw new \Exception("Invalid upgrade package");
             }
         } catch (\Exception $e) {
             $this->rm($this->source);
@@ -146,7 +146,7 @@ class UpgradeManager
     {
         $path = join_paths($this->source, self::META_FILE);
         if (!file_exists($path)) {
-            throw new \Exception("Cannot find meta file: {$path}");
+            throw new \Exception("Unknown package format");
         }
 
         return json_decode(file_get_contents($path), true);
