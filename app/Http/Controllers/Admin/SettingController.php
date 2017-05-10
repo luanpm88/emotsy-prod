@@ -438,14 +438,11 @@ class SettingController extends Controller
         $manager = new UpgradeManager();
         $failed = $manager->test();
         if (empty($failed)) {
+            $pageUrl = action('Admin\SettingController@upgrade');
             $manager->run();
-
             $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
             Log::info('System successfully upgraded to the new version');
-            return view('admin.settings.upgrade', [
-                'any' => 'any',
-                'manager' => $manager
-            ]);
+            return redirect()->away($pageUrl);
         } else {
             Log::warning('Cannot upgrade, certain files are not writable');
             return view('admin.settings.upgrade', [
