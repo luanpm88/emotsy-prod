@@ -430,18 +430,39 @@ class SettingController extends Controller
         $manager = new UpgradeManager();
         $failed = $manager->test();
         if (empty($failed)) {
-            $request->session()->flash('alert-success', 'Congratulation! You\'ve successfully upgraded to the new version of Acelle Mail.');
+            $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
+            Log::info('System successfully upgraded to the new version');
             return view('admin.settings.upgrade', [
                 'any' => 'any',
                 'manager' => $manager
             ]);
         } else {
+            Log::warning('Cannot upgrade, certain files are not writable');
             return view('admin.settings.upgrade', [
                 'any' => 'any',
                 'manager' => $manager,
                 'failed' => $failed,
             ]);
         }
+    }
+
+    /**
+     * Cancel upgrade and delete the uploaded file
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cancelUpgrade(Request $request)
+    {
+        try {
+            $manager = new UpgradeManager();
+            $manager->cleanup();
+            $request->session()->flash('alert-info', trans('messages.upgrade.alert.cancel_success'));
+        } catch (\Exception $e) {
+            Log::info("Something went wrong while cancelling upgrade. " . $e->getMessage());
+            $request->session()->flash('alert-error', $e->getMessage());
+        }
+
+        return redirect()->action('Admin\SettingController@upgrade');
     }
 
     /**
@@ -454,8 +475,9 @@ class SettingController extends Controller
         try {
             $manager = new UpgradeManager();
             $manager->load($request->file('file')->path());
+            $request->session()->flash('alert-success', trans('messages.upgrade.alert.upload_success'));
         } catch (\Exception $e) {
-            Log::info("OG NGOAI" . $e->getMessage());
+            Log::info("Upgrade failed. " . $e->getMessage());
             $request->session()->flash('alert-error', $e->getMessage());
         }
 

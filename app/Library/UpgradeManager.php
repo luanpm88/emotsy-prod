@@ -59,12 +59,7 @@ class UpgradeManager
     public function load($path)
     {
         // Check WRITE permission
-        if (!$this->isWritable($this->source)) {
-            throw new \Exception("Cannot write to folder {$this->source}");
-        } else {
-            // Clean up the target folder
-            $this->rm($this->source);
-        }
+        $this->cleanup();
 
         try {
             // Extract the zip file
@@ -83,7 +78,6 @@ class UpgradeManager
                 throw new \Exception("Invalid zip file");
             }
         } catch (\Exception $e) {
-            Log::info("GOES HERE");
             $this->rm($this->source);
             throw $e;
         }
@@ -100,6 +94,21 @@ class UpgradeManager
             return $this->getMetaInfo()['version'];
         } else {
             return null;
+        }
+    }
+
+    /**
+     * Read the meta data from a patch package
+     *
+     */
+    public function cleanup()
+    {
+        // Check WRITE permission
+        if (!$this->isWritable($this->source)) {
+            throw new \Exception("Cannot write to folder {$this->source}");
+        } else {
+            // Clean up the target folder
+            $this->rm($this->source);
         }
     }
 
@@ -184,9 +193,7 @@ class UpgradeManager
             $path = join_paths($this->target, $file);
             if (!$this->isWritable($path)) {
                 $errors[] = $path;
-                Log::info("$path x");
             }
-            Log::info("$path okie");
         }
 
         foreach ($deletes as $file) {
@@ -232,7 +239,6 @@ class UpgradeManager
      */
     private function isWritable($path)
     {
-        Log::info(is_writable($path));
         if (is_writable($path)) {
             return true;
         } elseif (!file_exists($path) && $this->canCreateFile($path)) {
