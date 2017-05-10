@@ -15,13 +15,17 @@ then
   echo "Error: directory does not exist" && exit 1
 fi
 
-RELEASED="April, 20th 2017"
 APPNAME="acellemail"
-APPVERSION="3.0.0"
-APPDIR="$APPNAME-$APPVERSION"
-BUILDVERSION=$(git tag --points-at HEAD)
-BUILDVERSION=${BUILDVERSION:-"v$APPVERSION-latest"}
-APPZIP="$APPDIR$(echo $BUILDVERSION | grep -o '\-.*').zip"
+VERSION=$(git tag --points-at HEAD)
+# VERSION=${VERSION:-"-latest"}
+
+if [ -z "$VERSION" ]
+then
+  echo "Error: no version (tag) found" && exit 1
+fi
+
+APPDIR="$APPNAME-$VERSION"
+APPZIP="$APPDIR.zip"
 OUTPUT="$1/$APPDIR"
 CURDIR=$(pwd)
 
@@ -36,7 +40,7 @@ cd $OUTPUT
 
 # create version file
 touch VERSION
-echo "$BUILDVERSION $RELEASED" > VERSION
+echo "$VERSION" > VERSION
 
 # create default env file
 cp .env.example .env
@@ -47,6 +51,9 @@ rm -fr storage/jobs/*
 rm -fr storage/tmp/*
 rm -fr storage/import/*
 rm -fr storage/export/*
+rm -fr storage/framework/views/*
+rm -fr storage/framework/cache/*
+rm -fr storage/framework/sessions/*
 rm -fr storage/installed
 touch storage/recache
 touch storage/logs/mail.log
@@ -67,11 +74,11 @@ rm -fr resources/lang/default
 cp -r resources/lang/en resources/lang/default
 
 # run artisan
-#php artisan config:cache
+php artisan config:cache
 php artisan key:generate
 
 # Generate the upgrade patch file
-ruby patch.rb /tmp/tmpbuild "$CURDIR"
+ruby patch.rb /tmp/tmpbuild "$CURDIR" "$VERSION"
 mkdir upgrade
 mv /tmp/tmpbuild/* upgrade/
 rm -fr /tmp/tmpbuild

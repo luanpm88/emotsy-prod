@@ -5,15 +5,16 @@
 require 'json'
 
 # Settings
-new_version = 'v3.0.0-p3'                 # the version of this build
-release_date = 'April, 30th 2017'         # format?
-old_versions = ['v3.0.0-p1', 'v3.0.0-p2'] # sort by chronological order
-packages = ['guzzlehttp']                             # vendor packages to be replaced
+old_versions = ['3.0.2']      # sort by chronological order
+packages = ['guzzlehttp']     # vendor packages to be replaced
 
+# Auto setting
+release_date = Time.now.to_s
 packages += ['autoload.php', 'composer'] unless packages.empty?
 last_supported = old_versions[0]
 
 # Retrieve input
+new_version = ARGV[2]
 output = ARGV[0]
 gitdir = ARGV[1]
 
