@@ -62,7 +62,11 @@ end
 
 ## copy files
 for file in meta[:updated]
-  `cp --parent #{file} #{File.join(output, subdir)}`
+  if File.exists?(file)
+    `cp --parent #{file} #{File.join(output, subdir)}`
+  else
+    puts "File #{file} skipped!"
+  end
 end
 
 ## copy packages and loaders

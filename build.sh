@@ -24,8 +24,8 @@ then
   echo "Error: no version (tag) found" && exit 1
 fi
 
-APPDIR="$APPNAME-$VERSION"
-APPZIP="$APPDIR.zip"
+APPDIR="$APPNAME"
+APPZIP="$APPNAME-$VERSION.zip"
 OUTPUT="$1/$APPDIR"
 CURDIR=$(pwd)
 
