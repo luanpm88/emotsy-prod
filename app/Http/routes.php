@@ -10,6 +10,7 @@
 | and give it the controller to call when that URI is requested.
 |
 */
+
 Route::resource('automation', 'AutomationController');
 Route::group(['middleware' => ['installed']], function () {
     // Installation
