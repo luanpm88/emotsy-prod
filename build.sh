@@ -66,8 +66,6 @@ rm -fr composer.phar
 rm -fr resources/lang/default
 cp -r resources/lang/en resources/lang/default
 
-echo "AAAAAAAAAAAAAA"
-
 # run artisan
 #php artisan config:cache
 php artisan key:generate
@@ -75,7 +73,7 @@ php artisan key:generate
 # Generate the upgrade patch file
 ruby patch.rb /tmp/tmpbuild "$CURDIR"
 mkdir upgrade
-mv /tmp/tmpbuild/*.zip upgrade/
+mv /tmp/tmpbuild/* upgrade/
 rm -fr /tmp/tmpbuild
 rm -fr patch.rb
 
