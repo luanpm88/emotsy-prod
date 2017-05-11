@@ -1,3 +1,13 @@
+3.0.1 / 2017-05-11
+==================
+
+ * Added: integration with email verification service Kickbox.io
+ * Added: integration with email verification service TheChecker.co
+ * Added: upgrade manager - allow upgrading directly from the admin dashboard
+ * Added: email web viewer (through the WEB_VIEW_URL tag)
+ * Added: table features for email builder
+ * Fixed: plain text campaign issue with ElasticEmail
+
 3.0.0-p3 / 2017-04-20
 ==================
 
