@@ -85,6 +85,8 @@ rm -fr /tmp/tmpbuild
 rm -fr patch.rb
 
 cd ..
+chmod 755 -R "$APPDIR"
+chmod 777 -R "$APPDIR/storage"
 zip -r "$APPZIP" "$APPDIR" > /dev/null
 rm -fr "$APPDIR"
 
