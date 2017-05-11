@@ -5,7 +5,7 @@
 require 'json'
 
 # Settings
-old_versions = ['3.0.2']      # sort by chronological order
+old_versions = ['3.0.1']      # sort by chronological order
 packages = []     # vendor packages to be replaced
 
 # Auto setting
