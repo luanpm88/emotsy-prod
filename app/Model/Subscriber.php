@@ -196,30 +196,30 @@ class Subscriber extends Model
      */
     public static function filter($query, $request)
     {
-        $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
-                        ->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
+        $query = $query->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
 
         // Email verification join
         $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
 
-        // Keyword
-        if (!empty(trim($request->keyword))) {
-            foreach (explode(' ', trim($request->keyword)) as $keyword) {
-                $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%')
-                        ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
-                });
+        if (isset($request)) {
+            // Keyword
+            if (!empty(trim($request->keyword))) {
+                foreach (explode(' ', trim($request->keyword)) as $keyword) {
+                    $query = $query->where(function ($q) use ($keyword) {
+                        $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
+                    });
+                }
             }
-        }
 
-        // filters
-        $filters = $request->filters;
-        if (!empty($filters)) {
-            if (!empty($filters['status'])) {
-                $query = $query->where('subscribers.status', '=', $filters['status']);
-            }
-            if (!empty($filters['verification_result'])) {
-                $query = $query->where('email_verifications.result', '=', $filters['verification_result']);
+            // filters
+            $filters = $request->filters;
+            if (!empty($filters)) {
+                if (!empty($filters['status'])) {
+                    $query = $query->where('subscribers.status', '=', $filters['status']);
+                }
+                if (!empty($filters['verification_result'])) {
+                    $query = $query->where('email_verifications.result', '=', $filters['verification_result']);
+                }
             }
         }
 

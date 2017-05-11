@@ -246,26 +246,14 @@ class Segment extends Model
                 // add condition
                 $conditions[] = $cond;
             } else {
-                // join email verification table once
-                if (strpos($condition->operator, 'verification') !== false && !in_array(\DB::getTablePrefix().'email_verifications', $joined_tables)) {
-                    // add to joins array
-                    $joins[] = [
-                        'table' => \DB::raw(\DB::getTablePrefix().'email_verifications as email_verifications'),
-                        'ons' => [
-                            [\DB::raw('email_verifications.subscriber_id'), \DB::raw(\DB::getTablePrefix().'subscribers.id')]
-                        ]
-                    ];
-                    $joined_tables[] = \DB::getTablePrefix().'email_verifications';
-                }
-
                 switch ($condition->operator) {
                     case 'verification_equal':
                         // add condition
-                        $conditions[] = "(email_verifications.result = '".$condition->value."')";
+                        $conditions[] = "(".\DB::getTablePrefix()."email_verifications.result = '".$condition->value."')";
                         break;
                     case 'verification_not_equal':
                         // add condition
-                        $conditions[] = "(email_verifications.result IS NULL OR email_verifications.result != '".$condition->value."')";
+                        $conditions[] = "(".\DB::getTablePrefix()."email_verifications.result IS NULL OR ".\DB::getTablePrefix()."email_verifications.result != '".$condition->value."')";
                         break;
                     default:
                 }
@@ -293,6 +281,7 @@ class Segment extends Model
     public function subscribers($request = null)
     {
         $query = \Acelle\Model\Subscriber::select('subscribers.*', 'email_verifications.result AS verify_result');
+        $query = Subscriber::filter($query, $request);
 
         $conditions = $this->getSubscribersConditions();
 
@@ -312,14 +301,13 @@ class Segment extends Model
         // WHERE...
         $query = $query->where('subscribers.mail_list_id', $this->mail_list_id);
         if (!empty($conditions['conditions'])) {
-            $query = $query->whereRaw($conditions['conditions']);
+            $query = $query->whereRaw('('.$conditions['conditions'].')');
         }
 
-        // filters
-        if (isset($request)) {
-            $query = Subscriber::filter($query, $request);
-            $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        }
+        //// filters
+        //if (isset($request)) {
+        //    $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        //}
 
         return $query;
     }
