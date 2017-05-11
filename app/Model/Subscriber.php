@@ -225,7 +225,7 @@ class Subscriber extends Model
             }
         }
 
-        return $query->groupBy('subscribers.id')->distinct();
+        return $query->groupBy('subscribers.id')->distinct('subscribers.id');
     }
 
     /**
