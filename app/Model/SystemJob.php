@@ -155,44 +155,54 @@ class SystemJob extends Model
     }
 
     /**
-    * Check if system job is cancelled
-    *
-    * @return boolean
-    */
+     * Check if system job is cancelled
+     *
+     * @return boolean
+     */
     function isCancelled()
     {
         return $this->status == SystemJob::STATUS_CANCELLED;
     }
 
     /**
-    * Check if system job is new
-    *
-    * @return boolean
-    */
+     * Check if system job is new
+     *
+     * @return boolean
+     */
     function isNew()
     {
         return $this->status == SystemJob::STATUS_NEW;
     }
 
     /**
-    * Check if system job is failed
-    *
-    * @return boolean
-    */
+     * Check if system job is failed
+     *
+     * @return boolean
+     */
     function isFailed()
     {
         return $this->status == SystemJob::STATUS_FAILED;
     }
 
     /**
-    * Check if system job is new
-    *
-    * @return boolean
-    * @todo this method is for the two classes ImportSubscribersJob/ExportSubscribersJob only
-    */
+     * Check if system job is new
+     *
+     * @return boolean
+     * @todo this method is for the two classes ImportSubscribersJob/ExportSubscribersJob only
+     */
     function isRunning()
     {
         $data = json_decode($this->data);
         return !(in_array($data->status, ['failed', 'done']) || $this->status == \Acelle\Model\SystemJob::STATUS_CANCELLED);
+    }
+
+    /**
+     * Get new pending jobs
+     *
+     * @return collection
+     */
+    public static function getNewJobs()
+    {
+        return self::where('status', '=', self::STATUS_NEW);
     }
 }

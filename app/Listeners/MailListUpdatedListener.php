@@ -5,6 +5,7 @@ namespace Acelle\Listeners;
 use Acelle\Events\MailListUpdated;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Acelle\Model\SystemJob as SystemJobModel;
 
 class MailListUpdatedListener
 {
@@ -27,7 +28,14 @@ class MailListUpdatedListener
     public function handle(MailListUpdated $event)
     {
         if ($event->delayed) {
-            dispatch(new \Acelle\Jobs\UpdateMailListJob($event->mailList));
+            $existed = SystemJobModel::getNewJobs()
+                           ->where('name', \Acelle\Jobs\UpdateMailListJob::class)
+                           ->where('data', $event->mailList->id)
+                           ->exists();
+
+            if (!$existed) {
+                dispatch(new \Acelle\Jobs\UpdateMailListJob($event->mailList));
+            }
         } else {
             $event->mailList->updateCache();
         }
