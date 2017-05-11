@@ -39,12 +39,12 @@
                     <ul class="modern-listing">
                         <li>
                             <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-							@if ($campaign->subscribers()->count())
+							@if ($campaign->subscribersCount())
 								<i class="icon-checkmark4"></i>
 							@else
 								<i class="icon-cross2 text-danger"></i>
 							@endif
-                            <h4>{{ $campaign->subscribers()->count() }} {{ trans('messages.recipients') }}</h4>
+                            <h4>{{ $campaign->subscribersCount() }} {{ trans('messages.recipients') }}</h4>
                             <p>
                                 {!! $campaign->displayRecipients() !!}
                             </p>

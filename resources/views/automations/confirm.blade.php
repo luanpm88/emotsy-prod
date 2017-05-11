@@ -1,18 +1,18 @@
 @extends('layouts.frontend')
 
 @section('title', trans('messages.campaigns') . " - " . trans('messages.confirm'))
-	
+
 @section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/pickers/anytime.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-		
+
     <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
 @endsection
 
-@section('page_header')	
+@section('page_header')
 			<div class="page-title">
 				@include('automations._head')
-					
+
 				@include('automations._steps', [
 					'step' => 'confirm'
 				])
@@ -20,48 +20,48 @@
 @endsection
 
 @section('content')
-    
+
         <div class="confirm-campaign-box">
                 <form action="{{ action('AutomationController@confirm', $automation->uid) }}" method="POST" class="form-validate-jqueryz">
                     {{ csrf_field() }}
-                    
+
                     <div class="head">
                         <h2 class="text-semibold mb-5">{{ trans('messages.you_are_all_send') }}</h2>
                         <p>{{ trans('messages.review_campaign_feeback') }}</p>
                     </div>
-                    
+
                     <ul class="modern-listing automation-confirm">
                         <li>
                             <a href="{{ action('AutomationController@edit', $automation->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-							@if ($automation->subscribers()->count())
+							@if ($automation->subscribersCount())
 								<i class="icon-checkmark4"></i>
 							@else
 								<i class="fa fa-exclamation text-warning"></i>
 							@endif
-                            <h4>{{ $automation->subscribers()->count() }} {{ trans('messages.recipients') }}</h4>
+                            <h4>{{ $automation->subscribersCount() }} {{ trans('messages.recipients') }}</h4>
                             <p>
 								{{ $automation->displayRecipients() }}
                             </p>
                         </li>
 						<li>
-                            <a href="{{ action('AutomationController@trigger', $automation->uid) }}" class="btn {{ (isset($first_event->id) && $first_event->subscribers()->count() > 0) ? 'btn-info bg-grey' : ' btn-info bg-info-800' }}">{{ trans('messages.edit') }}</a>
-							@if (isset($first_event->id) && $first_event->subscribers()->count() > 0)
+                            <a href="{{ action('AutomationController@trigger', $automation->uid) }}" class="btn {{ (isset($first_event->id) && $first_event->subscribersCount() > 0) ? 'btn-info bg-grey' : ' btn-info bg-info-800' }}">{{ trans('messages.edit') }}</a>
+							@if (isset($first_event->id) && $first_event->subscribersCount() > 0)
 								<i class="icon-checkmark4"></i>
-							@elseif($first_event->subscribers()->count() <= 0)
+							@elseif($first_event->subscribersCount() <= 0)
 								<i class="fa fa-exclamation text-warning"></i>
 							@else
 								<i class="icon-cross2 text-danger"></i>
-							@endif							
+							@endif
                             <h4><numbericon>1</numbericon> {{ trans('messages.trigger_workflow_when_the_following_conditions_are_met') }}</h4>
 							<p>
 								{!! $first_event->displayMessage() !!}
 								@if (in_array($first_event->event_type, [Acelle\Model\AutoEvent::TYPE_CUSTOM_CRITERIA]))
 									<br />
-									<span class="{{ $first_event->subscribers()->count() <= 0 ? 'text-warning' : '' }}">
-										<span class="text-bold">{{ $first_event->subscribers()->count() }}</span> {{ trans('messages.subscribers') }}
+									<span class="{{ $first_event->subscribersCount() <= 0 ? 'text-warning' : '' }}">
+										<span class="text-bold">{{ $first_event->subscribersCount() }}</span> {{ trans('messages.subscribers') }}
 									</span>
 								@endif
-							</p>							
+							</p>
                         </li>
 						@if (isset($first_event->id))
 							@forelse($first_event->campaigns as $key => $campaign)
@@ -70,7 +70,7 @@
 								@include('automations._campaign_confirm_row_empty', ['event' => $first_event])
 							@endforelse
 						@endif
-						
+
 						@foreach ($automation->getFollowUpEvents(false) as $key =>  $auto_event)
 							<li>
 								<a href="{{ action('AutomationController@workflow', $automation->uid) }}#event-{{ $auto_event->uid }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
@@ -91,7 +91,7 @@
 							@endforelse
 						@endforeach
                     </ul>
-                    
+
 					<div class="text-right">
 						<br />
 						<a href="{{ action("AutomationController@workflow", $automation->uid) }}" class="btn bg-grey-800">
@@ -102,6 +102,6 @@
 						@endif
 					</div>
                 </form>
-                    
+
             </div>
 @endsection

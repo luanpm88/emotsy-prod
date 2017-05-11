@@ -304,10 +304,10 @@ class Segment extends Model
             $query = $query->whereRaw('('.$conditions['conditions'].')');
         }
 
-        //// filters
-        //if (isset($request)) {
-        //    $query = $query->orderBy($request->sort_order, $request->sort_direction);
-        //}
+        // filters
+        if (isset($request)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
 
         return $query;
     }
@@ -332,5 +332,15 @@ class Segment extends Model
             'name' => $name,
             'data' => json_encode($data),
         ]);
+    }
+
+    /**
+     * Count subscribers.
+     *
+     * @return options
+     */
+    public function subscribersCount()
+    {
+        return $this->subscribers()->count('subscribers.id');
     }
 }

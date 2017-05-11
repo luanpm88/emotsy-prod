@@ -302,6 +302,8 @@ class Automation extends Model
         }
 
 		$query = Subscriber::select("subscribers.*");
+		// Email verification join
+        $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
 
         // Get subscriber from mailist and segment
 		$conditions = [];
@@ -335,7 +337,7 @@ class Automation extends Model
 			$query = $query->whereRaw(implode(' OR ', $conditions));
 		}
 
-        return $query;
+        return $query->groupBy('subscribers.id')->distinct();
     }
 
     /**
@@ -695,5 +697,15 @@ class Automation extends Model
     public static function getAll()
     {
         return self::select('*');
+    }
+
+	/**
+     * Count subscribers.
+     *
+     * @return integer
+     */
+    public function subscribersCount()
+    {
+        return $this->subscribers()->count('subscribers.id');
     }
 }

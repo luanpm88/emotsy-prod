@@ -378,7 +378,7 @@ class MailList extends Model
     public function getSegmentSelectOptions()
     {
         $options = $this->segments->map(function ($item) {
-            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribers()->count().' '.strtolower(trans('messages.subscribers')).')'];
+            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount().' '.strtolower(trans('messages.subscribers')).')'];
         });
 
         return $options;

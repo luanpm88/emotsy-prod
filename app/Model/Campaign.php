@@ -1144,6 +1144,8 @@ class Campaign extends Model
             }
 
             $query = Subscriber::select("subscribers.*");
+            // Email verification join
+            $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
 
             // Get subscriber from mailist and segment
             $conditions = [];
@@ -1216,7 +1218,7 @@ class Campaign extends Model
             }
         }
 
-        return $query;
+        return $query->groupBy('subscribers.id')->distinct();
     }
 
     /**
@@ -2444,7 +2446,7 @@ class Campaign extends Model
      */
     public function subscribersCount()
     {
-        return $this->subscribers()->count();
+        return $this->subscribers()->count('subscribers.id');
     }
 
     /**

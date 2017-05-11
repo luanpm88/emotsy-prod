@@ -1327,4 +1327,14 @@ class AutoEvent extends Model
         $query = $this->automation->subscribers();
         return $query;
     }
+
+    /**
+     * Count subscribers.
+     *
+     * @return integer
+     */
+    public function subscribersCount()
+    {
+        return $this->subscribers()->count('subscribers.id');
+    }
 }

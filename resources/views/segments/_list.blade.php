@@ -26,7 +26,7 @@
 											<div class="single-stat-box pull-left">
 
 												<a class="kq_search" href="{{ action('SegmentController@subscribers', ['list_uid' => $list->uid, 'uid' => $item->uid]) }}">
-                                                    <span class="no-margin stat-num">{{ $item->subscribers()->count() }}</span>
+                                                    <span class="no-margin stat-num">{{ $item->subscribersCount() }}</span>
                                                 </a>
 												<br />
 												<span class="text-muted">{{ trans("messages.subscribers") }}</span>
