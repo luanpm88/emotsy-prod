@@ -21,7 +21,7 @@
                             <div class="progress-bar progress-bar-info" style="width: {{ $campaign->deliveredRate() }}%">
                             </div>
                         </div>
-                        <span class="text-semibold">{{ $campaign->deliveredCount() }} / {{ $campaign->subscribers()->count() }}</span>
+                        <span class="text-semibold">{{ $campaign->deliveredCount() }} / {{ $campaign->subscribersCount() }}</span>
                         <br />
                         <span class="text-muted">{{ trans('messages.sent') }}</span>
                     </div>
@@ -48,7 +48,7 @@
             </td>
         </tr>
     </table>
-    
-    
-    
+
+
+
 </li>

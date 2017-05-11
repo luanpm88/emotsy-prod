@@ -6,7 +6,7 @@
 									<tr>
 										<td width="1%">
 											<i class="icon icon-envelop3 table-row-icon text-teal-800"></i>
-										</td>										
+										</td>
 										<td>
 											<h5 class="no-margin text-bold kq_search">
 												<a class="kq_search" href="{{ action('CampaignController@show', $item->uid) }}">
@@ -14,24 +14,11 @@
 												</a>
 											</h5>
 											<span data-popup="tooltip" title="{{ strip_tags($item->autoEvent()->displayMessage()) }}" class="auto-event-substr">{!! $item->autoEvent()->displayMessage() !!}</span>
-												
+
 											<div class="text-semibold" data-popup="tooltip" title="{{ $item->displayRecipients() }}">
-												{{ $item->subscribers()->count() }} {{ trans('messages.recipients') }}
+												{{ $item->subscribersCount() }} {{ trans('messages.recipients') }}
 											</div>
 										</td>
-										<!--<td>
-											<div class="single-stat-box pull-left">
-												@if (is_object($item->segment))
-													<span class="no-margin stat-num">{{ $item->mailList->name }} . {{ $item->segment->name }}</span>
-													<br>
-													<span class="text-muted text-nowrap">{{ $item->subscribers()->count() }} {{ strtolower(trans('messages.subscribers')) }}</span>
-												@elseif (is_object($item->mailList))
-													<span class="no-margin stat-num">{{ $item->mailList->name }}</span>
-													<br>
-													<span class="text-muted text-nowrap">{{ $item->subscribers()->count() }} {{ strtolower(trans('messages.subscribers')) }}</span>
-												@endif
-											</div>
-										</td>-->
 										<td class="stat-fix-size-sm">
 											@if ($item->status != 'new')
 												<div class="single-stat-box pull-left ml-20">
@@ -40,7 +27,7 @@
 														<div class="progress-bar progress-bar-info" style="width: {{ $item->deliveredRate() }}%">
 														</div>
 													</div>
-													<span class="text-semibold">{{ $item->deliveredCount() }} / {{ $item->subscribers()->count() }}</span>
+													<span class="text-semibold">{{ $item->deliveredCount() }} / {{ $item->subscribersCount() }}</span>
 													<br />
 													<span class="text-muted">{{ trans('messages.sent') }}</span>
 												</div>
@@ -61,11 +48,11 @@
 													<span class="text-muted">{{ trans('messages.click_rate') }}</span>
 												</div>
 											@endif
-										</td>										
+										</td>
 										<td class="text-right">
 											<span class="text-muted2 list-status pull-left">
 												<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.campaign_status_' . $item->status) }}</span>
-											</span>											
+											</span>
 											@if (\Gate::allows('update', $item))
 												<a href="{{ action('CampaignController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 											@endif
@@ -73,7 +60,7 @@
 												<a href="{{ action('CampaignController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="icon-stats-growth"></i> {{ trans('messages.overview') }}</a>
 											@endif
 											@if (\Gate::allows('delete', $item) || \Gate::allows('pause', $item) || \Gate::allows('restart', $item))
-												<div class="btn-group">										
+												<div class="btn-group">
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 													<ul class="dropdown-menu dropdown-menu-right">
 														@if (\Gate::allows('pause', $item))
@@ -83,7 +70,7 @@
 															<li><a link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart', ["uids" => $item->uid]) }}"><i class="icon-history"></i> {{ trans("messages.restart") }}</a></li>
 														@endif
 														@if (\Gate::allows('copy', $item))
-															<li>														
+															<li>
 																<a data-uid="{{ $item->uid }}" data-name="{{ trans("messages.copy_of_campaign", ['name' => $item->name]) }}" class="copy-campaign-link">
 																	<i class="icon-copy4"></i> {{ trans('messages.copy') }}
 																</a>
@@ -108,7 +95,7 @@
 									{{ trans('messages.no_search_result') }}
 								</span>
 							</div>
-						@else					
+						@else
 							<div class="empty-list">
 								<i class="icon-paperplane"></i>
 								<span class="line-1">
