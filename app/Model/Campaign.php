@@ -1218,7 +1218,7 @@ class Campaign extends Model
             }
         }
 
-        return $query->groupBy('subscribers.id')->distinct();
+        return $query->distinct('subscribers.id');
     }
 
     /**
