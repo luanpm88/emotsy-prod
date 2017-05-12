@@ -1,6 +1,6 @@
 @extends('layouts.clean')
 
-@section('title', trans('messages.something_went_wrong'))
+@section('title', trans('messages.app.notice.title'))
 
 @section('content')
     <div class="alert bg-info alert-styled-left">
