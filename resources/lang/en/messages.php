@@ -1875,4 +1875,5 @@ return [
     'upgrade_manager' => 'Upgrade Manager',
     'campaign_intro_regular' => 'Campaign with HTML email content as well as images, links. This is the most common type.',
     'campaign_intro_plain-text' => 'Send a plain-text email without link tracking, images, or HTML.',
+    'you_are_already_unsubscribed' => 'You are already unsubscribed!',
 ];

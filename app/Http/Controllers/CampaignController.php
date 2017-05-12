@@ -1113,6 +1113,8 @@ class CampaignController extends Controller
                 'page' => $page,
                 'subscriber' => $subscriber,
             ]);
+        } else {
+            return view('notice', ['message' => trans('messages.you_are_already_unsubscribed')]);
         }
     }
 
