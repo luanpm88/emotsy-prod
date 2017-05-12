@@ -42,6 +42,17 @@ class DeliveryHandler extends Model
             // try to connect
             $inbox = @imap_open($imapPath, $this->username, $this->password);
 
+            // try again with ssl/novalidate-cert
+            if ($inbox == false) {
+                MailLog::info($this->encryption);
+                if (strcasecmp ( $this->encryption , 'ssl') == 0) {
+                    MailLog::warning('Try using ssl/novalidate-cert instead');
+                    $imapPath = "{{$this->host}:{$this->port}/{$this->protocol}/ssl/novalidate-cert}INBOX";
+                    $inbox = @imap_open($imapPath, $this->username, $this->password);
+                }
+            }
+
+            // if failed
             if ($inbox == false) {
                 throw new \Exception("Cannot connect to the server: $imapPath");
             }
