@@ -2,9 +2,9 @@
 <html lang="en">
 <head>
 	<title>@yield('title') - {{ \Acelle\Model\Setting::get("site_name") }}</title>
-	
+
 	@include('layouts._favicon')
-	
+
 	@include('layouts._head')
 
 	<!-- Global stylesheets -->
@@ -32,15 +32,15 @@
 	<script type="text/javascript" src="{{ URL::asset('assets/js/core/app.js') }}"></script>
 	<!-- /theme JS files -->
 
-	<script>		
+	<script>
 		$(function() {
-		
+
 			// Style checkboxes and radios
 			$('.styled').uniform();
-		
+
 		});
 	</script>
-		
+
 	<!-- display flash message -->
 	@include('common.flash')
 
@@ -58,18 +58,18 @@
 			<div class="content-wrapper">
 				<div class="row">
 					<div class="col-sm-2 col-md-4">
-						
+
 					</div>
 					<div class="col-sm-8 col-md-4">
-					
+
 						<div class="text-center login-header">
 							<a class="main-logo-big" href="{{ action('HomeController@index') }}">
-								<img src="{{ URL::asset('images/logo_big.png') }}" alt="">
+								<img src="{{ URL::asset(\Acelle\Model\Setting::getSiteLogo()['big']) }}" alt="">
 							</a>
 						</div>
-					
+
 						@yield('content')
-						
+
 					</div>
 				</div>
 			</div>
@@ -81,7 +81,7 @@
 
 		<!-- Footer -->
 		<div class="footer text-white">
-			{!! trans('messages.copy_right_light') !!}			
+			{!! trans('messages.copy_right_light') !!}
 		</div>
 		<!-- /footer -->
 

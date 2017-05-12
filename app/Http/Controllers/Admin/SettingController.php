@@ -81,8 +81,15 @@ class SettingController extends Controller
             // Save settings
             foreach ($request->all() as $name => $value) {
                 if ($name != '_token' && isset($settings[$name])) {
-                    if ($settings[$name]['cat'] == 'general' && $request->user()->admin->getPermission('setting_general') == 'yes') {
-                        \Acelle\Model\Setting::set($name, $value);
+                    // Upload and save image
+                    if ($name == 'site_logo') {
+                        if ($request->hasFile($name) && $request->file($name)->isValid()) {
+                            \Acelle\Model\Setting::uploadSiteLogo($request->file($name));
+                        }
+                    } else {
+                        if ($settings[$name]['cat'] == 'general' && $request->user()->admin->getPermission('setting_general') == 'yes') {
+                            \Acelle\Model\Setting::set($name, $value);
+                        }
                     }
                 }
             }

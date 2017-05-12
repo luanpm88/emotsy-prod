@@ -2,17 +2,17 @@
 <html lang="en">
 <head>
 	<title>@yield('title') - {{ \Acelle\Model\Setting::get("site_name") }}</title>
-	
+
 	@include('layouts._favicon')
-	
+
 	@include('layouts._head')
-	
+
 	@include('layouts._css')
-	
+
 	@include('layouts._js')
-	
+
 	@include('layouts._user_script')
-	
+
 </head>
 
 <body class="navbar-top color-scheme-{{ Auth::user()->getFrontendScheme() }}">
@@ -21,7 +21,7 @@
 	<div class="navbar navbar-inverse navbar-fixed-top">
 		<div class="navbar-header">
 			<a class="navbar-brand" href="{{ action('HomeController@index') }}">
-				<img src="{{ URL::asset('assets/images/logo_light.png') }}" alt="">
+				<img src="{{ URL::asset(\Acelle\Model\Setting::getSiteLogo()['small']) }}" alt="">
 			</a>
 
 			<ul class="nav navbar-nav pull-right visible-xs-block">
@@ -49,7 +49,7 @@
 			</ul>
 
 			<ul class="nav navbar-nav navbar-right">
-				
+
 				@include('layouts._top_activity_log')
 
 				<li class="dropdown dropdown-user">
@@ -82,13 +82,13 @@
 		</div>
 	</div>
 	<!-- /main navbar -->
-	
+
 	<!-- Page header -->
 	<div class="page-header">
 		<div class="page-header-content">
-			
+
 			@yield('page_header')
-			
+
 		</div>
 	</div>
 	<!-- /page header -->
@@ -101,13 +101,13 @@
 
 			<!-- Main content -->
 			<div class="content-wrapper">
-			
+
 				<!-- display flash message -->
 				@include('common.errors')
-				
+
 				<!-- main inner content -->
 				@yield('content')
-                
+
 			</div>
 			<!-- /main content -->
 
@@ -123,8 +123,8 @@
 
 	</div>
 	<!-- /page container -->
-	
+
 	@include("layouts._modals")
-	
+
 </body>
 </html>

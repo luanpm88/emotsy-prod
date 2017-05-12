@@ -1877,4 +1877,5 @@ return [
     'campaign_intro_plain-text' => 'Send a plain-text email without link tracking, images, or HTML.',
     'you_are_already_unsubscribed' => 'You are already unsubscribed!',
     'app.notice.title' => 'Notice',
+    'site_logo' => 'Site logo',
 ];
