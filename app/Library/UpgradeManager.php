@@ -23,7 +23,7 @@
 namespace Acelle\Library;
 
 use ZipArchive;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Log as LaravelLog; // something wrong, cannot use the default name Log
 
 class UpgradeManager
 {
@@ -158,7 +158,7 @@ class UpgradeManager
      */
     public function run()
     {
-        Log::info('Start upgrading');
+        LaravelLog::info('Start upgrading');
         $meta = $this->getMetaInfo();
         $updates = $meta['updated'];
         $deletes = $meta['deleted'];
@@ -167,36 +167,36 @@ class UpgradeManager
         foreach($updates as $file) {
             $source = join_paths($this->source, $file);
             $target = join_paths($this->target, $file);
-            Log::info("Replacing {$target}");
+            LaravelLog::info("Replacing {$target}");
             if (!copy($source, $target)) {
-                Log::error("Cannot replace file {$target}");
+                LaravelLog::error("Cannot replace file {$target}");
                 throw new \Exception("Cannot replace file {$target}");
             }
         }
 
         foreach($deletes as $file) {
             $target = join_paths($this->target, $file);
-            Log::info("Deleting {$target}");
+            LaravelLog::info("Deleting {$target}");
             @unlink($target);
         }
 
         foreach($packages as $dir) {
             $source = join_paths($this->source, 'vendor', $dir);
             $target = join_paths($this->target, 'vendor', $dir);
-            Log::info("Replacing {$target}");
+            LaravelLog::info("Replacing {$target}");
             $this->rm($target);
             $this->copy($source, $target);
         }
 
-        Log::info("Cleaning up");
+        LaravelLog::info("Cleaning up");
         // cleanup
         $this->cleanup();
 
         // reload the config & run migration
-        Log::info("Start caching & migrating");
+        LaravelLog::info("Start caching & migrating");
         artisan_config_cache();
         artisan_migrate();
-        Log::info("All done!");
+        LaravelLog::info("All done!");
     }
 
     /**
