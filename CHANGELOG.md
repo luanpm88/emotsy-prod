@@ -1,3 +1,11 @@
+3.0.2 / 2017-05-xx
+==================
+
+ * Added: 
+ * Added:
+ * Fixed: delivery handler issue with SSL
+ * Fixed: reduce the number of running background jobs
+
 3.0.1 / 2017-05-11
 ==================
 
