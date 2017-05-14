@@ -2183,3 +2183,28 @@ input.mini-input {
 .sweet-alert p {
     margin: 0;
 }
+.navbar-brand {
+    padding: 0;
+    height: 53px;
+}
+.navbar-brand > img {
+    margin-top: 0px;
+    max-height: 53px;
+    max-width: 140px;
+}
+.navbar-brand {
+    padding: 0;
+    height: 53px;
+    width: 140px;
+    text-align: center;
+    position: relative;
+    display: inline-block;
+    line-height: 50px;
+}
+.navbar-brand > img {
+    margin: 0 auto;
+    max-height: 53px;
+    max-width: 140px;
+    vertical-align: middle;
+    display: inline-block;
+}

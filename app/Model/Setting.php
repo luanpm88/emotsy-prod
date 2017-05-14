@@ -128,15 +128,20 @@ class Setting extends Model
                 'value' => 'Email Marketing Application',
                 'type' => 'text',
             ],
-            'site_logo' => [
-                'cat' => 'general',
-                'value' => '',
-                'type' => 'image',
-            ],
             'site_keyword' => [
                 'cat' => 'general',
                 'value' => 'Email Marketing, Campaigns, Lists',
                 'type' => 'text',
+            ],
+            'site_logo_small' => [
+                'cat' => 'general',
+                'value' => '',
+                'type' => 'image',
+            ],
+            'site_logo_big' => [
+                'cat' => 'general',
+                'value' => '',
+                'type' => 'image',
             ],
             'license' => [
                 'cat' => 'license',
@@ -360,7 +365,7 @@ class Setting extends Model
      *
      * @var boolean
      */
-    public static function uploadSiteLogo($file)
+    public static function uploadSiteLogo($file, $type)
     {
         $path = 'images/';
         $upload_path = public_path($path);
@@ -369,39 +374,15 @@ class Setting extends Model
             mkdir($upload_path, 0777, true);
         }
 
-        $filename = 'site-logo.'.$file->getClientOriginalExtension();
+        $filename = $type.'.'.$file->getClientOriginalExtension();
 
         // save to server
         $file->move($upload_path, $filename);
 
         // create thumbnails
         $img = \Image::make($upload_path.$filename);
-        $img->fit(300, 63)->save($upload_path.$filename.'.big.jpg');
-        $img->fit(120, 25)->save($upload_path.$filename.'.small.jpg');
 
-        self::set('site_logo', $path.$filename);
+        self::set($type, $path.$filename);
         return true;
-    }
-
-    /**
-     * Get site logo.
-     *
-     * @var void
-     */
-    public static function getSiteLogo()
-    {
-        $path = self::get('site_logo');
-        $upload_path = public_path($path);
-        if (!$path || !file_exists($upload_path)) {
-            return [
-                'big' => 'images/logo_big.png',
-                'small' => 'assets/images/logo_light.png',
-            ];
-        } else {
-            return [
-                'big' => $path.'.big.jpg',
-                'small' => $path.'.small.jpg',
-            ];
-        }
     }
 }

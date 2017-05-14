@@ -12,7 +12,7 @@
                                 'type' => $setting['type'],
                                 'class' => (isset($setting['class']) ? $setting['class'] : "" ),
                                 'name' => $name,
-                                'value' => \Acelle\Model\Setting::get('site_logo') && $name == 'site_logo' ? \URL::asset(\Acelle\Model\Setting::getSiteLogo()['small']) : $setting['value'],
+                                'value' => $setting['value'],
                                 'label' => trans('messages.' . $name),
                                 'help_class' => 'setting',
                                 'options' => (isset($setting['options']) ? $setting['options'] : "" ),

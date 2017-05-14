@@ -23,7 +23,11 @@
 	<div class="navbar navbar-{{ Auth::user()->customer->getColorScheme() == "white" ? "default" : "inverse" }} navbar-fixed-top">
 		<div class="navbar-header">
 			<a class="navbar-brand" href="{{ action('HomeController@index') }}">
-				<img src="{{ URL::asset('assets/images/logo_' . (Auth::user()->customer->getColorScheme() == "white" ? "dark" : "light") . '.png') }}" alt="">
+				@if (\Acelle\Model\Setting::get('site_logo_small'))
+                    <img src="{{ URL::asset(\Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
+                @else
+                    <img src="{{ URL::asset('images/default_site_logo_small_' . (Auth::user()->customer->getColorScheme() == "white" ? "dark" : "light") . '.png') }}" alt="">
+                @endif
 			</a>
 
 			<ul class="nav navbar-nav pull-right visible-xs-block">
