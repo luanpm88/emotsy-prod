@@ -21,12 +21,12 @@ gitdir = ARGV[1]
 # Get deleted files
 deleted = []
 for version in old_versions
-  deleted += `git --git-dir #{File.join(gitdir, '.git')} diff --diff-filter=D --name-only #{version} #{new_version}`.split("\n")
+  deleted += `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} diff --diff-filter=D --name-only #{version} #{new_version}`.split("\n")
   deleted.uniq!
 end
 
 # Get updated flies
-updated = `git --git-dir #{File.join(gitdir, '.git')} diff --diff-filter=DM --name-only #{last_supported} #{new_version}`.split("\n")
+updated = `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} diff --diff-filter=DM --name-only #{last_supported} #{new_version}`.split("\n")
 updated << 'VERSION'
 
 for f in updated
