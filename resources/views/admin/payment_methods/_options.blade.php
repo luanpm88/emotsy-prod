@@ -48,6 +48,7 @@
         <div class="col-md-4">
             @include('helpers.form_control', [
 				'type' => 'select',
+				'class' => 'hook2',
 				'name' => 'options[environment]',
                 'label' => trans('messages.environment'),
 				'value' => $payment_method->getOption('environment'),
@@ -62,6 +63,7 @@
 		<div class="col-md-4">
             @include('helpers.form_control', [
 				'type' => 'text',
+				'class' => 'hook2',
 				'name' => 'options[merchantId]',
                 'label' => trans('messages.merchant_id'),
 				'value' => $payment_method->getOption('merchantId'),
@@ -74,6 +76,7 @@
 		<div class="col-md-4">
             @include('helpers.form_control', [
 				'type' => 'text',
+				'class' => 'hook2',
 				'name' => 'options[publicKey]',
                 'label' => trans('messages.public_key'),
 				'value' => $payment_method->getOption('publicKey'),
@@ -84,6 +87,7 @@
 		<div class="col-md-4">
             @include('helpers.form_control', [
 				'type' => 'text',
+				'class' => 'hook2',
 				'name' => 'options[privateKey]',
                 'label' => trans('messages.private_key'),
 				'value' => $payment_method->getOption('privateKey'),
@@ -92,6 +96,26 @@
 			])
         </div>
     </div>
+	<div class="row" style="height: 250px">
+		<div class="col-md-8">
+			<h3>Select Merchant Account ID</h3>
+			<div
+				class="ajax-detail-box"
+				data-url="{{ action('Admin\PaymentMethodController@braintreeMerchantAccountSelect', $payment_method->uid) }}"
+				data-form=".payment-method-form"
+				hook="hook2"
+				loading-message="{{ trans('messages.finding_merchant_accounts') }}"
+			>
+			</div>
+		</div>
+	</div>
+
+	<script>
+		$(document).ready(function() {
+			$('[name="options[environment]"]').trigger('change');
+		});
+	</script>
+
 @endif
 
 @if ($payment_method->type == \Acelle\Model\PaymentMethod::TYPE_STRIPE_CREDIT_CARD)

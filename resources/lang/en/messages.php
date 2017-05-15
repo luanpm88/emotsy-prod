@@ -1879,4 +1879,9 @@ return [
     'app.notice.title' => 'Notice',
     'site_logo_small' => 'Site logo (small)',
     'site_logo_big' => 'Site logo (big)',
+    'site_logo' => 'Site logo',
+    'merchant_account' => 'Merchant Account ID',
+    'payment_methods.can_not_get_merchant_accounts' => 'Can not get merchant accounts. Please check the account information above again.',
+    'finding_merchant_accounts' => 'Finding merchant accounts...',
+    'currency_code' => 'Currency code',
 ];

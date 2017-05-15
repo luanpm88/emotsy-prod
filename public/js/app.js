@@ -9,6 +9,55 @@
 *
 * ---------------------------------------------------------------------------- */
 
+function showAjaxDetailBox(items) {
+    items.each(function() {
+        var container = $(this);
+        var form_class = container.attr('data-form');
+        var form = $(form_class);
+        var url = container.attr('data-url');
+        var method = form.attr('method');
+        var hook_class = container.attr('hook');
+        var loading_message = container.attr('loading-message');
+
+        if (typeof(hook_class) === 'undefined') {
+            hook_class = 'hook';
+        }
+
+        if(typeof(method) === 'undefined') {
+            method = 'POST';
+        }
+
+        $(document).on('change', form_class + ' .' + hook_class, function() {
+            data = form.serialize();
+            
+            if (typeof(loading_message) !== 'undefined') {
+                container.html(loading_message);
+            }
+
+            $.ajax({
+                method: 'GET',
+                url: url,
+                data: data
+            })
+            .done(function(msg) {
+                container.html(msg);
+                container.find('.pickadate').pickadate({format: 'yyyy-mm-dd', selectYears: 100});
+                updatePickadateDateMask(container.find('.pickadate'));
+
+                // Select2
+                container.find('select').select2({
+                    minimumResultsForSearch: 101,
+                    templateResult: formatSelect2TextOption,
+                    templateSelection: formatSelect2TextSelected
+                });
+
+                // showAjaxDetailBox(items)
+                showAjaxDetailBox(container.find('.ajax-detail-box'));
+            });
+        });
+    });
+}
+
 function formatSelect2TextSelected(d) {
     var text = d.text;
     var parts = text.split('|||');
@@ -1308,38 +1357,7 @@ $(function() {
     });
 
     // ajax form review link
-    $('.ajax-detail-box').each(function() {
-        var container = $(this);
-        var form_class = container.attr('data-form');
-        var form = $(form_class);
-        var url = container.attr('data-url');
-        var method = form.attr('method');
-        var action = form.attr('action');
-
-        if(typeof(method) === 'undefined') {
-            method = 'POST';
-        }
-
-        $(document).on('change', form_class + ' .hook', function() {
-            $.ajax({
-                method: 'GET',
-                url: url,
-                data: form.serialize()
-            })
-            .done(function(msg) {
-                container.html(msg);
-                container.find('.pickadate').pickadate({format: 'yyyy-mm-dd', selectYears: 100});
-                updatePickadateDateMask(container.find('.pickadate'));
-
-                // Select2
-                container.find('select').select2({
-                    minimumResultsForSearch: 101,
-                    templateResult: formatSelect2TextOption,
-                    templateSelection: formatSelect2TextSelected
-                });
-            });
-        });
-    });
+    showAjaxDetailBox($('.ajax-detail-box'));
 
     // Payment method button click
     $(document).on('click', '.payment_method_type_button', function() {

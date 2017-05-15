@@ -2208,3 +2208,6 @@ input.mini-input {
     vertical-align: middle;
     display: inline-block;
 }
+.alert-danger {
+    border: none;
+}

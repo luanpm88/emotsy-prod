@@ -90,6 +90,7 @@ class PaymentController extends Controller {
                 $result = \Braintree_Transaction::sale([
                     'amount' => $subscription->price,
                     'paymentMethodNonce' => $nonceFromTheClient,
+                    'merchantAccountId' => $payment_method->getOption('merchantAccountID'),
                     "orderId" => $order_id,
                     'options' => [
                       'submitForSettlement' => True
@@ -151,6 +152,7 @@ class PaymentController extends Controller {
                 $result = \Braintree_Transaction::sale([
                     "amount" => $subscription->price,
                     "paymentMethodNonce" => $nonceFromTheClient,
+                    'merchantAccountId' => $payment_method->getOption('merchantAccountID'),
                     "orderId" => $order_id,
                     'options' => [
                       'submitForSettlement' => True

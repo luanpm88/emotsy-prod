@@ -204,7 +204,7 @@ class PaymentMethodController extends Controller
             $payment_method->save();
 
             $request->session()->flash('alert-success', trans('messages.payment_method.updated'));
-            return redirect()->action('Admin\PaymentMethodController@index');
+            return redirect()->action('Admin\PaymentMethodController@edit', $payment_method->uid);
         }
     }
 
@@ -349,5 +349,42 @@ class PaymentMethodController extends Controller
         return view('admin.payment_methods._options', [
             'payment_method' => $payment_method,
         ]);
+    }
+
+     /**
+     * Braintree merchant account select form.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function braintreeMerchantAccountSelect(Request $request, $uid=null) {
+        if ($uid) {
+            $payment_method = \Acelle\Model\PaymentMethod::findByUid($uid);
+        } else {
+            $payment_method = new \Acelle\Model\PaymentMethod();
+        }
+
+        $options = $request->options;
+        if (!isset($options['merchantAccountID'])) {
+            $options['merchantAccountID'] = $payment_method->getOption('merchantAccountID');
+        }
+
+        $payment_method->fill($request->all());
+        $payment_method->options = json_encode($options);
+
+        $error = false;
+        $accounts = NULL;
+        try {
+            $accounts = $payment_method->getBraintreeMerchantAccounts();
+        } catch (\Exception $ex) {
+            $error = trans('messages.payment_methods.can_not_get_merchant_accounts');
+        }
+
+        return view('admin.payment_methods._braintree_merchant_accounts_select', [
+            'payment_method' => $payment_method,
+            'accounts' => $accounts,
+            'error' => $error,
+        ]);
+
     }
 }
