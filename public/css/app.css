@@ -2211,3 +2211,6 @@ input.mini-input {
 .alert-danger {
     border: none;
 }
+.ui-pnotify {
+    max-width: 100%;
+}

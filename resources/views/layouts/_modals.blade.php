@@ -153,7 +153,7 @@
 		<div class="btn-close-pnotify"><i class="icon-cross2"></i></div>
 		@if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
 			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-				<h4 class="ui-pnotify-title text-nowrap">{!! trans('messages.current_login_as', ["name" => Auth::user()->customer->displayName()]) !!}</h4>
+				<h4 class="ui-pnotify-title">{!! trans('messages.current_login_as', ["name" => Auth::user()->customer->displayName()]) !!}</h4>
 				<div class="ui-pnotify-text">
 					{!! trans('messages.click_to_return_to_origin_user', ["link" => action("CustomerController@loginBack")]) !!}
 				</div>
@@ -162,7 +162,7 @@
 		@endif
 		@if (null !== Session::get('orig_admin_id') && Auth::user()->admin)
 			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-				<h4 class="ui-pnotify-title text-nowrap">{!! trans('messages.current_login_as', ["name" => Auth::user()->admin->displayName()]) !!}</h4>
+				<h4 class="ui-pnotify-title">{!! trans('messages.current_login_as', ["name" => Auth::user()->admin->displayName()]) !!}</h4>
 				<div class="ui-pnotify-text">
 					{!! trans('messages.click_to_return_to_origin_user', ["link" => action("Admin\AdminController@loginBack")]) !!}
 				</div>
@@ -171,7 +171,7 @@
 		@endif
 		@if (Acelle\Model\Setting::get("site_online") == 'false')
 			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-				<h4 class="ui-pnotify-title text-nowrap">{!! trans('messages.site_is_offline') !!}</h4>
+				<h4 class="ui-pnotify-title">{!! trans('messages.site_is_offline') !!}</h4>
 				<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
 			</div>
 		@endif
@@ -182,7 +182,7 @@
 				\Auth::user()->customer->notHaveAnyPlan() &&
 				!\Auth::user()->customer->hasAdminAccount())
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-					<h4 class="ui-pnotify-title text-nowrap">
+					<h4 class="ui-pnotify-title">
 					{!! trans('messages.not_have_any_plan_notification', [
 						'link' => action('AccountController@subscription'),
 					]) !!}
@@ -198,7 +198,7 @@
 				!\Auth::user()->customer->hasAdminAccount()
 			)
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-					<h4 class="ui-pnotify-title text-nowrap">
+					<h4 class="ui-pnotify-title">
 					{!! trans('messages.not_have_active_plan_notification', [
 						'link' => action('AccountController@subscription'),
 					]) !!}
@@ -215,7 +215,7 @@
 				!\Auth::user()->customer->hasAdminAccount()
 			)
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-					<h4 class="ui-pnotify-title text-nowrap">
+					<h4 class="ui-pnotify-title">
 					{!! trans('messages.not_have_any_customer_sending_server', [
 						'link' => action('SendingServerController@select'),
 					]) !!}
@@ -231,7 +231,7 @@
 				!\Acelle\Model\SendingServer::getAllAdminActive()->count()
 			)
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-					<h4 class="ui-pnotify-title text-nowrap">
+					<h4 class="ui-pnotify-title">
 					{!! trans('messages.not_have_any_admin_sending_server', [
 						'link' => action('Admin\SendingServerController@select'),
 					]) !!}
