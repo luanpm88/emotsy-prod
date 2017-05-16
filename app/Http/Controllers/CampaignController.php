@@ -1454,7 +1454,7 @@ class CampaignController extends Controller
             return $this->notAuthorized();
         }
 
-        $subscribers = $campaign->subscribers()->groupBy('subscribers.id');
+        $subscribers = $campaign->subscribers()->groupBy('subscribers.email');
 
         return view('campaigns.subscribers', [
             'subscribers' => $subscribers,
@@ -1475,7 +1475,7 @@ class CampaignController extends Controller
             return;
         }
 
-        $subscribers = $campaign->subscribers($request->all())->groupBy('subscribers.id')
+        $subscribers = $campaign->subscribers($request->all())->groupBy('subscribers.email')
                                 ->paginate($request->per_page);
         $fields = $campaign->defaultMailList->getFields->whereIn('uid', explode(',', $request->columns));
 

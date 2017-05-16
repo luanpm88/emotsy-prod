@@ -337,7 +337,7 @@ class Automation extends Model
 			$query = $query->whereRaw(implode(' OR ', $conditions));
 		}
 
-        return $query->distinct('subscribers.id');
+        return $query->distinct('subscribers.email');
     }
 
     /**
@@ -706,6 +706,6 @@ class Automation extends Model
      */
     public function subscribersCount()
     {
-        return $this->subscribers()->count('subscribers.id');
+        return $this->subscribers()->count('subscribers.email');
     }
 }

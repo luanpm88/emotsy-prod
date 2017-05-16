@@ -1218,7 +1218,7 @@ class Campaign extends Model
             }
         }
 
-        return $query->distinct('subscribers.id');
+        return $query->distinct('subscribers.email');
     }
 
     /**
@@ -2446,7 +2446,7 @@ class Campaign extends Model
      */
     public function subscribersCount()
     {
-        return $this->subscribers()->count('subscribers.id');
+        return $this->subscribers()->count('subscribers.email');
     }
 
     /**
