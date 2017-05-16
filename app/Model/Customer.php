@@ -1012,7 +1012,7 @@ class Customer extends Model
         $last_subscription = $this->subscriptions()
             ->orderBy('created_at', 'desc')->first();
 
-        if(is_object($last_subscription)) {
+        if(is_object($last_subscription) && isset($last_subscription->end_at)) {
             return $last_subscription->end_at->addDay(1);
         } else {
             return \Acelle\Library\Tool::customerDateTime(\Carbon\Carbon::now());

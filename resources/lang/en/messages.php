@@ -1884,4 +1884,5 @@ return [
     'payment_methods.can_not_get_merchant_accounts' => 'Can not get merchant accounts. Please check the account information above again.',
     'finding_merchant_accounts' => 'Finding merchant accounts...',
     'currency_code' => 'Currency code',
+    'user.activated' => 'Your account was successfully activated!<br>Please login to continue',
 ];
