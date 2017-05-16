@@ -64,7 +64,11 @@
 
 						<div class="text-center login-header">
 							<a class="main-logo-big" href="{{ action('HomeController@index') }}">
-								<img src="{{ URL::asset(\Acelle\Model\Setting::get('site_logo_big')) }}" alt="">
+								@if (\Acelle\Model\Setting::get('site_logo_big'))
+									<img src="{{ URL::asset(\Acelle\Model\Setting::get('site_logo_big')) }}" alt="">
+								@else
+									<img src="{{ URL::asset('images/logo_big.png') }}" alt="">
+								@endif
 							</a>
 						</div>
 
