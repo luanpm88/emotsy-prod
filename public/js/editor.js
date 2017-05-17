@@ -11,9 +11,9 @@ $(document).ready(function() {
         ],
         toolbar: 'insertfile undo redo | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media',
         content_css: [
+          APP_URL+'/tinymce/skins/lightgray/content.fixed.css',
           APP_URL+'/css/all.css',
           APP_URL+'/css/page.css',
-          APP_URL+'/tinymce/skins/lightgray/content.fixed.css',
         ],
 
         external_filemanager_path:APP_URL+"/filemanager/",
@@ -33,8 +33,8 @@ $(document).ready(function() {
         ],
         toolbar: 'insertfile undo redo | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media',
         content_css: [
-          APP_URL+'/css/email.css',
           APP_URL+'/tinymce/skins/lightgray/content.fixed.css',
+          APP_URL+'/css/email.css',
         ],
 
         external_filemanager_path:APP_URL+"/filemanager/",
