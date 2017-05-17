@@ -35,7 +35,7 @@
                             {{ trans('messages.upgrade.error.something_wrong') }}
                         </p>
 
-                        <h3>trans('messages.upgrade.title.in_progress')</h3>
+                        <h3>{{ trans('messages.upgrade.title.in_progress') }}</h3>
                         <p>{!! trans('messages.upgrade.error.cannot_write') !!}</p>
                         <p>
                             <pre>{!! implode("\n", $failed) !!}</pre>
