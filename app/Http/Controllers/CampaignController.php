@@ -1783,7 +1783,7 @@ class CampaignController extends Controller
 
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
-            return view('somethingWentWrong', ['message' => $e->getMessage()]);
+            return view('somethingWentWrong', ['message' => trans('messages.message_not_found')]);
         }
     }
 
