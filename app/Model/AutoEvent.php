@@ -1105,8 +1105,8 @@ class AutoEvent extends Model
     {
         return $this->automation->subscribers()
                     ->whereRaw(sprintf(table('subscribers') . '.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))
-                    ->where('created_at', '>=', $this->created_at)
-                    ->whereRaw(sprintf("COALESCE(". table('subscribers') .".subscription_type, '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
+                    ->where('subscribers.created_at', '>=', $this->created_at)
+                    ->whereRaw(sprintf("COALESCE(" . table('subscribers.subscription_type') . ", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
                     ->get();
     }
 
