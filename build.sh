@@ -69,6 +69,8 @@ rm -fr bootstrap/cache/config.php
 rm -fr php-cs-fixer
 rm -fr composer.phar
 rm -fr .env.example
+rm -fr doc
+rm -fr reset
 
 # copy default lang
 rm -fr resources/lang/default
