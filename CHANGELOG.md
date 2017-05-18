@@ -1,10 +1,14 @@
 3.0.2 / 2017-05-xx
 ==================
 
- * Added: 
- * Added:
+ * Added: support working with Braintree sub-accounts
+ * Added: support updating site logo
  * Fixed: delivery handler issue with SSL
- * Fixed: reduce the number of running background jobs
+ * Fixed: eliminate duplicate background jobs
+ * Fixed: automation issue with list subscription
+ * Fixed: prevent duplicate unsubscription
+ * Fixed: better mobile compatibility
+ * Fixed: upgrade manager issue with old PHP versions
 
 3.0.1 / 2017-05-11
 ==================
