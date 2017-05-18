@@ -71,6 +71,7 @@ rm -fr composer.phar
 rm -fr .env.example
 rm -fr doc
 rm -fr reset
+rm -fr apigen.phar
 
 # copy default lang
 rm -fr resources/lang/default
