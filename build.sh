@@ -74,8 +74,7 @@ rm -fr .env.example
 rm -fr resources/lang/default
 cp -r resources/lang/en resources/lang/default
 
-# run artisan
-php artisan config:cache
+# generate unique key
 php artisan key:generate
 
 # Generate the upgrade patch file

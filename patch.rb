@@ -6,7 +6,7 @@ require 'json'
 
 # Settings
 old_versions = ['3.0.1']      # sort by chronological order
-packages = []     # vendor packages to be replaced
+packages = []                 # vendor packages to be replaced
 
 # Auto setting
 release_date = Time.now.to_s
