@@ -5,7 +5,7 @@ class Uidd
 {
   static public function get() {
 		require '../../bootstrap/autoload.php';
-		
+
     $app = require_once '../../bootstrap/app.php';
 
     $kernel = $app->make('Illuminate\Contracts\Http\Kernel');
@@ -13,13 +13,13 @@ class Uidd
     $response = $kernel->handle(
       $request = Illuminate\Http\Request::capture()
     );
-    
+
     $id = $app['encrypter']->decrypt($_COOKIE[$app['config']['session.cookie']]);
     $app['session']->driver()->setId($id);
     $app['session']->driver()->start();
-    
+
     $user_uid = $app['auth']->user()->uid;
-    
+
     // Make folder if not exist
 		if (!file_exists('../source')) {
         mkdir('../source', 0777, true);
@@ -35,7 +35,7 @@ class Uidd
 				fwrite($fp,$content);
 				fclose($fp);
     }
-		
+
     $source_path = '../source/' . $user_uid;
     $thumbs_path = '../thumbs/' . $user_uid;
     if (!file_exists($source_path)) {
@@ -52,11 +52,11 @@ class Uidd
 				fwrite($fp,$content);
 				fclose($fp);
     }
-    
+
     return [
 				"user_uid" => $user_uid,
-				"max_size_upload_total" => $app['auth']->user()->customer->getOption("max_size_upload_total"),
-				"max_file_size_upload" => $app['auth']->user()->customer->getOption("max_file_size_upload"),
+				"max_size_upload_total" => is_object($app['auth']->user()->customer) ? $app['auth']->user()->customer->getOption("max_size_upload_total") : 999999999,
+				"max_file_size_upload" => is_object($app['auth']->user()->customer) ? $app['auth']->user()->customer->getOption("max_file_size_upload") : 999999999,
 		];
   }
 }
