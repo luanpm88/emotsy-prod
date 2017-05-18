@@ -21,11 +21,6 @@
 					<h5 class="no-margin text-bold">
 						<a class="kq_search" href="{{ action('EmailVerificationServerController@edit', $server->uid) }}">{{ $server->name }}</a>
 					</h5>
-					<span class="text-muted">
-						{!! is_object($server->admin) ? '<i class="icon-user-tie"></i>' . $server->admin->displayName() : '' !!}
-						{!! is_object($server->customer) ? '<i class="icon-user"></i>' . $server->customer->displayName() : '' !!}
-					</span>
-					<br />
 					<span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($server->created_at) }}</span>
 				</td>
 				<td>
