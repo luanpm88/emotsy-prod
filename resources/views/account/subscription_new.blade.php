@@ -1,6 +1,6 @@
 @extends('layouts.frontend')
 
-@section('title', trans('messages.api_token'))
+@section('title', trans('messages.subscriptions'))
 
 @section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
