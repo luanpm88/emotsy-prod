@@ -407,6 +407,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('payments/paypal/{subscription_uid}', 'PaymentController@paypal');
 
     // Email verification servers
+    Route::get('email_verification_servers/options', 'EmailVerificationServerController@options');
     Route::get('email_verification_servers/listing/{page?}', 'EmailVerificationServerController@listing');
     Route::get('email_verification_servers/sort', 'EmailVerificationServerController@sort');
     Route::get('email_verification_servers/delete', 'EmailVerificationServerController@delete');
