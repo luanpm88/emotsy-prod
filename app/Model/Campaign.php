@@ -507,6 +507,7 @@ class Campaign extends Model
                 // @todo wrap up the probability checking here
                 if (($i % 50) == 0) {
                     if ($this->refreshStatus()->isPaused()) {
+                        event(new \Acelle\Events\CampaignUpdated($this, false));
                         throw new CampaignPausedException();
                     }
                 }
