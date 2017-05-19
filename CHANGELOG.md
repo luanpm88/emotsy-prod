@@ -1,4 +1,4 @@
-3.0.2 / 2017-05-xx
+3.0.2 / 2017-05-20
 ==================
 
  * Added: support working with Braintree sub-accounts

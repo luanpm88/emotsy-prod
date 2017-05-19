@@ -73,6 +73,10 @@ rm -fr doc
 rm -fr reset
 rm -fr apigen.phar
 
+# Reduce file size
+rm -fr vendor/paypal/rest-api-sdk-php/sample
+rm -fr vendor/paypal/rest-api-sdk-php/tests
+
 # copy default lang
 rm -fr resources/lang/default
 cp -r resources/lang/en resources/lang/default
