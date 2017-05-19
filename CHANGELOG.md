@@ -1,7 +1,7 @@
 3.0.2 / 2017-05-20
 ==================
 
- * Added: support working with Braintree sub-accounts
+ * Added: support working with Braintree's merchant accounts
  * Added: support updating site logo
  * Fixed: delivery handler issue with SSL
  * Fixed: eliminate duplicate background jobs
