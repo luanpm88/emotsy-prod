@@ -17,13 +17,13 @@ class LicenseHelper
     {
         $ch = curl_init();
 
-        curl_setopt($ch, CURLOPT_URL,"http://verify.acellemail.com/");
+        curl_setopt($ch, CURLOPT_URL,"http://verify.acellemail.com/"); // @todo hard-coded here
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_TIMEOUT_MS, 10000);
         curl_setopt($ch, CURLOPT_POSTFIELDS,
             http_build_query(array(
                 'purchase-code' => $license,
-                'item-id' => '17796082'
+                'item-id' => '17796082' // @todo hard-coded here
             )
         ));
         curl_setopt($ch,CURLOPT_USERAGENT,md5($license));
