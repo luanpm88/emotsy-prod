@@ -1084,7 +1084,6 @@ class CampaignController extends Controller
             $subscriber->save();
 
             // Page content
-            $customer = $request->user()->customer;
             $list = $subscriber->mailList;
             $layout = \Acelle\Model\Layout::where('alias', 'unsubscribe_success_page')->first();
             $page = \Acelle\Model\Page::findPage($list, $layout);
