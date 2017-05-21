@@ -31,14 +31,9 @@
 	</div>
 </div>
 <div class="row">
-	<div class="col-md-12 ajax-detail-box" data-url="{{ action('Admin\PaymentMethodController@options') }}" data-form=".payment-method-form">
+	<div class="col-md-12 ajax-detail-box" data-url="{{ action('Admin\PaymentMethodController@options', $payment_method->uid) }}" data-form=".payment-method-form">
 		@include('admin.payment_methods._options', [
 			'payment_method' => $payment_method
 		])
 	</div>
-</div>
-
-<hr />
-<div class="text-left">
-	<button type='submit' class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 </div>

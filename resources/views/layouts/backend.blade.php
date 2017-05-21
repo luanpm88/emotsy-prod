@@ -23,7 +23,11 @@
 	<div class="navbar navbar-{{ Auth::user()->admin->getColorScheme() == "white" ? "default" : "inverse" }} navbar-fixed-top">
 		<div class="navbar-header">
 			<a class="navbar-brand" href="{{ action('Admin\HomeController@index') }}">
-				<img src="{{ URL::asset('assets/images/logo_' . (Auth::user()->admin->getColorScheme() == "white" ? "dark" : "light") . '.png') }}" alt="">
+				@if (\Acelle\Model\Setting::get('site_logo_small'))
+                    <img src="{{ URL::asset(\Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
+                @else
+                    <img src="{{ URL::asset('images/default_site_logo_small_' . (Auth::user()->admin->getColorScheme() == "white" ? "dark" : "light") . '.png') }}" alt="">
+                @endif
 			</a>
 
 			<ul class="nav navbar-nav pull-right visible-xs-block">
@@ -144,6 +148,7 @@
 					|| Auth::user()->admin->getPermission("sending_server_read") != 'no'
 					|| Auth::user()->admin->getPermission("bounce_handler_read") != 'no'
 					|| Auth::user()->admin->getPermission("fbl_handler_read") != 'no'
+					|| Auth::user()->admin->getPermission("email_verification_server_read") != 'no'
 				)
 					<li class="dropdown language-switch"
 						rel0="BounceHandlerController"
@@ -181,6 +186,13 @@
 								<li rel0="SendingDomainController">
 									<a href="{{ action('Admin\SendingDomainController@index') }}">
 										<i class="icon-earth"></i> {{ trans('messages.sending_domains') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->admin->getPermission("email_verification_server_read") != 'no')
+								<li rel0="EmailVerificationServerController">
+									<a href="{{ action('Admin\EmailVerificationServerController@index') }}">
+										<i class="icon-database-check"></i> {{ trans('messages.email_verification_servers') }}
 									</a>
 								</li>
 							@endif
@@ -244,13 +256,13 @@
 					|| Auth::user()->admin->getPermission("report_unsubscribe_log") != 'no'
 				)
 					<li class="dropdown language-switch"
-						 rel0="TrackingLogController"
-						 rel1="OpenLogController"
-						 rel2="ClickLogController"
-						 rel3="FeedbackLogController"
-						 rel4="BlacklistController"
-						 rel5="UnsubscribeLogController"
-						 rel6="BounceLogController"
+						rel0="TrackingLogController"
+						rel1="OpenLogController"
+						rel2="ClickLogController"
+						rel3="FeedbackLogController"
+						rel4="BlacklistController"
+						rel5="UnsubscribeLogController"
+						rel6="BounceLogController"
 					>
 						<a class="dropdown-toggle" data-toggle="dropdown">
 							<i class="icon-file-text2"></i> {{ trans('messages.report') }}

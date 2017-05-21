@@ -1,3 +1,25 @@
+3.0.2 / 2017-05-20
+==================
+
+ * Added: support working with Braintree's merchant accounts
+ * Added: support updating site logo
+ * Fixed: delivery handler issue with SSL
+ * Fixed: eliminate duplicate background jobs
+ * Fixed: automation issue with list subscription
+ * Fixed: prevent duplicate unsubscription
+ * Fixed: better mobile compatibility
+ * Fixed: upgrade manager issue with old PHP versions
+
+3.0.1 / 2017-05-11
+==================
+
+ * Added: integration with email verification service Kickbox.io
+ * Added: integration with email verification service TheChecker.co
+ * Added: upgrade manager - allow upgrading directly from the admin dashboard
+ * Added: email web viewer (through the WEB_VIEW_URL tag)
+ * Added: table features for email builder
+ * Fixed: plain text campaign issue with ElasticEmail
+
 3.0.0-p3 / 2017-04-20
 ==================
 

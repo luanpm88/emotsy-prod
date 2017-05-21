@@ -147,6 +147,12 @@ class Log extends Model
             $link = is_object($item) ? action('SendingDomainController@edit', $item->uid) : '#deleted';
             $data['link'] = $link;
         }
+        // Email verification server
+        elseif ($this->type == 'email_verification_server') {
+            $item = EmailVerificationServer::find($data['id']);
+            $link = is_object($item) ? action('EmailVerificationServerController@edit', $item->uid) : '#deleted';
+            $data['link'] = $link;
+        }
 
         $message = trans('messages.log.'.$this->type.'.'.$this->name, $data);
 

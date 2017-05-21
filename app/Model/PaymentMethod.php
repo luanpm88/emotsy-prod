@@ -72,6 +72,7 @@ class PaymentMethod extends Model
 			$rules['options.merchantId'] = 'required';
 			$rules['options.publicKey'] = 'required';
 			$rules['options.privateKey'] = 'required';
+			$rules['options.merchantAccountID'] = 'required';
 		}
 
         if($this->type == PaymentMethod::TYPE_STRIPE_CREDIT_CARD) {
@@ -292,6 +293,61 @@ class PaymentMethod extends Model
         \Braintree_Configuration::privateKey($this->getOption('privateKey'));
 
 		return \Braintree_ClientToken::generate();
+    }
+
+	/**
+     * Set Braintree auth info.
+     *
+     * @return void
+     */
+    public function getBraintreeMerchantAccounts()
+    {
+        \Braintree_Configuration::environment($this->getOption('environment'));
+        \Braintree_Configuration::merchantId($this->getOption('merchantId'));
+        \Braintree_Configuration::publicKey($this->getOption('publicKey'));
+        \Braintree_Configuration::privateKey($this->getOption('privateKey'));
+
+		$gateway = \Braintree_Configuration::gateway();
+		$merchantAccountIterator = $gateway->merchantAccount()->all();
+
+		$accounts = [];
+		foreach($merchantAccountIterator as $merchantAccount) {
+			$accounts[] = $merchantAccount;
+		}
+
+		return $accounts;
+    }
+
+	/**
+     * Set Braintree auth info.
+     *
+     * @return void
+     */
+    public function getBraintreeMerchantAccountSelectOptions($accounts)
+    {
+		$options = [];
+		foreach($accounts as $merchantAccount) {
+			$options[] = ['value' => $merchantAccount->id, 'text' => $merchantAccount->id.' / '.$merchantAccount->currencyIsoCode.($merchantAccount->default ? ' (' . trans('messages.default').')' : '')];
+		}
+
+		return $options;
+    }
+
+	/**
+     * Get Braintree merchant account by ID.
+     *
+     * @return void
+     */
+    public function getBraintreeMerchantAccountByID($accounts, $id)
+    {
+		$options = [];
+		foreach($accounts as $merchantAccount) {
+			if ($merchantAccount->id == $id) {
+				return $merchantAccount;
+			}
+		}
+
+		return $accounts[0];
     }
 
 	/**

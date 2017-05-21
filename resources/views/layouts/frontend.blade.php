@@ -23,7 +23,11 @@
 	<div class="navbar navbar-{{ Auth::user()->customer->getColorScheme() == "white" ? "default" : "inverse" }} navbar-fixed-top">
 		<div class="navbar-header">
 			<a class="navbar-brand" href="{{ action('HomeController@index') }}">
-				<img src="{{ URL::asset('assets/images/logo_' . (Auth::user()->customer->getColorScheme() == "white" ? "dark" : "light") . '.png') }}" alt="">
+				@if (\Acelle\Model\Setting::get('site_logo_small'))
+                    <img src="{{ URL::asset(\Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
+                @else
+                    <img src="{{ URL::asset('images/default_site_logo_small_' . (Auth::user()->customer->getColorScheme() == "white" ? "dark" : "light") . '.png') }}" alt="">
+                @endif
 			</a>
 
 			<ul class="nav navbar-nav pull-right visible-xs-block">
@@ -63,11 +67,13 @@
 				</li>
 				@if(
 					Auth::user()->customer->can("read", new Acelle\Model\SendingServer()) ||
-					Auth::user()->customer->can("read", new Acelle\Model\SendingDomain())
+					Auth::user()->customer->can("read", new Acelle\Model\SendingDomain()) ||
+                    Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer())
 				)
 					<li class="dropdown language-switch"
 						rel0="SendingServerController"
 						rel1="SendingDomainController"
+                        rel2="EmailVerificationServerController"
 					>
 						<a class="dropdown-toggle" data-toggle="dropdown">
 							<i class="glyphicon glyphicon-transfer"></i> {{ trans('messages.sending') }}
@@ -85,6 +91,13 @@
 								<li rel0="SendingDomainController">
 									<a href="{{ action('SendingDomainController@index') }}">
 										<i class="icon-earth"></i> {{ trans('messages.sending_domains') }}
+									</a>
+								</li>
+							@endif
+                            @if (Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer()))
+								<li rel0="EmailVerificationServerController">
+									<a href="{{ action('EmailVerificationServerController@index') }}">
+										<i class="icon-database-check"></i> {{ trans('messages.email_verification_servers') }}
 									</a>
 								</li>
 							@endif

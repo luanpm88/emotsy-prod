@@ -88,7 +88,7 @@ class SystemJob extends Model
         $this->end_at = \Carbon\Carbon::now();
         $this->save();
     }
-    
+
     /**
      * Run time.
      *
@@ -127,35 +127,82 @@ class SystemJob extends Model
             self::destroy($this->id);
         });
     }
-    
+
     /**
-    * Check if system job is cancelled
-    *
-    * @return boolean
-    */
+     * Delete the all (Laravel) job records which have not been reserved
+     *
+     * @return collect
+     */
+    public function clearJobs()
+    {
+        // delete all system_jobs & jobs
+        DB::transaction(function() {
+            // delete jobs
+            $jobs = Job::where('reserved', 0)->get();
+            foreach($jobs as $job) {
+                $json = json_decode($job->payload, true);
+                try {
+                    $j = unserialize($json['data']['command']);
+                    if ($j->getSystemJob()->id == $this->id) {
+                        Job::destroy($job->id);
+                    }
+                } catch (\Exception $ex) {
+                    // delete orphan job
+                    Job::destroy($job->id);
+                }
+            }
+        });
+    }
+
+    /**
+     * Check if system job is cancelled
+     *
+     * @return boolean
+     */
     function isCancelled()
     {
         return $this->status == SystemJob::STATUS_CANCELLED;
     }
-    
+
     /**
-    * Check if system job is new
-    *
-    * @return boolean
-    */
+     * Check if system job is new
+     *
+     * @return boolean
+     */
     function isNew()
     {
         return $this->status == SystemJob::STATUS_NEW;
     }
-    
+
     /**
-    * Check if system job is new
-    *
-    * @return boolean
-    */
+     * Check if system job is failed
+     *
+     * @return boolean
+     */
+    function isFailed()
+    {
+        return $this->status == SystemJob::STATUS_FAILED;
+    }
+
+    /**
+     * Check if system job is new
+     *
+     * @return boolean
+     * @todo this method is for the two classes ImportSubscribersJob/ExportSubscribersJob only
+     */
     function isRunning()
     {
         $data = json_decode($this->data);
         return !(in_array($data->status, ['failed', 'done']) || $this->status == \Acelle\Model\SystemJob::STATUS_CANCELLED);
+    }
+
+    /**
+     * Get new pending jobs
+     *
+     * @return collection
+     */
+    public static function getNewJobs()
+    {
+        return self::where('status', '=', self::STATUS_NEW);
     }
 }

@@ -507,6 +507,7 @@ class Campaign extends Model
                 // @todo wrap up the probability checking here
                 if (($i % 50) == 0) {
                     if ($this->refreshStatus()->isPaused()) {
+                        event(new \Acelle\Events\CampaignUpdated($this, false));
                         throw new CampaignPausedException();
                     }
                 }
@@ -638,6 +639,7 @@ class Campaign extends Model
             'LIST_SUBJECT' => $this->defaultMailList->default_subject,
             'LIST_FROM_NAME' => $this->defaultMailList->from_name,
             'LIST_FROM_EMAIL' => $this->defaultMailList->from_email,
+            'WEB_VIEW_URL' => str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), Setting::get('url_web_view')),
         );
 
         // UPDATE_PROFILE_URL
@@ -1143,6 +1145,8 @@ class Campaign extends Model
             }
 
             $query = Subscriber::select("subscribers.*");
+            // Email verification join
+            $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
 
             // Get subscriber from mailist and segment
             $conditions = [];
@@ -1156,7 +1160,9 @@ class Campaign extends Model
                             $query = $query->leftJoin($joining['table'], function($join) use ($joining)
                             {
                                 $join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
-                                $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
+                                if (isset($joining['ons'][1])) {
+                                    $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
+                                }
                             });
                         }
                     }
@@ -1213,7 +1219,7 @@ class Campaign extends Model
             }
         }
 
-        return $query;
+        return $query->distinct('subscribers.email');
     }
 
     /**
@@ -1946,8 +1952,12 @@ class Campaign extends Model
     public static function types()
     {
         return [
-            'regular' => [],
-            'plain-text' => [],
+            'regular' => [
+                'icon' => 'icon-magazine'
+            ],
+            'plain-text' => [
+                'icon' => 'icon-file-text2'
+            ],
         ];
     }
 
@@ -2437,7 +2447,7 @@ class Campaign extends Model
      */
     public function subscribersCount()
     {
-        return $this->subscribers()->count();
+        return $this->subscribers()->count('subscribers.email');
     }
 
     /**

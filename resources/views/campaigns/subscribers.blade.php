@@ -1,39 +1,39 @@
 @extends('layouts.frontend')
 
 @section('title', $campaign->name)
-	
-@section('page_script')    
+
+@section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
-		
+
     <script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
 @endsection
 
 @section('page_header')
-	
+
 			@include("campaigns._header")
 
 @endsection
 
 @section('content')
-                
+
       @include("campaigns._menu")
-			
+
 			<h2 class="text-semibold text-teal-800">{{ trans('messages.tracking_log') }}</h2>
-			
+
 			<form class="listing-form"
 					data-url="{{ action('CampaignController@subscribersListing', $campaign->uid) }}"
-					per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"					
-				>				
+					per-page="{{ Acelle\Model\Subscriber::$itemsPerPage }}"
+				>
 					<div class="row top-list-controls">
 						<div class="col-md-12">
-							@if ($subscribers->count() >= 0)					
+							@if ($subscribers->count() >= 0)
 								<div class="filter-box">
 									<div class="btn-group list_actions hide mr-10">
 										<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
 											{{ trans('messages.actions') }} <span class="caret"></span>
 										</button>
-										<ul class="dropdown-menu">											
+										<ul class="dropdown-menu">
 											<li>
 												<a link-confirm="{{ trans('messages.subscribe_subscribers_confirm') }}" href="{{ action('SubscriberController@subscribe', $list->uid) }}">
 													<i class="icon-enter"></i> {{ trans('messages.subscribe') }}
@@ -78,7 +78,7 @@
 															@endforelse
 														</ul>
 													</li>
-												</ul>												
+												</ul>
 											</li>
 											<li>
 												<a href="#">
@@ -141,8 +141,8 @@
 																<input {{ ($field->required ? "checked='checked'" : "") }} type="checkbox" id="{{ $field->tag }}" name="columns[]" value="{{ $field->uid }}" class="styled">
 																{{ $field->label }}
 															</label>
-														</div>															
-													</li>	
+														</div>
+													</li>
 												@endif
 											@endforeach
 											<li>
@@ -151,7 +151,7 @@
 														<input type="checkbox" id="created_at" name="columns[]" value="created_at" class="styled">
 														{{ trans('messages.created_at') }}
 													</label>
-												</div>															
+												</div>
 											</li>
 											<li>
 												<div class="checkbox">
@@ -159,10 +159,10 @@
 														<input type="checkbox" id="updated_at" name="columns[]" value="updated_at" class="styled">
 														{{ trans('messages.updated_at') }}
 													</label>
-												</div>															
+												</div>
 											</li>
 										</ul>
-									</div>									
+									</div>
 									<span class="filter-group ml-20">
 										<span class="title text-semibold text-muted">{{ trans('messages.subscribers_who') }}</span>
 										<select class="select" name="open">
@@ -180,16 +180,16 @@
 											<option value="">-- {{ trans('messages.click') }} --</option>
 											<option value="clicked">{{ trans('messages.clicked') }}</option>
 											<option value="not_clicked">{{ trans('messages.not_clicked') }}</option>
-										</select>		
+										</select>
 									</span>
 									<span class="filter-group mr-20">
 										<span class="title text-semibold text-muted">{{ trans('messages.tracking_status') }}</span>
 										<select class="select" name="tracking_status">
 											<option value="">-- {{ trans('messages.all') }} --</option>
-											<option value="not_sent">{{ trans('messages.not_sent') }}</option>
+											<!--<option value="not_sent">{{ trans('messages.not_sent') }}</option>-->
 											<option value="error">{{ trans('messages.error') }}</option>
 											<option value="sent">{{ trans('messages.sent') }}</option>
-										</select>										
+										</select>
 									</span>
 									<span class="text-nowrap">
 										<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
@@ -199,10 +199,10 @@
 							@endif
 						</div>
 					</div>
-					
+
 					<div class="pml-table-container">
-						
-						
+
+
 					</div>
 				</form>
 @endsection

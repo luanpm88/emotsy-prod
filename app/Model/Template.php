@@ -78,7 +78,7 @@ class Template extends Model
     {
         return $this->belongsTo('Acelle\Model\Customer');
     }
-    
+
     public function admin()
     {
         return $this->belongsTo('Acelle\Model\Admin');
@@ -110,7 +110,7 @@ class Template extends Model
 
         // filters
         $filters = $request->filters;
-        
+
         // Customer
         if (!empty($request->customer_id)) {
             if (!empty($filters) && !empty($filters['from'])) {
@@ -124,7 +124,7 @@ class Template extends Model
                 }
             }
         }
-        
+
         // Admin
         if (!empty($request->admin_id)) {
             $query = $query->where('admin_id', '=', $request->admin_id);
@@ -141,7 +141,7 @@ class Template extends Model
     public static function search($request)
     {
         $query = self::filter($request);
-        
+
         if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
@@ -190,7 +190,7 @@ class Template extends Model
     {
         return self::where('uid', '=', $uid)->first();
     }
-    
+
     /**
      * Define all template styles.
      *
@@ -265,7 +265,7 @@ class Template extends Model
             ],
         ];
     }
-    
+
     /**
      * Template tags.
      *
@@ -274,7 +274,7 @@ class Template extends Model
     public static function tags($list=null)
     {
         $tags = [];
-        
+
         $tags[] = ['name' => 'SUBSCRIBER_EMAIL', 'required' => false];
 
         // List field tags
@@ -289,6 +289,7 @@ class Template extends Model
         $tags = array_merge($tags, [
             ['name' => 'UNSUBSCRIBE_URL', 'required' => (\Auth::user()->customer && \Auth::user()->customer->getOption('unsubscribe_url_required') == 'yes' ? true : false)],
             ['name' => 'SUBSCRIBER_UID', 'required' => false],
+            ['name' => 'WEB_VIEW_URL', 'required' => false],
             ['name' => 'CAMPAIGN_NAME', 'required' => false],
             ['name' => 'CAMPAIGN_UID', 'required' => false],
             ['name' => 'CAMPAIGN_SUBJECT', 'required' => false],
@@ -315,7 +316,7 @@ class Template extends Model
 
         return $tags;
     }
-    
+
     /**
      * Replace url from content.
      *
@@ -325,7 +326,7 @@ class Template extends Model
     {
         $this->content = \Acelle\Library\Tool::replaceHtmlUrl($this->content, $template_path);
     }
-    
+
     /**
      * Display creator name.
      *

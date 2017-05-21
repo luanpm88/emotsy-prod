@@ -6,7 +6,7 @@
 				<form class="confirm-delete-form form-validate-jquery" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header bg-danger">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
 					<div class="modal-body">
@@ -38,7 +38,7 @@
 				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header bg-info-800">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
 					<div class="modal-body">
@@ -65,7 +65,7 @@
 				<form class="list-confirm-delete-form form-validate-jquery" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header bg-danger">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
 					<div class="modal-body">
@@ -115,7 +115,7 @@
 		<div class="modal-dialog">
 			<div class="modal-header bg-teal">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h2 class="modal-title">{{ trans('messages.name_new_list') }}</h2>
+				<h4 class="modal-title">{{ trans('messages.name_new_list') }}</h4>
 			</div>
 			<div class="modal-content">
 				<form action="{{ action('MailListController@copy') }}" method="POST" class="ajax_copy_list_form form-validate-jqueryz">
@@ -153,7 +153,7 @@
 		<div class="btn-close-pnotify"><i class="icon-cross2"></i></div>
 		@if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
 			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-				<h4 class="ui-pnotify-title text-nowrap">{!! trans('messages.current_login_as', ["name" => Auth::user()->customer->displayName()]) !!}</h4>
+				<h4 class="ui-pnotify-title">{!! trans('messages.current_login_as', ["name" => Auth::user()->customer->displayName()]) !!}</h4>
 				<div class="ui-pnotify-text">
 					{!! trans('messages.click_to_return_to_origin_user', ["link" => action("CustomerController@loginBack")]) !!}
 				</div>
@@ -162,7 +162,7 @@
 		@endif
 		@if (null !== Session::get('orig_admin_id') && Auth::user()->admin)
 			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-				<h4 class="ui-pnotify-title text-nowrap">{!! trans('messages.current_login_as', ["name" => Auth::user()->admin->displayName()]) !!}</h4>
+				<h4 class="ui-pnotify-title">{!! trans('messages.current_login_as', ["name" => Auth::user()->admin->displayName()]) !!}</h4>
 				<div class="ui-pnotify-text">
 					{!! trans('messages.click_to_return_to_origin_user', ["link" => action("Admin\AdminController@loginBack")]) !!}
 				</div>
@@ -171,7 +171,7 @@
 		@endif
 		@if (Acelle\Model\Setting::get("site_online") == 'false')
 			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-				<h4 class="ui-pnotify-title text-nowrap">{!! trans('messages.site_is_offline') !!}</h4>
+				<h4 class="ui-pnotify-title">{!! trans('messages.site_is_offline') !!}</h4>
 				<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
 			</div>
 		@endif
@@ -182,7 +182,7 @@
 				\Auth::user()->customer->notHaveAnyPlan() &&
 				!\Auth::user()->customer->hasAdminAccount())
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-					<h4 class="ui-pnotify-title text-nowrap">
+					<h4 class="ui-pnotify-title">
 					{!! trans('messages.not_have_any_plan_notification', [
 						'link' => action('AccountController@subscription'),
 					]) !!}
@@ -198,7 +198,7 @@
 				!\Auth::user()->customer->hasAdminAccount()
 			)
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-					<h4 class="ui-pnotify-title text-nowrap">
+					<h4 class="ui-pnotify-title">
 					{!! trans('messages.not_have_active_plan_notification', [
 						'link' => action('AccountController@subscription'),
 					]) !!}
@@ -215,7 +215,7 @@
 				!\Auth::user()->customer->hasAdminAccount()
 			)
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-					<h4 class="ui-pnotify-title text-nowrap">
+					<h4 class="ui-pnotify-title">
 					{!! trans('messages.not_have_any_customer_sending_server', [
 						'link' => action('SendingServerController@select'),
 					]) !!}
@@ -231,7 +231,7 @@
 				!\Acelle\Model\SendingServer::getAllAdminActive()->count()
 			)
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-					<h4 class="ui-pnotify-title text-nowrap">
+					<h4 class="ui-pnotify-title">
 					{!! trans('messages.not_have_any_admin_sending_server', [
 						'link' => action('Admin\SendingServerController@select'),
 					]) !!}
@@ -250,7 +250,7 @@
 		<div class="modal-dialog">
 			<div class="modal-header bg-teal">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h2 class="modal-title">{{ trans('messages.name_new_campaign') }}</h2>
+				<h4 class="modal-title">{{ trans('messages.name_new_campaign') }}</h4>
 			</div>
 			<div class="modal-content">
 				<form action="{{ action('CampaignController@copy') }}" method="POST" class="ajax_copy_campaign_form form-validate-jquery">
@@ -290,7 +290,7 @@
 		<div class="modal-dialog">
 			<div class="modal-header bg-teal">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h2 class="modal-title">{{ trans('messages.send_a_test_email') }}</h2>
+				<h4 class="modal-title">{{ trans('messages.send_a_test_email') }}</h4>
 			</div>
 			<div class="modal-content">
 				<form sending-text='<i class="icon-spinner10 spinner position-left"></i> {{ trans('messages.sending_please_wait') }}' action="{{ action('CampaignController@sendTestEmail') }}" method="POST" class="ajax_send_a_test_email_form form-validate-jquery">
@@ -332,7 +332,7 @@
 				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header bg-danger">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
 					<div class="modal-body">
@@ -358,7 +358,7 @@
 				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
 					<div class="modal-header bg-danger">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
-						<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
 					<div class="modal-body">
@@ -397,10 +397,10 @@
 
 	<!-- Basic modal -->
 	<div id="list-form-modal" class="modal fade">
-		<div class="modal-dialog modal-lg">
+		<div class="modal-dialog modal-md">
 			<div class="modal-header bg-teal">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h2 class="modal-title">{{ trans('messages.are_you_sure') }}</h2>
+				<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 			</div>
 			<div class="modal-content">
 				<form action="" method="POST" class="ajax_upload_form form-validate-jquery">

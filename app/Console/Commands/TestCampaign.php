@@ -54,15 +54,7 @@ class TestCampaign extends Command
      */
     public function handle()
     {
-        $user = User::first();
-        echo $user->getSendingQuota() . "/" . $user->getQuotaIntervalString() . "\n";
-        $user->getQuotaTracker()->add();
-        $user->saveQuotaUsageInfo();
-
-        $user->quotaDebug();
-
-        $e = AutoEvent::find(2);
-        $e->check();
+        $this->testImap();
     }
 
     public function testSmtp() {
@@ -86,5 +78,25 @@ class TestCampaign extends Command
 
         var_dump($result);
     }
-}
 
+    public function testImap() {
+        // Connect to IMAP server
+        $imapPath = "{mail.example.com:993/imap/tls}INBOX";
+
+        // try to connect
+        $inbox = imap_open($imapPath, 'user@example.com', 'password');
+
+        // search and get unseen emails, function will return email ids
+        $emails = imap_search($inbox, 'UNSEEN');
+
+        if (!empty($emails)) {
+            foreach ($emails as $message) {
+                var_dump($message);
+            }
+        }
+
+        // colse the connection
+        imap_expunge($inbox);
+        imap_close($inbox);
+    }
+}

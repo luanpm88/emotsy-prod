@@ -111,6 +111,11 @@ class PlanController extends Controller
             }
         }
 
+        // Email verification servers
+        if (isset($request->old()['email_verification_servers'])) {
+            $plan->fillPlansEmailVerificationServers($request->old()['email_verification_servers']);
+        }
+
         return view('admin.plans.create', [
             'plan' => $plan,
             'options' => $options
@@ -158,6 +163,11 @@ class PlanController extends Controller
             // For sending servers
             if (isset($request->sending_servers)) {
                 $plan->updateSendingServers($request->sending_servers);
+            }
+
+            // For email verification servers
+            if (isset($request->email_verification_servers)) {
+                $plan->updateEmailVerificationServers($request->email_verification_servers);
             }
 
             $request->session()->flash('alert-success', trans('messages.plan.created'));
@@ -217,6 +227,11 @@ class PlanController extends Controller
             }
         }
 
+        // Email verification servers
+        if (isset($request->old()['email_verification_servers'])) {
+            $plan->fillPlansEmailVerificationServers($request->old()['email_verification_servers']);
+        }
+
         return view('admin.plans.edit', [
             'plan' => $plan,
             'options' => $options
@@ -268,6 +283,11 @@ class PlanController extends Controller
             // For sending servers
             if (isset($request->sending_servers)) {
                 $plan->updateSendingServers($request->sending_servers);
+            }
+
+            // For email verification servers
+            if (isset($request->email_verification_servers)) {
+                $plan->updateEmailVerificationServers($request->email_verification_servers);
             }
 
             $request->session()->flash('alert-success', trans('messages.plan.updated'));

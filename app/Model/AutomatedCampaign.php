@@ -150,6 +150,7 @@ class AutomatedCampaign extends Campaign
             'LIST_SUBJECT' => $list->default_subject,
             'LIST_FROM_NAME' => $list->from_name,
             'LIST_FROM_EMAIL' => $list->from_email,
+            'WEB_VIEW_URL' => str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), Setting::get('url_web_view')),
         );
 
         // Update tags layout

@@ -302,6 +302,8 @@ class Automation extends Model
         }
 
 		$query = Subscriber::select("subscribers.*");
+		// Email verification join
+        $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
 
         // Get subscriber from mailist and segment
 		$conditions = [];
@@ -315,7 +317,9 @@ class Automation extends Model
 						$query = $query->leftJoin($joining['table'], function($join) use ($joining)
 						{
 							$join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
-							$join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
+							if (isset($joining['ons'][1])) {
+								$join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
+							}
 						});
 					}
 				}
@@ -333,7 +337,7 @@ class Automation extends Model
 			$query = $query->whereRaw(implode(' OR ', $conditions));
 		}
 
-        return $query;
+        return $query->distinct('subscribers.email');
     }
 
     /**
@@ -693,5 +697,15 @@ class Automation extends Model
     public static function getAll()
     {
         return self::select('*');
+    }
+
+	/**
+     * Count subscribers.
+     *
+     * @return integer
+     */
+    public function subscribersCount()
+    {
+        return $this->subscribers()->count('subscribers.email');
     }
 }

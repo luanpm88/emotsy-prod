@@ -29,7 +29,7 @@
                 <span class="badge badge-info bg-grey-400 badge-medium">
                     {{ trans('messages.not_open_per_total', [
                         'count' => $campaign->notOpenCount(),
-                        'total' => $campaign->subscribers()->count(),
+                        'total' => $campaign->subscribersCount(),
                     ]) }}
                 </span>
                 <a href="{{ action('CampaignController@openLog', $campaign->uid) }}"><i class="icon-arrow-right7"></i> {{ trans('messages.view_log') }}</a>

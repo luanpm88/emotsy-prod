@@ -1,17 +1,17 @@
-			
-            
+
+
             <div class="row">
                 <div class="col-md-6 campaigns-summary">
-					<h5 class="mt-10 text-semibold">{{ trans('messages.sent_to') }} <span class="text-bold badge badge-info bg-info-800 badge-big">{{ $campaign->subscribers()->count() }}</span> {{ trans('messages.recipients') }}</h5>
+					<h5 class="mt-10 text-semibold">{{ trans('messages.sent_to') }} <span class="text-bold badge badge-info bg-info-800 badge-big">{{ $campaign->subscribersCount() }}</span> {{ trans('messages.recipients') }}</h5>
                     <div class="mb-10">
                         <span class="text-bold text-muted">{{ trans('messages.from') }}:</span>
                         {!! $campaign->displayRecipients() !!}
-                    </div>                    
+                    </div>
                 </div>
                 <div class="col-md-6">
 					<div class="mb-10">
                         <span class="text-bold text-muted">{{ trans('messages.subject') }}:</span>
-                        {{ $campaign->subject }}  
+                        {{ $campaign->subject }}
                     </div>
                     <div class="mb-10">
                         <span class="text-bold text-muted">{{ trans('messages.run_at') }}:</span>
@@ -23,15 +23,15 @@
                     </div>
                 </div>
             </div>
-			
+
             @include("campaigns._chart")
             <br />
 			@include("campaigns._open_click_rate")
-            
+
             <br />
-            
+
             @include("campaigns._24h_chart")
-			
+
 			<br />
-			
+
 			@include("campaigns._most_open_country")

@@ -133,6 +133,16 @@ class Setting extends Model
                 'value' => 'Email Marketing, Campaigns, Lists',
                 'type' => 'text',
             ],
+            'site_logo_small' => [
+                'cat' => 'general',
+                'value' => '',
+                'type' => 'image',
+            ],
+            'site_logo_big' => [
+                'cat' => 'general',
+                'value' => '',
+                'type' => 'image',
+            ],
             'license' => [
                 'cat' => 'license',
                 'value' => '',
@@ -271,6 +281,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'url_web_view' => [
+                'cat' => 'url',
+                'value' => '',
+                'type' => 'text',
+                'not_required' => true,
+            ],
             'php_bin_path' => [
                 'cat' => 'cronjob',
                 'value' => '',
@@ -342,5 +358,31 @@ class Setting extends Model
         $license_type = \Acelle\Helpers\LicenseHelper::getLicenseType($license);
         Setting::set("license", $license);
         Setting::set("license_type", $license_type);
+    }
+
+    /**
+     * Upload site logo.
+     *
+     * @var boolean
+     */
+    public static function uploadSiteLogo($file, $type)
+    {
+        $path = 'images/';
+        $upload_path = public_path($path);
+
+        if (!file_exists($upload_path)) {
+            mkdir($upload_path, 0777, true);
+        }
+
+        $filename = $type.'.'.$file->getClientOriginalExtension();
+
+        // save to server
+        $file->move($upload_path, $filename);
+
+        // create thumbnails
+        $img = \Image::make($upload_path.$filename);
+
+        self::set($type, $path.$filename);
+        return true;
     }
 }

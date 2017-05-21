@@ -8,6 +8,97 @@
 *  Latest update: Aug 1, 2015
 *
 * ---------------------------------------------------------------------------- */
+
+function showAjaxDetailBox(items) {
+    items.each(function() {
+        var container = $(this);
+        var form_class = container.attr('data-form');
+        var form = $(form_class);
+        var url = container.attr('data-url');
+        var method = form.attr('method');
+        var hook_class = container.attr('hook');
+        var loading_message = container.attr('loading-message');
+
+        if (typeof(hook_class) === 'undefined') {
+            hook_class = 'hook';
+        }
+
+        if(typeof(method) === 'undefined') {
+            method = 'POST';
+        }
+
+        $(document).on('change', form_class + ' .' + hook_class, function() {
+            data = form.serialize();
+            
+            if (typeof(loading_message) !== 'undefined') {
+                container.html(loading_message);
+            }
+
+            $.ajax({
+                method: 'GET',
+                url: url,
+                data: data
+            })
+            .done(function(msg) {
+                container.html(msg);
+                container.find('.pickadate').pickadate({format: 'yyyy-mm-dd', selectYears: 100});
+                updatePickadateDateMask(container.find('.pickadate'));
+
+                // Select2
+                container.find('select').select2({
+                    minimumResultsForSearch: 101,
+                    templateResult: formatSelect2TextOption,
+                    templateSelection: formatSelect2TextSelected
+                });
+
+                // showAjaxDetailBox(items)
+                showAjaxDetailBox(container.find('.ajax-detail-box'));
+            });
+        });
+    });
+}
+
+function formatSelect2TextSelected(d) {
+    var text = d.text;
+    var parts = text.split('|||');
+
+    return parts[0];
+}
+
+function formatSelect2TextOption(d) {
+    var text = d.text;
+    var parts = text.split('|||');
+
+    if (parts.length == 1) {
+        return parts[0];
+    } else {
+        return '<div class="select2_title">' + parts[0] + '</div>' + '<div class="select2_sub_line">' + parts[1] + '</div>';
+    }
+}
+
+function startProgress(box) {
+    var url = box.attr('data-url');
+
+    if (typeof(url) == 'undefined') {
+        return;
+    }
+
+    $.ajax({
+        method: "GET",
+        url: url
+    })
+    .done(function( data ) {
+        if (data != 'done') {
+            box.html(data);
+            setTimeout (function() {
+                startProgress(box);
+            }, 1000);
+        } else {
+            location.reload();
+        }
+    });
+}
+
 function swalError(msg) {
     swal({
         title: msg,
@@ -189,12 +280,16 @@ $(function() {
 
     // Default initialization
     $('.select').select2({
-        minimumResultsForSearch: 101
+        minimumResultsForSearch: 101,
+        templateResult: formatSelect2TextOption,
+        templateSelection: formatSelect2TextSelected
     });
 
     // Select with search
     $('.select-search').select2({
-        minimumResultsForSearch: 101
+        minimumResultsForSearch: 101,
+        templateResult: formatSelect2TextOption,
+        templateSelection: formatSelect2TextSelected
     });
 
 
@@ -276,7 +371,7 @@ $(function() {
             count = $(this).attr("items-count");
         }
 
-        $('a[data-target="#delete_confirm_model"]').trigger("click");
+        $('#delete_confirm_model').modal("show");
         $("#delete_confirm_model h6").html(mgs.replace(":number", "<span class='text-bold text-danger'>" + count + "</span>"));
         $(".delete-confirm-button").attr("href", $(this).attr("new-href"));
         $(".delete-confirm-button").attr("data-method", method);
@@ -337,7 +432,7 @@ $(function() {
             curl = curl + "?uids=" + vals.join(",");
         }
 
-        $('a[data-target="#list_delete_confirm_model"]').trigger("click");
+        $('#list_delete_confirm_model').modal("show");
         $(".list-delete-confirm-button").attr("href", url);
         $(".list-delete-confirm-button").attr("data-method", method);
 
@@ -389,7 +484,7 @@ $(function() {
             count = $(this).attr("items-count");
         }
 
-        $('a[data-target="#link_confirm_model"]').trigger("click");
+        $('#link_confirm_model').modal("show");
 
         mgs = mgs.replace(":number", "<span class='text-bold text-teal-800'>" + count + "</span>");
         mgs = mgs.replace(":name", "<span class='text-bold text-teal-800'>" + $(this).html() + "</span>");
@@ -403,6 +498,12 @@ $(function() {
             $(".link-confirm-button").attr("data-method", method);
         } else {
             $(".link-confirm-button").removeAttr("data-method");
+        }
+
+        // Link confirm
+        if (typeof($(this).attr('link-method')) !== 'undefined') {
+            $(".link-confirm-button").attr("link-method", $(this).attr('link-method'));
+            $(".link-confirm-button").removeClass("ajax_link");
         }
 
         e.stopImmediatePropagation();
@@ -515,7 +616,11 @@ $(function() {
             $('.segment-conditions-container').append(msg);
 
             var new_line = $('.segment-conditions-container .condition-line').last();
-            new_line.find('select').select2();
+            new_line.find('select').select2({
+                templateResult: formatSelect2TextOption,
+                templateSelection: formatSelect2TextSelected
+            });
+            new_line.find('select').trigger('change');
         });
     });
 
@@ -632,7 +737,10 @@ $(function() {
                 box.html(msg);
 
                 // Select with search
-                $('.select-search').select2();
+                $('.select-search').select2({
+                    templateResult: formatSelect2TextOption,
+                    templateSelection: formatSelect2TextSelected
+                });
             });
         } else {
             box.html('');
@@ -741,6 +849,8 @@ $(function() {
             },
             escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
             minimumInputLength: 0,
+            templateResult: formatSelect2TextOption,
+            templateSelection: formatSelect2TextSelected,
         });
     });
 
@@ -753,7 +863,7 @@ $(function() {
         })
         .done(function( msg ) {
             $('#quota_modal .modal-body').html(msg);
-            $('a[data-target="#quota_modal"]').trigger("click");
+            $('#quota_modal').modal("show");
         });
     });
 
@@ -813,7 +923,7 @@ $(function() {
 
         $('input[name=copy_list_uid]').val(uid);
         $('input[name=copy_list_name]').val(name);
-        $('a[data-target="#copy_list"]').trigger("click");
+        $('#copy_list').modal("show");
     });
 
     // Ajax copy list
@@ -853,7 +963,7 @@ $(function() {
 
         $('input[name=copy_campaign_uid]').val(uid);
         $('input[name=copy_campaign_name]').val(name);
-        $('a[data-target="#copy_campaign"]').trigger("click");
+        $('#copy_campaign').modal("show");
     });
 
     // Ajax copy campaign
@@ -913,7 +1023,7 @@ $(function() {
         var uid = $(this).attr("data-uid");
 
         $('input[name=send_test_email_campaign_uid]').val(uid);
-        $('a[data-target="#send_a_test_email"]').trigger("click");
+        $('#send_a_test_email').modal("show");
 
         e.preventDefault();
     });
@@ -996,7 +1106,10 @@ $(function() {
             container.append(msg);
 
             var new_line = container.find('.condition-line').last();
-            new_line.find('select').select2();
+            new_line.find('select').select2({
+                templateResult: formatSelect2TextOption,
+                templateSelection: formatSelect2TextSelected
+            });
             new_line.find('.styled').uniform({
                 radioClass: 'choice'
             });
@@ -1244,36 +1357,7 @@ $(function() {
     });
 
     // ajax form review link
-    $('.ajax-detail-box').each(function() {
-        var container = $(this);
-        var form_class = container.attr('data-form');
-        var form = $(form_class);
-        var url = container.attr('data-url');
-        var method = form.attr('method');
-        var action = form.attr('action');
-
-        if(typeof(method) === 'undefined') {
-            method = 'POST';
-        }
-
-        $(document).on('change', form_class + ' .hook', function() {
-            $.ajax({
-                method: 'GET',
-                url: url,
-                data: form.serialize()
-            })
-            .done(function(msg) {
-                container.html(msg);
-                container.find('.pickadate').pickadate({format: 'yyyy-mm-dd', selectYears: 100});
-                updatePickadateDateMask(container.find('.pickadate'));
-
-                // Select2
-                container.find('select').select2({
-                    minimumResultsForSearch: 101
-                });
-            });
-        });
-    });
+    showAjaxDetailBox($('.ajax-detail-box'));
 
     // Payment method button click
     $(document).on('click', '.payment_method_type_button', function() {
@@ -1299,7 +1383,7 @@ $(function() {
             $('#full_modal .modal-body').find('[data-popup=tooltip]').tooltip({
                 template: '<div class="tooltip"><div class="bg-teal-800"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div></div>'
             });
-            $('a[data-target="#full_modal"]').trigger("click");
+            $('#full_modal').modal("show");
         });
     });
 
@@ -1329,7 +1413,9 @@ $(function() {
             $('body').append(data);
             $('#copy-move-subscribers-form').modal('show');
             $('#copy-move-subscribers-form').find('select').select2({
-                minimumResultsForSearch: 101
+                minimumResultsForSearch: 101,
+                templateResult: formatSelect2TextOption,
+                templateSelection: formatSelect2TextSelected
             });
             $('#copy-move-subscribers-form').find('.styled').uniform({
                 radioClass: 'choice'
@@ -1450,4 +1536,41 @@ $(function() {
         }
     });
     $('select[name=frequency_unit]').trigger('change');
+
+    // Segment condition field type select
+    $(document).on('change', '.condition-field-select', function() {
+        var line = $(this).parents('.condition-line');
+        var field_uid = $(this).val();
+        var value_col = line.find('.operator_value_col');
+        var url = value_col.attr('data-url');
+        var index = line.attr('rel');
+        var operator = line.find('.operator-col select').val();
+
+        value_col.html('');
+
+        if (field_uid != '') {
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: {
+                    field_uid: field_uid,
+                    index: index,
+                    operator: field_uid
+                }, // serializes the form's elements.
+                success: function(data)
+                {
+                    value_col.html(data);
+                    value_col.find('select').select2();
+                }
+            });
+        }
+    });
+    // $('.condition-field-select').trigger('change');
+
+    $('.operator-col select').trigger('change');
+
+    // progress bar ajax reload
+    $('.progress-box').each(function() {
+        startProgress($(this));
+    });
 });

@@ -4,6 +4,8 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use Acelle\Library\UpgradeManager;
+use Illuminate\Support\Facades\Log;
 
 class SettingController extends Controller
 {
@@ -79,8 +81,15 @@ class SettingController extends Controller
             // Save settings
             foreach ($request->all() as $name => $value) {
                 if ($name != '_token' && isset($settings[$name])) {
-                    if ($settings[$name]['cat'] == 'general' && $request->user()->admin->getPermission('setting_general') == 'yes') {
-                        \Acelle\Model\Setting::set($name, $value);
+                    // Upload and save image
+                    if ($name == 'site_logo_small' || $name == 'site_logo_big') {
+                        if ($request->hasFile($name) && $request->file($name)->isValid()) {
+                            \Acelle\Model\Setting::uploadSiteLogo($request->file($name), $name);
+                        }
+                    } else {
+                        if ($settings[$name]['cat'] == 'general' && $request->user()->admin->getPermission('setting_general') == 'yes') {
+                            \Acelle\Model\Setting::set($name, $value);
+                        }
                     }
                 }
             }
@@ -310,6 +319,7 @@ class SettingController extends Controller
             'uid' => 'SUBSCRIBER_UID',
             'code' => 'SECURE_CODE'))
         );
+        \Acelle\Model\Setting::set('url_web_view', action('CampaignController@webView', ['message_id' => 'MESSAGE_ID']));
 
         // Redirect to my lists page
         $request->session()->flash('alert-success', trans('messages.setting.updated'));
@@ -402,5 +412,98 @@ class SettingController extends Controller
             'current_license' => \Acelle\Model\Setting::get('license'),
             'license_error' => isset($license_error) ? $license_error : '',
         ]);
+    }
+
+    /**
+     * Upgrade manager page
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function upgrade(Request $request)
+    {
+        if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
+            return $this->notAuthorized();
+        }
+
+        $manager = new UpgradeManager();
+        return view('admin.settings.upgrade', [
+            'any' => 'any',
+            'manager' => $manager,
+        ]);
+    }
+
+    /**
+     * Upgrade manager page
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function doUpgrade(Request $request)
+    {
+        if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
+            return $this->notAuthorized();
+        }
+
+        $manager = new UpgradeManager();
+        $failed = $manager->test();
+        if (empty($failed)) {
+            $pageUrl = action('Admin\SettingController@upgrade');
+            $manager->run();
+            $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
+            Log::info('System successfully upgraded to the new version');
+            return redirect()->away($pageUrl);
+        } else {
+            Log::warning('Cannot upgrade, certain files are not writable');
+            return view('admin.settings.upgrade', [
+                'any' => 'any',
+                'manager' => $manager,
+                'failed' => $failed,
+            ]);
+        }
+    }
+
+    /**
+     * Cancel upgrade and delete the uploaded file
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cancelUpgrade(Request $request)
+    {
+        if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
+            return $this->notAuthorized();
+        }
+
+        try {
+            $manager = new UpgradeManager();
+            $manager->cleanup();
+            $request->session()->flash('alert-info', trans('messages.upgrade.alert.cancel_success'));
+        } catch (\Exception $e) {
+            Log::info("Something went wrong while cancelling upgrade. " . $e->getMessage());
+            $request->session()->flash('alert-error', $e->getMessage());
+        }
+
+        return redirect()->action('Admin\SettingController@upgrade');
+    }
+
+    /**
+     * Upload the application patch
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function uploadApplicationPatch(Request $request)
+    {
+        if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
+            return $this->notAuthorized();
+        }
+
+        try {
+            $manager = new UpgradeManager();
+            $manager->load($request->file('file')->path());
+            $request->session()->flash('alert-success', trans('messages.upgrade.alert.upload_success'));
+        } catch (\Exception $e) {
+            Log::info("Upgrade failed. " . $e->getMessage());
+            $request->session()->flash('alert-error', $e->getMessage());
+        }
+
+        return redirect()->action('Admin\SettingController@upgrade');
     }
 }

@@ -19,7 +19,7 @@
 													<i data-action="move" class="icon icon-more2 list-drag-button"></i>
 												@endif
 											</div>
-										</td>										
+										</td>
 										<td>
 											<h5 class="no-margin text-bold">
 												<a class="kq_search" href="{{ action('AutomationController@edit', $automation->uid) }}">
@@ -32,7 +32,7 @@
 												</span>
 											@endif
 											<div class="text-semibold" data-popup="tooltip" title="{{ $automation->displayRecipients() }}">
-												{{ $automation->subscribers()->count() }} {{ trans('messages.recipients') }}
+												{{ $automation->subscribersCount() }} {{ trans('messages.recipients') }}
 											</div>
 										</td>
 										<td>
@@ -75,18 +75,18 @@
 												</a>
 											@endif
 											@if (\Gate::allows('delete', $automation) || Auth::user()->can('disable', $automation) || Auth::user()->can('enable', $automation))
-												<div class="btn-group">										
+												<div class="btn-group">
 													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 													<ul class="dropdown-menu dropdown-menu-right">
 														@can('enable', $automation)
-															<li>														
+															<li>
 																<a data-method="PATCH" link-confirm="{{ trans('messages.enable_automations_confirm') }}" href="{{ action('AutomationController@enable', ["uids" => $automation->uid]) }}">
 																	<i class="icon-checkbox-checked2"></i> {{ trans('messages.enable') }}
 																</a>
 															</li>
 														@endcan
 														@can('disable', $automation)
-															<li>														
+															<li>
 																<a data-method="PATCH" link-confirm="{{ trans('messages.disable_automations_confirm') }}" href="{{ action('AutomationController@disable', ["uids" => $automation->uid]) }}">
 																	<i class="icon-checkbox-unchecked2"></i> {{ trans('messages.disable') }}
 																</a>
@@ -111,7 +111,7 @@
 									{{ trans('messages.no_search_result') }}
 								</span>
 							</div>
-						@else					
+						@else
 							<div class="empty-list">
 								<i class="icon-alarm-check"></i>
 								<span class="line-1">
