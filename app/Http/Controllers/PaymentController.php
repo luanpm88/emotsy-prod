@@ -72,12 +72,6 @@ class PaymentController extends Controller {
             $billing_information = $request->all();
             $request->session()->set('billing_information', $billing_information);
 
-            if ($request->update_customer_billing_information == 'true') {
-                $contact = $customer->getContact();
-                $customer->contact->fill($request->all());
-                $customer->contact->save();
-            }
-
             return redirect()->away($request->session()->get('current_payment_link'));
         }
 
