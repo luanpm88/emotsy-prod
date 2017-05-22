@@ -567,6 +567,12 @@ class InstallController extends Controller
             ],
             [
                 'type' => 'requirement',
+                'name' => 'GMP Extension',
+                'check' => extension_loaded('gmp'),
+                'note' => 'GMP Extension is required.',
+            ],
+            [
+                'type' => 'requirement',
                 'name' => 'Mbstring PHP Extension',
                 'check' => extension_loaded('mbstring'),
                 'note' => 'Mbstring PHP Extension is required.',

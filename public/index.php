@@ -8,12 +8,10 @@ if (!extension_loaded('mbstring')) {
     echo "ERROR: The requested PHP extension mbstring is missing from your system.<br />";
     exit(0);
 }
-
 if (!empty(ini_get('open_basedir'))) {
     echo "ERROR: Please disable the <strong>open_basedir</strong> setting to continue.<br />";
     exit(0);
 }
-
 if (!(file_exists('../storage/app') && is_dir('../storage/app') && (is_writable('../storage/app')))) {
     echo "ERROR: The directory [/storage/app] must be writable by the web server.<br />";
     $valid = false;

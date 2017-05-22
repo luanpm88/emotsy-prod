@@ -55,11 +55,29 @@ class IpLocation extends Model
 
         // Get info
         try {
-            $location_table = 'ip2location_db11';
+            if (!(strpos($ip, ":") > -1))
+            {
+                // Code for IPv4 address $ip_address...
+                $location_table = table('ip2location_db11');
+            }
+            else
+            {
+                // Code for IPv6 address $ip_address...ip2location_db11_ipv6
+                $location_table = table('ip2location_db11_ipv6');
+            }
+
             $location_tables = \DB::select('SHOW TABLES LIKE "'.$location_table.'"');
             // Local service
             if (count($location_tables)) {
-                $records = \DB::select("SELECT * FROM `".$location_table."` WHERE INET_ATON(?) <= ip_to LIMIT 1", [$ip]);
+                // Check for ipv4 or ipv6
+                if (!(strpos($ip, ":") > -1)) {
+                    $aton = $ip;
+                    $records = \DB::select("SELECT * FROM `".$location_table."` WHERE INET_ATON(?) <= ip_to LIMIT 1", [$aton]);
+                } else {
+                    $aton = Dot2LongIPv6($ip);
+                    $records = \DB::select("SELECT * FROM `".$location_table."` WHERE ? <= ip_to LIMIT 1", [$aton]);
+                }
+
                 if (count($records)) {
                     $record = $records[0];
                     $location->country_code = $record->country_code;
@@ -69,6 +87,8 @@ class IpLocation extends Model
                     $location->zipcode = $record->zip_code;
                     $location->latitude = $record->latitude;
                     $location->longitude = $record->longitude;
+                } else {
+                    throw new \Exception("IP address [$ip] can not be found in local database: ");
                 }
             // Remote service
             } else {
@@ -78,6 +98,7 @@ class IpLocation extends Model
                 $location->fill($values);
             }
         } catch (\Exception $e) {
+            echo $e->getMessage();
             // Note log
             LaravelLog::warning('Cannot get IP location info: ' . $e->getMessage());
         }
