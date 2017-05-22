@@ -78,7 +78,7 @@ class ApiHelper
 -d contact[city]=Noname \
 -d contact[zip]=80000 \
 -d contact[phone]=123+456+889 \
--d contact[country_id]={{ \Acelle\Model\Country::first()->id }} \
+-d contact[country_id]=' . \Acelle\Model\Country::first()->id . ' \
 -d contact[email]=info@abccorp.org \
 -d contact[url]=http://www.abccorp.org \
 -d subscribe_confirmation=1 \
