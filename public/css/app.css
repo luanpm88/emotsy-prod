@@ -1982,7 +1982,7 @@ ul.plans-intro li span {
 .payment_method_type_button {
     margin-bottom: 5px;
 }
-.bg-notpaid {
+.bg-cash_manual_confirmation, .bg-notpaid {
     background: #fff;
     border: solid 1px #aaa;
     color: #333;

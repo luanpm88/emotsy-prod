@@ -1850,7 +1850,7 @@ return [
     'billing_information_info' => 'You are about to subscribe the <a><strong>:plan plan</strong></a> with billing information bellow:',
     'change_billing_information' => 'Change',
     'payment_description' => 'Description',
-    'subscription_payment_status_cash' => 'Cash',
+    'subscription_payment_status_cash_manual_confirmation' => 'Manual Confirmation',
     'url_web_view' => 'Email web view',
     'web_view_can_not_find_tracking_log_with_message_id' => 'Can not retrieve email content (missing tracking log)',
     'web_view_can_not_find_campaign_or_subscriber' => 'Can not retrieve email content (missing subscriber or campaign)',

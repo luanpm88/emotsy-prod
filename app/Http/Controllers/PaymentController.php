@@ -365,7 +365,7 @@ class PaymentController extends Controller {
         $payment = new Payment();
         $payment->subscription_id = $subscription->id;
         $payment->payment_method_id = $payment_method->id;
-        $payment->status = \Acelle\Model\Payment::STATUS_CASH;
+        $payment->status = \Acelle\Model\Payment::STATUS_CASH_MANUAL_CONFIRMATION;
         $payment->action = \Acelle\Model\Payment::ACTION_PAID;;
         $payment->payment_method_name = trans('messages.' . $payment_method->type);
         $payment->order_id = $subscription->getOrderID();
