@@ -60,6 +60,8 @@
                         </div>
                         <div class="col-md-6">
 
+                            @include('helpers.form_control', ['type' => 'select', 'name' => 'country_id', 'label' => trans('messages.country'), 'value' => $contact->country_id, 'options' => Acelle\Model\Country::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Acelle\Model\Contact::$rules])
+
                             @include('helpers.form_control', ['type' => 'text', 'label' => trans('messages.company_organization'), 'name' => 'company', 'value' => $contact->company, 'rules' => Acelle\Model\Contact::$rules])
 
                             @include('helpers.form_control', ['type' => 'text', 'label' => trans('messages.office_phone'), 'name' => 'phone', 'value' => $contact->phone, 'rules' => Acelle\Model\Contact::$rules])
@@ -68,7 +70,32 @@
 
                             @include('helpers.form_control', ['type' => 'text', 'label' => trans('messages.state_province_region'), 'name' => 'state', 'value' => $contact->state, 'rules' => Acelle\Model\Contact::$rules])
 
-                            @include('helpers.form_control', ['type' => 'select', 'name' => 'country_id', 'label' => trans('messages.country'), 'value' => $contact->country_id, 'options' => Acelle\Model\Country::getSelectOptions(), 'include_blank' => trans('messages.choose'), 'rules' => Acelle\Model\Contact::$rules])
+                        </div>
+                    </div>
+
+                    <h2 class="text-semibold text-teal-800">{{ trans('messages.billing_information') }}</h2>
+
+                    <div class="row">
+                        <div class="col-md-6">
+
+                            @include('helpers.form_control', [
+                                'type' => 'text',
+                                'name' => 'tax_number',
+                                'value' => $contact->tax_number,
+                                'help_class' => 'customer_contact',
+                                'rules' => Acelle\Model\Contact::$rules]
+                            )
+
+                        </div>
+                        <div class="col-md-6">
+
+                            @include('helpers.form_control', [
+                                'type' => 'text',
+                                'name' => 'billing_address',
+                                'value' => $contact->billing_address,
+                                'help_class' => 'customer_contact',
+                                'rules' => Acelle\Model\Contact::$rules]
+                            )
 
                         </div>
                     </div>

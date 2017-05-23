@@ -1533,6 +1533,26 @@ class Customer extends Model
     }
 
     /**
+     * Get customer contact
+     *
+     * @return Contact
+     */
+    public function getContact()
+    {
+        if (is_object($this->contact)) {
+            $contact = $this->contact;
+        } else {
+            $contact = new \Acelle\Model\Contact([
+                'first_name' => $this->first_name,
+                'last_name' => $this->last_name,
+                'email' => $this->user->email,
+            ]);
+        }
+
+        return $contact;
+    }
+
+    /*
      * Custom name + email.
      *
      * @return string

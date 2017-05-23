@@ -97,15 +97,7 @@ class AccountController extends Controller
     {
         // Get current user
         $customer = $request->user()->customer;
-        if (is_object($customer->contact)) {
-            $contact = $customer->contact;
-        } else {
-            $contact = new \Acelle\Model\Contact([
-                'first_name' => $customer->first_name,
-                'last_name' => $customer->last_name,
-                'email' => $customer->user->email,
-            ]);
-        }
+        $contact = $customer->getContact();
 
         // Create new company if null
         if (!is_object($contact)) {
