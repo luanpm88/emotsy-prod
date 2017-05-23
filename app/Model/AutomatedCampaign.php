@@ -153,6 +153,14 @@ class AutomatedCampaign extends Campaign
             'WEB_VIEW_URL' => str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), Setting::get('url_web_view')),
         );
 
+        // UPDATE_PROFILE_URL
+        if(!$this->isStdClassSubscriber($subscriber)) {
+            // in case of actually sending campaign
+            $tags['UPDATE_PROFILE_URL'] = str_replace('LIST_UID', $this->trigger->autoEvent->automation->defaultMailList->uid,
+                str_replace('SUBSCRIBER_UID', $subscriber->uid,
+                str_replace('SECURE_CODE', $subscriber->getSecurityToken('update-profile'), Setting::get('url_update_profile'))));
+        }
+
         // Update tags layout
         foreach ($tags as $tag => $value) {
             $message = str_replace('{'.$tag.'}', $value, $message);
