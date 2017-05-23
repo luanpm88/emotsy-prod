@@ -4,6 +4,7 @@ $(document).ready(function() {
         height: 500,
         convert_urls: false,
         remove_script_host: false,
+        forced_root_block: "",
         plugins: [
           'table advlist autolink lists link image charmap print preview anchor fullpage',
           'searchreplace visualblocks code fullscreen textcolor',
@@ -26,6 +27,7 @@ $(document).ready(function() {
         height: 500,
         convert_urls: false,
         remove_script_host: false,
+        forced_root_block: "",
         plugins: [
           'table advlist autolink lists link image charmap print preview anchor fullpage',
           'searchreplace visualblocks code fullscreen textcolor',
@@ -47,6 +49,7 @@ $(document).ready(function() {
         height: 500,
         convert_urls: false,
         remove_script_host: false,
+        forced_root_block: "",
         plugins: [
           'table advlist autolink lists link image charmap print preview anchor fullpage',
           'searchreplace visualblocks code fullscreen',
@@ -68,6 +71,7 @@ $(document).ready(function() {
         height: 300,
         convert_urls: false,
         remove_script_host: false,
+        forced_root_block: "",
         plugins: [
           'table advlist autolink lists link image charmap print preview anchor fullpage',
           'searchreplace visualblocks code fullscreen',
