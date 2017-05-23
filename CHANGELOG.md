@@ -1,3 +1,15 @@
+3.0.3 / 2017-05-25
+==================
+
+ * Added: support billing information page
+ * Added: configure sending servers that can be added by customer
+ * Added: look up GEO information from local database
+ * Fixed: intermittent unsubscribe issue
+ * Fixed: plain text glitch with ElasticEmail
+ * Fixed: intermittent issue when saving payment methods
+ * Fixed: update-profile URL does not work with automation
+ * Fixed: editor inserts additional tags to the email content
+
 3.0.2 / 2017-05-20
 ==================
 
