@@ -242,7 +242,7 @@ class Plan extends Model
      */
     public static function defaultOptions()
     {
-        return [
+        $options = [
             'email_max' => '-1',
             'list_max' => '-1',
             'subscriber_max' => '-1',
@@ -268,7 +268,16 @@ class Plan extends Model
             'email_verification_servers_max' => '-1',
             'list_import' => 'yes',
             'list_export' => 'yes',
+            'all_sending_server_types' => 'yes',
+            'sending_server_types' => [],
         ];
+
+        // Sending server types
+        foreach (\Acelle\Model\SendingServer::types() as $key => $type) {
+            $options['sending_server_types'][$key] = 'yes';
+        }
+
+        return $options;
     }
 
     /**

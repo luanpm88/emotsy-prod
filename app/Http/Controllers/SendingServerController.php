@@ -75,6 +75,7 @@ class SendingServerController extends Controller
         $server = new \Acelle\Model\SendingServer();
         $server->status = 'active';
         $server->uid = '0';
+        $server->type = $request->type;
         $server->fill($request->old());
 
         // authorize
@@ -99,6 +100,7 @@ class SendingServerController extends Controller
         // Get current user
         $current_user = $request->user();
         $server = new \Acelle\Model\SendingServer();
+        $server->type = $request->type;
 
         // authorize
         if (!$request->user()->customer->can('create', $server)) {
@@ -112,7 +114,6 @@ class SendingServerController extends Controller
             // Save current user info
             $server->fill($request->all());
             $server->customer_id = $request->user()->customer->id;
-            $server->type = $request->type;
             $server->status = 'active';
 
             // bounce / feedback hanlder nullable

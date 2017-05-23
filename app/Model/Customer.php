@@ -1602,4 +1602,40 @@ class Customer extends Model
 
         return $options;
     }
+
+    /**
+     * Get customer's sending servers type.
+     *
+     * @return array
+     */
+    public function getSendingServertypes()
+    {
+        $allTypes = \Acelle\Model\SendingServer::types();
+        $types = [];
+
+        foreach ($allTypes as $type => $server) {
+            if ($this->isAllowCreateSendingServerType($type)) {
+                $types[$type] = $server;
+            }
+        }
+
+        return $types;
+    }
+
+    /**
+     * Check customer can create sending servers type.
+     *
+     * @return boolean
+     */
+    public function isAllowCreateSendingServerType($type)
+    {
+        $customerTypes = $this->getOption('sending_server_types');
+        if ($this->getOption('all_sending_server_types') == 'yes' ||
+            (isset($customerTypes[$type]) && $customerTypes[$type] == 'yes')
+        ) {
+            return true;
+        }
+
+        return false;
+    }
 }

@@ -1903,4 +1903,6 @@ return [
     'setting.notification_delete_subscription_receiver.help' => 'Receiver email(s). Additional email addresses must be separated by a comma.',
     'delete_subscription_notification' => 'Subscription for plan <strong>:plan</strong> of customer <strong>:customer</strong> deleted.',
     'message_not_found' => 'Message not found',
+    'allowed_sending_server_types' => 'Allowed sending servers types',
+    'select_allowed_sending_server_types' => 'Select allowed sending server types:',
 ];

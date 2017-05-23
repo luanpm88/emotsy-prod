@@ -403,13 +403,13 @@ class Subscription extends Model
     }
 
     /**
-     * Default options for new plan.
+     * Default options for new no plan.
      *
      * @return array
      */
     public static function defaultOptions()
     {
-        return [
+        $options = [
             'email_max' => '0',
             'list_max' => '0',
             'subscriber_max' => '0',
@@ -437,7 +437,16 @@ class Subscription extends Model
             'sending_domains_max' => '-1',
             'list_import' => 'no',
             'list_export' => 'no',
+            'all_sending_server_types' => 'yes',
+            'sending_server_types' => [],
         ];
+
+        // Sending server types
+        foreach (\Acelle\Model\SendingServer::types() as $key => $type) {
+            $options['sending_server_types'][$key] = 'no';
+        }
+
+        return $options;
     }
 
     /**
@@ -447,7 +456,7 @@ class Subscription extends Model
      */
     public static function defaultUnlimitedOptions()
     {
-        return [
+        $options = [
             'email_max' => '-1',
             'list_max' => '-1',
             'subscriber_max' => '-1',
@@ -473,7 +482,16 @@ class Subscription extends Model
             'email_verification_servers_max' => '-1',
             'list_import' => 'yes',
             'list_export' => 'yes',
+            'all_sending_server_types' => 'yes',
+            'sending_server_types' => [],
         ];
+
+        // Sending server types
+        foreach (\Acelle\Model\SendingServer::types() as $key => $type) {
+            $options['sending_server_types'][$key] = 'yes';
+        }
+
+        return $options;
     }
 
     /**

@@ -53,6 +53,7 @@ class SendingServerPolicy
                 $max = $user->customer->getOption('sending_servers_max');
                 $can = $user->customer->getOption('create_sending_servers') == 'yes'
                     && ($user->customer->sendingServersCount() < $max || $max == -1);
+                $can = $can && $user->customer->isAllowCreateSendingServerType($item->type);
                 break;
         }
 

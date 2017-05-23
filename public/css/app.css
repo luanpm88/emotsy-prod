@@ -1013,7 +1013,7 @@ input.numeric {
     text-align: right;
 }
 .mb-0 {
-    margin-bottom: 0;
+    margin-bottom: 0 !important;
 }
 .nav-tabs > li {
     margin-right: 40px;
@@ -1802,7 +1802,7 @@ ul.automation-confirm li.child-row h5 {
     margin-bottom: 0;
 }
 .pb-0 {
-    padding-bottom: 0;
+    padding-bottom: 0 !important;
 }
 .wizard-dark {
     margin-top: 20px;
