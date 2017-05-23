@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-md-4"></div>
     <div class="col-md-4">
-        <div class="text-center subscription-header login-header">
+        <div class="text-center subscription-header login-header mb-0">
             <a class="main-logo-big" href="{{ action('HomeController@index') }}">
                 @if (\Acelle\Model\Setting::get('site_logo_big'))
                     <img src="{{ URL::asset(\Acelle\Model\Setting::get('site_logo_big')) }}" alt="">
