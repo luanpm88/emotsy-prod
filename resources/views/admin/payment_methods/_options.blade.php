@@ -152,3 +152,10 @@
         <button type='submit' class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
     </div>
 @endif
+
+@if ($payment_method->type == \Acelle\Model\PaymentMethod::TYPE_CASH)
+    <hr />
+    <div class="text-left">
+        <button type='submit' class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+    </div>
+@endif
