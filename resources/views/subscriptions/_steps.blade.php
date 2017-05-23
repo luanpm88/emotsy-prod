@@ -1,9 +1,19 @@
-<div class="text-center subscription-header">
-    <a class="main-logo-big" href="{{ action('HomeController@index') }}">
-        <img src="{{ URL::asset('images/logo_big.png') }}" alt="">
-    </a>
-    
-    <h3 class="text-center text-muted2" style="color: #ccc">{{ trans('messages.subscription') }}</h3>
+<div class="row">
+    <div class="col-md-4"></div>
+    <div class="col-md-4">
+        <div class="text-center subscription-header login-header">
+            <a class="main-logo-big" href="{{ action('HomeController@index') }}">
+                @if (\Acelle\Model\Setting::get('site_logo_big'))
+                    <img src="{{ URL::asset(\Acelle\Model\Setting::get('site_logo_big')) }}" alt="">
+                @else
+                    <img src="{{ URL::asset('images/logo_big.png') }}" alt="">
+                @endif
+            </a>
+
+            <h3 class="text-center text-muted2" style="color: #ccc">{{ trans('messages.subscription') }}</h3>
+        </div>
+    </div>
+    <div class="col-md-4"></div>
 </div>
 
 <div class="row">
