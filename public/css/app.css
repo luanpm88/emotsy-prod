@@ -2214,3 +2214,7 @@ input.mini-input {
 .ui-pnotify {
     max-width: 100%;
 }
+.admin-recent-sencond-line {
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

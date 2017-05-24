@@ -90,7 +90,7 @@
                                         {{ $customer->displayName() }}
                                     </a>
                                 </h6>
-                                <p class="mb-0 admin-line">
+                                <p class="mb-0 admin-line admin-recent-sencond-line" title="{{ $customer->user->email }}">
                                     {{ $customer->user->email }}
                                 </p>
                             </div>
