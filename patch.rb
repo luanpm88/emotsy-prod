@@ -27,15 +27,24 @@ end
 
 # Get updated flies
 updated = `git --git-dir #{File.join(gitdir, '.git')}  --work-tree #{gitdir} diff --diff-filter=AM --name-only #{last_supported} #{new_version}`.split("\n")
+
 updated << 'VERSION'
 updated.uniq!
 
+skipped = [
+  'public/images/default_site_logo_small_dark.png',
+  'public/images/default_site_logo_small_light.png'
+]
+
 for f in updated
   unless File.exists?(f)
-    updated.delete_if { |i| i == f }
-    puts "* Warning: File #{f} skipped!"
+    skipped << f
   end
 end
+
+puts skipped.uniq.map{|f| "* Skipped: #{f}"}.join("\n")
+
+updated.delete_if{ |f| skipped.include?(f) }
 
 # Resolve the updated/deleted stuffs
 # Make sure your working copy is of the correct version: "git checkout v3.0.0-p3" for example
