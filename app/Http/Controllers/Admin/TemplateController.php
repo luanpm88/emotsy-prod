@@ -28,7 +28,7 @@ class TemplateController extends Controller
         if (!$request->user()->admin->can('read', new \Acelle\Model\Template())) {
             return $this->notAuthorized();
         }
-        
+
         // If admin can view all sending domains
         if (!$request->user()->admin->can("read_all", new \Acelle\Model\Template())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
@@ -51,7 +51,7 @@ class TemplateController extends Controller
         if (!$request->user()->admin->can('read', new \Acelle\Model\Template())) {
             return $this->notAuthorized();
         }
-        
+
         // If admin can view all sending domains
         if (!$request->user()->admin->can("read_all", new \Acelle\Model\Template())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
@@ -338,7 +338,7 @@ class TemplateController extends Controller
 
             // find all link in html content
             $template->replaceHtmlUrl($request->root().'/'.$public_dir.'/'.$sub_path);
-            
+
             $template->save();
 
             // remove tmp folder
@@ -376,7 +376,7 @@ class TemplateController extends Controller
         // Redirect to my lists page
         echo trans('messages.templates.deleted');
     }
-    
+
     /**
      * Buiding email template.
      *
@@ -388,23 +388,23 @@ class TemplateController extends Controller
     {
         $template = new \Acelle\Model\Template();
         $template->name = trans('messages.untitled_template');
-        
+
         // authorize
         if (!$request->user()->admin->can('create', $template)) {
             return $this->notAuthorized();
         }
-        
+
         $elements = [];
         if(isset($request->style)) {
             $elements = \Acelle\Model\Template::templateStyles()[$request->style];
         }
-        
+
         return view('admin.templates.build', [
             'template' => $template,
             'elements' => $elements
         ]);
     }
-    
+
     /**
      * Buiding email template.
      *
@@ -427,7 +427,7 @@ class TemplateController extends Controller
             'template' => $template,
         ]);
     }
-    
+
     /**
      * Select template style.
      *
@@ -438,12 +438,12 @@ class TemplateController extends Controller
     public function buildSelect(Request $request)
     {
         $template = new \Acelle\Model\Template();
-        
+
         return view('admin.templates.build_start', [
             'template' => $template,
         ]);
     }
-    
+
     /**
      * Preview template.
      *
@@ -452,20 +452,20 @@ class TemplateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function preview(Request $request, $id)
-    {        
+    {
         $template = \Acelle\Model\Template::findByUid($id);
-        
+
         // authorize
         if (!$request->user()->admin->can('preview', $template)) {
             return $this->not_authorized();
         }
-        
+
         // Convert to inline css if template source is builder
         if ($template->source == 'builder') {
             $cssToInlineStyles = new CssToInlineStyles();
             $html = $template->content;
             $css = file_get_contents(public_path("css/res_email.css"));
-            
+
             // output
             $template->content = $cssToInlineStyles->convert(
                 $html,
@@ -516,7 +516,7 @@ class TemplateController extends Controller
         $template->image = $upload_loca.$filename;
         $template->save();
     }
-    
+
     /**
      * Template screenshot.
      *
@@ -541,5 +541,30 @@ class TemplateController extends Controller
         }
 
         return $img->response();
+    }
+
+    /**
+     * Custom sort items.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sort(Request $request)
+    {
+        $sort = json_decode($request->sort);
+        foreach ($sort as $row) {
+            $item = \Acelle\Model\Template::findByUid($row[0]);
+
+            // authorize
+            if (!$request->user()->admin->can('update', $item)) {
+                return $this->notAuthorized();
+            }
+
+            $item->custom_order = $row[1];
+            $item->save();
+        }
+
+        echo trans('messages.templates.custom_order.updated');
     }
 }

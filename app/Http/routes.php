@@ -430,6 +430,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/users', 'UserController');
 
     // Template
+    Route::get('admin/templates/sort', 'TemplateController@sort');
     Route::get('admin/templates/{uid}/image', 'TemplateController@image');
     Route::post('admin/templates/{uid}/saveImage', 'TemplateController@saveImage');
     Route::get('admin/templates/{uid}/preview', 'TemplateController@preview');
