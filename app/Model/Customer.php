@@ -625,6 +625,16 @@ class Customer extends Model
     }
 
     /**
+     * Clean up the quota tracking files to prevent it from growing too large
+     *
+     * @return void
+     */
+    function cleanupQuotaTracker()
+    {
+        $this->getQuotaTracker()->cleanupSeries();
+    }
+
+    /**
      * Get customer's color scheme.
      *
      * @return string
@@ -788,7 +798,7 @@ class Customer extends Model
         $current = $this->getCurrentSubscription();
 
         $quota = [
-            'start' => $current->start_date,
+            'start' => $current->start_at,
             'max' => $current->getOption('email_max')
         ];
 

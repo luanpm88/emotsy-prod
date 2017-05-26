@@ -182,7 +182,7 @@ class QuotaTrackerFile
             if (is_null($this->quota)) {
                 $cutOff = $timePoint->copy()->sub(\DateInterval::createFromDateString(array_keys($this->limits)[0]))->timestamp;
             } else {
-                $cutOff = $this->quota['start'];
+                $cutOff = $this->quota['start']->timestamp;
             }
         } else {
             $cutOff = $timePoint->copy()->sub(\DateInterval::createFromDateString($interval))->timestamp;

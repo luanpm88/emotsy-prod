@@ -66,8 +66,10 @@ class AutomatedCampaign extends Campaign
     public function run($subscribers = null)
     {
         try {
-            $i = 0;
+            // clean up the tracker to prevent the log file from growing very big
+            $this->customer->cleanupQuotaTracker();
 
+            $i = 0;
             if (is_null($subscribers)) {
                 $subscribers = $this->trigger->autoEvent->automation->subscribers()->get();
             }

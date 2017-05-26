@@ -496,6 +496,9 @@ class Campaign extends Model
                 $subscribers = $this->getPendingSubscribers();
             }
 
+            // clean up the tracker to prevent the log file from growing very big
+            $this->customer->cleanupQuotaTracker();
+
             $i = 0;
             foreach ($subscribers as $subscriber) {
                 // @todo: customerneedcheck
