@@ -530,6 +530,17 @@ class SendingServer extends Model
     }
 
     /**
+     * Clean up the quota tracking files to prevent it from growing too large
+     *
+     * @return void
+     */
+    function cleanupQuotaTracker()
+    {
+        // @todo: hard-coded for 1 month
+        $this->getQuotaTracker()->cleanupSeries(null, '1 month');
+    }
+
+    /**
      * Get sending quota lock file
      *
      * @return string file path

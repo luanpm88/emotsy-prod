@@ -1338,6 +1338,7 @@ class MailList extends Model
             $id = RouletteWheel::generate($selection);
             if (empty(self::$serverPools[$id])) {
                 $server = SendingServer::find($id);
+                $server->cleanupQuotaTracker();
                 MailLog::info(sprintf('Initialize delivery server `%s` (ID: %s)', $server->name, $id));
                 self::$serverPools[$id] = SendingServer::mapServerType($server);
             }
