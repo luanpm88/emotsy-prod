@@ -29,7 +29,7 @@ function showAjaxDetailBox(items) {
 
         $(document).on('change', form_class + ' .' + hook_class, function() {
             data = form.serialize();
-            
+
             if (typeof(loading_message) !== 'undefined') {
                 container.html(loading_message);
             }
@@ -1458,7 +1458,7 @@ $(function() {
 
     // Copy Move subscribers
     $(document).on('click', '.list-form-button', function() {
-        var form = $('#list-form-modal').find('form');
+        var form = $($(this).attr('data-target')).find('form');
         var message = $(this).attr('message');
         var uids = $(this).attr('data-uids');
         var action = $(this).attr('data-url');
@@ -1474,33 +1474,36 @@ $(function() {
         form.find('h4').html(message);
     });
     // Ajax copy list
-    $(document).on('submit', '#list-form-modal form', function(e) {
+    $(document).on('submit', '.list-form-modal form', function(e) {
         var form = $(this);
+        var modal = form.parents('.list-form-modal');
         var url = form.attr("action");
         var method = form.attr("method");
 
-        $.ajax({
-            type: method,
-            url: url,
-            data: form.serialize(), // serializes the form's elements.
-            success: function(msg)
-            {
-                tableFilter($(".listing-form"));
-                if(msg != '') {
-                    swal({
-                        title: msg,
-                        text: "",
-                        confirmButtonColor: "#00695C",
-                        type: "success",
-                        allowOutsideClick: true,
-                        confirmButtonText: LANG_OK,
-                        customClass: "swl-success",
-                        html: true
-                    });
+        if (form.valid()) {
+            $.ajax({
+                type: method,
+                url: url,
+                data: form.serialize(), // serializes the form's elements.
+                success: function(msg)
+                {
+                    tableFilter($(".listing-form"));
+                    if(msg != '') {
+                        swal({
+                            title: msg,
+                            text: "",
+                            confirmButtonColor: "#00695C",
+                            type: "success",
+                            allowOutsideClick: true,
+                            confirmButtonText: LANG_OK,
+                            customClass: "swl-success",
+                            html: true
+                        });
+                    }
+                    modal.modal('hide');
                 }
-                $('#list-form-modal').modal('hide');
-            }
-        });
+            });
+        }
 
         e.preventDefault(); // avoid to execute the actual submit of the form.
     });

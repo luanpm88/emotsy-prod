@@ -386,7 +386,7 @@ class SubscriptionController extends Controller
         foreach ($subscriptions->get() as $subscription) {
             // authorize
             if ($request->user()->admin->can('paid', $subscription)) {
-                $subscription->setPaid($request->description);
+                $subscription->setPaid($request->all());
             }
         }
 

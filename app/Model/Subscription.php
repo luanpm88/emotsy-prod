@@ -872,17 +872,19 @@ class Subscription extends Model
      *
      * @return void
      */
-    public function setPaid($description='')
+    public function setPaid($params=[])
     {
         $this->paid = true;
         $this->save();
 
         // description
-        if (!empty($description)) {
+        if (!empty($params)) {
             $payment = new \Acelle\Model\Payment();
             $payment->subscription_id = $this->id;
             $payment->data = '';
-            $payment->description = $description;
+            $payment->description = $params["description"];
+            $payment->tax_number = $params["tax_number"];
+            $payment->billing_address = $params["billing_address"];
             $payment->payment_method_id = NULL;
             $payment->status = \Acelle\Model\Payment::STATUS_SUCCESS;
             $payment->action = \Acelle\Model\Payment::ACTION_PAID;

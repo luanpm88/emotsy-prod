@@ -391,7 +391,7 @@
 	<!-- /basic modal -->
 
 	<!-- Basic modal -->
-	<div id="list-form-modal" class="modal fade">
+	<div id="list-form-modal" class="modal fade list-form-modal">
 		<div class="modal-dialog modal-md">
 			<div class="modal-header bg-teal">
 				<button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -405,6 +405,59 @@
 
 					<div class="modal-body">
 						<h4></h4>
+						@include('helpers.form_control', [
+							'type' => 'textarea',
+							'class' => '',
+							'label' => trans('messages.description'),
+							'name' => 'description',
+							'value' => '',
+							'help_class' => 'payment',
+							'rules' => []
+						])
+					</div>
+					<div class="modal-footer">
+						<button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
+						<button type="submit" class="btn btn-primary bg-teal">{{ trans('messages.submit') }}</button>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- /basic modal -->
+
+	<!-- Basic modal -->
+	<div id="paid-form-modal" class="modal fade list-form-modal">
+		<div class="modal-dialog modal-md">
+			<div class="modal-header bg-teal">
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+				<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
+			</div>
+			<div class="modal-content">
+				<form action="" method="POST" class="ajax_upload_form form-validate-jquery">
+					{{ csrf_field() }}
+					<input type="hidden" name="_method" value="">
+					<input type="hidden" name="uids" value="">
+
+					<div class="modal-body">
+						<h4></h4>
+						@include('helpers.form_control', [
+							'type' => 'text',
+							'class' => '',
+							'label' => trans('messages.tax_number'),
+							'name' => 'tax_number',
+							'value' => '',
+							'help_class' => 'payment',
+							'rules' => ['tax_number' => 'required']
+						])
+						@include('helpers.form_control', [
+							'type' => 'text',
+							'class' => '',
+							'label' => trans('messages.billing_address'),
+							'name' => 'billing_address',
+							'value' => '',
+							'help_class' => 'payment',
+							'rules' => ['billing_address' => 'required']
+						])
 						@include('helpers.form_control', [
 							'type' => 'textarea',
 							'class' => '',
