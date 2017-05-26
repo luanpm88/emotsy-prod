@@ -31,6 +31,7 @@ class QuotaTrackerFile
     protected $hasLock = false;
     protected $limits;
     protected $quota;
+    protected $series;
 
     const TIMEOUT = 60;
     const UNLIMITED = -1;
@@ -169,6 +170,7 @@ class QuotaTrackerFile
      */
     private function shiftBy(Carbon $timePoint, $interval)
     {
+
         if (empty($this->series)) {
             return [];
         }
@@ -182,7 +184,7 @@ class QuotaTrackerFile
             if (is_null($this->quota)) {
                 $cutOff = $timePoint->copy()->sub(\DateInterval::createFromDateString(array_keys($this->limits)[0]))->timestamp;
             } else {
-                $cutOff = $this->quota['start']->timestamp;
+                $cutOff = $this->quota['start'];
             }
         } else {
             $cutOff = $timePoint->copy()->sub(\DateInterval::createFromDateString($interval))->timestamp;

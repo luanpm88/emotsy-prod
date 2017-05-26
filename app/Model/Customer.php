@@ -798,7 +798,7 @@ class Customer extends Model
         $current = $this->getCurrentSubscription();
 
         $quota = [
-            'start' => $current->start_at,
+            'start' => $current->start_at->timestamp,
             'max' => $current->getOption('email_max')
         ];
 
