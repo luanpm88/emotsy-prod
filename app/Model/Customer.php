@@ -790,11 +790,12 @@ class Customer extends Model
     }
 
     /**
-     * Initialize the quota tracker
+     * Get the quota/limit object
      *
      * @return array
      */
-    public function initQuotaTracker() {
+    public function getQuotaHash()
+    {
         $current = $this->getCurrentSubscription();
 
         $quota = [
@@ -802,7 +803,16 @@ class Customer extends Model
             'max' => $current->getOption('email_max')
         ];
 
-        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $quota, $this->getSendingLimits());
+        return $quota;
+    }
+
+    /**
+     * Initialize the quota tracker
+     *
+     * @return array
+     */
+    public function initQuotaTracker() {
+        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $this->getQuotaHash(), $this->getSendingLimits());
         // @note: in case of multi-process, the following command must be issued manually
         //     $this->renewQuotaTracker();
     }

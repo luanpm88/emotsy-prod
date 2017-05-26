@@ -4,7 +4,7 @@ use Illuminate\Foundation\Testing\WithoutMiddleware;
 use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Acelle\Library\QuotaTrackerFile;
-use Acelle\Model\User;
+use Acelle\Model\Customer;
 use Acelle\Model\SendingServer;
 use Carbon\Carbon;
 
@@ -18,7 +18,7 @@ class QuotaTrackerMultiProcessTest extends TestCase
     public function testRaceCondition()
     {
         $file = '/tmp/quotatest';
-        $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
+        $tracker = new QuotaTrackerFile($file, null, ['1 hour' => 100000]);
         $tracker->getExclusiveLock(function(&$tracker) {
             // the getSeries() here is to ensure that lock is not set again if the current process already got it
             // for the sake of code coverage
@@ -37,7 +37,7 @@ class QuotaTrackerMultiProcessTest extends TestCase
             if (!$pid) {
                 sleep(1);
 
-                $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
+                $tracker = new QuotaTrackerFile($file, null, ['1 hour' => 100000]);
 
                 $result = $this->nTimes(300, $tracker, function($tracker) {
                     return $tracker->add(Carbon::now());
@@ -67,7 +67,7 @@ class QuotaTrackerMultiProcessTest extends TestCase
     public function testResetWithTransactionSafe()
     {
         $file = '/tmp/quotatest';
-        $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
+        $tracker = new QuotaTrackerFile($file, null, ['1 hour' => 100000]);
         $tracker->getExclusiveLock(function(&$tracker) {
             $tracker->reset();
         });
@@ -82,14 +82,14 @@ class QuotaTrackerMultiProcessTest extends TestCase
             // for child process only
             if (!$pid) {
                 if ($i > 2) {
-                    $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
+                    $tracker = new QuotaTrackerFile($file, null, ['1 hour' => 100000]);
                     $result = $this->nTimes(500, $tracker, function($tracker) {
                         return $tracker->add(Carbon::now());
                     });
 
                     exit($i + 1);
                 } else {
-                    $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
+                    $tracker = new QuotaTrackerFile($file, null, ['1 hour' => 100000]);
                     $tracker->getExclusiveLock(function(&$tracker) {
                         $s = $tracker->getSeries();
                         sleep(1);
@@ -121,7 +121,7 @@ class QuotaTrackerMultiProcessTest extends TestCase
     public function testResetWithoutTransactionSafe()
     {
         $file = '/tmp/quotatest';
-        $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
+        $tracker = new QuotaTrackerFile($file, null, ['1 hour' => 100000]);
         $tracker->getExclusiveLock(function(&$tracker) {
             $tracker->reset();
         });
@@ -136,14 +136,14 @@ class QuotaTrackerMultiProcessTest extends TestCase
             // for child process only
             if (!$pid) {
                 if ($i > 2) {
-                    $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
+                    $tracker = new QuotaTrackerFile($file, null, ['1 hour' => 100000]);
                     $result = $this->nTimes(500, $tracker, function($tracker) {
                         return $tracker->add(Carbon::now());
                     });
 
                     exit($i + 1);
                 } else {
-                    $tracker = new QuotaTrackerFile($file, ['1 hour' => 100000]);
+                    $tracker = new QuotaTrackerFile($file, null, ['1 hour' => 100000]);
                     $s = $tracker->getSeries();  // not transaction safe: <--- other processes may jump into this point
                     sleep(1);                    // not transaction safe: <--- other processes may jump into this point
                     $tracker->getExclusiveLock(function(&$tracker) use ($s) {
@@ -178,8 +178,8 @@ class QuotaTrackerMultiProcessTest extends TestCase
             unlink($lock);
         }
 
-        $user = $this->getMockBuilder(User::class)
-                     ->setMethods(['getQuotaIntervalString', 'getSendingQuota', 'renewQuotaTracker', 'getSendingQuotaLockFile'])
+        $user = $this->getMockBuilder(Customer::class)
+                     ->setMethods(['getQuotaHash', 'getSendingLimits', 'getSendingQuotaLockFile', 'getCurrentSubscription'])
                      ->disableOriginalConstructor()
                      ->disableOriginalClone()
                      ->disableArgumentCloning()
@@ -193,9 +193,10 @@ class QuotaTrackerMultiProcessTest extends TestCase
         //            ->with('app.redis_enabled')
         //            ->andReturn(false);
 
-        $user->method('getQuotaIntervalString')->willReturn('1 minute');
         $user->method('getSendingQuotaLockFile')->willReturn($lock);
-        $user->method('getSendingQuota')->willReturn('3');
+        $user->method('getQuotaHash')->willReturn(['start' => (new Carbon('first day of March 2016'))->timestamp, 'max' => 1000000]);
+        $user->method('getSendingLimits')->willReturn(['1 minute' => 3]);
+        $user->method('getCurrentSubscription')->willReturn(true);
 
         // TEST IF QUOTA IS CORRECTLY ENFORCED
         // no usage yet
@@ -229,10 +230,17 @@ class QuotaTrackerMultiProcessTest extends TestCase
         $user->countUsage($t2);
 
         // now $t1 is the first point of the time series
+        // cleanup will count the time series from 'start', so calling it here does not have any impact on the series
+        $user->getQuotaTracker()->cleanupSeries();
+        $this->assertFalse($user->getQuotaTracker()->getSeries()[0] == $t1->timestamp);
+
+        // to test it, cut-off from $t1
+        $user->getQuotaTracker()->cleanupSeries(Carbon::now(), '1 minute');
         $this->assertTrue($user->getQuotaTracker()->getSeries()[0] == $t1->timestamp);
 
         sleep(50);
         // now $t2 becomes the first point of the time series
+        $user->getQuotaTracker()->cleanupSeries(Carbon::now(), '1 minute');
         $this->assertTrue($user->getQuotaTracker()->getSeries()[0] == $t2->timestamp);
     }
 
@@ -249,7 +257,7 @@ class QuotaTrackerMultiProcessTest extends TestCase
 
         // setup assumptions
         $server = $this->getMockBuilder(SendingServer::class)
-                     ->setMethods(['getQuotaIntervalString', 'getSendingQuota', 'renewQuotaTracker', 'getSendingQuotaLockFile'])
+                     ->setMethods(['getQuotaIntervalString', 'getSendingQuota', 'getSendingQuotaLockFile'])
                      ->disableOriginalConstructor()
                      ->disableOriginalClone()
                      ->disableArgumentCloning()

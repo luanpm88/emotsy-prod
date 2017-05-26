@@ -202,7 +202,7 @@ class QuotaTrackerFile
         if (is_null($offset)) {
             return [];
         } else {
-            return array_slice($this->series, $offset);
+            return array_slice($this->series, $offset); // including offset
         }
     }
 
