@@ -1027,7 +1027,7 @@ class Subscription extends Model
      */
     public function isTimeUnlimited()
     {
-        return !$this->start_at && !$this->end_at;
+        return !$this->end_at;
     }
 
     /**

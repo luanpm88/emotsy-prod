@@ -7,15 +7,16 @@
             <mc:flag>{{ $subscription->plan_name }}</mc:flag>
         </div>
     </li>
+    <li class="selfclear">
+        <div class="unit size1of2">
+            <strong>{{ trans('messages.start_at') }}</strong>
+        </div>
+        <div class="lastUnit size1of2">
+            <mc:flag>{{ $subscription->start_at ? \Acelle\Library\Tool::dateTime($subscription->start_at)->format(trans('messages.date_format')) : '' }}</mc:flag>
+        </div>
+    </li>
     @if (!$subscription->isTimeUnlimited())
-        <li class="selfclear">
-            <div class="unit size1of2">
-                <strong>{{ trans('messages.start_at') }}</strong>
-            </div>
-            <div class="lastUnit size1of2">
-                <mc:flag>{{ $subscription->start_at ? \Acelle\Library\Tool::dateTime($subscription->start_at)->format(trans('messages.date_format')) : '' }}</mc:flag>
-            </div>
-        </li>
+
         <li class="selfclear">
             <div class="unit size1of2">
                 <strong>{{ trans('messages.end_at') }}</strong>
@@ -36,6 +37,23 @@
                 </div>
             </li>
         @endif
+    @else
+        <li class="selfclear">
+            <div class="unit size1of2">
+                <strong>{{ trans('messages.end_at') }}</strong>
+            </div>
+            <div class="lastUnit size1of2">
+                <mc:flag>{{ trans('messages.unlimited') }}</mc:flag>
+            </div>
+        </li>
+        <li>
+            <div class="unit size1of2">
+                <strong>{{ trans_choice('messages.days_remain', $subscription->daysRemainCount()) }}</strong>
+            </div>
+            <div class="lastUnit size1of2">
+                <mc:flag>{{ trans('messages.unlimited') }}</mc:flag>
+            </div>
+        </li>
     @endif
     <li class="more">
         <a href="#more">{{ trans('messages.more_details') }}</a>
