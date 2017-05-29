@@ -783,7 +783,7 @@ class MailList extends Model
                     $value = $item->getValueByField($field);
                     $cols[] = $value;
                 }
-                $data[] = implode(',', $cols);
+                $data[] = \Acelle\Library\Tool::arrayToCsv($cols, ',');
 
                 ++$success;
             }
