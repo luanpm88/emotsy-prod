@@ -32,7 +32,7 @@
                         'total' => $campaign->subscribersCount(),
                     ]) }}
                 </span>
-                <a href="{{ action('CampaignController@openLog', $campaign->uid) }}"><i class="icon-arrow-right7"></i> {{ trans('messages.view_log') }}</a>
+                <a href="{{ action('CampaignController@subscribers', ['uid' => $campaign->uid, 'open' => 'not_opened']) }}"><i class="icon-arrow-right7"></i> {{ trans('messages.view_log') }}</a>
             </div>
 
             <div class="badge-row">

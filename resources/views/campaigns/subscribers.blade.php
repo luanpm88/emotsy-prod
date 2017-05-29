@@ -168,7 +168,7 @@
 										<select class="select" name="open">
 											<option value="">-- {{ trans('messages.open') }} --</option>
 											<option value="opened">{{ trans('messages.opened') }}</option>
-											<option value="not_opened">{{ trans('messages.not_opened') }}</option>
+											<option {{ (request()->open == 'not_opened' ? "selected" : '') }} value="not_opened">{{ trans('messages.not_opened') }}</option>
 										</select>
 										<!--<span class="small-select2">
 											<select class="select" name="and_or">
