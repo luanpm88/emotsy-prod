@@ -522,7 +522,7 @@ class Customer extends Model
      */
     public function subscribersCount()
     {
-        return $this->subscribers()->count();
+        return $this->subscribers()->distinct('subscribers.email')->count('subscribers.email');
     }
 
     /**
