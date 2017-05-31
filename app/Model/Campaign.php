@@ -506,15 +506,6 @@ class Campaign extends Model
                     throw new \Exception("Customer has reached sending limit");
                 }
 
-                // randomly check for campaign PAUSED status after 10 emails
-                // @todo wrap up the probability checking here
-                if (($i % 50) == 0) {
-                    if ($this->refreshStatus()->isPaused()) {
-                        event(new \Acelle\Events\CampaignUpdated($this, false));
-                        throw new CampaignPausedException();
-                    }
-                }
-
                 $i += 1;
                 MailLog::info("Sending to subscriber `{$subscriber->email}` ({$i}/".sizeof($subscribers).')');
 
@@ -524,7 +515,19 @@ class Campaign extends Model
 
                 list($message, $msgId) = $this->prepareEmail($subscriber, $server);
 
+                // randomly check for campaign PAUSED status after 10 emails
+                // @todo performance concern here
+                // @todo need an exclusive lock, what if the campaign is PAUSED, then RESTARTED
+                //       after the status check and before actually sending?
+                if ($this->refreshStatus()->isPaused()) {
+                    event(new \Acelle\Events\CampaignUpdated($this, false));
+                    throw new CampaignPausedException();
+                }
+
                 $sent = $server->send($message);
+
+                // additional log
+                MailLog::info("Sent to subscriber `{$subscriber->email}`");
 
                 $this->trackMessage($sent, $subscriber, $server, $msgId);
             }
