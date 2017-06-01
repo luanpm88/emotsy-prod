@@ -820,6 +820,9 @@ class Customer extends Model
     public function getSendingLimits()
     {
         $timeValue = $this->getOption('sending_quota_time');
+        if ($timeValue == -1) {
+            return []; // no limit
+        }
         $timeUnit = $this->getOption('sending_quota_time_unit');
         $limit = $this->getOption('sending_quota');
         return ["{$timeValue} {$timeUnit}" => $limit];
