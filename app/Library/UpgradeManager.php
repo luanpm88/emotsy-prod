@@ -177,6 +177,7 @@ class UpgradeManager
             $updates = $meta['updated'];
             $deletes = $meta['deleted'];
             $packages = $meta['packages'];
+            $dirs = $meta['dirs'];
 
             // new or updated files
             foreach($updates as $file) {
@@ -229,6 +230,21 @@ class UpgradeManager
             foreach($packages as $dir) {
                 $source = join_paths($this->source, 'vendor', $dir);
                 $target = join_paths($this->target, 'vendor', $dir);
+                if ($test) {
+                    if (!$this->isWritable($target)) {
+                        $errors[] = $target;
+                    }
+                } else {
+                    LaravelLog::info("Replacing {$target}");
+                    $this->rm($target);
+                    $this->copy($source, $target);
+                }
+            }
+
+            // new or updated entire directories
+            foreach($dirs as $dir) {
+                $source = join_paths($this->source, $dir);
+                $target = join_paths($this->target, $dir);
                 if ($test) {
                     if (!$this->isWritable($target)) {
                         $errors[] = $target;
