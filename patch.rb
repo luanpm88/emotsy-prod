@@ -33,7 +33,8 @@ updated.uniq!
 
 skipped = [
   'public/images/default_site_logo_small_dark.png',
-  'public/images/default_site_logo_small_light.png'
+  'public/images/default_site_logo_small_light.png',
+  'patch.rb'
 ]
 
 for f in updated
