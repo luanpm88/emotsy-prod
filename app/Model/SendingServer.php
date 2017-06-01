@@ -461,6 +461,9 @@ class SendingServer extends Model
      */
     public function displayQuota()
     {
+        if ($this->quota_value == -1) {
+            return trans('messages.unlimited');
+        }
         return $this->quota_value.' / '.$this->quota_base.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
     }
 
