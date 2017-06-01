@@ -16,7 +16,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         // Commands\Inspire::class,
         Commands\TestCampaign::class,
-        // Commands\TestSmtp::class,
+        Commands\UpgradeTranslation::class,
         Commands\RunHandler::class,
     ];
 
@@ -31,7 +31,7 @@ class Kernel extends ConsoleKernel
         $schedule->call(function () {
             Automation::run();
         })->name('automation:run')->everyFiveMinutes();
-        
+
         // Bounce/feedback handler
         $schedule->command('handler:run')->everyFiveMinutes();
 
