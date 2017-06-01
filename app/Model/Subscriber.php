@@ -196,8 +196,11 @@ class Subscriber extends Model
      */
     public static function filter($query, $request)
     {
+        /* does not support searching on subscriber fields, for the sake of performance
         $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
             ->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
+        */
+        $query = $query->leftJoin('mail_lists', 'subscribers.mail_list_id', '=', 'mail_lists.id');
 
         // Email verification join
         $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
@@ -207,8 +210,10 @@ class Subscriber extends Model
             if (!empty(trim($request->keyword))) {
                 foreach (explode(' ', trim($request->keyword)) as $keyword) {
                     $query = $query->where(function ($q) use ($keyword) {
-                        $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%')
+                        $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%');
+                            /* does not support searching on subscriber fields, for the sake of performance
                             ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
+                            */
                     });
                 }
             }
@@ -225,7 +230,7 @@ class Subscriber extends Model
             }
         }
 
-        return $query->distinct('subscribers.id');
+        return $query;
     }
 
     /**

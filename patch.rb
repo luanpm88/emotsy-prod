@@ -7,6 +7,7 @@ require 'json'
 # Settings
 old_versions = ['3.0.1', '3.0.2']      # sort by chronological order
 packages = []                 # vendor packages to be replaced
+dirs = [] # 'resources/lang/default' for example
 
 # Auto setting
 release_date = Time.now.to_s
@@ -58,6 +59,10 @@ for e in intersected
   end
 end
 
+if !updated.select{|f| f[/resources.lang.en.[a-z0-9]+\.php$/] }.empty?
+  dirs << 'resources/lang/default'
+end
+
 # build the meta json
 meta = {
   version: new_version,
@@ -65,7 +70,8 @@ meta = {
   last_supported: last_supported,
   updated: updated,
   deleted: deleted,
-  packages: packages
+  packages: packages,
+  dirs: dirs
 }
 
 # prepare output folder
@@ -93,6 +99,11 @@ for file in meta[:packages]
   path = "vendor/#{file}"
   `rm -fr #{File.join(output, subdir, path)}`
   `cp -r #{path} #{File.join(output, subdir, 'vendor/')}`
+end
+
+for dir in meta[:dirs]
+  `rm -fr  #{File.join(output, subdir, dir)}`
+  `cp -r #{dir} #{File.join(output, subdir, dir)}`
 end
 
 ## zip file

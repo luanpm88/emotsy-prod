@@ -496,20 +496,14 @@ class Campaign extends Model
                 $subscribers = $this->getPendingSubscribers();
             }
 
+            // clean up the tracker to prevent the log file from growing very big
+            $this->customer->cleanupQuotaTracker();
+
             $i = 0;
             foreach ($subscribers as $subscriber) {
                 // @todo: customerneedcheck
                 if ($this->customer->overQuota()) {
                     throw new \Exception("Customer has reached sending limit");
-                }
-
-                // randomly check for campaign PAUSED status after 10 emails
-                // @todo wrap up the probability checking here
-                if (($i % 50) == 0) {
-                    if ($this->refreshStatus()->isPaused()) {
-                        event(new \Acelle\Events\CampaignUpdated($this, false));
-                        throw new CampaignPausedException();
-                    }
                 }
 
                 $i += 1;
@@ -521,7 +515,19 @@ class Campaign extends Model
 
                 list($message, $msgId) = $this->prepareEmail($subscriber, $server);
 
+                // randomly check for campaign PAUSED status after 10 emails
+                // @todo performance concern here
+                // @todo need an exclusive lock, what if the campaign is PAUSED, then RESTARTED
+                //       after the status check and before actually sending?
+                if ($this->refreshStatus()->isPaused()) {
+                    event(new \Acelle\Events\CampaignUpdated($this, false));
+                    throw new CampaignPausedException();
+                }
+
                 $sent = $server->send($message);
+
+                // additional log
+                MailLog::info("Sent to subscriber `{$subscriber->email}`");
 
                 $this->trackMessage($sent, $subscriber, $server, $msgId);
             }

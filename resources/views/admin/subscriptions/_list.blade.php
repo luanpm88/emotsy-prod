@@ -105,7 +105,7 @@
 								@if (Auth::user()->admin->can('paid', $subscription))
 									<li>
 										<a
-											message="{{ trans('messages.paid_subscriptions_confirm') }}" data-toggle="modal" data-target="#list-form-modal" href="#paid"
+											message="{{ trans('messages.paid_subscriptions_confirm') }}" data-toggle="modal" data-target="#paid-form-modal" href="#paid"
 											class="list-form-button"
 											data-uids="{{ $subscription->uid }}"
 											data-method="PATCH"

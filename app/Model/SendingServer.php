@@ -461,6 +461,9 @@ class SendingServer extends Model
      */
     public function displayQuota()
     {
+        if ($this->quota_value == -1) {
+            return trans('messages.unlimited');
+        }
         return $this->quota_value.' / '.$this->quota_base.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
     }
 
@@ -527,6 +530,17 @@ class SendingServer extends Model
         $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), null, [$this->getQuotaIntervalString() => $this->getSendingQuota()]);
         // @note: in case of multi-process, the following command must be issued manually
         //     $this->renewQuotaTracker();
+    }
+
+    /**
+     * Clean up the quota tracking files to prevent it from growing too large
+     *
+     * @return void
+     */
+    function cleanupQuotaTracker()
+    {
+        // @todo: hard-coded for 1 month
+        $this->getQuotaTracker()->cleanupSeries(null, '1 month');
     }
 
     /**

@@ -148,7 +148,7 @@
 
 <h4 class="text-semibold text-teal-800">{{ trans('messages.sending_quota') }}</h4>
 
-<div class="row">
+<div class="row boxing">
 	<div class="col-md-12">
 		<p>{!! trans('messages.options.wording') !!}</p>
 	</div>
@@ -161,6 +161,12 @@
 			'help_class' => 'sending_server',
 			'rules' => Acelle\Model\SendingServer::rules(request()->type)
 		])
+		<div class="checkbox inline unlimited-check text-semibold">
+			<label>
+				<input{{ $server->quota_value  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
+				{{ trans('messages.unlimited') }}
+			</label>
+		</div>
 	</div>
 	<div class="col-md-4">
 		@include('helpers.form_control', [

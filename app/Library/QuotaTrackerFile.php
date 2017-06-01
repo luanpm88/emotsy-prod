@@ -31,6 +31,7 @@ class QuotaTrackerFile
     protected $hasLock = false;
     protected $limits;
     protected $quota;
+    protected $series;
 
     const TIMEOUT = 60;
     const UNLIMITED = -1;
@@ -169,11 +170,13 @@ class QuotaTrackerFile
      */
     private function shiftBy(Carbon $timePoint, $interval)
     {
+
         if (empty($this->series)) {
             return [];
         }
 
-        # Note:
+        # Conventions:
+        # - $timePoint is not null
         # - $interval empty means get the series from the quota start date
         # - $interval not empty means get the series from the interval
         # - If both $interval and $quota empty --> for backward compatibility --> get quota from the first interval of $this->limit
@@ -199,7 +202,7 @@ class QuotaTrackerFile
         if (is_null($offset)) {
             return [];
         } else {
-            return array_slice($this->series, $offset);
+            return array_slice($this->series, $offset); // including offset
         }
     }
 

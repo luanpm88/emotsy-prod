@@ -522,7 +522,7 @@ class Customer extends Model
      */
     public function subscribersCount()
     {
-        return $this->subscribers()->count();
+        return $this->subscribers()->distinct('subscribers.email')->count('subscribers.email');
     }
 
     /**
@@ -622,6 +622,16 @@ class Customer extends Model
         }
         // @todo use percentage helper here
         return $this->getSendingQuotaUsagePercentage().'%';
+    }
+
+    /**
+     * Clean up the quota tracking files to prevent it from growing too large
+     *
+     * @return void
+     */
+    function cleanupQuotaTracker()
+    {
+        $this->getQuotaTracker()->cleanupSeries();
     }
 
     /**
@@ -780,19 +790,29 @@ class Customer extends Model
     }
 
     /**
+     * Get the quota/limit object
+     *
+     * @return array
+     */
+    public function getQuotaHash()
+    {
+        $current = $this->getCurrentSubscription();
+
+        $quota = [
+            'start' => $current->start_at->timestamp,
+            'max' => $current->getOption('email_max')
+        ];
+
+        return $quota;
+    }
+
+    /**
      * Initialize the quota tracker
      *
      * @return array
      */
     public function initQuotaTracker() {
-        $current = $this->getCurrentSubscription();
-
-        $quota = [
-            'start' => $current->start_date,
-            'max' => $current->getOption('email_max')
-        ];
-
-        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $quota, $this->getSendingLimits());
+        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $this->getQuotaHash(), $this->getSendingLimits());
         // @note: in case of multi-process, the following command must be issued manually
         //     $this->renewQuotaTracker();
     }

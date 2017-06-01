@@ -156,83 +156,153 @@ class UpgradeManager
      * Actually run the upgrade process
      *
      */
-    public function run()
+    public function run($test = false)
     {
-        LaravelLog::info('Start upgrading');
-        $meta = $this->getMetaInfo();
-        $updates = $meta['updated'];
-        $deletes = $meta['deleted'];
-        $packages = $meta['packages'];
+        $old = umask(0);
 
-        foreach($updates as $file) {
-            $source = join_paths($this->source, $file);
-            $target = join_paths($this->target, $file);
-            LaravelLog::info("Replacing {$target}");
-            if (!copy($source, $target)) {
-                LaravelLog::error("Cannot replace file {$target}");
-                throw new \Exception("Cannot replace file {$target}");
+        try {
+            if ($test) {
+                LaravelLog::info('Start upgrading (test)');
+            } else {
+                LaravelLog::info('Start upgrading');
             }
+
+            if (!$test) {
+                // set umask(0) and back up the current umask
+                $old = umask(0);
+            }
+
+            $errors = [];
+            $meta = $this->getMetaInfo();
+            $updates = $meta['updated'];
+            $deletes = $meta['deleted'];
+            $packages = $meta['packages'];
+            $dirs = $meta['dirs'];
+
+            // new or updated files
+            foreach($updates as $file) {
+                $source = join_paths($this->source, $file);
+                $target = join_paths($this->target, $file);
+
+                if ($test) {
+                    if ($this->isLanguageFile($source)) {
+                        $languages = \Acelle\Model\Language::all();
+                        foreach ($languages as $lang) {
+                            $target = join_paths($lang->languageDir(), pathinfo($file)['basename']);
+                            if (!$this->isWritable($target)) {
+                                $errors[] = $target;
+                            }
+                        }
+                    } else {
+                        if (!$this->isWritable($target)) {
+                            $errors[] = $target;
+                        }
+                    }
+                } else {
+                    LaravelLog::info("Replacing {$target}");
+                    if ($this->isLanguageFile($source)) {
+                        $this->upgradeLanguageFiles($source);
+                    } else {
+                        if (!copy($source, $target)) {
+                            LaravelLog::error("Cannot replace file {$target}");
+                            throw new \Exception("Cannot replace file {$target}");
+                        }
+                    }
+                }
+            }
+
+            // deleted files
+            foreach($deletes as $file) {
+                $target = join_paths($this->target, $file);
+
+                if ($test) {
+                    if (!$this->isWritable($target)) {
+                        $errors[] = $target;
+                    }
+                } else {
+                    LaravelLog::info("Deleting {$target}");
+                    @unlink($target);
+                }
+
+            }
+
+            // new or updated packages
+            foreach($packages as $dir) {
+                $source = join_paths($this->source, 'vendor', $dir);
+                $target = join_paths($this->target, 'vendor', $dir);
+                if ($test) {
+                    if (!$this->isWritable($target)) {
+                        $errors[] = $target;
+                    }
+                } else {
+                    LaravelLog::info("Replacing {$target}");
+                    $this->rm($target);
+                    $this->copy($source, $target);
+                }
+            }
+
+            // new or updated entire directories
+            foreach($dirs as $dir) {
+                $source = join_paths($this->source, $dir);
+                $target = join_paths($this->target, $dir);
+                if ($test) {
+                    if (!$this->isWritable($target)) {
+                        $errors[] = $target;
+                    }
+                } else {
+                    LaravelLog::info("Replacing {$target}");
+                    $this->rm($target);
+                    $this->copy($source, $target);
+                }
+            }
+
+            // just finish for test mode
+            if ($test) {
+                return $errors;
+            }
+
+            // cleanup
+            LaravelLog::info("Cleaning up");
+            $this->cleanup();
+
+            // reload the config & run migration
+            LaravelLog::info("Start caching & migrating");
+            artisan_config_cache();
+            artisan_migrate();
+            LaravelLog::info("All done!");
+
+            if (!$test) {
+                // restore the umask
+                umask($old);
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            if (!$test) {
+                // restore the umask
+                umask($old);
+            }
+            throw $e;
         }
-
-        foreach($deletes as $file) {
-            $target = join_paths($this->target, $file);
-            LaravelLog::info("Deleting {$target}");
-            @unlink($target);
-        }
-
-        foreach($packages as $dir) {
-            $source = join_paths($this->source, 'vendor', $dir);
-            $target = join_paths($this->target, 'vendor', $dir);
-            LaravelLog::info("Replacing {$target}");
-            $this->rm($target);
-            $this->copy($source, $target);
-        }
-
-        LaravelLog::info("Cleaning up");
-        // cleanup
-        $this->cleanup();
-
-        // reload the config & run migration
-        LaravelLog::info("Start caching & migrating");
-        artisan_config_cache();
-        artisan_migrate();
-        LaravelLog::info("All done!");
     }
 
     /**
-     * Test the upgrade process (DRYRUN)
+     * Actually run the upgrade process
+     *
+     */
+    public function upgradeTranslationFiles()
+    {
+        $dir = base_path('resources/lang/');
+
+    }
+
+    /**
+     * Test the upgrade process (DRY-RUN)
      *
      */
     public function test()
     {
-        $errors = [];
-        $meta = $this->getMetaInfo();
-        $updates = $meta['updated'];
-        $deletes = $meta['deleted'];
-        $packages = $meta['packages'];
-
-        foreach ($updates as $file) {
-            $path = join_paths($this->target, $file);
-            if (!$this->isWritable($path)) {
-                $errors[] = $path;
-            }
-        }
-
-        foreach ($deletes as $file) {
-            $path = join_paths($this->target, $file);
-            if (!$this->isWritable($path)) {
-                $errors[] = $path;
-            }
-        }
-
-        foreach ($packages as $dir) {
-            $path = join_paths($this->target, 'vendor', $dir);
-            if (!$this->isWritable($path)) {
-                $errors[] = $path;
-            }
-        }
-
-        return $errors;
+        return $this->run(true);
     }
 
     /**
@@ -352,5 +422,29 @@ class UpgradeManager
             }
         }
         closedir($dir);
+    }
+
+    /**
+     * Check if the provided file is a language file
+     *
+     */
+    public function isLanguageFile($path)
+    {
+        return preg_match('/resources\/lang\/en\/[a-z0-9]+\.php$/', $path);
+    }
+
+    /**
+     * Check if the provided file is a language file
+     *
+     */
+    public function upgradeLanguageFiles($sourcePath)
+    {
+        $source = include $sourcePath;
+        $languages = \Acelle\Model\Language::all();
+        foreach ($languages as $lang) {
+            $target = include join_paths($lang->languageDir(), pathinfo($sourcePath)['basename']);
+            $merged = array_diff_key($target + $source, array_diff_key($target, $source));
+            $lang->updateFromYaml(pathinfo($sourcePath)['filename'], \Yaml::dump($merged));
+        }
     }
 }

@@ -783,7 +783,7 @@ class MailList extends Model
                     $value = $item->getValueByField($field);
                     $cols[] = $value;
                 }
-                $data[] = implode(',', $cols);
+                $data[] = \Acelle\Library\Tool::arrayToCsv($cols, ',');
 
                 ++$success;
             }
@@ -1338,6 +1338,7 @@ class MailList extends Model
             $id = RouletteWheel::generate($selection);
             if (empty(self::$serverPools[$id])) {
                 $server = SendingServer::find($id);
+                $server->cleanupQuotaTracker();
                 MailLog::info(sprintf('Initialize delivery server `%s` (ID: %s)', $server->name, $id));
                 self::$serverPools[$id] = SendingServer::mapServerType($server);
             }
