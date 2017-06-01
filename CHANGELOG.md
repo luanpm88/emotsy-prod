@@ -2,10 +2,11 @@
 ==================
 
  * Added: subscribers count by unique email
+ * Added: more test scripts
  * Fixed: fix potential security issues related to CSRF
  * Fixed: upgrade will no longer overwrite custom translation
  * Fixed: campaign does not pause in certain cases 
- * Fixed: CSV export does not work correctly
+ * Fixed: CSV export may not work correctly
 
 3.0.3 / 2017-05-25
 ==================
