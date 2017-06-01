@@ -28,8 +28,9 @@
 				</td>
 
 				@foreach ($fields as $field)
+					<?php $value = $item->getValueByField($field); ?>
 					<td>
-						<span class="no-margin stat-num kq_search">{{ empty($item->getValueByField($field)) ? "--" : $item->getValueByField($field) }}</span>
+						<span class="no-margin stat-num kq_search">{{ empty($value) ? "--" : $value }}</span>
 						<br>
 						<span class="text-muted2">{{ $field->label }}</span>
 					</td>
