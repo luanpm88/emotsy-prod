@@ -898,9 +898,9 @@ class Tool
     public static function currentTimezone()
     {
         if (Tool::currentView() == 'frontend') {
-            $timezone = is_object(\Auth::user()) && is_object(\Auth::user()->customer) ? \Auth::user()->customer->timezone : '';
+            $timezone = is_object(\Auth::user()) && is_object(\Auth::user()->customer) ? \Auth::user()->customer->timezone : '+00:00';
         } elseif (Tool::currentView() == 'backend') {
-            $timezone = is_object(\Auth::user()) && is_object(\Auth::user()->admin) ? \Auth::user()->admin->timezone : '';
+            $timezone = is_object(\Auth::user()) && is_object(\Auth::user()->admin) ? \Auth::user()->admin->timezone : '+00:00';
         } else {
             $timezone = '+00:00';
         }
