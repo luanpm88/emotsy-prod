@@ -76,6 +76,11 @@ class Subscription extends Model
             $rules['customer_uid'] = 'required';
         }
 
+        $options = self::defaultOptions();
+        foreach ($options as $type => $option) {
+            $rules['options.' . $type] = 'required';
+        }
+
         return $rules;
     }
 
