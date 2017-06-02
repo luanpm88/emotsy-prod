@@ -692,7 +692,11 @@ class MailListController extends Controller
         if ($request->isMethod('post')) {
             $subscriber = new \Acelle\Model\Subscriber($request->all());
             $subscriber->mail_list_id = $list->id;
-            $subscriber->status = 'unconfirmed';
+            if($list->subscribe_confirmation) {
+                $subscriber->status = 'unconfirmed';
+            } else {
+                $subscriber->status = 'subscribed';
+            }
             $subscriber->from = 'embedded-form';
 
             // Validation

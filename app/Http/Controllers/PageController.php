@@ -146,21 +146,25 @@ class PageController extends Controller
                 ->where("mail_list_id", "=", $list->id)->first();
             if(!is_object($subscriber)) {
                 $subscriber = new \Acelle\Model\Subscriber($request->all());
-                $subscriber->mail_list_id = $list->id;                
+                $subscriber->mail_list_id = $list->id;
             }
-            
+
             // Validation
             $this->validate($request, $subscriber->getRules());
-            
+
             $subscriber->email = $request->EMAIL;
-            $subscriber->ip = $request->ip();            
+            $subscriber->ip = $request->ip();
             $subscriber->from = 'web';
-            $subscriber->status = 'unconfirmed';
-            
+            if($list->subscribe_confirmation) {
+                $subscriber->status = 'unconfirmed';
+            } else {
+                $subscriber->status = 'subscribed';
+            }
+
             $subscriber->save();
             // Update field
             $subscriber->updateFields($request->all());
-            
+
             if($list->subscribe_confirmation) {
                 // SEND subscription confirmation email
                 try {
@@ -168,12 +172,12 @@ class PageController extends Controller
                 } catch (\Exception $ex) {
                     return view('somethingWentWrong', ['message' => $ex->getMessage()]);
                 }
-                
+
                 return redirect()->action('PageController@signUpThankyouPage', $list->uid);
             } else {
                 // change status to subscribed
                 $subscriber->updateStatus('subscribed');
-                
+
                 // Send welcome email
                 if($list->send_welcome_email) {
                     // SEND subscription confirmation email
@@ -183,7 +187,7 @@ class PageController extends Controller
                         return view('somethingWentWrong', ['message' => $ex->getMessage()]);
                     }
                 }
-                
+
                 // find display thank you page
                 $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_thankyou')->first();
                 $page = \Acelle\Model\Page::findPage($list, $layout);
@@ -247,7 +251,7 @@ class PageController extends Controller
                     $list->sendSubscriptionWelcomeEmail($subscriber);
                 } catch (\Exception $ex) {
                     return view('somethingWentWrong', ['message' => $ex->getMessage()]);
-                }  
+                }
             }
         }
 
@@ -289,8 +293,8 @@ class PageController extends Controller
                         $list->sendUnsubscriptionNotificationEmail($subscriber);
                     } catch (\Exception $ex) {
                         return view('somethingWentWrong', ['message' => $ex->getMessage()]);
-                    }                      
-                }                
+                    }
+                }
             }
             return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'uid' => $subscriber->uid]);
         }
@@ -339,9 +343,9 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'profile_update_form')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
-        
+
         $values = [];
-        
+
         // Fetch subscriber fields to values
         foreach ($list->fields as $key => $field) {
             $value = $subscriber->getValueByField($field);
@@ -352,7 +356,7 @@ class PageController extends Controller
             }
         }
 
-        // Get old post values        
+        // Get old post values
         if (null !== $request->old()) {
             foreach ($request->old() as $key => $value) {
                 if (is_array($value)) {
