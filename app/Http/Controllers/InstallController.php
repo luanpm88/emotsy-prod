@@ -657,6 +657,12 @@ class InstallController extends Controller
                 'check' => file_exists(base_path('/bootstrap/cache')) && is_dir(base_path('/bootstrap/cache')) && (is_writable(base_path('/bootstrap/cache'))),
                 'note' => 'The directory must be writable by the web server.',
             ],
+            [
+                'type' => 'permission',
+                'name' => base_path('public'),
+                'check' => file_exists(base_path('/public')) && is_dir(base_path('/public')) && (is_writable(base_path('/public'))),
+                'note' => 'The directory must be writable by the web server.',
+            ],
         ];
     }
 
