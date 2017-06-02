@@ -870,18 +870,29 @@ $(function() {
     // unlimited check
     $(document).on('change', '.unlimited-check input[type=checkbox]', function() {
         var box = $(this).parents(".boxing");
+        var checked = $(this).is(":checked");
 
-        if($(this).is(":checked")) {
-            box.find("input[type=text]").val(-1);
-            box.find("input[type=text]").addClass("text-trans");
-            box.find("input[type=text]").attr("readonly", "readonly");
-        } else {
-            if(box.find("input[type=text]").val() == "-1") {
-                box.find("input[type=text]").val(0);
+        box.find("input[type=text]").each(function() {
+            var input = $(this);
+            var d_val = $(this).attr('default-value');
+
+            if (typeof(d_val) === 'undefined') {
+                d_val = 0;
             }
-            box.find("input[type=text]").removeClass("text-trans");
-            box.find("input[type=text]").removeAttr("readonly", "readonly");
-        }
+
+            if(checked) {
+                input.val(-1);
+                input.addClass("text-trans");
+                input.attr("readonly", "readonly");
+            } else {
+                if(input.val() == "-1") {
+                    input.val(d_val);
+                }
+                input.removeClass("text-trans");
+                input.removeAttr("readonly", "readonly");
+            }
+        });
+
     });
     $('.unlimited-check input').trigger("change");
 

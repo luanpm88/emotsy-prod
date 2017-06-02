@@ -159,7 +159,8 @@
 			'name' => 'quota_value',
 			'value' => $server->quota_value,
 			'help_class' => 'sending_server',
-			'rules' => Acelle\Model\SendingServer::rules(request()->type)
+			'rules' => Acelle\Model\SendingServer::rules(request()->type),
+			'default_value' => '1000',
 		])
 		<div class="checkbox inline unlimited-check text-semibold">
 			<label>
@@ -175,7 +176,8 @@
 			'name' => 'quota_base',
 			'value' => $server->quota_base,
 			'help_class' => 'sending_server',
-			'rules' => Acelle\Model\SendingServer::rules(request()->type)
+			'rules' => Acelle\Model\SendingServer::rules(request()->type),
+			'default_value' => '1',
 		])
 	</div>
 	<div class="col-md-4">

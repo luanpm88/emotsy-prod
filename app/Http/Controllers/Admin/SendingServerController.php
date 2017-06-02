@@ -89,7 +89,9 @@ class SendingServerController extends Controller
         $server = new \Acelle\Model\SendingServer();
         $server->status = 'active';
         $server->uid = '0';
-        $server->quota_unit = 'day';
+        $server->quota_value = '1000';
+        $server->quota_base = '1';
+        $server->quota_unit = 'hour';
         $server->fill($request->old());
 
         // authorize
