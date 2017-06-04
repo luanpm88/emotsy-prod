@@ -788,12 +788,12 @@ class AutoEvent extends Model
         $field = $this->getDataValue('event');
 
         if ($field == 'subscription_date') {
-            $subscribers = Subscriber::select('subscribers.id')
+            $subscribers = $this->subscribers()
                          ->whereRaw(sprintf('DATE(CONVERT_TZ(' . table('subscribers') . '.created_at, %1$s, %2$s) + %3$s) = DATE(CONVERT_TZ(NOW(), %1$s, %2$s)) AND DATE(CONVERT_TZ(' . table('subscribers') . '.created_at, %1$s, %2$s)) + %3$s <= CONVERT_TZ(NOW(), %1$s, %2$s)', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->customer->getTimezone())), $this->getDelayIntervalMySql()))
                          ->whereRaw(sprintf('' . table('subscribers') . '.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %3$s WHERE auto_event_id = %4$s AND EXTRACT(YEAR FROM CONVERT_TZ(NOW(), %1$s, %2$s)) = EXTRACT(YEAR FROM CONVERT_TZ(created_at, %1$s, %2$s)) )', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->customer->getTimezone())), table('auto_triggers'), $this->id))
                          ->get();
         } else {
-            $subscribers = Subscriber::select('subscribers.id')
+            $subscribers = $this->subscribers()
                          ->join('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
                          ->join('fields', 'subscriber_fields.field_id', '=', 'fields.id')
                          ->where('fields.uid', $field)
