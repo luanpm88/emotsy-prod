@@ -641,12 +641,16 @@ $(function() {
         $(".modal").modal('hide');
 
         var url = $(this).attr("href");
+        var a_ = $(this);
         var form = $(this).parents(".listing-form");
         var method = $(this).attr('data-method');
 
         if(typeof(method) === 'undefined' || method.trim() === '') {
             method = "GET";
         }
+
+        a_.addClass('loading');
+        a_.append(' <div class="spinner a-loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
 
         $.ajax({
             method: method,
@@ -659,6 +663,16 @@ $(function() {
             var type = 'success';
             if(msg.indexOf('is-error') !== -1) {
                 type = 'error';
+            }
+
+            try
+            {
+               var data = JSON.parse(msg);
+               type = data.status;
+               msg = data.message;
+            }
+            catch(e)
+            {
             }
 
             tableFilter($(".listing-form"));
@@ -674,6 +688,9 @@ $(function() {
                     html: true
                 });
             }
+
+            a_.removeClass('loading');
+            a_.find('.a-loading').remove();
         });
     });
 

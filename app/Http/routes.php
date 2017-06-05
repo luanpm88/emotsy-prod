@@ -470,6 +470,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/bounce_handlers', 'BounceHandlerController');
 
     // Feedback Loop handlers
+    Route::get('admin/feedback_loop_handlers/{uid}/test', 'FeedbackLoopHandlerController@test');
     Route::get('admin/feedback_loop_handlers/listing/{page?}', 'FeedbackLoopHandlerController@listing');
     Route::get('admin/feedback_loop_handlers/sort', 'FeedbackLoopHandlerController@sort');
     Route::get('admin/feedback_loop_handlers/delete', 'FeedbackLoopHandlerController@delete');

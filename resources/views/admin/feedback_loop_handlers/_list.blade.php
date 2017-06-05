@@ -38,6 +38,11 @@
                                             <span class="text-muted">{{ trans('messages.username') }}</span>
                                         </td>
                                         <td class="text-right">
+                                            @can('read', $item)
+                                                <a href="{{ action('Admin\FeedbackLoopHandlerController@test', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.feedback_loop_handler.test') }}" type="button" class="btn bg-grey btn-icon ajax_link">
+                                                    <i class="icon-check"></i> {{ trans('messages.feedback_loop_handler.test') }}
+                                                </a>
+                                            @endcan
                                             @can('update', $item)
                                                 <a href="{{ action('Admin\FeedbackLoopHandlerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
                                             @endcan

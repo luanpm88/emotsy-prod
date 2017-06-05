@@ -27,7 +27,7 @@ class FeedbackLoopHandlerController extends Controller
         if (\Gate::denies('read', new \Acelle\Model\FeedbackLoopHandler())) {
             return $this->notAuthorized();
         }
-        
+
         // If admin can view all sending domains
         if (!$request->user()->admin->can("readAll", new \Acelle\Model\FeedbackLoopHandler())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
@@ -50,7 +50,7 @@ class FeedbackLoopHandlerController extends Controller
         if (\Gate::denies('read', new \Acelle\Model\FeedbackLoopHandler())) {
             return $this->notAuthorized();
         }
-        
+
         // If admin can view all sending domains
         if (!$request->user()->admin->can("readAll", new \Acelle\Model\FeedbackLoopHandler())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
@@ -246,7 +246,33 @@ class FeedbackLoopHandlerController extends Controller
             $item->delete();
         }
 
-        // Redirect to my lists page
+        // Result message
         echo trans('messages.feedback_loop_handlers.deleted');
+    }
+
+    /**
+     * Test feedback loop handler.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function test(Request $request, $uid)
+    {
+        // Get current user
+        $current_user = $request->user();
+        $server = \Acelle\Model\FeedbackLoopHandler::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('read', $server)) {
+            return $this->notAuthorized();
+        }
+
+        // Result message
+        echo json_encode([
+            'status' => 'error',
+            'message' => trans('messages.feedback_loop_handlers.test_failed')
+        ]);
     }
 }
