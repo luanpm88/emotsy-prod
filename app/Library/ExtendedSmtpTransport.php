@@ -30,7 +30,8 @@ class ExtendedSmtpTransport extends \Swift_SmtpTransport
      *
      */
     private $rawResponses = array();
-    
+    private $rawTrasmissionData = array();
+
     /**
      * Overwrite the execute method.
      *
@@ -38,8 +39,10 @@ class ExtendedSmtpTransport extends \Swift_SmtpTransport
      */
     public function executeCommand($command, $codes = array(), &$failures = null)
     {
+        $this->rawTrasmissionData[] = $command;
         $response = parent::executeCommand($command, $codes, $failures);
         $this->rawResponses[] = $response;
+        $this->rawTrasmissionData[] = $response;
         return $response;
     }
 
@@ -70,5 +73,15 @@ class ExtendedSmtpTransport extends \Swift_SmtpTransport
         }
 
         return $messageId;
+    }
+
+    /**
+     * Get SMTP raw responses (for debugging)
+     *
+     * @return array SMTP responses
+     */
+    public function getRawTrasmissionData()
+    {
+        return $this->rawTrasmissionData();
     }
 }
