@@ -45,7 +45,7 @@
     <h5 class="text-teal-800 text-semibold">{{ trans('messages.allowed_sending_server_types') }}</h5>
 	<div class="row">
 		<div class="col-md-5">
-			<span class="text-semibold">{{ trans('messages.allow_customer_create_sending_servers') }}</span> &nbsp;&nbsp;&nbsp;
+			<span class="text-semibold">{{ trans('messages.allow_adding_all_sending_server_types') }}</span> &nbsp;&nbsp;&nbsp;
 			<span class="notoping">
 				@include('helpers.form_control', ['type' => 'checkbox',
 					'class' => '',
