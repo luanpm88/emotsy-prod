@@ -565,12 +565,12 @@ class InstallController extends Controller
                 'check' => extension_loaded('openssl'),
                 'note' => 'OpenSSL PHP Extension is required.',
             ],
-            [
-                'type' => 'requirement',
-                'name' => 'GMP Extension',
-                'check' => extension_loaded('gmp'),
-                'note' => 'GMP Extension is required.',
-            ],
+            //[
+            //    'type' => 'requirement',
+            //    'name' => 'GMP Extension',
+            //    'check' => extension_loaded('gmp'),
+            //    'note' => 'GMP Extension is required.',
+            //],
             [
                 'type' => 'requirement',
                 'name' => 'Mbstring PHP Extension',
