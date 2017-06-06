@@ -1,3 +1,11 @@
+3.0.5 / 2017-06-08
+==================
+
+ * Added: resend a campaign to newly added subscribers
+ * Added: 
+ * Fixed: issue with automation for subscriber events
+ * Fixed: 
+
 3.0.4 / 2017-06-01
 ==================
 
