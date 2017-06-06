@@ -1544,4 +1544,13 @@ class MailList extends Model
             return (float)$this->countVerifiedSubscribers() / $count;
         }
     }
+
+    /**
+     * Subscribers count
+     *
+     */
+    public function subscribersCount()
+    {
+        return $this->subscribers()->distinct('subscribers.email')->count('subscribers.email');
+    }
 }
