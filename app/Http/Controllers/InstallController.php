@@ -113,7 +113,6 @@ class InstallController extends Controller
             'smtp_password' => 'required',
             'smtp_from_email' => 'required|email',
             'smtp_from_name' => 'required',
-            'smtp_encryption' => 'required',
         ];
         // validate and save posted data
         if ($request->isMethod('post')) {
