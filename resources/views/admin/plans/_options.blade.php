@@ -290,7 +290,6 @@
                         'value' => $options['sending_quota_time_unit'],
                         'label' => trans('messages.quota_time_unit'),
                         'options' => Acelle\Model\Plan::quotaTimeUnitOptions(),
-                        'include_blank' => trans('messages.choose'),
                         'help_class' => 'plan',
                         'rules' => $plan->rules()
                     ])
