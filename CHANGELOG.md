@@ -1,4 +1,4 @@
-3.0.5 / 2017-06-08
+3.0.6 / 2017-06-08
 ==================
 
  * Fixed: issue with automation for subscriber events
