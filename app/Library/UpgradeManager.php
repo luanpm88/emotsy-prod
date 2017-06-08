@@ -203,6 +203,7 @@ class UpgradeManager
                     if ($this->isLanguageFile($source)) {
                         $this->upgradeLanguageFiles($source);
                     } else {
+                        $this->createBaseDir($target);
                         if (!copy($source, $target)) {
                             LaravelLog::error("Cannot replace file {$target}");
                             throw new \Exception("Cannot replace file {$target}");
@@ -422,6 +423,26 @@ class UpgradeManager
             }
         }
         closedir($dir);
+    }
+
+    /**
+     * Create base directory for a given path
+     *
+     */
+    public function createBaseDir($path)
+    {
+        $dirname = pathinfo($path)['dirname'];
+        $a = explode(DIRECTORY_SEPARATOR, $dirname);
+        for ($i = 0; $i <= sizeof($a); $i += 1) { // @important: use <= here
+            $tmppath = implode(DIRECTORY_SEPARATOR, array_slice($a, 0, $i));
+            if (empty($tmppath)) {
+                continue;
+            }
+
+            if (!file_exists($tmppath)) {
+                mkdir($tmppath);
+            }
+        }
     }
 
     /**
