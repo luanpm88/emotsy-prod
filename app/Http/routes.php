@@ -376,6 +376,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('subscriptions', 'SubscriptionController');
 
     // Sending servers
+    Route::post('sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('sending_servers/select', 'SendingServerController@select');
     Route::get('sending_servers/listing/{page?}', 'SendingServerController@listing');
     Route::get('sending_servers/sort', 'SendingServerController@sort');
@@ -451,6 +452,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/layouts', 'LayoutController');
 
     // Sending servers
+    Route::post('admin/sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('admin/sending_servers/select', 'SendingServerController@select');
     Route::get('admin/sending_servers/listing/{page?}', 'SendingServerController@listing');
     Route::get('admin/sending_servers/sort', 'SendingServerController@sort');
@@ -464,13 +466,14 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::patch('admin/sending_servers/{id}/update/{type}', 'SendingServerController@update');
 
     // Bounce handlers
+    Route::post('admin/bounce_handlers/{uid}/test', 'BounceHandlerController@test');
     Route::get('admin/bounce_handlers/listing/{page?}', 'BounceHandlerController@listing');
     Route::get('admin/bounce_handlers/sort', 'BounceHandlerController@sort');
     Route::get('admin/bounce_handlers/delete', 'BounceHandlerController@delete');
     Route::resource('admin/bounce_handlers', 'BounceHandlerController');
 
     // Feedback Loop handlers
-    Route::get('admin/feedback_loop_handlers/{uid}/test', 'FeedbackLoopHandlerController@test');
+    Route::post('admin/feedback_loop_handlers/{uid}/test', 'FeedbackLoopHandlerController@test');
     Route::get('admin/feedback_loop_handlers/listing/{page?}', 'FeedbackLoopHandlerController@listing');
     Route::get('admin/feedback_loop_handlers/sort', 'FeedbackLoopHandlerController@sort');
     Route::get('admin/feedback_loop_handlers/delete', 'FeedbackLoopHandlerController@delete');

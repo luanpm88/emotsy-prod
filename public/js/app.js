@@ -645,6 +645,26 @@ $(function() {
         var form = $(this).parents(".listing-form");
         var method = $(this).attr('data-method');
 
+        // Skip if previous ajax calling
+        if (a_.hasClass('loading')) {
+            return;
+        }
+
+        // Default data
+        var data = {
+            "_token": CSRF_TOKEN
+        };
+
+        var in_form = $(this).attr('data-in-form');
+        if (typeof(in_form) !== 'undefined' && in_form == 'true' && $(this).parents('form').length > 0) {
+            data = $(this).parents('form').serialize();
+            data += "&_method=" + method;
+            if (!$(this).parents('form').valid()) {
+                return;
+            }
+        }
+
+
         if(typeof(method) === 'undefined' || method.trim() === '') {
             method = "GET";
         }
@@ -656,9 +676,7 @@ $(function() {
         $.ajax({
             method: method,
             url: url,
-            data: {
-                "_token": CSRF_TOKEN
-            }
+            data: data
         })
         .done(function( msg ) {
             var type = 'success';
@@ -676,8 +694,12 @@ $(function() {
             {
             }
 
-            tableFilter($(".listing-form"));
-            if(msg != '') {
+            // Reload table if exists
+            if ($(".listing-form").length > 0) {
+                tableFilter($(".listing-form"));
+            }
+
+            if(msg !== '') {
                 swal({
                     title: msg,
                     text: "",

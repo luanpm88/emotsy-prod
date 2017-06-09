@@ -1,3 +1,4 @@
+<input type="hidden" name="type" value="{{ $server->type }}" />
 <div class="row">
 	@if (array_key_exists("name", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
 		<div class="col-sm-6 col-md-4">
@@ -231,6 +232,17 @@
 @endif
 <hr >
 <div class="text-left">
+	@if(Auth::user()->admin->can('test', $server))
+		<a
+			href="{{ action('Admin\SendingServerController@test', $server->uid) }}"
+			type="button"
+			class="btn bg-grey-800 mr-5 btn-icon ajax_link"
+			data-in-form="true"
+			data-method="POST"
+		>
+			<i class="icon-rotate-cw3"></i> {{ trans('messages.sending_server.test') }}
+		</a>
+	@endif
 	<button class="btn bg-teal mr-5"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 	<a href="{{ action('Admin\SendingServerController@index') }}" type="button" class="btn bg-grey">
 		<i class="icon-cross2"></i> {{ trans('messages.cancel') }}

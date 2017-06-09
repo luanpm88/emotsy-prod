@@ -1,5 +1,5 @@
 					<div class="row">
-						<div class="col-sm-6 col-md-4">							
+						<div class="col-sm-6 col-md-4">
 							@include('helpers.form_control', [
 								'type' => 'text',
 								'class' => '',
@@ -88,5 +88,16 @@
 					</div>
 					<hr>
 					<div class="text-left">
+						@can('test', $server)
+                            <a
+                                href="{{ action('Admin\BounceHandlerController@test', $server->uid) }}"
+                                type="button"
+                                class="btn bg-grey-800 mr-5 btn-icon ajax_link"
+                                data-in-form="true"
+                                data-method="POST"
+                            >
+                                <i class="icon-rotate-cw3"></i> {{ trans('messages.bounce_handler.test') }}
+                            </a>
+                        @endcan
 						<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 					</div>

@@ -38,26 +38,30 @@
                                             <span class="text-muted">{{ trans('messages.username') }}</span>
                                         </td>
                                         <td class="text-right">
-                                            @can('read', $item)
-                                                <a href="{{ action('Admin\FeedbackLoopHandlerController@test', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.feedback_loop_handler.test') }}" type="button" class="btn bg-grey btn-icon ajax_link">
-                                                    <i class="icon-check"></i> {{ trans('messages.feedback_loop_handler.test') }}
-                                                </a>
-                                            @endcan
                                             @can('update', $item)
                                                 <a href="{{ action('Admin\FeedbackLoopHandlerController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
                                             @endcan
-                                            @can('delete', $item)
+                                            @if(Auth::user()->admin->can('delete', $item) || Auth::user()->admin->can('test', $item))
                                                 <div class="btn-group">
                                                     <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
                                                     <ul class="dropdown-menu dropdown-menu-right">
-                                                        <li>
-                                                            <a delete-confirm="{{ trans('messages.delete_feedback_loop_handlers_confirm') }}" href="{{ action('Admin\FeedbackLoopHandlerController@delete', ["uids" => $item->uid]) }}">
-                                                                <i class="icon-trash"></i> {{ trans('messages.delete') }}
-                                                            </a>
-                                                        </li>
+                                                        @can('test', $item)
+                                                            <li>
+                                                                <a href="{{ action('Admin\FeedbackLoopHandlerController@test', $item->uid) }}" data-method="POST" type="button" class="ajax_link">
+                                                                    <i class="icon-rotate-cw3"></i> {{ trans('messages.feedback_loop_handler.test') }}
+                                                                </a>
+                                                            </li>
+                                                        @endcan
+                                                        @can('delete', $item)
+                                                            <li>
+                                                                <a delete-confirm="{{ trans('messages.delete_feedback_loop_handlers_confirm') }}" href="{{ action('Admin\FeedbackLoopHandlerController@delete', ["uids" => $item->uid]) }}">
+                                                                    <i class="icon-trash"></i> {{ trans('messages.delete') }}
+                                                                </a>
+                                                            </li>
+                                                        @endcan
                                                     </ul>
                                                 </div>
-                                            @endcan
+                                            @endif
                                         </td>
                                     </tr>
                                 @endforeach

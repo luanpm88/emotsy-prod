@@ -14,14 +14,16 @@ class BounceHandlerPolicy
     public function __construct()
     {
     }
-    
+
     public function read(\Acelle\Model\User $user, \Acelle\Model\BounceHandler $item)
     {
-        $can = $user->admin->getPermission('bounce_handler_read') != 'no';
+        $ability = $user->admin->getPermission('bounce_handler_read');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return $can;
     }
-    
+
     public function readAll(\Acelle\Model\User $user, \Acelle\Model\BounceHandler $item)
     {
         $can = $user->admin->getPermission('bounce_handler_read') == 'all';
@@ -52,5 +54,10 @@ class BounceHandlerPolicy
                 || ($ability == 'own' && $user->admin->id == $item->admin_id);
 
         return $can;
+    }
+
+    public function test(\Acelle\Model\User $user, \Acelle\Model\BounceHandler $item)
+    {
+        return $this->update($user, $item) || !isset($item->id);
     }
 }

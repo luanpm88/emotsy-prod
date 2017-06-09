@@ -23,7 +23,7 @@
 
 @section('content')
 
-	<form action="{{ action('Admin\SendingServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jqueryz">
+	<form action="{{ action('Admin\SendingServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jquery">
 		{{ csrf_field() }}
 
 		@include('admin.sending_servers._form')

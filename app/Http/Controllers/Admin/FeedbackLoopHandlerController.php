@@ -262,17 +262,25 @@ class FeedbackLoopHandlerController extends Controller
     {
         // Get current user
         $current_user = $request->user();
-        $server = \Acelle\Model\FeedbackLoopHandler::findByUid($uid);
+
+        // Fill new server info
+        if ($uid) {
+            $server = \Acelle\Model\FeedbackLoopHandler::findByUid($uid);
+        } else {
+            $server = new \Acelle\Model\FeedbackLoopHandler();
+        }
+
+        $server->fill($request->all());
 
         // authorize
-        if (\Gate::denies('read', $server)) {
+        if (\Gate::denies('test', $server)) {
             return $this->notAuthorized();
         }
 
         // Result message
         echo json_encode([
             'status' => 'error',
-            'message' => trans('messages.feedback_loop_handlers.test_failed')
+            'message' => trans('messages.feedback_loop_handler.test_failed')
         ]);
     }
 }

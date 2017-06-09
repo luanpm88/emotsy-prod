@@ -126,4 +126,9 @@ class SendingServerPolicy
 
         return $can && $item->status != "active";
     }
+
+    public function test(\Acelle\Model\User $user, \Acelle\Model\SendingServer $item, $role)
+    {
+        return $this->update($user, $item, $role) || !isset($item->id);
+    }
 }

@@ -24,7 +24,7 @@
 @section('content')
 	<p>{{ trans('messages.sending_server.wording') }}</p>
 
-    <form action="{{ action('SendingServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jqueryz">
+    <form action="{{ action('SendingServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jquery">
         {{ csrf_field() }}
 
         @include('sending_servers._form')

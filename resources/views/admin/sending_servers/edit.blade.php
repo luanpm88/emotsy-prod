@@ -22,7 +22,7 @@
 
 @section('content')
 
-    <form enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', ["uid" => $server->uid, "type" => request()->type]) }}" method="POST" class="form-validate-jqueryz">
+    <form enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', ["uid" => $server->uid, "type" => request()->type]) }}" method="POST" class="form-validate-jquery">
         {{ csrf_field() }}
         <input type="hidden" name="_method" value="PATCH">
         @include('admin.sending_servers._form')

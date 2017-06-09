@@ -319,4 +319,39 @@ class SendingServerController extends Controller
         // Redirect to my lists page
         echo trans('messages.sending_servers.enabled');
     }
+
+    /**
+     * Test Sending server.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function test(Request $request, $uid)
+    {
+        // Get current user
+        $current_user = $request->user();
+
+        // Fill new server info
+        if ($uid) {
+            $server = \Acelle\Model\SendingServer::findByUid($uid);
+        } else {
+            $server = new \Acelle\Model\SendingServer();
+        }
+
+        $server->fill($request->all());
+        $server->type = $request->type;
+
+        // authorize
+        if (!$current_user->customer->can('test', $server)) {
+            return $this->notAuthorized();
+        }
+
+        // Result message
+        echo json_encode([
+            'status' => 'error',
+            'message' => trans('messages.bounce_handler.test_failed')
+        ]);
+    }
 }

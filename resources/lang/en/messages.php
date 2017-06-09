@@ -1915,6 +1915,10 @@ return [
     'message_not_found' => 'Message not found',
     'allowed_sending_server_types' => 'Allowed sending servers types',
     'select_allowed_sending_server_types' => 'Select allowed sending server types:',
-    'feedback_loop_handlers.test_failed' => '<span class="is-error">Failed</span>',
+    'feedback_loop_handler.test_failed' => '<span class="is-error">Failed</span>',
     'feedback_loop_handler.test' => 'Test',
+    'bounce_handler.test_failed' => 'Failed',
+    'bounce_handler.test' => 'Test',
+    'sending_server.test_failed' => 'Failed',
+    'sending_server.test' => 'Test',
 ];

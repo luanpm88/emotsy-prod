@@ -27,7 +27,7 @@ class BounceHandlerController extends Controller
         if (\Gate::denies('read', new \Acelle\Model\BounceHandler())) {
             return $this->notAuthorized();
         }
-        
+
         // If admin can view all sending domains
         if (!$request->user()->admin->can("readAll", new \Acelle\Model\BounceHandler())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
@@ -50,7 +50,7 @@ class BounceHandlerController extends Controller
         if (\Gate::denies('read', new \Acelle\Model\BounceHandler())) {
             return $this->notAuthorized();
         }
-        
+
         // If admin can view all sending domains
         if (!$request->user()->admin->can("readAll", new \Acelle\Model\BounceHandler())) {
             $request->merge(array("admin_id" => $request->user()->admin->id));
@@ -248,5 +248,39 @@ class BounceHandlerController extends Controller
 
         // Redirect to my lists page
         echo trans('messages.bounce_handlers.deleted');
+    }
+
+    /**
+     * Test Bounce handler.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function test(Request $request, $uid)
+    {
+        // Get current user
+        $current_user = $request->user();
+
+        // Fill new server info
+        if ($uid) {
+            $server = \Acelle\Model\BounceHandler::findByUid($uid);
+        } else {
+            $server = new \Acelle\Model\BounceHandler();
+        }
+
+        $server->fill($request->all());
+
+        // authorize
+        if (\Gate::denies('test', $server)) {
+            return $this->notAuthorized();
+        }
+
+        // Result message
+        echo json_encode([
+            'status' => 'error',
+            'message' => trans('messages.bounce_handler.test_failed')
+        ]);
     }
 }
