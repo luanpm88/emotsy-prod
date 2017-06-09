@@ -277,7 +277,7 @@ class BounceHandlerController extends Controller
             return $this->notAuthorized();
         }
 
-        // Result message
+        // @todo testing method and return result here. Ex: echo json_encode($server->test())
         echo json_encode([
             'status' => 'error',
             'message' => trans('messages.bounce_handler.test_failed')
