@@ -1,3 +1,16 @@
+3.0.6 / 2017-06-08
+==================
+
+ * Fixed: issue with automation for subscriber events
+ * Fixed: automation follow-up email not triggered in certain cases
+ * Fixed: incorrect quota counting in certain cases
+ * Fixed: cannot subscribe customer to a plan as administrator
+ * Fixed: prevent double subscription
+ * Fixed: check to make sure public/ folder is writable while installing
+ * Changed: queued campaign is now of QUEUED status (READY is no longer used)
+ * Changed: SMTP encryption is no longer a required field
+ * Changed: remove GMP extension validation as it is no longer required
+
 3.0.4 / 2017-06-01
 ==================
 

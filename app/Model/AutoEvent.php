@@ -961,7 +961,13 @@ class AutoEvent extends Model
                 // for follow-up type of auto-event, need to pass a preceding trigger
                 // empty $trigger->subscriber indicates ALL
                 MailLog::info(sprintf('Trigger sending follow-up email for automation %s, preceding event ID: %s, event ID: %s', $this->automation->name, $preceding->id, $this->id));
-                $this->fire([$trigger->subscriber], $trigger);
+                if ($trigger->subscriber()->exists()) {
+                    // follow up individual subscriber
+                    $this->fire([$trigger->subscriber], $trigger);
+                } else {
+                    // follow up the entire list (for the FollowUpSend event)
+                    $this->fire(null, $trigger);
+                }
             }
         }
     }

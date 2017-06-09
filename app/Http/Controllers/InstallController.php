@@ -113,7 +113,6 @@ class InstallController extends Controller
             'smtp_password' => 'required',
             'smtp_from_email' => 'required|email',
             'smtp_from_name' => 'required',
-            'smtp_encryption' => 'required',
         ];
         // validate and save posted data
         if ($request->isMethod('post')) {
@@ -565,12 +564,12 @@ class InstallController extends Controller
                 'check' => extension_loaded('openssl'),
                 'note' => 'OpenSSL PHP Extension is required.',
             ],
-            [
-                'type' => 'requirement',
-                'name' => 'GMP Extension',
-                'check' => extension_loaded('gmp'),
-                'note' => 'GMP Extension is required.',
-            ],
+            //[
+            //    'type' => 'requirement',
+            //    'name' => 'GMP Extension',
+            //    'check' => extension_loaded('gmp'),
+            //    'note' => 'GMP Extension is required.',
+            //],
             [
                 'type' => 'requirement',
                 'name' => 'Mbstring PHP Extension',

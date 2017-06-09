@@ -1359,7 +1359,7 @@ return [
     'leave_empty_to_choose_all_list' => '* Leave this box empty to choose all subscribers in the list',
     'language.uploaded' => 'Language was successfully uploaded',
     'campaign_status_new' => 'New',
-    'campaign_status_ready' => 'Ready',
+    'campaign_status_ready' => 'Queued',
     'campaign_status_sending' => 'Sending',
     'campaign_status_error' => 'Error',
     'campaign_status_done' => 'Done',
