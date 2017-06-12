@@ -165,6 +165,38 @@ return [
         'quota_value' => 'Sending limit',
         'quota_base' => 'Time base',
         'quota_unit' => 'Time unit',
+        'lists_segments' => [
+            '0' => [
+                'mail_list_uid' => 'List'
+            ],
+            '1' => [
+                'mail_list_uid' => 'List'
+            ],
+            '2' => [
+                'mail_list_uid' => 'List'
+            ],
+            '3' => [
+                'mail_list_uid' => 'List'
+            ],
+            '4' => [
+                'mail_list_uid' => 'List'
+            ],
+            '5' => [
+                'mail_list_uid' => 'List'
+            ],
+            '6' => [
+                'mail_list_uid' => 'List'
+            ],
+            '7' => [
+                'mail_list_uid' => 'List'
+            ],
+            '8' => [
+                'mail_list_uid' => 'List'
+            ],
+            '9' => [
+                'mail_list_uid' => 'List'
+            ],
+        ],
     ],
 
 ];
