@@ -10,11 +10,11 @@
 * ---------------------------------------------------------------------------- */
 
 $(function() {
-    
+
     // load locale
     $.getScript(JVALIDATE_TRANSLATE_URL, function(){
     });
-    
+
     // Styled checkboxes, radios
     $(".styled, .multiselect-container input").uniform({ radioClass: 'choice' });
 
@@ -42,7 +42,7 @@ $(function() {
 
         // Different components require proper error label placement
         errorPlacement: function(error, element) {
-            
+
             // Styled checkboxes, radios, bootstrap switch
             if (element.parents('div').hasClass("checker") || element.parents('div').hasClass("choice") || element.parent().hasClass('bootstrap-switch-container') ) {
                 if(element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
@@ -52,12 +52,12 @@ $(function() {
                     error.appendTo( element.parent().parent().parent().parent().parent() );
                 }
             }
-            
+
             // Select2
             else if (element.parents(".form-group").find('.input_help').length) {
                 error.insertAfter( element.parents(".form-group").find('.input_help') );
             }
-            
+
             // Unstyled checkboxes, radios
             else if (element.parents('div').hasClass('checkbox') || element.parents('div').hasClass('radio')) {
                 error.appendTo( element.parent().parent().parent() );
@@ -72,17 +72,17 @@ $(function() {
             else if (element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
                 error.appendTo( element.parent().parent() );
             }
-            
+
             // Select2
             else if (element.parents(".form-group").find('.select2').length) {
                 error.insertAfter( element.parents(".form-group").find('.select2') );
             }
-            
+
             // Select2
             else if (element.is("textarea")) {
                 error.insertBefore( element.parents(".form-group") );
             }
-            
+
             // Input group, styled file input
             else if (element.parent().hasClass('uploader') || element.parents().hasClass('input-group')) {
                 error.appendTo( element.parent().parent() );
@@ -90,7 +90,7 @@ $(function() {
             else {
                 error.insertAfter(element);
             }
-            
+
             // Add error class to form group
             element.parents(".form-group").addClass('has-error');
         },
@@ -102,7 +102,7 @@ $(function() {
         rules: {
             vali: "required",
             password: {
-                minlength: 5
+                "required",
             },
             repeat_password: {
                 equalTo: "#password"
