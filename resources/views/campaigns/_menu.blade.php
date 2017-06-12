@@ -66,11 +66,11 @@
 					</li>
 				</ul>
 			</li>
-			<!--<li rel0="CampaignController/templateReview" class="dropdown">
+			<li rel0="CampaignController/templateReview" class="dropdown">
 				<a href="{{ action('CampaignController@templateReview', $campaign->uid) }}" class="level-1">
-					<i class="icon-magazine"></i> {{ trans('messages.template') }}
+					<i class="icon-magazine"></i> {{ trans('messages.template_review') }}
 				</a>
-			</li>-->
+			</li>
 		</ul>
 	</div>
 </div>
