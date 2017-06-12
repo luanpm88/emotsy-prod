@@ -1,6 +1,7 @@
     var current_content;
     var current_block;
     var current_select_block;
+    var tmp_content = '';
 
     function updateConentDesign() {
         if (typeof(current_select_block) != 'undefined') {
@@ -40,7 +41,10 @@
     function updateConentCol() {
         if (typeof(current_content) != 'undefined') {
             content = tinyMCE.activeEditor.getContent({format : 'html'});
-            current_content.html(content);
+            if (tmp_content != content) {
+                current_content.html(content);
+                tmp_content = content;
+            }
         }
     }
 
