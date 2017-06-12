@@ -495,7 +495,7 @@ foreach($files as $k=>$file){
 		$current_folders_number++;
 		if($show_folder_size){
 			list($size,$nfiles,$nfolders) = folder_info($current_path.$rfm_subfolder.$subdir.$file,false);
-			
+
 		} else {
 			$size=0;
 		}
@@ -522,7 +522,7 @@ foreach($files as $k=>$file){
 }
 
 // Should lazy loading be enabled
-$lazy_loading_enabled= ($lazy_loading_file_number_threshold == 0 || $lazy_loading_file_number_threshold != -1 && $n_files > $lazy_loading_file_number_threshold) ? true : false;
+$lazy_loading_enabled= ($lazy_loading_file_number_threshold == 0 || $lazy_loading_file_number_threshold != -1 && $n_files > $lazy_loading_file_number_threshold) && false ? true : false;
 
 function filenameSort($x, $y) {
 	return $x['file_lcase'] <  $y['file_lcase'];
