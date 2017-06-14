@@ -1915,5 +1915,5 @@ return [
     'message_not_found' => 'Message not found',
     'allowed_sending_server_types' => 'Allowed sending servers types',
     'select_allowed_sending_server_types' => 'Select allowed sending server types:',
-    'template_review' => 'Template review',
+    'email_review' => 'Email review',
 ];
