@@ -116,7 +116,10 @@ class SubscriptionController extends Controller
             // Allow admin update end at date
             if(!empty($request->start_at)) {
                 $subscription->start_at = \Acelle\Library\Tool::systemTimeFromString($request->start_at . ' 00:00');
+            } else {
+                $subscription->start_at = \Carbon\Carbon::now();
             }
+
             if(!empty($request->end_at)) {
                 $subscription->end_at = \Acelle\Library\Tool::systemTimeFromString($request->end_at . ' 00:00');
             }

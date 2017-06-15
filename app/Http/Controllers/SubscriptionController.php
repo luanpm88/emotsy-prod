@@ -289,6 +289,10 @@ class SubscriptionController extends Controller
 
             $subscription->fillAttributes($request->all());
 
+            if (empty($subscription->start_at)) {
+                $subscription->start_at = \Carbon\Carbon::now();
+            }
+
             $subscription->save();
 
             if ($subscription->isFree()) {
