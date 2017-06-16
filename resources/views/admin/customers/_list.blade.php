@@ -39,10 +39,10 @@
 					<div class="single-stat-box pull-left ml-20">
 						<span class="no-margin text-teal-800 stat-num">{{ $item->displaySubscribersUsage() }}</span>
 						<div class="progress progress-xxs">
-							<div class="progress-bar progress-bar-info" style="width: {{ $item->subscribersUsage() }}%">
+							<div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('SubscriberUsage') }}%">
 							</div>
 						</div>
-						<span class="text-muted"><strong>{{ $item->subscribers()->count() }}/{{ $item->maxSubscribers() }}</strong><br /> {{ trans('messages.subscribers') }}</span>
+						<span class="text-muted"><strong>{{ $item->readCache('SubscriberCount') }}/{{ $item->maxSubscribers() }}</strong><br /> {{ trans('messages.subscribers') }}</span>
 					</div>
 				</td>
 				<td>
