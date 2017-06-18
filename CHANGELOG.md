@@ -1,3 +1,13 @@
+3.0.7 / 2017-06-19
+==================
+
+ * Fixed: message-id cannot be retrieved in bounced message
+ * Fixed: JS error showing up in the edit template page
+ * Fixed: lagging image/video in the email editor
+ * Fixed: thumbnail not showing up correctly
+ * Fixed: user cannot subscribe to certain plans
+ * Fixed: speed up the customers list view
+
 3.0.6 / 2017-06-08
 ==================
 
