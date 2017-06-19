@@ -318,9 +318,7 @@ function pagination($builder, $callback, $perPage=200) {
         echo $page;
         $offset = $limit * ( $page - 1 );
 
-        $list = $builder->skip($offset)->take($limit)->get();
-        foreach ($list as $item) {
-            $callback($item);
-        }
+        $list = $builder->skip($offset)->take($limit);
+        $callback($list);
     }
 }
