@@ -8,7 +8,7 @@ $(document).ready(function() {
         plugins: [
           'table advlist autolink lists link image charmap print preview anchor fullpage',
           'searchreplace visualblocks code fullscreen textcolor',
-          'insertdatetime media contextmenu paste responsivefilemanager code'
+          'insertdatetime media contextmenu paste code'
         ],
         toolbar: 'insertfile undo redo | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media',
         content_css: [
@@ -31,7 +31,7 @@ $(document).ready(function() {
         plugins: [
           'table advlist autolink lists link image charmap print preview anchor fullpage',
           'searchreplace visualblocks code fullscreen textcolor',
-          'insertdatetime media contextmenu paste responsivefilemanager code'
+          'insertdatetime media contextmenu paste code'
         ],
         toolbar: 'insertfile undo redo | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media',
         content_css: [
