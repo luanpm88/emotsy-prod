@@ -101,9 +101,6 @@ $(function() {
         },
         rules: {
             vali: "required",
-            password: {
-                "required",
-            },
             repeat_password: {
                 equalTo: "#password"
             },
