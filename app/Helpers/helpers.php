@@ -303,3 +303,22 @@ function Dot2LongIPv6($IPaddr) {
     $ipv6long = gmp_strval(gmp_init($ipv6long, 2), 10);
     return $ipv6long;
 }
+
+/**
+ * Function to pagination records from database
+ *
+ * @return colletion
+ */
+function pagination($builder, $callback, $perPage=200) {
+    $count = $builder->count();
+    $limit = $perPage;
+    $pages = ceil($count / $limit);
+
+    for ($page = 1; $page <= $pages; $page += 1) {
+        echo $page;
+        $offset = $limit * ( $page - 1 );
+
+        $list = $builder->skip($offset)->take($limit);
+        $callback($list);
+    }
+}
