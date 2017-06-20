@@ -321,95 +321,6 @@ class Campaign extends Model
     }
 
     /**
-     * Mark the campaign as 'done' or 'sent'.
-     */
-    public function done()
-    {
-        $this->status = self::STATUS_DONE;
-        $this->save();
-    }
-
-    /**
-     * Mark the campaign as 'sending'.
-     */
-    public function sending()
-    {
-        $this->status = self::STATUS_SENDING;
-        $this->delivery_at = \Carbon\Carbon::now();
-        $this->save();
-    }
-
-    /**
-     * Check if the campaign is in the "SENDING" status;
-     */
-    public function isSending()
-    {
-        return $this->status == self::STATUS_SENDING;
-    }
-
-    /**
-     * Check if the campaign is ready to start
-     */
-    public function isReady()
-    {
-        return $this->status == self::STATUS_READY;
-    }
-
-    /**
-     * Mark the campaign as 'ready' (which is equiv. to 'queued')
-     */
-    public function ready()
-    {
-        $this->status = self::STATUS_READY;
-        $this->save();
-    }
-
-    /**
-     * Mark the campaign as 'done' or 'sent'.
-     */
-    public function error($error = null)
-    {
-        $this->status = self::STATUS_ERROR;
-        $this->last_error = $error;
-        $this->save();
-    }
-
-    /**
-     * Mark the campaign as 'done' or 'sent'.
-     */
-    public function refreshStatus()
-    {
-        $me = self::find($this->id);
-        $this->status = $me->status;
-        $this->save();
-
-        return $this;
-    }
-
-    /**
-     * Get campaign's email chunks.
-     *
-     * @return mixed
-     */
-    public function getChunks($collection, $count)
-    {
-        $result = [];
-        if (sizeof($collection) == 0) {
-            return $result;
-        }
-        $chunks = array_chunk(range(0, sizeof($collection) - 1), ceil(sizeof($collection) / (float) $count), true);
-        foreach ($chunks as $key => $chunk) {
-            $list = [];
-            foreach (array_values($chunk) as $i) {
-                $list[] = $collection[$i];
-            }
-            $result[] = $list;
-        }
-
-        return $result;
-    }
-
-    /**
      * Start the campaign, using PHP fork() to launch multiple processes.
      *
      * @return mixed
@@ -563,6 +474,95 @@ class Campaign extends Model
             event(new \Acelle\Events\CampaignUpdated($this, false));
             event(new \Acelle\Events\MailListUpdated($this, false));
         }
+    }
+
+    /**
+     * Mark the campaign as 'done' or 'sent'.
+     */
+    public function done()
+    {
+        $this->status = self::STATUS_DONE;
+        $this->save();
+    }
+
+    /**
+     * Mark the campaign as 'sending'.
+     */
+    public function sending()
+    {
+        $this->status = self::STATUS_SENDING;
+        $this->delivery_at = \Carbon\Carbon::now();
+        $this->save();
+    }
+
+    /**
+     * Check if the campaign is in the "SENDING" status;
+     */
+    public function isSending()
+    {
+        return $this->status == self::STATUS_SENDING;
+    }
+
+    /**
+     * Check if the campaign is ready to start
+     */
+    public function isReady()
+    {
+        return $this->status == self::STATUS_READY;
+    }
+
+    /**
+     * Mark the campaign as 'ready' (which is equiv. to 'queued')
+     */
+    public function ready()
+    {
+        $this->status = self::STATUS_READY;
+        $this->save();
+    }
+
+    /**
+     * Mark the campaign as 'done' or 'sent'.
+     */
+    public function error($error = null)
+    {
+        $this->status = self::STATUS_ERROR;
+        $this->last_error = $error;
+        $this->save();
+    }
+
+    /**
+     * Mark the campaign as 'done' or 'sent'.
+     */
+    public function refreshStatus()
+    {
+        $me = self::find($this->id);
+        $this->status = $me->status;
+        $this->save();
+
+        return $this;
+    }
+
+    /**
+     * Get campaign's email chunks.
+     *
+     * @return mixed
+     */
+    public function getChunks($collection, $count)
+    {
+        $result = [];
+        if (sizeof($collection) == 0) {
+            return $result;
+        }
+        $chunks = array_chunk(range(0, sizeof($collection) - 1), ceil(sizeof($collection) / (float) $count), true);
+        foreach ($chunks as $key => $chunk) {
+            $list = [];
+            foreach (array_values($chunk) as $i) {
+                $list[] = $collection[$i];
+            }
+            $result[] = $list;
+        }
+
+        return $result;
     }
 
     /**
