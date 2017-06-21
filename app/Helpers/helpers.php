@@ -322,3 +322,17 @@ function pagination($builder, $callback, $perPage=200) {
         $callback($list);
     }
 }
+
+/**
+ * Distinct count helper for performance
+ *
+ * @return integer
+ */
+function distinctCount($builder, $column) {
+    $sub = $builder->select($column)->distinct();
+    $count = \DB::table( \DB::raw("({$sub->toSql()}) as sub") )
+        ->addBinding($sub->getBindings()) // you need to get underlying Query Builder
+        ->count();
+
+    return $count;
+}

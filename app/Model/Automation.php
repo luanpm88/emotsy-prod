@@ -706,6 +706,6 @@ class Automation extends Model
      */
     public function subscribersCount()
     {
-        return $this->subscribers()->count('subscribers.email');
+        return distinctCount($this->subscribers(), 'subscribers.email');
     }
 }
