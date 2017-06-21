@@ -1228,7 +1228,7 @@ class MailList extends Model
         // cache indexes
         $index = [
             'SubscriberCount' => function(&$list) {
-                return $list->subscribers()->count();
+                return $list->subscribersCount();
             },
             'VerifiedSubscriberCount' => function(&$list) {
                 return $list->countVerifiedSubscribers();
@@ -1551,6 +1551,6 @@ class MailList extends Model
      */
     public function subscribersCount()
     {
-        return $this->subscribers()->distinct('subscribers.email')->count('subscribers.email');
+        return $this->subscribers()->count('subscribers.email');
     }
 }

@@ -1225,7 +1225,7 @@ class Campaign extends Model
             }
         }
 
-        return $query->distinct('subscribers.email');
+        return $query;
     }
 
     /**

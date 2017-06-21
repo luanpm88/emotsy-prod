@@ -337,7 +337,7 @@ class Automation extends Model
 			$query = $query->whereRaw(implode(' OR ', $conditions));
 		}
 
-        return $query->distinct('subscribers.email');
+        return $query;
     }
 
     /**

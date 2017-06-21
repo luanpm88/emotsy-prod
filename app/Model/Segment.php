@@ -106,7 +106,7 @@ class Segment extends Model
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $query = self::select('segments.*')->where("segments.mail_list_id", "=", $list->id);
 
-        return $query->distinct();
+        return $query;
     }
 
     /**
