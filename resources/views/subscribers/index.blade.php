@@ -27,7 +27,7 @@
 				>
 					<div class="row top-list-controls">
 						<div class="col-md-10">
-							@if ($subscribersCount >= 0)
+							@if ($list->subscribersCount() >= 0)
 								<div class="filter-box">
 									<div class="btn-group list_actions hide mr-10">
 										<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
