@@ -32,7 +32,7 @@ class MailListController extends Controller
     public function index(Request $request)
     {
         $customer = $request->user()->customer;
-        $lists = $customer->lists;
+        $lists = $customer->lists();
 
         return view('lists.index', [
             'lists' => $lists,
