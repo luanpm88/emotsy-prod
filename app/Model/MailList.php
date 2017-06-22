@@ -1554,4 +1554,13 @@ class MailList extends Model
     {
         return distinctCount($this->subscribers(), 'subscribers.email');
     }
+
+    /**
+     * Segments count
+     *
+     */
+    public function segmentsCount()
+    {
+        return $this->segments()->count();
+    }
 }
