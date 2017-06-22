@@ -323,6 +323,7 @@ function paginate($builder, $callback, $params = []) {
         $params['count'] = $builder->count();
     }
 
+    // count the number of pages needed
     $pages = ceil($params['count'] / $params['limit']);
 
     for ($page = 1; $page <= $pages; $page += 1) {

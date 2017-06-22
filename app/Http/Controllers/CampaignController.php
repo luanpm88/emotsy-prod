@@ -332,7 +332,13 @@ class CampaignController extends Controller
 
         // Required tags
         $validate = 'required';
-        foreach (\Acelle\Model\Campaign::$required_tags as $tag) {
+
+        // @todo hard-coded here
+        $requiredTags = array(
+            array('name' => '{UNSUBSCRIBE_URL}', 'required' => true),
+        );
+
+        foreach ($requiredTags as $tag) {
             if ($tag['required']) {
                 $validate .= '|substring:"'.$tag['name'].'"';
             }
