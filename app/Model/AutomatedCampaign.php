@@ -29,7 +29,7 @@ use Acelle\Jobs\RunAutomatedCampaignJob;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 
-class AutomatedCampaign extends Campaign
+class AutomatedCampaign extends AbsCampaign
 {
     protected $table = 'campaigns';
     protected $trigger = null;
