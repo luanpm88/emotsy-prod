@@ -311,14 +311,24 @@ function Dot2LongIPv6($IPaddr) {
  * @input callback function
  * @return collection result set
  */
-function paginate($builder, $callback, $limit = 10000) {
-    $count = $builder->count();
-    $pages = ceil($count / $limit);
+function paginate($builder, $callback, $params = []) {
+    $default = [
+        'limit' => 10000
+    ];
+
+    $params = array_merge($default, $params);
+
+    // in some cases, use the pre-computed count rather than counting against the builder
+    if (!array_key_exists('count', $params)) {
+        $params['count'] = $builder->count();
+    }
+
+    $pages = ceil($params['count'] / $params['limit']);
 
     for ($page = 1; $page <= $pages; $page += 1) {
-        $offset = $limit * ( $page - 1 );
+        $offset = $params['limit'] * ( $page - 1 );
 
-        $list = $builder->skip($offset)->take($limit);
+        $list = $builder->skip($offset)->take($params['limit']);
         $callback($list, $page);
     }
 }
