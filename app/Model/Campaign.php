@@ -1089,7 +1089,7 @@ class Campaign extends Model
         }
 
         // Step 5
-        if ($this->subscribers()->count()) {
+        if ($this->subscribersCount()) {
             $step = 5;
         } else {
             return $step;
@@ -1461,7 +1461,7 @@ class Campaign extends Model
      */
     public function notOpenCount()
     {
-        return $this->subscribers()->count() - $this->openUniqCount();
+        return $this->subscribersCount() - $this->openUniqCount();
     }
 
     /**
@@ -1505,7 +1505,7 @@ class Campaign extends Model
      */
     public function notOpenRate()
     {
-        $subcribers_count = $this->subscribers()->count();
+        $subcribers_count = $this->subscribersCount();
 
         if ($subcribers_count == 0) {
             return 0;
@@ -2448,7 +2448,7 @@ class Campaign extends Model
      */
     public function sentRate()
     {
-        $subscribers_count = $this->subscribers()->count();
+        $subscribers_count = $this->subscribersCount();
 
         if ($subscribers_count == 0) {
             return 0;

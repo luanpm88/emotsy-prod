@@ -47,8 +47,8 @@ class MailListPolicy
         $max = $user->customer->getOption('subscriber_max');
         $maxPerList = $user->customer->getOption('subscriber_per_list_max');
         return $user->customer->id == $mailList->customer_id &&
-            ($max >= $user->customer->subscribers()->count() + $numberOfSubscribers || $max == -1) &&
-            ($maxPerList >= $mailList->subscribers()->count() + $numberOfSubscribers || $maxPerList == -1);
+            ($max >= $user->customer->subscribersCount() + $numberOfSubscribers || $max == -1) &&
+            ($maxPerList >= $mailList->subscribersCount() + $numberOfSubscribers || $maxPerList == -1);
     }
 
     public function import(\Acelle\Model\User $user, \Acelle\Model\MailList $item)

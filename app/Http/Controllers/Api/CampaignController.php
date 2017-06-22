@@ -72,7 +72,7 @@ class CampaignController extends Controller
 
         // statistics
         $statistics = [
-            'subscribers_count' => $item->subscribers()->count(),
+            'subscriber_count' => $item->subscribersCount(),
             'uniq_open_rate' => $item->openUniqRate(),
             'delivered_rate' => $item->deliveredRate(),
             'open_count' => $item->openCount(),

@@ -45,7 +45,7 @@ class MailListController extends Controller
         $item = \Acelle\Model\MailList::
             where('uid', '=', $id)
             ->first();
-            
+
         // check if item exists
         if (!is_object($item)) {
             return \Response::json(array('message' => 'Item not found'), 404);
@@ -55,7 +55,7 @@ class MailListController extends Controller
         if (!$user->can('read', $item)) {
             return \Response::json(array('message' => 'Unauthorized'), 401);
         }
-        
+
         // list info
         $list = [
             'uid' => $item->uid,
@@ -68,7 +68,7 @@ class MailListController extends Controller
             'created_at' => $item->created_at,
             'updated_at' => $item->updated_at,
         ];
-        
+
         // List fields
         $list['fields'] = [];
         foreach ($item->getFields as $key => $field) {
@@ -103,9 +103,9 @@ class MailListController extends Controller
 
         // statistics
         $statistics = [
-            'subscribe_count' => $item->subscribers()->count(),
+            'subscriber_count' => $item->subscribersCount(),
             'open_uniq_rate' => $item->openUniqRate(),
-            'click_rate' => $item->clickRate(),            
+            'click_rate' => $item->clickRate(),
             'subscribe_rate' => $item->subscribeRate(),
             'unsubscribe_rate' => $item->unsubscribeRate(),
             'unsubscribe_count' => $item->unsubscribeCount(),
@@ -114,7 +114,7 @@ class MailListController extends Controller
 
         return \Response::json(['list' => $list, 'contact' => $contact, 'statistics' => $statistics], 200);
     }
-    
+
     /**
      * Create new list.
      *
@@ -136,7 +136,7 @@ class MailListController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $validator = \Validator::make($request->all(), \Acelle\Model\MailList::$rules);    
+            $validator = \Validator::make($request->all(), \Acelle\Model\MailList::$rules);
             if ($validator->fails()) {
                 return response()->json($validator->messages(), 403);
             }
@@ -147,13 +147,13 @@ class MailListController extends Controller
             $list->customer_id = $user->customer->id;
             $list->contact_id = $contact->id;
             $list->save();
-            
+
             // Log
             $list->log('created', $user);
-            
+
             // Trigger updating related campaigns cache
             $list->updateCachedInfo();
-            
+
             return \Response::json(array(
                 'message' => trans('messages.list.created'),
                 'list_uid' => $list->uid

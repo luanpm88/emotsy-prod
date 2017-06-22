@@ -341,6 +341,6 @@ class Segment extends Model
      */
     public function subscribersCount()
     {
-        return $this->subscribers()->count('subscribers.id');
+        return distinctCount($this->subscribers(), 'subscribers.email');
     }
 }

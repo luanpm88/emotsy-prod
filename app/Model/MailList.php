@@ -364,7 +364,7 @@ class MailList extends Model
             $query = $query->where('id', '!=', $options['other_list_of']);
         }
         $options = $query->orderBy('name')->get()->map(function ($item) {
-            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribers()->count().' '.strtolower(trans('messages.subscribers')).')'];
+            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount().' '.strtolower(trans('messages.subscribers')).')'];
         });
 
         return $options;
@@ -391,7 +391,7 @@ class MailList extends Model
      */
     public function unsubscribeCount()
     {
-        return $this->subscribers()->where('status', '=', 'unsubscribed')->count();
+        return distinctCount($this->subscribers()->where('status', '=', 'unsubscribed'), 'subscribers.email');
     }
 
     /**
@@ -401,11 +401,11 @@ class MailList extends Model
      */
     public function unsubscribeRate()
     {
-        if ($this->subscribers()->count() == 0) {
+        if ($this->subscribersCount() == 0) {
             return '#';
         }
 
-        return round(($this->unsubscribeCount() / $this->subscribers()->count()) * 100, 2);
+        return round(($this->unsubscribeCount() / $this->subscribersCount()) * 100, 2);
     }
 
     /**
@@ -415,7 +415,7 @@ class MailList extends Model
      */
     public function subscribeCount()
     {
-        return $this->subscribers()->where('status', '=', 'subscribed')->count();
+        return distinctCount($this->subscribers()->where('status', '=', 'subscribed'), 'subscribers.email');
     }
 
     /**
@@ -425,11 +425,11 @@ class MailList extends Model
      */
     public function subscribeRate()
     {
-        if ($this->subscribers()->count() == 0) {
+        if ($this->subscribersCount() == 0) {
             return '#';
         }
 
-        return round(($this->subscribeCount() / $this->subscribers()->count()) * 100, 2);
+        return round(($this->subscribeCount() / $this->subscribersCount()) * 100, 2);
     }
 
     /**
@@ -439,7 +439,7 @@ class MailList extends Model
      */
     public function unconfirmedCount()
     {
-        return $this->subscribers()->where('status', '=', 'unconfirmed')->count();
+        return distinctCount($this->subscribers()->where('status', '=', 'unconfirmed'), 'subscribers.email');
     }
 
     /**
@@ -449,7 +449,7 @@ class MailList extends Model
      */
     public function blacklistedCount()
     {
-        return $this->subscribers()->where('status', '=', 'blacklisted')->count();
+        return distinctCount($this->subscribers()->where('status', '=', 'blacklisted'), 'subscribers.email');
     }
 
     /**
@@ -459,7 +459,7 @@ class MailList extends Model
      */
     public function spamReportedCount()
     {
-        return $this->subscribers()->where('status', '=', 'spam-reported')->count();
+        return distinctCount($this->subscribers()->where('status', '=', 'spam-reported'), 'subscribers.email');
     }
 
     /**
@@ -653,7 +653,8 @@ class MailList extends Model
      */
     public function longName()
     {
-        return $this->name.' - '.$this->subscribers()->count().' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('subscriber', $this->subscribers()->count())).'';
+        $subscribersCount = $this->subscribersCount();
+        return $this->name.' - '.$subscribersCount.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('subscriber', $subscribersCount)).'';
     }
 
     /**
@@ -761,7 +762,7 @@ class MailList extends Model
         $file_path = $directory.'data.csv';
 
         // Import to database
-        $total = $list->subscribers()->count();
+        $total = $list->subscribersCount();
         $success = 0;
         $error = 0;
         $lines_per_second = 1;
@@ -1537,7 +1538,7 @@ class MailList extends Model
      */
     public function getVerifiedSubscribersPercentage()
     {
-        $count = $this->subscribers()->count();
+        $count = $this->subscribersCount();
         if ($count == 0) {
             return 0.0;
         } else {

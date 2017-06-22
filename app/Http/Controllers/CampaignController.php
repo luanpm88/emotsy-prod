@@ -848,7 +848,7 @@ class CampaignController extends Controller
             'name' => trans('messages.recipients'),
             'type' => 'bar',
             'smooth' => true,
-            'data' => [$campaign->subscribers()->count()],
+            'data' => [$campaign->subscribersCount()],
             'itemStyle' => [
                 'normal' => [
                     'color' => '#555'

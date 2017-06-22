@@ -459,7 +459,7 @@ class Subscriber extends Model
         $customer = $user->customer;
         $directory = storage_path('export/');
         // Import to database
-        $total = $list->subscribers()->count();
+        $total = $list->subscribersCount();
         $success = 0;
         $error = 0;
         $lines_per_second = 1;
