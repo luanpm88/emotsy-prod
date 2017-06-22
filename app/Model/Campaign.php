@@ -679,7 +679,7 @@ class Campaign extends Model
      * Get Pending Subscribers
      * Select only subscribers that are ready for sending. Those whose status is `blacklisted`, `pending` or `unconfirmed` are not included.
      */
-    public function getPendingSubscribers()
+    public function getPendingSubscribers($partition = null)
     {
         /* *
          *
@@ -698,15 +698,23 @@ class Campaign extends Model
                 ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
                 ->select('subscribers.email')
                 ->addSelect('subscribers.uid')
-                ->addSelect('subscribers.id')
-                ->get();
+                ->addSelect('subscribers.id');
+
+        if (!is_null($partition)) {
+            // retrieve the subscribers list for this partition only
+            // partitioning is based on email to prevent one email from being taken by more than one process
+            // The idea is to generate a unique integer for an email address, then partition base on the number
+            list($partitionId, $count) = $partition;
+            $subscribers = $subscribers->whereRaw(sprintf('CONV(SUBSTR(MD5(%s),1, 4), 16, 10) MOD %s = %s', table('subscribers.email'), $count, $partitionId));
+        }
 
         // the array_unique_by functions out-perform the Collection::unique of Laravel!!!
-        $unique = array_unique_by($subscribers, function ($r) {
-            return $r['email'];
-        });
+        // The following code snipet is no longer needed as the list is already unique by email
+        //     $unique = array_unique_by($subscribers, function ($r) {
+        //         return $r['email'];
+        //     });
 
-        return $unique;
+        return $subscribers->get();
     }
 
     /**
@@ -1139,7 +1147,7 @@ class Campaign extends Model
      *
      * @return collect
      */
-    public function subscribers($params=[])
+    public function subscribers($params = [], $extra = ['email_verifications'])
     {
         // get subscribers from auto campaign or normal campaign
         if($this->isAuto()) {
@@ -1151,8 +1159,11 @@ class Campaign extends Model
             }
 
             $query = Subscriber::select("subscribers.*");
+
             // Email verification join
-            $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
+            if (in_array('email_verifications', $extra)) {
+                $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
+            }
 
             // Get subscriber from mailist and segment
             $conditions = [];
@@ -2453,7 +2464,7 @@ class Campaign extends Model
      */
     public function subscribersCount()
     {
-        return distinctCount($this->subscribers(), 'subscribers.email');
+        return distinctCount($this->subscribers([], []), 'subscribers.email');
     }
 
     /**

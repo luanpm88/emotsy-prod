@@ -305,21 +305,21 @@ function Dot2LongIPv6($IPaddr) {
 }
 
 /**
- * Function to pagination records from database
+ * Paginate a Laravel collection
  *
- * @return colletion
+ * @input Laravel Query Builder
+ * @input callback function
+ * @return collection result set
  */
-function pagination($builder, $callback, $perPage=200) {
+function paginate($builder, $callback, $limit = 10000) {
     $count = $builder->count();
-    $limit = $perPage;
     $pages = ceil($count / $limit);
 
     for ($page = 1; $page <= $pages; $page += 1) {
-        echo $page;
         $offset = $limit * ( $page - 1 );
 
         $list = $builder->skip($offset)->take($limit);
-        $callback($list);
+        $callback($list, $page);
     }
 }
 
