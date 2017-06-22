@@ -24,10 +24,8 @@ class SegmentController extends Controller
     public function index(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $segments = $list->segments;
 
         return view('segments.index', [
-            'segments' => $segments,
             'list' => $list,
         ]);
     }
