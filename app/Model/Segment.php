@@ -106,6 +106,11 @@ class Segment extends Model
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $query = self::select('segments.*')->where("segments.mail_list_id", "=", $list->id);
 
+        // Keyword
+        if (!empty(trim($request->keyword))) {
+            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
+        }
+
         return $query;
     }
 
