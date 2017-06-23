@@ -1105,7 +1105,7 @@ return [
     'select_temmplate_for_email_content' => 'Select a template for campaign email content',
     'rebuild' => 'Rebuild',
     'change_template' => 'Change template',
-    'build_template' => 'Buid template',
+    'build_template' => 'Build template',
     'style' => 'Style',
     'builder' => 'Builder',
     'design' => 'Design',
