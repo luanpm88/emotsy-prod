@@ -22,7 +22,7 @@
 
 namespace Acelle\Model;
 
-use Acelle\Library\Log;
+use Acelle\Library\Log as MailLog;
 
 class BounceHandler extends DeliveryHandler
 {
@@ -55,7 +55,7 @@ class BounceHandler extends DeliveryHandler
                 throw new \Exception('cannot find Message-ID, skipped');
             }
 
-            Log::info('Processing bounce notification for message '.$msgId);
+            MailLog::info('Processing bounce notification for message '.$msgId);
 
             $trackingLog = TrackingLog::where('message_id', $msgId)->first();
             if (empty($trackingLog)) {
@@ -72,9 +72,12 @@ class BounceHandler extends DeliveryHandler
             // just delete the bounce notification email
             imap_delete($mbox, $msgNo);
 
-            Log::info('Bounce recorded for message '.$msgId);
+            MailLog::info('Bounce recorded for message '.$msgId);
+
+            MailLog::info('Adding email to blacklist');
+            $bounceLog->findSubscriberByRuntimeMessageId()->sendToBlacklist($bounceLog->raw);
         } catch (\Exception $ex) {
-            Log::warning($ex->getMessage());
+            MailLog::warning($ex->getMessage());
         }
     }
 
@@ -132,7 +135,7 @@ class BounceHandler extends DeliveryHandler
                 $query = $query->where('bounce_handlers.type', '=', $filters['type']);
             }
         }
-        
+
         if(!empty($request->admin_id)) {
             $query = $query->where('bounce_handlers.admin_id', '=', $request->admin_id);
         }
