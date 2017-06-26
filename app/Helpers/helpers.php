@@ -283,6 +283,16 @@ function number_to_percentage($number, $precision = 2)
 }
 
 /**
+ * Format a number with delimiter
+ *
+ * @return string
+ */
+function number_with_delimiter($number, $precision = 0, $seperator = ',')
+{
+    return number_format($number, $precision, '.', $seperator);
+}
+
+/**
  * Function to convert IP address to IP number (IPv6)
  *
  * @return string

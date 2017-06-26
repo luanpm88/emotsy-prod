@@ -30,7 +30,7 @@
 
 					@if ($item->readCache('SubscriberCount'))
 						<div class="text-semibold" data-popup="tooltip" title="{{ $item->displayRecipients() }}">
-							{{ $item->readCache('SubscriberCount') }} {{ trans('messages.recipients') }}
+							{{ number_with_delimiter($item->readCache('SubscriberCount')) }} {{ trans('messages.recipients') }}
 						</div>
 					@endif
 
@@ -48,7 +48,7 @@
 								<div class="progress-bar progress-bar-info" style="width: {{ $item->isSending() ? $item->deliveredRate() : $item->readCache('DeliveredRate') }}%">
 								</div>
 							</div>
-							<span class="text-semibold">{{ $item->isSending() ? $item->deliveredCount() : $item->readCache('DeliveredCount', 0) }} / {{ $item->readCache('SubscriberCount', 0)  }}</span>
+							<span class="text-semibold">{{ $item->isSending() ? number_with_delimiter($item->deliveredCount()) : number_with_delimiter($item->readCache('DeliveredCount', 0)) }} / {{ number_with_delimiter($item->readCache('SubscriberCount', 0))  }}</span>
 							<br />
 							<span class="text-muted">{{ trans('messages.sent') }}</span>
 						</div>
