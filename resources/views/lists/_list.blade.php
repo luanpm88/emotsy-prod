@@ -32,7 +32,7 @@
 				<td class="stat-fix-size-sm">
 					<div class="single-stat-box pull-left">
 						<a href="{{ action('SubscriberController@index', $item->uid) }}">
-							<span class="no-margin stat-num">{{ $item->readCache('SubscriberCount', 0) }}</span>
+							<span class="no-margin stat-num">{{ number_with_delimiter($item->readCache('SubscriberCount', 0)) }}</span>
 						</a>
 						<br />
 						<span class="text-muted">{{ trans("messages." . Acelle\Library\Tool::getPluralPrase('subscriber', $item->readCache('SubscriberCount', 0))) }}</span>
