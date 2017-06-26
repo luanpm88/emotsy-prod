@@ -345,29 +345,6 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Get campaign's email chunks.
-     *
-     * @return mixed
-     */
-    public function getChunks($collection, $count)
-    {
-        $result = [];
-        if (sizeof($collection) == 0) {
-            return $result;
-        }
-        $chunks = array_chunk(range(0, sizeof($collection) - 1), ceil(sizeof($collection) / (float) $count), true);
-        foreach ($chunks as $key => $chunk) {
-            $list = [];
-            foreach (array_values($chunk) as $i) {
-                $list[] = $collection[$i];
-            }
-            $result[] = $list;
-        }
-
-        return $result;
-    }
-
-    /**
      * Log delivery message, used for later tracking.
      *
      */
@@ -771,103 +748,6 @@ abstract class AbsCampaign extends Model
         $query = self::filter($request);
 
         $query = $query->orderBy($request->sort_order, $request->sort_direction);
-
-        return $query;
-    }
-
-    /**
-     * Subscribers.
-     *
-     * @return collect
-     */
-    public function subscribers($params = [], $extra = ['email_verifications'])
-    {
-        // get subscribers from auto campaign or normal campaign
-        if($this->isAuto()) {
-            // Get subscriber from auto event
-            $query = $this->autoEvent()->subscribers();
-        } else {
-            if($this->listsSegments->isEmpty()) {
-                return collect([]);
-            }
-
-            $query = Subscriber::select("subscribers.*");
-
-            // Email verification join
-            if (in_array('email_verifications', $extra)) {
-                $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
-            }
-
-            // Get subscriber from mailist and segment
-            $conditions = [];
-            foreach($this->listsSegments as $lists_segment) {
-                if(!empty($lists_segment->segment_id)) {
-                    $conds = $lists_segment->segment->getSubscribersConditions();
-
-                    // JOINS...
-                    if (!empty($conds['joins'])) {
-                        foreach ($conds['joins'] as $joining) {
-                            $query = $query->leftJoin($joining['table'], function($join) use ($joining)
-                            {
-                                $join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
-                                if (isset($joining['ons'][1])) {
-                                    $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
-                                }
-                            });
-                        }
-                    }
-
-                    // WHERE...
-                    if (!empty($conds['conditions'])) {
-                        $conditions[] = $conds['conditions'];
-                    }
-
-                } else {
-                    $conditions[] = '(' . table('subscribers') . '.mail_list_id = ' . $lists_segment->mail_list_id . ')';
-                }
-            }
-
-            if (!empty($conditions)) {
-                $query = $query->whereRaw('(' . implode(' OR ', $conditions) . ')');
-            }
-        }
-
-        // Filter
-        $filters = isset($params["filters"]) ? $params["filters"] : null;
-
-        if(isset($filters) || $this->status == "done") {
-            $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id');
-            $query = $query->where('tracking_logs.id', "!=", "NULL");
-            $query = $query->where('tracking_logs.campaign_id', "=", $this->id);
-        }
-
-        if(isset($filters)) {
-            if(isset($filters["open"])) {
-                $equal = ($filters["open"] == "opened") ? "!=" : "=";
-                $query = $query->leftJoin('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
-                    ->where('open_logs.id', $equal, null);
-            }
-            if(isset($filters["click"])) {
-                $equal = ($filters["click"] == "clicked") ? "!=" : "=";
-                $query = $query->leftJoin('click_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
-                    ->where('click_logs.id', $equal, null);
-            }
-            if(isset($filters["tracking_status"])) {
-                $val = ($filters["tracking_status"] == "not_sent") ? null : $filters["tracking_status"];
-                $query = $query->where('tracking_logs.status', "=", $val);
-            }
-        }
-
-        // keyword
-        if (isset($params["keyword"]) && !empty(trim($params["keyword"]))) {
-            foreach (explode(' ', trim($params["keyword"])) as $keyword) {
-                $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id');
-                $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%')
-                        ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
-                });
-            }
-        }
 
         return $query;
     }

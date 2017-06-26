@@ -47,6 +47,9 @@ class Campaign extends AbsCampaign
                 return;
             }
 
+            // clean up the tracker to prevent the log file from growing very big
+            $this->customer->cleanupQuotaTracker();
+
             // lock the campaign, marked as sending
             $this->sending();
             MailLog::info('Starting campaign `'.$this->name.'`');
@@ -80,18 +83,13 @@ class Campaign extends AbsCampaign
      */
     public function runMultiProcesses()
     {
+        // processes to fork
         $count = (int) $this->customer->getOption('max_process');
-        $subscribers = $this->getPendingSubscribers();
-        MailLog::info(sizeof($subscribers).' subscriber(s) selected');
 
-        // split the big subscribers list into smaller ones
-        // this is also the number of processes to fork
-        $chunks = $this->getChunks($subscribers, $count);
-
-        MailLog::info('Forking '.sizeof($chunks).' process(es)');
+        MailLog::info("Forking {$count} process(es)");
         $parentPid = getmypid();
         $children = [];
-        for ($i = 0; $i < sizeof($chunks); ++$i) {
+        for ($i = 0; $i < $count; $i += 1) {
             $pid = pcntl_fork();
 
             // for child process only
@@ -102,9 +100,10 @@ class Campaign extends AbsCampaign
                 // Re-initialize logging to capture the child process' PID
                 MailLog::fork();
 
-                MailLog::info('Start child process '.($i + 1).' of '.sizeof($chunks).' (forked from '.$parentPid.')');
+                MailLog::info(sprintf("Start child process %s of %s (forked from %s)", $i + 1, $count, $parentPid));
                 sleep(self::WORKER_DELAY);
-                $this->run($chunks[$i]);
+                $partition = [$i, $count];
+                $this->run($partition);
 
                 exit($i + 1);
                 // end child process
@@ -156,19 +155,18 @@ class Campaign extends AbsCampaign
 
         // try/catch to make sure child process does not stop without reporting any error
         try {
-            // clean up the tracker to prevent the log file from growing very big
-            $this->customer->cleanupQuotaTracker();
-
             $i = 0;
-            $this->getPendingSubscribers($partition, function($subscribers, $page) {
-                foreach ($subscribers->get() as $subscriber) {
+            $this->getPendingSubscribers($partition, function($subscribers, $page, $total) use (&$i) {
+                MailLog::info("Fetching page $page (count: {$subscribers->count()})");
+
+                foreach ($subscribers as $subscriber) {
                     // @todo: customerneedcheck
                     if ($this->customer->overQuota()) {
                         throw new \Exception("Customer has reached sending limit");
                     }
 
                     $i += 1;
-                    MailLog::info("Sending to subscriber `{$subscriber->email}` ({$i}/".sizeof($subscribers).')');
+                    MailLog::info("Sending to subscriber `{$subscriber->email}` ({$i}/{$total})");
 
                     // Pick up an available sending server
                     // Throw exception in case no server available
@@ -291,6 +289,104 @@ class Campaign extends AbsCampaign
         return $message;
     }
 
+
+    /**
+     * Subscribers.
+     *
+     * @return collect
+     */
+    public function subscribers($params = [], $extra = ['email_verifications'])
+    {
+        // get subscribers from auto campaign or normal campaign
+        if($this->isAuto()) {
+            // Get subscriber from auto event
+            $query = $this->autoEvent()->subscribers();
+        } else {
+            if($this->listsSegments->isEmpty()) {
+                return collect([]);
+            }
+
+            $query = Subscriber::select("subscribers.*");
+
+            // Email verification join
+            if (in_array('email_verifications', $extra)) {
+                $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
+            }
+
+            // Get subscriber from mailist and segment
+            $conditions = [];
+            foreach($this->listsSegments as $lists_segment) {
+                if(!empty($lists_segment->segment_id)) {
+                    $conds = $lists_segment->segment->getSubscribersConditions();
+
+                    // JOINS...
+                    if (!empty($conds['joins'])) {
+                        foreach ($conds['joins'] as $joining) {
+                            $query = $query->leftJoin($joining['table'], function($join) use ($joining)
+                            {
+                                $join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
+                                if (isset($joining['ons'][1])) {
+                                    $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
+                                }
+                            });
+                        }
+                    }
+
+                    // WHERE...
+                    if (!empty($conds['conditions'])) {
+                        $conditions[] = $conds['conditions'];
+                    }
+
+                } else {
+                    $conditions[] = '(' . table('subscribers') . '.mail_list_id = ' . $lists_segment->mail_list_id . ')';
+                }
+            }
+
+            if (!empty($conditions)) {
+                $query = $query->whereRaw('(' . implode(' OR ', $conditions) . ')');
+            }
+        }
+
+        // Filter
+        $filters = isset($params["filters"]) ? $params["filters"] : null;
+
+        if(isset($filters) || $this->status == "done") {
+            $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id');
+            $query = $query->where('tracking_logs.id', "!=", "NULL");
+            $query = $query->where('tracking_logs.campaign_id', "=", $this->id);
+        }
+
+        if(isset($filters)) {
+            if(isset($filters["open"])) {
+                $equal = ($filters["open"] == "opened") ? "!=" : "=";
+                $query = $query->leftJoin('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
+                    ->where('open_logs.id', $equal, null);
+            }
+            if(isset($filters["click"])) {
+                $equal = ($filters["click"] == "clicked") ? "!=" : "=";
+                $query = $query->leftJoin('click_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
+                    ->where('click_logs.id', $equal, null);
+            }
+            if(isset($filters["tracking_status"])) {
+                $val = ($filters["tracking_status"] == "not_sent") ? null : $filters["tracking_status"];
+                $query = $query->where('tracking_logs.status', "=", $val);
+            }
+        }
+
+        // keyword
+        if (isset($params["keyword"]) && !empty(trim($params["keyword"]))) {
+            foreach (explode(' ', trim($params["keyword"])) as $keyword) {
+                $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id');
+                $query = $query->where(function ($q) use ($keyword) {
+                    $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%')
+                        ->orWhere('subscriber_fields.value', 'like', '%'.$keyword.'%');
+                });
+            }
+        }
+
+        return $query;
+    }
+
     /**
      * Get Pending Subscribers
      * Select only subscribers that are ready for sending. Those whose status is `blacklisted`, `pending` or `unconfirmed` are not included.
@@ -309,7 +405,7 @@ class Campaign extends AbsCampaign
                 ->get();
         */
 
-        $subscribers = $this->subscribers([], [])
+        $builder = $this->subscribers([], [])
                 ->whereRaw(sprintf(table('subscribers').'.id NOT IN (SELECT subscriber_id FROM %s WHERE campaign_id = %s)', table('tracking_logs'), $this->id))
                 ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
                 ->select('subscribers.email')
@@ -321,7 +417,7 @@ class Campaign extends AbsCampaign
             // partitioning is based on email to prevent one email from being taken by more than one process
             // The idea is to generate a unique integer for an email address, then partition base on the number
             list($partitionId, $count) = $partition;
-            $subscribers = $subscribers->whereRaw(sprintf('CONV(SUBSTR(MD5(%s),1, 4), 16, 10) MOD %s = %s', table('subscribers.email'), $count, $partitionId));
+            $builder = $builder->whereRaw(sprintf('CONV(SUBSTR(MD5(%s),1, 4), 16, 10) MOD %s = %s', table('subscribers.email'), $count, $partitionId));
         }
 
         // the array_unique_by functions out-perform the Collection::unique of Laravel!!!
@@ -330,9 +426,22 @@ class Campaign extends AbsCampaign
         //         return $r['email'];
         //     });
 
-        paginate($subscribers, function ($subset, $page) use ($callback) {
-            $callback($subset, $page);
-        });
+        $total = $builder->count();
+        $page = 1;
+        $limit = 100;
+        $subscribers = $builder->limit($limit)->get();
+        while ($subscribers->count()) {
+            $callback($subscribers, $page, $total);
+            $subscribers = $builder->limit($limit)->get();
+            $page += 1;
+        }
+
+        /*
+         * @todo the paginate helper does not work here since data table will be changed during the retrieving process
+        paginate($subscribers, function ($subset, $page) use ($callback, $total) {
+            $callback($subset, $page, $total);
+        }, ['count' => $total]);
+        */
     }
 
     /**
