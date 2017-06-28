@@ -136,6 +136,14 @@ class MailList extends Model
     }
 
     /**
+     * has_many association with automations through automations_lists_segments
+     */
+    public function automations()
+    {
+        return $this->belongsToMany('Acelle\Model\Automation', 'automations_lists_segments', 'mail_list_id', 'automation_id');
+    }
+
+    /**
      * Bootstrap any application services.
      */
     public static function boot()
@@ -1171,6 +1179,11 @@ class MailList extends Model
         // Trigger the CampaignUpdate event to update the campaign cache information
         foreach ($this->campaigns as $campaign) {
             event(new \Acelle\Events\CampaignUpdated($campaign));
+        }
+
+        // Trigger the CampaignUpdate event to update the related automations' cache information
+        foreach ($this->automations as $automation) {
+            event(new \Acelle\Events\AutomationUpdated($automation));
         }
 
         // Update list's cached information

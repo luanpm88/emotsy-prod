@@ -32,7 +32,7 @@
 												</span>
 											@endif
 											<div class="text-semibold" data-popup="tooltip" title="{{ $automation->displayRecipients() }}">
-												{{ $automation->subscribersCount() }} {{ trans('messages.recipients') }}
+												{{ number_with_delimiter($automation->readCache('SubscriberCount')) }} {{ trans('messages.recipients') }}
 											</div>
 										</td>
 										<td>

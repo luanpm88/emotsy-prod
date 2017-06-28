@@ -48,6 +48,14 @@ class Automation extends Model
         'name', 'mail_list_id', 'segment_id'
     ];
 
+	/**
+     * has_many association with mailList through automations_lists_segments
+     */
+    public function mailLists()
+    {
+        return $this->belongsToMany('Acelle\Model\MailList', 'automations_lists_segments', 'automation_id', 'mail_list_id');
+    }
+
     /**
      * Check if automation is active
      *
@@ -707,5 +715,63 @@ class Automation extends Model
     public function subscribersCount()
     {
         return distinctCount($this->subscribers(), 'subscribers.email');
+    }
+
+	/**
+     * Update Campaign cached data
+     *
+     * @return void
+     */
+    public function updateCache($key = null)
+    {
+        // cache indexes
+        $index = [
+            'SubscriberCount' => function(&$automation) {
+                return $automation->subscribersCount();
+            }
+        ];
+
+        // retrieve cached data
+        $cache = json_decode($this->cache, true);
+        if (is_null($cache)) {
+            $cache = [];
+        }
+
+        if (is_null($key)) {
+            // update all cache
+            foreach($index as $key => $callback) {
+                $cache[$key] = $callback($this);
+            }
+        } else {
+            // update specific key
+            $callback = $index[$key];
+            $cache[$key] = $callback($this);
+        }
+
+        // write back to the DB
+        $this->cache = json_encode($cache);
+        $this->save();
+    }
+
+	/**
+     * Retrieve Campaign cached data
+     *
+     * @return mixed
+     */
+    public function readCache($key, $default = null, $update = true)
+    {
+        $cache = json_decode($this->cache, true);
+        if (is_null($cache)) {
+            return $default;
+        }
+        if (array_key_exists($key, $cache)) {
+            if (is_null($cache[$key])) {
+                return $default;
+            } else {
+                return $cache[$key];
+            }
+        } else {
+            return null;
+        }
     }
 }
