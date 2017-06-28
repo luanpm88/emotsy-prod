@@ -1,4 +1,4 @@
-3.0.8 / 2017-06-27
+3.0.8 / 2017-06-29
 ==================
 
  * Fixed: bounced email not added to blacklist
@@ -7,6 +7,7 @@
  * Added: speed up page load in general
  * Added: font selection support for email template
  * Added: speed up automation page load
+ * Added: speed up subscribers listing
 
 3.0.7 / 2017-06-19
 ==================
