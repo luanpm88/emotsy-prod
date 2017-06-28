@@ -27,6 +27,7 @@ use Acelle\Library\RouletteWheel;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\QuotaTrackerFile;
 use Carbon\Carbon;
+use Acelle\Library\StringHelper;
 
 class SendingServer extends Model
 {
@@ -694,5 +695,38 @@ class SendingServer extends Model
             'name' => $name,
             'data' => json_encode($data),
         ]);
+    }
+
+    /**
+     * Send a test email for the sending server
+     */
+    public function sendTestEmail($params)
+    {
+        /**
+         * Required keys include
+         *     + from_email
+         *     + to_email
+         *     + subject
+         *     + plain
+         */
+        MailLog::info(sprintf("Sending test email for sending server `%s`", $this->name));
+        $message = \Swift_Message::newInstance();
+        $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($params['from_email']));
+        $message->setId($msgId);
+        $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', $msgId); // this header is required for SendGrid API sending server
+        $message->setContentType('text/plain; charset=utf-8');
+        $message->setSubject($params['subject']);
+        $message->setFrom($params['from_email']);
+        $message->setTo($params['to_email']);
+        $message->setReplyTo($params['from_email']);
+        $message->setEncoder(\Swift_Encoding::get8bitEncoding());
+        $message->addPart($params['plain'], 'text/plain');
+
+        $result = self::mapServerType($this)->send($message);
+        if (array_key_exists('error', $result)) {
+            throw new \Exception($result['error']);
+        }
+
+        return true;
     }
 }
