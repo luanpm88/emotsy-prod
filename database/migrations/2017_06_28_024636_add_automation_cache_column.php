@@ -13,7 +13,7 @@ class AddAutomationCacheColumn extends Migration
     public function up()
     {
         Schema::table('automations', function (Blueprint $table) {
-            $table->string('cache');
+            $table->string('cache')->nullable();
         });
     }
 
