@@ -2,10 +2,11 @@
 ==================
 
  * Fixed: bounced email not added to blacklist
- * Fixed: make sure confirmation email is retried in case of failure
+ * Fixed: make sure confirmation email be triggered
  * Added: reduce memory usage while sending
  * Added: speed up page load in general
  * Added: font selection support for email template
+ * Added: speed up automation page load
 
 3.0.7 / 2017-06-19
 ==================
