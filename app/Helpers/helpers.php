@@ -339,8 +339,8 @@ function paginate($builder, $callback, $params = []) {
     for ($page = 1; $page <= $pages; $page += 1) {
         $offset = $params['limit'] * ( $page - 1 );
 
-        $list = $builder->skip($offset)->take($params['limit']);
-        $callback($list, $page);
+        $builder = $builder->skip($offset)->take($params['limit']);
+        $callback($builder, $page);
     }
 }
 

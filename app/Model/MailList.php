@@ -33,6 +33,7 @@ use Acelle\Model\SendingServer;
 use Acelle\Model\EmailVerification;
 use Acelle\Model\EmailVerificationServer;
 use Acelle\Model\SystemJob;
+use Acelle\Exceptions\VerificationProcessCancelledException;
 
 class MailList extends Model
 {
@@ -1452,24 +1453,31 @@ class MailList extends Model
      */
     public function runVerification($serverId)
     {
-        $subscribers = $this->getUnverifiedSubscribers();
-        $verifier = EmailVerificationServer::find($serverId);
+        try {
+            $verifier = EmailVerificationServer::find($serverId);
 
-        if (is_null($verifier)) {
-            throw new \Exception(sprintf('Cannot find verification server with such ID: %s', $serverId));
-        }
-
-        foreach($subscribers as $index => $subscriber) {
-            $job = $this->getRunningVerificationJob();
-            if (is_null($job)) {
-                MailLog::warning(sprintf('Mail list `%s`: verification process terminated', $this->id));
-                return;
-            } elseif ($job->isCancelled()) {
-                MailLog::warning(sprintf('Mail list `%s`: verification process cancelled', $this->id));
-                return;
+            if (is_null($verifier)) {
+                throw new \Exception(sprintf('Cannot find verification server with such ID: %s', $serverId));
             }
-
-            $subscriber->verify($verifier);
+            $index = 1;
+            $this->getUnverifiedSubscribers(function($result, $page, $total) use (&$index, $verifier) {
+                MailLog::info("Verifying page {$page}");
+                foreach ($result->get() as $subscriber) {
+                    $job = $this->getRunningVerificationJob();
+                    if (is_null($job)) {
+                        throw new VerificationProcessCancelledException(sprintf('Mail list `%s`: verification process terminated', $this->id));
+                    } elseif ($job->isCancelled()) {
+                        // @todo it seems this is never the case, or in case of exception?
+                        throw new VerificationProcessCancelledException(sprintf('Mail list `%s`: verification process cancelled', $this->id));
+                    }
+                    MailLog::info(sprintf("Start verifying %s/%s", $index, $total));
+                    $subscriber->verify($verifier);
+                    $index += 1;
+                }
+            });
+        } catch (VerificationProcessCancelledException $e) {
+            MailLog::warning($e->getMessage());
+            // just finish
         }
     }
 
@@ -1527,11 +1535,16 @@ class MailList extends Model
      * Get unverified subscribers
      *
      */
-    public function getUnverifiedSubscribers()
+    public function getUnverifiedSubscribers($callback)
     {
-        return $this->subscribers()->whereNotIn('id', function($q){
+        $builder = $this->subscribers()->whereNotIn('id', function($q){
             $q->select('subscriber_id')->from('email_verifications');
-        })->get();
+        });
+
+        $total = $builder->count();
+        paginate($builder, function($result, $page) use ($callback, $total) {
+            $callback($result, $page, $total);
+        }, [ 'count' => $total ]);
     }
 
     /**
