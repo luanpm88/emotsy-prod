@@ -445,59 +445,6 @@ class Campaign extends AbsCampaign
     }
 
     /**
-     * Prepare the email content using Swift Mailer.
-     *
-     * @input object subscriber
-     * @input object sending server
-     *
-     * @return MIME text message
-     */
-    public function prepareEmail($subscriber, $server)
-    {
-        // build the message
-        $customHeaders = $this->getCustomHeaders($subscriber, $this);
-        $msgId = $customHeaders['X-Acelle-Message-Id'];
-
-        $message = \Swift_Message::newInstance();
-        $message->setId($msgId);
-
-        if ($this->type == self::TYPE_REGULAR) {
-            $message->setContentType('text/html; charset=utf-8');
-        } else {
-            $message->setContentType('text/plain; charset=utf-8');
-        }
-
-        foreach($customHeaders as $key => $value) {
-            $message->getHeaders()->addTextHeader($key, $value);
-        }
-
-        // @TODO for AWS, setting returnPath requires verified domain or email address
-        if ($server->allowCustomReturnPath()) {
-            $returnPath = $server->getVerp($subscriber->email);
-            if ($returnPath) {
-                $message->setReturnPath($returnPath);
-            }
-        }
-        $message->setSubject($this->getSubject($subscriber, $msgId));
-        $message->setFrom(array($this->from_email => $this->from_name));
-        $message->setTo($subscriber->email);
-        $message->setReplyTo($this->reply_to);
-        $message->setEncoder(\Swift_Encoding::get8bitEncoding());
-        $message->addPart($this->getPlainContent($subscriber, $msgId), 'text/plain');
-        if ($this->type == self::TYPE_REGULAR) {
-            $message->addPart($this->getHtmlContent($subscriber, $msgId), 'text/html');
-        }
-
-        if ($this->sign_dkim) {
-            $message = $this->sign($message);
-        }
-
-        // @todo attachment
-        //$message->attach(Swift_Attachment::fromPath('/tmp/gaugau.csv'));
-        return array($message, $msgId);
-    }
-
-    /**
      * Queue campaign for sending
      *
      */
