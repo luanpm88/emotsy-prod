@@ -43,11 +43,13 @@ class SendingServer extends Model
      * The attributes that are mass assignable.
      *
      * @var array
+     * @note important! consider updating the $fillable variable, it will affect some other methods
+     *
      */
     protected $fillable = [
-        'name', 'host', 'aws_access_key_id', 'aws_secret_access_key', 'aws_region', 'smtp_username',
-        'smtp_password', 'smtp_port', 'smtp_protocol', 'quota_value', 'quota_base', 'quota_unit',
-        'bounce_handler_id', 'feedback_loop_handler_id', 'sendmail_path', 'domain', 'api_key'
+        'name', 'type', 'host', 'aws_access_key_id', 'aws_secret_access_key', 'aws_region', 'domain', 'api_key', 'api_secret_key', 'smtp_username',
+        'smtp_password', 'smtp_port', 'smtp_protocol', 'quota_value', 'sendmail_path', 'quota_base', 'quota_unit',
+        'bounce_handler_id', 'feedback_loop_handler_id', 'status'
     ];
 
     // Supported server types
@@ -86,7 +88,7 @@ class SendingServer extends Model
     }
 
     /**
-     * Map a server to its class type and initiate an instance.
+     * Map a server to its class type and retrive an instance from the database
      *
      * @return mixed
      * @param campaign
@@ -96,6 +98,22 @@ class SendingServer extends Model
         $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
 
         return $class_name::find($server->id);
+    }
+
+    /**
+     * Map a server to its class type and initiate an instance.
+     *
+     * @return object sending server of its particular type
+     */
+    public static function getInstance($server)
+    {
+        $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
+        $attributes = $server->toArray();
+        if (array_key_exists('id', $attributes)) {
+            unset($attributes['id']);
+        }
+
+        return new $class_name($attributes);
     }
 
     /**
@@ -721,8 +739,8 @@ class SendingServer extends Model
         $message->setReplyTo($params['from_email']);
         $message->setEncoder(\Swift_Encoding::get8bitEncoding());
         $message->addPart($params['plain'], 'text/plain');
+        $result = self::getInstance($this)->send($message);
 
-        $result = self::mapServerType($this)->send($message);
         if (array_key_exists('error', $result)) {
             throw new \Exception($result['error']);
         }
