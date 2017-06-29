@@ -49,7 +49,6 @@ class BounceHandler extends DeliveryHandler
             */
 
             $msgId = $this->getMessageId($body);
-
             if (empty($msgId)) {
                 imap_setflag_full($mbox, $msgNo, '\\Seen \\Flagged');
                 throw new \Exception('cannot find Message-ID, skipped');
@@ -76,7 +75,7 @@ class BounceHandler extends DeliveryHandler
             MailLog::info('Bounce recorded for message '.$msgId);
 
             MailLog::info('Adding email to blacklist');
-            $bounceLog->findSubscriberByRuntimeMessageId()->sendToBlacklist($bounceLog->raw);
+            $trackingLog->subscriber->sendToBlacklist($bounceLog->raw);
         } catch (\Exception $ex) {
             MailLog::warning($ex->getMessage());
         }
