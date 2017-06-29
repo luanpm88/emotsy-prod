@@ -65,6 +65,7 @@ class BounceHandler extends DeliveryHandler
             // record a bounce log, one message may have more than one
             $bounceLog = new BounceLog();
             $bounceLog->message_id = $msgId;
+            $bounceLog->runtime_message_id = $msgId;
             $bounceLog->bounce_type = 'unknown'; // @TODO fill in the NULL value here
             $bounceLog->raw = imap_fetchheader($mbox, $msgNo).PHP_EOL.$body;
             $bounceLog->save();
