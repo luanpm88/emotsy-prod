@@ -2289,7 +2289,7 @@ a.loading {
     text-align: center;
     z-index: 10000;
 }
-.content {
+.mask-loading-effect .content {
     display: block;
     margin: auto;
     position: fixed;
