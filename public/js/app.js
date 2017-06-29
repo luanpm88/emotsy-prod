@@ -1635,10 +1635,19 @@ $(function() {
     $(document).on("click", "a.modal_link", function(e) {
         e.preventDefault();
         $(".modal").modal('hide');
-
         var url = $(this).attr("href");
         var a_ = $(this);
         var method = $(this).attr('data-method');
+
+        // Finding modal
+        var modal = $('#ajax-modal[rel="'+url+'"]');
+        if (!modal.length) {
+            $('body').append('<div id="ajax-modal" rel="'+url+'" class="modal fade ajax-modal"><div class="modal-dialog modal-md"></div></div>');
+            modal = $('#ajax-modal[rel="'+url+'"]');
+        } else {
+            modal.modal('show');
+            return;
+        }
 
         // Skip if previous ajax calling
         if (a_.hasClass('loading')) {
@@ -1673,13 +1682,6 @@ $(function() {
             data: data
         })
         .done(function( data ) {
-            // Add Form Modal
-            var modal = $('#ajax-modal');
-            if (!modal.length) {
-                $('body').append('<div id="ajax-modal" class="modal fade ajax-modal"><div class="modal-dialog modal-md"></div></div>');
-                modal = $('#ajax-modal');
-            }
-
             modal.find('.modal-dialog').html(data);
             modal.modal('show');
 
