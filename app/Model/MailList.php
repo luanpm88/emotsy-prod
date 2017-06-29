@@ -33,6 +33,7 @@ use Acelle\Model\SendingServer;
 use Acelle\Model\EmailVerification;
 use Acelle\Model\EmailVerificationServer;
 use Acelle\Model\SystemJob;
+use Acelle\Exceptions\VerificationProcessCancelledException;
 
 class MailList extends Model
 {
@@ -133,6 +134,14 @@ class MailList extends Model
         //return \Acelle\Model\Campaign::leftJoin('campaigns_lists_segments', 'campaigns_lists_segments.campaign_id', '=', 'campaigns.id')
         //    ->where('campaigns_lists_segments.mail_list_id', '=', $this->id);
         return $this->belongsToMany('Acelle\Model\Campaign', 'campaigns_lists_segments', 'mail_list_id', 'campaign_id');
+    }
+
+    /**
+     * has_many association with automations through automations_lists_segments
+     */
+    public function automations()
+    {
+        return $this->belongsToMany('Acelle\Model\Automation', 'automations_lists_segments', 'mail_list_id', 'automation_id');
     }
 
     /**
@@ -364,7 +373,7 @@ class MailList extends Model
             $query = $query->where('id', '!=', $options['other_list_of']);
         }
         $options = $query->orderBy('name')->get()->map(function ($item) {
-            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribers()->count().' '.strtolower(trans('messages.subscribers')).')'];
+            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount().' '.strtolower(trans('messages.subscribers')).')'];
         });
 
         return $options;
@@ -391,7 +400,7 @@ class MailList extends Model
      */
     public function unsubscribeCount()
     {
-        return $this->subscribers()->where('status', '=', 'unsubscribed')->count();
+        return distinctCount($this->subscribers()->where('status', '=', 'unsubscribed'), 'subscribers.email');
     }
 
     /**
@@ -401,11 +410,11 @@ class MailList extends Model
      */
     public function unsubscribeRate()
     {
-        if ($this->subscribers()->count() == 0) {
+        if ($this->subscribersCount() == 0) {
             return '#';
         }
 
-        return round(($this->unsubscribeCount() / $this->subscribers()->count()) * 100, 2);
+        return round(($this->unsubscribeCount() / $this->subscribersCount()) * 100, 2);
     }
 
     /**
@@ -415,7 +424,7 @@ class MailList extends Model
      */
     public function subscribeCount()
     {
-        return $this->subscribers()->where('status', '=', 'subscribed')->count();
+        return distinctCount($this->subscribers()->where('status', '=', 'subscribed'), 'subscribers.email');
     }
 
     /**
@@ -425,11 +434,11 @@ class MailList extends Model
      */
     public function subscribeRate()
     {
-        if ($this->subscribers()->count() == 0) {
+        if ($this->subscribersCount() == 0) {
             return '#';
         }
 
-        return round(($this->subscribeCount() / $this->subscribers()->count()) * 100, 2);
+        return round(($this->subscribeCount() / $this->subscribersCount()) * 100, 2);
     }
 
     /**
@@ -439,7 +448,7 @@ class MailList extends Model
      */
     public function unconfirmedCount()
     {
-        return $this->subscribers()->where('status', '=', 'unconfirmed')->count();
+        return distinctCount($this->subscribers()->where('status', '=', 'unconfirmed'), 'subscribers.email');
     }
 
     /**
@@ -449,7 +458,7 @@ class MailList extends Model
      */
     public function blacklistedCount()
     {
-        return $this->subscribers()->where('status', '=', 'blacklisted')->count();
+        return distinctCount($this->subscribers()->where('status', '=', 'blacklisted'), 'subscribers.email');
     }
 
     /**
@@ -459,7 +468,7 @@ class MailList extends Model
      */
     public function spamReportedCount()
     {
-        return $this->subscribers()->where('status', '=', 'spam-reported')->count();
+        return distinctCount($this->subscribers()->where('status', '=', 'spam-reported'), 'subscribers.email');
     }
 
     /**
@@ -653,7 +662,8 @@ class MailList extends Model
      */
     public function longName()
     {
-        return $this->name.' - '.$this->subscribers()->count().' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('subscriber', $this->subscribers()->count())).'';
+        $subscribersCount = $this->subscribersCount();
+        return $this->name.' - '.$subscribersCount.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('subscriber', $subscribersCount)).'';
     }
 
     /**
@@ -761,7 +771,7 @@ class MailList extends Model
         $file_path = $directory.'data.csv';
 
         // Import to database
-        $total = $list->subscribers()->count();
+        $total = $list->subscribersCount();
         $success = 0;
         $error = 0;
         $lines_per_second = 1;
@@ -1172,6 +1182,11 @@ class MailList extends Model
             event(new \Acelle\Events\CampaignUpdated($campaign));
         }
 
+        // Trigger the CampaignUpdate event to update the related automations' cache information
+        foreach ($this->automations as $automation) {
+            event(new \Acelle\Events\AutomationUpdated($automation));
+        }
+
         // Update list's cached information
         event(new \Acelle\Events\UserUpdated($this->customer, false));
     }
@@ -1228,7 +1243,7 @@ class MailList extends Model
         // cache indexes
         $index = [
             'SubscriberCount' => function(&$list) {
-                return $list->subscribers()->count();
+                return $list->subscribersCount();
             },
             'VerifiedSubscriberCount' => function(&$list) {
                 return $list->countVerifiedSubscribers();
@@ -1438,24 +1453,31 @@ class MailList extends Model
      */
     public function runVerification($serverId)
     {
-        $subscribers = $this->getUnverifiedSubscribers();
-        $verifier = EmailVerificationServer::find($serverId);
+        try {
+            $verifier = EmailVerificationServer::find($serverId);
 
-        if (is_null($verifier)) {
-            throw new \Exception(sprintf('Cannot find verification server with such ID: %s', $serverId));
-        }
-
-        foreach($subscribers as $index => $subscriber) {
-            $job = $this->getRunningVerificationJob();
-            if (is_null($job)) {
-                MailLog::warning(sprintf('Mail list `%s`: verification process terminated', $this->id));
-                return;
-            } elseif ($job->isCancelled()) {
-                MailLog::warning(sprintf('Mail list `%s`: verification process cancelled', $this->id));
-                return;
+            if (is_null($verifier)) {
+                throw new \Exception(sprintf('Cannot find verification server with such ID: %s', $serverId));
             }
-
-            $subscriber->verify($verifier);
+            $index = 1;
+            $this->getUnverifiedSubscribers(function($result, $page, $total) use (&$index, $verifier) {
+                MailLog::info("Verifying page {$page}");
+                foreach ($result->get() as $subscriber) {
+                    $job = $this->getRunningVerificationJob();
+                    if (is_null($job)) {
+                        throw new VerificationProcessCancelledException(sprintf('Mail list `%s`: verification process terminated', $this->id));
+                    } elseif ($job->isCancelled()) {
+                        // @todo it seems this is never the case, or in case of exception?
+                        throw new VerificationProcessCancelledException(sprintf('Mail list `%s`: verification process cancelled', $this->id));
+                    }
+                    MailLog::info(sprintf("Start verifying %s/%s", $index, $total));
+                    $subscriber->verify($verifier);
+                    $index += 1;
+                }
+            });
+        } catch (VerificationProcessCancelledException $e) {
+            MailLog::warning($e->getMessage());
+            // just finish
         }
     }
 
@@ -1513,11 +1535,16 @@ class MailList extends Model
      * Get unverified subscribers
      *
      */
-    public function getUnverifiedSubscribers()
+    public function getUnverifiedSubscribers($callback)
     {
-        return $this->subscribers()->whereNotIn('id', function($q){
+        $builder = $this->subscribers()->whereNotIn('id', function($q){
             $q->select('subscriber_id')->from('email_verifications');
-        })->get();
+        });
+
+        $total = $builder->count();
+        paginate($builder, function($result, $page) use ($callback, $total) {
+            $callback($result, $page, $total);
+        }, [ 'count' => $total ]);
     }
 
     /**
@@ -1537,7 +1564,7 @@ class MailList extends Model
      */
     public function getVerifiedSubscribersPercentage()
     {
-        $count = $this->subscribers()->count();
+        $count = $this->subscribersCount();
         if ($count == 0) {
             return 0.0;
         } else {
@@ -1551,6 +1578,15 @@ class MailList extends Model
      */
     public function subscribersCount()
     {
-        return $this->subscribers()->distinct('subscribers.email')->count('subscribers.email');
+        return distinctCount($this->subscribers(), 'subscribers.email');
+    }
+
+    /**
+     * Segments count
+     *
+     */
+    public function segmentsCount()
+    {
+        return $this->segments()->count();
     }
 }

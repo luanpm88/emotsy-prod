@@ -332,7 +332,13 @@ class CampaignController extends Controller
 
         // Required tags
         $validate = 'required';
-        foreach (\Acelle\Model\Campaign::$required_tags as $tag) {
+
+        // @todo hard-coded here
+        $requiredTags = array(
+            array('name' => '{UNSUBSCRIBE_URL}', 'required' => true),
+        );
+
+        foreach ($requiredTags as $tag) {
             if ($tag['required']) {
                 $validate .= '|substring:"'.$tag['name'].'"';
             }
@@ -848,7 +854,7 @@ class CampaignController extends Controller
             'name' => trans('messages.recipients'),
             'type' => 'bar',
             'smooth' => true,
-            'data' => [$campaign->subscribers()->count()],
+            'data' => [$campaign->subscribersCount()],
             'itemStyle' => [
                 'normal' => [
                     'color' => '#555'
@@ -1801,5 +1807,49 @@ class CampaignController extends Controller
         }
 
         return view('campaigns.select_type');
+    }
+
+    /**
+     * Template review.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateReview(Request $request)
+    {
+        // Get current user
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.template_review', [
+            'campaign' => $campaign
+        ]);
+    }
+
+    /**
+     * Template review iframe
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function templateReviewIframe(Request $request)
+    {
+        // Get current user
+        $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
+
+        // authorize
+        if (\Gate::denies('read', $campaign)) {
+            return $this->notAuthorized();
+        }
+
+        return view('campaigns.template_review_iframe', [
+            'campaign' => $campaign
+        ]);
     }
 }

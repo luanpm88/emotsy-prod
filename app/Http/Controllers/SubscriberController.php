@@ -27,11 +27,9 @@ class SubscriberController extends Controller
     public function index(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $subscribers = $list->subscribers;
 
         return view('subscribers.index', [
-            'subscribers' => $subscribers,
-            'list' => $list,
+            'list' => $list
         ]);
     }
 

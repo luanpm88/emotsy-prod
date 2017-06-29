@@ -53,7 +53,7 @@
         >
             <div class="row top-list-controls">
                 <div class="col-md-9">
-                    @if (Acelle\Model\Template::getAll()->count() >= 0)
+                    @if (true)
                         <div class="filter-box">
                             <span class="filter-group">
                                 <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>

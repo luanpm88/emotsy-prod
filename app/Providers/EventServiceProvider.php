@@ -22,6 +22,9 @@ class EventServiceProvider extends ServiceProvider
         'Acelle\Events\UserUpdated' => [
             'Acelle\Listeners\UserUpdatedListener',
         ],
+        'Acelle\Events\AutomationUpdated' => [
+            'Acelle\Listeners\AutomationUpdatedListener',
+        ],
     ];
 
     /**

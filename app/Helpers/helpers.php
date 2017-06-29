@@ -283,6 +283,16 @@ function number_to_percentage($number, $precision = 2)
 }
 
 /**
+ * Format a number with delimiter
+ *
+ * @return string
+ */
+function number_with_delimiter($number, $precision = 0, $seperator = ',')
+{
+    return number_format($number, $precision, '.', $seperator);
+}
+
+/**
  * Function to convert IP address to IP number (IPv6)
  *
  * @return string
@@ -302,4 +312,48 @@ function Dot2LongIPv6($IPaddr) {
     }
     $ipv6long = gmp_strval(gmp_init($ipv6long, 2), 10);
     return $ipv6long;
+}
+
+/**
+ * Paginate a Laravel collection
+ *
+ * @input Laravel Query Builder
+ * @input callback function
+ * @return collection result set
+ */
+function paginate($builder, $callback, $params = []) {
+    $default = [
+        'limit' => 10000
+    ];
+
+    $params = array_merge($default, $params);
+
+    // in some cases, use the pre-computed count rather than counting against the builder
+    if (!array_key_exists('count', $params)) {
+        $params['count'] = $builder->count();
+    }
+
+    // count the number of pages needed
+    $pages = ceil($params['count'] / $params['limit']);
+
+    for ($page = 1; $page <= $pages; $page += 1) {
+        $offset = $params['limit'] * ( $page - 1 );
+
+        $builder = $builder->skip($offset)->take($params['limit']);
+        $callback($builder, $page);
+    }
+}
+
+/**
+ * Distinct count helper for performance
+ *
+ * @return integer
+ */
+function distinctCount($builder, $column) {
+    $sub = $builder->select($column)->distinct();
+    $count = \DB::table( \DB::raw("({$sub->toSql()}) as sub") )
+        ->addBinding($sub->getBindings()) // you need to get underlying Query Builder
+        ->count();
+
+    return $count;
 }

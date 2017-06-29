@@ -23,7 +23,7 @@ class TemplateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function index(Request $request)
-    {        
+    {
         $request->merge(array("customer_id" => $request->user()->customer->id));
         $templates = \Acelle\Model\Template::search($request);
 
@@ -54,6 +54,7 @@ class TemplateController extends Controller
      */
     public function choosing(Request $request)
     {
+        $request->merge(array("customer_id" => $request->user()->customer->id));
         $templates = \Acelle\Model\Template::search($request)->paginate($request->per_page);
         $campaign = \Acelle\Model\Campaign::findByUid($request->campaign_uid);
 
@@ -118,7 +119,7 @@ class TemplateController extends Controller
         // Generate info
         $user = $request->user();
         $customer = $request->user()->customer;
-        
+
         $template = new \Acelle\Model\Template();
         $template->customer_id = $customer->id;
 
@@ -142,11 +143,11 @@ class TemplateController extends Controller
             if(isset($request->source)) {
                 $template->source = $request->source;
             }
-            
+
             //// update content
             //$template->content = preg_replace('/href\=\'([^\']*\{)/',"href='{", $template->content);
             //$template->content = preg_replace('/href\=\"([^\"]*\{)/','href="{', $template->content);
-            
+
             $template->save();
 
             // Redirect to my lists page
@@ -225,11 +226,11 @@ class TemplateController extends Controller
 
             // Save template
             $template->fill($request->all());
-            
+
             //// update content
             //$template->content = preg_replace('/href\=\'([^\']*\{)/',"href='{", $template->content);
             //$template->content = preg_replace('/href\=\"([^\"]*\{)/','href="{', $template->content);
-            
+
             $template->save();
 
             // Redirect to my lists page
@@ -362,7 +363,7 @@ class TemplateController extends Controller
                     if ($object != '.' && $object != '..') {
                         if (!is_dir($tmp_path.'/'.$object)) {
                             if (preg_match('/\.html?$/i', $object)) {
-                                $main_file = $tmp_path.'/'.$object;                                
+                                $main_file = $tmp_path.'/'.$object;
                                 break;
                             }
                         }
@@ -390,20 +391,20 @@ class TemplateController extends Controller
                 $rules['main_file_not_found'] = 'required';
             }
             $this->validate($request, $rules);
-            
+
             // read main file content
             $html_content = trim(file_get_contents($main_file));
             if (empty($html_content)) {
                 $rules['main_file_empty'] = 'required';
             }
             $this->validate($request, $rules);
-            
+
             // Save new template
             $template->fill($request->all());
             $template->content = $html_content;
             $template->source = 'upload';
             $template->save();
-            
+
             // copy all folder to public path
             $public_dir = 'upload/templates/template_'.$template->uid;
             $public_upload_path = public_path($public_dir);
@@ -412,18 +413,18 @@ class TemplateController extends Controller
             }
             // exec("cp -r {$tmp_path}/* {$public_upload_path}/");
             \Acelle\Library\Tool::xcopy($tmp_path, $public_upload_path);
-            
+
             // find all link in html content
             $template->replaceHtmlUrl($request->root().'/'.$public_dir.'/'.$sub_path);
-            
+
             $template->save();
-            
+
             // remove tmp folder
             //exec("rm -r {$tmp_path}");
             \Acelle\Library\Tool::xdelete($tmp_path);
-            
+
             $request->session()->flash('alert-success', trans('messages.template.uploaded'));
-            
+
             return redirect()->action('TemplateController@index');
         }
 
@@ -488,20 +489,20 @@ class TemplateController extends Controller
      * @return \Illuminate\Http\Response
      */
     public function preview(Request $request, $id)
-    {        
+    {
         $template = \Acelle\Model\Template::findByUid($id);
-        
+
         // authorize
         if (!$request->user()->customer->can('preview', $template)) {
             return $this->not_authorized();
         }
-        
+
         // Convert to inline css if template source is builder
         if ($template->source == 'builder') {
             $cssToInlineStyles = new CssToInlineStyles();
             $html = $template->content;
             $css = file_get_contents(public_path("css/res_email.css"));
-            
+
             // output
             $template->content = $cssToInlineStyles->convert(
                 $html,
@@ -552,7 +553,7 @@ class TemplateController extends Controller
         $template->image = $upload_loca.$filename;
         $template->save();
     }
-    
+
     /**
      * Buiding email template.
      *
@@ -564,23 +565,23 @@ class TemplateController extends Controller
     {
         $template = new \Acelle\Model\Template();
         $template->name = trans('messages.untitled_template');
-        
+
         // authorize
         if (!$request->user()->customer->can('create', $template)) {
             return $this->notAuthorized();
         }
-        
+
         $elements = [];
         if(isset($request->style)) {
             $elements = \Acelle\Model\Template::templateStyles()[$request->style];
         }
-        
+
         return view('templates.build', [
             'template' => $template,
             'elements' => $elements
         ]);
     }
-    
+
     /**
      * Buiding email template.
      *
@@ -603,7 +604,7 @@ class TemplateController extends Controller
             'template' => $template,
         ]);
     }
-    
+
     /**
      * Select template style.
      *
@@ -614,7 +615,7 @@ class TemplateController extends Controller
     public function buildSelect(Request $request)
     {
         $template = new \Acelle\Model\Template();
-        
+
         return view('templates.build_start', [
             'template' => $template,
         ]);

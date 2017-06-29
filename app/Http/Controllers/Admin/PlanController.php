@@ -446,7 +446,7 @@ class PlanController extends Controller
         }
 
         $result = [
-            'title' => '', // trans('messages.statistics') . " (" . $list->subscribers()->count() ." " . trans('messages.subscribers') .")",
+            'title' => '',
             'columns' => [],
             'data' => [],
             'bar_names' => [],

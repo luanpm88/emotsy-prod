@@ -2263,3 +2263,19 @@ a .double-bounce2 {
 a.loading {
     opacity: 0.8;
 }
+.pml-table-container.loading {
+    opacity: 0.5
+}
+.pml-table-container.loading:before {
+    content: "loading";
+    width: 100%;
+    background: url(http://umd.orgsync.com/images/spinner.gif?1485915548) no-repeat center center rgba(0,0,0,0.02);
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    z-index: 100;
+    text-indent: -9000px;
+}
+.pml-table-container {
+    position: relative;
+}

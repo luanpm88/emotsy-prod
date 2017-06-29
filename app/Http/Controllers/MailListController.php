@@ -32,11 +32,8 @@ class MailListController extends Controller
     public function index(Request $request)
     {
         $customer = $request->user()->customer;
-        $lists = $customer->lists;
 
-        return view('lists.index', [
-            'lists' => $lists,
-        ]);
+        return view('lists.index');
     }
 
     /**
@@ -478,7 +475,7 @@ class MailListController extends Controller
         }
 
         $result = [
-            'title' => '', // trans('messages.statistics') . " (" . $list->subscribers()->count() ." " . trans('messages.subscribers') .")",
+            'title' => '',
             'columns' => [],
             'data' => [],
             'bar_names' => [],

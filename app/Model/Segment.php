@@ -106,7 +106,12 @@ class Segment extends Model
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $query = self::select('segments.*')->where("segments.mail_list_id", "=", $list->id);
 
-        return $query->distinct();
+        // Keyword
+        if (!empty(trim($request->keyword))) {
+            $query = $query->where('name', 'like', '%'.$request->keyword.'%');
+        }
+
+        return $query;
     }
 
     /**
@@ -341,6 +346,6 @@ class Segment extends Model
      */
     public function subscribersCount()
     {
-        return $this->subscribers()->count('subscribers.id');
+        return distinctCount($this->subscribers(), 'subscribers.email');
     }
 }

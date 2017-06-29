@@ -1,3 +1,24 @@
+3.0.8 / 2017-06-29
+==================
+
+ * Fixed: bounced email not added to blacklist
+ * Fixed: make sure confirmation email be triggered
+ * Added: reduce memory usage while sending
+ * Added: speed up page load in general
+ * Added: font selection support for email template
+ * Added: speed up automation page load
+ * Added: speed up subscribers listing
+
+3.0.7 / 2017-06-19
+==================
+
+ * Fixed: message-id cannot be retrieved in bounced message
+ * Fixed: JS error showing up in the edit template page
+ * Fixed: lagging image/video in the email editor
+ * Fixed: thumbnail not showing up correctly
+ * Fixed: user cannot subscribe to certain plans
+ * Fixed: speed up the customers list view
+
 3.0.6 / 2017-06-08
 ==================
 

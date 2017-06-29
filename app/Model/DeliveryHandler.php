@@ -88,9 +88,15 @@ class DeliveryHandler extends Model
         preg_match('/(?<=X-Acelle-Message-Id:)\s{0,1}<{0,1}(?<id>[a-zA-Z0-9\.]+[a-zA-Z0-9]+@[a-zA-Z0-9\.\-]+[a-zA-Z0-9]+)/', $message, $matched);
         if (array_key_exists('id', $matched)) {
             return StringHelper::cleanupMessageId($matched['id']);
-        } else {
-            return null;
         }
+
+        // more tolerant matching (case-insensitive, no need for Acelle prefix, etc.)
+        preg_match('/(?<=Message-Id:)\s{0,1}<{0,1}(?<id>[a-zA-Z0-9\.]+[a-zA-Z0-9]+@[a-zA-Z0-9\.\-]+[a-zA-Z0-9]+)/i', $message, $matched);
+        if (array_key_exists('id', $matched)) {
+            return StringHelper::cleanupMessageId($matched['id']);
+        }
+
+        return null;
     }
 
     /**

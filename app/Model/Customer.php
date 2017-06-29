@@ -522,7 +522,7 @@ class Customer extends Model
      */
     public function subscribersCount()
     {
-        return $this->subscribers()->distinct('subscribers.email')->count('subscribers.email');
+        return distinctCount($this->subscribers(), 'subscribers.email');
     }
 
     /**
@@ -799,7 +799,7 @@ class Customer extends Model
         $current = $this->getCurrentSubscription();
 
         $quota = [
-            'start' => $current->start_at->timestamp,
+            'start' => (isset($current->start_at) ? $current->start_at->timestamp : NULL),
             'max' => $current->getOption('email_max')
         ];
 
@@ -978,7 +978,7 @@ class Customer extends Model
                 $query->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
                     ->orWhereNull('subscriptions.start_at');
             })->where(function($query) {
-                $query->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->endOfDay())
+                $query->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay())
                     ->orWhereNull('subscriptions.end_at');
             });
     }
