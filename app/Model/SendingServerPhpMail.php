@@ -28,7 +28,7 @@ use Acelle\Library\Log as MailLog;
 class SendingServerPhpMail extends SendingServer
 {
     protected $table = 'sending_servers';
-    
+
     /**
      * Send the provided message.
      *
@@ -50,7 +50,6 @@ class SendingServerPhpMail extends SendingServer
                 MailLog::info('Sent!');
 
                 return array(
-                    'runtime_message_id' => $sent['MessageId'],
                     'status' => self::DELIVERY_STATUS_SENT,
                 );
             } else {
