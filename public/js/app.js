@@ -1644,9 +1644,6 @@ $(function() {
         if (!modal.length) {
             $('body').append('<div id="ajax-modal" rel="'+url+'" class="modal fade ajax-modal"><div class="modal-dialog modal-md"></div></div>');
             modal = $('#ajax-modal[rel="'+url+'"]');
-        } else {
-            modal.modal('show');
-            return;
         }
 
         // Skip if previous ajax calling

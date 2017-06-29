@@ -1926,4 +1926,6 @@ return [
     'test_sending_server.intro' => 'Fill in the form below and hit the Send button to test the your server.',
     'email_review' => 'Email review',
     'sending_server.test_success' => 'A test message was successfully sent',
+    'bounce_handler.test_success' => 'Connection tested',
+    'feedback_loop_handler.test_success' => 'Connection tested',
 ];

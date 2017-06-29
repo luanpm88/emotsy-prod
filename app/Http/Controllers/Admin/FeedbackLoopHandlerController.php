@@ -277,10 +277,17 @@ class FeedbackLoopHandlerController extends Controller
             return $this->notAuthorized();
         }
 
-        // @todo testing method and return result here. Ex: echo json_encode($server->test())
-        echo json_encode([
-            'status' => 'error', // or success
-            'message' => trans('messages.feedback_loop_handler.test_failed')
-        ]);
+        try {
+            $server->test();
+            echo json_encode([
+                'status' => 'success', // or success
+                'message' => trans('messages.feedback_loop_handler.test_success')
+            ]);
+        } catch(\Exception $e) {
+            echo json_encode([
+                'status' => 'error', // or success
+                'message' => $e->getMessage()
+            ]);
+        }
     }
 }
