@@ -338,6 +338,7 @@ class SendingServerController extends Controller
             $server = \Acelle\Model\SendingServer::findByUid($uid);
         } else {
             $server = new \Acelle\Model\SendingServer();
+            $server->uid = 0;
         }
 
         $server->fill($request->all());
@@ -350,17 +351,26 @@ class SendingServerController extends Controller
 
         if ($request->isMethod('post')) {
             // @todo testing method and return result here. Ex: echo json_encode($server->test())
-
+            try {
                 $server->sendTestEmail([
                     'from_email' => $request->from_email,
                     'to_email' => $request->to_email,
                     'subject' => $request->subject,
                     'plain' => $request->content
                 ]);
+            } catch (\Exception $ex) {
+                echo json_encode([
+                    'status' => 'error', // or success
+                    'message' => $ex->getMessage()
+                ]);
+                return;
+            }
+
             echo json_encode([
-                'status' => 'error', // or success
-                'message' => trans('messages.bounce_handler.test_failed')
+                'status' => 'success', // or success
+                'message' => trans('messages.sending_server.test_success')
             ]);
+            return;
         }
 
         return view('sending_servers.test', [

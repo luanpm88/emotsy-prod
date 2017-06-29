@@ -236,7 +236,7 @@
 		<a
 			href="{{ action('Admin\SendingServerController@test', $server->uid) }}"
 			type="button"
-			class="btn bg-grey-800 mr-5 btn-icon modal_link"
+			class="btn bg-teal mr-5 btn-icon modal_link"
 			data-in-form="true"
 			data-method="GET"
 		>

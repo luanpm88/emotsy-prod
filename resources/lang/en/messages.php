@@ -1922,6 +1922,8 @@ return [
     'sending_server.test_failed' => 'Failed',
     'sending_server.test' => 'Test',
     'to_email' => 'To email',
-    'test_sending_server' => 'Test sending server',
+    'test_sending_server' => 'Sending a test message',
+    'test_sending_server.intro' => 'Fill in the form below and hit the Send button to test the your server.',
     'email_review' => 'Email review',
+    'sending_server.test_success' => 'A test message was successfully sent',
 ];

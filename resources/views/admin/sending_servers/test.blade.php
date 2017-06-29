@@ -13,7 +13,7 @@
         @endforeach
 
         <div class="modal-body">
-            <h4></h4>
+            <p>{{ trans('messages.test_sending_server.intro') }}</p>
             @include('helpers.form_control', [
                 'type' => 'text',
                 'class' => 'email',
@@ -51,17 +51,17 @@
                 'rules' => ['content' => 'required']
             ])
         </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
+        <div class="modal-footer text-left">
             <a
                 href="{{ action('Admin\SendingServerController@test', $server->uid) }}"
                 type="button"
-                class="btn bg-grey-800 mr-5 btn-icon ajax_link"
+                class="btn bg-teal mr-5 ajax_link"
                 data-in-form="true"
                 data-method="POST"
             >
-                <i class="icon-rotate-cw3"></i> {{ trans('messages.sending_server.test') }}
+                {{ trans('messages.send') }}
             </a>
+            <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.close') }}</button>
         </div>
     </form>
 </div>

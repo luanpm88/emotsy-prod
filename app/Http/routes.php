@@ -378,6 +378,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
 
     // Sending servers
     Route::post('sending_servers/{uid}/test', 'SendingServerController@test');
+    Route::get('sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('sending_servers/select', 'SendingServerController@select');
     Route::get('sending_servers/listing/{page?}', 'SendingServerController@listing');
     Route::get('sending_servers/sort', 'SendingServerController@sort');
