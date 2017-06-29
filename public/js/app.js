@@ -669,6 +669,10 @@ $(function() {
         }
 
         // Add loading effect
+        var mask_text = a_.attr('mask-title');
+        if(typeof(mask_text) !== 'undefined') {
+            $('body').append('<div class="mask-loading-effect"><div class="content">'+mask_text+'</div><div>');
+        }
         a_.addClass('loading');
         a_.append(' <div class="spinner a-loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
 
@@ -714,6 +718,8 @@ $(function() {
             // Remove loading effect
             a_.removeClass('loading');
             a_.find('.a-loading').remove();
+            $('.mask-loading-effect').remove();
+
             if (type != 'error') {
                 $(".modal").modal('hide');
             }
