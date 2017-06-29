@@ -978,7 +978,7 @@ class Customer extends Model
                 $query->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
                     ->orWhereNull('subscriptions.start_at');
             })->where(function($query) {
-                $query->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->endOfDay())
+                $query->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay())
                     ->orWhereNull('subscriptions.end_at');
             });
     }
