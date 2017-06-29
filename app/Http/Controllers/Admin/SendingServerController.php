@@ -357,20 +357,22 @@ class SendingServerController extends Controller
 
         if ($request->isMethod('post')) {
             // @todo testing method and return result here. Ex: echo json_encode($server->test())
-            try {
+            //try {
+            $server = new \Acelle\Model\SendingServer();
+            $server->uid = 0;
                 $server->sendTestEmail([
                     'from_email' => $request->from_email,
                     'to_email' => $request->to_email,
                     'subject' => $request->subject,
                     'plain' => $request->content
                 ]);
-            } catch (\Exception $ex) {
-                echo json_encode([
-                    'status' => 'error', // or success
-                    'message' => $ex->getMessage()
-                ]);
-                return;
-            }
+            //} catch (\Exception $ex) {
+            //    echo json_encode([
+            //        'status' => 'error', // or success
+            //        'message' => $ex->getMessage()
+            //    ]);
+            //    return;
+            //}
 
             echo json_encode([
                 'status' => 'success', // or success

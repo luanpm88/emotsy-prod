@@ -1922,4 +1922,5 @@ return [
     'sending_server.test_failed' => 'Failed',
     'sending_server.test' => 'Test',
     'to_email' => 'To email',
+    'test_sending_server' => 'Test sending server',
 ];
