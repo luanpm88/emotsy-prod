@@ -29,6 +29,44 @@ use Acelle\Library\Log as MailLog;
 class DeliveryHandler extends Model
 {
     /**
+     * Test the handler connection
+     *
+     * @return mixed
+     */
+    public function test()
+    {
+        // Connect to IMAP server
+        $imapPath = "{{$this->host}:{$this->port}/{$this->protocol}/{$this->encryption}}INBOX";
+
+        // try to connect
+        $inbox = @imap_open($imapPath, $this->username, $this->password);
+
+        // try again with ssl/novalidate-cert
+        if ($inbox == false) {
+            MailLog::info($this->encryption);
+            if (strcasecmp ( $this->encryption , 'ssl') == 0) {
+                MailLog::warning('Try using ssl/novalidate-cert instead');
+                $imapPath = "{{$this->host}:{$this->port}/{$this->protocol}/ssl/novalidate-cert}INBOX";
+                $inbox = @imap_open($imapPath, $this->username, $this->password);
+            }
+        }
+
+        // if failed
+        if ($inbox == false) {
+            throw new \Exception("Cannot connect to the server: $imapPath");
+        }
+
+        // search and get unseen emails, function will return email ids
+        $emails = imap_search($inbox, 'UNSEEN');
+
+        // colse the connection
+        imap_expunge($inbox);
+        imap_close($inbox);
+
+        return true;
+    }
+
+    /**
      * Start the handling processes.
      *
      * @return mixed
