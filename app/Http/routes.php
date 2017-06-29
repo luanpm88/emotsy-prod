@@ -453,6 +453,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
 
     // Sending servers
     Route::post('admin/sending_servers/{uid}/test', 'SendingServerController@test');
+    Route::get('admin/sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('admin/sending_servers/select', 'SendingServerController@select');
     Route::get('admin/sending_servers/listing/{page?}', 'SendingServerController@listing');
     Route::get('admin/sending_servers/sort', 'SendingServerController@sort');

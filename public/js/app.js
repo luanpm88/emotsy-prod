@@ -638,7 +638,6 @@ $(function() {
     // add segment condition
     $(document).on("click", "a.ajax_link", function(e) {
         e.preventDefault();
-        $(".modal").modal('hide');
 
         var url = $(this).attr("href");
         var a_ = $(this);
@@ -715,6 +714,9 @@ $(function() {
             // Remove loading effect
             a_.removeClass('loading');
             a_.find('.a-loading').remove();
+            if (type != 'error') {
+                $(".modal").modal('hide');
+            }
         });
     });
 
@@ -1627,5 +1629,63 @@ $(function() {
     // progress bar ajax reload
     $('.progress-box').each(function() {
         startProgress($(this));
+    });
+
+    // add segment condition
+    $(document).on("click", "a.modal_link", function(e) {
+        e.preventDefault();
+        $(".modal").modal('hide');
+
+        var url = $(this).attr("href");
+        var a_ = $(this);
+        var method = $(this).attr('data-method');
+
+        // Skip if previous ajax calling
+        if (a_.hasClass('loading')) {
+            return;
+        }
+
+        // Default data
+        var data = {
+            "_token": CSRF_TOKEN
+        };
+
+        var in_form = $(this).attr('data-in-form');
+        if (typeof(in_form) !== 'undefined' && in_form == 'true' && $(this).parents('form').length > 0) {
+            data = $(this).parents('form').serialize();
+            data += "&_method=" + method;
+            if (!$(this).parents('form').valid()) {
+                return;
+            }
+        }
+
+        if(typeof(method) === 'undefined' || method.trim() === '') {
+            method = "GET";
+        }
+
+        // Add loading effect
+        a_.addClass('loading');
+        a_.append(' <div class="spinner a-loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
+
+        $.ajax({
+            method: method,
+            url: url,
+            data: data
+        })
+        .done(function( data ) {
+            // Add Form Modal
+            var modal = $('#ajax-modal');
+            if (!modal.length) {
+                $('body').append('<div id="ajax-modal" class="modal fade ajax-modal"><div class="modal-dialog modal-md"></div></div>');
+                modal = $('#ajax-modal');
+            }
+
+            modal.find('.modal-dialog').html(data);
+            modal.modal('show');
+
+            // Remove loading effect
+            a_.removeClass('loading');
+            a_.find('.a-loading').remove();
+        });
     });
 });

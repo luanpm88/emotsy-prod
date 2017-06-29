@@ -348,10 +348,23 @@ class SendingServerController extends Controller
             return $this->notAuthorized();
         }
 
-        // @todo testing method and return result here. Ex: echo json_encode($server->test())
-        echo json_encode([
-            'status' => 'error', // or success
-            'message' => trans('messages.bounce_handler.test_failed')
+        if ($request->isMethod('post')) {
+            // @todo testing method and return result here. Ex: echo json_encode($server->test())
+
+                $server->sendTestEmail([
+                    'from_email' => $request->from_email,
+                    'to_email' => $request->to_email,
+                    'subject' => $request->subject,
+                    'plain' => $request->content
+                ]);
+            echo json_encode([
+                'status' => 'error', // or success
+                'message' => trans('messages.bounce_handler.test_failed')
+            ]);
+        }
+
+        return view('sending_servers.test', [
+            'server' => $server,
         ]);
     }
 }

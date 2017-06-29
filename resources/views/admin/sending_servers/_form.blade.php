@@ -236,9 +236,9 @@
 		<a
 			href="{{ action('Admin\SendingServerController@test', $server->uid) }}"
 			type="button"
-			class="btn bg-grey-800 mr-5 btn-icon ajax_link"
+			class="btn bg-grey-800 mr-5 btn-icon modal_link"
 			data-in-form="true"
-			data-method="POST"
+			data-method="GET"
 		>
 			<i class="icon-rotate-cw3"></i> {{ trans('messages.sending_server.test') }}
 		</a>
