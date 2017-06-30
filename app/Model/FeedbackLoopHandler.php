@@ -71,7 +71,7 @@ class FeedbackLoopHandler extends DeliveryHandler
             Log::warning($ex->getMessage());
         }
     }
-    
+
     /**
      * Extract FeedbackType from feedback email.
      *
@@ -125,7 +125,7 @@ class FeedbackLoopHandler extends DeliveryHandler
                 $query = $query->where('feedback_loop_handlers.type', '=', $filters['type']);
             }
         }
-        
+
         if(!empty($request->admin_id)) {
             $query = $query->where('feedback_loop_handlers.admin_id', '=', $request->admin_id);
         }
@@ -194,7 +194,7 @@ class FeedbackLoopHandler extends DeliveryHandler
      * @var array
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'password', 'protocol',
+        'name', 'host', 'port', 'username', 'password', 'protocol', 'email', 'encryption'
     ];
 
     /**
@@ -211,6 +211,7 @@ class FeedbackLoopHandler extends DeliveryHandler
             'username' => 'required',
             'password' => 'required',
             'protocol' => 'required',
+            'email' => 'required|email',
         ];
     }
 
@@ -229,7 +230,7 @@ class FeedbackLoopHandler extends DeliveryHandler
 
         return $options;
     }
-    
+
     /**
      * Protocol select options.
      *
@@ -239,6 +240,21 @@ class FeedbackLoopHandler extends DeliveryHandler
     {
         return [
             ['value' => 'imap', 'text' => 'imap']
+        ];
+    }
+
+    /**
+     * Encryption select options.
+     *
+     * @return array
+     */
+    public static function encryptionSelectOptions()
+    {
+        return [
+            ['value' => 'tls', 'text' => 'tls'],
+            ['value' => 'starttls', 'text' => 'starttls'],
+            ['value' => 'notls', 'text' => 'notls'],
+            ['value' => 'ssl', 'text' => 'ssl'],
         ];
     }
 }

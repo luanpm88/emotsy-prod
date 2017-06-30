@@ -29,6 +29,8 @@
             'rules' => Acelle\Model\FeedbackLoopHandler::rules()
         ])
     </div>
+</div>
+<div class="row">
     <div class="col-sm-6 col-md-4">
         @include('helpers.form_control', [
             'type' => 'text',
@@ -56,6 +58,29 @@
             'name' => 'protocol',
             'value' => $server->protocol,
             'options' => Acelle\Model\FeedbackLoopHandler::protocolSelectOptions(),
+            'help_class' => 'feedback_loop_handler',
+            'rules' => Acelle\Model\FeedbackLoopHandler::rules()
+        ])
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-6 col-md-4">
+        @include('helpers.form_control', [
+            'type' => 'text',
+            'class' => 'email',
+            'name' => 'email',
+            'value' => $server->email,
+            'help_class' => 'feedback_loop_handler',
+            'rules' => Acelle\Model\FeedbackLoopHandler::rules()
+        ])
+    </div>
+    <div class="col-sm-6 col-md-4">
+        @include('helpers.form_control', [
+            'type' => 'select',
+            'class' => '',
+            'name' => 'encryption',
+            'value' => $server->encryption,
+            'options' => Acelle\Model\FeedbackLoopHandler::encryptionSelectOptions(),
             'help_class' => 'feedback_loop_handler',
             'rules' => Acelle\Model\FeedbackLoopHandler::rules()
         ])
