@@ -1,3 +1,12 @@
+3.0.9 / 2017-07-xx
+==================
+
+ * Fixed: bounced emails not added to blacklist
+ * Added: speed up list loading
+ * Added: support testing bounce/feedback handlers
+ * Added: support sending a test email for sending server
+ * Added: display the generated DKIM DNS record for sending domain
+
 3.0.8 / 2017-06-29
 ==================
 
