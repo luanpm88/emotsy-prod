@@ -28,7 +28,9 @@
             <p>{!! trans('messages.sending_domain.wording') !!}</p>
         </div>
     </div>
-
-    @include('admin.sending_domains._form')
-
+        
+    <form enctype="multipart/form-data" action="{{ action('Admin\SendingDomainController@update', $server->uid) }}" method="POST" class="form-validate-jqueryz">
+        <input type="hidden" name="_method" value="PATCH">
+        @include('admin.sending_domains._form')
+    </form>
 @endsection

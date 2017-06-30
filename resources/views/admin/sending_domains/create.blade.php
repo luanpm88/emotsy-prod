@@ -28,6 +28,8 @@
         </div>
     </div>
 
-    @include('admin.sending_domains._form')
+    <form action="{{ action('Admin\SendingDomainController@store') }}" method="POST" class="form-validate-jqueryz">
+        @include('admin.sending_domains._form')
+    </form>
 
 @endsection

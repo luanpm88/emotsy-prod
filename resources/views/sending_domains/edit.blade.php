@@ -21,11 +21,16 @@
 @endsection
 
 @section('content')
+
     <div class="row">
         <div class="col-sm-12 col-md-10 col-lg-10">
             <p>{!! trans('messages.sending_domain.wording') !!}</p>
         </div>
     </div>
 
-    @include('sending_domains._form')
+    <form enctype="multipart/form-data" action="{{ action('SendingDomainController@update', $server->uid) }}" method="POST" class="form-validate-jqueryz">
+        <input type="hidden" name="_method" value="PATCH">
+        @include('sending_domains._form')
+    </form>
+
 @endsection
