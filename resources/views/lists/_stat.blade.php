@@ -25,7 +25,7 @@
                     <div class="col-md-3">
                         <div class="panel panel-white bg-teal-400">
                             <div class="panel-body text-center">
-                                <h2 class="text-semibold mb-10 mt-0">{{ $list->subscribeRate() }}%</h2>
+                                <h2 class="text-semibold mb-10 mt-0">{{ number_to_percentage($list->readCache('SubscribeRate')) }}</h2>
                                 <div class="text-muted">{{ trans('messages.avg_subscribe_rate') }}</div>
                             </div>
                         </div>
@@ -33,7 +33,7 @@
                     <div class="col-md-3">
                         <div class="panel panel-white bg-teal-400">
                             <div class="panel-body text-center">
-                                <h2 class="text-semibold mb-10 mt-0">{{ $list->unsubscribeRate() }}%</h2>
+                                <h2 class="text-semibold mb-10 mt-0">{{ number_to_percentage($list->readCache('UnsubscribeRate')) }}</h2>
                                 <div class="text-muted">{{ trans('messages.avg_unsubscribe_rate') }}</div>
                             </div>
                         </div>
@@ -41,7 +41,7 @@
                     <div class="col-md-3">
                         <div class="panel panel-white bg-teal-400">
                             <div class="panel-body text-center">
-                                <h2 class="text-semibold mb-10 mt-0">{{ $list->unsubscribeCount() }}</h2>
+                                <h2 class="text-semibold mb-10 mt-0">{{ number_with_delimiter($list->readCache('UnsubscribeCount')) }}</h2>
                                 <div class="text-muted">{{ trans('messages.total_unsubscribers') }}</div>
                             </div>
                         </div>
@@ -49,7 +49,7 @@
                     <div class="col-md-3">
                         <div class="panel panel-white bg-teal-400">
                             <div class="panel-body text-center">
-                                <h2 class="text-semibold mb-10 mt-0">{{ $list->unconfirmedCount() }}</h2>
+                                <h2 class="text-semibold mb-10 mt-0">{{ number_with_delimiter($list->readCache('UnconfirmedCount')) }}</h2>
                                 <div class="text-muted">{{ trans('messages.total_unconfirmed') }}</div>
                             </div>
                         </div>

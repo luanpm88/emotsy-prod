@@ -411,10 +411,10 @@ class MailList extends Model
     public function unsubscribeRate()
     {
         if ($this->subscribersCount() == 0) {
-            return '#';
+            return 0;
         }
 
-        return round(($this->unsubscribeCount() / $this->subscribersCount()) * 100, 2);
+        return round($this->unsubscribeCount() / $this->subscribersCount(), 2);
     }
 
     /**
@@ -435,10 +435,10 @@ class MailList extends Model
     public function subscribeRate()
     {
         if ($this->subscribersCount() == 0) {
-            return '#';
+            return 0;
         }
 
-        return round(($this->subscribeCount() / $this->subscribersCount()) * 100, 2);
+        return round($this->subscribeCount() / $this->subscribersCount(), 2);
     }
 
     /**
@@ -1253,6 +1253,27 @@ class MailList extends Model
             },
             'UniqOpenRate' => function(&$list) {
                 return $list->openUniqRate();
+            },
+            'SubscribeRate' => function(&$list) {
+                return $list->subscribeRate();
+            },
+            'SubscribeCount' => function(&$list) {
+                return $list->subscribeCount();
+            },
+            'UnsubscribeRate' => function(&$list) {
+                return $list->unsubscribeRate();
+            },
+            'UnsubscribeCount' => function(&$list) {
+                return $list->unsubscribeCount();
+            },
+            'UnconfirmedCount' => function(&$list) {
+                return $list->unconfirmedCount();
+            },
+            'BlacklistedCount' => function(&$list) {
+                return $list->blacklistedCount();
+            },
+            'SpamReportedCount' => function(&$list) {
+                return $list->spamReportedCount();
             },
         ];
 

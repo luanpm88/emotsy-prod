@@ -19,9 +19,9 @@
 						</div>
 					</li>
 				</ul>
-					
+
 				<h1>
 					<span class="text-semibold">{{ $list->name }}</span>
 				</h1>
-				<span class="badge badge-info bg-info-800 badge-big">{{ $list->subscribers()->count() }}</span> {{ trans('messages.subscribers') }}
+				<span class="badge badge-info bg-info-800 badge-big">{{ number_with_delimiter($list->readCache('SubscriberCount')) }}</span> {{ trans('messages.subscribers') }}
 			</div>

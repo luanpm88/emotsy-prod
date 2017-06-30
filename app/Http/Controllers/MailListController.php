@@ -484,29 +484,29 @@ class MailListController extends Controller
         $datas = [];
         if (isset($list->id)) {
             // create data
-            if ($list->subscribeCount()) {
+            if ($list->readCache('SubscribeCount')) {
                 $result['bar_names'][] = trans('messages.subscribed');
-                $datas[] = ['value' => $list->subscribeCount(), 'name' => trans('messages.subscribed')];
+                $datas[] = ['value' => $list->readCache('SubscribeCount'), 'name' => trans('messages.subscribed')];
             }
             // create data
-            if ($list->unsubscribeCount()) {
+            if ($list->readCache('UnsubscribeCount')) {
                 $result['bar_names'][] = trans('messages.unsubscribed');
-                $datas[] = ['value' => $list->unsubscribeCount(), 'name' => trans('messages.unsubscribed')];
+                $datas[] = ['value' => $list->readCache('UnsubscribeCount'), 'name' => trans('messages.unsubscribed')];
             }
             // create data
-            if ($list->unconfirmedCount()) {
+            if ($list->readCache('UnconfirmedCount')) {
                 $result['bar_names'][] = trans('messages.unconfirmed');
-                $datas[] = ['value' => $list->unconfirmedCount(), 'name' => trans('messages.unconfirmed')];
+                $datas[] = ['value' => $list->readCache('UnconfirmedCount'), 'name' => trans('messages.unconfirmed')];
             }
             // create data
-            if ($list->blacklistedCount()) {
+            if ($list->readCache('BlacklistedCount')) {
                 $result['bar_names'][] = trans('messages.blacklisted');
-                $datas[] = ['value' => $list->blacklistedCount(), 'name' => trans('messages.blacklisted')];
+                $datas[] = ['value' => $list->readCache('BlacklistedCount'), 'name' => trans('messages.blacklisted')];
             }
             // create data
-            if ($list->spamReportedCount()) {
+            if ($list->readCache('SpamReportedCount')) {
                 $result['bar_names'][] = trans('messages.spam_reported');
-                $datas[] = ['value' => $list->spamReportedCount(), 'name' => trans('messages.spam_reported')];
+                $datas[] = ['value' => $list->readCache('SpamReportedCount'), 'name' => trans('messages.spam_reported')];
             }
         } else {
             // create data
