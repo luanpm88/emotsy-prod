@@ -214,7 +214,7 @@ class QuotaTrackerMultiProcessTest extends TestCase
         // use extra slot -> failed
         $this->assertTrue($user->overQuota());
         $this->assertTrue($user->getQuotaTracker()->getUsage() == 3);
-        $this->assertFalse($user->countUsage());
+        $this->assertTrue($user->countUsage());
         $this->assertTrue($user->getSendingQuotaUsage() == 4);
         //$this->assertTrue((float) $user->getSendingQuotaUsagePercentage() == (float) 100 );
 
@@ -291,7 +291,7 @@ class QuotaTrackerMultiProcessTest extends TestCase
         // use extra slot -> failed
         $this->assertTrue($server->overQuota());
         $this->assertTrue($server->getQuotaTracker()->getUsage() == 3);
-        $this->assertFalse($server->countUsage());
+        $this->assertTrue($server->countUsage());
         $this->assertTrue($server->getSendingQuotaUsage() == 4);
         //$this->assertTrue((float) $server->getSendingQuotaUsagePercentage() == (float) 100 );
 

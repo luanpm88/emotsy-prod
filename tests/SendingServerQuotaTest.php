@@ -47,7 +47,7 @@ class SendingServerQuotaTest extends TestCase
 
         // use extra slot -> failed
         $this->assertTrue($server->overQuota());
-        $this->assertFalse($server->countUsage());
+        $this->assertTrue($server->countUsage());
 
         // store current status, and still failed
         $server->saveQuotaUsageInfo();

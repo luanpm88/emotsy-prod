@@ -46,7 +46,7 @@ class QuotaTrackerFileTest extends TestCase
         });
 
         $this->assertTrue($result);
-        $this->assertFalse($tracker->add(Carbon::now()));
+        $this->assertFalse($tracker->check(Carbon::now()));
 
         /**
          * Suppose the quota setting is: {5 emails, every 4 seconds}
@@ -57,7 +57,8 @@ class QuotaTrackerFileTest extends TestCase
             $tracker->reset([]);
         });
         $result = $this->nTimes(5, $tracker, function($tracker) {
-            return $tracker->add(Carbon::now());
+            $tracker->add(Carbon::now());
+            return $tracker->check();
         });
         $this->assertFalse($result);
 
@@ -70,7 +71,8 @@ class QuotaTrackerFileTest extends TestCase
             $tracker->reset([]);
         });
         $result = $this->nTimes(1, $tracker, function($tracker) {
-            return $tracker->add(Carbon::now());
+            $tracker->add(Carbon::now());
+            $tracker->check();
         });
         $this->assertFalse($result);
 
@@ -96,7 +98,8 @@ class QuotaTrackerFileTest extends TestCase
             $tracker->reset([]);
         });
         $result = $this->nTimes(2, $tracker, function($tracker) {
-            return $tracker->add(Carbon::now());
+            $tracker->add(Carbon::now());
+            return $tracker->check();
         });
         $this->assertFalse($result);
     }

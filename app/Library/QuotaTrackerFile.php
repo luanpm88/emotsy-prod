@@ -59,6 +59,10 @@ class QuotaTrackerFile
      */
     private function createLogFile()
     {
+        if (file_exists($this->file)) {
+            return true;
+        }
+
         // lock at application level
         $fp = fopen(storage_path('lock'), "r+");
         $start = time();
@@ -105,17 +109,11 @@ class QuotaTrackerFile
             $timePoint = Carbon::now();
         }
 
-        $this->getExclusiveLock(function() use ($timePoint, &$result) {
-            if ($this->check($timePoint)) {
-                $result = true;
-            } else {
-                $result = false;
-            }
-
-            $this->series[] = $timePoint->timestamp;
+        $this->getExclusiveLockWithAppendWriter(function(&$writer) use ($timePoint) {
+            fwrite($writer, "," . $timePoint->timestamp);
         });
 
-        return $result;
+        return true;
     }
 
     /**
@@ -295,18 +293,43 @@ class QuotaTrackerFile
     }
 
     /**
-     * Get exclusive lock, preparing to read/write quota data
+     * Get exclusive lock, yielding the file writer (append mod) for the calling method
      *
      * @return void
      */
+    public function getExclusiveLockWithAppendWriter($callback)
+    {
+        $this->reader = fopen($this->file, "a");
+        $start = time();
+        while (true) {
+            // if timed out
+            $this->timeout($start);
+
+            if (flock($this->reader, LOCK_EX | LOCK_NB)) {  // acquire an exclusive lock
+                $this->hasLock = true;
+
+                // execute the callback
+                $callback($this->reader);
+
+                fflush($this->reader);
+                $this->hasLock = false;
+                flock($this->reader, LOCK_UN);    // release the lock
+                fclose($this->reader);
+                break;
+            }
+
+            // Otherwise, loop and wait to for the lock
+        }
+    }
+
+    /**
+     * Get exclusive lock, preparing to read/write quota data
+     *
+     * @return void
+     * @deprecated due to performance issue (write the entire series to the file, mod "w")
+     */
     public function getExclusiveLock($callback)
     {
-        if ($this->hasLock) {
-            // execute the callback without getting for a lock again
-            $callback($this);
-            return;
-        }
-
         $this->reader = fopen($this->file, "r+");
         $start = time();
         while (true) {
