@@ -404,7 +404,10 @@ class QuotaTrackerFile
      */
     private function load()
     {
-        return array_map('intval', array_values(array_filter(explode(',', file_get_contents($this->file)))));
+        // the method below is deprecated as it is quite slow
+        // return array_map('intval', array_values(array_filter(explode(',', file_get_contents($this->file)))));
+        // a faster way is:
+        return json_decode('[' . preg_replace('/^,+/', '', file_get_contents($this->file)) . ']');
     }
 
     /**
