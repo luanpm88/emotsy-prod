@@ -2264,7 +2264,8 @@ a.loading {
     opacity: 0.8;
 }
 .pml-table-container.loading {
-    opacity: 0.5
+    opacity: 0.5;
+    min-height: 100px;
 }
 .pml-table-container.loading:before {
     content: "loading";
@@ -2276,6 +2277,7 @@ a.loading {
     top: 0;
     z-index: 100;
     text-indent: -9000px;
+    height: 100px;
 }
 .pml-table-container {
     position: relative;
