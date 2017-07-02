@@ -2269,7 +2269,8 @@ a.loading {
 .pml-table-container.loading:before {
     content: "loading";
     width: 100%;
-    background: url(http://umd.orgsync.com/images/spinner.gif?1485915548) no-repeat center center rgba(0,0,0,0.02);
+    /*background: url(http://umd.orgsync.com/images/spinner.gif?1485915548) no-repeat center center rgba(0,0,0,0.02);*/
+    background: rgba(0,0,0,0.02);
     position: absolute;
     bottom: 0;
     top: 0;
@@ -2329,6 +2330,10 @@ a.loading {
   animation-delay: -0.16s;
 }
 
+.spinner2.black > div {
+  background-color: #555;
+}
+
 @-webkit-keyframes sk-bouncedelay {
   0%, 80%, 100% { -webkit-transform: scale(0) }
   40% { -webkit-transform: scale(1.0) }
@@ -2342,4 +2347,11 @@ a.loading {
     -webkit-transform: scale(1.0);
     transform: scale(1.0);
   }
+}
+.list-loading-spinner {
+    position: absolute;
+    width: 100%;
+    padding-top: 20px;
+    height: 100px;
+    z-index: 9999;
 }

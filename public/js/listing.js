@@ -74,6 +74,11 @@ function tableFilter(form, custom_url) {
     });
 
     container.addClass('loading');
+    container.prepend('<div class="list-loading-spinner"><div class="spinner2 black">'+
+      '<div class="bounce1"></div>'+
+      '<div class="bounce2"></div>'+
+      '<div class="bounce3"></div>'+
+    '</div></div>');
 
     // ajax update custom sort
     // ajax update custom sort
