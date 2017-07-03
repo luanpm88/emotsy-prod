@@ -357,3 +357,23 @@ function distinctCount($builder, $column) {
 
     return $count;
 }
+
+/**
+ * Measure execution time of a script
+ *
+ * @return float execution time
+ */
+function measure($callback, $tests = 5)
+{
+    $results = [];
+
+    for ($i = 0; $i <= $tests; $i += 1) {
+        $start = microtime(true);
+        $callback();
+        $time = microtime(true) - $start;
+        $results[] = $time;
+    }
+    $agv = array_sum($results) / count($results);
+    echo "$agv\n";
+    return $agv;
+}
