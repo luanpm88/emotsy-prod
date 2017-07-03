@@ -1935,4 +1935,5 @@ return [
     'bounce_handler.testing_connection' => 'Testing connection...',
     'feedback_loop_handler.testing_connection' => 'Testing connection...',
     'sending_server.testing_connection' => 'Sending test message...',
+    'email_exists' => 'The email has already been taken.',
 ];

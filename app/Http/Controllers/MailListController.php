@@ -20,6 +20,7 @@ class MailListController extends Controller
             'except' => [
                 'embeddedFormSubscribe',
                 'embeddedFormCaptcha',
+                'checkEmail',
             ]
         ]);
     }
@@ -821,5 +822,21 @@ class MailListController extends Controller
         return view('lists.email_verification_progress', [
             'list' => $list,
         ]);
+    }
+
+    /**
+     * Check email
+     *
+     */
+    public function checkEmail(Request $request)
+    {
+        header("Access-Control-Allow-Origin: *");
+
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+        $subscribers = $list->subscribers()->where('email','=',strtolower(trim($request->EMAIL)));
+
+        $result = ($subscribers->count() == 0) ? true : trans('messages.email_exists');
+
+        return response()->json($result);
     }
 }

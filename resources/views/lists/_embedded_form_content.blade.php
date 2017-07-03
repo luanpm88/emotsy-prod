@@ -1,11 +1,11 @@
         @if ($stylesheet == 'yes')
 					<link href="{{ URL::asset('css/embedded.css') }}" rel="stylesheet" type="text/css">
 				@endif
-					
+
 				@if (!empty($custom_css))
 					<style>{{ $custom_css }}</style>
 				@endif
-				
+
 				<div class="subscribe-embedded-form">
 					@if (!empty($form_title))
 						<h2>{{ $form_title }}</h2>
@@ -14,7 +14,7 @@
 							@if (!isset($preview))
 								<form action="{{ action('MailListController@embeddedFormCaptcha', $list->uid) }}" method="POST" class="form-validate-jqueryz">
 							@endif
-          				
+
 								@foreach ($list->getFields as $field)
 									@if ($field->visible || !isset($is_page))
 										@if(($required_fields == 'yes' && $field->required) || $required_fields == 'no')
@@ -40,18 +40,18 @@
 										@endif
 									@endif
 								@endforeach
-					
-            
+
+
                 <div class="form-button">
                   <button class="btn btn-primary">{{ trans('messages.subscribe') }}</button>
                 </div>
-                  
+
 							@if (!isset($preview))
 								<form>
 							@endif
-					
+
         </div>
-				
+
 				@if (!isset($preview))
 					@if ($javascript == 'yes')
 						<script_tmp type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery.min.js') }}"></script_tmp>
@@ -59,9 +59,16 @@
 						<script_tmp>
 							$.noConflict();
 							jQuery( document ).ready(function( $ ) {
-								$(".subscribe-embedded-form form").validate();
+								$(".subscribe-embedded-form form").validate({
+									rules: {
+									  EMAIL: {
+										required: true,
+										email: true,
+										remote: "{{ action('MailListController@checkEmail', $list->uid) }}"
+									  }
+									}
+								});
 							});
 						</script_tmp>
 					@endif
 				@endif
-				
