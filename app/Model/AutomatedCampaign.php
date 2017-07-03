@@ -99,8 +99,6 @@ class AutomatedCampaign extends AbsCampaign
             MailLog::error($e->getMessage());
             $this->error($e->getMessage());
         } finally {
-            // record quota usage
-            $this->customer->saveQuotaUsageInfo();
             // reset server pools: just in case DeliveryServerAmazonSesWebApi
             // --> setup SNS requires using from_email of the corresponding campaign
             // but SNS is only made once when the server is initiated

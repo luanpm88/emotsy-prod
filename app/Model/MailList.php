@@ -335,9 +335,6 @@ class MailList extends Model
      */
     public static function resetServerPools()
     {
-        foreach(self::$serverPools as $server) {
-            $server->saveQuotaUsageInfo();
-        }
         self::$serverPools = array();
     }
 

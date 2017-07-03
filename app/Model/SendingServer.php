@@ -581,68 +581,12 @@ class SendingServer extends Model
     }
 
     /**
-     * Initialize the quota tracker
-     *
-     * @return array
-     */
-    public function renewQuotaTracker() {
-        $this->getQuotaTracker()->getExclusiveLock(function() {
-            $start = $this->getQuotaStartingTime();
-
-            // recent tracking logs
-            // @todo: potential issue here, application fails in case $start is NULL
-            $recent = $this->trackingLogs()->where('created_at', '>=', $start);
-
-            // existing quota usage
-            $stored = null;
-
-            // load the tracker from DB (if exists)
-            // then merge with the current tracking log data
-            if ($this->quota) {
-                try {
-                    $stored = unserialize($this->quota);
-                } catch (\Exception $x) {
-                    // @TODO logging here
-                    MailLog::warning('Cannot retrieve sending server quota');
-                }
-            }
-
-            // load the tracker from DB
-            if (!is_null($stored) && !empty($stored)) {
-                // retrieve the stored quota usage and merge it with actual (newer) usage
-                $recent = $recent->where('created_at', '>', \Carbon\Carbon::createFromTimestamp(end($stored)));
-                $series = $recent->get()->map(function($trackingLog) {
-                    return $trackingLog->created_at->timestamp;
-                })->toArray();
-
-                $series = array_merge($stored, $series);
-            } else {
-                $series = $recent->get()->map(function($trackingLog) {
-                    return $trackingLog->created_at->timestamp;
-                })->toArray();
-            }
-
-            $this->getQuotaTracker()->reset($series);
-        });
-    }
-
-    /**
      * Get quota starting time
      *
      * @return array
      */
     public function getQuotaStartingTime() {
         return "{$this->getQuotaIntervalString()} ago";
-    }
-
-    /**
-     * Store the current quota usage info to DB
-     *
-     * @return array
-     */
-    public function saveQuotaUsageInfo() {
-        $this->quota = serialize($this->getQuotaTracker()->getSeries());
-        $this->save();
     }
 
     /**

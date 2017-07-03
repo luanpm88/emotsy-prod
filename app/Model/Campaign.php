@@ -215,9 +215,6 @@ class Campaign extends AbsCampaign
             //         however, the method is still needed to save sending servers''
             MailList::resetServerPools();
 
-            // store customer quota usage
-            $this->customer->saveQuotaUsageInfo();
-
             // Trigger the CampaignUpdate event to update the campaign cache information
             // The second parameter of the constructor function is false, meanining immediate update
             event(new \Acelle\Events\CampaignUpdated($this, false));
