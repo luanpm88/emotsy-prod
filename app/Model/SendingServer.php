@@ -546,7 +546,8 @@ class SendingServer extends Model
      * @return void
      */
     public function initQuotaTracker() {
-        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), null, [$this->getQuotaIntervalString() => $this->getSendingQuota()]);
+        $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), ['start' => $this->created_at->timestamp, 'max' => -1], [$this->getQuotaIntervalString() => $this->getSendingQuota()]);
+        $this->quotaTracker->cleanupSeries();
         // @note: in case of multi-process, the following command must be issued manually
         //     $this->renewQuotaTracker();
     }

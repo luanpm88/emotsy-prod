@@ -363,7 +363,7 @@ class EmailVerificationServer extends Model
             "{$base}" =>$options['limit_value']
         ];
 
-        $this->quotaTracker = new QuotaTrackerFile($this->getQuotaLockFile(), null, $limit);
+        $this->quotaTracker = new QuotaTrackerFile($this->getQuotaLockFile(), ['start' => $this->created_at->timestamp, 'max' => -1], $limit);
     }
 
     /**
