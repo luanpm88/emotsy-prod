@@ -31,6 +31,7 @@ class SendingServerQuotaTest extends TestCase
         //            ->with('app.redis_enabled')
         //            ->andReturn(false);
 
+        $server->created_at = new Carbon('1 month ago');
         $server->method('save')->willReturn(true);
         $server->method('getQuotaIntervalString')->willReturn('1 minute');
         $server->method('getSendingQuota')->willReturn('3');
@@ -60,10 +61,12 @@ class SendingServerQuotaTest extends TestCase
         $t2 = Carbon::now();
         $server->countUsage($t2);
 
+        $server->getQuotaTracker()->cleanupSeries(null, '1 minute');
         // now $t1 is the first point of the time series
         $this->assertTrue($server->getQuotaTracker()->getSeries()[0] == $t1->timestamp);
 
         sleep(50);
+        $server->getQuotaTracker()->cleanupSeries(null, '1 minute');
         // now $t2 becomes the first point of the time series
         $server->overQuota(); // trigger recalculation of time series
         $this->assertTrue($server->getQuotaTracker()->getSeries()[0] == $t2->timestamp);
