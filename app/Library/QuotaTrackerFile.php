@@ -27,11 +27,11 @@ use Carbon\Carbon;
 class QuotaTrackerFile
 {
     protected $file;
-    protected $reader;
     protected $hasLock = false;
     protected $limits;
     protected $quota;
     protected $series;
+    protected $archived;
 
     const TIMEOUT = 60;
     const UNLIMITED = -1;
@@ -109,8 +109,10 @@ class QuotaTrackerFile
             $timePoint = Carbon::now();
         }
 
-        $this->getExclusiveLockWithAppendWriter(function(&$writer) use ($timePoint) {
+        $mode = 'a';
+        $this->getExclusiveLock($mode, function(&$writer) use ($timePoint) {
             fwrite($writer, "," . $timePoint->timestamp);
+            fflush($writer);
         });
 
         return true;
@@ -168,7 +170,7 @@ class QuotaTrackerFile
      */
     private function shiftBy(Carbon $timePoint, $interval)
     {
-
+        // @interval MUST be less than 'history_max_length'
         if (empty($this->series)) {
             return [];
         }
@@ -211,9 +213,11 @@ class QuotaTrackerFile
      * @param Array $series
      * @return void
      */
-    public function reset($series = [])
+    public function reset()
     {
-        $this->series = $series;
+        $this->getExclusiveLock('r+', function($writer) {
+            ftruncate($writer, 0);
+        });
     }
 
     /**
@@ -244,7 +248,16 @@ class QuotaTrackerFile
      */
     public function getUsage($timePoint = null, $interval = null)
     {
-        return sizeof($this->getSeries($timePoint, $interval));
+        $this->getSharedLock(function() use (&$result, $timePoint, $interval) {
+            if (is_null($interval)) {
+                list($start, $value) = $this->archived;
+                $result = $value + sizeof($this->getSeries($timePoint, $interval));
+            } else {
+                $result = sizeof($this->getSeries($timePoint, $interval));
+            }
+        });
+
+        return $result;
     }
 
     /**
@@ -285,41 +298,57 @@ class QuotaTrackerFile
      *
      * @return void
      */
-    public function cleanupSeries($timePoint = null, $interval = null)
+    public function cleanupSeries($timePoint = null, $interval = '1 month')
     {
-        $this->getExclusiveLock(function() use (&$series, $timePoint, $interval) {
-            $this->series = $this->getSeries($timePoint, $interval);
-        });
-    }
+        if (is_null($timePoint)) {
+            $timePoint = Carbon::now();
+        }
 
-    /**
-     * Get exclusive lock, yielding the file writer (append mod) for the calling method
-     *
-     * @return void
-     */
-    public function getExclusiveLockWithAppendWriter($callback)
-    {
-        $this->reader = fopen($this->file, "a");
-        $start = time();
-        while (true) {
-            // if timed out
-            $this->timeout($start);
+        $mode = 'r+';
+        $this->getExclusiveLock($mode, function($writer) use ($timePoint, $interval) {
+            $this->load();
 
-            if (flock($this->reader, LOCK_EX | LOCK_NB)) {  // acquire an exclusive lock
-                $this->hasLock = true;
-
-                // execute the callback
-                $callback($this->reader);
-
-                fflush($this->reader);
-                $this->hasLock = false;
-                flock($this->reader, LOCK_UN);    // release the lock
-                fclose($this->reader);
-                break;
+            // rebasing the start
+            list($currentStart, $currentValue) = $this->archived;
+            if (is_null($currentStart) || $currentStart < $this->quota['start']) {
+                $this->archived = [$this->quota['start'], 0];
+            } elseif ($currentStart > $this->quota['start']) {
+                $this->archived = [$this->quota['start'], $currentValue];
             }
 
-            // Otherwise, loop and wait to for the lock
-        }
+            // strip series coming before the start date
+            $offset = null;
+            foreach ($this->series as $i => $value) {
+                if ($value >= $this->quota['start']) {
+                    $offset = $i;
+                    break;
+                }
+            }
+            $this->series = array_slice($this->series, $offset);
+
+            // compute the archive as well as reset the series
+            $cutOff = $timePoint->copy()->sub(\DateInterval::createFromDateString($interval))->timestamp;
+            $offset = null;
+            foreach ($this->series as $i => $value) {
+                if ($value >= $cutOff) {
+                    $offset = $i;
+                    break;
+                }
+            }
+
+            $archived = array_slice($this->series, 0, $offset);
+            $newSeries = array_slice($this->series, $offset);
+
+            // retrieve the latest archive data
+            list($start, $value) = $this->archived;
+            $value += count($archived);
+            $archivedStr = sprintf("%s:%s|", $start, $value);
+
+            // write to file
+            ftruncate($writer, 0);
+            fwrite($writer, $archivedStr . implode(",", $newSeries));
+            fflush($writer);
+        });
     }
 
     /**
@@ -328,29 +357,26 @@ class QuotaTrackerFile
      * @return void
      * @deprecated due to performance issue (write the entire series to the file, mod "w")
      */
-    public function getExclusiveLock($callback)
+    public function getExclusiveLock($mode, $callback)
     {
-        $this->reader = fopen($this->file, "r+");
+        $reader = fopen($this->file, $mode);
         $start = time();
         while (true) {
             // if timed out
             $this->timeout($start);
 
-            if (flock($this->reader, LOCK_EX | LOCK_NB)) {  // acquire an exclusive lock
+            if (flock($reader, LOCK_EX | LOCK_NB)) {  // acquire an exclusive lock
                 $this->hasLock = true;
 
-                // retrieve the series data
-                $this->series = $this->load();
-
                 // execute the callback
-                $callback($this);
+                $callback($reader);
 
-                ftruncate($this->reader, 0);
-                fwrite($this->reader, implode(",", $this->series));
-                fflush($this->reader);
+                //ftruncate($reader, 0);
+                //fwrite($reader, implode(",", $this->series));
+                fflush($reader);
                 $this->hasLock = false;
-                flock($this->reader, LOCK_UN);    // release the lock
-                fclose($this->reader);
+                flock($reader, LOCK_UN);    // release the lock
+                fclose($reader);
                 break;
             }
 
@@ -372,23 +398,23 @@ class QuotaTrackerFile
         }
 
         $this->createLogFile();
-        $this->reader = fopen($this->file, "r");
+        $reader = fopen($this->file, "r");
         $start = time();
         while (true) {
             // if timed out
             $this->timeout($start);
 
-            if (flock($this->reader, LOCK_SH | LOCK_NB)) {  // acquire an exclusive lock
+            if (flock($reader, LOCK_SH | LOCK_NB)) {  // acquire an exclusive lock
                 $this->hasLock = true;
                 // retrieve the series data
-                $this->series = $this->load();
+                $this->load();
 
                 // execute the callback
                 $callback($this);
 
                 $this->hasLock = false;
-                flock($this->reader, LOCK_UN);    // release the lock
-                fclose($this->reader);
+                flock($reader, LOCK_UN);    // release the lock
+                fclose($reader);
 
                 break;
             }
@@ -404,10 +430,20 @@ class QuotaTrackerFile
      */
     private function load()
     {
-        // the method below is deprecated as it is quite slow
-        // return array_map('intval', array_values(array_filter(explode(',', file_get_contents($this->file)))));
-        // a faster way is:
-        return json_decode('[' . preg_replace('/^,+/', '', file_get_contents($this->file)) . ']');
+        $series = file_get_contents($this->file);
+        preg_match('/(?<archived>^[^\|]{1,24})\|/', $series, $matched);
+        if (array_key_exists('archived', $matched)) {
+            $this->archived = array_map('intval', explode(':', $matched['archived'])); // [ $start, $value]
+        } else {
+            $this->archived = [null, 0];
+        }
+
+        // @note the method below is deprecated as it is quite slow
+        //     return array_map('intval', array_values(array_filter(explode(',', file_get_contents($this->file)))));
+        // a faster way is to use json_decode
+
+        $this->series = json_decode('[' . preg_replace('/^(.*\|,*|,+)/', '', $series) . ']');
+        return $this->series;
     }
 
     /**
@@ -430,6 +466,16 @@ class QuotaTrackerFile
     public function getRawSeries()
     {
         return $this->load();
+    }
+
+    /**
+     * Get the raw archived info (for testing only)
+     *
+     * @return Array series
+     */
+    public function getRawArchived()
+    {
+        return $this->archived;
     }
 
 }

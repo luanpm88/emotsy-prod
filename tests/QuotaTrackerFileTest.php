@@ -22,9 +22,7 @@ class QuotaTrackerFileTest extends TestCase
          * Then we test with: send an email every 1 second and and expect it will NOT to exceed the quota
          */
         $tracker = new QuotaTrackerFile($file, null, ['5 seconds' => 6]);
-        $tracker->getExclusiveLock(function($tracker) {
-            $tracker->reset([]);
-        });
+        $tracker->reset();
 
         $result = $this->nTimes(10, $tracker, function($tracker) {
             return $tracker->add(Carbon::now());
@@ -37,9 +35,7 @@ class QuotaTrackerFileTest extends TestCase
          * Then we test with: send an email every 1 second and and expect it will NOT to exceed the quota
          */
         $tracker = new QuotaTrackerFile($file, ['start' => (new Carbon('first day of March 2016'))->timestamp, 'max' => 9], ['5 seconds' => 6]);
-        $tracker->getExclusiveLock(function($tracker) {
-            $tracker->reset([]);
-        });
+        $tracker->reset();
 
         $result = $this->nTimes(9, $tracker, function($tracker) {
             return $tracker->add(Carbon::now());
@@ -53,9 +49,7 @@ class QuotaTrackerFileTest extends TestCase
          * Then we test with: send an email every 1 second and and expect it will exceed the quota
          */
         $tracker = new QuotaTrackerFile($file, null, ['5 second' => 4]);
-        $tracker->getExclusiveLock(function($tracker) {
-            $tracker->reset([]);
-        });
+        $tracker->reset();
         $result = $this->nTimes(5, $tracker, function($tracker) {
             $tracker->add(Carbon::now());
             return $tracker->check();
@@ -67,9 +61,7 @@ class QuotaTrackerFileTest extends TestCase
          * Then we test with: send an email every 1 second and and expect it to fail immediately at first try
          */
         $tracker = new QuotaTrackerFile($file, null, ['1 hour' => 0]);
-        $tracker->getExclusiveLock(function($tracker) {
-            $tracker->reset([]);
-        });
+        $tracker->reset();
         $result = $this->nTimes(1, $tracker, function($tracker) {
             $tracker->add(Carbon::now());
             $tracker->check();
@@ -81,9 +73,7 @@ class QuotaTrackerFileTest extends TestCase
          * Then we test with: send an email every 1 second and and expect it NOT to fail after 1st try
          */
         $tracker = new QuotaTrackerFile($file, null, ['1 days' => 1]);
-        $tracker->getExclusiveLock(function($tracker) {
-            $tracker->reset([]);
-        });
+        $tracker->reset();
         $result = $this->nTimes(1, $tracker, function($tracker) {
             return $tracker->add(Carbon::now());
         });
@@ -94,9 +84,7 @@ class QuotaTrackerFileTest extends TestCase
          * Then we test with: send an email every 1 second and and expect it to fail after 2nd try
          */
         $tracker = new QuotaTrackerFile($file, null, ['1 days' => 1]);
-        $tracker->getExclusiveLock(function($tracker) {
-            $tracker->reset([]);
-        });
+        $tracker->reset();
         $result = $this->nTimes(2, $tracker, function($tracker) {
             $tracker->add(Carbon::now());
             return $tracker->check();
@@ -114,9 +102,7 @@ class QuotaTrackerFileTest extends TestCase
         $file = '/tmp/quotatest';
 
         $tracker = new QuotaTrackerFile($file, ['start' => (new Carbon('1 month ago'))->timestamp, 'max' => 1000]);
-        $tracker->getExclusiveLock(function($tracker) {
-            $tracker->reset();
-        });
+        $tracker->reset();
 
         $tracker->add();
         $tracker->add();

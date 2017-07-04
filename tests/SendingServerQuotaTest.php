@@ -49,10 +49,6 @@ class SendingServerQuotaTest extends TestCase
         $this->assertTrue($server->overQuota());
         $this->assertTrue($server->countUsage());
 
-        // store current status, and still failed
-        $server->saveQuotaUsageInfo();
-        $this->assertTrue($server->overQuota());
-
         sleep(61);
         // more than 1 minute has passed, now OKIE
         $this->assertFalse($server->overQuota());
