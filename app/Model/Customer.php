@@ -766,6 +766,7 @@ class Customer extends Model
      */
     public function initQuotaTracker() {
         $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), $this->getQuotaHash(), $this->getSendingLimits());
+        $this->quotaTracker->cleanupSeries();
         // @note: in case of multi-process, the following command must be issued manually
         //     $this->renewQuotaTracker();
     }
