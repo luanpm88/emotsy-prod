@@ -364,6 +364,7 @@ class EmailVerificationServer extends Model
         ];
 
         $this->quotaTracker = new QuotaTrackerFile($this->getQuotaLockFile(), ['start' => $this->created_at->timestamp, 'max' => -1], $limit);
+        $this->quotaTracker->cleanupSeries();
     }
 
     /**
