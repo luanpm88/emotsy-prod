@@ -13,6 +13,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         ini_set('memory_limit', '-1');
+        ini_set('pcre.backtrack_limit', 1000000000);
 
         app('view')->composer('*', function ($view) {
             $action = app('request')->route()->getAction();
