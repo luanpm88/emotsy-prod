@@ -485,7 +485,7 @@ class SubscriberController extends Controller
         if ($request->isMethod('post')) {
 
             // Start system job
-            $job = new \Acelle\Jobs\ExportSubscribersJob($list, $request->user());
+            $job = new \Acelle\Jobs\ExportSubscribersJob($list, $request->user()->customer);
             $this->dispatch($job);
 
             // Action Log
