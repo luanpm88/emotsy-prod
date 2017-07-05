@@ -567,4 +567,32 @@ class TemplateController extends Controller
 
         echo trans('messages.templates.custom_order.updated');
     }
+
+    /**
+     * Copy template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function copy(Request $request)
+    {
+        $template = \Acelle\Model\Template::findByUid($request->uid);
+
+        if ($request->isMethod('post')) {
+            // authorize
+            if (!$request->user()->admin->can('copy', $template)) {
+                return $this->notAuthorized();
+            }
+
+            $template->copy($request->name);
+
+            echo trans('messages.template.copied');
+            return;
+        }
+
+        return view('admin.templates.copy', [
+            'template' => $template,
+        ]);
+    }
 }
