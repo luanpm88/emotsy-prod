@@ -9,6 +9,7 @@
  * Added: reduce the tracking log size for faster delivery
  * Added: allow accessing the webapp from root directory
  * Added: more UI effect
+ * Added: support copying templates
 
 3.0.8 / 2017-06-29
 ==================
