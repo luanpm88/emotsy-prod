@@ -2004,7 +2004,9 @@ abstract class AbsCampaign extends Model
      */
     public function subscribersCount()
     {
-        return distinctCount($this->subscribers([], []), 'subscribers.email');
+        // email_verifications join is required in case of segment condition (for example: 'deliverable' or 'risky')
+        // return distinctCount($this->subscribers([], []), 'subscribers.email');
+        return distinctCount($this->subscribers([], ['email_verifications']), 'subscribers.email');
     }
 
     /**
