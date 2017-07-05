@@ -258,7 +258,7 @@
 							'type' => 'text',
 							'name' => 'copy_campaign_name',
 							'value' => '',
-							'label' => trans('messages.what_would_you_like_to_name_your_list'),
+							'label' => trans('messages.what_would_you_like_to_name_your_campaign'),
 							'options' => Acelle\Library\Tool::timeUnitOptions(),
 							'include_blank' => trans('messages.choose'),
 							'help_class' => 'campaign',
