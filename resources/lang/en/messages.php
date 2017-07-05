@@ -520,7 +520,7 @@ return [
     'dkim_public' => 'DKIM public key',
     'dkim_private' => 'DKIM private key',
     'sending_domain_empty_line_1' => 'You have no saved sending domains',
-    'sending_domain.signing_enabled.help' => 'Check the domain if signing enabled.',
+    'sending_domain.signing_enabled.help' => 'Sign outgoing emails if the FROM email address matches this domain',
     'languages' => 'Languages',
     'language.created' => 'Language was successfully created',
     'language.updated' => 'Language was successfully updated',
