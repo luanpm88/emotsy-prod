@@ -429,36 +429,6 @@ class SendingServer extends Model
     }
 
     /**
-     * Get sending server's sending quota rate.
-     *
-     * @return string
-     */
-    public function getSendingQuotaUsagePercentage()
-    {
-        if ($this->getSendingQuota() == '∞') {
-            return '0';
-        } elseif ($this->getSendingQuota() == '0' || $this->getSendingQuotaUsage() >= $this->getSendingQuota()) {
-            return '100';
-        }
-
-        return round(($this->getUsagePercentage * 100), 2);
-    }
-
-    /**
-     * Get user's sending quota rate.
-     *
-     * @return string
-     */
-    public function displaySendingQuotaUsage()
-    {
-        if ($this->getSendingQuota() == '∞') {
-            return trans('messages.unlimited');
-        }
-
-        return $this->getSendingQuotaUsagePercentage().'%';
-    }
-
-    /**
      * Get rules.
      *
      * @return string

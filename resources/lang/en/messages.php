@@ -1058,6 +1058,7 @@ return [
     'sending_server_intro_smtp' => 'Send emails through a SMTP service',
     'sending_server_intro_sendmail' => 'Send emails through the sendmail program on the hosting system',
     'sending_server_intro_php-mail' => 'Send emails through the built-in mail() function in PHP',
+    'sending_server.speed' => 'Speed limit: :limit',
     'open_uniq_per_total' => ':count unique / opened :total times',
     'clicked_a_link' => 'Clicked a link',
     'count_clicked' => ':count / :total links',
