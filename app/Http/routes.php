@@ -227,6 +227,8 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('lists/{list_uid}/unsubscribe-success/{uid}', 'PageController@unsubscribeSuccessPage');
 
     // Template
+    Route::post('templates/{uid}/copy', 'TemplateController@copy');
+    Route::get('templates/{uid}/copy', 'TemplateController@copy');
     Route::get('templates/{uid}/content', 'TemplateController@content');
     Route::get('templates/sort', 'TemplateController@sort');
     Route::get('templates/listing/{page?}', 'TemplateController@listing');

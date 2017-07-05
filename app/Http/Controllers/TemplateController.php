@@ -620,4 +620,32 @@ class TemplateController extends Controller
             'template' => $template,
         ]);
     }
+
+    /**
+     * Copy template.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function copy(Request $request)
+    {
+        $template = \Acelle\Model\Template::findByUid($request->uid);
+
+        if ($request->isMethod('post')) {
+            // authorize
+            if (!$request->user()->customer->can('copy', $template)) {
+                return $this->notAuthorized();
+            }
+
+            $template->copy($request->name);
+
+            echo trans('messages.template.copied');
+            return;
+        }
+
+        return view('templates.copy', [
+            'template' => $template,
+        ]);
+    }
 }

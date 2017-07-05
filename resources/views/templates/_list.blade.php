@@ -2,16 +2,16 @@
 							<table class="table table-box pml-table"
                                 current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
                             >
-								@foreach ($templates as $key => $item)
+								@foreach ($templates as $key => $template)
 									<tr>
 										<td width="1%">
 											<div class="text-nowrap">
 												<div class="checkbox inline">
 													<label>
 														<input type="checkbox" class="node styled"
-															custom-order="{{ $item->custom_order }}"
+															custom-order="{{ $template->custom_order }}"
 															name="ids[]"
-															value="{{ $item->uid }}"
+															value="{{ $template->uid }}"
 														/>
 													</label>
 												</div>
@@ -21,51 +21,67 @@
 											</div>
 										</td>
 										<td width="1%">
-											<a href="#"  onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)">
-												<img width="100" height="120" src="{{ action('TemplateController@image', $item->uid) }}?v={{ rand(0,10) }}" />
+											<a href="#"  onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)">
+												<img width="100" height="120" src="{{ action('TemplateController@image', $template->uid) }}?v={{ rand(0,10) }}" />
 											</a>
 										</td>
 										<td>
 											<h5 class="no-margin text-bold">
-												<a class="kq_search" href="#" onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)">
-													{{ $item->name }}
+												<a class="kq_search" href="#" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)">
+													{{ $template->name }}
 												</a>
 											</h5>
 											<span class="text-muted">
-												{!! is_object($item->admin) ? '<i class="icon-user-tie"></i>' . $item->admin->displayName() : '' !!}
-												{!! is_object($item->customer) ? '<i class="icon-user"></i>' . $item->customer->displayName() : '' !!}
+												{!! is_object($template->admin) ? '<i class="icon-user-tie"></i>' . $template->admin->displayName() : '' !!}
+												{!! is_object($template->customer) ? '<i class="icon-user"></i>' . $template->customer->displayName() : '' !!}
 											</span>
 											<br>
-											<span class="text-muted">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
+											<span class="text-muted">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($template->created_at) }}</span>
 										</td>
-										
+
 										<td>
 											<div class="single-stat-box pull-left">
-												<span class="no-margin stat-num">{{ trans('messages.template_type_' . $item->source) }}</span>
+												<span class="no-margin stat-num">{{ trans('messages.template_type_' . $template->source) }}</span>
 												<br>
 												<span class="text-muted text-nowrap">{{ trans('messages.type') }}</span>
 											</div>
 										</td>
-										
-										<td class="text-right">										
-											@if (Auth::user()->customer->can('update', $item))
-												@if ($item->source == 'builder')
-													<a href="{{ action('TemplateController@rebuild', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+
+										<td class="text-right">
+											@if (Auth::user()->customer->can('update', $template))
+												@if ($template->source == 'builder')
+													<a href="{{ action('TemplateController@rebuild', $template->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 												@else
-													<a href="{{ action('TemplateController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+													<a href="{{ action('TemplateController@edit', $template->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 												@endif
 											@endif
-											<div class="btn-group">										
-												<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
-												<ul class="dropdown-menu dropdown-menu-right">
-													@if (Auth::user()->customer->can('preview', $item))
-														<li><a href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a></li>
-													@endif
-													@if (Auth::user()->customer->can('delete', $item))
-														<li><a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('TemplateController@delete', ["uids" => $item->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
-													@endif
-												</ul>
-											</div>
+											@if (Auth::user()->customer->can('preview', $template) ||
+												Auth::user()->customer->can('copy', $template) ||
+												Auth::user()->customer->can('delete', $template))
+												<div class="btn-group">
+													<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
+													<ul class="dropdown-menu dropdown-menu-right">
+														@if (Auth::user()->customer->can('preview', $template))
+															<li><a href="#preview" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a></li>
+														@endif
+														@if (Auth::user()->customer->can('copy', $template))
+															<li>
+																<a
+																	href="{{ action('TemplateController@copy', $template->uid) }}"
+																	type="button"
+																	class="modal_link"
+																	data-method="GET"
+																>
+																	<i class="icon-copy4"></i> {{ trans("messages.template.copy") }}
+																</a>
+															</li>
+														@endif
+														@if (Auth::user()->customer->can('delete', $template))
+															<li><a delete-confirm="{{ trans('messages.delete_templates_confirm') }}" href="{{ action('TemplateController@delete', ["uids" => $template->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
+														@endif
+													</ul>
+												</div>
+											@endif
 										</td>
 									</tr>
 								@endforeach
@@ -79,7 +95,7 @@
 									{{ trans('messages.no_search_result') }}
 								</span>
 							</div>
-						@else					
+						@else
 							<div class="empty-list">
 								<i class="icon-magazine"></i>
 								<span class="line-1">

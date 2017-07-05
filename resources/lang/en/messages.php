@@ -1936,4 +1936,10 @@ return [
     'feedback_loop_handler.testing_connection' => 'Testing connection...',
     'sending_server.testing_connection' => 'Sending test message...',
     'email_exists' => 'The email has already been taken.',
+    'email_already_subscribed' => 'The email has already been subscribed.',
+    'template.copy' => 'Copy',
+    'what_would_you_like_to_name_your_template' => 'What would you like to name your template?',
+    'copy_of_template' => 'Copy of :name',
+    'template.copying...' => 'Copying...',
+    'template.copied' => 'Template was successfully copied',
 ];

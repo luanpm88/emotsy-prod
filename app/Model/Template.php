@@ -336,4 +336,17 @@ class Template extends Model
     {
         return is_object($this->admin) ? $this->admin->displayName() : (is_object($this->customer) ? $this->customer->displayName() : '');
     }
+
+    /**
+     * Copy new template.
+     */
+    public function copy($name)
+    {
+        $copy = $this->replicate();
+        $copy->name = $name;
+        $copy->created_at = \Carbon\Carbon::now();
+        $copy->updated_at = \Carbon\Carbon::now();
+        $copy->custom_order = 0;
+        $copy->save();
+    }
 }

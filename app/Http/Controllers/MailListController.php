@@ -833,9 +833,13 @@ class MailListController extends Controller
         header("Access-Control-Allow-Origin: *");
 
         $list = \Acelle\Model\MailList::findByUid($request->uid);
-        $subscribers = $list->subscribers()->where('email','=',strtolower(trim($request->EMAIL)));
+        $subscriber = $list->subscribers()->where('email','=',strtolower(trim($request->EMAIL)))->first();
 
-        $result = ($subscribers->count() == 0) ? true : trans('messages.email_exists');
+        if(is_object($subscriber) && $subscriber->status != \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
+            $result = trans('messages.email_already_subscribed');
+        } else {
+            $result = true;
+        }
 
         return response()->json($result);
     }
