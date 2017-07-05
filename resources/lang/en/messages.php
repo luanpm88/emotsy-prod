@@ -1769,6 +1769,7 @@ return [
     'paypal_error_cannot_get_access_token' => 'Cannot retrieve PayPal access token',
     'paypal_error_unknown' => 'Unknown',
     'added_by' => 'Added by',
+    'email_verification_server.credits_usage' => 'Credits used: :count',
     'email_verification_server' => 'Email verification server',
     'email_verification_servers' => 'Email verification servers',
     'email_verification_server.created' => 'Email verification server was successfully created',

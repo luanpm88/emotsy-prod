@@ -352,6 +352,25 @@ class EmailVerificationServer extends Model
     }
 
     /**
+     * Get credits used
+     *
+     * @return int credit used
+     */
+    public function getCreditUsage() {
+        return $this->getQuotaTracker()->getUsage();
+    }
+
+    /**
+     * Get speed limit string
+     *
+     * @return string speed limit
+     */
+    public function getSpeedLimitString() {
+        $options = $this->getOptions();
+        return "{$options['limit_value']} / {$options['limit_base']} {$options['limit_unit']}";
+    }
+
+    /**
      * Initialize the quota tracker
      *
      * @return void
@@ -360,7 +379,7 @@ class EmailVerificationServer extends Model
         $options = $this->getOptions();
         $base = "{$options['limit_base']} {$options['limit_unit']}";
         $limit = [
-            "{$base}" =>$options['limit_value']
+            "{$base}" => $options['limit_value']
         ];
 
         $this->quotaTracker = new QuotaTrackerFile($this->getQuotaLockFile(), ['start' => $this->created_at->timestamp, 'max' => -1], $limit);
