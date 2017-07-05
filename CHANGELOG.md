@@ -6,6 +6,9 @@
  * Added: support testing bounce/feedback handlers
  * Added: support sending a test email for sending server
  * Added: display the generated DKIM DNS record for sending domain
+ * Added: reduce the tracking log size for faster delivery
+ * Added: allow accessing the webapp from root directory
+ * Added: more UI effect
 
 3.0.8 / 2017-06-29
 ==================
