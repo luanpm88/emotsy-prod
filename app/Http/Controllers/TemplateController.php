@@ -406,8 +406,8 @@ class TemplateController extends Controller
             $template->save();
 
             // copy all folder to public path
-            $public_dir = 'upload/templates/template_'.$template->uid;
-            $public_upload_path = public_path($public_dir);
+            $public_dir = $template->getUploadUri();
+            $public_upload_path = $template->getUploadDir();
             if (!file_exists($public_upload_path)) {
                 mkdir($public_upload_path, 0777, true);
             }

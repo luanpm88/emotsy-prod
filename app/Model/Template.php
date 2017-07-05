@@ -64,7 +64,7 @@ class Template extends Model
         });
 
         static::deleted(function ($item) {
-            $uploaded_dir = 'upload/templates/template_'.$item->uid;
+            $uploaded_dir = $item->getUploadDir();
             \Acelle\Library\Tool::xdelete($uploaded_dir);
         });
     }
@@ -348,5 +348,33 @@ class Template extends Model
         $copy->updated_at = \Carbon\Carbon::now();
         $copy->custom_order = 0;
         $copy->save();
+
+        // Copy uploaded folder
+        if (file_exists($this->getUploadDir())) {
+            if (!file_exists($copy->getUploadDir())) {
+                mkdir($copy->getUploadDir(), 0777, true);
+            }
+
+            \Acelle\Library\Tool::xcopy($this->getUploadDir(), $copy->getUploadDir());
+            // replace image url
+            $copy->content = str_replace($this->getUploadUri(), $copy->getUploadUri(), $copy->content);
+            $copy->save();
+        }
+    }
+
+    /**
+     * Get public template upload uri.
+     */
+    public function getUploadUri()
+    {
+        return 'upload/templates/template_'.$this->uid;
+    }
+
+    /**
+     * Get public template upload dir.
+     */
+    public function getUploadDir()
+    {
+        return public_path($this->getUploadUri());
     }
 }
