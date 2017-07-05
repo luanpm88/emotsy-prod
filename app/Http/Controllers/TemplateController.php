@@ -638,7 +638,7 @@ class TemplateController extends Controller
                 return $this->notAuthorized();
             }
 
-            $template->copy($request->name);
+            $template->copy($request->name, $request->user()->customer);
 
             echo trans('messages.template.copied');
             return;

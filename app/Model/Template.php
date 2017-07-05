@@ -340,13 +340,21 @@ class Template extends Model
     /**
      * Copy new template.
      */
-    public function copy($name)
+    public function copy($name, $customer=NULL, $admin=NULL)
     {
         $copy = $this->replicate();
         $copy->name = $name;
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
         $copy->custom_order = 0;
+        if ($customer) {
+            $copy->admin_id = NULL;
+            $copy->customer_id = $customer->id;
+        }
+        if ($admin) {
+            $copy->admin_id = $admin->id;
+            $copy->customer_id = NULL;
+        }
         $copy->save();
 
         // Copy uploaded folder
