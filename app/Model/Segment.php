@@ -225,7 +225,7 @@ class Segment extends Model
                         $cond = 'sf'.$number.".value < '".$keyword."'";
                         break;
                     case 'not_starts':
-                        $cond = 'sf'.$number.".value) NOT LIKE '".$keyword."%'";
+                        $cond = 'sf'.$number.".value NOT LIKE '".$keyword."%'";
                         break;
                     case 'not_ends':
                         $cond = 'LOWER(sf'.$number.".value) NOT LIKE '%".$keyword."'";
