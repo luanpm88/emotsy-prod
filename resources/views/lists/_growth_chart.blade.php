@@ -11,7 +11,7 @@
         <!-- /basic column chart -->
     </div>
     <div class="col-md-6">
-        @if ($list->readCache('SubscriberCount') || (!isset($list->id) && \Acelle\Model\Subscriber::count()))
+        @if ($list->readCache('SubscriberCount') || (!isset($list->id) && Auth::user()->customer->readCache('SubscriberCount')))
             <!-- Basic column chart -->
             <div class="panel panel-flat">
                 <div class="panel-body">
