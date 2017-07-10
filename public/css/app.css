@@ -2357,3 +2357,9 @@ a.loading {
     height: 100px;
     z-index: 9999;
 }
+.navbar {
+    border-width: 0;
+}
+.navbar-nav > li > a {
+    line-height: 21px;
+}
