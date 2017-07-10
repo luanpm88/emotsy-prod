@@ -232,7 +232,7 @@
 @endif
 <hr >
 <div class="text-left">
-	@if(Auth::user()->admin->can('test', $server))
+	@if(Auth::user()->customer->can('test', $server))
 		<a
 			href="{{ action('SendingServerController@test', $server->uid) }}"
 			type="button"
