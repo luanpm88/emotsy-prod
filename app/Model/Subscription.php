@@ -344,7 +344,7 @@ class Subscription extends Model
                     $this->end_at = $this->start_at->addYears($plan->frequency_amount)->subDays(1);
                     break;
                 case 'unlimited':
-                    $this->start_at = NULL;
+                    $this->start_at = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now());
                     $this->end_at = NULL;
                     break;
             }
