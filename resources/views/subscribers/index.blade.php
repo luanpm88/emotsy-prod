@@ -140,7 +140,7 @@
 											</li>
 										</ul>
 									</div>
-									<span class="text-nowrap">
+									<span class="text-nowrap ml-10">
 										<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 										<i class="icon-search4 keyword_search_button"></i>
 									</span>

@@ -2371,3 +2371,9 @@ a.loading {
     border-radius: 5px;
     height: 33px;
 }
+.list_actions {
+    margin-right: 15px;
+}
+.filter-box input.search {
+    margin-top: -2px;
+}
