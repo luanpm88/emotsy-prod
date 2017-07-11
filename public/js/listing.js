@@ -183,6 +183,17 @@ function updateCheckList() {
             listCheckAll(form);
         }
 
+        // update count span
+        if (vals.length > 0) {
+          if (form.find('.list_actions button .checked_count').length) {
+            form.find('.list_actions button .checked_count').html(vals.length);
+          } else {
+            form.find('.list_actions button .caret').before(' <span class="badge bg-grey checked_count">'+vals.length+'</span>');
+          }
+        } else {
+          form.find('.list_actions button .checked_count').remove();
+        }
+
     });
 }
 

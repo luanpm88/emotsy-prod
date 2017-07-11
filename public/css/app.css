@@ -2363,3 +2363,11 @@ a.loading {
 .navbar-nav > li > a {
     line-height: 21px;
 }
+.btn-xs .badge {
+    padding: 1px 5px 1px 5px;
+    font-weight: 600;
+}
+.filter-box .btn {
+    border-radius: 5px;
+    height: 33px;
+}
