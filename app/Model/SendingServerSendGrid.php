@@ -120,6 +120,7 @@ class SendingServerSendGrid extends SendingServer
         $fromName = array_values($message->getFrom())[0];
         $toEmail = array_keys($message->getTo())[0];
         $toName = array_values($message->getTo())[0];
+        $replyToEmail = array_keys($message->getReplyTo())[0];
 
         // Following RFC 1341, section 7.2, if either text/html or text/plain are to be sent in your email: text/plain needs to be first
         // So, use array_shift instead of array_pop
@@ -133,6 +134,9 @@ class SendingServerSendGrid extends SendingServer
             new Email($toName, $toEmail),
             array_shift($parts)
         );
+
+        // set Reply-To header
+        $mail->setReplyTo(['email' => $replyToEmail]);
 
         foreach($parts as $part) {
             $mail->addContent($part);
