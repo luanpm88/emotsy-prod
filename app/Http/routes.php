@@ -424,7 +424,9 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('email_verification_servers', 'EmailVerificationServerController');
 
     // Blacklists
+    Route::get('blacklists/import/process', 'BlacklistController@importProcess');
     Route::post('blacklists/import', 'BlacklistController@import');
+    Route::get('blacklists/import', 'BlacklistController@import');
     Route::get('blacklists/listing/{page?}', 'BlacklistController@listing');
     Route::get('blacklists/delete', 'BlacklistController@delete');
     Route::resource('blacklists', 'BlacklistController');

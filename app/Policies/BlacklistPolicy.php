@@ -57,6 +57,20 @@ class BlacklistPolicy
         return $can;
     }
 
+    public function import(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = $user->admin->getPermission('sending_domain_create') == 'yes';
+                break;
+            case 'customer':
+                $can = $user->customer->getActiveImportBlacklistJobs()->count() == 0;
+                break;
+        }
+
+        return $can;
+    }
+
     public function update(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
     {
         switch ($role) {

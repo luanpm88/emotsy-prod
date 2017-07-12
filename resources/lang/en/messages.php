@@ -1949,4 +1949,9 @@ return [
     'blacklist.import' => 'Import',
     'blacklist.upload_list_from_file' => 'Upload blacklist from file',
     'blacklist.import_file_help' => 'Choose file from your device to import. Acceptable file type is TXT. One email per line. Server max file upload size is <strong class="text-bold">:max</strong>.',
+    'blacklist.import_process' => 'Import processing',
+    'blacklist.import_process.intro' => 'There is a running blacklist import processes...',
+    'blacklist.import_process_running' => 'Blacklist import process is running. <strong>:processed</strong>/<strong>:total</strong> emails imported.',
+    'blacklist.import_process_done' => 'Blacklist was imported successfully. <strong>:processed</strong>/<strong>:total</strong> emails imported.',
+    'blacklist.import_process_new' => 'Blacklist import process is starting',
 ];

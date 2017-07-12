@@ -26,6 +26,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class Blacklist extends Model
 {
+    // Subscribers to import every time
+    const IMPORT_STATUS_NEW = 'new';
+    const IMPORT_STATUS_RUNNING = 'running';
+    const IMPORT_STATUS_FAILED = 'failed';
+    const IMPORT_STATUS_DONE = 'done';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -98,4 +104,33 @@ class Blacklist extends Model
      * @var array
      */
     public static $itemsPerPage = 25;
+
+    /**
+     * Import from file.
+     *
+     * @return collect
+     */
+    public static function import($file, $customer, $system_job)
+    {
+        $total = 100;
+
+        // init the status
+        $system_job->updateStatus([
+            'status' => self::IMPORT_STATUS_RUNNING,
+        ]);
+
+        // update status, line count
+        $system_job->updateStatus([ 'total' => $total ]);
+
+        // demo process
+        for ($i=0; $i<=$total; $i++) {
+            // update status, finish one batch
+            $system_job->updateStatus([ 'processed' => $i ]);
+
+            sleep(1.5);
+        }
+
+        // Update status, finish all batches
+        $system_job->updateStatus([ 'status' => self::IMPORT_STATUS_DONE, 'total' => $total ]);
+    }
 }

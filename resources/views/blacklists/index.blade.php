@@ -49,7 +49,7 @@
             <div class="col-md-3">
                 @if (Auth::user()->customer->can('create', new Acelle\Model\Blacklist()))
                     <div class="text-right">
-                        <a href="{{ action('BlacklistController@create') }}" type="button" class="btn bg-info-800">
+                        <a href="{{ action('BlacklistController@import') }}" type="button" class="btn bg-info-800">
                             <i class="icon-download4"></i> {{ trans('messages.blacklist.import') }}
                         </a>
                     </div>

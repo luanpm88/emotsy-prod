@@ -197,4 +197,61 @@ class BlacklistController extends Controller
         // Redirect to my lists page
         echo trans('messages.blacklists.deleted');
     }
+
+    /**
+     * Start import process.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function import(Request $request)
+    {
+        $customer = $request->user()->customer;
+
+        if ($request->isMethod('post')) {
+            // authorize
+            if (!$request->user()->customer->can('import', new \Acelle\Model\Blacklist())) {
+                return $this->notAuthorized();
+            }
+
+            if ($request->hasFile('file')) {
+                // Start system job
+                $job = new \Acelle\Jobs\ImportBlacklistJob($request->user()->customer, $request->file('file')->path());
+                $this->dispatch($job);
+            } else {
+                // @note: use try/catch instead
+                echo "max_file_upload";
+            }
+        }
+
+        // Get current job
+        $system_job = $customer->getLastActiveImportBlacklistJob();
+
+        return view('blacklists.import', [
+            'system_job' => $system_job
+        ]);
+    }
+
+    /**
+     * Check import proccessing.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function importProcess(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $system_job = \Acelle\Model\SystemJob::find($request->system_job_id);
+
+        // authorize
+        if (!$customer->can('read', new \Acelle\Model\Blacklist())) {
+            return $this->notAuthorized();
+        }
+
+        return view('blacklists.import_process', [
+            'system_job' => $system_job
+        ]);
+    }
 }

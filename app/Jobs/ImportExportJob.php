@@ -13,7 +13,7 @@ class ImportExportJob extends SystemJob
      *
      * @return void
      */
-    public function __construct($mailList, $customer)
+    public function __construct($mailList=NULL, $customer)
     {
         // call parent's constructor
         parent::__construct();
