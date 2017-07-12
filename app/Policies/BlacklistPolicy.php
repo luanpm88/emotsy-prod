@@ -14,4 +14,78 @@ class BlacklistPolicy
     public function __construct()
     {
     }
+
+    public function read(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = $user->admin->getPermission('sending_domain_read') != 'no';
+                break;
+            case 'customer':
+                $can = true;
+                break;
+        }
+
+        return $can;
+    }
+
+    public function readAll(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = $user->admin->getPermission('sending_domain_read') == 'all';
+                break;
+            case 'customer':
+                $can = false;
+                break;
+        }
+
+        return $can;
+    }
+
+    public function create(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = $user->admin->getPermission('sending_domain_create') == 'yes';
+                break;
+            case 'customer':
+                $can = true;
+                break;
+        }
+
+        return $can;
+    }
+
+    public function update(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('sending_domain_update');
+                $can = $ability == 'all'
+                    || ($ability == 'own' && $user->admin->id == $blacklist->admin_id);
+                break;
+            case 'customer':
+                $can = $user->customer->id == $blacklist->customer_id;
+                break;
+        }
+
+        return $can;
+    }
+
+    public function delete(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('sending_domain_delete');
+                $can = $ability == 'all'
+                    || ($ability == 'own' && $user->admin->id == $blacklist->admin_id);
+                break;
+            case 'customer':
+                $can = $user->customer->id == $blacklist->customer_id;
+                break;
+        }
+
+        return $can;
+    }
 }

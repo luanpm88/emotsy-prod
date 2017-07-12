@@ -2377,3 +2377,6 @@ a.loading {
 .filter-box input.search {
     margin-top: -2px;
 }
+.navbar-nav > li > .dropdown-menu {
+    margin-top: 0;
+}

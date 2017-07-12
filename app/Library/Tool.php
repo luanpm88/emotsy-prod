@@ -47,7 +47,9 @@ class Tool
 
         // Make destination directory
         if (!is_dir($dest)) {
-            mkdir($dest, $permissions);
+            $oldmask = umask(0);
+            mkdir($dest, $permissions, true);
+            umask($oldmask);
         }
 
         // Loop through the folder

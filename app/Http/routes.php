@@ -422,6 +422,12 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('email_verification_servers/disable', 'EmailVerificationServerController@disable');
     Route::get('email_verification_servers/enable', 'EmailVerificationServerController@enable');
     Route::resource('email_verification_servers', 'EmailVerificationServerController');
+
+    // Blacklists
+    Route::post('blacklists/import', 'BlacklistController@import');
+    Route::get('blacklists/listing/{page?}', 'BlacklistController@listing');
+    Route::get('blacklists/delete', 'BlacklistController@delete');
+    Route::resource('blacklists', 'BlacklistController');
 });
 
 // ADMIN AREA

@@ -1946,4 +1946,7 @@ return [
     'template.copied' => 'Template was successfully copied',
     'notification.note' => 'Note: ',
     'notification.sending_servers' => 'sending servers added by admin shall be used by users who are not permitted to add their own ones. You can select the sending servers to assign to a particular plan',
+    'blacklist.import' => 'Import',
+    'blacklist.upload_list_from_file' => 'Upload blacklist from file',
+    'blacklist.import_file_help' => 'Choose file from your device to import. Acceptable file type is TXT. One email per line. Server max file upload size is <strong class="text-bold">:max</strong>.',
 ];

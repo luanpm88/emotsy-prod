@@ -64,6 +64,15 @@ class Blacklist extends Model
             }
         }
 
+        // Other filter
+        if(!empty($request->customer_id)) {
+            $query = $query->where('blacklists.customer_id', '=', $request->customer_id);
+        }
+
+        if(!empty($request->admin_id)) {
+            $query = $query->where('blacklists.admin_id', '=', $request->admin_id);
+        }
+
         return $query;
     }
 
@@ -76,7 +85,9 @@ class Blacklist extends Model
     {
         $query = self::filter($request);
 
-        $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        if(!empty($request->sort_order)) {
+            $query = $query->orderBy($request->sort_order, $request->sort_direction);
+        }
 
         return $query;
     }
