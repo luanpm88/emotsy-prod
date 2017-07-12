@@ -1,16 +1,15 @@
-3.0.9 / 2017-07-xx
+3.0.9 / 2017-07-13
 ==================
 
  * Fixed: bounced emails not added to blacklist
  * Fixed: Reply-To header not correctly set for SendGrid and ElasticEmail
- * Fixed: support Elastic's {unsubscribe} tag
+ * Fixed: support Elastic {unsubscribe} tag
  * Added: speed up list loading
  * Added: support testing bounce/feedback handlers
  * Added: support sending a test email for sending server
  * Added: display the generated DKIM DNS record for sending domain
  * Added: reduce the tracking log size for faster delivery
  * Added: allow accessing the webapp from root directory
- * Added: more UI effect
  * Added: support copying templates
 
 3.0.8 / 2017-06-29
