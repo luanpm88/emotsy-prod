@@ -168,6 +168,11 @@ class Customer extends Model
         return $this->emailVerificationServers()->where("status", "=", EmailVerificationServer::STATUS_ACTIVE);
     }
 
+    public function blacklists()
+    {
+        return $this->hasMany('Acelle\Model\Blacklist');
+    }
+
     /**
      * Bootstrap any application services.
      */
@@ -1660,5 +1665,25 @@ class Customer extends Model
         return $this->getActiveImportBlacklistJobs()
             ->orderBy("created_at","DESC")
             ->first();
+    }
+
+    /**
+     * Add email to customer's blacklist.
+     *
+     * @return void
+     */
+    public function addEmaillToBlacklist($email)
+    {
+        $email = trim(strtolower($email));
+
+        if (\Acelle\Library\Tool::isValidEmail($email)) {
+            $exist = $this->blacklists()->where('email','=',$email)->count();
+            if (!$exist) {
+                $blacklist = new \Acelle\Model\Blacklist();
+                $blacklist->customer_id = $this->id;
+                $blacklist->email = $email;
+                $blacklist->save();
+            }
+        }
     }
 }

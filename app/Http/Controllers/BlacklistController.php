@@ -217,7 +217,7 @@ class BlacklistController extends Controller
 
             if ($request->hasFile('file')) {
                 // Start system job
-                $job = new \Acelle\Jobs\ImportBlacklistJob($request->user()->customer, $request->file('file')->path());
+                $job = new \Acelle\Jobs\ImportBlacklistJob($request->file('file')->path(), $request->user()->customer);
                 $this->dispatch($job);
             } else {
                 // @note: use try/catch instead

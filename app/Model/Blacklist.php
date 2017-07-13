@@ -110,9 +110,12 @@ class Blacklist extends Model
      *
      * @return collect
      */
-    public static function import($file, $customer, $system_job)
+    public static function import($file, $system_job, $customer=NULL)
     {
-        $total = 100;
+        $content = \File::get($file);
+        $lines = preg_split('/\r\n|\r|\n/', $content);
+
+        $total = count($lines);
 
         // init the status
         $system_job->updateStatus([
@@ -123,14 +126,29 @@ class Blacklist extends Model
         $system_job->updateStatus([ 'total' => $total ]);
 
         // demo process
-        for ($i=0; $i<=$total; $i++) {
+        $success = 0;
+        foreach ($lines as $number => $line) {
+            $email = trim(strtolower($line));
+
             // update status, finish one batch
-            $system_job->updateStatus([ 'processed' => $i ]);
+            $system_job->updateStatus([ 'processed' => $number+1 ]);
+
+            // Add to blacklist
+
+            if (\Acelle\Library\Tool::isValidEmail($email)) {
+                $success++;
+                $system_job->updateStatus([ 'success' => $success ]);
+
+                // Add to blacklist
+                if (isset($customer)) {
+                    $customer->addEmaillToBlacklist($email);
+                }
+            }
 
             sleep(1.5);
         }
 
         // Update status, finish all batches
-        $system_job->updateStatus([ 'status' => self::IMPORT_STATUS_DONE, 'total' => $total ]);
+        $system_job->updateStatus([ 'status' => self::IMPORT_STATUS_DONE ]);
     }
 }

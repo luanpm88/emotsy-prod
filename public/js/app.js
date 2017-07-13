@@ -1698,4 +1698,16 @@ $(function() {
             a_.find('.a-loading').remove();
         });
     });
+
+    // add segment condition
+    $(document).on("click", "button.click-effect", function(e) {
+        var a_ = $(this);
+        var form = a_.parents('form');
+
+        if (!form.length || !form.hasClass('form-validate-jquery') || (form.hasClass('form-validate-jquery') && form.valid())) {
+            // Add loading effect
+            a_.addClass('loading');
+            a_.append(' <div class="spinner a-loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
+        }
+    });
 });

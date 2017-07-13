@@ -14,7 +14,7 @@ class ImportBlacklistJob extends ImportExportJob
      *
      * @return void
      */
-    public function __construct($customer, $file)
+    public function __construct($file, $customer)
     {
         // call parent's constructor
         parent::__construct(NULL, $customer);
@@ -75,7 +75,7 @@ class ImportBlacklistJob extends ImportExportJob
      */
     public function handle()
     {
-        \Acelle\Model\Blacklist::import($this->file, $this->customer, $this);
+        \Acelle\Model\Blacklist::import($this->file, $this, $this->customer);
     }
 
     /**

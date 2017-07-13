@@ -1,14 +1,31 @@
 @if ($blacklists->count() > 0)
-	<table class="table table-box pml-table table-log"
+	<table class="table table-box pml-table table-log mt-0"
 		current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
 	>
 		<tr>
+			<th>
+				<div class="checkbox inline check_all_list">
+					<label>
+						<input type="checkbox" class="styled check_all">
+					</label>
+				</div>
+			</th>
 			<th>{{ trans('messages.email') }}</th>
 			<th>{{ trans('messages.created_at') }}</th>
 			<th class="text-right">{{ trans('messages.action') }}</th>
 		</tr>
 		@foreach ($blacklists as $key => $blacklist)
 			<tr>
+				<td width="1%">
+					<div class="checkbox inline">
+						<label>
+							<input type="checkbox" class="node styled"
+								name="ids[]"
+								value="{{ $blacklist->id }}"
+							/>
+						</label>
+					</div>
+				</td>
 				<td>
 					<span class="no-margin kq_search">{{ $blacklist->email }}</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.email') }}</span>
@@ -18,9 +35,7 @@
 					<span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
 				</td>
 				<td class="text-right">
-					<a link-confirm="{{ trans('messages.remove_blacklist_confirm') }}" href="{{ action('BlacklistController@delete', ["emails" => $blacklist->email]) }}" type="button" class="btn bg-grey-600 btn-icon">
-						<i class="icon icon-minus2"></i> {{ trans('messages.remove_from_blacklist') }}</i>
-					</a>
+
 				</td>
 			</tr>
 		@endforeach
