@@ -119,6 +119,9 @@ function pickadateMask(selector) {
     $(selector).each(function() {
         updatePickadateDateMask($(this));
     });
+    $(document).on('focusout', selector, function() {
+        $(this).val($(this).parent().find('.date-mask-control').html());
+    });
 }
 
 function updatePickadateDateMask(control) {
