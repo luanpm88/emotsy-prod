@@ -787,7 +787,7 @@ return [
     'Upload_base' => 'Base upload',
     'Upload_java' => 'JAVA upload (Arquivos de tamanho grande)',
     'Upload_java_help' => 'Se o Java Applet não carregar, 1. certifique-se de ter Java instalado, caso contrário <a href=\'http://java.com/en/download/\'>[download link]</a>   2. Certifique-se de que nada seja bloqueado pelo seu firewall',
-    'Upload_base_help' => 'Arraste e solte arquivos ou clique na área acima (navegadores modernos) e selecione o (s) arquivo (s). Quando o carregamento estiver completo, clique no botão Enter para arquivos da lista'.',
+    'Upload_base_help' => 'Arraste e solte arquivos ou clique na área acima (navegadores modernos) e selecione o (s) arquivo (s). Quando o carregamento estiver completo, clique no botão Enter para arquivos da lista',
     'Type_dir' => 'dir',
     'Type' => 'Tipo',
     'Dimension' => 'Dimensão',
