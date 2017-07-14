@@ -217,9 +217,9 @@ class SendingServerElasticEmail extends SendingServer
 
         // @todo: custom headers not correctly supported by Elastic Email API v2
         $fromEmail = array_keys($message->getFrom())[0];
-        $fromName = array_values($message->getFrom())[0];
+        $fromName = (is_null($message->getFrom())) ? null : array_values($message->getFrom())[0];
         $toEmail = array_keys($message->getTo())[0];
-        $replyToEmail = array_keys($message->getReplyTo())[0];
+        $replyToEmail = (is_null($message->getReplyTo())) ? null : array_keys($message->getReplyTo())[0];
 
         $result = $this->client()->email()->send([
             'to' => $toEmail,

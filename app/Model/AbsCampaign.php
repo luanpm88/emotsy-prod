@@ -430,7 +430,7 @@ abstract class AbsCampaign extends Model
      * @return String
      */
     public function getSubject($subscriber, $msgId) {
-        return $this->tagMessage($this->subject, $subscriber, $msgId);
+        return $this->tagMessage($this->subject, $subscriber, $msgId, null);
     }
 
     /**
