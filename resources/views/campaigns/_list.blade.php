@@ -40,8 +40,8 @@
 						<span class="text-muted2">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 					@endif
 				</td>
-				<td class="stat-fix-size-sm">
-					@if ($item->status != 'new')
+				@if ($item->status != 'new')
+					<td class="stat-fix-size-sm">
 						<div class="single-stat-box pull-left ml-20">
 							<span class="no-margin text-teal-800 stat-num">{{ $item->isSending() ? $item->deliveredRate() : $item->readCache('DeliveredRate') }}%</span>
 							<div class="progress progress-xxs">
@@ -52,6 +52,8 @@
 							<br />
 							<span class="text-muted">{{ trans('messages.sent') }}</span>
 						</div>
+					</td>
+					<td class="stat-fix-size-sm">
 						<div class="single-stat-box pull-left ml-20">
 							<span class="no-margin text-teal-800 stat-num">{{ $item->readCache('UniqOpenRate') }}%</span>
 							<div class="progress progress-xxs">
@@ -60,6 +62,8 @@
 							</div>
 							<span class="text-muted">{{ trans('messages.open_rate') }}</span>
 						</div>
+					</td>
+					<td class="stat-fix-size-sm">
 						<div class="single-stat-box pull-left ml-20">
 							<span class="no-margin text-teal-800 stat-num">{{ $item->readCache('ClickedRate') }}%</span>
 							<div class="progress progress-xxs">
@@ -68,8 +72,12 @@
 							</div>
 							<span class="text-muted">{{ trans('messages.click_rate') }}</span>
 						</div>
-					@endif
-				</td>
+					</td>
+				@else
+					<td></td>
+					<td></td>
+					<td></td>
+				@endif
 				<td class="text-right">
 					<span class="text-muted2 list-status pull-left" title='{{ $item->status == Acelle\Model\Campaign::STATUS_ERROR ? $item->last_error : '' }}' data-popup='tooltip'>
 						<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.campaign_status_' . $item->status) }}</span>

@@ -531,7 +531,7 @@ class InstallController extends Controller
 
         $request->session()->set('install_finish', true);
 
-        $file_path = storage_path('installed');
+        $file_path = storage_path('app/installed');
         $file = fopen($file_path, 'w') or die('Unable to open file!');
         fwrite($file, '');
         fclose($file);
