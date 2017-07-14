@@ -69,7 +69,7 @@
   'password_confirmation' => 'Confirme nova senha',
   'new_password' => 'Nova senha',
   'account_information' => 'Informação da conta',
-  'account' => 'COnta',
+  'account' => 'Conta',
   'upload' => 'Enviar',
   'remove' => 'Remover',
   'contact_information' => 'Contactos',
