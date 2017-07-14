@@ -35,15 +35,14 @@
                                 {{ trans('messages.actions') }} <span class="caret"></span>
                             </button>
                             <ul class="dropdown-menu">
-                                <li><a link-confirm="{{ trans('messages.restart_campaigns_confirm') }}" href="{{ action('CampaignController@restart') }}"><i class="icon-history"></i> {{ trans("messages.restart") }}</a></li>
-                                <li><a link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause') }}"><i class="icon-pause"></i> {{ trans("messages.pause") }}</a></li>
-                                <li><a delete-confirm="{{ trans('messages.delete_campaigns_confirm') }}" href="{{ action('CampaignController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
+                                <li><a delete-confirm="{{ trans('messages.remove_blacklist_confirm') }}" href="{{ action('BlacklistController@delete') }}"><i class="icon-trash"></i> {{ trans('messages.delete') }}</a></li>
                             </ul>
                         </div>
                         <span class="filter-group">
                             <span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
                             <select class="select" name="sort-order">
                                 <option value="blacklists.created_at">{{ trans('messages.created_at') }}</option>
+                                <option value="blacklists.email">{{ trans('messages.email') }}</option>
                             </select>
                             <button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
                                 <i class="icon-sort-amount-desc"></i>

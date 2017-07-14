@@ -1,5 +1,5 @@
 @if ($blacklists->count() > 0)
-	<table class="table table-box pml-table table-log mt-0"
+	<table class="table table-box pml-table table-log mt-10"
 		current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
 	>
 		<tr>
@@ -35,7 +35,16 @@
 					<span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
 				</td>
 				<td class="text-right">
-
+					@if (Auth::user()->customer->can('delete', $blacklist))
+						<a
+							delete-confirm="{{ trans('messages.remove_blacklist_confirm') }}"
+							href="{{ action('BlacklistController@delete', ["uids" => $blacklist->id]) }}"
+							class="btn btn-primary btn-xs bg-grey"
+							data-popup="tooltip" title="{{ trans('messages.remove_from_blacklist') }}"
+						>
+							{{ trans('messages.blacklist.remove') }}
+						</a>
+					@endif
 				</td>
 			</tr>
 		@endforeach

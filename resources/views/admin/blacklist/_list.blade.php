@@ -12,7 +12,7 @@
 										<td>
 											<span class="no-margin kq_search">{{ $item->email }}</span>
 											<span class="text-muted second-line-mobile">{{ trans('messages.email') }}</span>
-										</td>										
+										</td>
 										<td>
 											<span class="no-margin kq_search">{{ Tool::formatDateTime($item->created_at) }}</span>
 											<span class="text-muted second-line-mobile">{{ trans('messages.created_at') }}</span>
@@ -20,7 +20,7 @@
 										<td class="text-right">
 											<a link-confirm="{{ trans('messages.remove_blacklist_confirm') }}" href="{{ action('Admin\BlacklistController@delete', ["emails" => $item->email]) }}" type="button" class="btn bg-grey-600 btn-icon">
 												<i class="icon icon-minus2"></i> {{ trans('messages.remove_from_blacklist') }}</i>
-											</a>											
+											</a>
 										</td>
 									</tr>
 								@endforeach
@@ -34,7 +34,7 @@
 									{{ trans('messages.no_search_result') }}
 								</span>
 							</div>
-						@else					
+						@else
 							<div class="empty-list">
 								<i class="glyphicon glyphicon-minus-sign"></i>
 								<span class="line-1">

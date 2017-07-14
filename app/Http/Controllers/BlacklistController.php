@@ -182,14 +182,12 @@ class BlacklistController extends Controller
      */
     public function delete(Request $request)
     {
-        $blacklists = \Acelle\Model\Blacklist::whereIn('uid', explode(',', $request->uids));
+        $blacklists = \Acelle\Model\Blacklist::whereIn('id', explode(',', $request->uids));
 
         foreach ($blacklists->get() as $blacklist) {
             // authorize
             if ($request->user()->customer->can('delete', $blacklist)) {
                 // Log
-                $blacklist->log('deleted', $request->user()->customer);
-
                 $blacklist->delete();
             }
         }

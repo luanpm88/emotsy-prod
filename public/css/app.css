@@ -1056,7 +1056,7 @@ table.table-log {
 }
 table.table-log tr th {
     padding: 5px 10px;
-    background: #ddd;
+    background: #efefef;
     color: #333;
     font-weight: 600;
 }
@@ -2386,4 +2386,17 @@ a.loading, button.loading {
 }
 .table-log .check_all_list .checker {
     margin-top: -2px;
+}
+.table-log tbody tr td, .table-log tbody tr th {
+    vertical-align: middle;
+}
+.btn.btn-xs {
+    padding: 0 10px;
+    font-size: 13px;
+}
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+    border-color: #eee;
+}
+.table-box tr:last-child td {
+    border-color: #eee;
 }

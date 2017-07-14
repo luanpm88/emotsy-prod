@@ -1960,4 +1960,5 @@ return [
     'blacklist.import.processed' => 'Processed',
     'blacklist.import.success' => 'Success',
     'blacklist.import.failed' => 'Failed',
+    'blacklist.remove' => 'Remove',
 ];
