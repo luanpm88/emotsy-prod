@@ -4,6 +4,7 @@
  * Fixed: bounced emails not added to blacklist
  * Fixed: Reply-To header not correctly set for SendGrid and ElasticEmail
  * Fixed: support Elastic {unsubscribe} tag
+ * Added: include Portuguese translation
  * Added: speed up list loading
  * Added: support testing bounce/feedback handlers
  * Added: support sending a test email for sending server
