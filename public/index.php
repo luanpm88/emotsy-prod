@@ -16,6 +16,19 @@ if (!(file_exists('../storage/app') && is_dir('../storage/app') && (is_writable(
     echo "ERROR: The directory [/storage/app] must be writable by the web server.<br />";
     $valid = false;
 }
+
+$proc_close_enabled = true;
+try {
+    $disabled = explode(',', ini_get('disable_functions'));
+    $proc_close_enabled = !in_array('proc_close', $disabled);
+} catch (\Exception $ex) {
+    $proc_close_enabled = false;
+}
+if (!$proc_close_enabled) {
+    echo "ERROR: <strong>proc_close()</strong> must be enabled.<br />";
+    $valid = false;
+}
+
 if (!(file_exists('../storage/framework') && is_dir('../storage/framework') && (is_writable('../storage/framework')))) {
     echo "ERROR: The directory [/storage/framework] must be writable by the web server.<br />";
     $valid = false;
