@@ -625,6 +625,12 @@ class InstallController extends Controller
                 'note' => 'PHP XML extension is required.',
             ],
             [
+                'type' => 'requirement',
+                'name' => 'proc_close()',
+                'check' => func_enabled('proc_close'),
+                'note' => 'proc_close() must be enabled.',
+            ],
+            [
                 'type' => 'permission',
                 'name' => base_path('storage/app'),
                 'check' => file_exists(base_path('/storage/app')) &&

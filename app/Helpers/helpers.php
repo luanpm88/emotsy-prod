@@ -377,3 +377,17 @@ function measure($callback, $tests = 5)
     echo "$agv\n";
     return $agv;
 }
+
+/**
+ * Check if function is enabled
+ *
+ * @return boolean
+ */
+function func_enabled($name) {
+    try {
+        $disabled = explode(',', ini_get('disable_functions'));
+        return !in_array($name, $disabled);
+    } catch (\Exception $ex) {
+       return false;
+    }
+}
