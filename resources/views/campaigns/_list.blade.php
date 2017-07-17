@@ -78,10 +78,12 @@
 					<td></td>
 					<td></td>
 				@endif
-				<td class="text-right">
+				<td>
 					<span class="text-muted2 list-status pull-left" title='{{ $item->status == Acelle\Model\Campaign::STATUS_ERROR ? $item->last_error : '' }}' data-popup='tooltip'>
 						<span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.campaign_status_' . $item->status) }}</span>
 					</span>
+				</td>
+				<td class="text-right">
 					@if (\Gate::allows('update', $item))
 						<a href="{{ action('CampaignController@edit', $item->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
 					@endif
