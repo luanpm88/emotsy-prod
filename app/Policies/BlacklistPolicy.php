@@ -19,7 +19,8 @@ class BlacklistPolicy
     {
         switch ($role) {
             case 'admin':
-                $can = $user->admin->getPermission('sending_domain_read') != 'no';
+                $ability = $user->admin->getPermission('report_blacklist');
+                $can = $ability == 'yes';
                 break;
             case 'customer':
                 $can = true;
@@ -33,7 +34,8 @@ class BlacklistPolicy
     {
         switch ($role) {
             case 'admin':
-                $can = $user->admin->getPermission('sending_domain_read') == 'all';
+                $ability = $user->admin->getPermission('report_blacklist');
+                $can = $ability == 'yes';
                 break;
             case 'customer':
                 $can = false;
@@ -47,7 +49,8 @@ class BlacklistPolicy
     {
         switch ($role) {
             case 'admin':
-                $can = $user->admin->getPermission('sending_domain_create') == 'yes';
+                $ability = $user->admin->getPermission('report_blacklist');
+                $can = $ability == 'yes';
                 break;
             case 'customer':
                 $can = true;
@@ -61,7 +64,8 @@ class BlacklistPolicy
     {
         switch ($role) {
             case 'admin':
-                $can = $user->admin->getPermission('sending_domain_create') == 'yes';
+                $ability = $user->admin->getPermission('report_blacklist');
+                $can = $ability == 'yes';
                 break;
             case 'customer':
                 $can = $user->customer->getActiveImportBlacklistJobs()->count() == 0;
@@ -75,9 +79,8 @@ class BlacklistPolicy
     {
         switch ($role) {
             case 'admin':
-                $ability = $user->admin->getPermission('sending_domain_update');
-                $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $blacklist->admin_id);
+                $ability = $user->admin->getPermission('report_blacklist');
+                $can = $ability == 'yes';
                 break;
             case 'customer':
                 $can = $user->customer->id == $blacklist->customer_id;
@@ -91,9 +94,8 @@ class BlacklistPolicy
     {
         switch ($role) {
             case 'admin':
-                $ability = $user->admin->getPermission('sending_domain_delete');
-                $can = $ability == 'all'
-                    || ($ability == 'own' && $user->admin->id == $blacklist->admin_id);
+                $ability = $user->admin->getPermission('report_blacklist');
+                $can = $ability == 'yes';
                 break;
             case 'customer':
                 $can = $user->customer->id == $blacklist->customer_id;

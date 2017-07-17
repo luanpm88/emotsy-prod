@@ -12,7 +12,7 @@
 @section('page_header')
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
         </ul>
         <h1>
             <span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.blacklist') }}</span>
@@ -56,7 +56,7 @@
                 @endif
             </div>
             <div class="col-md-3">
-                @if (Auth::user()->customer->can('create', new Acelle\Model\Blacklist()))
+                @if (Auth::user()->customer->can('import', new Acelle\Model\Blacklist()))
                     <div class="text-right">
                         <a href="{{ action('BlacklistController@import') }}" type="button" class="btn bg-info-800">
                             <i class="icon-download4"></i> {{ trans('messages.blacklist.import') }}

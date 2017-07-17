@@ -76,7 +76,7 @@ class Blacklist extends Model
         }
 
         if(!empty($request->admin_id)) {
-            $query = $query->where('blacklists.admin_id', '=', $request->admin_id);
+            $query = $query->whereNull('customer_id');
         }
 
         return $query;
@@ -110,7 +110,7 @@ class Blacklist extends Model
      *
      * @return collect
      */
-    public static function import($file, $system_job, $customer=NULL)
+    public static function import($file, $system_job, $customer=NULL, $admin=NULL)
     {
         $content = \File::get($file);
         $lines = preg_split('/\r\n|\r|\n/', $content);
@@ -142,6 +142,9 @@ class Blacklist extends Model
                 // Add to blacklist
                 if (isset($customer)) {
                     $customer->addEmaillToBlacklist($email);
+                }
+                if (isset($admin)) {
+                    $admin->addEmaillToBlacklist($email);
                 }
             }
 
