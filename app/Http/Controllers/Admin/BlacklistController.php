@@ -64,17 +64,14 @@ class BlacklistController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\Blacklist::whereIn('email', explode(',', $request->emails));
+        $blacklists = \Acelle\Model\Blacklist::whereIn('id', explode(',', $request->uids));
 
-        foreach ($items->get() as $item) {
+        foreach ($blacklists->get() as $blacklist) {
             // authorize
-            if ($request->user()->admin->getPermission('report_blacklist') == 'no') {
-                return;
+            if ($request->user()->admin->can('delete', $blacklist)) {
+                // Log
+                $blacklist->delete();
             }
-        }
-
-        foreach ($items->get() as $item) {
-            $item->delete();
         }
 
         // Redirect to my lists page
