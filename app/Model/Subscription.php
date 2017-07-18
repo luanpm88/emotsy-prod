@@ -1074,4 +1074,31 @@ class Subscription extends Model
         $rate = isset($currency_rates[$this->currency_code]) ? $currency_rates[$this->currency_code] : 100;
         return $this->price*$rate;
     }
+
+    /**
+     * Check if tax billing information is required.
+     *
+     * @return boolean
+     */
+    public function isTaxBillingRequired()
+    {
+        return $this->plan->tax_billing_required;
+    }
+
+    /**
+     * Check if currency is valid.
+     *
+     * @return boolean
+     */
+    public function isValidPaymentMethod($payment_method)
+    {
+        if (
+            in_array($payment_method->type, [\Acelle\Model\PaymentMethod::TYPE_BRAINTREE_PAYPAL,\Acelle\Model\PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD])
+            && $this->currency_code != $payment_method->getOption('currencyCode')
+        ) {
+            return false;
+        }
+
+        return true;
+    }
 }

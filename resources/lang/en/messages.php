@@ -1946,4 +1946,6 @@ return [
     'template.copied' => 'Template was successfully copied',
     'notification.note' => 'Note: ',
     'notification.sending_servers' => 'sending servers added by admin shall be used by users who are not permitted to add their own ones. You can select the sending servers to assign to a particular plan',
+    'tax_billing_required' => 'Billing information required?',
+    'plan.tax_billing_required.help' => 'Require tax billing information when subscribing a plan.',
 ];
