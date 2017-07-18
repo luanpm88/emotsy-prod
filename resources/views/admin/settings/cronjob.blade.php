@@ -5,13 +5,13 @@
 @section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
-		
-	<script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>		
+
+	<script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
 @endsection
 
 @section('page_header')
 
-			<div class="page-title">				
+			<div class="page-title">
 				<ul class="breadcrumb breadcrumb-caret position-right">
 					<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 				</ul>
@@ -24,16 +24,16 @@
 
 @section('content')
 				<div class="tabbable">
-					
+
 					@include("admin.settings._tabs")
-					
+
                     <form action="{{ action('Admin\SettingController@cronjob') }}" method="POST" class="form-validate-jqueryz">
 						{!! csrf_field() !!}
-						
+
 						@include('elements._cron_jobs', ['show_all' => true])
-					
+
 						<hr>
-						<div class="text-right">                                    
+						<div class="text-left">
 							<button class="btn btn-primary bg-teal">
 								{!! trans('messages.save') !!}
 							</button>
