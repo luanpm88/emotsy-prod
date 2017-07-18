@@ -17,8 +17,10 @@ if (!(file_exists('../storage/app') && is_dir('../storage/app') && (is_writable(
     $valid = false;
 }
 
+// proc_close() check =========
 $proc_close_enabled = true;
 try {
+    proc_close();
     $disabled = explode(',', ini_get('disable_functions'));
     $proc_close_enabled = !in_array('proc_close', $disabled);
 } catch (\Exception $ex) {
@@ -28,6 +30,21 @@ if (!$proc_close_enabled) {
     echo "ERROR: <strong>proc_close()</strong> must be enabled.<br />";
     $valid = false;
 }
+// =============================
+// escapeshellarg() check =========
+$escapeshellarg_enabled = true;
+try {
+    escapeshellarg();
+    $disabled = explode(',', ini_get('disable_functions'));
+    $escapeshellarg_enabled = !in_array('escapeshellarg', $disabled);
+} catch (\Exception $ex) {
+    $escapeshellarg_enabled = false;
+}
+if (!$escapeshellarg_enabled) {
+    echo "ERROR: <strong>escapeshellarg()</strong> must be enabled.<br />";
+    $valid = false;
+}
+// =============================
 
 if (!(file_exists('../storage/framework') && is_dir('../storage/framework') && (is_writable('../storage/framework')))) {
     echo "ERROR: The directory [/storage/framework] must be writable by the web server.<br />";

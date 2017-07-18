@@ -67,6 +67,19 @@ if (!$proc_close_enabled) {
     $valid = false;
 }
 // =============================
+// escapeshellarg() check =========
+$escapeshellarg_enabled = true;
+try {
+    $disabled = explode(',', ini_get('disable_functions'));
+    $escapeshellarg_enabled = !in_array('escapeshellarg', $disabled);
+} catch (\Exception $ex) {
+    $escapeshellarg_enabled = false;
+}
+if (!$escapeshellarg_enabled) {
+    echo "ERROR: <strong>escapeshellarg()</strong> must be enabled.<br />";
+    $valid = false;
+}
+// =============================
 if (!(file_exists('../storage/app') && is_dir('../storage/app') && (is_writable('../storage/app')))) {
     echo "ERROR: The directory [/storage/app] must be writable by the web server.<br />";
     $valid = false;

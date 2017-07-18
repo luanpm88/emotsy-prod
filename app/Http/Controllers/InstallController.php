@@ -631,6 +631,12 @@ class InstallController extends Controller
                 'note' => 'proc_close() must be enabled.',
             ],
             [
+                'type' => 'requirement',
+                'name' => 'escapeshellarg()',
+                'check' => func_enabled('escapeshellarg'),
+                'note' => 'escapeshellarg() must be enabled.',
+            ],
+            [
                 'type' => 'permission',
                 'name' => base_path('storage/app'),
                 'check' => file_exists(base_path('/storage/app')) &&
