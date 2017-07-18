@@ -56,6 +56,7 @@
 				<div class="panelz">
 					<div class="panel-bodyz">
 						<form id="checkout-form" action="{{ action('PaymentController@braintree_credit_card', $subscription->uid) }}" method="post">
+							{{ csrf_field() }}
 						  <div id="error-message"></div>
 
 						  <div class="form-group">

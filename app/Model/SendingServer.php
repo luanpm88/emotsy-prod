@@ -642,7 +642,7 @@ class SendingServer extends Model
          *     + subject
          *     + plain
          */
-        MailLog::info(sprintf("Sending test email for sending server `%s`", $this->name));
+        MailLog::info(sprintf("Sending test email to %s for sending server `%s`", $params['to_email'], $this->name));
         $message = \Swift_Message::newInstance();
         $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($params['from_email']));
         $message->setId($msgId);
@@ -661,5 +661,15 @@ class SendingServer extends Model
         }
 
         return true;
+    }
+
+    /**
+     * Check if the sending server is ElasticEmailAPI or ElasticEmailSmtp
+     *
+     * @return boolean
+     */
+    public function isElasticEmailServer()
+    {
+        return ($this->type == 'elasticemail-api' || $this->type == 'elasticemail-smtp');
     }
 }

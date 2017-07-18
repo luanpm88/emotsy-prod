@@ -30,6 +30,6 @@ class NotInstalled
      */
     public function alreadyInstalled($request)
     {
-        return file_exists(storage_path('installed'));
+        return file_exists(storage_path('app/installed'));
     }
 }

@@ -455,8 +455,8 @@ class UpgradeManager
     }
 
     /**
-     * Check if the provided file is a language file
-     *
+     * Upgrade all existing language packages using the provided file
+     * For example: $manager->upgradeLanguageFiles('/home/new/messages.php')
      */
     public function upgradeLanguageFiles($sourcePath)
     {

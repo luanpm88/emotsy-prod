@@ -226,10 +226,13 @@ class Campaign extends AbsCampaign
      * Transform Tags
      * Transform tags to actual values before sending.
      */
-    public function tagMessage($message, $subscriber, $msgId)
+    public function tagMessage($message, $subscriber, $msgId, $server = null)
     {
-        // @todo consider a solution for UNSUBSCRIBE_URL for test subscriber (also for other tags like: UPDATE_PROFILE_URL)
+        if (!is_null($server) && $server->isElasticEmailServer()) {
+            $message = $server->addUnsubscribeUrl($message);
+        }
 
+        // @todo consider a solution for UNSUBSCRIBE_URL for test subscriber (also for other tags like: UPDATE_PROFILE_URL)
         $tags = array(
             'SUBSCRIBER_EMAIL' => $subscriber->email,
             'CAMPAIGN_NAME' => $this->name,
@@ -282,7 +285,6 @@ class Campaign extends AbsCampaign
             // @todo how to manage such tags?
             $message = str_replace('{SUBSCRIBER_EMAIL}', $subscriber->email, $message);
         }
-
         return $message;
     }
 

@@ -531,7 +531,7 @@ class InstallController extends Controller
 
         $request->session()->set('install_finish', true);
 
-        $file_path = storage_path('installed');
+        $file_path = storage_path('app/installed');
         $file = fopen($file_path, 'w') or die('Unable to open file!');
         fwrite($file, '');
         fclose($file);
@@ -623,6 +623,12 @@ class InstallController extends Controller
                 'name' => 'PHP XML extension',
                 'check' => extension_loaded('xml'),
                 'note' => 'PHP XML extension is required.',
+            ],
+            [
+                'type' => 'requirement',
+                'name' => 'proc_close()',
+                'check' => func_enabled('proc_close'),
+                'note' => 'proc_close() must be enabled.',
             ],
             [
                 'type' => 'permission',

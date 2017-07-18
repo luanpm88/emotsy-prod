@@ -60,6 +60,7 @@
                 @elseif ($subscriber->emailVerification->isDeliverable())
                     <p>{!! trans('messages.verification.wording.deliverable', [ 'email' => sprintf("<strong>%s</strong>", $subscriber->email), 'at' => sprintf("<strong>%s</strong>", $subscriber->emailVerification->created_at) ]) !!}</p>
                     <form enctype="multipart/form-data" action="{{ action('SubscriberController@resetVerification', ['uid' => $subscriber->uid]) }}" method="POST" class="form-validate-jquery">
+                        {{ csrf_field() }}
                         <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
 
                         <div class="text-left">

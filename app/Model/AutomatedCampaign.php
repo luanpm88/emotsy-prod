@@ -120,8 +120,12 @@ class AutomatedCampaign extends AbsCampaign
      * Transform Tags
      * Transform tags to actual values before sending.
      */
-    public function tagMessage($message, $subscriber, $msgId)
+    public function tagMessage($message, $subscriber, $msgId, $server)
     {
+        if (!is_null($server) && $server->isElasticEmailServer()) {
+            $message = $server->addUnsubscribeUrl($message);
+        }
+
         $list = $this->trigger->autoEvent->automation->defaultMailList;
 
         $tags = array(

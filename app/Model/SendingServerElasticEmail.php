@@ -53,6 +53,16 @@ class SendingServerElasticEmail extends SendingServer
     }
 
     /**
+     * Process unsubscribe URL
+     * See documentation at: https://elasticemail.com/support/user-interface/unsubscribe/#Unsubscribe-Link
+     * @return string message
+     */
+    public function addUnsubscribeUrl($message)
+    {
+        return str_replace('{UNSUBSCRIBE_URL}', '{unsubscribe:{UNSUBSCRIBE_URL}}', $message);
+    }
+
+    /**
      * Handle notification from ElasticEmail
      * Handle Bounce/Feedback/Error
      *
@@ -167,6 +177,27 @@ class SendingServerElasticEmail extends SendingServer
         }
     }
 
+    /**
+     * Unescape the HTML attributes escaped by DOMDocument (inline CSS maker)
+     * For example: conver <a href="%7Bunsubscribe:...%7D" to <a href="{unsubscribe:...}"
+     *
+     * @return mixed
+     */
+    public function unescapeUnsubscribeUrl($message)
+    {
+        preg_match_all('/(?<matched>\%7Bunsubscribe:.*?\%7D)/', $message, $result);
+        foreach ($result['matched'] as $occurrence) {
+            $message = str_replace($occurrence, urldecode($occurrence), $message);
+        }
+
+        return $message;
+    }
+
+    /**
+     * Delivery message
+     *
+     * @return mixed
+     */
     public function sendElasticEmailV2($message) {
         // @todo: what if there are more than 2 parts?
         $html = null;
@@ -180,13 +211,19 @@ class SendingServerElasticEmail extends SendingServer
             }
         }
 
+        if (!is_null($html)) {
+            $html = $this->unescapeUnsubscribeUrl($html);
+        }
+
         // @todo: custom headers not correctly supported by Elastic Email API v2
         $fromEmail = array_keys($message->getFrom())[0];
-        $fromName = array_values($message->getFrom())[0];
+        $fromName = (is_null($message->getFrom())) ? null : array_values($message->getFrom())[0];
         $toEmail = array_keys($message->getTo())[0];
+        $replyToEmail = (is_null($message->getReplyTo())) ? null : array_keys($message->getReplyTo())[0];
 
         $result = $this->client()->email()->send([
             'to' => $toEmail,
+            'replyTo' => $replyToEmail,
             'subject' => $message->getSubject(),
             'from' => $fromEmail,
             'fromName' => $fromName,

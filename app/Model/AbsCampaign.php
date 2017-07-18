@@ -302,9 +302,9 @@ abstract class AbsCampaign extends Model
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
         $message->setEncoder(\Swift_Encoding::get8bitEncoding());
-        $message->addPart($this->getPlainContent($subscriber, $msgId), 'text/plain');
+        $message->addPart($this->getPlainContent($subscriber, $msgId, $server), 'text/plain');
         if ($this->type == self::TYPE_REGULAR) {
-            $message->addPart($this->getHtmlContent($subscriber, $msgId), 'text/html');
+            $message->addPart($this->getHtmlContent($subscriber, $msgId, $server), 'text/html');
         }
 
         if ($this->sign_dkim) {
@@ -430,7 +430,7 @@ abstract class AbsCampaign extends Model
      * @return String
      */
     public function getSubject($subscriber, $msgId) {
-        return $this->tagMessage($this->subject, $subscriber, $msgId);
+        return $this->tagMessage($this->subject, $subscriber, $msgId, null);
     }
 
     /**
@@ -469,7 +469,7 @@ abstract class AbsCampaign extends Model
      *
      * @return String
      */
-    public function getHtmlContent($subscriber, $msgId) {
+    public function getHtmlContent($subscriber, $msgId, $server = null) {
         // @note: IMPORTANT: the order must be as follows
         // * addTrackingURL
         // * appendOpenTrackingUrl
@@ -489,7 +489,7 @@ abstract class AbsCampaign extends Model
         }
 
         // Transform tags
-        $body = $this->tagMessage($body, $subscriber, $msgId);
+        $body = $this->tagMessage($body, $subscriber, $msgId, $server);
 
         // Transform CSS/HTML content to inline CSS
         $body = $this->inlineHtml($body);
@@ -502,9 +502,8 @@ abstract class AbsCampaign extends Model
      *
      * @return String
      */
-    public function getPlainContent($subscriber, $msgId) {
-        $plain = $this->tagMessage($this->plain, $subscriber, $msgId);
-
+    public function getPlainContent($subscriber, $msgId, $server = null) {
+        $plain = $this->tagMessage($this->plain, $subscriber, $msgId, $server);
         return $plain;
     }
 
