@@ -2407,3 +2407,13 @@ a.loading, button.loading {
 .mb-40 {
     margin-bottom: 40px;
 }
+.mb-30 {
+    margin-bottom: 30px;
+}
+.alert-warning a, .alert-warning a {
+    color: #aa3510 !important;
+    font-style: italic;
+}
+.alert-warning a:hover, .alert-warning a:hover {
+    text-decoration: underline;
+}

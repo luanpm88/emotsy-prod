@@ -1961,7 +1961,7 @@ return [
     'blacklist.import.success' => 'Success',
     'blacklist.import.failed' => 'Failed',
     'blacklist.remove' => 'Remove',
-    'blacklist.an_import_job_is_running' => 'There is an running import proccess. Click <a class="text-semibold" href=":link">here</a> to see the progress.',
+    'blacklist.an_import_job_is_running' => '<span class="text-semibold">NOTE: </span> there are an import job is running,. Click <a class="text-semibold" href=":link">here</a> to see the progress.',
     'blacklist.cancel' => 'Cancel',
     'blacklist.import.cancelled' => 'Import process was cancelled!',
     'blacklist.cancel.confirm' => 'You are about to cancel the running blacklist import process.',

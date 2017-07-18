@@ -23,7 +23,8 @@
 @section('content')
 
     @if (is_object($system_job))
-        <div class="alert alert-info">
+        <div class="alert alert-warning mb-30">
+            <button data-dismiss="alert" class="close" type="button"><span>×</span><span class="sr-only">Close</span></button>
             {!! trans('messages.blacklist.an_import_job_is_running', [
                 'link' => action('BlacklistController@import')
             ]) !!}
