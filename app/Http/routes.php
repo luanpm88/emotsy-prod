@@ -424,6 +424,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('email_verification_servers', 'EmailVerificationServerController');
 
     // Blacklists
+    Route::post('blacklists/job/{system_job_id}/cancel', 'BlacklistController@cancel');
     Route::get('blacklists/import/process', 'BlacklistController@importProcess');
     Route::post('blacklists/import', 'BlacklistController@import');
     Route::get('blacklists/import', 'BlacklistController@import');
@@ -562,6 +563,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/unsubscribe_log/listing', 'UnsubscribeLogController@listing');
 
     // Blacklist
+    Route::post('admin/blacklists/job/{system_job_id}/cancel', 'BlacklistController@cancel');
     Route::get('admin/blacklists/import/process', 'BlacklistController@importProcess');
     Route::post('admin/blacklists/import', 'BlacklistController@import');
     Route::get('admin/blacklists/import', 'BlacklistController@import');

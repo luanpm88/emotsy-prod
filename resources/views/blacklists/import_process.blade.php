@@ -43,7 +43,20 @@
     <a href="{{ action('BlacklistController@import') }}" class="btn btn-primary bg-teal mr-5">
         <i class="icon-reload-alt"></i> {{ trans('messages.blacklist.import_another') }}
     </a>
-    <a href="{{ action('BlacklistController@index') }}" class="btn btn-primary bg-grey">
+    <a href="{{ action('BlacklistController@index') }}" class="btn btn-default">
+        <i class="icon-arrow-left7"></i> {{ trans('messages.return_to_blacklist') }}
+    </a>
+@endif
+
+@if (in_array($system_job->status, [
+    \Acelle\Model\SystemJob::STATUS_NEW,
+    \Acelle\Model\SystemJob::STATUS_RUNNING,
+]))
+    <br>
+    <a link-method="POST" link-confirm="{{ trans('messages.blacklist.cancel.confirm') }}" href="{{ action('BlacklistController@cancel', $system_job->id) }}" class="btn btn-danger bg-grey-800 mr-5">
+        <i class="icon-cross2"></i> {{ trans('messages.blacklist.cancel') }}
+    </a>
+    <a href="{{ action('BlacklistController@index') }}" class="btn btn-default">
         <i class="icon-arrow-left7"></i> {{ trans('messages.return_to_blacklist') }}
     </a>
 @endif

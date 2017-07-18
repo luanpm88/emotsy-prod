@@ -75,6 +75,21 @@ class BlacklistPolicy
         return $can;
     }
 
+    public function importCancel(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $ability = $user->admin->getPermission('report_blacklist');
+                $can = $ability == 'yes';
+                break;
+            case 'customer':
+                $can = $user->customer->getActiveImportBlacklistJobs()->count();
+                break;
+        }
+
+        return $can;
+    }
+
     public function update(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
     {
         switch ($role) {

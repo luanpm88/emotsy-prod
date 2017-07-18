@@ -24,15 +24,21 @@ class BlacklistController extends Controller
      */
     public function index(Request $request)
     {
-        if ($request->user()->admin->getPermission('report_blacklist') == 'no') {
+        $admin = $request->user()->admin;
+
+        if (!$admin->can('import', new \Acelle\Model\Blacklist())) {
             return $this->notAuthorized();
         }
 
         $request->merge(array("admin_id" => $request->user()->admin->id));
         $blacklists = \Acelle\Model\Blacklist::search($request);
 
+        # Get current job
+        $system_job = $admin->getLastActiveImportBlacklistJob();
+
         return view('admin.blacklists.index', [
             'blacklists' => $blacklists,
+            'system_job' => $system_job,
         ]);
     }
 
@@ -43,7 +49,7 @@ class BlacklistController extends Controller
      */
     public function listing(Request $request)
     {
-        if (!$request->user()->customer->can('read', new \Acelle\Model\Blacklist())) {
+        if (!$request->user()->admin->can('read', new \Acelle\Model\Blacklist())) {
             return $this->notAuthorized();
         }
 
@@ -122,16 +128,40 @@ class BlacklistController extends Controller
      */
     public function importProcess(Request $request)
     {
-        $customer = $request->user()->customer;
+        $admin = $request->user()->admin;
+
         $system_job = \Acelle\Model\SystemJob::find($request->system_job_id);
 
         // authorize
-        if (!$customer->can('read', new \Acelle\Model\Blacklist())) {
+        if (!$admin->can('read', new \Acelle\Model\Blacklist())) {
             return $this->notAuthorized();
         }
 
         return view('admin.blacklists.import_process', [
             'system_job' => $system_job
         ]);
+    }
+
+    /**
+     * Cancel importing job.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cancel(Request $request)
+    {
+        $admin = $request->user()->admin;
+        $system_job = $admin->getLastActiveImportBlacklistJob();
+
+        // authorize
+        if (!$admin->can('importCancel', new \Acelle\Model\Blacklist())) {
+            return $this->notAuthorized();
+        }
+
+        $system_job->setCancelled();
+
+        $request->session()->flash('alert-success', trans('messages.blacklist.import.cancelled'));
+        return redirect()->action('Admin\BlacklistController@import');
     }
 }

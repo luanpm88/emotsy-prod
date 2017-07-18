@@ -2400,3 +2400,7 @@ a.loading, button.loading {
 .table-box tr:last-child td {
     border-color: #eee;
 }
+.alert {
+    border: none;
+    border-radius: 7px;
+}

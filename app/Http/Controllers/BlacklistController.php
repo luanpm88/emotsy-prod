@@ -24,15 +24,21 @@ class BlacklistController extends Controller
      */
     public function index(Request $request)
     {
-        if (!$request->user()->customer->can('read', new \Acelle\Model\Blacklist())) {
+        $customer = $request->user()->customer;
+
+        if (!$customer->can('read', new \Acelle\Model\Blacklist())) {
             return $this->notAuthorized();
         }
 
         $request->merge(array("customer_id" => $request->user()->customer->id));
         $blacklists = \Acelle\Model\Blacklist::search($request);
 
+        # Get current job
+        $system_job = $customer->getLastActiveImportBlacklistJob();
+
         return view('blacklists.index', [
             'blacklists' => $blacklists,
+            'system_job' => $system_job,
         ]);
     }
 
@@ -251,5 +257,28 @@ class BlacklistController extends Controller
         return view('blacklists.import_process', [
             'system_job' => $system_job
         ]);
+    }
+
+    /**
+     * Cancel importing job.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cancel(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $system_job = $customer->getLastActiveImportBlacklistJob();
+
+        // authorize
+        if (!$customer->can('importCancel', new \Acelle\Model\Blacklist())) {
+            return $this->notAuthorized();
+        }
+
+        $system_job->setCancelled();
+
+        $request->session()->flash('alert-success', trans('messages.blacklist.import.cancelled'));
+        return redirect()->action('BlacklistController@import');
     }
 }
