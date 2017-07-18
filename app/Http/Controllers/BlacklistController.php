@@ -279,6 +279,6 @@ class BlacklistController extends Controller
         $system_job->setCancelled();
 
         $request->session()->flash('alert-success', trans('messages.blacklist.import.cancelled'));
-        return redirect()->action('BlacklistController@import');
+        return redirect()->action('BlacklistController@index');
     }
 }

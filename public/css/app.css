@@ -2404,3 +2404,6 @@ a.loading, button.loading {
     border: none;
     border-radius: 7px;
 }
+.mb-40 {
+    margin-bottom: 40px;
+}

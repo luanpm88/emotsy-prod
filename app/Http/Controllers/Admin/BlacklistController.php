@@ -26,7 +26,7 @@ class BlacklistController extends Controller
     {
         $admin = $request->user()->admin;
 
-        if (!$admin->can('import', new \Acelle\Model\Blacklist())) {
+        if (!$admin->can('read', new \Acelle\Model\Blacklist())) {
             return $this->notAuthorized();
         }
 
@@ -162,6 +162,6 @@ class BlacklistController extends Controller
         $system_job->setCancelled();
 
         $request->session()->flash('alert-success', trans('messages.blacklist.import.cancelled'));
-        return redirect()->action('Admin\BlacklistController@import');
+        return redirect()->action('Admin\BlacklistController@index');
     }
 }
