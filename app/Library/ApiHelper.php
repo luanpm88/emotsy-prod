@@ -158,7 +158,7 @@ class ApiHelper
 ' . str_replace("-LIST_ID-", "<redbold>{list_uid}</redbold>", action("Api\SubscriberController@index", ["list_id" => "-LIST_ID-"])) . '? \
 -d api_token=' . \Auth::user()->api_token . ' \
 -d per_page=20 \
--d page=2',
+-d page=1',
                 ],
 
                 [
