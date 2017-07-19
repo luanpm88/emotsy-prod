@@ -1932,6 +1932,6 @@
   'notification.sending_servers' => 'sending servers added by admin shall be used by users who are not permitted to add their own ones. You can select the sending servers to assign to a particular plan',
   'languages.wording' => 'Acelle Mail multilingual support feature allows you to use different, translated versions of the web application. You can switch to a preferred language or even add your own one. You can customize the user interface (UI) text by translating it the way you desire.',
   'tax_billing_required' => 'Billing information required?',
-  'plan.tax_billing_required.help' => 'Require tax billing information when subscribing a plan.',
+  'plan.tax_billing_required.help' => 'Ask for tax billing information when subscribing to the plan',
   'the_email_no_longer_exists' => 'The email no longer exists',
 ) ?>
