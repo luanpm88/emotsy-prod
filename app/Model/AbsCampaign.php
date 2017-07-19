@@ -359,6 +359,14 @@ abstract class AbsCampaign extends Model
     }
 
     /**
+     * Check if the campaign is in the "DONE" status;
+     */
+    public function isDone()
+    {
+        return $this->status == self::STATUS_DONE;
+    }
+
+    /**
      * Check if the campaign is ready to start
      */
     public function isReady()
