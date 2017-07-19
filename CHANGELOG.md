@@ -4,7 +4,7 @@
  * Fixed: payment issue with Stripe/Braintree
  * Fixed: tax billing information is configurable, no longer compulsory
  * Fixed: license verification does not work in certain cases
- * Fixed: 
+ * Added: allow resending a campaign
 
 3.0.9 / 2017-07-13
 ==================
