@@ -1082,6 +1082,12 @@ class CampaignController extends Controller
     {
         $message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
         $tracking_log = \Acelle\Model\TrackingLog::where('message_id', '=', $message_id)->first();
+
+        if (!is_object($tracking_log)) {
+            LaravelLog::error("Tracking log not exists");
+            return view('somethingWentWrong', ['message' => trans('messages.the_email_no_longer_exists')]);
+        }
+
         $subscriber = $tracking_log->subscriber;
 
         if ($subscriber->status != 'unsubscribed') {
@@ -1788,7 +1794,7 @@ class CampaignController extends Controller
 
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
-            return view('somethingWentWrong', ['message' => trans('messages.message_not_found')]);
+            return view('somethingWentWrong', ['message' => trans('messages.the_email_no_longer_exists')]);
         }
     }
 
