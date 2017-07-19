@@ -178,6 +178,7 @@ class UpgradeManager
             $deletes = $meta['deleted'];
             $packages = $meta['packages'];
             $dirs = $meta['dirs'];
+            $langFiles = [];
 
             // new or updated files
             foreach($updates as $file) {
@@ -201,7 +202,7 @@ class UpgradeManager
                 } else {
                     LaravelLog::info("Replacing {$target}");
                     if ($this->isLanguageFile($source)) {
-                        $this->upgradeLanguageFiles($source);
+                        $langFiles[] = $source; // $this->upgradeLanguageFiles($source);
                     } else {
                         $this->createBaseDir($target);
                         if (!copy($source, $target)) {
@@ -210,6 +211,13 @@ class UpgradeManager
                         }
                     }
                 }
+            }
+
+            // process language files after all the other files have been processed
+            // in case a new language is added
+            foreach ($langFiles as $source) {
+                LaravelLog::info("Upgrade language file {$source}");
+                $this->upgradeLanguageFiles($source);
             }
 
             // deleted files
