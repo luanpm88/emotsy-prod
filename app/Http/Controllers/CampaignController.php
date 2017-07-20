@@ -1858,4 +1858,29 @@ class CampaignController extends Controller
             'campaign' => $campaign
         ]);
     }
+
+    /**
+     * Resend the specified campaign.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function resend(Request $request, $uid)
+    {
+        $customer = $request->user()->customer;
+        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+
+        // authorize
+        if (\Gate::allows('resend', $campaign)) {
+            $campaign->ready();
+            // Redirect to my lists page
+            echo trans('messages.campaign.resent');
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => trans('messages.not_authorized_message')
+            ]);
+        }
+    }
 }

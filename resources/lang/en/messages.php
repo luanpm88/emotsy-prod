@@ -1936,4 +1936,7 @@
   'tax_billing_required' => 'Billing information required?',
   'plan.tax_billing_required.help' => 'Ask for tax billing information when subscribing to the plan',
   'the_email_no_longer_exists' => 'The email no longer exists',
+  'campaign.resend' => 'Resend',
+  'campaign.resend_confirm' => 'You are going to send the campaign again to subscribers who did not receive the email yet.',
+  'campaign.resent' => 'The campaign was successfully resent',
 ) ?>

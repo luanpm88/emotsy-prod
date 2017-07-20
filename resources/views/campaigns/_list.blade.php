@@ -94,6 +94,10 @@
 						<div class="btn-group">
 							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
+								@if (\Gate::allows('resend', $item))
+									<li><a data-method='POST' link-confirm="{{ trans('messages.campaign.resend_confirm') }}" href="{{ action('CampaignController@resend', ["uids" => $item->uid]) }}">
+										<i class="icon-reload-alt"></i> {{ trans("messages.campaign.resend") }}</a></li>
+								@endif
 								@if (\Gate::allows('pause', $item))
 									<li><a link-confirm="{{ trans('messages.pause_campaigns_confirm') }}" href="{{ action('CampaignController@pause', ["uids" => $item->uid]) }}"><i class="icon-pause"></i> {{ trans("messages.pause") }}</a></li>
 								@endif

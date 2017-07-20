@@ -247,6 +247,8 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
+    Route::post('campaigns/{uid}/resend', 'CampaignController@resend');
+
     Route::get('campaigns/{uid}/template/review-iframe', 'CampaignController@templateReviewIframe');
     Route::get('campaigns/{uid}/template/review', 'CampaignController@templateReview');
     Route::get('campaigns/{message_id}/web-view', 'CampaignController@webView');
