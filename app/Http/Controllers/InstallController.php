@@ -205,6 +205,7 @@ class InstallController extends Controller
                 $conn = new \mysqli($request->hostname, $request->username, $request->password, $request->database_name, $port);
             } catch (\Exception $e) {
                 $rules['mysql_connection'] = 'required';
+                $request->session()->flash('alert-error', $e->getMessage());
             }
 
             $this->validate($request, $rules);
