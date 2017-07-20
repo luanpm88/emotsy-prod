@@ -212,7 +212,6 @@ class BlacklistController extends Controller
         }
 
         // Redirect to my lists page
-        echo $blacklists->count();
         echo trans('messages.blacklists.deleted');
     }
 
