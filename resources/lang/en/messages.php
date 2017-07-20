@@ -1965,4 +1965,5 @@ return [
     'blacklist.cancel' => 'Cancel',
     'blacklist.import.cancelled' => 'Import process was cancelled!',
     'blacklist.cancel.confirm' => 'You are about to cancel the running blacklist import process.',
+    'select_all_pages' => 'Select all pages',
 ];

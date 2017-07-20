@@ -2417,3 +2417,15 @@ a.loading, button.loading {
 .alert-warning a:hover, .alert-warning a:hover {
     text-decoration: underline;
 }
+.check_all_pages_outer {
+    margin-left: 10px;
+}
+.check_all_pages_outer .checker span {
+    margin: -2px;
+    background: #fff;
+}
+.check_all_pages_outer .checker {
+    border: solid 2px #bbb;
+    border-width: 0 1px 1px 0;
+    background: #ddd;
+}

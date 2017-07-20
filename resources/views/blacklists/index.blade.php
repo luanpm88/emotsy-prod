@@ -40,6 +40,11 @@
             <div class="col-md-9">
                 @if ($blacklists->count() >= 0)
                     <div class="filter-box">
+                        <div class="checkbox inline check_all_pages_outer" data-popup="tooltip" title="{{ trans('messages.select_all_pages') }}">
+                            <label>
+                                <input type="checkbox" class="styled check_all_pages">
+                            </label>
+                        </div>
                         <div class="btn-group list_actions hide">
                             <button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
                                 {{ trans('messages.actions') }} <span class="caret"></span>
