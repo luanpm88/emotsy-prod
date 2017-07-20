@@ -42,7 +42,7 @@
                     <div class="filter-box">
                         <div class="checkbox inline check_all_pages_outer" data-popup="tooltip" title="{{ trans('messages.select_all_pages') }}">
                             <label>
-                                <input type="checkbox" class="styled check_all_pages">
+                                <input type="checkbox" name="check_all_pages" class="styled check_all_pages">
                             </label>
                         </div>
                         <div class="btn-group list_actions hide">
