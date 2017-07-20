@@ -1819,8 +1819,8 @@
   'verification.wording.risky_or_unknown' => 'The email address :email was verified at :at. Verification result is :result',
   'verification.title.email_verification' => 'Email verification',
   'verification.error.job_failed' => 'Something went wrong with the verification process, please stop the job and try again later',
-  'can_import_list' => 'Import list',
-  'can_export_list' => 'Export list',
+  'can_import_list' => 'Customer can import list',
+  'can_export_list' => 'Customer can export list',
   'cash.wording' => 'Enable the cash payment option to allow payment to take place outside of the system. i.e. user can somehow make the payment for the subscription and then click on the "Pay In Cash" button to claim the payment.
         As the administrator, you can then go to the Subscription dashboard to review and confirm the payment.',
   'braintree_credit_card.wording' => 'Enter your Braintree merchant account\'s information to accept payments by credit card',

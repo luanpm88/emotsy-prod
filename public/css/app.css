@@ -1072,7 +1072,7 @@ table.table-log tr td:first-child {
 .checkbox.unlimited-check, .checkbox.sending_quota-check {
     display: block;
     margin-top: -10px;
-    margin-bottom: 20px;
+    margin-bottom: 0;
 }
 .checkbox.unlimited-check label, .checkbox.sending_quota-check label {
     font-weight: 600;
@@ -2125,7 +2125,7 @@ ul.modern-listing li .admin-line i {
     border-color: #555;
 }
 .boxing {
-    padding-bottom: 20px;
+    padding-bottom: 0;
 }
 input.mini-input {
     width: 200px !important;
@@ -2376,4 +2376,14 @@ a.loading {
 }
 .filter-box input.search {
     margin-top: -2px;
+}
+.control-checkbox2 {
+    margin-top: 15px;
+}
+.control-checkbox2 label {
+    display: inline;
+}
+.control-checkbox2 .checker {
+    float: left;
+    margin-right: 15px;
 }
