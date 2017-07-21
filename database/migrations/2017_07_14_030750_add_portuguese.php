@@ -13,7 +13,7 @@ class AddPortuguese extends Migration
      */
     public function up()
     {
-        $newId = Language::max('id')+1;
+        $newId = Language::max('id') + 1;
 
         // reserve ID of 1,2 for English and Spanish which will be loaded from the database_init.sql file
         if ($newId < 3 ) {
