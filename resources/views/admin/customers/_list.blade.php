@@ -42,7 +42,7 @@
                             <div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('SubscriberUsage') }}%">
                             </div>
                         </div>
-                        <span class="text-muted"><strong>{{ $item->readCache('SubscriberCount') }}/{{ $item->maxSubscribers() }}</strong><br /> {{ trans('messages.subscribers') }}</span>
+                        <span class="text-muted"><strong>{{ number_with_delimiter($item->readCache('SubscriberCount')) }}/{{ number_with_delimiter($item->maxSubscribers()) }}</strong><br /> {{ trans('messages.subscribers') }}</span>
                     </div>
                 </td>
                 <td>

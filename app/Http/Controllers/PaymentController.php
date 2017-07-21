@@ -25,7 +25,7 @@ class PaymentController extends Controller {
      */
     public function checkBillingInformation(Request $request, $subscription)
     {
-        if (null == $request->session()->get('billing_information')) {
+        if (null == $request->session()->get('billing_information') && $subscription->isTaxBillingRequired()) {
             return action('PaymentController@billingInformation', $subscription->uid);
         } else {
             return true;

@@ -13,15 +13,15 @@ class AddPortuguese extends Migration
      */
     public function up()
     {
-        $newId = Language::max('id');
+        $newId = Language::max('id')+1;
 
         // reserve ID of 1,2 for English and Spanish which will be loaded from the database_init.sql file
         if ($newId < 3 ) {
-            $maxId = 3;
+            $newId = 3;
         }
 
         $lang = new Language();
-        $lang->id = $maxId;
+        $lang->id = $newId;
         $lang->name = 'Portuguese';
         $lang->code = 'pt';
         $lang->region_code = 'pt';

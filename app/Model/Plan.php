@@ -36,7 +36,7 @@ class Plan extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'frequency_amount', 'frequency_unit', 'price', 'color', 'currency_id'
+        'name', 'frequency_amount', 'frequency_unit', 'price', 'color', 'currency_id', 'tax_billing_required'
     ];
 
     /**

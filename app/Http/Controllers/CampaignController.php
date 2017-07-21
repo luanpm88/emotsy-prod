@@ -1082,6 +1082,12 @@ class CampaignController extends Controller
     {
         $message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
         $tracking_log = \Acelle\Model\TrackingLog::where('message_id', '=', $message_id)->first();
+
+        if (!is_object($tracking_log)) {
+            LaravelLog::error("Tracking log not exists");
+            return view('somethingWentWrong', ['message' => trans('messages.the_email_no_longer_exists')]);
+        }
+
         $subscriber = $tracking_log->subscriber;
 
         if ($subscriber->status != 'unsubscribed') {
@@ -1788,7 +1794,7 @@ class CampaignController extends Controller
 
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
-            return view('somethingWentWrong', ['message' => trans('messages.message_not_found')]);
+            return view('somethingWentWrong', ['message' => trans('messages.the_email_no_longer_exists')]);
         }
     }
 
@@ -1851,5 +1857,30 @@ class CampaignController extends Controller
         return view('campaigns.template_review_iframe', [
             'campaign' => $campaign
         ]);
+    }
+
+    /**
+     * Resend the specified campaign.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function resend(Request $request, $uid)
+    {
+        $customer = $request->user()->customer;
+        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+
+        // authorize
+        if (\Gate::allows('resend', $campaign)) {
+            $campaign->ready();
+            // Redirect to my lists page
+            echo trans('messages.campaign.resent');
+        } else {
+            echo json_encode([
+                'status' => 'error',
+                'message' => trans('messages.not_authorized_message')
+            ]);
+        }
     }
 }

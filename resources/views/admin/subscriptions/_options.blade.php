@@ -4,9 +4,6 @@
         <li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
             <i class="icon-database"></i> {{ trans('messages.resources_quota') }}</a>
         </li>
-        <li class="text-semibold"><a href="#top-tab2" data-toggle="tab">
-            <i class="icon-upload"></i> {{ trans('messages.file_upload') }}</a>
-        </li>
         <li class="text-semibold"><a href="#top-tab3" data-toggle="tab">
             <i class="icon-stats-bars4"></i> {{ trans('messages.sending_quota') }}</a>
         </li>
@@ -22,7 +19,10 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="top-tab1">
-            @include('admin.subscriptions._tab_resources')
+            @include('admin.plans._form_resources', [
+                'help_class' => 'subscription',
+                'rules' => $subscription->rules()
+            ])
         </div>
         <div class="tab-pane" id="top-tab2">
             @include('admin.subscriptions._tab_file_upload')

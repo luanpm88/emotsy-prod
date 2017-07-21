@@ -205,6 +205,7 @@ class InstallController extends Controller
                 $conn = new \mysqli($request->hostname, $request->username, $request->password, $request->database_name, $port);
             } catch (\Exception $e) {
                 $rules['mysql_connection'] = 'required';
+                $request->session()->flash('alert-error', $e->getMessage());
             }
 
             $this->validate($request, $rules);
@@ -629,6 +630,12 @@ class InstallController extends Controller
                 'name' => 'proc_close()',
                 'check' => func_enabled('proc_close'),
                 'note' => 'proc_close() must be enabled.',
+            ],
+            [
+                'type' => 'requirement',
+                'name' => 'escapeshellarg()',
+                'check' => func_enabled('escapeshellarg'),
+                'note' => 'escapeshellarg() must be enabled.',
             ],
             [
                 'type' => 'permission',

@@ -26,7 +26,7 @@
     @include("account._menu")
 
     <div class="row">
-        <div class="col-sm-12 col-md-6 col-lg-6">
+        <div class="col-sm-12 col-md-8 col-lg-8">
             <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
 
             <div class="sub-section">
@@ -49,6 +49,27 @@
                             ]) !!}
                         </p>
 
+                        @if (!$subscription->isPaid() && !$subscription->isActive())
+                            <ul class="dotted-list topborder section mb-0">
+                                <li class="border-bottom-0">
+                                    <div class="unit size1of2 text-bold">
+                                        <strong>{{ trans('messages.price') }}</strong>
+                                    </div>
+                                    <div class="lastUnit size1of2">
+                                        <h5 class="mt-0 mb-0 text-semibold">
+                                            <mc:flag>
+                                                @if ($subscription->price)
+                                                    {{ Acelle\Library\Tool::format_price($subscription->price, $subscription->currency_format) }}
+                                                @else
+                                                    {{ trans('messages.free') }}
+                                                @endif
+                                            </mc:flag>
+                                        </h5>
+                                    </div>
+                                </li>
+                            </ul>
+                        @endif
+
                         @include('subscriptions._details', ['subscription' => $subscription])
 
                         @if (!$subscription->isPaid() && !$subscription->isActive())
@@ -56,14 +77,18 @@
 
                                 @foreach (\Acelle\Model\PaymentMethod::getAllActive() as $payment_method)
                                     @if ($payment_method->type != \Acelle\Model\PaymentMethod::TYPE_CASH)
-                                        <span class="">
-                                            <a
-                                                href="{{ action('SubscriptionController@selectPaymentMethod', ["uid" => $subscription->uid, 'payment_method_id' => $payment_method->uid]) }}"
-                                                class="btn bg-teal"
-                                            >
-                                                {!! trans('messages.payment_method_type_' . $payment_method->type . '_button') !!}
-                                            </a>
-                                        </span>
+                                        @if (
+                                            $subscription->isValidPaymentMethod($payment_method)
+                                        )
+                                            <span class="mb-10">
+                                                <a
+                                                    href="{{ action('SubscriptionController@selectPaymentMethod', ["uid" => $subscription->uid, 'payment_method_id' => $payment_method->uid]) }}"
+                                                    class="btn bg-teal"
+                                                >
+                                                    {!! trans('messages.payment_method_type_' . $payment_method->type . '_button') !!}
+                                                </a>
+                                            </span>
+                                        @endif
                                     @endif
                                 @endforeach
 
@@ -297,6 +322,27 @@
                             ]) !!}
                         </p>
 
+                        @if (!$nextSubscription->isPaid() && !$nextSubscription->isActive())
+                            <ul class="dotted-list topborder section mb-0">
+                                <li class="border-bottom-0">
+                                    <div class="unit size1of2 text-bold">
+                                        <strong>{{ trans('messages.price') }}</strong>
+                                    </div>
+                                    <div class="lastUnit size1of2">
+                                        <h5 class="mt-0 mb-0 text-semibold">
+                                            <mc:flag>
+                                                @if ($nextSubscription->price)
+                                                    {{ Acelle\Library\Tool::format_price($nextSubscription->price, $nextSubscription->currency_format) }}
+                                                @else
+                                                    {{ trans('messages.free') }}
+                                                @endif
+                                            </mc:flag>
+                                        </h5>
+                                    </div>
+                                </li>
+                            </ul>
+                        @endif
+
                         @include('subscriptions._details', ['subscription' => $nextSubscription])
 
                         @if (!$nextSubscription->isPaid() && !$nextSubscription->isActive())
@@ -304,14 +350,18 @@
 
                                 @foreach (\Acelle\Model\PaymentMethod::getAllActive() as $payment_method)
                                     @if ($payment_method->type != \Acelle\Model\PaymentMethod::TYPE_CASH)
-                                        <span class="">
-                                            <a
-                                                href="{{ action('SubscriptionController@selectPaymentMethod', ["uid" => $nextSubscription->uid, 'payment_method_id' => $payment_method->uid]) }}"
-                                                class="btn bg-teal"
-                                            >
-                                                {!! trans('messages.payment_method_type_' . $payment_method->type . '_button') !!}
-                                            </a>
-                                        </span>
+                                        @if (
+                                            $nextSubscription->isValidPaymentMethod($payment_method)
+                                        )
+                                            <span class="mb-10">
+                                                <a
+                                                    href="{{ action('SubscriptionController@selectPaymentMethod', ["uid" => $nextSubscription->uid, 'payment_method_id' => $payment_method->uid]) }}"
+                                                    class="btn bg-teal"
+                                                >
+                                                    {!! trans('messages.payment_method_type_' . $payment_method->type . '_button') !!}
+                                                </a>
+                                            </span>
+                                        @endif
                                     @endif
                                 @endforeach
 

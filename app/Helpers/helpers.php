@@ -279,6 +279,9 @@ function language_code() {
  */
 function number_to_percentage($number, $precision = 2)
 {
+    if (!is_numeric($number)) {
+        return $number;
+    }
     return sprintf("%.{$precision}f%%", $number * 100);
 }
 
@@ -289,6 +292,9 @@ function number_to_percentage($number, $precision = 2)
  */
 function number_with_delimiter($number, $precision = 0, $seperator = ',')
 {
+    if (!is_numeric($number)) {
+        return $number;
+    }
     return number_format($number, $precision, '.', $seperator);
 }
 

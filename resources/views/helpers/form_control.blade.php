@@ -7,14 +7,14 @@
                                     $classes = (isset($rules) && isset($rules[$var_name])) ? ' '.str_replace('|', ' ', $rules[$var_name]) : '';
                                     $required = (isset($rules) && isset($rules[$var_name]) && in_array('required', explode('|', $rules[$var_name]))) ? true : '';
                                 ?>
-                                
+
 								@if ($type == 'checkbox')
 									@include('helpers._' . $type)
 								@else
-									<div class="form-group{{ $errors->has($var_name) ? ' has-error' : '' }}">									
-										
-									
-										@if (!empty($label))
+									<div class="form-group{{ $errors->has($var_name) ? ' has-error' : '' }} control-{{ $type }}">
+
+
+										@if (!empty($label) && $type != 'checkbox2')
 											<label>
 												{!! $label !!}
 												@if ($required)
@@ -27,7 +27,7 @@
 												@endif
 											</label>
 										@endif
-										
+
 										@if ($type == 'textarea')
 											@if ($errors->has($var_name))
 												<span class="help-block">
@@ -35,33 +35,33 @@
 												</span>
 											@endif
 										@endif
-										
+
 										@if (!empty($prefix))
 											<span class="prefix">
 												{!! $prefix !!}
 											</span>
 										@endif
-										
+
 										@include('helpers._' . $type)
-										
+
 										@if (!empty($quick_note))
 											<span class="quick_note">
 												{!! $quick_note !!}
 											</span>
 										@endif
-										
+
 										@if (!empty($subfix))
 											<span class="subfix">
 												{!! $subfix !!}
 											</span>
 										@endif
-										
+
 										@if (isset($help_class) && Lang::has('messages.' . $help_class . '.' . $name . '.help'))
 											<div class="help alert alert-info">
 												{!! trans('messages.' . $help_class . '.' . $name . '.help') !!}
 											</div>
 										@endif
-										
+
 										@if ($type != 'textarea')
 											@if ($errors->has($var_name))
 												<span class="help-block">
