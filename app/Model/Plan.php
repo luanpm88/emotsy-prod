@@ -466,7 +466,7 @@ class Plan extends Model
      */
     public function displayAllowCreateSendingServer()
     {
-        if ($this->getOption("create_sending_servers") == 'no') {
+        if ($this->getOption("sending_server_option") != \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
             return trans('messages.feature_not_allow');
         }
 

@@ -1408,7 +1408,7 @@ class MailList extends Model
         $result = [];
 
         // Check the customer has permissions using sending servers and has his own sending servers
-        if ($this->customer->getOption("create_sending_servers") == 'yes') {
+        if ($this->customer->getOption("sending_server_option") == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
             if ($this->all_sending_servers) {
                 if ($this->customer->activeSendingServers()->count()) {
                     $result = $this->customer->activeSendingServers()->get()->map(function ($server) {
@@ -1421,7 +1421,7 @@ class MailList extends Model
                 });
             }
         // If customer dont have permission creating sending servers
-        } else {
+        } elseif ($this->customer->getOption("sending_server_option") == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM) {
             $subscription = $this->customer->getCurrentSubscription();
 
             // Check if has sending servers for current subscription

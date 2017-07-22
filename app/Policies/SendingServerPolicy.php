@@ -22,7 +22,7 @@ class SendingServerPolicy
                 $can = $user->admin->getPermission('sending_server_read') != 'no';
                 break;
             case 'customer':
-                $can = $user->customer->getOption('create_sending_servers') == 'yes';
+                $can = $user->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN;
                 break;
         }
 
@@ -51,7 +51,7 @@ class SendingServerPolicy
                 break;
             case 'customer':
                 $max = $user->customer->getOption('sending_servers_max');
-                $can = $user->customer->getOption('create_sending_servers') == 'yes'
+                $can = $user->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN
                     && ($user->customer->sendingServersCount() < $max || $max == -1);
                 $can = $can && (!isset($item->type) || $user->customer->isAllowCreateSendingServerType($item->type));
                 break;
@@ -69,7 +69,8 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getOption('create_sending_servers') == 'yes' && $user->customer->id == $item->customer_id;
+                $can = $user->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN
+                        && $user->customer->id == $item->customer_id;
                 break;
         }
 
@@ -85,7 +86,7 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getOption('create_sending_servers') == 'yes'
+                $can = $user->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN
                     && $user->customer->id == $item->customer_id;
                 break;
         }
@@ -102,7 +103,7 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getOption('create_sending_servers') == 'yes'
+                $can = $user->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN
                     && $user->customer->id == $item->customer_id;
                 break;
         }
@@ -119,7 +120,7 @@ class SendingServerPolicy
                     || ($ability == 'own' && $user->admin->id == $item->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->getOption('create_sending_servers') == 'yes'
+                $can = $user->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN
                     && $user->customer->id == $item->customer_id;
                 break;
         }

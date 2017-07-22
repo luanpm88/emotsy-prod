@@ -207,7 +207,7 @@
 			<!-- Alert if customer use their own sending servers but haven't had any one yet -->
 			@if (
 				is_object(\Auth::user()->customer) &&
-				\Auth::user()->customer->getOption("create_sending_servers") == 'yes' &&
+				\Auth::user()->customer->getOption("sending_server_option") == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN &&
 				!\Auth::user()->customer->activeSendingServers()->count())
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 					<h4 class="ui-pnotify-title">

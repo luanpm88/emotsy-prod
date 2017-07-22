@@ -198,19 +198,6 @@
 		});
 		$("input[name='options[all_sending_servers]']").trigger("change");
 
-
-		// Sending servers checking setting
-		$(document).on("change", "input[name='options[create_sending_servers]']", function(e) {
-			if($('input[name="options[create_sending_servers]"]:checked').val() == 'yes') {
-				$(".sending-servers-yes").show();
-				$(".sending-servers-no").hide();
-			} else {
-				$(".sending-servers-no").show();
-				$(".sending-servers-yes").hide();
-			}
-		});
-		$('input[name="options[create_sending_servers]"]').trigger("change");
-
         // Sending domains checking setting
 		$(document).on("change", "input[name='options[create_sending_domains]']", function(e) {
 			if($('input[name="options[create_sending_domains]"]:checked').val() == 'yes') {
