@@ -1948,4 +1948,5 @@
       cho phép chọn 1 sending server bên dưới (chỉ test Sendgrid Server) để khi assign plan cho customer thì cũng sẽ gọi API
       của sending server để tạo subaccount',
   'select_sending_servers' => 'Select sending servers',
+  'select_sending_server_with_subaccount' => 'Select sending server with subaccount',
 ) ?>

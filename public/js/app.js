@@ -1715,4 +1715,6 @@ $(function() {
             radio_box.find('.radio_more_box').hide();
         }
     });
+    $(".control-radio .radio_box .main-control input:checked").parents('.main-control').trigger('click');
+
 });

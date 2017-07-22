@@ -30,6 +30,11 @@ class Plan extends Model
     const STATUS_INACTIVE = 'inactive';
     const STATUS_ACTIVE = 'active';
 
+    // Plan status
+    const SENDING_SERVER_OPTION_SYSTEM = 'system';
+    const SENDING_SERVER_OPTION_OWN = 'own';
+    const SENDING_SERVER_OPTION_SUBACCOUNT = 'subaccount';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -57,7 +62,13 @@ class Plan extends Model
 
         $options = self::defaultOptions();
         foreach ($options as $type => $option) {
-            $rules['options.' . $type] = 'required';
+            if ($type != 'subaccount_sending_server_uid') {
+                $rules['options.' . $type] = 'required';
+            }
+        }
+
+        if($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
+            $rules['options.subaccount_sending_server_uid'] = 'required';
         }
 
         return $rules;
@@ -259,7 +270,7 @@ class Plan extends Model
             'max_file_size_upload' => '5',
             'unsubscribe_url_required' => 'yes',
             'access_when_offline' => 'no',
-            'create_sending_servers' => 'no',
+            //'create_sending_servers' => 'no',
             'create_sending_domains' => 'no',
             'sending_servers_max' => '-1',
             'sending_domains_max' => '-1',
@@ -270,6 +281,8 @@ class Plan extends Model
             'list_export' => 'yes',
             'all_sending_server_types' => 'yes',
             'sending_server_types' => [],
+            'sending_server_option' => self::SENDING_SERVER_OPTION_SYSTEM,
+            'subaccount_sending_server_uid' => null,
         ];
 
         // Sending server types

@@ -216,6 +216,8 @@ class SubscriptionController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
+            $subscription->options = json_encode($request->options);
+            
             $this->validate($request, $subscription->rules());
 
             $rules = [];
@@ -235,8 +237,6 @@ class SubscriptionController extends Controller
             if(!empty($request->end_at)) {
                 $subscription->end_at = \Acelle\Library\Tool::systemTimeFromString($request->end_at . ' 00:00');
             }
-
-            $subscription->options = json_encode($request->options);
 
             $subscription->save();
 

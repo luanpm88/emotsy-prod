@@ -700,4 +700,37 @@ class Admin extends Model
 
 		return $query;
     }
+
+    /**
+     * Get sub-account sending servers.
+     *
+     * @return integer
+     */
+    public function getSubaccountSendingServers()
+    {
+		$query = $this->getAllSendingServers();
+
+		$query = $query->whereIn('type', [
+            'sendgrid-api',
+            'sendgrid-smtp'
+        ]);
+
+		return $query;
+    }
+
+    /**
+     * Get sub-account sending servers options.
+     *
+     * @return integer
+     */
+    public function getSubaccountSendingServersSelectOptions()
+    {
+        $options = [];
+
+		foreach ($this->getSubaccountSendingServers()->get() as $server) {
+            $options[] = ['value' => $server->uid, 'text' => $server->name];
+        }
+
+		return $options;
+    }
 }

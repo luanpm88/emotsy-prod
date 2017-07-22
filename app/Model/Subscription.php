@@ -79,8 +79,14 @@ class Subscription extends Model
         if (isset($this->id)) {
             $options = self::defaultOptions();
             foreach ($options as $type => $option) {
-                $rules['options.' . $type] = 'required';
+                if ($type != 'subaccount_sending_server_uid') {
+                    $rules['options.' . $type] = 'required';
+                }
             }
+        }
+
+        if($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
+            $rules['options.subaccount_sending_server_uid'] = 'required';
         }
 
         return $rules;
@@ -433,7 +439,7 @@ class Subscription extends Model
             'max_file_size_upload' => '0',
             'unsubscribe_url_required' => 'yes',
             'access_when_offline' => 'no',
-            'create_sending_servers' => 'no',
+            //'create_sending_servers' => 'no',
             'create_sending_domains' => 'no',
             'sending_servers_max' => '0',
             'sending_domains_max' => '0',
@@ -446,6 +452,8 @@ class Subscription extends Model
             'list_export' => 'no',
             'all_sending_server_types' => 'yes',
             'sending_server_types' => [],
+            'sending_server_option' => \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM,
+            'subaccount_sending_server_uid' => null,
         ];
 
         // Sending server types
@@ -480,7 +488,7 @@ class Subscription extends Model
             'max_file_size_upload' => '100',
             'unsubscribe_url_required' => 'yes',
             'access_when_offline' => 'yes',
-            'create_sending_servers' => 'yes',
+            //'create_sending_servers' => 'yes',
             'create_sending_domains' => 'yes',
             'sending_servers_max' => '-1',
             'sending_domains_max' => '-1',
@@ -491,6 +499,8 @@ class Subscription extends Model
             'list_export' => 'yes',
             'all_sending_server_types' => 'yes',
             'sending_server_types' => [],
+            'sending_server_option' => \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN,
+            'subaccount_sending_server_uid' => null,
         ];
 
         // Sending server types
@@ -639,7 +649,7 @@ class Subscription extends Model
      */
     public function displayAllowCreateSendingServer()
     {
-        if ($this->getOption("create_sending_servers") == 'no') {
+        if ($this->getOption("sending_server_option") != \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
             return trans('messages.feature_not_allow');
         }
 

@@ -28,7 +28,11 @@
             @include('admin.subscriptions._tab_sending_quota')
         </div>
         <div class="tab-pane" id="top-tab4">
-            @include('admin.subscriptions._tab_sending_server')
+            @include('admin.plans._form_sending_server', [
+                'help_class' => 'subscription',
+                'rules' => $subscription->rules(),
+                'relatedSendingServers' => $subscription->subscriptionsSendingServers
+            ])
         </div>
         <div class="tab-pane" id="top-tab5">
             <h4 class="text-teal-800 text-semibold">{{ trans('messages.sending_domains_settings') }}</h4>
