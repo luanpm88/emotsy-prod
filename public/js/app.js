@@ -1701,4 +1701,18 @@ $(function() {
             a_.find('.a-loading').remove();
         });
     });
+
+    // Group radio box
+    $(document).on("click", ".control-radio .radio_box .main-control", function() {
+        var radio_control = $(this).parents('.control-radio');
+        var radio_box = $(this).parents('.radio_box');
+        var radio = $(this).find('input');
+
+        radio_control.find('.radio_more_box').hide();
+        if (radio.is(":checked")) {
+            radio_box.find('.radio_more_box').show();
+        } else {
+            radio_box.find('.radio_more_box').hide();
+        }
+    });
 });

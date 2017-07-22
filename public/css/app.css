@@ -383,7 +383,6 @@ h2 [class^="icon-"] {
 }
 .radio label, .checkbox label {
     padding-left: 35px;
-    font-size: 15px;
 }
 .navbar-default {
     background: #f5f5f5;
@@ -2386,4 +2385,29 @@ a.loading {
 .control-checkbox2 .checker {
     float: left;
     margin-right: 15px;
+}
+.control-radio .radio_box label.main-control {
+    padding-left: 0;
+}
+.control-radio .radio_box {
+    padding-left: 35px;
+}
+.radio.radio_box .checkbox label {
+    padding-left: 35px;
+}
+@media (min-width: 1024px) {
+    .form-group .checkbox:first-child {
+        margin-top: 5px;
+    }
+}
+.control-radio .radio_box .choice {
+    margin-left: -35px;
+    margin-right: 13px;
+}
+.form-group .desc {
+    margin-top: 5px;
+    margin-bottom: 20px !important;
+}
+.radio_more_box {
+    display: none;
 }
