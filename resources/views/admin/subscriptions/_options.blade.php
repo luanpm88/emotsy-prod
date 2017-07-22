@@ -24,9 +24,6 @@
                 'rules' => $subscription->rules()
             ])
         </div>
-        <div class="tab-pane" id="top-tab2">
-            @include('admin.subscriptions._tab_file_upload')
-        </div>
         <div class="tab-pane" id="top-tab3">
             @include('admin.subscriptions._tab_sending_quota')
         </div>
