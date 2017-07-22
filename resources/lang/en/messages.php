@@ -1940,7 +1940,7 @@
   'campaign.resend_confirm' => 'You are going to send the campaign again to subscribers who did not receive the email yet.',
   'campaign.resent' => 'The campaign was successfully resent',
   'plan_option.system_s_sending_server' => 'System\'s sending servers',
-  'plan_option.system_s_sending_server.intro' => 'System không có quyền add sending server, việc sending server sẽ dùng sending server của system',
+  'plan_option.system_s_sending_server.intro' => 'Customer không có quyền add sending server, việc sending server sẽ dùng sending server của system',
   'plan_option.own_sending_server' => 'Own sending server',
   'plan_option.own_sending_server.intro' => 'Customer add sending server của mình để gửi email',
   'plan_option.sub_account' => 'Sub-account',

@@ -191,3 +191,53 @@
         </div>
     </div>
 </div>
+<!--
+<h4 class="text-teal-800 text-semibold">{{ trans('messages.sending_servers_settings') }}</h4>
+
+<div class="row">
+    <div class="col-md-5">
+        <span class="text-semibold">{{ trans('messages.allow_customer_create_sending_servers') }}</span> &nbsp;&nbsp;&nbsp;
+        <span class="notoping">
+            @include('helpers.form_control', ['type' => 'checkbox',
+                'class' => '',
+                'name' => 'options[create_sending_servers]',
+                'value' => $options['create_sending_servers'],
+                'label' => '',
+                'options' => ['no','yes'],
+                'help_class' => 'plan',
+                'rules' => $plan->rules()
+            ])
+        </span>
+    </div>
+</div>
+<hr>
+
+<div class="sending-servers-yes">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="boxing pb-0">
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'class' => 'numeric',
+                    'name' => 'options[sending_servers_max]',
+                    'value' => $options['sending_servers_max'],
+                    'label' => trans('messages.max_sending_servers'),
+                    'help_class' => 'plan',
+                    'options' => ['true', 'false'],
+                    'rules' => $plan->rules()
+                ])
+                <div class="checkbox inline unlimited-check text-semibold mb-0">
+                    <label>
+                        <input{{ $options['sending_servers_max']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
+                        {{ trans('messages.unlimited') }}
+                    </label>
+                </div>
+            </div>
+        </div>
+    </div>
+    <hr>
+
+</div>
+
+<div class="sending-servers-no">
+</div>-->
