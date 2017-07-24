@@ -26,6 +26,8 @@ use Acelle\Library\QuotaTrackerFile;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Acelle\Library\Log as MailLog;
+use Acelle\Model\MailList;
+use Acelle\Model\Subscriber;
 
 class Customer extends Model
 {
@@ -1073,6 +1075,21 @@ class Customer extends Model
             'SubscriberUsage' => function(&$customer) {
                 return $customer->subscribersUsage();
             },
+            'SubscribedCount' => function(&$customer) {
+                return MailList::subscribersCountByStatus(Subscriber::STATUS_SUBSCRIBED, $customer);
+            },
+            'UnsubscribedCount' => function(&$customer) {
+                return MailList::subscribersCountByStatus(Subscriber::STATUS_UNSUBSCRIBED, $customer);
+            },
+            'UnconfirmedCount' => function(&$customer) {
+                return MailList::subscribersCountByStatus(Subscriber::STATUS_UNCONFIRMED, $customer);
+            },
+            'BlacklistedCount' => function(&$customer) {
+                return MailList::subscribersCountByStatus(Subscriber::STATUS_BLACKLISTED, $customer);
+            },
+            'SpamReportedCount' => function(&$customer) {
+                return MailList::subscribersCountByStatus(Subscriber::STATUS_SPAM_REPORTED, $customer);
+            },
         ];
 
         // retrieve cached data
@@ -1115,7 +1132,7 @@ class Customer extends Model
                 return $cache[$key];
             }
         } else {
-            return null;
+            return $default;
         }
     }
 

@@ -473,7 +473,7 @@ class MailList extends Model
      *
      * @return array
      */
-    public static function subscribersCountByStatus($status, $customer=null)
+    public static function subscribersCountByStatus($status, $customer = null)
     {
         $query = \Acelle\Model\Subscriber::where('subscribers.status', '=', $status);
 
