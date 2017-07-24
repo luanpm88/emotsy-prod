@@ -688,4 +688,18 @@ class Plan extends Model
     {
         return $this->is_default;
     }
+
+    /**
+     * Set option.
+     *
+     * @return void
+     */
+    public function setOption($name, $value)
+    {
+        $options = json_decode($this->options, true);
+        $options[$name] = $value;
+
+        $this->options = json_encode($options);
+        $this->save();
+    }
 }

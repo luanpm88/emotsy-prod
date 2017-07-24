@@ -1135,4 +1135,18 @@ class Subscription extends Model
 
         $account->save();
     }
+
+    /**
+     * Set option.
+     *
+     * @return void
+     */
+    public function setOption($name, $value)
+    {
+        $options = json_decode($this->options, true);
+        $options[$name] = $value;
+
+        $this->options = json_encode($options);
+        $this->save();
+    }
 }
