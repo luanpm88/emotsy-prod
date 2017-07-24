@@ -26,52 +26,51 @@
 
                 </div>
             </div>
-            @if(!Acelle\Model\SendingServer::getAllAdminActive()->count())
-                <div class="empty-list">
-                    <i class="icon-server"></i>
-                    <span class="line-1">
-                        {{ trans('messages.sending_server_no_active') }}
-                    </span>
+            @if(!Auth()->user()->admin->getAllSendingServers()->count())
+                <div class="alert alert-danger mt-20">
+                    {!! trans('messages.plan_option.there_no_sending_server') !!}
+                </div>
+            @else
+                <div class="sending-servers">
+                    <hr>
+                    <div class="row text-muted">
+                        <div class="col-md-4">
+                            <label>{{ trans('messages.select_sending_servers') }}</label>
+                        </div>
+                        <div class="col-md-4">
+                            <label>{{ trans('messages.fitness') }}</label>
+                        </div>
+                    </div>
+                    @foreach (Auth()->user()->admin->getAllSendingServers()->orderBy("name")->get() as $server)
+                        <div class="row mb-5">
+                            <div class="col-md-4">
+                                @include('helpers.form_control', [
+                                    'type' => 'checkbox2',
+                                    'name' => 'sending_servers[' . $server->uid . '][check]',
+                                    'value' => $relatedSendingServers->contains('sending_server_id', $server->id),
+                                    'label' => $server->name,
+                                    'options' => [false, true],
+                                    'help_class' => $help_class,
+                                    'rules' => $rules
+                                ])
+                            </div>
+                            <div class="col-md-4" show-with-control="input[name='{{ 'sending_servers[' . $server->uid . '][check]' }}']">
+                                <?php $found_key = array_search($server->id, array_column($relatedSendingServers->toArray(), 'sending_server_id')) ?>
+                                @include('helpers.form_control', [
+                                    'type' => 'text',
+                                    'class' => 'numeric',
+                                    'name' => 'sending_servers[' . $server->uid . '][fitness]',
+                                    'label' => '',
+                                    'value' => $found_key !== false ? $relatedSendingServers->toArray()[$found_key]["fitness"] : '100',
+                                    'help_class' => $help_class,
+                                    'rules' => $rules
+                                ])
+                            </div>
+                        </div>
+                    @endforeach
                 </div>
             @endif
-            <div class="sending-servers">
-                <hr>
-                <div class="row text-muted">
-                    <div class="col-md-4">
-                        <label>{{ trans('messages.select_sending_servers') }}</label>
-                    </div>
-                    <div class="col-md-4">
-                        <label>{{ trans('messages.fitness') }}</label>
-                    </div>
-                </div>
-                @foreach (Acelle\Model\SendingServer::getAllAdminActive()->orderBy("name")->get() as $server)
-                    <div class="row mb-5">
-                        <div class="col-md-4">
-                            @include('helpers.form_control', [
-                                'type' => 'checkbox2',
-                                'name' => 'sending_servers[' . $server->uid . '][check]',
-                                'value' => $relatedSendingServers->contains('sending_server_id', $server->id),
-                                'label' => $server->name,
-                                'options' => [false, true],
-                                'help_class' => $help_class,
-                                'rules' => $rules
-                            ])
-                        </div>
-                        <div class="col-md-4">
-                            <?php $found_key = array_search($server->id, array_column($relatedSendingServers->toArray(), 'sending_server_id')) ?>
-                            @include('helpers.form_control', [
-                                'type' => 'text',
-                                'class' => 'numeric',
-                                'name' => 'sending_servers[' . $server->uid . '][fitness]',
-                                'label' => '',
-                                'value' => isset($relatedSendingServers->toArray()[$found_key]) ? $relatedSendingServers->toArray()[$found_key]["fitness"] : '100',
-                                'help_class' => $help_class,
-                                'rules' => $rules
-                            ])
-                        </div>
-                    </div>
-                @endforeach
-            </div>
+
         </div>
     </div>
     <hr>
@@ -151,21 +150,27 @@
             </div>
         </label>
         <div class="radio_more_box">
-            <div class="row">
-                <div class="col-md-6">
-                    @include('helpers.form_control', [
-                        'type' => 'select',
-                        'class' => 'numeric',
-                        'name' => 'options[subaccount_sending_server_uid]',
-                        'value' => $options['subaccount_sending_server_uid'],
-                        'label' => '',
-                        'help_class' => $help_class,
-                        'include_blank' => trans('messages.select_sending_server_with_subaccount'),
-                        'options' => Auth()->user()->admin->getSubaccountSendingServersSelectOptions(),
-                        'rules' => $rules
-                    ])
+            @if (Auth()->user()->admin->getSubaccountSendingServers()->count())
+                <div class="row">
+                    <div class="col-md-6">
+                        @include('helpers.form_control', [
+                            'type' => 'select',
+                            'class' => 'numeric',
+                            'name' => 'options[sending_server_subaccount_uid]',
+                            'value' => $options['sending_server_subaccount_uid'],
+                            'label' => '',
+                            'help_class' => $help_class,
+                            'include_blank' => trans('messages.select_sending_server_with_subaccount'),
+                            'options' => Auth()->user()->admin->getSubaccountSendingServersSelectOptions(),
+                            'rules' => $rules
+                        ])
+                    </div>
                 </div>
-            </div>
+            @else
+                <div class="alert alert-danger">
+                    {!! trans('messages.plan_option.there_no_subaccount_sending_server') !!}
+                </div>
+            @endif
         </div>
     </div>
 </div>

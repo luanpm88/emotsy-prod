@@ -79,14 +79,14 @@ class Subscription extends Model
         if (isset($this->id)) {
             $options = self::defaultOptions();
             foreach ($options as $type => $option) {
-                if ($type != 'subaccount_sending_server_uid') {
+                if ($type != 'sending_server_subaccount_uid') {
                     $rules['options.' . $type] = 'required';
                 }
             }
         }
 
         if($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
-            $rules['options.subaccount_sending_server_uid'] = 'required';
+            $rules['options.sending_server_subaccount_uid'] = 'required';
         }
 
         return $rules;
@@ -189,6 +189,11 @@ class Subscription extends Model
                 $row->subscription_id = $subscription->id;
                 $row->server_id = $planServer->server_id;
                 $row->save();
+            }
+
+            // Create sub-account if plan sending server type is subaccount
+            if ($subscription->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
+                $subscription->createSubAccount();
             }
         });
 
@@ -453,7 +458,7 @@ class Subscription extends Model
             'all_sending_server_types' => 'yes',
             'sending_server_types' => [],
             'sending_server_option' => \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM,
-            'subaccount_sending_server_uid' => null,
+            'sending_server_subaccount_uid' => null,
         ];
 
         // Sending server types
@@ -500,7 +505,7 @@ class Subscription extends Model
             'all_sending_server_types' => 'yes',
             'sending_server_types' => [],
             'sending_server_option' => \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN,
-            'subaccount_sending_server_uid' => null,
+            'sending_server_subaccount_uid' => null,
         ];
 
         // Sending server types
@@ -1110,5 +1115,24 @@ class Subscription extends Model
         }
 
         return true;
+    }
+
+    /**
+     * Create sending server sub-account.
+     *
+     * @return void
+     */
+    public function createSubAccount()
+    {
+        $account = new \Acelle\Model\SubAccount();
+        // @todo how to name new sub-account
+        $account->name = 'Auto-created';
+        $account->subscription_id = $this->id;
+        $account->customer_id = $this->customer_id;
+
+        $server = \Acelle\Model\SendingServer::findByUid($this->getOption('sending_server_subaccount_uid'));
+        $account->sending_server_id = is_object($server) ? $server->id : null;
+
+        $account->save();
     }
 }

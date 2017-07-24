@@ -613,6 +613,9 @@ class Admin extends Model
             $query = $query->where('sending_servers.admin_id', '=', $this->id);
         }
 
+        // remove customer sending servers
+        $query = $query->whereNull('customer_id');
+
 		return $query;
     }
 
@@ -628,6 +631,9 @@ class Admin extends Model
 		if (!$this->can('readAll', new \Acelle\Model\SendingDomain())) {
             $query = $query->where('sending_domains.admin_id', '=', $this->id);
         }
+
+        // remove customer sending servers
+        $query = $query->whereNull('customer_id');
 
 		return $query;
     }
@@ -710,10 +716,7 @@ class Admin extends Model
     {
 		$query = $this->getAllSendingServers();
 
-		$query = $query->whereIn('type', [
-            'sendgrid-api',
-            'sendgrid-smtp'
-        ]);
+		$query = $query->whereIn('type', \Acelle\Model\SendingServer::getSubAccountTypes());
 
 		return $query;
     }

@@ -869,18 +869,18 @@ textarea.plain_text_content {
     font-size: 14px;
 }
 ul.modern-listing {
-    margin: 30px 0 30px 0;
+    margin: 20px 0 30px 0;
     padding: 0;
 }
 ul.modern-listing li {
     list-style: none;
     clear: both;
-    border-bottom: solid 1px #ddd;
-    margin-bottom: 20px;
+    border-bottom: solid 1px #eee;
+    margin-bottom: 15px;
 }
 ul.modern-listing li:first-child {
-    border-top: solid 1px #ddd;
-    padding-top: 20px;
+    border-top: solid 1px #eee;
+    padding-top: 15px;
 }
 ul.modern-listing li i, .table-row-icon {
     float: left;
@@ -2410,4 +2410,7 @@ a.loading {
 }
 .radio_more_box {
     display: none;
+}
+ul.modern-listing li p {
+    margin-bottom: 15px;
 }

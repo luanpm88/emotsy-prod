@@ -80,7 +80,7 @@ class SendingServer extends Model
     }
 
     /**
-     * Get the segment of the campaign.
+     * Get the bounce handler.
      */
     public function bounceHandler()
     {
@@ -671,5 +671,18 @@ class SendingServer extends Model
     public function isElasticEmailServer()
     {
         return ($this->type == 'elasticemail-api' || $this->type == 'elasticemail-smtp');
+    }
+
+    /**
+     * Get all sub-account supported sending server types
+     *
+     * @return array
+     */
+    public static function getSubAccountTypes()
+    {
+        return [
+            'sendgrid-api',
+            'sendgrid-smtp'
+        ];
     }
 }

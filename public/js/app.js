@@ -1717,4 +1717,22 @@ $(function() {
     });
     $(".control-radio .radio_box .main-control input:checked").parents('.main-control').trigger('click');
 
+
+    // show with control helper
+    $("[show-with-control]").each(function() {
+        var box = $(this);
+        var control = $(box.attr('show-with-control'));
+
+        control.change(function() {
+            var checked = $(this).is(':checked');
+
+            if (checked) {
+                box.show();
+            } else {
+                box.hide();
+            }
+        });
+
+        control.trigger('change');
+    });
 });

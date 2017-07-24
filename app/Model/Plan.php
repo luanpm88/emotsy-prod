@@ -62,13 +62,13 @@ class Plan extends Model
 
         $options = self::defaultOptions();
         foreach ($options as $type => $option) {
-            if ($type != 'subaccount_sending_server_uid') {
+            if ($type != 'sending_server_subaccount_uid') {
                 $rules['options.' . $type] = 'required';
             }
         }
 
         if($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
-            $rules['options.subaccount_sending_server_uid'] = 'required';
+            $rules['options.sending_server_subaccount_uid'] = 'required';
         }
 
         return $rules;
@@ -282,7 +282,7 @@ class Plan extends Model
             'all_sending_server_types' => 'yes',
             'sending_server_types' => [],
             'sending_server_option' => self::SENDING_SERVER_OPTION_SYSTEM,
-            'subaccount_sending_server_uid' => null,
+            'sending_server_subaccount_uid' => null,
         ];
 
         // Sending server types
