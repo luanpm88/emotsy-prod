@@ -7,7 +7,7 @@
         <li class="text-semibold"><a href="#top-tab3" data-toggle="tab">
             <i class="icon-stats-bars4"></i> {{ trans('messages.sending_quota') }}</a>
         </li>
-        <li class="text-semibold"><a href="#top-tab4" data-toggle="tab">
+        <li class="text-semibold hide"><a href="#top-tab4" data-toggle="tab">
             <i class="icon-server"></i> {{ trans('messages.sending_servers') }}</a>
         </li>
         <li class="text-semibold"><a href="#top-tab5" data-toggle="tab">
@@ -27,7 +27,7 @@
         <div class="tab-pane" id="top-tab3">
             @include('admin.subscriptions._tab_sending_quota')
         </div>
-        <div class="tab-pane" id="top-tab4">
+        <div class="tab-pane hide" id="top-tab4">
             @include('admin.plans._form_sending_server', [
                 'help_class' => 'subscription',
                 'rules' => $subscription->rules(),
