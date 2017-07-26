@@ -5,11 +5,11 @@ extract($config, EXTR_OVERWRITE);
 
 include 'include/utils.php';
 
-if ($_SESSION['RF']["verify"] != "RESPONSIVEfilemanager")
-{
-	response(trans('forbiden').AddErrorLocation())->send();
-	exit;
-}
+//if ($_SESSION['RF']["verify"] != "RESPONSIVEfilemanager")
+//{
+//	response(trans('forbiden').AddErrorLocation())->send();
+//	exit;
+//}
 
 if (strpos($_POST['path'],'/')===0
 	|| strpos($_POST['path'],'../')!==FALSE

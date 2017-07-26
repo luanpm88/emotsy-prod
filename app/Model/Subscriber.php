@@ -32,6 +32,7 @@ class Subscriber extends Model
     const STATUS_UNSUBSCRIBED = 'unsubscribed';
     const STATUS_BLACKLISTED = 'blacklisted';
     const STATUS_SPAM_REPORTED = 'spam-reported';
+    const STATUS_UNCONFIRMED = 'unconfirmed';
 
     const SUBSCRIPTION_TYPE_DOUBLE_OPTIN = 'double';
     const SUBSCRIPTION_TYPE_SINGLE_OPTIN = 'single';

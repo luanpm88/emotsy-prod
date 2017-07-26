@@ -116,7 +116,9 @@ textarea.form-control {
     font-weight: normal;
 }
 .checker span {
-    border-color: #bbb;
+    border-color: #ccc;
+    border-radius: 3px;
+    border-width: 1.5px;
 }
 .form-control, .select2 {
     font-size: 13px;
@@ -363,9 +365,10 @@ h2 [class^="icon-"] {
     transition: width 2s;
 }
 .checker span:after {
-    font-size: 24px;
-    top: -3px;
-    left: -3px;
+    font-size: 19px;
+    top: 0px;
+    left: 0px;
+    font-weight: normal;
 }
 .keyword {
     font-style: italic;
@@ -561,8 +564,8 @@ h2 [class^="icon-"] {
 }
 .check_all_list.check-some .checker span.checked:after {
     content: "\e9b7";
-    font-size: 20px;
-    padding: 2px;
+    font-size: 17px;
+    padding: 1px;
 }
 .num_per_page {
     margin: 15px 0;

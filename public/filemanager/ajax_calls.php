@@ -6,11 +6,11 @@ extract($config, EXTR_OVERWRITE);
 
 require_once 'include/utils.php';
 
-if ($_SESSION['RF']["verify"] != "RESPONSIVEfilemanager")
-{
-	response(trans('forbiden').AddErrorLocation())->send();
-	exit;
-}
+//if ($_SESSION['RF']["verify"] != "RESPONSIVEfilemanager")
+//{
+//	response(trans('forbiden').AddErrorLocation())->send();
+//	exit;
+//}
 
 if (isset($_SESSION['RF']['language_file']) && file_exists($_SESSION['RF']['language_file']))
 {
