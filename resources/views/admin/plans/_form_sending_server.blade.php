@@ -3,8 +3,7 @@
         <label class="main-control">
             <input {{ ($options['sending_server_option'] == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM ? 'checked' : '') }} type="radio"
                 name="options[sending_server_option]"
-                value="{{ \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM }}" class="styled" />
-            {{ trans('messages.plan_option.system_s_sending_server') }}
+                value="{{ \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM }}" class="styled" /><rtitle>{{ trans('messages.plan_option.system_s_sending_server') }}</rtitle>
             <div class="desc text-normal mb-10">
                 {{ trans('messages.plan_option.system_s_sending_server.intro') }}
             </div>
@@ -78,8 +77,7 @@
         <label class="main-control">
             <input {{ ($options['sending_server_option'] == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN ? 'checked' : '') }} type="radio"
                 name="options[sending_server_option]"
-                value="{{ \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN }}" class="styled" />
-            {{ trans('messages.plan_option.own_sending_server') }}
+                value="{{ \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN }}" class="styled" /><rtitle>{{ trans('messages.plan_option.own_sending_server') }}</rtitle>
             <div class="desc text-normal mb-10">
                 {{ trans('messages.plan_option.own_sending_server.intro') }}
             </div>
@@ -143,8 +141,7 @@
         <label class="main-control">
             <input {{ ($options['sending_server_option'] == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT ? 'checked' : '') }} type="radio"
                 name="options[sending_server_option]"
-                value="{{ \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT }}" class="styled" />
-            {{ trans('messages.plan_option.sub_account') }}
+                value="{{ \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT }}" class="styled" /><rtitle>{{ trans('messages.plan_option.sub_account') }}</rtitle>
             <div class="desc text-normal mb-10">
                 {{ trans('messages.plan_option.sub_account.intro') }}
             </div>

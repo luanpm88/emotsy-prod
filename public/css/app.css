@@ -2417,3 +2417,14 @@ a.loading {
 ul.modern-listing li p {
     margin-bottom: 15px;
 }
+.radio_box .choice, .radio_box .choice span, .radio_box .choice input {
+    height: 22px;
+    width: 22px;
+}
+.choice span:after {
+    border-style: solid;
+    border-width: 6px;
+}
+.radio_box rtitle {
+    font-size: 16px;
+}
