@@ -2390,3 +2390,45 @@ a.loading {
     float: left;
     margin-right: 15px;
 }
+.control-radio .radio_box label.main-control {
+    padding-left: 0;
+}
+.control-radio .radio_box {
+    padding-left: 35px;
+}
+.radio.radio_box .checkbox label {
+    padding-left: 35px;
+}
+@media (min-width: 1024px) {
+    .form-group .checkbox:first-child {
+        margin-top: 5px;
+    }
+}
+.control-radio .radio_box .choice {
+    margin-left: -35px;
+    margin-right: 13px;
+}
+.form-group .desc {
+    margin-top: 5px;
+    margin-bottom: 20px !important;
+}
+.radio_more_box {
+    display: none;
+}
+ul.modern-listing li p {
+    margin-bottom: 15px;
+}
+.radio_box .choice, .radio_box .choice span, .radio_box .choice input {
+    height: 22px;
+    width: 22px;
+}
+.choice span:after {
+    border-style: solid;
+    border-width: 6px;
+}
+.radio_box rtitle {
+    font-size: 16px;
+}
+canvas[data-zr-dom-id='_zrender_hover_'] {
+    display: none;
+}
