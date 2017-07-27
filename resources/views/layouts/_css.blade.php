@@ -8,6 +8,6 @@
 	<link href="{{ URL::asset('assets/css/core.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ URL::asset('assets/css/components.css') }}" rel="stylesheet" type="text/css">
 	<link href="{{ URL::asset('assets/css/colors.css') }}" rel="stylesheet" type="text/css">
-	<link href="{{ URL::asset('css/app.css') }}?v=1" rel="stylesheet" type="text/css">
+	<link href="{{ URL::asset('css/app.css') }}" rel="stylesheet" type="text/css">
     <link href="{{ URL::asset('css/theme.css') }}" rel="stylesheet" type="text/css">
 	<!-- /global stylesheets -->

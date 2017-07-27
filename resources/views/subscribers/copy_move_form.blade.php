@@ -18,7 +18,7 @@
 				</div>
 
 				<div class="modal-body">
-                    <h4>{{ trans('messages.subscribers_' . request()->action . '_message', ['number' => $subscribers->count()]) }}</h4>
+                    <h4>{!! trans('messages.subscribers_' . request()->action . '_message', ['number' => $subscribers->count()]) !!}</h4>
 
                     <input type="hidden" name="action" value="{{ request()->action }}" />
                     <input type="hidden" name="uids" value="{{ request()->uids }}" />

@@ -683,8 +683,13 @@ class SubscriberController extends Controller
      */
     public function copyMoveForm(Request $request)
     {
-        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
         $from_list = \Acelle\Model\MailList::findByUid($request->from_uid);
+
+        if ($request->select_tool == 'all_items') {
+            $subscribers = $this->search($from_list, $request);
+        } else {
+            $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+        }
 
         return view('subscribers.copy_move_form', [
             'subscribers' => $subscribers,
