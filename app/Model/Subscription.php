@@ -1127,7 +1127,7 @@ class Subscription extends Model
         // @todo hard-coded here for SendGrid
         $server = \Acelle\Model\SendingServer::findByUid($this->getOption('sending_server_subaccount_uid'));
         $account = \Acelle\Model\SubAccountSendGrid::setup([
-            'username' => $this->customer->user->email,
+            'email' => $this->customer->user->email,
             'subscription_id' => $this->id,
             'customer_id' => $this->customer_id,
             'sending_server_id' => $server->id,
