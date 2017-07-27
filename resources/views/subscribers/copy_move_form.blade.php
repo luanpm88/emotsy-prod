@@ -4,7 +4,12 @@
 		<div class="modal-content">
             <form action="{{ action("SubscriberController@" . request()->action) }}" method="POST" class="form-validate-jquery">
                 {{ csrf_field() }}
-                
+				<input type="hidden" name="from_uid" value="{{ $from_list->uid }}" />
+
+				@if (request()->select_tool)
+					<input type="hidden" name="select_tool" value="{{ request()->select_tool }}" />
+				@endif
+
 				<div class="modal-header bg-teal">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
 					<h2 class="modal-title">
@@ -14,22 +19,22 @@
 
 				<div class="modal-body">
                     <h4>{{ trans('messages.subscribers_' . request()->action . '_message', ['number' => $subscribers->count()]) }}</h4>
-                
+
                     <input type="hidden" name="action" value="{{ request()->action }}" />
                     <input type="hidden" name="uids" value="{{ request()->uids }}" />
-				
+
 					@include('helpers.form_control', [
 						'type' => 'select',
-						'name' => 'list_uid',
-						'class' => '',
+						'name' => 'to_uid',
+						'class' => 'required',
                         'required' => true,
 						'label' => trans('messages.select_the_target_list'),
 						'value' => '',
                         'include_blank' => trans('messages.choose'),
-						'options' => Acelle\Model\MailList::getSelectOptions(\Auth::user()->customer, ['other_list_of' => $list->id]),
+						'options' => Acelle\Model\MailList::getSelectOptions(\Auth::user()->customer, ['other_list_of' => $from_list->id]),
 						'rules' => []
 					])
-					
+
 					@include('helpers.form_control', [
 						'type' => 'radio',
 						'name' => 'type',
@@ -39,7 +44,7 @@
 						'options' => Acelle\Model\Subscriber::copyMoveExistSelectOptions(),
 						'rules' => []
 					])
-					
+
 				</div>
 
 				<div class="modal-footer">

@@ -31,7 +31,7 @@
 								<div class="filter-box">
 									<span class="mr-10">
 										@include('helpers.select_tool', [
-											'disable_all_items' => true
+											'disable_all_items' => false
 										])
 										<div class="btn-group list_actions hide mr-0">
 											<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
@@ -51,7 +51,7 @@
 												<li>
 													<a href="#" class="copy_move_subscriber"
 														data-url="{{ action('SubscriberController@copyMoveForm', [
-															'list_uid' => $list->uid,
+															'from_uid' => $list->uid,
 															'action' => 'copy',
 														]) }}">
 															<i class="icon-copy4"></i> {{ trans('messages.copy_to') }}
@@ -60,7 +60,7 @@
 												<li>
 													<a href="#move" class="copy_move_subscriber"
 														data-url="{{ action('SubscriberController@copyMoveForm', [
-															'list_uid' => $list->uid,
+															'from_uid' => $list->uid,
 															'action' => 'move',
 														]) }}">
 														<i class="icon-move-right"></i> {{ trans('messages.move_to') }}

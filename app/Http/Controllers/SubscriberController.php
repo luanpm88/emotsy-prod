@@ -20,6 +20,17 @@ class SubscriberController extends Controller
     }
 
     /**
+     * Search items.
+     */
+    public function search($list, $request)
+    {
+        $subscribers = \Acelle\Model\Subscriber::search($request)
+            ->where('mail_list_id', '=', $list->id);
+
+        return $subscribers;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -47,9 +58,8 @@ class SubscriberController extends Controller
             return;
         }
 
-        $subscribers = \Acelle\Model\Subscriber::search($request)
-                                        ->where('mail_list_id', '=', $list->id)
-                                        ->paginate($request->per_page);
+        $subscribers = $this->search($list, $request)->paginate($request->per_page);
+
         $fields = $list->getFields->whereIn('uid', explode(',', $request->columns));
 
         return view('subscribers._list', [
@@ -281,22 +291,24 @@ class SubscriberController extends Controller
      */
     public function subscribe(Request $request)
     {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $customer = $request->user()->customer;
-        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
 
-        foreach ($subscribers->get() as $subscriber) {
-            // authorize
-            if (\Gate::denies('subscribe', $subscriber)) {
-                return;
-            }
+        if ($request->select_tool == 'all_items') {
+            $subscribers = $this->search($list, $request);
+        } else {
+            $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
         }
 
         foreach ($subscribers->get() as $subscriber) {
-            $subscriber->status = 'subscribed';
-            $subscriber->save();
+            // authorize
+            if (\Gate::allows('subscribe', $subscriber)) {
+                $subscriber->status = 'subscribed';
+                $subscriber->save();
 
-            // Log
-            $subscriber->log('subscribed', $customer);
+                // Log
+                $subscriber->log('subscribed', $customer);
+            }
         }
 
         // Redirect to my lists page
@@ -312,22 +324,24 @@ class SubscriberController extends Controller
      */
     public function unsubscribe(Request $request)
     {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $customer = $request->user()->customer;
-        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
 
-        foreach ($subscribers->get() as $subscriber) {
-            // authorize
-            if (\Gate::denies('unsubscribe', $subscriber)) {
-                return;
-            }
+        if ($request->select_tool == 'all_items') {
+            $subscribers = $this->search($list, $request);
+        } else {
+            $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
         }
 
         foreach ($subscribers->get() as $subscriber) {
-            $subscriber->status = 'unsubscribed';
-            $subscriber->save();
+            // authorize
+            if (\Gate::allows('unsubscribe', $subscriber)) {
+                $subscriber->status = 'unsubscribed';
+                $subscriber->save();
 
-            // Log
-            $subscriber->log('unsubscribed', $customer);
+                // Log
+                $subscriber->log('unsubscribed', $customer);
+            }
         }
 
         // Redirect to my lists page
@@ -585,32 +599,33 @@ class SubscriberController extends Controller
      */
     public function copy(Request $request)
     {
-        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $from_list = $subscribers->first()->mailList;
+        $from_list = \Acelle\Model\MailList::findByUid($request->from_uid);
+        $to_list = \Acelle\Model\MailList::findByUid($request->to_uid);
+
+        if ($request->select_tool == 'all_items') {
+            $subscribers = $this->search($from_list, $request);
+        } else {
+            $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+        }
 
         foreach ($subscribers->get() as $subscriber) {
             // authorize
-            if (\Gate::denies('update', $subscriber)) {
-                return;
+            if (\Gate::allows('update', $to_list)) {
+                $subscriber->copy($to_list, $request->type);
             }
-        }
-
-        foreach (\Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids))->get() as $subscriber) {
-            $subscriber->copy($list, $request->type);
         }
 
         // Trigger updating related campaigns cache
         $from_list->updateCachedInfo();
-        $list->updateCachedInfo();
+        $to_list->updateCachedInfo();
 
         // Log
-        $list->log('copied', $request->user()->customer, [
+        $to_list->log('copied', $request->user()->customer, [
             'count' => $subscribers->count(),
             'from_uid' => $from_list->uid,
-            'to_uid' => $list->uid,
+            'to_uid' => $to_list->uid,
             'from_name' => $from_list->name,
-            'to_name' => $list->name,
+            'to_name' => $to_list->name,
         ]);
 
         // Redirect to my lists page
@@ -626,32 +641,33 @@ class SubscriberController extends Controller
      */
     public function move(Request $request)
     {
-        $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $from_list = $subscribers->first()->mailList;
+        $from_list = \Acelle\Model\MailList::findByUid($request->from_uid);
+        $to_list = \Acelle\Model\MailList::findByUid($request->to_uid);
+
+        if ($request->select_tool == 'all_items') {
+            $subscribers = $this->search($from_list, $request);
+        } else {
+            $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+        }
 
         foreach ($subscribers->get() as $subscriber) {
             // authorize
-            if (\Gate::denies('update', $subscriber)) {
-                return;
+            if (\Gate::allows('update', $to_list)) {
+                $subscriber->move($to_list, $request->type);
             }
-        }
-
-        foreach (\Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids))->get() as $subscriber) {
-            $subscriber->move($list, $request->type);
         }
 
         // Trigger updating related campaigns cache
         $from_list->updateCachedInfo();
-        $list->updateCachedInfo();
+        $to_list->updateCachedInfo();
 
         // Log
-        $list->log('moved', $request->user()->customer, [
+        $to_list->log('moved', $request->user()->customer, [
             'count' => $subscribers->count(),
             'from_uid' => $from_list->uid,
-            'to_uid' => $list->uid,
+            'to_uid' => $to_list->uid,
             'from_name' => $from_list->name,
-            'to_name' => $list->name,
+            'to_name' => $to_list->name,
         ]);
 
         // Redirect to my lists page
@@ -668,11 +684,11 @@ class SubscriberController extends Controller
     public function copyMoveForm(Request $request)
     {
         $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
-        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+        $from_list = \Acelle\Model\MailList::findByUid($request->from_uid);
 
         return view('subscribers.copy_move_form', [
             'subscribers' => $subscribers,
-            'list' => $list
+            'from_list' => $from_list
         ]);
     }
 

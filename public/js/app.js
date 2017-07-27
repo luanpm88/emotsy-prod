@@ -8,6 +8,148 @@
 *  Latest update: Aug 1, 2015
 *
 * ---------------------------------------------------------------------------- */
+function customValidate(selector) {
+    selector.validate({
+        ignore: 'input[type=hidden], .select2-input', // ignore hidden fields
+        errorClass: 'validation-error-label',
+        successClass: 'validation-valid-label',
+        highlight: function(element, errorClass) {
+            $(element).removeClass(errorClass);
+        },
+        unhighlight: function(element, errorClass) {
+            $(element).removeClass(errorClass);
+        },
+
+        // Different components require proper error label placement
+        errorPlacement: function(error, element) {
+
+            // Styled checkboxes, radios, bootstrap switch
+            if (element.parents('div').hasClass("checker") || element.parents('div').hasClass("choice") || element.parent().hasClass('bootstrap-switch-container') ) {
+                if(element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
+                    error.appendTo( element.parent().parent().parent().parent() );
+                }
+                 else {
+                    error.appendTo( element.parent().parent().parent().parent().parent() );
+                }
+            }
+
+            // Select2
+            else if (element.parents(".form-group").find('.input_help').length) {
+                error.insertAfter( element.parents(".form-group").find('.input_help') );
+            }
+
+            // Unstyled checkboxes, radios
+            else if (element.parents('div').hasClass('checkbox') || element.parents('div').hasClass('radio')) {
+                error.appendTo( element.parent().parent().parent() );
+            }
+
+            // Input with icons
+            else if (element.parents('div').hasClass('has-feedback')) {
+                error.appendTo( element.parent() );
+            }
+
+            // Inline checkboxes, radios
+            else if (element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
+                error.appendTo( element.parent().parent() );
+            }
+
+            // Select2
+            else if (element.parents(".form-group").find('.select2').length) {
+                error.insertAfter( element.parents(".form-group").find('.select2') );
+            }
+
+            // Select2
+            else if (element.is("textarea")) {
+                error.insertBefore( element.parents(".form-group") );
+            }
+
+            // Input group, styled file input
+            else if (element.parent().hasClass('uploader') || element.parents().hasClass('input-group')) {
+                error.appendTo( element.parent().parent() );
+            }
+            else {
+                error.insertAfter(element);
+            }
+
+            // Add error class to form group
+            element.parents(".form-group").addClass('has-error');
+        },
+        validClass: "validation-valid-label",
+        success: function(label) {
+            label.addClass("validation-valid-label").text("Success.");
+            label.parents(".form-group").removeClass('has-error');
+        },
+        rules: {
+            vali: "required",
+            repeat_password: {
+                equalTo: "#password"
+            },
+            password_confirmation: {
+                equalTo: "#password"
+            },
+            email: {
+                email: true
+            },
+            repeat_email: {
+                equalTo: "#email"
+            },
+            email_confirmation: {
+                equalTo: "#email"
+            },
+            minimum_characters: {
+                minlength: 10
+            },
+            maximum_characters: {
+                maxlength: 10
+            },
+            minimum_number: {
+                min: 10
+            },
+            maximum_number: {
+                max: 10
+            },
+            number_range: {
+                range: [10, 20]
+            },
+            url: {
+                url: true
+            },
+            date: {
+                date: true
+            },
+            date_iso: {
+                dateISO: true
+            },
+            numbers: {
+                number: true
+            },
+            digits: {
+                digits: true
+            },
+            card: {
+                creditcard: true
+            },
+            basic_checkbox: {
+                minlength: 2
+            },
+            styled_checkbox: {
+                minlength: 2
+            },
+            switchery_group: {
+                minlength: 2
+            },
+            switch_group: {
+                minlength: 2
+            }
+        },
+        messages: {
+            custom: {
+                required: "This is a custom error message",
+            },
+            agree: "Please accept our policy"
+        }
+    });
+}
 
 function showAjaxDetailBox(items) {
     items.each(function() {
@@ -356,6 +498,7 @@ $(function() {
 
         if (form.find('.select_tool').length && form.find('.select_tool').val() === 'all_items') {
             new_href += '&'+form.serialize();
+            new_href += '&select_tool='+form.find('.select_tool').val();
         }
 
         $(this).attr("new-href", new_href);
@@ -491,6 +634,12 @@ $(function() {
             }).get();
 
             url = url + "?uids=" + vals.join(",");
+
+            // Select tool
+            if (form.find('.select_tool').length && form.find('.select_tool').val()) {
+                var select_tool = form.find('.select_tool').val();
+                url = url + "&select_tool=" + select_tool;
+            }
         }
 
         // count items
@@ -677,7 +826,6 @@ $(function() {
                 return;
             }
         }
-
 
         if(typeof(method) === 'undefined' || method.trim() === '') {
             method = "GET";
@@ -1001,8 +1149,9 @@ $(function() {
         var uid = $(this).attr("data-uid");
         var name = $(this).attr("data-name");
 
-        $('input[name=copy_list_uid]').val(uid);
-        $('input[name=copy_list_name]').val(name);
+        $('.ajax_copy_list_form input[name=copy_list_uid]').val(uid);
+        $('.ajax_copy_list_form input[name=copy_list_name]').val(name);
+
         $('#copy_list').modal("show");
     });
 
@@ -1481,6 +1630,13 @@ $(function() {
             data = {
                 uids: vals.join(",")
             };
+
+            // select_tool
+            var select_tool = '';
+            if (form.find('.select_tool').length && form.find('.select_tool').val()) {
+                select_tool = form.find('.select_tool').val();
+            }
+            data.select_tool = select_tool;
         }
 
         $.ajax({
@@ -1500,7 +1656,7 @@ $(function() {
             $('#copy-move-subscribers-form').find('.styled').uniform({
                 radioClass: 'choice'
             });
-            $('#copy-move-subscribers-form').find('form').validate();
+            customValidate($('#copy-move-subscribers-form').find('form'));
         });
     });
 
