@@ -8,6 +8,22 @@
 *  Latest update: Aug 1, 2015
 *
 * ---------------------------------------------------------------------------- */
+
+function removeMaskLoading() {
+    $('.mask-loading-effect').remove();
+}
+
+function addMaskLoading(text) {
+    if (typeof(text) === 'undefined') {
+        var text = '';
+    }
+    $('body').append('<div class="mask-loading-effect"><div class="content">'+text+'<div class="spinner2">'+
+        '<div class="bounce1"></div>'+
+        '<div class="bounce2"></div>'+
+        '<div class="bounce3"></div>'+
+        '</div></div><div>');
+}
+
 function customValidate(selector) {
     selector.validate({
         ignore: 'input[type=hidden], .select2-input', // ignore hidden fields
@@ -636,9 +652,10 @@ $(function() {
             url = url + "?uids=" + vals.join(",");
 
             // Select tool
-            if (form.find('.select_tool').length && form.find('.select_tool').val()) {
+            if (form.find('.select_tool').length && form.find('.select_tool').val() == 'all_items') {
                 var select_tool = form.find('.select_tool').val();
                 url = url + "&select_tool=" + select_tool;
+                url = url + "&" + form.serialize();
             }
         }
 
@@ -838,11 +855,7 @@ $(function() {
         }
         a_.addClass('loading');
         a_.append(' <div class="spinner a-loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
-         $('body').append('<div class="mask-loading-effect"><div class="content">'+mask_text+'<div class="spinner2">'+
-  '<div class="bounce1"></div>'+
-  '<div class="bounce2"></div>'+
-  '<div class="bounce3"></div>'+
-'</div></div><div>');
+        addMaskLoading(mask_text);
 
         $.ajax({
             method: method,
@@ -886,7 +899,7 @@ $(function() {
             // Remove loading effect
             a_.removeClass('loading');
             a_.find('.a-loading').remove();
-            $('.mask-loading-effect').remove();
+            removeMaskLoading();
 
             if (type != 'error') {
                 $(".modal").modal('hide');
@@ -1633,10 +1646,14 @@ $(function() {
 
             // select_tool
             var select_tool = '';
-            if (form.find('.select_tool').length && form.find('.select_tool').val()) {
+            if (form.find('.select_tool').length && form.find('.select_tool').val() == 'all_items') {
                 select_tool = form.find('.select_tool').val();
+                arr = form.serializeArray();
+                for (var i = 0; i < arr.length; i++){
+                  data[arr[i]['name']] = arr[i]['value'];
+                }
             }
-            data.select_tool = select_tool;
+
         }
 
         $.ajax({
@@ -1665,6 +1682,8 @@ $(function() {
         var form = $(this);
         var url = form.attr("action");
 
+        addMaskLoading();
+
         $.ajax({
             type: "POST",
             url: url,
@@ -1685,6 +1704,8 @@ $(function() {
                     });
                 }
                 $('#copy-move-subscribers-form').modal('hide');
+
+                removeMaskLoading();
             }
         });
 

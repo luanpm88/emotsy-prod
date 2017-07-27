@@ -82,12 +82,12 @@
 									<span class="filter-group">
 										<span class="title text-semibold text-muted">{{ trans('messages.sort_by') }}</span>
 										<select class="select" name="sort-order">
+											<option value="subscribers.email">{{ trans('messages.email') }}</option>
 											<option value="subscribers.created_at">{{ trans('messages.created_at') }}</option>
 											<option value="subscribers.updated_at">{{ trans('messages.updated_at') }}</option>
-											<option value="subscribers.email">{{ trans('messages.email') }}</option>
 										</select>
-										<button class="btn btn-xs sort-direction" rel="desc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
-											<i class="icon-sort-amount-desc"></i>
+										<button class="btn btn-xs sort-direction" rel="asc" data-popup="tooltip" title="{{ trans('messages.change_sort_direction') }}" type="button" class="btn btn-xs">
+											<i class="icon-sort-amount-asc"></i>
 										</button>
 									</span>
 									<span class="">
@@ -146,7 +146,7 @@
 										</ul>
 									</div>
 									<span class="text-nowrap">
-										<input name="search_keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
+										<input name="keyword" class="form-control search" placeholder="{{ trans('messages.type_to_search') }}" />
 										<i class="icon-search4 keyword_search_button"></i>
 									</span>
 								</div>

@@ -603,7 +603,7 @@ class SubscriberController extends Controller
         $to_list = \Acelle\Model\MailList::findByUid($request->to_uid);
 
         if ($request->select_tool == 'all_items') {
-            $subscribers = $this->search($from_list, $request);
+            $subscribers = $this->search($from_list, $request)->select('subscribers.*');
         } else {
             $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
         }
@@ -645,7 +645,7 @@ class SubscriberController extends Controller
         $to_list = \Acelle\Model\MailList::findByUid($request->to_uid);
 
         if ($request->select_tool == 'all_items') {
-            $subscribers = $this->search($from_list, $request);
+            $subscribers = $this->search($from_list, $request)->select('subscribers.*');
         } else {
             $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
         }

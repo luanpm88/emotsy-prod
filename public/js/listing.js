@@ -67,7 +67,7 @@ function tableFilter(form, custom_url) {
     }
 
     var sort_direction = form.find(".sort-direction").attr("rel");
-    var keyword = form.find("input[name='search_keyword']").val();
+    var keyword = form.find("input[name='search_keyword'], input[name='keyword']").val();
 
     // Default page
     if(typeof(custom_url) !== 'undefined') {
@@ -398,7 +398,7 @@ $(document).ready(function() {
     });
 
     // Search when typing
-    $(document).on("keyup", "input[name='search_keyword']", function() {
+    $(document).on("keyup", "input[name='search_keyword'], input[name='keyword']", function() {
         var form = $(this).parents(".listing-form");
 
         tableFilter(form);

@@ -5,10 +5,15 @@
             <form action="{{ action("SubscriberController@" . request()->action) }}" method="POST" class="form-validate-jquery">
                 {{ csrf_field() }}
 				<input type="hidden" name="from_uid" value="{{ $from_list->uid }}" />
-
-				@if (request()->select_tool)
-					<input type="hidden" name="select_tool" value="{{ request()->select_tool }}" />
-				@endif
+				@foreach (request()->all() as $name => $value)
+					@if (is_array($value))
+						@foreach ($value as $v)
+							<input type="hidden" name="{{ $name }}[]" value="{{ $v }}" />
+						@endforeach
+					@else
+						<input type="hidden" name="{{ $name }}" value="{{ $value }}" />
+					@endif
+				@endforeach
 
 				<div class="modal-header bg-teal">
 					<button type="button" class="close" data-dismiss="modal">&times;</button>
