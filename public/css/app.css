@@ -2474,7 +2474,7 @@ ul.modern-listing li p {
     height: 22px;
     width: 22px;
 }
-.choice span:after {
+.radio_box .choice span:after {
     border-style: solid;
     border-width: 6px;
 }
