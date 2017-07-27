@@ -18,6 +18,17 @@ class BlacklistController extends Controller
     }
 
     /**
+     * Search items.
+     */
+    public function search($request)
+    {
+        $request->merge(array("admin_id" => $request->user()->admin->id));
+        $blacklists = \Acelle\Model\Blacklist::search($request);
+
+        return $blacklists;
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response
@@ -30,8 +41,7 @@ class BlacklistController extends Controller
             return $this->notAuthorized();
         }
 
-        $request->merge(array("admin_id" => $request->user()->admin->id));
-        $blacklists = \Acelle\Model\Blacklist::search($request);
+        $blacklists = $this->search($request);
 
         # Get current job
         $system_job = $admin->getLastActiveImportBlacklistJob();
@@ -53,8 +63,7 @@ class BlacklistController extends Controller
             return $this->notAuthorized();
         }
 
-        $request->merge(array("admin_id" => $request->user()->admin->id));
-        $blacklists = \Acelle\Model\Blacklist::search($request)->paginate($request->per_page);
+        $blacklists = $this->search($request)->paginate($request->per_page);
 
         return view('admin.blacklists._list', [
             'blacklists' => $blacklists,
@@ -70,7 +79,11 @@ class BlacklistController extends Controller
      */
     public function delete(Request $request)
     {
-        $blacklists = \Acelle\Model\Blacklist::whereIn('id', explode(',', $request->uids));
+        if ($request->select_tool == 'all_items') {
+            $blacklists = $this->search($request);
+        } else {
+            $blacklists = \Acelle\Model\Blacklist::whereIn('id', explode(',', $request->uids));
+        }
 
         foreach ($blacklists->get() as $blacklist) {
             // authorize

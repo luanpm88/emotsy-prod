@@ -197,7 +197,7 @@ class BlacklistController extends Controller
      */
     public function delete(Request $request)
     {
-        if ($request->check_all_pages) {
+        if ($request->select_tool == 'all_items') {
             $blacklists = $this->search($request);
         } else {
             $blacklists = \Acelle\Model\Blacklist::whereIn('id', explode(',', $request->uids));

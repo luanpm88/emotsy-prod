@@ -49,7 +49,7 @@
 			</tr>
 		@endforeach
 	</table>
-	@include('elements/_per_page_select', ["blacklists" => $blacklists])
+	@include('elements/_per_page_select', ["items" => $blacklists])
 	{{ $blacklists->links() }}
 @elseif (!empty(request()->keyword) || !empty(request()->filters["campaign_uid"]))
 	<div class="empty-list">

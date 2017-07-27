@@ -354,7 +354,7 @@ $(function() {
 
         var new_href = $(this).attr("href") + "?uids=" + vals.join(",");
 
-        if (form.find('.check_all_pages').length && form.find('.check_all_pages').is(":checked")) {
+        if (form.find('.select_tool').length && form.find('.select_tool').val() === 'all_items') {
             new_href += '&'+form.serialize();
         }
 

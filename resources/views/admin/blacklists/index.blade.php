@@ -40,6 +40,7 @@
             <div class="col-md-9">
                 @if ($blacklists->count() >= 0)
                     <div class="filter-box">
+                        @include('helpers.select_tool')
                         <div class="btn-group list_actions hide">
                             <button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
                                 {{ trans('messages.actions') }} <span class="caret"></span>
