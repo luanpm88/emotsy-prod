@@ -1124,16 +1124,14 @@ class Subscription extends Model
      */
     public function createSubAccount()
     {
-        $account = new \Acelle\Model\SubAccount();
-        // @todo how to name new sub-account
-        $account->name = 'Auto-created';
-        $account->subscription_id = $this->id;
-        $account->customer_id = $this->customer_id;
-
+        // @todo hard-coded here for SendGrid
         $server = \Acelle\Model\SendingServer::findByUid($this->getOption('sending_server_subaccount_uid'));
-        $account->sending_server_id = is_object($server) ? $server->id : null;
-
-        $account->save();
+        $account = \Acelle\Model\SubAccountSendGrid::setup([
+            'username' => $this->customer->user->email,
+            'subscription_id' => $this->id,
+            'customer_id' => $this->customer_id,
+            'sending_server_id' => $server->id,
+        ]);
     }
 
     /**

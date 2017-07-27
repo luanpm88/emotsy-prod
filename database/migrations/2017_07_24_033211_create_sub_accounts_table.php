@@ -18,8 +18,10 @@ class CreateSubAccountsTable extends Migration
             $table->integer('customer_id')->unsigned();
             $table->integer('sending_server_id')->unsigned();
             $table->integer('subscription_id')->unsigned();
-            $table->string('name');
-            $table->string('api_key');
+            $table->string('username')->nullable();
+            $table->string('password')->nullable();
+            $table->string('api_key_id')->nullable();
+            $table->string('api_key')->nullable();
 
             $table->timestamps();
 

@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "bf995f4c02ffd8f12313ab8b06fbcea6",
-    "content-hash": "bb7287a4841144ce35d6c66132ab11a2",
+    "hash": "f6792e9f77130616c78005f43cff938b",
+    "content-hash": "484b436f1ace6a7478ca6fc55f80117f",
     "packages": [
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -1564,6 +1564,25 @@
                 "storage"
             ],
             "time": "2016-08-10 08:55:11"
+        },
+        {
+            "name": "louis/sendgrid",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/louisitvn/sendgrid",
+                "reference": "master"
+            },
+            "require": {
+                "guzzlehttp/psr7": "^1.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Acelle\\Extra": "src"
+                }
+            },
+            "time": "2016-11-28 07:01:00"
         },
         {
             "name": "mailgun/mailgun-php",
@@ -5758,7 +5777,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "louis/sendgrid": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
