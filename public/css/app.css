@@ -116,7 +116,9 @@ textarea.form-control {
     font-weight: normal;
 }
 .checker span {
-    border-color: #bbb;
+    border-color: #ccc;
+    border-radius: 3px;
+    border-width: 1.5px;
 }
 .form-control, .select2 {
     font-size: 13px;
@@ -363,9 +365,10 @@ h2 [class^="icon-"] {
     transition: width 2s;
 }
 .checker span:after {
-    font-size: 24px;
-    top: -3px;
-    left: -3px;
+    font-size: 19px;
+    top: 0px;
+    left: 0px;
+    font-weight: normal;
 }
 .keyword {
     font-style: italic;
@@ -562,8 +565,8 @@ h2 [class^="icon-"] {
 }
 .check_all_list.check-some .checker span.checked:after {
     content: "\e9b7";
-    font-size: 20px;
-    padding: 2px;
+    font-size: 17px;
+    padding: 1px;
 }
 .num_per_page {
     margin: 15px 0;
@@ -2438,4 +2441,46 @@ a.loading, button.loading {
 .control-checkbox2 .checker {
     float: left;
     margin-right: 15px;
+}
+.control-radio .radio_box label.main-control {
+    padding-left: 0;
+}
+.control-radio .radio_box {
+    padding-left: 35px;
+}
+.radio.radio_box .checkbox label {
+    padding-left: 35px;
+}
+@media (min-width: 1024px) {
+    .form-group .checkbox:first-child {
+        margin-top: 5px;
+    }
+}
+.control-radio .radio_box .choice {
+    margin-left: -35px;
+    margin-right: 13px;
+}
+.form-group .desc {
+    margin-top: 5px;
+    margin-bottom: 20px !important;
+}
+.radio_more_box {
+    display: none;
+}
+ul.modern-listing li p {
+    margin-bottom: 15px;
+}
+.radio_box .choice, .radio_box .choice span, .radio_box .choice input {
+    height: 22px;
+    width: 22px;
+}
+.choice span:after {
+    border-style: solid;
+    border-width: 6px;
+}
+.radio_box rtitle {
+    font-size: 16px;
+}
+canvas[data-zr-dom-id='_zrender_hover_'] {
+    display: none;
 }

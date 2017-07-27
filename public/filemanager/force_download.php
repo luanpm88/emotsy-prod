@@ -8,11 +8,11 @@ extract($config, EXTR_OVERWRITE);
 
 include 'include/utils.php';
 
-if ($_SESSION['RF']["verify"] != "RESPONSIVEfilemanager")
-{
-	response(trans('forbiden').AddErrorLocation(), 403)->send();
-	exit;
-}
+//if ($_SESSION['RF']["verify"] != "RESPONSIVEfilemanager")
+//{
+//	response(trans('forbiden').AddErrorLocation(), 403)->send();
+//	exit;
+//}
 
 include 'include/mime_type_lib.php';
 

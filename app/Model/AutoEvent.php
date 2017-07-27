@@ -527,18 +527,20 @@ class AutoEvent extends Model
                 $strings = [];
                 foreach($this->getDataValue('criteria') as $criteria) {
                     $field = Field::findByUid($criteria["field_uid"]);
-                    if(in_array($criteria['operator'], [AutoEvent::OPERATOR_BLANK, AutoEvent::OPERATOR_NOT_BLANK])) {
-                        $strings[] = trans('messages.event_type_custom_criteria_description_2', [
-                            'field' => $field->label,
-                            'operator' => trans('messages.' . $criteria["operator"]),
-                            'value' => $criteria["value"],
-                        ]);
-                    } else {
-                        $strings[] = trans('messages.event_type_custom_criteria_description', [
-                            'field' => $field->label,
-                            'operator' => trans('messages.' . $criteria["operator"]),
-                            'value' => $criteria["value"],
-                        ]);
+                    if (is_object($field)) {
+                        if(in_array($criteria['operator'], [AutoEvent::OPERATOR_BLANK, AutoEvent::OPERATOR_NOT_BLANK])) {
+                            $strings[] = trans('messages.event_type_custom_criteria_description_2', [
+                                'field' => $field->label,
+                                'operator' => trans('messages.' . $criteria["operator"]),
+                                'value' => $criteria["value"],
+                            ]);
+                        } else {
+                            $strings[] = trans('messages.event_type_custom_criteria_description', [
+                                'field' => $field->label,
+                                'operator' => trans('messages.' . $criteria["operator"]),
+                                'value' => $criteria["value"],
+                            ]);
+                        }
                     }
                 }
 

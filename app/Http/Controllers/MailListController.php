@@ -461,6 +461,7 @@ class MailListController extends Controller
     public function statisticsChart(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
+        $customer = $request->user()->customer;
 
         if (is_object($list)) {
             $list_id = $list->id;
@@ -484,56 +485,55 @@ class MailListController extends Controller
 
         $datas = [];
         if (isset($list->id)) {
-            // create data
-            if ($list->readCache('SubscribeCount')) {
+            if ($list->readCache('SubscribeCount', 0)) {
                 $result['bar_names'][] = trans('messages.subscribed');
-                $datas[] = ['value' => $list->readCache('SubscribeCount'), 'name' => trans('messages.subscribed')];
+                $datas[] = ['value' => $list->readCache('SubscribeCount', 0), 'name' => trans('messages.subscribed')];
             }
-            // create data
-            if ($list->readCache('UnsubscribeCount')) {
+
+            if ($list->readCache('UnsubscribeCount', 0)) {
                 $result['bar_names'][] = trans('messages.unsubscribed');
-                $datas[] = ['value' => $list->readCache('UnsubscribeCount'), 'name' => trans('messages.unsubscribed')];
+                $datas[] = ['value' => $list->readCache('UnsubscribeCount', 0), 'name' => trans('messages.unsubscribed')];
             }
-            // create data
-            if ($list->readCache('UnconfirmedCount')) {
+
+            if ($list->readCache('UnconfirmedCount', 0)) {
                 $result['bar_names'][] = trans('messages.unconfirmed');
-                $datas[] = ['value' => $list->readCache('UnconfirmedCount'), 'name' => trans('messages.unconfirmed')];
+                $datas[] = ['value' => $list->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
             }
-            // create data
-            if ($list->readCache('BlacklistedCount')) {
+
+            if ($list->readCache('BlacklistedCount', 0)) {
                 $result['bar_names'][] = trans('messages.blacklisted');
-                $datas[] = ['value' => $list->readCache('BlacklistedCount'), 'name' => trans('messages.blacklisted')];
+                $datas[] = ['value' => $list->readCache('BlacklistedCount', 0), 'name' => trans('messages.blacklisted')];
             }
-            // create data
-            if ($list->readCache('SpamReportedCount')) {
+
+            if ($list->readCache('SpamReportedCount', 0)) {
                 $result['bar_names'][] = trans('messages.spam_reported');
-                $datas[] = ['value' => $list->readCache('SpamReportedCount'), 'name' => trans('messages.spam_reported')];
+                $datas[] = ['value' => $list->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
             }
         } else {
             // create data
-            if (\Acelle\Model\MailList::subscribersCountByStatus('subscribed', $request->user()->customer)) {
+            if ($customer->readCache('SubscribedCount', 0)) {
                 $result['bar_names'][] = trans('messages.subscribed');
-                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('subscribed', $request->user()->customer), 'name' => trans('messages.subscribed')];
+                $datas[] = ['value' => $request->user()->customer->readCache('SubscribedCount', 0), 'name' => trans('messages.subscribed')];
             }
-            // create data
-            if (\Acelle\Model\MailList::subscribersCountByStatus('unsubscribed', $request->user()->customer)) {
+
+            if ($customer->readCache('UnsubscribedCount', 0)) {
                 $result['bar_names'][] = trans('messages.unsubscribed');
-                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('unsubscribed', $request->user()->customer), 'name' => trans('messages.unsubscribed')];
+                $datas[] = ['value' => $customer->readCache('UnsubscribedCount', 0), 'name' => trans('messages.unsubscribed')];
             }
-            // create data
-            if (\Acelle\Model\MailList::subscribersCountByStatus('unconfirmed', $request->user()->customer)) {
+
+            if ($customer->readCache('UnconfirmedCount', 0)) {
                 $result['bar_names'][] = trans('messages.unconfirmed');
-                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('unconfirmed', $request->user()->customer), 'name' => trans('messages.unconfirmed')];
+                $datas[] = ['value' => $customer->readCache('UnconfirmedCount', 0), 'name' => trans('messages.unconfirmed')];
             }
-            // create data
-            if (\Acelle\Model\MailList::subscribersCountByStatus('blacklisted', $request->user()->customer)) {
+
+            if ($customer->readCache('BlackListedCount', 0)) {
                 $result['bar_names'][] = trans('messages.blacklisted');
-                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('blacklisted', $request->user()->customer), 'name' => trans('messages.blacklisted')];
+                $datas[] = ['value' => $customer->readCache('BlackListedCount', 0), 'name' => trans('messages.blacklisted')];
             }
-            // create data
-            if (\Acelle\Model\MailList::subscribersCountByStatus('spam-reported', $request->user()->customer)) {
+
+            if ($customer->readCache('SpamReportedCount', 0)) {
                 $result['bar_names'][] = trans('messages.spam_reported');
-                $datas[] = ['value' => \Acelle\Model\MailList::subscribersCountByStatus('spam-reported', $request->user()->customer), 'name' => trans('messages.spam_reported')];
+                $datas[] = ['value' => $customer->readCache('SpamReportedCount', 0), 'name' => trans('messages.spam_reported')];
             }
         }
 
@@ -547,7 +547,6 @@ class MailListController extends Controller
         ];
 
         $result['pie'] = 1;
-
         return json_encode($result);
     }
 
