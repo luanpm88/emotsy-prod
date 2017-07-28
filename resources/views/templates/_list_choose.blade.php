@@ -6,7 +6,7 @@
 									<tr>
 										<td width="1%">
 											<a href="#"  onclick="popupwindow('{{ action('TemplateController@preview', $item->uid) }}', '{{ $item->name }}', 800, 800)">
-												<img width="100" height="120" src="{{ action('TemplateController@image', $item->uid) }}?v={{ rand(0,10) }}" />
+												<img class="template-thumb mr-10" width="100" height="120" src="{{ action('TemplateController@image', $item->uid) }}?v={{ rand(0,10) }}" />
 											</a>
 										</td>
 										<td>
@@ -22,7 +22,7 @@
 											<br />
 											<span class="text-muted">{{ trans('messages.updated_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
 										</td>
-											
+
 										<td>
 											<div class="single-stat-box pull-left">
 												<span class="no-margin stat-num">{{ trans('messages.template_type_' . $item->source) }}</span>
@@ -30,8 +30,8 @@
 												<span class="text-muted text-nowrap">{{ trans('messages.type') }}</span>
 											</div>
 										</td>
-										
-										<td class="text-right">										
+
+										<td class="text-right">
 											@if (is_object($campaign->autoEvent()))
 												<a href="{{ action('AutoEventController@templateChoose', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid, 'template_uid' => $item->uid]) }}" type="button" class="btn bg-teal btn-icon"> <i class="icon-checkmark4"></i> {{ trans('messages.choose') }}</a>
 											@else
@@ -50,7 +50,7 @@
 									{{ trans('messages.no_search_result') }}
 								</span>
 							</div>
-						@else					
+						@else
 							<div class="empty-list">
 								<i class="icon-magazine"></i>
 								<span class="line-1">

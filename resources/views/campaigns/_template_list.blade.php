@@ -22,7 +22,7 @@
                 </td>
                 <td width="1%">
                     <a href="#"  onclick="popupwindow('{{ action('CampaignController@preview', $campaign->uid) }}', '{{ $campaign->name }}', 800, 800)">
-                        <img width="100" height="120" src="{{ action('CampaignController@image', $campaign->uid) }}?v={{ rand(0,10) }}" />
+                        <img class="template-thumb" width="100" height="120" src="{{ action('CampaignController@image', $campaign->uid) }}?v={{ rand(0,10) }}" />
                     </a>
                 </td>
                 <td>
@@ -32,7 +32,7 @@
                         </a>
                     </h5>
                     <span class="text-muted">{{ trans('messages.' . $campaign->type) }}</span>
-                    
+
                     <br />
                     @if ($campaign->status != 'new')
                         <span class="text-muted2">{{ trans('messages.run_at') }}: &nbsp;&nbsp;<i class="icon-alarm mr-0"></i> {{ isset($campaign->run_at) ? Tool::formatDateTime($campaign->run_at) : "" }}</span>
@@ -64,7 +64,7 @@
             {{ trans('messages.no_search_result') }}
         </span>
     </div>
-@else					
+@else
     <div class="empty-list">
         <i class="icon-paperplane"></i>
         <span class="line-1">
