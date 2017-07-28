@@ -3,6 +3,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log as LaravelLog;
 
 class Subscription extends Model
 {
@@ -100,6 +101,17 @@ class Subscription extends Model
     public static function findByUid($uid)
     {
         return self::where('uid', '=', $uid)->first();
+    }
+
+    /**
+     * Disable a subscription
+     *
+     * @return void
+     */
+    public function setDisabled()
+    {
+        $this->status = self::STATUS_DISABLED;
+        $this->save();
     }
 
     /**
@@ -1124,14 +1136,21 @@ class Subscription extends Model
      */
     public function createSubAccount()
     {
-        // @todo hard-coded here for SendGrid
-        $server = \Acelle\Model\SendingServer::findByUid($this->getOption('sending_server_subaccount_uid'));
-        $account = \Acelle\Model\SubAccountSendGrid::setup([
-            'email' => $this->customer->user->email,
-            'subscription_id' => $this->id,
-            'customer_id' => $this->customer_id,
-            'sending_server_id' => $server->id,
-        ]);
+        try {
+            // @todo hard-coded here for SendGrid
+            $server = \Acelle\Model\SendingServer::findByUid($this->getOption('sending_server_subaccount_uid'));
+            $account = \Acelle\Model\SubAccountSendGrid::setup([
+                'email' => $this->customer->user->email,
+                'subscription_id' => $this->id,
+                'customer_id' => $this->customer_id,
+                'sending_server_id' => $server->id,
+            ]);
+        } catch (\Exception $ex) {
+            LaravelLog::warning("Cannot create SendGrid sub-account, disabling the subscription");
+            $this->last_error = $ex->getMessage();
+            $this->setDisabled();
+            throw $ex;
+        }
     }
 
     /**

@@ -30,8 +30,6 @@ class SubAccountSendGrid extends SubAccount
 {
     protected $table = 'sub_accounts';
 
-    const DEFAULT_API_NAME = 'Acelle Mail API Key';
-
     public function sendingServerSendGrid()
     {
         return $this->belongsTo('Acelle\Model\SendingServerSendGrid', 'sending_server_id');
@@ -40,31 +38,12 @@ class SubAccountSendGrid extends SubAccount
     public function updateApiKey() {
         try {
             // create an API key
-            $client = new \Acelle\Extra\SendGrid($this->getSubAccountUsername(), decrypt($this->password));
-
-            $response = $client->api_keys()->request('POST', [
-                'name' => self::DEFAULT_API_NAME,
-                'scopes' => [
-                    'user.webhooks.event.settings.read',
-                    'user.webhooks.event.settings.update',
-                    'user.webhooks.parse.settings.create',
-                    'user.webhooks.parse.settings.delete',
-                    'user.webhooks.parse.settings.read',
-                    'user.webhooks.parse.settings.update',
-                    'user.webhooks.parse.stats.read',
-                    'mail.batch.create',
-                    'mail.batch.delete',
-                    'mail.batch.read',
-                    'mail.batch.update',
-                    'mail.send',
-                ]
-            ]);
-
-            $response_json = json_decode($response->getBody()->read(1024 * 1024), true);
-            $this->api_key_id = $response_json['api_key_id'];
-            $this->api_key = $response_json['api_key'];
+            $client = new \Acelle\Extra\SendGrid(['username' => $this->getSubAccountUsername(), 'password' => decrypt($this->password)]);
+            $response = $client->createApiKey(['name' => 'Acelle Mail']);
+            $this->api_key_id = $response['api_key_id'];
+            $this->api_key = $response['api_key'];
             $this->save();
-
+            LaravelLog::info("API key updated for SendGrid subuser {$this->getSubAccountUsername()}");
         } catch (\Exception $ex) {
             throw new \Exception('Cannot update API Key. Original message: ' . $ex->getMessage());
         }
@@ -99,18 +78,18 @@ class SubAccountSendGrid extends SubAccount
      */
     public function createSubAccount() {
         try {
-            LaravelLog::info("Trying to create SendGrid subuser {$this->getSubAccountUsername()}");
-            $client = new \Acelle\Extra\SendGrid('lifehappens', 'life@1655fdn');
+            $client = new \Acelle\Extra\SendGrid(['api' => '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']);
 
-            $ips = json_decode($client->ips()->request('GET')->getBody()->read(1024 * 1024), true);
-            $ips = array_map(function($ip) {
-                return $ip['ip'];
-            }, $ips);
-            $response = $client->subusers()->request('POST', [
+            if ($client->subUserExists($this->getSubAccountUsername())) {
+                LaravelLog::info("SendGrid subuser {$this->getSubAccountUsername()} already exists");
+                return;
+            }
+
+            LaravelLog::info("Trying to create SendGrid subuser {$this->getSubAccountUsername()}");
+            $response = $client->createSubUser([
                 "username" => $this->getSubAccountUsername(),
                 "email" => $this->email,
                 "password" => decrypt($this->password),
-                "ips" => $ips
             ]);
             LaravelLog::info("SendGrid subuser {$this->getSubAccountUsername()} created");
         } catch (\Exception $ex) {
@@ -120,22 +99,33 @@ class SubAccountSendGrid extends SubAccount
 
     public static function setup($params)
     {
-        $instance = new self();
-        $instance->email = $params['email'];
-        $instance->subscription_id = $params['subscription_id'];
-        $instance->customer_id = $params['customer_id'];
-        $instance->sending_server_id = $params['sending_server_id'];
-        $instance->password = encrypt(uniqid());
-        $instance->username = $instance->getSubAccountUsername();
-        $instance->save();
+        $instance = self::findByKeySet($params['customer_id'], $params['sending_server_id']);
 
-        $instance->createSubAccount();
-        $instance->updateApiKey();
+        if (is_null($instance)) {
+            $instance = new self();
+            $instance->email = $params['email'];
+            $instance->subscription_id = $params['subscription_id'];
+            $instance->customer_id = $params['customer_id'];
+            $instance->sending_server_id = $params['sending_server_id'];
+            $instance->password = encrypt(uniqid());
+            $instance->username = $instance->getSubAccountUsername();
+            $instance->save();
+        }
+
+        $instance->createSubAccount(); // if one does not exist yet, otherwise, just return ok
+        $instance->updateApiKey(); // just create a new API KEY for new subscription, @todo: is this a problem?
+
+        return $instance;
     }
 
     public function getSubAccountUsername()
     {
         // return a unique username for subaccount
         return "acellemail_" . substr(md5("{$this->sending_server_id}{$this->customer_id}"), 0, 8);
+    }
+
+    public static function findByKeySet($customer_id, $sending_server_id)
+    {
+        return self::where('customer_id', $customer_id)->where('sending_server_id', $sending_server_id)->first();
     }
 }
