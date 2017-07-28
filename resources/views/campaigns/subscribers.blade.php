@@ -55,7 +55,7 @@
 														<ul>
 															@forelse ($list->otherLists() as $l)
 																<li>
-																	<a link-confirm="{{ trans('messages.subscribers_copy_confirm.replace') }}" href="{{ action('SubscriberController@copy', ['list_uid' => $l->uid, 'type' => 'update']) }}">
+																	<a data-method="POST" link-confirm="{{ trans('messages.subscribers_copy_confirm.replace') }}" href="{{ action('SubscriberController@copy', ['list_uid' => $l->uid, 'type' => 'update']) }}">
 																		<i class="icon-address-book2"></i> {{ $l->name }}
 																	</a>
 																</li>
@@ -69,7 +69,7 @@
 														<ul>
 															@forelse ($list->otherLists() as $l)
 																<li>
-																	<a link-confirm="{{ trans('messages.subscribers_copy_confirm.keep') }}" href="{{ action('SubscriberController@copy', ['list_uid' => $l->uid, 'type' => 'keep']) }}">
+																	<a data-method="POST" link-confirm="{{ trans('messages.subscribers_copy_confirm.keep') }}" href="{{ action('SubscriberController@copy', ['list_uid' => $l->uid, 'type' => 'keep']) }}">
 																		<i class="icon-address-book2"></i> {{ $l->name }}
 																	</a>
 																</li>
@@ -91,7 +91,7 @@
 														<ul>
 															@forelse ($list->otherLists() as $l)
 																<li>
-																	<a link-confirm="{{ trans('messages.subscribers_move_confirm.replace') }}" href="{{ action('SubscriberController@move', ['list_uid' => $l->uid, 'type' => 'update']) }}">
+																	<a data-method="POST" link-confirm="{{ trans('messages.subscribers_move_confirm.replace') }}" href="{{ action('SubscriberController@move', ['list_uid' => $l->uid, 'type' => 'update']) }}">
 																		<i class="icon-address-book2"></i> {{ $l->name }}
 																	</a>
 																</li>
@@ -105,7 +105,7 @@
 														<ul>
 															@forelse ($list->otherLists() as $l)
 																<li>
-																	<a link-confirm="{{ trans('messages.subscribers_move_confirm.keep') }}" href="{{ action('SubscriberController@move', ['list_uid' => $l->uid, 'type' => 'keep']) }}">
+																	<a data-method="POST" link-confirm="{{ trans('messages.subscribers_move_confirm.keep') }}" href="{{ action('SubscriberController@move', ['list_uid' => $l->uid, 'type' => 'keep']) }}">
 																		<i class="icon-address-book2"></i> {{ $l->name }}
 																	</a>
 																</li>

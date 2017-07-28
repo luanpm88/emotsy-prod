@@ -478,7 +478,8 @@ $(function() {
                 return this.value;
             }).get();
 
-            url = url + "?uids=" + vals.join(",");
+            var sign = (url.indexOf('?') !== -1 ? '&' : '?');
+            url = url + sign + "uids=" + vals.join(",");
         }
 
         // count items
