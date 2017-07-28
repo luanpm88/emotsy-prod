@@ -407,6 +407,9 @@ class Subscription extends Model
     public function enable()
     {
         $this->status = Subscription::STATUS_ACTIVE;
+        if ($this->useSubAccount()) {
+            $this->createSubAccount();
+        }
         return $this->save();
     }
 
