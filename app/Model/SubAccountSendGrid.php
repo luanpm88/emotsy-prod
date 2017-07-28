@@ -45,7 +45,7 @@ class SubAccountSendGrid extends SubAccount
             $this->save();
             LaravelLog::info("API key updated for SendGrid subuser {$this->getSubAccountUsername()}");
         } catch (\Exception $ex) {
-            throw new \Exception('Cannot update API Key. Original message: ' . $ex->getMessage());
+            throw new \Exception('Cannot update API key. Error message from SendGrid: ' . $ex->getMessage());
         }
     }
 
@@ -78,7 +78,7 @@ class SubAccountSendGrid extends SubAccount
      */
     public function createSubAccount() {
         try {
-            $client = new \Acelle\Extra\SendGrid(['api' => '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']);
+            $client = new \Acelle\Extra\SendGrid(['api' => 'XSG.Mt2aSakBQfCBtGGirscWPA.J4Zla0WC6uPnZ-Tx4sjDxtLf4Y9TD6P1fkNT4_6iKzk']);
 
             if ($client->subUserExists($this->getSubAccountUsername())) {
                 LaravelLog::info("SendGrid subuser {$this->getSubAccountUsername()} already exists");
@@ -93,7 +93,7 @@ class SubAccountSendGrid extends SubAccount
             ]);
             LaravelLog::info("SendGrid subuser {$this->getSubAccountUsername()} created");
         } catch (\Exception $ex) {
-            throw new \Exception('Cannot create SendGrid subuser. Original message: ' .  $ex->getMessage());
+            throw new \Exception('Cannot create SendGrid subuser. Error message from SendGrid: ' .  $ex->getMessage());
         }
     }
 

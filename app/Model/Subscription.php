@@ -168,6 +168,11 @@ class Subscription extends Model
             ->where('email_verification_servers.status', '=', EmailVerificationServer::STATUS_ACTIVE);
     }
 
+    public function useSubAccount()
+    {
+        return $this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT;
+    }
+
     /**
      * Bootstrap any application services.
      */
@@ -201,11 +206,6 @@ class Subscription extends Model
                 $row->subscription_id = $subscription->id;
                 $row->server_id = $planServer->server_id;
                 $row->save();
-            }
-
-            // Create sub-account if plan sending server type is subaccount
-            if ($subscription->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
-                $subscription->createSubAccount();
             }
         });
 
@@ -1146,7 +1146,7 @@ class Subscription extends Model
                 'sending_server_id' => $server->id,
             ]);
         } catch (\Exception $ex) {
-            LaravelLog::warning("Cannot create SendGrid sub-account, disabling the subscription");
+            LaravelLog::warning("Cannot create SendGrid sub-account, disabling the subscription. Error: " . $ex->getMessage());
             $this->last_error = $ex->getMessage();
             $this->setDisabled();
             throw $ex;

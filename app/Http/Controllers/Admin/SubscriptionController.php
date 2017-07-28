@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Acelle\Http\Requests;
 use Acelle\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log as LaravelLog;
 
 class SubscriptionController extends Controller
 {
@@ -126,8 +127,19 @@ class SubscriptionController extends Controller
 
             $subscription->save();
 
-            $request->session()->flash('alert-success', trans('messages.subscription.created'));
-            return redirect()->action('Admin\SubscriptionController@index');
+            // Create sub-account if plan sending server type is subaccount
+            try {
+                if ($subscription->useSubAccount()) {
+                    $subscription->createSubAccount();
+                }
+
+                $request->session()->flash('alert-success', trans('messages.subscription.created'));
+            } catch (\Exception $ex) {
+                // just surpress the error, the subscription shall be disabled, awaiting admin to enable
+                $request->session()->flash('alert-warning', 'Subscription created but with error: ' . ($ex->getMessage()));
+            } finally {
+                return redirect()->action('Admin\SubscriptionController@index');
+            }
         }
     }
 
@@ -217,7 +229,7 @@ class SubscriptionController extends Controller
         // save posted data
         if ($request->isMethod('patch')) {
             $subscription->options = json_encode($request->options);
-            
+
             $this->validate($request, $subscription->rules());
 
             $rules = [];
