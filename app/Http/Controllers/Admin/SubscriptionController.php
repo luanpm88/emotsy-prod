@@ -338,7 +338,15 @@ class SubscriptionController extends Controller
         foreach ($subscriptions->get() as $subscription) {
             // authorize
             if ($request->user()->admin->can('enable', $subscription)) {
-                $subscription->enable();
+                try {
+                    $subscription->enable();
+                } catch (\Exception $e) {
+                    echo json_encode([
+                        'status' => 'error',
+                        'message' => $e->getMessage(),
+                    ]);
+                    return;
+                }
             }
         }
 
