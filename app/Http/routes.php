@@ -567,6 +567,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/customer_groups', 'CustomerGroupController');
 
     // Customer
+    Route::get('admin/customers/{uid}/su-account', 'CustomerController@subAccount');
     Route::post('admin/customers/{uid}/contact', 'CustomerController@contact');
     Route::get('admin/customers/{id}/contact', 'CustomerController@contact');
     Route::get('admin/customers/growthChart', 'CustomerController@growthChart');

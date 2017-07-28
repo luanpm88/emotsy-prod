@@ -5,7 +5,7 @@
         @foreach ($accounts as $key => $account)
             <tr>
                 <td width="1%">
-                    <img width="80" class="img-circle mr-10" src="{{ action('CustomerController@avatar', $account->customer->uid) }}" alt="">
+                    <img width="50" class="img-circle mr-10" src="{{ action('CustomerController@avatar', $account->customer->uid) }}" alt="">
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">
@@ -23,9 +23,16 @@
                 </td>
                 <td>
                     <div class="single-stat-box pull-left ml-20">
-                        <span class="no-margin stat-num kq_search">{{ $account->username }}</span>
+                        <span class="no-margin stat-num kq_search">{{ $account->name }}</span>
                         <br />
                         <span class="text-muted">{{ trans('messages.name') }}</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="single-stat-box pull-left ml-20">
+                        <span class="no-margin stat-num kq_search">{{ $account->getSecuredApiKey() }}</span>
+                        <br />
+                        <span class="text-muted">{{ trans('messages.sub_account.api_key') }}</span>
                     </div>
                 </td>
                 <td>

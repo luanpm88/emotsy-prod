@@ -895,6 +895,16 @@ ul.modern-listing li i, .table-row-icon {
     width: 30px;
     text-align: center;
 }
+ul.modern-listing li .btn i {
+    float: none;
+    font-size: inherit;
+    height: auto;
+    margin-right: inherit;
+    color: inherit;
+    margin-top: inherit;
+    width: inherit;
+    text-align: inherit;
+}
 .table-row-icon {
     color: #333;
 }

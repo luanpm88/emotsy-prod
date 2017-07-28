@@ -418,6 +418,7 @@ $(function() {
         var url = $(this).attr("href");
         var curl = $(this).attr("list-delete-confirm");
         var method = $(this).attr("data-method");
+        var a_ = $(this);
 
         if (typeof(method) === 'undefined' || method.trim() === '') {
             method = 'GET';
@@ -438,6 +439,13 @@ $(function() {
         $('#list_delete_confirm_model').modal("show");
         $(".list-delete-confirm-button").attr("href", url);
         $(".list-delete-confirm-button").attr("data-method", method);
+
+        // reload when need
+        if (a_.hasClass('reload_page')) {
+            $(".list-delete-confirm-button").addClass("reload_page");
+        } else {
+            $(".list-delete-confirm-button").removeClass("reload_page");
+        }
 
         // Get message
         // ajax update custom sort
@@ -711,7 +719,7 @@ $(function() {
                 tableFilter($(".listing-form"));
             }
 
-            if(msg !== '') {
+            if(msg !== '' && !a_.hasClass('reload_page')) {
                 swal({
                     title: msg,
                     text: "",
@@ -731,6 +739,11 @@ $(function() {
 
             if (type != 'error') {
                 $(".modal").modal('hide');
+            }
+
+            // reload when need
+            if (a_.hasClass('reload_page')) {
+                location.reload();
             }
         });
     });

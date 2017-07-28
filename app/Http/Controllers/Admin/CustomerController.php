@@ -532,4 +532,26 @@ class CustomerController extends Controller
             'contact' => $contact->fill($request->old()),
         ]);
     }
+
+    /**
+     * Customer's sub-account list.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function subAccount(Request $request, $uid)
+    {
+        // Get current user
+        $customer = \Acelle\Model\Customer::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('viewSubAccount', $customer)) {
+            return redirect()->action('Admin\CustomerController@edit', $customer->uid);
+        }
+
+        return view('admin.customers.sub_account', [
+            'customer' => $customer
+        ]);
+    }
 }

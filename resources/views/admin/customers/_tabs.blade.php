@@ -15,5 +15,12 @@
         text-semibold"><a href="{{ action('Admin\CustomerController@subscriptions', $customer->uid) }}">
             <i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}</a>
         </li>
+        @can('viewSubAccount', $customer))
+            <li class="
+            {{ request()->route()->getActionName() == 'Acelle\Http\Controllers\Admin\CustomerController@subAccount' ? 'active' : '' }}
+            text-semibold"><a href="{{ action('Admin\CustomerController@subAccount', $customer->uid) }}">
+                <i class="icon-drive"></i> {{ trans('messages.customer.sub_account') }}</a>
+            </li>
+        @endcan
     </ul>
 </div>

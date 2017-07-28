@@ -1959,4 +1959,8 @@
   'sub_account.currently_associated_subscriptions' => 'This sub-account is currently associated with the following subscriptions:',
   'sub_account.sure_to_delete_subscription_to' => 'Deleting the sub-account will also cancel the subscriptions. Are you sure?',
   'sub_accounts.deleted' => 'Sub-acount was successfully deleted',
+  'sub_account.api_key' => 'API key',
+  'customer.sub_account' => 'Sub-account',
+  'customer.sub_account.wording' => 'Listing of all customer\'s sending server sub-accounts....',
+  'customer.sub_account.title' => 'Sub-account(s)',
 ) ?>

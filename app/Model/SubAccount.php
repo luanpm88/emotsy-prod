@@ -123,4 +123,14 @@ class SubAccount extends Model
 
         return $query;
     }
+
+    /**
+     * Get secured api key.
+     *
+     * @return collect
+     */
+    public function getSecuredApiKey()
+    {
+        return substr($this->api_key, 0, 4) . "..." . substr($this->api_key,-4);
+    }
 }
