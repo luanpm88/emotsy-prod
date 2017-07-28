@@ -1,8 +1,8 @@
-<div class="modal-header bg-teal">
-    <button type="button" class="close" data-dismiss="modal">&times;</button>
-    <h4 class="modal-title">{{ trans('messages.test_sending_server') }}</h4>
-</div>
 <div class="modal-content">
+    <div class="modal-header bg-teal">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">{{ trans('messages.test_sending_server') }}</h4>
+    </div>
     <form action="" method="POST" class="ajax_upload_form form-validate-jquery">
         {{ csrf_field() }}
         <input type="hidden" name="_method" value="">

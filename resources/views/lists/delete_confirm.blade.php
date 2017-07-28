@@ -1,5 +1,5 @@
-<h4>{{ trans('messages.delete_list_confirm_warning') }}</h4>
-<ul class="modern-listing">
+<h6 class="mt-0 mb-0">{{ trans('messages.delete_list_confirm_warning') }}</h6>
+<ul class="modern-listing mt-10">
     @foreach ($lists->get() as $list)
         <li>
             <i class="icon-cancel-circle2 text-danger"></i>
@@ -14,7 +14,7 @@
                 @if ($list->campaigns()->count())
                     <span class="text-bold text-danger">{{ $list->campaigns()->count() }}</span> {{ trans('messages.campaigns') }}<pp>,</pp>
                 @endif
-            </p>                        
+            </p>
         </li>
     @endforeach
 </ul>
