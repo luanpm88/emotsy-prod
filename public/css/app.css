@@ -2431,3 +2431,18 @@ ul.modern-listing li p {
 canvas[data-zr-dom-id='_zrender_hover_'] {
     display: none;
 }
+.readonly-box {
+    position: relative;
+}
+.readonly-box:after {
+    content: 'readonly';
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    display: block;
+    position: absolute;
+    text-indent: -9000px;
+    z-index: 100;
+    background: rgba(255,255,255,0.4);
+}
