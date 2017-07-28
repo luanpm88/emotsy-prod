@@ -1,6 +1,6 @@
 <p>{{ trans('messages.sub_account.currently_associated_subscriptions') }}</p>
 <ul class="modern-listing">
-    @foreach ([$account->subscription] as $subscription)
+    @foreach ($account->subscriptions as $subscription)
         <li>
             <i class="icon-quill4 text-danger"></i>
             <h4 class="text-danger">{{ $subscription->customer->displayName() }}</h4>

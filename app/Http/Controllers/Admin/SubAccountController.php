@@ -77,6 +77,7 @@ class SubAccountController extends Controller
 
         // authorize
         if ($request->user()->admin->can('delete', $account)) {
+            $account = \Acelle\Model\SubAccountSendGrid::findByUid($uid);
             $account->delete();
         }
 
@@ -93,7 +94,8 @@ class SubAccountController extends Controller
      */
     public function deleteConfirm(Request $request, $uid)
     {
-        $account = \Acelle\Model\SubAccount::findByUid($uid);
+        // @todo hard-coded for SendGrid
+        $account = \Acelle\Model\SubAccountSendGrid::findByUid($uid);
 
         return view('admin.sub_accounts.delete_confirm', [
             'account' => $account,

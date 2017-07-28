@@ -38,8 +38,7 @@ class SubAccountSendGrid extends SubAccount
     public function updateApiKey() {
         try {
             // create an API key
-            $client = new \Acelle\Extra\SendGrid(['username' => $this->getSubAccountUsername(), 'password' => decrypt($this->password)]);
-            $response = $client->createApiKey(['name' => 'Acelle Mail']);
+            $response = $this->getApiClient()->createApiKey(['name' => 'Acelle Mail']);
             $this->api_key_id = $response['api_key_id'];
             $this->api_key = $response['api_key'];
             $this->save();
@@ -55,21 +54,30 @@ class SubAccountSendGrid extends SubAccount
      */
     public function delete()
     {
-        $this->deleteSubUser();
+        $this->getMasterApiClient()->deleteSubUser($this->getSubAccountUsername());
+        LaravelLog::info('Sub account deleted: ' . $this->getSubAccountUsername());
         parent::delete();
     }
 
     /**
-     * Overwrite the delete() method to also clear the pending jobs
+     * Get the sub-account API client (authenticated)
      *
      */
-    public function deleteSubAccount() {
-        try {
-            $client = new \Acelle\Extra\SendGrid(\Config::get('sendgrid.username'), \Config::get('sendgrid.password'));
-            $client->subusers()->delete($this->getSubAccountUsername());
-        } catch (\Exception $ex) {
-            // just suppress the error
-        }
+    public function getApiClient()
+    {
+        $client = new \Acelle\Extra\SendGrid(['username' => $this->getSubAccountUsername(), 'password' => decrypt($this->password)]);
+        return $client;
+    }
+
+    /**
+     * Get the master API client (authenticated)
+     *
+     */
+    public function getMasterApiClient()
+    {
+        $master = $this->sendingServerSendGrid;
+        $client = new \Acelle\Extra\SendGrid(['api' => $master->api_key]);
+        return $client;
     }
 
     /**
@@ -78,7 +86,7 @@ class SubAccountSendGrid extends SubAccount
      */
     public function createSubAccount() {
         try {
-            $client = new \Acelle\Extra\SendGrid(['api' => 'XSG.Mt2aSakBQfCBtGGirscWPA.J4Zla0WC6uPnZ-Tx4sjDxtLf4Y9TD6P1fkNT4_6iKzk']);
+            $client = $this->getMasterApiClient();
 
             if ($client->subUserExists($this->getSubAccountUsername())) {
                 LaravelLog::info("SendGrid subuser {$this->getSubAccountUsername()} already exists");
@@ -104,7 +112,6 @@ class SubAccountSendGrid extends SubAccount
         if (is_null($instance)) {
             $instance = new self();
             $instance->email = $params['email'];
-            $instance->subscription_id = $params['subscription_id'];
             $instance->customer_id = $params['customer_id'];
             $instance->sending_server_id = $params['sending_server_id'];
             $instance->password = encrypt(uniqid());
@@ -121,7 +128,7 @@ class SubAccountSendGrid extends SubAccount
     public function getSubAccountUsername()
     {
         // return a unique username for subaccount
-        return "acellemail_" . substr(md5("{$this->sending_server_id}{$this->customer_id}"), 0, 8);
+        return "acellemail_" . substr(md5("{$this->sendingServer->uid}{$this->customer->uid}"), 0, 8);
     }
 
     public static function findByKeySet($customer_id, $sending_server_id)

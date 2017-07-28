@@ -1139,17 +1139,24 @@ class Subscription extends Model
      */
     public function createSubAccount()
     {
+        // just return if subaccount was already setup
+        if (!is_null($this->sub_account_id)) {
+            return true;
+        }
+
         try {
             // @todo hard-coded here for SendGrid
             $server = \Acelle\Model\SendingServer::findByUid($this->getOption('sending_server_subaccount_uid'));
             $account = \Acelle\Model\SubAccountSendGrid::setup([
                 'email' => $this->customer->user->email,
-                'subscription_id' => $this->id,
                 'customer_id' => $this->customer_id,
                 'sending_server_id' => $server->id,
             ]);
+
+            $this->sub_account_id = $account->id;
+            $this->save();
         } catch (\Exception $ex) {
-            LaravelLog::warning("Cannot create SendGrid sub-account, disabling the subscription. Error: " . $ex->getMessage());
+            LaravelLog::warning($ex->getMessage());
             $this->last_error = $ex->getMessage();
             $this->setDisabled();
             throw $ex;

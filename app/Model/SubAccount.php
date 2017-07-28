@@ -22,15 +22,6 @@ class SubAccount extends Model
             }
             $account->uid = $uid;
         });
-
-        // When deleting the resource.
-        static::deleting(function ($account) {
-            // Disable subscription
-            $subscription = $account->subscription;
-            if (is_object($subscription) && $subscription->isActive()) {
-                $subscription->disable();
-            }
-        });
     }
 
     /**
@@ -65,9 +56,9 @@ class SubAccount extends Model
         return $this->belongsTo('Acelle\Model\Customer');
     }
 
-    public function subscription()
+    public function subscriptions()
     {
-        return $this->belongsTo('Acelle\Model\Subscription');
+        return $this->hasMany('Acelle\Model\Subscription', 'sub_account_id', 'id');
     }
 
     /**
