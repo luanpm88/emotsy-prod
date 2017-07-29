@@ -4,6 +4,7 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Acelle\Library\Log as MailLog;
+use Illuminate\Support\Facades\Log as LaravelLog;
 
 class SubscriptionController extends Controller
 {
@@ -289,16 +290,27 @@ class SubscriptionController extends Controller
 
             $subscription->fillAttributes($request->all());
 
+            // start_at must always be set
             if (empty($subscription->start_at)) {
                 $subscription->start_at = \Carbon\Carbon::now();
             }
 
-            $subscription->save();
-
             if ($subscription->isFree()) {
                 $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
-                $subscription->save();
+            }
 
+            $subscription->save();
+
+            try {
+                if ($subscription->useSubAccount()) {
+                    $subscription->createSubAccount();
+                }
+            } catch (\Exception $ex) {
+                // just suppress the error and leave the subscription disabled
+                LaravelLog::warning("Cannot create sub-account for subscription {$subscription->id}, proceed anyway");
+            }
+
+            if ($subscription->isFree()) {
                 $request->session()->flash('alert-success', trans('messages.subscription.created'));
                 return redirect()->action('AccountController@subscription');
             } else {
