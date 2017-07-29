@@ -894,22 +894,11 @@ class Subscription extends Model
     }
 
     /**
-     * Set active.
-     *
-     * @return void
-     */
-    public function setActive()
-    {
-        $this->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
-        $this->save();
-    }
-
-    /**
      * Set paid.
      *
      * @return void
      */
-    public function setPaid($params=[])
+    public function setPaid($params = [])
     {
         $this->paid = true;
         $this->save();

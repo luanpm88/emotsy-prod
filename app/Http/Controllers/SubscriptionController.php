@@ -295,22 +295,16 @@ class SubscriptionController extends Controller
                 $subscription->start_at = \Carbon\Carbon::now();
             }
 
-            if ($subscription->isFree()) {
-                $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
-            }
-
             $subscription->save();
 
-            try {
-                if ($subscription->useSubAccount()) {
-                    $subscription->createSubAccount();
-                }
-            } catch (\Exception $ex) {
-                // just suppress the error and leave the subscription disabled
-                LaravelLog::warning("Cannot create sub-account for subscription {$subscription->id}, proceed anyway");
-            }
-
             if ($subscription->isFree()) {
+                try {
+                    $subscription->enable();
+                } catch (\Exception $ex) {
+                    // just suppress the error and leave the subscription disabled
+                    LaravelLog::warning("Cannot enable subscription {$subscription->id}, proceed anyway");
+                }
+                
                 $request->session()->flash('alert-success', trans('messages.subscription.created'));
                 return redirect()->action('AccountController@subscription');
             } else {
