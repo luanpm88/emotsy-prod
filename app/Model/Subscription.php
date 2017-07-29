@@ -145,6 +145,15 @@ class Subscription extends Model
     }
 
     /**
+     * Subaccount if any
+     */
+    public function subAccount()
+    {
+        // @todo hard-coded for SendGrid
+        return $this->belongsTo('Acelle\Model\SubAccountSendGrid');
+    }
+
+    /**
      * Get all active subscription sending servers.
      *
      * @return collect

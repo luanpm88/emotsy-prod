@@ -30,11 +30,19 @@ class SubAccountSendGrid extends SubAccount
 {
     protected $table = 'sub_accounts';
 
+    /**
+     * Association, retrieve the corresponding SendGrid sending server
+     *
+     */
     public function sendingServerSendGrid()
     {
         return $this->belongsTo('Acelle\Model\SendingServerSendGrid', 'sending_server_id');
     }
 
+    /**
+     * Generate a new API key and update it for the sub-account
+     *
+     */
     public function updateApiKey() {
         try {
             // create an API key
@@ -105,6 +113,11 @@ class SubAccountSendGrid extends SubAccount
         }
     }
 
+    /**
+     * Setup a sub-account for the subscription
+     * A unique sub-account is created for every [customer, sending server]
+     * Create one if not exist yet
+     */
     public static function setup($params)
     {
         $instance = self::findByKeySet($params['customer_id'], $params['sending_server_id']);
@@ -125,12 +138,21 @@ class SubAccountSendGrid extends SubAccount
         return $instance;
     }
 
+    /**
+     * Genereate a globally unique SendGrid subuser username for [customer, sending server]
+     * As a result, many app can share the same SendGrid master account without worrying about name conflict
+     *
+     */
     public function getSubAccountUsername()
     {
         // return a unique username for subaccount
         return "acellemail_" . substr(md5("{$this->sendingServer->uid}{$this->customer->uid}"), 0, 8);
     }
 
+    /**
+     * Find the corresponding sub-account for [customer, sending server]
+     *
+     */
     public static function findByKeySet($customer_id, $sending_server_id)
     {
         return self::where('customer_id', $customer_id)->where('sending_server_id', $sending_server_id)->first();

@@ -33,11 +33,11 @@ class SendingServer extends Model
 {
     const DELIVERY_STATUS_SENT = 'sent';
     const DELIVERY_STATUS_FAILED = 'failed';
-
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
 
     protected $quotaTracker;
+    protected $subAccount;
 
     /**
      * The attributes that are mass assignable.
@@ -684,5 +684,10 @@ class SendingServer extends Model
             'sendgrid-api',
             'sendgrid-smtp'
         ];
+    }
+
+    public function setSubAccount($subAccount)
+    {
+        $this->subAccount = $subAccount;
     }
 }

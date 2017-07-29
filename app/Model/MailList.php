@@ -1373,7 +1373,15 @@ class MailList extends Model
                 $server = SendingServer::find($id);
                 $server->cleanupQuotaTracker();
                 MailLog::info(sprintf('Initialize delivery server `%s` (ID: %s)', $server->name, $id));
-                self::$serverPools[$id] = SendingServer::mapServerType($server);
+
+                $server = SendingServer::mapServerType($server);
+
+                // flag the server to use sub-account instead
+                $subscription = $this->customer->getCurrentSubscription();
+                if (!is_null($subscription->sub_account_id)) {
+                    $server->setSubAccount($subscription->subAccount);
+                }
+                self::$serverPools[$id] = $server;
             }
 
             if (self::$serverPools[$id]->overQuota()) {
