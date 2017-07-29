@@ -9,22 +9,18 @@
             </div>
         </label>
         <div class="radio_more_box">
-            <div class="row">
-                <div class="col-md-3">
-                    <span class="notoping">
-                        @include('helpers.form_control', ['type' => 'checkbox2',
-                            'class' => '',
-                            'name' => 'options[all_sending_servers]',
-                            'value' => $options['all_sending_servers'],
-                            'label' => trans('messages.use_all_sending_servers'),
-                            'options' => ['no','yes'],
-                            'help_class' => $help_class,
-                            'rules' => $rules
-                        ])
-                    </span>
+            <span class="notoping">
+                @include('helpers.form_control', ['type' => 'checkbox2',
+                    'class' => '',
+                    'name' => 'options[all_sending_servers]',
+                    'value' => $options['all_sending_servers'],
+                    'label' => trans('messages.use_all_sending_servers'),
+                    'options' => ['no','yes'],
+                    'help_class' => $help_class,
+                    'rules' => $rules
+                ])
+            </span>
 
-                </div>
-            </div>
             @if(!Auth()->user()->admin->getAllSendingServers()->count())
                 <div class="alert alert-danger mt-20">
                     {!! trans('messages.plan_option.there_no_sending_server') !!}
@@ -33,16 +29,16 @@
                 <div class="sending-servers">
                     <hr>
                     <div class="row text-muted">
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label>{{ trans('messages.select_sending_servers') }}</label>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-6">
                             <label>{{ trans('messages.fitness') }}</label>
                         </div>
                     </div>
                     @foreach (Auth()->user()->admin->getAllSendingServers()->orderBy("name")->get() as $server)
                         <div class="row mb-5">
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 @include('helpers.form_control', [
                                     'type' => 'checkbox2',
                                     'name' => 'sending_servers[' . $server->uid . '][check]',
@@ -53,7 +49,7 @@
                                     'rules' => $rules
                                 ])
                             </div>
-                            <div class="col-md-4" show-with-control="input[name='{{ 'sending_servers[' . $server->uid . '][check]' }}']">
+                            <div class="col-md-6" show-with-control="input[name='{{ 'sending_servers[' . $server->uid . '][check]' }}']">
                                 <?php $found_key = array_search($server->id, array_column($relatedSendingServers->toArray(), 'sending_server_id')) ?>
                                 @include('helpers.form_control', [
                                     'type' => 'text',
@@ -97,21 +93,17 @@
                 ])
             </span>
 
-            <div class="row mt-20">
-                <div class="col-md-5">
-                    <span class="">
-                        @include('helpers.form_control', ['type' => 'checkbox2',
-                            'class' => '',
-                            'name' => 'options[all_sending_server_types]',
-                            'value' => $options['all_sending_server_types'],
-                            'label' => trans('messages.allow_adding_all_sending_server_types'),
-                            'options' => ['no','yes'],
-                            'help_class' => $help_class,
-                            'rules' => $rules
-                        ])
-                    </span>
-                </div>
-            </div>
+            <p>
+                @include('helpers.form_control', ['type' => 'checkbox2',
+                    'class' => '',
+                    'name' => 'options[all_sending_server_types]',
+                    'value' => $options['all_sending_server_types'],
+                    'label' => trans('messages.allow_adding_all_sending_server_types'),
+                    'options' => ['no','yes'],
+                    'help_class' => $help_class,
+                    'rules' => $rules
+                ])
+            </p>
             <div class="all_sending_server_types_no">
                 <hr>
                 <label class="text-semibold text-muted">{{ trans('messages.select_allowed_sending_server_types') }}</label>
