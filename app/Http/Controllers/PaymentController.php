@@ -3,6 +3,7 @@ namespace Acelle\Http\Controllers;
 use Illuminate\Http\Request;
 use Acelle\Model\Payment;
 use Acelle\Library\Log as PaymentLog;
+use Illuminate\Support\Facades\Log as LaravelLog;
 
 class PaymentController extends Controller {
     /**
