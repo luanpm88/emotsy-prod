@@ -54,7 +54,7 @@ class SendingServerSendGridSmtp extends SendingServerSendGrid
             } else {
                 // use sub account
                 $username = $this->subAccount->getSubAccountUsername();
-                $password = $this->subAccount->password;
+                $password = decrypt($this->subAccount->password);
             }
 
             $transport = \Swift_SmtpTransport::newInstance($this->host, (int) $this->smtp_port, $this->smtp_protocol)
