@@ -737,7 +737,7 @@ $(function() {
             a_.find('.a-loading').remove();
             $('.mask-loading-effect').remove();
 
-            if (type != 'error') {
+            if (type != 'error' || a_.parents('form').find('input').length == 0) {
                 $(".modal").modal('hide');
             }
 
