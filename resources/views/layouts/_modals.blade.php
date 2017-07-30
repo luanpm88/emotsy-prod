@@ -1,20 +1,20 @@
     <a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#delete_confirm_model">aa</a>
 	<!-- Basic modal -->
-	<div id="delete_confirm_model" class="modal fade">
+	<div id="delete_confirm_model" class="modal fade new-modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<form class="confirm-delete-form form-validate-jquery" onkeypress="return event.keyCode != 13;">
-					<div class="modal-header bg-danger">
+					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
 					<div class="modal-body">
 
-							<h6></h6>
+							<h6 class="mt-0"></h6>
 
 							<div class="form-group">
-								<label>{!! trans('messages.type_delete_to_confirm') !!}</label>
+								<label class="text-normal">{!! trans('messages.type_delete_to_confirm') !!}</label>
 								<input class="form-control required" name="delete" />
 							</div>
 
@@ -22,7 +22,7 @@
 
 					<div class="modal-footer">
 						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
-						<a class="btn btn-danger delete-confirm-button ajax_link">{{ trans('messages.delete') }}</a>
+						<a class="btn btn-danger bg-grey delete-confirm-button ajax_link">{{ trans('messages.delete') }}</a>
 					</div>
 				</form>
 			</div>
@@ -59,11 +59,11 @@
 
 	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#list_delete_confirm_model">aa</a>
 	<!-- Basic modal -->
-	<div id="list_delete_confirm_model" class="modal fade">
+	<div id="list_delete_confirm_model" class="modal fade new-modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<form class="list-confirm-delete-form form-validate-jquery" onkeypress="return event.keyCode != 13;">
-					<div class="modal-header bg-danger">
+					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
@@ -75,7 +75,7 @@
 							</div>
 
 							<div class="form-group">
-								<label>{!! trans('messages.type_delete_to_confirm') !!}</label>
+								<label class="text-normal">{!! trans('messages.type_delete_to_confirm') !!}</label>
 								<input class="form-control required" name="delete" />
 							</div>
 
@@ -83,7 +83,7 @@
 
 					<div class="modal-footer">
 						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
-						<a class="btn btn-danger list-delete-confirm-button ajax_link">{{ trans('messages.delete') }}</a>
+						<a class="btn btn-danger bg-grey list-delete-confirm-button ajax_link">{{ trans('messages.delete') }}</a>
 					</div>
 				</form>
 			</div>
@@ -113,11 +113,11 @@
 	<!-- Basic modal -->
 	<div id="copy_list" class="modal fade">
 		<div class="modal-dialog">
-			<div class="modal-header bg-teal">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">{{ trans('messages.name_new_list') }}</h4>
-			</div>
 			<div class="modal-content">
+				<div class="modal-header bg-teal">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">{{ trans('messages.name_new_list') }}</h4>
+				</div>
 				<form action="{{ action('MailListController@copy') }}" method="POST" class="ajax_copy_list_form form-validate-jqueryz">
 					{{ csrf_field() }}
 					<input type="hidden" name="copy_list_uid" />
@@ -207,7 +207,7 @@
 			<!-- Alert if customer use their own sending servers but haven't had any one yet -->
 			@if (
 				is_object(\Auth::user()->customer) &&
-				\Auth::user()->customer->getOption("create_sending_servers") == 'yes' &&
+				\Auth::user()->customer->getOption("sending_server_option") == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN &&
 				!\Auth::user()->customer->activeSendingServers()->count())
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 					<h4 class="ui-pnotify-title">
@@ -243,11 +243,11 @@
 	<!-- Basic modal -->
 	<div id="copy_campaign" class="modal fade">
 		<div class="modal-dialog">
-			<div class="modal-header bg-teal">
-				<button type="button" class="close" data-dismiss="modal">&times;</button>
-				<h4 class="modal-title">{{ trans('messages.name_new_campaign') }}</h4>
-			</div>
 			<div class="modal-content">
+				<div class="modal-header bg-teal">
+					<button type="button" class="close" data-dismiss="modal">&times;</button>
+					<h4 class="modal-title">{{ trans('messages.name_new_campaign') }}</h4>
+				</div>
 				<form action="{{ action('CampaignController@copy') }}" method="POST" class="ajax_copy_campaign_form form-validate-jquery">
 					{{ csrf_field() }}
 					<input type="hidden" name="copy_campaign_uid" />
@@ -321,24 +321,24 @@
 	<!-- /basic modal -->
 
 	<!-- Basic modal -->
-	<div id="delete_auto_campaign_confirm_model" class="modal fade">
+	<div id="delete_auto_campaign_confirm_model" class="modal fade new-modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
-					<div class="modal-header bg-danger">
+					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
 					<div class="modal-body">
 
-							<h6></h6>
+							<h6 class="mt-0"></h6>
 
 					</div>
 
 					<div class="modal-footer">
 						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
-						<a class="btn btn-danger auto-campaign-delete-confirmed">{{ trans('messages.confirm') }}</a>
+						<a class="btn btn-danger bg-grey auto-campaign-delete-confirmed">{{ trans('messages.confirm') }}</a>
 					</div>
 				</form>
 			</div>
@@ -347,24 +347,24 @@
 	<!-- /basic modal -->
 
 	<!-- Basic modal -->
-	<div id="delete_auto_event_confirm_model" class="modal fade">
+	<div id="delete_auto_event_confirm_model" class="modal fade new-modal">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
-					<div class="modal-header bg-danger">
+					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
 
 					<div class="modal-body">
 
-							<h6></h6>
+							<h6 class="mt-0"></h6>
 
 					</div>
 
 					<div class="modal-footer">
 						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
-						<a class="btn btn-danger auto-event-delete-confirmed">{{ trans('messages.confirm') }}</a>
+						<a class="btn btn-danger bg-grey auto-event-delete-confirmed">{{ trans('messages.confirm') }}</a>
 					</div>
 				</form>
 			</div>

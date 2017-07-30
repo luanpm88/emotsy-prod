@@ -1373,7 +1373,15 @@ class MailList extends Model
                 $server = SendingServer::find($id);
                 $server->cleanupQuotaTracker();
                 MailLog::info(sprintf('Initialize delivery server `%s` (ID: %s)', $server->name, $id));
-                self::$serverPools[$id] = SendingServer::mapServerType($server);
+
+                $server = SendingServer::mapServerType($server);
+
+                // flag the server to use sub-account instead
+                $subscription = $this->customer->getCurrentSubscription();
+                if (!is_null($subscription->sub_account_id)) {
+                    $server->setSubAccount($subscription->subAccount);
+                }
+                self::$serverPools[$id] = $server;
             }
 
             if (self::$serverPools[$id]->overQuota()) {
@@ -1406,9 +1414,10 @@ class MailList extends Model
     public function getSendingServers()
     {
         $result = [];
+        $subscription = $this->customer->getCurrentSubscription();
 
         // Check the customer has permissions using sending servers and has his own sending servers
-        if ($this->customer->getOption("create_sending_servers") == 'yes') {
+        if ($this->customer->getOption("sending_server_option") == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
             if ($this->all_sending_servers) {
                 if ($this->customer->activeSendingServers()->count()) {
                     $result = $this->customer->activeSendingServers()->get()->map(function ($server) {
@@ -1421,9 +1430,7 @@ class MailList extends Model
                 });
             }
         // If customer dont have permission creating sending servers
-        } else {
-            $subscription = $this->customer->getCurrentSubscription();
-
+        } elseif ($this->customer->getOption("sending_server_option") == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM) {
             // Check if has sending servers for current subscription
             if (is_object($subscription)) {
                 if ($subscription->getOption("all_sending_servers") == 'yes') {
@@ -1438,6 +1445,8 @@ class MailList extends Model
                     });
                 }
             }
+        } elseif ($subscription->useSubAccount()) {
+            $result[] = [$subscription->subAccount->sending_server_id, '100'];
         }
 
         $assoc = [];

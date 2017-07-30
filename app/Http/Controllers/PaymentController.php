@@ -3,6 +3,7 @@ namespace Acelle\Http\Controllers;
 use Illuminate\Http\Request;
 use Acelle\Model\Payment;
 use Acelle\Library\Log as PaymentLog;
+use Illuminate\Support\Facades\Log as LaravelLog;
 
 class PaymentController extends Controller {
     /**
@@ -125,8 +126,15 @@ class PaymentController extends Controller {
                 $payment->save();
 
                 if ($result->success) {
-                    $subscription->setActive();
                     $subscription->setPaid();
+
+                    // try enabling the subscription, proceed anyway if failed
+                    try {
+                        $subscription->enable();
+                    } catch (\Exception $ex) {
+                        // just suppress the error and leave the subscription disabled
+                        LaravelLog::warning("Cannot enable subscription {$subscription->id}, proceed anyway");
+                    }
 
                     return redirect()->action('PaymentController@success', $subscription->uid);
                 } else {
@@ -201,8 +209,15 @@ class PaymentController extends Controller {
                 $payment->save();
 
                 if ($result->success) {
-                    $subscription->setActive();
                     $subscription->setPaid();
+
+                    // try enabling the subscription, proceed anyway if failed
+                    try {
+                        $subscription->enable();
+                    } catch (\Exception $ex) {
+                        // just suppress the error and leave the subscription disabled
+                        LaravelLog::warning("Cannot enable subscription {$subscription->id}, proceed anyway");
+                    }
 
                     return redirect()->action('PaymentController@success', $subscription->uid);
                 }
@@ -229,7 +244,7 @@ class PaymentController extends Controller {
      */
     public function braintree_paypal(Request $request, $subscription_uid) {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
-        $result = NULL;
+        $result = null;
 
         // Check billing information
         if( $this->checkBillingInformation($request, $subscription) !== true ) {
@@ -277,13 +292,19 @@ class PaymentController extends Controller {
                 $payment->save();
 
                 if ($result->success) {
-                    $subscription->setActive();
                     $subscription->setPaid();
+
+                    // try enabling the subscription, proceed anyway if failed
+                    try {
+                        $subscription->enable();
+                    } catch (\Exception $ex) {
+                        // just suppress the error and leave the subscription disabled
+                        LaravelLog::warning("Cannot enable subscription {$subscription->id}, proceed anyway");
+                    }
 
                     return redirect()->action('PaymentController@success', $subscription->uid);
                 }
             }
-
         } catch (\Exception $e) {
             PaymentLog::error(trans('messages.something_went_wrong_with_payment') . ': ' .$e->getMessage());
             return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment', ['error' => $e->getMessage()])]);
@@ -393,7 +414,7 @@ class PaymentController extends Controller {
     public function stripe_credit_card(Request $request, $subscription_uid) {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $order_id = $subscription->getOrderID();
-        $result = NULL;
+        $result = null;
 
         // Check billing information
         if( $this->checkBillingInformation($request, $subscription) !== true ) {
@@ -403,7 +424,6 @@ class PaymentController extends Controller {
         $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_STRIPE_CREDIT_CARD);
         $apiSecretKey = $payment_method->getOption('api_secret_key');
         $apiPublishableKey = $payment_method->getOption('api_publishable_key');
-
 
         try {
             \Stripe\Stripe::setApiKey($apiSecretKey);
@@ -441,9 +461,15 @@ class PaymentController extends Controller {
                 }
 
                 $payment->save();
-
-                $subscription->setActive();
                 $subscription->setPaid();
+
+                // try enabling the subscription, proceed anyway if failed
+                try {
+                    $subscription->enable();
+                } catch (\Exception $ex) {
+                    // just suppress the error and leave the subscription disabled
+                    LaravelLog::warning("Cannot enable subscription {$subscription->id}, proceed anyway");
+                }
 
                 return redirect()->action('PaymentController@success', $subscription->uid);
             }

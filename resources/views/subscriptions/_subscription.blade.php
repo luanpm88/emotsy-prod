@@ -1,6 +1,6 @@
 <div class="panel panel-plan mr-30 {{ $subscription->beingUsed() ? 'box-shadow border-dark' : '' }}">
     <div class="panel-heading {{ $subscription->beingUsed() ? 'bg-teal-800' : 'bg-grey-800' }} subscription-state subscription-state-{{ $subscription->timeStatus() }}">
-        <h4 class="pull-left panel-title text-center">													
+        <h4 class="pull-left panel-title text-center">
             {{ $subscription->plan_name }}
         </h4>
         <span class="label label-flat bg-white pull-right">
@@ -67,11 +67,11 @@
     </div>
     @if (!isset($readonly))
         <div class="panel-footer pt-10 pb-10 text-left">
-        
+
             @if (Auth::user()->can('delete', $subscription)
                 || Auth::user()->can('pay', $subscription)
             )
-                <div class="btn-group">										
+                <div class="btn-group">
                     <button type="button" class="btn bg-teal-800 dropdown-toggle" data-toggle="dropdown">
                     <i class="icon-loop4"></i> {{ trans('messages.actions') }} <span class="caret ml-0"></span>
                     </button>
@@ -79,7 +79,7 @@
                         @if (!$subscription->isPaid() && !$subscription->isActive())
                             @can('pay', $subscription)
                                 @foreach (\Acelle\Model\PaymentMethod::getAllActive() as $payment_method)
-                                    <li>														
+                                    <li>
                                         <a href="{{ action('SubscriptionController@selectPaymentMethod', ["uid" => $subscription->uid, 'payment_method_id' => $payment_method->uid]) }}">
                                             {!! trans('messages.payment_method_type_' . $payment_method->type . '_button') !!}
                                         </a>
@@ -88,7 +88,7 @@
                             @endcan
                         @endif
                         @can('delete', $subscription)
-                            <li>														
+                            <li>
                                 <a delete-confirm="{{ trans('messages.delete_subscriptions_confirm') }}" href="{{ action('SubscriptionController@delete', ["uids" => $subscription->uid]) }}">
                                     <i class="icon-trash"></i> {{ trans('messages.delete') }}
                                 </a>

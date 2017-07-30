@@ -17,21 +17,21 @@ class CustomerPolicy
     {
         //
     }
-    
+
     public function read(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
         $can = $user->admin->getPermission('customer_read') != 'no';
 
         return $can;
     }
-    
+
     public function readAll(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
         $can = $user->admin->getPermission('customer_read') == 'all';
 
         return $can;
     }
-    
+
     public function create(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
         $can = $user->admin->getPermission('customer_create') == 'yes';
@@ -70,7 +70,7 @@ class CustomerPolicy
 
         return $can && $user->admin->user_id != $item->user_id;
     }
-    
+
     public function disable(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
         $ability = $user->admin->getPermission('customer_update');
@@ -79,7 +79,7 @@ class CustomerPolicy
 
         return $can && $item->status != 'inactive';
     }
-    
+
     public function enable(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
         $ability = $user->admin->getPermission('customer_update');
@@ -88,12 +88,21 @@ class CustomerPolicy
 
         return $can && $item->status != 'active';
     }
-    
+
     public function register(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
     {
         $ability = \Acelle\Model\Setting::get('enable_user_registration') == 'yes';
         $can = $ability;
 
         return true;
+    }
+
+    public function viewSubAccount(\Acelle\Model\User $user, \Acelle\Model\Customer $item)
+    {
+        $ability = $user->admin->getPermission('customer_update');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
+        $can = $can && $item->subAccounts()->count();
+        return $can;
     }
 }

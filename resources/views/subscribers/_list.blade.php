@@ -69,7 +69,7 @@
 							@endif
 
 							<li>
-								<a href="#copy" class="copy_move_subscriber"
+								<a href="#copy" class="copy_move_subscriber" data-method="POST"
 									data-url="{{ action('SubscriberController@copyMoveForm', [
 										'uids' => $item->uid,
 										'from_uid' => $list->uid,
@@ -79,7 +79,7 @@
 								</a>
 							</li>
 							<li>
-								<a href="#move" class="copy_move_subscriber"
+								<a href="#move" class="copy_move_subscriber" data-method="POST"
 									data-url="{{ action('SubscriberController@copyMoveForm', [
 										'uids' => $item->uid,
 										'from_uid' => $list->uid,

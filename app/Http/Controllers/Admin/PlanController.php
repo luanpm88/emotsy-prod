@@ -142,6 +142,9 @@ class PlanController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
+            $plan->fill($request->all());
+            $plan->options = json_encode($request->options);
+            
             $this->validate($request, $plan->rules());
 
             $rules = [];
@@ -154,8 +157,6 @@ class PlanController extends Controller
             }
             $this->validate($request, $rules);
 
-            $plan->fill($request->all());
-            $plan->options = json_encode($request->options);
             $plan->admin_id = $user->admin->id;
             $plan->status = \Acelle\Model\Plan::STATUS_ACTIVE;
             $plan->save();
@@ -264,6 +265,9 @@ class PlanController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
+            $plan->fill($request->all());
+            $plan->options = json_encode($request->options);
+
             $this->validate($request, $plan->rules());
 
             $rules = [];
@@ -276,8 +280,6 @@ class PlanController extends Controller
             }
             $this->validate($request, $rules);
 
-            $plan->fill($request->all());
-            $plan->options = json_encode($request->options);
             $plan->save();
 
             // For sending servers

@@ -31,7 +31,7 @@ class TrackingLog extends Model
     const STATUS_FEEDBACK_ABUSE = 'feedback-abuse';
     const STATUS_FEEDBACK_SPAM = 'feedback-spam';
 
-    protected $fillable = ['campaign_id', 'message_id', 'runtime_message_id', 'subscriber_id', 'sending_server_id', 'customer_id', 'status', 'error', 'auto_trigger_id'];
+    protected $fillable = ['campaign_id', 'message_id', 'runtime_message_id', 'subscriber_id', 'sending_server_id', 'customer_id', 'status', 'error', 'auto_trigger_id', 'sub_account_id'];
 
     /**
      * Associations.
@@ -47,7 +47,7 @@ class TrackingLog extends Model
     {
         return $this->belongsTo('Acelle\Model\Campaign');
     }
-    
+
     public function mailList()
     {
         return $this->belongsTo('Acelle\Model\MailList');

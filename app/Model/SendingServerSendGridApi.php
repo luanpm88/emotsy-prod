@@ -54,12 +54,18 @@ class SendingServerSendGridApi extends SendingServerSendGrid
             if (preg_match("/^2../i", $statusCode)) {
                 MailLog::info('Sent!');
 
-                return array(
+                $result = array(
                     // @deprecated
                     // 'runtime_message_id' => StringHelper::cleanupMessageId($this->getMessageId($response->headers())),
                     'runtime_message_id' => $msgId,
                     'status' => self::DELIVERY_STATUS_SENT,
                 );
+
+                if (!is_null($this->subAccount)) {
+                    $result['sub_account_id'] = $this->subAccount->id;
+                }
+
+                return $result;
             } else {
                 throw new \Exception("{$statusCode} ".$response->body());
             }
@@ -67,10 +73,16 @@ class SendingServerSendGridApi extends SendingServerSendGrid
             MailLog::warning('Sending failed');
             MailLog::warning($e->getMessage());
 
-            return array(
+            $result = array(
                 'status' => self::DELIVERY_STATUS_FAILED,
                 'error' => $e->getMessage(),
             );
+
+            if (!is_null($this->subAccount)) {
+                $result['sub_account_id'] = $this->subAccount->id;
+            }
+
+            return $result;
         }
     }
 }

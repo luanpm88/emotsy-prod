@@ -47,9 +47,19 @@ class SendingServerSendGridSmtp extends SendingServerSendGrid
             $header->setUniqueArgs(array('runtime_message_id' => $msgId));
             $message->getHeaders()->addTextHeader(HEADER::NAME, $header->jsonString());
 
+            if (is_null($this->subAccount)) {
+                // use master account
+                $username = $this->smtp_username;
+                $password = $this->smtp_password;
+            } else {
+                // use sub account
+                $username = $this->subAccount->getSubAccountUsername();
+                $password = decrypt($this->subAccount->password);
+            }
+
             $transport = \Swift_SmtpTransport::newInstance($this->host, (int) $this->smtp_port, $this->smtp_protocol)
-              ->setUsername($this->smtp_username)
-              ->setPassword($this->smtp_password)
+              ->setUsername($username)
+              ->setPassword($password)
             ;
 
             // Create the Mailer using your created Transport
@@ -61,26 +71,33 @@ class SendingServerSendGridSmtp extends SendingServerSendGrid
             if ($sent) {
                 MailLog::info('Sent!');
 
-                return array(
+                $result = array(
                     'runtime_message_id' => $msgId,
                     'status' => self::DELIVERY_STATUS_SENT,
                 );
-            } else {
-                MailLog::warning('Sending failed');
 
-                return array(
-                    'status' => self::DELIVERY_STATUS_FAILED,
-                    'error' => 'Unknown SMTP error',
-                );
+                if (!is_null($this->subAccount)) {
+                    $result['sub_account_id'] = $this->subAccount->id;
+                }
+
+                return $result;
+            } else {
+                throw new \Exception("Unknown SMTP error");
             }
         } catch (\Exception $e) {
             MailLog::warning('Sending failed');
             MailLog::warning($e->getMessage());
 
-            return array(
+            $result = array(
                 'status' => self::DELIVERY_STATUS_FAILED,
                 'error' => $e->getMessage(),
             );
+
+            if (!is_null($this->subAccount)) {
+                $result['sub_account_id'] = $this->subAccount->id;
+            }
+
+            return $result;
         }
     }
 }

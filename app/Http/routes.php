@@ -581,6 +581,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/customer_groups', 'CustomerGroupController');
 
     // Customer
+    Route::get('admin/customers/{uid}/su-account', 'CustomerController@subAccount');
     Route::post('admin/customers/{uid}/contact', 'CustomerController@contact');
     Route::get('admin/customers/{id}/contact', 'CustomerController@contact');
     Route::get('admin/customers/growthChart', 'CustomerController@growthChart');
@@ -670,4 +671,10 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/email_verification_servers/disable', 'EmailVerificationServerController@disable');
     Route::get('admin/email_verification_servers/enable', 'EmailVerificationServerController@enable');
     Route::resource('admin/email_verification_servers', 'EmailVerificationServerController');
+
+    // Sub account
+    Route::get('admin/sub_accounts/{uid}/delete/confirm', 'SubAccountController@deleteConfirm');
+    Route::delete('admin/sub_accounts/{uid}/delete', 'SubAccountController@delete');
+    Route::get('admin/sub_accounts/listing/{page?}', 'SubAccountController@listing');
+    Route::resource('admin/sub_accounts', 'SubAccountController');
 });

@@ -4,6 +4,7 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Acelle\Library\Log as MailLog;
+use Illuminate\Support\Facades\Log as LaravelLog;
 
 class SubscriptionController extends Controller
 {
@@ -289,6 +290,7 @@ class SubscriptionController extends Controller
 
             $subscription->fillAttributes($request->all());
 
+            // start_at must always be set
             if (empty($subscription->start_at)) {
                 $subscription->start_at = \Carbon\Carbon::now();
             }
@@ -296,9 +298,13 @@ class SubscriptionController extends Controller
             $subscription->save();
 
             if ($subscription->isFree()) {
-                $subscription->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
-                $subscription->save();
-
+                try {
+                    $subscription->enable();
+                } catch (\Exception $ex) {
+                    // just suppress the error and leave the subscription disabled
+                    LaravelLog::warning("Cannot enable subscription {$subscription->id}, proceed anyway");
+                }
+                
                 $request->session()->flash('alert-success', trans('messages.subscription.created'));
                 return redirect()->action('AccountController@subscription');
             } else {

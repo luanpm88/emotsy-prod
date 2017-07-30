@@ -3,6 +3,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Log as LaravelLog;
 
 class Subscription extends Model
 {
@@ -79,8 +80,14 @@ class Subscription extends Model
         if (isset($this->id)) {
             $options = self::defaultOptions();
             foreach ($options as $type => $option) {
-                $rules['options.' . $type] = 'required';
+                if ($type != 'sending_server_subaccount_uid') {
+                    $rules['options.' . $type] = 'required';
+                }
             }
+        }
+
+        if($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
+            $rules['options.sending_server_subaccount_uid'] = 'required';
         }
 
         return $rules;
@@ -94,6 +101,17 @@ class Subscription extends Model
     public static function findByUid($uid)
     {
         return self::where('uid', '=', $uid)->first();
+    }
+
+    /**
+     * Disable a subscription
+     *
+     * @return void
+     */
+    public function setDisabled()
+    {
+        $this->status = self::STATUS_DISABLED;
+        $this->save();
     }
 
     /**
@@ -127,6 +145,15 @@ class Subscription extends Model
     }
 
     /**
+     * Subaccount if any
+     */
+    public function subAccount()
+    {
+        // @todo hard-coded for SendGrid
+        return $this->belongsTo('Acelle\Model\SubAccountSendGrid');
+    }
+
+    /**
      * Get all active subscription sending servers.
      *
      * @return collect
@@ -148,6 +175,11 @@ class Subscription extends Model
         return $this->subscriptionsEmailVerificationServers()
             ->join('email_verification_servers', 'email_verification_servers.id', '=', 'subscriptions_email_verification_servers.server_id')
             ->where('email_verification_servers.status', '=', EmailVerificationServer::STATUS_ACTIVE);
+    }
+
+    public function useSubAccount()
+    {
+        return $this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT;
     }
 
     /**
@@ -384,6 +416,9 @@ class Subscription extends Model
     public function enable()
     {
         $this->status = Subscription::STATUS_ACTIVE;
+        if ($this->useSubAccount()) {
+            $this->createSubAccount();
+        }
         return $this->save();
     }
 
@@ -433,7 +468,7 @@ class Subscription extends Model
             'max_file_size_upload' => '0',
             'unsubscribe_url_required' => 'yes',
             'access_when_offline' => 'no',
-            'create_sending_servers' => 'no',
+            //'create_sending_servers' => 'no',
             'create_sending_domains' => 'no',
             'sending_servers_max' => '0',
             'sending_domains_max' => '0',
@@ -446,6 +481,8 @@ class Subscription extends Model
             'list_export' => 'no',
             'all_sending_server_types' => 'yes',
             'sending_server_types' => [],
+            'sending_server_option' => \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM,
+            'sending_server_subaccount_uid' => null,
         ];
 
         // Sending server types
@@ -480,7 +517,7 @@ class Subscription extends Model
             'max_file_size_upload' => '100',
             'unsubscribe_url_required' => 'yes',
             'access_when_offline' => 'yes',
-            'create_sending_servers' => 'yes',
+            //'create_sending_servers' => 'yes',
             'create_sending_domains' => 'yes',
             'sending_servers_max' => '-1',
             'sending_domains_max' => '-1',
@@ -491,6 +528,8 @@ class Subscription extends Model
             'list_export' => 'yes',
             'all_sending_server_types' => 'yes',
             'sending_server_types' => [],
+            'sending_server_option' => \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN,
+            'sending_server_subaccount_uid' => null,
         ];
 
         // Sending server types
@@ -639,7 +678,7 @@ class Subscription extends Model
      */
     public function displayAllowCreateSendingServer()
     {
-        if ($this->getOption("create_sending_servers") == 'no') {
+        if ($this->getOption("sending_server_option") != \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
             return trans('messages.feature_not_allow');
         }
 
@@ -864,22 +903,11 @@ class Subscription extends Model
     }
 
     /**
-     * Set active.
-     *
-     * @return void
-     */
-    public function setActive()
-    {
-        $this->status = \Acelle\Model\Subscription::STATUS_ACTIVE;
-        $this->save();
-    }
-
-    /**
      * Set paid.
      *
      * @return void
      */
-    public function setPaid($params=[])
+    public function setPaid($params = [])
     {
         $this->paid = true;
         $this->save();
@@ -1100,5 +1128,50 @@ class Subscription extends Model
         }
 
         return true;
+    }
+
+    /**
+     * Create sending server sub-account.
+     *
+     * @return void
+     */
+    public function createSubAccount()
+    {
+        // just return if subaccount was already setup
+        if (!is_null($this->sub_account_id)) {
+            return true;
+        }
+
+        try {
+            // @todo hard-coded here for SendGrid
+            $server = \Acelle\Model\SendingServer::findByUid($this->getOption('sending_server_subaccount_uid'));
+            $account = \Acelle\Model\SubAccountSendGrid::setup([
+                'email' => $this->customer->user->email,
+                'customer_id' => $this->customer_id,
+                'sending_server_id' => $server->id,
+            ]);
+
+            $this->sub_account_id = $account->id;
+            $this->save();
+        } catch (\Exception $ex) {
+            LaravelLog::warning($ex->getMessage());
+            $this->last_error = $ex->getMessage();
+            $this->setDisabled();
+            throw $ex;
+        }
+    }
+
+    /**
+     * Set option.
+     *
+     * @return void
+     */
+    public function setOption($name, $value)
+    {
+        $options = json_decode($this->options, true);
+        $options[$name] = $value;
+
+        $this->options = json_encode($options);
+        $this->save();
     }
 }

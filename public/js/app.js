@@ -585,6 +585,7 @@ $(function() {
         var url = $(this).attr("href");
         var curl = $(this).attr("list-delete-confirm");
         var method = $(this).attr("data-method");
+        var a_ = $(this);
 
         if (typeof(method) === 'undefined' || method.trim() === '') {
             method = 'GET';
@@ -607,6 +608,13 @@ $(function() {
         $('#list_delete_confirm_model').modal("show");
         $(".list-delete-confirm-button").attr("href", url);
         $(".list-delete-confirm-button").attr("data-method", method);
+
+        // reload when need
+        if (a_.hasClass('reload_page')) {
+            $(".list-delete-confirm-button").addClass("reload_page");
+        } else {
+            $(".list-delete-confirm-button").removeClass("reload_page");
+        }
 
         // Get message
         // ajax update custom sort
@@ -649,7 +657,8 @@ $(function() {
                 return this.value;
             }).get();
 
-            url = url + "?uids=" + vals.join(",");
+            var sign = (url.indexOf('?') !== -1 ? '&' : '?');
+            url = url + sign + "uids=" + vals.join(",");
 
             // Select tool
             if (form.find('.select_tool').length && form.find('.select_tool').val() == 'all_items') {
@@ -883,7 +892,7 @@ $(function() {
                 tableFilter($(".listing-form"));
             }
 
-            if(msg !== '') {
+            if(msg !== '' && !a_.hasClass('reload_page')) {
                 swal({
                     title: msg,
                     text: "",
@@ -901,8 +910,13 @@ $(function() {
             a_.find('.a-loading').remove();
             removeMaskLoading();
 
-            if (type != 'error') {
+            if (type != 'error' || a_.parents('form').find('input').length == 0) {
                 $(".modal").modal('hide');
+            }
+
+            // reload when need
+            if (a_.hasClass('reload_page')) {
+                location.reload();
             }
         });
     });
@@ -1901,5 +1915,39 @@ $(function() {
             a_.addClass('loading');
             a_.append(' <div class="spinner a-loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
         }
+    });
+
+    // Group radio box
+    $(document).on("click", ".control-radio .radio_box .main-control", function() {
+        var radio_control = $(this).parents('.control-radio');
+        var radio_box = $(this).parents('.radio_box');
+        var radio = $(this).find('input');
+
+        radio_control.find('.radio_more_box').hide();
+        if (radio.is(":checked")) {
+            radio_box.find('.radio_more_box').show();
+        } else {
+            radio_box.find('.radio_more_box').hide();
+        }
+    });
+    $(".control-radio .radio_box .main-control input:checked").parents('.main-control').trigger('click');
+
+
+    // show with control helper
+    $("[show-with-control]").each(function() {
+        var box = $(this);
+        var control = $(box.attr('show-with-control'));
+
+        control.change(function() {
+            var checked = $(this).is(':checked');
+
+            if (checked) {
+                box.show();
+            } else {
+                box.hide();
+            }
+        });
+
+        control.trigger('change');
     });
 });

@@ -33,11 +33,11 @@ class SendingServer extends Model
 {
     const DELIVERY_STATUS_SENT = 'sent';
     const DELIVERY_STATUS_FAILED = 'failed';
-
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
 
     protected $quotaTracker;
+    protected $subAccount;
 
     /**
      * The attributes that are mass assignable.
@@ -80,7 +80,7 @@ class SendingServer extends Model
     }
 
     /**
-     * Get the segment of the campaign.
+     * Get the bounce handler.
      */
     public function bounceHandler()
     {
@@ -671,5 +671,23 @@ class SendingServer extends Model
     public function isElasticEmailServer()
     {
         return ($this->type == 'elasticemail-api' || $this->type == 'elasticemail-smtp');
+    }
+
+    /**
+     * Get all sub-account supported sending server types
+     *
+     * @return array
+     */
+    public static function getSubAccountTypes()
+    {
+        return [
+            'sendgrid-api',
+            'sendgrid-smtp'
+        ];
+    }
+
+    public function setSubAccount($subAccount)
+    {
+        $this->subAccount = $subAccount;
     }
 }

@@ -32,7 +32,8 @@
         "php-http/guzzle6-adapter": "^1.1",
         "sparkpost/sparkpost": "^2.1",
         "stripe/stripe-php": "^4.7",
-        "skyscanner/jsonpath": "^0.7.3"
+        "skyscanner/jsonpath": "^0.7.3",
+        "louis/sendgrid": "dev-master"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -75,5 +76,28 @@
     },
     "config": {
         "preferred-install": "dist"
-    }
+    },
+    "repositories": [
+        {
+            "type": "package",
+            "package": {
+                "name": "louis/sendgrid",
+                "version": "dev-master",
+                "source": {
+                    "url": "https://github.com/louisitvn/sendgrid",
+                    "type": "git",
+                    "reference": "master"
+                },
+                "autoload": {
+                    "psr-0" : {
+                        "Acelle\\Extra": "src"
+                    }
+                },
+                "require" : {
+                    "guzzlehttp/psr7": "^1.3"
+                }
+            }
+        }
+    ]
 }
+

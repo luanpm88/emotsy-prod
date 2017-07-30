@@ -45,7 +45,14 @@ class SendingServerSendGrid extends SendingServer
     public function client()
     {
         if (!self::$client) {
-            self::$client = new \SendGrid($this->api_key);
+            if (is_null($this->subAccount)) {
+                MailLog::info("Using master account");
+                self::$client = new \SendGrid($this->api_key);
+            } else {
+                MailLog::info("Using subaccount {$this->subAccount->getSubAccountUsername()}");
+                self::$client = new \SendGrid($this->subAccount->api_key);
+            }
+
         }
 
         return self::$client;

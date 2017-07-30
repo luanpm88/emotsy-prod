@@ -613,6 +613,9 @@ class Admin extends Model
             $query = $query->where('sending_servers.admin_id', '=', $this->id);
         }
 
+        // remove customer sending servers
+        $query = $query->whereNull('customer_id');
+
 		return $query;
     }
 
@@ -628,6 +631,9 @@ class Admin extends Model
 		if (!$this->can('readAll', new \Acelle\Model\SendingDomain())) {
             $query = $query->where('sending_domains.admin_id', '=', $this->id);
         }
+
+        // remove customer sending servers
+        $query = $query->whereNull('customer_id');
 
 		return $query;
     }
@@ -755,5 +761,34 @@ class Admin extends Model
                 $blacklist->save();
             }
         }
+
+    /**
+     * Get sub-account sending servers.
+     *
+     * @return integer
+     */
+    public function getSubaccountSendingServers()
+    {
+		$query = $this->getAllSendingServers();
+
+		$query = $query->whereIn('type', \Acelle\Model\SendingServer::getSubAccountTypes());
+
+		return $query;
+    }
+
+    /**
+     * Get sub-account sending servers options.
+     *
+     * @return integer
+     */
+    public function getSubaccountSendingServersSelectOptions()
+    {
+        $options = [];
+
+		foreach ($this->getSubaccountSendingServers()->get() as $server) {
+            $options[] = ['value' => $server->uid, 'text' => $server->name];
+        }
+
+		return $options;
     }
 }

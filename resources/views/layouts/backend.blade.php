@@ -149,12 +149,14 @@
 					|| Auth::user()->admin->getPermission("bounce_handler_read") != 'no'
 					|| Auth::user()->admin->getPermission("fbl_handler_read") != 'no'
 					|| Auth::user()->admin->getPermission("email_verification_server_read") != 'no'
+					|| Auth::user()->admin->can('read', new \Acelle\Model\SubAccount())
 				)
 					<li class="dropdown language-switch"
 						rel0="BounceHandlerController"
 						rel1="FeedbackLoopHandlerController"
 						rel2="SendingServerController"
 						rel3="SendingDomainController"
+						rel3="SubAccountController"
 					>
 						<a class="dropdown-toggle" data-toggle="dropdown">
 							<i class="glyphicon glyphicon-transfer"></i> {{ trans('messages.sending') }}
@@ -165,6 +167,13 @@
 								<li rel0="SendingServerController">
 									<a href="{{ action('Admin\SendingServerController@index') }}">
 										<i class="icon-server"></i> {{ trans('messages.sending_severs') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->admin->can('read', new \Acelle\Model\SubAccount()))
+								<li rel0="SubAccountController">
+									<a href="{{ action('Admin\SubAccountController@index') }}">
+										<i class="icon-drive"></i> {{ trans('messages.sub_accounts') }}
 									</a>
 								</li>
 							@endif
