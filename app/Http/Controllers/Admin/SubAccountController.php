@@ -73,16 +73,24 @@ class SubAccountController extends Controller
      */
     public function delete(Request $request, $uid)
     {
-        $account = \Acelle\Model\SubAccount::findByUid($uid);
+        try {
+            $account = \Acelle\Model\SubAccount::findByUid($uid);
 
-        // authorize
-        if ($request->user()->admin->can('delete', $account)) {
-            $account = \Acelle\Model\SubAccountSendGrid::findByUid($uid);
-            $account->delete();
+            // authorize
+            if ($request->user()->admin->can('delete', $account)) {
+                $account = \Acelle\Model\SubAccountSendGrid::findByUid($uid);
+                $account->delete();
+            }
+
+            // Redirect to my lists page
+            echo trans('messages.sub_accounts.deleted');
+        } catch (\Exception $e) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ]);
+            return;
         }
-
-        // Redirect to my lists page
-        echo trans('messages.sub_accounts.deleted');
     }
 
     /**

@@ -50,9 +50,9 @@
                                     <i class="icon-drive text-grey-800"></i>
                                 </span>
                             </div>
-                            <h4><span class="text-teal-800">{{ $account->name }} ({{ $account->sendingServer->name }}/{{ trans('messages.' . $account->sendingServer->type) }})</span></h4>
+                            <h4><span class="text-teal-800">{{ $account->username }}</span></h4>
                             <p>
-                                {{ $account->getSecuredApiKey() }}
+                                {{ $account->sendingServer->name }} ({{ trans('messages.' . $account->sendingServer->type) }})
                             </p>
                         </li>
                     @endforeach

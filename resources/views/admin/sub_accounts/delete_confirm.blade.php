@@ -1,3 +1,4 @@
+@if empty($account->subscriptions)
 <p>{{ trans('messages.sub_account.currently_associated_subscriptions') }}</p>
 <ul class="modern-listing">
     @foreach ($account->subscriptions as $subscription)
@@ -11,4 +12,5 @@
         </li>
     @endforeach
 </ul>
+@endif
 <p>{{ trans('messages.sub_account.sure_to_delete_subscription_to') }}</p>
