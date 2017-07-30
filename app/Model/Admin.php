@@ -761,7 +761,8 @@ class Admin extends Model
                 $blacklist->save();
             }
         }
-
+    }
+    
     /**
      * Get sub-account sending servers.
      *
