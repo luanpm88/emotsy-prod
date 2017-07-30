@@ -112,7 +112,7 @@ class CustomerController extends Controller
                 return $this->notAuthorized();
             }
 
-            $rules = $customer->apiRules();
+            $rules = $customer->apiUpdateRules($request);
 
             $validator = \Validator::make($request->all(), $rules);
             if ($validator->fails()) {
@@ -121,7 +121,9 @@ class CustomerController extends Controller
 
             // Update user account for customer
             $user = $customer->user;
-            $user->email = $request->email;
+            if (!empty($request->email)) {
+                $user->email = $request->email;
+            }
             // Update password
             if (!empty($request->password)) {
                 $user->password = bcrypt($request->password);

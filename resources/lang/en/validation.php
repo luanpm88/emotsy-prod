@@ -77,7 +77,7 @@ return [
     ],
     'string' => 'The :attribute must be a string.',
     'timezone' => 'The :attribute must be a valid zone.',
-    'unique' => 'The field has already been taken.',
+    'unique' => 'The :attribute field has already been taken.',
     'url' => 'The :attribute format is invalid.',
     'substring' => 'The :tag tag was not found in :attribute.',
     'license' => 'The license is not valid.',
