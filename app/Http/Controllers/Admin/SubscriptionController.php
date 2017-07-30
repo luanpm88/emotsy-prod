@@ -228,7 +228,7 @@ class SubscriptionController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $subscription->options = json_encode($request->options);
+            $subscription->fillOptions($request->options);
 
             $this->validate($request, $subscription->rules());
 

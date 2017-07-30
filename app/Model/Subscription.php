@@ -1174,4 +1174,18 @@ class Subscription extends Model
         $this->options = json_encode($options);
         $this->save();
     }
+
+    /**
+     * Fill option from request.
+     *
+     * @return void
+     */
+    public function fillOptions($options)
+    {
+        $db_options = json_decode($this->options, true);
+        foreach ($options as $key => $value) {
+            $db_options[$key] = $value;
+        }
+        $this->options = json_encode($db_options);
+    }
 }
