@@ -143,8 +143,9 @@ class PlanController extends Controller
         // save posted data
         if ($request->isMethod('post')) {
             $plan->fill($request->all());
-            $plan->options = json_encode($request->options);
-            
+            // $plan->options = json_encode($request->options);
+            $plan->fillOptions($request->options);
+
             $this->validate($request, $plan->rules());
 
             $rules = [];
@@ -266,7 +267,8 @@ class PlanController extends Controller
         // save posted data
         if ($request->isMethod('patch')) {
             $plan->fill($request->all());
-            $plan->options = json_encode($request->options);
+            // $plan->options = json_encode($request->options);
+            $plan->fillOptions($request->options);
 
             $this->validate($request, $plan->rules());
 

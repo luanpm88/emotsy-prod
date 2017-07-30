@@ -79,7 +79,7 @@
             </div>
         </label>
         <div class="radio_more_box">
-            <span class="boxing">
+            <div class="boxing">
                 @include('helpers.form_control', [
                     'type' => 'text',
                     'class' => 'numeric',
@@ -91,7 +91,7 @@
                     'rules' => $rules,
                     'unlimited_check' => true,
                 ])
-            </span>
+            </div>
 
             <p>
                 @include('helpers.form_control', ['type' => 'checkbox2',

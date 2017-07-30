@@ -71,7 +71,7 @@
             </div>
         </div>
         <div class="tab-pane" id="top-tab4">
-            <div class="row boxing">
+            <div class="row">
                 <div class="col-md-8">
                     @include('admin.plans._form_sending_server', [
                         'help_class' => 'subscription',
