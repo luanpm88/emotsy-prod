@@ -30,7 +30,7 @@
 							@if ($subscribers->count() >= 0)
 								<div class="filter-box">
 									@include('helpers.select_tool', [
-											'disable_all_items' => false
+											'disable_all_items' => true
 									])
 									<div class="btn-group list_actions hide mr-10">
 										<button type="button" class="btn btn-xs btn-grey-600 dropdown-toggle" data-toggle="dropdown">
@@ -48,77 +48,23 @@
 												</a>
 											</li>
 											<li>
-												<a href="#">
-													<i class="icon-copy4"></i> {{ trans('messages.copy_to') }}
-													<i class="icon-arrow-right13 pull-right"></i>
+												<a href="#" class="copy_move_subscriber"
+													data-url="{{ action('SubscriberController@copyMoveForm', [
+														'from_uid' => $list->uid,
+														'action' => 'copy',
+													]) }}">
+														<i class="icon-copy4"></i> {{ trans('messages.copy_to') }}
 												</a>
-												<ul>
-													<li>
-														<a>{{ trans('messages.replace_if_exist') }} <i class="icon-arrow-right13 pull-right"></i></a>
-														<ul>
-															@forelse ($list->otherLists() as $l)
-																<li>
-																	<a data-method="POST" link-confirm="{{ trans('messages.subscribers_copy_confirm.replace') }}" href="{{ action('SubscriberController@copy', ['list_uid' => $l->uid, 'type' => 'update']) }}">
-																		<i class="icon-address-book2"></i> {{ $l->name }}
-																	</a>
-																</li>
-															@empty
-																<li><a href="#">({{ trans('messages.empty') }})</a></li>
-															@endforelse
-														</ul>
-													</li>
-													<li>
-														<a>{{ trans('messages.keep_if_exist') }} <i class="icon-arrow-right13 pull-right"></i></a>
-														<ul>
-															@forelse ($list->otherLists() as $l)
-																<li>
-																	<a data-method="POST" link-confirm="{{ trans('messages.subscribers_copy_confirm.keep') }}" href="{{ action('SubscriberController@copy', ['list_uid' => $l->uid, 'type' => 'keep']) }}">
-																		<i class="icon-address-book2"></i> {{ $l->name }}
-																	</a>
-																</li>
-															@empty
-																<li><a href="#">({{ trans('messages.empty') }})</a></li>
-															@endforelse
-														</ul>
-													</li>
-												</ul>
 											</li>
-											<li>
-												<a href="#">
+											<!--<li>
+												<a href="#move" class="copy_move_subscriber"
+													data-url="{{ action('SubscriberController@copyMoveForm', [
+														'from_uid' => $list->uid,
+														'action' => 'move',
+													]) }}">
 													<i class="icon-move-right"></i> {{ trans('messages.move_to') }}
-													<i class="icon-arrow-right13 pull-right"></i>
 												</a>
-												<ul>
-													<li>
-														<a>{{ trans('messages.replace_if_exist') }} <i class="icon-arrow-right13 pull-right"></i></a>
-														<ul>
-															@forelse ($list->otherLists() as $l)
-																<li>
-																	<a data-method="POST" link-confirm="{{ trans('messages.subscribers_move_confirm.replace') }}" href="{{ action('SubscriberController@move', ['list_uid' => $l->uid, 'type' => 'update']) }}">
-																		<i class="icon-address-book2"></i> {{ $l->name }}
-																	</a>
-																</li>
-															@empty
-																<li><a href="#">({{ trans('messages.empty') }})</a></li>
-															@endforelse
-														</ul>
-													</li>
-													<li>
-														<a>{{ trans('messages.keep_if_exist') }} <i class="icon-arrow-right13 pull-right"></i></a>
-														<ul>
-															@forelse ($list->otherLists() as $l)
-																<li>
-																	<a data-method="POST" link-confirm="{{ trans('messages.subscribers_move_confirm.keep') }}" href="{{ action('SubscriberController@move', ['list_uid' => $l->uid, 'type' => 'keep']) }}">
-																		<i class="icon-address-book2"></i> {{ $l->name }}
-																	</a>
-																</li>
-															@empty
-																<li><a href="#">({{ trans('messages.empty') }})</a></li>
-															@endforelse
-														</ul>
-													</li>
-												</ul>
-											</li>
+											</li>-->
 											<li>
 												<a delete-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', $list->uid) }}">
 													<i class="icon-trash"></i> {{ trans('messages.delete') }}
