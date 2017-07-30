@@ -880,16 +880,12 @@ ul.modern-listing li {
     clear: both;
     border-bottom: solid 1px #eee;
     margin-bottom: 15px;
+    padding-bottom: 20px;
 }
 ul.modern-listing li:first-child {
-<<<<<<< HEAD
-    border-top: solid 1px #eee;
-    padding-top: 15px;
-=======
     border-top: solid 1px #ddd;
     padding-top: 20px;
     padding-bottom: 20px;
->>>>>>> customer
 }
 ul.modern-listing li i, .table-row-icon {
     float: left;
