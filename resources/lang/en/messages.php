@@ -1872,7 +1872,7 @@
   'upgrade.title.current' => 'Your current version',
   'upgrade.title.upgrade_confirm' => 'Upgrade confirmation',
   'upgrade.wording.upload' => 'Your are currently running on Acelle Mail :current. To upgrade your application, please download the latest build from <code><a target="_blank" href="https://codecanyon.net/item/acelle-email-marketing-web-application/17796082">codecanyon.net</a></code>, then you can find the upgrade package located at <code>[acellemail source]/upgrade/patch-3.x.x.bin</code>, upload it using the form below',
-  'upgrade.alert.upgrade_success' => 'Congratulations! You\'ve successfully upgraded to the new version of Acelle Mail.',
+  'upgrade.alert.upgrade_success' => 'Congratulations! You have successfully upgraded to the new version of Acelle Mail.',
   'upgrade.alert.cancel_success' => 'Upgrade has been canceled',
   'upgrade.alert.upload_success' => 'A new version of Acelle Mail was successfully uploaded. You can now review the changes and proceed with the upgrade',
   'upgrade_manager' => 'Upgrade Manager',
