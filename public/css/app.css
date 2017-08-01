@@ -1544,7 +1544,7 @@ label.col-center {
     overflow: auto;
 }
 .auto-event-form-line .select2-container {
-    height: 41px;
+    height: 39px;
     display: inline-block;
 }
 .auto-event-form-line input {
@@ -2506,4 +2506,7 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
     .nav-tabs.nav-tabs-top > li {
         margin-bottom: -1px;
     }
+}
+.control-time .text-left {
+    text-align: left !important;
 }
