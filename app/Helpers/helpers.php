@@ -397,3 +397,13 @@ function func_enabled($name) {
        return false;
     }
 }
+
+/**
+ * Get the current application version
+ *
+ * @return string version
+ */
+function app_version()
+{
+    return trim(file_get_contents(base_path('VERSION')));
+}
