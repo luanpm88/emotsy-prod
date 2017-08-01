@@ -302,7 +302,8 @@ class Campaign extends AbsCampaign
             $query = $this->autoEvent()->subscribers();
         } else {
             if($this->listsSegments->isEmpty()) {
-                return collect([]);
+                // this is a trick for returning an empty builder
+                return Subscriber::limit(0);
             }
 
             $query = Subscriber::select("subscribers.*");

@@ -306,7 +306,8 @@ class Automation extends Model
     public function subscribers($params=[])
     {
         if($this->listsSegments->isEmpty()) {
-            return collect([]);
+            // this is a trick for returning an empty builder
+            return Subscriber::limit(0);
         }
 
         $query = Subscriber::select("subscribers.*");
