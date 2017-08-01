@@ -19,7 +19,7 @@ class LicenseHelper
 
         curl_setopt($ch, CURLOPT_URL,"http://verify.acellemail.com/"); // @todo hard-coded here
         curl_setopt($ch, CURLOPT_POST, 1);
-        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 10000);
+        curl_setopt($ch, CURLOPT_TIMEOUT_MS, 100000);
         curl_setopt($ch, CURLOPT_POSTFIELDS,
             htmlspecialchars_decode(http_build_query(array(
                 'purchase-code' => $license,
