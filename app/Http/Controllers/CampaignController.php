@@ -1874,6 +1874,7 @@ class CampaignController extends Controller
         // authorize
         if (\Gate::allows('resend', $campaign)) {
             $campaign->ready();
+            $campaign->requeue();
             // Redirect to my lists page
             echo trans('messages.campaign.resent');
         } else {

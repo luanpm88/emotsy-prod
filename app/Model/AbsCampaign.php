@@ -1661,7 +1661,7 @@ abstract class AbsCampaign extends Model
      */
     public function requeue()
     {
-        // clear all campaign's sendign jobs which are being queue
+        // clear all campaign's sending jobs which are being queued
         $this->clearAllJobs();
 
         // and queue again
