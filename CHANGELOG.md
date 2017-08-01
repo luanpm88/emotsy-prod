@@ -5,6 +5,8 @@
  * Fixed: tax billing information is configurable, no longer compulsory
  * Fixed: license verification does not work in certain cases
  * Added: allow resending a campaign
+ * Added: support SendGrid subuser
+ * Added: support sending a campaign again
 
 3.0.9 / 2017-07-13
 ==================
