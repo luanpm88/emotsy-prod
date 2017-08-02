@@ -783,6 +783,13 @@ class AutoEvent extends Model
 
     /**
      * Check for subscriber-event
+     * @note
+     *   - Carbon automatically sets db zone to UTC before executing any query, so db zone offset is always +00:00
+     *   - Make sure the custom field date format is [yyyy-mm-dd]
+     *   - Only take date into consideration, no time, that is why DATE_FORMAT(.., '%m%d') is used
+     *   - Do not use convert_tz(DateString, ...) as it may unexpectedly add the default time and change the result date
+     *     For example, convert_tz('2016-12-25', '+00:00', '-02:00') will result in '2016-12-24 22:00:00'
+     *   - Trigger only one time per year
      *
      * @return NULL
      */
@@ -797,21 +804,22 @@ class AutoEvent extends Model
         $dbZoneOffset = db_quote('+00:00'); // Carbon automatically sets db zone to +00:00 before executing any query
         $delayInterval = $this->getDelayIntervalMySql();
 
+        // get subscribers that match the criteria
         if ($field == 'subscription_date') {
             $subscribers = $this->subscribers()
-                         ->whereRaw(sprintf('DATE_FORMAT(CONVERT_TZ(%5$s, %1$s, %2$s) + %3$s, \'%%m%%d\') = DATE_FORMAT(CONVERT_TZ(NOW(), %1$s, %2$s), \'%%m%%d\') AND DATE_FORMAT(CONVERT_TZ(\'2000-01-01 %4$s\', %1$s, %2$s), \'%%H%%i\') <= DATE_FORMAT(CONVERT_TZ(NOW(), %1$s, %2$s), \'%%H%%i\')', $dbZoneOffset, $userZoneOffset, $delayInterval, $at, table('subscribers.created_at')))
-                         ->whereRaw(sprintf('%5$s NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %3$s WHERE auto_event_id = %4$s AND EXTRACT(YEAR FROM CONVERT_TZ(NOW(), %1$s, %2$s)) = EXTRACT(YEAR FROM CONVERT_TZ(created_at, %1$s, %2$s)) )', $dbZoneOffset, $userZoneOffset, table('auto_triggers'), $this->id, table('subscribers.id')))
-                         ->get();
+                         ->whereRaw(sprintf('DATE_FORMAT(CONVERT_TZ(%5$s, %1$s, %2$s) + %3$s, \'%%m%%d\') = DATE_FORMAT(CONVERT_TZ(NOW(), %1$s, %2$s), \'%%m%%d\') AND DATE_FORMAT(CONVERT_TZ(\'2000-01-01 %4$s\', %1$s, %2$s), \'%%H%%i\') <= DATE_FORMAT(CONVERT_TZ(NOW(), %1$s, %2$s), \'%%H%%i\')', $dbZoneOffset, $userZoneOffset, $delayInterval, $at, table('subscribers.created_at')));
         } else {
             $subscribers = $this->subscribers()
                          ->join('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id')
                          ->join('fields', 'subscriber_fields.field_id', '=', 'fields.id')
                          ->where('fields.uid', $field)
-                         ->whereRaw(sprintf('DATE(CONVERT_TZ(' . table('subscriber_fields') . '.value, %1$s, %2$s) + %3$s) = DATE(CONVERT_TZ(NOW(), %1$s, %2$s)) AND DATE(CONVERT_TZ(' . table('subscriber_fields') . '.value, %1$s, %2$s)) + %3$s <= CONVERT_TZ(NOW(), %1$s, %2$s)', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->customer->getTimezone())), $this->getDelayIntervalMySql()))
-                         ->whereRaw(sprintf('' . table('subscribers') . '.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %3$s WHERE auto_event_id = %4$s AND EXTRACT(YEAR FROM CONVERT_TZ(NOW(), %1$s, %2$s)) = EXTRACT(YEAR FROM CONVERT_TZ(created_at, %1$s, %2$s)) )', db_quote(db_utc_offset()), db_quote(utc_offset($this->automation->customer->getTimezone())), table('auto_triggers'), $this->id))
-                         ->get();
+                         ->whereRaw(sprintf('DATE_FORMAT(STR_TO_DATE(%5$s, \'%%Y-%%m-%%d\') + %3$s, \'%%m%%d\') = DATE_FORMAT(CONVERT_TZ(NOW(), %1$s, %2$s), \'%%m%%d\') AND DATE_FORMAT(CONVERT_TZ(\'2000-01-01 %4$s\', %1$s, %2$s), \'%%H%%i\') <= DATE_FORMAT(CONVERT_TZ(NOW(), %1$s, %2$s), \'%%H%%i\')', $dbZoneOffset, $userZoneOffset, $delayInterval, $at, table('subscriber_fields.value')));
         }
 
+        // make sure the event is not yet trigger within the year
+        $subscribers = $subscribers->whereRaw(sprintf('%5$s NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %3$s WHERE auto_event_id = %4$s AND EXTRACT(YEAR FROM CONVERT_TZ(NOW(), %1$s, %2$s)) = EXTRACT(YEAR FROM CONVERT_TZ(created_at, %1$s, %2$s)) )', $dbZoneOffset, $userZoneOffset, table('auto_triggers'), $this->id, table('subscribers.id')))->get();
+
+        // actually trigger the event
         foreach ($subscribers as $subscriber) {
             MailLog::info(sprintf('Trigger sending subscriber-event email for automation `%s`, subscriber ID: %s, event ID: %s', $this->automation->name, $subscriber->id, $this->id));
             $this->fire(collect([$subscriber]));
