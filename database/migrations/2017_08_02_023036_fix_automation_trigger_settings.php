@@ -12,7 +12,7 @@ class FixAutomationTriggerSettings extends Migration
      */
     public function up()
     {
-        foreach (\Acelle\Model\AutoEvent::all() as $e) {
+        foreach (\Acelle\Model\AutoEvent::where('event_type', '=', 'subscriber-event')->get() as $e) {
             $data = $e->getData();
             $updated = false;
             if (!array_key_exists('at', $data)) {
