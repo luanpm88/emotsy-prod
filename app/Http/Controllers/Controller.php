@@ -95,7 +95,7 @@ class Controller extends BaseController
      */
     public function docsApiV1()
     {
-        return view('docs.api.v1');
+        return view('docs.api.v1', ['view' => 'frontend']);
     }
 
     /**

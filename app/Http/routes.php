@@ -115,7 +115,7 @@ Route::group(['middleware' => ['not_logged_in']], function () {
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('/', 'HomeController@index');
-    Route::get('{view}/docs/api/v1', 'Controller@docsApiV1');
+    Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
 
     Route::get('/current_user_uid', 'UserController@showUid');
 
@@ -429,6 +429,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
 // ADMIN AREA
 Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend']], function () {
     Route::get('admin', 'HomeController@index');
+    Route::get('admin/docs/api/v1', 'ApiController@doc');
 
     // User
     Route::get('admin/users/switch/{uid}', 'UserController@switch_user');
