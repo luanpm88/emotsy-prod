@@ -127,7 +127,12 @@
                                 newForm.submit();
                             });
 
-                        }
+                        },
+						onError: function(err) {
+							// Show an error page here, when an error occurs
+							// console.log(err);
+							swalError(err);
+						}
 
                     }, '#paypal-button-container');
 
