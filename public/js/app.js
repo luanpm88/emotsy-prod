@@ -1084,7 +1084,7 @@ $(function() {
     });
 
     //embedded-options-form
-    $(document).on("change", ".embedded-options-form input[type=text], .embedded-options-form textarea, .embedded-options-form input[name='required_fields'], .embedded-options-form input[name='javascript'], .embedded-options-form input[name='stylesheet']", function() {
+    $(document).on("change", ".embedded-options-form input[type=text], .embedded-options-form textarea, .embedded-options-form input[name='required_fields'], .embedded-options-form input[name='show_invisible'], .embedded-options-form input[name='javascript'], .embedded-options-form input[name='stylesheet']", function() {
         var url = $(this).parents("form").attr("action");
 
         updateEmbeddedForm($(this).parents("form"), url);

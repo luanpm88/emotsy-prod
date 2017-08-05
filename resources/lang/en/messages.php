@@ -1963,4 +1963,5 @@
   'customer.sub_account.wording' => 'Sub-accounts associated to this user',
   'customer.sub_account.title' => 'Sub-account(s)',
   'list.there_no_subaccount_sending_server' => '<span class="text-semibold">ERROR:</span> There are no active sending servers.',
+  'embeded_form.show_invisible' => 'Show invisible field(s)',
 ) ?>
