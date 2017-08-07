@@ -16,7 +16,7 @@ td {
 img {
     border: 0;
 }
-div[style*="margin: 16px 0"] { 
+div[style*="margin: 16px 0"] {
     margin:0 !important;
 }
 .wrapper {
@@ -36,7 +36,7 @@ div[style*="margin: 16px 0"] {
 }
 .full-width-image img {
     max-width: 600px;
-    width: 100%;
+    /*width: 100%;*/
     height: auto;
 }
 .inner {
@@ -50,13 +50,13 @@ a {
     text-decoration: underline;
 }
 
- 
+
 /* One column layout */
 .one-column .contents {
     text-align: left;
 }
 .one-column p {
-    font-size: 14px;    
+    font-size: 14px;
     Margin-bottom: 10px;
 }
 /*Two column layout*/
@@ -197,7 +197,7 @@ text-align: center;
     }
     .two-column .column {
         max-width: 50% !important;
-    }    
+    }
 }
 
 p.h1, h1 {
