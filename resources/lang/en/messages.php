@@ -985,6 +985,7 @@
   'plan' => 'Plan',
   'plans' => 'Plans',
   'create_plan' => 'Create plan',
+  'plan.renew.wording' => 'You can renew your current plan or subscribe to a new one. Below are the available plans for you to choose from:',
   'plan.updated' => 'Plan was successfully updated',
   'plan.created' => 'Plan was successfully created',
   'plans.disabled' => 'Plan was successfully disabled',

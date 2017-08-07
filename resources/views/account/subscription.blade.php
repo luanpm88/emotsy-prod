@@ -294,7 +294,7 @@
                     @if (!$nextSubscription)
                         @if (\Auth::user()->customer->can('create', new Acelle\Model\Subscription()))
                             <h3>{{ trans('messages.available_plans') }}</h3>
-                            <p>You can renew your current plan or subscribe to a new one. Below are the available plans for you to choose from:</p>
+                            <p>{{ trans('messages.plan.renew.wording') }}</p>
                             <form enctype="multipart/form-data" action="{{ action('SubscriptionController@store') }}" method="POST" class="form-validate-jqueryz subscription-form">
                                 {{ csrf_field() }}
 
