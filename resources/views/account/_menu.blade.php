@@ -17,7 +17,7 @@
                     rel2="AccountController/subscriptionNew"
                 >
                     <a href="{{ action("AccountController@subscription") }}" class="level-1">
-                        <i class="icon-quill4 position-left"></i> Subscription
+                        <i class="icon-quill4 position-left"></i> {{ trans('messages.subscription') }}
                     </a>
                 </li>
                 <li rel0="AccountController/logs">
