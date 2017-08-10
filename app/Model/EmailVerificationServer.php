@@ -62,10 +62,10 @@ class EmailVerificationServer extends Model
         // build the request URI
         $uri = $config['uri'];
         $uri = str_replace('{EMAIL}', $email, $uri);
-        $uri = str_replace('{API_KEY}', $options['api_key'], $uri);
-        if (array_key_exists('api_secret_key', $options)) {
-            $uri = str_replace('{API_SECRET_KEY}', $options['api_secret_key'], $uri);
-        }
+        $uri = array_key_exists('api_key', $options) ? str_replace('{API_KEY}', $options['api_key'], $uri) : $uri;
+        $uri = array_key_exists('api_secret_key', $options) ? str_replace('{API_SECRET_KEY}', $options['api_secret_key'], $uri) : $uri;
+        $uri = array_key_exists('username', $options) ? str_replace('{USERNAME}', $options['username'], $uri) : $uri;
+        $uri = array_key_exists('password', $options) ? str_replace('{PASSWORD}', $options['password'], $uri) : $uri;
 
         // actually request to the service
         $response = $client->request($config['request_type'], $uri);
@@ -194,7 +194,6 @@ class EmailVerificationServer extends Model
         return array(
             'name' => 'required',
             'type' => 'required',
-            'options.api_key' => 'required',
             'options.limit_value' => 'required',
             'options.limit_base' => 'required',
             'options.limit_unit' => 'required',
