@@ -1790,6 +1790,8 @@
   'verification_server_credits.wording' => 'The configuration setting below allows you to set a limit on email verification speed. For example, to limit verification speed to <strong>2,000 emails every 5 minutes</strong>, you can set <strong>Limit value = 2000</strong>, <strong>Limit base = 5</strong>, and <strong>Limit unit = minute</strong> accordingly',
   'verification_api_key' => 'API key',
   'verification_api_secret_key' => 'API secret key',
+  'verification_username' => 'Username',
+  'verification_password' => 'Password',
   'email_verification_server_type' => 'Type',
   'allow_customer_create_email_verification_servers' => 'Allows customer to add email verification servers',
   'setting_up_email_verification_servers_for_plan' => 'Setting up email verification servers for the plan',
