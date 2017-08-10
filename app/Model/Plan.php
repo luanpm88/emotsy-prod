@@ -75,6 +75,29 @@ class Plan extends Model
     }
 
     /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function apiRules()
+    {
+        $rules = array(
+            'name' => 'required',
+            'currency_id' => 'required',
+            'frequency_amount' => 'required|min:1',
+            'frequency_unit' => 'required',
+            'price' => 'required|min:0',
+            'color' => 'required',
+        );
+
+        if($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
+            $rules['options.sending_server_subaccount_uid'] = 'required';
+        }
+
+        return $rules;
+    }
+
+    /**
      * Find item by uid.
      *
      * @return object
@@ -710,10 +733,13 @@ class Plan extends Model
      */
     public function fillOptions($options)
     {
-        $db_options = json_decode($this->options, true);
-        foreach ($options as $key => $value) {
-            $db_options[$key] = $value;
+        $defaultOptions = self::defaultOptions();
+        $dbOptions = $this->options ? json_decode($this->options, true) : $defaultOptions;
+        if (!empty($options)) {
+            foreach ($options as $key => $value) {
+                $dbOptions[$key] = $value;
+            }
         }
-        $this->options = json_encode($db_options);
+        $this->options = json_encode($dbOptions);
     }
 }

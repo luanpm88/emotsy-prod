@@ -1481,7 +1481,7 @@
   'you_are_not_activated' => 'Your account hasn\'t been activated. Please check your inbox for confirmation email or resend it again.',
   'resend_activation_email' => 'Resend activation email',
   'USER_GROUPS' => 'USER GROUPS',
-  'SENDING_SERVERS' => 'SENDING SERVERS',
+  'SENDING_SERVER' => 'SENDING SERVER',
   'user_group.deleted' => 'User group was successfully deleted',
   'subscriptions.deleted' => 'One or more subscriptions were successfully deleted',
   'delete_subscriptions_confirm' => 'You\'re about to delete :number subscription(s).',

@@ -55,7 +55,7 @@
                                                                 </span>
                                                             @endif
                                                         </var></dt></dt>
-                                                        <dd>{{ $parameter['description'] }}</dd>
+                                                        <dd>{!! $parameter['description'] !!}</dd>
                                                     @endforeach
                                                 </dl></div>
                                         @endif

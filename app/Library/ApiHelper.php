@@ -280,13 +280,70 @@ class ApiHelper
 ' . action("Api\PlanController@index") . '? \
 -d api_token=' . \Auth::user()->api_token,
                 ],
+                [
+                    'method' => 'POST',
+                    'uri' => '/api/v1/plans',
+                    'description' => 'Add new plan',
+                    'parameters' => [
+                        ['name' => '$name', 'description' => 'Plan\'s name'],
+                        ['name' => '$currency_id', 'description' => 'Currency\'s id'],
+                        ['name' => '$frequency_amount', 'description' => 'Billing recurs every this amount of time'],
+                        ['name' => '$frequency_unit', 'description' => 'Time unit for billing recurs (day, week, month, year, unlimited)'],
+                        ['name' => '$price', 'description' => 'Plan\'s price'],
+                        ['name' => '$color', 'description' => 'Plan\'s color (red, blue, #008c6e, #917319,...)'],
+                        ['name' => '$options[...]', 'description' => 'Plan\'s options...<br>
+                            <ul>
+                                <li><span class="text-semibold">email_max</span>: '.trans('messages.max_emails').' (number, -1 for unlimited)</li>
+                                <li><span class="text-semibold">list_max</span>: '.trans('messages.max_lists').' (number, -1 for unlimited)</li>
+                                <li><span class="text-semibold">subscriber_max</span>: '.trans('messages.max_subscribers').' (number, -1 for unlimited)</li>
+                                <li><span class="text-semibold">subscriber_per_list_max</span>: '.trans('messages.max_subscribers_per_list').' (number, -1 for unlimited)</li>
+                                <li><span class="text-semibold">segment_per_list_max</span>: '.trans('messages.segment_per_list_max').' (number, -1 for unlimited)</li>
+                                <li><span class="text-semibold">campaign_max</span>: '.trans('messages.max_campaigns').' (number, -1 for unlimited)</li>
+                                <li><span class="text-semibold">automation_max</span>: '.trans('messages.max_automations').' (number, -1 for unlimited)</li>
+                                <li><span class="text-semibold">sending_quota</span>: '.trans('messages.sending_quota').' (number, -1 for unlimited)</li>
+                                <li><span class="text-semibold">sending_quota_time</span>: '.trans('messages.quota_time').' (number, -1 for unlimited)</li>
+                                <li><span class="text-semibold">sending_quota_time_unit</span>: '.trans('messages.quota_time_unit').' (day|hour|minute)</li>
+                                <li><span class="text-semibold">max_process</span>: '.trans('messages.max_number_of_processes').' (number)</li>
+                                <li><span class="text-semibold">all_sending_servers</span>: '.trans('messages.use_all_sending_servers').' (yes|no)</li>
+                                <li><span class="text-semibold">max_size_upload_total</span>: '.trans('messages.max_size_upload_total').' (number)</li>
+                                <li><span class="text-semibold">max_file_size_upload</span>: '.trans('messages.max_file_size_upload').' (number)</li>
+                                <li><span class="text-semibold">unsubscribe_url_required</span>: '.trans('messages.unsubscribe_url_required').' (yes|no)</li>
+                                <li><span class="text-semibold">access_when_offline</span>: '.trans('messages.access_when_offline').' (yes|no)</li>
+                                <li><span class="text-semibold">create_sending_domains</span>: '.trans('messages.allow_customer_create_sending_domains').' (yes|no)</li>
+                                <li><span class="text-semibold">sending_servers_max</span>: '.trans('messages.max_sending_servers').' (number, -1 for unlimited)</li>
+                                <li><span class="text-semibold">sending_domains_max</span>: '.trans('messages.max_sending_domains').' (number, -1 for unlimited)</li>
+                                <li><span class="text-semibold">all_email_verification_servers</span>: '.trans('messages.use_all_email_verification_servers').' (yes|no)</li>
+                                <li><span class="text-semibold">create_email_verification_servers</span>: '.trans('messages.allow_customer_create_email_verification_servers').' (yes|no)</li>
+                                <li><span class="text-semibold">email_verification_servers_max</span>: '.trans('messages.max_email_verification_servers').' (number, -1 for unlimited)</li>
+                                <li><span class="text-semibold">list_import</span>: '.trans('messages.can_import_list').' (yes|no)</li>
+                                <li><span class="text-semibold">list_export</span>: '.trans('messages.can_export_list').' (yes|no)</li>
+                                <li><span class="text-semibold">all_sending_server_types</span>: '.trans('messages.allow_adding_all_sending_server_types').' (yes|no)</li>
+                                <li><span class="text-semibold">sending_server_types</span>: (array)</li>
+                                <li><span class="text-semibold">sending_server_option</span>: ('.\Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM.'|'.\Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN.'|'.\Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT.')</li>
+                                <li><span class="text-semibold">sending_server_subaccount_uid</span></li>
+                            </ul>
+                        ', 'optional' => true],
+                    ],
+                    'returns' => 'Creation messages in json',
+                    'example' => 'curl -X POST -H "accept:application/json" -G \
+' . action("Api\PlanController@store") . '? \
+-d api_token=' . \Auth::user()->api_token . '  \
+-d name=Advanced \
+-d currency_id=' . \Acelle\Model\Currency::first()->id . ' \
+-d frequency_amount=1 \
+-d frequency_unit=month \
+-d price=20 \
+-d color=red \
+-d options[sending_server_option]=' . \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN . ' \
+-d options[email_max]=10000',
+                ],
             ],
         ];
 
         // SENDING SERVER
         $docs[] = [
             'view' => 'backend',
-            'title' => trans('messages.SENDING_SERVERS'),
+            'title' => trans('messages.SENDING_SERVER'),
             'functions' => [
                 [
                     'method' => 'GET',
@@ -418,7 +475,7 @@ class ApiHelper
                 [
                     'method' => 'POST',
                     'uri' => '/api/v1/file/upload',
-                    'description' => 'Upload a file to customer\'s storage',
+                    'description' => 'Upload file(s) to customer\'s storage',
                     'parameters' => [
                         ['name' => '$file_url', 'description' => 'File url'],
                         ['name' => '$subdirectory', 'description' => 'Custom subdirectory', 'optional' => true, 'default' => 'user root directory']
