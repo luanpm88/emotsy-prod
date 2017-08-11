@@ -1094,13 +1094,13 @@ abstract class AbsCampaign extends Model
      */
     public function notOpenRate()
     {
-        $subcribers_count = $this->subscribersCount();
+        $total = $this->subscribersCount();
 
-        if ($subcribers_count == 0) {
+        if ($total == 0) {
             return 0;
         }
 
-        return round(($this->notOpenCount() / $subcribers_count) * 100, 0);
+        return $this->notOpenCount() / $total;
     }
 
     /**
@@ -1958,6 +1958,12 @@ abstract class AbsCampaign extends Model
             'UniqOpenCount' => function(&$campaign) {
                 return $campaign->openUniqCount();
             },
+            'NotOpenRate' => function(&$campaign) {
+                return $campaign->notOpenRate();
+            },
+            'NotOpenCount' => function(&$campaign) {
+                return $campaign->notOpenCount();
+            }
         ];
 
         // retrieve cached data
