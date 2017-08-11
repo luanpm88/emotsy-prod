@@ -356,7 +356,20 @@ function paginate($builder, $callback, $params = []) {
  * @return integer
  */
 function distinctCount($builder, $column) {
-    $sub = $builder->select($column)->distinct();
+    /*
+     * There are 2 options to COUNT DISTINCT
+     *   1. Use DISTINCT
+     *   2. Use GROUP BY
+     * Normally GROUP BY yields better performance (for example: 500,000 records, DISTINCT -> 7 seconds, GROUP BY -> 1.9 seconds)
+     **/
+
+    // Use GROUP BY
+    $sub = $builder->groupBy($column)->select($column);
+
+    // Use DISTINCT
+    // $sub = $builder->select($column)->distinct();
+
+    // Result
     $count = \DB::table( \DB::raw("({$sub->toSql()}) as sub") )
         ->addBinding($sub->getBindings()) // you need to get underlying Query Builder
         ->count();
