@@ -2,7 +2,7 @@
 
             <div class="row">
                 <div class="col-md-6 campaigns-summary">
-					<h5 class="mt-10 text-semibold">{{ trans('messages.sent_to') }} <span class="text-bold badge badge-info bg-info-800 badge-big">{{ $campaign->subscribersCount() }}</span> {{ trans('messages.recipients') }}</h5>
+					<h5 class="mt-10 text-semibold">{{ trans('messages.sent_to') }} <span class="text-bold badge badge-info bg-info-800 badge-big">{{ $campaign->readCache('SubscriberCount', 0) }}</span> {{ trans('messages.recipients') }}</h5>
                     <div class="mb-10">
                         <span class="text-bold text-muted">{{ trans('messages.from') }}:</span>
                         {!! $campaign->displayRecipients() !!}
