@@ -883,13 +883,29 @@ abstract class AbsCampaign extends Model
      */
     public function deliveredRate()
     {
-        $subscribers_count = $this->subscribersCount();
+        $total = $this->subscribersCount();
 
-        if ($subscribers_count == 0) {
+        if ($total == 0) {
             return 0;
         }
 
-        return round(($this->deliveredCount() / $subscribers_count) * 100, 0);
+        return $this->deliveredCount() / $total;
+    }
+
+    /**
+     * Partially cached delivery rate
+     *
+     * @return delivery rate
+     */
+    public function partiallyCachedDeliveredRate()
+    {
+        $total = $this->readCache('SubscriberCount', 0);
+
+        if ($total == 0) {
+            return 0;
+        }
+
+        return $this->deliveredCount() / $total;
     }
 
     /**
@@ -1984,7 +2000,7 @@ abstract class AbsCampaign extends Model
                 return $cache[$key];
             }
         } else {
-            return null;
+            return $default;
         }
     }
 
