@@ -24,12 +24,12 @@
             </div>
 
             <div class="badge-row">
-                <span class="badge badge-info bg-orange badge-big">{{ $campaign->notOpenRate() }}%</span>
+                <span class="badge badge-info bg-orange badge-big">{{ number_to_percentage($campaign->readCache('NotOpenRate', 0)) }}</span>
                 {{ trans('messages.not_opened') }}
                 <span class="badge badge-info bg-grey-400 badge-medium">
                     {{ trans('messages.not_open_per_total', [
-                        'count' => $campaign->notOpenCount(),
-                        'total' => $campaign->subscribersCount(),
+                        'count' => $campaign->readCache('NotOpenCount', 0),
+                        'total' => $campaign->readCache('SubscriberCount', 0),
                     ]) }}
                 </span>
                 <a href="{{ action('CampaignController@subscribers', ['uid' => $campaign->uid, 'open' => 'not_opened']) }}"><i class="icon-arrow-right7"></i> {{ trans('messages.view_log') }}</a>
