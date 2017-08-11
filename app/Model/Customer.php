@@ -46,6 +46,8 @@ class Customer extends Model
         'name', 'first_name', 'last_name', 'timezone', 'language_id', 'color_scheme'
     ];
 
+    protected $currentSubscription;
+
     /**
      * The rules for validation.
      *
@@ -935,9 +937,13 @@ class Customer extends Model
      * @return Subscription
      */
     public function getCurrentSubscription() {
-        return $subsciption = $this->getCurrentSubscriptions()
+        if (!$this->currentSubscription) {
+            $this->currentSubscription = $this->getCurrentSubscriptions()
             ->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_ACTIVE)
             ->first();
+        }
+
+        return $this->currentSubscription;
     }
 
     /**

@@ -89,6 +89,8 @@ class MailList extends Model
      */
     public static $itemsPerPage = 25;
 
+    protected $currentSubscription;
+
     /**
      * Associations.
      *
@@ -1350,6 +1352,15 @@ class MailList extends Model
         }
     }
 
+    public function getCurrentSubscription()
+    {
+        if (empty($this->currentSubscription)) {
+            $this->currentSubscription = $this->customer->getCurrentSubscription();
+        }
+
+        return $this->currentSubscription;
+    }
+
     /**
      * Pick one sending server associated to the Mail List
      *
@@ -1377,7 +1388,7 @@ class MailList extends Model
                 $server = SendingServer::mapServerType($server);
 
                 // flag the server to use sub-account instead
-                $subscription = $this->customer->getCurrentSubscription();
+                $subscription = $this->getCurrentSubscription();
                 if (!is_null($subscription->sub_account_id)) {
                     $server->setSubAccount($subscription->subAccount);
                 }
@@ -1414,7 +1425,7 @@ class MailList extends Model
     public function getSendingServers()
     {
         $result = [];
-        $subscription = $this->customer->getCurrentSubscription();
+        $subscription = $this->getCurrentSubscription();
 
         // Check the customer has permissions using sending servers and has his own sending servers
         if ($this->customer->getOption("sending_server_option") == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
