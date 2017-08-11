@@ -4,9 +4,13 @@
  * Fixed: payment issue with Stripe/Braintree
  * Fixed: tax billing information is configurable, no longer compulsory
  * Fixed: license verification does not work in certain cases
+ * Fixed: speed up campaigns listing
+ * Fixed: speed up subscribers counting
+ * Fixed: automation trigger for date in the past
  * Added: allow resending a campaign
  * Added: support SendGrid subuser
  * Added: support sending a campaign again
+ * Added: support verify-email.org service 
 
 3.0.9 / 2017-07-13
 ==================
