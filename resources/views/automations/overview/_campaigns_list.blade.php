@@ -22,9 +22,9 @@
 										<td class="stat-fix-size-sm">
 											@if ($item->status != 'new')
 												<div class="single-stat-box pull-left ml-20">
-													<span class="no-margin text-teal-800 stat-num">{{ $item->deliveredRate() }}%</span>
+													<span class="no-margin text-teal-800 stat-num">{{ number_to_percentage($item->deliveredRate()) }}%</span>
 													<div class="progress progress-xxs bg-danger">
-														<div class="progress-bar progress-bar-info" style="width: {{ $item->deliveredRate() }}%">
+														<div class="progress-bar progress-bar-info" style="width: {{ number_to_percentage($item->deliveredRate()) }}%">
 														</div>
 													</div>
 													<span class="text-semibold">{{ $item->deliveredCount() }} / {{ $item->subscribersCount() }}</span>
