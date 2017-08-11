@@ -16,9 +16,9 @@
             <td>
                 @if ($campaign->status != 'new')
                     <div class="single-stat-box pull-left ml-20 automation-email-stat-box">
-                        <span class="no-margin text-teal-800 stat-num">{{ number_to_percentage($campaign->deliveredRate()) }}%</span>
+                        <span class="no-margin text-teal-800 stat-num">{{ number_to_percentage($campaign->deliveredRate()) }}</span>
                         <div class="progress progress-xxs">
-                            <div class="progress-bar progress-bar-info" style="width: {{ number_to_percentage($campaign->deliveredRate()) }}%">
+                            <div class="progress-bar progress-bar-info" style="width: {{ number_to_percentage($campaign->deliveredRate()) }}">
                             </div>
                         </div>
                         <span class="text-semibold">{{ $campaign->deliveredCount() }} / {{ $campaign->subscribersCount() }}</span>
