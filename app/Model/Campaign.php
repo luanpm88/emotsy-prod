@@ -277,8 +277,8 @@ class Campaign extends AbsCampaign
 
         if (!$this->isStdClassSubscriber($subscriber)) {
             // in case of actually sending campaign
-            foreach ($this->defaultMailList->fields as $field) {
-                $message = str_replace('{SUBSCRIBER_'.$field->tag.'}', $subscriber->getValueByField($field), $message);
+            foreach ($subscriber->subscriberFields as $field) {
+                $message = str_replace('{SUBSCRIBER_'.$field->tag.'}', $field->value, $message);
             }
         } else {
             // in case of sending test email
@@ -426,13 +426,14 @@ class Campaign extends AbsCampaign
         //         return $r['email'];
         //     });
 
-        $total = $builder->count();
         $page = 1;
-        $limit = 100;
-        $subscribers = $builder->limit($limit)->get();
-        while ($subscribers->count()) {
+        $limit = 10000;
+        while ($total = $builder->count()) {
+            // @note eager loading will result in a very long query
+            // which could exceed the [max_allowed_packet] setting of MySQL
+            // so the value of $limit must be considered carefully
+            $subscribers = $builder->limit($limit)->with('subscriberFields')->get();
             $callback($subscribers, $page, $total);
-            $subscribers = $builder->limit($limit)->get();
             $page += 1;
         }
 
