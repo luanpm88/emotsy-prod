@@ -24,6 +24,8 @@ class CreateIndexOnEmailVerificationsResult extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('email_verifications', function (Blueprint $table) {
+            $table->dropIndex(['result']);
+        });
     }
 }
