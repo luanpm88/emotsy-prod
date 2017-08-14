@@ -195,7 +195,7 @@ class SegmentController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $segment = \Acelle\Model\Segment::findByUid($request->uid);
 
-        $subscribers = $segment->subscribers($request)->groupBy('subscribers.id')->paginate($request->per_page);
+        $subscribers = $segment->subscribers($request)->paginate($request->per_page);
         $fields = $list->getFields->whereIn('uid', explode(',', $request->columns));
 
         return view('subscribers._list', [
