@@ -1,4 +1,4 @@
-@if ($subscribers->count() > 0)
+@if ($total > 0)
 	<table class="table table-box pml-table table-sub"
 		current-page="{{ empty(request()->page) ? 1 : empty(request()->page) }}"
 	>

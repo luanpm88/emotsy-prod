@@ -195,11 +195,14 @@ class SegmentController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $segment = \Acelle\Model\Segment::findByUid($request->uid);
 
-        $subscribers = $segment->subscribers($request)->paginate($request->per_page);
-        $fields = $list->getFields->whereIn('uid', explode(',', $request->columns));
+        $subscribers = $segment->subscribers($request);
+        $total = distinctCount($subscribers, 'subscribers.id');
+        $subscribers = \optimized_paginate($subscribers, $request->per_page, null, null, null, $total);
 
+        $fields = $list->getFields->whereIn('uid', explode(',', $request->columns));
         return view('subscribers._list', [
             'subscribers' => $subscribers,
+            'total' => $total,
             'list' => $list,
             'fields' => $fields,
             'segment' => $segment,

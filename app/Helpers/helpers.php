@@ -321,7 +321,8 @@ function Dot2LongIPv6($IPaddr) {
 }
 
 /**
- * Paginate a Laravel collection
+ * Paginate a Laravel collection, used for service only as
+ * it DOES NOT return a true Pagination object (for rendering to view)
  *
  * @input Laravel Query Builder
  * @input callback function
@@ -351,11 +352,36 @@ function paginate($builder, $callback, $params = []) {
 }
 
 /**
+ * Overwrite the Laravel's Builder#paginate, accept a $total parameter specifying the total number of records
+ *
+ * @param  int  $perPage
+ * @param  array  $columns
+ * @param  string  $pageName
+ * @param  int|null  $page
+ * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
+ */
+function optimized_paginate($builder, $perPage = 15, $columns = null, $pageName = null, $page = null, $total = null)
+{
+  $pageName = $pageName ?: 'page';
+  $page = $page ?: \Illuminate\Pagination\Paginator::resolveCurrentPage($pageName);
+  $columns = $columns ?: ['*'];
+  $total = $total ?: $builder->getCountForPagination($columns);
+  $results = $total ? $builder->forPage($page, $perPage)->get($columns) : [];
+
+  return new \Illuminate\Pagination\LengthAwarePaginator($results, $total, $perPage, $page, [
+    'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
+    'pageName' => $pageName,
+  ]);
+}
+
+
+/**
  * Distinct count helper for performance
  *
  * @return integer
  */
 function distinctCount($builder, $column) {
+    $q = clone $builder;
     /*
      * There are 2 options to COUNT DISTINCT
      *   1. Use DISTINCT
@@ -364,10 +390,10 @@ function distinctCount($builder, $column) {
      **/
 
     // Use GROUP BY
-    $sub = $builder->groupBy($column)->select($column);
+    $sub = $q->groupBy($column)->select($column);
 
     // Use DISTINCT
-    // $sub = $builder->select($column)->distinct();
+    // $sub = $q->select($column)->distinct();
 
     // Result
     $count = \DB::table( \DB::raw("({$sub->toSql()}) as sub") )

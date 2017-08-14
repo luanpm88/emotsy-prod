@@ -7,6 +7,7 @@
  * Fixed: speed up campaigns listing
  * Fixed: speed up subscribers counting
  * Fixed: automation trigger for date in the past
+ * Fixed: reduce the number of SQL queries
  * Added: allow resending a campaign
  * Added: support SendGrid subuser
  * Added: support sending a campaign again
