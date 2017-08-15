@@ -515,4 +515,81 @@ class PaymentController extends Controller {
             'payment_method' => $payment_method,
         ]);
     }
+
+    /**
+     * Subscription pay by Paddle card.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function paddle_card(Request $request, $subscription_uid) {
+        $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
+        $orderId = $subscription->getOrderID();
+        $result = null;
+
+        // Check billing information
+        if( $this->checkBillingInformation($request, $subscription) !== true ) {
+            return redirect()->away($this->checkBillingInformation($request, $subscription));
+        }
+
+        $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_PADDLE_CARD);
+        $vendorId = $payment_method->getOption('vendor_id');
+
+        // Checkout url
+        $data['vendor_id'] = $vendorId;
+        $data['vendor_auth_code'] = $payment_method->getOption('vendor_auth_code');
+
+        $data['title'] = trans('messages.paddle_checkout_title', ['plan' => $subscription->plan_name]); //'Plan: ' . $subscription->plan_name ; // name of product
+        $data['webhook_url'] = action('PaymentController@paddle_card_hook', $subscription->uid); // URL to call when product is purchased
+        $data['quantity_variable'] = 0; // name of product
+
+        // You must provide at least one price for the checkout, here we are setting multiple for different currencies.
+        $data['prices'] = [
+            $subscription->currency_code . ':0' // . $subscription->price
+        ];
+
+        // Setting some other (optional) data.
+        $data['custom_message'] = trans('messages.paddle_order_id') . ': ' . $orderId;
+        $data['return_url'] = action('PaymentController@success', $subscription->uid);
+
+        // Here we make the request to the Paddle API
+        $url = 'https://vendors.paddle.com/api/2.0/product/generate_pay_link';
+        $ch = curl_init($url);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
+
+        try {
+            $response = curl_exec($ch);
+
+            if ($response) {
+                // And handle the response...
+                $data = json_decode($response);
+                if($data->success) {
+                    $checkoutUrl = $data->response->url;
+                } else {
+                    throw new \Exception($data->error->message);
+                }
+            } else {
+                throw new \Exception('Cannot connect to Paddle generate pay link!');
+            }
+        } catch (\Exception $e) {
+            PaymentLog::error(trans('messages.something_went_wrong_with_payment') . ': ' .$e->getMessage());
+            return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment', ['error' => $e->getMessage()])]);
+        }
+
+        return view('payments.paddle_card', [
+            'subscription' => $subscription,
+            'payment_method' => $payment_method,
+            'vendorId' => $vendorId,
+            'orderId' => $orderId,
+            'checkoutUrl' => $checkoutUrl,
+        ]);
+    }
+
+    public function paddle_card_hook(Request $request) {
+        $arr = $request->all();
+        $arr['time'] = \Carbon\Carbon::now();
+        \File::put('paddle-process.log', json_encode($arr));
+    }
 }

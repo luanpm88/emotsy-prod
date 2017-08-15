@@ -403,6 +403,9 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('sending_domains', 'SendingDomainController');
 
     // Payment
+    Route::get('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
+    Route::post('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
+    Route::get('payments/paddle/card/{subscription_uid}', 'PaymentController@paddle_card');
     Route::post('payments/billing-information/{subscription_uid}', 'PaymentController@billingInformation');
     Route::get('payments/billing-information/{subscription_uid}', 'PaymentController@billingInformation');
     Route::post('payments/stripe/credit-card/{subscription_uid}', 'PaymentController@stripe_credit_card');

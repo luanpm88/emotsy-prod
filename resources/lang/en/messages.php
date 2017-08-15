@@ -1967,4 +1967,13 @@
   'customer.sub_account.title' => 'Sub-account(s)',
   'list.there_no_subaccount_sending_server' => '<span class="text-semibold">ERROR:</span> There are no active sending servers.',
   'embeded_form.show_invisible' => 'Show invisible field(s)',
+  'paddle_card' => 'Paddle / Card',
+  'payment_method.paddle_card.button' => '<i class="icon-credit-card"></i> Pay with Paddle',
+  'paddle_card.pay_by_card' => '<i class="icon-credit-card"></i> Pay with Paddle',
+  'paddle_card.purchasing_intro' => 'Please click the button below so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the Pay by Card (Paddle) option
+                . Your plan price is: <a><strong>:price</strong></a>',
+  'paddle.vendor_id' => 'Vendor ID',
+  'paddle.vendor_auth_code' => 'Vendor auth code',
+  'paddle_checkout_title' => 'Plan: :plan',
+  'paddle_order_id' => 'Order ID',
 ) ?>
