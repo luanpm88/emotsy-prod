@@ -948,7 +948,7 @@ class MailList extends Model
         $maxPerList = $this->customer->getOption('subscriber_per_list_max');
 
         $remainingForList = $maxPerList - $this->reload()->subscribers->count();
-        $remaining = $max - $this->reload()->customer->subscribers->count();
+        $remaining = $max - $this->reload()->customer->subscribersCount();
 
         if ($maxPerList == -1) {
             return ($max == -1) ? -1 : $remaining;
