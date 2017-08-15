@@ -550,7 +550,7 @@ class PaymentController extends Controller {
 
         // Setting some other (optional) data.
         $data['custom_message'] = trans('messages.paddle_order_id') . ': ' . $orderId;
-        $data['return_url'] = action('PaymentController@success', $subscription->uid);
+        # $data['return_url'] = action('PaymentController@success', $subscription->uid);
 
         // Here we make the request to the Paddle API
         $url = 'https://vendors.paddle.com/api/2.0/product/generate_pay_link';
