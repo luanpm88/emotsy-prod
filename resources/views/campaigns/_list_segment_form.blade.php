@@ -42,7 +42,7 @@
                     'type' => 'select',
                     'name' => 'lists_segments[' . $index . '][segment_uids][]',
                     'label' => trans('messages.which_segment_send'),
-                    'options' => $lists_segment_group['list']->getSegmentSelectOptions(),
+                    'options' => collect($lists_segment_group['list']->readCache('SegmentSelectOptions', [])),
                     'multiple' => true,
                     'quick_note' => trans('messages.leave_empty_to_choose_all_list')
                 ])
