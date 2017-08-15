@@ -759,7 +759,8 @@ abstract class AbsCampaign extends Model
         }
 
         // Step 5
-        if ($this->subscribersCount()) {
+        // @todo: consider removing this check!
+        if ( is_object($this->subscribers([], [])->limit(1)->first()) ) {
             $step = 5;
         } else {
             return $step;
