@@ -16,7 +16,7 @@
 											<span data-popup="tooltip" title="{{ strip_tags($item->autoEvent()->displayMessage()) }}" class="auto-event-substr">{!! $item->autoEvent()->displayMessage() !!}</span>
 
 											<div class="text-semibold" data-popup="tooltip" title="{{ $item->displayRecipients() }}">
-												{{ $item->subscribersCount() }} {{ trans('messages.recipients') }}
+												{{ $item->readCache('SubscriberCount', 0) }} {{ trans('messages.recipients') }}
 											</div>
 										</td>
 										<td class="stat-fix-size-sm">
@@ -27,7 +27,7 @@
 														<div class="progress-bar progress-bar-info" style="width: {{ number_to_percentage($item->deliveredRate()) }}">
 														</div>
 													</div>
-													<span class="text-semibold">{{ $item->deliveredCount() }} / {{ $item->subscribersCount() }}</span>
+													<span class="text-semibold">{{ $item->deliveredCount() }} / {{ $item->readCache('SubscriberCount', 0) }}</span>
 													<br />
 													<span class="text-muted">{{ trans('messages.sent') }}</span>
 												</div>

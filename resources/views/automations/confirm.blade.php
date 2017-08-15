@@ -33,12 +33,12 @@
                     <ul class="modern-listing automation-confirm">
                         <li>
                             <a href="{{ action('AutomationController@edit', $automation->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-							@if ($automation->subscribersCount())
+							@if ($automation->readCache('SubscriberCount', 0))
 								<i class="icon-checkmark4"></i>
 							@else
 								<i class="fa fa-exclamation text-warning"></i>
 							@endif
-                            <h4>{{ $automation->subscribersCount() }} {{ trans('messages.recipients') }}</h4>
+                            <h4>{{ $automation->readCache('SubscriberCount', 0) }} {{ trans('messages.recipients') }}</h4>
                             <p>
 								{{ $automation->displayRecipients() }}
                             </p>
