@@ -159,3 +159,35 @@
         <button type='submit' class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
     </div>
 @endif
+
+@if ($payment_method->type == \Acelle\Model\PaymentMethod::TYPE_PADDLE_CARD)
+    <div class="row">
+		<div class="col-md-6">
+            @include('helpers.form_control', [
+				'type' => 'text',
+				'name' => 'options[vendor_id]',
+                'label' => trans('messages.paddle.vendor_id'),
+				'value' => $payment_method->getOption('vendor_id'),
+				'help_class' => 'payment_method',
+				'rules' => $payment_method->rules()
+			])
+        </div>
+	</div>
+	<div class="row">
+		<div class="col-md-6">
+            @include('helpers.form_control', [
+				'type' => 'text',
+				'name' => 'options[vendor_auth_code]',
+                'label' => trans('messages.paddle.vendor_auth_code'),
+				'value' => $payment_method->getOption('vendor_auth_code'),
+				'help_class' => 'payment_method',
+				'rules' => $payment_method->rules()
+			])
+        </div>
+	</div>
+
+    <hr />
+    <div class="text-left">
+        <button type='submit' class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+    </div>
+@endif
