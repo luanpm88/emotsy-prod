@@ -1036,11 +1036,11 @@ class MailList extends Model
      */
     public function import2($file, $customer, $system_job)
     {
-        $processed_count = 0;
-        $logger = $system_job->getLogger();
-        $logger->info(trans('messages.Start_importing_for_list_uid', ['uid' => $this->uid]));
-
         try {
+            $processed_count = 0;
+            $logger = $system_job->getLogger();
+            $logger->info(trans('messages.Start_importing_for_list_uid', ['uid' => $this->uid]));
+
             // init the status
             $system_job->updateStatus([
                 'status' => self::IMPORT_STATUS_RUNNING,
@@ -1152,9 +1152,6 @@ class MailList extends Model
 
             $this->updateCachedInfo();
 
-            // write to job's logger
-            $logger->error($e->getMessage());
-
             // update job status
             $system_job->updateStatus([
                 'status' => self::IMPORT_STATUS_FAILED,
@@ -1163,6 +1160,9 @@ class MailList extends Model
 
             // Action Log
             $this->log('import_max_error', $customer, ['count' => $processed_count]);
+
+            // write to job's logger
+            $logger->error($e->getMessage());
         }
     }
 
