@@ -122,7 +122,7 @@ class AccountController extends Controller
                     $customer->contact_id = $contact->id;
                     $customer->save();
                 }
-                $request->session()->flash('alert-success', 'Contact information was successfully updated!');
+                $request->session()->flash('alert-success', trans('messages.customer_contact.updated'));
             }
         }
 
