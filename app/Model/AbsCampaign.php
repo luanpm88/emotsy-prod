@@ -1883,10 +1883,6 @@ abstract class AbsCampaign extends Model
         $campaign = Campaign::find($this->id);
         $campaign->default_mail_list_id = $this->default_mail_list_id;
         $campaign->save();
-
-        // Trigger the CampaignUpdate event to update the campaign cache information
-        // The second parameter of the constructor function is false, meanining immediate update
-        event(new \Acelle\Events\CampaignUpdated($campaign, false));
     }
 
     /**

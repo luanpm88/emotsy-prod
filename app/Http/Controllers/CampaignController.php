@@ -230,7 +230,12 @@ class CampaignController extends Controller
             $this->validate($request, $rules);
 
             $campaign->saveRecipients($request->all());
+
+            // Trigger the CampaignUpdate event to update the campaign cache information
+            // The second parameter of the constructor function is false, meanining immediate update
             event(new \Acelle\Events\CampaignUpdated($campaign));
+
+            // redirect to the next step
             return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
         }
 
