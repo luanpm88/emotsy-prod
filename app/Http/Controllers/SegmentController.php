@@ -393,7 +393,7 @@ class SegmentController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         return view('segments._select_box', [
-            'options' => $list->getSegmentSelectOptions(),
+            'options' => collect($list->readCache('SegmentSelectOptions', [])),
             'index' => $request->index,
         ]);
     }
