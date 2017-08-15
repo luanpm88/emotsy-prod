@@ -1101,6 +1101,10 @@ class Customer extends Model
             'SpamReportedCount' => function(&$customer) {
                 return MailList::subscribersCountByStatus(Subscriber::STATUS_SPAM_REPORTED, $customer);
             },
+            'MailListSelectOptions' => function(&$customer) {
+                return $customer->getMailListSelectOptions();
+            },
+
         ];
 
         // retrieve cached data
@@ -1598,6 +1602,28 @@ class Customer extends Model
                 }
             }
         }
+
+        return $result;
+    }
+
+    /**
+     * Get the list of available mail lists, used for populating select box
+     *
+     * @return array
+     */
+    public function getMailListSelectOptions($options = [])
+    {
+        $query = \Acelle\Model\MailList::getAll();
+        $query->where('customer_id', '=', $this->id);
+
+        # Other list
+        if (isset($options['other_list_of'])) {
+            $query->where('id', '!=', $options['other_list_of']);
+        }
+
+        $result = $query->orderBy('name')->get()->map(function ($item) {
+            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount().' '.strtolower(trans('messages.subscribers')).')'];
+        });
 
         return $result;
     }

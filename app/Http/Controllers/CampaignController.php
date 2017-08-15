@@ -220,6 +220,7 @@ class CampaignController extends Controller
         // Get rules and data
         $rules = $campaign->recipientsRules($request->all());
         $campaign->fillRecipients($request->all());
+
         if (!empty($request->old())) {
             $rules = $campaign->recipientsRules($request->old());
             $campaign->fillRecipients($request->old());

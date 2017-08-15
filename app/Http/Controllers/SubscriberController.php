@@ -127,7 +127,7 @@ class SubscriberController extends Controller
             $subscriber->updateFields($request->all());
 
             // update MailList cache
-            $subscriber->mailList->updateCachedInfo();
+            event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
             // Log
             $subscriber->log('created', $customer);
@@ -215,6 +215,8 @@ class SubscriberController extends Controller
             // Update field
             $subscriber->updateFields($request->all());
 
+            event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
+
             // Log
             $subscriber->log('updated', $customer);
 
@@ -267,7 +269,7 @@ class SubscriberController extends Controller
         }
 
         foreach ($lists as $list) {
-            $list->updateCachedInfo();
+            event(new \Acelle\Events\MailListUpdated($list));
         }
 
         // Redirect to my lists page
