@@ -18,6 +18,7 @@ class Kernel extends ConsoleKernel
         Commands\TestCampaign::class,
         Commands\UpgradeTranslation::class,
         Commands\RunHandler::class,
+        Commands\ImportList::class,
     ];
 
     /**
