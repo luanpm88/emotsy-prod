@@ -1391,6 +1391,9 @@ class MailList extends Model
             'SegmentSelectOptions' => function(&$list) {
                 return $list->getSegmentSelectOptions();
             },
+            'LongName' => function(&$list) {
+                return $list->longName();
+            },
         ];
 
         // retrieve cached data
