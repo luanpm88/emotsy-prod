@@ -1383,6 +1383,9 @@ class MailList extends Model
             'SpamReportedCount' => function(&$list) {
                 return $list->spamReportedCount();
             },
+            'SegmentSelectOptions' => function(&$list) {
+                return $list->getSegmentSelectOptions();
+            },
         ];
 
         // retrieve cached data
@@ -1425,7 +1428,7 @@ class MailList extends Model
                 return $cache[$key];
             }
         } else {
-            return null;
+            return $default;
         }
     }
 

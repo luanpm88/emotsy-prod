@@ -15,7 +15,7 @@
                         'popup' => trans('messages.campaign_default_list_help'),
                         'value' => $lists_segment_group['is_default'],
                         'options' => [['text' => trans('messages.selected'), 'value' => 'true']],
-                        'rules' => [],                        
+                        'rules' => [],
                         'radio_group' => 'campaign_list_info_defaulf',
                     ])
                 </div>
@@ -31,12 +31,12 @@
                 'type' => 'select',
                 'label' => trans('messages.which_list_send'),
                 'value' => (is_object($lists_segment_group['list']) ? $lists_segment_group['list']->uid : ""),
-                'options' => Acelle\Model\MailList::getSelectOptions(Auth::user()->customer),                
+                'options' => Acelle\Model\MailList::getSelectOptions(Auth::user()->customer),
                 'rules' => isset($rules) ? $rules : []
             ])
         </div>
         <div class="col-md-5 segments-select-box multiple">
-            @if (is_object($lists_segment_group['list']) && $lists_segment_group['list']->getSegmentSelectOptions()->count())
+            @if (is_object($lists_segment_group['list']) && $lists_segment_group['list']->readCache('SegmentSelectOptions', collect([]))->count())
                 @include('helpers.form_control', [
                     'value' => implode(",", $lists_segment_group['segment_uids']),
                     'type' => 'select',
