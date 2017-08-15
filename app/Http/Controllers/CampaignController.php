@@ -230,7 +230,7 @@ class CampaignController extends Controller
             $this->validate($request, $rules);
 
             $campaign->saveRecipients($request->all());
-
+            event(new \Acelle\Events\CampaignUpdated($campaign));
             return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
         }
 
