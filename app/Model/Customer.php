@@ -1622,7 +1622,7 @@ class Customer extends Model
         }
 
         $result = $query->orderBy('name')->get()->map(function ($item) {
-            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount().' '.strtolower(trans('messages.subscribers')).')'];
+            return ['id' => $item->id, 'value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount().' '.strtolower(trans('messages.subscribers')).')'];
         });
 
         return $result;
