@@ -1283,20 +1283,25 @@ class MailList extends Model
     public function updateCachedInfo()
     {
         // Update list's cached information
-        event(new \Acelle\Events\MailListUpdated($this, false));
+        $this->updateCache();
 
         // Trigger the CampaignUpdate event to update the campaign cache information
         foreach ($this->campaigns as $campaign) {
-            event(new \Acelle\Events\CampaignUpdated($campaign));
+            $campaign->updateCache();
         }
 
         // Trigger the CampaignUpdate event to update the related automations' cache information
         foreach ($this->automations as $automation) {
-            event(new \Acelle\Events\AutomationUpdated($automation));
+            $automation->updateCache();
         }
 
-        // Update list's cached information
-        event(new \Acelle\Events\UserUpdated($this->customer, false));
+        // Update segments cached information
+        foreach ($this->segments as $segment) {
+            $segment->updateCache();
+        }
+
+        // Update user's cached information
+        $this->customer->updateCache();
     }
 
     /**

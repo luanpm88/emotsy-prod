@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Model\SystemJob as SystemJobModel;
 
 class Segment extends Model
 {
@@ -347,5 +348,88 @@ class Segment extends Model
     public function subscribersCount()
     {
         return distinctCount($this->subscribers(), 'subscribers.email');
+    }
+
+    /**
+     * Update segment cached data
+     *
+     * @return void
+     */
+    public function updateCacheDelayed()
+    {
+        $existed = SystemJobModel::getNewJobs()
+                       ->where('name', \Acelle\Jobs\UpdateSegmentJob::class)
+                       ->where('data', $this->id)
+                       ->exists();
+
+        // check if a pending cache updating process is already there for the list
+        if (!$existed) {
+            $existed = SystemJobModel::getNewJobs()
+                       ->where('name', \Acelle\Jobs\UpdateMailListJob::class)
+                       ->where('data', $this->mailList->id)
+                       ->exists();
+        }
+
+        if (!$existed) {
+            dispatch(new \Acelle\Jobs\UpdateSegmentJob($this));
+        }
+    }
+
+    /**
+     * Update segment cached data
+     *
+     * @return void
+     */
+    public function updateCache($key = null)
+    {
+        // cache indexes
+        $index = [
+            'SubscriberCount' => function(&$segment) {
+                return $segment->subscribersCount();
+            }
+        ];
+
+        // retrieve cached data
+        $cache = json_decode($this->cache, true);
+        if (is_null($cache)) {
+            $cache = [];
+        }
+
+        if (is_null($key)) {
+            // update all cache
+            foreach($index as $key => $callback) {
+                $cache[$key] = $callback($this);
+            }
+        } else {
+            // update specific key
+            $callback = $index[$key];
+            $cache[$key] = $callback($this);
+        }
+
+        // write back to the DB
+        $this->cache = json_encode($cache);
+        $this->save();
+    }
+
+    /**
+     * Retrieve Campaign cached data
+     *
+     * @return mixed
+     */
+    public function readCache($key, $default = null)
+    {
+        $cache = json_decode($this->cache, true);
+        if (is_null($cache)) {
+            return $default;
+        }
+        if (array_key_exists($key, $cache)) {
+            if (is_null($cache[$key])) {
+                return $default;
+            } else {
+                return $cache[$key];
+            }
+        } else {
+            return $default;
+        }
     }
 }
