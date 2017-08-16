@@ -1074,6 +1074,12 @@ class Customer extends Model
         return $arr;
     }
 
+    public function getSubscribedCount()
+    {
+        $query = $this->subscribers()->where('subscribers.status', Subscriber::STATUS_SUBSCRIBED);
+        return distinctCount($query, 'subscribers.email');
+    }
+
     /**
      * Update Campaign cached data
      *
@@ -1630,7 +1636,7 @@ class Customer extends Model
             $query->where('id', '!=', $options['other_list_of']);
         }
 
-        $result = $query->orderBy('name')->get()->map(function ($item) {
+        $result = $query->orderBy('name')->get()->map(function ($item) use ($cache) {
             return ['id' => $item->id, 'value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount($cache).' '.strtolower(trans('messages.subscribers')).')'];
         });
 
