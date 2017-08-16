@@ -1937,6 +1937,7 @@ abstract class AbsCampaign extends Model
     {
         // cache indexes
         $index = [
+            // @note: SubscriberCount must come first as its value shall be used by the others
             'SubscriberCount' => function(&$campaign) {
                 return $campaign->subscribersCount(false); // spepcial key that requires true update
             },
