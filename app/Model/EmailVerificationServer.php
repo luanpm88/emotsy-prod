@@ -191,13 +191,21 @@ class EmailVerificationServer extends Model
      */
     public function rules()
     {
-        return array(
+        $rules =  array(
             'name' => 'required',
             'type' => 'required',
             'options.limit_value' => 'required',
             'options.limit_base' => 'required',
             'options.limit_unit' => 'required',
         );
+
+        if ($this->type) {
+            foreach ($this->getConfig()["fields"] as $field) {
+                $rules['options.' . $field] = 'required';
+            }
+        }
+
+        return $rules;
     }
 
     /**

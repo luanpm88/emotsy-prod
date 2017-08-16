@@ -129,10 +129,11 @@ class EmailVerificationServerController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
+            $server->fill($request->all());
+
             $this->validate($request, $server->rules());
 
             // Save current user info
-            $server->fill($request->all());
             $server->admin_id = $request->user()->admin->id;
             $server->status = \Acelle\Model\EmailVerificationServer::STATUS_ACTIVE;
             $server->options = json_encode($request->options);
@@ -205,10 +206,11 @@ class EmailVerificationServerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
+            $server->fill($request->all());
+            
             $this->validate($request, $server->rules());
 
             // Save current user info
-            $server->fill($request->all());
             $server->options = json_encode($request->options);
 
             if ($server->save()) {
