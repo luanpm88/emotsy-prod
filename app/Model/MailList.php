@@ -383,10 +383,10 @@ class MailList extends Model
      *
      * @return array
      */
-    public function getSegmentSelectOptions()
+    public function getSegmentSelectOptions($cache = false)
     {
         $options = $this->segments->map(function ($item) {
-            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount().' '.strtolower(trans('messages.subscribers')).')'];
+            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount($cache).' '.strtolower(trans('messages.subscribers')).')'];
         });
 
         return $options;
@@ -407,13 +407,14 @@ class MailList extends Model
      *
      * @return array
      */
-    public function unsubscribeRate()
+    public function unsubscribeRate($cache = false)
     {
-        if ($this->subscribersCount() == 0) {
+        $count = $this->subscribersCount($cache);
+        if ($count == 0) {
             return 0;
         }
 
-        return round($this->unsubscribeCount() / $this->subscribersCount(), 2);
+        return round($this->unsubscribeCount() / $count, 2);
     }
 
     /**
@@ -659,10 +660,10 @@ class MailList extends Model
      *
      * @return number
      */
-    public function longName()
+    public function longName($cache = false)
     {
-        $subscribersCount = $this->subscribersCount();
-        return $this->name.' - '.$subscribersCount.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('subscriber', $subscribersCount)).'';
+        $count = $this->subscribersCount($cache);
+        return $this->name.' - '.$count.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('subscriber', $count)).'';
     }
 
     /**
@@ -1355,8 +1356,9 @@ class MailList extends Model
     {
         // cache indexes
         $index = [
+            // @note: SubscriberCount must come first as its value shall be used by the others
             'SubscriberCount' => function(&$list) {
-                return $list->subscribersCount();
+                return $list->subscribersCount(false);
             },
             'VerifiedSubscriberCount' => function(&$list) {
                 return $list->countVerifiedSubscribers();
@@ -1374,7 +1376,7 @@ class MailList extends Model
                 return $list->subscribeCount();
             },
             'UnsubscribeRate' => function(&$list) {
-                return $list->unsubscribeRate();
+                return $list->unsubscribeRate(true);
             },
             'UnsubscribeCount' => function(&$list) {
                 return $list->unsubscribeCount();
@@ -1389,10 +1391,10 @@ class MailList extends Model
                 return $list->spamReportedCount();
             },
             'SegmentSelectOptions' => function(&$list) {
-                return $list->getSegmentSelectOptions();
+                return $list->getSegmentSelectOptions(true);
             },
             'LongName' => function(&$list) {
-                return $list->longName();
+                return $list->longName(true);
             },
         ];
 
@@ -1734,8 +1736,11 @@ class MailList extends Model
      * Subscribers count
      *
      */
-    public function subscribersCount()
+    public function subscribersCount($cache = false)
     {
+        if ($cache) {
+            return $this->readCache('SubscriberCount', 0);
+        }
         return distinctCount($this->subscribers(), 'subscribers.email');
     }
 
