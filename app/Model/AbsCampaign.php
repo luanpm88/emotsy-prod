@@ -1049,7 +1049,7 @@ abstract class AbsCampaign extends Model
      *
      * @return number
      */
-    public function notOpenCount($cache = fale)
+    public function notOpenCount($cache = false)
     {
         return $this->subscribersCount($cache) - $this->openUniqCount();
     }
