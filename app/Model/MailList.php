@@ -432,13 +432,14 @@ class MailList extends Model
      *
      * @return array
      */
-    public function subscribeRate()
+    public function subscribeRate($cache = false)
     {
-        if ($this->subscribersCount() == 0) {
+        $count = $this->subscribersCount($cache);
+        if ($count == 0) {
             return 0;
         }
 
-        return round($this->subscribeCount() / $this->subscribersCount(), 2);
+        return round($this->subscribeCount() / $count, 2);
     }
 
     /**
@@ -1370,7 +1371,7 @@ class MailList extends Model
                 return $list->openUniqRate();
             },
             'SubscribeRate' => function(&$list) {
-                return $list->subscribeRate();
+                return $list->subscribeRate(true);
             },
             'SubscribeCount' => function(&$list) {
                 return $list->subscribeCount();
@@ -1408,6 +1409,11 @@ class MailList extends Model
             // update all cache
             foreach($index as $key => $callback) {
                 $cache[$key] = $callback($this);
+                if ($key == 'SubscriberCount') {
+                    // SubscriberCount cache must always be updated as its value will be used for the others
+                    $this->cache = json_encode($cache);
+                    $this->save();
+                }
             }
         } else {
             // update specific key
