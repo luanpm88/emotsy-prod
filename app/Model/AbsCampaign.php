@@ -1938,7 +1938,7 @@ abstract class AbsCampaign extends Model
         // cache indexes
         $index = [
             'SubscriberCount' => function(&$campaign) {
-                return $campaign->subscribersCount();
+                return $campaign->subscribersCount(false); // spepcial key that requires true update
             },
             'DeliveredRate' => function(&$campaign) {
                 return $campaign->deliveredRate(true);
@@ -1973,8 +1973,14 @@ abstract class AbsCampaign extends Model
             // update all cache
             foreach($index as $key => $callback) {
                 $cache[$key] = $callback($this);
+                if ($key == 'SubscriberCount') {
+                    // SubscriberCount cache must always be updated as its value will be used for the others
+                    $this->cache = json_encode($cache);
+                    $this->save();
+                }
             }
         } else {
+            // @deprecated, requires updating the SubscriberCount cache before updating any other one
             // update specific key
             $callback = $index[$key];
             $cache[$key] = $callback($this);
