@@ -882,9 +882,9 @@ abstract class AbsCampaign extends Model
      *
      * @return number
      */
-    public function deliveredRate()
+    public function deliveredRate($cache = false)
     {
-        $total = $this->subscribersCount();
+        $total = $this->subscribersCount($cache);
 
         if ($total == 0) {
             return 0;
@@ -1049,9 +1049,9 @@ abstract class AbsCampaign extends Model
      *
      * @return number
      */
-    public function notOpenCount()
+    public function notOpenCount($cache = fale)
     {
-        return $this->subscribersCount() - $this->openUniqCount();
+        return $this->subscribersCount($cache) - $this->openUniqCount();
     }
 
     /**
@@ -1093,9 +1093,9 @@ abstract class AbsCampaign extends Model
      *
      * @return number
      */
-    public function notOpenRate()
+    public function notOpenRate($cache = false)
     {
-        $total = $this->subscribersCount();
+        $total = $this->subscribersCount($cache);
 
         if ($total == 0) {
             return 0;
@@ -1941,7 +1941,7 @@ abstract class AbsCampaign extends Model
                 return $campaign->subscribersCount();
             },
             'DeliveredRate' => function(&$campaign) {
-                return $campaign->deliveredRate();
+                return $campaign->deliveredRate(true);
             },
             'DeliveredCount' => function(&$campaign) {
                 return $campaign->deliveredCount();
@@ -1956,10 +1956,10 @@ abstract class AbsCampaign extends Model
                 return $campaign->openUniqCount();
             },
             'NotOpenRate' => function(&$campaign) {
-                return $campaign->notOpenRate();
+                return $campaign->notOpenRate(true);
             },
             'NotOpenCount' => function(&$campaign) {
-                return $campaign->notOpenCount();
+                return $campaign->notOpenCount(true);
             }
         ];
 
@@ -2028,8 +2028,11 @@ abstract class AbsCampaign extends Model
      *
      * @return integer
      */
-    public function subscribersCount()
+    public function subscribersCount($cache = false)
     {
+        if ($cache) {
+            return $this->readCache('SubscriberCount', 0);
+        }
         // email_verifications join is required in case of segment condition (for example: 'deliverable' or 'risky')
         // return distinctCount($this->subscribers([], []), 'subscribers.email');
         return distinctCount($this->subscribers([], ['email_verifications']), 'subscribers.email');
