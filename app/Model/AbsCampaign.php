@@ -894,22 +894,6 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Partially cached delivery rate
-     *
-     * @return delivery rate
-     */
-    public function partiallyCachedDeliveredRate()
-    {
-        $total = $this->readCache('SubscriberCount', 0);
-
-        if ($total == 0) {
-            return 0;
-        }
-
-        return $this->deliveredCount() / $total;
-    }
-
-    /**
      * Count click.
      *
      * @return number
