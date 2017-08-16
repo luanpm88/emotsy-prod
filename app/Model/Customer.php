@@ -524,8 +524,11 @@ class Customer extends Model
      *
      * @return number
      */
-    public function subscribersCount()
+    public function subscribersCount($cache = false)
     {
+        if ($cache) {
+            return $this->readCache('SubscriberCount');
+        }
         return distinctCount($this->subscribers(), 'subscribers.email');
     }
 
@@ -534,10 +537,10 @@ class Customer extends Model
      *
      * @return number
      */
-    public function subscribersUsage()
+    public function subscribersUsage($cache = false)
     {
         $max = $this->maxSubscribers();
-        $count = $this->subscribersCount();
+        $count = $this->subscribersCount($cache);
 
         if ($max == '∞') {
             return 0;
@@ -1080,11 +1083,12 @@ class Customer extends Model
     {
         // cache indexes
         $index = [
+            // @note: SubscriberCount must come first as its value shall be used by the others
             'SubscriberCount' => function(&$customer) {
-                return $customer->subscribersCount();
+                return $customer->subscribersCount(false);
             },
             'SubscriberUsage' => function(&$customer) {
-                return $customer->subscribersUsage();
+                return $customer->subscribersUsage(true);
             },
             'SubscribedCount' => function(&$customer) {
                 return MailList::subscribersCountByStatus(Subscriber::STATUS_SUBSCRIBED, $customer);
@@ -1102,7 +1106,7 @@ class Customer extends Model
                 return MailList::subscribersCountByStatus(Subscriber::STATUS_SPAM_REPORTED, $customer);
             },
             'MailListSelectOptions' => function(&$customer) {
-                return $customer->getMailListSelectOptions();
+                return $customer->getMailListSelectOptions([], true);
             },
 
         ];
@@ -1117,6 +1121,11 @@ class Customer extends Model
             // update all cache
             foreach($index as $key => $callback) {
                 $cache[$key] = $callback($this);
+                if ($key == 'SubscriberCount') {
+                    // SubscriberCount cache must always be updated as its value will be used for the others
+                    $this->cache = json_encode($cache);
+                    $this->save();
+                }
             }
         } else {
             // update specific key
@@ -1611,7 +1620,7 @@ class Customer extends Model
      *
      * @return array
      */
-    public function getMailListSelectOptions($options = [])
+    public function getMailListSelectOptions($options = [], $cache = false)
     {
         $query = \Acelle\Model\MailList::getAll();
         $query->where('customer_id', '=', $this->id);
@@ -1622,7 +1631,7 @@ class Customer extends Model
         }
 
         $result = $query->orderBy('name')->get()->map(function ($item) {
-            return ['id' => $item->id, 'value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount().' '.strtolower(trans('messages.subscribers')).')'];
+            return ['id' => $item->id, 'value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount($cache).' '.strtolower(trans('messages.subscribers')).')'];
         });
 
         return $result;
