@@ -89,6 +89,11 @@ class FieldController extends Controller
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
+        // authorize
+        if (\Gate::denies('update', $list)) {
+            return $this->notAuthorized();
+        }
+
         // validate and save posted data
         if ($request->isMethod('post')) {
             $rules = [];
@@ -229,9 +234,15 @@ class FieldController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $list = \Acelle\Model\Field::findByUid($row[0]);
-            $list->custom_order = $row[1];
-            $list->save();
+            $field = \Acelle\Model\Field::findByUid($row[0]);
+
+            // authorize
+            if (\Gate::denies('update', $field->mailList)) {
+                return $this->notAuthorized();
+            }
+
+            $field->custom_order = $row[1];
+            $field->save();
         }
 
         echo trans('messages.fields.custom_order.updated');
@@ -247,6 +258,11 @@ class FieldController extends Controller
     public function sample(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('update', $list)) {
+            return $this->notAuthorized();
+        }
 
         return view('fields._form_samples', [
             'list' => $list,
@@ -265,11 +281,21 @@ class FieldController extends Controller
     {
         $field = \Acelle\Model\Field::findByUid($request->uid);
 
-        $field->delete();
+        // authorize
+        if (\Gate::denies('update', $field->mailList)) {
+            return $this->notAuthorized();
+        }
 
-        // Redirect to my lists page
-        $request->session()->flash('alert-success', trans('messages.fields.deleted'));
+        if ($field->tag != 'EMAIL') {
+            $field->delete();
 
-        return redirect()->action('FieldController@index', $request->list_uid);
+            // Redirect to my lists page
+            $request->session()->flash('alert-success', trans('messages.fields.deleted'));
+            return redirect()->action('FieldController@index', $request->list_uid);
+        } else {
+            // Redirect to my lists page
+            $request->session()->flash('alert-error', trans('messages.fields.can_not_delete_email_field'));
+            return redirect()->action('FieldController@index', $request->list_uid);
+        }
     }
 }
