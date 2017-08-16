@@ -345,8 +345,11 @@ class Segment extends Model
      *
      * @return options
      */
-    public function subscribersCount()
+    public function subscribersCount($cache = false)
     {
+        if ($cache) {
+            return $this->readCache('SubscriberCount');
+        }
         return distinctCount($this->subscribers(), 'subscribers.email');
     }
 
@@ -385,7 +388,7 @@ class Segment extends Model
         // cache indexes
         $index = [
             'SubscriberCount' => function(&$segment) {
-                return $segment->subscribersCount();
+                return $segment->subscribersCount(false);
             }
         ];
 
