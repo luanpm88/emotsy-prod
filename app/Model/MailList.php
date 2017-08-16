@@ -357,28 +357,6 @@ class MailList extends Model
     }
 
     /**
-     * Get select options.
-     *
-     * @return array
-     */
-    public static function getSelectOptions($customer=null, $options=[])
-    {
-        $query = self::getAll();
-        if (is_object($customer)) {
-            $query = $query->where('customer_id', '=', $customer->id);
-        }
-        # Other list
-        if (isset($options['other_list_of'])) {
-            $query = $query->where('id', '!=', $options['other_list_of']);
-        }
-        $options = $query->orderBy('name')->get()->map(function ($item) {
-            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount().' '.strtolower(trans('messages.subscribers')).')'];
-        });
-
-        return $options;
-    }
-
-    /**
      * Get segments select options.
      *
      * @return array
