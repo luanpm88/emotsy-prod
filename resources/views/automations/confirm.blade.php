@@ -44,10 +44,10 @@
                             </p>
                         </li>
 						<li>
-                            <a href="{{ action('AutomationController@trigger', $automation->uid) }}" class="btn {{ (isset($first_event->id) && $first_event->subscribersCount() > 0) ? 'btn-info bg-grey' : ' btn-info bg-info-800' }}">{{ trans('messages.edit') }}</a>
-							@if (isset($first_event->id) && $first_event->subscribersCount() > 0)
+                            <a href="{{ action('AutomationController@trigger', $automation->uid) }}" class="btn {{ (isset($first_event->id) && $first_event->automation->readCache('SubscriberCount', 0) > 0) ? 'btn-info bg-grey' : ' btn-info bg-info-800' }}">{{ trans('messages.edit') }}</a>
+							@if (isset($first_event->id) && $first_event->automation->readCache('SubscriberCount', 0) > 0)
 								<i class="icon-checkmark4"></i>
-							@elseif($first_event->subscribersCount() <= 0)
+							@elseif($first_event->automation->readCache('SubscriberCount', 0) <= 0)
 								<i class="fa fa-exclamation text-warning"></i>
 							@else
 								<i class="icon-cross2 text-danger"></i>
@@ -57,8 +57,8 @@
 								{!! $first_event->displayMessage() !!}
 								@if (in_array($first_event->event_type, [Acelle\Model\AutoEvent::TYPE_CUSTOM_CRITERIA]))
 									<br />
-									<span class="{{ $first_event->subscribersCount() <= 0 ? 'text-warning' : '' }}">
-										<span class="text-bold">{{ $first_event->subscribersCount() }}</span> {{ trans('messages.subscribers') }}
+									<span class="{{ $first_event->automation->readCache('SubscriberCount', 0) <= 0 ? 'text-warning' : '' }}">
+										<span class="text-bold">{{ $first_event->automation->readCache('SubscriberCount', 0) }}</span> {{ trans('messages.subscribers') }}
 									</span>
 								@endif
 							</p>
