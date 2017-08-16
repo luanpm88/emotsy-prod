@@ -296,7 +296,7 @@ h3 {
     width: 105px;
 }
 .stat-fix-size-sm .single-stat-box {
-    width: 90px;
+    min-width: 90px;
 }
 .single-stat-box .progress {
     margin: 2px 0 2px 0;

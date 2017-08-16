@@ -48,7 +48,7 @@
 								<div class="progress-bar progress-bar-info" style="width: {{ $item->isSending() ? number_to_percentage($item->deliveredRate(true)) : number_to_percentage($item->readCache('DeliveredRate')) }}">
 								</div>
 							</div>
-							<span class="text-semibold">{{ $item->isSending() ? number_with_delimiter($item->deliveredCount()) : number_with_delimiter($item->readCache('DeliveredCount', 0)) }} / {{ number_with_delimiter($item->readCache('SubscriberCount', 0))  }}</span>
+							<span class="text-semibold text-nowrap">{{ $item->isSending() ? number_with_delimiter($item->deliveredCount()) : number_with_delimiter($item->readCache('DeliveredCount', 0)) }} / {{ number_with_delimiter($item->readCache('SubscriberCount', 0))  }}</span>
 							<br />
 							<span class="text-muted">{{ trans('messages.sent') }}</span>
 						</div>
