@@ -451,23 +451,6 @@ class MailList extends Model
     }
 
     /**
-     * Count by status.
-     *
-     * @return array
-     */
-    public static function subscribersCountByStatus($status, $customer = null)
-    {
-        $query = \Acelle\Model\Subscriber::where('subscribers.status', '=', $status);
-
-        if(isset($customer)) {
-            $query = $query->join('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
-                            ->where("mail_lists.customer_id", "=", $customer->id);
-        }
-
-        return $query->count();
-    }
-
-    /**
      * Add customer action log.
      */
     public function log($name, $customer, $add_datas = [])

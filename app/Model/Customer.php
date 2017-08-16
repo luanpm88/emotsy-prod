@@ -1074,10 +1074,11 @@ class Customer extends Model
         return $arr;
     }
 
-    public function getSubscribedCount()
+    public function getSubscriberCountByStatus($status)
     {
-        $query = $this->subscribers()->where('subscribers.status', Subscriber::STATUS_SUBSCRIBED);
-        return distinctCount($query, 'subscribers.email');
+        // @note: in this particular case, a simple count(distinct) query is much more efficient
+        $query = $this->subscribers()->where('subscribers.status', $status)->distinct('subscribers.email');
+        return $query->count();
     }
 
     /**
@@ -1097,19 +1098,19 @@ class Customer extends Model
                 return $customer->subscribersUsage(true);
             },
             'SubscribedCount' => function(&$customer) {
-                return MailList::subscribersCountByStatus(Subscriber::STATUS_SUBSCRIBED, $customer);
+                return $customer->getSubscriberCountByStatus(Subscriber::STATUS_SUBSCRIBED);
             },
             'UnsubscribedCount' => function(&$customer) {
-                return MailList::subscribersCountByStatus(Subscriber::STATUS_UNSUBSCRIBED, $customer);
+                return $customer->getSubscriberCountByStatus(Subscriber::STATUS_UNSUBSCRIBED);
             },
             'UnconfirmedCount' => function(&$customer) {
-                return MailList::subscribersCountByStatus(Subscriber::STATUS_UNCONFIRMED, $customer);
+                return $customer->getSubscriberCountByStatus(Subscriber::STATUS_UNCONFIRMED);
             },
             'BlacklistedCount' => function(&$customer) {
-                return MailList::subscribersCountByStatus(Subscriber::STATUS_BLACKLISTED, $customer);
+                return $customer->getSubscriberCountByStatus(Subscriber::STATUS_BLACKLISTED);
             },
             'SpamReportedCount' => function(&$customer) {
-                return MailList::subscribersCountByStatus(Subscriber::STATUS_SPAM_REPORTED, $customer);
+                return $customer->getSubscriberCountByStatus(Subscriber::STATUS_SPAM_REPORTED);
             },
             'MailListSelectOptions' => function(&$customer) {
                 return $customer->getMailListSelectOptions([], true);
