@@ -2015,22 +2015,6 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Count sent success rate (success / subscribers count).
-     *
-     * @return number
-     */
-    public function sentRate()
-    {
-        $subscribers_count = $this->subscribersCount();
-
-        if ($subscribers_count == 0) {
-            return 0;
-        }
-
-        return round(($this->deliveredCount() / $subscribers_count) * 100, 0);
-    }
-
-    /**
      * Count subscribers.
      *
      * @return integer
