@@ -1375,6 +1375,10 @@ class MailList extends Model
             'LongName' => function(&$list) {
                 return $list->longName(true);
             },
+            'VerifiedSubscribersPercentage' => function(&$list) {
+                return $list->getVerifiedSubscribersPercentage(true);
+            },
+
         ];
 
         // retrieve cached data
@@ -1706,9 +1710,9 @@ class MailList extends Model
      * get verified subscribers percentage
      *
      */
-    public function getVerifiedSubscribersPercentage()
+    public function getVerifiedSubscribersPercentage($cache = false)
     {
-        $count = $this->subscribersCount();
+        $count = $this->subscribersCount($cache);
         if ($count == 0) {
             return 0.0;
         } else {

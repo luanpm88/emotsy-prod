@@ -6,7 +6,7 @@
 @endif
 
 @include('helpers._progress_bar', [
-    'percent' => $list->getVerifiedSubscribersPercentage()
+    'percent' => $list->readCache('VerifiedSubscribersPercentage', 0)
 ])
 
 <p>{!! trans('messages.verification_process_running', [
