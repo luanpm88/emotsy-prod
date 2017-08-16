@@ -307,6 +307,9 @@ class Campaign extends AbsCampaign
 
             $query = Subscriber::select("subscribers.*");
 
+            // Tell MySQL to use the right index
+            // $query->from(\DB::raw(\DB::getTablePrefix() . 'subscribers FORCE INDEX (subscribers_mail_list_id_email_index)'));
+
             // Email verification join
             if (in_array('email_verifications', $extra)) {
                 $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
