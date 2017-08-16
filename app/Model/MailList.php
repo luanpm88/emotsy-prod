@@ -750,7 +750,7 @@ class MailList extends Model
         $file_path = $directory.'data.csv';
 
         // Import to database
-        $total = $list->subscribersCount();
+        $total = $list->subscribersCount(); // no cache
         $success = 0;
         $error = 0;
         $lines_per_second = 1;
@@ -928,7 +928,7 @@ class MailList extends Model
         $maxPerList = $this->customer->getOption('subscriber_per_list_max');
 
         $remainingForList = $maxPerList - $this->reload()->subscribers->count();
-        $remaining = $max - $this->reload()->customer->subscribersCount();
+        $remaining = $max - $this->reload()->customer->subscribersCount(); // no cache
 
         if ($maxPerList == -1) {
             return ($max == -1) ? -1 : $remaining;
