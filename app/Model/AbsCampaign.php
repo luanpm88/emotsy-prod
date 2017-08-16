@@ -1101,7 +1101,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return $this->notOpenCount() / $total;
+        return $this->notOpenCount($cache) / $total;
     }
 
     /**
