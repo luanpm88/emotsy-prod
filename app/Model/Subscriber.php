@@ -263,7 +263,7 @@ class Subscriber extends Model
      */
     public function getValueByField($field)
     {
-        $fv = $this->subscriberFields->filter(function($r, $key) use ($field) { return $r->field_id == $field; })->first();
+        $fv = $this->subscriberFields->filter(function($r, $key) use ($field) { return $r->field_id == $field->id; })->first();
         if (is_object($fv)) {
             return $fv->value;
         } else {

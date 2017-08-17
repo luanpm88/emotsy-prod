@@ -365,8 +365,9 @@ function optimized_paginate($builder, $perPage = 15, $columns = null, $pageName 
   $pageName = $pageName ?: 'page';
   $page = $page ?: \Illuminate\Pagination\Paginator::resolveCurrentPage($pageName);
   $columns = $columns ?: ['*'];
-  $total = $total ?: $builder->getCountForPagination($columns);
-  $results = $total ? $builder->forPage($page, $perPage)->get($columns) : [];
+  $total = is_null($total) ? $builder->getCountForPagination() : $total;
+  // in case $total == 0
+  $results = $total ? $builder->forPage($page, $perPage)->get($columns) : collect([]);
 
   return new \Illuminate\Pagination\LengthAwarePaginator($results, $total, $perPage, $page, [
     'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
