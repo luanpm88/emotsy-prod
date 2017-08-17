@@ -350,7 +350,7 @@ class Segment extends Model
         if ($cache) {
             return $this->readCache('SubscriberCount');
         }
-        return distinctCount($this->subscribers(), 'subscribers.email');
+        return distinctCount($this->subscribers());
     }
 
     /**
