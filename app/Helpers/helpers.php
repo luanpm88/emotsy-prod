@@ -381,7 +381,7 @@ function optimized_paginate($builder, $perPage = 15, $columns = null, $pageName 
  *
  * @return integer
  */
-function distinctCount($builder, $column, $method = 'group') {
+function distinctCount($builder, $column = null, $method = 'group') {
     $q = clone $builder;
     /*
      * There are 2 options to COUNT DISTINCT
@@ -390,15 +390,17 @@ function distinctCount($builder, $column, $method = 'group') {
      * Normally GROUP BY yields better performance (for example: 500,000 records, DISTINCT -> 7 seconds, GROUP BY -> 1.9 seconds)
      **/
 
-    if ($method == 'group') {
-        $sub = $q->groupBy($column)->select($column);
-    } else {
-        $sub = $q->select($column)->distinct();
+    if (is_null($column)) {
+        // just count it
+    } elseif ($method == 'group') {
+        $q->groupBy($column)->select($column);
+    } elseif ($method == 'distinct') {
+        $q->select($column)->distinct();
     }
 
     // Result
-    $count = \DB::table( \DB::raw("({$sub->toSql()}) as sub") )
-        ->addBinding($sub->getBindings()) // you need to get underlying Query Builder
+    $count = \DB::table( \DB::raw("({$q->toSql()}) as sub") )
+        ->addBinding($q->getBindings()) // you need to get underlying Query Builder
         ->count();
 
     return $count;

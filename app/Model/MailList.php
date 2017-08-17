@@ -1709,7 +1709,7 @@ class MailList extends Model
         if ($cache) {
             return $this->readCache('SubscriberCount', 0);
         }
-        return distinctCount($this->subscribers(), 'subscribers.email');
+        return $this->subscribers()->count();
     }
 
     /**

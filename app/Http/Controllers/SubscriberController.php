@@ -48,7 +48,7 @@ class SubscriberController extends Controller
         }
 
         $subscribers = \Acelle\Model\Subscriber::search($request)->where('mail_list_id', '=', $list->id);
-        $total = distinctCount($subscribers, 'subscribers.id');
+        $total = distinctCount($subscribers);
         $subscribers->with(['mailList', 'subscriberFields']);
         $subscribers = \optimized_paginate($subscribers, $request->per_page, null, null, null, $total);
 
