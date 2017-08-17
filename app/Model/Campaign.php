@@ -179,7 +179,7 @@ class Campaign extends AbsCampaign
                     // @todo need an exclusive lock, what if the campaign is PAUSED, then RESTARTED
                     //       after the status check and before actually sending?
                     if ($this->refreshStatus()->isPaused()) {
-                        event(new \Acelle\Events\CampaignUpdated($this, false));
+                        $this->updateCache();
                         throw new CampaignPausedException();
                     }
 
@@ -215,9 +215,8 @@ class Campaign extends AbsCampaign
             //         however, the method is still needed to save sending servers''
             MailList::resetServerPools();
 
-            // Trigger the CampaignUpdate event to update the campaign cache information
-            // The second parameter of the constructor function is false, meanining immediate update
-            event(new \Acelle\Events\MailListUpdated($this, false));
+            // update the campaign cache information
+            $this->updateCache();
         }
     }
 
