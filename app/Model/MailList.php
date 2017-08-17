@@ -81,15 +81,9 @@ class MailList extends Model
 
     // Server pools
     public static $serverPools = array();
-
-    /**
-     * Items per page.
-     *
-     * @var array
-     */
     public static $itemsPerPage = 25;
-
     protected $currentSubscription;
+    protected $sendingSevers = [];
 
     /**
      * Associations.
@@ -1515,6 +1509,10 @@ class MailList extends Model
      */
     public function getSendingServers()
     {
+        if (!is_null($this->sendingSevers)) {
+            return $this->sendingSevers;
+        }
+
         $result = [];
         $subscription = $this->getCurrentSubscription();
 
@@ -1557,7 +1555,8 @@ class MailList extends Model
             $assoc[(int) $key] = $fitness;
         }
 
-        return $assoc;
+        $this->sendingSevers = $assoc;
+        return $this->sendingSevers;
     }
 
     /**
