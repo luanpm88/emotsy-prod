@@ -361,7 +361,7 @@ class MailList extends Model
      */
     public function getSegmentSelectOptions($cache = false)
     {
-        $options = $this->segments->map(function ($item) {
+        $options = $this->segments->map(function ($item) use ($cache) {
             return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount($cache).' '.strtolower(trans('messages.subscribers')).')'];
         });
 
