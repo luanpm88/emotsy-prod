@@ -408,10 +408,7 @@ class Campaign extends AbsCampaign
 
         $builder = $this->subscribers([], [])
                 ->whereRaw(sprintf(table('subscribers').'.id NOT IN (SELECT subscriber_id FROM %s WHERE campaign_id = %s)', table('tracking_logs'), $this->id))
-                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
-                ->select('subscribers.email')
-                ->addSelect('subscribers.uid')
-                ->addSelect('subscribers.id');
+                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'");
 
         if (!is_null($partition)) {
             // retrieve the subscribers list for this partition only
@@ -428,12 +425,12 @@ class Campaign extends AbsCampaign
         //     });
 
         $page = 1;
-        $limit = 10000;
+        $limit = 2000;
         while ($total = $builder->count()) {
             // @note eager loading will result in a very long query
             // which could exceed the [max_allowed_packet] setting of MySQL
             // so the value of $limit must be considered carefully
-            $subscribers = $builder->limit($limit)->with('subscriberFields')->get();
+            $subscribers = $builder->limit($limit)->with(['mailList', 'subscriberFields'])->get();
             $callback($subscribers, $page, $total);
             $page += 1;
         }
