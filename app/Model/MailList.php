@@ -83,7 +83,7 @@ class MailList extends Model
     public static $serverPools = array();
     public static $itemsPerPage = 25;
     protected $currentSubscription;
-    protected $sendingSevers = [];
+    protected $sendingSevers = null;
 
     /**
      * Associations.

@@ -381,7 +381,7 @@ function optimized_paginate($builder, $perPage = 15, $columns = null, $pageName 
  *
  * @return integer
  */
-function distinctCount($builder, $column) {
+function distinctCount($builder, $column, $method = 'group') {
     $q = clone $builder;
     /*
      * There are 2 options to COUNT DISTINCT
@@ -390,11 +390,11 @@ function distinctCount($builder, $column) {
      * Normally GROUP BY yields better performance (for example: 500,000 records, DISTINCT -> 7 seconds, GROUP BY -> 1.9 seconds)
      **/
 
-    // Use GROUP BY
-    $sub = $q->groupBy($column)->select($column);
-
-    // Use DISTINCT
-    // $sub = $q->select($column)->distinct();
+    if ($method == 'group') {
+        $sub = $q->groupBy($column)->select($column);
+    } else {
+        $sub = $q->select($column)->distinct();
+    }
 
     // Result
     $count = \DB::table( \DB::raw("({$sub->toSql()}) as sub") )
