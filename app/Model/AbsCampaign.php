@@ -59,7 +59,7 @@ abstract class AbsCampaign extends Model
     protected $dates = ['created_at', 'updated_at', 'run_at'];
 
     /**
-     * Get the mail list.
+     * Get campaign's default mail list
      */
     public function defaultMailList()
     {
@@ -68,6 +68,14 @@ abstract class AbsCampaign extends Model
         } else {
             return $this->belongsTo('Acelle\Model\MailList', 'default_mail_list_id');
         }
+    }
+
+    /**
+     * Get campaign's associated mail list
+     */
+    public function mailLists()
+    {
+        return $this->belongsToMany('Acelle\Model\MailList', 'campaigns_lists_segments');
     }
 
     /**
