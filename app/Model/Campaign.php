@@ -348,10 +348,12 @@ class Campaign extends AbsCampaign
             }
         }
 
-        // Filter
+        // Filters
         $filters = isset($params["filters"]) ? $params["filters"] : null;
 
-        if(isset($filters) || $this->status == "done") {
+        if((isset($filters) && (isset($filters["open"]) || isset($filters["click"]) || isset($filters["tracking_status"])))
+           || $this->status == "done"
+        ) {
             $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id');
             $query = $query->where('tracking_logs.id', "!=", "NULL");
             $query = $query->where('tracking_logs.campaign_id', "=", $this->id);

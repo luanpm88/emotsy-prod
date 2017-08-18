@@ -47,7 +47,9 @@ class Tool
 
         // Make destination directory
         if (!is_dir($dest)) {
-            mkdir($dest, $permissions);
+            $oldmask = umask(0);
+            mkdir($dest, $permissions, true);
+            umask($oldmask);
         }
 
         // Loop through the folder
@@ -949,5 +951,14 @@ class Tool
         }
 
         return implode( $delimiter, $output );
+    }
+
+    /**
+     * Check email is valid.
+     *
+     * @var string
+     */
+    public static function isValidEmail($email){
+        return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 }

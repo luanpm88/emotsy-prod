@@ -172,6 +172,11 @@ class Customer extends Model
         return $this->emailVerificationServers()->where("status", "=", EmailVerificationServer::STATUS_ACTIVE);
     }
 
+    public function blacklists()
+    {
+        return $this->hasMany('Acelle\Model\Blacklist');
+    }
+
     /**
      * Bootstrap any application services.
      */
@@ -1694,5 +1699,61 @@ class Customer extends Model
         }
 
         return false;
+    }
+
+    /**
+     * Get import jobs.
+     *
+     * @return number
+     */
+    public function getImportBlacklistJobs()
+    {
+        return \Acelle\Model\SystemJob::where("name","=","Acelle\Jobs\ImportBlacklistJob")
+            ->where("data","like", "%\"customer_id\":" . $this->id . "%");
+    }
+
+    /**
+     * Get running import jobs.
+     *
+     * @return number
+     */
+    public function getActiveImportBlacklistJobs()
+    {
+        return $this->getImportBlacklistJobs()
+            ->where("status","!=", \Acelle\Model\SystemJob::STATUS_DONE)
+            ->where("status","!=", \Acelle\Model\SystemJob::STATUS_FAILED)
+            ->where("status","!=", \Acelle\Model\SystemJob::STATUS_CANCELLED);
+    }
+
+    /**
+     * Get last import black list job.
+     *
+     * @return number
+     */
+    public function getLastActiveImportBlacklistJob()
+    {
+        return $this->getActiveImportBlacklistJobs()
+            ->orderBy("created_at","DESC")
+            ->first();
+    }
+
+    /**
+     * Add email to customer's blacklist.
+     *
+     * @return void
+     */
+    public function addEmaillToBlacklist($email)
+    {
+        $email = trim(strtolower($email));
+
+        if (\Acelle\Library\Tool::isValidEmail($email)) {
+            $exist = $this->blacklists()->where('email','=',$email)->count();
+            if (!$exist) {
+                $blacklist = new \Acelle\Model\Blacklist();
+                $blacklist->customer_id = $this->id;
+                $blacklist->email = $email;
+                $blacklist->save();
+            }
+        }
     }
 }

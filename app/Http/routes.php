@@ -169,7 +169,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     // Subscriber
     Route::post('subscriber/{uid}/verification/start', 'SubscriberController@startVerification');
     Route::post('subscriber/{uid}/verification/reset', 'SubscriberController@resetVerification');
-    Route::get('subscribers/copy-move-from/{list_uid}/{action}', 'SubscriberController@copyMoveForm');
+    Route::get('lists/{from_uid}/copy-move-from/{action}', 'SubscriberController@copyMoveForm');
     Route::post('subscribers/move', 'SubscriberController@move');
     Route::post('subscribers/copy', 'SubscriberController@copy');
     Route::get('lists/{list_uid}/subscribers', 'SubscriberController@index');
@@ -247,6 +247,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
+    Route::get('campaigns/{from_uid}/copy-move-from/{action}', 'CampaignController@copyMoveForm');
     Route::post('campaigns/{uid}/resend', 'CampaignController@resend');
 
     Route::get('campaigns/{uid}/template/review-iframe', 'CampaignController@templateReviewIframe');
@@ -427,6 +428,15 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('email_verification_servers/disable', 'EmailVerificationServerController@disable');
     Route::get('email_verification_servers/enable', 'EmailVerificationServerController@enable');
     Route::resource('email_verification_servers', 'EmailVerificationServerController');
+
+    // Blacklists
+    Route::post('blacklists/job/{system_job_id}/cancel', 'BlacklistController@cancel');
+    Route::get('blacklists/import/process', 'BlacklistController@importProcess');
+    Route::post('blacklists/import', 'BlacklistController@import');
+    Route::get('blacklists/import', 'BlacklistController@import');
+    Route::get('blacklists/listing/{page?}', 'BlacklistController@listing');
+    Route::get('blacklists/delete', 'BlacklistController@delete');
+    Route::resource('blacklists', 'BlacklistController');
 });
 
 // ADMIN AREA
@@ -559,7 +569,11 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/unsubscribe_log', 'UnsubscribeLogController@index');
     Route::get('admin/unsubscribe_log/listing', 'UnsubscribeLogController@listing');
 
-    // Sending domain
+    // Blacklist
+    Route::post('admin/blacklists/job/{system_job_id}/cancel', 'BlacklistController@cancel');
+    Route::get('admin/blacklists/import/process', 'BlacklistController@importProcess');
+    Route::post('admin/blacklists/import', 'BlacklistController@import');
+    Route::get('admin/blacklists/import', 'BlacklistController@import');
     Route::get('admin/blacklist', 'BlacklistController@index');
     Route::get('admin/blacklist/listing', 'BlacklistController@listing');
     Route::get('admin/blacklist/delete', 'BlacklistController@delete');

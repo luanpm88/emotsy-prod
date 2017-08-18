@@ -205,4 +205,15 @@ class SystemJob extends Model
     {
         return self::where('status', '=', self::STATUS_NEW);
     }
+
+    /**
+     * Get value from data
+     *
+     * @return value
+     */
+    function getData($name)
+    {
+        $data = json_decode($this->data, true);
+        return isset($data[$name]) ? $data[$name] : NULL;
+    }
 }

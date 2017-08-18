@@ -542,7 +542,7 @@ h2 [class^="icon-"] {
 }
 .filter-box .select2 {
     max-width: 180px !important;
-    min-width: 150px !important;
+    min-width: auto !important;
     width: auto !important;
 }
 .filter-box .select2-selection--single {
@@ -1070,7 +1070,7 @@ table.table-log {
 }
 table.table-log tr th {
     padding: 5px 10px;
-    background: #ddd;
+    background: #efefef;
     color: #333;
     font-weight: 600;
 }
@@ -2230,7 +2230,7 @@ input.mini-input {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-a .spinner {
+a .spinner, button .spinner {
     width: 24px;
     height: 24px;
     position: relative;
@@ -2239,7 +2239,7 @@ a .spinner {
     margin-top: -3px;
     margin-bottom: -7px;
 }
-a .double-bounce1, a .double-bounce2 {
+a .double-bounce1, a .double-bounce2, button .double-bounce1, button .double-bounce2 {
   width: 100%;
   height: 100%;
   border-radius: 50%;
@@ -2253,7 +2253,7 @@ a .double-bounce1, a .double-bounce2 {
   animation: sk-bounce 2.0s infinite ease-in-out;
 }
 
-a .double-bounce2 {
+a .double-bounce2, button .double-bounce2 {
   -webkit-animation-delay: -1.0s;
   animation-delay: -1.0s;
 }
@@ -2272,7 +2272,7 @@ a .double-bounce2 {
     -webkit-transform: scale(1.0);
   }
 }
-a.loading {
+a.loading, button.loading {
     opacity: 0.8;
 }
 .pml-table-container.loading {
@@ -2389,6 +2389,58 @@ a.loading {
 .filter-box input.search {
     margin-top: -2px;
 }
+.navbar-nav > li > .dropdown-menu {
+    margin-top: 0;
+}
+.table-log .radio label, .table-log .checkbox label {
+    margin-top: -10px;
+    padding-left: 20px;
+}
+.table-log .check_all_list .checker {
+    margin-top: -2px;
+}
+.table-log tbody tr td, .table-log tbody tr th {
+    vertical-align: middle;
+}
+.btn.btn-xs {
+    padding: 0 10px;
+    font-size: 13px;
+}
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+    border-color: #eee;
+}
+.table-box tr:last-child td {
+    border-color: #eee;
+}
+.alert {
+    border: none;
+    border-radius: 7px;
+}
+.mb-40 {
+    margin-bottom: 40px;
+}
+.mb-30 {
+    margin-bottom: 30px;
+}
+.alert-warning a, .alert-warning a {
+    color: #aa3510 !important;
+    font-style: italic;
+}
+.alert-warning a:hover, .alert-warning a:hover {
+    text-decoration: underline;
+}
+.check_all_pages_outer {
+    margin-left: 10px;
+}
+.check_all_pages_outer .checker span {
+    margin: -2px;
+    background: #fff;
+}
+.check_all_pages_outer .checker {
+    border: solid 2px #bbb;
+    border-width: 0 1px 1px 0;
+    background: #ddd;
+}
 .control-checkbox2 {
     margin-top: 15px;
 }
@@ -2440,6 +2492,9 @@ ul.modern-listing li p {
 }
 canvas[data-zr-dom-id='_zrender_hover_'] {
     display: none;
+}
+.select2-dropdown--below {
+    min-width: 150px;
 }
 .readonly-box {
     position: relative;

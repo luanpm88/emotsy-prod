@@ -56,7 +56,7 @@
 					rel0="MailListController"
 					rel1="FieldController"
 					rel2="SubscriberController"
-					rel2="SegmentController"
+					rel3="SegmentController"
 				>
 					<a href="{{ action('MailListController@index') }}"><i class="icon-address-book2"></i> {{ trans('messages.lists') }}</a>
 				</li>
@@ -68,12 +68,14 @@
 				@if(
 					Auth::user()->customer->can("read", new Acelle\Model\SendingServer()) ||
 					Auth::user()->customer->can("read", new Acelle\Model\SendingDomain()) ||
-                    Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer())
+                    Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer()) ||
+					Auth::user()->customer->can("read", new Acelle\Model\Blacklist())
 				)
 					<li class="dropdown language-switch"
 						rel0="SendingServerController"
 						rel1="SendingDomainController"
                         rel2="EmailVerificationServerController"
+						rel3="BlacklistController"
 					>
 						<a class="dropdown-toggle" data-toggle="dropdown">
 							<i class="glyphicon glyphicon-transfer"></i> {{ trans('messages.sending') }}
@@ -98,6 +100,13 @@
 								<li rel0="EmailVerificationServerController">
 									<a href="{{ action('EmailVerificationServerController@index') }}">
 										<i class="icon-database-check"></i> {{ trans('messages.email_verification_servers') }}
+									</a>
+								</li>
+							@endif
+							@if (Auth::user()->customer->can("read", new Acelle\Model\Blacklist()))
+								<li rel0="BlacklistController">
+									<a href="{{ action('BlacklistController@index') }}">
+										<i class="glyphicon glyphicon-minus-sign"></i> {{ trans('messages.blacklist') }}
 									</a>
 								</li>
 							@endif

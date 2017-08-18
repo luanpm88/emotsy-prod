@@ -4,6 +4,16 @@
         <div class="modal-content">
             <form action="{{ action("SubscriberController@" . request()->action) }}" method="POST" class="form-validate-jquery">
                 {{ csrf_field() }}
+                <input type="hidden" name="from_uid" value="{{ $from_list->uid }}" />
+                @foreach (request()->all() as $name => $value)
+                    @if (is_array($value))
+                        @foreach ($value as $v)
+                            <input type="hidden" name="{{ $name }}[]" value="{{ $v }}" />
+                        @endforeach
+                    @else
+                        <input type="hidden" name="{{ $name }}" value="{{ $value }}" />
+                    @endif
+                @endforeach
 
                 <div class="modal-header bg-teal">
                     <button type="button" class="close" data-dismiss="modal">&times;</button>
@@ -24,7 +34,7 @@
                     @include('helpers.form_control', [
                         'type' => 'select',
                         'name' => 'list_uid',
-                        'class' => '',
+                        'class' => 'required',
                         'required' => true,
                         'label' => trans('messages.select_the_target_list'),
                         'value' => '',

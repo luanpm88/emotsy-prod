@@ -14,5 +14,6 @@
             "to" => ($items->toArray()["per_page"]*$items->toArray()["current_page"] > $items->toArray()["total"] ? $items->toArray()["total"] : $items->toArray()["per_page"]*$items->toArray()["current_page"]),
             "count" => $items->toArray()["total"]]
         ) !!}
+        <input type="hidden" name="total_items_count" value="{{ $items->toArray()["total"] }}" />
     @endif
 </div>

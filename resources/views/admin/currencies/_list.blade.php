@@ -82,7 +82,7 @@
 			</tr>
 		@endforeach
 	</table>
-	@include('elements/_per_page_select')
+	@include('elements/_per_page_select', ["items" => $currencies])
 	{{ $currencies->links() }}
 @elseif (!empty(request()->filters))
 	<div class="empty-list">

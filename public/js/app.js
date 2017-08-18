@@ -9,6 +9,164 @@
 *
 * ---------------------------------------------------------------------------- */
 
+function removeMaskLoading() {
+    $('.mask-loading-effect').remove();
+}
+
+function addMaskLoading(text) {
+    if (typeof(text) === 'undefined') {
+        var text = '';
+    }
+    $('body').append('<div class="mask-loading-effect"><div class="content">'+text+'<div class="spinner2">'+
+        '<div class="bounce1"></div>'+
+        '<div class="bounce2"></div>'+
+        '<div class="bounce3"></div>'+
+        '</div></div><div>');
+}
+
+function customValidate(selector) {
+    selector.validate({
+        ignore: 'input[type=hidden], .select2-input', // ignore hidden fields
+        errorClass: 'validation-error-label',
+        successClass: 'validation-valid-label',
+        highlight: function(element, errorClass) {
+            $(element).removeClass(errorClass);
+        },
+        unhighlight: function(element, errorClass) {
+            $(element).removeClass(errorClass);
+        },
+
+        // Different components require proper error label placement
+        errorPlacement: function(error, element) {
+
+            // Styled checkboxes, radios, bootstrap switch
+            if (element.parents('div').hasClass("checker") || element.parents('div').hasClass("choice") || element.parent().hasClass('bootstrap-switch-container') ) {
+                if(element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
+                    error.appendTo( element.parent().parent().parent().parent() );
+                }
+                 else {
+                    error.appendTo( element.parent().parent().parent().parent().parent() );
+                }
+            }
+
+            // Select2
+            else if (element.parents(".form-group").find('.input_help').length) {
+                error.insertAfter( element.parents(".form-group").find('.input_help') );
+            }
+
+            // Unstyled checkboxes, radios
+            else if (element.parents('div').hasClass('checkbox') || element.parents('div').hasClass('radio')) {
+                error.appendTo( element.parent().parent().parent() );
+            }
+
+            // Input with icons
+            else if (element.parents('div').hasClass('has-feedback')) {
+                error.appendTo( element.parent() );
+            }
+
+            // Inline checkboxes, radios
+            else if (element.parents('label').hasClass('checkbox-inline') || element.parents('label').hasClass('radio-inline')) {
+                error.appendTo( element.parent().parent() );
+            }
+
+            // Select2
+            else if (element.parents(".form-group").find('.select2').length) {
+                error.insertAfter( element.parents(".form-group").find('.select2') );
+            }
+
+            // Select2
+            else if (element.is("textarea")) {
+                error.insertBefore( element.parents(".form-group") );
+            }
+
+            // Input group, styled file input
+            else if (element.parent().hasClass('uploader') || element.parents().hasClass('input-group')) {
+                error.appendTo( element.parent().parent() );
+            }
+            else {
+                error.insertAfter(element);
+            }
+
+            // Add error class to form group
+            element.parents(".form-group").addClass('has-error');
+        },
+        validClass: "validation-valid-label",
+        success: function(label) {
+            label.addClass("validation-valid-label").text("Success.");
+            label.parents(".form-group").removeClass('has-error');
+        },
+        rules: {
+            vali: "required",
+            repeat_password: {
+                equalTo: "#password"
+            },
+            password_confirmation: {
+                equalTo: "#password"
+            },
+            email: {
+                email: true
+            },
+            repeat_email: {
+                equalTo: "#email"
+            },
+            email_confirmation: {
+                equalTo: "#email"
+            },
+            minimum_characters: {
+                minlength: 10
+            },
+            maximum_characters: {
+                maxlength: 10
+            },
+            minimum_number: {
+                min: 10
+            },
+            maximum_number: {
+                max: 10
+            },
+            number_range: {
+                range: [10, 20]
+            },
+            url: {
+                url: true
+            },
+            date: {
+                date: true
+            },
+            date_iso: {
+                dateISO: true
+            },
+            numbers: {
+                number: true
+            },
+            digits: {
+                digits: true
+            },
+            card: {
+                creditcard: true
+            },
+            basic_checkbox: {
+                minlength: 2
+            },
+            styled_checkbox: {
+                minlength: 2
+            },
+            switchery_group: {
+                minlength: 2
+            },
+            switch_group: {
+                minlength: 2
+            }
+        },
+        messages: {
+            custom: {
+                required: "This is a custom error message",
+            },
+            agree: "Please accept our policy"
+        }
+    });
+}
+
 function showAjaxDetailBox(items) {
     items.each(function() {
         var container = $(this);
@@ -352,8 +510,15 @@ $(function() {
             return this.value;
         }).get();
 
-        $(this).attr("new-href", $(this).attr("href") + "?uids=" + vals.join(","));
-        $(this).attr("items-count", vals.length);
+        var new_href = $(this).attr("href") + "?uids=" + vals.join(",");
+
+        if (form.find('.select_tool').length && form.find('.select_tool').val() === 'all_items') {
+            new_href += '&'+form.serialize();
+            new_href += '&select_tool='+form.find('.select_tool').val();
+        }
+
+        $(this).attr("new-href", new_href);
+        $(this).attr("items-count", form.find('.checked_count').html());
     });
 
 
@@ -367,7 +532,9 @@ $(function() {
             method = 'GET';
         }
 
-        $(this).attr("new-href", $(this).attr("href"));
+        if (typeof($(this).attr('new-href')) === 'undefined' || $(this).attr('new-href') === '') {
+            $(this).attr("new-href", $(this).attr("href"));
+        }
         // count items
         var count = 1;
         if (typeof($(this).attr("items-count")) != 'undefined') {
@@ -390,16 +557,16 @@ $(function() {
             }
         }
 
-        if($(this).parents(".list_actions").length) {
-            var url = $(this).attr("new-href");
-            var form = $(this).parents(".listing-form");
-            var vals = form.find("input[name='ids[]']:checked").map(function () {
-                return this.value;
-            }).get();
-
-            url = url + "?uids=" + vals.join(",");
-             $(".delete-confirm-button").attr("href", url);
-        }
+        //if($(this).parents(".list_actions").length) {
+        //    var url = $(this).attr("new-href");
+        //    var form = $(this).parents(".listing-form");
+        //    var vals = form.find("input[name='ids[]']:checked").map(function () {
+        //        return this.value;
+        //    }).get();
+        //
+        //    url = url + "?uids=" + vals.join(",");
+        //     $(".delete-confirm-button").attr("href", url);
+        //}
 
         e.stopImmediatePropagation();
         e.preventDefault();
@@ -424,7 +591,9 @@ $(function() {
             method = 'GET';
         }
 
-        $(this).attr("new-href", $(this).attr("href"));
+        if (typeof($(this).attr('new-href')) === 'undefined' || $(this).attr('new-href') === '') {
+            $(this).attr("new-href", $(this).attr("href"));
+        }
 
         if($(this).parents(".list_actions").length) {
             var form = $(this).parents(".listing-form");
@@ -478,7 +647,9 @@ $(function() {
             method = 'GET';
         }
 
-        $(this).attr("new-href", $(this).attr("href"));
+        if (typeof($(this).attr('new-href')) === 'undefined' || $(this).attr('new-href') === '') {
+            $(this).attr("new-href", $(this).attr("href"));
+        }
 
         if($(this).parents(".list_actions").length) {
             var form = $(this).parents(".listing-form");
@@ -488,6 +659,13 @@ $(function() {
 
             var sign = (url.indexOf('?') !== -1 ? '&' : '?');
             url = url + sign + "uids=" + vals.join(",");
+
+            // Select tool
+            if (form.find('.select_tool').length && form.find('.select_tool').val() == 'all_items') {
+                var select_tool = form.find('.select_tool').val();
+                url = url + "&select_tool=" + select_tool;
+                url = url + "&" + form.serialize();
+            }
         }
 
         // count items
@@ -675,7 +853,6 @@ $(function() {
             }
         }
 
-
         if(typeof(method) === 'undefined' || method.trim() === '') {
             method = "GET";
         }
@@ -687,11 +864,7 @@ $(function() {
         }
         a_.addClass('loading');
         a_.append(' <div class="spinner a-loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
-         $('body').append('<div class="mask-loading-effect"><div class="content">'+mask_text+'<div class="spinner2">'+
-  '<div class="bounce1"></div>'+
-  '<div class="bounce2"></div>'+
-  '<div class="bounce3"></div>'+
-'</div></div><div>');
+        addMaskLoading(mask_text);
 
         $.ajax({
             method: method,
@@ -735,7 +908,7 @@ $(function() {
             // Remove loading effect
             a_.removeClass('loading');
             a_.find('.a-loading').remove();
-            $('.mask-loading-effect').remove();
+            removeMaskLoading();
 
             if (type != 'error' || a_.parents('form').find('input').length == 0) {
                 $(".modal").modal('hide');
@@ -1003,8 +1176,9 @@ $(function() {
         var uid = $(this).attr("data-uid");
         var name = $(this).attr("data-name");
 
-        $('input[name=copy_list_uid]').val(uid);
-        $('input[name=copy_list_name]').val(name);
+        $('.ajax_copy_list_form input[name=copy_list_uid]').val(uid);
+        $('.ajax_copy_list_form input[name=copy_list_name]').val(name);
+
         $('#copy_list').modal("show");
     });
 
@@ -1483,6 +1657,17 @@ $(function() {
             data = {
                 uids: vals.join(",")
             };
+
+            // select_tool
+            var select_tool = '';
+            if (form.find('.select_tool').length && form.find('.select_tool').val() == 'all_items') {
+                select_tool = form.find('.select_tool').val();
+                arr = form.serializeArray();
+                for (var i = 0; i < arr.length; i++){
+                  data[arr[i]['name']] = arr[i]['value'];
+                }
+            }
+
         }
 
         $.ajax({
@@ -1502,7 +1687,7 @@ $(function() {
             $('#copy-move-subscribers-form').find('.styled').uniform({
                 radioClass: 'choice'
             });
-            $('#copy-move-subscribers-form').find('form').validate();
+            customValidate($('#copy-move-subscribers-form').find('form'));
         });
     });
 
@@ -1510,6 +1695,8 @@ $(function() {
     $(document).on('submit', '#copy-move-subscribers-form form', function(e) {
         var form = $(this);
         var url = form.attr("action");
+
+        addMaskLoading();
 
         $.ajax({
             type: "POST",
@@ -1531,6 +1718,8 @@ $(function() {
                     });
                 }
                 $('#copy-move-subscribers-form').modal('hide');
+
+                removeMaskLoading();
             }
         });
 
@@ -1714,6 +1903,18 @@ $(function() {
             a_.removeClass('loading');
             a_.find('.a-loading').remove();
         });
+    });
+
+    // add segment condition
+    $(document).on("click", "button.click-effect", function(e) {
+        var a_ = $(this);
+        var form = a_.parents('form');
+
+        if (!form.length || !form.hasClass('form-validate-jquery') || (form.hasClass('form-validate-jquery') && form.valid())) {
+            // Add loading effect
+            a_.addClass('loading');
+            a_.append(' <div class="spinner a-loading"><div class="double-bounce1"></div><div class="double-bounce2"></div></div>');
+        }
     });
 
     // Group radio box

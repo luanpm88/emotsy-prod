@@ -1,3 +1,17 @@
+function listCheckAllPages(form) {
+    form.find('input[type=checkbox]').prop("checked", true);
+    form.find('.check_all_list').removeClass('check-some');
+    form.find('.list_actions').removeClass('hide');
+    $.uniform.update();
+}
+
+function listUncheckAllPages(form) {
+    form.find('input[type=checkbox]').prop("checked", false);
+    form.find('.check_all_list').removeClass('check-some');
+    form.find('.list_actions').addClass('hide');
+    $.uniform.update();
+}
+
 // Generate unique id
 function guid() {
   function s4() {
@@ -53,7 +67,7 @@ function tableFilter(form, custom_url) {
     }
 
     var sort_direction = form.find(".sort-direction").attr("rel");
-    var keyword = form.find("input[name='search_keyword']").val();
+    var keyword = form.find("input[name='search_keyword'], input[name='keyword']").val();
 
     // Default page
     if(typeof(custom_url) !== 'undefined') {
@@ -140,6 +154,7 @@ function listCheckAll(form) {
     form.find('table input[type=checkbox]').prop("checked", true);
     form.find('.check_all_list').removeClass('check-some');
     form.find('.list_actions').removeClass('hide');
+    // form.find('.select_tool').val('whole_page').trigger('change.select2');
     $.uniform.update();
 }
 
@@ -147,6 +162,7 @@ function listUncheckAll(form) {
     form.find('table input[type=checkbox]').prop("checked", false);
     form.find('.check_all_list').removeClass('check-some');
     form.find('.list_actions').addClass('hide');
+    form.find('.select_tool').val('').trigger('change.select2');
     $.uniform.update();
 }
 
@@ -157,38 +173,53 @@ function updateCheckList() {
         var vals = form.find("input[name='ids[]']:checked").map(function () {
                     return this.value;
                 }).get();
+        var check_all_pages = form.find('.check_all_pages');
+        var select_tool = form.find('.select_tool');
+        var checked_count = vals.length;
 
         // Check if none checked
-        if (vals.length == 0) {
+        if (checked_count == 0) {
             form.find('.check_all_list input.check_all').prop("checked", false);
             form.find('.check_all_list').removeClass('check-some');
             form.find('.list_actions').removeClass('check-some');
             form.find('.list_actions').addClass('hide');
+            form.find('input.check_all_pages').prop("checked", false);
+            form.find('.select_tool').val('').trigger('change.select2');
             $.uniform.update();
         }
 
         // Check if some checked
-        else if (total > vals.length) {
+        else if (total > checked_count) {
             form.find('.check_all_list input.check_all').prop("checked", true);
             form.find('.check_all_list').addClass('check-some');
             form.find('.list_actions').removeClass('hide');
+            form.find('input.check_all_pages').prop("checked", false);
+            form.find('.select_tool').val('').trigger('change.select2');
             $.uniform.update();
         }
 
         // check if all checked
-        else if (total == vals.length) {
+        else if (total == checked_count) {
             form.find('.check_all_list input.check_all').prop("checked", true);
             form.find('.check_all_list').removeClass('check-some');
             form.find('.list_actions').removeClass('hide');
+            if (select_tool.val() !== 'all_items') {
+                form.find('.select_tool').val('whole_page').trigger('change.select2');
+            }
             listCheckAll(form);
         }
 
+        // If check all pages
+        if (check_all_pages.is(":checked") || select_tool.val() == 'all_items') {
+            checked_count = form.find('input[name=total_items_count]').val();
+        }
+
         // update count span
-        if (vals.length > 0) {
+        if (checked_count > 0) {
           if (form.find('.list_actions button .checked_count').length) {
-            form.find('.list_actions button .checked_count').html(vals.length);
+            form.find('.list_actions button .checked_count').html(checked_count);
           } else {
-            form.find('.list_actions button .caret').before(' <span class="badge bg-grey checked_count">'+vals.length+'</span>');
+            form.find('.list_actions button .caret').before(' <span class="badge bg-grey checked_count">'+checked_count+'</span>');
           }
         } else {
           form.find('.list_actions button .checked_count').remove();
@@ -302,12 +333,17 @@ $(document).ready(function() {
 
     // Update checkbox list
     $(document).on("change", "input[name='ids[]']", function() {
+        var form = $(this).parents(".listing-form");
+
+        $(".check_all_pages").prop("checked", false);
+
         updateCheckList();
     });
 
     // Check / Uncheck all
     $(document).on("mouseup", ".check_all_list", function() {
         var checked = $(this).find('input.check_all').is(':checked');
+        var form = $(this).parents(".listing-form");
 
         if (checked) {
             listUncheckAll($(this).parents(".listing-form"));
@@ -315,7 +351,10 @@ $(document).ready(function() {
             listCheckAll($(this).parents(".listing-form"));
         }
 
-        setTimeout("updateCheckList()", 200);
+        setTimeout(function() {
+            $(".check_all_pages").prop("checked", false);
+            updateCheckList();
+        }, 200);
     });
 
     // Change page
@@ -352,14 +391,14 @@ $(document).ready(function() {
     });
 
     // Sort button
-    $(document).on("change", ".listing-form select", function() {
+    $(document).on("change", ".listing-form select:not(.select_tool)", function() {
         var form = $(this).parents(".listing-form");
 
         tableFilter(form);
     });
 
     // Search when typing
-    $(document).on("keyup", "input[name='search_keyword']", function() {
+    $(document).on("keyup", "input[name='search_keyword'], input[name='keyword']", function() {
         var form = $(this).parents(".listing-form");
 
         tableFilter(form);
@@ -371,9 +410,36 @@ $(document).ready(function() {
     });
 
     // Columns filters
-    $(document).on("change", ".listing-form input[name='columns[]'], .listing-form .filter-box input[type=checkbox]:not(.check_all)", function(e) {
+    $(document).on("change", ".listing-form input[name='columns[]'], .listing-form .filter-box input[type=checkbox]:not(.check_all):not(.check_all_pages)", function(e) {
         var form = $(this).parents(".listing-form");
 
         tableFilter(form);
+    });
+
+    // Check / Uncheck all pages
+    $(document).on("change", ".check_all_pages", function() {
+        var checked = $(this).is(':checked');
+
+        if (!checked) {
+            listUncheckAllPages($(this).parents(".listing-form"));
+        } else {
+            listCheckAllPages($(this).parents(".listing-form"));
+        }
+
+        setTimeout("updateCheckList()", 200);
+    });
+
+    // Check / Uncheck all pages
+    $(document).on("change", ".select_tool", function() {
+        var val = $(this).val();
+        var form = $(this).parents(".listing-form");
+
+        if (val === '') {
+            listUncheckAll(form);
+        } else {
+            listCheckAll(form);
+        }
+
+        setTimeout("updateCheckList()", 200);
     });
 });

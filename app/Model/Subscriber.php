@@ -241,14 +241,18 @@ class Subscriber extends Model
      */
     public static function search($request, $customer = null)
     {
+        $query = self::select('subscribers.*', 'email_verifications.result as verify_result');
+
+        // Filter by customer
         if (!isset($customer)) {
             $customer = $request->user()->customer;
         }
-        $query = self::select('subscribers.*', 'email_verifications.result as verify_result');
         $query = $query->where('mail_lists.customer_id', '=', $customer->id);
 
+        // Filter
         $query = self::filter($query, $request);
 
+        // Order
         if (isset($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
