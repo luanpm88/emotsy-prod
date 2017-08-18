@@ -1580,8 +1580,8 @@ abstract class AbsCampaign extends Model
             $new_lists_segment->save();
         }
 
-        // update cache
-        $copy->updateCache();
+        // refresh to update cache (otherwise, list-segment information will not be available yet)
+        Campaign::find($copy->id)->updateCache();
     }
 
     /**
