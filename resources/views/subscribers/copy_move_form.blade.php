@@ -23,17 +23,17 @@
                 </div>
 
                 <div class="modal-body">
-                    <h4>{{ trans('messages.subscribers_' . request()->action . '_message', ['number' => $subscribers->count()]) }}</h4>
+                    <h4>{!! trans('messages.subscribers_' . request()->action . '_message', ['number' => $subscribers->count()]) !!}</h4>
 
                     <input type="hidden" name="action" value="{{ request()->action }}" />
                     <input type="hidden" name="uids" value="{{ request()->uids }}" />
                     <?php
                         $lists = collect(Auth::user()->customer->readCache('MailListSelectOptions', []));
-                        $lists = $lists->filter(function ($record, $key) use($list) { return $record['id'] != $list->id; });
+                        $lists = $lists->filter(function ($record, $key) use($from_list) { return $record['id'] != $from_list->id; });
                     ?>
                     @include('helpers.form_control', [
                         'type' => 'select',
-                        'name' => 'list_uid',
+                        'name' => 'to_uid',
                         'class' => 'required',
                         'required' => true,
                         'label' => trans('messages.select_the_target_list'),

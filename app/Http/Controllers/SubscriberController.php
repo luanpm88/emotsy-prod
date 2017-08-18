@@ -58,7 +58,7 @@ class SubscriberController extends Controller
             return;
         }
 
-        $subscribers = $this->search($request);
+        $subscribers = $this->search($list, $request);
         $total = distinctCount($subscribers);
         $subscribers->with(['mailList', 'subscriberFields']);
         $subscribers = \optimized_paginate($subscribers, $request->per_page, null, null, null, $total);
@@ -622,8 +622,7 @@ class SubscriberController extends Controller
         }
 
         // Trigger updating related campaigns cache
-        $from_list->updateCachedInfo();
-        $to_list->updateCachedInfo();
+        event(new \Acelle\Events\MailListUpdated($to_list));
 
         // Log
         $to_list->log('copied', $request->user()->customer, [
@@ -664,8 +663,8 @@ class SubscriberController extends Controller
         }
 
         // Trigger updating related campaigns cache
-        $from_list->updateCachedInfo();
-        $to_list->updateCachedInfo();
+        event(new \Acelle\Events\MailListUpdated($from_list));
+        event(new \Acelle\Events\MailListUpdated($to_list));
 
         // Log
         $to_list->log('moved', $request->user()->customer, [
