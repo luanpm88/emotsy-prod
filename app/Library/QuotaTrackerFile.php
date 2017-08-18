@@ -478,4 +478,18 @@ class QuotaTrackerFile
         return $this->archived;
     }
 
+    /**
+     * Dump the quota track configuration settings
+     *
+     * @return Array settings
+     */
+    public function dump()
+    {
+        return [
+            'file' => $this->file,
+            'quota' => $this->quota,
+            'limits' => $this->limits,
+            'usage' => $this->getUsage(),
+        ];
+    }
 }
