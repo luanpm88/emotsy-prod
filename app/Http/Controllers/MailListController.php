@@ -354,6 +354,9 @@ class MailListController extends Controller
 
                 // Log
                 $item->log('deleted', $request->user()->customer);
+
+                // update MailList cache
+                event(new \Acelle\Events\MailListUpdated($item));
             }
         }
 

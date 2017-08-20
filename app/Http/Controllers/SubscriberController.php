@@ -311,6 +311,8 @@ class SubscriberController extends Controller
             if (\Gate::allows('subscribe', $subscriber)) {
                 $subscriber->status = 'subscribed';
                 $subscriber->save();
+                // update MailList cache
+                event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
                 // Log
                 $subscriber->log('subscribed', $customer);
@@ -347,6 +349,9 @@ class SubscriberController extends Controller
 
                 // Log
                 $subscriber->log('unsubscribed', $customer);
+
+                // update MailList cache
+                event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
             }
         }
 
@@ -715,6 +720,9 @@ class SubscriberController extends Controller
 
             // success message
             $request->session()->flash('alert-success', trans('messages.verification.finish'));
+
+            // update MailList cache
+            event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
             return redirect()->action('SubscriberController@edit', ['list_uid' => $request->list_uid, 'uid' => $subscriber->uid]);
         } catch (\Exception $e) {
