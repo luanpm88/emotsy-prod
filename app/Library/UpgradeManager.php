@@ -490,7 +490,7 @@ class UpgradeManager
         foreach ($languages as $lang) {
             // if for any reason the language directory does not exist, just ignore it
             if (!file_exists($lang->languageDir())) {
-                LaravelLog::warning(sprintf("Language directory % does not exist", $lang->languageDir()));
+                LaravelLog::warning(sprintf("Language directory %s does not exist", $lang->languageDir()));
                 continue;
             }
 
