@@ -29,7 +29,7 @@
                             {{ csrf_field() }}
 
                             <div class="upload_file before">
-                                <p>{!! trans('messages.click_to_start_export', ['total' => $list->subscribers()->count()]) !!}</p>
+                                <p>{!! trans('messages.click_to_start_export', ['total' => $list->readCache('SubscriberCount', 0)]) !!}</p>
                                 <div class="text-left">
                                     <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.export') }}</button>
                                 </div>

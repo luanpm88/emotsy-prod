@@ -172,6 +172,11 @@ class Customer extends Model
         return $this->emailVerificationServers()->where("status", "=", EmailVerificationServer::STATUS_ACTIVE);
     }
 
+    public function blacklists()
+    {
+        return $this->hasMany('Acelle\Model\Blacklist');
+    }
+
     /**
      * Bootstrap any application services.
      */
@@ -524,9 +529,12 @@ class Customer extends Model
      *
      * @return number
      */
-    public function subscribersCount()
+    public function subscribersCount($cache = false)
     {
-        return distinctCount($this->subscribers(), 'subscribers.email');
+        if ($cache) {
+            return $this->readCache('SubscriberCount');
+        }
+        return distinctCount($this->subscribers(), 'subscribers.email', 'distinct');
     }
 
     /**
@@ -534,10 +542,10 @@ class Customer extends Model
      *
      * @return number
      */
-    public function subscribersUsage()
+    public function subscribersUsage($cache = false)
     {
         $max = $this->maxSubscribers();
-        $count = $this->subscribersCount();
+        $count = $this->subscribersCount($cache);
 
         if ($max == '∞') {
             return 0;
@@ -1071,6 +1079,13 @@ class Customer extends Model
         return $arr;
     }
 
+    public function getSubscriberCountByStatus($status)
+    {
+        // @note: in this particular case, a simple count(distinct) query is much more efficient
+        $query = $this->subscribers()->where('subscribers.status', $status)->distinct('subscribers.email');
+        return $query->count();
+    }
+
     /**
      * Update Campaign cached data
      *
@@ -1080,27 +1095,32 @@ class Customer extends Model
     {
         // cache indexes
         $index = [
+            // @note: SubscriberCount must come first as its value shall be used by the others
             'SubscriberCount' => function(&$customer) {
-                return $customer->subscribersCount();
+                return $customer->subscribersCount(false);
             },
             'SubscriberUsage' => function(&$customer) {
-                return $customer->subscribersUsage();
+                return $customer->subscribersUsage(true);
             },
             'SubscribedCount' => function(&$customer) {
-                return MailList::subscribersCountByStatus(Subscriber::STATUS_SUBSCRIBED, $customer);
+                return $customer->getSubscriberCountByStatus(Subscriber::STATUS_SUBSCRIBED);
             },
             'UnsubscribedCount' => function(&$customer) {
-                return MailList::subscribersCountByStatus(Subscriber::STATUS_UNSUBSCRIBED, $customer);
+                return $customer->getSubscriberCountByStatus(Subscriber::STATUS_UNSUBSCRIBED);
             },
             'UnconfirmedCount' => function(&$customer) {
-                return MailList::subscribersCountByStatus(Subscriber::STATUS_UNCONFIRMED, $customer);
+                return $customer->getSubscriberCountByStatus(Subscriber::STATUS_UNCONFIRMED);
             },
             'BlacklistedCount' => function(&$customer) {
-                return MailList::subscribersCountByStatus(Subscriber::STATUS_BLACKLISTED, $customer);
+                return $customer->getSubscriberCountByStatus(Subscriber::STATUS_BLACKLISTED);
             },
             'SpamReportedCount' => function(&$customer) {
-                return MailList::subscribersCountByStatus(Subscriber::STATUS_SPAM_REPORTED, $customer);
+                return $customer->getSubscriberCountByStatus(Subscriber::STATUS_SPAM_REPORTED);
             },
+            'MailListSelectOptions' => function(&$customer) {
+                return $customer->getMailListSelectOptions([], true);
+            },
+
         ];
 
         // retrieve cached data
@@ -1113,6 +1133,11 @@ class Customer extends Model
             // update all cache
             foreach($index as $key => $callback) {
                 $cache[$key] = $callback($this);
+                if ($key == 'SubscriberCount') {
+                    // SubscriberCount cache must always be updated as its value will be used for the others
+                    $this->cache = json_encode($cache);
+                    $this->save();
+                }
             }
         } else {
             // update specific key
@@ -1603,6 +1628,28 @@ class Customer extends Model
     }
 
     /**
+     * Get the list of available mail lists, used for populating select box
+     *
+     * @return array
+     */
+    public function getMailListSelectOptions($options = [], $cache = false)
+    {
+        $query = \Acelle\Model\MailList::getAll();
+        $query->where('customer_id', '=', $this->id);
+
+        # Other list
+        if (isset($options['other_list_of'])) {
+            $query->where('id', '!=', $options['other_list_of']);
+        }
+
+        $result = $query->orderBy('name')->get()->map(function ($item) use ($cache) {
+            return ['id' => $item->id, 'value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount($cache).' '.strtolower(trans('messages.subscribers')).')'];
+        });
+
+        return $result;
+    }
+
+    /**
      * Get email verification servers select options.
      *
      * @return array
@@ -1652,5 +1699,61 @@ class Customer extends Model
         }
 
         return false;
+    }
+
+    /**
+     * Get import jobs.
+     *
+     * @return number
+     */
+    public function getImportBlacklistJobs()
+    {
+        return \Acelle\Model\SystemJob::where("name","=","Acelle\Jobs\ImportBlacklistJob")
+            ->where("data","like", "%\"customer_id\":" . $this->id . "%");
+    }
+
+    /**
+     * Get running import jobs.
+     *
+     * @return number
+     */
+    public function getActiveImportBlacklistJobs()
+    {
+        return $this->getImportBlacklistJobs()
+            ->where("status","!=", \Acelle\Model\SystemJob::STATUS_DONE)
+            ->where("status","!=", \Acelle\Model\SystemJob::STATUS_FAILED)
+            ->where("status","!=", \Acelle\Model\SystemJob::STATUS_CANCELLED);
+    }
+
+    /**
+     * Get last import black list job.
+     *
+     * @return number
+     */
+    public function getLastActiveImportBlacklistJob()
+    {
+        return $this->getActiveImportBlacklistJobs()
+            ->orderBy("created_at","DESC")
+            ->first();
+    }
+
+    /**
+     * Add email to customer's blacklist.
+     *
+     * @return void
+     */
+    public function addEmaillToBlacklist($email)
+    {
+        $email = trim(strtolower($email));
+
+        if (\Acelle\Library\Tool::isValidEmail($email)) {
+            $exist = $this->blacklists()->where('email','=',$email)->count();
+            if (!$exist) {
+                $blacklist = new \Acelle\Model\Blacklist();
+                $blacklist->customer_id = $this->id;
+                $blacklist->email = $email;
+                $blacklist->save();
+            }
+        }
     }
 }

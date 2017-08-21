@@ -713,8 +713,11 @@ class Automation extends Model
      *
      * @return integer
      */
-    public function subscribersCount()
+    public function subscribersCount($cache = false)
     {
+        if ($cache) {
+            return $this->readCache('SubscriberCount');
+        }
         return distinctCount($this->subscribers(), 'subscribers.email');
     }
 
@@ -728,7 +731,7 @@ class Automation extends Model
         // cache indexes
         $index = [
             'SubscriberCount' => function(&$automation) {
-                return $automation->subscribersCount();
+                return $automation->subscribersCount(false);
             }
         ];
 

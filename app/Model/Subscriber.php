@@ -241,14 +241,18 @@ class Subscriber extends Model
      */
     public static function search($request, $customer = null)
     {
+        $query = self::select('subscribers.*', 'email_verifications.result as verify_result');
+
+        // Filter by customer
         if (!isset($customer)) {
             $customer = $request->user()->customer;
         }
-        $query = self::select('subscribers.*', 'email_verifications.result as verify_result');
         $query = $query->where('mail_lists.customer_id', '=', $customer->id);
 
+        // Filter
         $query = self::filter($query, $request);
 
+        // Order
         if (isset($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
@@ -263,7 +267,7 @@ class Subscriber extends Model
      */
     public function getValueByField($field)
     {
-        $fv = SubscriberField::where('subscriber_id', '=', $this->id)->where('field_id', '=', $field->id)->first();
+        $fv = $this->subscriberFields->filter(function($r, $key) use ($field) { return $r->field_id == $field->id; })->first();
         if (is_object($fv)) {
             return $fv->value;
         } else {
@@ -460,7 +464,7 @@ class Subscriber extends Model
         $customer = $user->customer;
         $directory = storage_path('export/');
         // Import to database
-        $total = $list->subscribersCount();
+        $total = $list->subscribersCount(); // no cache
         $success = 0;
         $error = 0;
         $lines_per_second = 1;

@@ -1346,19 +1346,9 @@ class AutoEvent extends Model
      * @return collect
      * @todo: sanitize the input
      */
-    public function subscribers($params=[])
+    public function subscribers($params = [])
     {
         $query = $this->automation->subscribers();
         return $query;
-    }
-
-    /**
-     * Count subscribers.
-     *
-     * @return integer
-     */
-    public function subscribersCount()
-    {
-        return distinctCount($this->subscribers(), 'subscribers.email');
     }
 }

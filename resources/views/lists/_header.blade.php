@@ -9,7 +9,7 @@
 								@forelse ($list->otherLists() as $l)
 									<li>
 										<a href="{{ action('MailListController@overview', ['list_uid' => $l->uid]) }}">
-											{{ $l->longName() }}
+											{{ $l->readCache('LongName', $l->name) }}
 										</a>
 									</li>
 								@empty

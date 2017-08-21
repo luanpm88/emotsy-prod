@@ -72,7 +72,7 @@
 								<a href="#copy" class="copy_move_subscriber" data-method="POST"
 									data-url="{{ action('SubscriberController@copyMoveForm', [
 										'uids' => $item->uid,
-										'list_uid' => $list->uid,
+										'from_uid' => $list->uid,
 										'action' => 'copy',
 									]) }}">
 										<i class="icon-copy4"></i> {{ trans('messages.copy_to') }}
@@ -82,7 +82,7 @@
 								<a href="#move" class="copy_move_subscriber" data-method="POST"
 									data-url="{{ action('SubscriberController@copyMoveForm', [
 										'uids' => $item->uid,
-										'list_uid' => $list->uid,
+										'from_uid' => $list->uid,
 										'action' => 'move',
 									]) }}">
 									<i class="icon-move-right"></i> {{ trans('messages.move_to') }}

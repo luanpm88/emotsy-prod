@@ -6,6 +6,7 @@ class ImportExportJob extends SystemJob
 {
     protected $mailList;
     protected $customer;
+    protected $admin;
     protected $path;
 
     /**
@@ -13,13 +14,14 @@ class ImportExportJob extends SystemJob
      *
      * @return void
      */
-    public function __construct($mailList, $customer)
+    public function __construct($mailList=NULL, $customer=NULL, $admin=NULL)
     {
         // call parent's constructor
         parent::__construct();
 
         $this->mailList = $mailList;
         $this->customer = $customer;
+        $this->admin = $admin;
         $systemJob = $this->getSystemJob();
 
         // folder for job file

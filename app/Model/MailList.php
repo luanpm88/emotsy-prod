@@ -81,15 +81,9 @@ class MailList extends Model
 
     // Server pools
     public static $serverPools = array();
-
-    /**
-     * Items per page.
-     *
-     * @var array
-     */
     public static $itemsPerPage = 25;
-
     protected $currentSubscription;
+    protected $sendingSevers = null;
 
     /**
      * Associations.
@@ -133,8 +127,6 @@ class MailList extends Model
 
     public function campaigns()
     {
-        //return \Acelle\Model\Campaign::leftJoin('campaigns_lists_segments', 'campaigns_lists_segments.campaign_id', '=', 'campaigns.id')
-        //    ->where('campaigns_lists_segments.mail_list_id', '=', $this->id);
         return $this->belongsToMany('Acelle\Model\Campaign', 'campaigns_lists_segments', 'mail_list_id', 'campaign_id');
     }
 
@@ -357,36 +349,14 @@ class MailList extends Model
     }
 
     /**
-     * Get select options.
-     *
-     * @return array
-     */
-    public static function getSelectOptions($customer=null, $options=[])
-    {
-        $query = self::getAll();
-        if (is_object($customer)) {
-            $query = $query->where('customer_id', '=', $customer->id);
-        }
-        # Other list
-        if (isset($options['other_list_of'])) {
-            $query = $query->where('id', '!=', $options['other_list_of']);
-        }
-        $options = $query->orderBy('name')->get()->map(function ($item) {
-            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount().' '.strtolower(trans('messages.subscribers')).')'];
-        });
-
-        return $options;
-    }
-
-    /**
      * Get segments select options.
      *
      * @return array
      */
-    public function getSegmentSelectOptions()
+    public function getSegmentSelectOptions($cache = false)
     {
-        $options = $this->segments->map(function ($item) {
-            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount().' '.strtolower(trans('messages.subscribers')).')'];
+        $options = $this->segments->map(function ($item) use ($cache) {
+            return ['value' => $item->uid, 'text' => $item->name.' ('.$item->subscribersCount($cache).' '.strtolower(trans('messages.subscribers')).')'];
         });
 
         return $options;
@@ -407,13 +377,14 @@ class MailList extends Model
      *
      * @return array
      */
-    public function unsubscribeRate()
+    public function unsubscribeRate($cache = false)
     {
-        if ($this->subscribersCount() == 0) {
+        $count = $this->subscribersCount($cache);
+        if ($count == 0) {
             return 0;
         }
 
-        return round($this->unsubscribeCount() / $this->subscribersCount(), 2);
+        return round($this->unsubscribeCount() / $count, 2);
     }
 
     /**
@@ -431,13 +402,14 @@ class MailList extends Model
      *
      * @return array
      */
-    public function subscribeRate()
+    public function subscribeRate($cache = false)
     {
-        if ($this->subscribersCount() == 0) {
+        $count = $this->subscribersCount($cache);
+        if ($count == 0) {
             return 0;
         }
 
-        return round($this->subscribeCount() / $this->subscribersCount(), 2);
+        return round($this->subscribeCount() / $count, 2);
     }
 
     /**
@@ -468,23 +440,6 @@ class MailList extends Model
     public function spamReportedCount()
     {
         return distinctCount($this->subscribers()->where('status', '=', 'spam-reported'), 'subscribers.email');
-    }
-
-    /**
-     * Count by status.
-     *
-     * @return array
-     */
-    public static function subscribersCountByStatus($status, $customer = null)
-    {
-        $query = \Acelle\Model\Subscriber::where('subscribers.status', '=', $status);
-
-        if(isset($customer)) {
-            $query = $query->join('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
-                            ->where("mail_lists.customer_id", "=", $customer->id);
-        }
-
-        return $query->count();
     }
 
     /**
@@ -659,10 +614,10 @@ class MailList extends Model
      *
      * @return number
      */
-    public function longName()
+    public function longName($cache = false)
     {
-        $subscribersCount = $this->subscribersCount();
-        return $this->name.' - '.$subscribersCount.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('subscriber', $subscribersCount)).'';
+        $count = $this->subscribersCount($cache);
+        return $this->name.' - '.$count.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('subscriber', $count)).'';
     }
 
     /**
@@ -770,7 +725,7 @@ class MailList extends Model
         $file_path = $directory.'data.csv';
 
         // Import to database
-        $total = $list->subscribersCount();
+        $total = $list->subscribersCount(); // no cache
         $success = 0;
         $error = 0;
         $lines_per_second = 1;
@@ -948,7 +903,7 @@ class MailList extends Model
         $maxPerList = $this->customer->getOption('subscriber_per_list_max');
 
         $remainingForList = $maxPerList - $this->reload()->subscribers->count();
-        $remaining = $max - $this->reload()->customer->subscribersCount();
+        $remaining = $max - $this->reload()->customer->subscribersCount(); // no cache
 
         if ($maxPerList == -1) {
             return ($max == -1) ? -1 : $remaining;
@@ -1283,20 +1238,25 @@ class MailList extends Model
     public function updateCachedInfo()
     {
         // Update list's cached information
-        event(new \Acelle\Events\MailListUpdated($this, false));
+        $this->updateCache();
 
         // Trigger the CampaignUpdate event to update the campaign cache information
         foreach ($this->campaigns as $campaign) {
-            event(new \Acelle\Events\CampaignUpdated($campaign));
+            $campaign->updateCache();
         }
 
         // Trigger the CampaignUpdate event to update the related automations' cache information
         foreach ($this->automations as $automation) {
-            event(new \Acelle\Events\AutomationUpdated($automation));
+            $automation->updateCache();
         }
 
-        // Update list's cached information
-        event(new \Acelle\Events\UserUpdated($this->customer, false));
+        // Update segments cached information
+        foreach ($this->segments as $segment) {
+            $segment->updateCache();
+        }
+
+        // Update user's cached information
+        $this->customer->updateCache();
     }
 
     /**
@@ -1350,8 +1310,9 @@ class MailList extends Model
     {
         // cache indexes
         $index = [
+            // @note: SubscriberCount must come first as its value shall be used by the others
             'SubscriberCount' => function(&$list) {
-                return $list->subscribersCount();
+                return $list->subscribersCount(false);
             },
             'VerifiedSubscriberCount' => function(&$list) {
                 return $list->countVerifiedSubscribers();
@@ -1363,13 +1324,13 @@ class MailList extends Model
                 return $list->openUniqRate();
             },
             'SubscribeRate' => function(&$list) {
-                return $list->subscribeRate();
+                return $list->subscribeRate(true);
             },
             'SubscribeCount' => function(&$list) {
                 return $list->subscribeCount();
             },
             'UnsubscribeRate' => function(&$list) {
-                return $list->unsubscribeRate();
+                return $list->unsubscribeRate(true);
             },
             'UnsubscribeCount' => function(&$list) {
                 return $list->unsubscribeCount();
@@ -1383,6 +1344,16 @@ class MailList extends Model
             'SpamReportedCount' => function(&$list) {
                 return $list->spamReportedCount();
             },
+            'SegmentSelectOptions' => function(&$list) {
+                return $list->getSegmentSelectOptions(true);
+            },
+            'LongName' => function(&$list) {
+                return $list->longName(true);
+            },
+            'VerifiedSubscribersPercentage' => function(&$list) {
+                return $list->getVerifiedSubscribersPercentage(true);
+            },
+
         ];
 
         // retrieve cached data
@@ -1395,6 +1366,11 @@ class MailList extends Model
             // update all cache
             foreach($index as $key => $callback) {
                 $cache[$key] = $callback($this);
+                if ($key == 'SubscriberCount') {
+                    // SubscriberCount cache must always be updated as its value will be used for the others
+                    $this->cache = json_encode($cache);
+                    $this->save();
+                }
             }
         } else {
             // update specific key
@@ -1425,7 +1401,7 @@ class MailList extends Model
                 return $cache[$key];
             }
         } else {
-            return null;
+            return $default;
         }
     }
 
@@ -1533,6 +1509,10 @@ class MailList extends Model
      */
     public function getSendingServers()
     {
+        if (!is_null($this->sendingSevers)) {
+            return $this->sendingSevers;
+        }
+
         $result = [];
         $subscription = $this->getCurrentSubscription();
 
@@ -1575,7 +1555,8 @@ class MailList extends Model
             $assoc[(int) $key] = $fitness;
         }
 
-        return $assoc;
+        $this->sendingSevers = $assoc;
+        return $this->sendingSevers;
     }
 
     /**
@@ -1709,9 +1690,9 @@ class MailList extends Model
      * get verified subscribers percentage
      *
      */
-    public function getVerifiedSubscribersPercentage()
+    public function getVerifiedSubscribersPercentage($cache = false)
     {
-        $count = $this->subscribersCount();
+        $count = $this->subscribersCount($cache);
         if ($count == 0) {
             return 0.0;
         } else {
@@ -1723,9 +1704,12 @@ class MailList extends Model
      * Subscribers count
      *
      */
-    public function subscribersCount()
+    public function subscribersCount($cache = false)
     {
-        return distinctCount($this->subscribers(), 'subscribers.email');
+        if ($cache) {
+            return $this->readCache('SubscriberCount', 0);
+        }
+        return $this->subscribers()->count();
     }
 
     /**

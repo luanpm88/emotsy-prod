@@ -42,9 +42,9 @@
 									<td>
 										<h4>
 											@if (is_object($automation->segment))
-												{{ $automation->mailList->name }} . {{ $automation->segment->name }}: {{ $automation->subscribersCount() }} {{ strtolower(trans('messages.recipients')) }}
+												{{ $automation->mailList->name }} . {{ $automation->segment->name }}: {{ $automation->readCache('SubscriberCount', 0) }} {{ strtolower(trans('messages.recipients')) }}
 											@elseif (is_object($automation->mailList))
-												{{ $automation->mailList->name }}: {{ $automation->subscribersCount() }} {{ strtolower(trans('messages.recipients')) }}
+												{{ $automation->mailList->name }}: {{ $automation->readCache('SubscriberCount', 0) }} {{ strtolower(trans('messages.recipients')) }}
 											@endif
 										</h4>
 										{{ trans('messages.recipients') }}

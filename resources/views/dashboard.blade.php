@@ -111,7 +111,7 @@
                     'label' => '',
                     'value' => '',
                     'include_blank' => trans('messages.all'),
-                    'options' => Acelle\Model\MailList::getSelectOptions(Auth::user()->customer),
+                    'options' => Auth::user()->customer->readCache('MailListSelectOptions', []),
                 ])
             </div>
         </div>

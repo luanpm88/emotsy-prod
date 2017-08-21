@@ -365,8 +365,9 @@ function optimized_paginate($builder, $perPage = 15, $columns = null, $pageName 
   $pageName = $pageName ?: 'page';
   $page = $page ?: \Illuminate\Pagination\Paginator::resolveCurrentPage($pageName);
   $columns = $columns ?: ['*'];
-  $total = $total ?: $builder->getCountForPagination($columns);
-  $results = $total ? $builder->forPage($page, $perPage)->get($columns) : [];
+  $total = is_null($total) ? $builder->getCountForPagination() : $total;
+  // in case $total == 0
+  $results = $total ? $builder->forPage($page, $perPage)->get($columns) : collect([]);
 
   return new \Illuminate\Pagination\LengthAwarePaginator($results, $total, $perPage, $page, [
     'path' => \Illuminate\Pagination\Paginator::resolveCurrentPath(),
@@ -380,7 +381,7 @@ function optimized_paginate($builder, $perPage = 15, $columns = null, $pageName 
  *
  * @return integer
  */
-function distinctCount($builder, $column) {
+function distinctCount($builder, $column = null, $method = 'group') {
     $q = clone $builder;
     /*
      * There are 2 options to COUNT DISTINCT
@@ -389,15 +390,17 @@ function distinctCount($builder, $column) {
      * Normally GROUP BY yields better performance (for example: 500,000 records, DISTINCT -> 7 seconds, GROUP BY -> 1.9 seconds)
      **/
 
-    // Use GROUP BY
-    $sub = $q->groupBy($column)->select($column);
-
-    // Use DISTINCT
-    // $sub = $q->select($column)->distinct();
+    if (is_null($column)) {
+        // just count it
+    } elseif ($method == 'group') {
+        $q->groupBy($column)->select($column);
+    } elseif ($method == 'distinct') {
+        $q->select($column)->distinct();
+    }
 
     // Result
-    $count = \DB::table( \DB::raw("({$sub->toSql()}) as sub") )
-        ->addBinding($sub->getBindings()) // you need to get underlying Query Builder
+    $count = \DB::table( \DB::raw("({$q->toSql()}) as sub") )
+        ->addBinding($q->getBindings()) // you need to get underlying Query Builder
         ->count();
 
     return $count;

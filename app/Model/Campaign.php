@@ -179,7 +179,7 @@ class Campaign extends AbsCampaign
                     // @todo need an exclusive lock, what if the campaign is PAUSED, then RESTARTED
                     //       after the status check and before actually sending?
                     if ($this->refreshStatus()->isPaused()) {
-                        event(new \Acelle\Events\CampaignUpdated($this, false));
+                        $this->updateCache();
                         throw new CampaignPausedException();
                     }
 
@@ -215,10 +215,8 @@ class Campaign extends AbsCampaign
             //         however, the method is still needed to save sending servers''
             MailList::resetServerPools();
 
-            // Trigger the CampaignUpdate event to update the campaign cache information
-            // The second parameter of the constructor function is false, meanining immediate update
-            event(new \Acelle\Events\CampaignUpdated($this, false));
-            event(new \Acelle\Events\MailListUpdated($this, false));
+            // update the campaign cache information
+            $this->updateCache();
         }
     }
 
@@ -308,6 +306,9 @@ class Campaign extends AbsCampaign
 
             $query = Subscriber::select("subscribers.*");
 
+            // Tell MySQL to use the right index
+            // $query->from(\DB::raw(\DB::getTablePrefix() . 'subscribers FORCE INDEX (subscribers_mail_list_id_email_index)'));
+
             // Email verification join
             if (in_array('email_verifications', $extra)) {
                 $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
@@ -347,10 +348,12 @@ class Campaign extends AbsCampaign
             }
         }
 
-        // Filter
+        // Filters
         $filters = isset($params["filters"]) ? $params["filters"] : null;
 
-        if(isset($filters) || $this->status == "done") {
+        if((isset($filters) && (isset($filters["open"]) || isset($filters["click"]) || isset($filters["tracking_status"])))
+           || $this->status == "done"
+        ) {
             $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id');
             $query = $query->where('tracking_logs.id', "!=", "NULL");
             $query = $query->where('tracking_logs.campaign_id', "=", $this->id);
@@ -407,10 +410,7 @@ class Campaign extends AbsCampaign
 
         $builder = $this->subscribers([], [])
                 ->whereRaw(sprintf(table('subscribers').'.id NOT IN (SELECT subscriber_id FROM %s WHERE campaign_id = %s)', table('tracking_logs'), $this->id))
-                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
-                ->select('subscribers.email')
-                ->addSelect('subscribers.uid')
-                ->addSelect('subscribers.id');
+                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'");
 
         if (!is_null($partition)) {
             // retrieve the subscribers list for this partition only
@@ -427,12 +427,12 @@ class Campaign extends AbsCampaign
         //     });
 
         $page = 1;
-        $limit = 10000;
+        $limit = 2000;
         while ($total = $builder->count()) {
             // @note eager loading will result in a very long query
             // which could exceed the [max_allowed_packet] setting of MySQL
             // so the value of $limit must be considered carefully
-            $subscribers = $builder->limit($limit)->with('subscriberFields')->get();
+            $subscribers = $builder->limit($limit)->with(['mailList', 'subscriberFields'])->get();
             $callback($subscribers, $page, $total);
             $page += 1;
         }

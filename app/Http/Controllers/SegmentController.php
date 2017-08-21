@@ -40,6 +40,10 @@ class SegmentController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $segments = \Acelle\Model\Segment::search($request)->paginate($request->per_page);
 
+        foreach ($segments as $segment) {
+            $segment->updateCacheDelayed();
+        }
+
         return view('segments._list', [
             'segments' => $segments,
             'list' => $list,
@@ -389,7 +393,7 @@ class SegmentController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
         return view('segments._select_box', [
-            'options' => $list->getSegmentSelectOptions(),
+            'options' => collect($list->readCache('SegmentSelectOptions', [])),
             'index' => $request->index,
         ]);
     }

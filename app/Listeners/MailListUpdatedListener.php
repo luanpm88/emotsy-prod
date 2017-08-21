@@ -37,7 +37,7 @@ class MailListUpdatedListener
                 dispatch(new \Acelle\Jobs\UpdateMailListJob($event->mailList));
             }
         } else {
-            $event->mailList->updateCache();
+            $event->mailList->updateCachedInfo();
         }
     }
 }

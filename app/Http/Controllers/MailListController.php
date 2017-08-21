@@ -153,7 +153,7 @@ class MailListController extends Controller
             }
 
             // Trigger updating related campaigns cache
-            $list->updateCachedInfo();
+            event(new \Acelle\Events\MailListUpdated($list));
 
             // Log
             $list->log('created', $request->user()->customer);
@@ -354,6 +354,9 @@ class MailListController extends Controller
 
                 // Log
                 $item->log('deleted', $request->user()->customer);
+
+                // update MailList cache
+                event(new \Acelle\Events\MailListUpdated($item));
             }
         }
 

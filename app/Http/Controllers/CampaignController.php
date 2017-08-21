@@ -106,7 +106,7 @@ class CampaignController extends Controller
         // Trigger the CampaignUpdate event to update the campaign cache information
         // The second parameter of the constructor function is false, meanining immediate update
         try {
-            event(new \Acelle\Events\CampaignUpdated($campaign, false));
+            event(new \Acelle\Events\CampaignUpdated($campaign));
         } catch (\Exception $ex) {
             // in case TrackingLog record does not exist yet (open before logged!)
         }
@@ -220,6 +220,7 @@ class CampaignController extends Controller
         // Get rules and data
         $rules = $campaign->recipientsRules($request->all());
         $campaign->fillRecipients($request->all());
+
         if (!empty($request->old())) {
             $rules = $campaign->recipientsRules($request->old());
             $campaign->fillRecipients($request->old());
@@ -231,6 +232,11 @@ class CampaignController extends Controller
 
             $campaign->saveRecipients($request->all());
 
+            // Trigger the CampaignUpdate event to update the campaign cache information
+            // The second parameter of the constructor function is false, meanining immediate update
+            event(new \Acelle\Events\CampaignUpdated($campaign));
+
+            // redirect to the next step
             return redirect()->action('CampaignController@setup', ['uid' => $campaign->uid]);
         }
 
@@ -854,7 +860,7 @@ class CampaignController extends Controller
             'name' => trans('messages.recipients'),
             'type' => 'bar',
             'smooth' => true,
-            'data' => [$campaign->subscribersCount()],
+            'data' => [$campaign->readCache('SubscriberCount', 0)],
             'itemStyle' => [
                 'normal' => [
                     'color' => '#555'
@@ -1033,8 +1039,7 @@ class CampaignController extends Controller
         try {
             $log->save();
 
-            event(new \Acelle\Events\CampaignUpdated($log->trackingLog->campaign, false));
-            event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList, false));
+            event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList));
         } catch (\Exception $ex) {
             // in case TrackingLog record does not exist yet (open before logged!)
             LaravelLog::warning('Cannot save open tracking log for message: ' . $log->message_id);
@@ -1062,8 +1067,7 @@ class CampaignController extends Controller
             // The second parameter of the constructor function is false, meanining immediate update
             try {
                 $log->save();
-                event(new \Acelle\Events\CampaignUpdated($log->trackingLog->campaign, false));
-                event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList, false));
+                event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList));
             } catch (\Exception $ex) {
                 // in case TrackingLog record does not exist yet (open before logged!)
                 LaravelLog::warning('Cannot save click tracking log for message: ' . $log->message_id);

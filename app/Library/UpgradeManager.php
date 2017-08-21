@@ -201,10 +201,12 @@ class UpgradeManager
                     }
                 } else {
                     LaravelLog::info("Replacing {$target}");
-                    if ($this->isLanguageFile($source)) {
-                        $langFiles[] = $source; // $this->upgradeLanguageFiles($source);
+
+                    if ($this->isEnFile($source)) {
+                        $langFiles[] = $source;
+                    } elseif ($this->isLanguageFile($source)) {
+                        $this->mergeLanguageFile($source, $target);
                     } else {
-                        $this->createBaseDir($target);
                         if (!copy($source, $target)) {
                             LaravelLog::error("Cannot replace file {$target}");
                             throw new \Exception("Cannot replace file {$target}");
@@ -414,11 +416,16 @@ class UpgradeManager
      */
     private function copy($src, $dst)
     {
+        // create the base directory for the destination if it does not exist yet
+        $this->createBaseDir($target);
+
+        // if source is a file, just copy it
         if (!is_dir($src)) {
             copy($src, $dst);
             return;
         }
 
+        // if source is a directory, copy recursively all its child files/directories
         $dir = opendir($src);
         mkdir($dst);
         while(false !== ( $file = readdir($dir)) ) {
@@ -459,6 +466,15 @@ class UpgradeManager
      */
     public function isLanguageFile($path)
     {
+        return preg_match('/resources\/lang\/[a-z0-9]{2}\/[a-z0-9]+\.php$/', $path);
+    }
+
+    /**
+     * Check if the provided file is a language file and is EN
+     *
+     */
+    public function isEnFile($path)
+    {
         return preg_match('/resources\/lang\/en\/[a-z0-9]+\.php$/', $path);
     }
 
@@ -469,11 +485,35 @@ class UpgradeManager
     public function upgradeLanguageFiles($sourcePath)
     {
         $source = include $sourcePath;
+
         $languages = \Acelle\Model\Language::all();
         foreach ($languages as $lang) {
+            // if for any reason the language directory does not exist, just ignore it
+            if (!file_exists($lang->languageDir())) {
+                LaravelLog::warning(sprintf("Language directory % does not exist", $lang->languageDir()));
+                continue;
+            }
+
             $target = include join_paths($lang->languageDir(), pathinfo($sourcePath)['basename']);
             $merged = array_diff_key($target + $source, array_diff_key($target, $source));
             $lang->updateFromYaml(pathinfo($sourcePath)['filename'], \Yaml::dump($merged));
         }
+    }
+
+    /**
+     * Merge the language file to retain user's change
+     */
+    public function mergeLanguageFile($sourcePath, $targetPath)
+    {
+        // if the language files does not exist yet, just create it
+        if (!file_exists($targetPath)) {
+            $this->copy($sourcePath, $targetPath);
+        }
+        $source = include $sourcePath;
+        $target = include $targetPath;
+        $merged = array_diff_key($target + $source, array_diff_key($target, $source));
+
+        $out = '<?php return ' . var_export(\Yaml::parse($merged), true) . ' ?>';
+        \File::put($targetPath, $out);
     }
 }

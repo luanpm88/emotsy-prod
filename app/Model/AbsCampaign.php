@@ -59,7 +59,7 @@ abstract class AbsCampaign extends Model
     protected $dates = ['created_at', 'updated_at', 'run_at'];
 
     /**
-     * Get the mail list.
+     * Get campaign's default mail list
      */
     public function defaultMailList()
     {
@@ -68,6 +68,14 @@ abstract class AbsCampaign extends Model
         } else {
             return $this->belongsTo('Acelle\Model\MailList', 'default_mail_list_id');
         }
+    }
+
+    /**
+     * Get campaign's associated mail list
+     */
+    public function mailLists()
+    {
+        return $this->belongsToMany('Acelle\Model\MailList', 'campaigns_lists_segments');
     }
 
     /**
@@ -759,7 +767,8 @@ abstract class AbsCampaign extends Model
         }
 
         // Step 5
-        if ($this->subscribersCount()) {
+        // @todo: consider removing this check!
+        if ( is_object($this->subscribers([], [])->limit(1)->first()) ) {
             $step = 5;
         } else {
             return $step;
@@ -881,25 +890,9 @@ abstract class AbsCampaign extends Model
      *
      * @return number
      */
-    public function deliveredRate()
+    public function deliveredRate($cache = false)
     {
-        $total = $this->subscribersCount();
-
-        if ($total == 0) {
-            return 0;
-        }
-
-        return $this->deliveredCount() / $total;
-    }
-
-    /**
-     * Partially cached delivery rate
-     *
-     * @return delivery rate
-     */
-    public function partiallyCachedDeliveredRate()
-    {
-        $total = $this->readCache('SubscriberCount', 0);
+        $total = $this->subscribersCount($cache);
 
         if ($total == 0) {
             return 0;
@@ -1048,9 +1041,9 @@ abstract class AbsCampaign extends Model
      *
      * @return number
      */
-    public function notOpenCount()
+    public function notOpenCount($cache = false)
     {
-        return $this->subscribersCount() - $this->openUniqCount();
+        return $this->subscribersCount($cache) - $this->openUniqCount();
     }
 
     /**
@@ -1092,15 +1085,15 @@ abstract class AbsCampaign extends Model
      *
      * @return number
      */
-    public function notOpenRate()
+    public function notOpenRate($cache = false)
     {
-        $total = $this->subscribersCount();
+        $total = $this->subscribersCount($cache);
 
         if ($total == 0) {
             return 0;
         }
 
-        return $this->notOpenCount() / $total;
+        return $this->notOpenCount($cache) / $total;
     }
 
     /**
@@ -1587,8 +1580,8 @@ abstract class AbsCampaign extends Model
             $new_lists_segment->save();
         }
 
-        // update cache
-        $copy->updateCache();
+        // refresh to update cache (otherwise, list-segment information will not be available yet)
+        Campaign::find($copy->id)->updateCache();
     }
 
     /**
@@ -1882,10 +1875,6 @@ abstract class AbsCampaign extends Model
         $campaign = Campaign::find($this->id);
         $campaign->default_mail_list_id = $this->default_mail_list_id;
         $campaign->save();
-
-        // Trigger the CampaignUpdate event to update the campaign cache information
-        // The second parameter of the constructor function is false, meanining immediate update
-        event(new \Acelle\Events\CampaignUpdated($campaign, false));
     }
 
     /**
@@ -1940,11 +1929,12 @@ abstract class AbsCampaign extends Model
     {
         // cache indexes
         $index = [
+            // @note: SubscriberCount must come first as its value shall be used by the others
             'SubscriberCount' => function(&$campaign) {
-                return $campaign->subscribersCount();
+                return $campaign->subscribersCount(false); // spepcial key that requires true update
             },
             'DeliveredRate' => function(&$campaign) {
-                return $campaign->deliveredRate();
+                return $campaign->deliveredRate(true);
             },
             'DeliveredCount' => function(&$campaign) {
                 return $campaign->deliveredCount();
@@ -1959,10 +1949,10 @@ abstract class AbsCampaign extends Model
                 return $campaign->openUniqCount();
             },
             'NotOpenRate' => function(&$campaign) {
-                return $campaign->notOpenRate();
+                return $campaign->notOpenRate(true);
             },
             'NotOpenCount' => function(&$campaign) {
-                return $campaign->notOpenCount();
+                return $campaign->notOpenCount(true);
             }
         ];
 
@@ -1976,8 +1966,14 @@ abstract class AbsCampaign extends Model
             // update all cache
             foreach($index as $key => $callback) {
                 $cache[$key] = $callback($this);
+                if ($key == 'SubscriberCount') {
+                    // SubscriberCount cache must always be updated as its value will be used for the others
+                    $this->cache = json_encode($cache);
+                    $this->save();
+                }
             }
         } else {
+            // @deprecated, requires updating the SubscriberCount cache before updating any other one
             // update specific key
             $callback = $index[$key];
             $cache[$key] = $callback($this);
@@ -2011,28 +2007,15 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Count sent success rate (success / subscribers count).
-     *
-     * @return number
-     */
-    public function sentRate()
-    {
-        $subscribers_count = $this->subscribersCount();
-
-        if ($subscribers_count == 0) {
-            return 0;
-        }
-
-        return round(($this->deliveredCount() / $subscribers_count) * 100, 0);
-    }
-
-    /**
      * Count subscribers.
      *
      * @return integer
      */
-    public function subscribersCount()
+    public function subscribersCount($cache = false)
     {
+        if ($cache) {
+            return $this->readCache('SubscriberCount', 0);
+        }
         // email_verifications join is required in case of segment condition (for example: 'deliverable' or 'risky')
         // return distinctCount($this->subscribers([], []), 'subscribers.email');
         return distinctCount($this->subscribers([], ['email_verifications']), 'subscribers.email');

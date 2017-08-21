@@ -45,7 +45,7 @@
             @endif
         </div>
 
-        @if ($list->getVerifiedSubscribersPercentage() != 1)
+        @if ($list->readCache('VerifiedSubscribersPercentage', 0) != 1)
             <div class="sub-section">
                 <h3 class="text-semibold">{{ trans('messages.list_verification') }}</h3>
                 <form enctype="multipart/form-data" action="{{ action('MailListController@startVerification', $list->uid) }}" method="POST" class="form-validate-jquery">
