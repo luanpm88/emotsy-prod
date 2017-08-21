@@ -1,4 +1,4 @@
-3.0.10 / 2017-07-30
+3.0.10 / 2017-08-22
 ==================
 
  * Fixed: payment issue with Stripe/Braintree
@@ -8,10 +8,12 @@
  * Fixed: speed up subscribers counting
  * Fixed: automation trigger for date in the past
  * Fixed: reduce the number of SQL queries
+ * Fixed: retain custom translation when upgrading
  * Added: allow resending a campaign
  * Added: support SendGrid subuser
  * Added: support sending a campaign again
- * Added: support verify-email.org service 
+ * Added: support verify-email.org service
+ * Added: support importing subscribers via CLI
 
 3.0.9 / 2017-07-13
 ==================
