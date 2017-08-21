@@ -513,7 +513,7 @@ class UpgradeManager
         $target = include $targetPath;
         $merged = array_diff_key($target + $source, array_diff_key($target, $source));
 
-        $out = '<?php return ' . var_export(\Yaml::parse($merged), true) . ' ?>';
+        $out = '<?php return ' . var_export(\Yaml::parse(\Yaml::dump($merged)), true) . ' ?>';
         \File::put($targetPath, $out);
     }
 }
