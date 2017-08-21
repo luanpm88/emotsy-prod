@@ -417,7 +417,7 @@ class UpgradeManager
     private function copy($src, $dst)
     {
         // create the base directory for the destination if it does not exist yet
-        $this->createBaseDir($target);
+        $this->createBaseDir($dst);
 
         // if source is a file, just copy it
         if (!is_dir($src)) {
