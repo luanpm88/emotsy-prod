@@ -135,7 +135,9 @@ function pickadateMask(selector) {
         updatePickadateDateMask($(this));
     });
     $(document).on('focusout', selector, function() {
-        $(this).val($(this).parent().find('.date-mask-control').html());
+        var value = $(this).parent().find('.date-mask-control').html();
+        var date = moment(value, LANG_DATE_FORMAT.toUpperCase()); //Get the current date
+        $(this).val(date.format('yyyy-mm-dd'.toUpperCase()));
     });
 }
 
