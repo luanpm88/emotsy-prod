@@ -146,7 +146,7 @@ function updatePickadateDateMask(control) {
 
         if(value !== '') {
             var date = moment(value); //Get the current date
-            mask.html(date.format(LANG_DATE_FORMAT.toUpperCase()));
+            mask.html(date.format("yyyy-mm-dd".toUpperCase()));
         }
     });
 }
