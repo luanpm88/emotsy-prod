@@ -207,10 +207,7 @@ class UpgradeManager
                     } elseif ($this->isLanguageFile($source)) {
                         $this->mergeLanguageFile($source, $target);
                     } else {
-                        if (!copy($source, $target)) {
-                            LaravelLog::error("Cannot replace file {$target}");
-                            throw new \Exception("Cannot replace file {$target}");
-                        }
+                        $this->copy($source, $target);
                     }
                 }
             }
