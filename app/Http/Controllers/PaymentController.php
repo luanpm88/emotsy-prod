@@ -14,7 +14,8 @@ class PaymentController extends Controller {
         parent::__construct();
 
         $this->middleware('auth', ['except' => [
-            'avatar'
+            'avatar',
+            'paddle_card_hook'
         ]]);
     }
 
