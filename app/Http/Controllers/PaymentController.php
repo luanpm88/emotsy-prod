@@ -546,12 +546,12 @@ class PaymentController extends Controller {
 
         // You must provide at least one price for the checkout, here we are setting multiple for different currencies.
         $data['prices'] = [
-            $subscription->currency_code . ':0' // . $subscription->price
+            $subscription->currency_code . ':' . $subscription->price
         ];
 
         // Setting some other (optional) data.
         $data['custom_message'] = trans('messages.paddle_order_id') . ': ' . $orderId;
-        # $data['return_url'] = action('PaymentController@success', $subscription->uid);
+        $data['return_url'] = action('PaymentController@success', $subscription->uid);
 
         // Here we make the request to the Paddle API
         $url = 'https://vendors.paddle.com/api/2.0/product/generate_pay_link';
@@ -588,9 +588,89 @@ class PaymentController extends Controller {
         ]);
     }
 
-    public function paddle_card_hook(Request $request) {
+    /**
+     * Subscription pay by Paddle card hook.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function paddle_card_hook(Request $request, $subscription_uid) {
         $arr = $request->all();
         $arr['time'] = \Carbon\Carbon::now();
         \File::put('paddle-process.log', json_encode($arr));
+
+        $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
+        $order_id = $subscription->getOrderID();
+        $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_PADDLE_CARD);
+
+        $verified = $this->paddleVerifySignature($payment_method->getOption('public_key'), $request->all());
+
+        if ($verified) {
+            $result = $request->all();
+
+            $payment = new Payment();
+            $payment->subscription_id = $subscription->id;
+            $payment->payment_method_id = $payment_method->id;
+            $payment->data = serialize($result);
+            $payment->action = \Acelle\Model\Payment::ACTION_PAID;
+            $payment->payment_method_name = trans('messages.' . $payment_method->type);
+            $payment->order_id = $order_id;
+
+            // billing information
+            $billing_information = $request->session()->get('billing_information');
+            if (isset($billing_information)) {
+                $payment->tax_number = $billing_information['tax_number'];
+                $payment->billing_address = $billing_information['billing_address'];
+                $request->session()->forget('billing_information');
+            }
+
+            $payment->status = \Acelle\Model\Payment::STATUS_SUCCESS; // : \Acelle\Model\Payment::STATUS_FAILED;
+
+            $payment->save();
+            $subscription->setPaid();
+
+            // try enabling the subscription, proceed anyway if failed
+            try {
+                $subscription->enable();
+            } catch (\Exception $ex) {
+                // just suppress the error and leave the subscription disabled
+                LaravelLog::warning("Cannot enable subscription {$subscription->id}, proceed anyway");
+            }
+        } else {
+            LaravelLog::error("Cannot verify Paddle signature " . $request->p_signature);
+        }
+    }
+
+    /**
+     * Verify paddle signature.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    function paddleVerifySignature($public_key, $post) {
+        // Get the p_signature parameter & base64 decode it.
+        $signature = base64_decode($post['p_signature']);
+
+        // Get the fields sent in the request, and remove the p_signature parameter
+        $fields = $post;
+        unset($fields['p_signature']);
+
+        // ksort() and serialize the fields
+        ksort($fields);
+        foreach($fields as $k => $v) {
+            if(!in_array(gettype($v), array('object', 'array'))) {
+                $fields[$k] = "$v";
+            }
+        }
+        $data = serialize($fields);
+
+        // Veirfy the signature
+        $verification = openssl_verify($data, $signature, $public_key, OPENSSL_ALGO_SHA1);
+
+        if($verification == 1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

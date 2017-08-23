@@ -185,6 +185,18 @@
 			])
         </div>
 	</div>
+	<div class="row">
+		<div class="col-md-6">
+            @include('helpers.form_control', [
+				'type' => 'textarea',
+				'name' => 'options[public_key]',
+                'label' => trans('messages.paddle.public_key'),
+				'value' => $payment_method->getOption('public_key'),
+				'help_class' => 'payment_method',
+				'rules' => $payment_method->rules()
+			])
+        </div>
+	</div>
 
     <hr />
     <div class="text-left">

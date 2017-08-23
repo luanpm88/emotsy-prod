@@ -1977,4 +1977,5 @@
   'paddle_checkout_title' => 'Plan: :plan',
   'paddle_order_id' => 'Order ID',
   'payment_method_type_paddle_card_button' => '<i class="fa fa-money"></i> Pay with Paddle',
+  'paddle.public_key' => 'Public key',
 ) ?>
