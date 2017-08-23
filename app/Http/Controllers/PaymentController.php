@@ -74,6 +74,9 @@ class PaymentController extends Controller {
             $billing_information = $request->all();
             $request->session()->set('billing_information', $billing_information);
 
+            // Write payment info to file
+            \File::put('billing-information-' . $subscription->uid . '.log', json_encode($billing_information));
+
             return redirect()->away($request->session()->get('current_payment_link'));
         }
 
@@ -528,6 +531,16 @@ class PaymentController extends Controller {
         $orderId = $subscription->getOrderID();
         $result = null;
 
+        // billing information
+        $billing_information = $request->session()->get('billing_information');
+        if (isset($billing_information)) {
+            // Write payment info to file
+            \File::put('billing-information-' . $subscription->uid . '.log', json_encode([
+                "tax_number" => $billing_information['tax_number'],
+                "billing_address" => $billing_information['billing_address'],
+            ]));
+        }
+
         // Check billing information
         if( $this->checkBillingInformation($request, $subscription) !== true ) {
             return redirect()->away($this->checkBillingInformation($request, $subscription));
@@ -617,7 +630,9 @@ class PaymentController extends Controller {
             $payment->order_id = $order_id;
 
             // billing information
-            $billing_information = $request->session()->get('billing_information');
+            if ($subscription->isTaxBillingRequired() && file_exists('billing-information-' . $subscription->uid . '.log')) {
+                $billing_information = json_decode(file_get_contents('billing-information-' . $subscription->uid . '.log'), true);
+            }
             if (isset($billing_information)) {
                 $payment->tax_number = $billing_information['tax_number'];
                 $payment->billing_address = $billing_information['billing_address'];
