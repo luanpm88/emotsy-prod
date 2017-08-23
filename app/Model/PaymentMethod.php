@@ -84,6 +84,7 @@ class PaymentMethod extends Model
 		if($this->type == PaymentMethod::TYPE_PADDLE_CARD) {
 			$rules['options.vendor_id'] = 'required';
 			$rules['options.vendor_auth_code'] = 'required';
+			$rules['options.public_key'] = 'required';
 		}
 
 		# Check if payment method is valid

@@ -111,6 +111,9 @@ Route::group(['middleware' => ['not_logged_in']], function () {
     // Translation data
     Route::get('/datatable_locale', 'Controller@datatable_locale');
     Route::get('/jquery_validate_locale', 'Controller@jquery_validate_locale');
+
+    Route::get('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
+    Route::post('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
 });
 
 Route::group(['middleware' => ['not_installed', 'frontend']], function () {
@@ -404,8 +407,6 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::resource('sending_domains', 'SendingDomainController');
 
     // Payment
-    Route::get('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
-    Route::post('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
     Route::get('payments/paddle/card/{subscription_uid}', 'PaymentController@paddle_card');
     Route::post('payments/billing-information/{subscription_uid}', 'PaymentController@billingInformation');
     Route::get('payments/billing-information/{subscription_uid}', 'PaymentController@billingInformation');

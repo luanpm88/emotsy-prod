@@ -96,7 +96,9 @@
                         @endif
                     @else
                         <p>
-                            {!! trans('messages.current_plan_notactive_paid_intro' . ($subscription->isTimeUnlimited() ? '_unlimited' : '')) !!}
+                            {!! trans('messages.current_plan_notactive_paid_intro' . ($subscription->isTimeUnlimited() ? '_unlimited' : ''), [
+                                'plan' => $subscription->plan_name
+                            ]) !!}
                         </p>
 
                         @include('subscriptions._details', ['subscription' => $subscription])
