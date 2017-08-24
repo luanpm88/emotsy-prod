@@ -1,3 +1,10 @@
+3.0.11 / 2017-8-25
+==================
+
+ * Fixed: suppress PHP warning messages from the UI
+ * Fixed: intermittent issue with automation trigger for list-subscription 
+ * Added: support Paddle payment gateway
+
 3.0.10 / 2017-08-22
 ==================
 
