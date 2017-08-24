@@ -5,8 +5,8 @@
 require 'json'
 
 # Settings
-old_versions = ['3.0.5', '3.0.6', '3.0.7', '3.0.8', '3.0.9', '3.0.10-rc1', '3.0.10-rc2', '3.0.10-rc3']      # sort by chronological order
-packages = ['louis']                 # vendor packages to be replaced
+old_versions = ['3.0.10']      # sort by chronological order
+packages = []                 # vendor packages to be replaced
 dirs = [] # 'resources/lang/default' for example
 
 # Auto setting
