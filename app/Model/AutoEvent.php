@@ -306,7 +306,7 @@ class AutoEvent extends Model
                     'delay_type' => isset($params["delay_type"]) ? $params["delay_type"] : 'before',
                     'delay_value' => isset($params["delay_value"]) ? $params["delay_value"] : '0',
                     'delay_unit' => isset($params["delay_unit"]) ? $params["delay_unit"] : 'day',
-                    'at' => isset($params["at"]) ? \Acelle\Library\Tool::systemTimeFromString('2017-07-07' . $params["at"], \Auth::user()->timezone)->format('H:i') : '',
+                    'at' => $params["at"] ? \Acelle\Library\Tool::systemTimeFromString('2017-07-07' . $params["at"], \Auth::user()->timezone)->format('H:i') : '',
                 ]);
                 break;
         }
