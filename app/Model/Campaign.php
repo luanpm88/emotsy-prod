@@ -275,8 +275,8 @@ class Campaign extends AbsCampaign
 
         if (!$this->isStdClassSubscriber($subscriber)) {
             // in case of actually sending campaign
-            foreach ($subscriber->subscriberFields as $field) {
-                $message = str_replace('{SUBSCRIBER_'.$field->tag.'}', $field->value, $message);
+            foreach ($this->defaultMailList->fields as $field) {
+                $message = str_replace('{SUBSCRIBER_'.$field->tag.'}', $subscriber->getValueByField($field), $message);
             }
         } else {
             // in case of sending test email
