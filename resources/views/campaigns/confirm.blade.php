@@ -38,7 +38,7 @@
             <ul class="modern-listing">
                 <li>
                     <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-                    <!-- {{ $count = $campaign->readCache('SubscriberCount') }} -->
+                    <!-- {{ $count = $campaign->subscribersCount() }} -->
                     @if ($count)
                         <i class="icon-checkmark4"></i>
                     @else
