@@ -2002,4 +2002,5 @@
   'payment_method_type_paddle_card_button' => '<i class="fa fa-money"></i> Pay with Paddle',
   'fields.can_not_delete_email_field' => 'Can not delete email field',
   'paddle.public_key' => 'Public key',
+  'paddle_card.wording' => 'Fill out Paddle method settings below. You can find those settings in your Paddle dashboard.',
 ) ?>
