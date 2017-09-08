@@ -15,7 +15,7 @@ return [
             'name' => 'TheChecker',
             'uri' => 'https://api.thechecker.co/v1/verify?email={EMAIL}&api_key={API_KEY}',
             'request_type' => 'GET',
-            'fields' => [ 'api_key', 'api_secret_key' ],
+            'fields' => [ 'api_key' ],
             'result_xpath' => '$.result',
             'result_map' => [ 'deliverable' => 'deliverable', 'undeliverable' => 'undeliverable', 'risky' => 'risky', 'unknown' => 'unknown' ]
         ], [
