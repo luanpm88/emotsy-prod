@@ -1,5 +1,5 @@
-                @if (count($tags) > 0)                                
-					<div class="tags_list">                                    
+                @if (count($tags) > 0)
+					<div class="tags_list">
 						<label class="text-semibold text-teal">{{ trans('messages.required_tags') }}:</label>
 						<br />
 						@foreach($tags as $tag)
@@ -8,13 +8,13 @@
 									{{ "{".$tag["name"]."}" }}
 								</a>
 							@endif
-						@endforeach                                        
+						@endforeach
 					</div>
 				@endif
-				
+
 				<br />
-				@if (count($tags) > 0)                                
-					<div class="tags_list">                                    
+				@if (count($tags) > 0)
+					<div class="tags_list">
 						<label class="text-semibold text-teal">{{ trans('messages.available_tags') }}:</label>
 						<br />
 						@foreach($tags as $tag)
@@ -23,6 +23,6 @@
 									{{ "{".$tag["name"]."}" }}
 								</a>
 							@endif
-						@endforeach                                        
+						@endforeach
 					</div>
 				@endif

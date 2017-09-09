@@ -219,7 +219,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
     Route::get('lists/{list_uid}/sign-up', 'PageController@signUpForm');
     Route::post('lists/{list_uid}/sign-up', 'PageController@signUpForm');
-    Route::get('lists/{list_uid}/sign-up/thank-you', 'PageController@signUpThankyouPage');
+    Route::get('lists/{list_uid}/sign-up/{subscriber_uid}/thank-you', 'PageController@signUpThankyouPage');
     Route::get('lists/{list_uid}/subscribe-confirm/{uid}/{code}', 'PageController@signUpConfirmationThankyou');
     Route::get('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribeForm');
     Route::post('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribeForm');

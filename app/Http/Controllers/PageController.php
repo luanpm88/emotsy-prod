@@ -173,7 +173,7 @@ class PageController extends Controller
                     return view('somethingWentWrong', ['message' => $ex->getMessage()]);
                 }
 
-                return redirect()->action('PageController@signUpThankyouPage', $list->uid);
+                return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_uid' => $subscriber->uid]);
             } else {
                 // change status to subscribed
                 $subscriber->updateStatus('subscribed');
@@ -215,7 +215,9 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_thankyou_page')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
 
-        $page->renderContent();
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->subscriber_uid);
+
+        $page->renderContent(null, $subscriber);
 
         return view('pages.default', [
             'list' => $list,

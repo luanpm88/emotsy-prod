@@ -734,7 +734,7 @@ class MailListController extends Controller
                 // SEND subscription confirmation email
                 $list->sendSubscriptionConfirmationEmail($subscriber);
 
-                return redirect()->action('PageController@signUpThankyouPage', $list->uid);
+                return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_uid' => $subscriber->uid]);
             } else {
                 // change status to subscribed
                 $subscriber->updateStatus('subscribed');
