@@ -121,7 +121,7 @@ class ApiHelper
                     'description' => 'Get information about all campaigns',
                     'parameters' => [],
                     'returns' => 'List of all user\'s campaigns in json',
-                    'example' => 'curl -X POST -H "accept:application/json" -G \
+                    'example' => 'curl -X GET -H "accept:application/json" -G \
 ' . action("Api\CampaignController@index") . '? \
 -d api_token=' . \Auth::user()->api_token,
                 ],

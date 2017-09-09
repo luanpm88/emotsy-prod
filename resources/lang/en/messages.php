@@ -2003,4 +2003,5 @@
   'fields.can_not_delete_email_field' => 'Can not delete email field',
   'paddle.public_key' => 'Public key',
   'paddle_card.wording' => 'Fill out Paddle method settings below. You can find those settings in your Paddle dashboard.',
+  'can_use_api' => 'Customer can use API',
 ) ?>

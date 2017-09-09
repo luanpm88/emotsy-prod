@@ -198,3 +198,18 @@
         </span>
     </div>
 </div>
+    <div class="row">
+    <div class="col-md-12">
+        <span class="notoping">
+            @include('helpers.form_control', ['type' => 'checkbox2',
+                'class' => '',
+                'name' => 'options[api_access]',
+                'value' => $options['api_access'],
+                'label' => trans('messages.can_use_api'),
+                'options' => ['no','yes'],
+                'help_class' => $help_class,
+                'rules' => $rules
+            ])
+        </span>
+    </div>
+</div>

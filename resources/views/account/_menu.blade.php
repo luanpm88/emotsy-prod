@@ -25,11 +25,13 @@
                         <i class="icon-history position-left"></i> {{ trans('messages.logs') }}
                     </a>
                 </li>
-                <li rel0="AccountController/api">
-                    <a href="{{ action("AccountController@api") }}" class="level-1">
-                        <i class="icon-key position-left"></i> {{ trans('messages.api_token') }}
-                    </a>
-                </li>
+                @if (Auth::user()->customer->canUseApi())
+                    <li rel0="AccountController/api">
+                        <a href="{{ action("AccountController@api") }}" class="level-1">
+                            <i class="icon-key position-left"></i> {{ trans('messages.api_token') }}
+                        </a>
+                    </li>
+                @endif
             </ul>
         </div>
     </div>

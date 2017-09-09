@@ -11,6 +11,21 @@ use Acelle\Http\Controllers\Controller;
 class MailListController extends Controller
 {
     /**
+     * Create a new controller instance.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $user = \Auth::guard('api')->user();
+
+        if (!$user->customer->canUseApi()) {
+            echo json_encode(array('message' => 'Unauthorized'));
+            exit;
+        }
+    }
+
+    /**
      * Display all user's lists.
      *
      * GET /api/v1/lists
@@ -19,14 +34,14 @@ class MailListController extends Controller
      */
     public function index()
     {
-        $user = \Auth::guard('api')->user();
-
-        $lists = \Acelle\Model\MailList::getAll()
-            ->select('uid', 'name', 'default_subject', 'from_email', 'from_name', 'status', 'created_at', 'updated_at')
-            ->where('customer_id', '=', $user->customer->id)
-            ->get();
-
-        return \Response::json($lists, 200);
+        //$user = \Auth::guard('api')->user();
+        //
+        //$lists = \Acelle\Model\MailList::getAll()
+        //    ->select('uid', 'name', 'default_subject', 'from_email', 'from_name', 'status', 'created_at', 'updated_at')
+        //    ->where('customer_id', '=', $user->customer->id)
+        //    ->get();
+        //
+        //return \Response::json($lists, 200);
     }
 
     /**

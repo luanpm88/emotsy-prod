@@ -1756,4 +1756,14 @@ class Customer extends Model
             }
         }
     }
+
+    /**
+     * Check if customer has api access
+     *
+     * @return boolean
+     */
+    public function canUseApi()
+    {
+        return $this->getOption('api_access') == 'yes';
+    }
 }

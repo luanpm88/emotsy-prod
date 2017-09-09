@@ -11,6 +11,21 @@ use Acelle\Http\Controllers\Controller;
 class FileController extends Controller
 {
     /**
+     * Create a new controller instance.
+     */
+    public function __construct()
+    {
+        parent::__construct();
+
+        $user = \Auth::guard('api')->user();
+
+        if (!$user->customer->canUseApi()) {
+            echo json_encode(array('message' => 'Unauthorized'));
+            exit;
+        }
+    }
+
+    /**
      * Upload file to user directory.
      *
      * GET /api/v1/file/upload

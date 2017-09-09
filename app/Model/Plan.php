@@ -306,6 +306,7 @@ class Plan extends Model
             'sending_server_types' => [],
             'sending_server_option' => self::SENDING_SERVER_OPTION_SYSTEM,
             'sending_server_subaccount_uid' => null,
+            'api_access' => 'yes',
         ];
 
         // Sending server types

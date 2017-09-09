@@ -483,6 +483,7 @@ class Subscription extends Model
             'sending_server_types' => [],
             'sending_server_option' => \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM,
             'sending_server_subaccount_uid' => null,
+            'api_access' => 'no',
         ];
 
         // Sending server types
@@ -530,6 +531,7 @@ class Subscription extends Model
             'sending_server_types' => [],
             'sending_server_option' => \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN,
             'sending_server_subaccount_uid' => null,
+            'api_access' => 'yes',
         ];
 
         // Sending server types
