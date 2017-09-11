@@ -1,3 +1,11 @@
+3.0.12 / 2017-09-12
+==================
+
+ * Fixed: some payment methods are not supported in older systems
+ * Fixed: verification with thechecker.co sometimes does not work
+ * Fixed: certain custom tags are not translated
+ * Changed: do not show up raw bounce message
+
 3.0.11 / 2017-8-31
 ==================
 
