@@ -229,6 +229,46 @@ class Subscriber extends Model
                     $query = $query->where('email_verifications.result', '=', $filters['verification_result']);
                 }
             }
+
+            // Open
+            if ($request->open == 'yes') {
+                $query = $query->whereExists(function ($q) {
+                    $q->select(\DB::raw(1))
+                        ->from('open_logs')
+                        ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+                        ->whereRaw(table('tracking_logs') . '.subscriber_id = ' .table('subscribers'). '.id');
+                });
+            }
+
+            // Not Open
+            if ($request->open == 'no') {
+                $query = $query->whereNotExists(function ($q) {
+                    $q->select(\DB::raw(1))
+                        ->from('open_logs')
+                        ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+                        ->whereRaw(table('tracking_logs') . '.subscriber_id = ' .table('subscribers'). '.id');
+                });
+            }
+
+            // Click
+            if ($request->click == 'yes') {
+                $query = $query->whereExists(function ($q) {
+                    $q->select(\DB::raw(1))
+                        ->from('click_logs')
+                        ->join('tracking_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
+                        ->whereRaw(table('tracking_logs') . '.subscriber_id = ' .table('subscribers'). '.id');
+                });
+            }
+
+            // Not Click
+            if ($request->click == 'no') {
+                $query = $query->whereNotExists(function ($q) {
+                    $q->select(\DB::raw(1))
+                        ->from('click_logs')
+                        ->join('tracking_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
+                        ->whereRaw(table('tracking_logs') . '.subscriber_id = ' .table('subscribers'). '.id');
+                });
+            }
         }
 
         return $query;

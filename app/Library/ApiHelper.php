@@ -131,7 +131,7 @@ class ApiHelper
                     'uri' => '/api/v1/campaigns/{uid}',
                     'description' => 'Get information about a specific campaign',
                     'parameters' => [],
-                    'returns' => 'List of list\'s subscribers in json',
+                    'returns' => 'Campaign\'s information in json',
                     'example' => 'curl -X GET -H "accept:application/json" -G \
 ' . str_replace("-ID-", "<redbold>{uid}</redbold>", action("Api\CampaignController@show", "-ID-")) . '? \
 -d api_token=' . \Auth::user()->api_token,
@@ -150,6 +150,8 @@ class ApiHelper
                     'description' => 'Display list\'s subscribers',
                     'parameters' => [
                         ['name' => '$list_uid', 'description' => 'List\'s uid'],
+                        ['name' => '$open', 'description' => 'yes - opened some campaigns<br>no - not opened any campaign', 'optional' => true, 'default' => 'all'],
+                        ['name' => '$click', 'description' => 'yes - clicked some campaigns<br>no - not clicked any campaign', 'optional' => true, 'default' => 'all'],
                         ['name' => '$per_page', 'description' => 'Number of subscribers per page', 'optional' => true, 'default' => 25],
                         ['name' => '$page', 'description' => 'Page number'],
                     ],
