@@ -143,6 +143,9 @@ return [
         'payment_method_not_valid' => [
             'required' => 'Something went wrong with payment method setting. Please check again.',
         ],
+        'email_already_subscribed' => [
+            'required' => 'The email has already been subscribed.',
+        ],
     ],
 
     /*

@@ -690,7 +690,18 @@ class MailListController extends Controller
 
         // Create subscriber
         if ($request->isMethod('post')) {
-            $subscriber = new \Acelle\Model\Subscriber($request->all());
+            $subscriber = $list->subscribers()->where('email','=',strtolower(trim($request->EMAIL)))->first();
+
+            if (!is_object($subscriber)) {
+                $subscriber = new \Acelle\Model\Subscriber($request->all());
+            }
+
+            // Validation
+            $rules = $subscriber->getRules();
+            if(is_object($subscriber) && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
+                $rules['email_already_subscribed'] = 'required';
+            }
+
             $subscriber->mail_list_id = $list->id;
             if($list->subscribe_confirmation) {
                 $subscriber->status = 'unconfirmed';
@@ -699,15 +710,19 @@ class MailListController extends Controller
             }
             $subscriber->from = 'embedded-form';
 
-            // Validation
-            $validator = \Validator::make($request->all(), $subscriber->getRules());
+            // Validate
+            $validator = \Validator::make($request->all(), $rules);
 
             if ($validator->fails()) {
                 $url = $request->session()->pull('form_url');
                 // $validator->errors()
                 $errs = [];
                 foreach($validator->errors()->toArray() as $key => $error) {
-                    $errs[] = $key . ": " . $error[0];
+                    if ($key != 'email_already_subscribed') {
+                        $errs[] = $key . ": " . $error[0];
+                    } else {
+                        $errs[] = $error[0];
+                    }
                 }
 
                 if (strpos($url, '?') !== false) {
@@ -837,7 +852,7 @@ class MailListController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->uid);
         $subscriber = $list->subscribers()->where('email','=',strtolower(trim($request->EMAIL)))->first();
 
-        if(is_object($subscriber) && $subscriber->status != \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
+        if(is_object($subscriber) && $subscriber->status == \Acelle\Model\Subscriber::STATUS_SUBSCRIBED) {
             $result = trans('messages.email_already_subscribed');
         } else {
             $result = true;
