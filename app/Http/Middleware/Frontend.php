@@ -34,6 +34,13 @@ class Frontend
         ) {
             return redirect()->action('Controller@offline');
         }
+        
+        // If user is disabled
+        if (
+            (isset($user) && is_object($user->customer) && !$user->customer->isActive())
+        ) {
+            return redirect()->action('Controller@userDisabled');
+        }
 
         // Language
         try {

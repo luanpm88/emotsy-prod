@@ -209,4 +209,15 @@ class Controller extends BaseController
             echo trans('messages.invalid_token');
         }
     }
+    
+    /**
+     * When user is diabled.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function userDisabled()
+    {
+        \Auth::logout();
+        return view('isDisabled');
+    }
 }

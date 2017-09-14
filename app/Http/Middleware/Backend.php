@@ -23,6 +23,13 @@ class Backend
             return redirect()->action('Controller@notAuthorized');
         }
         
+        // If user is disabled
+        if (
+            (isset($user) && is_object($user->admin) && !$user->admin->isActive())
+        ) {
+            return redirect()->action('Controller@userDisabled');
+        }
+        
         // Language
         try {
             if (is_object($user->admin->language)) {

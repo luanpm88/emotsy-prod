@@ -81,16 +81,6 @@ class AuthController extends Controller
             return view('notActivated', ['uid' => $uid]);
         }
         
-        // If user is disabled
-        if (
-            (is_object($user->customer) && !$user->customer->isActive()) ||
-            (is_object($user->admin) && !$user->admin->isActive())
-        ) {
-            $uid = $user->uid;
-            auth()->logout();
-            return view('isDisabled', ['uid' => $uid]);
-        }
-        
         return redirect()->intended('/');
     }
     

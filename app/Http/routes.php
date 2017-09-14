@@ -73,7 +73,8 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
 Route::group(['middleware' => ['not_logged_in']], function () {
     Route::auth();
     Route::get('user/activate/{token}', 'UserController@activate');
-
+    
+    Route::get('/disabled', 'Controller@userDisabled');
     Route::get('/offline', 'Controller@offline');
     Route::get('/not-authorized', 'Controller@notAuthorized');
     Route::get('/demo', 'Controller@demo');
