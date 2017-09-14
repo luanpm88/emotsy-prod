@@ -324,7 +324,8 @@ class QuotaTrackerFile
                     break;
                 }
             }
-            $this->series = array_slice($this->series, $offset);
+
+            $this->series = is_null($offset) ? [] : array_slice($this->series, $offset);
 
             // compute the archive as well as reset the series
             $cutOff = $timePoint->copy()->sub(\DateInterval::createFromDateString($interval))->timestamp;
@@ -336,8 +337,13 @@ class QuotaTrackerFile
                 }
             }
 
-            $archived = array_slice($this->series, 0, $offset);
-            $newSeries = array_slice($this->series, $offset);
+            if (is_null($offset)) {
+                $archived = $this->series;
+                $newSeries = [];
+            } else {
+                $archived = array_slice($this->series, 0, $offset); // offset acts as limit
+                $newSeries = array_slice($this->series, $offset);
+            }
 
             // retrieve the latest archive data
             list($start, $value) = $this->archived;
