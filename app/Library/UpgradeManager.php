@@ -499,6 +499,9 @@ class UpgradeManager
 
     /**
      * Merge the language file to retain user's change
+     * Example:
+     *    $manager = new \Acelle\Library\UpgradeManager()
+     *    $manager->mergeLanguageFile('/home/user/mailixa/resources/lang/en/messages.php', '/tmp/messages.php')
      */
     public function mergeLanguageFile($sourcePath, $targetPath)
     {
