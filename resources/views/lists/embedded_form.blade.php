@@ -101,7 +101,7 @@
     </div>
     <hr />
     <div class="embedded-form-result">
-        @if (isset(request()->all()['stylesheet']))
+        @if (array_key_exists('stylesheet', request()->all()))
             <div class="row">
                 <div class="col-md-6">
                     <h4 class="text-semibold">{{ trans('messages.Copy_paste_onto_your_site') }}</h4>
