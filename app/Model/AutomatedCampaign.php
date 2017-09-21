@@ -28,6 +28,7 @@ use Acelle\Model\Campaign;
 use Acelle\Jobs\RunAutomatedCampaignJob;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
+use Acelle\Model\Subscriber;
 
 class AutomatedCampaign extends AbsCampaign
 {
@@ -71,7 +72,7 @@ class AutomatedCampaign extends AbsCampaign
 
             $i = 0;
             if (is_null($subscribers)) {
-                $subscribers = $this->trigger->autoEvent->automation->subscribers()->get();
+                $subscribers = $this->trigger->autoEvent->automation->subscribers()->where('subscribers.status', Subscriber::STATUS_SUBSCRIBED)->get();
             }
             foreach ($subscribers as $subscriber) {
                 if ($this->customer->overQuota()) {
