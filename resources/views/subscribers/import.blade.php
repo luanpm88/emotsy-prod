@@ -6,6 +6,7 @@
     <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
 @endsection
 
 @section('page_header')
@@ -35,6 +36,22 @@
 					{!! trans('messages.max_file_upload', ['size' => \Acelle\Library\Tool::maxFileUploadInBytes()]) !!}
 
 					@include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file', 'value' => $list->name])
+
+					@if (\Acelle\Model\Setting::get('import_subscribers_commitment'))
+						<div class="mt-40">
+							@include('helpers.form_control', [
+								'type' => 'checkbox2',
+								'class' => 'policy_commitment mb-10 required',
+								'name' => 'policy_commitment',
+								'value' => 'no',
+								'required' => true,
+								'label' => \Acelle\Model\Setting::get('import_subscribers_commitment'),
+								'options' => ['no','yes'],
+								'rules' => []
+							])
+						</div>
+						<hr>
+					@endif
 
 					<div class="text-left">
 						<button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.import') }}</button>
@@ -168,6 +185,22 @@
 
 		$(document).on("submit", "form.ajax_upload_form", function() {
 			var form = $(this);
+
+			//var input = form.find();
+			//var form = input.closest('form');
+			//
+			//form.submit(function(e) {
+			//	console.log(input.is(':checked'));
+			//	if (form.valid()) {
+			//		if (input.is(':checked')) {
+			//			return true;
+			//		} else {
+			//			alert('aaa');
+			//			e.preventDedault();
+			//			return false;
+			//		}
+			//	}
+			//});
 
 			if(!form.valid()) {
 				$("label.error").insertAfter(".uploader");

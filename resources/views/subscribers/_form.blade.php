@@ -25,3 +25,19 @@
 		@endif
 	@endif
 @endforeach
+@if (\Acelle\Model\Setting::get('import_subscribers_commitment'))
+    <hr>
+    <div class="mt-40">
+        @include('helpers.form_control', [
+            'type' => 'checkbox2',
+            'class' => 'policy_commitment mb-10 required',
+            'name' => 'policy_commitment',
+            'value' => 'no',
+            'required' => true,
+            'label' => \Acelle\Model\Setting::get('import_subscribers_commitment'),
+            'options' => ['no','yes'],
+            'rules' => []
+        ])
+    </div>
+
+@endif

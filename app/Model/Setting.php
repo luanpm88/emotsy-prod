@@ -215,6 +215,11 @@ class Setting extends Model
                 'type' => 'checkbox',
                 'options' => ['no','yes'],
             ],
+            'import_subscribers_commitment' => [
+                'cat' => 'general',
+                'value' => '',
+                'type' => 'textarea'
+            ],
             'sending_campaigns_at_once' => [
                 'cat' => 'sending',
                 'value' => '10',

@@ -1,6 +1,6 @@
 <input type="hidden" name="{{ $name }}" value="{{ $options[0] }}" />
 
-<div class="checkbox inline unlimited-check text-semibold">
+<div class="checkbox inline unlimited-check text-semibold {{ isset($class) ? $class : "" }}">
     <label>
         <input {{ $value == $options[1] ? " checked" : "" }}
             {{ isset($disabled) && $disabled == true ? ' disabled="disabled"' : "" }}

@@ -21,7 +21,7 @@
 				<div class="sub-section">
 					<h2 class="text-semibold text-teal-800"><i class="icon-plus2"></i> {{ trans('messages.create_subscriber') }}</h2>
 
-					<form action="{{ action('SubscriberController@store', $list->uid) }}" method="POST" class="form-validate-jqueryz">
+					<form action="{{ action('SubscriberController@store', $list->uid) }}" method="POST" class="form-validate-jquery">
 						{{ csrf_field() }}
 
 						@include("subscribers._form")
