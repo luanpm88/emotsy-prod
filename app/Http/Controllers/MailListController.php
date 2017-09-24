@@ -694,6 +694,7 @@ class MailListController extends Controller
 
             if (!is_object($subscriber)) {
                 $subscriber = new \Acelle\Model\Subscriber($request->all());
+                $subscriber->mail_list_id = $list->id;
             }
 
             // Validation
@@ -702,7 +703,6 @@ class MailListController extends Controller
                 $rules['email_already_subscribed'] = 'required';
             }
 
-            $subscriber->mail_list_id = $list->id;
             if($list->subscribe_confirmation) {
                 $subscriber->status = 'unconfirmed';
             } else {
@@ -747,7 +747,14 @@ class MailListController extends Controller
 
             if($list->subscribe_confirmation) {
                 // SEND subscription confirmation email
-                $list->sendSubscriptionConfirmationEmail($subscriber);
+                try {
+                    $list->sendSubscriptionConfirmationEmail($subscriber);
+                } catch (\Exception $ex) {
+                    return view('somethingWentWrong', ['message' => $ex->getMessage()]);
+                }
+
+                // update MailList cache
+                event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
                 return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_uid' => $subscriber->uid]);
             } else {
