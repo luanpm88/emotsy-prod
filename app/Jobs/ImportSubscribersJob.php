@@ -22,7 +22,7 @@ class ImportSubscribersJob extends ImportExportJob
         // Upload csv
         $this->file = join_paths($this->path, 'data.csv');
         rename($file, $this->file);
-        chmod($this->file, 0775);
+        chmod($this->file, 0777);
 
         // Update system job status
         // init the status
