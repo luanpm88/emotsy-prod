@@ -261,6 +261,12 @@ class SubscriberController extends Controller
     {
         $customer = $request->user()->customer;
         $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // Select all items
+        if ($request->select_tool == 'all_items') {
+            $subscribers = $this->search($list, $request);
+        }
 
         // get related mail lists to update the cached information
         $lists = $subscribers->get()->map(function($e) { return \Acelle\Model\MailList::find($e->mail_list_id); })->unique();
@@ -268,16 +274,12 @@ class SubscriberController extends Controller
         // actually delete the subscriber
         foreach ($subscribers->get() as $subscriber) {
             // authorize
-            if (\Gate::denies('delete', $subscriber)) {
-                return;
+            if (\Gate::allows('delete', $subscriber)) {
+                $subscriber->delete();
+
+                // Log
+                $subscriber->log('deleted', $customer);
             }
-        }
-
-        foreach ($subscribers->get() as $subscriber) {
-            $subscriber->delete();
-
-            // Log
-            $subscriber->log('deleted', $customer);
         }
 
         foreach ($lists as $list) {
