@@ -17,5 +17,7 @@ class VerifyCsrfToken extends BaseVerifier
         '*/embedded-form-*',
         'payments/stripe/credit-card*',
         'payments/paddle/card*/hook',
+        'payments/payumoney-success/*',
+        'payments/payumoney-fail/*',
     ];
 }

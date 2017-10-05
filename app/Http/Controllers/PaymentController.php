@@ -1,11 +1,13 @@
 <?php
 namespace Acelle\Http\Controllers;
+
 use Illuminate\Http\Request;
 use Acelle\Model\Payment;
 use Acelle\Library\Log as PaymentLog;
 use Illuminate\Support\Facades\Log as LaravelLog;
 
-class PaymentController extends Controller {
+class PaymentController extends Controller
+{
     /**
      * Create a new controller instance.
      */
@@ -40,7 +42,8 @@ class PaymentController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function billingInformation(Request $request, $subscription_uid) {
+    public function billingInformation(Request $request, $subscription_uid)
+    {
         $customer = $request->user()->customer;
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $billing_information = [];
@@ -93,12 +96,13 @@ class PaymentController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function paypal(Request $request, $subscription_uid) {
+    public function paypal(Request $request, $subscription_uid)
+    {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $order_id = $subscription->getOrderID();
 
         // Check billing information
-        if( $this->checkBillingInformation($request, $subscription) !== true ) {
+        if ($this->checkBillingInformation($request, $subscription) !== true) {
             return redirect()->away($this->checkBillingInformation($request, $subscription));
         }
 
@@ -163,12 +167,13 @@ class PaymentController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function braintree_credit_card(Request $request, $subscription_uid) {
+    public function braintree_credit_card(Request $request, $subscription_uid)
+    {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
-        $result = NULL;
+        $result = null;
 
         // Check billing information
-        if( $this->checkBillingInformation($request, $subscription) !== true ) {
+        if ($this->checkBillingInformation($request, $subscription) !== true) {
             return redirect()->away($this->checkBillingInformation($request, $subscription));
         }
 
@@ -189,7 +194,7 @@ class PaymentController extends Controller {
                     'merchantAccountId' => $payment_method->getOption('merchantAccountID'),
                     "orderId" => $order_id,
                     'options' => [
-                      'submitForSettlement' => True
+                      'submitForSettlement' => true
                     ]
                 ]);
 
@@ -226,7 +231,6 @@ class PaymentController extends Controller {
                     return redirect()->action('PaymentController@success', $subscription->uid);
                 }
             }
-
         } catch (\Exception $e) {
             PaymentLog::error(trans('messages.something_went_wrong_with_payment') . ': ' .$e->getMessage());
             return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment', ['error' => $e->getMessage()])]);
@@ -246,12 +250,13 @@ class PaymentController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function braintree_paypal(Request $request, $subscription_uid) {
+    public function braintree_paypal(Request $request, $subscription_uid)
+    {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $result = null;
 
         // Check billing information
-        if( $this->checkBillingInformation($request, $subscription) !== true ) {
+        if ($this->checkBillingInformation($request, $subscription) !== true) {
             return redirect()->away($this->checkBillingInformation($request, $subscription));
         }
 
@@ -272,7 +277,7 @@ class PaymentController extends Controller {
                     'merchantAccountId' => $payment_method->getOption('merchantAccountID'),
                     "orderId" => $order_id,
                     'options' => [
-                      'submitForSettlement' => True
+                      'submitForSettlement' => true
                     ]
                 ]);
 
@@ -328,7 +333,8 @@ class PaymentController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function success(Request $request, $subscription_uid) {
+    public function success(Request $request, $subscription_uid)
+    {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
 
         return view('payments.success', [
@@ -342,11 +348,12 @@ class PaymentController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function paymentStatus(Request $request) {
-        if($request->tx) {
-            if($payment=Payment::where('transaction_id',$request->tx)->first()){
+    public function paymentStatus(Request $request)
+    {
+        if ($request->tx) {
+            if ($payment=Payment::where('transaction_id', $request->tx)->first()) {
                 $payment_id=$payment->id;
-            }else{
+            } else {
                 $payment=new Payment;
                 $payment->item_number = $request->item_number;
                 $payment->transaction_id = $request->tx;
@@ -367,7 +374,7 @@ class PaymentController extends Controller {
             }
 
             return 'Pyament has been done and your payment id is : ' . $payment_id;
-        }else{
+        } else {
             return 'Payment has failed';
         }
     }
@@ -378,12 +385,13 @@ class PaymentController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function cash(Request $request, $subscription_uid) {
+    public function cash(Request $request, $subscription_uid)
+    {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_CASH);
 
         // Check billing information
-        if( $this->checkBillingInformation($request, $subscription) !== true ) {
+        if ($this->checkBillingInformation($request, $subscription) !== true) {
             return redirect()->away($this->checkBillingInformation($request, $subscription));
         }
 
@@ -391,7 +399,7 @@ class PaymentController extends Controller {
         $payment->subscription_id = $subscription->id;
         $payment->payment_method_id = $payment_method->id;
         $payment->status = \Acelle\Model\Payment::STATUS_CASH_MANUAL_CONFIRMATION;
-        $payment->action = \Acelle\Model\Payment::ACTION_PAID;;
+        $payment->action = \Acelle\Model\Payment::ACTION_PAID;
         $payment->payment_method_name = trans('messages.' . $payment_method->type);
         $payment->order_id = $subscription->getOrderID();
 
@@ -415,13 +423,14 @@ class PaymentController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function stripe_credit_card(Request $request, $subscription_uid) {
+    public function stripe_credit_card(Request $request, $subscription_uid)
+    {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $order_id = $subscription->getOrderID();
         $result = null;
 
         // Check billing information
-        if( $this->checkBillingInformation($request, $subscription) !== true ) {
+        if ($this->checkBillingInformation($request, $subscription) !== true) {
             return redirect()->away($this->checkBillingInformation($request, $subscription));
         }
 
@@ -477,8 +486,7 @@ class PaymentController extends Controller {
 
                 return redirect()->action('PaymentController@success', $subscription->uid);
             }
-
-        } catch(\Stripe_CardError $e) {
+        } catch (\Stripe_CardError $e) {
             $error_message = "";
             // Since it's a decline, Stripe_CardError will be caught
             $body = $e->getJsonBody();
@@ -526,7 +534,8 @@ class PaymentController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function paddle_card(Request $request, $subscription_uid) {
+    public function paddle_card(Request $request, $subscription_uid)
+    {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $orderId = $subscription->getOrderID();
         $result = null;
@@ -542,7 +551,7 @@ class PaymentController extends Controller {
         }
 
         // Check billing information
-        if( $this->checkBillingInformation($request, $subscription) !== true ) {
+        if ($this->checkBillingInformation($request, $subscription) !== true) {
             return redirect()->away($this->checkBillingInformation($request, $subscription));
         }
 
@@ -579,7 +588,7 @@ class PaymentController extends Controller {
             if ($response) {
                 // And handle the response...
                 $data = json_decode($response);
-                if($data->success) {
+                if ($data->success) {
                     $checkoutUrl = $data->response->url;
                 } else {
                     throw new \Exception($data->error->message);
@@ -607,7 +616,8 @@ class PaymentController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function paddle_card_hook(Request $request, $subscription_uid) {
+    public function paddle_card_hook(Request $request, $subscription_uid)
+    {
         $arr = $request->all();
         $arr['time'] = \Carbon\Carbon::now();
         \File::put('paddle-process.log', json_encode($arr));
@@ -662,7 +672,8 @@ class PaymentController extends Controller {
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    function paddleVerifySignature($public_key, $post) {
+    public function paddleVerifySignature($public_key, $post)
+    {
         // Get the p_signature parameter & base64 decode it.
         $signature = base64_decode($post['p_signature']);
 
@@ -672,8 +683,8 @@ class PaymentController extends Controller {
 
         // ksort() and serialize the fields
         ksort($fields);
-        foreach($fields as $k => $v) {
-            if(!in_array(gettype($v), array('object', 'array'))) {
+        foreach ($fields as $k => $v) {
+            if (!in_array(gettype($v), array('object', 'array'))) {
                 $fields[$k] = "$v";
             }
         }
@@ -682,10 +693,204 @@ class PaymentController extends Controller {
         // Veirfy the signature
         $verification = openssl_verify($data, $signature, $public_key, OPENSSL_ALGO_SHA1);
 
-        if($verification == 1) {
+        if ($verification == 1) {
             return true;
         } else {
             return false;
         }
+    }
+
+
+    /**
+     * Subscription pay by PayU Money.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function payumoney(Request $request, $subscription_uid)
+    {
+        $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
+        $data = [];
+        // Check billing information
+        if ($this->checkBillingInformation($request, $subscription) !== true) {
+            return redirect()->away($this->checkBillingInformation($request, $subscription));
+        }
+
+        $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_PAYU_MONEY);
+        $rules = [
+            'name' => 'required',
+            'emails' => 'required',
+            'phones'=>'required',
+        ];
+        try {
+            $order_id = $subscription->getOrderID();
+            $hash = '';
+            $payu_link='';
+            // Hash Sequence
+            $hashSequence = "key|txnid|amount|productinfo|firstname|email|udf1|udf2|udf3|udf4|udf5|udf6|udf7|udf8|udf9|udf10";
+            // validate and save posted data
+            if ($request->isMethod('post')) {
+                //$this->validate($request, $rules);
+                $data = [
+                  'key'=>$payment_method->getOption('merchant_key'),
+                  'txnid' => substr(hash('sha256', mt_rand() . microtime()), 0, 20), # Transaction ID.
+                  'amount' => $subscription->price, # Amount to be charged.
+                  'productinfo' => "subscription",
+                  'firstname' => $request->name, # Payee Name.
+                  'email' => $request->emails, # Payee Email Address.
+                  'phone' => $request->phones, # Payee Phone Number.
+                  'surl'=>url('/').'/payments/payumoney-success/'.$subscription_uid,
+                  'furl'=>url('/').'/payments/payumoney-fail/'.$subscription_uid,
+                  'service_provider'=>'payu_paisa',
+              ];
+                $hashVarsSeq = explode('|', $hashSequence);
+                $hash_string = '';
+                foreach ($hashVarsSeq as $hash_var) {
+                    $hash_string .= isset($data[$hash_var]) ? $data[$hash_var] : '';
+                    $hash_string .= '|';
+                }
+                $hash_string .= $payment_method->getOption('salt');
+                $hash = strtolower(hash('sha512', $hash_string));
+                $payu_link = $payment_method->getOption('payu_base_url') . '/_payment';
+            }
+        } catch (\Exception $e) {
+            PaymentLog::error(trans('messages.something_went_wrong_with_payment') . ': ' .$e->getMessage());
+            return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment', ['error' => $e->getMessage()])]);
+        }
+        return view('payments.payumoney', [
+                'subscription' => $subscription,
+                'data' => $data,
+                'hash'=>$hash,
+                'payu_link'=>$payu_link,
+                'payment_method' => $payment_method,
+            ]);
+    }
+
+    /**
+     * Subscription pay by PayU Money Success.
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function payumoney_success(Request $request, $subscription_uid)
+    {
+        $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
+        $result = null;
+        // Check billing information
+        if ($this->checkBillingInformation($request, $subscription) !== true) {
+            return redirect()->away($this->checkBillingInformation($request, $subscription));
+        }
+
+        $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_PAYU_MONEY);
+
+        try {
+            $order_id = $subscription->getOrderID();
+
+            // validate and save posted data
+            if ($request->isMethod('post')) {
+                $result = $request->all();
+                $payment = new Payment();
+                $payment->subscription_id = $subscription->id;
+                $payment->data = serialize($result);
+                $payment->payment_method_id = $payment_method->id;
+                $payment->status = \Acelle\Model\Payment::STATUS_SUCCESS;
+                $payment->action = \Acelle\Model\Payment::ACTION_PAID;
+                $payment->payment_method_name = trans('messages.' . $payment_method->type);
+                $payment->order_id = $order_id;
+
+                // billing information
+                $billing_information = $request->session()->get('billing_information');
+                if (isset($billing_information)) {
+                    $payment->tax_number = $billing_information['tax_number'];
+                    $payment->billing_address = $billing_information['billing_address'];
+                    $request->session()->forget('billing_information');
+                }
+
+                $payment->save();
+
+                if ($result['status']) {
+                    $subscription->setPaid();
+
+                    // try enabling the subscription, proceed anyway if failed
+                    try {
+                        $subscription->enable();
+                    } catch (\Exception $ex) {
+                        // just suppress the error and leave the subscription disabled
+                        LaravelLog::warning("Cannot enable subscription {$subscription->id}, proceed anyway");
+                    }
+
+                    return redirect()->action('PaymentController@success', $subscription->uid);
+                }
+            }
+        } catch (\Exception $e) {
+            PaymentLog::error(trans('messages.something_went_wrong_with_payment') . ': ' .$e->getMessage());
+            return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment', ['error' => $e->getMessage()])]);
+        }
+    }
+
+    /**
+     * Subscription pay by PayU Money failure.
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function payumoney_fail(Request $request, $subscription_uid)
+    {
+        $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
+        $result = null;
+        // Check billing information
+        if ($this->checkBillingInformation($request, $subscription) !== true) {
+            return redirect()->away($this->checkBillingInformation($request, $subscription));
+        }
+
+        $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_PAYU_MONEY);
+
+        try {
+            $order_id = $subscription->getOrderID();
+
+            // validate and save posted data
+            if ($request->isMethod('post')) {
+                $result = $request->all();
+                $payment = new Payment();
+                $payment->subscription_id = $subscription->id;
+                $payment->data = serialize($result);
+                $payment->payment_method_id = $payment_method->id;
+                $payment->status = \Acelle\Model\Payment::STATUS_FAILED;
+                $payment->action = \Acelle\Model\Payment::ACTION_PAID;
+                $payment->payment_method_name = trans('messages.' . $payment_method->type);
+                $payment->order_id = $order_id;
+
+                // billing information
+                $billing_information = $request->session()->get('billing_information');
+                if (isset($billing_information)) {
+                    $payment->tax_number = $billing_information['tax_number'];
+                    $payment->billing_address = $billing_information['billing_address'];
+                    $request->session()->forget('billing_information');
+                }
+
+                $payment->save();
+                //  $subscription->setPaid();
+                return redirect()->action('PaymentController@failure', $subscription->uid);
+                if ($result['status']=="failure") {
+                    $subscription->setPaid();
+                }
+            }
+        } catch (\Exception $e) {
+            PaymentLog::error(trans('messages.something_went_wrong_with_payment') . ': ' .$e->getMessage());
+            return view('somethingWentWrong', ['message' => trans('messages.something_went_wrong_with_payment', ['error' => $e->getMessage()])]);
+        }
+    }
+
+    /**
+     * Payment failure page.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function failure(Request $request, $subscription_uid)
+    {
+        $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
+
+        return view('payments.failure', [
+            'subscription' => $subscription
+        ]);
     }
 }

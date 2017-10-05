@@ -351,13 +351,14 @@ class PaymentMethodController extends Controller
         ]);
     }
 
-     /**
-     * Braintree merchant account select form.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function braintreeMerchantAccountSelect(Request $request, $uid=null) {
+    /**
+    * Braintree merchant account select form.
+    *
+    * @param  \Illuminate\Http\Request  $request
+    * @return \Illuminate\Http\Response
+    */
+    public function braintreeMerchantAccountSelect(Request $request, $uid=null)
+    {
         if ($uid) {
             $payment_method = \Acelle\Model\PaymentMethod::findByUid($uid);
         } else {
@@ -373,7 +374,7 @@ class PaymentMethodController extends Controller
         $payment_method->options = json_encode($options);
 
         $error = false;
-        $accounts = NULL;
+        $accounts = null;
         try {
             $accounts = $payment_method->getBraintreeMerchantAccounts();
         } catch (\Exception $ex) {
@@ -385,6 +386,5 @@ class PaymentMethodController extends Controller
             'accounts' => $accounts,
             'error' => $error,
         ]);
-
     }
 }

@@ -73,7 +73,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
 Route::group(['middleware' => ['not_logged_in']], function () {
     Route::auth();
     Route::get('user/activate/{token}', 'UserController@activate');
-    
+
     Route::get('/disabled', 'Controller@userDisabled');
     Route::get('/offline', 'Controller@offline');
     Route::get('/not-authorized', 'Controller@notAuthorized');
@@ -421,6 +421,13 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('payments/cash/{subscription_uid}', 'PaymentController@cash');
     Route::post('payments/paypal/{subscription_uid}', 'PaymentController@paypal');
     Route::get('payments/paypal/{subscription_uid}', 'PaymentController@paypal');
+    Route::post('payments/payumoney/{subscription_uid}', 'PaymentController@payumoney');
+    Route::get('payments/payumoney/{subscription_uid}', 'PaymentController@payumoney');
+    Route::get('payments/payumoney-success/{subscription_uid}', 'PaymentController@payumoney_success');
+    Route::post('payments/payumoney-success/{subscription_uid}', 'PaymentController@payumoney_success');
+    Route::get('payments/payumoney-fail/{subscription_uid}', 'PaymentController@payumoney_fail');
+    Route::post('payments/payumoney-fail/{subscription_uid}', 'PaymentController@payumoney_fail');
+    Route::get('payments/failure/{subscription_uid}', 'PaymentController@failure');
 
     // Email verification servers
     Route::get('email_verification_servers/options', 'EmailVerificationServerController@options');

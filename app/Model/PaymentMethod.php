@@ -27,16 +27,17 @@ use Illuminate\Database\Eloquent\Model;
 class PaymentMethod extends Model
 {
     // PaymentMethod status
-	const STATUS_INACTIVE = 'inactive';
+    const STATUS_INACTIVE = 'inactive';
     const STATUS_ACTIVE = 'active';
 
-	// PaymentMethod type
-	const TYPE_CASH = 'cash';
+    // PaymentMethod type
+    const TYPE_CASH = 'cash';
     const TYPE_PAYPAL = 'paypal';
-	const TYPE_BRAINTREE_PAYPAL = 'braintree_paypal';
-	const TYPE_BRAINTREE_CREDIT_CARD = 'braintree_credit_card';
+    const TYPE_BRAINTREE_PAYPAL = 'braintree_paypal';
+    const TYPE_BRAINTREE_CREDIT_CARD = 'braintree_credit_card';
     const TYPE_STRIPE_CREDIT_CARD = 'stripe_credit_card';
-	const TYPE_PADDLE_CARD = 'paddle_card';
+    const TYPE_PADDLE_CARD = 'paddle_card';
+    const TYPE_PAYU_MONEY = 'payumoney';
 
     /**
      * The attributes that are mass assignable.
@@ -55,42 +56,48 @@ class PaymentMethod extends Model
     public function rules()
     {
         $rules = array(
-			'status' => 'required',
+            'status' => 'required',
         );
 
-        if(\Auth::user()->can('create', $this)) {
-			$rules['type'] = 'required';
-		}
+        if (\Auth::user()->can('create', $this)) {
+            $rules['type'] = 'required';
+        }
 
-		if($this->type == PaymentMethod::TYPE_PAYPAL) {
-			$rules['options.environment'] = 'required';
-			$rules['options.clientID'] = 'required';
-			$rules['options.secret'] = 'required';
-		}
+        if ($this->type == PaymentMethod::TYPE_PAYPAL) {
+            $rules['options.environment'] = 'required';
+            $rules['options.clientID'] = 'required';
+            $rules['options.secret'] = 'required';
+        }
 
-		if($this->type == PaymentMethod::TYPE_BRAINTREE_PAYPAL || $this->type == PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD) {
-			$rules['options.environment'] = 'required';
-			$rules['options.merchantId'] = 'required';
-			$rules['options.publicKey'] = 'required';
-			$rules['options.privateKey'] = 'required';
-			$rules['options.merchantAccountID'] = 'required';
-		}
+        if ($this->type == PaymentMethod::TYPE_BRAINTREE_PAYPAL || $this->type == PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD) {
+            $rules['options.environment'] = 'required';
+            $rules['options.merchantId'] = 'required';
+            $rules['options.publicKey'] = 'required';
+            $rules['options.privateKey'] = 'required';
+            $rules['options.merchantAccountID'] = 'required';
+        }
 
-        if($this->type == PaymentMethod::TYPE_STRIPE_CREDIT_CARD) {
-			$rules['options.api_secret_key'] = 'required';
-			$rules['options.api_publishable_key'] = 'required';
-		}
+        if ($this->type == PaymentMethod::TYPE_STRIPE_CREDIT_CARD) {
+            $rules['options.api_secret_key'] = 'required';
+            $rules['options.api_publishable_key'] = 'required';
+        }
 
-		if($this->type == PaymentMethod::TYPE_PADDLE_CARD) {
-			$rules['options.vendor_id'] = 'required';
-			$rules['options.vendor_auth_code'] = 'required';
-			$rules['options.public_key'] = 'required';
-		}
+        if ($this->type == PaymentMethod::TYPE_PADDLE_CARD) {
+            $rules['options.vendor_id'] = 'required';
+            $rules['options.vendor_auth_code'] = 'required';
+            $rules['options.public_key'] = 'required';
+        }
 
-		# Check if payment method is valid
+        if ($this->type == PaymentMethod::TYPE_PAYU_MONEY) {
+            $rules['options.merchant_key'] = 'required';
+            $rules['options.salt'] = 'required';
+            $rules['options.payu_base_url'] = 'required';
+        }
+
+        # Check if payment method is valid
         if (!$this->isValid()) {
             $rules['payment_method_not_valid'] = 'required';
-		}
+        }
 
         return $rules;
     }
@@ -170,7 +177,7 @@ class PaymentMethod extends Model
         // filters
         $filters = $request->filters;
 
-		if(!empty($request->admin_id)) {
+        if (!empty($request->admin_id)) {
             $query = $query->where('payment_methods.admin_id', '=', $request->admin_id);
         }
 
@@ -189,8 +196,8 @@ class PaymentMethod extends Model
         if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         } else {
-			$query = $query->orderBy("payment_methods.type", "asc");
-		}
+            $query = $query->orderBy("payment_methods.type", "asc");
+        }
 
         return $query;
     }
@@ -234,8 +241,8 @@ class PaymentMethod extends Model
      */
     public function getOption($name)
     {
-		$options = $this->getOptions();
-        return isset($options[$name]) ? $options[$name] : NULL;
+        $options = $this->getOptions();
+        return isset($options[$name]) ? $options[$name] : null;
     }
 
     /**
@@ -243,7 +250,8 @@ class PaymentMethod extends Model
      *
      * @return array
      */
-    public static function select2($request) {
+    public static function select2($request)
+    {
         $data = ['items' => [], 'more' => true];
 
         $query = \Acelle\Model\PaymentMethod::getAll()->orderBy('custom_order', 'asc');
@@ -268,11 +276,11 @@ class PaymentMethod extends Model
     public static function getAllActive()
     {
         return PaymentMethod::getAll()
-			->where("payment_methods.status", "=", PaymentMethod::STATUS_ACTIVE)
-			->orderBy('custom_order', 'asc')->get();
+            ->where("payment_methods.status", "=", PaymentMethod::STATUS_ACTIVE)
+            ->orderBy('custom_order', 'asc')->get();
     }
 
-	/**
+    /**
      * Payment methos types select options.
      *
      * @return array
@@ -281,13 +289,13 @@ class PaymentMethod extends Model
     {
         return [
             ['value' => PaymentMethod::TYPE_CASH, 'text' => trans('messages.' . PaymentMethod::TYPE_CASH)],
-			['value' => PaymentMethod::TYPE_BRAINTREE_PAYPAL, 'text' => trans('messages.' . PaymentMethod::TYPE_BRAINTREE_PAYPAL)],
-			['value' => PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD, 'text' => trans('messages.' . PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD)],
+            ['value' => PaymentMethod::TYPE_BRAINTREE_PAYPAL, 'text' => trans('messages.' . PaymentMethod::TYPE_BRAINTREE_PAYPAL)],
+            ['value' => PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD, 'text' => trans('messages.' . PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD)],
             ['value' => PaymentMethod::TYPE_STRIPE_CREDIT_CARD, 'text' => trans('messages.' . PaymentMethod::TYPE_STRIPE_CREDIT_CARD)],
         ];
     }
 
-	/**
+    /**
      * Set Braintree auth info.
      *
      * @return void
@@ -299,10 +307,10 @@ class PaymentMethod extends Model
         \Braintree_Configuration::publicKey($this->getOption('publicKey'));
         \Braintree_Configuration::privateKey($this->getOption('privateKey'));
 
-		return \Braintree_ClientToken::generate();
+        return \Braintree_ClientToken::generate();
     }
 
-	/**
+    /**
      * Set Braintree auth info.
      *
      * @return void
@@ -314,50 +322,50 @@ class PaymentMethod extends Model
         \Braintree_Configuration::publicKey($this->getOption('publicKey'));
         \Braintree_Configuration::privateKey($this->getOption('privateKey'));
 
-		$gateway = \Braintree_Configuration::gateway();
-		$merchantAccountIterator = $gateway->merchantAccount()->all();
+        $gateway = \Braintree_Configuration::gateway();
+        $merchantAccountIterator = $gateway->merchantAccount()->all();
 
-		$accounts = [];
-		foreach($merchantAccountIterator as $merchantAccount) {
-			$accounts[] = $merchantAccount;
-		}
+        $accounts = [];
+        foreach ($merchantAccountIterator as $merchantAccount) {
+            $accounts[] = $merchantAccount;
+        }
 
-		return $accounts;
+        return $accounts;
     }
 
-	/**
+    /**
      * Set Braintree auth info.
      *
      * @return void
      */
     public function getBraintreeMerchantAccountSelectOptions($accounts)
     {
-		$options = [];
-		foreach($accounts as $merchantAccount) {
-			$options[] = ['value' => $merchantAccount->id, 'text' => $merchantAccount->id.' / '.$merchantAccount->currencyIsoCode.($merchantAccount->default ? ' (' . trans('messages.default').')' : '')];
-		}
+        $options = [];
+        foreach ($accounts as $merchantAccount) {
+            $options[] = ['value' => $merchantAccount->id, 'text' => $merchantAccount->id.' / '.$merchantAccount->currencyIsoCode.($merchantAccount->default ? ' (' . trans('messages.default').')' : '')];
+        }
 
-		return $options;
+        return $options;
     }
 
-	/**
+    /**
      * Get Braintree merchant account by ID.
      *
      * @return void
      */
     public function getBraintreeMerchantAccountByID($accounts, $id)
     {
-		$options = [];
-		foreach($accounts as $merchantAccount) {
-			if ($merchantAccount->id == $id) {
-				return $merchantAccount;
-			}
-		}
+        $options = [];
+        foreach ($accounts as $merchantAccount) {
+            if ($merchantAccount->id == $id) {
+                return $merchantAccount;
+            }
+        }
 
-		return $accounts[0];
+        return $accounts[0];
     }
 
-	/**
+    /**
      * Get payment method by type.
      *
      * @return object
@@ -365,10 +373,10 @@ class PaymentMethod extends Model
     public static function getByType($type)
     {
         return PaymentMethod::where("payment_methods.type", "=", $type)
-			->first();
+            ->first();
     }
 
-	/**
+    /**
      * Check payment method setting is valid.
      *
      * @return boolean
@@ -376,17 +384,17 @@ class PaymentMethod extends Model
     public function isValid()
     {
         try {
-            if($this->type == PaymentMethod::TYPE_BRAINTREE_PAYPAL || $this->type == PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD) {
-				$this->getBraintreeClientToken();
-			}
-		} catch (\Exception $e) {
-			return false;
-		}
+            if ($this->type == PaymentMethod::TYPE_BRAINTREE_PAYPAL || $this->type == PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD) {
+                $this->getBraintreeClientToken();
+            }
+        } catch (\Exception $e) {
+            return false;
+        }
 
-		return true;
+        return true;
     }
 
-	/**
+    /**
      * Payment methods status select options.
      *
      * @return array
@@ -395,7 +403,7 @@ class PaymentMethod extends Model
     {
         return [
             ['value' => PaymentMethod::STATUS_ACTIVE, 'text' => trans('messages.payment_method_status_' . PaymentMethod::STATUS_ACTIVE)],
-			['value' => PaymentMethod::STATUS_INACTIVE, 'text' => trans('messages.payment_method_status_' . PaymentMethod::STATUS_INACTIVE)],
+            ['value' => PaymentMethod::STATUS_INACTIVE, 'text' => trans('messages.payment_method_status_' . PaymentMethod::STATUS_INACTIVE)],
         ];
     }
 
@@ -404,15 +412,16 @@ class PaymentMethod extends Model
      *
      * @return array
      */
-    function getPayPalAccessToken() {
+    public function getPayPalAccessToken()
+    {
         $ch = curl_init();
 
-		// Get options from payment method PayPal
+        // Get options from payment method PayPal
         $clientId = $this->getOption('clientID');
         $secret = $this->getOption('secret');
 
-		// Request to PayPal enpoint
-        curl_setopt($ch, CURLOPT_URL, "https://api" . ( $this->getOption('environment') == 'sandbox' ? ".sandbox" : '' ). ".paypal.com/v1/oauth2/token");
+        // Request to PayPal enpoint
+        curl_setopt($ch, CURLOPT_URL, "https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/oauth2/token");
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_POST, true);
@@ -422,17 +431,17 @@ class PaymentMethod extends Model
 
         $result = curl_exec($ch);
 
-		// Check the result
-        if(!empty($result)) {
+        // Check the result
+        if (!empty($result)) {
             $json = json_decode($result);
 
-			// Token success
+            // Token success
             if (isset($json->access_token)) {
                 return ['success' => true, 'token' => $json->access_token];
-			// Check if has any error
+                // Check if has any error
             } elseif (isset($json->error)) {
-				throw new \Exception($json->error . ': ' . $json->error_description);
-			}
+                throw new \Exception($json->error . ': ' . $json->error_description);
+            }
         }
 
         throw new \Exception(trans("messages.paypal_error_cannot_get_access_token"));
@@ -443,11 +452,12 @@ class PaymentMethod extends Model
      *
      * @return array
      */
-    function checkPayPalPaymentSuccess($paymentID, $payerID, $access_token, $subscription) {
+    public function checkPayPalPaymentSuccess($paymentID, $payerID, $access_token, $subscription)
+    {
         $ch = curl_init();
 
-		// Request to PayPal enpoint
-        curl_setopt($ch, CURLOPT_URL, "https://api" . ( $this->getOption('environment') == 'sandbox' ? ".sandbox" : '' ). ".paypal.com/v1/payments/payment/$paymentID");
+        // Request to PayPal enpoint
+        curl_setopt($ch, CURLOPT_URL, "https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/payments/payment/$paymentID");
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type:application/json',
             'Authorization: Bearer ' . $access_token
@@ -457,25 +467,25 @@ class PaymentMethod extends Model
 
         $result = curl_exec($ch);
 
-		// Check the result
-        if(!empty($result)) {
-			$json = json_decode($result);
+        // Check the result
+        if (!empty($result)) {
+            $json = json_decode($result);
 
-			// Check if payment state is not approved
-			if (!isset($json->state) || $json->state != 'approved') {
-				return (object) ['success' => false, 'data' => $json, 'error' => trans("messages.paypal_error_payment_not_approved")];
-			}
+            // Check if payment state is not approved
+            if (!isset($json->state) || $json->state != 'approved') {
+                return (object) ['success' => false, 'data' => $json, 'error' => trans("messages.paypal_error_payment_not_approved")];
+            }
 
-			// Check if payment amount is not equal to the subscription amount
-            if((float) $json->transactions[0]->amount->details->subtotal != (float) $subscription->price) {
+            // Check if payment amount is not equal to the subscription amount
+            if ((float) $json->transactions[0]->amount->details->subtotal != (float) $subscription->price) {
                 return (object) ['success' => false, 'data' => $json, 'error' => trans("messages.paypal_error_amount_not_equal")];
             }
 
-			// Return success if nothing wrong
-			return (object) ['success' => true, 'data' => $result];
+            // Return success if nothing wrong
+            return (object) ['success' => true, 'data' => $result];
         }
 
-		// Uncatchable error
+        // Uncatchable error
         throw new \Exception(trans("messages.paypal_error_unknown"));
     }
 }
