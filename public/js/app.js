@@ -1822,7 +1822,6 @@ $(function() {
                 if (input.is(':checked')) {
                     return true;
                 } else {
-                    alert('aaa');
                     e.preventDedault();
                     return false;
                 }
