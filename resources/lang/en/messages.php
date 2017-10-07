@@ -2015,6 +2015,6 @@
                 . Your plan price is: <a><strong>:price</strong></a>',
   'pay_by_credit_debit_card'=>'Pay by Credit / Debit Card',
   'firstname'=>'First Name',
-  'subscription_paid_finish_messages_failure' => '<h2 class="text-semibold mt-0 text-teal-800">Sorry!</h2>
-        <p>You are un-successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is not activated.<br />Let choose an action below for next step.</p>',
+  'subscription_paid_finish_messages_failure' => '<h2 class="text-semibold mt-0 text-danger">Sorry!</h2>
+        <p>You are <span class="text-bold text-danger">un-successfully</span> subscribed to the plan <span class="text-bold">:plan</span>. Now your account is not activated.<br />Let choose an action below for next step.</p>',
 );
