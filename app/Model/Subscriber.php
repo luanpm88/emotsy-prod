@@ -50,7 +50,8 @@ class Subscriber extends Model
      * @var array
      */
     protected $fillable = [
-        'mail_list_id', 'email'
+        'mail_list_id', 'email',
+        'image'
     ];
 
     /**
@@ -810,5 +811,64 @@ class Subscriber extends Model
     public function resetVerification()
     {
         return $this->emailVerifications()->delete();
+    }
+
+    /**
+     * Upload and resize avatar.
+     *
+     * @var String
+     * @return String
+     */
+    public function uploadImage($file)
+    {
+        $path = 'app/subscriber/';
+        $upload_path = storage_path($path);
+
+        if (!file_exists($upload_path)) {
+            mkdir($upload_path, 0777, true);
+        }
+
+        $filename = $this->uid.'.jpg';
+
+        // save to server
+        $file->move($upload_path, $filename);
+
+        // create thumbnails
+        $img = \Image::make($upload_path.$filename);
+        $img->fit(120, 120)->save($upload_path.$filename);
+
+        return $path.$filename;
+    }
+
+    /**
+     * Get image thumb path.
+     *
+     * @return  string
+     */
+    public function imagePath()
+    {
+        if (!empty($this->uid) && is_file(storage_path('app/subscriber/'.$this->uid).'.jpg')) {
+            return storage_path('app/subscriber/'.$this->uid).'.jpg';
+        } else {
+            return '';
+        }
+    }
+
+    /**
+     * Remove thumb path.
+     *
+     *
+     */
+    public function removeImage()
+    {
+        if (!empty($this->uid)) {
+            $path = storage_path('app/subscriber/'.$this->uid);
+            if (is_file($path)) {
+                unlink($path);
+            }
+            if (is_file($path.'.jpg')) {
+                unlink($path.'.jpg');
+            }
+        }
     }
 }
