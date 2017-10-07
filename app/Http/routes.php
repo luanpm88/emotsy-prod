@@ -87,6 +87,9 @@ Route::group(['middleware' => ['not_logged_in']], function () {
     // Customer avatar
     Route::get('assets/images/avatar/customer-{uid?}.jpg', 'CustomerController@avatar');
 
+    //Subscriber avatar
+    Route::get('assets/images/avatar/subscriber-{uid?}.jpg', 'SubscriberController@avatar');
+
     // Admin avatar
     Route::get('assets/images/avatar/admin-{uid?}.jpg', 'AdminController@avatar');
 

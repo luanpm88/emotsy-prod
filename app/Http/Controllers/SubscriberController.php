@@ -224,7 +224,19 @@ class SubscriberController extends Controller
         if ($request->isMethod('patch')) {
             $this->validate($request, $subscriber->getRules());
 
-            // Update field
+            // Upload
+            if ($request->hasFile('image')) {
+                if ($request->file('image')->isValid()) {
+                    // Remove old images
+                    $subscriber->uploadImage($request->file('image'));
+                }
+            }
+            // Remove image
+            if ($request->_remove_image == 'true') {
+                $subscriber->removeImage();
+            }
+
+                // Update field
             $subscriber->updateFields($request->all());
 
             event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
