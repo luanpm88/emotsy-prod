@@ -2570,3 +2570,10 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
     position: relative;
     z-index: 1000;
 }
+.profile-image .zone-upload {
+    height: 125px;
+    padding: 5px;
+}
+.zone-upload {
+    border: 2px dashed #ccc;
+}

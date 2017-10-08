@@ -224,7 +224,19 @@ class SubscriberController extends Controller
         if ($request->isMethod('patch')) {
             $this->validate($request, $subscriber->getRules());
 
-            // Update field
+            // Upload
+            if ($request->hasFile('image')) {
+                if ($request->file('image')->isValid()) {
+                    // Remove old images
+                    $subscriber->uploadImage($request->file('image'));
+                }
+            }
+            // Remove image
+            if ($request->_remove_image == 'true') {
+                $subscriber->removeImage();
+            }
+
+                // Update field
             $subscriber->updateFields($request->all());
 
             event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
@@ -753,5 +765,25 @@ class SubscriberController extends Controller
             MailLog::error(sprintf("Something went wrong while cleaning up verification data for %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage()));
             return view('somethingWentWrong', ['message' => sprintf("Something went wrong while cleaning up verification data for %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage())]);
         }
+    }
+
+    /**
+     * Render customer image.
+     */
+    public function avatar(Request $request)
+    {
+        // Get current customer
+        if ($request->uid != '0') {
+            $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        } else {
+            $subscriber = new \Acelle\Model\Subscriber();
+        }
+        if (!empty($subscriber->imagePath())) {
+            $img = \Image::make($subscriber->imagePath());
+        } else {
+            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
+        }
+
+        return $img->response();
     }
 }
