@@ -25,6 +25,7 @@
                     <input type="hidden" name="_method" value="PATCH">
                     <input type="hidden" name="list_uid" value="{{ $list->uid }}" />
                     @include('helpers._upload',['src' => action('SubscriberController@avatar',  $subscriber->uid), 'dragId' => 'upload-avatar', 'preview' => 'image'])
+                    <h3 class="clear-both">{{trans("messages.basic_information")}}</h3>
                     @include("subscribers._form")
 
                     <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
