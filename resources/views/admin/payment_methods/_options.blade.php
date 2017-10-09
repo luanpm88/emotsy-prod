@@ -233,10 +233,14 @@
     <div class="row">
         <div class="col-md-6">
             @include('helpers.form_control', [
-                'type' => 'text',
+                'type' => 'select',
                 'name' => 'options[payu_base_url]',
                 'label' => trans('messages.payu.payu_base_url'),
                 'value' => $payment_method->getOption('payu_base_url'),
+                'options' => [
+                    ['value' => 'https://test.payu.in', 'text' => trans('messages.payu.testing')],
+                    ['value' => 'https://secure.payu.in', 'text' => trans('messages.payu.production')],
+                ],
                 'help_class' => 'payment_method',
                 'rules' => $payment_method->rules()
             ])

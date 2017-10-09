@@ -2017,4 +2017,6 @@
   'firstname'=>'First Name',
   'subscription_paid_finish_messages_failure' => '<h2 class="text-semibold mt-0 text-danger">Sorry!</h2>
         <p>You are <span class="text-bold text-danger">un-successfully</span> subscribed to the plan <span class="text-bold">:plan</span>. Now your account is not activated.<br />Let choose an action below for next step.</p>',
+ 'payu.testing' => 'For Testing',
+ 'payu.production' => 'For Production',
 );
