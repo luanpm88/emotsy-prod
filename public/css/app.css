@@ -2570,10 +2570,55 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
     position: relative;
     z-index: 1000;
 }
-.profile-image .zone-upload {
-    height: 125px;
-    padding: 5px;
+.clear-both {
+    clear:both;
 }
-.zone-upload {
-    border: 2px dashed #ccc;
+.radius-0{
+    border-radius: 0;
+}
+.pre-upload-photo {
+    text-align: left;
+    width: 80px;
+    height: 80px;
+    border: 1px solid #797676;
+}
+.profile-image .pre-upload-photo img {
+    width: 80px !important;
+    height: 80px !important;
+}
+.padding-l0 {
+    padding-left: 0
+}
+.edit-photo {
+    color: white;
+    background: rgba(0,0,0,0.3);
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    line-height: 2.2;
+    position: relative;
+    right: -50px;
+    top: -35px;
+    cursor: pointer;
+}
+.edit-photo::after {
+    content: " ";
+    width: 16px;
+    height: 3px;
+    border: 1px solid white;
+    display: block;
+    position: absolute;
+    top: 24px;
+    left: 8px;
+}
+.profile-image .preview {
+    display: block;
+    margin-bottom: 20px;
+    padding: 0;
+}
+.background-gray {
+    background: #737373;
+}
+.background-gray:hover {
+    color: white
 }

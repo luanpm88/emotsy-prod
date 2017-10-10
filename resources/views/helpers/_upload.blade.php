@@ -1,20 +1,22 @@
 <div class="form-group control-text">
     <div class="sub_section">
-        <h2 class="text-semibold text-teal-800">{{ trans('messages.profile_photo') }}</h2>
+        <h3 class="text-semibold text-teal-800">{{ trans('messages.profile_photo') }}</h3>
         <div class="media profile-image">
-            <div class="media-left zone-upload" id="{{$dragId}}">
-                <a href="#" class="upload-media-container">
+            <div class="preview col-md-2" id="{{$dragId}}">
+                <a href="#" class="upload-media-container radius-0 pre-upload-photo">
                     <img preview-for="image" empty-src="{{ URL::asset('assets/images/placeholder.jpg') }}" src="{{ $src }}" class="img-circle" alt="">
+
                 </a>
+                <span onclick="$('input[name=image]').trigger('click')"  class="edit-photo text-center"><i class="icon-pencil"></i></span>
                 <input type="file" name="image" id="{{$preview}}" accept="image/*" class="file-styled previewable hide">
                 <input type="hidden" name="_remove_image" value='' />
             </div>
-            <div class="media-body text-center">
+            <div class="col-md-10 padding-l0">
                 <h5 class="media-heading text-semibold">{{ trans('messages.upload_your_photo') }}</h5>
                 {{ trans('messages.photo_at_least', ["size" => "300px x 300px"]) }}
-                <br /><br />
-                <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-xs bg-teal mr-10"><i class="icon-upload4"></i> {{ trans('messages.upload') }}</a>
-                <a href="#remove" class="btn btn-xs bg-grey-800 remove-profile-image"><i class="icon-trash"></i> {{ trans('messages.remove') }}</a>
+                <a href="#remove" class=" remove-profile-image"> {{ trans('messages.remove_current_photo') }}</a>
+                <br />
+                <a href="#upload" onclick="$('input[name=image]').trigger('click')" class="btn btn-xs  background-gray">{{ trans('messages.upload_photo') }}</a>
             </div>
         </div>
     </div>
