@@ -7,7 +7,7 @@ require 'json'
 # Settings
 old_versions = ['3.0.10', '3.0.11', '3.0.12']      # sort by chronological order
 packages = []                 # vendor packages to be replaced
-dirs = [] # 'resources/lang/default' for example
+dirs = ['resources/lang/de'] # 'resources/lang/default' for example
 
 # Auto setting
 release_date = Time.now.to_s
