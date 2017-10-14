@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Acelle\Model\Language;
 
 class AddGerman extends Migration
 {
@@ -12,7 +13,7 @@ class AddGerman extends Migration
      */
     public function up()
     {
-        if (\Acelle\Model\Language::where('code', 'de')->exists()) {
+        if (Language::where('code', 'de')->exists()) {
             return;
         }
         $newId = Language::max('id') + 1;
