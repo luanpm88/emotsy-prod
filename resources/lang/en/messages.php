@@ -1,4 +1,4 @@
-<?php return array(
+<?php return array (
   'datetime_format' => 'Y-m-d, H:i',
   'datetime_format_2' => 'Y-m-d, H:i:s',
   'time_format' => 'H:i',
@@ -2013,13 +2013,13 @@
   'payu.payu_base_url' => 'PayU Base URL',
   'payumoney.wording' => 'Fill out PayU Money method settings below. You can find those settings in your PayU Money dashboard.',
   'payment_method.payumoney.button' => '<i class="icon-credit-card"></i> Pay with PayU',
-  'payment_method_type_payumoney_button'=>'<i class="fa fa-money"></i> Pay with PayU',
+  'payment_method_type_payumoney_button' => '<i class="fa fa-money"></i> Pay with PayU',
   'purchasing_intro_payumoney' => 'Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card / Debit Card option
                 . Your plan price is: <a><strong>:price</strong></a>',
-  'pay_by_credit_debit_card'=>'Pay by Credit / Debit Card',
-  'firstname'=>'First Name',
+  'pay_by_credit_debit_card' => 'Pay by Credit / Debit Card',
+  'firstname' => 'First Name',
   'subscription_paid_finish_messages_failure' => '<h2 class="text-semibold mt-0 text-danger">Sorry!</h2>
         <p>You are <span class="text-bold text-danger">un-successfully</span> subscribed to the plan <span class="text-bold">:plan</span>. Now your account is not activated.<br />Let choose an action below for next step.</p>',
- 'payu.testing' => 'For Testing',
- 'payu.production' => 'For Production',
-);
+  'payu.testing' => 'For Testing',
+  'payu.production' => 'For Production',
+) ?>
