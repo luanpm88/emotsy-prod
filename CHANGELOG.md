@@ -1,3 +1,17 @@
+3.0.13 / 2017-10-15
+==================
+
+ * Fixed: JS issue with embedded form
+ * Fixed: subscriber listing API does not work correctly
+ * Fixed: SSL verification issue for system email
+ * Fixed: double subscription
+ * Fixed: quota tracker issue resulting in invalid credit deduction
+ * Fixed: do not send automation emails to unsubscribers
+ * Fixed: permission error while importing subscribers
+ * Added: support for PayUMoney
+ * Added: support uploading subscriber image
+ * Added: auto convert ISO-8859-1 to UTF-8 while importing subscribers
+
 3.0.12 / 2017-09-12
 ==================
 
