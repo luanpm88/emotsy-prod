@@ -509,7 +509,7 @@
   'sending_domain.created' => 'Absender Domain wurde erfolgreich erstellt',
   'sending_domain.updated' => 'Absender Domain wurde erfolgreich aktualisiert',
   'sending_domains.deleted' => 'Eine oder mehrere Absender Domains wurden erfolgreich gelöscht',
-  'sending_domain.wording' => 'Die Absender Domain wird verwendet, um den Absender zu bestätigen, dessen E-Mail-Adresse im <code> FROM </ code> -Header einer E-Mail erscheint. Fügen Sie Ihre eigenen verifizierten Absender-Domains hinzu, um E-Mails in Ihrem Namen oder im Namen Ihrer Organisation zu senden.',
+  'sending_domain.wording' => 'Die Absender Domain wird verwendet, um den Absender zu bestätigen, dessen E-Mail-Adresse im <code> FROM </code> -Header einer E-Mail erscheint. Fügen Sie Ihre eigenen verifizierten Absender-Domains hinzu, um E-Mails in Ihrem Namen oder im Namen Ihrer Organisation zu senden.',
   'sending_domain.dkim_wording' => 'DomainKeys Identified Mail (DKIM) ist eine Möglichkeit, Ihre E-Mail zu autorisieren oder zu signieren. Das erlaubt Ihnen, Verantwortung für Ihre E Mails zu übernehmen und wird verwendet, um legitime E-Mails von Spam- und Phishing-Kampagnen zu trennen. Fügen Sie den folgenden Datensatz zu Ihrer Domain-DNS hinzu, damit jede ausgehende E-Mail, deren <code> FROM </ code> E-Mail-Adresse mit der Domain übereinstimmt, signiert wird und vom Server des Empfängers überprüft werden kann.',
   'sending_domain.title' => 'Absender Domain',
   'sending_domain.dkim_title' => 'Domain DKIM Datensatz',
