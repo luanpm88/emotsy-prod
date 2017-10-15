@@ -18,17 +18,17 @@
         <div class="left">
             <h1>{{ $campaign->name }}: {{ trans('messages.build_template') }}</h1>
         </div>
-            
+
         <script>
             $(document).ready(function() {
-            
+
                 @foreach($elements as $element)
                     insertElement("{{ $element }}");
                 @endforeach
-            
+
             });
         </script>
-    
+
 @endsection
 
 @section('template_content')
@@ -53,5 +53,10 @@
             </div>
         </center>
     </content>
-    
+    <div class="image_upload_div">
+     <form action="{{url('/')}}/filemanager/upload.php" class="dropzone">
+        <input name="path" value="../source/59d3d6caafbf9/" type="hidden">
+        <input name="path_thumb" value="../thumbs/59d3d6caafbf9/" type="hidden">
+    </form>
+  </div>
 @endsection

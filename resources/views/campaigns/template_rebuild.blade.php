@@ -18,7 +18,7 @@
         <div class="left">
             <h1>{{ $campaign->name }}: {{ trans('messages.build_template') }}</h1>
         </div>
-    
+
 @endsection
 
 @section('template_content')

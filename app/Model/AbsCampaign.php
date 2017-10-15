@@ -221,13 +221,13 @@ abstract class AbsCampaign extends Model
      */
     public function getListsSegments()
     {
-        if($this->isAuto()) {
+        if ($this->isAuto()) {
             return $this->autoEvent()->automation->getListsSegments();
         }
 
         $lists_segments = $this->listsSegments;
 
-        if($lists_segments->isEmpty()) {
+        if ($lists_segments->isEmpty()) {
             $lists_segment = new CampaignsListsSegment();
             $lists_segment->campaign_id = $this->id;
             $lists_segment->is_default = true;
@@ -245,25 +245,25 @@ abstract class AbsCampaign extends Model
      */
     public function getListsSegmentsGroups()
     {
-        if($this->isAuto()) {
+        if ($this->isAuto()) {
             return $this->autoEvent()->automation->getListsSegmentsGroups();
         }
 
         $lists_segments = $this->getListsSegments();
         $groups = [];
 
-        foreach($lists_segments as $lists_segment) {
-            if(!isset($groups[$lists_segment->mail_list_id])) {
+        foreach ($lists_segments as $lists_segment) {
+            if (!isset($groups[$lists_segment->mail_list_id])) {
                 $groups[$lists_segment->mail_list_id] = [];
                 $groups[$lists_segment->mail_list_id]['list'] = $lists_segment->mailList;
-                if($this->default_mail_list_id == $lists_segment->mail_list_id) {
+                if ($this->default_mail_list_id == $lists_segment->mail_list_id) {
                     $groups[$lists_segment->mail_list_id]['is_default'] = true;
                 } else {
                     $groups[$lists_segment->mail_list_id]['is_default'] = false;
                 }
                 $groups[$lists_segment->mail_list_id]['segment_uids'] = [];
             }
-            if(is_object($lists_segment->segment) && !in_array($lists_segment->segment->uid, $groups[$lists_segment->mail_list_id]['segment_uids'])) {
+            if (is_object($lists_segment->segment) && !in_array($lists_segment->segment->uid, $groups[$lists_segment->mail_list_id]['segment_uids'])) {
                 $groups[$lists_segment->mail_list_id]['segment_uids'][] = $lists_segment->segment->uid;
             }
         }
@@ -294,7 +294,7 @@ abstract class AbsCampaign extends Model
             $message->setContentType('text/plain; charset=utf-8');
         }
 
-        foreach($customHeaders as $key => $value) {
+        foreach ($customHeaders as $key => $value) {
             $message->getHeaders()->addTextHeader($key, $value);
         }
 
@@ -319,7 +319,8 @@ abstract class AbsCampaign extends Model
             $message = $this->sign($message);
         }
 
-        // @todo attachment
+        //@todo attach function used for any attachment of Campaign
+        //$message->attach(\Swift_Attachment::fromPath(public_path().'/source/59de14e2708c7/process.png')->setFilename('myfilename.jpg'));
         //$message->attach(Swift_Attachment::fromPath('/tmp/gaugau.csv'));
         return array($message, $msgId);
     }
@@ -329,7 +330,8 @@ abstract class AbsCampaign extends Model
      *
      * @return mixed
      */
-    public static function resetMaxExecutionTime() {
+    public static function resetMaxExecutionTime()
+    {
         try {
             set_time_limit(0);
             ini_set('max_execution_time', 0);
@@ -445,7 +447,8 @@ abstract class AbsCampaign extends Model
      *
      * @return String
      */
-    public function getSubject($subscriber, $msgId) {
+    public function getSubject($subscriber, $msgId)
+    {
         return $this->tagMessage($this->subject, $subscriber, $msgId, null);
     }
 
@@ -466,7 +469,8 @@ abstract class AbsCampaign extends Model
      *
      * @return Hash list of custom headers
      */
-    public function getCustomHeaders($subscriber, $server) {
+    public function getCustomHeaders($subscriber, $server)
+    {
         $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email));
 
         return array(
@@ -485,7 +489,8 @@ abstract class AbsCampaign extends Model
      *
      * @return String
      */
-    public function getHtmlContent($subscriber, $msgId, $server = null) {
+    public function getHtmlContent($subscriber, $msgId, $server = null)
+    {
         // @note: IMPORTANT: the order must be as follows
         // * addTrackingURL
         // * appendOpenTrackingUrl
@@ -518,7 +523,8 @@ abstract class AbsCampaign extends Model
      *
      * @return String
      */
-    public function getPlainContent($subscriber, $msgId, $server = null) {
+    public function getPlainContent($subscriber, $msgId, $server = null)
+    {
         $plain = $this->tagMessage($this->plain, $subscriber, $msgId, $server);
         return $plain;
     }
@@ -718,7 +724,7 @@ abstract class AbsCampaign extends Model
      */
     public function unsubscribe_url_valid()
     {
-        if($this->type != 'plain-text' &&
+        if ($this->type != 'plain-text' &&
            \Auth::user()->customer->getOption('unsubscribe_url_required') == 'yes' &&
             strpos($this->html, '{UNSUBSCRIBE_URL}') == false
         ) {
@@ -768,7 +774,7 @@ abstract class AbsCampaign extends Model
 
         // Step 5
         // @todo: consider removing this check!
-        if ( is_object($this->subscribers([], [])->limit(1)->first()) ) {
+        if (is_object($this->subscribers([], [])->limit(1)->first())) {
             $step = 5;
         } else {
             return $step;
@@ -788,7 +794,7 @@ abstract class AbsCampaign extends Model
         $query = self::where('customer_id', '=', $customer->id);
 
         // Get campaign from ... (all|normal|automated)
-        if($request->source == 'template') {
+        if ($request->source == 'template') {
             $query = $query->where('html', '!=', null);
         } else {
             $query = $query->where('is_auto', '=', false);
@@ -1532,7 +1538,7 @@ abstract class AbsCampaign extends Model
                 // if the link contains UNSUBSCRIBE URL tag
                 if (strpos($href, '{UNSUBSCRIBE_URL}') !== false) {
                     // just do nothing
-                } else if (preg_match("/{[A-Z0-9_]+}/", $href)) {
+                } elseif (preg_match("/{[A-Z0-9_]+}/", $href)) {
                     // just skip if the url contains a tag. For example: {UPDATE_PROFILE_URL}
                     // @todo: do we track these clicks?
                 } else {
@@ -1627,13 +1633,14 @@ abstract class AbsCampaign extends Model
 
             // build the message from campaign information
             list($message, $msgId) = $this->prepareEmail($subscriber, $server);
-
+            //  print_r($message);
+            //  die;
             // actually send
             // @todo consider using queue here
             $result = $server->send($message);
 
             // examine the result from sending server
-            if(array_has($result, 'error')) {
+            if (array_has($result, 'error')) {
                 throw new \Exception($result['error']);
             }
 
@@ -1714,7 +1721,8 @@ abstract class AbsCampaign extends Model
      *
      * @param Object $object
      */
-    public function isStdClassSubscriber($object) {
+    public function isStdClassSubscriber($object)
+    {
         return (get_class($object) == 'stdClass');
     }
 
@@ -1723,7 +1731,8 @@ abstract class AbsCampaign extends Model
      *
      * @param void
      */
-    public function getInfoFromMailList($list) {
+    public function getInfoFromMailList($list)
+    {
         $this->from_name = !empty($this->from_name) ? $this->from_name : $list->from_name;
         $this->from_email = !empty($this->from_email) ? $this->from_email : $list->from_email;
         $this->subject = !empty($this->subject) ? $this->subject : $list->default_subject;
@@ -1778,7 +1787,7 @@ abstract class AbsCampaign extends Model
             'lists_segments' => 'required'
         ];
 
-        if(isset($params['lists_segments'])) {
+        if (isset($params['lists_segments'])) {
             foreach ($params['lists_segments'] as $key => $param) {
                 $rules['lists_segments.'.$key.'.mail_list_uid'] = 'required';
             }
@@ -1794,26 +1803,26 @@ abstract class AbsCampaign extends Model
      */
     public function fillRecipients($params=[])
     {
-        if(isset($params['lists_segments'])) {
+        if (isset($params['lists_segments'])) {
             foreach ($params['lists_segments'] as $key => $param) {
                 $mail_list = null;
 
-                if(!empty($param['mail_list_uid'])) {
+                if (!empty($param['mail_list_uid'])) {
                     $mail_list = MailList::findByUid($param['mail_list_uid']);
 
                     // default mail list id
-                    if(isset($param['is_default']) && $param['is_default'] == 'true') {
+                    if (isset($param['is_default']) && $param['is_default'] == 'true') {
                         $this->default_mail_list_id = $mail_list->id;
                     }
                 }
 
-                if(!empty($param['segment_uids'])) {
+                if (!empty($param['segment_uids'])) {
                     foreach ($param['segment_uids'] as $segment_uid) {
                         $segment = Segment::findByUid($segment_uid);
 
                         $lists_segment = new CampaignsListsSegment();
                         $lists_segment->campaign_id = $this->id;
-                        if(is_object($mail_list)) {
+                        if (is_object($mail_list)) {
                             $lists_segment->mail_list_id = $mail_list->id;
                         }
                         $lists_segment->segment_id = $segment->id;
@@ -1822,7 +1831,7 @@ abstract class AbsCampaign extends Model
                 } else {
                     $lists_segment = new CampaignsListsSegment();
                     $lists_segment->campaign_id = $this->id;
-                    if(is_object($mail_list)) {
+                    if (is_object($mail_list)) {
                         $lists_segment->mail_list_id = $mail_list->id;
                     }
                     $this->listsSegments->push($lists_segment);
@@ -1846,9 +1855,9 @@ abstract class AbsCampaign extends Model
         $lists_segments_groups = $this->getListsSegmentsGroups();
 
         $data = [];
-        foreach($lists_segments_groups as $lists_segments_group) {
-            if(!empty($lists_segments_group['segment_uids'])) {
-                foreach($lists_segments_group['segment_uids'] as $segment_uid) {
+        foreach ($lists_segments_groups as $lists_segments_group) {
+            if (!empty($lists_segments_group['segment_uids'])) {
+                foreach ($lists_segments_group['segment_uids'] as $segment_uid) {
                     $segment = Segment::findByUid($segment_uid);
                     $data[] = [
                         'campaign_id' => $this->id,
@@ -1860,7 +1869,7 @@ abstract class AbsCampaign extends Model
                 $data[] = [
                     'campaign_id' => $this->id,
                     'mail_list_id' => $lists_segments_group['list']->id,
-                    'segment_id' => NULL,
+                    'segment_id' => null,
                 ];
             }
         }
@@ -1884,23 +1893,23 @@ abstract class AbsCampaign extends Model
      */
     public function displayRecipients()
     {
-        if(!is_object($this->defaultMailList)) {
+        if (!is_object($this->defaultMailList)) {
             return "";
         }
 
         $lines = [];
-        foreach($this->getListsSegmentsGroups() as $lists_segments_group) {
+        foreach ($this->getListsSegmentsGroups() as $lists_segments_group) {
             $list_name = $lists_segments_group['list']->name;
 
             $segment_names = [];
-            if(!empty($lists_segments_group['segment_uids'])) {
-                foreach($lists_segments_group['segment_uids'] as $segment_uid) {
+            if (!empty($lists_segments_group['segment_uids'])) {
+                foreach ($lists_segments_group['segment_uids'] as $segment_uid) {
                     $segment = Segment::findByUid($segment_uid);
                     $segment_names[] = $segment->name;
                 }
             }
 
-            if(empty($segment_names)) {
+            if (empty($segment_names)) {
                 $lines[] = $list_name;
             } else {
                 $lines[] = implode(': ', [$list_name, implode(', ', $segment_names)]);
@@ -1930,28 +1939,28 @@ abstract class AbsCampaign extends Model
         // cache indexes
         $index = [
             // @note: SubscriberCount must come first as its value shall be used by the others
-            'SubscriberCount' => function(&$campaign) {
+            'SubscriberCount' => function (&$campaign) {
                 return $campaign->subscribersCount(false); // spepcial key that requires true update
             },
-            'DeliveredRate' => function(&$campaign) {
+            'DeliveredRate' => function (&$campaign) {
                 return $campaign->deliveredRate(true);
             },
-            'DeliveredCount' => function(&$campaign) {
+            'DeliveredCount' => function (&$campaign) {
                 return $campaign->deliveredCount();
             },
-            'ClickedRate' => function(&$campaign) {
+            'ClickedRate' => function (&$campaign) {
                 return $campaign->clickedEmailsRate();
             },
-            'UniqOpenRate' => function(&$campaign) {
+            'UniqOpenRate' => function (&$campaign) {
                 return $campaign->openUniqRate();
             },
-            'UniqOpenCount' => function(&$campaign) {
+            'UniqOpenCount' => function (&$campaign) {
                 return $campaign->openUniqCount();
             },
-            'NotOpenRate' => function(&$campaign) {
+            'NotOpenRate' => function (&$campaign) {
                 return $campaign->notOpenRate(true);
             },
-            'NotOpenCount' => function(&$campaign) {
+            'NotOpenCount' => function (&$campaign) {
                 return $campaign->notOpenCount(true);
             }
         ];
@@ -1964,7 +1973,7 @@ abstract class AbsCampaign extends Model
 
         if (is_null($key)) {
             // update all cache
-            foreach($index as $key => $callback) {
+            foreach ($index as $key => $callback) {
                 $cache[$key] = $callback($this);
                 if ($key == 'SubscriberCount') {
                     // SubscriberCount cache must always be updated as its value will be used for the others
@@ -2036,7 +2045,7 @@ abstract class AbsCampaign extends Model
             $query = $query->where('open_logs.created_at', '<=', $end);
         }
 
-        return $query->orderBy('open_logs.created_at', 'asc')->get()->groupBy(function($date) {
+        return $query->orderBy('open_logs.created_at', 'asc')->get()->groupBy(function ($date) {
             return \Acelle\Library\Tool::dateTime($date->created_at)->format('H'); // grouping by hours
         });
     }
@@ -2057,7 +2066,7 @@ abstract class AbsCampaign extends Model
             $query = $query->where('click_logs.created_at', '<=', $end);
         }
 
-        return $query->orderBy('click_logs.created_at', 'asc')->get()->groupBy(function($date) {
+        return $query->orderBy('click_logs.created_at', 'asc')->get()->groupBy(function ($date) {
             return \Acelle\Library\Tool::dateTime($date->created_at)->format('H'); // grouping by hours
         });
     }

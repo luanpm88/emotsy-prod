@@ -10,6 +10,7 @@
     <link href="{{ URL::asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
 
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/builder.css') }}" />
+    <link rel="stylesheet" type="text/css" href="{{ URL::asset('assets/js/plugins/dropzone/css/dropzone.css') }}" />
     <!--[if (gte mso 9)|(IE)]>
     <style type="text/css">
         table {border-collapse: collapse;}
@@ -30,6 +31,7 @@
 
     <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/builder.js') }}"></script>
+      <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/dropzone/js/dropzone.js') }}"></script>
 
     @include('layouts._script_vars')
 
@@ -478,6 +480,10 @@
             <!--<div class="block tool-item" template="button">
                 <i class="icon-newspaper"></i>
                 <label>{{ trans('messages.button') }}</label>
+            </div>-->
+            <!--<div class="block tool-item" template="file_attachment">
+                <i class="icon-newspaper"></i>
+                <label>{{ trans('messages.dropfile') }}</label>
             </div>-->
         </div>
     </toolbox>
