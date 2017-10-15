@@ -260,7 +260,7 @@ class PlanController extends Controller
         }
 
         // prevent action from demo mod
-        if($this->isDemoMode()) {
+        if ($this->isDemoMode()) {
             return $this->notAuthorized();
         }
 
@@ -478,5 +478,26 @@ class PlanController extends Controller
         $result['pie'] = 1;
 
         return json_encode($result);
+    }
+
+    /**
+     * Copy plans.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function copy(Request $request)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($request->copy_plan_uid);
+
+        // authorize
+        if (\Gate::denies('copy', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        $plan->copy($request->copy_plan_name);
+
+        echo trans('messages.plan.copied');
     }
 }

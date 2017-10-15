@@ -2022,4 +2022,8 @@
         <p>You are <span class="text-bold text-danger">un-successfully</span> subscribed to the plan <span class="text-bold">:plan</span>. Now your account is not activated.<br />Let choose an action below for next step.</p>',
  'payu.testing' => 'For Testing',
  'payu.production' => 'For Production',
+ 'what_would_you_like_to_name_your_plan' => 'What would you like to name your Plan?',
+ 'copy_of_plan' => 'Copy of :name',
+ 'name_new_plan' => 'Name your new plan',
+ 'plan.copied' => 'Plan was successfully copied',
 );

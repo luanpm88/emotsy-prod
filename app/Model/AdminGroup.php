@@ -95,7 +95,7 @@ class AdminGroup extends Model
             $query = $query->where('name', 'like', '%'.$request->keyword.'%');
         }
 
-        if(!empty($request->creator_id)) {
+        if (!empty($request->creator_id)) {
             $query = $query->where('admin_groups.creator_id', '=', $request->creator_id);
         }
 
@@ -112,7 +112,7 @@ class AdminGroup extends Model
     {
         $query = self::filter($request);
 
-        if(!empty($request->sort_order)) {
+        if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
@@ -139,7 +139,7 @@ class AdminGroup extends Model
      *
      * @return array
      */
-    public static function getSelectOptions($admin = NULL)
+    public static function getSelectOptions($admin = null)
     {
         $query = self::getAll();
 
@@ -199,6 +199,7 @@ class AdminGroup extends Model
             'plan_create' => 'yes',
             'plan_update' => 'own',
             'plan_delete' => 'own',
+            'plan_copy' => 'all',
             'payment_method_read' => 'own',
             'payment_method_create' => 'yes',
             'payment_method_update' => 'own',
@@ -441,6 +442,13 @@ class AdminGroup extends Model
                     ],
                 ],
                 'delete' => [
+                    'options' => [
+                        ['value' => 'no', 'text' => trans('messages.no')],
+                        ['value' => 'own', 'text' => trans('messages.own')],
+                        ['value' => 'all', 'text' => trans('messages.all')],
+                    ],
+                ],
+                'copy' => [
                     'options' => [
                         ['value' => 'no', 'text' => trans('messages.no')],
                         ['value' => 'own', 'text' => trans('messages.own')],
@@ -817,8 +825,8 @@ class AdminGroup extends Model
         } else {
             $defaul_options = self::defaultOptions();
             $saved_options = json_decode($this->options, true);
-            foreach($defaul_options as $x => $group) {
-                if(isset($saved_options[$x])) {
+            foreach ($defaul_options as $x => $group) {
+                if (isset($saved_options[$x])) {
                     $defaul_options[$x] = $saved_options[$x];
                 }
             }
@@ -838,8 +846,8 @@ class AdminGroup extends Model
         } else {
             $defaul_permissions = self::defaultPermissions();
             $saved_permissions = json_decode($this->permissions, true);
-            foreach($defaul_permissions as $x => $permission) {
-                if(isset($saved_permissions[$x])) {
+            foreach ($defaul_permissions as $x => $permission) {
+                if (isset($saved_permissions[$x])) {
                     $defaul_permissions[$x] = $saved_permissions[$x];
                 }
             }

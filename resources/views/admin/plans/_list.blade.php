@@ -56,7 +56,7 @@
                     @can('update', $plan)
                         <a href="{{ action('Admin\PlanController@edit', $plan->uid) }}" type="button" class="btn bg-grey btn-icon"> <i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
                     @endcan
-                    @if (\Auth::user()->can('delete', $plan) || \Auth::user()->can('disable', $plan) || \Auth::user()->can('enable', $plan))
+                    @if (\Auth::user()->can('delete', $plan) || \Auth::user()->can('disable', $plan) || \Auth::user()->can('enable', $plan) || \Auth::user()->can('copy', $plan))
                         <div class="btn-group">
                             <button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
                             <ul class="dropdown-menu dropdown-menu-right">
@@ -74,6 +74,13 @@
                                         </a>
                                     </li>
                                 @endif
+                                 @can('copy', $plan)
+                                    <li>
+                                        <a data-name="{{$plan->name}}" data-uid="{{$plan->uid}}" title="{{ trans('messages.copy') }}" class="copy-plan-link">
+                                            <i class="icon icon-copy4"></i> {{ trans('messages.copy') }}
+                                        </a>
+                                    </li>
+                                  @endcan
                                 @can('delete', $plan)
                                     <li>
                                         <a list-delete-confirm="{{ action('Admin\PlanController@deleteConfirm', ['uids' => $plan->uid]) }}" href="{{ action('Admin\PlanController@delete', ['uids' => $plan->uid]) }}" title="{{ trans('messages.delete') }}" class="">

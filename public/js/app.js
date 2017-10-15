@@ -1829,4 +1829,43 @@ $(function() {
         });
 
     });
+    // copy Plan
+    $(document).on('click', '.copy-plan-link', function(e) {
+        var uid = $(this).attr("data-uid");
+        var name = $(this).attr("data-name");
+        $('input[name=copy_plan_uid]').val(uid);
+        $('input[name=copy_plan_name]').val(name);
+        $('#copy_plan').modal("show");
+    });
+
+    // Ajax copy campaign
+    $(".ajax_copy_plan_form").submit(function(e) {
+        var url = $(this).attr("action");
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: $(".ajax_copy_plan_form").serialize(), // serializes the form's elements.
+            success: function(msg)
+            {
+                tableFilter($(".listing-form"));
+                if(msg != '') {
+                    swal({
+                        title: msg,
+                        text: "",
+                        confirmButtonColor: "#00695C",
+                        type: "success",
+                        allowOutsideClick: true,
+                        confirmButtonText: LANG_OK,
+                        customClass: "swl-success",
+                        html: true
+                    });
+                }
+            }
+        });
+
+        $(".copy-plan-close").trigger("click");
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+
 });
