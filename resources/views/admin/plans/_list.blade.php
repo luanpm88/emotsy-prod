@@ -76,7 +76,7 @@
                                 @endif
                                  @can('copy', $plan)
                                     <li>
-                                        <a data-name="{{$plan->name}}" data-uid="{{$plan->uid}}" title="{{ trans('messages.copy') }}" class="copy-plan-link">
+                                        <a data-name="{{'Copy of '}}{{$plan->name}}" data-uid="{{$plan->uid}}" title="{{ trans('messages.copy') }}" class="copy-plan-link">
                                             <i class="icon icon-copy4"></i> {{ trans('messages.copy') }}
                                         </a>
                                     </li>
