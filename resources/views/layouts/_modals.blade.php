@@ -477,3 +477,44 @@
 		</div>
 	</div>
 	<!-- /basic modal -->
+
+
+  <a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#copy_plan"></a>
+  <!-- Basic modal -->
+  <div id="copy_plan" class="modal fade">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header bg-teal">
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+          <h4 class="modal-title">{{ trans('messages.name_new_plan') }}</h4>
+        </div>
+        <form action="{{ action('Admin\PlanController@copy') }}" method="POST" class="ajax_copy_plan_form form-validate-jquery">
+          {{ csrf_field() }}
+          <input type="hidden" name="copy_plan_uid" />
+
+          <div class="modal-body">
+
+            @include('helpers.form_control', [
+              'type' => 'text',
+              'name' => 'copy_plan_name',
+              'value' => '',
+              'label' => trans('messages.what_would_you_like_to_name_your_plan'),
+              'options' => Acelle\Library\Tool::timeUnitOptions(),
+              'include_blank' => trans('messages.choose'),
+              'help_class' => 'campaign',
+              'rules' => ['copy_plan_name' => 'required']
+            ])
+
+
+            <div class="text-right">
+              <button type="submit" class="btn btn-info bg-teal-600 mr-5">{{ trans('messages.copy') }}</button>
+              <button type="button" class="btn btn-default ml-0 copy-plan-close" data-dismiss="modal">{{ trans('messages.close') }}</button>
+            </div>
+
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+  <!-- /basic modal -->

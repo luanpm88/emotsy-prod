@@ -67,7 +67,7 @@ class Plan extends Model
             }
         }
 
-        if($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
+        if ($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
             $rules['options.sending_server_subaccount_uid'] = 'required';
         }
 
@@ -90,7 +90,7 @@ class Plan extends Model
             'color' => 'required',
         );
 
-        if($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
+        if ($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
             $rules['options.sending_server_subaccount_uid'] = 'required';
         }
 
@@ -192,7 +192,7 @@ class Plan extends Model
         // filters
         $filters = $request->filters;
 
-        if(!empty($request->admin_id)) {
+        if (!empty($request->admin_id)) {
             $query = $query->where('plans.admin_id', '=', $request->admin_id);
         }
 
@@ -329,8 +329,8 @@ class Plan extends Model
         } else {
             $defaul_options = self::defaultOptions();
             $saved_options = json_decode($this->options, true);
-            foreach($defaul_options as $x => $group) {
-                if(isset($saved_options[$x])) {
+            foreach ($defaul_options as $x => $group) {
+                if (isset($saved_options[$x])) {
                     $defaul_options[$x] = $saved_options[$x];
                 }
             }
@@ -524,7 +524,8 @@ class Plan extends Model
      *
      * @return array
      */
-    public static function select2($request) {
+    public static function select2($request)
+    {
         $data = ['items' => [], 'more' => true];
 
         $query = \Acelle\Model\Plan::getAllActive()->orderBy('custom_order', 'asc');
@@ -547,12 +548,12 @@ class Plan extends Model
         return json_encode($data);
     }
 
-     /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function getAllActiveWithDefault($admin = NULL)
+    /**
+    * Get all items.
+    *
+    * @return collect
+    */
+    public static function getAllActiveWithDefault($admin = null)
     {
         $query = Plan::getAll()
             ->where("plans.status", "=", Plan::STATUS_ACTIVE);
@@ -571,7 +572,7 @@ class Plan extends Model
      *
      * @return collect
      */
-    public static function getAllActive($admin = NULL)
+    public static function getAllActive($admin = null)
     {
         $query = Plan::getAllActiveWithDefault()->where("plans.is_default", "=", false);
 
@@ -701,7 +702,7 @@ class Plan extends Model
         } else {
             return $this->getOption("email_verification_servers_max");
         }
-	}
+    }
 
     /**
      * Check if plan is default.
@@ -742,5 +743,19 @@ class Plan extends Model
             }
         }
         $this->options = json_encode($dbOptions);
+    }
+
+    /**
+     * Copy new plan.
+     */
+    public function copy($name)
+    {
+        $copy = $this->replicate(['cache', 'last_error', 'run_at']);
+        $copy->name = $name;
+        $copy->created_at = \Carbon\Carbon::now();
+        $copy->updated_at = \Carbon\Carbon::now();
+        $copy->status = PaymentMethod::STATUS_ACTIVE;
+        $copy->custom_order = 0;
+        $copy->save();
     }
 }

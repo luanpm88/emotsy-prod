@@ -25,7 +25,7 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 
 class Language extends Model
-{    
+{
     /**
      * Get users.
      *
@@ -35,7 +35,27 @@ class Language extends Model
     {
         return $this->hasMany('Acelle\Model\User');
     }
-    
+
+    /**
+     * Customer association
+     *
+     * @return mixed
+     */
+    public function customers()
+    {
+        return $this->hasMany('Acelle\Model\Customer');
+    }
+
+    /**
+     * Admin association
+     *
+     * @return mixed
+     */
+    public function admins()
+    {
+        return $this->hasMany('Acelle\Model\Admin');
+    }
+
     /**
      * Language folder path.
      *
@@ -45,7 +65,7 @@ class Language extends Model
     {
         return base_path("resources/lang/" . $this->code . "/");
     }
-    
+
     /**
      * Get all languages.
      *
@@ -153,10 +173,10 @@ class Language extends Model
             }
             $item->uid = $uid;
         });
-        
+
         // After created
         static::created(function ($item) {
-            // Create language folder if not exists            
+            // Create language folder if not exists
             $des = $item->languageDir();
             if (!file_exists($des)) {
                 $oldmask = umask(0);
@@ -164,25 +184,26 @@ class Language extends Model
                 $sou = Language::getDefaultLanguage()->languageDir();
                 \Acelle\Library\Tool::xcopy($sou, $des);
                 umask($oldmask);
-                
+
             }
         });
-        
+
         // While deleting
         static::deleting(function ($item) {
-            // Change deleting language's users to the default langauge            
+            // Change deleting language's users to the default langauge
             $default_language = Language::getIsDefaultLanguage();
-            $item->users()->update(['language_id' => $default_language->id]);
+            $item->customers()->update(['language_id' => $default_language->id]);
+            $item->admins()->update(['language_id' => $default_language->id]);
         });
-        
+
         // After deleted
         static::deleted(function ($item) {
-            // Create language folder if not exists            
+            // Create language folder if not exists
             $des = $item->languageDir();
             if (file_exists($des)) {
                 \Acelle\Library\Tool::xdelete($des);
             }
-        });        
+        });
     }
 
     /**
@@ -206,7 +227,7 @@ class Language extends Model
             'code' => 'required|unique:languages,code,'.$this->id,
         ];
     }
-    
+
     /**
      * Get default language.
      *
@@ -219,7 +240,7 @@ class Language extends Model
             'code' => "default",
         ]);
     }
-    
+
     /**
      * Get is default language.
      *
@@ -229,7 +250,7 @@ class Language extends Model
     {
         return \Acelle\Model\Language::where("is_default", "=", true)->first();
     }
-    
+
     /**
      * Get locale array from file.
      *
@@ -240,7 +261,7 @@ class Language extends Model
         $arr = \File::getRequire($this->languageDir() . $filename . '.php');
         return $arr;
     }
-    
+
     /**
      * Read locale file.
      *
@@ -251,7 +272,7 @@ class Language extends Model
         $text = \File::get($this->languageDir() . $filename . '.php');
         return $text;
     }
-    
+
     /**
      * Read locale file.
      *
@@ -262,7 +283,7 @@ class Language extends Model
         $text = $this->readLocaleFile($filename);
         return yaml_parse($text);
     }
-    
+
     /**
      * Update language file from yaml.
      *
@@ -273,7 +294,7 @@ class Language extends Model
         $content = '<?php return ' . var_export(\Yaml::parse($yaml), true) . ' ?>';
         $bytes_written = \File::put($this->languageDir() . $filename . ".php", $content);
     }
-    
+
     /**
      * all language code.
      *
@@ -467,7 +488,7 @@ class Language extends Model
             'zh' => 'Chinese',
             'zu' => 'Zulu',
         );
-        
+
         $result = [];
         foreach($arr as $key => $name) {
             $result[] = [
@@ -475,10 +496,10 @@ class Language extends Model
                 'value' => $key
             ];
         }
-        
+
         return $result;
     }
-    
+
     /**
      * Disable language
      *
@@ -489,7 +510,7 @@ class Language extends Model
         $this->status = "inactive";
         $this->save();
     }
-    
+
     /**
      * Enable language
      *

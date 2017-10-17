@@ -646,7 +646,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/plans/disable', 'PlanController@disable');
     Route::get('admin/plans/enable', 'PlanController@enable');
     Route::resource('admin/plans', 'PlanController');
-
+    Route::post('admin/plans/copy', 'PlanController@copy');
     // Currency
     Route::get('admin/currencies/select2', 'CurrencyController@select2');
     Route::get('admin/currencies/listing/{page?}', 'CurrencyController@listing');
