@@ -32,6 +32,7 @@ use Carbon\Carbon;
 use Acelle\Model\SystemJob;
 use Acelle\Exceptions\CampaignPausedException;
 use Acelle\Exceptions\CampaignErrorException;
+use File;
 
 abstract class AbsCampaign extends Model
 {
@@ -320,8 +321,13 @@ abstract class AbsCampaign extends Model
         }
 
         //@todo attach function used for any attachment of Campaign
-        //$message->attach(\Swift_Attachment::fromPath(public_path().'/source/59de14e2708c7/process.png')->setFilename('myfilename.jpg'));
-        //$message->attach(Swift_Attachment::fromPath('/tmp/gaugau.csv'));
+        $path_campaign=public_path().'/campaign_attachment'.'/'.$this->uid;
+        if (is_dir($path_campaign)) {
+            $files = File::allFiles($path_campaign);
+            foreach ($files as $file) {
+                $message->attach(\Swift_Attachment::fromPath((string)$file));
+            }
+        }
         return array($message, $msgId);
     }
 
@@ -1633,8 +1639,8 @@ abstract class AbsCampaign extends Model
 
             // build the message from campaign information
             list($message, $msgId) = $this->prepareEmail($subscriber, $server);
-            //  print_r($message);
-            //  die;
+            //print_r($message);
+            //die;
             // actually send
             // @todo consider using queue here
             $result = $server->send($message);
@@ -2069,5 +2075,11 @@ abstract class AbsCampaign extends Model
         return $query->orderBy('click_logs.created_at', 'asc')->get()->groupBy(function ($date) {
             return \Acelle\Library\Tool::dateTime($date->created_at)->format('H'); // grouping by hours
         });
+    }
+    public function fileInfo($filePath)
+    {
+        $name = $filePath['filename'];
+        $extension = $filePath['extension'];
+        return $name.'.'.$extension;
     }
 }

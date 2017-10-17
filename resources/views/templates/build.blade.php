@@ -17,17 +17,17 @@
         <div class="right">
             
         </div>
-            
+
         <script>
             $(document).ready(function() {
-            
+
                 @foreach($elements as $element)
                     insertElement("{{ $element }}");
                 @endforeach
-            
+
             });
         </script>
-    
+
 @endsection
 
 @section('template_content')
@@ -52,5 +52,5 @@
             </div>
         </center>
     </content>
-    
+
 @endsection

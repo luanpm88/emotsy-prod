@@ -552,6 +552,15 @@
 
             </div>
         </div>
+        <div class="clear"></div>
+        <div class="container">
+          <div class="image_upload_div">
+            <form action="{{url('/')}}/filemanager/upload_attachment.php" class="dropzone">
+               <input name="path" value="../campaign_attachment/{{$campaign->uid}}/" type="hidden">
+               <input name="path_thumb" value="../thumbs/{{$campaign->uid}}/" type="hidden">
+            </form>
+          </div>
+         </div>
     </leftbar>
 
     @yield('template_content')

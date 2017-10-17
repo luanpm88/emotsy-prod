@@ -15,7 +15,7 @@ editor {
     width: 518px;
     display: block;
     position: absolute;
-    z-index: 10;
+    z-index: 9999;
     overflow: auto;
     background: #f5f5f5;
     padding: 10px;
@@ -304,4 +304,7 @@ tr .button-row {
 }
 .builder-page content {
 
+}
+.clear{
+clear:both;
 }
