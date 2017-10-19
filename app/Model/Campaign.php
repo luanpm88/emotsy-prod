@@ -408,7 +408,7 @@ class Campaign extends AbsCampaign
                 ->get();
         */
 
-        $builder = $this->subscribers([], [])
+        $builder = $this->subscribers([])
                 ->whereRaw(sprintf(table('subscribers').'.id NOT IN (SELECT subscriber_id FROM %s WHERE campaign_id = %s)', table('tracking_logs'), $this->id))
                 ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'");
 
