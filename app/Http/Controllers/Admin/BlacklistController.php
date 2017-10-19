@@ -89,6 +89,7 @@ class BlacklistController extends Controller
             // authorize
             if ($request->user()->admin->can('delete', $blacklist)) {
                 // Log
+                $blacklist->delist();
                 $blacklist->delete();
             }
         }
