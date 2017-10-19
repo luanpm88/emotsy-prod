@@ -103,11 +103,11 @@ class Blacklist extends Model
         }
 
         // Other filter
-        if(!empty($request->customer_id)) {
+        if (!empty($request->customer_id)) {
             $query = $query->where('blacklists.customer_id', '=', $request->customer_id);
         }
 
-        if(!empty($request->admin_id)) {
+        if (!empty($request->admin_id)) {
             $query = $query->whereNull('customer_id');
         }
 
@@ -123,7 +123,7 @@ class Blacklist extends Model
     {
         $query = self::filter($request);
 
-        if(!empty($request->sort_order)) {
+        if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
@@ -142,7 +142,7 @@ class Blacklist extends Model
      *
      * @return collect
      */
-    public static function import($file, $system_job, $customer=NULL, $admin=NULL)
+    public static function import($file, $system_job, $customer=null, $admin=null)
     {
         $content = \File::get($file);
         $lines = preg_split('/\r\n|\r|\n/', $content);
