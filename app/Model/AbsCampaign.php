@@ -1890,20 +1890,22 @@ abstract class AbsCampaign extends Model
 
         $lines = [];
         foreach($this->getListsSegmentsGroups() as $lists_segments_group) {
-            $list_name = $lists_segments_group['list']->name;
-
-            $segment_names = [];
-            if(!empty($lists_segments_group['segment_uids'])) {
-                foreach($lists_segments_group['segment_uids'] as $segment_uid) {
-                    $segment = Segment::findByUid($segment_uid);
-                    $segment_names[] = $segment->name;
+            if (is_object($lists_segments_group['list'])) {
+                $list_name = $lists_segments_group['list']->name;            
+    
+                $segment_names = [];
+                if(!empty($lists_segments_group['segment_uids'])) {
+                    foreach($lists_segments_group['segment_uids'] as $segment_uid) {
+                        $segment = Segment::findByUid($segment_uid);
+                        $segment_names[] = $segment->name;
+                    }
                 }
-            }
-
-            if(empty($segment_names)) {
-                $lines[] = $list_name;
-            } else {
-                $lines[] = implode(': ', [$list_name, implode(', ', $segment_names)]);
+    
+                if(empty($segment_names)) {
+                    $lines[] = $list_name;
+                } else {
+                    $lines[] = implode(': ', [$list_name, implode(', ', $segment_names)]);
+                }
             }
         }
 
