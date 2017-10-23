@@ -416,4 +416,84 @@ class SegmentController extends Controller
             'index' => $request->index,
         ]);
     }
+
+
+    /**
+     * Export to csv.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function export(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('export', $list)) {
+            return $this->notAuthorized();
+        }
+        // Start system job
+        $job = new \Acelle\Jobs\ExportSegmentsJob($list, $request->user()->customer,$request->input("fields"));
+        $this->dispatch($job);
+
+        // Action Log
+        $list->log('export_started', $request->user()->customer);
+    }
+
+
+
+    /**
+     * Export to csv.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function viewExport(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('export', $list)) {
+            return $this->notAuthorized();
+        }
+
+        $system_jobs = $list->exportSegmentJobs();
+
+
+        // authorize
+        if (\Gate::denies('export', $list)) {
+            return $this->notAuthorized();
+        }
+        return view('segments.export', [
+            'list' => $list,
+            'system_jobs' => $system_jobs
+        ]);
+    }
+
+    /**
+     * Display a listing of subscriber import job.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function exportList(Request $request)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // authorize
+        if (\Gate::denies('export', $list)) {
+            return $this->notAuthorized();
+        }
+
+        $system_jobs = $list->exportSegmentJobs();
+        $system_jobs = $system_jobs->orderBy($request->sort_order, $request->sort_direction);
+        $system_jobs = $system_jobs->paginate($request->per_page);
+
+        return view('helpers._export_list', [
+            'system_jobs' => $system_jobs,
+            'list' => $list,
+            'label' => trans('messages.export_segments')
+        ]);
+    }
 }

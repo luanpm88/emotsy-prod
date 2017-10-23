@@ -690,6 +690,17 @@ class MailList extends Model
     }
 
     /**
+     * Get export segment jobs.
+     *
+     * @return number
+     */
+    public function exportSegmentJobs()
+    {
+        return \Acelle\Model\SystemJob::where("name", "=", "Acelle\Jobs\ExportSegmentsJob")
+            ->where("data", "like", "%\"mail_list_uid\":\"" . $this->uid . "\"%");
+    }
+
+    /**
      * Get last export job.
      *
      * @return number
@@ -800,6 +811,96 @@ class MailList extends Model
         // Action Log
         $list->log('export_success', $customer, ['count' => $success, 'error' => $error]);
     }
+
+
+    /**
+     * Export Segments.
+     *
+     * @return void
+     */
+    public static function exportSegments($list, $customer, $job)
+    {
+        // Info from job
+        $systemJob = $job->getSystemJob();
+        $directory = $job->getPath();
+
+        $file_path = $directory.'data.csv';
+
+        // Import to database
+        $total = $list->segmentsCount(); // no cache
+        $success = 0;
+        $error = 0;
+        $json = json_decode($systemJob->data);
+        $fields = preg_split("/,/",$json->fields);
+        $headers = $json->fields;
+        // write csv
+        $myfile = file_put_contents($file_path, $headers.PHP_EOL , FILE_APPEND | LOCK_EX);
+
+        $num = 100;
+        for($page = 0; $page <= ceil($total/$num); $page++) { // ceil($total/$num)
+            $data = [];
+            foreach ($list->segments()->skip($page*$num)->take($num)->get() as $key => $item) {
+                $cols = [];
+                foreach ($fields as $key2 => $field) {
+                    $value = $item->$field;
+                    $cols[] = $value;
+                }
+                $data[] = \Acelle\Library\Tool::arrayToCsv($cols, ',');
+
+                ++$success;
+            }
+
+            // write csv
+            $myfile = file_put_contents($file_path, implode("\r\n", $data).PHP_EOL , FILE_APPEND | LOCK_EX);
+
+            $content_cache = trans('messages.export_segments_statistics_line', [
+                'total' => $total,
+                'processed' => $success + $error,
+                'success' => $success,
+                'error' => $error,
+            ]);
+
+            // update system job
+            $systemJob->data = json_encode([
+                "mail_list_uid" => $list->uid,
+                "customer_id" => $customer->id,
+                "status" => "running",
+                "message" => $content_cache,
+                "total" => $total,
+                "success" => $success,
+                "error" => $error,
+                "percent" => round((($success + $error) / $total) * 100, 0),
+                "fields" => $json->fields
+            ]);
+            $systemJob->save();
+        }
+
+        $content_cache = trans('messages.export_segments_statistics_line', [
+            'total' => $total,
+            'processed' => $success + $error,
+            'success' => $success,
+            'error' => $error,
+        ]);
+
+        // update system job
+        $systemJob->data = json_encode([
+            "mail_list_uid" => $list->uid,
+            "customer_id" => $customer->id,
+            "status" => "done",
+            "message" => $content_cache,
+            "total" => $total,
+            "success" => $success,
+            "error" => $error,
+            "percent" => 100,
+            'fields' => $json->fields
+        ]);
+        $systemJob->save();
+
+        // Action Log
+        $list->log('export_success', $customer, ['count' => $success, 'error' => $error]);
+    }
+
+
 
     /**
      * Send subscription confirmation email to subscriber.
