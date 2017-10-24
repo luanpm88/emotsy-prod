@@ -207,6 +207,7 @@ class BlacklistController extends Controller
             // authorize
             if ($request->user()->customer->can('delete', $blacklist)) {
                 // Log
+                $blacklist->delist($request->user()->customer);
                 $blacklist->delete();
             }
         }

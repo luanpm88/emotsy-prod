@@ -79,24 +79,20 @@ if (!$escapeshellarg_enabled) {
     echo "ERROR: <strong>escapeshellarg()</strong> must be enabled.<br />";
     $valid = false;
 }
-// =============================
-if (!(file_exists('../storage/app') && is_dir('../storage/app') && (is_writable('../storage/app')))) {
-    echo "ERROR: The directory [/storage/app] must be writable by the web server.<br />";
-    $valid = false;
-}
-if (!(file_exists('../storage/framework') && is_dir('../storage/framework') && (is_writable('../storage/framework')))) {
-    echo "ERROR: The directory [/storage/framework] must be writable by the web server.<br />";
-    $valid = false;
-}
-if (!(file_exists('../storage/logs') && is_dir('../storage/logs') && (is_writable('../storage/logs')))) {
-    echo "ERROR: The directory [/storage/logs] must be writable by the web server.<br />";
-    $valid = false;
-}
-if (!(file_exists('../bootstrap/cache') && is_dir('../bootstrap/cache') && (is_writable('../bootstrap/cache')))) {
-    echo "ERROR: The directory [/bootstrap/cache] must be writable by the web server.<br />";
-    $valid = false;
+
+// check directory permission
+$dirs = [ 'storage/app', 'storage/framework', 'storage/logs', 'bootstrap/cache' ];
+foreach ($dirs as $dir) {
+    $basepath = pathinfo(__FILE__)['dirname'];
+    $path = "$basepath/$dir";
+    file_put_contents('/tmp/emo', $path);
+    if (!(file_exists($path) && is_dir($path) && is_writable($path))) {
+        echo "ERROR: The directory [{$dir}] must be writable by the web server.<br />";
+        $valid = false;
+    }
 }
 
+// just finish
 if($valid) {
     echo "ok";
 }

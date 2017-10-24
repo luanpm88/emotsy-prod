@@ -585,14 +585,13 @@ class Tool
      */
     public static function checkPHPBinPath($path) {
         $result = '';
-
         if (!file_exists($path) || !is_executable($path)) {
             return $result;
         }
 
         if(exec_enabled()) {
-            $exec_script = $path . " " . base_path() . "/php_bin_test.php";
-            $result = exec($exec_script);
+            $exec_script = $path . " " . base_path() . '/php_bin_test.php 2>&1';
+            $result = exec($exec_script, $output);
         } else {
             $result = 'ok';
         }
