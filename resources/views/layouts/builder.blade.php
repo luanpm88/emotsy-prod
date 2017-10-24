@@ -32,7 +32,6 @@
     <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/builder.js') }}"></script>
       <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/dropzone/js/dropzone.js') }}"></script>
-
     @include('layouts._script_vars')
 
 </head>
@@ -560,9 +559,45 @@
                <input name="path_thumb" value="../thumbs/{{$campaign->uid}}/" type="hidden">
             </form>
           </div>
+          <div>
+            <?php
+            $path_campaign=public_path().'/campaign_attachment'.'/'.$campaign->uid;
+            if (is_dir($path_campaign)) {
+                echo "Below are attachment list:- <br/>";
+                $ffs = scandir($path_campaign);
+
+                unset($ffs[array_search('.', $ffs, true)]);
+                unset($ffs[array_search('..', $ffs, true)]);
+
+                // prevent empty ordered elements
+                if (count($ffs) < 1) {
+                    return;
+                }
+
+                echo '<ol>';
+                foreach ($ffs as $k=>$ff) {
+                    echo '<li>'.$ff; ?>
+                    <form action="{{url('/')}}/filemanager/force_download_attachment.php" method="post" class="download-form" id="{{$k}}">
+					            <input name="path" value="{{$campaign->uid}}{{'/'}}" type="hidden">
+					            <input class="name_download" name="name" value="{{$ff}}" type="hidden">
+					            <a title="" class="tip-right" href="javascript:void('')" onclick="$('#{{$k}}').submit();" data-original-title="Download"><i class="icon-download"></i></a>
+											<a href="javascript:void('')" class="tip-left erase-button delete-file" title="" data-confirm="Are you sure you want to delete this file?" data-path="{{$ff}}" data-original-title="Erase">
+					               <i class="icon-trash "></i>
+					           </a>
+					          </form>
+                    <?php
+                    if (is_dir($path_campaign.'/'.$ff)) {
+                        listFolderFiles($path_campaign.'/'.$ff);
+                    }
+                    echo '</li>';
+                }
+                echo '</ol>';
+            }
+            ?>
+          </div>
          </div>
     </leftbar>
-
+	<!-- player div end -->
     @yield('template_content')
 
 </body>
