@@ -21,6 +21,6 @@
 
     <h2 class="text-bold text-teal-800"><i class="icon-users4"></i> {{ trans('messages.export_segments') }}</h2>
 
-    @include("helpers._export",['url' => action('SegmentController@exportList', ["list_uid" => $list->uid]) ])
+    @include("helpers._export",['url' => action('SegmentController@exportList', ["list_uid" => $list->uid, "uid" => $uid]) ])
 
 @endsection

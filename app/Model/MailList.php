@@ -694,10 +694,10 @@ class MailList extends Model
      *
      * @return number
      */
-    public function exportSegmentJobs()
+    public function exportSegmentJobs($uid)
     {
         return \Acelle\Model\SystemJob::where("name", "=", "Acelle\Jobs\ExportSegmentsJob")
-            ->where("data", "like", "%\"mail_list_uid\":\"" . $this->uid . "\"%");
+            ->where("data", "like", "%\"uid\":\"" . $uid . "\"%");
     }
 
     /**
@@ -827,22 +827,25 @@ class MailList extends Model
         $file_path = $directory.'data.csv';
 
         // Import to database
-        $total = $list->segmentsCount(); // no cache
-        $success = 0;
-        $error = 0;
+
+
         $json = json_decode($systemJob->data);
         $fields = preg_split("/,/",$json->fields);
         $headers = $json->fields;
+        $segment = \Acelle\Model\Segment::findByUid($json->uid);
+        $total = $segment->subscribersCount(); // no cache
+        $success = 0;
+        $error = 0;
         // write csv
         $myfile = file_put_contents($file_path, $headers.PHP_EOL , FILE_APPEND | LOCK_EX);
 
         $num = 100;
         for($page = 0; $page <= ceil($total/$num); $page++) { // ceil($total/$num)
             $data = [];
-            foreach ($list->segments()->skip($page*$num)->take($num)->get() as $key => $item) {
+            foreach ($segment->subscribers()->skip($page*$num)->take($num)->get() as $key => $item) {
                 $cols = [];
                 foreach ($fields as $key2 => $field) {
-                    $value = $item->$field;
+                    $value = $item->getValueByTag($field);
                     $cols[] = $value;
                 }
                 $data[] = \Acelle\Library\Tool::arrayToCsv($cols, ',');
@@ -870,7 +873,8 @@ class MailList extends Model
                 "success" => $success,
                 "error" => $error,
                 "percent" => round((($success + $error) / $total) * 100, 0),
-                "fields" => $json->fields
+                "fields" => $json->fields,
+                "uid" => $json->uid
             ]);
             $systemJob->save();
         }
@@ -892,7 +896,8 @@ class MailList extends Model
             "success" => $success,
             "error" => $error,
             "percent" => 100,
-            'fields' => $json->fields
+            'fields' => $json->fields,
+            'uid' => $json->uid
         ]);
         $systemJob->save();
 

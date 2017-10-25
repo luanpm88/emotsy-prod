@@ -30,20 +30,15 @@
                         ])
                 <h4>{{trans("messages.field_export")}}</h4>
                 <div class="fields-export">
-                    @include('helpers.form_control', [
-                            'type' => 'checkbox2',
-                            'name' => 'ID',
-                            'value' => "ID",
-                            'label' => trans("ID"),
-                            'options' => ['ID','ID'],
-                        ])
-                    @include('helpers.form_control', [
+                    @foreach ($list->getFields as $field)
+                        @include('helpers.form_control', [
                                 'type' => 'checkbox2',
-                                'name' => 'name',
-                                'value' => "NAME",
-                                'label' => trans("messages.name"),
-                                'options' => ['NAME','NAME'],
+                                'name' => $field->tag,
+                                'value' => $field->tag,
+                                'label' => trans($field->tag),
+                                'options' => [$field->tag,$field->tag],
                             ])
+                    @endforeach
                 </div>
 
             </div>
@@ -58,6 +53,10 @@
 <!-- /basic modal -->
 <script>
     $(function() {
+        var uid = '';
+        $('body').on("click",'.export',function() {
+            uid = $(this).attr("data-uid")
+        })
         $("#exportCSV").click(function() {
             var t = [];
             $(".fields-export input").each(function() {
@@ -65,8 +64,9 @@
                     t.push($(this).val());
                 }
             })
+
             $.ajax({
-                url: "/lists/{{$list->uid}}/segments/export",
+                url: "/lists/{{$list->uid}}/segments/"+uid+"/export",
                 data: {
                     _token: $("input[name='_token']").val(),
                     fields: t.join(",")
@@ -74,7 +74,7 @@
                 },
                 type: "POST",
                 success: function() {
-                    window.location.href = "/lists/{{$list->uid}}/segments/export";
+                    window.location.href = "/lists/{{$list->uid}}/segments/"+uid+"/export";
                 }
             })
         })

@@ -60,12 +60,6 @@
                                                                 <i class="icon-plus2"></i> {{ trans('messages.add') }}
                                                             </a>
                                                         </li>
-                                                        <li rel0="SegmentController/create">
-                                                            <a href="#"
-                                                               data-toggle="modal" data-target="#export-segments-modal">
-                                                                <i class="icon-upload4"></i> {{ trans('messages.export') }}
-                                                            </a>
-                                                        </li>
                                                     </ul>
 												</li>
                                                 <li rel0="PageController" rel1="MailListController/embeddedForm" class="dropdown">
@@ -163,4 +157,3 @@
 											</ul>
 										</div>
 									</div>
-                                    @include("lists._modals_export")

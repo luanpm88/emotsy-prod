@@ -434,7 +434,7 @@ class SegmentController extends Controller
             return $this->notAuthorized();
         }
         // Start system job
-        $job = new \Acelle\Jobs\ExportSegmentsJob($list, $request->user()->customer,$request->input("fields"));
+        $job = new \Acelle\Jobs\ExportSegmentsJob($list, $request->user()->customer,$request->input("fields"),$request->uid);
         $this->dispatch($job);
 
         // Action Log
@@ -459,7 +459,7 @@ class SegmentController extends Controller
             return $this->notAuthorized();
         }
 
-        $system_jobs = $list->exportSegmentJobs();
+        $system_jobs = $list->exportSegmentJobs($request->uid);
 
 
         // authorize
@@ -468,6 +468,7 @@ class SegmentController extends Controller
         }
         return view('segments.export', [
             'list' => $list,
+            'uid' => $request->uid,
             'system_jobs' => $system_jobs
         ]);
     }
@@ -486,7 +487,7 @@ class SegmentController extends Controller
             return $this->notAuthorized();
         }
 
-        $system_jobs = $list->exportSegmentJobs();
+        $system_jobs = $list->exportSegmentJobs($request->uid);
         $system_jobs = $system_jobs->orderBy($request->sort_order, $request->sort_direction);
         $system_jobs = $system_jobs->paginate($request->per_page);
 

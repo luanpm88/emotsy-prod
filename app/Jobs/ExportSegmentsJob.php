@@ -11,7 +11,7 @@ class ExportSegmentsJob extends ImportExportJob
      *
      * @return void
      */
-    public function __construct($mailList, $customer,$fields)
+    public function __construct($mailList, $customer,$fields,$uid)
     {
         // call parent's constructor
         parent::__construct($mailList, $customer);
@@ -27,7 +27,8 @@ class ExportSegmentsJob extends ImportExportJob
             "success" => 0,
             "error" => 0,
             "percent" => 0,
-            "fields" => $fields
+            "fields" => $fields,
+            "uid" => $uid
         ]);
         $systemJob->save();
     }
@@ -54,7 +55,8 @@ class ExportSegmentsJob extends ImportExportJob
                 "success" => 0,
                 "error" => 0,
                 "percent" => 0,
-                "fields" => $json->fields
+                "fields" => $json->fields,
+                "uid" => $json->uid
             ]);
             $systemJob->save();
         }

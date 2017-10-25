@@ -46,6 +46,9 @@
 													@if (\Gate::allows('delete', $item))
 														<li><a class="ajax_link" delete-confirm="{{ trans('messages.delete_segments_confirm') }}" href="{{ action('SegmentController@delete', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
 													@endif
+													@if (\Gate::allows('export', $item))
+														<li class="export" data-uid="{{$item->uid}}"><a href="#" data-toggle="modal" data-target="#export-segments-modal"><i class="icon-upload4"></i> {{ trans("messages.export") }}</a></li>
+													@endif
 												</ul>
 											</div>
 										</td>
