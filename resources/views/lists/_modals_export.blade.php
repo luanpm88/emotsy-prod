@@ -43,7 +43,7 @@
 
             </div>
             <div class="modal-footer">
-                <button type="submit" id="exportCSV" class="btn btn-primary bg-teal">{{ trans('messages.export') }}</button>
+                <button type="submit" id="exportCSV" data-dismiss="modal" class="btn btn-primary bg-teal">{{ trans('messages.export') }}</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">{{ trans('messages.Cancel') }}</button>
 
             </div>
@@ -53,10 +53,6 @@
 <!-- /basic modal -->
 <script>
     $(function() {
-        var uid = '';
-        $('body').on("click",'.export',function() {
-            uid = $(this).attr("data-uid")
-        })
         $("#exportCSV").click(function() {
             var t = [];
             $(".fields-export input").each(function() {
@@ -66,7 +62,7 @@
             })
 
             $.ajax({
-                url: "/lists/{{$list->uid}}/segments/"+uid+"/export",
+                url: "{{ action('SegmentController@export', ["list_uid" => $list->uid, "uid" => $uid]) }}",
                 data: {
                     _token: $("input[name='_token']").val(),
                     fields: t.join(",")
@@ -74,7 +70,6 @@
                 },
                 type: "POST",
                 success: function() {
-                    window.location.href = "/lists/{{$list->uid}}/segments/"+uid+"/export";
                 }
             })
         })

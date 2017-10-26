@@ -78,5 +78,5 @@
 					</div>
 
 				</form>
-				@include("lists._modals_export",['list' => $list])
+
 @endsection

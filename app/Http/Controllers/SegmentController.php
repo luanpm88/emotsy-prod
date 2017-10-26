@@ -460,6 +460,7 @@ class SegmentController extends Controller
         }
 
         $system_jobs = $list->exportSegmentJobs($request->uid);
+        $segment = \Acelle\Model\Segment::findByUid($request->uid);
 
 
         // authorize
@@ -468,13 +469,13 @@ class SegmentController extends Controller
         }
         return view('segments.export', [
             'list' => $list,
-            'uid' => $request->uid,
+            'segment' => $segment,
             'system_jobs' => $system_jobs
         ]);
     }
 
     /**
-     * Display a listing of subscriber import job.
+     * Display a listing of segment export  job.
      *
      * @return \Illuminate\Http\Response
      */
