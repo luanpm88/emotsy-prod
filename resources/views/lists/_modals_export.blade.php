@@ -11,23 +11,6 @@
             <input type="hidden" name="uids" value="">
 
             <div class="modal-body">
-                <h4>{{trans("messages.output")}}</h4>
-                @include('helpers.form_control', [
-                            'type' => 'checkbox2',
-                            'name' => 'csv_export',
-                            'value' => 1,
-                            'label' => trans("messages.csv_export"),
-                            'options' => [false, true],
-                            'help_class' => 'list'
-                        ])
-                @include('helpers.form_control', [
-                            'type' => 'checkbox2',
-                            'name' => 'tab_export',
-                            'value' => 0,
-                            'label' => trans("messages.tab_export"),
-                            'options' => [false, true],
-                            'help_class' => 'list'
-                        ])
                 <h4>{{trans("messages.field_export")}}</h4>
                 <div class="fields-export">
                     @foreach ($list->getFields as $field)
@@ -40,7 +23,6 @@
                             ])
                     @endforeach
                 </div>
-
             </div>
             <div class="modal-footer">
                 <button type="submit" id="exportCSV" data-dismiss="modal" class="btn btn-primary bg-teal">{{ trans('messages.export') }}</button>
