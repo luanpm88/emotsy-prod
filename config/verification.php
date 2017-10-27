@@ -26,6 +26,14 @@ return [
             'fields' => [ 'username', 'password' ],
             'result_xpath' => '$.verify_status',
             'result_map' => [ '1' => 'deliverable', '0' => 'undeliverable' ]
+        ], [
+            'id' => 'proofy.io',
+            'name' => 'proofy.io',
+            'uri' => 'https://api.proofy.io/check?aid={USERNAME}&key={API_KEY}&mail={EMAIL}',
+            'request_type' => 'GET',
+            'fields' => [ 'username', 'api_key' ],
+            'result_xpath' => '$.mail.statusName',
+            'result_map' => [ 'deliverable' => 'deliverable', 'undeliverable' => 'undeliverable', 'risky' => 'risky' ]
         ]
     ]
 ];
