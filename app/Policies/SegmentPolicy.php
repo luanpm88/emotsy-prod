@@ -36,4 +36,10 @@ class SegmentPolicy
         $customer = $user->customer;
         return $item->mailList->customer_id == $customer->id;
     }
+
+    public function export(\Acelle\Model\User $user, \Acelle\Model\Segment $item)
+    {
+        $customer = $user->customer;
+        return $item->mailList->customer_id == $customer->id;
+    }
 }
