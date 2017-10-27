@@ -19,7 +19,7 @@
 
     @include("lists._menu")
 
-    <h2 class="text-bold text-teal-800"><i class="icon-users4"></i> {{$segment->name}} - {{ trans('messages.export') }} </h2>
+    <h2 class="text-bold text-teal-800"><i class="icon-make-group position-left"></i> {{$segment->name}} - {{ trans('messages.export') }} </h2>
     <p>{!! trans('messages.click_to_start_export', ['total' => $segment->readCache('SubscriberCount', 0)]) !!}</p>
     <div class="text-left">
         <button data-toggle="modal" data-target="#export-segments-modal" class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.export') }}</button>
