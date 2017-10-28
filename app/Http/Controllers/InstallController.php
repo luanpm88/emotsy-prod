@@ -773,10 +773,10 @@ REDIS_PORT=6379
 MAIL_DRIVER='.(isset($smtp['mail_driver']) ? $smtp['mail_driver'] : 'mail').'
 MAIL_HOST='.(isset($smtp['smtp_hostname']) ? $smtp['smtp_hostname'] : '').'
 MAIL_PORT='.(isset($smtp['smtp_port']) ? $smtp['smtp_port'] : '').'
-MAIL_USERNAME='.(isset($smtp['smtp_username']) ? $smtp['smtp_username'] : '').'
-MAIL_PASSWORD='.(isset($smtp['smtp_password']) ? $smtp['smtp_password'] : '').'
+MAIL_USERNAME="'.(isset($smtp['smtp_username']) ? $smtp['smtp_username'] : '').'"
+MAIL_PASSWORD="'.(isset($smtp['smtp_password']) ? $smtp['smtp_password'] : '').'"
 MAIL_ENCRYPTION='.(isset($smtp['smtp_encryption']) ? $smtp['smtp_encryption'] : '').'
-MAIL_FROM_EMAIL='.(isset($smtp['smtp_from_email']) ? $smtp['smtp_from_email'] : '').'
+MAIL_FROM_EMAIL="'.(isset($smtp['smtp_from_email']) ? $smtp['smtp_from_email'] : '').'"
 MAIL_FROM_NAME="'.(isset($smtp['smtp_from_name']) ? $smtp['smtp_from_name'] : '').'"
 ';
         $config_string;
