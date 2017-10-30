@@ -55,9 +55,9 @@ class VerifyMailListJob extends SystemJob
             $systemJob = $this->getSystemJob();
             $systemJob->last_error = $e->getMessage();
             $systemJob->save();
-            
-            throw $e;
+
             MailLog::warning(sprintf('Verification process for list `%s` failed. %s', $list->id, $e->getMessage()));
+            throw $e;
         }
 
     }
