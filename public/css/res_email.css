@@ -3,7 +3,7 @@ body {
     margin: 0 !important;
     padding: 0;
     background-color: #ffffff;
-    line-height: 18px;
+    line-height: auto;
 }
 table {
     border-spacing: 0;
@@ -261,4 +261,7 @@ hr {
 }
 tr.block {
     display: block;
+}
+.mce-content-body p, .mce-content-body div, .mce-content-body h1, .mce-content-body h2, .mce-content-body h3, .mce-content-body h4, .mce-content-body h5, .mce-content-body h6 {
+    line-height: normal !important;
 }
