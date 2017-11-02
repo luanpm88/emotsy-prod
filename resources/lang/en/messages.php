@@ -2032,4 +2032,5 @@
  'copy_of_plan' => 'Copy of :name',
  'name_new_plan' => 'Name your new plan',
  'plan.copied' => 'Plan was successfully copied',
+ 'attachments'=>'Attachments',
 );
