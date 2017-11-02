@@ -34,6 +34,14 @@ return [
             'fields' => [ 'username', 'api_key' ],
             'result_xpath' => '$.mail.statusName',
             'result_map' => [ 'deliverable' => 'deliverable', 'undeliverable' => 'undeliverable', 'risky' => 'risky' ]
+        ], [
+            'id' => 'everifier.org',
+            'name' => 'everifier.org',
+            'uri' => 'https://api.everifier.org/v1/{API_KEY}/verify/{EMAIL}',
+            'request_type' => 'GET',
+            'fields' => [ 'api_key' ],
+            'result_xpath' => '$.*.status',
+            'result_map' => [ '1' => 'deliverable', '0' => 'undeliverable' ]
         ]
     ]
 ];
