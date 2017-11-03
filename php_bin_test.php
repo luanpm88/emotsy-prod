@@ -1,5 +1,14 @@
 <?php
+
+try {
+  // to prevent it that the output is compressed, resulting in invalid string
+  ini_set('zlib.output_compression', 'Off');
+} catch(\Exception $e) {
+  // just ignore it
+}
+
 $valid = true;
+
 if (!version_compare(PHP_VERSION, '5.5.9', '>=')) {
     echo "ERROR: PHP 5.5.9 or higher is required.<br />";
     $valid = false;
