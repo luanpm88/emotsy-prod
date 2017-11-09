@@ -1056,7 +1056,9 @@ class MailList extends Model
             // Read CSV files
             $lineCount = line_count($file) - 1; // do not count the header
             $reader = \League\Csv\Reader::createFromPath($file);
-            $headers = array_map('strtolower', $reader->fetchOne());
+            // get the headers, using array_filter to strip empty/null header
+            // to avoid the error of "InvalidArgumentException: Use a flat array with unique string values in /home/nghi/mailixa/vendor/league/csv/src/Reader.php:305"
+            $headers = array_filter(array_map('strtolower', $reader->fetchOne()));
             $fields = collect($this->fields)->map(function ($field) {
                 return strtolower($field->tag);
             })->toArray();
