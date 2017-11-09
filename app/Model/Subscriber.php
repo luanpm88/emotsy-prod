@@ -231,6 +231,14 @@ class Subscriber extends Model
                 }
             }
 
+            // outside filters
+            if (!empty($request->status)) {
+                $query = $query->where('subscribers.status', '=', $request->status);
+            }
+            if (!empty($request->verification_result)) {
+                $query = $query->where('email_verifications.result', '=', $request->verification_result);
+            }
+
             // Open
             if ($request->open == 'yes') {
                 $query = $query->whereExists(function ($q) {
