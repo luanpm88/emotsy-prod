@@ -28,6 +28,7 @@ class SubscriberPolicy
         $max_per_list = $customer->getOption('subscriber_per_list_max');
 
         return $customer->id == $item->mailList->customer_id &&
+            // @todo: performance issue here
             ($max > $customer->subscribersCount() || $max == -1) &&
             ($max_per_list > $item->mailList->subscribersCount() || $max_per_list == -1);
     }
