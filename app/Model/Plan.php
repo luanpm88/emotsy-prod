@@ -41,7 +41,7 @@ class Plan extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'frequency_amount', 'frequency_unit', 'price', 'color', 'currency_id', 'tax_billing_required'
+        'name', 'frequency_amount', 'frequency_unit', 'price', 'color', 'currency_id', 'tax_billing_required','paddle_plan_id'
     ];
 
     /**

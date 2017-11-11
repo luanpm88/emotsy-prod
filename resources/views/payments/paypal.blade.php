@@ -57,8 +57,7 @@
                 <script src="https://www.paypalobjects.com/api/checkout.js"></script>
 
                 <div id="paypal-button-container"></div>
-
-                <script>
+            <script>
 
                     // Render the PayPal button
 
@@ -66,7 +65,7 @@
 
                         // Set your environment
 
-                        env: '{{ $payment_method->getOption('environment') }}', // sandbox | production
+                        env: "{{ $payment_method->getOption('environment') }}", // sandbox | production
 
                         // PayPal Client IDs - replace with your own
                         // Create a PayPal app: https://developer.paypal.com/developer/applications/create
@@ -81,7 +80,6 @@
                         payment: function() {
 
                             // Make a client-side call to the REST api to create the payment
-
                             return paypal.rest.payment.create(this.props.env, this.props.client, {
                                 transactions: [
                                     {
@@ -94,8 +92,8 @@
                         // Wait for the payment to be authorized by the customer
 
                         onAuthorize: function(data, actions) {
-
-                            return actions.payment.execute().then(function() {
+console.log(data);
+                        //  return actions.payment.execute().then(function() {
                                 //// Execute the payment
                                 //$.post('{{ action('PaymentController@paypal', $subscription->uid) }}', {
                                 //    paymentID: data.paymentID,
@@ -104,7 +102,7 @@
                                 //
                                 //});
 
-                                var newForm = jQuery('<form>', {
+                               var newForm = jQuery('<form>', {
                                     'action': '{{ action('PaymentController@paypal', $subscription->uid) }}',
                                     'method': 'POST'
                                 });
@@ -125,7 +123,7 @@
                                 }));
                                 $(document.body).append(newForm);
                                 newForm.submit();
-                            });
+                        //   });
 
                         },
 						onError: function(err) {
@@ -137,7 +135,6 @@
                     }, '#paypal-button-container');
 
                 </script>
-
 			</div>
 		</div>
 	</div>

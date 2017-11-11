@@ -434,7 +434,6 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('payments/payumoney-fail/{subscription_uid}', 'PaymentController@payumoney_fail');
     Route::post('payments/payumoney-fail/{subscription_uid}', 'PaymentController@payumoney_fail');
     Route::get('payments/failure/{subscription_uid}', 'PaymentController@failure');
-
     // Email verification servers
     Route::get('email_verification_servers/options', 'EmailVerificationServerController@options');
     Route::get('email_verification_servers/listing/{page?}', 'EmailVerificationServerController@listing');

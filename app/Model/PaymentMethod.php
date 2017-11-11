@@ -419,7 +419,6 @@ class PaymentMethod extends Model
         // Get options from payment method PayPal
         $clientId = $this->getOption('clientID');
         $secret = $this->getOption('secret');
-
         // Request to PayPal enpoint
         curl_setopt($ch, CURLOPT_URL, "https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/oauth2/token");
         curl_setopt($ch, CURLOPT_HEADER, false);
@@ -430,11 +429,9 @@ class PaymentMethod extends Model
         curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
 
         $result = curl_exec($ch);
-
         // Check the result
         if (!empty($result)) {
             $json = json_decode($result);
-
             // Token success
             if (isset($json->access_token)) {
                 return ['success' => true, 'token' => $json->access_token];
@@ -487,5 +484,277 @@ class PaymentMethod extends Model
 
         // Uncatchable error
         throw new \Exception(trans("messages.paypal_error_unknown"));
+    }
+
+    /**
+     * executePayment server side  - one time payment without recurring payment
+     *
+     * @return array
+     */
+    public function executePayment($paymentID, $payerID, $subscription)
+    {
+        $ch = curl_init();
+
+        // Get options from payment method PayPal
+        $clientId = $this->getOption('clientID');
+        $secret = $this->getOption('secret');
+        // Request to PayPal enpoint
+        curl_setopt($ch, CURLOPT_URL, "https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/oauth2/token");
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_USERPWD, $clientId.":".$secret);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
+
+        $result = curl_exec($ch);
+        // Check the result
+        if (!empty($result)) {
+            $json = json_decode($result);
+            $access_token=$json->access_token;
+            $ch = curl_init();
+            $json_body='{
+                          "payer_id": "'.$payerID.'"
+                        }';
+            // Request to PayPal enpoint
+            curl_setopt($ch, CURLOPT_URL, "https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/payments/payment/$paymentID/execute/");
+            curl_setopt($ch, CURLOPT_HTTPHEADER, [
+                  'Content-Type:application/json',
+                  'Authorization: Bearer ' . $access_token
+              ]);
+            curl_setopt($ch, CURLOPT_HEADER, false);
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+            curl_setopt($ch, CURLOPT_POST, true);
+            curl_setopt($ch, CURLOPT_POSTFIELDS, $json_body);
+            $result = curl_exec($ch);
+
+            // Check the result
+            if (!empty($result)) {
+                $json = json_decode($result);
+                // Check if payment state is not approved
+                if (!isset($json->state) || $json->state != 'approved') {
+                    return (object) ['success' => false, 'data' => $json, 'error' => trans("messages.paypal_error_payment_not_approved")];
+                }
+
+                // Check if payment amount is not equal to the subscription amount
+                if ((float) $json->transactions[0]->amount->total != (float) $subscription->price) {
+                    return (object) ['success' => false, 'data' => $json, 'error' => trans("messages.paypal_error_amount_not_equal")];
+                }
+
+                // Return success if nothing wrong
+                return (object) ['success' => true, 'data' => $result];
+            }
+
+            // Uncatchable error
+            throw new \Exception(trans("messages.paypal_error_unknown"));
+        }
+        throw new \Exception(trans("messages.paypal_error_cannot_get_access_token"));
+    }
+
+
+    /**
+     * recurringPayment server side  - one time payment with recurring payment
+     *
+     * @return array
+     */
+    public function recurringPayment($paymentID, $payerID, $subscription, $subscription_uid)
+    {
+        $ch = curl_init();
+
+        // Get options from payment method PayPal
+        $clientId = $this->getOption('clientID');
+        $secret = $this->getOption('secret');
+        // Request to PayPal enpoint
+        curl_setopt($ch, CURLOPT_URL, "https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/oauth2/token");
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_USERPWD, $clientId.":".$secret);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
+
+        $result = curl_exec($ch);
+        // Check the result
+        if (!empty($result)) {
+            $json = json_decode($result);
+            $access_token=$json->access_token;
+            $result1=$this->createPlan($access_token, $subscription, $subscription_uid);
+            // Check the result
+            if (!empty($result1)) {
+
+                // Check if payment state is not approved
+                if (!isset($json->state) || $json->state != 'approved') {
+                    return (object) ['success' => false, 'data' => $json, 'error' => trans("messages.paypal_error_payment_not_approved")];
+                }
+
+                // Check if payment amount is not equal to the subscription amount
+                if ((float) $json->transactions[0]->amount->total != (float) $subscription->price) {
+                    return (object) ['success' => false, 'data' => $json, 'error' => trans("messages.paypal_error_amount_not_equal")];
+                }
+
+                // Return success if nothing wrong
+                return (object) ['success' => true, 'data' => $result];
+            }
+
+            // Uncatchable error
+            throw new \Exception(trans("messages.paypal_error_unknown"));
+        }
+        throw new \Exception(trans("messages.paypal_error_cannot_get_access_token"));
+    }
+
+
+    public function createPlan($access_token, $subscription, $subscription_uid)
+    {
+        $amout = array(
+           'value' => "$subscription->price",
+           'currency' => "$subscription->currency_code",
+        );
+        $shippingandtax = array(
+            'value' => '0',
+            'currency' => 'USD',
+        );
+
+        $charge_models = array([
+            'type'=> 'SHIPPING',
+            'amount'=> $shippingandtax,
+          ],
+          [
+            'type'=> 'TAX',
+            'amount'=> $shippingandtax,
+        ]);
+
+        $payment_definitions_creation = array();
+        array_push($payment_definitions_creation, [
+          'name' => $subscription->plan_name,
+          'type' => 'REGULAR',
+          'frequency' => 'DAY',
+          'frequency_interval'=> '1',
+          'amount' => $amout,
+          'cycles' => '0',
+          'charge_models' => $charge_models
+       ]);
+
+
+
+        $merchant_preferences_temp = array(
+          'value' => '0',
+          'currency' => 'USD'
+        );
+        $merchant_preferences = array(
+          "setup_fee" => $merchant_preferences_temp,
+          "return_url"=> url('/')."/payments/paypal/".$subscription_uid,
+          "cancel_url"=> url('/')."/payments/paypal/".$subscription_uid."/paypal_cancel",
+          'auto_bill_amount' => 'YES',
+          'initial_fail_amount_action' => 'CONTINUE',
+          'max_fail_attempts' => '3'
+        );
+        $name = $subscription->plan_name;
+        $body = array(
+          'name' => $name,
+          'description' => 'Subscribtion'.$name,
+          'type' => 'INFINITE',
+          'payment_definitions' => $payment_definitions_creation,
+          "merchant_preferences"=> $merchant_preferences,
+        );
+        $myJSON = json_encode($body);
+
+
+        $plan_url="https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/payments/billing-plans/";
+        //open connection
+        $ch = curl_init();
+
+        //set connection properties
+        curl_setopt($ch, CURLOPT_URL, $plan_url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+          'Content-Type:application/json',
+          'Authorization: Bearer ' .$access_token
+      ]);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $myJSON);
+
+        //execute post
+        $response = curl_exec($ch);
+
+        //close connection
+        curl_close($ch);
+        return $response;
+    }
+
+    public function activePlan($access_token, $subscription, $subscription_uid)
+    {
+        $amout = array(
+           'value' => "$subscription->price",
+           'currency' => "$subscription->currency_code",
+        );
+        $shippingandtax = array(
+            'value' => '0',
+            'currency' => 'USD',
+        );
+
+        $charge_models = array([
+            'type'=> 'SHIPPING',
+            'amount'=> $shippingandtax,
+          ],
+          [
+            'type'=> 'TAX',
+            'amount'=> $shippingandtax,
+        ]);
+
+        $payment_definitions_creation = array();
+        array_push($payment_definitions_creation, [
+          'name' => $subscription->plan_name,
+          'type' => 'REGULAR',
+          'frequency' => 'DAY',
+          'frequency_interval'=> '1',
+          'amount' => $amout,
+          'cycles' => '0',
+          'charge_models' => $charge_models
+       ]);
+
+
+
+        $merchant_preferences_temp = array(
+          'value' => '0',
+          'currency' => 'USD'
+        );
+        $merchant_preferences = array(
+          "setup_fee" => $merchant_preferences_temp,
+          "return_url"=> url('/')."payments/paypal/".$subscription_uid,
+          "cancel_url"=> url('/')."payments/paypal/".$subscription_uid."/paypal_cancel",
+          'auto_bill_amount' => 'YES',
+          'initial_fail_amount_action' => 'CONTINUE',
+          'max_fail_attempts' => '3'
+        );
+        $name = $subscription->plan_name;
+        $body = array(
+          'name' => $name,
+          'description' => 'Subscribtion'.$name,
+          'type' => 'INFINITE',
+          'payment_definitions' => $payment_definitions_creation,
+          "merchant_preferences"=> $merchant_preferences,
+        );
+        $myJSON = json_encode($body);
+
+
+        $plan_url="https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/payments/billing-plans/";
+        //open connection
+        $ch = curl_init();
+
+        //set connection properties
+        curl_setopt($ch, CURLOPT_URL, $plan_url);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+          'Content-Type:application/json',
+          'Authorization: Bearer ' .$access_token
+      ]);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $myJSON);
+
+        //execute post
+        $response = curl_exec($ch);
+
+        //close connection
+        curl_close($ch);
+
+        return 1;
     }
 }
