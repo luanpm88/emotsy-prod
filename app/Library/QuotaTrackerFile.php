@@ -448,7 +448,8 @@ class QuotaTrackerFile
         //     return array_map('intval', array_values(array_filter(explode(',', file_get_contents($this->file)))));
         // a faster way is to use json_decode
 
-        $this->series = json_decode('[' . preg_replace('/^(.*\|,*|,+)/', '', $series) . ']');
+        // REXP to replace anything before the pipe or leading/trailing comma
+        $this->series = json_decode('[' . preg_replace('/(^(.*\|,*|,+)|,+$)/', '', $series) . ']');
         return $this->series;
     }
 
