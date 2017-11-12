@@ -301,7 +301,7 @@
   'sign_up_form_url' => 'Sign-up form URL',
   'content' => 'Content',
   'sign_up_confirmation_email' => 'Sign-up confirmation email',
-  'sign_up_confirmation_thankyou' => 'Comfrmation "Thank you" page',
+  'sign_up_confirmation_thankyou' => 'Confirmation "Thank you" page',
   'home_page' => 'Home page',
   'sign_up_welcome_email' => 'Final "Welcome" email',
   'unsubscribe_goodbye_email' => 'Unsubscribe "Goodbye" email',
