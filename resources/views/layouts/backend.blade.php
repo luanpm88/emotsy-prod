@@ -108,13 +108,6 @@
 									</a>
 								</li>
 							@endif
-							@if (Auth::user()->can("read", new Acelle\Model\PaymentMethod()))
-								<li rel0="PaymentMethodController">
-									<a href="{{ action('Admin\PaymentMethodController@index') }}">
-										<i class="icon-credit-card2"></i> {{ trans('messages.payment_methods') }}
-									</a>
-								</li>
-							@endif
 						</ul>
 					</li>
 				@endif

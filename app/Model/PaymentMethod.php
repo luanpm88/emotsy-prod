@@ -45,7 +45,7 @@ class PaymentMethod extends Model
      * @var array
      */
     protected $fillable = [
-        'type', 'options', 'status'
+        'type', 'options', 'status','admin_id'
     ];
 
     /**
@@ -756,5 +756,28 @@ class PaymentMethod extends Model
         curl_close($ch);
 
         return 1;
+    }
+
+    /***
+    **function: createPlanOnServer
+    ** $payment_method: get payment method details by id
+    ** $type:  plan type - paypal, stripe , paddle
+    ** use: create all plan on server and update plan table with plan id
+    **/
+    public function createPlanOnServer($payment_method)
+    {
+        if ($payment_method->type==PaymentMethod::TYPE_PADDLE_CARD) {
+            foreach (\Acelle\Model\Plan::getAllActiveWithDefault()->get() as $plan) {
+                $vendorId = $payment_method->getOption('vendor_id');
+                $vendor_auth_code=$payment_method->getOption('vendor_auth_code');
+                // plan_type: accepts day, week, month, year
+                $json_body="vendor_id=".$vendorId."&vendor_auth_code=".$vendor_auth_code."&plan_name=".$plan->name."&plan_trial_days=0&plan_type=".$plan->frequency_unit."&plan_length=".$plan->frequency_amount."&main_currency_code=USD&initial_price_usd=0.00&recurring_price_usd=".$plan->price;
+                // create plan if paddle plan id blank
+                if ($plan->paddle_plan_id=="" || $plan->paddle_plan_id==null) {
+                    $plan->createPaddlePlan($json_body, $plan);
+                }
+            }
+        }
+        return true;
     }
 }

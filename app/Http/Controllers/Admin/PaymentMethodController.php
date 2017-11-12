@@ -153,12 +153,10 @@ class PaymentMethodController extends Controller
     public function edit(Request $request, $id)
     {
         $payment_method = \Acelle\Model\PaymentMethod::findByUid($id);
-
         // authorize
         if (\Gate::denies('update', $payment_method)) {
             return $this->notAuthorized();
         }
-
         if (!empty($request->old())) {
             $payment_method->fill($request->old());
         }
@@ -168,7 +166,6 @@ class PaymentMethodController extends Controller
             $payment_method->options = json_encode($request->old()['options']);
         }
         $options = $payment_method->getOptions();
-
         return view('admin.payment_methods.edit', [
             'payment_method' => $payment_method,
             'options' => $options
@@ -202,6 +199,9 @@ class PaymentMethodController extends Controller
             $this->validate($request, $payment_method->rules());
 
             $payment_method->save();
+
+            //create multiple plan on server like paypal, paddle,stripe_credit_card
+            $payment_method->createPlanOnServer($payment_method);
 
             $request->session()->flash('alert-success', trans('messages.payment_method.updated'));
             return redirect()->action('Admin\PaymentMethodController@edit', $payment_method->uid);

@@ -181,7 +181,7 @@ class AccountController extends Controller
 
         // Get current subscription
         $subscription = $customer->getCurrentSubscriptionIgnoreStatus();
-
+        
         // Get next subscription
         $nextSubscription = $customer->getNextSubscription();
 

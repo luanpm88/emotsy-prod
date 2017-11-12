@@ -2033,4 +2033,5 @@
  'name_new_plan' => 'Name your new plan',
  'plan.copied' => 'Plan was successfully copied',
  'attachments'=>'Attachments',
+ 'plan_sync' => 'Plan Sync Live',
 );
