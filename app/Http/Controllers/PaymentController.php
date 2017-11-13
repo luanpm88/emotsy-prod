@@ -5,6 +5,8 @@ use Illuminate\Http\Request;
 use Acelle\Model\Payment;
 use Acelle\Library\Log as PaymentLog;
 use Illuminate\Support\Facades\Log as LaravelLog;
+use File;
+use Auth;
 
 class PaymentController extends Controller
 {
@@ -17,7 +19,8 @@ class PaymentController extends Controller
 
         $this->middleware('auth', ['except' => [
             'avatar',
-            'paddle_card_hook'
+            'paddle_card_hook',
+            'paddle_webhook'
         ]]);
     }
 
@@ -111,8 +114,14 @@ class PaymentController extends Controller
         // validate and save posted data
         if ($request->isMethod('post')) {
             try {
-                $access_token = $payment_method->getPayPalAccessToken()["token"];
-                $result = $payment_method->checkPayPalPaymentSuccess($request->paymentID, $request->payerID, $access_token, $subscription);
+                //$access_token = $payment_method->getPayPalAccessToken();
+                //$result = $payment_method->checkPayPalPaymentSuccess($request->paymentID, $request->payerID, $access_token, $subscription);
+
+
+                //server side payment without recurring payment
+                $result = $payment_method->executePayment($request->paymentID, $request->payerID, $subscription);
+                //server side payment with recurring payment
+                //$result = $payment_method->recurringPayment($request->paymentID, $request->payerID, $subscription, $subscription_uid);
 
                 $payment = new Payment();
                 $payment->subscription_id = $subscription->id;
@@ -336,7 +345,6 @@ class PaymentController extends Controller
     public function success(Request $request, $subscription_uid)
     {
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
-
         return view('payments.success', [
             'subscription' => $subscription
         ]);
@@ -561,20 +569,26 @@ class PaymentController extends Controller
         // Checkout url
         $data['vendor_id'] = $vendorId;
         $data['vendor_auth_code'] = $payment_method->getOption('vendor_auth_code');
+        if ($subscription->plan->paddle_plan_id!="" || $subscription->plan->$subscription->plan->paddle_plan_id!=null) {
+            $data['product_id'] =$subscription->plan->paddle_plan_id;//'520029';
+        }
 
         $data['title'] = trans('messages.paddle_checkout_title', ['plan' => $subscription->plan_name]); //'Plan: ' . $subscription->plan_name ; // name of product
-        $data['webhook_url'] = action('PaymentController@paddle_card_hook', $subscription->uid); // URL to call when product is purchased
-        $data['quantity_variable'] = 0; // name of product
-
+        //$data['webhook_url'] = action('PaymentController@paddle_card_hook', $subscription->uid); // URL to call when product is purchased
+        $data['quantity_variable'] = 0; //Specifies if the user is allowed to alter the quantity of the checkout, accepts 0 or 1 (default: 1).
         // You must provide at least one price for the checkout, here we are setting multiple for different currencies.
         $data['prices'] = [
             $subscription->currency_code . ':' . $subscription->price
         ];
-
+        //If you leave this field empty, then the default prices of the Plan will be used.If this field is provided, you can set the recurring price for any of the currencies of your Plan, but you must always provide the recurring price in the main currency of your Plan.
+        $data['recurring_prices'] = [
+            $subscription->currency_code . ':' . $subscription->price
+        ];
+        //$data['recurring_affiliate_limit'] = 1;
         // Setting some other (optional) data.
         $data['custom_message'] = trans('messages.paddle_order_id') . ': ' . $orderId;
         $data['return_url'] = action('PaymentController@success', $subscription->uid);
-
+        $data['passthrough'] =$subscription->customer_id.'/'.$subscription_uid;//customer id that pay the payment also add subscription_uid
         // Here we make the request to the Paddle API
         $url = 'https://vendors.paddle.com/api/2.0/product/generate_pay_link';
         $ch = curl_init($url);
@@ -621,7 +635,6 @@ class PaymentController extends Controller
         $arr = $request->all();
         $arr['time'] = \Carbon\Carbon::now();
         \File::put('paddle-process.log', json_encode($arr));
-
         $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
         $order_id = $subscription->getOrderID();
         $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_PADDLE_CARD);
@@ -892,5 +905,104 @@ class PaymentController extends Controller
         return view('payments.failure', [
             'subscription' => $subscription
         ]);
+    }
+
+    /**
+     * Subscription pay by paypal_create.
+     *
+     */
+    public function create_payment(Request $request, $subscription_uid)
+    {
+        $access_token = $payment_method->getPayPalAccessToken();
+
+        $PAYMENT='{
+        "intent": "sale",
+        "redirect_urls": {
+          "return_url": "http://example.com/your_redirect_url.html",
+          "cancel_url": "http://example.com/your_cancel_url.html"
+        },
+        "payer": {
+          "payment_method":"paypal"
+        },
+        "transactions": [
+          {
+            "amount":{
+              "total":"7.47",
+              "currency":"USD"
+            }
+          }
+        ]
+      }';
+        $ch = curl_init();
+
+        // Request to PayPal enpoint
+        curl_setopt($ch, CURLOPT_URL, "https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/payments/payment");
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'Content-Type:application/json',
+            'Authorization: Bearer ' . $access_token
+        ]);
+        curl_setopt($ch, CURLOPT_HEADER, false);
+        curl_setopt($ch, CURLOPT_POST, $PAYMENT);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        $result = curl_exec($ch);
+
+        return $result;
+    }
+
+
+    /**
+     * Subscription pay by Paddle card hook.
+     * All type of webhook - depend on alert_name
+     * alert_name= subscription_created,subscription_updated,subscription_cancelled,subscription_payment_succeeded,subscription_payment_refunded
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function paddle_webhook(Request $request)
+    {
+        $result = $request->all();
+        $result['time'] = \Carbon\Carbon::now();
+        \File::put('paddle-process.log', json_encode($result));
+        if ($result['alert_name']=="subscription_created") {
+            $info=explode("/", $result['passthrough']);
+            $customer_id=$info[0];
+            $subscription_uid=$info[1];
+            $subscription = \Acelle\Model\Subscription::findByUid($subscription_uid);
+            $order_id = $subscription->getOrderID();
+            $payment_method = \Acelle\Model\PaymentMethod::getByType(\Acelle\Model\PaymentMethod::TYPE_PADDLE_CARD);
+
+            $payment = new Payment();
+            $payment->subscription_id = $subscription->id;
+            $payment->payment_method_id = $payment_method->id;
+            $payment->data = serialize($result);
+            $payment->action = \Acelle\Model\Payment::ACTION_PAID;
+            $payment->payment_method_name = trans('messages.' . $payment_method->type);
+            $payment->order_id = $order_id;
+
+            // billing information
+            if ($subscription->isTaxBillingRequired() && file_exists('billing-information-' . $subscription->uid . '.log')) {
+                $billing_information = json_decode(file_get_contents('billing-information-' . $subscription->uid . '.log'), true);
+            }
+            if (isset($billing_information)) {
+                $payment->tax_number = $billing_information['tax_number'];
+                $payment->billing_address = $billing_information['billing_address'];
+                $request->session()->forget('billing_information');
+            }
+
+            $payment->status = \Acelle\Model\Payment::STATUS_SUCCESS; // : \Acelle\Model\Payment::STATUS_FAILED;
+
+            $payment->save();
+            $subscription->setPaid();
+
+            // try enabling the subscription, proceed anyway if failed
+            try {
+                $subscription->enable();
+                //update subscription data column with server payment gateway response
+                $subscription->data=serialize($result);
+                $subscription->save();
+            } catch (\Exception $ex) {
+                // just suppress the error and leave the subscription disabled
+                LaravelLog::warning("Cannot enable subscription {$subscription->id}, proceed anyway");
+            }
+        }
     }
 }

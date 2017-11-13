@@ -70,10 +70,10 @@ class Subscription extends Model
     {
         $rules = [];
 
-        if(!isset($this->plan_id)) {
+        if (!isset($this->plan_id)) {
             $rules['plan_uid'] = 'required';
         }
-        if(!isset($this->customer_id)) {
+        if (!isset($this->customer_id)) {
             $rules['customer_uid'] = 'required';
         }
 
@@ -86,7 +86,7 @@ class Subscription extends Model
             }
         }
 
-        if($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
+        if ($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
             $rules['options.sending_server_subaccount_uid'] = 'required';
         }
 
@@ -201,7 +201,7 @@ class Subscription extends Model
 
         static::created(function ($subscription) {
             // get sending server from plan.
-            foreach($subscription->plan->plansSendingServers as $planServer) {
+            foreach ($subscription->plan->plansSendingServers as $planServer) {
                 $row = new SubscriptionsSendingServer();
                 $row->subscription_id = $subscription->id;
                 $row->sending_server_id = $planServer->sending_server_id;
@@ -210,7 +210,7 @@ class Subscription extends Model
             }
 
             // get email verification server from plan.
-            foreach($subscription->plan->plansEmailVerificationServers as $planServer) {
+            foreach ($subscription->plan->plansEmailVerificationServers as $planServer) {
                 $row = new SubscriptionsEmailVerificationServer();
                 $row->subscription_id = $subscription->id;
                 $row->server_id = $planServer->server_id;
@@ -220,7 +220,7 @@ class Subscription extends Model
 
         static::created(function ($subscription) {
             // get sending server from plan.
-            foreach($subscription->plan->plansSendingServers as $planServer) {
+            foreach ($subscription->plan->plansSendingServers as $planServer) {
                 $row = new SubscriptionsSendingServer();
                 $row->subscription_id = $subscription->id;
                 $row->sending_server_id = $planServer->sending_server_id;
@@ -303,12 +303,12 @@ class Subscription extends Model
         }
 
         // Other filter
-        if(!empty($request->customer_id)) {
+        if (!empty($request->customer_id)) {
             $query = $query->where('subscriptions.customer_id', '=', $request->customer_id);
         }
 
         // Other filter
-        if(!empty($request->customer_admin_id)) {
+        if (!empty($request->customer_admin_id)) {
             $query = $query->where('customers.admin_id', '=', $request->customer_admin_id);
         }
 
@@ -328,7 +328,7 @@ class Subscription extends Model
     {
         $query = self::filter($request);
 
-        if(isset($request->sort_order)) {
+        if (isset($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         } else {
             $query = $query->orderBy('subscriptions.created_at', 'desc');
@@ -353,7 +353,7 @@ class Subscription extends Model
 
         $this->fill($params);
 
-        if(isset($this->plan_id)) {
+        if (isset($this->plan_id)) {
             // Save info from plan
             $this->price = $plan->price;
             $this->plan_name = $plan->name;
@@ -377,7 +377,7 @@ class Subscription extends Model
                     break;
                 case 'unlimited':
                     $this->start_at = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now());
-                    $this->end_at = NULL;
+                    $this->end_at = null;
                     break;
             }
         }
@@ -439,7 +439,7 @@ class Subscription extends Model
      */
     public function daysRemainCount()
     {
-        $count = isset($this->end_at) ? $this->end_at->diffInDays(\Carbon\Carbon::now()) : NULL;
+        $count = isset($this->end_at) ? $this->end_at->diffInDays(\Carbon\Carbon::now()) : null;
 
         return $count;
     }
@@ -554,8 +554,8 @@ class Subscription extends Model
         } else {
             $defaul_options = self::defaultOptions();
             $saved_options = json_decode($this->options, true);
-            foreach($defaul_options as $x => $group) {
-                if(isset($saved_options[$x])) {
+            foreach ($defaul_options as $x => $group) {
+                if (isset($saved_options[$x])) {
                     $defaul_options[$x] = $saved_options[$x];
                 }
             }
@@ -774,7 +774,7 @@ class Subscription extends Model
      */
     public function isCurrent()
     {
-        if($this->isStarted() &&
+        if ($this->isStarted() &&
            !$this->isOld()
         ) {
             return true;
@@ -790,7 +790,7 @@ class Subscription extends Model
      */
     public function beingUsed()
     {
-        if($this->isCurrent() &&
+        if ($this->isCurrent() &&
            $this->isActive()
         ) {
             return true;
@@ -820,7 +820,8 @@ class Subscription extends Model
      *
      * @return array
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->plan->name;
     }
 
@@ -829,7 +830,8 @@ class Subscription extends Model
      *
      * @return array
      */
-    public function isPaid() {
+    public function isPaid()
+    {
         return $this->paid;
     }
 
@@ -838,7 +840,8 @@ class Subscription extends Model
      *
      * @return array
      */
-    public function getStatusAttribute($value) {
+    public function getStatusAttribute($value)
+    {
         // Auto update status
         if ($this->isOld()) {
             $this->disable();
@@ -922,7 +925,7 @@ class Subscription extends Model
             $payment->description = $params["description"];
             $payment->tax_number = $params["tax_number"];
             $payment->billing_address = $params["billing_address"];
-            $payment->payment_method_id = NULL;
+            $payment->payment_method_id = null;
             $payment->status = \Acelle\Model\Payment::STATUS_SUCCESS;
             $payment->action = \Acelle\Model\Payment::ACTION_PAID;
             $payment->payment_method_name = '';
@@ -947,7 +950,7 @@ class Subscription extends Model
             $payment->subscription_id = $this->id;
             $payment->data = '';
             $payment->description = $description;
-            $payment->payment_method_id = NULL;
+            $payment->payment_method_id = null;
             $payment->status = \Acelle\Model\Payment::STATUS_SUCCESS;
             $payment->action = \Acelle\Model\Payment::ACTION_UNPAID;
             $payment->payment_method_name = '';

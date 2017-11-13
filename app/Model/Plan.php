@@ -41,7 +41,7 @@ class Plan extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'frequency_amount', 'frequency_unit', 'price', 'color', 'currency_id', 'tax_billing_required'
+        'name', 'frequency_amount', 'frequency_unit', 'price', 'color', 'currency_id', 'tax_billing_required','paddle_plan_id','admin_id'
     ];
 
     /**
@@ -757,5 +757,52 @@ class Plan extends Model
         $copy->status = PaymentMethod::STATUS_ACTIVE;
         $copy->custom_order = 0;
         $copy->save();
+    }
+
+    /**
+    **All Payment Methods: create plan on server
+    **/
+    public function createPlanOnServer($data, $plan)
+    {
+        $planMethodlist= \Acelle\Model\PaymentMethod::getAllActive();
+        if (count($planMethodlist)>0) {
+            foreach ($planMethodlist as $payment_method) {
+                if ($payment_method->type==PaymentMethod::TYPE_PADDLE_CARD) {
+                    if ($data!=="unlimited") {
+                        $vendorId = $payment_method->getOption('vendor_id');
+                        $vendor_auth_code=$payment_method->getOption('vendor_auth_code');
+                        // plan_type: accepts day, week, month, year
+                        $json_body="vendor_id=".$vendorId."&vendor_auth_code=".$vendor_auth_code."&plan_name=".$data['name']."&plan_trial_days=0&plan_type=".$data['frequency_unit']."&plan_length=".$data['frequency_amount']."&main_currency_code=USD&initial_price_usd=0.00&recurring_price_usd=".$data['price'];
+                        $this->createPaddlePlan($json_body, $plan);
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
+    /**
+    ** Create paddle plan on servers
+    **/
+    public function createPaddlePlan($json_body, $plan)
+    {
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, "https://vendors.paddle.com/api/2.0/subscription/plans_create");
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, $json_body);
+        curl_setopt($ch, CURLOPT_POST, 1);
+        $headers = array();
+        $headers[] = "Content-Type: application/x-www-form-urlencoded";
+        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+        $result = curl_exec($ch);
+        //close connection
+        curl_close($ch);
+        $result= json_decode($result);
+        if ($result->success) {
+            $paddle_plan_id=$result->response->product_id;
+            $plan->paddle_plan_id=$paddle_plan_id;
+            $plan->save();
+        }
+        return true;
     }
 }

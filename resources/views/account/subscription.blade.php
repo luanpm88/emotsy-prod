@@ -30,7 +30,7 @@
             <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
 
             <div class="sub-section">
-                <h3 class="text-semibold">{{ trans('messages.current_plan') }}</h3>
+                <h3 class="text-semibold">{{ trans('messages.current_plan') }} </h3>
 
                 @if (!$subscription->isActive())
                     @if ($subscription->isDisabled())
