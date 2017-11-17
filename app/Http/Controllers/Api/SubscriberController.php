@@ -102,10 +102,14 @@ class SubscriberController extends Controller
             return \Response::json(array('message' => trans('List not found')), 404);
         }
 
-        $subscriber = new \Acelle\Model\Subscriber();
-        $subscriber->mail_list_id = $list->id;
-        $subscriber->status = 'subscribed';
-        $subscriber->from = 'api';
+        $subscriber = \Acelle\Model\Subscriber::where('mail_list_id', $list->id)->where('email', '=', $request->EMAIL)->first();
+
+        if (is_null($subscriber)) {
+            $subscriber = new \Acelle\Model\Subscriber();
+            $subscriber->mail_list_id = $list->id;
+            $subscriber->status = 'subscribed';
+            $subscriber->from = 'api';
+        }
 
         // authorize
         if (!$user->can('create', $subscriber)) {
@@ -316,6 +320,10 @@ class SubscriberController extends Controller
         }
 
         $subscriber = \Acelle\Model\Subscriber::findByUid($id);
+
+        if (!is_object($subscriber)) {
+            $subscriber = \Acelle\Model\Subscriber::where('mail_list_id', '=', $list->id)->where('email', '=', $id)->first();
+        }
 
         // check if item exists
         if (!is_object($subscriber)) {
