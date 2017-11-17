@@ -410,7 +410,8 @@ class Campaign extends AbsCampaign
 
         $builder = $this->subscribers([])
                 ->whereRaw(sprintf(table('subscribers').'.id NOT IN (SELECT subscriber_id FROM %s WHERE campaign_id = %s)', table('tracking_logs'), $this->id))
-                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'");
+                ->whereRaw(DB::getTablePrefix()."subscribers.status = '".Subscriber::STATUS_SUBSCRIBED."'")
+                ->groupBy(DB::raw(table('subscribers.email')));
 
         if (!is_null($partition)) {
             // retrieve the subscribers list for this partition only
