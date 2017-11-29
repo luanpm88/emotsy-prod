@@ -59,7 +59,7 @@ class AdminPolicy
         $can = $ability == 'all'
                 || ($ability == 'own' && $user->id == $item->creator_id);
 
-        return $can && $item->customers()->count() == 0;
+        return $can && $item->customers()->count() == 0 && $item->id !== $user->admin->id;
     }
 
     public function loginAs(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
