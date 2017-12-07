@@ -364,7 +364,7 @@ class Subscription extends Model
 
             switch ($plan->frequency_unit) {
                 case 'day':
-                    $this->end_at = $this->start_at->addDays($plan->frequency_amount)->subDays(1);
+                    $this->end_at = $this->start_at->addDays($plan->frequency_amount);
                     break;
                 case 'week':
                     $this->end_at = $this->start_at->addWeeks($plan->frequency_amount)->subDays(1);
