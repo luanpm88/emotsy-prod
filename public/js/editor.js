@@ -15,14 +15,14 @@ $(document).ready(function() {
         ],
         toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media',
         content_css: [
-          APP_URL+'/tinymce/skins/lightgray/content.fixed.css',
-          APP_URL+'/css/all.css',
-          APP_URL+'/css/page.css',
+          APP_URL.replace('/index.php','')+'/tinymce/skins/lightgray/content.fixed.css',
+          APP_URL.replace('/index.php','')+'/css/all.css',
+          APP_URL.replace('/index.php','')+'/css/page.css',
         ],
 
-        external_filemanager_path:APP_URL+"/filemanager/",
+        external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager/",
         filemanager_title:"Responsive Filemanager" ,
-        external_plugins: { "filemanager" : APP_URL+"/filemanager/plugin.min.js"}
+        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager/plugin.min.js"}
     });
 
     tinymce.init({
@@ -41,13 +41,13 @@ $(document).ready(function() {
         ],
         toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media',
         content_css: [
-          APP_URL+'/tinymce/skins/lightgray/content.fixed.css',
-          APP_URL+'/css/email.css',
+          APP_URL.replace('/index.php','')+'/tinymce/skins/lightgray/content.fixed.css',
+          APP_URL.replace('/index.php','')+'/css/email.css',
         ],
 
-        external_filemanager_path:APP_URL+"/filemanager/",
+        external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager/",
         filemanager_title:"Responsive Filemanager" ,
-        external_plugins: { "filemanager" : APP_URL+"/filemanager/plugin.min.js"}
+        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager/plugin.min.js"}
     });
 
     tinymce.init({
@@ -66,11 +66,11 @@ $(document).ready(function() {
         extended_valid_elements : "meta[*]",
         valid_children : "+body[style],+body[meta],+div[h2|span|meta|object],+object[param|embed]",
         content_css: [
-            APP_URL+'/tinymce/skins/lightgray/content.fixed.css',
+            APP_URL.replace('/index.php','')+'/tinymce/skins/lightgray/content.fixed.css',
         ],
-        external_filemanager_path:APP_URL+"/filemanager/",
+        external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager/",
         filemanager_title:"Responsive Filemanager" ,
-        external_plugins: { "filemanager" : APP_URL+"/filemanager/plugin.min.js"}
+        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager/plugin.min.js"}
     });
 
     tinymce.init({
@@ -89,11 +89,11 @@ $(document).ready(function() {
         extended_valid_elements : "meta[*]",
         valid_children : "+body[style],+body[meta],+div[h2|span|meta|object],+object[param|embed]",
         content_css: [
-          APP_URL+'/css/res_email.css',
-          APP_URL+'/css/editor.css',
+          APP_URL.replace('/index.php','')+'/css/res_email.css',
+          APP_URL.replace('/index.php','')+'/css/editor.css',
         ],
-        external_filemanager_path:APP_URL+"/filemanager/",
+        external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager/",
         filemanager_title:"Responsive Filemanager" ,
-        external_plugins: { "filemanager" : APP_URL+"/filemanager/plugin.min.js"}
+        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager/plugin.min.js"}
     });
 });
