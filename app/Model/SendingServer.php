@@ -133,6 +133,9 @@ class SendingServer extends Model
                 // @todo disable VERP as it is not supported by all mailbox
                 // return str_replace('@', '+'.str_replace('@', '=', $recipient).'@', $this->bounceHandler->username);
                 return $this->bounceHandler->username;
+            } else {
+                // @todo raise an error here, hold off the entire campaign
+                return $this->bounceHandler->email;
             }
         }
 
