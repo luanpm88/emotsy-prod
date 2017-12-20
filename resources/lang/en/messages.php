@@ -1604,7 +1604,7 @@
   'log.sending_domain.updated' => 'The sending domain "<a href=":link">:name</a>" was updated!',
   'log.sending_domain.deleted' => 'The sending domain ":name" was deleted!',
   'plan_pie_chart' => 'Plan chart',
-  'not_have_any_customer_sending_server' => 'There is no sending server yet. <a href=":link">Click here</a> to configure one',
+  'not_have_any_customer_sending_server' => 'There is no active sending server available. <a href=":link">Click here</a> to set up one',
   'admin.create_customer_account.help' => 'Also create a customer account associated with the admin user',
   'create_customer_account' => 'Create customer account',
   'not_have_any_admin_sending_server' => 'There is no sending server yet. <a href=":link">Click here</a> to configure one',
