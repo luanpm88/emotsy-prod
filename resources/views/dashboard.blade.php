@@ -21,7 +21,7 @@
                 </div>
                 <h5 class="text-semibold mb-5">{{ trans('messages.sending_quota') }}</h5>
                 <div class="progress">
-                    <div class="progress-bar bg-{{ Auth::user()->customer->listsUsage() >= 80 ? 'danger' : 'primary' }} progress-bar-striped" style="width: {{ Auth::user()->customer->getSendingQuotaUsagePercentage() }}%">
+                    <div class="progress-bar bg-{{ Auth::user()->customer->getSendingQuotaUsagePercentage() >= 80 ? 'danger' : 'primary' }} progress-bar-striped" style="width: {{ Auth::user()->customer->getSendingQuotaUsagePercentage() }}%">
                     </div>
                 </div>
             </div>
@@ -47,7 +47,7 @@
                 </div>
                 <h5 class="text-semibold mb-5 mt-20">{{ trans('messages.campaign') }}</h5>
                 <div class="progress">
-                    <div class="progress-bar bg-{{ Auth::user()->customer->listsUsage() >= 80 ? 'danger' : 'primary' }} progress-bar-striped" style="width: {{ Auth::user()->customer->campaignsUsage() }}%">
+                    <div class="progress-bar bg-{{ Auth::user()->customer->campaignsUsage() >= 80 ? 'danger' : 'primary' }} progress-bar-striped" style="width: {{ Auth::user()->customer->campaignsUsage() }}%">
                     </div>
                 </div>
             </div>
@@ -60,7 +60,7 @@
                 </div>
                 <h5 class="text-semibold mb-5 mt-20">{{ trans('messages.subscriber') }}</h5>
                 <div class="progress">
-                    <div class="progress-bar bg-{{ Auth::user()->customer->listsUsage() >= 80 ? 'danger' : 'primary' }} progress-bar-striped" style="width: {{ Auth::user()->customer->readCache('SubscriberUsage', 0) }}%">
+                    <div class="progress-bar bg-{{ Auth::user()->customer->subscribersUsage() >= 80 ? 'danger' : 'primary' }} progress-bar-striped" style="width: {{ Auth::user()->customer->readCache('SubscriberUsage', 0) }}%">
                     </div>
                 </div>
             </div>
