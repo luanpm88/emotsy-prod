@@ -33,6 +33,7 @@ use Acelle\Model\SendingServer;
 use Acelle\Model\EmailVerification;
 use Acelle\Model\EmailVerificationServer;
 use Acelle\Model\SystemJob;
+use Acelle\Model\Blacklist;
 use Acelle\Exceptions\VerificationProcessCancelledException;
 
 class MailList extends Model
@@ -1231,6 +1232,9 @@ class MailList extends Model
 
             // Trigger updating related campaigns cache
             $this->updateCachedInfo();
+
+            // blacklist new emails (if any)
+            Blacklist::doBlacklist($customer);
 
             // Action Log
             $this->log('import_success', $customer, ['count' => $processed_count, 'error' => '']);

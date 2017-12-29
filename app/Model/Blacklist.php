@@ -74,13 +74,15 @@ class Blacklist extends Model
      */
     public static function doBlacklist($customer = null)
     {
-        if (is_null($customer)) {
-            $sql = sprintf('UPDATE %s s SET status = %s WHERE s.status = %s AND s.email IN (SELECT email FROM %s)', table('subscribers'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED), table('blacklists'));
-        } else {
-            $sql = sprintf('UPDATE %s s SET status = %s WHERE s.status = %s AND s.email IN (SELECT email FROM %s) AND mail_list_id IN (SELECT id FROM %s WHERE customer_id = %s)', table('subscribers'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED), table('blacklists'), table('mail_lists'), $customer->id);
-        }
-
+        // application wide blacklist
+        $sql = sprintf('UPDATE %s s SET status = %s WHERE s.status = %s AND s.email IN (SELECT email FROM %s WHERE admin_id IS NOT NULL)', table('subscribers'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED), table('blacklists'));
         \DB::statement($sql);
+
+        // user wide blacklist
+        if (!is_null($customer)) {
+            $sql = sprintf('UPDATE %s s SET status = %s WHERE s.status = %s AND s.email IN (SELECT email FROM %s WHERE admin_id IS NULL) AND mail_list_id IN (SELECT id FROM %s WHERE customer_id = %s)', table('subscribers'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED), table('blacklists'), table('mail_lists'), $customer->id);
+            \DB::statement($sql);
+        }
     }
 
     /**
@@ -144,45 +146,54 @@ class Blacklist extends Model
      */
     public static function import($file, $system_job, $customer=null, $admin=null)
     {
-        $content = \File::get($file);
-        $lines = preg_split('/\r\n|\r|\n/', $content);
+        try {
+            $content = \File::get($file);
+            $lines = preg_split('/\r\n|\r|\n/', $content);
 
-        $total = count($lines);
+            $total = count($lines);
 
-        // init the status
-        $system_job->updateStatus([
-            'status' => self::IMPORT_STATUS_RUNNING,
-        ]);
+            // init the status
+            $system_job->updateStatus([
+                'status' => self::IMPORT_STATUS_RUNNING,
+            ]);
 
-        // update status, line count
-        $system_job->updateStatus([ 'total' => $total ]);
+            // update status, line count
+            $system_job->updateStatus([ 'total' => $total ]);
 
-        // demo process
-        $success = 0;
-        foreach ($lines as $number => $line) {
-            $email = trim(strtolower($line));
+            // demo process
+            $success = 0;
+            foreach ($lines as $number => $line) {
+                $email = trim(strtolower($line));
 
-            // update status, finish one batch
-            $system_job->updateStatus([ 'processed' => $number+1 ]);
-
-            // Add to blacklist
-            if (\Acelle\Library\Tool::isValidEmail($email)) {
-                $success++;
-                $system_job->updateStatus([ 'success' => $success ]);
+                // update status, finish one batch
+                $system_job->updateStatus([ 'processed' => $number+1 ]);
 
                 // Add to blacklist
-                if (isset($customer)) {
-                    $customer->addEmaillToBlacklist($email);
-                }
-                if (isset($admin)) {
-                    $admin->addEmaillToBlacklist($email);
+                if (\Acelle\Library\Tool::isValidEmail($email)) {
+                    $success++;
+                    $system_job->updateStatus([ 'success' => $success ]);
+
+                    // Add to blacklist
+                    if (isset($customer)) {
+                        $customer->addEmaillToBlacklist($email);
+                    }
+                    if (isset($admin)) {
+                        $admin->addEmaillToBlacklist($email);
+                    }
                 }
             }
+
+            self::doBlacklist($customer);
+
+            // Update status, finish all batches
+            $system_job->updateStatus([ 'status' => self::IMPORT_STATUS_DONE ]);
+
+        } catch (\Exception $e) {
+            // update job status
+            $system_job->updateStatus([
+                'status' => self::IMPORT_STATUS_FAILED,
+                'error_message' => $e->getMessage(),
+            ]);
         }
-
-        self::doBlacklist($customer);
-
-        // Update status, finish all batches
-        $system_job->updateStatus([ 'status' => self::IMPORT_STATUS_DONE ]);
     }
 }

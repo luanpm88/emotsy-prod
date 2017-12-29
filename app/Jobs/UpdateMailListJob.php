@@ -3,6 +3,7 @@
 namespace Acelle\Jobs;
 
 use Acelle\Library\Log as MailLog;
+use Acelle\Model\Blacklist;
 
 class UpdateMailListJob extends SystemJob
 {
@@ -44,5 +45,7 @@ class UpdateMailListJob extends SystemJob
     public function handle()
     {
         $this->list->updateCachedInfo();
+        // blacklist new emails (if any)
+        Blacklist::doBlacklist($this->list->customer);
     }
 }
