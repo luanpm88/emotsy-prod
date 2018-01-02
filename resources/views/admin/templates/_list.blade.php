@@ -47,7 +47,7 @@
 										</td>
 										<td class="text-right">
 											@if (Auth::user()->admin->can('preview', $template))
-												<a href="#preview" class="btn bg-teal-600 btn-icon" onclick="popupwindow('{{ action('TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a>
+												<a href="#preview" class="btn bg-teal-600 btn-icon" onclick="popupwindow('{{ action('Admin\TemplateController@preview', $template->uid) }}', '{{ $template->name }}', 800, 800)"><i class="icon-zoomin3"></i> {{ trans("messages.preview") }}</a>
 											@endif
 											@if (Auth::user()->admin->can('update', $template))
 												@if ($template->source == 'builder')
