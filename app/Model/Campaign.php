@@ -303,23 +303,18 @@ class Campaign extends AbsCampaign
                 // this is a trick for returning an empty builder
                 return Subscriber::limit(0);
             }
-
             $query = Subscriber::select("subscribers.*");
-
             // Tell MySQL to use the right index
             // $query->from(\DB::raw(\DB::getTablePrefix() . 'subscribers FORCE INDEX (subscribers_mail_list_id_email_index)'));
-
             // Email verification join
             if (in_array('email_verifications', $extra)) {
                 $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
             }
-
             // Get subscriber from mailist and segment
             $conditions = [];
-            foreach($this->listsSegments as $lists_segment) {
-                if(!empty($lists_segment->segment_id)) {
+            foreach ($this->listsSegments as $lists_segment) {
+                if (!empty($lists_segment->segment_id)) {
                     $conds = $lists_segment->segment->getSubscribersConditions();
-
                     // JOINS...
                     if (!empty($conds['joins'])) {
                         foreach ($conds['joins'] as $joining) {
@@ -332,13 +327,12 @@ class Campaign extends AbsCampaign
                             });
                         }
                     }
-
                     // WHERE...
                     if (!empty($conds['conditions'])) {
                         $conditions[] = $conds['conditions'];
                     }
-
                 } else {
+                    // failed case
                     $conditions[] = '(' . table('subscribers') . '.mail_list_id = ' . $lists_segment->mail_list_id . ')';
                 }
             }
@@ -346,11 +340,12 @@ class Campaign extends AbsCampaign
             if (!empty($conditions)) {
                 $query = $query->whereRaw('(' . implode(' OR ', $conditions) . ')');
             }
-        }
 
+            // what if list does not have segment?
+            $query->where(table('subscribers') . '.mail_list_id', '=', $lists_segment->mail_list_id);
+        }
         // Filters
         $filters = isset($params["filters"]) ? $params["filters"] : null;
-
         if((isset($filters) && (isset($filters["open"]) || isset($filters["click"]) || isset($filters["tracking_status"])))
            || $this->status == "done"
         ) {
@@ -358,7 +353,6 @@ class Campaign extends AbsCampaign
             $query = $query->where('tracking_logs.id', "!=", "NULL");
             $query = $query->where('tracking_logs.campaign_id', "=", $this->id);
         }
-
         if(isset($filters)) {
             if(isset($filters["open"])) {
                 $equal = ($filters["open"] == "opened") ? "!=" : "=";
@@ -375,7 +369,6 @@ class Campaign extends AbsCampaign
                 $query = $query->where('tracking_logs.status', "=", $val);
             }
         }
-
         // keyword
         if (isset($params["keyword"]) && !empty(trim($params["keyword"]))) {
             foreach (explode(' ', trim($params["keyword"])) as $keyword) {
@@ -386,7 +379,6 @@ class Campaign extends AbsCampaign
                 });
             }
         }
-
         return $query;
     }
 
