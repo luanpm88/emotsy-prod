@@ -1,3 +1,19 @@
+3.0.14 / 2018-01-09
+==================
+
+ * Fixed: PHP CLI checker does not work correctly
+ * Fixed: verification result is not correct
+ * Fixed: blacklisting may not work correctly
+ * Fixed: "flat array" issue
+ * Fixed: SendGrid feedback handling issue
+ * Added: support cloning plan
+ * Added: support file attachment for campaign email
+ * Added: export segment
+ * Added: integated with Proofy.io verification service
+ * Added: support everifier.org verification service
+ * Added: support changing font-size for email editor
+ * Added: 
+
 3.0.13 / 2017-10-15
 ==================
 
