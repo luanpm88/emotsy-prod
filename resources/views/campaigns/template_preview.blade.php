@@ -90,6 +90,10 @@
                                     'rules' => $rules,
                                     'help_class' => 'campaign'
                                 ])
+
+								@if ($campaign->template_source != 'builder')
+									@include('elements._tags', ['tags' => Acelle\Model\Template::tags($campaign->defaultMailList)])
+								@endif
                             @endif
 						</div>
 					@endif
@@ -103,10 +107,6 @@
                             'rules' => $rules,
                             'help_class' => 'campaign'
                         ])
-                @if ($campaign->template_source != 'builder')
-                    @include('elements._tags', ['tags' => Acelle\Model\Template::tags($campaign->defaultMailList)])
-                @endif
-
 					</div>
 				<div class="text-right" id="previw_next_btn">
 					<hr>
