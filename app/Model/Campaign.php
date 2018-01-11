@@ -331,19 +331,17 @@ class Campaign extends AbsCampaign
                     if (!empty($conds['conditions'])) {
                         $conditions[] = $conds['conditions'];
                     }
-                } else {
-                    // failed case
-                    $conditions[] = '(' . table('subscribers') . '.mail_list_id = ' . $lists_segment->mail_list_id . ')';
                 }
             }
+
+            // what if list does not have segment?
+            $query->whereRaw(sprintf("%s = %s", table('subscribers.mail_list_id'), $lists_segment->mail_list_id));
 
             if (!empty($conditions)) {
                 $query = $query->whereRaw('(' . implode(' OR ', $conditions) . ')');
             }
-
-            // what if list does not have segment?
-            $query->where(table('subscribers') . '.mail_list_id', '=', $lists_segment->mail_list_id);
         }
+        
         // Filters
         $filters = isset($params["filters"]) ? $params["filters"] : null;
         if((isset($filters) && (isset($filters["open"]) || isset($filters["click"]) || isset($filters["tracking_status"])))
