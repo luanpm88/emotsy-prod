@@ -204,7 +204,7 @@
   'save_change' => 'Guardar as alterações',
   'are_you_sure' => 'Tem certeza?',
   'delete_field_alert' => 'A exclusão de um campo de formulário também exclui todos os dados da sua lista associados a ele. É isso que pretende fazer? (<strong>Não pode ser desfeito</strong>)',
-  'type_delete_to_confirm' => 'Digite <strong>ELIMINAR</strong> para confirmar',
+  'type_delete_to_confirm' => 'Digite <strong>DELETE</strong> para confirmar',
   'delete_validate' => 'Digite o texto exatamente como ele é exibido para confirmar a exclusão',
   'add_more' => 'Adicione mais',
   'value' => 'Valor',
