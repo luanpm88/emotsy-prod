@@ -103,7 +103,9 @@ if ( ! empty($_FILES))
 
 		// upload
 		move_uploaded_file($tempFile,$targetFile);
+		$oldumask = umask(0);
 		chmod($targetFile, 0755);
+    umask($oldumask);
 
 		if ($is_img)
 		{
