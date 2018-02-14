@@ -146,7 +146,7 @@ class MailListController extends Controller
 
         // authorize
         if (!$user->can('create', $list)) {
-            return \Response::json(array('message' => trans('no_more_item')), 403);
+            return \Response::json(array('status' => 0, 'message' => trans('no_more_item')), 403);
         }
 
         // validate and save posted data
@@ -170,6 +170,7 @@ class MailListController extends Controller
             $list->updateCachedInfo();
 
             return \Response::json(array(
+                'status' => 1, 
                 'message' => trans('messages.list.created'),
                 'list_uid' => $list->uid
             ), 200);

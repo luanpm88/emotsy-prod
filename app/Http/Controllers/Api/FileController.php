@@ -60,7 +60,7 @@ class FileController extends Controller
                             // return response()->json('Path is not valid', 400);
                             $result[] = [
                                 'file' => $fileUrl,
-                                'status' => 'failed',
+                                'status' => 0,
                                 'message' => 'Subdirectory is not valid',
                             ];
                             continue;
@@ -84,7 +84,7 @@ class FileController extends Controller
                 // return response()->json('The same file name already exists', 400);
                 $result[] = [
                     'file' => $fileUrl,
-                    'status' => 'failed',
+                    'status' => 0,
                     'message' => 'The same file name already exists',
                 ];
                 continue;
@@ -100,14 +100,14 @@ class FileController extends Controller
 
                 $result[] = [
                     'file' => $fileUrl,
-                    'status' => 'success',
+                    'status' => 1,
                     'message' => trans('messages.file_uploaded'),
                 ];
             } catch (\Exception $ex) {
                 // return response()->json($ex->getMessage(), 400);
                 $result[] = [
                     'file' => $fileUrl,
-                    'status' => 'failed',
+                    'status' => 0,
                     'message' => $ex->getMessage(),
                 ];
             }

@@ -27,7 +27,7 @@ class CustomerController extends Controller
 
         // authorize
         if (!$current_user->can('create', $customer)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
         // save posted data
@@ -72,6 +72,7 @@ class CustomerController extends Controller
                 }
 
                 return \Response::json(array(
+                    'status' => 1, 
                     'message' => trans('messages.customer.created'),
                     'customer_uid' => $customer->uid,
                     'api_token' => $customer->user->api_token
@@ -97,12 +98,12 @@ class CustomerController extends Controller
 
         // check if item exists
         if (!is_object($customer)) {
-            return \Response::json(array('message' => 'Item not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
         }
 
         // authorize
         if (!$current_user->can('update', $customer)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
         // save posted data
@@ -150,6 +151,7 @@ class CustomerController extends Controller
             }
 
             return \Response::json(array(
+                'status' => 1, 
                 'message' => trans('messages.customer.updated'),
                 'customer_uid' => $customer->uid
             ), 200);
@@ -265,17 +267,18 @@ class CustomerController extends Controller
 
         // check if item exists
         if (!is_object($customer)) {
-            return \Response::json(array('message' => 'Customer not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
         // authorize
         if (!$user->can('enable', $customer)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
         $customer->enable();
 
         return \Response::json(array(
+            'status' => 1, 
             'message' => trans('messages.customer.enabled'),
             'customer_uid' => $customer->uid
         ), 200);
@@ -298,17 +301,18 @@ class CustomerController extends Controller
 
         // check if item exists
         if (!is_object($customer)) {
-            return \Response::json(array('message' => 'Customer not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Customer not found'), 404);
         }
 
         // authorize
         if (!$user->can('disable', $customer)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
         $customer->disable();
 
         return \Response::json(array(
+            'status' => 1, 
             'message' => trans('messages.customer.disabled'),
             'customer_uid' => $customer->uid
         ), 200);

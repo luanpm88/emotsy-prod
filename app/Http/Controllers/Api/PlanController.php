@@ -67,7 +67,7 @@ class PlanController extends Controller
 
         // authorize
         if (!$user->can('create', $plan)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
         // save posted data
@@ -110,6 +110,7 @@ class PlanController extends Controller
             }
 
             return \Response::json(array(
+                'status' => 1, 
                 'message' => trans('messages.plan.created'),
                 'plan_uid' => $plan->uid
             ), 200);

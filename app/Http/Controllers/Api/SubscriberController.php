@@ -137,6 +137,7 @@ class SubscriberController extends Controller
             event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
             return \Response::json(array(
+                'status' => 1,
                 'message' => trans('messages.subscriber.created'),
                 'subscriber_uid' => $subscriber->uid
             ), 200);
@@ -221,24 +222,24 @@ class SubscriberController extends Controller
 
         // authorize
         if (!is_object($list)) {
-            return \Response::json(array('message' => trans('List not found')), 404);
+            return \Response::json(array('status' => 0, 'message' => trans('List not found')), 404);
         }
 
         $subscriber = \Acelle\Model\Subscriber::findByUid($id);
 
         // check if item exists
         if (!is_object($subscriber)) {
-            return \Response::json(array('message' => 'Item not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
         }
 
         // check if item subscribed
         if ($subscriber->status == 'subscribed') {
-            return \Response::json(array('message' => 'Already subscribed'), 409);
+            return \Response::json(array('status' => 0, 'message' => 'Already subscribed'), 409);
         }
 
         // authorize
         if (!$user->can('subscribe', $subscriber)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
         // Unsubscribe
@@ -248,7 +249,7 @@ class SubscriberController extends Controller
         // Log
         $subscriber->log('subscribed', $user->customer);
 
-        return \Response::json(array('message' => 'Subscribed'), 200);
+        return \Response::json(array('status' => 1, 'message' => 'Subscribed'), 200);
     }
 
     /**
@@ -269,24 +270,24 @@ class SubscriberController extends Controller
 
         // authorize
         if (!is_object($list)) {
-            return \Response::json(array('message' => trans('List not found')), 404);
+            return \Response::json(array('status' => 0, 'message' => trans('List not found')), 404);
         }
 
         $subscriber = \Acelle\Model\Subscriber::findByUid($id);
 
         // check if item exists
         if (!is_object($subscriber)) {
-            return \Response::json(array('message' => 'Item not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
         }
 
         // check if item unsubscribed
         if ($subscriber->status == 'unsubscribed') {
-            return \Response::json(array('message' => 'Already unsubscribed'), 409);
+            return \Response::json(array('status' => 0, 'message' => 'Already unsubscribed'), 409);
         }
 
         // authorize
         if (!$user->can('unsubscribe', $subscriber)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
         // Unsubscribe
@@ -296,7 +297,7 @@ class SubscriberController extends Controller
         // Log
         $subscriber->log('unsubscribed', $user->customer);
 
-        return \Response::json(array('message' => 'Unsubscribed'), 200);
+        return \Response::json(array('status' => 1, 'message' => 'Unsubscribed'), 200);
     }
 
     /**
@@ -327,12 +328,12 @@ class SubscriberController extends Controller
 
         // check if item exists
         if (!is_object($subscriber)) {
-            return \Response::json(array('message' => 'Item not found'), 404);
+            return \Response::json(array('status' => 0, 'message' => 'Item not found'), 404);
         }
 
         // authorize
         if (!$user->can('delete', $subscriber)) {
-            return \Response::json(array('message' => 'Unauthorized'), 401);
+            return \Response::json(array('status' => 0, 'message' => 'Unauthorized'), 401);
         }
 
         // Log
@@ -344,7 +345,7 @@ class SubscriberController extends Controller
         // update MailList cache
         event(new \Acelle\Events\MailListUpdated($list));
 
-        return \Response::json(array('message' => 'Deleted'), 200);
+        return \Response::json(array('status' => 1, 'message' => 'Deleted'), 200);
     }
 
     /**
@@ -413,7 +414,7 @@ class SubscriberController extends Controller
 
         // authorize
         if (!$user->can('update', $subscriber)) {
-            return \Response::json(array('message' => trans('no_more_item')), 403);
+            return \Response::json(array('status' => 0, 'message' => trans('no_more_item')), 403);
         }
 
         // validate and save posted data
@@ -433,6 +434,7 @@ class SubscriberController extends Controller
             event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
             return \Response::json(array(
+                'status' => 1, 
                 'message' => trans('messages.subscriber.updated'),
                 'subscriber_uid' => $subscriber->uid
             ), 200);
