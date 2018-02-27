@@ -127,7 +127,7 @@ class SendingServerSendGrid extends SendingServer
         $fromName = (is_null($message->getFrom())) ? null : array_values($message->getFrom())[0];
         $toEmail = array_keys($message->getTo())[0];
         $toName = (is_null($message->getTo())) ? null : array_values($message->getTo())[0];
-        $replyToEmail = (is_null($message->getReplyTo())) ? null : array_keys($message->getReplyTo())[0];
+        $replyToEmail = (is_null($message->getReplyTo())) ? $fromEmail : array_keys($message->getReplyTo())[0];
 
         // Following RFC 1341, section 7.2, if either text/html or text/plain are to be sent in your email: text/plain needs to be first
         // So, use array_shift instead of array_pop
