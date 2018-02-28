@@ -46,22 +46,9 @@
 
 <body>
     @if ($campaign->type != 'plain-text')
-        <div class="tab">
-          <button class="tablinks active" onclick="openTab(event, 'html')">{{ trans('messages.web_view_html_tab') }}</button>
-          <button class="tablinks" onclick="openTab(event, 'plain')">{{ trans('messages.web_view_plain_tab') }}</button>
-        </div>
-
-        <div id="html" class="tabcontent" style="display: block">
-            {!! $campaign->getHtmlContent($subscriber, $message_id) !!}
-        </div>
-    @endif
-
-    @if ($campaign->type != 'plain-text')
-        <div id="plain" class="tabcontent">
-    @endif
+        {!! $campaign->getHtmlContent($subscriber, $message_id) !!}
+    @else
         {!! $campaign->getPlainContent($subscriber, $message_id) !!}
-    @if ($campaign->type != 'plain-text')
-        </div>
     @endif
 
     <script>
@@ -89,4 +76,3 @@
 </body>
 
 </html>
-
