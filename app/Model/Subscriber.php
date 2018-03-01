@@ -619,6 +619,8 @@ class Subscriber extends Model
             $copy = $this->replicate();
             $copy->mail_list_id = $list->id;
             $copy->save();
+            
+            $copy = \Acelle\Model\Subscriber::find($copy->id);
         } else {
             // return if keep
             if ($type == 'keep') {
@@ -627,7 +629,7 @@ class Subscriber extends Model
         }
 
         // update fields
-        foreach ($this->subscriberFields as $item) {
+        foreach ($this->subscriberFields as $item) {            
             foreach ($copy->mailList->fields as $field) {
                 if ($item->field->tag == $field->tag) {
                     $copy->setField($field, $item->value);
