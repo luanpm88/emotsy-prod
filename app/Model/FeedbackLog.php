@@ -53,10 +53,8 @@ class FeedbackLog extends Model
      */
     public static function filter($request)
     {
-        $user = $request->user();
-        $customer = $user->customer;
         $query = self::select('feedback_logs.*');
-        $query = $query->leftJoin('tracking_logs', 'feedback_logs.message_id', '=', 'tracking_logs.message_id');
+        $query = $query->join('tracking_logs', 'feedback_logs.message_id', '=', 'tracking_logs.message_id');
         $query = $query->leftJoin('subscribers', 'subscribers.id', '=', 'tracking_logs.subscriber_id');
         $query = $query->leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
         $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
