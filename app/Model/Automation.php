@@ -311,6 +311,8 @@ class Automation extends Model
         }
 
         $query = Subscriber::select("subscribers.*");
+        $query->where('subscribers.status', \Acelle\Model\Subscriber::STATUS_SUBSCRIBED);
+        
         // Email verification join
         $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
 
