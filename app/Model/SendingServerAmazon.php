@@ -144,6 +144,10 @@ class SendingServerAmazon extends SendingServer
      */
     public function setupSnsThreadSafe($message)
     {
+        if (self::$isSnsSetup) {
+            return true;
+        }
+        
         $lock = new Lockable(storage_path('locks/sending-server-sns-' . $this->uid));
         $lock->getExclusiveLock(function() use ($message) {
             $this->setupSns($message);
