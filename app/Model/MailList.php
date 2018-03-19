@@ -1180,7 +1180,7 @@ class MailList extends Model
                     $record = array_only($r, $availableFields);
                     if (!is_null($record['email'])) {
                         // replace the non-break space (not a normal space) as well as all other spaces
-                        $record['email'] = preg_replace('/[ \s*]*/', '', trim($record['email']));
+                        $record['email'] = strtolower(preg_replace('/[ \s*]*/', '', trim($record['email'])));
                     }
 
                     return $record;
