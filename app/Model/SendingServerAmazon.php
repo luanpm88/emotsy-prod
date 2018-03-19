@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
+use Acelle\Library\Lockable;
 
 class SendingServerAmazon extends SendingServer
 {
@@ -73,7 +74,6 @@ class SendingServerAmazon extends SendingServer
                 'version' => '2010-12-01'
             ));
         }
-
         return self::$sesClient;
     }
 
@@ -135,5 +135,19 @@ class SendingServerAmazon extends SendingServer
         }
 
         self::$isSnsSetup = true;
+    }
+    
+    /**
+     * Setup SNS, make sure the request limit (in case of multi-process) is less than 1 request / second
+     *
+     * @return mixed
+     */
+    public function setupSnsThreadSafe($message)
+    {
+        $lock = new Lockable(storage_path('locks/sending-server-sns-' . $this->uid));
+        $lock->getExclusiveLock(function() use ($message) {
+            $this->setupSns($message);
+            sleep(1); // SNS request rate limit
+        });
     }
 }

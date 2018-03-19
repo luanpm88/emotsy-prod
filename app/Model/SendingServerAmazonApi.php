@@ -37,7 +37,7 @@ class SendingServerAmazonApi extends SendingServerAmazon
     public function send($message, $params = array())
     {
         try {
-            $this->setupSns($message);
+            $this->setupSnsThreadSafe($message);
             $sent = $this->sesClient()->sendRawEmail(array(
                 'RawMessage' => array(
                     'Data' => $message->toString(),
