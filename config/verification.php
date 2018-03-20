@@ -41,7 +41,7 @@ return [
             'request_type' => 'GET',
             'fields' => [ 'api_key' ],
             'result_xpath' => '$.*.status',
-            'result_map' => [ '1' => 'deliverable', '0' => 'undeliverable' ]
+            'result_map' => [ '1' => 'deliverable', '0' => 'undeliverable', '-1' => 'risky' ]
         ]
     ]
 ];
