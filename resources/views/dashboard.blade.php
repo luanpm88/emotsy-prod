@@ -20,8 +20,8 @@
                     &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingQuotaUsage() }}
                 </div>
                 <h5 class="text-semibold mb-5">{{ trans('messages.sending_quota') }}</h5>
-                <div class="progress">
-                    <div class="progress-bar bg-{{ Auth::user()->customer->getSendingQuotaUsagePercentage() >= 80 ? 'danger' : 'primary' }} progress-bar-striped" style="width: {{ Auth::user()->customer->getSendingQuotaUsagePercentage() }}%">
+                <div class="progress progress-sm">
+                    <div class="progress-bar bg-{{ Auth::user()->customer->getSendingQuotaUsagePercentage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->getSendingQuotaUsagePercentage() }}%">
                     </div>
                 </div>
             </div>
@@ -33,8 +33,8 @@
                     &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayListsUsage() }}
                 </div>
                 <h5 class="text-semibold mb-5">{{ trans('messages.list') }}</h5>
-                <div class="progress">
-                    <div class="progress-bar bg-{{ Auth::user()->customer->listsUsage() >= 80 ? 'danger' : 'primary' }} progress-bar-striped" style="width: {{ Auth::user()->customer->listsUsage() }}%">
+                <div class="progress progress-sm">
+                    <div class="progress-bar bg-{{ Auth::user()->customer->listsUsage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->listsUsage() }}%">
                     </div>
                 </div>
             </div>
@@ -46,8 +46,8 @@
                     &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayCampaignsUsage() }}
                 </div>
                 <h5 class="text-semibold mb-5 mt-20">{{ trans('messages.campaign') }}</h5>
-                <div class="progress">
-                    <div class="progress-bar bg-{{ Auth::user()->customer->campaignsUsage() >= 80 ? 'danger' : 'primary' }} progress-bar-striped" style="width: {{ Auth::user()->customer->campaignsUsage() }}%">
+                <div class="progress progress-sm">
+                    <div class="progress-bar bg-{{ Auth::user()->customer->campaignsUsage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->campaignsUsage() }}%">
                     </div>
                 </div>
             </div>
@@ -59,8 +59,8 @@
                     &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySubscribersUsage() }}
                 </div>
                 <h5 class="text-semibold mb-5 mt-20">{{ trans('messages.subscriber') }}</h5>
-                <div class="progress">
-                    <div class="progress-bar bg-{{ Auth::user()->customer->subscribersUsage() >= 80 ? 'danger' : 'primary' }} progress-bar-striped" style="width: {{ Auth::user()->customer->readCache('SubscriberUsage', 0) }}%">
+                <div class="progress progress-sm">
+                    <div class="progress-bar bg-{{ Auth::user()->customer->subscribersUsage() >= 80 ? 'danger' : 'primary' }}" style="width: {{ Auth::user()->customer->readCache('SubscriberUsage', 0) }}%">
                     </div>
                 </div>
             </div>
