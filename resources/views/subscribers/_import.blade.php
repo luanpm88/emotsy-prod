@@ -2,7 +2,8 @@
 			<h2 class="text-bold text-teal-800"><i class="icon-task"></i> {{ trans('messages.recent_import') }}</h2>
 			<form class="listing-form"
 					data-url="{{ action('SubscriberController@importList', ["list_uid" => $list->uid]) }}"
-					per-page="10"					
+					per-page="10"
+                                                            loading-mask="false"
 				>				
 					<div class="row top-list-controls">
 						<div class="col-md-10">

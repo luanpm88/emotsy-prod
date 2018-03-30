@@ -56,6 +56,7 @@ function tableFilter(form, custom_url) {
     var per_page = form.attr("per-page")
     var sort_order = form.find("select[name='sort-order']").val();
     var container = form.find(".pml-table-container");
+    var loading_mask = form.attr("loading-mask");
 
     // Remove sort direction when sort order == custom_order
     if(sort_order == 'custom_order') {
@@ -86,13 +87,15 @@ function tableFilter(form, custom_url) {
             d[entry.name] = entry.value
         }
     });
-
-    container.addClass('loading');
-    container.prepend('<div class="list-loading-spinner"><div class="spinner2 black">'+
-      '<div class="bounce1"></div>'+
-      '<div class="bounce2"></div>'+
-      '<div class="bounce3"></div>'+
-    '</div></div>');
+    
+    if (typeof(loading_mask) == 'undefined' || loading_mask == 'true') {
+      container.addClass('loading');
+      container.prepend('<div class="list-loading-spinner"><div class="spinner2 black">'+
+        '<div class="bounce1"></div>'+
+        '<div class="bounce2"></div>'+
+        '<div class="bounce3"></div>'+
+      '</div></div>');
+    }
 
     // ajax update custom sort
     // ajax update custom sort
