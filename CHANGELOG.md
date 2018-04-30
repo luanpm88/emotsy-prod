@@ -1,3 +1,17 @@
+3.0.15 / 2018-05-02
+==================
+
+ * Fixed: everifier.org compatibility issue
+ * Fixed: AWS SNS rate limit issue
+ * Fixed: import issue with uppercase email address
+ * Fixed: automation issue with unsubscribed contacts
+ * Fixed: feedback log not showing up correctly
+ * Fixed: Reply-To header is now required for SendGrid
+ * Fixed: moving subscribers issue
+ * Fixed: subscribers filtering issue
+ * Fixed: Return-Path header not set correctly
+ * Changed: remove plain text online viewer
+
 3.0.14 / 2018-01-09
 ==================
 
