@@ -73,7 +73,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
 Route::group(['middleware' => ['not_logged_in']], function () {
     Route::auth();
     Route::get('user/activate/{token}', 'UserController@activate');
-    
+
     Route::get('/disabled', 'Controller@userDisabled');
     Route::get('/offline', 'Controller@offline');
     Route::get('/not-authorized', 'Controller@notAuthorized');
@@ -86,6 +86,9 @@ Route::group(['middleware' => ['not_logged_in']], function () {
 
     // Customer avatar
     Route::get('assets/images/avatar/customer-{uid?}.jpg', 'CustomerController@avatar');
+
+    //Subscriber avatar
+    Route::get('assets/images/avatar/subscriber-{uid?}.jpg', 'SubscriberController@avatar');
 
     // Admin avatar
     Route::get('assets/images/avatar/admin-{uid?}.jpg', 'AdminController@avatar');
@@ -212,6 +215,9 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('lists/{list_uid}/segments/{uid}/edit', 'SegmentController@edit');
     Route::patch('lists/{list_uid}/segments/{uid}/update', 'SegmentController@update');
     Route::get('lists/{list_uid}/segments/delete', 'SegmentController@delete');
+    Route::post('lists/{list_uid}/segments/{uid}/export', 'SegmentController@export');
+    Route::get('lists/{list_uid}/segments/{uid}/export', 'SegmentController@viewExport');
+    Route::get('lists/{list_uid}/segments/{uid}/export/list', 'SegmentController@exportList');
     Route::get('lists/{list_uid}/segments/sample_condition', 'SegmentController@sample_condition');
 
     // Page
@@ -421,7 +427,14 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('payments/cash/{subscription_uid}', 'PaymentController@cash');
     Route::post('payments/paypal/{subscription_uid}', 'PaymentController@paypal');
     Route::get('payments/paypal/{subscription_uid}', 'PaymentController@paypal');
-
+    Route::post('payments/payumoney/{subscription_uid}', 'PaymentController@payumoney');
+    Route::get('payments/payumoney/{subscription_uid}', 'PaymentController@payumoney');
+    Route::get('payments/payumoney-success/{subscription_uid}', 'PaymentController@payumoney_success');
+    Route::post('payments/payumoney-success/{subscription_uid}', 'PaymentController@payumoney_success');
+    Route::get('payments/payumoney-fail/{subscription_uid}', 'PaymentController@payumoney_fail');
+    Route::post('payments/payumoney-fail/{subscription_uid}', 'PaymentController@payumoney_fail');
+    Route::get('payments/failure/{subscription_uid}', 'PaymentController@failure');
+    Route::post('payments/paddle/card/webhook', 'PaymentController@paddle_webhook');
     // Email verification servers
     Route::get('email_verification_servers/options', 'EmailVerificationServerController@options');
     Route::get('email_verification_servers/listing/{page?}', 'EmailVerificationServerController@listing');
@@ -636,7 +649,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::get('admin/plans/disable', 'PlanController@disable');
     Route::get('admin/plans/enable', 'PlanController@enable');
     Route::resource('admin/plans', 'PlanController');
-
+    Route::post('admin/plans/copy', 'PlanController@copy');
     // Currency
     Route::get('admin/currencies/select2', 'CurrencyController@select2');
     Route::get('admin/currencies/listing/{page?}', 'CurrencyController@listing');

@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Model\Subscriber;
 
 class Blacklist extends Model
 {
@@ -52,6 +53,37 @@ class Blacklist extends Model
     }
 
     /**
+     * Get all items.
+     *
+     * @return collect
+     */
+    public function delist($customer = null)
+    {
+        if (is_null($customer)) {
+            $sql = sprintf('UPDATE %s SET status = %s WHERE status = %s AND email = %s', table('subscribers'), db_quote(Subscriber::STATUS_SUBSCRIBED), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote($this->email));
+        } else {
+            $sql = sprintf('UPDATE %s SET status = %s WHERE status = %s AND email = %s AND mail_list_id IN (SELECT id FROM %s WHERE customer_id = %s)', table('subscribers'), db_quote(Subscriber::STATUS_SUBSCRIBED), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote($this->email), table('mail_lists'), $customer->id);
+        }
+        \DB::statement($sql);
+    }
+
+    /**
+     * Blacklist all subscribers of the same email address
+     *
+     * @return collect
+     */
+    public static function doBlacklist($customer = null)
+    {
+        if (is_null($customer)) {
+            $sql = sprintf('UPDATE %s s SET status = %s WHERE s.status = %s AND s.email IN (SELECT email FROM %s)', table('subscribers'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED), table('blacklists'));
+        } else {
+            $sql = sprintf('UPDATE %s s SET status = %s WHERE s.status = %s AND s.email IN (SELECT email FROM %s) AND mail_list_id IN (SELECT id FROM %s WHERE customer_id = %s)', table('subscribers'), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote(Subscriber::STATUS_SUBSCRIBED), table('blacklists'), table('mail_lists'), $customer->id);
+        }
+
+        \DB::statement($sql);
+    }
+
+    /**
      * Filter items.
      *
      * @return collect
@@ -71,11 +103,11 @@ class Blacklist extends Model
         }
 
         // Other filter
-        if(!empty($request->customer_id)) {
+        if (!empty($request->customer_id)) {
             $query = $query->where('blacklists.customer_id', '=', $request->customer_id);
         }
 
-        if(!empty($request->admin_id)) {
+        if (!empty($request->admin_id)) {
             $query = $query->whereNull('customer_id');
         }
 
@@ -91,7 +123,7 @@ class Blacklist extends Model
     {
         $query = self::filter($request);
 
-        if(!empty($request->sort_order)) {
+        if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
@@ -110,7 +142,7 @@ class Blacklist extends Model
      *
      * @return collect
      */
-    public static function import($file, $system_job, $customer=NULL, $admin=NULL)
+    public static function import($file, $system_job, $customer=null, $admin=null)
     {
         $content = \File::get($file);
         $lines = preg_split('/\r\n|\r|\n/', $content);
@@ -134,7 +166,6 @@ class Blacklist extends Model
             $system_job->updateStatus([ 'processed' => $number+1 ]);
 
             // Add to blacklist
-
             if (\Acelle\Library\Tool::isValidEmail($email)) {
                 $success++;
                 $system_job->updateStatus([ 'success' => $success ]);
@@ -147,9 +178,9 @@ class Blacklist extends Model
                     $admin->addEmaillToBlacklist($email);
                 }
             }
-
-            sleep(1.5);
         }
+
+        self::doBlacklist($customer);
 
         // Update status, finish all batches
         $system_job->updateStatus([ 'status' => self::IMPORT_STATUS_DONE ]);

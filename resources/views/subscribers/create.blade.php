@@ -26,6 +26,22 @@
 
 						@include("subscribers._form")
 
+                        @if (\Acelle\Model\Setting::get('import_subscribers_commitment'))
+                            <hr>
+                            <div class="mt-40">
+                                @include('helpers.form_control', [
+                                    'type' => 'checkbox2',
+                                    'class' => 'policy_commitment mb-10 required',
+                                    'name' => 'policy_commitment',
+                                    'value' => 'no',
+                                    'required' => true,
+                                    'label' => \Acelle\Model\Setting::get('import_subscribers_commitment'),
+                                    'options' => ['no','yes'],
+                                    'rules' => []
+                                ])
+                            </div>
+                        @endif
+
 						<div class="text-left">
 							<button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 							<a href="{{ action('SubscriberController@index', $list->uid) }}" class="btn bg-grey-800"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>

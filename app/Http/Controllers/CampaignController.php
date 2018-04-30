@@ -372,11 +372,11 @@ class CampaignController extends Controller
             $campaign->fill($request->all());
             // convert html to plain text if plain text is empty
             if (trim($request->plain) == '') {
-                $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($request->html)));
+                $campaign->plain = preg_replace('/\s+/', ' ', preg_replace('/\r\n/', ' ', strip_tags($request->html)));
             }
             $campaign->save();
 
-            if(isset($request->template_source)) {
+            if (isset($request->template_source)) {
                 return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
             } else {
                 return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
@@ -384,7 +384,7 @@ class CampaignController extends Controller
         }
 
         // redirect page
-        if(!empty($campaign->html) || $campaign->type == 'plain-text') {
+        if (!empty($campaign->html) || $campaign->type == 'plain-text') {
             return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
         } else {
             return redirect()->action('CampaignController@templateSelect', ['uid' => $campaign->uid]);
@@ -441,7 +441,7 @@ class CampaignController extends Controller
         // $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($campaign->html)));
         $campaign->save();
 
-        if(!$campaign->is_auto) {
+        if (!$campaign->is_auto) {
             return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
         } else {
             return redirect()->action('AutoEventController@templatePreview', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid]);
@@ -507,7 +507,7 @@ class CampaignController extends Controller
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // check step
-        if($campaign->step() < 3) {
+        if ($campaign->step() < 3) {
             return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
         }
 
@@ -563,7 +563,7 @@ class CampaignController extends Controller
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // check step
-        if($campaign->step() < 4) {
+        if ($campaign->step() < 4) {
             return redirect()->action('CampaignController@schedule', ['uid' => $campaign->uid]);
         }
 
@@ -910,7 +910,7 @@ class CampaignController extends Controller
         }
 
         // others
-        if($total > $count) {
+        if ($total > $count) {
             $result['bar_names'][] = trans('messages.others');
             $datas[] = ['value' => $total - $count, 'name' => trans('messages.others')];
         }
@@ -964,7 +964,7 @@ class CampaignController extends Controller
         }
 
         // others
-        if($total > $count) {
+        if ($total > $count) {
             $result['bar_names'][] = trans('messages.others');
             $datas[] = ['value' => $total - $count, 'name' => trans('messages.others')];
         }
@@ -1116,7 +1116,7 @@ class CampaignController extends Controller
 
             try {
                 // Send goodbye email
-                if($list->unsubscribe_notification) {
+                if ($list->unsubscribe_notification) {
                     // SEND subscription confirmation email
                     $list->sendUnsubscriptionNotificationEmail($subscriber);
                 }
@@ -1519,7 +1519,7 @@ class CampaignController extends Controller
         }
 
         $elements = [];
-        if(isset($request->style)) {
+        if (isset($request->style)) {
             $elements = \Acelle\Model\Template::templateStyles()[$request->style];
         }
 
@@ -1737,7 +1737,7 @@ class CampaignController extends Controller
         // $campaign->plain = preg_replace('/\s+/',' ',preg_replace('/\r\n/',' ',strip_tags($campaign->html)));
         $campaign->save();
 
-        if(!$campaign->is_auto) {
+        if (!$campaign->is_auto) {
             return redirect()->action('CampaignController@templatePreview', ['uid' => $campaign->uid]);
         } else {
             return redirect()->action('AutoEventController@templatePreview', ['uid' => $campaign->autoEvent()->uid, 'campaign_uid' => $campaign->uid]);
@@ -1795,7 +1795,6 @@ class CampaignController extends Controller
                 'subscriber' => $subscriber,
                 'message_id' => $message_id,
             ]);
-
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
             return view('somethingWentWrong', ['message' => trans('messages.the_email_no_longer_exists')]);

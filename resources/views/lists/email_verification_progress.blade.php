@@ -1,7 +1,7 @@
 @if ($list->getRunningVerificationJob()->isFailed())
     <div class="alert alert-danger alert-noborder">
         <button data-dismiss="alert" class="close" type="button"><span>×</span><span class="sr-only">Close</span></button>
-        <strong>{{ trans('messages.verification.error.job_failed') }}</strong>
+        <strong>{{ trans('messages.verification.error.job_failed') }}: {{ $list->getRunningVerificationJob()->last_error }}</strong>
     </div>
 @endif
 

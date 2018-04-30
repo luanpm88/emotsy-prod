@@ -10,6 +10,7 @@
     <link href="{{ URL::asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
 
     <link rel="stylesheet" type="text/css" href="{{ URL::asset('css/builder.css') }}" />
+
     <!--[if (gte mso 9)|(IE)]>
     <style type="text/css">
         table {border-collapse: collapse;}
@@ -479,6 +480,10 @@
                 <i class="icon-newspaper"></i>
                 <label>{{ trans('messages.button') }}</label>
             </div>-->
+            <!--<div class="block tool-item" template="file_attachment">
+                <i class="icon-newspaper"></i>
+                <label>{{ trans('messages.dropfile') }}</label>
+            </div>-->
         </div>
     </toolbox>
 
@@ -546,8 +551,8 @@
 
             </div>
         </div>
-    </leftbar>
-
+        </leftbar>
+	<!-- player div end -->
     @yield('template_content')
 
 </body>

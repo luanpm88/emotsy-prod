@@ -14,3 +14,5 @@ Homestead.json
 /public/source
 /public/thumbs
 /storage/tmp
+/composer.phar
+/public/campaign_attachment

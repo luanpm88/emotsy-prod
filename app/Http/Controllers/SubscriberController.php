@@ -224,7 +224,19 @@ class SubscriberController extends Controller
         if ($request->isMethod('patch')) {
             $this->validate($request, $subscriber->getRules());
 
-            // Update field
+            // Upload
+            if ($request->hasFile('image')) {
+                if ($request->file('image')->isValid()) {
+                    // Remove old images
+                    $subscriber->uploadImage($request->file('image'));
+                }
+            }
+            // Remove image
+            if ($request->_remove_image == 'true') {
+                $subscriber->removeImage();
+            }
+
+                // Update field
             $subscriber->updateFields($request->all());
 
             event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
@@ -261,6 +273,12 @@ class SubscriberController extends Controller
     {
         $customer = $request->user()->customer;
         $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
+        $list = \Acelle\Model\MailList::findByUid($request->list_uid);
+
+        // Select all items
+        if ($request->select_tool == 'all_items') {
+            $subscribers = $this->search($list, $request);
+        }
 
         // get related mail lists to update the cached information
         $lists = $subscribers->get()->map(function($e) { return \Acelle\Model\MailList::find($e->mail_list_id); })->unique();
@@ -268,16 +286,12 @@ class SubscriberController extends Controller
         // actually delete the subscriber
         foreach ($subscribers->get() as $subscriber) {
             // authorize
-            if (\Gate::denies('delete', $subscriber)) {
-                return;
+            if (\Gate::allows('delete', $subscriber)) {
+                $subscriber->delete();
+
+                // Log
+                $subscriber->log('deleted', $customer);
             }
-        }
-
-        foreach ($subscribers->get() as $subscriber) {
-            $subscriber->delete();
-
-            // Log
-            $subscriber->log('deleted', $customer);
         }
 
         foreach ($lists as $list) {
@@ -751,5 +765,25 @@ class SubscriberController extends Controller
             MailLog::error(sprintf("Something went wrong while cleaning up verification data for %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage()));
             return view('somethingWentWrong', ['message' => sprintf("Something went wrong while cleaning up verification data for %s (%s). Error message: %s", $subscriber->email, $subscriber->id, $e->getMessage())]);
         }
+    }
+
+    /**
+     * Render customer image.
+     */
+    public function avatar(Request $request)
+    {
+        // Get current customer
+        if ($request->uid != '0') {
+            $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        } else {
+            $subscriber = new \Acelle\Model\Subscriber();
+        }
+        if (!empty($subscriber->imagePath())) {
+            $img = \Image::make($subscriber->imagePath());
+        } else {
+            $img = \Image::make(public_path('assets/images/placeholder.jpg'));
+        }
+
+        return $img->response();
     }
 }

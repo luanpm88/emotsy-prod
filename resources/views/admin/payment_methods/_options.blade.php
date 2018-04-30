@@ -203,3 +203,52 @@
         <button type='submit' class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
     </div>
 @endif
+
+
+@if ($payment_method->type == \Acelle\Model\PaymentMethod::TYPE_PAYU_MONEY)
+    <div class="row">
+        <div class="col-md-6">
+            @include('helpers.form_control', [
+                'type' => 'text',
+                'name' => 'options[merchant_key]',
+                'label' => trans('messages.payu.merchant_key'),
+                'value' => $payment_method->getOption('merchant_key'),
+                'help_class' => 'payment_method',
+                'rules' => $payment_method->rules()
+            ])
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            @include('helpers.form_control', [
+                'type' => 'text',
+                'name' => 'options[salt]',
+                'label' => trans('messages.payu.salt'),
+                'value' => $payment_method->getOption('salt'),
+                'help_class' => 'payment_method',
+                'rules' => $payment_method->rules()
+            ])
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6">
+            @include('helpers.form_control', [
+                'type' => 'select',
+                'name' => 'options[payu_base_url]',
+                'label' => trans('messages.payu.payu_base_url'),
+                'value' => $payment_method->getOption('payu_base_url'),
+                'options' => [
+                    ['value' => 'https://test.payu.in', 'text' => trans('messages.payu.testing')],
+                    ['value' => 'https://secure.payu.in', 'text' => trans('messages.payu.production')],
+                ],
+                'help_class' => 'payment_method',
+                'rules' => $payment_method->rules()
+            ])
+        </div>
+    </div>
+
+    <hr />
+    <div class="text-left">
+        <button type='submit' class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+    </div>
+@endif

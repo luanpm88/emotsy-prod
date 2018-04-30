@@ -132,8 +132,43 @@ class StringHelper
      *
      * @return string
      */
-    public static function extractSendGridMessageId($smtpId) {
+    public static function extractSendGridMessageId($smtpId)
+    {
         $cleaned = self::cleanupMessageId($smtpId);
         return substr($cleaned, 0, strpos($cleaned, '@'));
+    }
+
+    /**
+     * Detect file encoding
+     *
+     * @param String file path
+     *
+     * @return String encoding or false if cannot detect one
+     */
+    public static function detectEncoding($file, $max = 100)
+    {
+        $file = fopen($file, "r");
+
+        $sample = "";
+        $count = 0;
+        while (!feof($file) && $count <= $max) {
+            $count += 1;
+            $sample .= fgets($file);
+        }
+        fclose($file);
+
+        return mb_detect_encoding($sample, 'UTF-8, ISO-8859-1', true);
+    }
+
+    /**
+     * Convert from one encoding to the other
+     *
+     * @param String file path
+     */
+    public static function toUTF8($file, $from = 'UTF-8')
+    {
+        $content = file_get_contents($file);
+        $content = mb_convert_encoding($content, 'UTF-8', $from);
+        file_put_contents($file, $content);
     }
 }

@@ -171,6 +171,9 @@ class PlanController extends Controller
             if (isset($request->email_verification_servers)) {
                 $plan->updateEmailVerificationServers($request->email_verification_servers);
             }
+            //create single plan on server like paypal, paddle,stripe_credit_card
+            //if payment method is active
+            $plan->createPlanOnServer($request->all(), $plan);
 
             $request->session()->flash('alert-success', trans('messages.plan.created'));
             return redirect()->action('Admin\PlanController@index');
@@ -198,7 +201,6 @@ class PlanController extends Controller
     public function edit(Request $request, $id)
     {
         $plan = \Acelle\Model\Plan::findByUid($id);
-
         // authorize
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
@@ -233,7 +235,6 @@ class PlanController extends Controller
         if (isset($request->old()['email_verification_servers'])) {
             $plan->fillPlansEmailVerificationServers($request->old()['email_verification_servers']);
         }
-
         return view('admin.plans.edit', [
             'plan' => $plan,
             'options' => $options
@@ -260,7 +261,7 @@ class PlanController extends Controller
         }
 
         // prevent action from demo mod
-        if($this->isDemoMode()) {
+        if ($this->isDemoMode()) {
             return $this->notAuthorized();
         }
 
@@ -293,7 +294,9 @@ class PlanController extends Controller
             if (isset($request->email_verification_servers)) {
                 $plan->updateEmailVerificationServers($request->email_verification_servers);
             }
-
+            //update single plan on server like paypal, paddle,stripe_credit_card
+            //if payment method is active
+            $plan->createPlanOnServer($request->all(), $plan);
             $request->session()->flash('alert-success', trans('messages.plan.updated'));
             return redirect()->action('Admin\PlanController@edit', $plan->uid);
         }
@@ -478,5 +481,26 @@ class PlanController extends Controller
         $result['pie'] = 1;
 
         return json_encode($result);
+    }
+
+    /**
+     * Copy plans.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function copy(Request $request)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($request->copy_plan_uid);
+
+        // authorize
+        if (\Gate::denies('copy', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        $plan->copy($request->copy_plan_name);
+
+        echo trans('messages.plan.copied');
     }
 }

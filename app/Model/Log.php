@@ -81,7 +81,7 @@ class Log extends Model
             $data['list_link'] = $list_link;
 
             $item = Subscriber::find($data['id']);
-            $link = is_object($item) ? action('SubscriberController@edit', ['uid' => $item->uid, 'list_uid' => $list->uid]) : '#deleted';
+            $link = is_object($item) && is_object($list) ? action('SubscriberController@edit', ['uid' => $item->uid, 'list_uid' => $list->uid]) : '#deleted';
             $data['link'] = $link;
         }
         // Segment
@@ -91,7 +91,7 @@ class Log extends Model
             $data['list_link'] = $list_link;
 
             $item = Segment::find($data['id']);
-            $link = is_object($item) ? action('SegmentController@edit', ['uid' => $item->uid, 'list_uid' => $list->uid]) : '#deleted';
+            $link = is_object($item) && is_object($list) ? action('SegmentController@edit', ['uid' => $item->uid, 'list_uid' => $list->uid]) : '#deleted';
             $data['link'] = $link;
         }
         // Page
@@ -101,7 +101,7 @@ class Log extends Model
             $data['list_link'] = $list_link;
 
             $item = Page::find($data['id']);
-            $link = is_object($item) ? action('PageController@update', ['list_uid' => $list->uid, 'alias' => $data['alias']]) : '#deleted';
+            $link = is_object($item) && is_object($list) ? action('PageController@update', ['list_uid' => $list->uid, 'alias' => $data['alias']]) : '#deleted';
             $data['link'] = $link;
             $data['name'] = trans('messages.'.$data['alias']);
         }

@@ -1822,7 +1822,6 @@ $(function() {
                 if (input.is(':checked')) {
                     return true;
                 } else {
-                    alert('aaa');
                     e.preventDedault();
                     return false;
                 }
@@ -1830,4 +1829,104 @@ $(function() {
         });
 
     });
+    // copy Plan
+    $(document).on('click', '.copy-plan-link', function(e) {
+        var uid = $(this).attr("data-uid");
+        var name = $(this).attr("data-name");
+        $('input[name=copy_plan_uid]').val(uid);
+        $('input[name=copy_plan_name]').val(name);
+        $('#copy_plan').modal("show");
+    });
+
+    // Ajax copy campaign
+    $(".ajax_copy_plan_form").submit(function(e) {
+        var url = $(this).attr("action");
+
+        $.ajax({
+            type: "POST",
+            url: url,
+            data: $(".ajax_copy_plan_form").serialize(), // serializes the form's elements.
+            success: function(msg)
+            {
+                tableFilter($(".listing-form"));
+                if(msg != '') {
+                    swal({
+                        title: msg,
+                        text: "",
+                        confirmButtonColor: "#00695C",
+                        type: "success",
+                        allowOutsideClick: true,
+                        confirmButtonText: LANG_OK,
+                        customClass: "swl-success",
+                        html: true
+                    });
+                }
+            }
+        });
+
+        $(".copy-plan-close").trigger("click");
+        e.preventDefault(); // avoid to execute the actual submit of the form.
+    });
+
+    // campaign preview page hide and show tab
+    $(document).on('click', '#myTabs a[href="#top-justified-divided-tab3"]', function(e) {
+      $('#top-justified-divided-tab1').removeClass('active');
+       $('#top-justified-divided-tab2').removeClass('active');
+       $("#previw_next_btn").hide();
+    });
+    // campaign preview page hide and show tab
+    $(document).on('click', '#myTabs a[href="#top-justified-divided-tab2"]', function(e) {
+      $('#top-justified-divided-tab1').removeClass('active');
+       $('#top-justified-divided-tab3').removeClass('active');
+        $("#previw_next_btn").show();
+    });
+
+    // campaign preview page hide and show tab
+    $(document).on('click', '#myTabs a[href="#top-justified-divided-tab1"]', function(e) {
+      $('#top-justified-divided-tab3').removeClass('active');
+       $('#top-justified-divided-tab2').removeClass('active');
+        $("#previw_next_btn").show();
+    });
+
+    // List file delete confirm event
+    // ------------------------------
+    $(document).on("click", "a[file-delete-confirm]", function(e) {
+        var url = $(this).attr("href");
+        var curl = $(this).attr("file-delete-confirm");
+        var method = $(this).attr("data-method");
+        var delid = $(this).attr("data-del");
+        var a_ = $(this);
+
+        if (typeof(method) === 'undefined' || method.trim() === '') {
+            method = 'GET';
+        }
+
+        if (typeof($(this).attr('new-href')) === 'undefined' || $(this).attr('new-href') === '') {
+            $(this).attr("new-href", $(this).attr("href"));
+        }
+
+        $('#file_delete_confirm_model').modal("show");
+        $(".list-delete-confirm-button").attr("href", url);
+        $(".list-delete-confirm-button").attr("data-method", method);
+        $(".file_delete_cancel").attr("data-cancel-id", delid);
+
+        // Get message
+        // ajax update custom sort
+        $.ajax({
+            method: "GET",
+            url: curl,
+        })
+        .done(function(msg) {
+            $("#file_delete_confirm_model .content").html(msg);
+                $("#"+delid).hide();
+        });
+        e.stopImmediatePropagation();
+        e.preventDefault();
+    });
+
+   $(document).on("click", ".file_delete_cancel", function(e) {
+     var delid = $(this).attr("data-cancel-id");
+     $("#"+delid).show();
+   });
+
 });

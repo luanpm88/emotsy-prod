@@ -74,4 +74,13 @@ class PlanPolicy
 
         return $can && $item->status != 'active' && !$item->isDefault();
     }
+
+    public function copy(\Acelle\Model\User $user, \Acelle\Model\Plan $item)
+    {
+        $ability = $user->admin->getPermission('plan_copy');
+        $can = $ability == 'all'
+                || ($ability == 'own' && $user->admin->id == $item->admin_id);
+
+        return $can;
+    }
 }

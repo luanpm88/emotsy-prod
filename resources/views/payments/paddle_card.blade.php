@@ -36,7 +36,7 @@
                         'price' => Acelle\Library\Tool::format_price($subscription->price, $subscription->currency_format)
                     ]) !!}
                 </p>
-                <a href="#!" class="paddle_buttons btn btn-primary">Buy Now!</a>
+                <a href="#!" class="paddle_buttons btn btn-primary" >Buy Now!</a>
 			</div>
 		</div>
 	</div>
@@ -55,7 +55,7 @@
 
         jQuery('.paddle_buttons').click(function() {
             Paddle.Checkout.open({
-                override: '{{ $checkoutUrl }}'
+                override: '{{ $checkoutUrl }}',
             });
         });
 
