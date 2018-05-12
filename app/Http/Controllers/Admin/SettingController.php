@@ -498,7 +498,12 @@ class SettingController extends Controller
 
         try {
             $manager = new UpgradeManager();
-            $manager->load($request->file('file')->path());
+            // if file size exceeds "upload_max_filesize" ini directive
+            // moving will end up fail with an exception
+            // also, file('file')->path() will return the application root directory rather than the correct file path
+            $request->file('file')->move(storage_path('tmp'), $request->file('file')->getClientOriginalName());
+            $path = storage_path('tmp/' . $request->file('file')->getClientOriginalName());
+            $manager->load($path);
             $request->session()->flash('alert-success', trans('messages.upgrade.alert.upload_success'));
         } catch (\Exception $e) {
             Log::info("Upgrade failed. " . $e->getMessage());

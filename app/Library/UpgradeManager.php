@@ -65,6 +65,7 @@ class UpgradeManager
                 $this->validate();
             } else {
                 umask($old);
+                LaravelLog::error('Cannot open zip file ' . $path . ' with error code ' . $res);
                 throw new \Exception("Invalid upgrade package");
             }
         } catch (\Exception $e) {
