@@ -332,10 +332,10 @@ class Campaign extends AbsCampaign
                         $conditions[] = $conds['conditions'];
                     }
                 }
+                
+                // also add mail list condition, even if a segment condition is already in place
+                $conditions[] = '(' . table('subscribers') . '.mail_list_id = ' . $lists_segment->mail_list_id . ')';
             }
-
-            // what if list does not have segment?
-            $query->whereRaw(sprintf("%s = %s", table('subscribers.mail_list_id'), $lists_segment->mail_list_id));
 
             if (!empty($conditions)) {
                 $query = $query->whereRaw('(' . implode(' OR ', $conditions) . ')');
