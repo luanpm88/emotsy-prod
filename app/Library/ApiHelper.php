@@ -178,7 +178,7 @@ class ApiHelper
 
                 [
                     'method' => 'GET',
-                    'uri' => '/api/v1/subscribers/{email}',
+                    'uri' => '/api/v1/subscribers/email/{email}',
                     'description' => 'Find subscribers with email',
                     'parameters' => [
                         ['name' => '$email', 'description' => 'Subsciber\'s email'],
