@@ -777,6 +777,14 @@ $(function() {
             if (a_.hasClass('reload_page')) {
                 location.reload();
             }
+            
+            // call back
+            var callback = a_.attr("callback");
+            
+            if(typeof(callback) != 'undefined') {
+                var x = eval(callback);
+                x;
+            }
         });
     });
 

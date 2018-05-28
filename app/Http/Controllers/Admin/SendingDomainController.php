@@ -267,4 +267,20 @@ class SendingDomainController extends Controller
 
         echo json_encode(array('status' => 'success', 'message' => trans('messages.sending_domain_verified')));
     }
+    
+    /**
+     * sending domain's records.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function records($id)
+    {
+        $server = \Acelle\Model\SendingDomain::findByUid($id);
+
+        return view('admin.sending_domains._records', [
+            'server' => $server,
+        ]);
+    }
 }
