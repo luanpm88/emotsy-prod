@@ -73,11 +73,7 @@
 				>
                     <div class="pml-table-container">                        
                     </div>
-                </div>
-                <div class="text-right mt-20">
-                    <!--<a callback="" data-method="POST" href="{{ action('Admin\SendingDomainController@verify', $server->uid) }}" class="btn btn-primary ajax_link">{{ trans('messages.sending_domain_verify') }}</a>-->
-                    <a onclick="tableRefreshAll();" class="btn btn-primary">{{ trans('messages.sending_domain_verify') }}</a>
-                </div>
+                </div>                
             </div>
         </div>
     </div>
