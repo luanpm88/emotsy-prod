@@ -520,6 +520,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
 
     // Sending domain
     Route::get('admin/sending_domains/{id}/records', 'SendingDomainController@records');
+    Route::get('admin/sending_domains/{id}/verify', 'SendingDomainController@verify');
     Route::post('admin/sending_domains/{id}/verify', 'SendingDomainController@verify');
     Route::get('admin/sending_domains/listing/{page?}', 'SendingDomainController@listing');
     Route::get('admin/sending_domains/sort', 'SendingDomainController@sort');
