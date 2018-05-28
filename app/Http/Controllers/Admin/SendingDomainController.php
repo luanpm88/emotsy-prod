@@ -123,7 +123,7 @@ class SendingDomainController extends Controller
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.sending_domain.created'));
 
-                return redirect()->action('Admin\SendingDomainController@index');
+                return redirect()->action('Admin\SendingDomainController@edit', $server->uid);
             }
         }
     }
@@ -252,5 +252,19 @@ class SendingDomainController extends Controller
 
         // Redirect to my lists page
         echo trans('messages.sending_domains.deleted');
+    }
+    
+    /**
+     * Verify sending domain.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function verify($id)
+    {
+        $server = \Acelle\Model\SendingDomain::findByUid($id);
+
+        echo json_encode(array('status' => 'success', 'message' => trans('messages.sending_domain_verified')));
     }
 }

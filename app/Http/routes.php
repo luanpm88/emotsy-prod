@@ -519,6 +519,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/feedback_loop_handlers', 'FeedbackLoopHandlerController');
 
     // Sending domain
+    Route::post('admin/sending_domains/{id}/verify', 'SendingDomainController@verify');
     Route::get('admin/sending_domains/listing/{page?}', 'SendingDomainController@listing');
     Route::get('admin/sending_domains/sort', 'SendingDomainController@sort');
     Route::get('admin/sending_domains/delete', 'SendingDomainController@delete');

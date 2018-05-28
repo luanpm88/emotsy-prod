@@ -63,8 +63,43 @@
             <pre>{{ $server->getDnsDkimConfig() }}</pre>
         </div>
     </div>
+        
+    <div class="row">
+        <div class="col-sm-12 col-md-12 mt-20">
+            <div class="scrollbar-box dim-box">
+                <table class="table table-trans tbody-white">
+                    <thead>
+                        <tr>
+                            <th class="trans-upcase text-semibold">{{ trans('messages.type') }}</th>
+                            <th class="trans-upcase text-semibold">{{ trans('messages.host') }}</th>
+                            <th class="trans-upcase text-semibold">{{ trans('messages.value') }}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white">
+                        <tr>
+                            <td>CNAME</td>
+                            <td>000.sample.com.vn</td>
+                            <td>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDIHBetcyn</td>
+                            <td class="text-right"><a href="javascript:;" class="btn btn-default">{{ trans('messages.copy') }}</a></td>
+                        </tr>
+                        <tr>
+                            <td>CNAME</td>
+                            <td>000.sample.com.vn</td>
+                            <td>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDIHBetcyn</td>
+                            <td class="text-right"><a href="javascript:;" class="btn btn-default">{{ trans('messages.copy') }}</a></td>
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="text-right mt-20">
+                    <a data-method="POST" href="{{ action('Admin\SendingDomainController@verify', $server->uid) }}" class="btn btn-primary ajax_link">{{ trans('messages.sending_domain_verify') }}</a>
+                </div>
+            </div>
+        </div>
+    </div>
 @endif
 <hr >
 <div class="text-left">
-    <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+    <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+    <a class="btn bg-grey" href="{{ action('Admin\SendingDomainController@index') }}"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
 </div>
