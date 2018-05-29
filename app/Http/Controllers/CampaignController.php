@@ -305,6 +305,14 @@ class CampaignController extends Controller
 
             // Save campaign
             $campaign->fill($request->all());
+            // Tacking domain
+            $tracking_domain = \Acelle\Model\SendingDomain::findByUid($request->tracking_domain_uid);
+            if (is_object($tracking_domain)) {
+                $campaign->tracking_domain_id = $tracking_domain->id;
+            } else {
+                $campaign->tracking_domain_id = NULL;
+            }
+            
             $campaign->save();
 
             // Log
@@ -316,6 +324,7 @@ class CampaignController extends Controller
         return view('campaigns.setup', [
             'campaign' => $campaign,
             'rules' => $rules,
+            'sendingDomainOptions' => $customer->getSendingDomainOptions(),
         ]);
     }
 

@@ -78,6 +78,14 @@ abstract class AbsCampaign extends Model
     {
         return $this->belongsToMany('Acelle\Model\MailList', 'campaigns_lists_segments');
     }
+    
+    /**
+     * Get campaign's associated tracking domain
+     */
+    public function trackingDomain()
+    {
+        return $this->belongsTo('Acelle\Model\SendingDomain', 'tracking_domain_id');
+    }
 
     /**
      * Get campaign validation rules.
@@ -581,6 +589,7 @@ abstract class AbsCampaign extends Model
         'reply_to', 'track_open',
         'track_click', 'sign_dkim', 'track_fbl',
         'html', 'plain', 'template_source',
+        'tracking_domain_id'
     ];
 
     /**

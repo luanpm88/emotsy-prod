@@ -27,6 +27,9 @@ use Illuminate\Database\Eloquent\Model;
 class SendingDomain extends Model
 {
     const DKIM_FULL_SELECTOR = 'mailer._domainkey';
+    
+    const STATUS_ACTIVE = 'active';
+    const STATUS_INACTIVE = 'inactive';
 
     /**
      * Associations.
@@ -51,6 +54,26 @@ class SendingDomain extends Model
     public static function getAll()
     {
         return self::select('*');
+    }
+    
+    /**
+     * Get all active items.
+     *
+     * @return collect
+     */
+    public static function getAllActive()
+    {
+        return self::where('status', '=', SendingDomain::STATUS_ACTIVE);
+    }
+
+    /**
+     * Get all active system items.
+     *
+     * @return collect
+     */
+    public static function getAllAdminActive()
+    {
+        return self::getAllActive()->whereNotNull('admin_id');
     }
 
     /**

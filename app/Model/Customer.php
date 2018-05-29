@@ -161,6 +161,11 @@ class Customer extends Model
     {
         return $this->hasMany('Acelle\Model\SendingDomain');
     }
+    
+    public function activeSendingDomains()
+    {
+        return $this->sendingDomains()->where("status", "=", SendingDomain::STATUS_ACTIVE);
+    }
 
     public function emailVerificationServers()
     {
@@ -1610,7 +1615,7 @@ class Customer extends Model
         } else {
             $subscription = $this->getCurrentSubscription();
 
-            // Check if has sending servers for current subscription
+            // Check if has email verification servers for current subscription
             if (is_object($subscription)) {
                 if ($subscription->getOption("all_email_verification_servers") == 'yes') {
                     $result = \Acelle\Model\EmailVerificationServer::getAllAdminActive()->get()->map(function ($server) {
@@ -1625,6 +1630,45 @@ class Customer extends Model
         }
 
         return $result;
+    }
+    
+    /**
+     * Get list of available sending domains.
+     *
+     * @var boolean
+     */
+    public function getSendingDomains()
+    {
+        $result = [];
+
+        // Check the customer has permissions using sending domains and has his own sending domains
+        if ($this->getOption("create_sending_domains") == 'yes') {
+            $result = $this->activeSendingDomains()->get()->map(function ($server) {
+                return $server;
+            });
+        // If customer dont have permission creating sending domain
+        } else {
+            $subscription = $this->getCurrentSubscription();
+
+            // Check if has email verification servers for current subscription
+            $result = \Acelle\Model\SendingDomain::getAllAdminActive()->get()->map(function ($server) {
+                return $server;
+            });
+        }
+
+        return $result;
+    }
+    
+    /**
+     * Get list of available sending domains options.
+     *
+     * @var boolean
+     */
+    public function getSendingDomainOptions()
+    {
+        return $this->getSendingDomains()->map(function ($domain) {
+            return ['value' => $domain->uid, 'text' => $domain->name];
+        });
     }
 
     /**

@@ -69,6 +69,15 @@
                                                                 'rules' => $rules,
                                                                 'help_class' => 'campaign'
                                                             ])
+							@include('helpers.form_control', ['type' => 'select',
+                                                                'name' => 'tracking_domain_uid',
+                                                                'label' => trans('messages.tracking_domain'),
+                                                                'value' => (is_object($campaign->trackingDomain) ? $campaign->trackingDomain->uid : NULL),
+                                                                'rules' => $rules,
+                                                                'help_class' => 'campaign',
+																'include_blank' => trans('messages.default'),
+																'options' => $sendingDomainOptions
+                                                            ])
 						</div>
 						<div class="col-md-6 segments-select-box">
                             <div class="form-group checkbox-right-switch">

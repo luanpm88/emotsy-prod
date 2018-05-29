@@ -2035,4 +2035,5 @@
  'attachments'=>'Attachments',
  'plan_sync' => 'Plan Sync Live',
  'sending_domain_verify' => 'Verify',
+ 'tracking_domain' => 'Tracking domain',
 );
