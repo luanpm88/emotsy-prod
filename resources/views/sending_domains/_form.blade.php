@@ -7,6 +7,7 @@
 	<div class="col-sm-6 col-md-6">
 		@include('helpers.form_control', [
 			'type' => 'text',
+			'readonly' => 'readonly',
 			'class' => '',
 			'name' => 'name',
 			'label' => trans('messages.domain_name'),
@@ -15,6 +16,7 @@
 			'rules' => Acelle\Model\SendingDomain::rules()
 		])
 	</div>
+
 	<div class="col-sm-6 col-md-6">
 		<div class="form-group checkbox-right-switch">
 			@include('helpers.form_control', [

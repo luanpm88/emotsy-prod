@@ -23,6 +23,23 @@
                     </h5>
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
                 </td>
+                
+                <td class="text-center">
+                    <div class="single-stat-box pull-left">
+                        <i class="table-checkmark-{{ $item->domain_verified }}"></i>
+                        <br />
+                        <span class="text-muted">{{ trans("messages.sending_domain.domain_verification") }}</span>
+                    </div>
+                </td>
+                    
+                <td class="text-center">
+                    <div class="single-stat-box pull-left">
+                        <i class="table-checkmark-{{ $item->dkim_verified }}"></i>
+                        <br />
+                        <span class="text-muted">{{ trans("messages.sending_domain.dkim_verification") }}</span>
+                    </div>
+                </td>
+                
                 <td class="text-center">
                     <div class="single-stat-box pull-left">
                         <i class="table-checkmark-{{ $item->signing_enabled }}"></i>
