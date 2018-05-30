@@ -264,6 +264,7 @@ class SendingDomainController extends Controller
     public function verify($id)
     {
         $server = \Acelle\Model\SendingDomain::findByUid($id);
+        $server->verify();
 
         // echo json_encode(array('status' => 'success', 'message' => trans('messages.sending_domain_verified')));
         return view('admin.sending_domains._records', [

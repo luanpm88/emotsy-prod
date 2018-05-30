@@ -23,11 +23,14 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Log as MailLog;
 
 class SendingDomain extends Model
 {
     const DKIM_FULL_SELECTOR = 'mailer._domainkey';
-    
+    const VERIFICATION_TXT_NAME = 'acellemail';
+    const VERIFIED = 1;
+    const UNVERIFIED = 0;
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
 
@@ -177,6 +180,18 @@ class SendingDomain extends Model
 
             // Generate dkim keys
             $item->generateDkimKeys();
+            
+            // Generate verification token
+            $item->generateVerificationToken();
+            
+            // Default status = inactive (until domain verified)
+            $item->status = self::STATUS_INACTIVE;
+        });
+        
+        // Create uid when creating list.
+        static::saving(function ($item) {
+            // Disable if not verified
+            $item->status = $item->domain_verified ? self::STATUS_ACTIVE : self::STATUS_INACTIVE;
         });
     }
 
@@ -218,7 +233,31 @@ class SendingDomain extends Model
      */
     public function getDnsDkimConfig()
     {
-        return sprintf('%s      TXT      "v=DKIM1; k=rsa; p=%s;"', self::DKIM_FULL_SELECTOR, $this->getCleanPublicKey());
+        return sprintf('"%s"', $this->getDnsDkimConfigWithoutQuote());
+    }
+    
+    /**
+     * Generate the Domain DNS configuration for DKIM.
+     */
+    public function getDnsDkimConfigWithoutQuote()
+    {
+        return sprintf('v=DKIM1; k=rsa; p=%s;', $this->getCleanPublicKey());
+    }
+    
+    /**
+     * Retrieve the VERIFICATION_TXT_NAME value which is used as TXT name
+     */
+    public function getVerificationTxtName()
+    {
+        return self::VERIFICATION_TXT_NAME;
+    }
+    
+    /**
+     * Generate the verification token
+     */
+    public function generateVerificationToken()
+    {
+        $this->verification_token = base64_encode(md5($this->name));
     }
 
     /**
@@ -268,5 +307,35 @@ class SendingDomain extends Model
             'name' => $name,
             'data' => json_encode($data),
         ]);
+    }
+    
+    /**
+     * Verify domain DNS
+     */
+    public function verify()
+    {
+        $this->verifyDomainDns();
+        $this->verifyDomainDkim();
+    }
+    
+    public function verifyDomainDns()
+    {
+        $results = collect(dns_get_record($this->name, DNS_TXT));
+        $results = $results->where('type', 'TXT')
+                           ->where('txt', $this->verification_token);
+
+        $this->domain_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
+        $this->save();
+    }
+    
+    public function verifyDomainDkim()
+    {
+        $fqdn = sprintf("%s.%s", self::DKIM_FULL_SELECTOR, $this->name);
+        $results = collect(dns_get_record($fqdn, DNS_TXT));
+        $results = $results->where('type', 'TXT')
+                           ->whereIn('txt', [$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig()]);
+        
+        $this->dkim_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
+        $this->save();
     }
 }

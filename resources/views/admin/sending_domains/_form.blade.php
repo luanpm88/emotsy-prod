@@ -55,17 +55,11 @@
             ])
         </div>
     </div>
-
-    <div class="row">
-        <div class="col-sm-12 col-md-12">
-            <h3>{{ trans('messages.sending_domain.dkim_title') }}</h3>
-            <p>{!! trans('messages.sending_domain.dkim_wording') !!}</p>
-            <pre>{{ $server->getDnsDkimConfig() }}</pre>
-        </div>
-    </div>
         
     <div class="row">
         <div class="col-sm-12 col-md-12 mt-20">
+            <h3>{{ trans('messages.sending_domain.dkim_title') }}</h3>
+            <p>{!! trans('messages.sending_domain.dkim_wording') !!}</p>
             <div class="scrollbar-box dim-box">
                 <div class="listing-form"
 					data-url="{{ action('Admin\SendingDomainController@verify', $server->uid) }}"

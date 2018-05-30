@@ -1,0 +1,35 @@
+<?php
+
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
+
+class AddVerificationFieldsToSendingDomainsTable extends Migration
+{
+    /**
+     * Run the migrations.
+     *
+     * @return void
+     */
+    public function up()
+    {
+        Schema::table('sending_domains', function (Blueprint $table) {
+            $table->text('verification_token')->nullable();
+            $table->boolean('domain_verified')->default(false);
+            $table->boolean('dkim_verified')->default(false);
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     *
+     * @return void
+     */
+    public function down()
+    {
+        Schema::table('sending_domains', function (Blueprint $table) {
+            $table->dropColumn('verification_token');
+            $table->dropColumn('domain_verified');
+            $table->dropColumn('dkim_verified');
+        });
+    }
+}

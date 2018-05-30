@@ -1,4 +1,4 @@
-<table class="table table-trans tbody-white">
+<table class="table table-trans tbody-white" class="table-layout:fixed">
     <thead>
         <tr>
             <th class="trans-upcase text-semibold">{{ trans('messages.type') }}</th>
@@ -9,15 +9,15 @@
     </thead>
     <tbody class="bg-white">
         <tr>
-            <td>CNAME</td>
-            <td>000.sample.com.vn</td>
-            <td>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDIHBetcyn</td>
-            <td class="text-right"><a href="javascript:;" class="btn btn-default">{{ trans('messages.copy') }}</a></td>
+            <td width="1%">TXT</td>
+            <td width="20%">{{ $server->getVerificationTxtName() }}</td>
+            <td>{{ $server->verification_token }}</td>
+            <td class="text-right" width="1%"><a href="javascript:;" class="btn btn-default">{{ trans('messages.copy') }}</a></td>
         </tr>
         <tr>
-            <td>CNAME</td>
-            <td>000.sample.com.vn</td>
-            <td>MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDIHBetcyn</td>
+            <td>TXT</td>
+            <td>mailer._domainkey</td>
+            <td><textarea style="width:100%;border:0;height:100px;resize:none;">{{ $server->getDnsDkimConfig() }}</textarea></td>
             <td class="text-right"><a href="javascript:;" class="btn btn-default">{{ trans('messages.copy') }}</a></td>
         </tr>
     </tbody>
