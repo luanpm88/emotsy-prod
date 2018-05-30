@@ -13,7 +13,8 @@
             'label' => trans('messages.domain_name'),
             'value' => $server->name,
             'help_class' => 'sending_server',
-            'rules' => Acelle\Model\SendingDomain::rules()
+            'rules' => Acelle\Model\SendingDomain::rules(),
+            'readonly' => isset($server->id) ? true : false
         ])
     </div>
     <div class="col-sm-6 col-md-6">
@@ -55,11 +56,6 @@
             ])
         </div>
     </div>
-    
-    <hr >
-    <div class="text-left">
-        <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-    </div>
         
     <div class="row">
         <div class="col-sm-12 col-md-12 mt-20">
@@ -79,5 +75,8 @@
 @endif
 <hr >
 <div class="text-left">
-    <a callback="" data-method="POST" href="{{ action('Admin\SendingDomainController@verify', $server->uid) }}" class="btn btn-primary bg-grey ajax_link">{{ trans('messages.sending_domain.verify') }}</a>
+    @if (isset($server->id))
+        <a callback="" data-method="POST" href="{{ action('Admin\SendingDomainController@verify', $server->uid) }}" class="btn btn-primary bg-grey ajax_link">{{ trans('messages.sending_domain.verify') }}</a>
+    @endif
+    <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 </div>
