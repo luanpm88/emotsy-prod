@@ -62,7 +62,7 @@
             <p>{!! trans('messages.sending_domain.dkim_wording') !!}</p>
             <div class="scrollbar-box dim-box">
                 <div class="listing-form"
-					data-url="{{ action('Admin\SendingDomainController@verify', $server->uid) }}"
+					data-url="{{ action('Admin\SendingDomainController@records', $server->uid) }}"
 					per-page="1"					
 				>
                     <div class="pml-table-container">                        
@@ -74,6 +74,6 @@
 @endif
 <hr >
 <div class="text-left">
-    <a onclick="tableRefreshAll();" class="btn bg-grey">{{ trans('messages.sending_domain.verify') }}</a>
+    <a callback="" data-method="POST" href="{{ action('Admin\SendingDomainController@verify', $server->uid) }}" class="btn btn-primary bg-grey ajax_link">{{ trans('messages.sending_domain.verify') }}</a>
     <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 </div>
