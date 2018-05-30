@@ -52,8 +52,10 @@
                         <span class="label label-flat bg-{{ $item->status }}">{{ trans('messages.sending_domain_status_' . $item->status) }}</span>
                     </span>
 
-                    @if (Auth::user()->admin->can('update', $item))
-                        <a href="{{ action('Admin\SendingDomainController@edit', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.edit') }}" type="button" class="btn bg-grey btn-icon"><i class="icon-pencil"></i> {{ trans('messages.edit') }}</a>
+                    @if (Auth::user()->admin->can('read', $item))
+                        <a href="{{ action('Admin\SendingDomainController@show', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.sending_domain.view') }}" type="button" class="btn bg-grey btn-icon">
+                            {{ trans('messages.sending_domain.view') }}
+                        </a>
                     @endif
 
                     @if (Auth::user()->admin->can('delete', $item))

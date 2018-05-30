@@ -29,50 +29,7 @@
 		</div>
 	</div>
 </div>
-@if (isset($server->id))
-	<div class="row">
-		<div class="col-sm-6 col-md-6">
-			@include('helpers.form_control', [
-				'type' => 'textarea',
-				'class' => 'dkim_box code',
-				'readonly' => 'readonly',
-				'name' => 'dkim_private',
-				'value' => $server->dkim_private,
-				'help_class' => 'sending_domain',
-				'rules' => Acelle\Model\SendingDomain::rules()
-			])
-		</div>
-		<div class="col-sm-6 col-md-6">
-			@include('helpers.form_control', [
-				'type' => 'textarea',
-				'class' => 'dkim_box code',
-				'readonly' => 'readonly',
-				'name' => 'dkim_public',
-				'value' => $server->dkim_public,
-				'help_class' => 'sending_domain',
-				'rules' => Acelle\Model\SendingDomain::rules()
-			])
-		</div>
-	</div>
-
-	<div class="row">
-        <div class="col-sm-12 col-md-12 mt-20">
-            <h3>{{ trans('messages.sending_domain.dkim_title') }}</h3>
-            <p>{!! trans('messages.sending_domain.dkim_wording') !!}</p>
-            <div class="scrollbar-box dim-box">
-                <div class="listing-form"
-					data-url="{{ action('SendingDomainController@records', $server->uid) }}"
-					per-page="1"					
-				>
-                    <div class="pml-table-container">                        
-                    </div>
-                </div>                
-            </div>
-        </div>
-    </div>
-@endif
 <hr >
 <div class="text-left">
-    <a callback="" data-method="POST" href="{{ action('SendingDomainController@verify', $server->uid) }}" class="btn btn-primary bg-grey ajax_link">{{ trans('messages.sending_domain.verify') }}</a>
 	<button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 </div>

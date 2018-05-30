@@ -2040,4 +2040,6 @@
  'plan_sync' => 'Plan Sync Live',
  'sending_domain.verify' => 'Verify Now',
  'tracking_domain' => 'Tracking domain',
+ 'sending_domain.view' => 'View',
+ 'sending_domain.edit' => 'Edit domain information',
 );

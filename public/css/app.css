@@ -1016,7 +1016,7 @@ ul.modern-listing li .btn {
     text-align: left;
 }
 textarea.dkim_box {
-    height: 200px;
+    height: 100px;
     font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
     font-size: 14px;
 }
@@ -2062,6 +2062,14 @@ ul.dotted-list {
     width: 50%;
     float: left;
 }
+.size1of3 {
+    width: 33.3%;
+    float: left;
+}
+.size2of3 {
+    width: 66.6%;
+    float: left;
+}
 .lastUnit, .lastGroup {
     float: none;
     width: auto;
@@ -2632,4 +2640,21 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 }
 .square-tag {
   border-radius: 2px;
+}
+.section-flex .form-group {
+  width: 100%;
+}
+.section-flex li {
+  display: flex;
+}
+.section-flex li .unit {
+  flex-shrink: 0;
+}
+.btn-default {
+  background: #e0e0e0 !important;
+  color: #484848 !important;
+  border-color: #e0e0e0 !important;
+}
+.btn-default:hover {
+  background: #d0d0d0 !important;
 }

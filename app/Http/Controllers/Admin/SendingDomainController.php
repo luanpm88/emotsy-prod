@@ -123,7 +123,7 @@ class SendingDomainController extends Controller
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.sending_domain.created'));
 
-                return redirect()->action('Admin\SendingDomainController@edit', $server->uid);
+                return redirect()->action('Admin\SendingDomainController@show', $server->uid);
             }
         }
     }
@@ -137,6 +137,11 @@ class SendingDomainController extends Controller
      */
     public function show($id)
     {
+        $server = \Acelle\Model\SendingDomain::findByUid($id);
+        
+        return view('admin.sending_domains.show', [
+            'server' => $server,
+        ]);
     }
 
     /**
@@ -191,7 +196,7 @@ class SendingDomainController extends Controller
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.sending_domain.updated'));
 
-                return redirect()->action('Admin\SendingDomainController@index');
+                return redirect()->action('Admin\SendingDomainController@show', $server->uid);
             }
         }
     }
