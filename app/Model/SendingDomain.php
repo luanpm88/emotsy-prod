@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\Log as MailLog;
 
 class SendingDomain extends Model
 {
@@ -58,7 +57,7 @@ class SendingDomain extends Model
     {
         return self::select('*');
     }
-    
+
     /**
      * Get all active items.
      *
@@ -66,7 +65,7 @@ class SendingDomain extends Model
      */
     public static function getAllActive()
     {
-        return self::where('status', '=', SendingDomain::STATUS_ACTIVE);
+        return self::where('status', '=', self::STATUS_ACTIVE);
     }
 
     /**
@@ -109,16 +108,16 @@ class SendingDomain extends Model
         }
 
         // Other filter
-        if(!empty($request->customer_id)) {
+        if (!empty($request->customer_id)) {
             $query = $query->where('sending_domains.customer_id', '=', $request->customer_id);
         }
 
-        if(!empty($request->admin_id)) {
+        if (!empty($request->admin_id)) {
             $query = $query->where('sending_domains.admin_id', '=', $request->admin_id);
         }
 
         // remove customer sending servers
-        if(!empty($request->no_customer)) {
+        if (!empty($request->no_customer)) {
             $query = $query->whereNull('customer_id');
         }
 
@@ -134,7 +133,7 @@ class SendingDomain extends Model
     {
         $query = self::filter($request);
 
-        if(!empty($request->sort_order)) {
+        if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
@@ -180,14 +179,14 @@ class SendingDomain extends Model
 
             // Generate dkim keys
             $item->generateDkimKeys();
-            
+
             // Generate verification token
             $item->generateVerificationToken();
-            
+
             // Default status = inactive (until domain verified)
             $item->status = self::STATUS_INACTIVE;
         });
-        
+
         // Create uid when creating list.
         static::saving(function ($item) {
             // Disable if not verified
@@ -235,7 +234,7 @@ class SendingDomain extends Model
     {
         return sprintf('"%s"', $this->getDnsDkimConfigWithoutQuote());
     }
-    
+
     /**
      * Generate the Domain DNS configuration for DKIM.
      */
@@ -243,17 +242,17 @@ class SendingDomain extends Model
     {
         return sprintf('v=DKIM1; k=rsa; p=%s;', $this->getCleanPublicKey());
     }
-    
+
     /**
-     * Retrieve the VERIFICATION_TXT_NAME value which is used as TXT name
+     * Retrieve the VERIFICATION_TXT_NAME value which is used as TXT name.
      */
     public function getVerificationTxtName()
     {
         return self::VERIFICATION_TXT_NAME;
     }
-    
+
     /**
-     * Generate the verification token
+     * Generate the verification token.
      */
     public function generateVerificationToken()
     {
@@ -308,34 +307,74 @@ class SendingDomain extends Model
             'data' => json_encode($data),
         ]);
     }
-    
+
     /**
-     * Verify domain DNS
+     * Verify domain DNS.
      */
     public function verify()
     {
         $this->verifyDomainDns();
-        $this->verifyDomainDkim();
+        $this->verifyDkim();
     }
-    
+
+    /**
+     * Verify TXT record, update domain status accordingly.
+     *
+     * @return mixed
+     */
     public function verifyDomainDns()
     {
-        $results = collect(dns_get_record($this->name, DNS_TXT));
+        $fqdn = sprintf('%s.%s', $this->getVerificationTxtName(), $this->name);
+        $results = collect(dns_get_record($fqdn, DNS_TXT));
         $results = $results->where('type', 'TXT')
                            ->where('txt', $this->verification_token);
 
         $this->domain_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
         $this->save();
     }
-    
-    public function verifyDomainDkim()
+
+    /**
+     * Verify DKIM record, update domain status accordingly.
+     *
+     * @return mixed
+     */
+    public function verifyDkim()
     {
-        $fqdn = sprintf("%s.%s", self::DKIM_FULL_SELECTOR, $this->name);
+        $fqdn = sprintf('%s.%s', self::DKIM_FULL_SELECTOR, $this->name);
         $results = collect(dns_get_record($fqdn, DNS_TXT));
         $results = $results->where('type', 'TXT')
                            ->whereIn('txt', [$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig()]);
-        
         $this->dkim_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
         $this->save();
+    }
+
+    /**
+     * Check if domain is verified.
+     *
+     * @return bool
+     */
+    public function domainVerified()
+    {
+        return $this->domain_verified == self::VERIFIED;
+    }
+
+    /**
+     * Check if DKIM is verified.
+     *
+     * @return bool
+     */
+    public function dkimVeririfed()
+    {
+        return $this->dkim_verified == self::VERIFIED;
+    }
+
+    /**
+     * Get DKIM selector.
+     *
+     * @return string
+     */
+    public function getDkimSelector()
+    {
+        return self::DKIM_FULL_SELECTOR;
     }
 }

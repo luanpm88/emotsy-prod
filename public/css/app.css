@@ -2630,3 +2630,6 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
     padding: 15px;
     background: #f5f5f5;
 }
+.square-tag {
+  border-radius: 2px;
+}

@@ -74,6 +74,6 @@
 @endif
 <hr >
 <div class="text-left">
+    <a onclick="tableRefreshAll();" class="btn bg-grey">{{ trans('messages.sending_domain.verify') }}</a>
     <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-    <a class="btn bg-grey" href="{{ action('Admin\SendingDomainController@index') }}"><i class="icon-cross2"></i> {{ trans('messages.cancel') }}</a>
 </div>

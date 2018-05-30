@@ -524,6 +524,8 @@
   'sending_domain.signing_enabled.help' => 'Sign outgoing emails if the FROM email address matches this domain',
   'sending_domain.domain_verification' => 'Domain verification',
   'sending_domain.dkim_verification' => 'DKIM verification',
+  'sending_domain.verified' => 'verified',
+  'sending_domain.pending' => 'pending',
   'languages' => 'Languages',
   'languages.wording' => 'Acelle Mail multilingual support feature allows you to use different, translated versions of the web application. You can switch to a preferred language or even add your own one. You can customize the user interface (UI) text by translating it the way you desire.',
   'language.created' => 'Language was successfully created',
@@ -2036,6 +2038,6 @@
  'plan.copied' => 'Plan was successfully copied',
  'attachments'=>'Attachments',
  'plan_sync' => 'Plan Sync Live',
- 'sending_domain_verify' => 'Verify',
+ 'sending_domain.verify' => 'Verify Now',
  'tracking_domain' => 'Tracking domain',
 );

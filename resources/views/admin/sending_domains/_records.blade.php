@@ -9,21 +9,44 @@
     </thead>
     <tbody class="bg-white">
         <tr>
-            <td width="1%">TXT</td>
+            <td width="1%">
+                <span class="text-muted2 list-status pull-left">
+                    <span class="label label-flat bg-pending square-tag">TXT</span>
+                </span>
+            </td>
             <td width="20%">{{ $server->getVerificationTxtName() }}</td>
             <td>{{ $server->verification_token }}</td>
-            <td class="text-right" width="1%"><a href="javascript:;" class="btn btn-default">{{ trans('messages.copy') }}</a></td>
+            <td class="text-right" width="1%">
+                @if ($server->domainVerified())
+                    <span class="text-muted2 list-status pull-left">
+                        <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>
+                    </span>
+                @else
+                    <span class="text-muted2 list-status pull-left">
+                        <span class="label label-flat bg-inactive">{{ trans('messages.sending_domain.pending') }}</span>
+                    </span>
+                @endif
+            </td>
         </tr>
         <tr>
-            <td>TXT</td>
-            <td>mailer._domainkey</td>
+            <td>
+                <span class="text-muted2 list-status pull-left">
+                    <span class="label label-flat bg-pending square-tag">TXT</span>
+                </span>
+            </td>
+            <td>{{ $server->getDkimSelector() }}</td>
             <td><textarea style="width:100%;border:0;height:100px;resize:none;">{{ $server->getDnsDkimConfig() }}</textarea></td>
-            <td class="text-right"><a href="javascript:;" class="btn btn-default">{{ trans('messages.copy') }}</a></td>
+            <td class="text-right">
+                @if ($server->domainVerified())
+                    <span class="text-muted2 list-status pull-left">
+                        <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>
+                    </span>
+                @else
+                    <span class="text-muted2 list-status pull-left">
+                        <span class="label label-flat bg-inactive">{{ trans('messages.sending_domain.pending') }}</span>
+                    </span>
+                @endif
+            </td>
         </tr>
     </tbody>
 </table>
-    
-<div class="text-right mt-20">
-    <!--<a callback="" data-method="POST" href="{{ action('Admin\SendingDomainController@verify', $server->uid) }}" class="btn btn-primary ajax_link">{{ trans('messages.sending_domain_verify') }}</a>-->
-    <a onclick="tableRefreshAll();" class="btn btn-primary">{{ trans('messages.sending_domain_verify') }}</a>
-</div>
