@@ -111,7 +111,7 @@ function join_paths()
         if ($arg !== '') { $paths[] = $arg; }
     }
 
-    return preg_replace('#/+#','/',join('/', $paths));
+    return preg_replace('#/+#', '/', join('/', $paths));
 }
 
 /**
