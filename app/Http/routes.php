@@ -408,6 +408,8 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::patch('sending_servers/{id}/update/{type}', 'SendingServerController@update');
 
     // Sending domain
+    Route::get('sending_domains/{id}/records', 'SendingDomainController@records');
+    Route::post('sending_domains/{id}/verify', 'SendingDomainController@verify');
     Route::get('sending_domains/listing/{page?}', 'SendingDomainController@listing');
     Route::get('sending_domains/sort', 'SendingDomainController@sort');
     Route::get('sending_domains/delete', 'SendingDomainController@delete');

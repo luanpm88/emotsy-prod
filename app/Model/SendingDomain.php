@@ -92,9 +92,7 @@ class SendingDomain extends Model
         if (!empty(trim($request->keyword))) {
             foreach (explode(' ', trim($request->keyword)) as $keyword) {
                 $query = $query->where(function ($q) use ($keyword) {
-                    $q->orwhere('sending_domains.name', 'like', '%'.$keyword.'%')
-                        ->orWhere('sending_domains.type', 'like', '%'.$keyword.'%')
-                        ->orWhere('sending_domains.host', 'like', '%'.$keyword.'%');
+                    $q->orwhere('sending_domains.name', 'like', '%'.$keyword.'%');
                 });
             }
         }
@@ -102,9 +100,7 @@ class SendingDomain extends Model
         // filters
         $filters = $request->filters;
         if (!empty($filters)) {
-            if (!empty($filters['type'])) {
-                $query = $query->where('sending_domains.type', '=', $filters['type']);
-            }
+
         }
 
         // Other filter

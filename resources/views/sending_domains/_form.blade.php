@@ -54,16 +54,29 @@
 			])
 		</div>
 	</div>
+		
+	<hr >
+	<div class="text-left">
+		<button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+	</div>
 
 	<div class="row">
-		<div class="col-sm-12 col-md-12">
-			<h3>{{ trans('messages.sending_domain.dkim_title') }}</h3>
-			<p>{!! trans('messages.sending_domain.dkim_wording') !!}</p>
-			<pre>{{ $server->getDnsDkimConfig() }}</pre>
-		</div>
-	</div>
+        <div class="col-sm-12 col-md-12 mt-20">
+            <h3>{{ trans('messages.sending_domain.dkim_title') }}</h3>
+            <p>{!! trans('messages.sending_domain.dkim_wording') !!}</p>
+            <div class="scrollbar-box dim-box">
+                <div class="listing-form"
+					data-url="{{ action('SendingDomainController@records', $server->uid) }}"
+					per-page="1"					
+				>
+                    <div class="pml-table-container">                        
+                    </div>
+                </div>                
+            </div>
+        </div>
+    </div>
 @endif
 <hr >
 <div class="text-left">
-	<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+    <a callback="" data-method="POST" href="{{ action('SendingDomainController@verify', $server->uid) }}" class="btn btn-primary bg-grey ajax_link">{{ trans('messages.sending_domain.verify') }}</a>
 </div>

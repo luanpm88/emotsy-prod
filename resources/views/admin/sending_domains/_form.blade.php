@@ -55,6 +55,11 @@
             ])
         </div>
     </div>
+    
+    <hr >
+    <div class="text-left">
+        <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+    </div>
         
     <div class="row">
         <div class="col-sm-12 col-md-12 mt-20">
@@ -75,5 +80,4 @@
 <hr >
 <div class="text-left">
     <a callback="" data-method="POST" href="{{ action('Admin\SendingDomainController@verify', $server->uid) }}" class="btn btn-primary bg-grey ajax_link">{{ trans('messages.sending_domain.verify') }}</a>
-    <button class="btn bg-teal mr-10"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
 </div>

@@ -111,7 +111,7 @@ class SendingDomainController extends Controller
                 $server->log('created', $request->user()->customer);
 
                 $request->session()->flash('alert-success', trans('messages.sending_domain.created'));
-                return redirect()->action('SendingDomainController@index');
+                return redirect()->action('SendingDomainController@edit', $server->uid);
             }
         }
     }
@@ -181,7 +181,7 @@ class SendingDomainController extends Controller
                 $server->log('updated', $request->user()->customer);
 
                 $request->session()->flash('alert-success', trans('messages.sending_domain.updated'));
-                return redirect()->action('SendingDomainController@index');
+                return redirect()->action('SendingDomainController@edit', $server->uid);
             }
         }
     }
@@ -245,5 +245,34 @@ class SendingDomainController extends Controller
 
         // Redirect to my lists page
         echo trans('messages.sending_domains.deleted');
+    }
+    
+    /**
+     * Verify sending domain.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function verify($id)
+    {
+        $server = \Acelle\Model\SendingDomain::findByUid($id);
+        $server->verify();
+    }
+    
+    /**
+     * sending domain's records.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function records($id)
+    {
+        $server = \Acelle\Model\SendingDomain::findByUid($id);
+
+        return view('sending_domains._records', [
+            'server' => $server,
+        ]);
     }
 }
