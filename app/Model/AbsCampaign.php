@@ -30,6 +30,7 @@ use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use DB;
 use Carbon\Carbon;
 use Acelle\Model\SystemJob;
+use Acelle\Model\Setting;
 use Acelle\Exceptions\CampaignPausedException;
 use Acelle\Exceptions\CampaignErrorException;
 use File;
@@ -472,10 +473,10 @@ abstract class AbsCampaign extends Model
      */
     public function appendOpenTrackingUrl($body, $msgId)
     {
-        $openTrackingBaseURL = Setting::get('url_open_track');
-        $tracking_url = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $openTrackingBaseURL);
+        $path = route('openTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
+        $url = $this->buildTrackingUrl($path);
 
-        return $body.'<img src="'.$tracking_url.'" width="0" height="0" alt="" style="visibility:hidden" />';
+        return $body.'<img src="'.$url.'" width="0" height="0" alt="" style="visibility:hidden" />';
     }
 
     /**
@@ -493,7 +494,7 @@ abstract class AbsCampaign extends Model
             'X-Acelle-Customer-Id' => $this->customer->uid,
             'X-Acelle-Message-Id' => $msgId,
             'X-Acelle-Sending-Server-Id' => $server->uid,
-            'List-Unsubscribe' => '<'.str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), Setting::get('url_unsubscribe')).'>',
+            'List-Unsubscribe' => '<'.$this->generateUnsubscribeUrl($msgId).'>',
             'Precedence' => 'bulk'
         );
     }
@@ -1517,6 +1518,50 @@ abstract class AbsCampaign extends Model
 
         return $records->take($number);
     }
+    
+    public function generateUnsubscribeUrl($msgId)
+    {
+        $path = route('unsubscribeUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
+        return $this->buildPublicUrl($path);
+    }
+    
+    public function generateWebViewerUrl($msgId)
+    {
+        $path = route('webViewerUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
+        return $this->buildPublicUrl($path);
+    }
+    
+    public function generateUpdateProfileUrl($subscriber)
+    {
+        $path = route('updateProfileUrl', ['list_uid' => $this->defaultMailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('update-profile')], false);
+        return $this->buildPublicUrl($path);
+    }
+    
+    public function buildTrackingUrl($path)
+    {
+        $host = $this->getTrackingHost();
+        return join_url($host, $path);
+    }
+    
+    public function buildPublicUrl($path)
+    {
+        $host = Setting::get('url_root');
+        return join_url($host, $path);
+    }
+    
+    public function getTrackingHost()
+    {
+        $root = Setting::get('url_root');
+        
+        if (!$this->trackingDomain()->exists()) {
+            return $root;
+        }
+        
+        preg_match('/^(?<scheme>https{0,1}:\/\/)/', $root, $result);
+        $protocol = $result['scheme'];
+        
+        return sprintf('%s%s', $protocol, $this->trackingDomain->name);
+    }
 
     /**
      * Campaign locations.
@@ -1545,9 +1590,9 @@ abstract class AbsCampaign extends Model
         if (preg_match_all('/<a[^>]*href=["\'](?<url>http[^"\']*)["\']/i', $email_html_content, $matches)) {
             foreach ($matches[0] as $key => $href) {
                 $url = $matches['url'][$key];
-
-                $newUrl = str_replace('URL', StringHelper::base64UrlEncode($url), Setting::get('url_click_track'));
-                $newUrl = str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), $newUrl);
+                
+                $newUrl = route('clickTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId), 'url' => StringHelper::base64UrlEncode($url)], false);
+                $newUrl = $this->buildTrackingUrl($newUrl);
                 $newHref = str_replace($url, $newUrl, $href);
 
                 // if the link contains UNSUBSCRIBE URL tag

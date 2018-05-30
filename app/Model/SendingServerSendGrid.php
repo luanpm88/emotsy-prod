@@ -131,10 +131,15 @@ class SendingServerSendGrid extends SendingServer
 
         // Following RFC 1341, section 7.2, if either text/html or text/plain are to be sent in your email: text/plain needs to be first
         // So, use array_shift instead of array_pop
+        // Also, sort the parts so that text/plain comes before text/html
+        
+        $parts = $message->getChildren();
+        usort($parts, function($a, $b) { return ($a->getContentType() == 'text/plain') ? -1 : 1; });
+        
         $parts = array_map(function ($part) {
             return new Content($part->getContentType(), $part->getBody());
-        }, $message->getChildren());
-
+        }, $parts);
+        
         $mail = new Mail(
             new Email($fromName, $fromEmail),
             $message->getSubject(),

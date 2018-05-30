@@ -111,7 +111,23 @@ function join_paths()
         if ($arg !== '') { $paths[] = $arg; }
     }
 
-    return preg_replace('#/+#', '/', join('/', $paths));
+    return preg_replace('#/+#','/',join('/', $paths));
+}
+
+/**
+ * Join URL parts
+ *
+ * @param * parts of the URL. Note that the first part should be something like http:// or http://host.name
+ * @return string a full URL
+ */
+function join_url()
+{
+    $paths = array();
+    foreach (func_get_args() as $arg) {
+        if ($arg !== '') { $paths[] = $arg; }
+    }
+
+    return preg_replace('#(?<=[^:])/+#', '/', join('/', $paths));
 }
 
 /**

@@ -30,6 +30,7 @@ use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use DB;
 use Carbon\Carbon;
 use Acelle\Model\SystemJob;
+use Acelle\Model\Setting;
 use Acelle\Exceptions\CampaignPausedException;
 use Acelle\Exceptions\CampaignErrorException;
 
@@ -230,9 +231,7 @@ class Campaign extends AbsCampaign
             $message = $server->addUnsubscribeUrl($message);
         }
 
-        // @todo consider a solution for UNSUBSCRIBE_URL for test subscriber (also for other tags like: UPDATE_PROFILE_URL)
         $tags = array(
-            'SUBSCRIBER_EMAIL' => $subscriber->email,
             'CAMPAIGN_NAME' => $this->name,
             'CAMPAIGN_UID' => $this->uid,
             'CAMPAIGN_SUBJECT' => $this->subject,
@@ -243,7 +242,6 @@ class Campaign extends AbsCampaign
             'CURRENT_YEAR' => date('Y'),
             'CURRENT_MONTH' => date('m'),
             'CURRENT_DAY' => date('d'),
-            'UNSUBSCRIBE_URL' => str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), Setting::get('url_unsubscribe')),
             'CONTACT_NAME' => $this->defaultMailList->contact->company,
             'CONTACT_COUNTRY' => $this->defaultMailList->contact->country->name,
             'CONTACT_STATE' => $this->defaultMailList->contact->state,
@@ -257,36 +255,30 @@ class Campaign extends AbsCampaign
             'LIST_SUBJECT' => $this->defaultMailList->default_subject,
             'LIST_FROM_NAME' => $this->defaultMailList->from_name,
             'LIST_FROM_EMAIL' => $this->defaultMailList->from_email,
-            'WEB_VIEW_URL' => str_replace('MESSAGE_ID', StringHelper::base64UrlEncode($msgId), Setting::get('url_web_view')),
         );
 
-        // UPDATE_PROFILE_URL
-        if(!$this->isStdClassSubscriber($subscriber)) {
-            // in case of actually sending campaign
-            $tags['UPDATE_PROFILE_URL'] = str_replace('LIST_UID', $this->defaultMailList->uid,
-                str_replace('SUBSCRIBER_UID', $subscriber->uid,
-                str_replace('SECURE_CODE', $subscriber->getSecurityToken('update-profile'), Setting::get('url_update_profile'))));
+        # Subscriber specific
+        if (!$this->isStdClassSubscriber($subscriber)) {
+            $tags['UPDATE_PROFILE_URL'] = $this->generateUpdateProfileUrl($subscriber);
+            $tags['UNSUBSCRIBE_URL'] = $this->generateUnsubscribeUrl($msgId);
+            $tags['WEB_VIEW_URL'] = $this->generateWebViewerUrl($msgId);
+            
+            # Subscriber custom fields
+            foreach ($this->defaultMailList->fields as $field) {
+                $tags['SUBSCRIBER_'.$field->tag] = $subscriber->getValueByField($field);
+            }
+        } else {
+            $tags['SUBSCRIBER_EMAIL'] = $subscriber->email;
         }
 
-        // Update tags layout
+        // Actually transform the message
         foreach ($tags as $tag => $value) {
             $message = str_replace('{'.$tag.'}', $value, $message);
         }
 
-        if (!$this->isStdClassSubscriber($subscriber)) {
-            // in case of actually sending campaign
-            foreach ($this->defaultMailList->fields as $field) {
-                $message = str_replace('{SUBSCRIBER_'.$field->tag.'}', $subscriber->getValueByField($field), $message);
-            }
-        } else {
-            // in case of sending test email
-            // @todo how to manage such tags?
-            $message = str_replace('{SUBSCRIBER_EMAIL}', $subscriber->email, $message);
-        }
         return $message;
     }
-
-
+    
     /**
      * Subscribers.
      *

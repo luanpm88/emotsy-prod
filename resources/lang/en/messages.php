@@ -2042,4 +2042,7 @@
  'tracking_domain' => 'Tracking domain',
  'sending_domain.view' => 'View',
  'sending_domain.edit' => 'Edit domain information',
+ 'campaign.name.help' => 'Give your campaign a name',
+ 'campaign.from_email.help' => 'FROM header of your email, also the identity of the sender. Use an email address that does match one of your verified domains to make it more likely that your email reaches recipient\'s INBOX',
+ 'campaign.tracking_domain_uid.help' => 'Rewrite all tracking links to use the domain you choose'
 );

@@ -45,20 +45,6 @@ class Setting extends Model
     }
 
     /**
-     * Get all items.
-     *
-     * @return collect
-     */
-    public static function updateAll()
-    {
-        $settings = self::getAll();
-
-        foreach ($settings as $key => $setting) {
-            self::set($key, $setting['value']);
-        }
-    }
-
-    /**
      * Get setting.
      *
      * @return object
@@ -256,9 +242,15 @@ class Setting extends Model
                 'type' => 'text',
                 'class' => 'numeric',
             ],
+            'url_root' => [
+                'cat' => 'url',
+                'value' => '',
+                'type' => 'text',
+                'not_required' => true,
+            ],
             'url_unsubscribe' => [
                 'cat' => 'url',
-                'value' => '', // action('CampaignController@unsubscribe', ["message_id" => trans("messages.MESSAGE_ID")]),
+                'value' => '',
                 'type' => 'text',
                 'not_required' => true,
             ],

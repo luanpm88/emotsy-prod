@@ -230,7 +230,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('lists/{list_uid}/subscribe-confirm/{uid}/{code}', 'PageController@signUpConfirmationThankyou');
     Route::get('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribeForm');
     Route::post('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribeForm');
-    Route::get('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profileUpdateForm');
+    Route::get('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profileUpdateForm')->name('updateProfileUrl');
     Route::post('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profileUpdateForm');
     Route::get('lists/{list_uid}/update-profile-success/{uid}', 'PageController@profileUpdateSuccessPage');
     Route::get('lists/{list_uid}/profile-update-email-sent/{uid}', 'PageController@profileUpdateEmailSent');
@@ -262,7 +262,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
 
     Route::get('campaigns/{uid}/template/review-iframe', 'CampaignController@templateReviewIframe');
     Route::get('campaigns/{uid}/template/review', 'CampaignController@templateReview');
-    Route::get('campaigns/{message_id}/web-view', 'CampaignController@webView');
+    Route::get('campaigns/{message_id}/web-view', 'CampaignController@webView')->name('webViewerUrl');
     Route::get('campaigns/select-type', 'CampaignController@selectType');
     Route::get('campaigns/{uid}/list-segment-form', 'CampaignController@listSegmentForm');
     Route::post('campaigns/{uid}/image/save', 'CampaignController@saveImage');
@@ -272,9 +272,9 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::patch('campaigns/{uid}/templates/choose/from/{from_uid}', 'CampaignController@campaignTemplateChoose');
     Route::post('campaigns/send-test-email', 'CampaignController@sendTestEmail');
     Route::get('campaigns/delete/confirm', 'CampaignController@deleteConfirm');
-    Route::get('campaigns/{message_id}/open', 'CampaignController@open');
-    Route::get('campaigns/{message_id}/click/{url}', 'CampaignController@click');
-    Route::get('campaigns/{message_id}/unsubscribe', 'CampaignController@unsubscribe');
+    Route::get('campaigns/{message_id}/open', 'CampaignController@open')->name('openTrackingUrl');
+    Route::get('campaigns/{message_id}/click/{url}', 'CampaignController@click')->name('clickTrackingUrl');
+    Route::get('campaigns/{message_id}/unsubscribe', 'CampaignController@unsubscribe')->name('unsubscribeUrl');
 
     Route::post('campaigns/copy', 'CampaignController@copy');
     Route::get('campaigns/{uid}/subscribers', 'CampaignController@subscribers');
