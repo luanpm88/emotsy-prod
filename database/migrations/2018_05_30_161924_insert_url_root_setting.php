@@ -14,7 +14,9 @@ class InsertUrlRootSetting extends Migration
     {
         // Trick here
         preg_match('/^https{0,1}:\/\/[^\/]*/', \Acelle\Model\Setting::get('url_delivery_handler'), $result);
-        \Acelle\Model\Setting::set('url_root', $result[0]);
+        if (!empty($result)) { // for upgrade only, not needed for new installation
+            \Acelle\Model\Setting::set('url_root', $result[0]);
+        }
     }
 
     /**
