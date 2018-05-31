@@ -90,6 +90,7 @@ class SendingDomainController extends Controller
 
         return view('admin.sending_domains.create', [
             'server' => $server,
+            'readonly' => '0',
         ]);
     }
 
@@ -164,6 +165,7 @@ class SendingDomainController extends Controller
 
         return view('admin.sending_domains.edit', [
             'server' => $server,
+            'readonly' => 'readonly'
         ]);
     }
 

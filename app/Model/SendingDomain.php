@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\Log as MailLog;
 
 class SendingDomain extends Model
 {
@@ -238,6 +239,26 @@ class SendingDomain extends Model
     {
         return sprintf('v=DKIM1; k=rsa; p=%s;', $this->getCleanPublicKey());
     }
+    
+    /**
+     * Generate SPF: allow sending through the host's server (IP address)
+     * See more at: http://www.openspf.org/SPF_Record_Syntax
+     */
+    public function getSpf()
+    {
+        return sprintf('v=spf1 +a +mx +ip4:%s ~all', $this->getHostIpAddress());
+    }
+    
+    /**
+     * Generate the Domain DNS configuration for DKIM.
+     */
+    public function getHostIpAddress()
+    {
+        $root = \Acelle\Model\Setting::get('url_root');
+        $hostname = parse_url($root, PHP_URL_HOST);
+        $ip = gethostbyname($hostname);
+        return $ip;
+    }
 
     /**
      * Retrieve the VERIFICATION_TXT_NAME value which is used as TXT name.
@@ -252,7 +273,7 @@ class SendingDomain extends Model
      */
     public function generateVerificationToken()
     {
-        $this->verification_token = base64_encode(md5($this->name));
+        $this->verification_token = base64_encode(md5(uniqid()));
     }
 
     /**
@@ -311,6 +332,7 @@ class SendingDomain extends Model
     {
         $this->verifyDomainDns();
         $this->verifyDkim();
+        $this->verifySpf();
     }
 
     /**
@@ -324,7 +346,7 @@ class SendingDomain extends Model
         $results = collect(dns_get_record($fqdn, DNS_TXT));
         $results = $results->where('type', 'TXT')
                            ->where('txt', $this->verification_token);
-
+                
         $this->domain_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
         $this->save();
     }
@@ -340,7 +362,23 @@ class SendingDomain extends Model
         $results = collect(dns_get_record($fqdn, DNS_TXT));
         $results = $results->where('type', 'TXT')
                            ->whereIn('txt', [$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig()]);
+                
         $this->dkim_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
+        $this->save();
+    }
+    
+    /**
+     * Verify DKIM record, update domain status accordingly.
+     *
+     * @return mixed
+     */
+    public function verifySpf()
+    {
+        $results = collect(dns_get_record($this->name, DNS_TXT));
+        $results = $results->where('type', 'TXT')
+                           ->whereIn('txt', [$this->getSpf(), sprintf('"%s"', $this->getSpf())]);
+                
+        $this->spf_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
         $this->save();
     }
 
@@ -359,9 +397,19 @@ class SendingDomain extends Model
      *
      * @return bool
      */
-    public function dkimVeririfed()
+    public function dkimVerified()
     {
         return $this->dkim_verified == self::VERIFIED;
+    }
+    
+    /**
+     * Check if SPF is verified.
+     *
+     * @return bool
+     */
+    public function spfVerified()
+    {
+        return $this->spf_verified == self::VERIFIED;
     }
 
     /**

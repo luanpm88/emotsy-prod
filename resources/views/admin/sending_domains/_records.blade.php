@@ -37,7 +37,28 @@
             <td>{{ $server->getDkimSelector() }}</td>
             <td><textarea style="width:100%;border:0;height:100px;resize:none;">{{ $server->getDnsDkimConfig() }}</textarea></td>
             <td class="text-right">
-                @if ($server->domainVerified())
+                @if ($server->dkimVerified())
+                    <span class="text-muted2 list-status pull-left">
+                        <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>
+                    </span>
+                @else
+                    <span class="text-muted2 list-status pull-left">
+                        <span class="label label-flat bg-inactive">{{ trans('messages.sending_domain.pending') }}</span>
+                    </span>
+                @endif
+            </td>
+        </tr>
+            
+        <tr>
+            <td>
+                <span class="text-muted2 list-status pull-left">
+                    <span class="label label-flat bg-pending square-tag">TXT</span>
+                </span>
+            </td>
+            <td>@</td>
+            <td>{{ $server->getSpf() }}</td>
+            <td class="text-right">
+                @if ($server->spfVerified())
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-active">{{ trans('messages.sending_domain.verified') }}</span>
                     </span>

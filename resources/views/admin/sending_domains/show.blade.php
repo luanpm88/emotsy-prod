@@ -111,18 +111,17 @@
         <div class="col-sm-12 col-md-12 mt-20">
             <h3>{{ trans('messages.sending_domain.dkim_title') }}</h3>
             <p>{!! trans('messages.sending_domain.dkim_wording') !!}</p>
+            <p>{!! trans('messages.sending_domain.spf_wording') !!}</p>
             <div class="scrollbar-box dim-box">
                 <div class="listing-form"
 					data-url="{{ action('Admin\SendingDomainController@records', $server->uid) }}"
-					per-page="1"					
-				>
+					per-page="1">
                     <div class="pml-table-container">                        
                     </div>
                 </div>                
             </div>
         </div>
     </div>
-        
     <hr >
     <div class="text-left">
         <a callback="" data-method="POST" href="{{ action('Admin\SendingDomainController@verify', $server->uid) }}" class="btn btn-primary bg-teal ajax_link">{{ trans('messages.sending_domain.verify') }}</a>

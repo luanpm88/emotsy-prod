@@ -53,7 +53,7 @@
 					
 					<hr>
 					<div class="text-right">
-						<button class="btn bg-teal-800">{{ trans('messages.next') }} <i class="icon-arrow-right7"></i> </button>
+						<button class="btn bg-teal-800">{{ trans('messages.save_and_next') }} <i class="icon-arrow-right7"></i> </button>
 					</div>
 					
 				<form>

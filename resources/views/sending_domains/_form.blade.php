@@ -7,7 +7,7 @@
 	<div class="col-sm-6 col-md-6">
 		@include('helpers.form_control', [
 			'type' => 'text',
-			'readonly' => 'readonly',
+			'readonly' => $readonly,
 			'class' => '',
 			'name' => 'name',
 			'label' => trans('messages.domain_name'),
