@@ -19,7 +19,7 @@
                 </td>
                 <td>
                     <h5 class="no-margin text-bold">
-                        <a class="kq_search" href="{{ action('SendingDomainController@edit', $item->uid) }}">{{ $item->name }}</a>
+                        <a class="kq_search" href="{{ action('SendingDomainController@show', $item->uid) }}">{{ $item->name }}</a>
                     </h5>
                     <span class="text-muted">{{ trans('messages.created_at') }}: {{ Tool::formatDateTime($item->created_at) }}</span>
                 </td>

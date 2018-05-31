@@ -13,7 +13,7 @@
                 </td>
                 <td>
                     <h5 class="no-margin text-bold">
-                        <a class="kq_search" href="{{ action('Admin\SendingDomainController@edit', $item->uid) }}">{{ $item->name }}</a>
+                        <a class="kq_search" href="{{ action('Admin\SendingDomainController@show', $item->uid) }}">{{ $item->name }}</a>
                     </h5>
                     <span class="text-muted">
                         {!! is_object($item->admin) ? '<i class="icon-user-tie"></i>' . $item->admin->displayName() : '' !!}
