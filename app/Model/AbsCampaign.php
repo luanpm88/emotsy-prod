@@ -2138,4 +2138,18 @@ abstract class AbsCampaign extends Model
         $extension = $filePath['extension'];
         return $name.'.'.$extension;
     }
+    
+    public function fillAttributes($params) {
+        $this->fill($params);
+        
+        // Tacking domain
+        if (isset($params["tracking_domain_uid"])) {
+            $tracking_domain = \Acelle\Model\SendingDomain::findByUid($params["tracking_domain_uid"]);
+            if (is_object($tracking_domain)) {
+                $this->tracking_domain_id = $tracking_domain->id;
+            } else {
+                $this->tracking_domain_id = NULL;
+            }
+        }
+    }
 }

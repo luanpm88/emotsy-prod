@@ -295,7 +295,7 @@ class CampaignController extends Controller
 
         // Get old post values
         if (null !== $request->old()) {
-            $campaign->fill($request->old());
+            $campaign->fillAttributes($request->old());
         }
 
         // validate and save posted data
@@ -304,14 +304,7 @@ class CampaignController extends Controller
             $this->validate($request, $rules);
 
             // Save campaign
-            $campaign->fill($request->all());
-            // Tacking domain
-            $tracking_domain = \Acelle\Model\SendingDomain::findByUid($request->tracking_domain_uid);
-            if (is_object($tracking_domain)) {
-                $campaign->tracking_domain_id = $tracking_domain->id;
-            } else {
-                $campaign->tracking_domain_id = NULL;
-            }
+            $campaign->fillAttributes($request->all());
             
             $campaign->save();
 

@@ -142,6 +142,8 @@ class AutoEventController extends Controller
      */
     public function campaignSetup(Request $request, $uid, $campaign_uid)
     {
+        $customer = $request->user()->customer;
+        
         // Generate info
         $auto_event = \Acelle\Model\AutoEvent::findByUid($uid);
         $campaign = \Acelle\Model\Campaign::findByUid($campaign_uid);
@@ -156,7 +158,7 @@ class AutoEventController extends Controller
         
         // Get old post values
         if (null !== $request->old()) {
-            $campaign->fill($request->old());
+            $campaign->fillAttributes($request->old());            
         }
 
         // validate and save posted data
@@ -165,7 +167,7 @@ class AutoEventController extends Controller
             $this->validate($request, $campaign->automatedCampaignRules());
 
             // Save campaign
-            $campaign->fill($request->all());
+            $campaign->fillAttributes($request->all());            
             $campaign->type = $request->type;
             $campaign->save();
             
@@ -174,7 +176,8 @@ class AutoEventController extends Controller
         
         return view('auto_events.campaigns.setup', [
             'auto_event' => $auto_event,
-            'campaign' => $campaign
+            'campaign' => $campaign,            
+            'sendingDomainOptions' => $customer->getSendingDomainOptions(),
         ]);
     }
     
