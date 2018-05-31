@@ -1,3 +1,13 @@
+3.0.16 / 2017-06-01
+==================
+ 
+ * Added: domain verification
+ * Added: DKIM verification
+ * Added: SPF verification
+ * Added: support tracking domain
+ * Fixed: campaign does not send to all contacts
+ * Fixed: upload manager fails to check file size
+
 3.0.15 / 2018-05-02
 ==================
 

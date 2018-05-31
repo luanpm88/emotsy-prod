@@ -478,7 +478,9 @@ class UpgradeManager
 
     /**
      * Upgrade all existing language packages using the provided file
-     * For example: $manager->upgradeLanguageFiles('/home/new/messages.php')
+     * For example:
+     *    $manager = new \Acelle\Library\UpgradeManager();
+     *    $manager->upgradeLanguageFiles(resource_path("lang/en/messages.php"));
      */
     public function upgradeLanguageFiles($sourcePath)
     {
