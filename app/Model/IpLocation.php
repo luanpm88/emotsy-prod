@@ -55,13 +55,10 @@ class IpLocation extends Model
 
         // Get info
         try {
-            if (!(strpos($ip, ":") > -1))
-            {
+            if (!(strpos($ip, ':') > -1)) {
                 // Code for IPv4 address $ip_address...
                 $location_table = table('ip2location_db11');
-            }
-            else
-            {
+            } else {
                 // Code for IPv6 address $ip_address...ip2location_db11_ipv6
                 $location_table = table('ip2location_db11_ipv6');
             }
@@ -70,12 +67,12 @@ class IpLocation extends Model
             // Local service
             if (count($location_tables)) {
                 // Check for ipv4 or ipv6
-                if (!(strpos($ip, ":") > -1)) {
+                if (!(strpos($ip, ':') > -1)) {
                     $aton = $ip;
-                    $records = \DB::select("SELECT * FROM `".$location_table."` WHERE INET_ATON(?) <= ip_to LIMIT 1", [$aton]);
+                    $records = \DB::select('SELECT * FROM `'.$location_table.'` WHERE INET_ATON(?) <= ip_to LIMIT 1', [$aton]);
                 } else {
                     $aton = Dot2LongIPv6($ip);
-                    $records = \DB::select("SELECT * FROM `".$location_table."` WHERE ? <= ip_to LIMIT 1", [$aton]);
+                    $records = \DB::select('SELECT * FROM `'.$location_table.'` WHERE ? <= ip_to LIMIT 1', [$aton]);
                 }
 
                 if (count($records)) {
@@ -100,7 +97,7 @@ class IpLocation extends Model
         } catch (\Exception $e) {
             echo $e->getMessage();
             // Note log
-            LaravelLog::warning('Cannot get IP location info: ' . $e->getMessage());
+            LaravelLog::warning('Cannot get IP location info: '.$e->getMessage());
         }
 
         $location->save();
@@ -126,6 +123,7 @@ class IpLocation extends Model
             $str[] = $this->country_name;
         }
         $name = implode(', ', $str);
-        return (empty($name) ? trans('messages.unknown') : $name);
+
+        return empty($name) ? trans('messages.unknown') : $name;
     }
 }

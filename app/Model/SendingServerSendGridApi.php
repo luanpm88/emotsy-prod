@@ -25,19 +25,18 @@ namespace Acelle\Model;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use SendGrid\Mail;
-use SendGrid\Email;
-use SendGrid\Content;
 
 class SendingServerSendGridApi extends SendingServerSendGrid
 {
     protected $table = 'sending_servers';
 
-    /**
-     * Send the provided message.
-     *
-     * @return boolean
-     * @param message
-     */
+/**
+ * Send the provided message.
+ *
+ * @return bool
+ *
+ * @param message
+ */
     // Inherit class to implementation of this method
     public function send($message, $params = array())
     {
@@ -51,7 +50,7 @@ class SendingServerSendGridApi extends SendingServerSendGrid
             $statusCode = $response->statusCode();
 
             # if response from SendGrid is 200, 202, 2xx
-            if (preg_match("/^2../i", $statusCode)) {
+            if (preg_match('/^2../i', $statusCode)) {
                 MailLog::info('Sent!');
 
                 $result = array(

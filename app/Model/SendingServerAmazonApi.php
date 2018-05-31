@@ -31,7 +31,8 @@ class SendingServerAmazonApi extends SendingServerAmazon
     /**
      * Send the provided message.
      *
-     * @return boolean
+     * @return bool
+     *
      * @param message
      */
     public function send($message, $params = array())

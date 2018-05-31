@@ -29,7 +29,7 @@ use Acelle\Library\Log as MailLog;
 class DeliveryHandler extends Model
 {
     /**
-     * Test the handler connection
+     * Test the handler connection.
      *
      * @return mixed
      */
@@ -44,7 +44,7 @@ class DeliveryHandler extends Model
         // try again with ssl/novalidate-cert
         if ($inbox == false) {
             MailLog::info($this->encryption);
-            if (strcasecmp ( $this->encryption , 'ssl') == 0) {
+            if (strcasecmp($this->encryption, 'ssl') == 0) {
                 MailLog::warning('Try using ssl/novalidate-cert instead');
                 $imapPath = "{{$this->host}:{$this->port}/{$this->protocol}/ssl/novalidate-cert}INBOX";
                 $inbox = @imap_open($imapPath, $this->username, $this->password);
@@ -83,7 +83,7 @@ class DeliveryHandler extends Model
             // try again with ssl/novalidate-cert
             if ($inbox == false) {
                 MailLog::info($this->encryption);
-                if (strcasecmp ( $this->encryption , 'ssl') == 0) {
+                if (strcasecmp($this->encryption, 'ssl') == 0) {
                     MailLog::warning('Try using ssl/novalidate-cert instead');
                     $imapPath = "{{$this->host}:{$this->port}/{$this->protocol}/ssl/novalidate-cert}INBOX";
                     $inbox = @imap_open($imapPath, $this->username, $this->password);
@@ -134,7 +134,7 @@ class DeliveryHandler extends Model
             return StringHelper::cleanupMessageId($matched['id']);
         }
 
-        return null;
+        return;
     }
 
     /**

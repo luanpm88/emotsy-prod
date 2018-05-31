@@ -36,7 +36,7 @@ class EmailVerificationServer extends Model
     }
 
     /**
-     * Verify email address
+     * Verify email address.
      *
      * @return mixed
      */
@@ -49,7 +49,7 @@ class EmailVerificationServer extends Model
                 $logged = true;
                 $options = $this->getOptions();
                 $limit = "[{$options['limit_value']} / {$options['limit_base']} {$options['limit_unit']}]";
-                MailLog::warning(sprintf("Verification server `%s` (%s) is exceeding speed limit of %s, waiting...", $this->name, $this->id, $limit));
+                MailLog::warning(sprintf('Verification server `%s` (%s) is exceeding speed limit of %s, waiting...', $this->name, $this->id, $limit));
             }
             sleep(self::WAIT);
         }
@@ -71,34 +71,35 @@ class EmailVerificationServer extends Model
         $response = $client->request($config['request_type'], $uri);
 
         // fetch the result
-        $raw = (string)$response->getBody();
+        $raw = (string) $response->getBody();
         $jsonObject = new JsonObject($raw);
         $result = $jsonObject->get($config['result_xpath'])[0];
 
         // map the result value to those of Acelle Mail
         if (!array_key_exists($result, $config['result_map'])) {
-            throw new \Exception('Unexpected result from verification service: ' . $raw);
+            throw new \Exception('Unexpected result from verification service: '.$raw);
         }
         $mapped = $config['result_map'][$result];
         $this->countUsage();
+
         return [$mapped, $raw];
     }
 
     /**
-     * Find the configuration settings for a given verification service
+     * Find the configuration settings for a given verification service.
      *
      * @return mixed
      */
     public function getConfig()
     {
         $configs = \Config::get('verification.services');
-        foreach($configs as $config) {
+        foreach ($configs as $config) {
             if ($config['id'] == $this->type) {
                 return $config;
             }
         }
 
-        throw new \Exception('Cannot find settings for verification service ' . $this->type);
+        throw new \Exception('Cannot find settings for verification service '.$this->type);
     }
 
     /**
@@ -138,16 +139,16 @@ class EmailVerificationServer extends Model
         }
 
         // Other filter
-        if(!empty($request->customer_id)) {
+        if (!empty($request->customer_id)) {
             $query = $query->where('email_verification_servers.customer_id', '=', $request->customer_id);
         }
 
-        if(!empty($request->admin_id)) {
+        if (!empty($request->admin_id)) {
             $query = $query->where('email_verification_servers.admin_id', '=', $request->admin_id);
         }
 
         // remove customer sending servers
-        if(!empty($request->no_customer)) {
+        if (!empty($request->no_customer)) {
             $query = $query->whereNull('customer_id');
         }
 
@@ -163,7 +164,7 @@ class EmailVerificationServer extends Model
     {
         $query = self::filter($request);
 
-        if(!empty($request->sort_order)) {
+        if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
@@ -179,8 +180,8 @@ class EmailVerificationServer extends Model
     {
         $services = config('verification.services');
         $options = [];
-        foreach($services as $service) {
-            $options[] = ['value' => $service["id"], 'text' => $service["name"]];
+        foreach ($services as $service) {
+            $options[] = ['value' => $service['id'], 'text' => $service['name']];
         }
 
         return $options;
@@ -191,7 +192,7 @@ class EmailVerificationServer extends Model
      */
     public function rules()
     {
-        $rules =  array(
+        $rules = array(
             'name' => 'required',
             'type' => 'required',
             'options.limit_value' => 'required',
@@ -200,8 +201,8 @@ class EmailVerificationServer extends Model
         );
 
         if ($this->type) {
-            foreach ($this->getConfig()["fields"] as $field) {
-                $rules['options.' . $field] = 'required';
+            foreach ($this->getConfig()['fields'] as $field) {
+                $rules['options.'.$field] = 'required';
             }
         }
 
@@ -230,8 +231,8 @@ class EmailVerificationServer extends Model
     public static function statusSelectOptions()
     {
         return [
-            ['value' => self::STATUS_ACTIVE, 'text' => trans('messages.email_verification_server_status_' . self::STATUS_ACTIVE)],
-			['value' => self::STATUS_INACTIVE, 'text' => trans('messages.email_verification_server_status_' . self::STATUS_INACTIVE)],
+            ['value' => self::STATUS_ACTIVE, 'text' => trans('messages.email_verification_server_status_'.self::STATUS_ACTIVE)],
+            ['value' => self::STATUS_INACTIVE, 'text' => trans('messages.email_verification_server_status_'.self::STATUS_INACTIVE)],
         ];
     }
 
@@ -284,7 +285,7 @@ class EmailVerificationServer extends Model
     }
 
     /**
-     * Disable verification server
+     * Disable verification server.
      *
      * @return array
      */
@@ -295,7 +296,7 @@ class EmailVerificationServer extends Model
     }
 
     /**
-     * Enable verification server
+     * Enable verification server.
      *
      * @return array
      */
@@ -346,12 +347,13 @@ class EmailVerificationServer extends Model
     }
 
     /**
-     * Get sending server's QuotaTracker
+     * Get sending server's QuotaTracker.
      *
      * @return array
      */
-    public function getQuotaTracker() {
-        if(!$this->quotaTracker) {
+    public function getQuotaTracker()
+    {
+        if (!$this->quotaTracker) {
             $this->initQuotaTracker();
         }
 
@@ -359,34 +361,36 @@ class EmailVerificationServer extends Model
     }
 
     /**
-     * Get credits used
+     * Get credits used.
      *
      * @return int credit used
      */
-    public function getCreditUsage() {
+    public function getCreditUsage()
+    {
         return $this->getQuotaTracker()->getUsage();
     }
 
     /**
-     * Get speed limit string
+     * Get speed limit string.
      *
      * @return string speed limit
      */
-    public function getSpeedLimitString() {
+    public function getSpeedLimitString()
+    {
         $options = $this->getOptions();
+
         return "{$options['limit_value']} / {$options['limit_base']} {$options['limit_unit']}";
     }
 
     /**
-     * Initialize the quota tracker
-     *
-     * @return void
+     * Initialize the quota tracker.
      */
-    public function initQuotaTracker() {
+    public function initQuotaTracker()
+    {
         $options = $this->getOptions();
         $base = "{$options['limit_base']} {$options['limit_unit']}";
         $limit = [
-            "{$base}" => $options['limit_value']
+            "{$base}" => $options['limit_value'],
         ];
 
         $this->quotaTracker = new QuotaTrackerFile($this->getQuotaLockFile(), ['start' => $this->created_at->timestamp, 'max' => -1], $limit);
@@ -394,16 +398,17 @@ class EmailVerificationServer extends Model
     }
 
     /**
-     * Get sending quota lock file
+     * Get sending quota lock file.
      *
      * @return string file path
      */
-    public function getQuotaLockFile() {
+    public function getQuotaLockFile()
+    {
         return storage_path("app/server/quota/{$this->uid}");
     }
 
     /**
-     * Increment quota usage
+     * Increment quota usage.
      *
      * @return mixed
      */
@@ -415,7 +420,7 @@ class EmailVerificationServer extends Model
     /**
      * Check if user has used up all quota allocated.
      *
-     * @return boolean
+     * @return bool
      */
     public function isOverQuota()
     {
@@ -423,7 +428,7 @@ class EmailVerificationServer extends Model
     }
 
     /**
-     * Get service type name
+     * Get service type name.
      *
      * @return string
      */
@@ -431,6 +436,7 @@ class EmailVerificationServer extends Model
     {
         try {
             $service = $this->getConfig();
+
             return $service['name'];
         } catch (\Exception $ex) {
             return 'Error: Config missing!';

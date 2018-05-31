@@ -24,9 +24,6 @@ namespace Acelle\Model;
 
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
-use Acelle\Model\TrackingLog;
-use Acelle\Model\BounceLog;
-use Acelle\Model\FeedbackLog;
 
 class SendingServerElasticEmail extends SendingServer
 {
@@ -54,7 +51,8 @@ class SendingServerElasticEmail extends SendingServer
 
     /**
      * Process unsubscribe URL
-     * See documentation at: https://elasticemail.com/support/user-interface/unsubscribe/#Unsubscribe-Link
+     * See documentation at: https://elasticemail.com/support/user-interface/unsubscribe/#Unsubscribe-Link.
+     *
      * @return string message
      */
     public function addUnsubscribeUrl($message)
@@ -64,11 +62,12 @@ class SendingServerElasticEmail extends SendingServer
 
     /**
      * Handle notification from ElasticEmail
-     * Handle Bounce/Feedback/Error
+     * Handle Bounce/Feedback/Error.
      *
      * @return mixed
      */
-    public static function handleNotification($params) {
+    public static function handleNotification($params)
+    {
         // bounce
         if (strcasecmp($params['status'], 'Error') == 0) {
             $bounceLog = new BounceLog();
@@ -93,7 +92,7 @@ class SendingServerElasticEmail extends SendingServer
             } else {
                 MailLog::warning('Cannot find associated tracking log for ElasticEmail message '.$bounceLog->runtime_message_id);
             }
-        } else if (strcasecmp($params['status'], 'AbuseReport') == 0) {
+        } elseif (strcasecmp($params['status'], 'AbuseReport') == 0) {
             $feedbackLog = new FeedbackLog();
 
             // use Elastic Email transaction id as runtime-message-id
@@ -125,7 +124,7 @@ class SendingServerElasticEmail extends SendingServer
 
     /**
      * Enable custom headers.
-     * By default, customers headers are suppressed by Elastic Email
+     * By default, customers headers are suppressed by Elastic Email.
      *
      * @return mixed
      */
@@ -136,15 +135,14 @@ class SendingServerElasticEmail extends SendingServer
         }
 
         try {
-            $response = file_get_contents(self::API_ENDPOINT."/account/updatehttpnotification?apikey=".$this->api_key."&allowCustomHeaders=true");
+            $response = file_get_contents(self::API_ENDPOINT.'/account/updatehttpnotification?apikey='.$this->api_key.'&allowCustomHeaders=true');
             $responseJson = json_decode($response);
 
-
             if ($responseJson->success == true) {
-                MailLog::info("Custom headers enabled");
+                MailLog::info('Custom headers enabled');
                 self::$isCustomHeadersEnabled = true;
             } else {
-                throw new Exception("Cannot enable customer headers: ".$response);
+                throw new Exception('Cannot enable customer headers: '.$response);
             }
         } catch (\Exception $e) {
             MailLog::warning($e->getMessage());
@@ -165,12 +163,12 @@ class SendingServerElasticEmail extends SendingServer
         try {
             $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
 
-            $response = file_get_contents(self::API_ENDPOINT."/account/updatehttpnotification?apikey=".$this->api_key."&url=".$subscribeUrl."&settings={sent:false,opened:false,clicked:false,unsubscribed:false,complaints:true,error:true}");
+            $response = file_get_contents(self::API_ENDPOINT.'/account/updatehttpnotification?apikey='.$this->api_key.'&url='.$subscribeUrl.'&settings={sent:false,opened:false,clicked:false,unsubscribed:false,complaints:true,error:true}');
             if ($response == '{"success":true}') {
-                MailLog::info("webhook set!");
+                MailLog::info('webhook set!');
                 self::$isWebhookSetup = true;
             } else {
-                throw new Exception("Cannot setup webhook. Response from server: ".$response);
+                throw new Exception('Cannot setup webhook. Response from server: '.$response);
             }
         } catch (\Exception $e) {
             MailLog::warning($e->getMessage());
@@ -179,7 +177,7 @@ class SendingServerElasticEmail extends SendingServer
 
     /**
      * Unescape the HTML attributes escaped by DOMDocument (inline CSS maker)
-     * For example: conver <a href="%7Bunsubscribe:...%7D" to <a href="{unsubscribe:...}"
+     * For example: conver <a href="%7Bunsubscribe:...%7D" to <a href="{unsubscribe:...}".
      *
      * @return mixed
      */
@@ -194,19 +192,20 @@ class SendingServerElasticEmail extends SendingServer
     }
 
     /**
-     * Delivery message
+     * Delivery message.
      *
      * @return mixed
      */
-    public function sendElasticEmailV2($message) {
+    public function sendElasticEmailV2($message)
+    {
         // @todo: what if there are more than 2 parts?
         $html = null;
         $plain = null;
-        foreach($message->getChildren() as $part) {
+        foreach ($message->getChildren() as $part) {
             $contentType = $part->getContentType();
             if ($contentType == 'text/html') {
                 $html = $part->getBody();
-            } else if ($contentType == 'text/plain') {
+            } elseif ($contentType == 'text/plain') {
                 $plain = $part->getBody();
             }
         }

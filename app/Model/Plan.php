@@ -41,7 +41,7 @@ class Plan extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'frequency_amount', 'frequency_unit', 'price', 'color', 'currency_id', 'tax_billing_required','paddle_plan_id','admin_id'
+        'name', 'frequency_amount', 'frequency_unit', 'price', 'color', 'currency_id', 'tax_billing_required', 'paddle_plan_id', 'admin_id',
     ];
 
     /**
@@ -63,7 +63,7 @@ class Plan extends Model
         $options = self::defaultOptions();
         foreach ($options as $type => $option) {
             if ($type != 'sending_server_subaccount_uid') {
-                $rules['options.' . $type] = 'required';
+                $rules['options.'.$type] = 'required';
             }
         }
 
@@ -161,7 +161,7 @@ class Plan extends Model
      */
     public static function getAll()
     {
-        return Plan::select('*');
+        return self::select('*');
     }
 
     /**
@@ -218,22 +218,24 @@ class Plan extends Model
     /**
      * Disable plan.
      *
-     * @return boolean
+     * @return bool
      */
     public function disable()
     {
         $this->status = PaymentMethod::STATUS_INACTIVE;
+
         return $this->save();
     }
 
     /**
      * Enable plan.
      *
-     * @return boolean
+     * @return bool
      */
     public function enable()
     {
         $this->status = PaymentMethod::STATUS_ACTIVE;
+
         return $this->save();
     }
 
@@ -334,6 +336,7 @@ class Plan extends Model
                     $defaul_options[$x] = $saved_options[$x];
                 }
             }
+
             return $defaul_options;
         }
     }
@@ -390,12 +393,12 @@ class Plan extends Model
      */
     public function displayQuota()
     {
-        if ($this->getOption("sending_quota") == -1) {
+        if ($this->getOption('sending_quota') == -1) {
             return trans('messages.unlimited');
-        } elseif ($this->getOption("sending_quota_time") == -1) {
-            return $this->getOption("sending_quota");
+        } elseif ($this->getOption('sending_quota_time') == -1) {
+            return $this->getOption('sending_quota');
         } else {
-            return strtolower(\Acelle\Library\Tool::format_number($this->getOption("sending_quota")) . " " . trans('messages.' . \Acelle\Library\Tool::getPluralPrase('email', $this->getOption("sending_quota"))) . ' / '.$this->getOption("sending_quota_time").' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption("sending_quota_time_unit"), $this->getOption("sending_quota"))));
+            return strtolower(\Acelle\Library\Tool::format_number($this->getOption('sending_quota')).' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('email', $this->getOption('sending_quota'))).' / '.$this->getOption('sending_quota_time').' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption('sending_quota_time_unit'), $this->getOption('sending_quota'))));
         }
     }
 
@@ -406,10 +409,10 @@ class Plan extends Model
      */
     public function displayTotalQuota()
     {
-        if ($this->getOption("email_max") == -1) {
+        if ($this->getOption('email_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption("email_max"));
+            return \Acelle\Library\Tool::format_number($this->getOption('email_max'));
         }
     }
 
@@ -420,10 +423,10 @@ class Plan extends Model
      */
     public function displayMaxList()
     {
-        if ($this->getOption("list_max") == -1) {
+        if ($this->getOption('list_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption("list_max"));
+            return \Acelle\Library\Tool::format_number($this->getOption('list_max'));
         }
     }
 
@@ -434,10 +437,10 @@ class Plan extends Model
      */
     public function displayMaxSubscriber()
     {
-        if ($this->getOption("subscriber_max") == -1) {
+        if ($this->getOption('subscriber_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption("subscriber_max"));
+            return \Acelle\Library\Tool::format_number($this->getOption('subscriber_max'));
         }
     }
 
@@ -448,10 +451,10 @@ class Plan extends Model
      */
     public function displayMaxCampaign()
     {
-        if ($this->getOption("campaign_max") == -1) {
+        if ($this->getOption('campaign_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption("campaign_max"));
+            return \Acelle\Library\Tool::format_number($this->getOption('campaign_max'));
         }
     }
 
@@ -462,10 +465,10 @@ class Plan extends Model
      */
     public function displayMaxSizeUploadTotal()
     {
-        if ($this->getOption("max_size_upload_total") == -1) {
+        if ($this->getOption('max_size_upload_total') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption("max_size_upload_total"));
+            return \Acelle\Library\Tool::format_number($this->getOption('max_size_upload_total'));
         }
     }
 
@@ -476,10 +479,10 @@ class Plan extends Model
      */
     public function displayFileSizeUpload()
     {
-        if ($this->getOption("max_file_size_upload") == -1) {
+        if ($this->getOption('max_file_size_upload') == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("max_file_size_upload");
+            return $this->getOption('max_file_size_upload');
         }
     }
 
@@ -490,14 +493,14 @@ class Plan extends Model
      */
     public function displayAllowCreateSendingServer()
     {
-        if ($this->getOption("sending_server_option") != \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
+        if ($this->getOption('sending_server_option') != \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
             return trans('messages.feature_not_allow');
         }
 
-        if ($this->getOption("sending_servers_max") == -1) {
+        if ($this->getOption('sending_servers_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("sending_servers_max");
+            return $this->getOption('sending_servers_max');
         }
     }
 
@@ -508,19 +511,19 @@ class Plan extends Model
      */
     public function displayAllowCreateSendingDomain()
     {
-        if ($this->getOption("create_sending_domains") == 'no') {
+        if ($this->getOption('create_sending_domains') == 'no') {
             return trans('messages.feature_not_allow');
         }
 
-        if ($this->getOption("sending_domains_max") == -1) {
+        if ($this->getOption('sending_domains_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("sending_domains_max");
+            return $this->getOption('sending_domains_max');
         }
     }
 
     /**
-     * Get customer select2 select options
+     * Get customer select2 select options.
      *
      * @return array
      */
@@ -542,21 +545,21 @@ class Plan extends Model
         }
 
         foreach ($query->limit(20)->get() as $plan) {
-            $data['items'][] = ['id' => $plan->uid, 'text' => $plan->name."|||".\Acelle\Library\Tool::format_price($plan->price, $plan->currency->format)];
+            $data['items'][] = ['id' => $plan->uid, 'text' => $plan->name.'|||'.\Acelle\Library\Tool::format_price($plan->price, $plan->currency->format)];
         }
 
         return json_encode($data);
     }
 
     /**
-    * Get all items.
-    *
-    * @return collect
-    */
+     * Get all items.
+     *
+     * @return collect
+     */
     public static function getAllActiveWithDefault($admin = null)
     {
-        $query = Plan::getAll()
-            ->where("plans.status", "=", Plan::STATUS_ACTIVE);
+        $query = self::getAll()
+            ->where('plans.status', '=', self::STATUS_ACTIVE);
 
         if (isset($admin) && !$admin->can('readAll', new \Acelle\Model\Plan())) {
             $query = $query->where('plans.admin_id', '=', $admin->id);
@@ -574,7 +577,7 @@ class Plan extends Model
      */
     public static function getAllActive($admin = null)
     {
-        $query = Plan::getAllActiveWithDefault()->where("plans.is_default", "=", false);
+        $query = self::getAllActiveWithDefault()->where('plans.is_default', '=', false);
 
         return $query;
     }
@@ -591,13 +594,13 @@ class Plan extends Model
             return trans('messages.plan_time_unlimited');
         }
 
-        return $this->frequency_amount . ' ' . \Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount);
+        return $this->frequency_amount.' '.\Acelle\Library\Tool::getPluralPrase($this->frequency_unit, $this->frequency_amount);
     }
 
     /**
      * Subscriptions count.
      *
-     * @return integer
+     * @return int
      */
     public function subscriptionsCount()
     {
@@ -607,7 +610,7 @@ class Plan extends Model
     /**
      * Customers count.
      *
-     * @return integer
+     * @return int
      */
     public function cutomersCount()
     {
@@ -631,7 +634,7 @@ class Plan extends Model
     /**
      * Check if plan time is unlimited.
      *
-     * @return boolean
+     * @return bool
      */
     public function isTimeUnlimited()
     {
@@ -645,13 +648,11 @@ class Plan extends Model
      */
     public static function getDefaultPlan()
     {
-        return Plan::where('is_default', '=', true)->first();
+        return self::where('is_default', '=', true)->first();
     }
 
     /**
      * Fill email verification servers.
-     *
-     * @return void
      */
     public function fillPlansEmailVerificationServers($params)
     {
@@ -693,21 +694,21 @@ class Plan extends Model
      */
     public function displayAllowCreateEmailVerificationServer()
     {
-        if ($this->getOption("create_email_verification_servers") == 'no') {
+        if ($this->getOption('create_email_verification_servers') == 'no') {
             return trans('messages.feature_not_allow');
         }
 
-        if ($this->getOption("email_verification_servers_max") == -1) {
+        if ($this->getOption('email_verification_servers_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("email_verification_servers_max");
+            return $this->getOption('email_verification_servers_max');
         }
     }
 
     /**
      * Check if plan is default.
      *
-     * @return boolean
+     * @return bool
      */
     public function isDefault()
     {
@@ -716,8 +717,6 @@ class Plan extends Model
 
     /**
      * Set option.
-     *
-     * @return void
      */
     public function setOption($name, $value)
     {
@@ -730,8 +729,6 @@ class Plan extends Model
 
     /**
      * Fill option from request.
-     *
-     * @return void
      */
     public function fillOptions($options)
     {
@@ -760,49 +757,51 @@ class Plan extends Model
     }
 
     /**
-    **All Payment Methods: create plan on server
-    **/
+     **All Payment Methods: create plan on server.
+     **/
     public function createPlanOnServer($data, $plan)
     {
-        $planMethodlist= \Acelle\Model\PaymentMethod::getAllActive();
-        if (count($planMethodlist)>0) {
+        $planMethodlist = \Acelle\Model\PaymentMethod::getAllActive();
+        if (count($planMethodlist) > 0) {
             foreach ($planMethodlist as $payment_method) {
-                if ($payment_method->type==PaymentMethod::TYPE_PADDLE_CARD) {
-                    if ($data!=="unlimited") {
+                if ($payment_method->type == PaymentMethod::TYPE_PADDLE_CARD) {
+                    if ($data !== 'unlimited') {
                         $vendorId = $payment_method->getOption('vendor_id');
-                        $vendor_auth_code=$payment_method->getOption('vendor_auth_code');
+                        $vendor_auth_code = $payment_method->getOption('vendor_auth_code');
                         // plan_type: accepts day, week, month, year
-                        $json_body="vendor_id=".$vendorId."&vendor_auth_code=".$vendor_auth_code."&plan_name=".$data['name']."&plan_trial_days=0&plan_type=".$data['frequency_unit']."&plan_length=".$data['frequency_amount']."&main_currency_code=USD&initial_price_usd=0.00&recurring_price_usd=".$data['price'];
+                        $json_body = 'vendor_id='.$vendorId.'&vendor_auth_code='.$vendor_auth_code.'&plan_name='.$data['name'].'&plan_trial_days=0&plan_type='.$data['frequency_unit'].'&plan_length='.$data['frequency_amount'].'&main_currency_code=USD&initial_price_usd=0.00&recurring_price_usd='.$data['price'];
                         $this->createPaddlePlan($json_body, $plan);
                     }
                 }
             }
         }
+
         return true;
     }
 
     /**
-    ** Create paddle plan on servers
-    **/
+     ** Create paddle plan on servers.
+     **/
     public function createPaddlePlan($json_body, $plan)
     {
         $ch = curl_init();
-        curl_setopt($ch, CURLOPT_URL, "https://vendors.paddle.com/api/2.0/subscription/plans_create");
+        curl_setopt($ch, CURLOPT_URL, 'https://vendors.paddle.com/api/2.0/subscription/plans_create');
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $json_body);
         curl_setopt($ch, CURLOPT_POST, 1);
         $headers = array();
-        $headers[] = "Content-Type: application/x-www-form-urlencoded";
+        $headers[] = 'Content-Type: application/x-www-form-urlencoded';
         curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         $result = curl_exec($ch);
         //close connection
         curl_close($ch);
-        $result= json_decode($result);
+        $result = json_decode($result);
         if ($result->success) {
-            $paddle_plan_id=$result->response->product_id;
-            $plan->paddle_plan_id=$paddle_plan_id;
+            $paddle_plan_id = $result->response->product_id;
+            $plan->paddle_plan_id = $paddle_plan_id;
             $plan->save();
         }
+
         return true;
     }
 }

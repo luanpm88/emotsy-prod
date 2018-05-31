@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Abstract Campaign class
+ * Abstract Campaign class.
  *
  * Model class for campaigns related functionalities.
  * This is the center of the application
@@ -29,10 +29,7 @@ use Acelle\Library\StringHelper;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use DB;
 use Carbon\Carbon;
-use Acelle\Model\SystemJob;
-use Acelle\Model\Setting;
-use Acelle\Exceptions\CampaignPausedException;
-use Acelle\Exceptions\CampaignErrorException;
+
 use File;
 
 abstract class AbsCampaign extends Model
@@ -61,7 +58,7 @@ abstract class AbsCampaign extends Model
     protected $dates = ['created_at', 'updated_at', 'run_at'];
 
     /**
-     * Get campaign's default mail list
+     * Get campaign's default mail list.
      */
     public function defaultMailList()
     {
@@ -73,15 +70,15 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Get campaign's associated mail list
+     * Get campaign's associated mail list.
      */
     public function mailLists()
     {
         return $this->belongsToMany('Acelle\Model\MailList', 'campaigns_lists_segments');
     }
-    
+
     /**
-     * Get campaign's associated tracking domain
+     * Get campaign's associated tracking domain.
      */
     public function trackingDomain()
     {
@@ -330,18 +327,19 @@ abstract class AbsCampaign extends Model
         }
 
         //@todo attach function used for any attachment of Campaign
-        $path_campaign=public_path().'/campaign_attachment'.'/'.$this->uid;
+        $path_campaign = public_path().'/campaign_attachment'.'/'.$this->uid;
         if (is_dir($path_campaign)) {
             $files = File::allFiles($path_campaign);
             foreach ($files as $file) {
-                $message->attach(\Swift_Attachment::fromPath((string)$file));
+                $message->attach(\Swift_Attachment::fromPath((string) $file));
             }
         }
+
         return array($message, $msgId);
     }
 
     /**
-     * Reset max_execution_time so that command can run for a long time without being terminated
+     * Reset max_execution_time so that command can run for a long time without being terminated.
      *
      * @return mixed
      */
@@ -376,7 +374,7 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Check if the campaign is in the "SENDING" status;
+     * Check if the campaign is in the "SENDING" status;.
      */
     public function isSending()
     {
@@ -384,7 +382,7 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Check if the campaign is in the "DONE" status;
+     * Check if the campaign is in the "DONE" status;.
      */
     public function isDone()
     {
@@ -392,7 +390,7 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Check if the campaign is ready to start
+     * Check if the campaign is ready to start.
      */
     public function isReady()
     {
@@ -400,7 +398,7 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Mark the campaign as 'ready' (which is equiv. to 'queued')
+     * Mark the campaign as 'ready' (which is equiv. to 'queued').
      */
     public function ready()
     {
@@ -432,7 +430,6 @@ abstract class AbsCampaign extends Model
 
     /**
      * Log delivery message, used for later tracking.
-     *
      */
     public function trackMessage($response, $subscriber, $server, $msgId)
     {
@@ -458,9 +455,9 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Get tagged Subject
+     * Get tagged Subject.
      *
-     * @return String
+     * @return string
      */
     public function getSubject($subscriber, $msgId)
     {
@@ -480,7 +477,7 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Build Email Custom Headers
+     * Build Email Custom Headers.
      *
      * @return Hash list of custom headers
      */
@@ -495,14 +492,14 @@ abstract class AbsCampaign extends Model
             'X-Acelle-Message-Id' => $msgId,
             'X-Acelle-Sending-Server-Id' => $server->uid,
             'List-Unsubscribe' => '<'.$this->generateUnsubscribeUrl($msgId).'>',
-            'Precedence' => 'bulk'
+            'Precedence' => 'bulk',
         );
     }
 
     /**
-     * Build Email HTML content
+     * Build Email HTML content.
      *
-     * @return String
+     * @return string
      */
     public function getHtmlContent($subscriber, $msgId, $server = null)
     {
@@ -534,13 +531,14 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Build Email HTML content
+     * Build Email HTML content.
      *
-     * @return String
+     * @return string
      */
     public function getPlainContent($subscriber, $msgId, $server = null)
     {
         $plain = $this->tagMessage($this->plain, $subscriber, $msgId, $server);
+
         return $plain;
     }
 
@@ -590,7 +588,7 @@ abstract class AbsCampaign extends Model
         'reply_to', 'track_open',
         'track_click', 'sign_dkim', 'track_fbl',
         'html', 'plain', 'template_source',
-        'tracking_domain_id'
+        'tracking_domain_id',
     ];
 
     /**
@@ -823,7 +821,7 @@ abstract class AbsCampaign extends Model
 
         // Status
         if (!empty(trim($request->statuses))) {
-            $query = $query->whereIn('status', explode(",", $request->statuses));
+            $query = $query->whereIn('status', explode(',', $request->statuses));
         }
 
         return $query;
@@ -846,9 +844,9 @@ abstract class AbsCampaign extends Model
     /**
      * Create customer action log.
      *
-     * @param string $cat
-     * @param Customer   $customer
-     * @param array  $add_datas
+     * @param string   $cat
+     * @param Customer $customer
+     * @param array    $add_datas
      */
     public function log($name, $customer, $add_datas = [])
     {
@@ -1518,48 +1516,53 @@ abstract class AbsCampaign extends Model
 
         return $records->take($number);
     }
-    
+
     public function generateUnsubscribeUrl($msgId)
     {
         $path = route('unsubscribeUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
+
         return $this->buildPublicUrl($path);
     }
-    
+
     public function generateWebViewerUrl($msgId)
     {
         $path = route('webViewerUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
+
         return $this->buildPublicUrl($path);
     }
-    
+
     public function generateUpdateProfileUrl($subscriber)
     {
         $path = route('updateProfileUrl', ['list_uid' => $this->defaultMailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('update-profile')], false);
+
         return $this->buildPublicUrl($path);
     }
-    
+
     public function buildTrackingUrl($path)
     {
         $host = $this->getTrackingHost();
+
         return join_url($host, $path);
     }
-    
+
     public function buildPublicUrl($path)
     {
         $host = Setting::get('url_root');
+
         return join_url($host, $path);
     }
-    
+
     public function getTrackingHost()
     {
         $root = Setting::get('url_root');
-        
+
         if (!$this->trackingDomain()->exists()) {
             return $root;
         }
-        
+
         preg_match('/^(?<scheme>https{0,1}:\/\/)/', $root, $result);
         $protocol = $result['scheme'];
-        
+
         return sprintf('%s%s', $protocol, $this->trackingDomain->name);
     }
 
@@ -1590,7 +1593,7 @@ abstract class AbsCampaign extends Model
         if (preg_match_all('/<a[^>]*href=["\'](?<url>http[^"\']*)["\']/i', $email_html_content, $matches)) {
             foreach ($matches[0] as $key => $href) {
                 $url = $matches['url'][$key];
-                
+
                 $newUrl = route('clickTrackingUrl', ['message_id' => StringHelper::base64UrlEncode($msgId), 'url' => StringHelper::base64UrlEncode($url)], false);
                 $newUrl = $this->buildTrackingUrl($newUrl);
                 $newHref = str_replace($url, $newUrl, $href);
@@ -1598,7 +1601,7 @@ abstract class AbsCampaign extends Model
                 // if the link contains UNSUBSCRIBE URL tag
                 if (strpos($href, '{UNSUBSCRIBE_URL}') !== false) {
                     // just do nothing
-                } elseif (preg_match("/{[A-Z0-9_]+}/", $href)) {
+                } elseif (preg_match('/{[A-Z0-9_]+}/', $href)) {
                     // just skip if the url contains a tag. For example: {UPDATE_PROFILE_URL}
                     // @todo: do we track these clicks?
                 } else {
@@ -1606,6 +1609,7 @@ abstract class AbsCampaign extends Model
                 }
             }
         }
+
         return $email_html_content;
     }
 
@@ -1618,10 +1622,10 @@ abstract class AbsCampaign extends Model
     {
         return [
             'regular' => [
-                'icon' => 'icon-magazine'
+                'icon' => 'icon-magazine',
             ],
             'plain-text' => [
-                'icon' => 'icon-file-text2'
+                'icon' => 'icon-file-text2',
             ],
         ];
     }
@@ -1652,8 +1656,8 @@ abstract class AbsCampaign extends Model
 
     /**
      * Convert html to inline.
-     * @todo not very OOP here, consider moving this to a Helper instead
      *
+     * @todo not very OOP here, consider moving this to a Helper instead
      */
     public function inlineHtml($html)
     {
@@ -1661,7 +1665,7 @@ abstract class AbsCampaign extends Model
         if ($this->template_source == 'builder') {
             $cssToInlineStyles = new CssToInlineStyles();
 
-            $css = file_get_contents(public_path("css/res_email.css"));
+            $css = file_get_contents(public_path('css/res_email.css'));
 
             // output
             $html = $cssToInlineStyles->convert(
@@ -1674,13 +1678,13 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Send a test email for testing campaign
+     * Send a test email for testing campaign.
      */
     public function sendTestEmail($email)
     {
         try {
-            MailLog::info('Sending test email for campaign `' . $this->name . '`');
-            MailLog::info('Sending test email to `' . $email . '`');
+            MailLog::info('Sending test email for campaign `'.$this->name.'`');
+            MailLog::info('Sending test email to `'.$email.'`');
 
             // @todo: only send a test message when campaign sufficient information is available
 
@@ -1705,20 +1709,19 @@ abstract class AbsCampaign extends Model
             }
 
             return [
-                "status" => "success",
-                "message" => trans('messages.campaign.test_sent')
+                'status' => 'success',
+                'message' => trans('messages.campaign.test_sent'),
             ];
         } catch (\Exception $e) {
             return [
-                "status" => "error",
-                "message" => $e->getMessage()
+                'status' => 'error',
+                'message' => $e->getMessage(),
             ];
         }
     }
 
     /**
-     * Get the delay time before sending
-     *
+     * Get the delay time before sending.
      */
     public function getDelayInSeconds()
     {
@@ -1732,8 +1735,7 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Re-queue the campaign for sending
-     *
+     * Re-queue the campaign for sending.
      */
     public function requeue()
     {
@@ -1745,8 +1747,7 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Overwrite the delete() method to also clear the pending jobs
-     *
+     * Overwrite the delete() method to also clear the pending jobs.
      */
     public function delete()
     {
@@ -1758,7 +1759,7 @@ abstract class AbsCampaign extends Model
      * Create a stdClass subscriber (for sending a campaign test email)
      * The campaign sending functions take a subscriber object as input
      * However, a test email address is not yet a subscriber object, so we have to build a fake stdClass object
-     * which can be used as a real subscriber
+     * which can be used as a real subscriber.
      *
      * @param array $subscriber
      */
@@ -1766,7 +1767,7 @@ abstract class AbsCampaign extends Model
     {
         // default attributes that are required
         $jsonObj = [
-            'uid' => uniqid()
+            'uid' => uniqid(),
         ];
 
         // append the customer specified attributes and build a stdClass object
@@ -1777,17 +1778,17 @@ abstract class AbsCampaign extends Model
 
     /**
      * Check if the given variable is a subscriber object (for actually sending a campaign)
-     * Or a stdClass subscriber (for sending test email)
+     * Or a stdClass subscriber (for sending test email).
      *
-     * @param Object $object
+     * @param object $object
      */
     public function isStdClassSubscriber($object)
     {
-        return (get_class($object) == 'stdClass');
+        return get_class($object) == 'stdClass';
     }
 
     /**
-     * Get information from mail list
+     * Get information from mail list.
      *
      * @param void
      */
@@ -1821,15 +1822,15 @@ abstract class AbsCampaign extends Model
     public static function getTypeSelectOptions()
     {
         return [
-            ['text' => trans('messages.' . self::TYPE_REGULAR), 'value' => self::TYPE_REGULAR],
-            ['text' => trans('messages.' . self::TYPE_PLAIN_TEXT), 'value' => self::TYPE_PLAIN_TEXT]
+            ['text' => trans('messages.'.self::TYPE_REGULAR), 'value' => self::TYPE_REGULAR],
+            ['text' => trans('messages.'.self::TYPE_PLAIN_TEXT), 'value' => self::TYPE_PLAIN_TEXT],
         ];
     }
 
     /**
      * Check if campaign is automated.
      *
-     * @return boolean
+     * @return bool
      */
     public function isAuto()
     {
@@ -1844,7 +1845,7 @@ abstract class AbsCampaign extends Model
     public function recipientsRules($params = [])
     {
         $rules = [
-            'lists_segments' => 'required'
+            'lists_segments' => 'required',
         ];
 
         if (isset($params['lists_segments'])) {
@@ -1861,7 +1862,7 @@ abstract class AbsCampaign extends Model
      *
      * @var void
      */
-    public function fillRecipients($params=[])
+    public function fillRecipients($params = [])
     {
         if (isset($params['lists_segments'])) {
             foreach ($params['lists_segments'] as $key => $param) {
@@ -1905,7 +1906,7 @@ abstract class AbsCampaign extends Model
      *
      * @var void
      */
-    public function saveRecipients($params=[])
+    public function saveRecipients($params = [])
     {
         // Empty current data
         $this->listsSegments = collect([]);
@@ -1954,7 +1955,7 @@ abstract class AbsCampaign extends Model
     public function displayRecipients()
     {
         if (!is_object($this->defaultMailList)) {
-            return "";
+            return '';
         }
 
         $lines = [];
@@ -1984,7 +1985,7 @@ abstract class AbsCampaign extends Model
     /**
      * Check if campaign is paused.
      *
-     * @return boolean
+     * @return bool
      */
     public function isPaused()
     {
@@ -1992,9 +1993,7 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Update Campaign cached data
-     *
-     * @return void
+     * Update Campaign cached data.
      */
     public function updateCache($key = null)
     {
@@ -2024,7 +2023,7 @@ abstract class AbsCampaign extends Model
             },
             'NotOpenCount' => function (&$campaign) {
                 return $campaign->notOpenCount(true);
-            }
+            },
         ];
 
         // retrieve cached data
@@ -2056,7 +2055,7 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Retrieve Campaign cached data
+     * Retrieve Campaign cached data.
      *
      * @return mixed
      */
@@ -2080,7 +2079,7 @@ abstract class AbsCampaign extends Model
     /**
      * Count subscribers.
      *
-     * @return integer
+     * @return int
      */
     public function subscribersCount($cache = false)
     {
@@ -2136,19 +2135,21 @@ abstract class AbsCampaign extends Model
     {
         $name = $filePath['filename'];
         $extension = $filePath['extension'];
+
         return $name.'.'.$extension;
     }
-    
-    public function fillAttributes($params) {
+
+    public function fillAttributes($params)
+    {
         $this->fill($params);
-        
+
         // Tacking domain
-        if (isset($params["tracking_domain_uid"])) {
-            $tracking_domain = \Acelle\Model\SendingDomain::findByUid($params["tracking_domain_uid"]);
+        if (isset($params['tracking_domain_uid'])) {
+            $tracking_domain = \Acelle\Model\SendingDomain::findByUid($params['tracking_domain_uid']);
             if (is_object($tracking_domain)) {
                 $this->tracking_domain_id = $tracking_domain->id;
             } else {
-                $this->tracking_domain_id = NULL;
+                $this->tracking_domain_id = null;
             }
         }
     }

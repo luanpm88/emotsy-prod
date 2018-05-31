@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Model\EmailVerification;
 use Acelle\Library\Log as MailLog;
 
 class Subscriber extends Model
@@ -41,7 +40,7 @@ class Subscriber extends Model
     protected $dates = ['unsubscribed_at'];
 
     public static $rules = [
-        'email' => ['required', 'email']
+        'email' => ['required', 'email'],
     ];
 
     /**
@@ -51,7 +50,7 @@ class Subscriber extends Model
      */
     protected $fillable = [
         'mail_list_id', 'email',
-        'image'
+        'image',
     ];
 
     /**
@@ -131,11 +130,11 @@ class Subscriber extends Model
     }
 
     /**
-     * Blacklist a subscriber
+     * Blacklist a subscriber.
      *
-     * @return boolean
+     * @return bool
      */
-    public function sendToBlacklist($reason = NULL)
+    public function sendToBlacklist($reason = null)
     {
         // blacklist all email
         self::where('email', $this->email)->update(['status' => self::STATUS_BLACKLISTED]);
@@ -149,9 +148,9 @@ class Subscriber extends Model
     }
 
     /**
-     * Mark a subscriber/list as abuse-reported
+     * Mark a subscriber/list as abuse-reported.
      *
-     * @return boolean
+     * @return bool
      */
     public function markAsSpamReported()
     {
@@ -183,7 +182,7 @@ class Subscriber extends Model
                 $fv->save();
 
                 // update email attribute of subscriber
-                if($field->tag == 'EMAIL') {
+                if ($field->tag == 'EMAIL') {
                     $this->email = $fv->value;
                     $this->save();
                 }
@@ -245,7 +244,7 @@ class Subscriber extends Model
                     $q->select(\DB::raw(1))
                         ->from('open_logs')
                         ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
-                        ->whereRaw(table('tracking_logs') . '.subscriber_id = ' .table('subscribers'). '.id');
+                        ->whereRaw(table('tracking_logs').'.subscriber_id = '.table('subscribers').'.id');
                 });
             }
 
@@ -255,7 +254,7 @@ class Subscriber extends Model
                     $q->select(\DB::raw(1))
                         ->from('open_logs')
                         ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
-                        ->whereRaw(table('tracking_logs') . '.subscriber_id = ' .table('subscribers'). '.id');
+                        ->whereRaw(table('tracking_logs').'.subscriber_id = '.table('subscribers').'.id');
                 });
             }
 
@@ -265,7 +264,7 @@ class Subscriber extends Model
                     $q->select(\DB::raw(1))
                         ->from('click_logs')
                         ->join('tracking_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
-                        ->whereRaw(table('tracking_logs') . '.subscriber_id = ' .table('subscribers'). '.id');
+                        ->whereRaw(table('tracking_logs').'.subscriber_id = '.table('subscribers').'.id');
                 });
             }
 
@@ -275,7 +274,7 @@ class Subscriber extends Model
                     $q->select(\DB::raw(1))
                         ->from('click_logs')
                         ->join('tracking_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
-                        ->whereRaw(table('tracking_logs') . '.subscriber_id = ' .table('subscribers'). '.id');
+                        ->whereRaw(table('tracking_logs').'.subscriber_id = '.table('subscribers').'.id');
                 });
             }
         }
@@ -316,7 +315,7 @@ class Subscriber extends Model
      */
     public function getValueByField($field)
     {
-        $fv = $this->subscriberFields->filter(function($r, $key) use ($field) { return $r->field_id == $field->id; })->first();
+        $fv = $this->subscriberFields->filter(function ($r, $key) use ($field) { return $r->field_id == $field->id; })->first();
         if (is_object($fv)) {
             return $fv->value;
         } else {
@@ -428,17 +427,17 @@ class Subscriber extends Model
                 $list->log('import_max_error', $customer, ['count' => $count]);
 
                 $error_detail = trans('messages.error_add_max_quota');
-                $myfile = file_put_contents($directory.$list->uid.'-detail.log', $error_detail.PHP_EOL , FILE_APPEND | LOCK_EX);
+                $myfile = file_put_contents($directory.$list->uid.'-detail.log', $error_detail.PHP_EOL, FILE_APPEND | LOCK_EX);
 
                 return;
             }
 
             if ($key > 0) {
                 $parts = explode(',', $line);
-                if(isset($parts[$main_index])) {
+                if (isset($parts[$main_index])) {
                     $email = strtolower(trim(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($parts[$main_index])))));
                 } else {
-                    $email = "";
+                    $email = '';
                 }
 
                 $valid = $list->checkExsitEmail($email);
@@ -452,7 +451,7 @@ class Subscriber extends Model
 
                     foreach ($parts as $key => $value) {
                         $value = trim(preg_replace('!\s+!', '_', preg_replace('![\'|\"|\\r|\\n]!', '', rtrim($value))));
-                        if(isset($headers[$key])) {
+                        if (isset($headers[$key])) {
                             $lf = $list->fields()->where('tag', '=', $headers[$key])->first();
                             if (is_object($lf)) {
                                 //// save fields
@@ -485,7 +484,7 @@ class Subscriber extends Model
                     $bytes_written = \File::put($directory.$list->id.'-process.log', $str);
 
                     // Details
-                    $myfile = file_put_contents($directory.$list->uid.'-detail.log', $error_detail."\r\n".PHP_EOL , FILE_APPEND | LOCK_EX);
+                    $myfile = file_put_contents($directory.$list->uid.'-detail.log', $error_detail."\r\n".PHP_EOL, FILE_APPEND | LOCK_EX);
                 }
             }
         }
@@ -574,7 +573,7 @@ class Subscriber extends Model
      */
     public function getSecurityToken($action)
     {
-        $string = $this->email . $action . config('app.key');
+        $string = $this->email.$action.config('app.key');
 
         return md5($string);
     }
@@ -582,9 +581,9 @@ class Subscriber extends Model
     /**
      * Create customer action log.
      *
-     * @param string $cat
-     * @param Customer   $customer
-     * @param array  $add_datas
+     * @param string   $cat
+     * @param Customer $customer
+     * @param array    $add_datas
      */
     public function log($name, $customer, $add_datas = [])
     {
@@ -619,7 +618,7 @@ class Subscriber extends Model
             $copy = $this->replicate();
             $copy->mail_list_id = $list->id;
             $copy->save();
-            
+
             $copy = \Acelle\Model\Subscriber::find($copy->id);
         } else {
             // return if keep
@@ -629,7 +628,7 @@ class Subscriber extends Model
         }
 
         // update fields
-        foreach ($this->subscriberFields as $item) {            
+        foreach ($this->subscriberFields as $item) {
             foreach ($copy->mailList->fields as $field) {
                 if ($item->field->tag == $field->tag) {
                     $copy->setField($field, $item->value);
@@ -674,12 +673,12 @@ class Subscriber extends Model
      *
      * @param MailList $list
      */
-    public function openLogs($campaign=null)
+    public function openLogs($campaign = null)
     {
         $query = \Acelle\Model\OpenLog::leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
             ->where('tracking_logs.subscriber_id', '=', $this->id);
 
-        if(isset($campaign)) {
+        if (isset($campaign)) {
             $query = $query->where('tracking_logs.campaign_id', '=', $campaign->id);
         }
 
@@ -691,7 +690,7 @@ class Subscriber extends Model
      *
      * @param MailList $list
      */
-    public function lastOpenLog($campaign=null)
+    public function lastOpenLog($campaign = null)
     {
         $query = $this->openLogs($campaign);
 
@@ -705,12 +704,12 @@ class Subscriber extends Model
      *
      * @param MailList $list
      */
-    public function clickLogs($campaign=null)
+    public function clickLogs($campaign = null)
     {
         $query = \Acelle\Model\ClickLog::leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
             ->where('tracking_logs.subscriber_id', '=', $this->id);
 
-        if(isset($campaign)) {
+        if (isset($campaign)) {
             $query = $query->where('tracking_logs.campaign_id', '=', $campaign->id);
         }
 
@@ -722,10 +721,11 @@ class Subscriber extends Model
      *
      * @param MailList $list
      */
-    public function lastClickLog($campaign=null)
+    public function lastClickLog($campaign = null)
     {
         $query = $this->clickLogs();
         $query = $query->orderBy('click_logs.created_at', 'desc')->first();
+
         return $query;
     }
 
@@ -764,24 +764,22 @@ class Subscriber extends Model
     }
 
     /**
-     * Verify subscriber email address using a given service
-     *
-     * @return void
+     * Verify subscriber email address using a given service.
      */
     public function verify($verifier)
     {
-        MailLog::info(sprintf("Start verifying %s (%s)", $this->email, $this->id));
+        MailLog::info(sprintf('Start verifying %s (%s)', $this->email, $this->id));
         $log = new EmailVerification();
         list($result, $details) = $verifier->verify($this->email);
         $log->result = $result;
         $log->details = $details;
         $log->email_verification_server_id = $verifier->id;
         $this->emailVerifications()->save($log);
-        MailLog::info(sprintf("Finish verifying %s (%s)", $this->email, $this->id));
+        MailLog::info(sprintf('Finish verifying %s (%s)', $this->email, $this->id));
     }
 
     /**
-     * Get email verification of a subcriber
+     * Get email verification of a subcriber.
      *
      * @return EmailVerification
      */
@@ -791,7 +789,7 @@ class Subscriber extends Model
     }
 
     /**
-     * Get email verification of a subcriber
+     * Get email verification of a subcriber.
      *
      * @return EmailVerification
      */
@@ -800,13 +798,14 @@ class Subscriber extends Model
         if (!$this->isVerifed()) {
             return '';
         }
+
         return $this->getEmailVerification()->result;
     }
 
     /**
-     * Check if subscriber is verified
+     * Check if subscriber is verified.
      *
-     * @return boolean
+     * @return bool
      */
     public function isVerifed()
     {
@@ -814,9 +813,7 @@ class Subscriber extends Model
     }
 
     /**
-     * Reset subscriber verification
-     *
-     * @return void
+     * Reset subscriber verification.
      */
     public function resetVerification()
     {
@@ -826,8 +823,9 @@ class Subscriber extends Model
     /**
      * Upload and resize avatar.
      *
-     * @var String
-     * @return String
+     * @var string
+     *
+     * @return string
      */
     public function uploadImage($file)
     {
@@ -853,7 +851,7 @@ class Subscriber extends Model
     /**
      * Get image thumb path.
      *
-     * @return  string
+     * @return string
      */
     public function imagePath()
     {
@@ -866,8 +864,6 @@ class Subscriber extends Model
 
     /**
      * Remove thumb path.
-     *
-     *
      */
     public function removeImage()
     {

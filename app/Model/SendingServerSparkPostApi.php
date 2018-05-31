@@ -16,8 +16,8 @@
  * @license    Acelle Co., Ltd
  *
  * @version    1.0
- * @link       http://acellemail.com
  *
+ * @link       http://acellemail.com
  */
 
 namespace Acelle\Model;
@@ -32,6 +32,7 @@ class SendingServerSparkPostApi extends SendingServerSparkPost
      * Send the provided message.
      *
      * @return array sending results
+     *
      * @param message
      */
     public function send($message, $params = array())
@@ -43,7 +44,8 @@ class SendingServerSparkPostApi extends SendingServerSparkPost
 
             if ($response->getStatusCode() == 200) {
                 $body = $response->getBody();
-                MailLog::info("Sent!");
+                MailLog::info('Sent!');
+
                 return array(
                     'status' => self::DELIVERY_STATUS_SENT,
                 );
@@ -52,7 +54,7 @@ class SendingServerSparkPostApi extends SendingServerSparkPost
                 throw new \Exception($response->getBody(true));
             }
         } catch (\Exception $e) {
-            MailLog::warning('SparkPost failed to send' . $e->getMessage());
+            MailLog::warning('SparkPost failed to send'.$e->getMessage());
 
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,
@@ -62,9 +64,10 @@ class SendingServerSparkPostApi extends SendingServerSparkPost
     }
 
     /**
-     * Prepare the email message to be sent by SparkPost API
+     * Prepare the email message to be sent by SparkPost API.
      *
-     * @return Array SparkPost formatted message
+     * @return array SparkPost formatted message
+     *
      * @param SwiftMessage message
      */
     private function prepareEmail($message)
@@ -77,7 +80,7 @@ class SendingServerSparkPostApi extends SendingServerSparkPost
 
         return [
             'content' => [
-                'email_rfc822' => $message->toString()
+                'email_rfc822' => $message->toString(),
             ],
             'recipients' => [
                 [
@@ -88,8 +91,8 @@ class SendingServerSparkPostApi extends SendingServerSparkPost
                 ],
             ],
             'metadata' => [
-                'runtime_message_id' => $msgId
-            ]
+                'runtime_message_id' => $msgId,
+            ],
         ];
     }
 }

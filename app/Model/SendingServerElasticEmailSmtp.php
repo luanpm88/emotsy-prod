@@ -28,13 +28,14 @@ use Acelle\Library\ExtendedSmtpTransport;
 class SendingServerElasticEmailSmtp extends SendingServerElasticEmail
 {
     protected $table = 'sending_servers';
-    
-    /**
-     * Send the provided message.
-     *
-     * @return boolean
-     * @param message
-     */
+
+/**
+ * Send the provided message.
+ *
+ * @return bool
+ *
+ * @param message
+ */
     // Inherit class to implementation of this method
     public function send($message, $params = array())
     {

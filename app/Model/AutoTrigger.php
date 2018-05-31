@@ -23,12 +23,11 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 
 class AutoTrigger extends Model
 {
     protected $fillable = [
-        'start_at'
+        'start_at',
     ];
 
     protected $dates = ['created_at', 'updated_at', 'start_at'];
@@ -44,7 +43,7 @@ class AutoTrigger extends Model
     }
 
     /**
-     * Associations
+     * Associations.
      *
      * @return the associated subscriber, in case of FollowUp trigger
      */

@@ -86,7 +86,7 @@ class FeedbackLog extends Model
     }
 
     /**
-     * Find corresponding subscriber by 'runtime_message_id'
+     * Find corresponding subscriber by 'runtime_message_id'.
      *
      * @return mix
      */
@@ -96,7 +96,7 @@ class FeedbackLog extends Model
         if ($trackingLog) {
             return $trackingLog->subscriber;
         } else {
-            return NULL;
+            return;
         }
     }
 

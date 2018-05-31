@@ -117,9 +117,9 @@ class Template extends Model
                 if ($filters['from'] == 'mine') {
                     $query = $query->where('customer_id', '=', $request->customer_id);
                 } elseif ($filters['from'] == 'gallery') {
-                    $query = $query->where('customer_id', '=', NULL);
+                    $query = $query->where('customer_id', '=', null);
                 } else {
-                    $query = $query->where('customer_id', '=', NULL)
+                    $query = $query->where('customer_id', '=', null)
                         ->orWhere('customer_id', '=', $request->customer_id);
                 }
             }
@@ -199,69 +199,69 @@ class Template extends Model
     public static function templateStyles()
     {
         return [
-            "1_column" => [
-                "full_width_banner",
-                "single_text_row",
-                "footer"
+            '1_column' => [
+                'full_width_banner',
+                'single_text_row',
+                'footer',
             ],
-            "1_2_column" => [
-                "full_width_banner",
-                "single_text_row",
-                "two_image_text_columns",
-                "footer"
+            '1_2_column' => [
+                'full_width_banner',
+                'single_text_row',
+                'two_image_text_columns',
+                'footer',
             ],
-            "1_2_1_column" => [
-                "full_width_banner",
-                "single_text_row",
-                "two_image_text_columns",
-                "single_text_row",
-                "footer"
+            '1_2_1_column' => [
+                'full_width_banner',
+                'single_text_row',
+                'two_image_text_columns',
+                'single_text_row',
+                'footer',
             ],
-            "1_3_column" => [
-                "full_width_banner",
-                "single_text_row",
-                "three_image_text_columns",
-                "single_text_row",
-                "footer"
+            '1_3_column' => [
+                'full_width_banner',
+                'single_text_row',
+                'three_image_text_columns',
+                'single_text_row',
+                'footer',
             ],
-            "1_3_1_column" => [
-                "full_width_banner",
-                "single_text_row",
-                "three_image_text_columns",
-                "single_text_row",
-                "footer"
+            '1_3_1_column' => [
+                'full_width_banner',
+                'single_text_row',
+                'three_image_text_columns',
+                'single_text_row',
+                'footer',
             ],
-            "1_3_2_column" => [
-                "full_width_banner",
-                "single_text_row",
-                "three_image_text_columns",
-                "two_image_text_columns",
-                "footer"
+            '1_3_2_column' => [
+                'full_width_banner',
+                'single_text_row',
+                'three_image_text_columns',
+                'two_image_text_columns',
+                'footer',
             ],
-            "2_column" => [
-                "full_width_banner",
-                "two_image_text_columns",
-                "footer"
+            '2_column' => [
+                'full_width_banner',
+                'two_image_text_columns',
+                'footer',
             ],
-            "2_1_column" => [
-                "full_width_banner",
-                "two_image_text_columns",
-                "single_text_row",
-                "footer"
+            '2_1_column' => [
+                'full_width_banner',
+                'two_image_text_columns',
+                'single_text_row',
+                'footer',
             ],
-            "2_1_2_column" => [
-                "full_width_banner",
-                "two_image_text_columns",
-                "single_text_row",
-                "two_image_text_columns",
-                "footer"
+            '2_1_2_column' => [
+                'full_width_banner',
+                'two_image_text_columns',
+                'single_text_row',
+                'two_image_text_columns',
+                'footer',
             ],
-            "3_1_3_column" => [
-                "full_width_banner",
-                "three_image_text_columns",
-                "single_text_row",
-                "three_image_text_columns",
-                "footer"
+            '3_1_3_column' => [
+                'full_width_banner',
+                'three_image_text_columns',
+                'single_text_row',
+                'three_image_text_columns',
+                'footer',
             ],
         ];
     }
@@ -271,16 +271,16 @@ class Template extends Model
      *
      * All availabel template tags
      */
-    public static function tags($list=null)
+    public static function tags($list = null)
     {
         $tags = [];
 
         $tags[] = ['name' => 'SUBSCRIBER_EMAIL', 'required' => false];
 
         // List field tags
-        if(isset($list)) {
+        if (isset($list)) {
             foreach ($list->fields as $field) {
-                if($field->tag != 'EMAIL') {
+                if ($field->tag != 'EMAIL') {
                     $tags[] = ['name' => 'SUBSCRIBER_'.$field->tag, 'required' => false];
                 }
             }
@@ -319,8 +319,6 @@ class Template extends Model
 
     /**
      * Replace url from content.
-     *
-     * @return void
      */
     public function replaceHtmlUrl($template_path)
     {
@@ -340,7 +338,7 @@ class Template extends Model
     /**
      * Copy new template.
      */
-    public function copy($name, $customer=NULL, $admin=NULL)
+    public function copy($name, $customer = null, $admin = null)
     {
         $copy = $this->replicate();
         $copy->name = $name;
@@ -348,12 +346,12 @@ class Template extends Model
         $copy->updated_at = \Carbon\Carbon::now();
         $copy->custom_order = 0;
         if ($customer) {
-            $copy->admin_id = NULL;
+            $copy->admin_id = null;
             $copy->customer_id = $customer->id;
         }
         if ($admin) {
             $copy->admin_id = $admin->id;
-            $copy->customer_id = NULL;
+            $copy->customer_id = null;
         }
         $copy->save();
 

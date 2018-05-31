@@ -45,7 +45,7 @@ class PaymentMethod extends Model
      * @var array
      */
     protected $fillable = [
-        'type', 'options', 'status','admin_id'
+        'type', 'options', 'status', 'admin_id',
     ];
 
     /**
@@ -63,13 +63,13 @@ class PaymentMethod extends Model
             $rules['type'] = 'required';
         }
 
-        if ($this->type == PaymentMethod::TYPE_PAYPAL) {
+        if ($this->type == self::TYPE_PAYPAL) {
             $rules['options.environment'] = 'required';
             $rules['options.clientID'] = 'required';
             $rules['options.secret'] = 'required';
         }
 
-        if ($this->type == PaymentMethod::TYPE_BRAINTREE_PAYPAL || $this->type == PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD) {
+        if ($this->type == self::TYPE_BRAINTREE_PAYPAL || $this->type == self::TYPE_BRAINTREE_CREDIT_CARD) {
             $rules['options.environment'] = 'required';
             $rules['options.merchantId'] = 'required';
             $rules['options.publicKey'] = 'required';
@@ -77,18 +77,18 @@ class PaymentMethod extends Model
             $rules['options.merchantAccountID'] = 'required';
         }
 
-        if ($this->type == PaymentMethod::TYPE_STRIPE_CREDIT_CARD) {
+        if ($this->type == self::TYPE_STRIPE_CREDIT_CARD) {
             $rules['options.api_secret_key'] = 'required';
             $rules['options.api_publishable_key'] = 'required';
         }
 
-        if ($this->type == PaymentMethod::TYPE_PADDLE_CARD) {
+        if ($this->type == self::TYPE_PADDLE_CARD) {
             $rules['options.vendor_id'] = 'required';
             $rules['options.vendor_auth_code'] = 'required';
             $rules['options.public_key'] = 'required';
         }
 
-        if ($this->type == PaymentMethod::TYPE_PAYU_MONEY) {
+        if ($this->type == self::TYPE_PAYU_MONEY) {
             $rules['options.merchant_key'] = 'required';
             $rules['options.salt'] = 'required';
             $rules['options.payu_base_url'] = 'required';
@@ -146,7 +146,7 @@ class PaymentMethod extends Model
      */
     public static function getAll()
     {
-        return PaymentMethod::select('*');
+        return self::select('*');
     }
 
     /**
@@ -196,7 +196,7 @@ class PaymentMethod extends Model
         if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         } else {
-            $query = $query->orderBy("payment_methods.type", "asc");
+            $query = $query->orderBy('payment_methods.type', 'asc');
         }
 
         return $query;
@@ -205,22 +205,24 @@ class PaymentMethod extends Model
     /**
      * Disable payment_method.
      *
-     * @return boolean
+     * @return bool
      */
     public function disable()
     {
-        $this->status = PaymentMethod::STATUS_INACTIVE;
+        $this->status = self::STATUS_INACTIVE;
+
         return $this->save();
     }
 
     /**
      * Enable payment_method.
      *
-     * @return boolean
+     * @return bool
      */
     public function enable()
     {
-        $this->status = PaymentMethod::STATUS_ACTIVE;
+        $this->status = self::STATUS_ACTIVE;
+
         return $this->save();
     }
 
@@ -242,11 +244,12 @@ class PaymentMethod extends Model
     public function getOption($name)
     {
         $options = $this->getOptions();
+
         return isset($options[$name]) ? $options[$name] : null;
     }
 
     /**
-     * Get customer select2 select options
+     * Get customer select2 select options.
      *
      * @return array
      */
@@ -262,7 +265,7 @@ class PaymentMethod extends Model
             });
         }
         foreach ($query->limit(20)->get() as $payment_method) {
-            $data['items'][] = ['id' => $payment_method->uid, 'text' => trans('messages.payment_method_type_' . $payment_method->type)];
+            $data['items'][] = ['id' => $payment_method->uid, 'text' => trans('messages.payment_method_type_'.$payment_method->type)];
         }
 
         return json_encode($data);
@@ -275,8 +278,8 @@ class PaymentMethod extends Model
      */
     public static function getAllActive()
     {
-        return PaymentMethod::getAll()
-            ->where("payment_methods.status", "=", PaymentMethod::STATUS_ACTIVE)
+        return self::getAll()
+            ->where('payment_methods.status', '=', self::STATUS_ACTIVE)
             ->orderBy('custom_order', 'asc')->get();
     }
 
@@ -288,17 +291,15 @@ class PaymentMethod extends Model
     public static function typeSelectOptions()
     {
         return [
-            ['value' => PaymentMethod::TYPE_CASH, 'text' => trans('messages.' . PaymentMethod::TYPE_CASH)],
-            ['value' => PaymentMethod::TYPE_BRAINTREE_PAYPAL, 'text' => trans('messages.' . PaymentMethod::TYPE_BRAINTREE_PAYPAL)],
-            ['value' => PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD, 'text' => trans('messages.' . PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD)],
-            ['value' => PaymentMethod::TYPE_STRIPE_CREDIT_CARD, 'text' => trans('messages.' . PaymentMethod::TYPE_STRIPE_CREDIT_CARD)],
+            ['value' => self::TYPE_CASH, 'text' => trans('messages.'.self::TYPE_CASH)],
+            ['value' => self::TYPE_BRAINTREE_PAYPAL, 'text' => trans('messages.'.self::TYPE_BRAINTREE_PAYPAL)],
+            ['value' => self::TYPE_BRAINTREE_CREDIT_CARD, 'text' => trans('messages.'.self::TYPE_BRAINTREE_CREDIT_CARD)],
+            ['value' => self::TYPE_STRIPE_CREDIT_CARD, 'text' => trans('messages.'.self::TYPE_STRIPE_CREDIT_CARD)],
         ];
     }
 
     /**
      * Set Braintree auth info.
-     *
-     * @return void
      */
     public function getBraintreeClientToken()
     {
@@ -312,8 +313,6 @@ class PaymentMethod extends Model
 
     /**
      * Set Braintree auth info.
-     *
-     * @return void
      */
     public function getBraintreeMerchantAccounts()
     {
@@ -335,14 +334,12 @@ class PaymentMethod extends Model
 
     /**
      * Set Braintree auth info.
-     *
-     * @return void
      */
     public function getBraintreeMerchantAccountSelectOptions($accounts)
     {
         $options = [];
         foreach ($accounts as $merchantAccount) {
-            $options[] = ['value' => $merchantAccount->id, 'text' => $merchantAccount->id.' / '.$merchantAccount->currencyIsoCode.($merchantAccount->default ? ' (' . trans('messages.default').')' : '')];
+            $options[] = ['value' => $merchantAccount->id, 'text' => $merchantAccount->id.' / '.$merchantAccount->currencyIsoCode.($merchantAccount->default ? ' ('.trans('messages.default').')' : '')];
         }
 
         return $options;
@@ -350,8 +347,6 @@ class PaymentMethod extends Model
 
     /**
      * Get Braintree merchant account by ID.
-     *
-     * @return void
      */
     public function getBraintreeMerchantAccountByID($accounts, $id)
     {
@@ -372,19 +367,19 @@ class PaymentMethod extends Model
      */
     public static function getByType($type)
     {
-        return PaymentMethod::where("payment_methods.type", "=", $type)
+        return self::where('payment_methods.type', '=', $type)
             ->first();
     }
 
     /**
      * Check payment method setting is valid.
      *
-     * @return boolean
+     * @return bool
      */
     public function isValid()
     {
         try {
-            if ($this->type == PaymentMethod::TYPE_BRAINTREE_PAYPAL || $this->type == PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD) {
+            if ($this->type == self::TYPE_BRAINTREE_PAYPAL || $this->type == self::TYPE_BRAINTREE_CREDIT_CARD) {
                 $this->getBraintreeClientToken();
             }
         } catch (\Exception $e) {
@@ -402,13 +397,13 @@ class PaymentMethod extends Model
     public static function statusSelectOptions()
     {
         return [
-            ['value' => PaymentMethod::STATUS_ACTIVE, 'text' => trans('messages.payment_method_status_' . PaymentMethod::STATUS_ACTIVE)],
-            ['value' => PaymentMethod::STATUS_INACTIVE, 'text' => trans('messages.payment_method_status_' . PaymentMethod::STATUS_INACTIVE)],
+            ['value' => self::STATUS_ACTIVE, 'text' => trans('messages.payment_method_status_'.self::STATUS_ACTIVE)],
+            ['value' => self::STATUS_INACTIVE, 'text' => trans('messages.payment_method_status_'.self::STATUS_INACTIVE)],
         ];
     }
 
     /**
-     * Get PayPal Api Access token
+     * Get PayPal Api Access token.
      *
      * @return array
      */
@@ -420,13 +415,13 @@ class PaymentMethod extends Model
         $clientId = $this->getOption('clientID');
         $secret = $this->getOption('secret');
         // Request to PayPal enpoint
-        curl_setopt($ch, CURLOPT_URL, "https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/oauth2/token");
+        curl_setopt($ch, CURLOPT_URL, 'https://api'.($this->getOption('environment') == 'sandbox' ? '.sandbox' : '').'.paypal.com/v1/oauth2/token');
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_USERPWD, $clientId.":".$secret);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
+        curl_setopt($ch, CURLOPT_USERPWD, $clientId.':'.$secret);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, 'grant_type=client_credentials');
 
         $result = curl_exec($ch);
         // Check the result
@@ -437,15 +432,15 @@ class PaymentMethod extends Model
                 return ['success' => true, 'token' => $json->access_token];
                 // Check if has any error
             } elseif (isset($json->error)) {
-                throw new \Exception($json->error . ': ' . $json->error_description);
+                throw new \Exception($json->error.': '.$json->error_description);
             }
         }
 
-        throw new \Exception(trans("messages.paypal_error_cannot_get_access_token"));
+        throw new \Exception(trans('messages.paypal_error_cannot_get_access_token'));
     }
 
     /**
-     * Check PayPal Payment success
+     * Check PayPal Payment success.
      *
      * @return array
      */
@@ -454,10 +449,10 @@ class PaymentMethod extends Model
         $ch = curl_init();
 
         // Request to PayPal enpoint
-        curl_setopt($ch, CURLOPT_URL, "https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/payments/payment/$paymentID");
+        curl_setopt($ch, CURLOPT_URL, 'https://api'.($this->getOption('environment') == 'sandbox' ? '.sandbox' : '').".paypal.com/v1/payments/payment/$paymentID");
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
             'Content-Type:application/json',
-            'Authorization: Bearer ' . $access_token
+            'Authorization: Bearer '.$access_token,
         ]);
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -470,12 +465,12 @@ class PaymentMethod extends Model
 
             // Check if payment state is not approved
             if (!isset($json->state) || $json->state != 'approved') {
-                return (object) ['success' => false, 'data' => $json, 'error' => trans("messages.paypal_error_payment_not_approved")];
+                return (object) ['success' => false, 'data' => $json, 'error' => trans('messages.paypal_error_payment_not_approved')];
             }
 
             // Check if payment amount is not equal to the subscription amount
             if ((float) $json->transactions[0]->amount->details->subtotal != (float) $subscription->price) {
-                return (object) ['success' => false, 'data' => $json, 'error' => trans("messages.paypal_error_amount_not_equal")];
+                return (object) ['success' => false, 'data' => $json, 'error' => trans('messages.paypal_error_amount_not_equal')];
             }
 
             // Return success if nothing wrong
@@ -483,11 +478,11 @@ class PaymentMethod extends Model
         }
 
         // Uncatchable error
-        throw new \Exception(trans("messages.paypal_error_unknown"));
+        throw new \Exception(trans('messages.paypal_error_unknown'));
     }
 
     /**
-     * executePayment server side  - one time payment without recurring payment
+     * executePayment server side  - one time payment without recurring payment.
      *
      * @return array
      */
@@ -499,28 +494,28 @@ class PaymentMethod extends Model
         $clientId = $this->getOption('clientID');
         $secret = $this->getOption('secret');
         // Request to PayPal enpoint
-        curl_setopt($ch, CURLOPT_URL, "https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/oauth2/token");
+        curl_setopt($ch, CURLOPT_URL, 'https://api'.($this->getOption('environment') == 'sandbox' ? '.sandbox' : '').'.paypal.com/v1/oauth2/token');
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_USERPWD, $clientId.":".$secret);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
+        curl_setopt($ch, CURLOPT_USERPWD, $clientId.':'.$secret);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, 'grant_type=client_credentials');
 
         $result = curl_exec($ch);
         // Check the result
         if (!empty($result)) {
             $json = json_decode($result);
-            $access_token=$json->access_token;
+            $access_token = $json->access_token;
             $ch = curl_init();
-            $json_body='{
+            $json_body = '{
                           "payer_id": "'.$payerID.'"
                         }';
             // Request to PayPal enpoint
-            curl_setopt($ch, CURLOPT_URL, "https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/payments/payment/$paymentID/execute/");
+            curl_setopt($ch, CURLOPT_URL, 'https://api'.($this->getOption('environment') == 'sandbox' ? '.sandbox' : '').".paypal.com/v1/payments/payment/$paymentID/execute/");
             curl_setopt($ch, CURLOPT_HTTPHEADER, [
                   'Content-Type:application/json',
-                  'Authorization: Bearer ' . $access_token
+                  'Authorization: Bearer '.$access_token,
               ]);
             curl_setopt($ch, CURLOPT_HEADER, false);
             curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
@@ -533,12 +528,12 @@ class PaymentMethod extends Model
                 $json = json_decode($result);
                 // Check if payment state is not approved
                 if (!isset($json->state) || $json->state != 'approved') {
-                    return (object) ['success' => false, 'data' => $json, 'error' => trans("messages.paypal_error_payment_not_approved")];
+                    return (object) ['success' => false, 'data' => $json, 'error' => trans('messages.paypal_error_payment_not_approved')];
                 }
 
                 // Check if payment amount is not equal to the subscription amount
                 if ((float) $json->transactions[0]->amount->total != (float) $subscription->price) {
-                    return (object) ['success' => false, 'data' => $json, 'error' => trans("messages.paypal_error_amount_not_equal")];
+                    return (object) ['success' => false, 'data' => $json, 'error' => trans('messages.paypal_error_amount_not_equal')];
                 }
 
                 // Return success if nothing wrong
@@ -546,14 +541,13 @@ class PaymentMethod extends Model
             }
 
             // Uncatchable error
-            throw new \Exception(trans("messages.paypal_error_unknown"));
+            throw new \Exception(trans('messages.paypal_error_unknown'));
         }
-        throw new \Exception(trans("messages.paypal_error_cannot_get_access_token"));
+        throw new \Exception(trans('messages.paypal_error_cannot_get_access_token'));
     }
 
-
     /**
-     * recurringPayment server side  - one time payment with recurring payment
+     * recurringPayment server side  - one time payment with recurring payment.
      *
      * @return array
      */
@@ -565,31 +559,31 @@ class PaymentMethod extends Model
         $clientId = $this->getOption('clientID');
         $secret = $this->getOption('secret');
         // Request to PayPal enpoint
-        curl_setopt($ch, CURLOPT_URL, "https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/oauth2/token");
+        curl_setopt($ch, CURLOPT_URL, 'https://api'.($this->getOption('environment') == 'sandbox' ? '.sandbox' : '').'.paypal.com/v1/oauth2/token');
         curl_setopt($ch, CURLOPT_HEADER, false);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_USERPWD, $clientId.":".$secret);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, "grant_type=client_credentials");
+        curl_setopt($ch, CURLOPT_USERPWD, $clientId.':'.$secret);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, 'grant_type=client_credentials');
 
         $result = curl_exec($ch);
         // Check the result
         if (!empty($result)) {
             $json = json_decode($result);
-            $access_token=$json->access_token;
-            $result1=$this->createPlan($access_token, $subscription, $subscription_uid);
+            $access_token = $json->access_token;
+            $result1 = $this->createPlan($access_token, $subscription, $subscription_uid);
             // Check the result
             if (!empty($result1)) {
 
                 // Check if payment state is not approved
                 if (!isset($json->state) || $json->state != 'approved') {
-                    return (object) ['success' => false, 'data' => $json, 'error' => trans("messages.paypal_error_payment_not_approved")];
+                    return (object) ['success' => false, 'data' => $json, 'error' => trans('messages.paypal_error_payment_not_approved')];
                 }
 
                 // Check if payment amount is not equal to the subscription amount
                 if ((float) $json->transactions[0]->amount->total != (float) $subscription->price) {
-                    return (object) ['success' => false, 'data' => $json, 'error' => trans("messages.paypal_error_amount_not_equal")];
+                    return (object) ['success' => false, 'data' => $json, 'error' => trans('messages.paypal_error_amount_not_equal')];
                 }
 
                 // Return success if nothing wrong
@@ -597,11 +591,10 @@ class PaymentMethod extends Model
             }
 
             // Uncatchable error
-            throw new \Exception(trans("messages.paypal_error_unknown"));
+            throw new \Exception(trans('messages.paypal_error_unknown'));
         }
-        throw new \Exception(trans("messages.paypal_error_cannot_get_access_token"));
+        throw new \Exception(trans('messages.paypal_error_cannot_get_access_token'));
     }
-
 
     public function createPlan($access_token, $subscription, $subscription_uid)
     {
@@ -615,38 +608,36 @@ class PaymentMethod extends Model
         );
 
         $charge_models = array([
-            'type'=> 'SHIPPING',
-            'amount'=> $shippingandtax,
+            'type' => 'SHIPPING',
+            'amount' => $shippingandtax,
           ],
           [
-            'type'=> 'TAX',
-            'amount'=> $shippingandtax,
-        ]);
+            'type' => 'TAX',
+            'amount' => $shippingandtax,
+        ], );
 
         $payment_definitions_creation = array();
         array_push($payment_definitions_creation, [
           'name' => $subscription->plan_name,
           'type' => 'REGULAR',
           'frequency' => 'DAY',
-          'frequency_interval'=> '1',
+          'frequency_interval' => '1',
           'amount' => $amout,
           'cycles' => '0',
-          'charge_models' => $charge_models
+          'charge_models' => $charge_models,
        ]);
-
-
 
         $merchant_preferences_temp = array(
           'value' => '0',
-          'currency' => 'USD'
+          'currency' => 'USD',
         );
         $merchant_preferences = array(
-          "setup_fee" => $merchant_preferences_temp,
-          "return_url"=> url('/')."/payments/paypal/".$subscription_uid,
-          "cancel_url"=> url('/')."/payments/paypal/".$subscription_uid."/paypal_cancel",
+          'setup_fee' => $merchant_preferences_temp,
+          'return_url' => url('/').'/payments/paypal/'.$subscription_uid,
+          'cancel_url' => url('/').'/payments/paypal/'.$subscription_uid.'/paypal_cancel',
           'auto_bill_amount' => 'YES',
           'initial_fail_amount_action' => 'CONTINUE',
-          'max_fail_attempts' => '3'
+          'max_fail_attempts' => '3',
         );
         $name = $subscription->plan_name;
         $body = array(
@@ -654,12 +645,11 @@ class PaymentMethod extends Model
           'description' => 'Subscribtion'.$name,
           'type' => 'INFINITE',
           'payment_definitions' => $payment_definitions_creation,
-          "merchant_preferences"=> $merchant_preferences,
+          'merchant_preferences' => $merchant_preferences,
         );
         $myJSON = json_encode($body);
 
-
-        $plan_url="https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/payments/billing-plans/";
+        $plan_url = 'https://api'.($this->getOption('environment') == 'sandbox' ? '.sandbox' : '').'.paypal.com/v1/payments/billing-plans/';
         //open connection
         $ch = curl_init();
 
@@ -667,7 +657,7 @@ class PaymentMethod extends Model
         curl_setopt($ch, CURLOPT_URL, $plan_url);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
           'Content-Type:application/json',
-          'Authorization: Bearer ' .$access_token
+          'Authorization: Bearer '.$access_token,
       ]);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $myJSON);
@@ -677,6 +667,7 @@ class PaymentMethod extends Model
 
         //close connection
         curl_close($ch);
+
         return $response;
     }
 
@@ -692,38 +683,36 @@ class PaymentMethod extends Model
         );
 
         $charge_models = array([
-            'type'=> 'SHIPPING',
-            'amount'=> $shippingandtax,
+            'type' => 'SHIPPING',
+            'amount' => $shippingandtax,
           ],
           [
-            'type'=> 'TAX',
-            'amount'=> $shippingandtax,
-        ]);
+            'type' => 'TAX',
+            'amount' => $shippingandtax,
+        ], );
 
         $payment_definitions_creation = array();
         array_push($payment_definitions_creation, [
           'name' => $subscription->plan_name,
           'type' => 'REGULAR',
           'frequency' => 'DAY',
-          'frequency_interval'=> '1',
+          'frequency_interval' => '1',
           'amount' => $amout,
           'cycles' => '0',
-          'charge_models' => $charge_models
+          'charge_models' => $charge_models,
        ]);
-
-
 
         $merchant_preferences_temp = array(
           'value' => '0',
-          'currency' => 'USD'
+          'currency' => 'USD',
         );
         $merchant_preferences = array(
-          "setup_fee" => $merchant_preferences_temp,
-          "return_url"=> url('/')."payments/paypal/".$subscription_uid,
-          "cancel_url"=> url('/')."payments/paypal/".$subscription_uid."/paypal_cancel",
+          'setup_fee' => $merchant_preferences_temp,
+          'return_url' => url('/').'payments/paypal/'.$subscription_uid,
+          'cancel_url' => url('/').'payments/paypal/'.$subscription_uid.'/paypal_cancel',
           'auto_bill_amount' => 'YES',
           'initial_fail_amount_action' => 'CONTINUE',
-          'max_fail_attempts' => '3'
+          'max_fail_attempts' => '3',
         );
         $name = $subscription->plan_name;
         $body = array(
@@ -731,12 +720,11 @@ class PaymentMethod extends Model
           'description' => 'Subscribtion'.$name,
           'type' => 'INFINITE',
           'payment_definitions' => $payment_definitions_creation,
-          "merchant_preferences"=> $merchant_preferences,
+          'merchant_preferences' => $merchant_preferences,
         );
         $myJSON = json_encode($body);
 
-
-        $plan_url="https://api" . ($this->getOption('environment') == 'sandbox' ? ".sandbox" : ''). ".paypal.com/v1/payments/billing-plans/";
+        $plan_url = 'https://api'.($this->getOption('environment') == 'sandbox' ? '.sandbox' : '').'.paypal.com/v1/payments/billing-plans/';
         //open connection
         $ch = curl_init();
 
@@ -744,7 +732,7 @@ class PaymentMethod extends Model
         curl_setopt($ch, CURLOPT_URL, $plan_url);
         curl_setopt($ch, CURLOPT_HTTPHEADER, [
           'Content-Type:application/json',
-          'Authorization: Bearer ' .$access_token
+          'Authorization: Bearer '.$access_token,
       ]);
         curl_setopt($ch, CURLOPT_POST, true);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $myJSON);
@@ -766,18 +754,19 @@ class PaymentMethod extends Model
     **/
     public function createPlanOnServer($payment_method)
     {
-        if ($payment_method->type==PaymentMethod::TYPE_PADDLE_CARD) {
+        if ($payment_method->type == self::TYPE_PADDLE_CARD) {
             foreach (\Acelle\Model\Plan::getAllActiveWithDefault()->get() as $plan) {
                 $vendorId = $payment_method->getOption('vendor_id');
-                $vendor_auth_code=$payment_method->getOption('vendor_auth_code');
+                $vendor_auth_code = $payment_method->getOption('vendor_auth_code');
                 // plan_type: accepts day, week, month, year
-                $json_body="vendor_id=".$vendorId."&vendor_auth_code=".$vendor_auth_code."&plan_name=".$plan->name."&plan_trial_days=0&plan_type=".$plan->frequency_unit."&plan_length=".$plan->frequency_amount."&main_currency_code=USD&initial_price_usd=0.00&recurring_price_usd=".$plan->price;
+                $json_body = 'vendor_id='.$vendorId.'&vendor_auth_code='.$vendor_auth_code.'&plan_name='.$plan->name.'&plan_trial_days=0&plan_type='.$plan->frequency_unit.'&plan_length='.$plan->frequency_amount.'&main_currency_code=USD&initial_price_usd=0.00&recurring_price_usd='.$plan->price;
                 // create plan if paddle plan id blank
-                if ($plan->paddle_plan_id=="" || $plan->paddle_plan_id==null) {
+                if ($plan->paddle_plan_id == '' || $plan->paddle_plan_id == null) {
                     $plan->createPaddlePlan($json_body, $plan);
                 }
             }
         }
+
         return true;
     }
 }

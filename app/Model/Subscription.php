@@ -23,20 +23,20 @@ class Subscription extends Model
 
     // Subscription statuses
     public $statuses = [
-        Subscription::STATUS_ACTIVE => [
-            Subscription::TIME_STATUS_PAST => 'expired',
-            Subscription::TIME_STATUS_CURRENT => 'current_active',
-            Subscription::TIME_STATUS_FUTURE => 'pending_active'
+        self::STATUS_ACTIVE => [
+            self::TIME_STATUS_PAST => 'expired',
+            self::TIME_STATUS_CURRENT => 'current_active',
+            self::TIME_STATUS_FUTURE => 'pending_active',
         ],
-        Subscription::STATUS_INACTIVE => [
-            Subscription::TIME_STATUS_PAST => 'expired',
-            Subscription::TIME_STATUS_CURRENT => 'current_inactive',
-            Subscription::TIME_STATUS_FUTURE => 'pending_inactive'
+        self::STATUS_INACTIVE => [
+            self::TIME_STATUS_PAST => 'expired',
+            self::TIME_STATUS_CURRENT => 'current_inactive',
+            self::TIME_STATUS_FUTURE => 'pending_inactive',
         ],
-        Subscription::STATUS_DISABLED => [
-            Subscription::TIME_STATUS_PAST => 'expired',
-            Subscription::TIME_STATUS_CURRENT => 'current_disabled',
-            Subscription::TIME_STATUS_FUTURE => 'pending_disabled'
+        self::STATUS_DISABLED => [
+            self::TIME_STATUS_PAST => 'expired',
+            self::TIME_STATUS_CURRENT => 'current_disabled',
+            self::TIME_STATUS_FUTURE => 'pending_disabled',
         ],
     ];
 
@@ -49,7 +49,7 @@ class Subscription extends Model
         'created_at',
         'updated_at',
         'start_at',
-        'end_at'
+        'end_at',
     ];
 
     /**
@@ -58,7 +58,7 @@ class Subscription extends Model
      * @var array
      */
     protected $fillable = [
-        'plan_id', 'payment_method_id'
+        'plan_id', 'payment_method_id',
     ];
 
     /**
@@ -81,7 +81,7 @@ class Subscription extends Model
             $options = self::defaultOptions();
             foreach ($options as $type => $option) {
                 if ($type != 'sending_server_subaccount_uid') {
-                    $rules['options.' . $type] = 'required';
+                    $rules['options.'.$type] = 'required';
                 }
             }
         }
@@ -104,9 +104,7 @@ class Subscription extends Model
     }
 
     /**
-     * Disable a subscription
-     *
-     * @return void
+     * Disable a subscription.
      */
     public function setDisabled()
     {
@@ -145,7 +143,7 @@ class Subscription extends Model
     }
 
     /**
-     * Subaccount if any
+     * Subaccount if any.
      */
     public function subAccount()
     {
@@ -285,14 +283,14 @@ class Subscription extends Model
             }
             if (!empty($filters['time_status'])) {
                 switch ($filters['time_status']) {
-                    case Subscription::TIME_STATUS_PAST:
+                    case self::TIME_STATUS_PAST:
                         $query = $query->where('subscriptions.end_at', '<', \Carbon\Carbon::now()->startOfDay());
                         break;
-                    case Subscription::TIME_STATUS_CURRENT:
+                    case self::TIME_STATUS_CURRENT:
                         $query = $query->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
                             ->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
                         break;
-                    case Subscription::TIME_STATUS_FUTURE:
+                    case self::TIME_STATUS_FUTURE:
                         $query = $query->where('subscriptions.start_at', '>', \Carbon\Carbon::now()->endOfDay());
                         break;
                 }
@@ -400,32 +398,34 @@ class Subscription extends Model
     /**
      * Disable subscription.
      *
-     * @return boolean
+     * @return bool
      */
     public function disable()
     {
-        $this->status = Subscription::STATUS_DISABLED;
+        $this->status = self::STATUS_DISABLED;
+
         return $this->save();
     }
 
     /**
      * Enable subscription.
      *
-     * @return boolean
+     * @return bool
      */
     public function enable()
     {
-        $this->status = Subscription::STATUS_ACTIVE;
+        $this->status = self::STATUS_ACTIVE;
         if ($this->useSubAccount()) {
             $this->createSubAccount();
         }
+
         return $this->save();
     }
 
     /**
      * Check if subscription is free.
      *
-     * @return boolean
+     * @return bool
      */
     public function isFree()
     {
@@ -435,7 +435,7 @@ class Subscription extends Model
     /**
      * Count remaining days.
      *
-     * @return integer
+     * @return int
      */
     public function daysRemainCount()
     {
@@ -559,6 +559,7 @@ class Subscription extends Model
                     $defaul_options[$x] = $saved_options[$x];
                 }
             }
+
             return $defaul_options;
         }
     }
@@ -580,12 +581,12 @@ class Subscription extends Model
      */
     public function displayQuota()
     {
-        if ($this->getOption("sending_quota") == -1) {
+        if ($this->getOption('sending_quota') == -1) {
             return trans('messages.unlimited');
-        } elseif ($this->getOption("sending_quota_time") == -1) {
-            return $this->getOption("sending_quota");
+        } elseif ($this->getOption('sending_quota_time') == -1) {
+            return $this->getOption('sending_quota');
         } else {
-            return strtolower(\Acelle\Library\Tool::format_number($this->getOption("sending_quota")) . " " . trans('messages.' . \Acelle\Library\Tool::getPluralPrase('email', $this->getOption("sending_quota"))) . ' / '.$this->getOption("sending_quota_time").' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption("sending_quota_time_unit"), $this->getOption("sending_quota"))));
+            return strtolower(\Acelle\Library\Tool::format_number($this->getOption('sending_quota')).' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('email', $this->getOption('sending_quota'))).' / '.$this->getOption('sending_quota_time').' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption('sending_quota_time_unit'), $this->getOption('sending_quota'))));
         }
     }
 
@@ -596,10 +597,10 @@ class Subscription extends Model
      */
     public function displayTotalQuota()
     {
-        if ($this->getOption("email_max") == -1) {
+        if ($this->getOption('email_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption("email_max"));
+            return \Acelle\Library\Tool::format_number($this->getOption('email_max'));
         }
     }
 
@@ -610,10 +611,10 @@ class Subscription extends Model
      */
     public function displayMaxList()
     {
-        if ($this->getOption("list_max") == -1) {
+        if ($this->getOption('list_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption("list_max"));
+            return \Acelle\Library\Tool::format_number($this->getOption('list_max'));
         }
     }
 
@@ -624,10 +625,10 @@ class Subscription extends Model
      */
     public function displayMaxSubscriber()
     {
-        if ($this->getOption("subscriber_max") == -1) {
+        if ($this->getOption('subscriber_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption("subscriber_max"));
+            return \Acelle\Library\Tool::format_number($this->getOption('subscriber_max'));
         }
     }
 
@@ -638,10 +639,10 @@ class Subscription extends Model
      */
     public function displayMaxCampaign()
     {
-        if ($this->getOption("campaign_max") == -1) {
+        if ($this->getOption('campaign_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption("campaign_max"));
+            return \Acelle\Library\Tool::format_number($this->getOption('campaign_max'));
         }
     }
 
@@ -652,10 +653,10 @@ class Subscription extends Model
      */
     public function displayMaxSizeUploadTotal()
     {
-        if ($this->getOption("max_size_upload_total") == -1) {
+        if ($this->getOption('max_size_upload_total') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption("max_size_upload_total"));
+            return \Acelle\Library\Tool::format_number($this->getOption('max_size_upload_total'));
         }
     }
 
@@ -666,10 +667,10 @@ class Subscription extends Model
      */
     public function displayFileSizeUpload()
     {
-        if ($this->getOption("max_file_size_upload") == -1) {
+        if ($this->getOption('max_file_size_upload') == -1) {
             return trans('messages.unlimited');
         } else {
-            return \Acelle\Library\Tool::format_number($this->getOption("max_file_size_upload"));
+            return \Acelle\Library\Tool::format_number($this->getOption('max_file_size_upload'));
         }
     }
 
@@ -680,14 +681,14 @@ class Subscription extends Model
      */
     public function displayAllowCreateSendingServer()
     {
-        if ($this->getOption("sending_server_option") != \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
+        if ($this->getOption('sending_server_option') != \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
             return trans('messages.feature_not_allow');
         }
 
-        if ($this->getOption("sending_servers_max") == -1) {
+        if ($this->getOption('sending_servers_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("sending_servers_max");
+            return $this->getOption('sending_servers_max');
         }
     }
 
@@ -698,14 +699,14 @@ class Subscription extends Model
      */
     public function displayAllowCreateEmailVerificationServer()
     {
-        if ($this->getOption("create_email_verification_servers") == 'no') {
+        if ($this->getOption('create_email_verification_servers') == 'no') {
             return trans('messages.feature_not_allow');
         }
 
-        if ($this->getOption("email_verification_servers_max") == -1) {
+        if ($this->getOption('email_verification_servers_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("email_verification_servers_max");
+            return $this->getOption('email_verification_servers_max');
         }
     }
 
@@ -716,14 +717,14 @@ class Subscription extends Model
      */
     public function displayAllowCreateSendingDomain()
     {
-        if ($this->getOption("create_sending_domains") == 'no') {
+        if ($this->getOption('create_sending_domains') == 'no') {
             return trans('messages.feature_not_allow');
         }
 
-        if ($this->getOption("sending_domains_max") == -1) {
+        if ($this->getOption('sending_domains_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("sending_domains_max");
+            return $this->getOption('sending_domains_max');
         }
     }
 
@@ -734,7 +735,7 @@ class Subscription extends Model
      */
     public function isActive()
     {
-        return $this->status == Subscription::STATUS_ACTIVE;
+        return $this->status == self::STATUS_ACTIVE;
     }
 
     /**
@@ -744,7 +745,7 @@ class Subscription extends Model
      */
     public function isDisabled()
     {
-        return $this->status == Subscription::STATUS_DISABLED;
+        return $this->status == self::STATUS_DISABLED;
     }
 
     /**
@@ -800,23 +801,23 @@ class Subscription extends Model
     }
 
     /**
-     * Check current state
+     * Check current state.
      *
      * @return array
      */
     public function timeStatus()
     {
         if (!$this->isStarted()) {
-            return Subscription::TIME_STATUS_FUTURE;
+            return self::TIME_STATUS_FUTURE;
         } elseif ($this->isOld()) {
-            return Subscription::TIME_STATUS_PAST;
+            return self::TIME_STATUS_PAST;
         } else {
-            return Subscription::TIME_STATUS_CURRENT;
+            return self::TIME_STATUS_CURRENT;
         }
     }
 
     /**
-     * Get subsciption display name
+     * Get subsciption display name.
      *
      * @return array
      */
@@ -826,7 +827,7 @@ class Subscription extends Model
     }
 
     /**
-     * Check if subscriptioon is paid
+     * Check if subscriptioon is paid.
      *
      * @return array
      */
@@ -836,7 +837,7 @@ class Subscription extends Model
     }
 
     /**
-     * When get status attribute
+     * When get status attribute.
      *
      * @return array
      */
@@ -846,6 +847,7 @@ class Subscription extends Model
         if ($this->isOld()) {
             $this->disable();
         }
+
         return $value;
     }
 
@@ -890,8 +892,6 @@ class Subscription extends Model
 
     /**
      * Fill email verification servers.
-     *
-     * @return void
      */
     public function fillEmailVerificationServers($params)
     {
@@ -909,8 +909,6 @@ class Subscription extends Model
 
     /**
      * Set paid.
-     *
-     * @return void
      */
     public function setPaid($params = [])
     {
@@ -922,9 +920,9 @@ class Subscription extends Model
             $payment = new \Acelle\Model\Payment();
             $payment->subscription_id = $this->id;
             $payment->data = '';
-            $payment->description = $params["description"];
-            $payment->tax_number = $params["tax_number"];
-            $payment->billing_address = $params["billing_address"];
+            $payment->description = $params['description'];
+            $payment->tax_number = $params['tax_number'];
+            $payment->billing_address = $params['billing_address'];
             $payment->payment_method_id = null;
             $payment->status = \Acelle\Model\Payment::STATUS_SUCCESS;
             $payment->action = \Acelle\Model\Payment::ACTION_PAID;
@@ -936,10 +934,8 @@ class Subscription extends Model
 
     /**
      * Set un-paid.
-     *
-     * @return void
      */
-    public function setUnPaid($description='')
+    public function setUnPaid($description = '')
     {
         $this->paid = false;
         $this->save();
@@ -967,9 +963,9 @@ class Subscription extends Model
     public function getPaidStatus()
     {
         if ($this->isPaid()) {
-            return Subscription::PAID_STATUS_TRUE;
+            return self::PAID_STATUS_TRUE;
         } else {
-            return Subscription::PAID_STATUS_FALSE;
+            return self::PAID_STATUS_FALSE;
         }
     }
 
@@ -1011,11 +1007,12 @@ class Subscription extends Model
     public function longTitle()
     {
         $strs = [$this->plan_name];
-        $strs[] = '(' . \Acelle\Library\Tool::formatDate($this->start_at);
-        $strs[] = ' - ' . \Acelle\Library\Tool::formatDate($this->end_at) . ')';
+        $strs[] = '('.\Acelle\Library\Tool::formatDate($this->start_at);
+        $strs[] = ' - '.\Acelle\Library\Tool::formatDate($this->end_at).')';
         if ($this->isCurrent()) {
-            $strs[] = ' / ' . trans('messages.subscription_time_status_' . $this->timeStatus());
+            $strs[] = ' / '.trans('messages.subscription_time_status_'.$this->timeStatus());
         }
+
         return implode(' ', $strs);
     }
 
@@ -1027,9 +1024,9 @@ class Subscription extends Model
     public static function statusSelectOptions()
     {
         return [
-            ['value' => Subscription::STATUS_ACTIVE, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_ACTIVE)],
-            ['value' => Subscription::STATUS_INACTIVE, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_INACTIVE)],
-            ['value' => Subscription::STATUS_DISABLED, 'text' => trans('messages.subscription_status_' . Subscription::STATUS_DISABLED)],
+            ['value' => self::STATUS_ACTIVE, 'text' => trans('messages.subscription_status_'.self::STATUS_ACTIVE)],
+            ['value' => self::STATUS_INACTIVE, 'text' => trans('messages.subscription_status_'.self::STATUS_INACTIVE)],
+            ['value' => self::STATUS_DISABLED, 'text' => trans('messages.subscription_status_'.self::STATUS_DISABLED)],
         ];
     }
 
@@ -1041,9 +1038,9 @@ class Subscription extends Model
     public static function timeStatusSelectOptions()
     {
         return [
-            ['value' => Subscription::TIME_STATUS_PAST, 'text' => trans('messages.subscription_time_status_' . Subscription::TIME_STATUS_PAST)],
-            ['value' => Subscription::TIME_STATUS_CURRENT, 'text' => trans('messages.subscription_time_status_' . Subscription::TIME_STATUS_CURRENT)],
-            ['value' => Subscription::TIME_STATUS_FUTURE, 'text' => trans('messages.subscription_time_status_' . Subscription::TIME_STATUS_FUTURE)],
+            ['value' => self::TIME_STATUS_PAST, 'text' => trans('messages.subscription_time_status_'.self::TIME_STATUS_PAST)],
+            ['value' => self::TIME_STATUS_CURRENT, 'text' => trans('messages.subscription_time_status_'.self::TIME_STATUS_CURRENT)],
+            ['value' => self::TIME_STATUS_FUTURE, 'text' => trans('messages.subscription_time_status_'.self::TIME_STATUS_FUTURE)],
         ];
     }
 
@@ -1055,15 +1052,15 @@ class Subscription extends Model
     public static function paidStatusSelectOptions()
     {
         return [
-            ['value' => 'true', 'text' => trans('messages.subscription_paid_status_' . Subscription::PAID_STATUS_FALSE)],
-            ['value' => 1, 'text' => trans('messages.subscription_paid_status_' . Subscription::PAID_STATUS_TRUE)],
+            ['value' => 'true', 'text' => trans('messages.subscription_paid_status_'.self::PAID_STATUS_FALSE)],
+            ['value' => 1, 'text' => trans('messages.subscription_paid_status_'.self::PAID_STATUS_TRUE)],
         ];
     }
 
     /**
      * Check if plan time is unlimited.
      *
-     * @return boolean
+     * @return bool
      */
     public function isTimeUnlimited()
     {
@@ -1102,16 +1099,17 @@ class Subscription extends Model
             'MGA' => 1,
             'PYG' => 1,
             'VND' => 1,
-            'XPF' => 1
+            'XPF' => 1,
         ];
         $rate = isset($currency_rates[$this->currency_code]) ? $currency_rates[$this->currency_code] : 100;
-        return $this->price*$rate;
+
+        return $this->price * $rate;
     }
 
     /**
      * Check if tax billing information is required.
      *
-     * @return boolean
+     * @return bool
      */
     public function isTaxBillingRequired()
     {
@@ -1121,12 +1119,12 @@ class Subscription extends Model
     /**
      * Check if currency is valid.
      *
-     * @return boolean
+     * @return bool
      */
     public function isValidPaymentMethod($payment_method)
     {
         if (
-            in_array($payment_method->type, [\Acelle\Model\PaymentMethod::TYPE_BRAINTREE_PAYPAL,\Acelle\Model\PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD])
+            in_array($payment_method->type, [\Acelle\Model\PaymentMethod::TYPE_BRAINTREE_PAYPAL, \Acelle\Model\PaymentMethod::TYPE_BRAINTREE_CREDIT_CARD])
             && $this->currency_code != $payment_method->getOption('currencyCode')
         ) {
             return false;
@@ -1137,8 +1135,6 @@ class Subscription extends Model
 
     /**
      * Create sending server sub-account.
-     *
-     * @return void
      */
     public function createSubAccount()
     {
@@ -1168,8 +1164,6 @@ class Subscription extends Model
 
     /**
      * Set option.
-     *
-     * @return void
      */
     public function setOption($name, $value)
     {
@@ -1182,8 +1176,6 @@ class Subscription extends Model
 
     /**
      * Fill option from request.
-     *
-     * @return void
      */
     public function fillOptions($options)
     {

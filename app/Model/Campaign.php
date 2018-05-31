@@ -25,26 +25,22 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
-use Acelle\Library\StringHelper;
-use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use DB;
-use Carbon\Carbon;
-use Acelle\Model\SystemJob;
-use Acelle\Model\Setting;
 use Acelle\Exceptions\CampaignPausedException;
 use Acelle\Exceptions\CampaignErrorException;
 
 class Campaign extends AbsCampaign
 {
     /**
-     * Start the campaign
-     *
+     * Start the campaign.
      */
-    public function start($trigger = null) {
+    public function start($trigger = null)
+    {
         try {
             // make sure the same campaign is not started twice
             if (!$this->refreshStatus()->isReady()) {
                 MailLog::info("Campaign ID: {$this->id} is not ready or already started");
+
                 return;
             }
 
@@ -101,7 +97,7 @@ class Campaign extends AbsCampaign
                 // Re-initialize logging to capture the child process' PID
                 MailLog::fork();
 
-                MailLog::info(sprintf("Start child process %s of %s (forked from %s)", $i + 1, $count, $parentPid));
+                MailLog::info(sprintf('Start child process %s of %s (forked from %s)', $i + 1, $count, $parentPid));
                 sleep(self::WORKER_DELAY);
                 $partition = [$i, $count];
                 $this->run($partition);
@@ -114,7 +110,7 @@ class Campaign extends AbsCampaign
         }
 
         // wait for child processes to finish
-        foreach($children as $child) {
+        foreach ($children as $child) {
             $pid = pcntl_wait($status);
             if (pcntl_wifexited($status)) {
                 $code = pcntl_wexitstatus($status);
@@ -157,13 +153,13 @@ class Campaign extends AbsCampaign
         // try/catch to make sure child process does not stop without reporting any error
         try {
             $i = 0;
-            $this->getPendingSubscribers($partition, function($subscribers, $page, $total) use (&$i) {
+            $this->getPendingSubscribers($partition, function ($subscribers, $page, $total) use (&$i) {
                 MailLog::info("Fetching page $page (count: {$subscribers->count()})");
 
                 foreach ($subscribers as $subscriber) {
                     // @todo: customerneedcheck
                     if ($this->customer->overQuota()) {
-                        throw new \Exception("Customer has reached sending limit");
+                        throw new \Exception('Customer has reached sending limit');
                     }
 
                     $i += 1;
@@ -198,13 +194,12 @@ class Campaign extends AbsCampaign
             if (!$asChildProcess) {
                 $this->done();
             }
-
         } catch (CampaignPausedException $e) {
             // just finish
             MailLog::warning('Campaign paused');
         } catch (CampaignErrorException $e) {
             // just finish
-            MailLog::warning('Campaign terminated: ' . $e->getMessage());
+            MailLog::warning('Campaign terminated: '.$e->getMessage());
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
             $this->error($e->getMessage());
@@ -262,7 +257,7 @@ class Campaign extends AbsCampaign
             $tags['UPDATE_PROFILE_URL'] = $this->generateUpdateProfileUrl($subscriber);
             $tags['UNSUBSCRIBE_URL'] = $this->generateUnsubscribeUrl($msgId);
             $tags['WEB_VIEW_URL'] = $this->generateWebViewerUrl($msgId);
-            
+
             # Subscriber custom fields
             foreach ($this->defaultMailList->fields as $field) {
                 $tags['SUBSCRIBER_'.$field->tag] = $subscriber->getValueByField($field);
@@ -278,7 +273,7 @@ class Campaign extends AbsCampaign
 
         return $message;
     }
-    
+
     /**
      * Subscribers.
      *
@@ -287,15 +282,15 @@ class Campaign extends AbsCampaign
     public function subscribers($params = [], $extra = ['email_verifications'])
     {
         // get subscribers from auto campaign or normal campaign
-        if($this->isAuto()) {
+        if ($this->isAuto()) {
             // Get subscriber from auto event
             $query = $this->autoEvent()->subscribers();
         } else {
-            if($this->listsSegments->isEmpty()) {
+            if ($this->listsSegments->isEmpty()) {
                 // this is a trick for returning an empty builder
                 return Subscriber::limit(0);
             }
-            $query = Subscriber::select("subscribers.*");
+            $query = Subscriber::select('subscribers.*');
             // Tell MySQL to use the right index
             // $query->from(\DB::raw(\DB::getTablePrefix() . 'subscribers FORCE INDEX (subscribers_mail_list_id_email_index)'));
             // Email verification join
@@ -310,8 +305,7 @@ class Campaign extends AbsCampaign
                     // JOINS...
                     if (!empty($conds['joins'])) {
                         foreach ($conds['joins'] as $joining) {
-                            $query = $query->leftJoin($joining['table'], function($join) use ($joining)
-                            {
+                            $query = $query->leftJoin($joining['table'], function ($join) use ($joining) {
                                 $join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
                                 if (isset($joining['ons'][1])) {
                                     $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
@@ -324,44 +318,44 @@ class Campaign extends AbsCampaign
                         $conditions[] = $conds['conditions'];
                     }
                 }
-                
+
                 // also add mail list condition, even if a segment condition is already in place
-                $conditions[] = '(' . table('subscribers') . '.mail_list_id = ' . $lists_segment->mail_list_id . ')';
+                $conditions[] = '('.table('subscribers').'.mail_list_id = '.$lists_segment->mail_list_id.')';
             }
 
             if (!empty($conditions)) {
-                $query = $query->whereRaw('(' . implode(' OR ', $conditions) . ')');
+                $query = $query->whereRaw('('.implode(' OR ', $conditions).')');
             }
         }
-        
+
         // Filters
-        $filters = isset($params["filters"]) ? $params["filters"] : null;
-        if((isset($filters) && (isset($filters["open"]) || isset($filters["click"]) || isset($filters["tracking_status"])))
-           || $this->status == "done"
+        $filters = isset($params['filters']) ? $params['filters'] : null;
+        if ((isset($filters) && (isset($filters['open']) || isset($filters['click']) || isset($filters['tracking_status'])))
+           || $this->status == 'done'
         ) {
             $query = $query->leftJoin('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id');
-            $query = $query->where('tracking_logs.id', "!=", "NULL");
-            $query = $query->where('tracking_logs.campaign_id', "=", $this->id);
+            $query = $query->where('tracking_logs.id', '!=', 'NULL');
+            $query = $query->where('tracking_logs.campaign_id', '=', $this->id);
         }
-        if(isset($filters)) {
-            if(isset($filters["open"])) {
-                $equal = ($filters["open"] == "opened") ? "!=" : "=";
+        if (isset($filters)) {
+            if (isset($filters['open'])) {
+                $equal = ($filters['open'] == 'opened') ? '!=' : '=';
                 $query = $query->leftJoin('open_logs', 'tracking_logs.message_id', '=', 'open_logs.message_id')
                     ->where('open_logs.id', $equal, null);
             }
-            if(isset($filters["click"])) {
-                $equal = ($filters["click"] == "clicked") ? "!=" : "=";
+            if (isset($filters['click'])) {
+                $equal = ($filters['click'] == 'clicked') ? '!=' : '=';
                 $query = $query->leftJoin('click_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
                     ->where('click_logs.id', $equal, null);
             }
-            if(isset($filters["tracking_status"])) {
-                $val = ($filters["tracking_status"] == "not_sent") ? null : $filters["tracking_status"];
-                $query = $query->where('tracking_logs.status', "=", $val);
+            if (isset($filters['tracking_status'])) {
+                $val = ($filters['tracking_status'] == 'not_sent') ? null : $filters['tracking_status'];
+                $query = $query->where('tracking_logs.status', '=', $val);
             }
         }
         // keyword
-        if (isset($params["keyword"]) && !empty(trim($params["keyword"]))) {
-            foreach (explode(' ', trim($params["keyword"])) as $keyword) {
+        if (isset($params['keyword']) && !empty(trim($params['keyword']))) {
+            foreach (explode(' ', trim($params['keyword'])) as $keyword) {
                 $query = $query->leftJoin('subscriber_fields', 'subscribers.id', '=', 'subscriber_fields.subscriber_id');
                 $query = $query->where(function ($q) use ($keyword) {
                     $q->orwhere('subscribers.email', 'like', '%'.$keyword.'%')
@@ -369,6 +363,7 @@ class Campaign extends AbsCampaign
                 });
             }
         }
+
         return $query;
     }
 
@@ -429,8 +424,7 @@ class Campaign extends AbsCampaign
     }
 
     /**
-     * Queue campaign for sending
-     *
+     * Queue campaign for sending.
      */
     public function queue($trigger = null, $subscribers = null, $delay = 0)
     {
@@ -440,15 +434,14 @@ class Campaign extends AbsCampaign
     }
 
     /**
-     * Queue campaign for sending
-     *
+     * Queue campaign for sending.
      */
     public function clearAllJobs()
     {
         // cleanup jobs and system_jobs
         // @todo data should be a JSON field instead
         $systemJobs = SystemJob::where('name', 'Acelle\Jobs\RunCampaignJob')->where('data', $this->id)->get();
-        foreach($systemJobs as $systemJob) {
+        foreach ($systemJobs as $systemJob) {
             // @todo what if jobs were already started? check `reserved` field?
             $systemJob->clear();
         }

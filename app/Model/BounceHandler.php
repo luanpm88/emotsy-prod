@@ -136,7 +136,7 @@ class BounceHandler extends DeliveryHandler
             }
         }
 
-        if(!empty($request->admin_id)) {
+        if (!empty($request->admin_id)) {
             $query = $query->where('bounce_handlers.admin_id', '=', $request->admin_id);
         }
 
@@ -152,7 +152,7 @@ class BounceHandler extends DeliveryHandler
     {
         $query = self::filter($request);
 
-        if(!empty($request->sort_order)) {
+        if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
@@ -204,7 +204,7 @@ class BounceHandler extends DeliveryHandler
      * @var array
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'password', 'protocol', 'encryption', 'email'
+        'name', 'host', 'port', 'username', 'password', 'protocol', 'encryption', 'email',
     ];
 
     /**
@@ -250,7 +250,7 @@ class BounceHandler extends DeliveryHandler
     public static function protocolSelectOptions()
     {
         return [
-            ['value' => 'imap', 'text' => 'imap']
+            ['value' => 'imap', 'text' => 'imap'],
         ];
     }
 

@@ -74,7 +74,7 @@ class CustomerGroup extends Model
 
         $options = self::defaultOptions();
         foreach ($options as $type => $option) {
-            $rules['options.' . $type] = 'required';
+            $rules['options.'.$type] = 'required';
         }
 
         return $rules;
@@ -109,8 +109,8 @@ class CustomerGroup extends Model
     {
         $user = $request->user();
         $query = self::select('customer_groups.*');
-        
-        if (!$user->can("read_all", new CustomerGroup())) {
+
+        if (!$user->can('read_all', new self())) {
             $query = $query->where('customer_groups.admin_id', '=', $user->admin->id);
         }
 
@@ -189,7 +189,7 @@ class CustomerGroup extends Model
             'access_when_offline' => 'no',
         ];
     }
-    
+
     /**
      * Get options.
      *
@@ -202,11 +202,12 @@ class CustomerGroup extends Model
         } else {
             $defaul_options = self::defaultOptions();
             $saved_options = json_decode($this->options, true);
-            foreach($defaul_options as $x => $group) {
-                if(isset($saved_options[$x])) {
+            foreach ($defaul_options as $x => $group) {
+                if (isset($saved_options[$x])) {
                     $defaul_options[$x] = $saved_options[$x];
                 }
             }
+
             return $defaul_options;
         }
     }
@@ -297,7 +298,7 @@ class CustomerGroup extends Model
 
         return $options;
     }
-    
+
     /**
      * Display group quota.
      *
@@ -305,15 +306,15 @@ class CustomerGroup extends Model
      */
     public function displayQuota()
     {
-        if ($this->getOption("sending_quota") == -1) {
+        if ($this->getOption('sending_quota') == -1) {
             return trans('messages.unlimited');
-        } elseif ($this->getOption("sending_quota_time") == -1) {
-            return $this->getOption("sending_quota");
+        } elseif ($this->getOption('sending_quota_time') == -1) {
+            return $this->getOption('sending_quota');
         } else {
-            return $this->getOption("sending_quota") . " " . trans('messages.' . \Acelle\Library\Tool::getPluralPrase('email', $this->getOption("sending_quota"))) . ' / '.$this->getOption("sending_quota_time").' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption("sending_quota_time_unit"), $this->getOption("sending_quota")));
-        }        
+            return $this->getOption('sending_quota').' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('email', $this->getOption('sending_quota'))).' / '.$this->getOption('sending_quota_time').' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption('sending_quota_time_unit'), $this->getOption('sending_quota')));
+        }
     }
-    
+
     /**
      * Display max lists.
      *
@@ -321,13 +322,13 @@ class CustomerGroup extends Model
      */
     public function displayMaxList()
     {
-        if ($this->getOption("list_max") == -1) {
+        if ($this->getOption('list_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("list_max");
-        }        
+            return $this->getOption('list_max');
+        }
     }
-    
+
     /**
      * Display max subscribers.
      *
@@ -335,13 +336,13 @@ class CustomerGroup extends Model
      */
     public function displayMaxSubscriber()
     {
-        if ($this->getOption("subscriber_max") == -1) {
+        if ($this->getOption('subscriber_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("subscriber_max");
-        }        
+            return $this->getOption('subscriber_max');
+        }
     }
-    
+
     /**
      * Display max campaign.
      *
@@ -349,13 +350,13 @@ class CustomerGroup extends Model
      */
     public function displayMaxCampaign()
     {
-        if ($this->getOption("campaign_max") == -1) {
+        if ($this->getOption('campaign_max') == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("campaign_max");
-        }        
+            return $this->getOption('campaign_max');
+        }
     }
-    
+
     /**
      * Display max campaign.
      *
@@ -363,13 +364,13 @@ class CustomerGroup extends Model
      */
     public function displayMaxSizeUploadTotal()
     {
-        if ($this->getOption("max_size_upload_total") == -1) {
+        if ($this->getOption('max_size_upload_total') == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("max_size_upload_total");
-        }        
+            return $this->getOption('max_size_upload_total');
+        }
     }
-    
+
     /**
      * Display max campaign.
      *
@@ -377,27 +378,27 @@ class CustomerGroup extends Model
      */
     public function displayFileSizeUpload()
     {
-        if ($this->getOption("max_file_size_upload") == -1) {
+        if ($this->getOption('max_file_size_upload') == -1) {
             return trans('messages.unlimited');
         } else {
-            return $this->getOption("max_file_size_upload");
-        }        
+            return $this->getOption('max_file_size_upload');
+        }
     }
-    
+
     /**
-     * Display sending servers count
+     * Display sending servers count.
      *
      * @return array
      */
     public function displaySendingServersCount()
     {
-        if ($this->getOption("all_sending_servers") == 'yes') {
+        if ($this->getOption('all_sending_servers') == 'yes') {
             return trans('messages.all');
         } else {
             return $this->user_group_sending_servers()->count();
         }
     }
-    
+
     /**
      * Api rules.
      *
@@ -411,20 +412,18 @@ class CustomerGroup extends Model
 
         return $rules;
     }
-    
+
     /**
      * Update options from request.
-     *
-     * @return void
      */
     public function updateOptions($options)
     {
         if (is_array($options)) {
             $defaul_options = self::defaultOptions();
             $saved_options = $options;
-            foreach($defaul_options as $x => $group) {
-                foreach($group as $y => $option) {
-                    if(isset($saved_options[$x]) && isset($saved_options[$x][$y])) {
+            foreach ($defaul_options as $x => $group) {
+                foreach ($group as $y => $option) {
+                    if (isset($saved_options[$x]) && isset($saved_options[$x][$y])) {
                         $defaul_options[$x][$y] = $saved_options[$x][$y];
                     }
                 }

@@ -23,9 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Foundation\Bus\DispatchesJobs;
 use DB;
-use Acelle\Model\Job;
 
 class SystemJob extends Model
 {
@@ -42,7 +40,7 @@ class SystemJob extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'status'
+        'name', 'status',
     ];
 
     /**
@@ -50,7 +48,8 @@ class SystemJob extends Model
      *
      * @var array
      */
-    public function setStarted() {
+    public function setStarted()
+    {
         $this->status = self::STATUS_RUNNING;
         $this->start_at = \Carbon\Carbon::now();
         $this->save();
@@ -61,7 +60,8 @@ class SystemJob extends Model
      *
      * @var array
      */
-    public function setDone() {
+    public function setDone()
+    {
         $this->status = self::STATUS_DONE;
         $this->end_at = \Carbon\Carbon::now();
         $this->save();
@@ -72,18 +72,20 @@ class SystemJob extends Model
      *
      * @var array
      */
-    public function setFailed() {
+    public function setFailed()
+    {
         $this->status = self::STATUS_FAILED;
         $this->end_at = \Carbon\Carbon::now();
         $this->save();
     }
 
     /**
-     * Set job status as cancelled
+     * Set job status as cancelled.
      *
      * @var array
      */
-    public function setCancelled() {
+    public function setCancelled()
+    {
         $this->status = self::STATUS_CANCELLED;
         $this->end_at = \Carbon\Carbon::now();
         $this->save();
@@ -96,21 +98,21 @@ class SystemJob extends Model
      */
     public function runTime()
     {
-        return gmdate("H:i:s", -$this->updated_at->diffInSeconds($this->created_at, false));
+        return gmdate('H:i:s', -$this->updated_at->diffInSeconds($this->created_at, false));
     }
 
     /**
-     * Stop the job as well as delete the Job records
+     * Stop the job as well as delete the Job records.
      *
      * @return collect
      */
     public function clear()
     {
         // delete all system_jobs & jobs
-        DB::transaction(function() {
+        DB::transaction(function () {
             // delete jobs
             $jobs = Job::where('reserved', 0)->get();
-            foreach($jobs as $job) {
+            foreach ($jobs as $job) {
                 $json = json_decode($job->payload, true);
                 try {
                     $j = unserialize($json['data']['command']);
@@ -129,17 +131,17 @@ class SystemJob extends Model
     }
 
     /**
-     * Delete the all (Laravel) job records which have not been reserved
+     * Delete the all (Laravel) job records which have not been reserved.
      *
      * @return collect
      */
     public function clearJobs()
     {
         // delete all system_jobs & jobs
-        DB::transaction(function() {
+        DB::transaction(function () {
             // delete jobs
             $jobs = Job::where('reserved', 0)->get();
-            foreach($jobs as $job) {
+            foreach ($jobs as $job) {
                 $json = json_decode($job->payload, true);
                 try {
                     $j = unserialize($json['data']['command']);
@@ -155,49 +157,51 @@ class SystemJob extends Model
     }
 
     /**
-     * Check if system job is cancelled
+     * Check if system job is cancelled.
      *
-     * @return boolean
+     * @return bool
      */
-    function isCancelled()
+    public function isCancelled()
     {
-        return $this->status == SystemJob::STATUS_CANCELLED;
+        return $this->status == self::STATUS_CANCELLED;
     }
 
     /**
-     * Check if system job is new
+     * Check if system job is new.
      *
-     * @return boolean
+     * @return bool
      */
-    function isNew()
+    public function isNew()
     {
-        return $this->status == SystemJob::STATUS_NEW;
+        return $this->status == self::STATUS_NEW;
     }
 
     /**
-     * Check if system job is failed
+     * Check if system job is failed.
      *
-     * @return boolean
+     * @return bool
      */
-    function isFailed()
+    public function isFailed()
     {
-        return $this->status == SystemJob::STATUS_FAILED;
+        return $this->status == self::STATUS_FAILED;
     }
 
     /**
-     * Check if system job is new
+     * Check if system job is new.
      *
-     * @return boolean
+     * @return bool
+     *
      * @todo this method is for the two classes ImportSubscribersJob/ExportSubscribersJob only
      */
-    function isRunning()
+    public function isRunning()
     {
         $data = json_decode($this->data);
+
         return !(in_array($data->status, ['failed', 'done']) || $this->status == \Acelle\Model\SystemJob::STATUS_CANCELLED);
     }
 
     /**
-     * Get new pending jobs
+     * Get new pending jobs.
      *
      * @return collection
      */
@@ -207,13 +211,14 @@ class SystemJob extends Model
     }
 
     /**
-     * Get value from data
+     * Get value from data.
      *
      * @return value
      */
-    function getData($name)
+    public function getData($name)
     {
         $data = json_decode($this->data, true);
-        return isset($data[$name]) ? $data[$name] : NULL;
+
+        return isset($data[$name]) ? $data[$name] : null;
     }
 }

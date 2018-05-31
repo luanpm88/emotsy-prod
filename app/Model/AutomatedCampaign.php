@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Automated Campaign Class
+ * Automated Campaign Class.
  *
  * Model class for automated campaigns.
  *
@@ -23,12 +23,9 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
-use Acelle\Model\Campaign;
 use Acelle\Jobs\RunAutomatedCampaignJob;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
-use Acelle\Model\Subscriber;
 
 class AutomatedCampaign extends AbsCampaign
 {
@@ -36,19 +33,19 @@ class AutomatedCampaign extends AbsCampaign
     protected $trigger = null;
 
     /**
-     * Start the auto campaign
-     *
+     * Start the auto campaign.
      */
-    public function start($trigger = null, $subscribers = null) {
+    public function start($trigger = null, $subscribers = null)
+    {
         if (is_null($trigger)) {
-            throw new \Exception("Trigger must not be null for Automated Campaign");
+            throw new \Exception('Trigger must not be null for Automated Campaign');
         }
 
         // set the trigger
         $this->trigger = $trigger;
 
         try {
-            MailLog::info('Start auto campaign `'.$this->name.'`, trigger ID: ' . $this->trigger->id);
+            MailLog::info('Start auto campaign `'.$this->name.'`, trigger ID: '.$this->trigger->id);
 
             // Reset max_execution_time so that command can run for a long time without being terminated
             self::resetMaxExecutionTime();
@@ -159,7 +156,7 @@ class AutomatedCampaign extends AbsCampaign
         );
 
         // UPDATE_PROFILE_URL
-        if(!$this->isStdClassSubscriber($subscriber)) {
+        if (!$this->isStdClassSubscriber($subscriber)) {
             // in case of actually sending campaign
             $tags['UPDATE_PROFILE_URL'] = str_replace('LIST_UID', $this->trigger->autoEvent->automation->defaultMailList->uid,
                 str_replace('SUBSCRIBER_UID', $subscriber->uid,
@@ -186,14 +183,13 @@ class AutomatedCampaign extends AbsCampaign
     }
 
     /**
-     * Queue campaign for sending
-     *
+     * Queue campaign for sending.
      */
     public function queue($subscribers = null, $trigger = null, $delay = 0)
     {
         // @note only set the trigger when start()
         // since campaign can be started without queue()
-        MailLog::info(sprintf('Automated campaign `%s` (ID: %s) queued, trigger ID: %s', $this->name, $this->id, $trigger->id ));
+        MailLog::info(sprintf('Automated campaign `%s` (ID: %s) queued, trigger ID: %s', $this->name, $this->id, $trigger->id));
         $job = ((new RunAutomatedCampaignJob($this, $trigger, $subscribers))->delay($delay));
         dispatch($job);
     }

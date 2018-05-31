@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Model\Subscriber;
 
 class Blacklist extends Model
 {
@@ -39,7 +38,7 @@ class Blacklist extends Model
      * @var array
      */
     protected $fillable = [
-        'email', 'reason'
+        'email', 'reason',
     ];
 
     /**
@@ -69,7 +68,7 @@ class Blacklist extends Model
     }
 
     /**
-     * Blacklist all subscribers of the same email address
+     * Blacklist all subscribers of the same email address.
      *
      * @return collect
      */
@@ -147,7 +146,7 @@ class Blacklist extends Model
      *
      * @return collect
      */
-    public static function import($file, $system_job, $customer=null, $admin=null)
+    public static function import($file, $system_job, $customer = null, $admin = null)
     {
         try {
             $content = \File::get($file);
@@ -161,7 +160,7 @@ class Blacklist extends Model
             ]);
 
             // update status, line count
-            $system_job->updateStatus([ 'total' => $total ]);
+            $system_job->updateStatus(['total' => $total]);
 
             // demo process
             $success = 0;
@@ -169,12 +168,12 @@ class Blacklist extends Model
                 $email = trim(strtolower($line));
 
                 // update status, finish one batch
-                $system_job->updateStatus([ 'processed' => $number+1 ]);
+                $system_job->updateStatus(['processed' => $number + 1]);
 
                 // Add to blacklist
                 if (\Acelle\Library\Tool::isValidEmail($email)) {
-                    $success++;
-                    $system_job->updateStatus([ 'success' => $success ]);
+                    ++$success;
+                    $system_job->updateStatus(['success' => $success]);
 
                     // Add to blacklist
                     if (isset($customer)) {
@@ -189,8 +188,7 @@ class Blacklist extends Model
             self::doBlacklist($customer);
 
             // Update status, finish all batches
-            $system_job->updateStatus([ 'status' => self::IMPORT_STATUS_DONE ]);
-
+            $system_job->updateStatus(['status' => self::IMPORT_STATUS_DONE]);
         } catch (\Exception $e) {
             // update job status
             $system_job->updateStatus([

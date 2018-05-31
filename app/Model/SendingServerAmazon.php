@@ -50,7 +50,7 @@ class SendingServerAmazon extends SendingServer
                     'secret' => trim($this->aws_secret_access_key),
                 ),
                 'region' => $this->aws_region,
-                'version' => '2010-03-31'
+                'version' => '2010-03-31',
             ));
         }
 
@@ -71,9 +71,10 @@ class SendingServerAmazon extends SendingServer
                     'secret' => trim($this->aws_secret_access_key),
                 ),
                 'region' => $this->aws_region,
-                'version' => '2010-12-01'
+                'version' => '2010-12-01',
             ));
         }
+
         return self::$sesClient;
     }
 
@@ -136,9 +137,9 @@ class SendingServerAmazon extends SendingServer
 
         self::$isSnsSetup = true;
     }
-    
+
     /**
-     * Setup SNS, make sure the request limit (in case of multi-process) is less than 1 request / second
+     * Setup SNS, make sure the request limit (in case of multi-process) is less than 1 request / second.
      *
      * @return mixed
      */
@@ -147,9 +148,9 @@ class SendingServerAmazon extends SendingServer
         if (self::$isSnsSetup) {
             return true;
         }
-        
-        $lock = new Lockable(storage_path('locks/sending-server-sns-' . $this->uid));
-        $lock->getExclusiveLock(function() use ($message) {
+
+        $lock = new Lockable(storage_path('locks/sending-server-sns-'.$this->uid));
+        $lock->getExclusiveLock(function () use ($message) {
             $this->setupSns($message);
             sleep(1); // SNS request rate limit
         });

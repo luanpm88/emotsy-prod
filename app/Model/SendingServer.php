@@ -23,7 +23,6 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Acelle\Library\RouletteWheel;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\QuotaTrackerFile;
 use Carbon\Carbon;
@@ -44,12 +43,11 @@ class SendingServer extends Model
      *
      * @var array
      * @note important! consider updating the $fillable variable, it will affect some other methods
-     *
      */
     protected $fillable = [
         'name', 'type', 'host', 'aws_access_key_id', 'aws_secret_access_key', 'aws_region', 'domain', 'api_key', 'api_secret_key', 'smtp_username',
         'smtp_password', 'smtp_port', 'smtp_protocol', 'quota_value', 'sendmail_path', 'quota_base', 'quota_unit',
-        'bounce_handler_id', 'feedback_loop_handler_id', 'status'
+        'bounce_handler_id', 'feedback_loop_handler_id', 'status',
     ];
 
     // Supported server types
@@ -88,9 +86,10 @@ class SendingServer extends Model
     }
 
     /**
-     * Map a server to its class type and retrive an instance from the database
+     * Map a server to its class type and retrive an instance from the database.
      *
      * @return mixed
+     *
      * @param campaign
      */
     public static function mapServerType($server)
@@ -139,7 +138,7 @@ class SendingServer extends Model
             }
         }
 
-        return null;
+        return;
     }
 
     /**
@@ -197,16 +196,16 @@ class SendingServer extends Model
         }
 
         // Other filter
-        if(!empty($request->customer_id)) {
+        if (!empty($request->customer_id)) {
             $query = $query->where('sending_servers.customer_id', '=', $request->customer_id);
         }
 
-        if(!empty($request->admin_id)) {
+        if (!empty($request->admin_id)) {
             $query = $query->where('sending_servers.admin_id', '=', $request->admin_id);
         }
 
         // remove customer sending servers
-        if(!empty($request->no_customer)) {
+        if (!empty($request->no_customer)) {
             $query = $query->whereNull('customer_id');
         }
 
@@ -222,7 +221,7 @@ class SendingServer extends Model
     {
         $query = self::filter($request);
 
-        if(!empty($request->sort_order)) {
+        if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
@@ -428,6 +427,7 @@ class SendingServer extends Model
     public function getSendingQuotaUsage()
     {
         $tracker = $this->getQuotaTracker();
+
         return $tracker->getUsage();
     }
 
@@ -456,6 +456,7 @@ class SendingServer extends Model
         if ($this->quota_value == -1) {
             return trans('messages.unlimited');
         }
+
         return $this->quota_value.' / '.$this->quota_base.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
     }
 
@@ -479,34 +480,35 @@ class SendingServer extends Model
     }
 
     /**
-     * Disable sending server
+     * Disable sending server.
      *
      * @return array
      */
     public function disable()
     {
-        $this->status = "inactive";
+        $this->status = 'inactive';
         $this->save();
     }
 
     /**
-     * Enable sending server
+     * Enable sending server.
      *
      * @return array
      */
     public function enable()
     {
-        $this->status = "active";
+        $this->status = 'active';
         $this->save();
     }
 
     /**
-     * Get sending server's QuotaTracker
+     * Get sending server's QuotaTracker.
      *
      * @return array
      */
-    public function getQuotaTracker() {
-        if(!$this->quotaTracker) {
+    public function getQuotaTracker()
+    {
+        if (!$this->quotaTracker) {
             $this->initQuotaTracker();
         }
 
@@ -514,11 +516,10 @@ class SendingServer extends Model
     }
 
     /**
-     * Initialize the quota tracker
-     *
-     * @return void
+     * Initialize the quota tracker.
      */
-    public function initQuotaTracker() {
+    public function initQuotaTracker()
+    {
         $this->quotaTracker = new QuotaTrackerFile($this->getSendingQuotaLockFile(), ['start' => $this->created_at->timestamp, 'max' => -1], [$this->getQuotaIntervalString() => $this->getSendingQuota()]);
         $this->quotaTracker->cleanupSeries();
         // @note: in case of multi-process, the following command must be issued manually
@@ -526,47 +527,46 @@ class SendingServer extends Model
     }
 
     /**
-     * Clean up the quota tracking files to prevent it from growing too large
-     *
-     * @return void
+     * Clean up the quota tracking files to prevent it from growing too large.
      */
-    function cleanupQuotaTracker()
+    public function cleanupQuotaTracker()
     {
         // @todo: hard-coded for 1 month
         $this->getQuotaTracker()->cleanupSeries(null, '1 month');
     }
 
     /**
-     * Get sending quota lock file
+     * Get sending quota lock file.
      *
      * @return string file path
      */
-    public function getSendingQuotaLockFile() {
+    public function getSendingQuotaLockFile()
+    {
         return storage_path("app/server/quota/{$this->uid}");
     }
 
     /**
-     * Get quota starting time
+     * Get quota starting time.
      *
      * @return string
      */
-    public function getQuotaIntervalString() {
+    public function getQuotaIntervalString()
+    {
         return "{$this->quota_base} {$this->quota_unit}";
     }
 
     /**
-     * Get quota starting time
+     * Get quota starting time.
      *
      * @return array
      */
-    public function getQuotaStartingTime() {
+    public function getQuotaStartingTime()
+    {
         return "{$this->getQuotaIntervalString()} ago";
     }
 
     /**
-     * Increment quota usage
-     *
-     * @return void
+     * Increment quota usage.
      */
     public function countUsage(Carbon $timePoint = null)
     {
@@ -584,13 +584,13 @@ class SendingServer extends Model
     }
 
     /**
-     * Check if sending server supports custom ReturnPath header (used for bounced/feedback handling)
+     * Check if sending server supports custom ReturnPath header (used for bounced/feedback handling).
      *
-     * @return boolean
+     * @return bool
      */
     public function allowCustomReturnPath()
     {
-        return ( $this->type == 'smtp' || $this->type == 'sendmail' || $this->type == 'php-mail' );
+        return  $this->type == 'smtp' || $this->type == 'sendmail' || $this->type == 'php-mail';
     }
 
     /**
@@ -600,7 +600,7 @@ class SendingServer extends Model
      */
     public static function getAllActive()
     {
-        return self::where('status', '=', SendingServer::STATUS_ACTIVE);
+        return self::where('status', '=', self::STATUS_ACTIVE);
     }
 
     /**
@@ -634,18 +634,18 @@ class SendingServer extends Model
     }
 
     /**
-     * Send a test email for the sending server
+     * Send a test email for the sending server.
      */
     public function sendTestEmail($params)
     {
-        /**
+        /*
          * Required keys include
          *     + from_email
          *     + to_email
          *     + subject
          *     + plain
          */
-        MailLog::info(sprintf("Sending test email to %s for sending server `%s`", $params['to_email'], $this->name));
+        MailLog::info(sprintf('Sending test email to %s for sending server `%s`', $params['to_email'], $this->name));
         $message = \Swift_Message::newInstance();
         $msgId = StringHelper::generateMessageId(StringHelper::getDomainFromEmail($params['from_email']));
         $message->setId($msgId);
@@ -667,17 +667,17 @@ class SendingServer extends Model
     }
 
     /**
-     * Check if the sending server is ElasticEmailAPI or ElasticEmailSmtp
+     * Check if the sending server is ElasticEmailAPI or ElasticEmailSmtp.
      *
-     * @return boolean
+     * @return bool
      */
     public function isElasticEmailServer()
     {
-        return ($this->type == 'elasticemail-api' || $this->type == 'elasticemail-smtp');
+        return $this->type == 'elasticemail-api' || $this->type == 'elasticemail-smtp';
     }
 
     /**
-     * Get all sub-account supported sending server types
+     * Get all sub-account supported sending server types.
      *
      * @return array
      */
@@ -685,7 +685,7 @@ class SendingServer extends Model
     {
         return [
             'sendgrid-api',
-            'sendgrid-smtp'
+            'sendgrid-smtp',
         ];
     }
 

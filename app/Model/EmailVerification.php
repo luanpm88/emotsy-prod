@@ -12,9 +12,9 @@ class EmailVerification extends Model
     const RESULT_RISKY = 'risky';
 
     /**
-     * Check if the email address is deliverable
+     * Check if the email address is deliverable.
      *
-     * @return boolean
+     * @return bool
      */
     public function isDeliverable()
     {
@@ -22,9 +22,9 @@ class EmailVerification extends Model
     }
 
     /**
-     * Check if the email address is undeliverable
+     * Check if the email address is undeliverable.
      *
-     * @return boolean
+     * @return bool
      */
     public function isUndeliverable()
     {
@@ -32,9 +32,9 @@ class EmailVerification extends Model
     }
 
     /**
-     * Check if the email address is risky
+     * Check if the email address is risky.
      *
-     * @return boolean
+     * @return bool
      */
     public function isRisky()
     {
@@ -42,9 +42,9 @@ class EmailVerification extends Model
     }
 
     /**
-     * Check if the email address is unknown
+     * Check if the email address is unknown.
      *
-     * @return boolean
+     * @return bool
      */
     public function isUnknown()
     {
@@ -59,10 +59,10 @@ class EmailVerification extends Model
     public static function resultSelectOptions()
     {
         return [
-            ['value' => self::RESULT_DELIVERABLE, 'text' => trans('messages.email_verification_result_' . self::RESULT_DELIVERABLE)],
-			['value' => self::RESULT_UNDELIVERABLE, 'text' => trans('messages.email_verification_result_' . self::RESULT_UNDELIVERABLE)],
-			['value' => self::RESULT_UNKNOWN, 'text' => trans('messages.email_verification_result_' . self::RESULT_UNKNOWN)],
-            ['value' => self::RESULT_RISKY, 'text' => trans('messages.email_verification_result_' . self::RESULT_RISKY)],
+            ['value' => self::RESULT_DELIVERABLE, 'text' => trans('messages.email_verification_result_'.self::RESULT_DELIVERABLE)],
+            ['value' => self::RESULT_UNDELIVERABLE, 'text' => trans('messages.email_verification_result_'.self::RESULT_UNDELIVERABLE)],
+            ['value' => self::RESULT_UNKNOWN, 'text' => trans('messages.email_verification_result_'.self::RESULT_UNKNOWN)],
+            ['value' => self::RESULT_RISKY, 'text' => trans('messages.email_verification_result_'.self::RESULT_RISKY)],
         ];
     }
 }

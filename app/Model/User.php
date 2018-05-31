@@ -24,9 +24,6 @@ namespace Acelle\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
-use Carbon\Carbon;
-use Acelle\Library\Log as MailLog;
-
 class User extends Authenticatable
 {
     /**
@@ -35,7 +32,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email'
+        'email',
     ];
 
     /**
@@ -97,7 +94,8 @@ class User extends Authenticatable
      *
      * @return string
      */
-    public function sendActivationMail($name=null, $redirect_url=null) {
+    public function sendActivationMail($name = null, $redirect_url = null)
+    {
         $layout = \Acelle\Model\Layout::where('alias', 'registration_confirmation_email')->first();
         $token = $this->getToken();
         $redirect_url = urlencode($redirect_url);
@@ -106,7 +104,7 @@ class User extends Authenticatable
         $layout->content = str_replace('{CUSTOMER_NAME}', $name, $layout->content);
 
         \Mail::send('users.registration_confirmation_email', ['content' => $layout->content], function ($m) use ($layout) {
-            $m->from(config("mail.from")["address"], config("mail.from")["name"]);
+            $m->from(config('mail.from')['address'], config('mail.from')['name']);
             $m->to($this->email, trans('messages.to_email_name'))->subject($layout->subject);
         });
     }
@@ -146,7 +144,7 @@ class User extends Authenticatable
     /**
      * Set user is activated.
      *
-     * @return boolean
+     * @return bool
      */
     public function setActivated()
     {
@@ -189,12 +187,12 @@ class User extends Authenticatable
     }
 
     /**
-     * Get storage path
+     * Get storage path.
      *
      * @return string
      */
     public function storagePath()
     {
-        return base_path('public/source/' . $this->uid . "/");
+        return base_path('public/source/'.$this->uid.'/');
     }
 }

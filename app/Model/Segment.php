@@ -105,7 +105,7 @@ class Segment extends Model
     {
         $user = $request->user();
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
-        $query = self::select('segments.*')->where("segments.mail_list_id", "=", $list->id);
+        $query = self::select('segments.*')->where('segments.mail_list_id', '=', $list->id);
 
         // Keyword
         if (!empty(trim($request->keyword))) {
@@ -174,7 +174,7 @@ class Segment extends Model
     {
         return [
             ['text' => trans('messages.equal'), 'value' => 'verification_equal'],
-            ['text' => trans('messages.not_equal'), 'value' => 'verification_not_equal']
+            ['text' => trans('messages.not_equal'), 'value' => 'verification_not_equal'],
         ];
     }
 
@@ -245,8 +245,8 @@ class Segment extends Model
                     'table' => \DB::raw(\DB::getTablePrefix().'subscriber_fields as sf'.$number),
                     'ons' => [
                         [\DB::raw('sf'.$number.'.subscriber_id'), \DB::raw(\DB::getTablePrefix().'subscribers.id')],
-                        [\DB::raw('sf'.$number.'.field_id'), \DB::raw($condition->field_id)]
-                    ]
+                        [\DB::raw('sf'.$number.'.field_id'), \DB::raw($condition->field_id)],
+                    ],
                 ];
 
                 // add condition
@@ -255,11 +255,11 @@ class Segment extends Model
                 switch ($condition->operator) {
                     case 'verification_equal':
                         // add condition
-                        $conditions[] = "(".\DB::getTablePrefix()."email_verifications.result = '".$condition->value."')";
+                        $conditions[] = '('.\DB::getTablePrefix()."email_verifications.result = '".$condition->value."')";
                         break;
                     case 'verification_not_equal':
                         // add condition
-                        $conditions[] = "(".\DB::getTablePrefix()."email_verifications.result IS NULL OR ".\DB::getTablePrefix()."email_verifications.result != '".$condition->value."')";
+                        $conditions[] = '('.\DB::getTablePrefix().'email_verifications.result IS NULL OR '.\DB::getTablePrefix()."email_verifications.result != '".$condition->value."')";
                         break;
                     default:
                 }
@@ -274,8 +274,8 @@ class Segment extends Model
         }
 
         return [
-            "joins" => $joins,
-            "conditions" => $conditions
+            'joins' => $joins,
+            'conditions' => $conditions,
         ];
     }
 
@@ -294,8 +294,7 @@ class Segment extends Model
         // JOINS...
         if (!empty($conditions['joins'])) {
             foreach ($conditions['joins'] as $joining) {
-                $query = $query->leftJoin($joining['table'], function($join) use ($joining)
-                {
+                $query = $query->leftJoin($joining['table'], function ($join) use ($joining) {
                     $join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
                     if (isset($joining['ons'][1])) {
                         $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
@@ -350,13 +349,12 @@ class Segment extends Model
         if ($cache) {
             return $this->readCache('SubscriberCount');
         }
+
         return distinctCount($this->subscribers());
     }
 
     /**
-     * Update segment cached data
-     *
-     * @return void
+     * Update segment cached data.
      */
     public function updateCacheDelayed()
     {
@@ -379,17 +377,15 @@ class Segment extends Model
     }
 
     /**
-     * Update segment cached data
-     *
-     * @return void
+     * Update segment cached data.
      */
     public function updateCache($key = null)
     {
         // cache indexes
         $index = [
-            'SubscriberCount' => function(&$segment) {
+            'SubscriberCount' => function (&$segment) {
                 return $segment->subscribersCount(false);
-            }
+            },
         ];
 
         // retrieve cached data
@@ -400,7 +396,7 @@ class Segment extends Model
 
         if (is_null($key)) {
             // update all cache
-            foreach($index as $key => $callback) {
+            foreach ($index as $key => $callback) {
                 $cache[$key] = $callback($this);
             }
         } else {
@@ -415,7 +411,7 @@ class Segment extends Model
     }
 
     /**
-     * Retrieve Campaign cached data
+     * Retrieve Campaign cached data.
      *
      * @return mixed
      */

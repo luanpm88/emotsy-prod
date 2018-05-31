@@ -45,11 +45,11 @@ class Automation extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'mail_list_id', 'segment_id'
+        'name', 'mail_list_id', 'segment_id',
     ];
 
     /**
-     * has_many association with mailList through automations_lists_segments
+     * has_many association with mailList through automations_lists_segments.
      */
     public function mailLists()
     {
@@ -57,9 +57,9 @@ class Automation extends Model
     }
 
     /**
-     * Check if automation is active
+     * Check if automation is active.
      *
-     * @return boolean active or not
+     * @return bool active or not
      */
     public function isActive()
     {
@@ -67,9 +67,7 @@ class Automation extends Model
     }
 
     /**
-     * Monitor and trigger automation events
-     *
-     * @return null
+     * Monitor and trigger automation events.
      */
     public static function run()
     {
@@ -87,9 +85,9 @@ class Automation extends Model
     }
 
     /**
-     * Check if automation is active
+     * Check if automation is active.
      *
-     * @return boolean active or not
+     * @return bool active or not
      */
     public function start()
     {
@@ -141,7 +139,7 @@ class Automation extends Model
         return $this->hasMany('Acelle\Model\AutoEvent');
     }
 
-    public function getCampaigns($request=NULL)
+    public function getCampaigns($request = null)
     {
         $query = Campaign::select('campaigns.*')
             ->leftJoin('auto_campaigns', 'auto_campaigns.campaign_id', '=', 'campaigns.id')
@@ -150,7 +148,7 @@ class Automation extends Model
             ->where('automations.id', '=', $this->id);
 
         // Keyword
-        if(isset($request)) {
+        if (isset($request)) {
             if (!empty(trim($request->keyword))) {
                 $query = $query->where('campaigns.name', 'like', '%'.$request->keyword.'%');
             }
@@ -172,7 +170,7 @@ class Automation extends Model
             'init' => [
                 'name' => 'required',
                 'mail_list_uid' => 'required',
-            ]
+            ],
         ];
     }
 
@@ -196,14 +194,14 @@ class Automation extends Model
         $this->fill($params);
 
         // Fill mail list with mail_list_uid
-        if(!empty($params["mail_list_uid"])) {
-            $this->mail_list_id = MailList::findByUid($params["mail_list_uid"])->id;
+        if (!empty($params['mail_list_uid'])) {
+            $this->mail_list_id = MailList::findByUid($params['mail_list_uid'])->id;
         }
 
         // Fill segment with segment_uid
-        if(!empty($params["segment_uid"])) {
-            $this->segment_id = Segment::findByUid($params["segment_uid"])->id;
-        } elseif(!empty($params)) {
+        if (!empty($params['segment_uid'])) {
+            $this->segment_id = Segment::findByUid($params['segment_uid'])->id;
+        } elseif (!empty($params)) {
             $this->segment_id = null;
         }
     }
@@ -215,11 +213,11 @@ class Automation extends Model
      */
     public function getInitEvent()
     {
-        $auto_event = $this->autoEvents()->where('previous_event_id', '=', NULL)
+        $auto_event = $this->autoEvents()->where('previous_event_id', '=', null)
             ->orderBy('created_at', 'ASC')
             ->first();
 
-        if(!is_object($auto_event)) {
+        if (!is_object($auto_event)) {
             $auto_event = new AutoEvent([
                 'event_type' => AutoEvent::TYPE_SPECIFIC_DATETIME,
             ]);
@@ -236,13 +234,13 @@ class Automation extends Model
      *
      * @var AutoEvent
      */
-    public function getFollowUpEvents($show_inactive=true)
+    public function getFollowUpEvents($show_inactive = true)
     {
         $events = collect();
         $event = $this->getInitEvent();
-        while(is_object($event->nextEvent)) {
+        while (is_object($event->nextEvent)) {
             $event = $event->nextEvent;
-            if($show_inactive || $event->status != AutoEvent::STATUS_INACTIVE) {
+            if ($show_inactive || $event->status != AutoEvent::STATUS_INACTIVE) {
                 $events->push($event);
             }
         }
@@ -303,30 +301,29 @@ class Automation extends Model
      *
      * @return collect
      */
-    public function subscribers($params=[])
+    public function subscribers($params = [])
     {
-        if($this->listsSegments->isEmpty()) {
+        if ($this->listsSegments->isEmpty()) {
             // this is a trick for returning an empty builder
             return Subscriber::limit(0);
         }
 
-        $query = Subscriber::select("subscribers.*");
+        $query = Subscriber::select('subscribers.*');
         $query->where('subscribers.status', \Acelle\Model\Subscriber::STATUS_SUBSCRIBED);
-        
+
         // Email verification join
         $query = $query->leftJoin('email_verifications', 'email_verifications.subscriber_id', '=', 'subscribers.id');
 
         // Get subscriber from mailist and segment
         $conditions = [];
-        foreach($this->listsSegments as $lists_segment) {
-            if(!empty($lists_segment->segment_id)) {
+        foreach ($this->listsSegments as $lists_segment) {
+            if (!empty($lists_segment->segment_id)) {
                 $conds = $lists_segment->segment->getSubscribersConditions();
 
                 // JOINS...
                 if (!empty($conds['joins'])) {
                     foreach ($conds['joins'] as $joining) {
-                        $query = $query->leftJoin($joining['table'], function($join) use ($joining)
-                        {
+                        $query = $query->leftJoin($joining['table'], function ($join) use ($joining) {
                             $join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
                             if (isset($joining['ons'][1])) {
                                 $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
@@ -340,7 +337,7 @@ class Automation extends Model
                     $conditions[] = $conds['conditions'];
                 }
             } else {
-                $conditions[] = '(' . table('subscribers') . '.mail_list_id = ' . $lists_segment->mail_list_id . ')';
+                $conditions[] = '('.table('subscribers').'.mail_list_id = '.$lists_segment->mail_list_id.')';
             }
         }
 
@@ -359,7 +356,7 @@ class Automation extends Model
     public function createAutoEvent()
     {
         $event = new AutoEvent([
-            'event_type' => AutoEvent::TYPE_FOLLOW_UP
+            'event_type' => AutoEvent::TYPE_FOLLOW_UP,
         ]);
         $event->status = AutoEvent::STATUS_DRAFT;
 
@@ -384,7 +381,7 @@ class Automation extends Model
     {
         // remove contraints for deleting auto events
         $this->autoEvents()->update([
-            'previous_event_id' => NULL
+            'previous_event_id' => null,
         ]);
 
         // Delete automation
@@ -400,13 +397,13 @@ class Automation extends Model
     {
         // check first auto event isset
         $first_event = $this->getInitEvent();
-        if(!isset($first_event->id)) { //  ||
+        if (!isset($first_event->id)) { //  ||
             return false;
         }
 
         // check each auto events is valid
-        foreach($this->autoEvents as $auto_event) {
-            if(!$auto_event->isValid()) {
+        foreach ($this->autoEvents as $auto_event) {
+            if (!$auto_event->isValid()) {
                 return false;
             }
         }
@@ -416,16 +413,14 @@ class Automation extends Model
 
     /**
      * set automation status to active.
-     *
-     * @return void
      */
     public function setActive()
     {
-        $this->status = Automation::STATUS_ACTIVE;
+        $this->status = self::STATUS_ACTIVE;
 
         // set active for all events if they are draft
-        foreach($this->autoEvents as $auto_event) {
-            if($auto_event->status == AutoEvent::STATUS_DRAFT) {
+        foreach ($this->autoEvents as $auto_event) {
+            if ($auto_event->status == AutoEvent::STATUS_DRAFT) {
                 $auto_event->setActive();
             }
         }
@@ -436,9 +431,9 @@ class Automation extends Model
     /**
      * Create customer action log.
      *
-     * @param string     $cat
-     * @param Customer  $customer
-     * @param array      $add_datas
+     * @param string   $cat
+     * @param Customer $customer
+     * @param array    $add_datas
      */
     public function log($name, $customer, $add_datas = [])
     {
@@ -469,23 +464,19 @@ class Automation extends Model
 
     /**
      * enable automation.
-     *
-     * @return void
      */
     public function enable()
     {
-        $this->status = Automation::STATUS_ACTIVE;
+        $this->status = self::STATUS_ACTIVE;
         $this->save();
     }
 
     /**
      * disable automation.
-     *
-     * @return void
      */
     public function disable()
     {
-        $this->status = Automation::STATUS_INACTIVE;
+        $this->status = self::STATUS_INACTIVE;
         $this->save();
     }
 
@@ -498,7 +489,7 @@ class Automation extends Model
     {
         $lists_segments = $this->listsSegments;
 
-        if($lists_segments->isEmpty()) {
+        if ($lists_segments->isEmpty()) {
             $lists_segment = new AutomationsListsSegment();
             $lists_segment->automation_id = $this->id;
             $lists_segment->is_default = true;
@@ -519,18 +510,18 @@ class Automation extends Model
         $lists_segments = $this->getListsSegments();
         $groups = [];
 
-        foreach($lists_segments as $lists_segment) {
-            if(!isset($groups[$lists_segment->mail_list_id])) {
+        foreach ($lists_segments as $lists_segment) {
+            if (!isset($groups[$lists_segment->mail_list_id])) {
                 $groups[$lists_segment->mail_list_id] = [];
                 $groups[$lists_segment->mail_list_id]['list'] = $lists_segment->mailList;
-                if($this->default_mail_list_id == $lists_segment->mail_list_id) {
+                if ($this->default_mail_list_id == $lists_segment->mail_list_id) {
                     $groups[$lists_segment->mail_list_id]['is_default'] = true;
                 } else {
                     $groups[$lists_segment->mail_list_id]['is_default'] = false;
                 }
                 $groups[$lists_segment->mail_list_id]['segment_uids'] = [];
             }
-            if(is_object($lists_segment->segment) && !in_array($lists_segment->segment->uid, $groups[$lists_segment->mail_list_id]['segment_uids'])) {
+            if (is_object($lists_segment->segment) && !in_array($lists_segment->segment->uid, $groups[$lists_segment->mail_list_id]['segment_uids'])) {
                 $groups[$lists_segment->mail_list_id]['segment_uids'][] = $lists_segment->segment->uid;
             }
         }
@@ -553,25 +544,25 @@ class Automation extends Model
      *
      * @var void
      */
-    public function fillRecipients($params=[])
+    public function fillRecipients($params = [])
     {
-        if(isset($params['lists_segments'])) {
+        if (isset($params['lists_segments'])) {
             foreach ($params['lists_segments'] as $key => $param) {
-                if(!empty($param['mail_list_uid'])) {
+                if (!empty($param['mail_list_uid'])) {
                     $mail_list = MailList::findByUid($param['mail_list_uid']);
 
                     // default mail list id
-                    if(isset($param['is_default']) && $param['is_default'] == 'true') {
+                    if (isset($param['is_default']) && $param['is_default'] == 'true') {
                         $this->default_mail_list_id = $mail_list->id;
                     }
 
-                    if(!empty($param['segment_uids'])) {
+                    if (!empty($param['segment_uids'])) {
                         foreach ($param['segment_uids'] as $segment_uid) {
                             $segment = Segment::findByUid($segment_uid);
 
                             $lists_segment = new AutomationsListsSegment();
                             $lists_segment->automation_id = $this->id;
-                            if(is_object($mail_list)) {
+                            if (is_object($mail_list)) {
                                 $lists_segment->mail_list_id = $mail_list->id;
                             }
                             $lists_segment->segment_id = $segment->id;
@@ -580,7 +571,7 @@ class Automation extends Model
                     } else {
                         $lists_segment = new AutomationsListsSegment();
                         $lists_segment->automation_id = $this->id;
-                        if(is_object($mail_list)) {
+                        if (is_object($mail_list)) {
                             $lists_segment->mail_list_id = $mail_list->id;
                         }
                         $this->listsSegments->push($lists_segment);
@@ -595,7 +586,7 @@ class Automation extends Model
      *
      * @var void
      */
-    public function saveRecipients($params=[])
+    public function saveRecipients($params = [])
     {
         // Empty current data
         $this->listsSegments = collect([]);
@@ -605,9 +596,9 @@ class Automation extends Model
         $lists_segments_groups = $this->getListsSegmentsGroups();
 
         $data = [];
-        foreach($lists_segments_groups as $lists_segments_group) {
-            if(!empty($lists_segments_group['segment_uids'])) {
-                foreach($lists_segments_group['segment_uids'] as $segment_uid) {
+        foreach ($lists_segments_groups as $lists_segments_group) {
+            if (!empty($lists_segments_group['segment_uids'])) {
+                foreach ($lists_segments_group['segment_uids'] as $segment_uid) {
                     $segment = Segment::findByUid($segment_uid);
                     $data[] = [
                         'automation_id' => $this->id,
@@ -619,7 +610,7 @@ class Automation extends Model
                 $data[] = [
                     'automation_id' => $this->id,
                     'mail_list_id' => $lists_segments_group['list']->id,
-                    'segment_id' => NULL,
+                    'segment_id' => null,
                 ];
             }
         }
@@ -631,7 +622,7 @@ class Automation extends Model
         AutomationsListsSegment::insert($data);
 
         // Save campaign with default list id
-        $automation = Automation::find($this->id);
+        $automation = self::find($this->id);
         $automation->default_mail_list_id = $this->default_mail_list_id;
         $automation->save();
     }
@@ -643,24 +634,24 @@ class Automation extends Model
      */
     public function displayRecipients()
     {
-        if(!is_object($this->defaultMailList)) {
-            return "";
+        if (!is_object($this->defaultMailList)) {
+            return '';
         }
 
         $lines = [];
-        foreach($this->getListsSegmentsGroups() as $lists_segments_group) {
+        foreach ($this->getListsSegmentsGroups() as $lists_segments_group) {
             if (is_object($lists_segments_group['list'])) {
                 $list_name = $lists_segments_group['list']->name;
-    
+
                 $segment_names = [];
-                if(!empty($lists_segments_group['segment_uids'])) {
-                    foreach($lists_segments_group['segment_uids'] as $segment_uid) {
+                if (!empty($lists_segments_group['segment_uids'])) {
+                    foreach ($lists_segments_group['segment_uids'] as $segment_uid) {
                         $segment = Segment::findByUid($segment_uid);
                         $segment_names[] = $segment->name;
                     }
                 }
-    
-                if(empty($segment_names)) {
+
+                if (empty($segment_names)) {
                     $lines[] = $list_name;
                 } else {
                     $lines[] = implode(': ', [$list_name, implode(', ', $segment_names)]);
@@ -686,14 +677,14 @@ class Automation extends Model
      *
      * @var array
      */
-    public function recipientsRules($params=[])
+    public function recipientsRules($params = [])
     {
         $rules = [
             'lists_segments' => 'required',
-            'name' => 'required'
+            'name' => 'required',
         ];
 
-        if(isset($params['lists_segments'])) {
+        if (isset($params['lists_segments'])) {
             foreach ($params['lists_segments'] as $key => $param) {
                 $rules['lists_segments.'.$key.'.mail_list_uid'] = 'required';
             }
@@ -715,28 +706,27 @@ class Automation extends Model
     /**
      * Count subscribers.
      *
-     * @return integer
+     * @return int
      */
     public function subscribersCount($cache = false)
     {
         if ($cache) {
             return $this->readCache('SubscriberCount');
         }
+
         return distinctCount($this->subscribers(), 'subscribers.email');
     }
 
     /**
-     * Update Campaign cached data
-     *
-     * @return void
+     * Update Campaign cached data.
      */
     public function updateCache($key = null)
     {
         // cache indexes
         $index = [
-            'SubscriberCount' => function(&$automation) {
+            'SubscriberCount' => function (&$automation) {
                 return $automation->subscribersCount(false);
-            }
+            },
         ];
 
         // retrieve cached data
@@ -747,7 +737,7 @@ class Automation extends Model
 
         if (is_null($key)) {
             // update all cache
-            foreach($index as $key => $callback) {
+            foreach ($index as $key => $callback) {
                 $cache[$key] = $callback($this);
             }
         } else {
@@ -762,7 +752,7 @@ class Automation extends Model
     }
 
     /**
-     * Retrieve Campaign cached data
+     * Retrieve Campaign cached data.
      *
      * @return mixed
      */
@@ -783,9 +773,7 @@ class Automation extends Model
     }
 
     /**
-     * Trigger the AutomationUpdated event to update cached information
-     *
-     * @return void
+     * Trigger the AutomationUpdated event to update cached information.
      */
     public function updateCacheDelayed()
     {

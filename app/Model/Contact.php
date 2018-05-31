@@ -33,7 +33,7 @@ class Contact extends Model
      */
     protected $fillable = [
         'email', 'first_name', 'last_name', 'address_1', 'address_2', 'city', 'zip', 'url', 'company', 'phone', 'state', 'country_id',
-        'tax_number', 'billing_address'
+        'tax_number', 'billing_address',
     ];
 
     /**

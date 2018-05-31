@@ -27,7 +27,6 @@ use Acelle\Library\StringHelper;
 use SendGrid\Mail;
 use SendGrid\Email;
 use SendGrid\Content;
-use Acelle\Model\Campaign;
 
 class SendingServerSendGrid extends SendingServer
 {
@@ -46,13 +45,12 @@ class SendingServerSendGrid extends SendingServer
     {
         if (!self::$client) {
             if (is_null($this->subAccount)) {
-                MailLog::info("Using master account");
+                MailLog::info('Using master account');
                 self::$client = new \SendGrid($this->api_key);
             } else {
                 MailLog::info("Using subaccount {$this->subAccount->getSubAccountUsername()}");
                 self::$client = new \SendGrid($this->subAccount->api_key);
             }
-
         }
 
         return self::$client;
@@ -89,10 +87,10 @@ class SendingServerSendGrid extends SendingServer
             );
             $response = $this->client()->client->user()->webhooks()->event()->settings()->patch($request_body);
 
-            if($response->_status_code == '200') {
+            if ($response->_status_code == '200') {
                 MailLog::info('Webhooks successfully set!');
             } else {
-                throw new \Exception("Cannot setup SendGrid webhooks");
+                throw new \Exception('Cannot setup SendGrid webhooks');
             }
 
             self::$isWebhookSetup = true;
@@ -103,21 +101,22 @@ class SendingServerSendGrid extends SendingServer
 
     /**
      * Get Message Id
-     * Extract the message id from SendGrid response
+     * Extract the message id from SendGrid response.
      *
-     * @return String
+     * @return string
      */
-    public function getMessageId($headers) {
+    public function getMessageId($headers)
+    {
         preg_match('/(?<=X-Message-Id: ).*/', $headers, $matches);
         if (isset($matches[0])) {
             return $matches[0];
         } else {
-            return NULL;
+            return;
         }
     }
 
     /**
-     * Prepare the email object for sending
+     * Prepare the email object for sending.
      *
      * @return mixed
      */
@@ -132,14 +131,14 @@ class SendingServerSendGrid extends SendingServer
         // Following RFC 1341, section 7.2, if either text/html or text/plain are to be sent in your email: text/plain needs to be first
         // So, use array_shift instead of array_pop
         // Also, sort the parts so that text/plain comes before text/html
-        
+
         $parts = $message->getChildren();
-        usort($parts, function($a, $b) { return ($a->getContentType() == 'text/plain') ? -1 : 1; });
-        
+        usort($parts, function ($a, $b) { return ($a->getContentType() == 'text/plain') ? -1 : 1; });
+
         $parts = array_map(function ($part) {
             return new Content($part->getContentType(), $part->getBody());
         }, $parts);
-        
+
         $mail = new Mail(
             new Email($fromName, $fromEmail),
             $message->getSubject(),
@@ -150,32 +149,32 @@ class SendingServerSendGrid extends SendingServer
         // set Reply-To header
         $mail->setReplyTo(['email' => $replyToEmail]);
 
-        foreach($parts as $part) {
+        foreach ($parts as $part) {
             $mail->addContent($part);
         }
 
         $preserved = [
-            "Content-Transfer-Encoding",
-            "Content-Type",
-            "MIME-Version",
-            "Date",
-            "Message-ID",
-            "From",
-            "Subject",
-            "To",
-            "Reply-To",
-            "Subject",
-            "From"
+            'Content-Transfer-Encoding',
+            'Content-Type',
+            'MIME-Version',
+            'Date',
+            'Message-ID',
+            'From',
+            'Subject',
+            'To',
+            'Reply-To',
+            'Subject',
+            'From',
         ];
 
-        foreach($message->getHeaders()->getAll() as $header) {
+        foreach ($message->getHeaders()->getAll() as $header) {
             if (!in_array($header->getFieldName(), $preserved)) {
                 $mail->addHeader($header->getFieldName(), $header->getFieldBody());
             }
         }
 
         // to track bounce/feedback notification
-        $mail->addCustomArg("runtime_message_id", $message->getHeaders()->get('X-Acelle-Message-Id')->getFieldBody());
+        $mail->addCustomArg('runtime_message_id', $message->getHeaders()->get('X-Acelle-Message-Id')->getFieldBody());
 
         return $mail;
     }

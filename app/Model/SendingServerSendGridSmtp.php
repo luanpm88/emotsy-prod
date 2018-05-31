@@ -29,12 +29,13 @@ class SendingServerSendGridSmtp extends SendingServerSendGrid
 {
     protected $table = 'sending_servers';
 
-    /**
-     * Send the provided message.
-     *
-     * @return boolean
-     * @param message
-     */
+/**
+ * Send the provided message.
+ *
+ * @return bool
+ *
+ * @param message
+ */
     // Inherit class to implementation of this method
     public function send($message, $params = array())
     {
@@ -82,7 +83,7 @@ class SendingServerSendGridSmtp extends SendingServerSendGrid
 
                 return $result;
             } else {
-                throw new \Exception("Unknown SMTP error");
+                throw new \Exception('Unknown SMTP error');
             }
         } catch (\Exception $e) {
             MailLog::warning('Sending failed');

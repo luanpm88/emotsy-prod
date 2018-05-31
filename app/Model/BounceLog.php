@@ -50,7 +50,7 @@ class BounceLog extends Model
     }
 
     /**
-     * Find corresponding subscriber by 'runtime_message_id'
+     * Find corresponding subscriber by 'runtime_message_id'.
      *
      * @return mixed
      */
@@ -60,7 +60,7 @@ class BounceLog extends Model
         if ($trackingLog) {
             return $trackingLog->subscriber;
         } else {
-            return NULL;
+            return;
         }
     }
 
@@ -79,7 +79,7 @@ class BounceLog extends Model
         $query = $query->leftJoin('campaigns', 'campaigns.id', '=', 'tracking_logs.campaign_id');
         $query = $query->leftJoin('sending_servers', 'sending_servers.id', '=', 'tracking_logs.sending_server_id');
         $query = $query->leftJoin('customers', 'customers.id', '=', 'tracking_logs.customer_id');
-        $query = $query->where('tracking_logs.id', "!=", NULL);
+        $query = $query->where('tracking_logs.id', '!=', null);
 
         // Keyword
         if (!empty(trim($request->keyword))) {

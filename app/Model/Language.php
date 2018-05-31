@@ -37,7 +37,7 @@ class Language extends Model
     }
 
     /**
-     * Customer association
+     * Customer association.
      *
      * @return mixed
      */
@@ -47,7 +47,7 @@ class Language extends Model
     }
 
     /**
-     * Admin association
+     * Admin association.
      *
      * @return mixed
      */
@@ -63,7 +63,7 @@ class Language extends Model
      */
     public function languageDir()
     {
-        return base_path("resources/lang/" . $this->code . "/");
+        return base_path('resources/lang/'.$this->code.'/');
     }
 
     /**
@@ -73,7 +73,7 @@ class Language extends Model
      */
     public static function getAll()
     {
-        return self::where("status", "=", "active")->get();
+        return self::where('status', '=', 'active')->get();
     }
 
     /**
@@ -184,7 +184,6 @@ class Language extends Model
                 $sou = Language::getDefaultLanguage()->languageDir();
                 \Acelle\Library\Tool::xcopy($sou, $des);
                 umask($oldmask);
-
             }
         });
 
@@ -236,8 +235,8 @@ class Language extends Model
     public static function getDefaultLanguage()
     {
         return new \Acelle\Model\Language([
-            'name' => "Default",
-            'code' => "default",
+            'name' => 'Default',
+            'code' => 'default',
         ]);
     }
 
@@ -248,7 +247,7 @@ class Language extends Model
      */
     public static function getIsDefaultLanguage()
     {
-        return \Acelle\Model\Language::where("is_default", "=", true)->first();
+        return \Acelle\Model\Language::where('is_default', '=', true)->first();
     }
 
     /**
@@ -258,7 +257,8 @@ class Language extends Model
      */
     public function getLocaleArrayFromFile($filename)
     {
-        $arr = \File::getRequire($this->languageDir() . $filename . '.php');
+        $arr = \File::getRequire($this->languageDir().$filename.'.php');
+
         return $arr;
     }
 
@@ -269,7 +269,8 @@ class Language extends Model
      */
     public function readLocaleFile($filename)
     {
-        $text = \File::get($this->languageDir() . $filename . '.php');
+        $text = \File::get($this->languageDir().$filename.'.php');
+
         return $text;
     }
 
@@ -281,6 +282,7 @@ class Language extends Model
     public function localeToYaml($filename)
     {
         $text = $this->readLocaleFile($filename);
+
         return yaml_parse($text);
     }
 
@@ -291,8 +293,8 @@ class Language extends Model
      */
     public function updateFromYaml($filename, $yaml)
     {
-        $content = '<?php return ' . var_export(\Yaml::parse($yaml), true) . ' ?>';
-        $bytes_written = \File::put($this->languageDir() . $filename . ".php", $content);
+        $content = '<?php return '.var_export(\Yaml::parse($yaml), true).' ?>';
+        $bytes_written = \File::put($this->languageDir().$filename.'.php', $content);
     }
 
     /**
@@ -490,10 +492,10 @@ class Language extends Model
         );
 
         $result = [];
-        foreach($arr as $key => $name) {
+        foreach ($arr as $key => $name) {
             $result[] = [
-                'text' => strtoupper($key) . ' / ' . $name,
-                'value' => $key
+                'text' => strtoupper($key).' / '.$name,
+                'value' => $key,
             ];
         }
 
@@ -501,24 +503,24 @@ class Language extends Model
     }
 
     /**
-     * Disable language
+     * Disable language.
      *
      * @return array
      */
     public function disable()
     {
-        $this->status = "inactive";
+        $this->status = 'inactive';
         $this->save();
     }
 
     /**
-     * Enable language
+     * Enable language.
      *
      * @return array
      */
     public function enable()
     {
-        $this->status = "active";
+        $this->status = 'active';
         $this->save();
     }
 }

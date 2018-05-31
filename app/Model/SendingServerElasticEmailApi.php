@@ -23,18 +23,18 @@
 namespace Acelle\Model;
 
 use Acelle\Library\Log as MailLog;
-use Acelle\Library\StringHelper;
 
 class SendingServerElasticEmailApi extends SendingServerElasticEmail
 {
     protected $table = 'sending_servers';
 
-    /**
-     * Send the provided message.
-     *
-     * @return boolean
-     * @param message
-     */
+/**
+ * Send the provided message.
+ *
+ * @return bool
+ *
+ * @param message
+ */
     // Inherit class to implementation of this method
     public function send($message, $params = array())
     {

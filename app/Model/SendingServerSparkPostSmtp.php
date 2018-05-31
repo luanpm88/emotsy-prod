@@ -31,7 +31,8 @@ class SendingServerSparkPostSmtp extends SendingServerSparkPost
     /**
      * Send the provided message.
      *
-     * @return boolean
+     * @return bool
+     *
      * @param message
      */
     public function send($message, $params = [])
@@ -69,7 +70,7 @@ class SendingServerSparkPostSmtp extends SendingServerSparkPost
                 );
             }
         } catch (\Exception $e) {
-            MailLog::warning('Sending failed: ' . $e->getMessage());
+            MailLog::warning('Sending failed: '.$e->getMessage());
 
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,

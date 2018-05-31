@@ -126,7 +126,7 @@ class FeedbackLoopHandler extends DeliveryHandler
             }
         }
 
-        if(!empty($request->admin_id)) {
+        if (!empty($request->admin_id)) {
             $query = $query->where('feedback_loop_handlers.admin_id', '=', $request->admin_id);
         }
 
@@ -142,7 +142,7 @@ class FeedbackLoopHandler extends DeliveryHandler
     {
         $query = self::filter($request);
 
-        if(!empty($request->sort_order)) {
+        if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
@@ -194,7 +194,7 @@ class FeedbackLoopHandler extends DeliveryHandler
      * @var array
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'password', 'protocol', 'email', 'encryption'
+        'name', 'host', 'port', 'username', 'password', 'protocol', 'email', 'encryption',
     ];
 
     /**
@@ -239,7 +239,7 @@ class FeedbackLoopHandler extends DeliveryHandler
     public static function protocolSelectOptions()
     {
         return [
-            ['value' => 'imap', 'text' => 'imap']
+            ['value' => 'imap', 'text' => 'imap'],
         ];
     }
 

@@ -12,7 +12,7 @@ class AdminGroup extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'options', 'permissions'
+        'name', 'options', 'permissions',
     ];
 
     /**
@@ -59,12 +59,12 @@ class AdminGroup extends Model
 
         $options = self::defaultOptions();
         foreach ($options as $type => $option) {
-            $rules['options.' . $type] = 'required';
+            $rules['options.'.$type] = 'required';
         }
 
         $permissions = self::defaultPermissions();
         foreach ($permissions as $type => $value) {
-            $rules['permissions.' . $type] = 'required';
+            $rules['permissions.'.$type] = 'required';
         }
 
         return $rules;
@@ -98,7 +98,6 @@ class AdminGroup extends Model
         if (!empty($request->creator_id)) {
             $query = $query->where('admin_groups.creator_id', '=', $request->creator_id);
         }
-
 
         return $query;
     }
@@ -143,7 +142,7 @@ class AdminGroup extends Model
     {
         $query = self::getAll();
 
-        if ($admin && !$admin->can('readAll', new AdminGroup())) {
+        if ($admin && !$admin->can('readAll', new self())) {
             $query = $query->where('admin_groups.creator_id', '=', $admin->user_id);
         }
 
@@ -809,7 +808,7 @@ class AdminGroup extends Model
                         ['value' => 'yes', 'text' => trans('messages.yes')],
                     ],
                 ],
-            ]
+            ],
         ];
     }
 
@@ -830,6 +829,7 @@ class AdminGroup extends Model
                     $defaul_options[$x] = $saved_options[$x];
                 }
             }
+
             return $defaul_options;
         }
     }
@@ -851,6 +851,7 @@ class AdminGroup extends Model
                     $defaul_permissions[$x] = $saved_permissions[$x];
                 }
             }
+
             return $defaul_permissions;
         }
     }

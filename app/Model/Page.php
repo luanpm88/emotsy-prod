@@ -32,7 +32,7 @@ class Page extends Model
      * @var array
      */
     protected $fillable = [
-        'content', 'subject'
+        'content', 'subject',
     ];
 
     /**

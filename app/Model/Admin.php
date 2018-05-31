@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Admin extends Model
 {
-	const STATUS_ACTIVE = 'active';
+    const STATUS_ACTIVE = 'active';
 
     /**
      * The attributes that are mass assignable.
@@ -34,7 +34,7 @@ class Admin extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'first_name', 'last_name', 'timezone', 'language_id', 'color_scheme'
+        'name', 'first_name', 'last_name', 'timezone', 'language_id', 'color_scheme',
     ];
 
     /**
@@ -53,12 +53,12 @@ class Admin extends Model
         );
 
         if (isset($this->id)) {
-			$rules['password'] = 'confirmed|min:5';
-		} else {
-			$rules['password'] = 'required|confirmed|min:5';
-		}
+            $rules['password'] = 'confirmed|min:5';
+        } else {
+            $rules['password'] = 'required|confirmed|min:5';
+        }
 
-		return $rules;
+        return $rules;
     }
 
     /**
@@ -68,7 +68,7 @@ class Admin extends Model
      */
     public function email()
     {
-        return (is_object($this->user) ? $this->user->email : "" );
+        return is_object($this->user) ? $this->user->email : '';
     }
 
     /**
@@ -214,7 +214,7 @@ class Admin extends Model
      */
     public static function getAll()
     {
-        return Admin::select('*');
+        return self::select('*');
     }
 
     /**
@@ -253,7 +253,7 @@ class Admin extends Model
             }
         }
 
-        if(!empty($request->creator_id)) {
+        if (!empty($request->creator_id)) {
             $query = $query->where('admins.creator_id', '=', $request->creator_id);
         }
 
@@ -269,7 +269,7 @@ class Admin extends Model
     {
         $query = self::filter($request);
 
-        if(!empty($request->sort_order)) {
+        if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
@@ -331,26 +331,28 @@ class Admin extends Model
     /**
      * Disable admin.
      *
-     * @return boolean
+     * @return bool
      */
     public function disable()
     {
         $this->status = 'inactive';
+
         return $this->save();
     }
 
     /**
      * Enable admin.
      *
-     * @return boolean
+     * @return bool
      */
     public function enable()
     {
         $this->status = 'active';
+
         return $this->save();
     }
 
-	/**
+    /**
      * Get recent resellers.
      *
      * @return collect
@@ -359,11 +361,11 @@ class Admin extends Model
     {
         $query = \Acelle\Model\Customer::getAll();
 
-		if (!$this->user->can('readAll', new \Acelle\Model\Customer())) {
+        if (!$this->user->can('readAll', new \Acelle\Model\Customer())) {
             $query = $query->where('customers.admin_id', '=', $this->id);
         }
 
-		return $query;
+        return $query;
     }
 
     /**
@@ -373,7 +375,7 @@ class Admin extends Model
      */
     public function recentCustomers()
     {
-        return $this->getAllCustomers()->orderBy("created_at", "DESC")->limit(5)->get();
+        return $this->getAllCustomers()->orderBy('created_at', 'DESC')->limit(5)->get();
     }
 
     /**
@@ -416,7 +418,7 @@ class Admin extends Model
      *
      * @return collect
      */
-    public function recentSubscriptions($number=5)
+    public function recentSubscriptions($number = 5)
     {
         $query = $this->getAllSubscriptions()
             //->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
@@ -427,40 +429,42 @@ class Admin extends Model
     }
 
     /**
-     * Get admin language code
+     * Get admin language code.
      *
      * @return string
      */
-    public function getLanguageCode() {
-        return (is_object($this->language) ? $this->language->code : null);
+    public function getLanguageCode()
+    {
+        return is_object($this->language) ? $this->language->code : null;
     }
 
     /**
-     * Get admin logs of their customers
+     * Get admin logs of their customers.
      *
      * @return string
      */
-    public function getLogs() {
+    public function getLogs()
+    {
         $query = \Acelle\Model\Log::select('logs.*')->leftJoin('customers', 'customers.id', '=', 'logs.customer_id')
             ->leftJoin('admins', 'admins.id', '=', 'customers.admin_id');
 
         if (!$this->user->can('readAll', new \Acelle\Model\Customer())) {
             $query = $query->where('admins.id', '=', $this->id);
         }
+
         return $query;
     }
 
     /**
-     * Create customer account
-     *
-     * @return void
+     * Create customer account.
      */
-    public function createCustomerAccount($admin) {
+    public function createCustomerAccount($admin)
+    {
         if (!$this->hasCustomerAccount()) {
             // Create customer
             $customer = new \Acelle\Model\Customer();
             $customer->user_id = $this->user_id;
-			$customer->admin_id = $this->id;
+            $customer->admin_id = $this->id;
             $customer->language_id = $this->language_id;
             $customer->first_name = $this->first_name;
             $customer->last_name = $this->last_name;
@@ -479,35 +483,37 @@ class Admin extends Model
 
             $subscription->fillAttributes([]);
 
-			// Start at default
-			$subscription->start_at = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now());
+            // Start at default
+            $subscription->start_at = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now());
 
             $subscription->save();
         }
     }
 
     /**
-     * Check if admin has customer account
+     * Check if admin has customer account.
      *
-     * @return boolean
+     * @return bool
      */
-    public function hasCustomerAccount() {
+    public function hasCustomerAccount()
+    {
         return is_object($this->user) && is_object($this->user->customer);
     }
 
     /**
-     * Check if customer is disabled
+     * Check if customer is disabled.
      *
-     * @return boolean
+     * @return bool
      */
-    public function isActive() {
-		return $this->status == Customer::STATUS_ACTIVE;
-	}
+    public function isActive()
+    {
+        return $this->status == Customer::STATUS_ACTIVE;
+    }
 
     /**
      * Custom can for admin.
      *
-     * @return boolean
+     * @return bool
      */
     public function can($action, $item)
     {
@@ -517,12 +523,12 @@ class Admin extends Model
     /**
      * Destroy admin.
      *
-     * @return boolean
+     * @return bool
      */
     public function deleteRecursive()
     {
         // unset all customers
-        $this->customers()->update(['admin_id' => NULL]);
+        $this->customers()->update(['admin_id' => null]);
 
         // Delete admin and user
         $user = $this->user;
@@ -530,192 +536,192 @@ class Admin extends Model
         $user->delete();
     }
 
-	/**
+    /**
      * Get all subscription count by plan.
      *
-     * @return integer
+     * @return int
      */
     public function getAllSubscriptionsByPlan($plan)
     {
-		return $this->getAllSubscriptions()->where('subscriptions.plan_id', '=', $plan->id);
+        return $this->getAllSubscriptions()->where('subscriptions.plan_id', '=', $plan->id);
     }
 
-	/**
+    /**
      * Get all plans.
      *
-     * @return integer
+     * @return int
      */
     public function getAllPlans()
     {
-		return \Acelle\Model\Plan::getAllActive($this);
+        return \Acelle\Model\Plan::getAllActive($this);
     }
 
-	/**
+    /**
      * Get all payment methods.
      *
-     * @return integer
+     * @return int
      */
     public function getAllPaymentMethods()
     {
-		$query = \Acelle\Model\PaymentMethod::getAll()
-			->where("payment_methods.status", "=", \Acelle\Model\PaymentMethod::STATUS_ACTIVE);
+        $query = \Acelle\Model\PaymentMethod::getAll()
+            ->where('payment_methods.status', '=', \Acelle\Model\PaymentMethod::STATUS_ACTIVE);
 
-		if (!$this->can('readAll', new \Acelle\Model\PaymentMethod())) {
+        if (!$this->can('readAll', new \Acelle\Model\PaymentMethod())) {
             $query = $query->where('payment_methods.admin_id', '=', $this->id);
         }
 
-		return $query;
+        return $query;
     }
 
-	/**
+    /**
      * Get all admin.
      *
-     * @return integer
+     * @return int
      */
     public function getAllAdmins()
     {
-		$query = \Acelle\Model\Admin::getAll()
-			->where("admins.status", "=", \Acelle\Model\Admin::STATUS_ACTIVE);
+        $query = \Acelle\Model\Admin::getAll()
+            ->where('admins.status', '=', \Acelle\Model\Admin::STATUS_ACTIVE);
 
-		if (!$this->can('readAll', new \Acelle\Model\Admin())) {
+        if (!$this->can('readAll', new \Acelle\Model\Admin())) {
             $query = $query->where('admins.creator_id', '=', $this->user_id);
         }
 
-		return $query;
+        return $query;
     }
 
-	/**
+    /**
      * Get all admin.
      *
-     * @return integer
+     * @return int
      */
     public function getAllAdminGroups()
     {
-		$query = \Acelle\Model\AdminGroup::getAll();
+        $query = \Acelle\Model\AdminGroup::getAll();
 
-		if (!$this->can('readAll', new \Acelle\Model\AdminGroup())) {
+        if (!$this->can('readAll', new \Acelle\Model\AdminGroup())) {
             $query = $query->where('admin_groups.creator_id', '=', $this->user_id);
         }
 
-		return $query;
+        return $query;
     }
 
-	/**
+    /**
      * Get all sending servers.
      *
-     * @return integer
+     * @return int
      */
     public function getAllSendingServers()
     {
-		$query = \Acelle\Model\SendingServer::getAll();
+        $query = \Acelle\Model\SendingServer::getAll();
 
-		if (!$this->can('readAll', new \Acelle\Model\SendingServer())) {
+        if (!$this->can('readAll', new \Acelle\Model\SendingServer())) {
             $query = $query->where('sending_servers.admin_id', '=', $this->id);
         }
 
         // remove customer sending servers
         $query = $query->whereNull('customer_id');
 
-		return $query;
+        return $query;
     }
 
-	/**
+    /**
      * Get all sending servers.
      *
-     * @return integer
+     * @return int
      */
     public function getAllSendingDomains()
     {
-		$query = \Acelle\Model\SendingDomain::getAll();
+        $query = \Acelle\Model\SendingDomain::getAll();
 
-		if (!$this->can('readAll', new \Acelle\Model\SendingDomain())) {
+        if (!$this->can('readAll', new \Acelle\Model\SendingDomain())) {
             $query = $query->where('sending_domains.admin_id', '=', $this->id);
         }
 
         // remove customer sending servers
         $query = $query->whereNull('customer_id');
 
-		return $query;
+        return $query;
     }
 
-	/**
+    /**
      * Get all campaigns.
      *
      * @return collect
      */
     public function getAllCampaigns()
     {
-		$query = \Acelle\Model\Campaign::getAll();
+        $query = \Acelle\Model\Campaign::getAll();
 
-		if (!$this->can('readAll', new \Acelle\Model\Customer())) {
+        if (!$this->can('readAll', new \Acelle\Model\Customer())) {
             $query = $query->leftJoin('customers', 'customers.id', '=', 'campaigns.customer_id')
-				->where('customers.admin_id', '=', $this->id);
+                ->where('customers.admin_id', '=', $this->id);
         }
 
-		return $query;
+        return $query;
     }
 
-	/**
+    /**
      * Get all lists.
      *
      * @return collect
      */
     public function getAllLists()
     {
-		$query = \Acelle\Model\MailList::getAll();
+        $query = \Acelle\Model\MailList::getAll();
 
-		if (!$this->can('readAll', new \Acelle\Model\Customer())) {
+        if (!$this->can('readAll', new \Acelle\Model\Customer())) {
             $query = $query->leftJoin('customers', 'customers.id', '=', 'mail_lists.customer_id')
-				->where('customers.admin_id', '=', $this->id);
+                ->where('customers.admin_id', '=', $this->id);
         }
 
-		return $query;
+        return $query;
     }
 
-	/**
+    /**
      * Get all automations.
      *
      * @return collect
      */
     public function getAllAutomations()
     {
-		$query = \Acelle\Model\Automation::getAll();
+        $query = \Acelle\Model\Automation::getAll();
 
-		if (!$this->can('readAll', new \Acelle\Model\Customer())) {
+        if (!$this->can('readAll', new \Acelle\Model\Customer())) {
             $query = $query->leftJoin('customers', 'customers.id', '=', 'automations.customer_id')
-				->where('customers.admin_id', '=', $this->id);
+                ->where('customers.admin_id', '=', $this->id);
         }
 
-		return $query;
+        return $query;
     }
 
-	/**
+    /**
      * Get all automations.
      *
      * @return collect
      */
     public function getAllSubscribers()
     {
-		$query = \Acelle\Model\Subscriber::getAll();
+        $query = \Acelle\Model\Subscriber::getAll();
 
-		if (!$this->can('readAll', new \Acelle\Model\Customer())) {
+        if (!$this->can('readAll', new \Acelle\Model\Customer())) {
             $query = $query->leftJoin('mail_lists', 'mail_lists.id', '=', 'subscribers.mail_list_id')
-				->leftJoin('customers', 'customers.id', '=', 'mail_lists.customer_id')
-				->where('customers.admin_id', '=', $this->id);
+                ->leftJoin('customers', 'customers.id', '=', 'mail_lists.customer_id')
+                ->where('customers.admin_id', '=', $this->id);
         }
 
-		return $query;
+        return $query;
     }
 
-	/**
+    /**
      * Get import jobs.
      *
      * @return number
      */
     public function getImportBlacklistJobs()
     {
-        return \Acelle\Model\SystemJob::where("name","=","Acelle\Jobs\ImportBlacklistJob")
-            ->where("data","like", "%\"admin_id\":" . $this->id . "%");
+        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ImportBlacklistJob")
+            ->where('data', 'like', '%"admin_id":'.$this->id.'%');
     }
 
     /**
@@ -726,9 +732,9 @@ class Admin extends Model
     public function getActiveImportBlacklistJobs()
     {
         return $this->getImportBlacklistJobs()
-            ->where("status","!=", \Acelle\Model\SystemJob::STATUS_DONE)
-            ->where("status","!=", \Acelle\Model\SystemJob::STATUS_FAILED)
-            ->where("status","!=", \Acelle\Model\SystemJob::STATUS_CANCELLED);
+            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_DONE)
+            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_FAILED)
+            ->where('status', '!=', \Acelle\Model\SystemJob::STATUS_CANCELLED);
     }
 
     /**
@@ -739,21 +745,19 @@ class Admin extends Model
     public function getLastActiveImportBlacklistJob()
     {
         return $this->getActiveImportBlacklistJobs()
-            ->orderBy("created_at","DESC")
+            ->orderBy('created_at', 'DESC')
             ->first();
     }
 
-	/**
+    /**
      * Add email to admin blacklist.
-     *
-     * @return void
      */
     public function addEmaillToBlacklist($email)
     {
         $email = trim(strtolower($email));
 
         if (\Acelle\Library\Tool::isValidEmail($email)) {
-            $exist = \Acelle\Model\Blacklist::whereNull('customer_id')->where('email','=',$email)->count();
+            $exist = \Acelle\Model\Blacklist::whereNull('customer_id')->where('email', '=', $email)->count();
             if (!$exist) {
                 $blacklist = new \Acelle\Model\Blacklist();
                 $blacklist->admin_id = $this->id;
@@ -762,34 +766,34 @@ class Admin extends Model
             }
         }
     }
-    
+
     /**
      * Get sub-account sending servers.
      *
-     * @return integer
+     * @return int
      */
     public function getSubaccountSendingServers()
     {
-		$query = $this->getAllSendingServers();
+        $query = $this->getAllSendingServers();
 
-		$query = $query->whereIn('type', \Acelle\Model\SendingServer::getSubAccountTypes());
+        $query = $query->whereIn('type', \Acelle\Model\SendingServer::getSubAccountTypes());
 
-		return $query;
+        return $query;
     }
 
     /**
      * Get sub-account sending servers options.
      *
-     * @return integer
+     * @return int
      */
     public function getSubaccountSendingServersSelectOptions()
     {
         $options = [];
 
-		foreach ($this->getSubaccountSendingServers()->get() as $server) {
+        foreach ($this->getSubaccountSendingServers()->get() as $server) {
             $options[] = ['value' => $server->uid, 'text' => $server->name];
         }
 
-		return $options;
+        return $options;
     }
 }

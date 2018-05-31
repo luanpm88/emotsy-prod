@@ -84,7 +84,7 @@ class SubAccount extends Model
             }
         }
 
-        if(!empty($request->admin_id)) {
+        if (!empty($request->admin_id)) {
             $query = $query->where('sending_servers.admin_id', '=', $request->admin_id);
         }
 
@@ -108,7 +108,7 @@ class SubAccount extends Model
     {
         $query = self::filter($request);
 
-        if(!empty($request->sort_order)) {
+        if (!empty($request->sort_order)) {
             $query = $query->orderBy($request->sort_order, $request->sort_direction);
         }
 
@@ -122,6 +122,6 @@ class SubAccount extends Model
      */
     public function getSecuredApiKey()
     {
-        return substr($this->api_key, 0, 4) . "..." . substr($this->api_key,-4);
+        return substr($this->api_key, 0, 4).'...'.substr($this->api_key, -4);
     }
 }

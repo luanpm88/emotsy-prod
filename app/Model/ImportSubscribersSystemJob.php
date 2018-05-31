@@ -22,14 +22,14 @@
 
 namespace Acelle\Model;
 
-use Acelle\Model\SystemJob;
-
 class ImportSubscribersSystemJob extends SystemJob
 {
     protected $table = 'system_jobs';
 
-    public function getLog() {
+    public function getLog()
+    {
         $data = json_decode($this->data, true);
+
         return $data['log'];
     }
 }

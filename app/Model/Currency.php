@@ -12,7 +12,7 @@ class Currency extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'code', 'format'
+        'name', 'code', 'format',
     ];
 
     /**
@@ -69,8 +69,7 @@ class Currency extends Model
             $item->code = strtoupper($item->code);
         });
 
-        static::updating(function($item)
-        {
+        static::updating(function ($item) {
             // uppercase for currency code
             $item->code = strtoupper($item->code);
         });
@@ -83,7 +82,7 @@ class Currency extends Model
      */
     public static function getAll()
     {
-        return Currency::select('*');
+        return self::select('*');
     }
 
     /**
@@ -112,7 +111,7 @@ class Currency extends Model
             }
         }
 
-        if(!empty($request->admin_id)) {
+        if (!empty($request->admin_id)) {
             $query = $query->where('currencies.admin_id', '=', $request->admin_id);
         }
 
@@ -138,34 +137,37 @@ class Currency extends Model
     /**
      * Disable customer.
      *
-     * @return boolean
+     * @return bool
      */
     public function disable()
     {
         $this->status = 'inactive';
+
         return $this->save();
     }
 
     /**
      * Enable customer.
      *
-     * @return boolean
+     * @return bool
      */
     public function enable()
     {
         $this->status = 'active';
+
         return $this->save();
     }
 
     /**
-     * Get customer select2 select options
+     * Get customer select2 select options.
      *
      * @return array
      */
-    public static function select2($request) {
+    public static function select2($request)
+    {
         $data = ['items' => [], 'more' => true];
 
-        $query = Currency::getAll();
+        $query = self::getAll();
         if (isset($request->q)) {
             $keyword = $request->q;
             $query = $query->where(function ($q) use ($keyword) {
@@ -175,9 +177,9 @@ class Currency extends Model
         }
 
         // Read all check
-		if (!$request->user()->admin->can('readAll', new \Acelle\Model\Currency())) {
-			$query = $query->where('currencies.admin_id', '=', $request->user()->admin->id);
-		}
+        if (!$request->user()->admin->can('readAll', new \Acelle\Model\Currency())) {
+            $query = $query->where('currencies.admin_id', '=', $request->user()->admin->id);
+        }
 
         foreach ($query->limit(20)->get() as $currency) {
             $data['items'][] = ['id' => $currency->id, 'text' => $currency->displayName()];
@@ -193,6 +195,6 @@ class Currency extends Model
      */
     public function displayName()
     {
-        return $this->name . " (" . $this->code . ")";
+        return $this->name.' ('.$this->code.')';
     }
 }

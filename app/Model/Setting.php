@@ -22,7 +22,6 @@
 
 namespace Acelle\Model;
 
-use Acelle\Model\Setting;
 use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
@@ -54,10 +53,10 @@ class Setting extends Model
         $setting = self::where('name', $name)->first();
         if (is_object($setting)) {
             return $setting->value;
-        } else if(isset(self::defaultSettings()[$name])) {
+        } elseif (isset(self::defaultSettings()[$name])) {
             return self::defaultSettings()[$name]['value'];
         } else {
-            return NULL;
+            return;
         }
     }
 
@@ -181,30 +180,30 @@ class Setting extends Model
                 'cat' => 'general',
                 'value' => 'no',
                 'type' => 'checkbox',
-                'options' => ['no','yes'],
+                'options' => ['no', 'yes'],
             ],
             'embedded_form_recaptcha' => [
                 'cat' => 'general',
                 'value' => 'no',
                 'type' => 'checkbox',
-                'options' => ['no','yes'],
+                'options' => ['no', 'yes'],
             ],
             'enable_user_registration' => [
                 'cat' => 'general',
                 'value' => 'yes',
                 'type' => 'checkbox',
-                'options' => ['no','yes'],
+                'options' => ['no', 'yes'],
             ],
             'registration_recaptcha' => [
                 'cat' => 'general',
                 'value' => 'yes',
                 'type' => 'checkbox',
-                'options' => ['no','yes'],
+                'options' => ['no', 'yes'],
             ],
             'import_subscribers_commitment' => [
                 'cat' => 'general',
                 'value' => '',
-                'type' => 'textarea'
+                'type' => 'textarea',
             ],
             'sending_campaigns_at_once' => [
                 'cat' => 'sending',
@@ -319,15 +318,13 @@ class Setting extends Model
 
     /**
      * Update setting one line.
-     *
-     * @return void
      */
     public static function setEnv($key, $value)
     {
         $file_path = base_path('.env');
         $data = file($file_path);
-        $data = array_map(function($data) use ($key, $value) {
-            if (stristr($value, " ")) {
+        $data = array_map(function ($data) use ($key, $value) {
+            if (stristr($value, ' ')) {
                 return stristr($data, $key) ? "$key='$value'\n" : $data;
             } else {
                 return stristr($data, $key) ? "$key=$value\n" : $data;
@@ -336,7 +333,7 @@ class Setting extends Model
 
         // Write file
         $env_file = fopen($file_path, 'w') or die('Unable to open file!');
-        fwrite($env_file, implode($data, ""));
+        fwrite($env_file, implode($data, ''));
         fclose($env_file);
     }
 
@@ -348,19 +345,20 @@ class Setting extends Model
     public static function updateLicense($license)
     {
         if (empty($license)) {
-            Setting::set("license", '');
-            Setting::set("license_type", '');
+            self::set('license', '');
+            self::set('license_type', '');
+
             return;
         }
         $license_type = \Acelle\Helpers\LicenseHelper::getLicenseType($license);
-        Setting::set("license", $license);
-        Setting::set("license_type", $license_type);
+        self::set('license', $license);
+        self::set('license_type', $license_type);
     }
 
     /**
      * Upload site logo.
      *
-     * @var boolean
+     * @var bool
      */
     public static function uploadSiteLogo($file, $type)
     {
@@ -380,6 +378,7 @@ class Setting extends Model
         $img = \Image::make($upload_path.$filename);
 
         self::set($type, $path.$filename);
+
         return true;
     }
 }

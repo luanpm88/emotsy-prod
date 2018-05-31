@@ -16,6 +16,7 @@
  * @license    Acelle Co., Ltd
  *
  * @version    1.0
+ *
  * @link       http://acellemail.com
  *
  * @description: This is the Skeleton for developing a sending server which is used to send email through a 3rd service
@@ -82,15 +83,15 @@ class SendingServerSparkPost extends SendingServer
         try {
             $this->cleanupWebhook($webhookUrl);
             $response = $this->client()->request('POST', 'webhooks', [
-                "name" => 'Acelle Mail Webhook',
-                "target" => $webhookUrl,
-                "auth_type" => "none",
-                "events" => [
-                    "bounce",
-                    "spam_complaint",
-                    "out_of_band",
-                    "policy_rejection"
-                ]
+                'name' => 'Acelle Mail Webhook',
+                'target' => $webhookUrl,
+                'auth_type' => 'none',
+                'events' => [
+                    'bounce',
+                    'spam_complaint',
+                    'out_of_band',
+                    'policy_rejection',
+                ],
             ]);
 
             if ($response->getStatusCode() == 200) {
@@ -103,14 +104,12 @@ class SendingServerSparkPost extends SendingServer
         } catch (\Exception $e) {
             // just ignore the error
             self::$isWebhookSetup = true;
-            MailLog::warning('Cannot setup Spark Post webhook. Error: ' . $e->getMessage());
+            MailLog::warning('Cannot setup Spark Post webhook. Error: '.$e->getMessage());
         }
     }
 
     /**
-     * Clean up any existing webhook for this webapp
-     *
-     * @return void
+     * Clean up any existing webhook for this webapp.
      */
     public function cleanupWebhook($webhookUrl)
     {
@@ -118,7 +117,7 @@ class SendingServerSparkPost extends SendingServer
 
         if ($response->getStatusCode() == 200) {
             $webhooks = $response->getBody();
-            foreach($webhooks['results'] as $webhook) {
+            foreach ($webhooks['results'] as $webhook) {
                 if ($webhook['target'] == $webhookUrl) {
                     $this->deleteWebhook($webhook['id']);
                 }
@@ -130,9 +129,7 @@ class SendingServerSparkPost extends SendingServer
     }
 
     /**
-     * Delete a particular webhook
-     *
-     * @return void
+     * Delete a particular webhook.
      */
     public function deleteWebhook($id)
     {
@@ -150,9 +147,7 @@ class SendingServerSparkPost extends SendingServer
     }
 
     /**
-     * Hanle delivery notification requested through the webhook
-     *
-     * @return void
+     * Hanle delivery notification requested through the webhook.
      */
     public static function handleNotification()
     {
@@ -165,7 +160,7 @@ class SendingServerSparkPost extends SendingServer
             return response('Webhook verified OK', 200);
         }
 
-        foreach($messages as $message) {
+        foreach ($messages as $message) {
             if (!array_key_exists('message_event', $message['msys'])) {
                 MailLog::warning('Unknown notification type');
                 continue;
@@ -185,15 +180,13 @@ class SendingServerSparkPost extends SendingServer
                     self::handleSpamComplaint($message);
                     break;
                 default:
-                    MailLog::warning('Unknown notification type: ' . $type);
+                    MailLog::warning('Unknown notification type: '.$type);
             }
         }
     }
 
     /**
-     * Process bounce notification
-     *
-     * @return void
+     * Process bounce notification.
      */
     private static function handleBounce($message)
     {
@@ -204,6 +197,7 @@ class SendingServerSparkPost extends SendingServer
             $bounceLog->runtime_message_id = $message['msys']['message_event']['rcpt_meta']['runtime_message_id'];
         } catch (\Exception $e) {
             MailLog::warning('Cannot retrive runtime_message_id');
+
             return response('', 200);
         }
 
@@ -228,9 +222,7 @@ class SendingServerSparkPost extends SendingServer
     }
 
     /**
-     * Process feedbac notification
-     *
-     * @return void
+     * Process feedbac notification.
      */
     private static function handleSpamComplaint($message)
     {
@@ -241,6 +233,7 @@ class SendingServerSparkPost extends SendingServer
             $feedbackLog->runtime_message_id = $message['msys']['message_event']['rcpt_meta']['runtime_message_id'];
         } catch (\Exception $e) {
             MailLog::warning('Cannot retrive runtime_message_id');
+
             return response('', 200);
         }
 

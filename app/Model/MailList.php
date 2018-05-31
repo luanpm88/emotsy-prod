@@ -23,17 +23,11 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
-use Carbon\Carbon;
 use DB;
 use Illuminate\Support\Facades\Validator;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
-use Acelle\Model\SendingServer;
-use Acelle\Model\EmailVerification;
-use Acelle\Model\EmailVerificationServer;
-use Acelle\Model\SystemJob;
-use Acelle\Model\Blacklist;
 use Acelle\Exceptions\VerificationProcessCancelledException;
 
 class MailList extends Model
@@ -53,7 +47,7 @@ class MailList extends Model
         'name', 'default_subject', 'from_email', 'from_name',
         'remind_message', 'send_to', 'email_daily', 'email_subscribe',
         'email_unsubscribe', 'send_welcome_email', 'unsubscribe_notification',
-        'subscribe_confirmation', 'all_sending_servers'
+        'subscribe_confirmation', 'all_sending_servers',
     ];
 
     /**
@@ -132,7 +126,7 @@ class MailList extends Model
     }
 
     /**
-     * has_many association with automations through automations_lists_segments
+     * has_many association with automations through automations_lists_segments.
      */
     public function automations()
     {
@@ -618,6 +612,7 @@ class MailList extends Model
     public function longName($cache = false)
     {
         $count = $this->subscribersCount($cache);
+
         return $this->name.' - '.$count.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('subscriber', $count)).'';
     }
 
@@ -663,8 +658,8 @@ class MailList extends Model
      */
     public function importJobs()
     {
-        return \Acelle\Model\SystemJob::where("name", "=", "Acelle\Jobs\ImportSubscribersJob")
-            ->where("data", "like", "%\"mail_list_uid\":\"" . $this->uid . "\"%");
+        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ImportSubscribersJob")
+            ->where('data', 'like', '%"mail_list_uid":"'.$this->uid.'"%');
     }
 
     /**
@@ -675,7 +670,7 @@ class MailList extends Model
     public function getLastImportJob()
     {
         return $this->importJobs()
-            ->orderBy("created_at", "DESC")
+            ->orderBy('created_at', 'DESC')
             ->first();
     }
 
@@ -686,8 +681,8 @@ class MailList extends Model
      */
     public function exportJobs()
     {
-        return \Acelle\Model\SystemJob::where("name", "=", "Acelle\Jobs\ExportSubscribersJob")
-            ->where("data", "like", "%\"mail_list_uid\":\"" . $this->uid . "\"%");
+        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ExportSubscribersJob")
+            ->where('data', 'like', '%"mail_list_uid":"'.$this->uid.'"%');
     }
 
     /**
@@ -697,8 +692,8 @@ class MailList extends Model
      */
     public function exportSegmentJobs($uid)
     {
-        return \Acelle\Model\SystemJob::where("name", "=", "Acelle\Jobs\ExportSegmentsJob")
-            ->where("data", "like", "%\"uid\":\"" . $uid . "\"%");
+        return \Acelle\Model\SystemJob::where('name', '=', "Acelle\Jobs\ExportSegmentsJob")
+            ->where('data', 'like', '%"uid":"'.$uid.'"%');
     }
 
     /**
@@ -709,7 +704,7 @@ class MailList extends Model
     public function getLastExportJob()
     {
         return $this->exportJobs()
-            ->orderBy("created_at", "DESC")
+            ->orderBy('created_at', 'DESC')
             ->first();
     }
 
@@ -721,13 +716,12 @@ class MailList extends Model
     public function getLastImportLog()
     {
         $data = json_decode($this->getLastImportJob()->data, true);
+
         return $data['log'];
     }
 
     /**
      * Export subscribers.
-     *
-     * @return void
      */
     public static function export($list, $customer, $job)
     {
@@ -752,9 +746,9 @@ class MailList extends Model
         $myfile = file_put_contents($file_path, $headers.PHP_EOL, FILE_APPEND | LOCK_EX);
 
         $num = 100;
-        for ($page = 0; $page <= ceil($total/$num); $page++) { // ceil($total/$num)
+        for ($page = 0; $page <= ceil($total / $num); ++$page) { // ceil($total/$num)
             $data = [];
-            foreach ($list->subscribers()->skip($page*$num)->take($num)->get() as $key => $item) {
+            foreach ($list->subscribers()->skip($page * $num)->take($num)->get() as $key => $item) {
                 $cols = [];
                 foreach ($list->getFields as $key2 => $field) {
                     $value = $item->getValueByField($field);
@@ -777,14 +771,14 @@ class MailList extends Model
 
             // update system job
             $systemJob->data = json_encode([
-                "mail_list_uid" => $list->uid,
-                "customer_id" => $customer->id,
-                "status" => "running",
-                "message" => $content_cache,
-                "total" => $total,
-                "success" => $success,
-                "error" => $error,
-                "percent" => round((($success + $error) / $total) * 100, 0)
+                'mail_list_uid' => $list->uid,
+                'customer_id' => $customer->id,
+                'status' => 'running',
+                'message' => $content_cache,
+                'total' => $total,
+                'success' => $success,
+                'error' => $error,
+                'percent' => round((($success + $error) / $total) * 100, 0),
             ]);
             $systemJob->save();
         }
@@ -798,14 +792,14 @@ class MailList extends Model
 
         // update system job
         $systemJob->data = json_encode([
-            "mail_list_uid" => $list->uid,
-            "customer_id" => $customer->id,
-            "status" => "done",
-            "message" => $content_cache,
-            "total" => $total,
-            "success" => $success,
-            "error" => $error,
-            "percent" => 100
+            'mail_list_uid' => $list->uid,
+            'customer_id' => $customer->id,
+            'status' => 'done',
+            'message' => $content_cache,
+            'total' => $total,
+            'success' => $success,
+            'error' => $error,
+            'percent' => 100,
         ]);
         $systemJob->save();
 
@@ -813,11 +807,8 @@ class MailList extends Model
         $list->log('export_success', $customer, ['count' => $success, 'error' => $error]);
     }
 
-
     /**
      * Export Segments.
-     *
-     * @return void
      */
     public static function exportSegments($list, $customer, $job)
     {
@@ -829,21 +820,20 @@ class MailList extends Model
 
         // Import to database
 
-
         $json = json_decode($systemJob->data);
-        $fields = preg_split("/,/",$json->fields);
+        $fields = preg_split('/,/', $json->fields);
         $headers = $json->fields;
         $segment = \Acelle\Model\Segment::findByUid($json->uid);
         $total = $segment->subscribersCount(); // no cache
         $success = 0;
         $error = 0;
         // write csv
-        $myfile = file_put_contents($file_path, $headers.PHP_EOL , FILE_APPEND | LOCK_EX);
+        $myfile = file_put_contents($file_path, $headers.PHP_EOL, FILE_APPEND | LOCK_EX);
 
         $num = 100;
-        for($page = 0; $page <= ceil($total/$num); $page++) { // ceil($total/$num)
+        for ($page = 0; $page <= ceil($total / $num); ++$page) { // ceil($total/$num)
             $data = [];
-            foreach ($segment->subscribers()->skip($page*$num)->take($num)->get() as $key => $item) {
+            foreach ($segment->subscribers()->skip($page * $num)->take($num)->get() as $key => $item) {
                 $cols = [];
                 foreach ($fields as $key2 => $field) {
                     $value = $item->getValueByTag($field);
@@ -855,7 +845,7 @@ class MailList extends Model
             }
 
             // write csv
-            $myfile = file_put_contents($file_path, implode("\r\n", $data).PHP_EOL , FILE_APPEND | LOCK_EX);
+            $myfile = file_put_contents($file_path, implode("\r\n", $data).PHP_EOL, FILE_APPEND | LOCK_EX);
 
             $content_cache = trans('messages.export_segments_statistics_line', [
                 'total' => $total,
@@ -866,16 +856,16 @@ class MailList extends Model
 
             // update system job
             $systemJob->data = json_encode([
-                "mail_list_uid" => $list->uid,
-                "customer_id" => $customer->id,
-                "status" => "running",
-                "message" => $content_cache,
-                "total" => $total,
-                "success" => $success,
-                "error" => $error,
-                "percent" => round((($success + $error) / $total) * 100, 0),
-                "fields" => $json->fields,
-                "uid" => $json->uid
+                'mail_list_uid' => $list->uid,
+                'customer_id' => $customer->id,
+                'status' => 'running',
+                'message' => $content_cache,
+                'total' => $total,
+                'success' => $success,
+                'error' => $error,
+                'percent' => round((($success + $error) / $total) * 100, 0),
+                'fields' => $json->fields,
+                'uid' => $json->uid,
             ]);
             $systemJob->save();
         }
@@ -889,16 +879,16 @@ class MailList extends Model
 
         // update system job
         $systemJob->data = json_encode([
-            "mail_list_uid" => $list->uid,
-            "customer_id" => $customer->id,
-            "status" => "done",
-            "message" => $content_cache,
-            "total" => $total,
-            "success" => $success,
-            "error" => $error,
-            "percent" => 100,
+            'mail_list_uid' => $list->uid,
+            'customer_id' => $customer->id,
+            'status' => 'done',
+            'message' => $content_cache,
+            'total' => $total,
+            'success' => $success,
+            'error' => $error,
+            'percent' => 100,
             'fields' => $json->fields,
-            'uid' => $json->uid
+            'uid' => $json->uid,
         ]);
         $systemJob->save();
 
@@ -906,12 +896,8 @@ class MailList extends Model
         $list->log('export_success', $customer, ['count' => $success, 'error' => $error]);
     }
 
-
-
     /**
      * Send subscription confirmation email to subscriber.
-     *
-     * @return void
      */
     public function sendSubscriptionConfirmationEmail($subscriber)
     {
@@ -924,21 +910,18 @@ class MailList extends Model
     }
 
     /**
-     * Send list related email
-     *
-     * @return void
+     * Send list related email.
      */
     public function send($message, $params = [])
     {
         $server = $this->pickSendingServer();
         $message->getHeaders()->addTextHeader('X-Acelle-Message-Id', StringHelper::generateMessageId(StringHelper::getDomainFromEmail($this->from_email)));
+
         return $server->send($message, $params);
     }
 
     /**
      * Send subscription confirmation email to subscriber.
-     *
-     * @return void
      */
     public function sendSubscriptionWelcomeEmail($subscriber)
     {
@@ -951,8 +934,6 @@ class MailList extends Model
 
     /**
      * Send unsubscription goodbye email to subscriber.
-     *
-     * @return void
      */
     public function sendUnsubscriptionNotificationEmail($subscriber)
     {
@@ -965,8 +946,6 @@ class MailList extends Model
 
     /**
      * Send unsubscription goodbye email to subscriber.
-     *
-     * @return void
      */
     public function sendProfileUpdateEmail($subscriber)
     {
@@ -1004,9 +983,10 @@ class MailList extends Model
     }
 
     /**
-     * Read a CSV file, returning the meta information
+     * Read a CSV file, returning the meta information.
      *
      * @param string file path
+     *
      * @return array [$headers, $availableFields, $lineCount, $results]
      */
     public function getRemainingAddSubscribersQuota()
@@ -1029,17 +1009,18 @@ class MailList extends Model
     }
 
     /**
-     * Read a CSV file, returning the meta information
+     * Read a CSV file, returning the meta information.
      *
      * @param string file path
+     *
      * @return array [$headers, $availableFields, $lineCount, $results]
      */
     private function readCsv($file)
     {
         try {
             // Fix the problem with MAC OS's line endings
-            if (!ini_get("auto_detect_line_endings")) {
-                ini_set("auto_detect_line_endings", '1');
+            if (!ini_get('auto_detect_line_endings')) {
+                ini_set('auto_detect_line_endings', '1');
             }
 
             // return false or an encoding name
@@ -1073,14 +1054,15 @@ class MailList extends Model
             return [$headers, $availableFields, $lineCount, $results];
         } catch (\Exception $ex) {
             // @todo: translation here
-            throw new \Exception("Invalid headers. Original error message is: " . $ex->getMessage());
+            throw new \Exception('Invalid headers. Original error message is: '.$ex->getMessage());
         }
     }
 
     /**
-     * Validate imported file's headers
+     * Validate imported file's headers.
      *
      * @param headers
+     *
      * @return true or throw an exception
      */
     private function validateCsvHeader($headers)
@@ -1091,14 +1073,16 @@ class MailList extends Model
             // @todo: I18n is required here
             throw new \Exception(trans('messages.import_missing_header_field', ['fields' => implode(', ', $missing)]));
         }
+
         return true;
     }
 
     /**
-     * Validate imported record
+     * Validate imported record.
      *
      * @param headers
-     * @return boolean whether or not the record is valid
+     *
+     * @return bool whether or not the record is valid
      */
     private function validateCsvRecord($record)
     {
@@ -1113,9 +1097,10 @@ class MailList extends Model
     }
 
     /**
-     * Import subscriber from a CSV file
+     * Import subscriber from a CSV file.
      *
      * @param string original value
+     *
      * @return string quoted value
      * @todo: use MySQL escape function to correctly escape string with astrophe
      */
@@ -1139,7 +1124,7 @@ class MailList extends Model
             $this->validateCsvHeader($availableFields);
 
             // update status, line count
-            $system_job->updateStatus([ 'total' => $lineCount ]);
+            $system_job->updateStatus(['total' => $lineCount]);
 
             // process by batches
             each_batch($results, config('app.import_batch_size'), true, function ($batch) use ($logger, $availableFields, &$customer, &$processed_count, &$system_job) {
@@ -1195,30 +1180,31 @@ class MailList extends Model
                 $data = array_where($data, function ($key, $value) use ($logger) {
                     list($valid, $errors) = $this->validateCsvRecord($value);
                     if (!$valid) {
-                        $logger->warning($value['email'].": ".implode(", ", $errors));
+                        $logger->warning($value['email'].': '.implode(', ', $errors));
                     }
+
                     return $valid;
                 });
 
                 DB::table('__tmp_subscribers')->insert($data);
 
                 // Insert new subscribers from temp table to the main table
-                DB::statement("INSERT INTO " . table('subscribers') . "(uid, mail_list_id, email, status, subscription_type, created_at, updated_at)
-                               SELECT UUID_SHORT(), " . $this->id . ", uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", " . db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED) . ", NOW(), NOW()
-                               FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN " . table('subscribers') . " main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL) uniq");
+                DB::statement('INSERT INTO '.table('subscribers').'(uid, mail_list_id, email, status, subscription_type, created_at, updated_at)
+                               SELECT UUID_SHORT(), ' .$this->id.', uniq.email, '.db_quote(Subscriber::STATUS_SUBSCRIBED).', '.db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED).", NOW(), NOW()
+                               FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL) uniq");
 
                 // Insert subscribers' custom fields to the fields table
-                DB::statement("DELETE FROM " . table('subscriber_fields') . " WHERE subscriber_id IN (SELECT main.id FROM " . table('subscribers') . " main JOIN {$tmpTable} tmp ON main.email = tmp.email WHERE mail_list_id = " . $this->id . ")");
+                DB::statement('DELETE FROM '.table('subscriber_fields').' WHERE subscriber_id IN (SELECT main.id FROM '.table('subscribers')." main JOIN {$tmpTable} tmp ON main.email = tmp.email WHERE mail_list_id = ".$this->id.')');
                 foreach ($availableFields as $field) {
-                    $sql = "INSERT INTO " . table('subscriber_fields') . "(subscriber_id, field_id, value, created_at, updated_at)
+                    $sql = 'INSERT INTO '.table('subscriber_fields')."(subscriber_id, field_id, value, created_at, updated_at)
                     SELECT t.subscriber_id, f.id, t.`{$field}`, NOW(), NOW()
-                    FROM (SELECT main.id AS subscriber_id, tmp.{$field} FROM " . table('subscribers') . " main JOIN {$tmpTable} tmp ON tmp.email = main.email WHERE main.mail_list_id = " . $this->id . ") t
-                    JOIN " . table('fields') . " f ON f.tag = '{$field}' AND f.mail_list_id = " . $this->id;
+                    FROM (SELECT main.id AS subscriber_id, tmp.{$field} FROM ".table('subscribers')." main JOIN {$tmpTable} tmp ON tmp.email = main.email WHERE main.mail_list_id = ".$this->id.') t
+                    JOIN ' .table('fields')." f ON f.tag = '{$field}' AND f.mail_list_id = ".$this->id;
                     DB::statement($sql);
                 }
 
                 // update status, finish one batch
-                $system_job->updateStatus([ 'processed' => $processed_count ]);
+                $system_job->updateStatus(['processed' => $processed_count]);
 
                 // Cleanup
                 DB::statement("DROP TEMPORARY TABLE IF EXISTS {$tmpTable};");
@@ -1228,7 +1214,7 @@ class MailList extends Model
             });
 
             // Update status, finish all batches
-            $system_job->updateStatus([ 'status' => self::IMPORT_STATUS_DONE, 'total' => $processed_count ]);
+            $system_job->updateStatus(['status' => self::IMPORT_STATUS_DONE, 'total' => $processed_count]);
 
             // Trigger updating related campaigns cache
             $this->updateCachedInfo();
@@ -1260,9 +1246,10 @@ class MailList extends Model
     }
 
     /**
-     * Import subscriber from a CSV file (beta, for console only)
+     * Import subscriber from a CSV file (beta, for console only).
      *
      * @param string original value
+     *
      * @return string quoted value
      * @todo: use MySQL escape function to correctly escape string with astrophe
      */
@@ -1315,6 +1302,7 @@ class MailList extends Model
                         // replace the non-break space (not a normal space) as well as all other spaces
                         $record['email'] = preg_replace('/[ \s*]*/', '', trim($record['email']));
                     }
+
                     return $record;
                 })->toArray();
 
@@ -1327,24 +1315,25 @@ class MailList extends Model
                 $data = array_where($data, function ($key, $value) {
                     list($valid, $errors) = $this->validateCsvRecord($value);
                     if (!$valid) {
-                        echo "Warning: " . $value['email'].": ".implode(", ", $errors) . "\n";
+                        echo 'Warning: '.$value['email'].': '.implode(', ', $errors)."\n";
                     }
+
                     return $valid;
                 });
                 DB::table('__tmp_subscribers')->insert($data);
 
                 // Insert new subscribers from temp table to the main table
-                DB::statement("INSERT INTO " . table('subscribers') . "(uid, mail_list_id, email, status, subscription_type, created_at, updated_at)
-                               SELECT UUID_SHORT(), " . $this->id . ", uniq.email, " . db_quote(Subscriber::STATUS_SUBSCRIBED) . ", " . db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED) . ", NOW(), NOW()
-                               FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN " . table('subscribers') . " main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL) uniq");
+                DB::statement('INSERT INTO '.table('subscribers').'(uid, mail_list_id, email, status, subscription_type, created_at, updated_at)
+                               SELECT UUID_SHORT(), ' .$this->id.', uniq.email, '.db_quote(Subscriber::STATUS_SUBSCRIBED).', '.db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED).", NOW(), NOW()
+                               FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL) uniq");
 
                 // Insert subscribers' custom fields to the fields table
-                DB::statement("DELETE FROM " . table('subscriber_fields') . " WHERE subscriber_id IN (SELECT main.id FROM " . table('subscribers') . " main JOIN {$tmpTable} tmp ON main.email = tmp.email WHERE mail_list_id = " . $this->id . ")");
+                DB::statement('DELETE FROM '.table('subscriber_fields').' WHERE subscriber_id IN (SELECT main.id FROM '.table('subscribers')." main JOIN {$tmpTable} tmp ON main.email = tmp.email WHERE mail_list_id = ".$this->id.')');
                 foreach ($availableFields as $field) {
-                    $sql = "INSERT INTO " . table('subscriber_fields') . "(subscriber_id, field_id, value, created_at, updated_at)
+                    $sql = 'INSERT INTO '.table('subscriber_fields')."(subscriber_id, field_id, value, created_at, updated_at)
                     SELECT t.subscriber_id, f.id, t.`{$field}`, NOW(), NOW()
-                    FROM (SELECT main.id AS subscriber_id, tmp.{$field} FROM " . table('subscribers') . " main JOIN {$tmpTable} tmp ON tmp.email = main.email WHERE main.mail_list_id = " . $this->id . ") t
-                    JOIN " . table('fields') . " f ON f.tag = '{$field}' AND f.mail_list_id = " . $this->id;
+                    FROM (SELECT main.id AS subscriber_id, tmp.{$field} FROM ".table('subscribers')." main JOIN {$tmpTable} tmp ON tmp.email = main.email WHERE main.mail_list_id = ".$this->id.') t
+                    JOIN ' .table('fields')." f ON f.tag = '{$field}' AND f.mail_list_id = ".$this->id;
                     DB::statement($sql);
                 }
 
@@ -1366,14 +1355,12 @@ class MailList extends Model
 
             $this->updateCachedInfo();
 
-            echo "Error: " . $e->getMessage() . "\n";
+            echo 'Error: '.$e->getMessage()."\n";
         }
     }
 
     /**
-     * Update List related cache
-     *
-     * @return void
+     * Update List related cache.
      */
     public function updateCachedInfo()
     {
@@ -1400,9 +1387,10 @@ class MailList extends Model
     }
 
     /**
-     * Reload mail list information
+     * Reload mail list information.
      *
      * @return object mail list model
+     *
      * @todo why reload() is needed?
      */
     public function reload()
@@ -1443,9 +1431,7 @@ class MailList extends Model
     }
 
     /**
-     * Update Campaign cached data
-     *
-     * @return void
+     * Update Campaign cached data.
      */
     public function updateCache($key = null)
     {
@@ -1525,7 +1511,7 @@ class MailList extends Model
     }
 
     /**
-     * Retrieve Campaign cached data
+     * Retrieve Campaign cached data.
      *
      * @return mixed
      */
@@ -1569,7 +1555,7 @@ class MailList extends Model
 
         try {
             $this->send($message, [
-                'subscriber' => $subscriber
+                'subscriber' => $subscriber,
             ]);
         } catch (\Exception $ex) {
             $error = $ex->getMessage();
@@ -1588,9 +1574,9 @@ class MailList extends Model
     }
 
     /**
-     * Pick one sending server associated to the Mail List
+     * Pick one sending server associated to the Mail List.
      *
-     * @return Object SendingServer
+     * @return object SendingServer
      */
     public function pickSendingServer()
     {
@@ -1598,7 +1584,7 @@ class MailList extends Model
 
         // raise an exception if no sending servers are available
         if (empty($selection)) {
-            throw new \Exception(sprintf("No sending server available for Mail List ID %s", $this->id));
+            throw new \Exception(sprintf('No sending server available for Mail List ID %s', $this->id));
         }
 
         // do not raise an exception, just wait if sending servers are available but exceeding sending limit
@@ -1626,12 +1612,12 @@ class MailList extends Model
                 // log every 60 seconds
                 if (!array_key_exists($id, $blacklisted) || time() - $blacklisted[$id] >= 60) {
                     $blacklisted[$id] = time();
-                    MailLog::warning(sprintf("Sending server `%s` exceeds sending limit, skipped", self::$serverPools[$id]->name));
+                    MailLog::warning(sprintf('Sending server `%s` exceeds sending limit, skipped', self::$serverPools[$id]->name));
                 }
 
                 // if all sending servers are blacklisted
                 if (sizeof($blacklisted) == sizeof($selection)) {
-                    MailLog::warning("All sending servers exceed sending limit, waiting...");
+                    MailLog::warning('All sending servers exceed sending limit, waiting...');
                     sleep(30);
                 }
 
@@ -1639,6 +1625,7 @@ class MailList extends Model
             }
 
             MailLog::info(sprintf('Pick up delivery server `%s` (ID: %s)', self::$serverPools[$id]->name, $id));
+
             return self::$serverPools[$id];
         }
     }
@@ -1646,7 +1633,7 @@ class MailList extends Model
     /**
      * Check if list can send through it's sending servers.
      *
-     * @var boolean
+     * @var bool
      */
     public function getSendingServers()
     {
@@ -1658,31 +1645,31 @@ class MailList extends Model
         $subscription = $this->getCurrentSubscription();
 
         // Check the customer has permissions using sending servers and has his own sending servers
-        if ($this->customer->getOption("sending_server_option") == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
+        if ($this->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
             if ($this->all_sending_servers) {
                 if ($this->customer->activeSendingServers()->count()) {
                     $result = $this->customer->activeSendingServers()->get()->map(function ($server) {
-                        return [ $server->id, '100' ];
+                        return [$server->id, '100'];
                     });
                 }
             } elseif ($this->activeMailListsSendingServers()->count()) {
                 $result = $this->activeMailListsSendingServers()->get()->map(function ($server) {
-                    return [ $server->sending_server_id, $server->fitness ];
+                    return [$server->sending_server_id, $server->fitness];
                 });
             }
             // If customer dont have permission creating sending servers
-        } elseif ($this->customer->getOption("sending_server_option") == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM) {
+        } elseif ($this->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM) {
             // Check if has sending servers for current subscription
             if (is_object($subscription)) {
-                if ($subscription->getOption("all_sending_servers") == 'yes') {
+                if ($subscription->getOption('all_sending_servers') == 'yes') {
                     if (\Acelle\Model\SendingServer::getAllAdminActive()->count()) {
                         $result = \Acelle\Model\SendingServer::getAllAdminActive()->get()->map(function ($server) {
-                            return [ $server->id, '100' ];
+                            return [$server->id, '100'];
                         });
                     }
                 } elseif ($subscription->activeSubscriptionsSendingServers()->count()) {
                     $result = $subscription->activeSubscriptionsSendingServers()->get()->map(function ($server) {
-                        return [ $server->sending_server_id, $server->fitness ];
+                        return [$server->sending_server_id, $server->fitness];
                     });
                 }
             }
@@ -1697,12 +1684,12 @@ class MailList extends Model
         }
 
         $this->sendingSevers = $assoc;
+
         return $this->sendingSevers;
     }
 
     /**
-     * Queue for list verification
-     *
+     * Queue for list verification.
      */
     public function queueForVerification($serverId)
     {
@@ -1717,8 +1704,7 @@ class MailList extends Model
     }
 
     /**
-     * Run list verification process, triggered by a daemon
-     *
+     * Run list verification process, triggered by a daemon.
      */
     public function runVerification($serverId)
     {
@@ -1739,7 +1725,7 @@ class MailList extends Model
                         // @todo it seems this is never the case, or in case of exception?
                         throw new VerificationProcessCancelledException(sprintf('Mail list `%s`: verification process cancelled', $this->id));
                     }
-                    MailLog::info(sprintf("Start verifying %s/%s", $index, $total));
+                    MailLog::info(sprintf('Start verifying %s/%s', $index, $total));
                     $subscriber->verify($verifier);
                     $index += 1;
                 }
@@ -1751,8 +1737,7 @@ class MailList extends Model
     }
 
     /**
-     * Stop list verification process (if any)
-     *
+     * Stop list verification process (if any).
      */
     public function stopVerification()
     {
@@ -1766,8 +1751,7 @@ class MailList extends Model
     }
 
     /**
-     * Reset verification data for list
-     *
+     * Reset verification data for list.
      */
     public function resetVerification()
     {
@@ -1777,19 +1761,18 @@ class MailList extends Model
     }
 
     /**
-     * Check if the verification process is running
-     *
+     * Check if the verification process is running.
      */
     public function isVerificationRunning()
     {
         $job = $this->getRunningVerificationJob();
+
         return !is_null($job);
     }
 
     /**
      * Get current verification process
-     * Note that FAILED is also considered "current"
-     *
+     * Note that FAILED is also considered "current".
      */
     public function getRunningVerificationJob()
     {
@@ -1797,12 +1780,12 @@ class MailList extends Model
                         ->whereIn('status', [SystemJob::STATUS_NEW, SystemJob::STATUS_RUNNING, SystemJob::STATUS_FAILED])
                         ->where('data', $this->id)
                         ->first();
+
         return $job;
     }
 
     /**
-     * Get unverified subscribers
-     *
+     * Get unverified subscribers.
      */
     public function getUnverifiedSubscribers($callback)
     {
@@ -1813,12 +1796,11 @@ class MailList extends Model
         $total = $builder->count();
         paginate($builder, function ($result, $page) use ($callback, $total) {
             $callback($result, $page, $total);
-        }, [ 'count' => $total ]);
+        }, ['count' => $total]);
     }
 
     /**
-     * Count verified subscribers
-     *
+     * Count verified subscribers.
      */
     public function countVerifiedSubscribers()
     {
@@ -1828,8 +1810,7 @@ class MailList extends Model
     }
 
     /**
-     * get verified subscribers percentage
-     *
+     * get verified subscribers percentage.
      */
     public function getVerifiedSubscribersPercentage($cache = false)
     {
@@ -1837,25 +1818,24 @@ class MailList extends Model
         if ($count == 0) {
             return 0.0;
         } else {
-            return (float)$this->countVerifiedSubscribers() / $count;
+            return (float) $this->countVerifiedSubscribers() / $count;
         }
     }
 
     /**
-     * Subscribers count
-     *
+     * Subscribers count.
      */
     public function subscribersCount($cache = false)
     {
         if ($cache) {
             return $this->readCache('SubscriberCount', 0);
         }
+
         return $this->subscribers()->count();
     }
 
     /**
-     * Segments count
-     *
+     * Segments count.
      */
     public function segmentsCount()
     {
