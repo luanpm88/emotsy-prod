@@ -62,7 +62,7 @@ class Blacklist extends Model
             $sql = sprintf('UPDATE %s SET status = %s WHERE status = %s AND email = %s', table('subscribers'), db_quote(Subscriber::STATUS_SUBSCRIBED), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote($this->email));
         } else {
             // slow: $sql = sprintf('UPDATE %s SET status = %s WHERE status = %s AND email = %s AND mail_list_id IN (SELECT id FROM %s WHERE customer_id = %s)', table('subscribers'), db_quote(Subscriber::STATUS_SUBSCRIBED), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote($this->email), table('mail_lists'), $customer->id);
-           $sql = sprintf('UPDATE %s s INNER JOIN %s m ON m.id = s.mail_list_id SET status = %s WHERE status = %s AND email = %s AND m.customer_id = %s', table('subscribers'), table('mail_lists'), db_quote(Subscriber::STATUS_SUBSCRIBED), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote($this->email), $customer->id);
+           $sql = sprintf('UPDATE %s s INNER JOIN %s m ON m.id = s.mail_list_id SET s.status = %s WHERE s.status = %s AND s.email = %s AND m.customer_id = %s', table('subscribers'), table('mail_lists'), db_quote(Subscriber::STATUS_SUBSCRIBED), db_quote(Subscriber::STATUS_BLACKLISTED), db_quote($this->email), $customer->id);
         }
         \DB::statement($sql);
     }
