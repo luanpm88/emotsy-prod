@@ -27,7 +27,7 @@
 					</div>
 				</td>
 				<td>
-					<span class="no-margin kq_search">{{ $blacklist->email }}</span>
+					<span class="no-margin kq_search" title="{{ $blacklist->reason }}">{{ $blacklist->email }}</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.email') }}</span>
 				</td>
 				<td>
