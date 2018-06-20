@@ -35,16 +35,16 @@ class AdminController extends Controller
 
         return $img->response();
     }
-    
+
     /**
-     * User uid for editor
+     * User uid for editor.
      */
     public function showUid(Request $request)
     {
         $user = $request->user();
         echo $user->uid;
     }
-    
+
     /**
      * Log in back user.
      *
@@ -56,9 +56,9 @@ class AdminController extends Controller
     {
         $id = \Session::pull('orig_user_id');
         $orig_user = \Acelle\Model\User::findByUid($id);
-        
+
         \Auth::login($orig_user);
-        
+
         return redirect()->action('Admin\UserController@index');
     }
 }

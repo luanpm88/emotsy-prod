@@ -20,7 +20,7 @@ class CampaignController extends Controller
             'open',
             'click',
             'unsubscribe',
-            'webView'
+            'webView',
         ]]);
     }
 
@@ -260,7 +260,7 @@ class CampaignController extends Controller
 
         return view('campaigns.recipients', [
             'campaign' => $campaign,
-            'rules' => $rules
+            'rules' => $rules,
         ]);
     }
 
@@ -305,7 +305,7 @@ class CampaignController extends Controller
 
             // Save campaign
             $campaign->fillAttributes($request->all());
-            
+
             $campaign->save();
 
             // Log
@@ -471,7 +471,7 @@ class CampaignController extends Controller
 
         return view('campaigns.template_preview', [
             'campaign' => $campaign,
-            'rules' => $rules
+            'rules' => $rules,
         ]);
     }
 
@@ -537,7 +537,7 @@ class CampaignController extends Controller
             // $this->validate($request, $rules);
 
             //// Save campaign
-            $time = \Acelle\Library\Tool::systemTimeFromString($request->delivery_date . ' ' . $request->delivery_time);
+            $time = \Acelle\Library\Tool::systemTimeFromString($request->delivery_date.' '.$request->delivery_time);
             $campaign->run_at = $time;
             $campaign->save();
 
@@ -604,6 +604,7 @@ class CampaignController extends Controller
 
         if (isSiteDemo()) {
             echo trans('messages.operation_not_allowed_in_demo');
+
             return;
         }
 
@@ -771,7 +772,7 @@ class CampaignController extends Controller
         ];
 
         // columns
-        $result['columns'][] = trans("messages.count");
+        $result['columns'][] = trans('messages.count');
 
         // datas
         $result['data'][] = [
@@ -781,8 +782,8 @@ class CampaignController extends Controller
             'data' => [$campaign->unsubscribeCount()],
             'itemStyle' => [
                 'normal' => [
-                    'color' => '#D81B60'
-                ]
+                    'color' => '#D81B60',
+                ],
             ],
         ];
 
@@ -793,8 +794,8 @@ class CampaignController extends Controller
             'data' => [$campaign->feedbackCount()],
             'itemStyle' => [
                 'normal' => [
-                    'color' => '#00897B'
-                ]
+                    'color' => '#00897B',
+                ],
             ],
         ];
 
@@ -805,8 +806,8 @@ class CampaignController extends Controller
             'data' => [$campaign->bounceCount()],
             'itemStyle' => [
                 'normal' => [
-                    'color' => '#6D4C41'
-                ]
+                    'color' => '#6D4C41',
+                ],
             ],
         ];
 
@@ -817,8 +818,8 @@ class CampaignController extends Controller
             'data' => [$campaign->clickedEmailsCount()],
             'itemStyle' => [
                 'normal' => [
-                    'color' => '#039BE5'
-                ]
+                    'color' => '#039BE5',
+                ],
             ],
         ];
 
@@ -829,8 +830,8 @@ class CampaignController extends Controller
             'data' => [$campaign->openUniqCount()],
             'itemStyle' => [
                 'normal' => [
-                    'color' => '#546E7A'
-                ]
+                    'color' => '#546E7A',
+                ],
             ],
         ];
 
@@ -841,8 +842,8 @@ class CampaignController extends Controller
             'data' => [$campaign->failedCount()],
             'itemStyle' => [
                 'normal' => [
-                    'color' => '#E53935'
-                ]
+                    'color' => '#E53935',
+                ],
             ],
         ];
 
@@ -853,8 +854,8 @@ class CampaignController extends Controller
             'data' => [$campaign->deliveredCount()],
             'itemStyle' => [
                 'normal' => [
-                    'color' => '#7CB342'
-                ]
+                    'color' => '#7CB342',
+                ],
             ],
         ];
 
@@ -865,11 +866,10 @@ class CampaignController extends Controller
             'data' => [$campaign->readCache('SubscriberCount', 0)],
             'itemStyle' => [
                 'normal' => [
-                    'color' => '#555'
-                ]
+                    'color' => '#555',
+                ],
             ],
         ];
-
 
         $result['horizontal'] = 1;
 
@@ -923,7 +923,7 @@ class CampaignController extends Controller
             'type' => 'pie',
             'radius' => '70%',
             'center' => ['50%', '57.5%'],
-            'data' => $datas
+            'data' => $datas,
         ];
 
         $result['pie'] = 1;
@@ -977,7 +977,7 @@ class CampaignController extends Controller
             'type' => 'pie',
             'radius' => '70%',
             'center' => ['50%', '57.5%'],
-            'data' => $datas
+            'data' => $datas,
         ];
 
         $result['pie'] = 1;
@@ -1044,7 +1044,7 @@ class CampaignController extends Controller
             event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList));
         } catch (\Exception $ex) {
             // in case TrackingLog record does not exist yet (open before logged!)
-            LaravelLog::warning('Cannot save open tracking log for message: ' . $log->message_id);
+            LaravelLog::warning('Cannot save open tracking log for message: '.$log->message_id);
         }
         # Just return a blank image
         return response()->file(public_path('images/transparent.gif'));
@@ -1072,7 +1072,7 @@ class CampaignController extends Controller
                 event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList));
             } catch (\Exception $ex) {
                 // in case TrackingLog record does not exist yet (open before logged!)
-                LaravelLog::warning('Cannot save click tracking log for message: ' . $log->message_id);
+                LaravelLog::warning('Cannot save click tracking log for message: '.$log->message_id);
             }
         } catch (\Exception $e) {
             // Allow click from a test email
@@ -1090,7 +1090,8 @@ class CampaignController extends Controller
         $tracking_log = \Acelle\Model\TrackingLog::where('message_id', '=', $message_id)->first();
 
         if (!is_object($tracking_log)) {
-            LaravelLog::error("Tracking log not exists");
+            LaravelLog::error('Tracking log not exists');
+
             return view('somethingWentWrong', ['message' => trans('messages.the_email_no_longer_exists')]);
         }
 
@@ -1550,7 +1551,7 @@ class CampaignController extends Controller
 
         return view('campaigns.template_rebuild', [
             'campaign' => $campaign,
-            'list' => $campaign->defaultMailList
+            'list' => $campaign->defaultMailList,
         ]);
     }
 
@@ -1608,12 +1609,12 @@ class CampaignController extends Controller
 
         $campaigns = \Acelle\Model\Campaign::search($request, 'all')
             ->where('id', '!=', $campaign->id)
-            ->where('html', '!=', "")
+            ->where('html', '!=', '')
             ->paginate($request->per_page);
 
         return view('campaigns._template_list', [
             'campaigns' => $campaigns,
-            'uid' => $campaign->uid
+            'uid' => $campaign->uid,
         ]);
     }
 
@@ -1637,7 +1638,7 @@ class CampaignController extends Controller
         if ($campaign->template_source == 'builder') {
             $cssToInlineStyles = new CssToInlineStyles();
             $html = $campaign->html;
-            $css = file_get_contents(public_path("css/res_email.css"));
+            $css = file_get_contents(public_path('css/res_email.css'));
 
             // output
             $campaign->html = $cssToInlineStyles->convert(
@@ -1767,8 +1768,8 @@ class CampaignController extends Controller
             'campaign' => $campaign,
             'lists_segment_group' => [
                 'list' => null,
-                'is_default' => false
-            ]
+                'is_default' => false,
+            ],
         ]);
     }
 
@@ -1782,14 +1783,14 @@ class CampaignController extends Controller
 
         try {
             if (!is_object($tracking_log)) {
-                throw new \Exception(trans("messages.web_view_can_not_find_tracking_log_with_message_id"));
+                throw new \Exception(trans('messages.web_view_can_not_find_tracking_log_with_message_id'));
             }
 
             $subscriber = $tracking_log->subscriber;
             $campaign = $tracking_log->campaign;
 
             if (!is_object($campaign) || !is_object($subscriber)) {
-                throw new \Exception(trans("messages.web_view_can_not_find_campaign_or_subscriber"));
+                throw new \Exception(trans('messages.web_view_can_not_find_campaign_or_subscriber'));
             }
 
             return view('campaigns.web_view', [
@@ -1799,6 +1800,7 @@ class CampaignController extends Controller
             ]);
         } catch (\Exception $e) {
             MailLog::error($e->getMessage());
+
             return view('somethingWentWrong', ['message' => trans('messages.the_email_no_longer_exists')]);
         }
     }
@@ -1838,12 +1840,12 @@ class CampaignController extends Controller
         }
 
         return view('campaigns.template_review', [
-            'campaign' => $campaign
+            'campaign' => $campaign,
         ]);
     }
 
     /**
-     * Template review iframe
+     * Template review iframe.
      *
      * @param \Illuminate\Http\Request $request
      *
@@ -1860,7 +1862,7 @@ class CampaignController extends Controller
         }
 
         return view('campaigns.template_review_iframe', [
-            'campaign' => $campaign
+            'campaign' => $campaign,
         ]);
     }
 
@@ -1885,7 +1887,7 @@ class CampaignController extends Controller
         } else {
             echo json_encode([
                 'status' => 'error',
-                'message' => trans('messages.not_authorized_message')
+                'message' => trans('messages.not_authorized_message'),
             ]);
         }
     }
