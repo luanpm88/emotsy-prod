@@ -25,7 +25,7 @@ class AddColumnData extends Migration
     public function down()
     {
         Schema::table('subscriptions', function (Blueprint $table) {
-             $table->text('data')->nullable();
+            $table->dropColumn('data');
         });
     }
 }

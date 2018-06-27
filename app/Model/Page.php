@@ -32,7 +32,7 @@ class Page extends Model
      * @var array
      */
     protected $fillable = [
-        'content', 'subject',
+        'content', 'subject', 'use_outside_url', 'outside_url'
     ];
 
     /**
@@ -232,5 +232,31 @@ class Page extends Model
             'name' => $name,
             'data' => json_encode($data),
         ]);
+    }
+    
+    /**
+     * Check if page has outside url.
+     */
+    public function canHasOutsideUrl()
+    {
+        return in_array($this->layout->alias, array(
+            'sign_up_thankyou_page',
+            'sign_up_confirmation_thankyou',
+            'unsubscribe_success_page',
+            'profile_update_email_sent',
+            'profile_update_success_page',
+        ));
+    }
+    
+    /**
+     * Get outside url with subscriber uid.
+     */
+    public function getOutsideUrlWithUid()
+    {
+        if (parse_url($this->outside_url, PHP_URL_QUERY)) {
+            return $this->outside_url . "&subscriber_id=" . $this->uid;
+        } else {
+            return $this->outside_url . "?subscriber_id=" . $this->uid;
+        }
     }
 }

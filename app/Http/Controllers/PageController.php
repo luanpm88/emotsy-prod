@@ -26,6 +26,16 @@ class PageController extends Controller
             ],
         ]);
     }
+    
+    /**
+     * Redirect page if use outside url
+     */
+    public function checkOutsideUrlRedirect($page)
+    {
+        if ($page->use_outside_url) {
+            return redirect($page->outside_url);
+        }
+    }
 
     /**
      * Update list page content.
@@ -48,6 +58,8 @@ class PageController extends Controller
 
         // storing
         if ($request->isMethod('post')) {
+            $page->fill($request->all());
+            
             $validate = 'required';
             foreach ($layout->tags() as $tag) {
                 if ($tag['required']) {
@@ -55,15 +67,20 @@ class PageController extends Controller
                 }
             }
 
-            $rules = array(
-                'content' => $validate,
-            );
-            $rules['subject'] = 'required';
-
+            $rules = array();
+            
+            // Check if use outside url
+            if ($request->use_outside_url) {
+                $rules['outside_url'] = 'active_url';
+            } else {
+                $rules['content'] = $validate;
+                $rules['subject'] = 'required';
+            }
+            
+            // Validation
             $this->validate($request, $rules);
 
-            // save
-            $page->fill($request->all());
+            // save            
             $page->save();
 
             // Log
@@ -214,6 +231,11 @@ class PageController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_thankyou_page')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
+        
+        // redirect if use outside url
+        if ($page->use_outside_url) {
+            return redirect($page->getOutsideUrlWithUid());
+        }
 
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->subscriber_uid);
 
@@ -239,6 +261,11 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_thankyou')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+        
+        // redirect if use outside url
+        if ($page->use_outside_url) {
+            return redirect($page->getOutsideUrlWithUid());
+        }
 
         $page->renderContent(null, $subscriber);
 
@@ -323,6 +350,11 @@ class PageController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         $page->renderContent(null, $subscriber);
+        
+        // redirect if use outside url
+        if ($page->use_outside_url) {
+            return redirect($page->getOutsideUrlWithUid());
+        }
 
         return view('pages.default', [
             'list' => $list,
@@ -408,6 +440,11 @@ class PageController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         $page->renderContent(null, $subscriber);
+        
+        // redirect if use outside url
+        if ($page->use_outside_url) {
+            return redirect($page->getOutsideUrlWithUid());
+        }
 
         return view('pages.default', [
             'list' => $list,
@@ -432,6 +469,11 @@ class PageController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         $page->renderContent(null, $subscriber);
+        
+        // redirect if use outside url
+        if ($page->use_outside_url) {
+            return redirect($page->getOutsideUrlWithUid());
+        }
 
         // SEND EMAIL
         try {

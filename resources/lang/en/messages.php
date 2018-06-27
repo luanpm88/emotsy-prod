@@ -2046,4 +2046,8 @@
   'campaign.from_email.help' => 'FROM header of your email, also the identity of the sender. Use an email address that does match one of your verified domains to make it more likely that your email reaches recipient\'s INBOX',
   'campaign.tracking_domain_uid.help' => 'Rewrite all tracking links to use the domain you choose',
   'url_root' => 'Root URL',
+  'form_page.use_outside_url' => 'Custom outside url',
+  'form_page.use_outside_url.intro' => 'Auto redirect to custom url below',
+  'form_page.use_built_in_page' => 'Built-in page',
+  'form_page.use_built_in_page.intro' => 'Use build-in page',
 ) ?>
