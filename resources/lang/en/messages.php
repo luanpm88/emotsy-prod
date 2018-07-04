@@ -2051,4 +2051,5 @@
   'form_page.use_built_in_page' => 'Built-in page',
   'form_page.use_built_in_page.intro' => 'Use your Acelle Mail page',
   'form_page.enter_outside_url' => 'http://your-url.com',
+  'campaign.overview_statistics' => 'Statistics / Overview',
 ) ?>
