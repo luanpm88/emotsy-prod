@@ -2052,5 +2052,6 @@
   'form_page.use_built_in_page.intro' => 'Use your Acelle Mail page',
   'form_page.enter_outside_url' => 'http://your-url.com',
   'campaign.overview_statistics' => 'Statistics / Overview',
+  'list.overview_statistics' => 'Statistics / Overview',
   'embedded_form.list_not_exsit' => 'The list does not exist',
 ) ?>
