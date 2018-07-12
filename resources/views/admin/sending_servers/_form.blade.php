@@ -145,6 +145,18 @@
 			])
 		</div>
 	@endif
+	@if (array_key_exists("default_from_email", Acelle\Model\SendingServer::types()[request()->type]["cols"]))
+		<div class="col-sm-6 col-md-4">
+			@include('helpers.form_control', [
+				'type' => 'text',
+				'class' => '',
+				'name' => 'default_from_email',
+				'value' => $server->default_from_email,
+				'help_class' => 'sending_server',
+				'rules' => Acelle\Model\SendingServer::rules(request()->type)
+			])
+		</div>
+	@endif
 </div>
 
 <h4 class="text-semibold text-teal-800">{{ trans('messages.sending_quota') }}</h4>

@@ -163,11 +163,12 @@ class AutoEventController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('patch')) {
+            $campaign->fillAttributes($request->all());
+            
             // Check validation
             $this->validate($request, $campaign->automatedCampaignRules());
 
-            // Save campaign
-            $campaign->fillAttributes($request->all());            
+            // Save campaign                     
             $campaign->type = $request->type;
             $campaign->save();
             

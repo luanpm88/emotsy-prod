@@ -2054,4 +2054,6 @@
   'campaign.overview_statistics' => 'Statistics / Overview',
   'list.overview_statistics' => 'Statistics / Overview',
   'embedded_form.list_not_exsit' => 'The list does not exist',
+  'default_from_email' => 'Default FROM email address',
+  'use_sending_server_default_value' => 'Use sending server\'s default value',
 ) ?>
