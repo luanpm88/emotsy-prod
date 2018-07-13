@@ -106,7 +106,7 @@
                 <div class="col-md-6">
                     <h4 class="text-semibold">{{ trans('messages.Copy_paste_onto_your_site') }}</h4>
                         <pre class="language-markup content-group embedded-code"><code></code></pre>
-                        <textareas class="form-control hide">@include("lists._embedded_form_content", request()->all())</textareas>
+                        <textarea style="height: 400px" class="form-control main-code hide">@include("lists._embedded_form_content", request()->all())</textarea>
                 </div>
                 <div class="col-md-6">
                     <h4 class="text-semibold">{{ trans('messages.preview') }}</h4>
@@ -118,7 +118,7 @@
                 </div>
             </div>
             <script>
-                var bio_text = $("textareas").html();
+                var bio_text = $("textarea.main-code").html();
                 bio_text = bio_text.replace(/\</g, '&lt;');
                 bio_text = bio_text.replace(/script_tmp/g, 'script');
                 bio_text = bio_text.replace(/\t/g, '');
