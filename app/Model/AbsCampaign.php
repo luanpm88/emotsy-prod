@@ -328,7 +328,13 @@ abstract class AbsCampaign extends Model
             }
         }
         $message->setSubject($this->getSubject($subscriber, $msgId));
-        $message->setFrom(array($this->from_email => $this->from_name));
+        
+        if ($this->useSendingServerFromEmailAddress()) {
+            $message->setFrom($server->default_from_email);
+        } else {
+            $message->setFrom(array($this->from_email => $this->from_name));
+        }
+        
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
         $message->setEncoder(\Swift_Encoding::get8bitEncoding());
@@ -351,6 +357,16 @@ abstract class AbsCampaign extends Model
         }
 
         return array($message, $msgId);
+    }
+    
+    /**
+     * Check if the campaign setting is "use sending server's FROM email address"
+     *
+     * @return mixed
+     */
+    private function useSendingServerFromEmailAddress()
+    {
+        return $this->use_default_sending_server_from_email == true;
     }
 
     /**
