@@ -285,14 +285,6 @@ class CampaignController extends Controller
         $campaign->from_email = !empty($campaign->from_email) ? $campaign->from_email : $campaign->defaultMailList->from_email;
         $campaign->subject = !empty($campaign->subject) ? $campaign->subject : $campaign->defaultMailList->default_subject;
 
-        $rules = array(
-            'name' => 'required',
-            'subject' => 'required',
-            'from_email' => 'required|email',
-            'from_name' => 'required',
-            'reply_to' => 'required|email',
-        );
-
         // Get old post values
         if (null !== $request->old()) {
             $campaign->fillAttributes($request->old());
@@ -300,11 +292,11 @@ class CampaignController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            // Check validation
-            $this->validate($request, $rules);
-
-            // Save campaign
+            // Fill values
             $campaign->fillAttributes($request->all());
+            
+            // Check validation
+            $this->validate($request, $campaign->rules());            
 
             $campaign->save();
 
@@ -313,10 +305,12 @@ class CampaignController extends Controller
 
             return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
         }
+        
+        $rules = $campaign->rules();
 
         return view('campaigns.setup', [
             'campaign' => $campaign,
-            'rules' => $rules,
+            'rules' => $campaign->rules(),
             'sendingDomainOptions' => $customer->getSendingDomainOptions(),
         ]);
     }

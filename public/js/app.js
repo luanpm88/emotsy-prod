@@ -1932,9 +1932,38 @@ $(function() {
         e.preventDefault();
     });
 
-   $(document).on("click", ".file_delete_cancel", function(e) {
-     var delid = $(this).attr("data-cancel-id");
-     $("#"+delid).show();
-   });
-
+    $(document).on("click", ".file_delete_cancel", function(e) {
+      var delid = $(this).attr("data-cancel-id");
+      $("#"+delid).show();
+    });
+    
+    $('.hiddable-cond').each(function() {
+        var box = $(this);
+        var control = $(box.attr('data-control'));
+        var hide_value = box.attr('data-hide-value');
+        
+        control.change(function() {
+            var val;
+            
+            control.each(function() {
+                if ($(this).is(':checked')) {
+                    val = $(this).val();
+                }
+            });
+            
+            if(hide_value == val) {
+                box.find('input').attr('readonly', 'readonly');
+                box.find('input').addClass('text-trans');
+            } else {
+                box.find('input').removeAttr('readonly');
+                box.find('input').removeClass('text-trans');
+            }
+        });
+        
+        control.change();
+    });
+        $(document).on("click", ".file_delete_cancel", function(e) {
+            var delid = $(this).attr("data-cancel-id");
+            $("#"+delid).show();
+        });
 });

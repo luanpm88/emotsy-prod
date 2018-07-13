@@ -57,7 +57,8 @@
 				</td>
 				<td class="text-right">
 					<a href="{{ action('SubscriberController@create', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.create_subscriber') }}" type="button" class="btn bg-grey-600 btn-icon"><i class="icon icon-plus2"></i><i class="glyphicon glyphicon-user"></i></a>
-					<a href="{{ action('MailListController@overview', $item->uid) }}" data-popup="tooltip" title="{{ trans('messages.overview') }}" type="button" class="btn bg-teal-600 btn-icon"><i class="icon-stats-growth mr-0 pr-0"></i></a>
+					<a href="{{ action('MailListController@overview', $item->uid) }}" type="button" class="btn bg-teal-600 btn-icon">
+						<i class="icon-stats-growth mr-0 pr-0"></i> {{ trans('messages.list.overview_statistics') }}</a>
 					<div class="btn-group">
 						<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>
 						<ul class="dropdown-menu dropdown-menu-right">

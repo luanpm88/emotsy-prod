@@ -653,6 +653,11 @@ class MailListController extends Controller
     public function embeddedFormCaptcha(Request $request)
     {
         $list = \Acelle\Model\MailList::findByUid($request->uid);
+        
+        // Check if list does exist
+        if (!is_object($list)) {
+            return view('somethingWentWrong', ['message' => trans('messages.embedded_form.list_not_exsit')]);
+        }
 
         $request->session()->set('form_url', \URL::previous());
 
@@ -677,6 +682,11 @@ class MailListController extends Controller
         }
 
         $list = \Acelle\Model\MailList::findByUid($request->uid);
+        
+        // Check if list does exist
+        if (!is_object($list)) {
+            return view('somethingWentWrong', ['message' => trans('messages.embedded_form.list_not_exsit')]);
+        }
 
         if (!$success) {
             $url = $request->session()->pull('form_url');

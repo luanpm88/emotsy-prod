@@ -99,7 +99,7 @@ class SendingServerMailgun extends SendingServer
 
             self::$isWebhookSetup = true;
         } catch (\Exception $e) {
-            // just ignore
+            MailLog::warning('Cannot set up Mailgun webhook: '.$e->getMessage());
         }
     }
 }
