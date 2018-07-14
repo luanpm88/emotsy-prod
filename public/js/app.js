@@ -200,7 +200,17 @@ function updateEmbeddedForm(form, url) {
         // $(".embedded-form-result").html($("<div>").html(msg).find(".embedded-form-result"));
         var html = $("<div>").html(msg).find(".embedded-form-result").html();
         $(".embedded-form-result").html(html);
-
+        
+        var bio_text = $("textareas").html();
+        bio_text = bio_text.replace(/\</g, '&lt;');
+        bio_text = bio_text.replace(/script_tmp/g, 'script');
+        bio_text = bio_text.replace(/\t/g, '');
+        bio_text = bio_text.replace(/\n/g, '');
+        bio_text = bio_text.replace(/\s+/g, ' ');
+        bio_text = bio_text.replace(/\>\s*&lt;/g, "&gt;\n&lt;");
+        bio_text = bio_text.replace(/\s+\{\s+/g, "{");
+        $("code").html(bio_text);
+        
         // Hightlight code
         Prism.highlightAll();
     });
