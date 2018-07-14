@@ -2051,7 +2051,9 @@
   'form_page.use_built_in_page' => 'Built-in page',
   'form_page.use_built_in_page.intro' => 'Use your Acelle Mail page',
   'form_page.enter_outside_url' => 'http://your-url.com',
-  'campaign.overview_statistics' => 'Statistics / Overview',
-  'list.overview_statistics' => 'Statistics / Overview',
+  'campaign.overview_statistics' => 'Statistics',
+  'list.overview_statistics' => 'Statistics',
   'embedded_form.list_not_exsit' => 'The list does not exist',
+  'default_from_email' => 'Default FROM email address',
+  'use_sending_server_default_value' => 'Use sending server\'s default value',
 ) ?>

@@ -47,7 +47,7 @@ class SendingServer extends Model
     protected $fillable = [
         'name', 'type', 'host', 'aws_access_key_id', 'aws_secret_access_key', 'aws_region', 'domain', 'api_key', 'api_secret_key', 'smtp_username',
         'smtp_password', 'smtp_port', 'smtp_protocol', 'quota_value', 'sendmail_path', 'quota_base', 'quota_unit',
-        'bounce_handler_id', 'feedback_loop_handler_id', 'status',
+        'bounce_handler_id', 'feedback_loop_handler_id', 'status', 'default_from_email'
     ];
 
     // Supported server types
@@ -286,6 +286,7 @@ class SendingServer extends Model
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
                     'smtp_protocol' => 'required',
+                    'default_from_email' => 'email|required',
                 ],
             ],
             'amazon-api' => [
@@ -294,6 +295,7 @@ class SendingServer extends Model
                     'aws_access_key_id' => 'required',
                     'aws_secret_access_key' => 'required',
                     'aws_region' => 'required',
+                    'default_from_email' => 'email|required',
                 ],
             ],
             'sendgrid-smtp' => [
@@ -304,12 +306,14 @@ class SendingServer extends Model
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
+                    'default_from_email' => 'email|required',
                 ],
             ],
             'sendgrid-api' => [
                 'cols' => [
                     'name' => 'required',
                     'api_key' => 'required',
+                    'default_from_email' => 'email|required',
                 ],
             ],
             'mailgun-api' => [
@@ -317,6 +321,7 @@ class SendingServer extends Model
                     'name' => 'required',
                     'domain' => 'required',
                     'api_key' => 'required',
+                    'default_from_email' => 'email|required',
                 ],
             ],
             'mailgun-smtp' => [
@@ -329,12 +334,14 @@ class SendingServer extends Model
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
                     'smtp_protocol' => 'required',
+                    'default_from_email' => 'email|required',
                 ],
             ],
             'elasticemail-api' => [
                 'cols' => [
                     'name' => 'required',
                     'api_key' => 'required',
+                    'default_from_email' => 'email|required',
                 ],
             ],
             'elasticemail-smtp' => [
@@ -345,12 +352,14 @@ class SendingServer extends Model
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
+                    'default_from_email' => 'email|required',
                 ],
             ],
             'sparkpost-api' => [
                 'cols' => [
                     'name' => 'required',
                     'api_key' => 'required',
+                    'default_from_email' => 'email|required',
                 ],
             ],
             'sparkpost-smtp' => [
@@ -362,6 +371,7 @@ class SendingServer extends Model
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
                     'smtp_protocol' => '',
+                    'default_from_email' => 'email|required',
                 ],
             ],
             'smtp' => [
@@ -374,6 +384,7 @@ class SendingServer extends Model
                     'smtp_protocol' => '',
                     'bounce_handler_id' => '',
                     'feedback_loop_handler_id' => '',
+                    'default_from_email' => 'email|required',
                 ],
             ],
             'sendmail' => [
@@ -382,6 +393,7 @@ class SendingServer extends Model
                     'sendmail_path' => 'required',
                     'bounce_handler_id' => '',
                     'feedback_loop_handler_id' => '',
+                    'default_from_email' => 'email|required',
                 ],
             ],
             'php-mail' => [
@@ -389,6 +401,7 @@ class SendingServer extends Model
                     'name' => 'required',
                     'bounce_handler_id' => '',
                     'feedback_loop_handler_id' => '',
+                    'default_from_email' => 'email|required',
                 ],
             ],
         ];
