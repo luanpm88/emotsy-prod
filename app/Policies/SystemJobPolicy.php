@@ -14,8 +14,6 @@ class SystemJobPolicy
     ];
     /**
      * Create a new policy instance.
-     *
-     * @return void
      */
     public function __construct()
     {
@@ -24,9 +22,10 @@ class SystemJobPolicy
 
     public function delete(\Acelle\Model\User $user, \Acelle\Model\SystemJob $item)
     {
-        if(array_search($item->name, $this->jobs) != false) {
+        if (in_array($item->name, $this->jobs)) {
             $data = json_decode($item->data);
             $list = \Acelle\Model\MailList::findByUid($data->mail_list_uid);
+
             return $list->customer_id == $user->customer->id && !$item->isRunning();
         }
 
@@ -37,6 +36,7 @@ class SystemJobPolicy
     {
         $data = json_decode($item->data);
         $list = \Acelle\Model\MailList::findByUid($data->mail_list_uid);
+
         return $list->customer_id == $user->customer->id &&
             $item->name == 'Acelle\Jobs\ImportSubscribersJob' &&
             $data->status == 'done';
@@ -46,6 +46,7 @@ class SystemJobPolicy
     {
         $data = json_decode($item->data);
         $list = \Acelle\Model\MailList::findByUid($data->mail_list_uid);
+
         return $list->customer_id == $user->customer->id &&
             ($item->name == 'Acelle\Jobs\ExportSubscribersJob' || $item->name == 'Acelle\Jobs\ExportSegmentsJob') &&
             $data->status == 'done';
@@ -53,9 +54,10 @@ class SystemJobPolicy
 
     public function cancel(\Acelle\Model\User $user, \Acelle\Model\SystemJob $item)
     {
-        if(array_search($item->name, $this->jobs) != false) {
+        if (in_array($item->name, $this->jobs)) {
             $data = json_decode($item->data);
             $list = \Acelle\Model\MailList::findByUid($data->mail_list_uid);
+
             return $list->customer_id == $user->customer->id &&
                 $item->isRunning();
         }
