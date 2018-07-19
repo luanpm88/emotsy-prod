@@ -142,7 +142,7 @@ class SendingServerElasticEmail extends SendingServer
                 MailLog::info('Custom headers enabled');
                 self::$isCustomHeadersEnabled = true;
             } else {
-                throw new Exception('Cannot enable customer headers: '.$response);
+                throw new \Exception('Cannot enable customer headers: '.$response);
             }
         } catch (\Exception $e) {
             MailLog::warning($e->getMessage());
@@ -168,7 +168,7 @@ class SendingServerElasticEmail extends SendingServer
                 MailLog::info('webhook set!');
                 self::$isWebhookSetup = true;
             } else {
-                throw new Exception('Cannot setup webhook. Response from server: '.$response);
+                throw new \Exception('Cannot setup webhook. Response from server: '.$response);
             }
         } catch (\Exception $e) {
             MailLog::warning($e->getMessage());
