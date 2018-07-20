@@ -60,6 +60,9 @@ class Log extends Model
     public function message()
     {
         $data = (array) json_decode($this->data);
+        if (isset($data['name'])) {
+            $data['name'] = strip_tags($data['name']);
+        }
 
         // Campaign
         if ($this->type == 'campaign') {
