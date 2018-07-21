@@ -713,7 +713,7 @@ class MailListController extends Controller
                 $rules['email_already_subscribed'] = 'required';
             }
 
-            if($list->subscribe_confirmation) {
+            if ($list->subscribe_confirmation) {
                 $subscriber->status = 'unconfirmed';
             } else {
                 $subscriber->status = 'subscribed';

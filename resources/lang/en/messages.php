@@ -217,6 +217,7 @@
   'subscriber_details' => 'Subscriber details',
   'create_subscriber' => 'New subscriber',
   'subscriber.created' => 'Subscriber was successfully created',
+  'subscriber.confirmation_email_sent' => 'Confirmation email sent to the subscriber',
   'subscriber.updated' => 'Subscriber was successfully updated',
   'subscribers.deleted' => 'One or more subscribers were successfully deleted',
   'subscribers.copied' => 'One or more subscribers were successfully copied',

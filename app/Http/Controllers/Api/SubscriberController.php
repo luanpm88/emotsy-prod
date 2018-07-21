@@ -4,6 +4,7 @@ namespace Acelle\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use Acelle\Library\Log as MailLog;
 
 /**
  * /api/v1/lists/{list_id}/subscribers - API controller for managing list's subscribers.
@@ -24,7 +25,6 @@ class SubscriberController extends Controller
             exit;
         }
     }
-
 
     /**
      * Display all list's subscribers.
@@ -107,7 +107,6 @@ class SubscriberController extends Controller
         if (is_null($subscriber)) {
             $subscriber = new \Acelle\Model\Subscriber();
             $subscriber->mail_list_id = $list->id;
-            $subscriber->status = 'subscribed';
             $subscriber->from = 'api';
         }
 
@@ -125,7 +124,21 @@ class SubscriberController extends Controller
 
             // Save subscriber
             $subscriber->email = $request->EMAIL;
-            $subscriber->save();
+
+            if ($list->subscribe_confirmation) {
+                // SEND subscription confirmation email
+                try {
+                    $subscriber->status = \Acelle\Model\Subscriber::STATUS_UNCONFIRMED;
+                    $subscriber->save();
+                    MailLog::info(sprintf('Sending confirmation email to %s who is being added to mail list `%s` (#%s)', $subscriber->email, $list->name, $list->id));
+                    $list->sendSubscriptionConfirmationEmail($subscriber);
+                } catch (\Exception $ex) {
+                    return \Response::json(array('message' => 'Something went wrong adding subscriber. '.$ex->getMessage()), 404);
+                }
+            } else {
+                $subscriber->status = \Acelle\Model\Subscriber::STATUS_SUBSCRIBED;
+                $subscriber->save();
+            }
 
             // Update field
             $subscriber->updateFields($request->all());
@@ -138,8 +151,8 @@ class SubscriberController extends Controller
 
             return \Response::json(array(
                 'status' => 1,
-                'message' => trans('messages.subscriber.created'),
-                'subscriber_uid' => $subscriber->uid
+                'message' => ($list->subscribe_confirmation) ? trans('messages.subscriber.confirmation_email_sent') : trans('messages.subscriber.created'),
+                'subscriber_uid' => $subscriber->uid,
             ), 200);
         }
     }
@@ -168,7 +181,7 @@ class SubscriberController extends Controller
         if (strpos($id, '@') !== false) {
             $item = \Acelle\Model\Subscriber::
                 where('email', '=', $id)
-                ->where('mail_list_id', "=", $list->id)
+                ->where('mail_list_id', '=', $list->id)
                 ->first();
         } else {
             $item = \Acelle\Model\Subscriber::
@@ -192,7 +205,7 @@ class SubscriberController extends Controller
             'email' => $item->email,
             'status' => $item->status,
             'source' => $item->from,
-            'ip_address' => $item->ip
+            'ip_address' => $item->ip,
         ];
 
         foreach ($list->fields as $field) {
@@ -381,7 +394,7 @@ class SubscriberController extends Controller
                     'email' => $subscriber->email,
                     'status' => $subscriber->status,
                     'source' => $subscriber->from,
-                    'ip_address' => $subscriber->ip
+                    'ip_address' => $subscriber->ip,
                 ];
 
                 foreach ($subscriber->mailList->fields as $field) {
@@ -434,9 +447,9 @@ class SubscriberController extends Controller
             event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
 
             return \Response::json(array(
-                'status' => 1, 
+                'status' => 1,
                 'message' => trans('messages.subscriber.updated'),
-                'subscriber_uid' => $subscriber->uid
+                'subscriber_uid' => $subscriber->uid,
             ), 200);
         }
     }
