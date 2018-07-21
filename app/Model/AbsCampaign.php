@@ -581,8 +581,8 @@ abstract class AbsCampaign extends Model
     public function findSendingDomain($email)
     {
         $domain = substr(strrchr($email, '@'), 1);
-
-        return SendingDomain::where('name', $domain)->first();
+        
+        return $this->customer->activeDkimSendingDomains()->where('name', $domain)->first();
     }
 
     /**

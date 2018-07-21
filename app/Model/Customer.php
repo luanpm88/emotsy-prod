@@ -163,6 +163,11 @@ class Customer extends Model
     {
         return $this->sendingDomains()->where('status', '=', SendingDomain::STATUS_ACTIVE);
     }
+    
+    public function activeDkimSendingDomains()
+    {
+        return $this->activeSendingDomains()->where('dkim_verified', true);
+    }
 
     public function emailVerificationServers()
     {
