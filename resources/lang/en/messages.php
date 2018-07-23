@@ -2057,4 +2057,8 @@
   'embedded_form.list_not_exsit' => 'The list does not exist',
   'default_from_email' => 'Default FROM email address',
   'use_sending_server_default_value' => 'Use sending server\'s default value',
+  'sending_domain.verification_hostname.enter' => 'Enter hostname',
+  'sending_domain.verification_hostname.not_valid' => 'hostname should only contain lowercase letters or number, and cannot be longer than 24 characters',
+  'sending_domain.dkim_selector.enter' => 'Enter hostname',
+  'sending_domain.dkim_selector.not_valid' => 'hostname should only contain lowercase letters or number, and cannot be longer than 24 characters',
 ) ?>

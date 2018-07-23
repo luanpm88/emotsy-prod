@@ -283,4 +283,50 @@ class SendingDomainController extends Controller
             'server' => $server,
         ]);
     }
+    
+    /**
+     * update VerificationTxtName.
+     *
+     * @param int $id
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function updateVerificationTxtName($id, Request $request)
+    {
+        $server = \Acelle\Model\SendingDomain::findByUid($id);
+        
+        // authorize
+        if (!$request->user()->customer->can('update', $server)) {
+            return $this->notAuthorized();
+        }
+
+        if (!$server->setVerificationTxtName($request->value)) {
+            return response(trans('messages.sending_domain.verification_hostname.not_valid'), 404)
+                ->header('Content-Type', 'text/plain');
+        }
+    }
+    
+    /**
+     * update VerificationTxtName.
+     *
+     * @param int $id
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function updateDkimSelector($id, Request $request)
+    {
+        $server = \Acelle\Model\SendingDomain::findByUid($id);
+        
+        // authorize
+        if (!$request->user()->customer->can('update', $server)) {
+            return $this->notAuthorized();
+        }
+
+        if (!$server->setDkimSelector($request->value)) {
+            return response(trans('messages.sending_domain.dkim_selector.not_valid'), 404)
+                ->header('Content-Type', 'text/plain');
+        }
+    }
 }

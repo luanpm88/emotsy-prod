@@ -1972,8 +1972,14 @@ $(function() {
         
         control.change();
     });
-        $(document).on("click", ".file_delete_cancel", function(e) {
-            var delid = $(this).attr("data-cancel-id");
-            $("#"+delid).show();
-        });
+    $(document).on("click", ".file_delete_cancel", function(e) {
+        var delid = $(this).attr("data-cancel-id");
+        $("#"+delid).show();
+    });
+    
+    $.fn.editable.defaults.params = function (params) {
+        params._token = CSRF_TOKEN;
+        return params;
+    };
+    $('.inline-editable').editable();
 });

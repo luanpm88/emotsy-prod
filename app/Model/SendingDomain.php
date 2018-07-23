@@ -264,7 +264,11 @@ class SendingDomain extends Model
      */
     public function getVerificationTxtName()
     {
-        return self::VERIFICATION_TXT_NAME;
+        if (!empty($this->verification_hostname)) {
+            return $this->verification_hostname;
+        } else {
+            return self::VERIFICATION_TXT_NAME;
+        }        
     }
 
     /**
@@ -418,6 +422,50 @@ class SendingDomain extends Model
      */
     public function getDkimSelector()
     {
-        return self::DKIM_FULL_SELECTOR;
+        if (!empty($this->dkim_selector)) {
+            return $this->dkim_selector . '._domainkey';
+        } else {
+            return self::DKIM_FULL_SELECTOR;
+        }
+    }
+    
+    /**
+     * Get DKIM selector parts.
+     *
+     * @return string
+     */
+    public function getDkimSelectorParts()
+    {
+        return explode(".", $this->getDkimSelector());
+    }
+    
+    /**
+     * Set DKIM selector.
+     *
+     * @return string
+     */
+    public function setDkimSelector($dkim_selector)
+    {
+        if ( preg_match('/^[a-z0-9]{1,24}$/',  $dkim_selector) ) {
+            $this->dkim_selector = $dkim_selector;
+            $this->save();
+            return true;
+        }
+        return false;
+    }
+    
+    /**
+     * Set VerificationTxtName.
+     *
+     * @return string
+     */
+    public function setVerificationTxtName($verification_hostname)
+    {
+        if ( preg_match('/^[a-z0-9]{1,24}$/',  $verification_hostname) ) {
+            $this->verification_hostname = $verification_hostname;
+            $this->save();
+            return true;
+        }
+        return false;
     }
 }

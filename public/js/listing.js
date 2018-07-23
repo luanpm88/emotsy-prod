@@ -150,6 +150,8 @@ function tableFilter(form, custom_url) {
         form.attr("current-url", url);
 
         container.removeClass('loading');
+        
+        container.find('.inline-editable').editable();
     });
 }
 

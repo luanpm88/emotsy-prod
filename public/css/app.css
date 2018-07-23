@@ -2658,3 +2658,6 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 .btn-default:hover {
   background: #d0d0d0 !important;
 }
+.editable-clear-x:after {
+  content: none;
+}

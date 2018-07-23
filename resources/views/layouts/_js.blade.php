@@ -33,6 +33,8 @@
     <script type="text/javascript" src="{{ URL::asset('js/scrollbar/jquery.mCustomScrollbar.concat.min.js') }}"></script>
 
     <script type="text/javascript" src="{{ URL::asset('js/jquery.cookie.js') }}"></script>
+	
+	<script type="text/javascript" src="{{ URL::asset('bootstrap3-editable/js/bootstrap-editable.js') }}"></script>
 
 	@yield('page_script')
 

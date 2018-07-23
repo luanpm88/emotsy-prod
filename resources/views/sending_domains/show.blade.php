@@ -105,7 +105,7 @@
             <h3>{{ trans('messages.sending_domain.dkim_title') }}</h3>
             <p>{!! trans('messages.sending_domain.dkim_wording') !!}</p>
             <p>{!! trans('messages.sending_domain.spf_wording') !!}</p>
-            <div class="scrollbar-box dim-box">
+            <div class="scrollbar-boxx dim-box">
                 <div class="listing-form"
 					data-url="{{ action('SendingDomainController@records', $server->uid) }}"
 					per-page="1">
