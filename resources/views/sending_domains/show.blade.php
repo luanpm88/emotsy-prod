@@ -100,13 +100,6 @@
         </div>
     </div>
         
-    @if (Auth::user()->customer->can('update', $server))
-        <a href="{{ action('SendingDomainController@edit', $server->uid) }}" data-popup="tooltip"
-            title="{{ trans('messages.sending_domain.edit') }}" type="button" class="btn btn-default bg-grey btn-icon">
-                <i class="icon-pencil mr-5"></i> {{ trans('messages.sending_domain.edit') }}
-        </a>
-    @endif
-        
     <div class="row">
         <div class="col-sm-12 col-md-12 mt-20">
             <h3>{{ trans('messages.sending_domain.dkim_title') }}</h3>
