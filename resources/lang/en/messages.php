@@ -2061,4 +2061,11 @@
   'sending_domain.verification_hostname.not_valid' => 'hostname should only contain lowercase letters or number, and cannot be longer than 24 characters',
   'sending_domain.dkim_selector.enter' => 'Enter hostname',
   'sending_domain.dkim_selector.not_valid' => 'hostname should only contain lowercase letters or number, and cannot be longer than 24 characters',
+  'list.exported_file.headers.uid' => 'UID',
+  'list.exported_file.headers.status' => 'STATUS',
+  'list.exported_file.status.subscribed' => 'subscribed',
+  'list.exported_file.status.unsubscribed' => 'unsubscribed',
+  'list.exported_file.status.blacklisted' => 'blacklisted',
+  'list.exported_file.status.spam-reported' => 'spam-reported',
+  'list.exported_file.status.unconfirmed' => 'unconfirmed',
 ) ?>
