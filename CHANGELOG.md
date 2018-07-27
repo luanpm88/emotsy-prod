@@ -1,4 +1,15 @@
-3.0.16 / 2017-06-01
+3.0.17 / 2018-07-29
+==================
+
+ * Added: support changing DKIM selector
+ * Added: choose sending server's default FROM header
+ * Fixed: embedded form broken
+ * Fixed: date/time field issue
+ * Fixed: import cancel issue
+ * Fixed: export UID and STATUS values
+ * Fixed: XSS thread with campaign email
+
+3.0.16 / 2018-07-01
 ==================
  
  * Added: domain verification
