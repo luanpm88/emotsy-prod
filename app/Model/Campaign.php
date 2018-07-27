@@ -301,8 +301,8 @@ class Campaign extends AbsCampaign
             $conditions = [];
             foreach ($this->listsSegments as $lists_segment) {
                 if (!empty($lists_segment->segment_id)) {
+                    // Segment 
                     $conds = $lists_segment->segment->getSubscribersConditions();
-                    // JOINS...
                     if (!empty($conds['joins'])) {
                         foreach ($conds['joins'] as $joining) {
                             $query = $query->leftJoin($joining['table'], function ($join) use ($joining) {
@@ -317,11 +317,11 @@ class Campaign extends AbsCampaign
                     if (!empty($conds['conditions'])) {
                         $conditions[] = $conds['conditions'];
                     }
+                } else {
+                    // Entire list
+                    $conditions[] = '(' . table('subscribers.mail_list_id') . ' = ' . $lists_segment->mail_list_id . ')';
                 }
             }
-
-            // what if list does not have segment?
-            $query->whereRaw(sprintf('%s = %s', table('subscribers.mail_list_id'), $lists_segment->mail_list_id));
 
             if (!empty($conditions)) {
                 $query = $query->whereRaw('('.implode(' OR ', $conditions).')');
