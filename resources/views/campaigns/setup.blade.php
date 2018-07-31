@@ -84,7 +84,8 @@
 			</div>
 			<div class="col-md-6 segments-select-box">
 				<div class="form-group checkbox-right-switch">
-					@include('helpers.form_control', ['type' => 'checkbox',
+					@if ($campaign->type != 'plain-text')
+						@include('helpers.form_control', ['type' => 'checkbox',
 													'name' => 'track_open',
 													'label' => trans('messages.track_opens'),
 													'value' => $campaign->track_open,
@@ -93,7 +94,7 @@
 													'rules' => $rules
 												])
 					
-					@include('helpers.form_control', ['type' => 'checkbox',
+						@include('helpers.form_control', ['type' => 'checkbox',
 													'name' => 'track_click',
 													'label' => trans('messages.track_clicks'),
 													'value' => $campaign->track_click,
@@ -101,6 +102,7 @@
 													'help_class' => 'campaign',
 													'rules' => $rules
 												])
+					@endif
 					
 					@include('helpers.form_control', ['type' => 'checkbox',
 													'name' => 'sign_dkim',
