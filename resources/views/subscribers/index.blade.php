@@ -49,6 +49,11 @@
 														<i class="icon-exit"></i> {{ trans('messages.unsubscribe') }}
 													</a>
 												</li>
+                                                <li>
+													<a data-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', $list->uid) }}">
+														<i class="icon-envelop5"></i> {{ trans('messages.subscribers.resend_confirmation_email') }}
+													</a>
+												</li>
 												<li>
 													<a href="#" class="copy_move_subscriber"
 														data-url="{{ action('SubscriberController@copyMoveForm', [

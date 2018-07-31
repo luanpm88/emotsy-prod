@@ -2061,4 +2061,7 @@
   'sending_domain.verification_hostname.not_valid' => 'hostname should only contain lowercase letters or number, and cannot be longer than 24 characters',
   'sending_domain.dkim_selector.enter' => 'Enter hostname',
   'sending_domain.dkim_selector.not_valid' => 'hostname should only contain lowercase letters or number, and cannot be longer than 24 characters',
+  'subscribers.resend_confirmation_email' => 'Resend Confirmation Emails',
+  'subscribers.resend_confirmation_email.being_sent' => 'Confirmation email(s) are being sent. It may take a while for the task to finish.',
+  'subscribers.resend_confirmation_email.confirm' => 'You\'re about to resend confirmation email(s) to :number subscriber(s) from the list.',
 ) ?>

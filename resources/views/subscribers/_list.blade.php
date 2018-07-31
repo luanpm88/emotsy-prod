@@ -88,7 +88,13 @@
 									<i class="icon-move-right"></i> {{ trans('messages.move_to') }}
 								</a>
 							</li>
-
+							@if (\Gate::allows('update', $item))
+								<li>
+									<a data-method="POST" link-confirm="{{ trans('messages.subscribers.resend_confirmation_email.confirm') }}" href="{{ action('SubscriberController@resendConfirmationEmail', ['list_uid' => $list->uid, "uids" => $item->uid]) }}">
+										<i class="icon-envelop5"></i> {{ trans('messages.subscribers.resend_confirmation_email') }}
+									</a>
+								</li>
+							@endif
 							@if (\Gate::allows('delete', $item))
 								<li><a delete-confirm="{{ trans('messages.delete_subscribers_confirm') }}" href="{{ action('SubscriberController@delete', ['list_uid' => $list->uid, "uids" => $item->uid]) }}"><i class="icon-trash"></i> {{ trans("messages.delete") }}</a></li>
 							@endif

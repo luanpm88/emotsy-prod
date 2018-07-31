@@ -174,6 +174,7 @@ Route::group(['middleware' => ['not_installed', 'frontend']], function () {
     Route::get('lists/{list_uid}/fields/{uid}/delete', 'FieldController@delete');
 
     // Subscriber
+    Route::post('lists/{list_uid}/subscribers/resend/confirmation-email/{uids?}', 'SubscriberController@resendConfirmationEmail');
     Route::post('subscriber/{uid}/verification/start', 'SubscriberController@startVerification');
     Route::post('subscriber/{uid}/verification/reset', 'SubscriberController@resetVerification');
     Route::get('lists/{from_uid}/copy-move-from/{action}', 'SubscriberController@copyMoveForm');
