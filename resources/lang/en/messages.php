@@ -2068,4 +2068,8 @@
   'list.exported_file.status.blacklisted' => 'blacklisted',
   'list.exported_file.status.spam-reported' => 'spam-reported',
   'list.exported_file.status.unconfirmed' => 'unconfirmed',
+  'campaign.plain_text.open_click_tracking_wanring' => '<span class="text-semibold">Warning</span>: a plain-text campaign does not support open/click tracking.
+    Consider creating a Regular Campaign to enable tracking features.',
+  'automation_email.plain_text.open_click_tracking_wanring' => '<span class="text-semibold">Warning</span>: a plain-text email does not support open/click tracking.
+    Consider creating a Regular Campaign to enable tracking features.',
 ) ?>

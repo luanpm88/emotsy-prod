@@ -112,6 +112,12 @@
 													'help_class' => 'campaign',
 													'rules' => $rules
 												])
+												
+					@if ($campaign->type == 'plain-text')
+						<div class="alert alert-warning">
+							{!! trans('messages.campaign.plain_text.open_click_tracking_wanring') !!}
+						</div>
+					@endif
 				</div>
 			</div>
 		</div>

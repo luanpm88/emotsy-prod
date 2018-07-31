@@ -135,6 +135,11 @@
                                                                 'help_class' => 'campaign',
                                                                 'rules' => $campaign->automatedCampaignRules()
                                                             ])
+								<div class="hiddable-box" data-control="input[name=type]" data-hide-value="regular">
+									<div class="alert alert-warning">
+										{!! trans('messages.automation_email.plain_text.open_click_tracking_wanring') !!}
+									</div>
+								</div>
                             </div>
 						</div>
 					</div>
