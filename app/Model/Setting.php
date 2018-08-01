@@ -381,4 +381,27 @@ class Setting extends Model
 
         return true;
     }
+    
+    public function isCronjobExecutedWithin($diff = '15 minutes')
+    {
+        $timestamp = self::get('cronjob_last_execution');
+        if (is_null($timestamp)) {
+            return false;
+        }
+        
+        $lastexec = \Carbon\Carbon::createFromTimestamp($timestamp);
+        $checked = new \Carbon\Carbon(sprintf('%s ago', $diff));
+        return ($checked > $lastexec) ? true : false;
+    }
+    
+    public function getCronjobWarningMessage()
+    {
+        $timestamp = self::get('cronjob_last_execution');
+        if (is_null($timestamp)) {
+            return 'Application cronjob has never been executed. Please go to Setting > Background Job, check your setting and make sure you have added the application cronjob to your hosting system';
+        }
+        
+        $lastexec = \Carbon\Carbon::createFromTimestamp($timestamp);
+        $checked = new \Carbon\Carbon(sprintf('%s ago', $diff));
+    }
 }
