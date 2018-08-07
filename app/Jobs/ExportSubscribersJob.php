@@ -38,8 +38,18 @@ class ExportSubscribersJob extends ImportExportJob
      */
     public function handle()
     {
+        $job = $this;
+        
+        // Set language
         try {
-            $job = $this;
+            if (is_object($job->customer) && is_object($job->customer->language)) {
+                \App::setLocale($job->customer->language->code);
+                \Carbon\Carbon::setLocale($job->customer->language->code);
+            }
+        } catch (\Exception $e) {
+        }
+        
+        try {            
             \Acelle\Model\MailList::export($job->mailList, $job->customer, $job);
         } catch (\Exception $e) {
             $systemJob = $this->getSystemJob();
