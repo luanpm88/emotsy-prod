@@ -101,6 +101,16 @@ class Notification extends Model
     }
     
     /**
+     * Get top notifications
+     *
+     * @return notification records
+     */
+    public static function top($limit = 3)
+    {
+        return static::limit($limit)->get();
+    }
+    
+    /**
      * Clean up notifications of the same type as the called class
      *
      * @return void
