@@ -51,11 +51,13 @@ class Setting extends Model
     public static function get($name)
     {
         $setting = self::where('name', $name)->first();
+        
         if (is_object($setting)) {
             return $setting->value;
         } elseif (isset(self::defaultSettings()[$name])) {
             return self::defaultSettings()[$name]['value'];
         } else {
+            // @todo exception case not handled
             return;
         }
     }
@@ -295,6 +297,18 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'cronjob_last_execution' => [
+                'cat' => 'monitor',
+                'value' => null,
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'cronjob_min_interval' => [
+                'cat' => 'monitor',
+                'value' => '5 minutes',
+                'type' => 'text',
+                'not_required' => true,
+            ],
         ];
     }
 
@@ -380,28 +394,5 @@ class Setting extends Model
         self::set($type, $path.$filename);
 
         return true;
-    }
-    
-    public function isCronjobExecutedWithin($diff = '15 minutes')
-    {
-        $timestamp = self::get('cronjob_last_execution');
-        if (is_null($timestamp)) {
-            return false;
-        }
-        
-        $lastexec = \Carbon\Carbon::createFromTimestamp($timestamp);
-        $checked = new \Carbon\Carbon(sprintf('%s ago', $diff));
-        return ($checked > $lastexec) ? true : false;
-    }
-    
-    public function getCronjobWarningMessage()
-    {
-        $timestamp = self::get('cronjob_last_execution');
-        if (is_null($timestamp)) {
-            return 'Application cronjob has never been executed. Please go to Setting > Background Job, check your setting and make sure you have added the application cronjob to your hosting system';
-        }
-        
-        $lastexec = \Carbon\Carbon::createFromTimestamp($timestamp);
-        $checked = new \Carbon\Carbon(sprintf('%s ago', $diff));
     }
 }

@@ -30,7 +30,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // Log last execution time
-        Setting::set('cronjob_last_execution', \Carbon\Carbon::now()->timestamp);
+        event(new \Acelle\Events\CronJobExecuted());
         
         // Automation
         $schedule->call(function () {

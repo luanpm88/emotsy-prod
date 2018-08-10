@@ -12,8 +12,11 @@ class HomeController extends Controller
     public function __construct()
     {
         parent::__construct();
-
+        
         $this->middleware('auth');
+        
+        // Trigger admin monitoring events when admin is logged in
+        event(new \Acelle\Events\AdminLoggedIn());
     }
 
     /**
