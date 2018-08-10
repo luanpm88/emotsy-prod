@@ -5,6 +5,7 @@ namespace Acelle\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Acelle\Model\Automation;
+use Acelle\Model\Setting;
 
 class Kernel extends ConsoleKernel
 {
@@ -28,6 +29,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
+        // Log last execution time
+        event(new \Acelle\Events\CronJobExecuted());
+        
         // Automation
         $schedule->call(function () {
             Automation::run();

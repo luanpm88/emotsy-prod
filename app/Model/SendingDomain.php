@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class SendingDomain extends Model
 {
-    const DKIM_FULL_SELECTOR = 'mailer._domainkey';
+    const DEFAULT_DKIM_SELECTOR = 'mailer._domainkey';
     const VERIFICATION_TXT_NAME = 'acellemail';
     const VERIFIED = 1;
     const UNVERIFIED = 0;
@@ -361,7 +361,7 @@ class SendingDomain extends Model
      */
     public function verifyDkim()
     {
-        $fqdn = sprintf('%s.%s', self::DKIM_FULL_SELECTOR, $this->name);
+        $fqdn = sprintf('%s.%s', $this->getDkimSelector(), $this->name);
         $results = collect(dns_get_record($fqdn, DNS_TXT));
         $results = $results->where('type', 'TXT')
                            ->whereIn('txt', [$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig()]);
@@ -425,7 +425,7 @@ class SendingDomain extends Model
         if (!empty($this->dkim_selector)) {
             return $this->dkim_selector . '._domainkey';
         } else {
-            return self::DKIM_FULL_SELECTOR;
+            return self::DEFAULT_DKIM_SELECTOR;
         }
     }
     

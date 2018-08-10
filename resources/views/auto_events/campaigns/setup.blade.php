@@ -105,23 +105,27 @@
 							])
 							
                             <div class="form-group checkbox-right-switch">
-                                @include('helpers.form_control', ['type' => 'checkbox',
-                                                                'name' => 'track_open',
-                                                                'label' => trans('messages.track_opens'),
-                                                                'value' => $campaign->track_open,
-                                                                'options' => [false,true],
-                                                                'help_class' => 'campaign',
-                                                                'rules' => $campaign->automatedCampaignRules()
-                                                            ])
-                                
-                                @include('helpers.form_control', ['type' => 'checkbox',
-                                                                'name' => 'track_click',
-                                                                'label' => trans('messages.track_clicks'),
-                                                                'value' => $campaign->track_click,
-                                                                'options' => [false,true],
-                                                                'help_class' => 'campaign',
-                                                                'rules' => $campaign->automatedCampaignRules()
-                                                            ])
+								
+								<div class="hiddable-box" data-control="input[name=type]" data-hide-value="plain-text">
+									@include('helpers.form_control', ['type' => 'checkbox',
+															'name' => 'track_open',
+															'label' => trans('messages.track_opens'),
+															'value' => $campaign->track_open,
+															'options' => [false,true],
+															'help_class' => 'campaign',
+															'rules' => $campaign->automatedCampaignRules()
+														])
+							
+									@include('helpers.form_control', ['type' => 'checkbox',
+															'name' => 'track_click',
+															'label' => trans('messages.track_clicks'),
+															'value' => $campaign->track_click,
+															'options' => [false,true],
+															'help_class' => 'campaign',
+															'rules' => $campaign->automatedCampaignRules()
+														])
+								</div>
+								
                                 
                                 @include('helpers.form_control', ['type' => 'checkbox',
                                                                 'name' => 'sign_dkim',
@@ -131,6 +135,11 @@
                                                                 'help_class' => 'campaign',
                                                                 'rules' => $campaign->automatedCampaignRules()
                                                             ])
+								<div class="hiddable-box" data-control="input[name=type]" data-hide-value="regular">
+									<div class="alert alert-warning">
+										{!! trans('messages.automation_email.plain_text.open_click_tracking_wanring') !!}
+									</div>
+								</div>
                             </div>
 						</div>
 					</div>

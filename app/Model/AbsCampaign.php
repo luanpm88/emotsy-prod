@@ -48,7 +48,6 @@ abstract class AbsCampaign extends Model
 
     // Campaign settings
     const WORKER_DELAY = 1;
-    const DKIM_SELECTOR = 'mailer';
 
     /**
      * The attributes that should be mutated to dates.
@@ -600,7 +599,7 @@ abstract class AbsCampaign extends Model
 
         $privateKey = $sendingDomain->dkim_private;
         $domainName = $sendingDomain->name;
-        $selector = self::DKIM_SELECTOR;
+        $selector = $sendingDomain->getDkimSelector();
         $signer = new \Swift_Signers_DKIMSigner($privateKey, $domainName, $selector);
         $signer->ignoreHeader('Return-Path');
         $message->attachSigner($signer);

@@ -373,7 +373,7 @@ class Template extends Model
      */
     public function getUploadUri()
     {
-        return 'upload/templates/template_'.$this->uid;
+        return 'app/templates/template_'.$this->uid;
     }
 
     /**
@@ -381,6 +381,6 @@ class Template extends Model
      */
     public function getUploadDir()
     {
-        return public_path($this->getUploadUri());
+        return storage_path($this->getUploadUri());
     }
 }

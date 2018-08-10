@@ -1947,12 +1947,12 @@ $(function() {
       $("#"+delid).show();
     });
     
-    $('.hiddable-cond').each(function() {
+    $('.hiddable-box').each(function() {
         var box = $(this);
         var control = $(box.attr('data-control'));
         var hide_value = box.attr('data-hide-value');
         
-        control.change(function() {
+        control.change(function() {            
             var val;
             
             control.each(function() {
@@ -1967,6 +1967,29 @@ $(function() {
             } else {
                 box.find('input').removeAttr('readonly');
                 box.find('input').removeClass('text-trans');
+            }
+        });
+        
+        control.change();
+    });
+    $('.hiddable-box').each(function() {
+        var box = $(this);
+        var control = $(box.attr('data-control'));
+        var hide_value = box.attr('data-hide-value');
+        
+        control.change(function() {            
+            var val;
+            
+            control.each(function() {
+                if ($(this).is(':checked')) {
+                    val = $(this).val();
+                }
+            });
+            
+            if(hide_value == val) {
+                box.addClass('hide');
+            } else {
+                box.removeClass('hide');
             }
         });
         

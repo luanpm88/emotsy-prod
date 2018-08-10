@@ -28,6 +28,15 @@ Route::group(['middleware' => ['installed']], function () {
     Route::get('install/finish', 'InstallController@finish');
 });
 
+// UX routes
+Route::get('/app/templates/{name?}', [ function ($name) {
+    $path = storage_path("app/templates/$name");
+    $mime_type = \Acelle\Library\File::getFileType($path);
+    if (\File::exists($path)) {
+        return response()->file($path, array('Content-Type' => $mime_type));
+    }
+}])->where('name', '.+');
+
 Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:api'], function () {
     // Route::group(['namespace' => 'Api', 'prefix' => 'api/v1'], function () {
     Route::get('', 'HomeController@index');

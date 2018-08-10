@@ -81,19 +81,11 @@
 					'help_class' => 'campaign'
 				])
 				
-				@include('helpers.form_control', ['type' => 'select',
-					'name' => 'tracking_domain_uid',
-					'label' => trans('messages.tracking_domain'),
-					'value' => (is_object($campaign->trackingDomain) ? $campaign->trackingDomain->uid : NULL),
-					'rules' => $rules,
-					'help_class' => 'campaign',
-					'include_blank' => trans('messages.default'),
-					'options' => $sendingDomainOptions
-				])
 			</div>
 			<div class="col-md-6 segments-select-box">
 				<div class="form-group checkbox-right-switch">
-					@include('helpers.form_control', ['type' => 'checkbox',
+					@if ($campaign->type != 'plain-text')
+						@include('helpers.form_control', ['type' => 'checkbox',
 													'name' => 'track_open',
 													'label' => trans('messages.track_opens'),
 													'value' => $campaign->track_open,
@@ -102,7 +94,7 @@
 													'rules' => $rules
 												])
 					
-					@include('helpers.form_control', ['type' => 'checkbox',
+						@include('helpers.form_control', ['type' => 'checkbox',
 													'name' => 'track_click',
 													'label' => trans('messages.track_clicks'),
 													'value' => $campaign->track_click,
@@ -110,6 +102,7 @@
 													'help_class' => 'campaign',
 													'rules' => $rules
 												])
+					@endif
 					
 					@include('helpers.form_control', ['type' => 'checkbox',
 													'name' => 'sign_dkim',
@@ -119,6 +112,12 @@
 													'help_class' => 'campaign',
 													'rules' => $rules
 												])
+												
+					@if ($campaign->type == 'plain-text')
+						<div class="alert alert-warning">
+							{!! trans('messages.campaign.plain_text.open_click_tracking_wanring') !!}
+						</div>
+					@endif
 				</div>
 			</div>
 		</div>

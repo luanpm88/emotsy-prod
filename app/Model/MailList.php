@@ -737,6 +737,8 @@ class MailList extends Model
         $error = 0;
         $lines_per_second = 1;
         $headers = [];
+        $headers[] = trans('messages.list.exported_file.headers.uid');
+        $headers[] = trans('messages.list.exported_file.headers.status');
         foreach ($list->getFields as $key => $field) {
             $headers[] = $field->tag;
         }
@@ -750,6 +752,8 @@ class MailList extends Model
             $data = [];
             foreach ($list->subscribers()->skip($page * $num)->take($num)->get() as $key => $item) {
                 $cols = [];
+                $cols[] = $item->uid;
+                $cols[] = trans("messages.list.exported_file.status." . $item->status);
                 foreach ($list->getFields as $key2 => $field) {
                     $value = $item->getValueByField($field);
                     $cols[] = $value;
@@ -1153,7 +1157,7 @@ class MailList extends Model
                 $tmpTable = table('__tmp_subscribers');
                 // @todo: hard-coded charset and COLLATE
                 $tmpFields = implode(',', array_map(function ($field) {
-                    return "`{$field}` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci";
+                    return "`{$field}` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci";
                 }, $availableFields));
                 DB::statement("DROP TEMPORARY TABLE IF EXISTS {$tmpTable};
                                CREATE TEMPORARY TABLE {$tmpTable}({$tmpFields});
