@@ -305,7 +305,7 @@ class Setting extends Model
             ],
             'cronjob_min_interval' => [
                 'cat' => 'monitor',
-                'value' => '5 minutes',
+                'value' => '15 minutes',
                 'type' => 'text',
                 'not_required' => true,
             ],
