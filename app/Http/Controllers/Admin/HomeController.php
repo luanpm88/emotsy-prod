@@ -3,6 +3,7 @@
 namespace Acelle\Http\Controllers\Admin;
 
 use Acelle\Http\Controllers\Controller;
+use Acelle\Model\Notification;
 
 class HomeController extends Controller
 {
@@ -12,8 +13,11 @@ class HomeController extends Controller
     public function __construct()
     {
         parent::__construct();
-
+        
         $this->middleware('auth');
+        
+        // Trigger admin monitoring events when admin is logged in
+        event(new \Acelle\Events\AdminLoggedIn());
     }
 
     /**
@@ -23,6 +27,7 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('admin.dashboard');
+        $notifications = Notification::top();
+        return view('admin.dashboard', ['notifications' => $notifications]);
     }
 }

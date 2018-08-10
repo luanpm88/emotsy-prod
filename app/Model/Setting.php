@@ -51,11 +51,13 @@ class Setting extends Model
     public static function get($name)
     {
         $setting = self::where('name', $name)->first();
+        
         if (is_object($setting)) {
             return $setting->value;
         } elseif (isset(self::defaultSettings()[$name])) {
             return self::defaultSettings()[$name]['value'];
         } else {
+            // @todo exception case not handled
             return;
         }
     }
@@ -292,6 +294,18 @@ class Setting extends Model
             'remote_job_token' => [
                 'cat' => 'cronjob',
                 'value' => '',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'cronjob_last_execution' => [
+                'cat' => 'monitor',
+                'value' => null,
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'cronjob_min_interval' => [
+                'cat' => 'monitor',
+                'value' => '5 minutes',
                 'type' => 'text',
                 'not_required' => true,
             ],

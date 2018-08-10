@@ -25,6 +25,12 @@ class EventServiceProvider extends ServiceProvider
         'Acelle\Events\AutomationUpdated' => [
             'Acelle\Listeners\AutomationUpdatedListener',
         ],
+        'Acelle\Events\CronJobExecuted' => [
+            'Acelle\Listeners\CronJobExecutedListener',
+        ],
+        'Acelle\Events\AdminLoggedIn' => [
+            'Acelle\Listeners\AdminLoggedInListener',
+        ],
     ];
 
     /**
