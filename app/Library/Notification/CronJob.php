@@ -39,8 +39,8 @@ class CronJob extends Notification
         $interval = Setting::get('cronjob_min_interval');
         if (!self::isCronjobExecutedWithin($interval)) {
             $warning = [
-                'title' => 'CronJob',
-                'message' => sprintf('Acelle CronJob has not been executed during the last %s. Last executed at %s', $interval, self::getLastExecutionDateTime()),
+                'title' => trans('messages.admin.notification.cronjob_title'),
+                'message' => trans('messages.admin.notification.cronjob_not_active', ['cronjob_min_interval' => "$interval", 'cronjob_last_executed' => self::getLastExecutionDateTime()]),
             ];
 
             self::warning($warning);
