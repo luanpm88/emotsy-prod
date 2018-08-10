@@ -14,17 +14,19 @@ class AppServiceProvider extends ServiceProvider
     {
         ini_set('memory_limit', '-1');
         ini_set('pcre.backtrack_limit', 1000000000);
-
-        app('view')->composer('*', function ($view) {
-            $action = app('request')->route()->getAction();
-
-            $controller = class_basename($action['controller']);
-
-            list($controller, $action) = explode('@', $controller);
-
-            $view->with(compact('controller', 'action'));
-        });
-
+        
+        if (!\App::runningInConsole()){
+            // This is just a trick for getting Controller name in view
+            // See https://stackoverflow.com/questions/29549660/get-laravel-5-controller-name-in-view
+            // @todo: fix this anti-pattern
+            app('view')->composer('*', function ($view) {
+                $action = app('request')->route()->getAction();
+                $controller = class_basename($action['controller']);
+                list($controller, $action) = explode('@', $controller);
+                $view->with(compact('controller', 'action'));
+            });
+        }
+        
         // extend substring validator
         Validator::extend('substring', function ($attribute, $value, $parameters, $validator) {
             $tag = $parameters[0];
