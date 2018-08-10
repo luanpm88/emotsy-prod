@@ -796,7 +796,6 @@ class SubscriberController extends Controller
      */
     public function resendConfirmationEmail(Request $request)
     {
-        $customer = $request->user()->customer;
         $subscribers = \Acelle\Model\Subscriber::whereIn('uid', explode(',', $request->uids));
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
 
@@ -804,25 +803,9 @@ class SubscriberController extends Controller
         if ($request->select_tool == 'all_items') {
             $subscribers = $this->search($list, $request);
         }
-
-        // get related mail lists to update the cached information
-        $lists = $subscribers->get()->map(function($e) { return \Acelle\Model\MailList::find($e->mail_list_id); })->unique();
-
-        // actually resend the subscriber
-        foreach ($subscribers->get() as $subscriber) {
-            // authorize
-            if (\Gate::allows('update', $subscriber)) {
-                // Resend confirmation email here...
-                // $subscriber->resendConfirmationEmail();
-                
-                // Log
-                $subscriber->log('resend-confirmation-email', $customer);
-            }
-        }
-
-        foreach ($lists as $list) {
-            event(new \Acelle\Events\MailListUpdated($list));
-        }
+        
+        // Launch re-sending job
+        dispatch(new \Acelle\Jobs\SendConfirmationEmailJob($subscribers->get(), $list));
 
         // Redirect to my lists page
         echo trans('messages.subscribers.resend_confirmation_email.being_sent');
