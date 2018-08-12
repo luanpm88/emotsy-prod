@@ -3,6 +3,6 @@
 		<option value="">{{ $include_blank }}</option>
 	@endif
 	@foreach($options as $option)
-		<option{{ in_array($option['value'], explode(",", $value)) ? " selected" : "" }} value="{{ $option['value'] }}">{{ $option['text'] }}</option>
+		<option{{ in_array($option['value'], explode(",", $value)) ? " selected" : "" }} value="{{ $option['value'] }}">{{ htmlspecialchars($option['text']) }}</option>
 	@endforeach
 </select>

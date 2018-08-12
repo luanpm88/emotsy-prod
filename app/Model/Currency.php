@@ -195,6 +195,6 @@ class Currency extends Model
      */
     public function displayName()
     {
-        return $this->name.' ('.$this->code.')';
+        return htmlspecialchars($this->name.' ('.$this->code.')');
     }
 }

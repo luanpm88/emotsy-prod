@@ -209,7 +209,7 @@ class Customer extends Model
      */
     public function displayName()
     {
-        return $this->first_name.' '.$this->last_name;
+        return htmlspecialchars($this->first_name.' '.$this->last_name);
     }
 
     /**

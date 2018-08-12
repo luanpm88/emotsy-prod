@@ -7,6 +7,6 @@
 		<option value="">{{ $include_blank }}</option>
 	@endif
     @if (isset($selected) && isset($selected['value']))
-        <option selected='selected' value="{{ $selected['value'] }}">{{ $selected['text'] }}</option>
+        <option selected='selected' value="{{ $selected['value'] }}">{{ htmlspecialchars($selected['text']) }}</option>
     @endif
 </select>
