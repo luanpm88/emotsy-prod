@@ -639,8 +639,8 @@ class Tool
 
         // Suggestion paths
         $paths = [
-            '/usr/bin/php',
             '/usr/local/bin/php',
+            '/usr/bin/php',
             '/bin/php',
             '/usr/bin/php7',
             '/usr/bin/php7.0',
