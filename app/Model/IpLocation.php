@@ -89,10 +89,30 @@ class IpLocation extends Model
                 }
             // Remote service
             } else {
-                $result = file_get_contents('http://freegeoip.net/json/'.$ip);
+                //$result = file_get_contents('http://freegeoip.net/json/'.$ip);
+                //$values = json_decode($result, true);
+                //
+                //$location->fill($values);
+                
+                $result = file_get_contents('http://geoip.nekudo.com/api/'.$ip);
                 $values = json_decode($result, true);
-
-                $location->fill($values);
+                
+                if (isset($values["country"])) {
+                    $location->country_code = $values["country"]["code"];
+                    $location->country_name = $values["country"]["name"];
+                }
+                
+                // $location->region_name = $record->region_name;
+                
+                if (isset($values["city"])) {
+                    $location->city = $values["city"];
+                }
+                // $location->zipcode = $record->zip_code;
+                
+                if (isset($values["location"])) {
+                    $location->latitude = $values["location"]["latitude"];
+                    $location->longitude = $values["location"]["longitude"];
+                }
             }
         } catch (\Exception $e) {
             echo $e->getMessage();
