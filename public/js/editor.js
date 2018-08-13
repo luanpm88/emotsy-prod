@@ -9,11 +9,11 @@ $(document).ready(function() {
         extended_valid_elements : "meta[*]",
         valid_children : "+body[meta],+div[h2|span|meta|object],+object[param|embed]",
         plugins: [
-          'table advlist autolink lists link image charmap print preview anchor fullpage',
+          'table advlist autolink lists link image charmap print preview anchor directionality',
           'searchreplace visualblocks code fullscreen textcolor',
           'insertdatetime media contextmenu paste code'
         ],
-        toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media',
+        toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
         content_css: [
           APP_URL.replace('/index.php','')+'/tinymce/skins/lightgray/content.fixed.css',
           APP_URL.replace('/index.php','')+'/css/all.css',
@@ -39,7 +39,7 @@ $(document).ready(function() {
           'searchreplace visualblocks code fullscreen textcolor',
           'insertdatetime media contextmenu paste code'
         ],
-        toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media',
+        toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
         content_css: [
           APP_URL.replace('/index.php','')+'/tinymce/skins/lightgray/content.fixed.css',
           APP_URL.replace('/index.php','')+'/css/email.css',
@@ -57,11 +57,11 @@ $(document).ready(function() {
         remove_script_host: false,
         forced_root_block: "",
         plugins: [
-          'table advlist autolink lists link image charmap print preview anchor fullpage',
+          'table advlist autolink lists link image charmap print preview anchor directionality',
           'searchreplace visualblocks code fullscreen',
           'insertdatetime media contextmenu paste code textcolor'
         ],
-        toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media',
+        toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
         valid_elements : '*[*],meta[*]',
         extended_valid_elements : "meta[*]",
         valid_children : "+body[style],+body[meta],+div[h2|span|meta|object],+object[param|embed]",
@@ -80,11 +80,11 @@ $(document).ready(function() {
         remove_script_host: false,
         forced_root_block: "",
         plugins: [
-          'table advlist autolink lists link image charmap print preview anchor fullpage',
+          'table advlist autolink lists link image charmap print preview anchor directionality',
           'searchreplace visualblocks code fullscreen',
           'insertdatetime media contextmenu paste code textcolor'
         ],
-        toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media',
+        toolbar: 'insertfile undo redo | fontselect | fontsizeselect | styleselect | bold italic | forecolor backcolor | alignleft aligncenter alignright alignjustify | bullist numlist outdent indent | link image media | ltr rtl',
         valid_elements : '*[*],meta[*]',
         extended_valid_elements : "meta[*]",
         valid_children : "+body[style],+body[meta],+div[h2|span|meta|object],+object[param|embed]",
