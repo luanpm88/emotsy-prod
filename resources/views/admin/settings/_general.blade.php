@@ -29,6 +29,11 @@
                 @endif
             @endforeach
         </div>
+            
+        @if (request()->advanced)
+            @include("admin.settings._advanced")
+        @endif
+        
         <br />
         <div class="text-left">
             <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
