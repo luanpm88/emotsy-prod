@@ -2075,4 +2075,5 @@
   'automation_email.plain_text.open_click_tracking_wanring' => 'A Plain-text email does not support open/click tracking. Consider creating a Regular email to enable tracking features.',
   'admin.notification.cronjob_not_active' => 'Application\'s CronJob has not been executed during the last :cronjob_min_interval. Last executed at :cronjob_last_executed',
   'admin.notification.cronjob_title' => 'CronJob',
+  'advanced_settings' => 'Advanced settings',
 ) ?>
