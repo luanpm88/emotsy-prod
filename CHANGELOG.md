@@ -1,3 +1,16 @@
+3.0.18 / 2018-08-14
+==================
+
+ * Added: switch to MySQL utf8mb4
+ * Added: better 404 handling
+ * Added: re-send confirmation email
+ * Added: CronJob notification
+ * Added: support RTL email editor
+ * Fixed: contacts' status not translated in export
+ * Fixed: security for template webroot
+ * Fixed: error with GeoIP tracking
+ * Fixed: XSS vulnerability
+
 3.0.17 / 2018-07-29
 ==================
 
