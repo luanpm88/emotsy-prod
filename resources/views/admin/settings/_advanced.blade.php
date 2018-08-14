@@ -13,7 +13,7 @@
                             'class' => (isset($setting['class']) ? $setting['class'] : "" ),
                             'name' => $name,
                             'value' => $setting['value'],
-                            'label' => trans('messages.' . $name),
+                            'label' => $name,
                             'help_class' => 'setting',
                             'options' => (isset($setting['options']) ? $setting['options'] : "" ),
                             'rules' => Acelle\Model\Setting::rules(),
