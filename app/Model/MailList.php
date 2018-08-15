@@ -1193,8 +1193,9 @@ class MailList extends Model
                 DB::table('__tmp_subscribers')->insert($data);
 
                 // Insert new subscribers from temp table to the main table
+                // Use SUBSTRING(MD5(UUID()), 1, 13) to produce a UNIQUE ID which is similar to the output of PHP uniqid()
                 DB::statement('INSERT INTO '.table('subscribers').'(uid, mail_list_id, email, status, subscription_type, created_at, updated_at)
-                               SELECT UUID_SHORT(), ' .$this->id.', uniq.email, '.db_quote(Subscriber::STATUS_SUBSCRIBED).', '.db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED).", NOW(), NOW()
+                               SELECT SUBSTRING(MD5(UUID()), 1, 13), ' .$this->id.', uniq.email, '.db_quote(Subscriber::STATUS_SUBSCRIBED).', '.db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED).", NOW(), NOW()
                                FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL) uniq");
 
                 // Insert subscribers' custom fields to the fields table
@@ -1328,7 +1329,7 @@ class MailList extends Model
 
                 // Insert new subscribers from temp table to the main table
                 DB::statement('INSERT INTO '.table('subscribers').'(uid, mail_list_id, email, status, subscription_type, created_at, updated_at)
-                               SELECT UUID_SHORT(), ' .$this->id.', uniq.email, '.db_quote(Subscriber::STATUS_SUBSCRIBED).', '.db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED).", NOW(), NOW()
+                               SELECT SUBSTRING(MD5(UUID()), 1, 13), ' .$this->id.', uniq.email, '.db_quote(Subscriber::STATUS_SUBSCRIBED).', '.db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED).", NOW(), NOW()
                                FROM (SELECT tmp.email FROM {$tmpTable} tmp LEFT JOIN ".table('subscribers')." main ON (tmp.email = main.email AND main.mail_list_id = {$this->id}) WHERE main.email IS NULL) uniq");
 
                 // Insert subscribers' custom fields to the fields table
