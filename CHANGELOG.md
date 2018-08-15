@@ -1,4 +1,4 @@
-3.0.18 / 2018-08-14
+3.0.18 / 2018-08-15
 ==================
 
  * Added: switch to MySQL utf8mb4
@@ -10,6 +10,8 @@
  * Fixed: security for template webroot
  * Fixed: error with GeoIP tracking
  * Fixed: XSS vulnerability
+ * Fixed: better MySQL UIID
+ * Fixed: invalid PHP CLI detected
 
 3.0.17 / 2018-07-29
 ==================
