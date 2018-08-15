@@ -30,7 +30,10 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // Log last execution time
-        event(new \Acelle\Events\CronJobExecuted());
+        // Move the event into a schedule::call to prevent it from triggering every time "php artisan" command is executed
+        $schedule->call(function () {
+            event(new \Acelle\Events\CronJobExecuted());
+        })->name('cronjob_event:log')->everyMinute();
         
         // Automation
         $schedule->call(function () {
