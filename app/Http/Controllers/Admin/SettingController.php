@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Library\UpgradeManager;
 use Illuminate\Support\Facades\Log;
+use Acelle\Model\Setting;
 
 class SettingController extends Controller
 {
@@ -173,8 +174,16 @@ class SettingController extends Controller
         }
 
         $settings = \Acelle\Model\Setting::getAll();
+        
+        // Check URL
+        $current = url('/');
+        $cached = Setting::get('url_root');
+        
         return view('admin.settings.urls', [
             'settings' => $settings,
+            'matched' => ($cached == $current),
+            'current' => $current,
+            'cached' => $cached,
         ]);
     }
 
