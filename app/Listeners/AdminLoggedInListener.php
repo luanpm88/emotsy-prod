@@ -5,6 +5,7 @@ namespace Acelle\Listeners;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Acelle\Library\Notification\CronJob;
+use Acelle\Library\Notification\SystemUrl;
 use Acelle\Events\AdminLoggedIn;
 
 class AdminLoggedInListener
@@ -29,5 +30,8 @@ class AdminLoggedInListener
     {
         // Check CronJob
         CronJob::check();
+        
+        // Check System URL
+        SystemUrl::check();
     }
 }

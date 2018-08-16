@@ -2075,4 +2075,6 @@
   'automation_email.plain_text.open_click_tracking_wanring' => 'A Plain-text email does not support open/click tracking. Consider creating a Regular email to enable tracking features.',
   'admin.notification.cronjob_not_active' => 'Application\'s CronJob has not been executed during the last :cronjob_min_interval. Last executed at :cronjob_last_executed',
   'admin.notification.cronjob_title' => 'CronJob',
+  'admin.notification.system_url_title' => 'Application URL',
+  'admin.notification.system_url_not_match' => 'The current application URL (:current) does not match with the one stored in Acelle Mail\'s cache (:cached). Please go to Admin > Setting > All Settings > System URL to verify and update your setting cache',
 ) ?>
