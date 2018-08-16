@@ -23,7 +23,7 @@ class AdminLoggedInListener
     /**
      * Handle the event.
      *
-     * @param  CronJobExecuted  $event
+     * @param  AdminLoggedIn  $event
      * @return void
      */
     public function handle(AdminLoggedIn $event)
