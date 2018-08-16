@@ -83,15 +83,17 @@
 								'rules' => $campaign->automatedCampaignRules(),
 								'help_class' => 'campaign'
 							])
-							@include('helpers.form_control', ['type' => 'select',
-								'name' => 'tracking_domain_uid',
-								'label' => trans('messages.tracking_domain'),
-								'value' => (is_object($campaign->trackingDomain) ? $campaign->trackingDomain->uid : NULL),
-								'rules' => $campaign->automatedCampaignRules(),
-								'help_class' => 'campaign',
-								'include_blank' => trans('messages.default'),
-								'options' => $sendingDomainOptions
-							])
+							<div class="hide">
+								@include('helpers.form_control', ['type' => 'select',
+									'name' => 'tracking_domain_uid',
+									'label' => trans('messages.tracking_domain'),
+									'value' => (is_object($campaign->trackingDomain) ? $campaign->trackingDomain->uid : NULL),
+									'rules' => $campaign->automatedCampaignRules(),
+									'help_class' => 'campaign',
+									'include_blank' => trans('messages.default'),
+									'options' => $sendingDomainOptions
+								])
+							</div>
 						</div>
 						<div class="col-md-6 segments-select-box">
 							@include('helpers.form_control', [
