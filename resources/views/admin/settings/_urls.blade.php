@@ -6,7 +6,7 @@
                 <p>{!! trans('messages.admin.settings.system_urls.not_match', ['cached' => $cached, 'current' => $current]) !!}</p>
                 <p><a href="{{ action("Admin\SettingController@updateUrls") }}" class="btn bg-teal">{{ trans('messages.update_urls') }}</a></p>
             @endif
-            <p>Below are the current application URL stored in Acelle Mail cache</p>
+            <p>{{ trans('messages.admin.settings.system_urls.current_urls_wording') }}</p>
             <ul class="modern-listing mt-0 top-border-none">
             @foreach ($settings as $name => $setting)
                 @if ($setting['cat'] == 'url')

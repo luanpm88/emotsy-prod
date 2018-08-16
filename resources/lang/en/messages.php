@@ -2079,4 +2079,5 @@
   'admin.notification.system_url_not_match' => 'The current application URL (:current) does not match with the one stored in Acelle Mail\'s cache (:cached). Please go to Admin > Setting > All Settings > System URL to verify and update your setting cache',
   'admin.settings.system_urls.not_match' => 'WARNING: The current application URL <code>:current</code> does not match with the one stored in Acelle Mail\'s cache <code>:cached</code>. Click the button below to update Acelle Mail\'s cache',
   'admin.settings.system_urls.title' => 'Application URL',
+  'admin.settings.system_urls.current_urls_wording' => 'Below are the current application URLs stored in Acelle Mail cache',
 ) ?>
