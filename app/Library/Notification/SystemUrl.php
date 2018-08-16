@@ -35,7 +35,6 @@ class SystemUrl extends Notification
     public static function check()
     {
         self::cleanupSimilarNotifications();
-        \Acelle\Library\Log::info('Gaugau');
         
         $current = url('/');
         $cached = Setting::get('url_root');
