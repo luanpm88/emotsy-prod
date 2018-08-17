@@ -38,6 +38,7 @@ class CampaignController extends Controller
         $lists = \Acelle\Model\Campaign::getAll()
             ->select('uid', 'name', 'type', 'subject', 'html', 'plain', 'from_email', 'from_name', 'reply_to', 'status', 'delivery_at', 'created_at', 'updated_at')
             ->where('customer_id', '=', $user->customer->id)
+            ->where('is_auto', '=', false)
             ->get();
 
         return \Response::json($lists, 200);
