@@ -160,6 +160,7 @@ return [
         Acelle\Providers\EventServiceProvider::class,
         Acelle\Providers\RouteServiceProvider::class,
         Acelle\Providers\JobServiceProvider::class,
+        Acelle\Extra\LogViewer\ServiceProvider::class,
     ],
 
     /*

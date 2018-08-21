@@ -33,7 +33,8 @@
         "sparkpost/sparkpost": "^2.1",
         "stripe/stripe-php": "^4.7",
         "skyscanner/jsonpath": "^0.7.3",
-        "louis/sendgrid": "dev-master"
+        "louis/sendgrid": "dev-master",
+        "louis/log-viewer": "^1.1"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -97,7 +98,9 @@
                     "guzzlehttp/psr7": "^1.4"
                 }
             }
+        }, {
+            "type": "vcs",
+            "url": "https://github.com/louisitvn/log-viewer"
         }
     ]
 }
-
