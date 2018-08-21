@@ -30,6 +30,13 @@ class Kernel extends HttpKernel
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
             \Acelle\Http\Middleware\VerifyCsrfToken::class,
         ],
+        'web_nocsrf' => [
+            \Acelle\Http\Middleware\EncryptCookies::class,
+            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
+            \Illuminate\Session\Middleware\StartSession::class,
+            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            #\Acelle\Http\Middleware\VerifyCsrfToken::class,
+        ],
         'api' => [
             'throttle:60,1',
         ],
