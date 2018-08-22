@@ -3,6 +3,8 @@
 namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Acelle\Model\User;
+use Acelle\Model\Template;
 
 class TemplatePolicy
 {
@@ -15,7 +17,7 @@ class TemplatePolicy
     {
     }
 
-    public function read(\Acelle\Model\User $user, \Acelle\Model\Template $item, $role)
+    public function read(User $user, Template $item, $role)
     {
         switch ($role) {
             case 'admin':
@@ -29,7 +31,7 @@ class TemplatePolicy
         return $can;
     }
 
-    public function readAll(\Acelle\Model\User $user, \Acelle\Model\Template $item, $role)
+    public function readAll(User $user, Template $item, $role)
     {
         switch ($role) {
             case 'admin':
@@ -43,7 +45,7 @@ class TemplatePolicy
         return $can;
     }
 
-    public function create(\Acelle\Model\User $user, \Acelle\Model\Template $item, $role)
+    public function create(User $user, Template $item, $role)
     {
         switch ($role) {
             case 'admin':
@@ -57,7 +59,7 @@ class TemplatePolicy
         return $can;
     }
 
-    public function view(\Acelle\Model\User $user, \Acelle\Model\Template $item, $role)
+    public function view(User $user, Template $item, $role)
     {
         switch ($role) {
             case 'admin':
@@ -73,7 +75,7 @@ class TemplatePolicy
         return $can;
     }
 
-    public function update(\Acelle\Model\User $user, \Acelle\Model\Template $item, $role)
+    public function update(User $user, Template $item, $role)
     {
         switch ($role) {
             case 'admin':
@@ -89,7 +91,7 @@ class TemplatePolicy
         return $can;
     }
 
-    public function image(\Acelle\Model\User $user, \Acelle\Model\Template $item, $role)
+    public function image(User $user, Template $item, $role)
     {
         switch ($role) {
             case 'admin':
@@ -105,7 +107,7 @@ class TemplatePolicy
         return $can;
     }
 
-    public function delete(\Acelle\Model\User $user, \Acelle\Model\Template $item, $role)
+    public function delete(User $user, Template $item, $role)
     {
         switch ($role) {
             case 'admin':
@@ -121,7 +123,7 @@ class TemplatePolicy
         return $can;
     }
 
-    public function preview(\Acelle\Model\User $user, \Acelle\Model\Template $item, $role)
+    public function preview(User $user, Template $item, $role)
     {
         switch ($role) {
             case 'admin':
@@ -137,7 +139,7 @@ class TemplatePolicy
         return $can;
     }
 
-    public function saveImage(\Acelle\Model\User $user, \Acelle\Model\Template $item, $role)
+    public function saveImage(User $user, Template $item, $role)
     {
         switch ($role) {
             case 'admin':
@@ -153,7 +155,7 @@ class TemplatePolicy
         return $can;
     }
 
-    public function copy(\Acelle\Model\User $user, \Acelle\Model\Template $item, $role)
+    public function copy(User $user, Template $item, $role)
     {
         switch ($role) {
             case 'admin':
