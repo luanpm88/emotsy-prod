@@ -78,7 +78,7 @@ class PaymentController extends Controller
             $this->validate($request, $rules);
 
             $billing_information = $request->all();
-            $request->session()->set('billing_information', $billing_information);
+            $request->session()->put('billing_information', $billing_information);
 
             // Write payment info to file
             \File::put('billing-information-' . $subscription->uid . '.log', json_encode($billing_information));

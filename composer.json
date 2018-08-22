@@ -34,7 +34,8 @@
         "stripe/stripe-php": "^4.7",
         "skyscanner/jsonpath": "^0.7.3",
         "louis/sendgrid": "dev-master",
-        "louis/log-viewer": "1.2.*"
+        "louis/log-viewer": "1.2.*",
+        "laravel/tinker": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

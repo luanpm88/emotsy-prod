@@ -374,7 +374,7 @@ class SubscriptionController extends Controller
             $action = action('PaymentController@' . $subscription->paymentMethod->type, $subscription->uid);
 
             // save current checkout link
-            $request->session()->set('current_payment_link', $action);
+            $request->session()->put('current_payment_link', $action);
 
             return redirect()->away($action);
         }

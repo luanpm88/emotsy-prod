@@ -79,10 +79,10 @@ class Controller extends BaseController
         \Auth::logout();
 
         if ($request->view == 'backend') {
-            session()->set('demo', 'backend');
+            session()->put('demo', 'backend');
             return redirect()->action('Admin\HomeController@index');
         } else {
-            session()->set('demo', 'frontend');
+            session()->put('demo', 'frontend');
             return redirect()->action('HomeController@index');
         }
     }

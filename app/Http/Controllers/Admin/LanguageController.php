@@ -249,7 +249,7 @@ class LanguageController extends Controller
             try {
                 $language->updateFromYaml($filename, $request->all()[$filename]);
             } catch (\Symfony\Component\Yaml\Exception\ParseException $e) {
-                $request->session()->set("parse_error", $e->getMessage());
+                $request->session()->put("parse_error", $e->getMessage());
                 $rules = ['yaml_parse_error' => 'required'];
             }
             $this->validate($request, $rules);

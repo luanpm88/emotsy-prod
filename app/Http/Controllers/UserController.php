@@ -81,7 +81,7 @@ class UserController extends Controller
         } else {
             $userActivation->user->setActivated();
 
-            $request->session()->set('user-activated', trans('messages.user.activated'));
+            $request->session()->put('user-activated', trans('messages.user.activated'));
 
             if(isset($request->redirect)) {
                 return redirect()->away(urldecode($request->redirect));
