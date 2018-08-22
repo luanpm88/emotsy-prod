@@ -19,20 +19,6 @@ use Acelle\Model\FeedbackLog;
 
 class DeliveryController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth', [
-            'except' => [
-                'notify',
-            ],
-        ]);
-    }
-
 
     /**
      * Campaign notification.

@@ -9,21 +9,6 @@ use Acelle\Model\EmailVerificationServer;
 
 class MailListController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth', [
-            'except' => [
-                'embeddedFormSubscribe',
-                'embeddedFormCaptcha',
-                'checkEmail',
-            ]
-        ]);
-    }
 
     /**
      * Display a listing of the resource.

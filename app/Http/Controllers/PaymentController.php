@@ -10,19 +10,6 @@ use Auth;
 
 class PaymentController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth', ['except' => [
-            'avatar',
-            'paddle_card_hook',
-            'paddle_webhook'
-        ]]);
-    }
 
     /**
      * Check billing information exists.

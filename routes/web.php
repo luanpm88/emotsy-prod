@@ -11,9 +11,6 @@
 |
 */
 
-// Root URL
-Route::get('/', 'HomeController@index');
-
 // Helper method to generate other routes for authentication
 Auth::routes();
 
@@ -91,6 +88,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
     Route::post('file/upload', 'FileController@upload');
 });
 
+// For visitor with Web UI, loading the right app language
 Route::group(['middleware' => ['not_logged_in']], function () {
     Route::get('user/activate/{token}', 'UserController@activate');
     Route::get('/disabled', 'Controller@userDisabled');
@@ -145,9 +143,26 @@ Route::group(['middleware' => ['not_installed']], function () {
     Route::get('campaigns/{message_id}/click/{url}', 'CampaignController@click')->name('clickTrackingUrl');
     Route::get('campaigns/{message_id}/unsubscribe', 'CampaignController@unsubscribe')->name('unsubscribeUrl');
     Route::get('campaigns/{message_id}/web-view', 'CampaignController@webView')->name('webViewerUrl');
+    Route::post('lists/{uid}/embedded-form-subscribe', 'MailListController@embeddedFormSubscribe');
+    Route::post('lists/{uid}/embedded-form-subscribe-captcha', 'MailListController@embeddedFormCaptcha');
+    Route::get('lists/{uid}/check-email', 'MailListController@checkEmail');
+    Route::get('lists/{list_uid}/sign-up', 'PageController@signUpForm');
+    Route::post('lists/{list_uid}/sign-up', 'PageController@signUpForm');
+    Route::get('lists/{list_uid}/sign-up/{subscriber_uid}/thank-you', 'PageController@signUpThankyouPage');
+    Route::get('lists/{list_uid}/subscribe-confirm/{uid}/{code}', 'PageController@signUpConfirmationThankyou');
+    Route::get('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribeForm');
+    Route::post('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribeForm');
+    Route::get('lists/{list_uid}/unsubscribe-success/{uid}', 'PageController@unsubscribeSuccessPage');
+    Route::get('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profileUpdateForm')->name('updateProfileUrl');
+    Route::post('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profileUpdateForm');
+    Route::get('lists/{list_uid}/update-profile-success/{uid}', 'PageController@profileUpdateSuccessPage');
+    Route::get('lists/{list_uid}/profile-update-email-sent/{uid}', 'PageController@profileUpdateEmailSent');
+    Route::post('payments/paddle/card/webhook', 'PaymentController@paddle_webhook');
+    Route::get('subscriptions/preview', 'SubscriptionController@preview');
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
+    Route::get('/', 'HomeController@index')->middleware('auth');
     Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
     Route::get('/current_user_uid', 'UserController@showUid');
 
@@ -168,7 +183,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('assets/images/avatar/user-{uid?}.jpg', 'UserController@avatar');
 
     // Mail list
-    Route::get('lists/{uid}/check-email', 'MailListController@checkEmail');
     Route::get('lists/{uid}/verification/progress', 'MailListController@verificationProgress');
     Route::get('lists/{uid}/verification', 'MailListController@verification');
     Route::post('lists/{uid}/verification/start', 'MailListController@startVerification');
@@ -187,8 +201,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('lists/{uid}/edit', 'MailListController@edit');
     Route::patch('lists/{uid}/update', 'MailListController@update');
     Route::get('lists/{uid}/embedded-form', 'MailListController@embeddedForm');
-    Route::post('lists/{uid}/embedded-form-subscribe', 'MailListController@embeddedFormSubscribe');
-    Route::post('lists/{uid}/embedded-form-subscribe-captcha', 'MailListController@embeddedFormCaptcha');
     Route::get('lists/{uid}/embedded-form-frame', 'MailListController@embeddedFormFrame');
 
     // Field
@@ -250,17 +262,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('lists/{list_uid}/pages/{alias}/update', 'PageController@update');
     Route::post('lists/{list_uid}/pages/{alias}/update', 'PageController@update');
     Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
-    Route::get('lists/{list_uid}/sign-up', 'PageController@signUpForm');
-    Route::post('lists/{list_uid}/sign-up', 'PageController@signUpForm');
-    Route::get('lists/{list_uid}/sign-up/{subscriber_uid}/thank-you', 'PageController@signUpThankyouPage');
-    Route::get('lists/{list_uid}/subscribe-confirm/{uid}/{code}', 'PageController@signUpConfirmationThankyou');
-    Route::get('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribeForm');
-    Route::post('lists/{list_uid}/unsubscribe/{uid}/{code}', 'PageController@unsubscribeForm');
-    Route::get('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profileUpdateForm')->name('updateProfileUrl');
-    Route::post('lists/{list_uid}/update-profile/{uid}/{code}', 'PageController@profileUpdateForm');
-    Route::get('lists/{list_uid}/update-profile-success/{uid}', 'PageController@profileUpdateSuccessPage');
-    Route::get('lists/{list_uid}/profile-update-email-sent/{uid}', 'PageController@profileUpdateEmailSent');
-    Route::get('lists/{list_uid}/unsubscribe-success/{uid}', 'PageController@unsubscribeSuccessPage');
 
     // Template
     Route::post('templates/{uid}/copy', 'TemplateController@copy');
@@ -407,7 +408,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('subscriptions/finish', 'SubscriptionController@finish');
     Route::post('subscriptions/subscription/{plan_uid?}', 'SubscriptionController@subscription');
     Route::get('subscriptions/subscription/{plan_uid?}', 'SubscriptionController@subscription');
-    Route::get('subscriptions/preview', 'SubscriptionController@preview');
     Route::get('subscriptions/listing/{page?}', 'SubscriptionController@listing');
     Route::get('subscriptions/sort', 'SubscriptionController@sort');
     Route::delete('subscriptions/delete', 'SubscriptionController@delete');
@@ -459,7 +459,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('payments/payumoney-fail/{subscription_uid}', 'PaymentController@payumoney_fail');
     Route::post('payments/payumoney-fail/{subscription_uid}', 'PaymentController@payumoney_fail');
     Route::get('payments/failure/{subscription_uid}', 'PaymentController@failure');
-    Route::post('payments/paddle/card/webhook', 'PaymentController@paddle_webhook');
+    
     // Email verification servers
     Route::get('email_verification_servers/options', 'EmailVerificationServerController@options');
     Route::get('email_verification_servers/listing/{page?}', 'EmailVerificationServerController@listing');
@@ -480,7 +480,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
 });
 
 // ADMIN AREA
-Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend']], function () {
+Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 'backend']], function () {
     Route::get('admin', 'HomeController@index');
     Route::get('admin/docs/api/v1', 'ApiController@doc');
 

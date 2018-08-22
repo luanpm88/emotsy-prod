@@ -8,21 +8,6 @@ use Illuminate\Support\Facades\Log as LaravelLog;
 
 class SubscriptionController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth', [
-            'except' => [
-                'selectPlan',
-                'register',
-                'preview',
-            ]
-        ]);
-    }
 
     /**
      * Select a plan.
