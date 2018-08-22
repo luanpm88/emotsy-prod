@@ -49,9 +49,9 @@
         "psr-4": {
             "Acelle\\": "app/"
         },
-	    "files": [
-	        "app/Helpers/helpers.php"
-	    ]
+        "files": [
+	    "app/Helpers/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
