@@ -8,13 +8,6 @@ use Acelle\Model\User;
 class UserPolicy
 {
     use HandlesAuthorization;
-
-    /**
-     * Create a new policy instance.
-     */
-    public function __construct()
-    {
-    }
     
     public function read(User $user)
     {

@@ -10,13 +10,6 @@ class TemplatePolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     */
-    public function __construct()
-    {
-    }
-
     public function read(User $user, Template $item, $role)
     {
         switch ($role) {

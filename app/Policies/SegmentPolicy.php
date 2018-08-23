@@ -3,19 +3,14 @@
 namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Acelle\Model\User;
+use Acelle\Model\Segment;
 
 class SegmentPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     */
-    public function __construct()
-    {
-    }
-
-    public function create(\Acelle\Model\User $user, \Acelle\Model\Segment $item)
+    public function create(User $user, Segment $item)
     {
         $customer = $user->customer;
         $max_per_list = $customer->getOption('segment_per_list_max');
@@ -25,19 +20,19 @@ class SegmentPolicy
                 || $max_per_list == -1);
     }
 
-    public function update(\Acelle\Model\User $user, \Acelle\Model\Segment $item)
+    public function update(User $user, Segment $item)
     {
         $customer = $user->customer;
         return $item->mailList->customer_id == $customer->id;
     }
 
-    public function delete(\Acelle\Model\User $user, \Acelle\Model\Segment $item)
+    public function delete(User $user, Segment $item)
     {
         $customer = $user->customer;
         return $item->mailList->customer_id == $customer->id;
     }
 
-    public function export(\Acelle\Model\User $user, \Acelle\Model\Segment $item)
+    public function export(User $user, Segment $item)
     {
         $customer = $user->customer;
         return $item->mailList->customer_id == $customer->id;

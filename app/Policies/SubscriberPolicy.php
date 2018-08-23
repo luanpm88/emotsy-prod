@@ -3,25 +3,20 @@
 namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Acelle\Model\User;
+use Acelle\Model\Subscriber;
 
 class SubscriberPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     */
-    public function __construct()
-    {
-    }
-
-    public function read(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)
+    public function read(User $user, Subscriber $item)
     {
         $customer = $user->customer;
         return $item->mailList->customer_id == $customer->id;
     }
 
-    public function create(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)
+    public function create(User $user, Subscriber $item)
     {
         $customer = $user->customer;
         $max = $customer->getOption('subscriber_max');
@@ -33,25 +28,25 @@ class SubscriberPolicy
             ($max_per_list > $item->mailList->subscribersCount() || $max_per_list == -1);
     }
 
-    public function update(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)
+    public function update(User $user, Subscriber $item)
     {
         $customer = $user->customer;
         return $item->mailList->customer_id == $customer->id;
     }
 
-    public function delete(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)
+    public function delete(User $user, Subscriber $item)
     {
         $customer = $user->customer;
         return $item->mailList->customer_id == $customer->id;
     }
 
-    public function subscribe(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)
+    public function subscribe(User $user, Subscriber $item)
     {
         $customer = $user->customer;
         return $item->mailList->customer_id == $customer->id && $item->status == 'unsubscribed';
     }
 
-    public function unsubscribe(\Acelle\Model\User $user, \Acelle\Model\Subscriber $item)
+    public function unsubscribe(User $user, Subscriber $item)
     {
         $customer = $user->customer;
         return $item->mailList->customer_id == $customer->id && $item->status == 'subscribed';
