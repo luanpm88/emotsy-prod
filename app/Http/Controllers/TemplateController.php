@@ -290,38 +290,29 @@ class TemplateController extends Controller
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $zip = new \ZipArchive();
-
             $rules = array(
-                'file' => 'required',
+                'file' => 'required|mimetypes:application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip',
                 'name' => 'required',
             );
 
-            // check if file exsits
-            if (!$request->hasFile('file')) {
-                $rules['file_not_found'] = 'required';
-            }
-            $this->validate($request, $rules);
-
-            // check if file is zip achive
-            $file_ext = $request->file('file')->guessExtension();
-
-            if ($file_ext != 'zip') {
-                $rules['not_zip_archive'] = 'required';
-            }
-            $this->validate($request, $rules);
-
+            $this->validate($request, $rules, [
+                'file.mimetypes' => 'Invalid .zip file',
+            ]);
+            
             // move file to temp place
             $tmp_path = storage_path('tmp/uploaded_template_'.$user->id.'_'.time());
             $file_name = $request->file('file')->getClientOriginalName();
             $request->file('file')->move($tmp_path, $file_name);
             $tmp_zip = $tmp_path.'/'.$file_name;
-
+            
             // read zip file check if zip archive invalid
+            $zip = new \ZipArchive();
             if ($zip->open($tmp_zip, \ZipArchive::CREATE) !== true) {
-                $rules['zip_archive_unvalid'] = 'required';
+                // @todo Hack, should move 
+                $validator = \Validator::make([], []); // Empty data and rules fields
+                $validator->errors()->add('file', 'Cannot open .zip file');
+                throw new \Illuminate\Validation\ValidationException($validator);
             }
-            $this->validate($request, $rules);
 
             // unzip template archive and remove zip file
             $zip->extractTo($tmp_path);
@@ -377,18 +368,8 @@ class TemplateController extends Controller
                 }
             }
 
-            // main file not found
-            if ($main_file === null) {
-                $rules['main_file_not_found'] = 'required';
-            }
-            $this->validate($request, $rules);
-
             // read main file content
             $html_content = trim(file_get_contents($main_file));
-            if (empty($html_content)) {
-                $rules['main_file_empty'] = 'required';
-            }
-            $this->validate($request, $rules);
 
             // Save new template
             $template->fill($request->all());
