@@ -10,15 +10,6 @@ use Acelle\Model\Setting;
 
 class SettingController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth');
-    }
 
     /**
      * Display and update all settings.
@@ -435,12 +426,22 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
             return $this->notAuthorized();
         }
-
+        
         $manager = new UpgradeManager();
-        return view('admin.settings.upgrade', [
-            'any' => 'any',
-            'manager' => $manager,
-        ]);
+        
+        // If upgrade done successfully, perform config:cache
+        // The config:cache must be done in a subsequent process, not in the 'doUpgrade' one
+        if ($request->session()->has('upgraded')) {
+            $manager->refreshConfig();
+            $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
+            return redirect()->back();
+        } else {
+            return view('admin.settings.upgrade', [
+                'any' => 'any',
+                'manager' => $manager,
+            ]);   
+        }        
+        
     }
 
     /**
@@ -459,7 +460,9 @@ class SettingController extends Controller
         if (empty($failed)) {
             $pageUrl = action('Admin\SettingController@upgrade');
             $manager->run();
-            $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
+            
+            $request->session()->flash('upgraded', true);
+            
             Log::info('System successfully upgraded to the new version');
             return redirect()->away($pageUrl);
         } else {

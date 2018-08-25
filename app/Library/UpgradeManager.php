@@ -274,12 +274,6 @@ class UpgradeManager
             LaravelLog::info("Cleaning up");
             $this->cleanup();
 
-            // reload the config & run migration
-            LaravelLog::info("Start caching & migrating");
-            artisan_config_cache();
-            artisan_migrate();
-            LaravelLog::info("All done!");
-
             if (!$test) {
                 // restore the umask
                 umask($old);
@@ -293,6 +287,15 @@ class UpgradeManager
             }
             throw $e;
         }
+    }
+    
+    public function refreshConfig()
+    {
+        // reload the config & run migration
+        LaravelLog::info("Start caching & migrating");
+        artisan_config_cache();
+        artisan_migrate();
+        LaravelLog::info("Done caching & migrating!");
     }
 
     /**
@@ -426,6 +429,7 @@ class UpgradeManager
         // if source is a directory, copy recursively all its child files/directories
         $dir = opendir($src);
         mkdir($dst);
+        
         while(false !== ( $file = readdir($dir)) ) {
             if (( $file != '.' ) && ( $file != '..' )) {
                 if ( is_dir(join_paths($src, $file)) ) {
