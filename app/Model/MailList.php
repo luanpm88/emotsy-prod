@@ -1181,10 +1181,10 @@ class MailList extends Model
                 });
 
                 // validate amd remove invalid records
-                $data = array_where($data, function ($key, $value) use ($logger) {
-                    list($valid, $errors) = $this->validateCsvRecord($value);
+                $data = array_where($data, function ($record) use ($logger) {
+                    list($valid, $errors) = $this->validateCsvRecord($record);
                     if (!$valid) {
-                        $logger->warning($value['email'].': '.implode(', ', $errors));
+                        $logger->warning($record['email'].': '.implode(', ', $errors));
                     }
 
                     return $valid;
@@ -1317,10 +1317,10 @@ class MailList extends Model
                 });
 
                 // validate amd remove invalid records
-                $data = array_where($data, function ($key, $value) {
-                    list($valid, $errors) = $this->validateCsvRecord($value);
+                $data = array_where($data, function ($record) {
+                    list($valid, $errors) = $this->validateCsvRecord($record);
                     if (!$valid) {
-                        echo 'Warning: '.$value['email'].': '.implode(', ', $errors)."\n";
+                        echo 'Warning: '.$record['email'].': '.implode(', ', $errors)."\n";
                     }
 
                     return $valid;
