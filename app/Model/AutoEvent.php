@@ -1094,7 +1094,7 @@ class AutoEvent extends Model
         // Boot performance with temporary table + index
         try {
             \DB::statement("DROP TEMPORARY TABLE `_new_subscribers_to_follow`");
-        } catch (\Ex) {
+        } catch (\Exception $ex) {
             // just ignore, in case 2 queries in the same MySQL connection session
         }
         
