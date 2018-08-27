@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Acelle\Model\Automation;
 use Acelle\Model\Setting;
+use Laravel\Tinker\Console\TinkerCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -20,6 +21,7 @@ class Kernel extends ConsoleKernel
         Commands\UpgradeTranslation::class,
         Commands\RunHandler::class,
         Commands\ImportList::class,
+        TinkerCommand::class,
     ];
 
     /**
