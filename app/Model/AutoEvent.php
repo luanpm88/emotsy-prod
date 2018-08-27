@@ -1091,8 +1091,17 @@ class AutoEvent extends Model
      */
     public function getNewSubscribersToFollow()
     {
+        // Boot performance with temporary table + index
+        try {
+            \DB::statement("DROP TEMPORARY TABLE `_new_subscribers_to_follow`");
+        } catch (\Ex) {
+            // just ignore, in case 2 queries in the same MySQL connection session
+        }
+        
+        \DB::statement(sprintf("CREATE TEMPORARY TABLE `_new_subscribers_to_follow` AS SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s; CREATE INDEX _new_subscribers_to_follow_index ON _new_subscribers_to_follow(subscriber_id);", table('auto_triggers'), $this->id));
+        
         return $this->automation->subscribers()
-                    ->whereRaw(sprintf(table('subscribers').'.id NOT IN (SELECT COALESCE(subscriber_id, 0) FROM %s WHERE auto_event_id = %s)', table('auto_triggers'), $this->id))
+                    ->whereRaw(table('subscribers.id').' NOT IN (SELECT subscriber_id FROM _new_subscribers_to_follow)')
                     ->where('subscribers.created_at', '>=', $this->created_at)
                     ->whereRaw(sprintf('COALESCE('.table('subscribers.subscription_type').", '') <> %s", db_quote(Subscriber::SUBSCRIPTION_TYPE_IMPORTED)))
                     ->get();
