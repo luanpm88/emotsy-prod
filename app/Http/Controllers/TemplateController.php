@@ -4,6 +4,7 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
+use Acelle\Model\Template;
 
 class TemplateController extends Controller
 {
@@ -276,133 +277,19 @@ class TemplateController extends Controller
      */
     public function upload(Request $request)
     {
-        $user = $request->user();
-        $customer = $request->user()->customer;
-
-        // Create template
-        $template = new \Acelle\Model\Template();
-        $template->customer_id = $customer->id;
-
         // authorize
-        if (!$request->user()->customer->can('create', $template)) {
+        if (!$request->user()->customer->can('create', Template::class)) {
             return $this->notAuthorized();
         }
 
         // validate and save posted data
         if ($request->isMethod('post')) {
-            $rules = array(
-                'file' => 'required|mimetypes:application/zip,application/octet-stream,application/x-zip-compressed,multipart/x-zip',
-                'name' => 'required',
-            );
-
-            $this->validate($request, $rules, [
-                'file.mimetypes' => 'Invalid .zip file',
-            ]);
-            
-            // move file to temp place
-            $tmp_path = storage_path('tmp/uploaded_template_'.$user->id.'_'.time());
-            $file_name = $request->file('file')->getClientOriginalName();
-            $request->file('file')->move($tmp_path, $file_name);
-            $tmp_zip = $tmp_path.'/'.$file_name;
-            
-            // read zip file check if zip archive invalid
-            $zip = new \ZipArchive();
-            if ($zip->open($tmp_zip, \ZipArchive::CREATE) !== true) {
-                // @todo Hack, should move 
-                $validator = \Validator::make([], []); // Empty data and rules fields
-                $validator->errors()->add('file', 'Cannot open .zip file');
-                throw new \Illuminate\Validation\ValidationException($validator);
-            }
-
-            // unzip template archive and remove zip file
-            $zip->extractTo($tmp_path);
-            $zip->close();
-            unlink($tmp_zip);
-
-            // try to find the main file, index.html | index.html | file_name.html | ...
-            $archive_name = str_replace(array('../', './', '..\\', '.\\', '..'), '', basename($file_name, '.zip'));
-            $main_file = null;
-            $sub_path = "";
-            $possible_main_file_names = array('index.html', 'index.htm', $archive_name.'.html', $archive_name.'.htm');
-            foreach ($possible_main_file_names as $name) {
-                if (is_file($file = $tmp_path.'/'.$name)) {
-                    $main_file = $file;
-                    break;
-                }
-                $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
-                foreach($dirs as $sub) {
-                    if (is_file($file = $sub.'/'.$name)) {
-                        $main_file = $file;
-                        $sub_path = explode("/",$sub)[count(explode("/",$sub))-1]."/";
-                        break;
-                    }
-                }
-            }
-            // try to find first htm|html file
-            if ($main_file === null) {
-                $objects = scandir($tmp_path);
-                foreach ($objects as $object) {
-                    if ($object != '.' && $object != '..') {
-                        if (!is_dir($tmp_path.'/'.$object)) {
-                            if (preg_match('/\.html?$/i', $object)) {
-                                $main_file = $tmp_path.'/'.$object;
-                                break;
-                            }
-                        }
-                    }
-                }
-                $dirs = array_filter(glob($tmp_path.'/'.'*'), 'is_dir');
-                foreach($dirs as $sub) {
-                    $objects = scandir($sub);
-                    foreach ($objects as $object) {
-                        if ($object != '.' && $object != '..') {
-                            if (!is_dir($sub.'/'.$object)) {
-                                if (preg_match('/\.html?$/i', $object)) {
-                                    $main_file = $sub.'/'.$object;
-                                    $sub_path = explode("/",$sub)[count(explode("/",$sub))-1]."/";
-                                    break;
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-
-            // read main file content
-            $html_content = trim(file_get_contents($main_file));
-
-            // Save new template
-            $template->fill($request->all());
-            $template->content = $html_content;
-            $template->source = 'upload';
-            $template->save();
-
-            // copy all folder to public path
-            $public_dir = $template->getUploadUri();
-            $public_upload_path = $template->getUploadDir();
-            if (!file_exists($public_upload_path)) {
-                mkdir($public_upload_path, 0777, true);
-            }
-            // exec("cp -r {$tmp_path}/* {$public_upload_path}/");
-            \Acelle\Library\Tool::xcopy($tmp_path, $public_upload_path);
-
-            // find all link in html content
-            $template->replaceHtmlUrl($request->root().'/'.$public_dir.'/'.$sub_path);
-
-            $template->save();
-
-            // remove tmp folder
-            //exec("rm -r {$tmp_path}");
-            \Acelle\Library\Tool::xdelete($tmp_path);
-
+            $template = Template::upload($request);
             $request->session()->flash('alert-success', trans('messages.template.uploaded'));
-
             return redirect()->action('TemplateController@index');
         }
 
-        return view('templates.upload', [
-            'template' => $template,
-        ]);
+        return view('templates.upload');
     }
 
     /**

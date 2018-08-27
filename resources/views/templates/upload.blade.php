@@ -35,7 +35,7 @@
             <form enctype="multipart/form-data" action="{{ action('TemplateController@upload') }}" method="POST" class="ajax_upload_form form-validate-jquery">
                 {{ csrf_field() }}
 
-                @include('helpers.form_control', ['required' => true, 'type' => 'text', 'label' => trans('messages.template_name'), 'name' => 'name', 'value' => $template->name, 'rules' => ['name' => 'required']])
+                @include('helpers.form_control', ['required' => true, 'type' => 'text', 'label' => trans('messages.template_name'), 'name' => 'name', 'value' => old('name'), 'rules' => ['name' => 'required']])
 
                 @include('helpers.form_control', ['required' => true, 'type' => 'file', 'label' => trans('messages.upload_file'), 'name' => 'file'])
 

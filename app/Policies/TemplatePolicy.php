@@ -38,7 +38,7 @@ class TemplatePolicy
         return $can;
     }
 
-    public function create(User $user, Template $item, $role)
+    public function create(User $user, $role)
     {
         switch ($role) {
             case 'admin':
