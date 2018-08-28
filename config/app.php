@@ -212,6 +212,7 @@ return [
         'Tool' => Acelle\Library\Tool::class,
         'Yaml' => Symfony\Component\Yaml\Yaml::class,
         'Zipper' => Chumper\Zipper\Zipper::class,
+        'Geoip'=> Lawepham\Geoip\Facades\LaweGeoipFacade::class,
     ],
 
     /*
