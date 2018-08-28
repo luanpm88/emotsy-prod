@@ -161,6 +161,8 @@ return [
         Acelle\Providers\RouteServiceProvider::class,
         Acelle\Providers\JobServiceProvider::class,
         Acelle\Extra\LogViewer\ServiceProvider::class,
+        
+        Acelle\Providers\LaweGeoIpProvider::class,
     ],
 
     /*

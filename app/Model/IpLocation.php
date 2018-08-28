@@ -22,6 +22,7 @@
 
 namespace Acelle\Model;
 
+use App;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Log as LaravelLog;
 
@@ -46,74 +47,18 @@ class IpLocation extends Model
     public static function add($ip)
     {
         //SELECT * FROM `ip2location_db11` WHERE INET_ATON('116.109.245.204') <= ip_to LIMIT 1
-
-        $location = self::where('ip_address', '=', $ip)->first();
-        if (!is_object($location)) {
-            $location = new self();
-        }
-        $location->ip_address = $ip;
+        $location = self::firstOrNew(['ip_address' => $ip]);
 
         // Get info
         try {
-            if (!(strpos($ip, ':') > -1)) {
-                // Code for IPv4 address $ip_address...
-                $location_table = table('ip2location_db11');
-            } else {
-                // Code for IPv6 address $ip_address...ip2location_db11_ipv6
-                $location_table = table('ip2location_db11_ipv6');
-            }
-
-            $location_tables = \DB::select('SHOW TABLES LIKE "'.$location_table.'"');
-            // Local service
-            if (count($location_tables)) {
-                // Check for ipv4 or ipv6
-                if (!(strpos($ip, ':') > -1)) {
-                    $aton = $ip;
-                    $records = \DB::select('SELECT * FROM `'.$location_table.'` WHERE INET_ATON(?) <= ip_to LIMIT 1', [$aton]);
-                } else {
-                    $aton = Dot2LongIPv6($ip);
-                    $records = \DB::select('SELECT * FROM `'.$location_table.'` WHERE ? <= ip_to LIMIT 1', [$aton]);
-                }
-
-                if (count($records)) {
-                    $record = $records[0];
-                    $location->country_code = $record->country_code;
-                    $location->country_name = $record->country_name;
-                    $location->region_name = $record->region_name;
-                    $location->city = $record->city_name;
-                    $location->zipcode = $record->zip_code;
-                    $location->latitude = $record->latitude;
-                    $location->longitude = $record->longitude;
-                } else {
-                    throw new \Exception("IP address [$ip] can not be found in local database: ");
-                }
-            // Remote service
-            } else {
-                //$result = file_get_contents('http://freegeoip.net/json/'.$ip);
-                //$values = json_decode($result, true);
-                //
-                //$location->fill($values);
-                
-                $result = file_get_contents('http://geoip.nekudo.com/api/'.$ip);
-                $values = json_decode($result, true);
-                
-                if (isset($values["country"])) {
-                    $location->country_code = $values["country"]["code"];
-                    $location->country_name = $values["country"]["name"];
-                }
-                
-                // $location->region_name = $record->region_name;
-                
-                if (isset($values["city"])) {
-                    $location->city = $values["city"];
-                }
-                // $location->zipcode = $record->zip_code;
-                
-                if (isset($values["location"])) {
-                    $location->latitude = $values["location"]["latitude"];
-                    $location->longitude = $values["location"]["longitude"];
-                }
-            }
+            $geoip = App::make('Acelle\Library\Contracts\GeoIpInterface');
+            $geoip->resolveIp($ip);
+            
+            $location->country_code = $geoip->getCountryCode();
+            $location->country_name = $geoip->getCountryName();
+            $location->city = $geoip->getCity();
+            $location->latitude = $geoip->getLatitude();
+            $location->longitude = $geoip->getLongitude();
         } catch (\Exception $e) {
             echo $e->getMessage();
             // Note log
