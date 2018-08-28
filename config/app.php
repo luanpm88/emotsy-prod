@@ -162,7 +162,7 @@ return [
         Acelle\Providers\JobServiceProvider::class,
         Acelle\Extra\LogViewer\ServiceProvider::class,
         
-        Acelle\Providers\LaweGeoIpProvider::class,
+        Lawepham\Geoip\LaweGeoIpProvider::class,
     ],
 
     /*

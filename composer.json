@@ -34,7 +34,8 @@
         "stripe/stripe-php": "^4.7",
         "skyscanner/jsonpath": "^0.7.3",
         "louis/sendgrid": "dev-master",
-        "louis/log-viewer": "^1.1"
+        "louis/log-viewer": "1.1.*",
+        "lawepham/geoip": "^1.0"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",
@@ -101,6 +102,9 @@
         }, {
             "type": "vcs",
             "url": "https://github.com/louisitvn/log-viewer"
+        }, {
+            "type": "vcs",
+            "url": "https://github.com/luanpm88/lawepham-geoip"
         }
     ]
 }
