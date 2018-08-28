@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
+use Acelle\Model\Blacklist;
 
 class Subscriber extends Model
 {
@@ -876,5 +877,13 @@ class Subscriber extends Model
                 unlink($path.'.jpg');
             }
         }
+    }
+    
+    /**
+     * Check if the subscriber is listed in the Blacklist database.
+     */
+    public function isListedInBlacklist()
+    {
+        return Blacklist::where('email', '=', $this->email)->exists();
     }
 }

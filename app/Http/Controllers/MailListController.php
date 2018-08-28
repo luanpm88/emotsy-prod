@@ -740,9 +740,12 @@ class MailListController extends Controller
             // Update field
             $subscriber->updateFields($request->all());
 
-            if($list->subscribe_confirmation) {
+            if ($list->subscribe_confirmation) {
                 // SEND subscription confirmation email
                 try {
+                    if ($subscriber->isListedInBlacklist()) {
+                        throw new \Exception(trans('messages.subscriber.blacklisted'));
+                    }
                     $list->sendSubscriptionConfirmationEmail($subscriber);
                 } catch (\Exception $ex) {
                     return view('somethingWentWrong', ['message' => $ex->getMessage()]);

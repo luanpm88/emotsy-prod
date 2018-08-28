@@ -216,6 +216,7 @@
   'checkbox' => 'Checkbox',
   'subscriber_details' => 'Subscriber details',
   'create_subscriber' => 'New subscriber',
+  'subscriber.blacklisted' => 'The email address is blacklisted',
   'subscriber.created' => 'Subscriber was successfully created',
   'subscriber.confirmation_email_sent' => 'Confirmation email sent to the subscriber',
   'subscriber.updated' => 'Subscriber was successfully updated',
