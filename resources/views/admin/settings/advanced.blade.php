@@ -32,7 +32,6 @@
 
 						@include("admin.settings._advanced")
                         
-                        <br />
                         <div class="text-left">
                             <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
                         </div>

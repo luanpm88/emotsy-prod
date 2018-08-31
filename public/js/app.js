@@ -2004,5 +2004,19 @@ $(function() {
         params._token = CSRF_TOKEN;
         return params;
     };
-    $('.inline-editable').editable();
+    $('.inline-editable').editable({
+        success: function(data) {
+            if (data) {
+                swal({
+                    title: data,
+                    text: "",
+                    confirmButtonColor: "#00695C",
+                    type: "success",
+                    allowOutsideClick: true,
+                    confirmButtonText: LANG_OK,
+                    customClass: "swl-success"
+                });
+            }
+        },
+    });
 });
