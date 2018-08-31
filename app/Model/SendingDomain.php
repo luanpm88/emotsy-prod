@@ -26,8 +26,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class SendingDomain extends Model
 {
-    const DEFAULT_DKIM_SELECTOR = 'mailer._domainkey';
-    const VERIFICATION_TXT_NAME = 'acellemail';
     const VERIFIED = 1;
     const UNVERIFIED = 0;
     const STATUS_ACTIVE = 'active';
@@ -244,7 +242,13 @@ class SendingDomain extends Model
      */
     public function getSpf()
     {
-        return sprintf('v=spf1 +a +mx +ip4:%s ~all', $this->getHostIpAddress());
+        $spf = Setting::get('spf');
+        if (is_null($spf)) {
+            return sprintf('v=spf1 +a +mx +ip4:%s ~all', $this->getHostIpAddress());    
+        } else {
+            return $spf;
+        }
+        
     }
 
     /**
@@ -264,10 +268,10 @@ class SendingDomain extends Model
      */
     public function getVerificationTxtName()
     {
-        if (!empty($this->verification_hostname)) {
+        if (!is_null($this->verification_hostname)) {
             return $this->verification_hostname;
         } else {
-            return self::VERIFICATION_TXT_NAME;
+            return Setting::get('verification_hostname');
         }        
     }
 
@@ -425,7 +429,7 @@ class SendingDomain extends Model
         if (!empty($this->dkim_selector)) {
             return $this->dkim_selector . '._domainkey';
         } else {
-            return self::DEFAULT_DKIM_SELECTOR;
+            return Setting::get('dkim_selector').'._domainkey';
         }
     }
     

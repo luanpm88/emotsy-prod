@@ -556,6 +556,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'backend
     Route::resource('admin/languages', 'LanguageController');
 
     // Settings
+    Route::post('admin/settings/advanced/{name}/update', 'SettingController@advancedUpdate');
+    Route::get('admin/settings/advanced', 'SettingController@advanced');
     Route::post('admin/settings/upgrade/cancel', 'SettingController@cancelUpgrade');
     Route::post('admin/settings/upgrade', 'SettingController@doUpgrade');
     Route::post('admin/settings/upgrade/upload', 'SettingController@uploadApplicationPatch');

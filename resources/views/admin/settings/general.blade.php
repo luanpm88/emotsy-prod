@@ -32,7 +32,7 @@
 
 					<div class="tab-content">
 
-						@include("admin.settings._general")
+						@include("admin.settings._general")                        
 
 					</div>
 				</div>

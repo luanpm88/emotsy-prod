@@ -364,6 +364,7 @@
   'campaign.track_fbl.help' => 'Sign your email with your sending domain (if any), telling receiving email servers that your email is actually coming from you. This is to help establish the authenticity of your email, improving delivery rate.',
   'sign_dkim' => 'Add DKIM signature',
   'campaign.sign_dkim.help' => 'Sign your email with your sending domain (if any), telling receiving email servers that your email is actually coming from you. This is to help establish the authenticity of your email, improving delivery rate.',
+  'campaign.setup.from_email_not_allowed' => 'FROM email does not match any verified sending domain',
   'template' => 'Template',
   'html_content' => 'HTML content',
   'email_content' => 'Email content',
@@ -2080,4 +2081,10 @@
   'admin.settings.system_urls.not_match' => 'WARNING: The current application URL <code>:current</code> does not match with the one stored in Acelle Mail\'s cache <code>:cached</code>. Click the button below to update Acelle Mail\'s cache',
   'admin.settings.system_urls.title' => 'Application URL',
   'admin.settings.system_urls.current_urls_wording' => 'Below are the current application URLs stored in Acelle Mail cache',
+  'advanced_settings' => 'Advanced settings',
+  'setting.name' => 'Name',
+  'setting.value' => 'Value',
+  'setting.action' => 'Action',
+  'setting.enter' => 'Enter :name',
+  'setting.update.success' => ':name setting was successfully updated.',
 ) ?>
