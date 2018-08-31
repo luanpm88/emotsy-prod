@@ -513,4 +513,61 @@ class SettingController extends Controller
 
         return redirect()->action('Admin\SettingController@upgrade');
     }
+    
+    /**
+     * Advanced settings.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function advanced(Request $request)
+    {
+        if ($request->user()->admin->getPermission('setting_general') != 'yes') {
+            return $this->notAuthorized();
+        }
+
+        // \Acelle\Model\Setting::updateAll();
+        $settings = \Acelle\Model\Setting::getAll();
+        if (null !== $request->old()) {
+            foreach ($request->old() as $name => $value) {
+                if (isset($settings[$name])) {
+                    $settings[$name]['value'] = $value;
+                }
+            }
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+
+            if($this->isDemoMode()) {
+                return $this->notAuthorized();
+            }
+
+            $rules = [];
+            $this->validate($request, $rules);
+
+            // Save settings
+            foreach ($request->all() as $name => $value) {
+                if ($name != '_token' && isset($settings[$name])) {
+                    // Upload and save image
+                    if ($name == 'site_logo_small' || $name == 'site_logo_big') {
+                        if ($request->hasFile($name) && $request->file($name)->isValid()) {
+                            \Acelle\Model\Setting::uploadSiteLogo($request->file($name), $name);
+                        }
+                    } else {
+                        if ($settings[$name]['cat'] == 'advanced' && $request->user()->admin->getPermission('setting_general') == 'yes') {
+                            \Acelle\Model\Setting::set($name, $value);
+                        }
+                    }
+                }
+            }
+
+            // Redirect to my lists page
+            $request->session()->flash('alert-success', trans('messages.setting.updated'));
+            return redirect()->action('Admin\SettingController@advanced');
+        }
+
+        return view('admin.settings.advanced', [
+            'settings' => $settings,
+        ]);
+    }
 }
