@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use Acelle\Library\Log as MailLog;
 use Illuminate\Support\Facades\Log as LaravelLog;
+use Gate;
+use Validator;
+use Illuminate\Validation\ValidationException;
 
 class CampaignController extends Controller
 {
@@ -277,7 +280,7 @@ class CampaignController extends Controller
         $campaign = \Acelle\Model\Campaign::findByUid($request->uid);
 
         // authorize
-        if (\Gate::denies('update', $campaign)) {
+        if (Gate::denies('update', $campaign)) {
             return $this->notAuthorized();
         }
 
@@ -296,7 +299,14 @@ class CampaignController extends Controller
             $campaign->fillAttributes($request->all());
             
             // Check validation
-            $this->validate($request, $campaign->rules());            
+            $this->validate($request, $campaign->rules());
+            
+            // authorize
+            if (Gate::denies('send-from', $campaign->from_email)) {
+                $validator = Validator::make([], []); // Empty data and rules fields
+                $validator->errors()->add('from_email', trans('messages.campaign.setup.from_email_not_allowed'));
+                $this->throwValidationException($request, $validator);
+            }
 
             $campaign->save();
 

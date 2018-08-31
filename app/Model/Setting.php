@@ -309,6 +309,30 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'spf' => [
+                'cat' => 'dns',
+                'value' => null,
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'verification_hostname' => [
+                'cat' => 'dns',
+                'value' => 'acellemail',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'dkim_selector' => [
+                'cat' => 'dns',
+                'value' => 'mailer',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'allow_send_from_unverified_domain' => [
+                'cat' => 'others',
+                'value' => 'yes',
+                'type' => 'text',
+                'not_required' => true,
+            ],
         ];
     }
 

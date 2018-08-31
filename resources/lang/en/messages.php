@@ -364,6 +364,7 @@
   'campaign.track_fbl.help' => 'Sign your email with your sending domain (if any), telling receiving email servers that your email is actually coming from you. This is to help establish the authenticity of your email, improving delivery rate.',
   'sign_dkim' => 'Add DKIM signature',
   'campaign.sign_dkim.help' => 'Sign your email with your sending domain (if any), telling receiving email servers that your email is actually coming from you. This is to help establish the authenticity of your email, improving delivery rate.',
+  'campaign.setup.from_email_not_allowed' => 'FROM email does not match any verified sending domain',
   'template' => 'Template',
   'html_content' => 'HTML content',
   'email_content' => 'Email content',
