@@ -2081,4 +2081,9 @@
   'admin.settings.system_urls.title' => 'Application URL',
   'admin.settings.system_urls.current_urls_wording' => 'Below are the current application URLs stored in Acelle Mail cache',
   'advanced_settings' => 'Advanced settings',
+  'setting.name' => 'Name',
+  'setting.value' => 'Value',
+  'setting.action' => 'Action',
+  'setting.enter' => 'Enter :name',
+  'setting.update.success' => ':name setting was successfully updated.',
 ) ?>

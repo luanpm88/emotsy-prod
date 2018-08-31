@@ -582,4 +582,25 @@ class SettingController extends Controller
             'settings' => $settings,
         ]);
     }
+    
+    /**
+     * Advanced settings.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function advancedUpdate(Request $request, $name)
+    {
+        if ($request->user()->admin->getPermission('setting_general') != 'yes') {
+            return $this->notAuthorized();
+        }
+        
+        if($this->isDemoMode()) {
+            return $this->notAuthorized();
+        }
+        
+        // update setting value
+        \Acelle\Model\Setting::set($name, $request->value);
+        
+        echo trans('messages.setting.update.success', ['name' => $name]);
+    }
 }

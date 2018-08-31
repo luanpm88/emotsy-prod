@@ -309,11 +309,6 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
-            'test_advanced_setting' => [
-                'cat' => 'advanced',
-                'value' => '12',
-                'type' => 'text',
-            ],
         ];
     }
 

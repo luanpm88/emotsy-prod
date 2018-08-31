@@ -1,32 +1,45 @@
 <div class="sub-section">
-    <h3>{{ trans('messages.advanced_settings') }}</h3>
     <div class="row">
-        <?php $count = 0; ?>
-        @foreach ($settings as $name => $setting)
-            @if (isset($setting['cat']) && $setting['cat'] == 'advanced')
-                <div class="col-md-6">
-                    @if ($setting['type'] == 'checkbox')
-                        <div class="form-group checkbox-right-switch">
-                    @endif
-                        @include('helpers.form_control', [
-                            'type' => $setting['type'],
-                            'class' => (isset($setting['class']) ? $setting['class'] : "" ),
-                            'name' => $name,
-                            'value' => $setting['value'],
-                            'label' => $name,
-                            'help_class' => 'setting',
-                            'options' => (isset($setting['options']) ? $setting['options'] : "" ),
-                            'rules' => Acelle\Model\Setting::rules(),
-                        ])
-                    @if ($setting['type'] == 'checkbox')
-                        </div>
-                    @endif
-                </div>
-                @if ($count%2 == 1)
-    </div><div class="row">
-                @endif
-                <?php ++$count; ?>
-            @endif
-        @endforeach
+        <div class="col-md-12">
+            <div class="scrollbar-boxx dim-box">
+                <div class="ui-sortable">
+                    <div class="pml-table-container">
+                        <table class="table table-trans tbody-white">
+                            <thead>
+                                <tr>
+                                    <th class="trans-upcase text-semibold">{{ trans('messages.setting.name') }}</th>
+                                    <th class="trans-upcase text-semibold">{{ trans('messages.setting.value') }}</th>
+                                    <th class="trans-upcase text-semibold"></th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white">
+                                @foreach ($settings as $name => $setting)
+                                    <tr>
+                                        <td width="30%">
+                                            <span class="list-status pull-left">
+                                                <span class="text-semibold">{{ $name }}</span>
+                                            </span>
+                                        </td>
+                                        <td width="20%">
+                                            <a href="#" data-type="text"
+                                              data-pk="1"
+                                              data-url="{{ action('Admin\SettingController@advancedUpdate', ['name' => $name]) }}"
+                                              data-title="{{ trans('messages.setting.enter', ['name' => $name]) }}"
+                                              class="inline-editable editable editable-click">
+                                                {{ $setting['value'] }}
+                                            </a>
+                                        </td>
+                                        <td class="text-muted2">
+                                            
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </div>                
+            </div>
+        </div>
+    
     </div>
 </div>
