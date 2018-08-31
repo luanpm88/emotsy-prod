@@ -29,10 +29,6 @@
                 @endif
             @endforeach
         </div>
-            
-        @if (request()->advanced)
-            @include("admin.settings._advanced")
-        @endif
         
         <br />
         <div class="text-left">
