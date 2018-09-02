@@ -17,7 +17,7 @@
   'password_reset.help' => 'We\'ll email you instructions on how to reset your password.',
   'enter_your_registered_email_here' => 'Enter your registered email here',
   'return_to_login' => 'Return to login',
-  'click_here_to_reset_password' => 'Click here to reset your password',
+  'click_here_to_reset_password' => 'You are receiving this email because we received a password reset request for your account.',
   'reset_password_email_subject' => 'Your Password Reset Link',
   'reset_password' => 'Reset Password',
   'confirm_password' => 'Confirm password',

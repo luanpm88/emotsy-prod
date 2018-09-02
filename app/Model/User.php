@@ -24,6 +24,7 @@ namespace Acelle\Model;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Acelle\Notifications\ResetPassword;
 
 class User extends Authenticatable
 {
@@ -35,9 +36,9 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'email',
+        'name', 'email', 'password',
     ];
-
+    
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -195,4 +196,15 @@ class User extends Authenticatable
     {
         return base_path('public/source/'.$this->uid.'/');
     }
+    
+    /**
+    * Send the password reset notification.
+    *
+    * @param  string  $token
+    * @return void
+    */
+   public function sendPasswordResetNotification($token)
+   {
+       $this->notify(new ResetPassword($token, url('password/reset', $token)));
+   }
 }
