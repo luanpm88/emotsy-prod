@@ -164,7 +164,7 @@ class MailListController extends Controller
             $list->save();
 
             // Log
-            $list->log('created', $user);
+            $list->log('created', $user->customer);
 
             // Trigger updating related campaigns cache
             $list->updateCachedInfo();

@@ -3,43 +3,35 @@
 namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Acelle\Model\User;
+use Acelle\Model\Setting;
 
 class SettingPolicy
 {
     use HandlesAuthorization;
-
-    /**
-     * Create a new policy instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
     
-    public function general(\Acelle\Model\User $user, \Acelle\Model\Setting $item)
+    public function general(User $user, Setting $item)
     {
         $can = $user->admin->getPermission('setting_general') == 'yes';
 
         return $can;
     }
     
-    public function sending(\Acelle\Model\User $user, \Acelle\Model\Setting $item)
+    public function sending(User $user, Setting $item)
     {
         $can = $user->admin->getPermission('setting_sending') == 'yes';
 
         return $can;
     }
     
-    public function system_urls(\Acelle\Model\User $user, \Acelle\Model\Setting $item)
+    public function system_urls(User $user, Setting $item)
     {
         $can = $user->admin->getPermission('setting_system_urls') == 'yes';
 
         return $can;
     }
     
-    public function access_when_offline(\Acelle\Model\User $user, \Acelle\Model\Setting $item)
+    public function access_when_offline(User $user, Setting $item)
     {
         $can = $user->admin->getPermission('setting_access_when_offline') == 'yes';
 

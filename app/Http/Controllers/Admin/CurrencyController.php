@@ -9,15 +9,6 @@ use Acelle\Http\Controllers\Controller;
 
 class CurrencyController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth');
-    }
 
     /**
      * Display a listing of the resource.

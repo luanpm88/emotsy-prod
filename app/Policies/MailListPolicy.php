@@ -3,26 +3,20 @@
 namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
-use Illuminate\Support\Facades\Log;
+use Acelle\Model\User;
+use Acelle\Model\MailList;
 
 class MailListPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     */
-    public function __construct()
-    {
-    }
-
-    public function read(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
+    public function read(User $user, MailList $item)
     {
         $customer = $user->customer;
         return $item->customer_id == $customer->id;
     }
 
-    public function create(\Acelle\Model\User $user)
+    public function create(User $user)
     {
         $customer = $user->customer;
         $max = $customer->getOption('list_max');
@@ -30,19 +24,19 @@ class MailListPolicy
         return $max > $customer->lists()->count() || $max == -1;
     }
 
-    public function update(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
+    public function update(User $user, MailList $item)
     {
         $customer = $user->customer;
         return $item->customer_id == $customer->id;
     }
 
-    public function delete(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
+    public function delete(User $user, MailList $item)
     {
         $customer = $user->customer;
         return $item->customer_id == $customer->id;
     }
 
-    public function addMoreSubscribers(\Acelle\Model\User $user, \Acelle\Model\MailList $mailList, $numberOfSubscribers)
+    public function addMoreSubscribers(User $user, MailList $mailList, $numberOfSubscribers)
     {
         $max = $user->customer->getOption('subscriber_max');
         $maxPerList = $user->customer->getOption('subscriber_per_list_max');
@@ -51,7 +45,7 @@ class MailListPolicy
             ($maxPerList >= $mailList->subscribersCount() + $numberOfSubscribers || $maxPerList == -1);
     }
 
-    public function import(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
+    public function import(User $user, MailList $item)
     {
         $customer = $user->customer;
         $can = $customer->getOption('list_import');
@@ -59,7 +53,7 @@ class MailListPolicy
         return ($can == 'yes' && $item->customer_id == $customer->id);
     }
 
-    public function export(\Acelle\Model\User $user, \Acelle\Model\MailList $item)
+    public function export(User $user, MailList $item)
     {
         $customer = $user->customer;
         $can = $customer->getOption('list_export');

@@ -73,7 +73,7 @@ class InstallController extends Controller
         // retry if something not work yet
         try {
             if ($result) {
-                $request->session()->set('compatibilities', $compatibilities);
+                $request->session()->put('compatibilities', $compatibilities);
             }
 
             return view('install.compatibilities', [
@@ -157,7 +157,7 @@ class InstallController extends Controller
                 $site_info["smtp_from_email"] = $site_info["email"];
             }
 
-            $request->session()->set('site_info', $site_info);
+            $request->session()->put('site_info', $site_info);
 
             return redirect()->action('InstallController@database');
         }
@@ -212,7 +212,7 @@ class InstallController extends Controller
 
             // Save database session
             $database = $request->all();
-            $request->session()->set('database', $database);
+            $request->session()->put('database', $database);
 
             $next_page = action('InstallController@databaseImport');
 
@@ -302,7 +302,7 @@ class InstallController extends Controller
         // 3. Validation
         $this->validate($request, $rules);
 
-        $request->session()->set('database_imported', true);
+        $request->session()->put('database_imported', true);
         $next_page = action('InstallController@cronJobs');
 
         // Run migrate
@@ -497,7 +497,7 @@ class InstallController extends Controller
             return redirect()->action('InstallController@database');
         }
 
-        $request->session()->set('install_finish', true);
+        $request->session()->put('install_finish', true);
 
         $file_path = storage_path('app/installed');
         $file = fopen($file_path, 'w') or die('Unable to open file!');

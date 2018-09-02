@@ -726,7 +726,7 @@ class Tool
                 $valid = true;
             }
 
-            $request->session()->set('cron_jobs', true);
+            $request->session()->put('cron_jobs', true);
 
             // Update .env
             if(in_array($queue_driver, ['database', 'async']) && config('queue.default') != $queue_driver) {

@@ -3,19 +3,14 @@
 namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Acelle\Model\User;
+use Acelle\Model\Blacklist;
 
 class BlacklistPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     */
-    public function __construct()
-    {
-    }
-
-    public function read(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
+    public function read(User $user, Blacklist $blacklist, $role)
     {
         switch ($role) {
             case 'admin':
@@ -30,7 +25,7 @@ class BlacklistPolicy
         return $can;
     }
 
-    public function readAll(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
+    public function readAll(User $user, Blacklist $blacklist, $role)
     {
         switch ($role) {
             case 'admin':
@@ -45,7 +40,7 @@ class BlacklistPolicy
         return $can;
     }
 
-    public function create(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
+    public function create(User $user, Blacklist $blacklist, $role)
     {
         switch ($role) {
             case 'admin':
@@ -60,7 +55,7 @@ class BlacklistPolicy
         return $can;
     }
 
-    public function import(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
+    public function import(User $user, Blacklist $blacklist, $role)
     {
         switch ($role) {
             case 'admin':
@@ -75,7 +70,7 @@ class BlacklistPolicy
         return $can;
     }
 
-    public function importCancel(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
+    public function importCancel(User $user, Blacklist $blacklist, $role)
     {
         switch ($role) {
             case 'admin':
@@ -90,7 +85,7 @@ class BlacklistPolicy
         return $can;
     }
 
-    public function update(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
+    public function update(User $user, Blacklist $blacklist, $role)
     {
         switch ($role) {
             case 'admin':
@@ -105,7 +100,7 @@ class BlacklistPolicy
         return $can;
     }
 
-    public function delete(\Acelle\Model\User $user, \Acelle\Model\Blacklist $blacklist, $role)
+    public function delete(User $user, Blacklist $blacklist, $role)
     {
         switch ($role) {
             case 'admin':

@@ -9,21 +9,6 @@ use Acelle\Model\EmailVerificationServer;
 
 class MailListController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth', [
-            'except' => [
-                'embeddedFormSubscribe',
-                'embeddedFormCaptcha',
-                'checkEmail',
-            ]
-        ]);
-    }
 
     /**
      * Display a listing of the resource.
@@ -659,7 +644,7 @@ class MailListController extends Controller
             return view('somethingWentWrong', ['message' => trans('messages.embedded_form.list_not_exsit')]);
         }
 
-        $request->session()->set('form_url', \URL::previous());
+        $request->session()->put('form_url', \URL::previous());
 
         return view('lists.embedded_form_captcha', [
             'list' => $list,
@@ -755,9 +740,12 @@ class MailListController extends Controller
             // Update field
             $subscriber->updateFields($request->all());
 
-            if($list->subscribe_confirmation) {
+            if ($list->subscribe_confirmation) {
                 // SEND subscription confirmation email
                 try {
+                    if ($subscriber->isListedInBlacklist()) {
+                        throw new \Exception(trans('messages.subscriber.blacklisted'));
+                    }
                     $list->sendSubscriptionConfirmationEmail($subscriber);
                 } catch (\Exception $ex) {
                     return view('somethingWentWrong', ['message' => $ex->getMessage()]);

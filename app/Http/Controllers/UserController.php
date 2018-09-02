@@ -6,18 +6,6 @@ use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth', ['except' => [
-            'resendActivationEmail',
-            'activate'
-        ]]);
-    }
 
     /**
      * Render user image.
@@ -81,7 +69,7 @@ class UserController extends Controller
         } else {
             $userActivation->user->setActivated();
 
-            $request->session()->set('user-activated', trans('messages.user.activated'));
+            $request->session()->put('user-activated', trans('messages.user.activated'));
 
             if(isset($request->redirect)) {
                 return redirect()->away(urldecode($request->redirect));

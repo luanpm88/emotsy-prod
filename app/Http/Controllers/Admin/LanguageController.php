@@ -7,15 +7,6 @@ use Acelle\Http\Controllers\Controller;
 
 class LanguageController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth');
-    }
 
     /**
      * Display a listing of the resource.
@@ -249,7 +240,7 @@ class LanguageController extends Controller
             try {
                 $language->updateFromYaml($filename, $request->all()[$filename]);
             } catch (\Symfony\Component\Yaml\Exception\ParseException $e) {
-                $request->session()->set("parse_error", $e->getMessage());
+                $request->session()->put("parse_error", $e->getMessage());
                 $rules = ['yaml_parse_error' => 'required'];
             }
             $this->validate($request, $rules);

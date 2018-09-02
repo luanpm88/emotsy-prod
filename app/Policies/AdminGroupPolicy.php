@@ -3,43 +3,35 @@
 namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Acelle\Model\User;
+use Acelle\Model\AdminGroup;
 
 class AdminGroupPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    public function read(\Acelle\Model\User $user, \Acelle\Model\AdminGroup $item)
+    public function read(User $user, AdminGroup $item)
     {
         $can = $user->admin->getPermission('admin_group_read') != 'no';
 
         return $can;
     }
 
-    public function readAll(\Acelle\Model\User $user, \Acelle\Model\AdminGroup $item)
+    public function readAll(User $user, AdminGroup $item)
     {
         $can = $user->admin->getPermission('admin_group_read') == 'all';
 
         return $can;
     }
 
-    public function create(\Acelle\Model\User $user, \Acelle\Model\AdminGroup $item)
+    public function create(User $user, AdminGroup $item)
     {
         $can = $user->admin->getPermission('admin_group_create') == 'yes';
 
         return $can;
     }
 
-    public function update(\Acelle\Model\User $user, \Acelle\Model\AdminGroup $item)
+    public function update(User $user, AdminGroup $item)
     {
         $ability = $user->admin->getPermission('admin_group_update');
         $can = $ability == 'all'
@@ -48,7 +40,7 @@ class AdminGroupPolicy
         return $can;
     }
 
-    public function sort(\Acelle\Model\User $user, \Acelle\Model\AdminGroup $item)
+    public function sort(User $user, AdminGroup $item)
     {
         $ability = $user->admin->getPermission('admin_group_update');
         $can = $ability == 'all'
@@ -57,7 +49,7 @@ class AdminGroupPolicy
         return $can;
     }
 
-    public function delete(\Acelle\Model\User $user, \Acelle\Model\AdminGroup $item)
+    public function delete(User $user, AdminGroup $item)
     {
         $ability = $user->admin->getPermission('admin_group_delete');
         $can = $ability == 'all'

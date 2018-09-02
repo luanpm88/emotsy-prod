@@ -3,22 +3,14 @@
 namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Acelle\Model\User;
+use Acelle\Model\SubAccount;
 
 class SubAccountPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    public function read(\Acelle\Model\User $user, \Acelle\Model\SubAccount $sub_account, $role)
+    public function read(User $user, SubAccount $sub_account, $role)
     {
         switch ($role) {
             case 'admin':
@@ -32,7 +24,7 @@ class SubAccountPolicy
         return $can;
     }
 
-    public function readAll(\Acelle\Model\User $user, \Acelle\Model\SubAccount $sub_account, $role)
+    public function readAll(User $user, SubAccount $sub_account, $role)
     {
         switch ($role) {
             case 'admin':
@@ -46,7 +38,7 @@ class SubAccountPolicy
         return $can;
     }
 
-    public function delete(\Acelle\Model\User $user, \Acelle\Model\SubAccount $sub_account, $role)
+    public function delete(User $user, SubAccount $sub_account, $role)
     {
         switch ($role) {
             case 'admin':

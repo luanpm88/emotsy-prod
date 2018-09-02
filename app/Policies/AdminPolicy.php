@@ -3,48 +3,40 @@
 namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Acelle\Model\User;
+use Acelle\Model\Admin;
 
 class AdminPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    public function read(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
+    public function read(User $user, Admin $item)
     {
         $can = $user->admin->getPermission('admin_read') != 'no';
 
         return $can;
     }
 
-    public function readAll(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
+    public function readAll(User $user, Admin $item)
     {
         $can = $user->admin->getPermission('admin_read') == 'all';
 
         return $can;
     }
 
-    public function create(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
+    public function create(User $user, Admin $item)
     {
         $can = $user->admin->getPermission('admin_create') == 'yes';
 
         return $can;
     }
 
-    public function profile(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
+    public function profile(User $user, Admin $item)
     {
         return $user->id == $item->user_id;
     }
 
-    public function update(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
+    public function update(User $user, Admin $item)
     {
         $ability = $user->admin->getPermission('admin_update');
         $can = $ability == 'all'
@@ -53,7 +45,7 @@ class AdminPolicy
         return $can;
     }
 
-    public function delete(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
+    public function delete(User $user, Admin $item)
     {
         $ability = $user->admin->getPermission('admin_delete');
         $can = $ability == 'all'
@@ -62,7 +54,7 @@ class AdminPolicy
         return $can && $item->customers()->count() == 0 && $item->id !== $user->admin->id;
     }
 
-    public function loginAs(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
+    public function loginAs(User $user, Admin $item)
     {
         $ability = $user->admin->getPermission('admin_login_as');
         $can = $ability == 'all'
@@ -71,7 +63,7 @@ class AdminPolicy
         return $can && $user->admin->id != $item->id;
     }
 
-    public function disable(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
+    public function disable(User $user, Admin $item)
     {
         $ability = $user->admin->getPermission('admin_update');
         $can = $ability == 'all'
@@ -80,7 +72,7 @@ class AdminPolicy
         return $can && $item->status != 'inactive';
     }
 
-    public function enable(\Acelle\Model\User $user, \Acelle\Model\Admin $item)
+    public function enable(User $user, Admin $item)
     {
         $ability = $user->admin->getPermission('admin_update');
         $can = $ability == 'all'

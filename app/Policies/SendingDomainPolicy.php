@@ -3,19 +3,14 @@
 namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Acelle\Model\User;
+use Acelle\Model\SendingDomain;
 
 class SendingDomainPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     */
-    public function __construct()
-    {
-    }
-
-    public function read(\Acelle\Model\User $user, \Acelle\Model\SendingDomain $item, $role)
+    public function read(User $user, SendingDomain $item, $role)
     {
         switch ($role) {
             case 'admin':
@@ -29,7 +24,7 @@ class SendingDomainPolicy
         return $can;
     }
 
-    public function readAll(\Acelle\Model\User $user, \Acelle\Model\SendingDomain $item, $role)
+    public function readAll(User $user, SendingDomain $item, $role)
     {
         switch ($role) {
             case 'admin':
@@ -43,7 +38,7 @@ class SendingDomainPolicy
         return $can;
     }
 
-    public function create(\Acelle\Model\User $user, \Acelle\Model\SendingDomain $item, $role)
+    public function create(User $user, SendingDomain $item, $role)
     {
         switch ($role) {
             case 'admin':
@@ -59,7 +54,7 @@ class SendingDomainPolicy
         return $can;
     }
 
-    public function update(\Acelle\Model\User $user, \Acelle\Model\SendingDomain $item, $role)
+    public function update(User $user, SendingDomain $item, $role)
     {
         switch ($role) {
             case 'admin':
@@ -76,7 +71,7 @@ class SendingDomainPolicy
         return $can;
     }
 
-    public function delete(\Acelle\Model\User $user, \Acelle\Model\SendingDomain $item, $role)
+    public function delete(User $user, SendingDomain $item, $role)
     {
         switch ($role) {
             case 'admin':

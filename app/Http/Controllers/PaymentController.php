@@ -10,19 +10,6 @@ use Auth;
 
 class PaymentController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth', ['except' => [
-            'avatar',
-            'paddle_card_hook',
-            'paddle_webhook'
-        ]]);
-    }
 
     /**
      * Check billing information exists.
@@ -78,7 +65,7 @@ class PaymentController extends Controller
             $this->validate($request, $rules);
 
             $billing_information = $request->all();
-            $request->session()->set('billing_information', $billing_information);
+            $request->session()->put('billing_information', $billing_information);
 
             // Write payment info to file
             \File::put('billing-information-' . $subscription->uid . '.log', json_encode($billing_information));
