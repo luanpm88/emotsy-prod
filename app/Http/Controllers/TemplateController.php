@@ -17,7 +17,7 @@ class TemplateController extends Controller
     public function index(Request $request)
     {
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $templates = \Acelle\Model\Template::search($request);
+        $templates = Template::search($request);
 
         return view('templates.index', [
             'templates' => $templates,
@@ -32,7 +32,7 @@ class TemplateController extends Controller
     public function listing(Request $request)
     {
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $templates = \Acelle\Model\Template::search($request)->paginate($request->per_page);
+        $templates = Template::search($request)->paginate($request->per_page);
 
         return view('templates._list', [
             'templates' => $templates,
@@ -47,7 +47,7 @@ class TemplateController extends Controller
     public function choosing(Request $request)
     {
         $request->merge(array("customer_id" => $request->user()->customer->id));
-        $templates = \Acelle\Model\Template::search($request)->paginate($request->per_page);
+        $templates = Template::search($request)->paginate($request->per_page);
         $campaign = \Acelle\Model\Campaign::findByUid($request->campaign_uid);
 
         return view('templates._list_choose', [
@@ -63,7 +63,7 @@ class TemplateController extends Controller
      */
     public function content(Request $request)
     {
-        $template = \Acelle\Model\Template::findByUid($request->uid);
+        $template = Template::findByUid($request->uid);
 
         // authorize
         if (!$request->user()->customer->can('view', $template)) {
@@ -82,7 +82,7 @@ class TemplateController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $template = new \Acelle\Model\Template();
+        $template = new Template();
 
         // authorize
         if (!$request->user()->customer->can('create', $template)) {
@@ -112,7 +112,7 @@ class TemplateController extends Controller
         $user = $request->user();
         $customer = $request->user()->customer;
 
-        $template = new \Acelle\Model\Template();
+        $template = new Template();
         $template->customer_id = $customer->id;
 
         // authorize
@@ -171,7 +171,7 @@ class TemplateController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $template = \Acelle\Model\Template::findByUid($uid);
+        $template = Template::findByUid($uid);
 
         // authorize
         if (!$request->user()->customer->can('update', $template)) {
@@ -200,7 +200,7 @@ class TemplateController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $template = \Acelle\Model\Template::findByUid($request->uid);
+        $template = Template::findByUid($request->uid);
 
         // authorize
         if (!$request->user()->customer->can('update', $template)) {
@@ -254,7 +254,7 @@ class TemplateController extends Controller
     {
         $sort = json_decode($request->sort);
         foreach ($sort as $row) {
-            $item = \Acelle\Model\Template::findByUid($row[0]);
+            $item = Template::findByUid($row[0]);
 
             // authorize
             if (!$request->user()->customer->can('update', $item)) {
@@ -302,7 +302,7 @@ class TemplateController extends Controller
     public function image(Request $request)
     {
         // Get current user
-        $template = \Acelle\Model\Template::findByUid($request->uid);
+        $template = Template::findByUid($request->uid);
 
         // authorize
         if (!$request->user()->customer->can('image', $template)) {
@@ -327,7 +327,7 @@ class TemplateController extends Controller
      */
     public function delete(Request $request)
     {
-        $items = \Acelle\Model\Template::whereIn('uid', explode(',', $request->uids));
+        $items = Template::whereIn('uid', explode(',', $request->uids));
 
         foreach ($items->get() as $item) {
             // authorize
@@ -349,7 +349,7 @@ class TemplateController extends Controller
      */
     public function preview(Request $request, $id)
     {
-        $template = \Acelle\Model\Template::findByUid($id);
+        $template = Template::findByUid($id);
 
         // authorize
         if (!$request->user()->customer->can('preview', $template)) {
@@ -384,7 +384,7 @@ class TemplateController extends Controller
      */
     public function saveImage(Request $request, $id)
     {
-        $template = \Acelle\Model\Template::findByUid($id);
+        $template = Template::findByUid($id);
 
         // authorize
         if (!$request->user()->customer->can('saveImage', $template)) {
@@ -422,17 +422,17 @@ class TemplateController extends Controller
      */
     public function build(Request $request)
     {
-        $template = new \Acelle\Model\Template();
+        $template = new Template();
         $template->name = trans('messages.untitled_template');
 
         // authorize
-        if (!$request->user()->customer->can('create', $template)) {
+        if (!$request->user()->customer->can('create', Template::class)) {
             return $this->notAuthorized();
         }
 
         $elements = [];
         if(isset($request->style)) {
-            $elements = \Acelle\Model\Template::templateStyles()[$request->style];
+            $elements = Template::templateStyles()[$request->style];
         }
 
         return view('templates.build', [
@@ -452,7 +452,7 @@ class TemplateController extends Controller
     {
         // Generate info
         $user = $request->user();
-        $template = \Acelle\Model\Template::findByUid($request->uid);
+        $template = Template::findByUid($request->uid);
 
         // authorize
         if (!$request->user()->customer->can('update', $template)) {
@@ -473,7 +473,7 @@ class TemplateController extends Controller
      */
     public function buildSelect(Request $request)
     {
-        $template = new \Acelle\Model\Template();
+        $template = new Template();
 
         return view('templates.build_start', [
             'template' => $template,
@@ -489,7 +489,7 @@ class TemplateController extends Controller
      */
     public function copy(Request $request)
     {
-        $template = \Acelle\Model\Template::findByUid($request->uid);
+        $template = Template::findByUid($request->uid);
 
         if ($request->isMethod('post')) {
             // authorize
