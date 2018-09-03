@@ -159,6 +159,9 @@ Route::group(['middleware' => ['not_installed']], function () {
     Route::get('lists/{list_uid}/profile-update-email-sent/{uid}', 'PageController@profileUpdateEmailSent');
     Route::post('payments/paddle/card/webhook', 'PaymentController@paddle_webhook');
     Route::get('subscriptions/preview', 'SubscriptionController@preview');
+    // Notification handler
+    Route::post('delivery/notify/{stype}', 'DeliveryController@notify');
+    Route::get('delivery/notify/{stype}', 'DeliveryController@notify');
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
@@ -236,11 +239,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('lists/{list_uid}/subscribers/export/proccess', 'SubscriberController@exportProccess');
     Route::get('lists/{list_uid}/subscribers/export/download', 'SubscriberController@downloadExportedCsv');
     Route::get('lists/{list_uid}/subscribers/export/list', 'SubscriberController@exportList');
-
-    // Notification handler
-    Route::post('delivery/notify/{stype}', 'DeliveryController@notify');
-    Route::get('delivery/notify/{stype}', 'DeliveryController@notify');
-
+    
     // Segment
     Route::get('segments/condition-value-control', 'SegmentController@conditionValueControl');
     Route::get('segments/select_box', 'SegmentController@selectBox');
