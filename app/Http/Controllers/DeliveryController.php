@@ -16,6 +16,7 @@ use Acelle\Model\SendingServerSendGrid;
 use Acelle\Model\SendingServerElasticEmail;
 use Acelle\Model\SendingServerSparkPost;
 use Acelle\Model\FeedbackLog;
+use Acelle\Model\Blacklist;
 
 class DeliveryController extends Controller
 {
@@ -185,6 +186,7 @@ class DeliveryController extends Controller
         } catch (\Exception $e) {
             // Pretend we're not here if the message is invalid
             MailLog::warning('not an Amazon push');
+            MailLog::warning($e->getMessage());
 
             return;
         }
@@ -223,24 +225,37 @@ class DeliveryController extends Controller
         */
 
         if ($responseMessage['notificationType'] == 'Bounce') {
+            MailLog::info('Bounce reported');
             $bounce = $responseMessage['bounce'];
 
             $bounceLog = new BounceLog();
             $bounceLog->runtime_message_id = $responseMessage['mail']['messageId'];
-            $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
-            $bounceLog->message_id = $trackingLog->message_id;
             $bounceLog->bounce_type = $bounce['bounceType']; // !== 'Permanent' ? BounceLog::SOFT : BounceLog::HARD;
             $bounceLog->raw = $message['Message'];
-            $bounceLog->save();
-            MailLog::info('Bounce recorded for message '.$bounceLog->runtime_message_id);
-
-            if ($bounce['bounceType'] === 'Permanent') {
-                MailLog::info('Adding email to blacklist');
-                $bounceLog->findSubscriberByRuntimeMessageId()->sendToBlacklist($bounceLog->raw);
+            $trackingLog = TrackingLog::where('runtime_message_id', $bounceLog->runtime_message_id)->first();
+            if (!is_null($trackingLog)) {
+                $bounceLog->message_id = $trackingLog->message_id;    
+                $bounceLog->save();
+                MailLog::info('Bounce recorded for message '.$bounceLog->runtime_message_id);
+    
+                if ($bounce['bounceType'] === 'Permanent') {
+                    MailLog::info('Adding email to blacklist');
+                    $bounceLog->findSubscriberByRuntimeMessageId()->sendToBlacklist($bounceLog->raw);
+                }    
+            } else {
+                MailLog::info('No tracking log found');
+                $bounceLog->save();
+                if ($bounce['bounceType'] === 'Permanent') {
+                    $r = Blacklist::firstOrNew(['email' => $responseMessage['mail']['destination'][0]]);
+                    $r->reason = $bounceLog->raw;
+                    $r->save();
+                    MailLog::info($responseMessage['mail']['destination'][0].' blacklisted');
+                }
             }
         }
 
         if ($responseMessage['notificationType'] == 'Complaint') {
+            MailLog::info('Complaint reported');
             $feedback = $responseMessage['complaint'];
 
             $feedbackLog = new FeedbackLog();
