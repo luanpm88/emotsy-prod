@@ -128,7 +128,7 @@
                 'name' => 'mail_driver',
 								'label' => trans('messages.mail_driver'),
                 'value' => (isset($site_info["mail_driver"]) ? $site_info["mail_driver"] : ""),
-								'options' => [["value" => "mail", "text" => trans('messages.php_mail')],["value" => "smtp", "text" => trans('messages.smtp')]],
+								'options' => [["value" => "sendmail", "text" => trans('messages.sendmail')],["value" => "smtp", "text" => trans('messages.smtp')]],
                 'help_class' => 'install',
                 'rules' => $rules
             ])
@@ -227,7 +227,7 @@
 <script>
 	function toogleMailer() {
 		var value = $("select[name='mail_driver']").val();
-		if(value == 'mail') {
+		if(value == 'sendmail') {
 			$('.smtp_box').hide();
 		} else {
 			$('.smtp_box').show();

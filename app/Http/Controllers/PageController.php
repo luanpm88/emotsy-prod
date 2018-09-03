@@ -6,26 +6,6 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth', [
-            'except' => [
-                'signUpForm',
-                'signUpThankyouPage',
-                'signUpConfirmationThankyou',
-                'unsubscribeForm',
-                'unsubscribeSuccessPage',
-                'profileUpdateForm',
-                'profileUpdateSuccessPage',
-                'profileUpdateEmailSent',
-            ],
-        ]);
-    }
     
     /**
      * Redirect page if use outside url

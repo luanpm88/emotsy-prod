@@ -3,22 +3,14 @@
 namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Acelle\Model\User;
+use Acelle\Model\EmailVerificationServer;
 
 class EmailVerificationServerPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    public function read(\Acelle\Model\User $user, \Acelle\Model\EmailVerificationServer $server, $role)
+    public function read(User $user, EmailVerificationServer $server, $role)
     {
         switch ($role) {
             case 'admin':
@@ -32,7 +24,7 @@ class EmailVerificationServerPolicy
         return $can;
     }
 
-    public function readAll(\Acelle\Model\User $user, \Acelle\Model\EmailVerificationServer $server, $role)
+    public function readAll(User $user, EmailVerificationServer $server, $role)
     {
         switch ($role) {
             case 'admin':
@@ -46,7 +38,7 @@ class EmailVerificationServerPolicy
         return $can;
     }
 
-    public function create(\Acelle\Model\User $user, \Acelle\Model\EmailVerificationServer $server, $role)
+    public function create(User $user, EmailVerificationServer $server, $role)
     {
         switch ($role) {
             case 'admin':
@@ -62,7 +54,7 @@ class EmailVerificationServerPolicy
         return $can;
     }
 
-    public function update(\Acelle\Model\User $user, \Acelle\Model\EmailVerificationServer $server, $role)
+    public function update(User $user, EmailVerificationServer $server, $role)
     {
         switch ($role) {
             case 'admin':
@@ -78,7 +70,7 @@ class EmailVerificationServerPolicy
         return $can;
     }
 
-    public function delete(\Acelle\Model\User $user, \Acelle\Model\EmailVerificationServer $server, $role)
+    public function delete(User $user, EmailVerificationServer $server, $role)
     {
         switch ($role) {
             case 'admin':
@@ -95,7 +87,7 @@ class EmailVerificationServerPolicy
         return $can;
     }
 
-    public function disable(\Acelle\Model\User $user, \Acelle\Model\EmailVerificationServer $server, $role)
+    public function disable(User $user, EmailVerificationServer $server, $role)
     {
         switch ($role) {
             case 'admin':
@@ -109,10 +101,10 @@ class EmailVerificationServerPolicy
                 break;
         }
 
-        return $can && $server->status != \Acelle\Model\EmailVerificationServer::STATUS_INACTIVE;
+        return $can && $server->status != EmailVerificationServer::STATUS_INACTIVE;
     }
 
-    public function enable(\Acelle\Model\User $user, \Acelle\Model\EmailVerificationServer $server, $role)
+    public function enable(User $user, EmailVerificationServer $server, $role)
     {
         switch ($role) {
             case 'admin':
@@ -126,6 +118,6 @@ class EmailVerificationServerPolicy
                 break;
         }
 
-        return $can && $server->status != \Acelle\Model\EmailVerificationServer::STATUS_ACTIVE;
+        return $can && $server->status != EmailVerificationServer::STATUS_ACTIVE;
     }
 }

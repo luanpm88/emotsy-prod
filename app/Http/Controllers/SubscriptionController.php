@@ -8,21 +8,6 @@ use Illuminate\Support\Facades\Log as LaravelLog;
 
 class SubscriptionController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth', [
-            'except' => [
-                'selectPlan',
-                'register',
-                'preview',
-            ]
-        ]);
-    }
 
     /**
      * Select a plan.
@@ -374,7 +359,7 @@ class SubscriptionController extends Controller
             $action = action('PaymentController@' . $subscription->paymentMethod->type, $subscription->uid);
 
             // save current checkout link
-            $request->session()->set('current_payment_link', $action);
+            $request->session()->put('current_payment_link', $action);
 
             return redirect()->away($action);
         }

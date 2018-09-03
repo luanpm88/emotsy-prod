@@ -12,20 +12,6 @@ use Illuminate\Validation\ValidationException;
 
 class CampaignController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth', ['except' => [
-            'open',
-            'click',
-            'unsubscribe',
-            'webView',
-        ]]);
-    }
 
     /**
      * Display a listing of the resource.

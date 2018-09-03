@@ -6,6 +6,7 @@ use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Acelle\Model\Automation;
 use Acelle\Model\Setting;
+use Laravel\Tinker\Console\TinkerCommand;
 
 class Kernel extends ConsoleKernel
 {
@@ -20,6 +21,7 @@ class Kernel extends ConsoleKernel
         Commands\UpgradeTranslation::class,
         Commands\RunHandler::class,
         Commands\ImportList::class,
+        TinkerCommand::class,
     ];
 
     /**
@@ -44,6 +46,16 @@ class Kernel extends ConsoleKernel
         $schedule->command('handler:run')->everyFiveMinutes();
 
         // Queued import/export/campaign
-        $schedule->command('queue:work --tries=3')->everyMinute();
+        $schedule->command('queue:work --once --tries=3')->everyMinute();
+    }
+    
+    /**
+     * Register the Closure based commands for the application.
+     *
+     * @return void
+     */
+    protected function commands()
+    {
+        require base_path('routes/console.php');
     }
 }
