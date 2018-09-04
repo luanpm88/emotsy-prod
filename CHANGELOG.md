@@ -1,6 +1,7 @@
 3.0.18 / 2018-09-01
 ==================
-
+ 
+ * Added: upgrade Laravel framework to 5.4 (support PHP >=5.6)
  * Added: switch to MySQL utf8mb4
  * Added: better 404 handling
  * Added: re-send confirmation email
