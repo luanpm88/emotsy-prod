@@ -291,7 +291,7 @@ class CampaignController extends Controller
             if (Gate::denies('send-from', $campaign->from_email)) {
                 $validator = Validator::make([], []); // Empty data and rules fields
                 $validator->errors()->add('from_email', trans('messages.campaign.setup.from_email_not_allowed'));
-                $this->throwValidationException($request, $validator);
+                throw new ValidationException($validator);
             }
 
             $campaign->save();
