@@ -2079,4 +2079,12 @@
   'admin.settings.system_urls.not_match' => 'WARNING: The current application URL <code>:current</code> does not match with the one stored in Acelle Mail\'s cache <code>:cached</code>. Click the button below to update Acelle Mail\'s cache',
   'admin.settings.system_urls.title' => 'Application URL',
   'admin.settings.system_urls.current_urls_wording' => 'Below are the current application URLs stored in Acelle Mail cache',
+  'subscriber.blacklisted' => 'The email address is blacklisted',
+  'campaign.setup.from_email_not_allowed' => 'FROM email does not match any verified sending domain',
+  'advanced_settings' => 'Advanced settings',
+  'setting.name' => 'Name',
+  'setting.value' => 'Value',
+  'setting.action' => 'Action',
+  'setting.enter' => 'Enter :name',
+  'setting.update.success' => ':name setting was successfully updated.',
 ) ?>
