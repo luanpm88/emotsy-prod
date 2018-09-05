@@ -166,6 +166,8 @@ class UpgradeManager
                 LaravelLog::info('Start upgrading (test)');
             } else {
                 LaravelLog::info('Start upgrading');
+                LaravelLog::info('Clearing old assets');
+                artisan_clear();
             }
 
             if (!$test) {

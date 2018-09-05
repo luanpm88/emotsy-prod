@@ -1,7 +1,8 @@
-3.0.18 / 2018-09-01
+3.0.18 / 2018-09-05
 ==================
  
- * Added: upgrade Laravel framework to 5.4 (support PHP >=5.6)
+ * Added: upgrade to Laravel 5.4 (support PHP >=5.6)
+ * Added: blacklist recorded for failed subscription
  * Added: switch to MySQL utf8mb4
  * Added: better 404 handling
  * Added: re-send confirmation email
@@ -13,6 +14,8 @@
  * Fixed: XSS vulnerability
  * Fixed: better MySQL UIID
  * Fixed: invalid PHP CLI detected
+ * Fixed: create mail list API
+ * Fixed: automation performance
 
 3.0.17 / 2018-07-29
 ==================

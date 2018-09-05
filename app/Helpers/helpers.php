@@ -258,6 +258,16 @@ function artisan_migrate() {
 }
 
 /**
+ * Run artisan clean up
+ *
+ * @return boolean
+ */
+function artisan_clear() {
+    \Artisan::call('view:clear');
+    \Artisan::call('route:clear');
+}
+
+/**
  * Check if site is in demo mod
  *
  * @return boolean
