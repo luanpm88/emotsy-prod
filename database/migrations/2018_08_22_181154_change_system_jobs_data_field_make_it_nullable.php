@@ -14,7 +14,7 @@ class ChangeSystemJobsDataFieldMakeItNullable extends Migration
     public function up()
     {
         Schema::table('system_jobs', function (Blueprint $table) {
-            $table->string('data')->nullable()->change();
+            $table->text('data')->nullable()->change();
         });
     }
 
