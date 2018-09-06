@@ -427,21 +427,40 @@ class SettingController extends Controller
             return $this->notAuthorized();
         }
         
+        // Upgrade manager
         $manager = new UpgradeManager();
+        
+        // Redirect URL
+        $pageUrl = action('Admin\SettingController@upgrade');
         
         // If upgrade done successfully, perform config:cache
         // The config:cache must be done in a subsequent process, not in the 'doUpgrade' one
         if ($request->session()->has('upgraded')) {
+            $request->session()->forget('upgraded');
+            $request->session()->put('reset', true);
             $manager->refreshConfig();
-            $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
-            return redirect()->back();
-        } else {
-            return view('admin.settings.upgrade', [
-                'any' => 'any',
-                'manager' => $manager,
-            ]);   
-        }        
+            echo '<html>
+                <head>
+                    <meta http-equiv="refresh" content="0;'.$pageUrl.'" />
+                <title>Page Moved</title>
+                </head>
+                <body>
+                    Upgrade done, click <a href="'.$pageUrl.'">here</a> to proceed.
+                </body>
+                </html>';
+            return;
+        }
         
+        if ($request->session()->has('reset')) {
+            $pageUrl = action('Admin\SettingController@upgrade');
+            $request->session()->forget('reset');
+            $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
+        }
+        
+        return view('admin.settings.upgrade', [
+            'any' => 'any',
+            'manager' => $manager,
+        ]);
     }
 
     /**
@@ -454,17 +473,26 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
             return $this->notAuthorized();
         }
-
         $manager = new UpgradeManager();
         $failed = $manager->test();
         if (empty($failed)) {
             $pageUrl = action('Admin\SettingController@upgrade');
             $manager->run();
-            
-            $request->session()->flash('upgraded', true);
-            
             Log::info('System successfully upgraded to the new version');
-            return redirect()->away($pageUrl);
+            $request->session()->put('upgraded', true);
+            // Redirect to an entirely new page
+            // Then make a new request from browser to load new config
+            // Simple using redirect() will retain the current setting
+            echo '<html>
+                <head>
+                    <meta http-equiv="refresh" content="0;'.$pageUrl.'" />
+                <title>Page Moved</title>
+                </head>
+                <body>
+                    Upgrade is in progress, click <a href="'.$pageUrl.'">here</a> to proceed.
+                </body>
+                </html>';
+            return;
         } else {
             Log::warning('Cannot upgrade, certain files are not writable');
             return view('admin.settings.upgrade', [
