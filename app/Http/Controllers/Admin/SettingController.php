@@ -7,6 +7,7 @@ use Acelle\Http\Controllers\Controller;
 use Acelle\Library\UpgradeManager;
 use Illuminate\Support\Facades\Log;
 use Acelle\Model\Setting;
+use Illuminate\Support\Facades\Session;
 
 class SettingController extends Controller
 {
@@ -438,14 +439,15 @@ class SettingController extends Controller
         if ($request->session()->has('upgraded')) {
             $request->session()->forget('upgraded');
             $request->session()->put('reset', true);
+            Session::save();
             $manager->refreshConfig();
             echo '<html>
                 <head>
-                    <meta http-equiv="refresh" content="0;'.$pageUrl.'" />
+                    <meta http-equiv="refresh" content="3;'.$pageUrl.'" />
                 <title>Page Moved</title>
                 </head>
                 <body>
-                    Upgrade done, click <a href="'.$pageUrl.'">here</a> to proceed.
+                    Upgrade done, redirecting...
                 </body>
                 </html>';
             return;
@@ -454,6 +456,7 @@ class SettingController extends Controller
         if ($request->session()->has('reset')) {
             $pageUrl = action('Admin\SettingController@upgrade');
             $request->session()->forget('reset');
+            Session::save();
             $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
         }
         
@@ -485,11 +488,11 @@ class SettingController extends Controller
             // Simple using redirect() will retain the current setting
             echo '<html>
                 <head>
-                    <meta http-equiv="refresh" content="0;'.$pageUrl.'" />
+                    <meta http-equiv="refresh" content="3;'.$pageUrl.'" />
                 <title>Page Moved</title>
                 </head>
                 <body>
-                    Upgrade is in progress, click <a href="'.$pageUrl.'">here</a> to proceed.
+                    Upgrade is in progress, please wait...
                 </body>
                 </html>';
             return;
