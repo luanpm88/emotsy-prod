@@ -12,17 +12,25 @@ class AddVerificationFieldsToSendingDomainsTable extends Migration
      */
     public function up()
     {
-        Schema::table('sending_domains', function (Blueprint $table) {
-            $table->text('verification_token')->nullable();
-            $table->boolean('domain_verified')->default(false);
-            $table->boolean('dkim_verified')->default(false);
-            $table->boolean('spf_verified')->default(false);
-        });
+        try {
+            Schema::table('sending_domains', function (Blueprint $table) {
+                $table->text('verification_token')->nullable();
+                $table->boolean('domain_verified')->default(false);
+                $table->boolean('dkim_verified')->default(false);
+                $table->boolean('spf_verified')->default(false);
+            });
+        } catch (\Exception $ex) {
+            //
+        }
         
-        $domains = \Acelle\Model\SendingDomain::whereNull('verification_token')->get();
-        foreach ($domains as $domain) {
-            $domain->generateVerificationToken();
-            $domain->save();
+        try {
+            $domains = \Acelle\Model\SendingDomain::whereNull('verification_token')->get();
+            foreach ($domains as $domain) {
+                $domain->generateVerificationToken();
+                $domain->save();
+            }
+        } catch (\Exception $ex) {
+            //
         }
     }
 

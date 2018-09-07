@@ -49,7 +49,7 @@ return [
             'charset' => 'utf8mb4',
             'collation' => 'utf8mb4_unicode_ci',
             'prefix' => env('DB_TABLES_PREFIX', ''),
-            'strict' => true,
+            'strict' => false,
             'engine' => null,
             'options' => array(
                 PDO::ATTR_EMULATE_PREPARES => true,
