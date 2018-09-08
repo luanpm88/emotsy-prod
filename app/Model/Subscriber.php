@@ -884,6 +884,7 @@ class Subscriber extends Model
      */
     public function isListedInBlacklist()
     {
+        // @todo Filter by current user only
         return Blacklist::where('email', '=', $this->email)->exists();
     }
 }
