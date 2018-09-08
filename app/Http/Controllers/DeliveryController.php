@@ -244,7 +244,7 @@ class DeliveryController extends Controller
                 MailLog::info('No tracking log found');
                 $bounceLog->save();
                 if ($bounce['bounceType'] === 'Permanent') {
-                    $r = Blacklist::firstOrNew(['email' => $responseMessage['mail']['destination'][0]]);
+                    $r = Blacklist::firstOrNew(['email' => extract_email($responseMessage['mail']['destination'][0])]);
                     $r->reason = $bounceLog->raw;
                     $r->save();
                     MailLog::info($responseMessage['mail']['destination'][0].' blacklisted');
