@@ -38,8 +38,6 @@ class DeliveryController extends Controller
 
         $type = $request->stype;
 
-        echo $type;
-
         if ($type == 'amazon') { // @TODO hard-coded here, seeking for a solution
             $this->handleAws();
         } elseif ($type == SendingServerMailgun::WEBHOOK) {
