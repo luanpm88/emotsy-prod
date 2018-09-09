@@ -295,6 +295,14 @@ class UpgradeManager
     {
         // reload the config & run migration
         LaravelLog::info("Start caching & migrating");
+        $files = ['bootstrap/cache/config.php', 'bootstrap/cache/services.php', 'bootstrap/cache/compiled.php'];
+        foreach ($files as $file) {
+            $path = base_path($file);
+            if (file_exists($path)) {
+                $this->rm($path);
+            }
+        }
+
         artisan_config_cache();
         artisan_migrate();
         LaravelLog::info("Done caching & migrating!");
