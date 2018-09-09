@@ -62,6 +62,11 @@
                     @else
                         <h3>{{ trans('messages.upgrade.title.current') }}</h3>
                         <p>{!! trans('messages.upgrade.wording.upload', [ 'current' => "<code>{$manager->getCurrentVersion()}</code>" ]) !!}</p>
+                        <p>Please make sure the upgrade package file size does not exceed the following upload limit settings:</p>
+                        <ul>
+                            <li><code>post_max_size</code> <strong>{{ ini_get('post_max_size') }}</strong></li>
+                            <li><code>upload_max_filesize</code> <strong>{{ ini_get('upload_max_filesize') }}</strong></li>
+                        </ul>
                         <form action="{{ action('Admin\SettingController@uploadApplicationPatch') }}" class="form-validate-jquery" method="POST"  enctype="multipart/form-data">
                             {{ csrf_field() }}
 
