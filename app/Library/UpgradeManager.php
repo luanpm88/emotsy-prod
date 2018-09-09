@@ -302,6 +302,14 @@ class UpgradeManager
                 $this->rm($path);
             }
         }
+        
+        try {
+            \Artisan::call('cache:clear');
+            \Artisan::call('route:clear');
+            \Artisan::call('view:clear');    
+        } catch (\Exception $e) {
+            // something wrong here
+        }
 
         artisan_config_cache();
         artisan_migrate();
