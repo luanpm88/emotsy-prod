@@ -242,11 +242,6 @@ class PageController extends Controller
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
         
-        // redirect if use outside url
-        if ($page->use_outside_url) {
-            return redirect($page->getOutsideUrlWithUid());
-        }
-
         $page->renderContent(null, $subscriber);
 
         if ($subscriber->getSecurityToken('subscribe-confirm') == $request->code && $subscriber->status == 'unconfirmed') {
@@ -262,6 +257,11 @@ class PageController extends Controller
                     return view('somethingWentWrong', ['message' => $ex->getMessage()]);
                 }
             }
+        }
+        
+        // redirect if use outside url
+        if ($page->use_outside_url) {
+            return redirect($page->getOutsideUrlWithUid());
         }
 
         return view('pages.default', [
