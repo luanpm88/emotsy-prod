@@ -449,17 +449,17 @@ class PageController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         $page->renderContent(null, $subscriber);
-        
-        // redirect if use outside url
-        if ($page->use_outside_url) {
-            return redirect($page->getOutsideUrlWithUid());
-        }
 
         // SEND EMAIL
         try {
             $list->sendProfileUpdateEmail($subscriber);
         } catch (\Exception $ex) {
             return view('somethingWentWrong', ['message' => $ex->getMessage()]);
+        }
+        
+        // redirect if use outside url
+        if ($page->use_outside_url) {
+            return redirect($page->getOutsideUrlWithUid());
         }
 
         return view('pages.default', [
