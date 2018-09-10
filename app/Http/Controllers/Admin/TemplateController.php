@@ -252,7 +252,7 @@ class TemplateController extends Controller
         $template->name = trans('messages.untitled_template');
 
         // authorize
-        if (!$request->user()->admin->can('create', $template)) {
+        if (!$request->user()->admin->can('create', $template, 'admin')) {
             return $this->notAuthorized();
         }
 
