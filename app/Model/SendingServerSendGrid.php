@@ -87,7 +87,7 @@ class SendingServerSendGrid extends SendingServer
             );
             $response = $this->client()->client->user()->webhooks()->event()->settings()->patch($request_body);
 
-            if ($response->_status_code == '200') {
+            if ($response->statusCode() == '200') {
                 MailLog::info('Webhooks successfully set!');
             } else {
                 throw new \Exception('Cannot setup SendGrid webhooks');
