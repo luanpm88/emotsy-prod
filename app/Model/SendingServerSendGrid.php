@@ -66,37 +66,34 @@ class SendingServerSendGrid extends SendingServer
         if (self::$isWebhookSetup) {
             return true;
         }
-        try {
-            MailLog::info('Setting up SendGrid webhooks');
-            $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
-            $request_body = json_decode('{
-                "bounce": true,
-                "click": false,
-                "deferred": false,
-                "delivered": false,
-                "dropped": true,
-                "enabled": true,
-                "group_resubscribe": false,
-                "group_unsubscribe": false,
-                "open": false,
-                "processed": false,
-                "spam_report": true,
-                "unsubscribe": false,
-                "url": "'.$subscribeUrl.'"
-                }'
-            );
-            $response = $this->client()->client->user()->webhooks()->event()->settings()->patch($request_body);
+        
+        MailLog::info('Setting up SendGrid webhooks');
+        $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
+        $request_body = json_decode('{
+            "bounce": true,
+            "click": false,
+            "deferred": false,
+            "delivered": false,
+            "dropped": true,
+            "enabled": true,
+            "group_resubscribe": false,
+            "group_unsubscribe": false,
+            "open": false,
+            "processed": false,
+            "spam_report": true,
+            "unsubscribe": false,
+            "url": "'.$subscribeUrl.'"
+            }'
+        );
+        $response = $this->client()->client->user()->webhooks()->event()->settings()->patch($request_body);
 
-            if ($response->statusCode() == '200') {
-                MailLog::info('Webhooks successfully set!');
-            } else {
-                throw new \Exception('Cannot setup SendGrid webhooks');
-            }
-
-            self::$isWebhookSetup = true;
-        } catch (\Exception $e) {
-            MailLog::warning($e->getMessage());
+        if ($response->statusCode() == '200') {
+            MailLog::info('Webhooks successfully set!');
+        } else {
+            throw new \Exception(sprintf('Cannot setup SendGrid webhook. Status code: %s. Body: %s', $response->statusCode(), $response->body() ));
         }
+
+        self::$isWebhookSetup = true;
     }
 
     /**
