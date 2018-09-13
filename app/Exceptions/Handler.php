@@ -87,12 +87,12 @@ class Handler extends ExceptionHandler
     private function customErrors()
     {
         return [
-            \PDOException::class => [
+            \Illuminate\Database\QueryException::class => [
                 'title' => 'Cannot connect to MySQL',
-                'message' => 'Make sure MySQL service is running and MySQL connection settings in <code>.env</code> and <code>bootstrap/cache/config.php</code> files are correct'
+                'message' => 'Make sure MySQL service <code>is running</code> and MySQL connection settings in <code>.env</code> and <code>bootstrap/cache/config.php</code> files are correct'
             ],
             \RuntimeException::class => [
-                'match' => 'No supported encrypter found. The cipher and / or key length are invalid',
+                'match' => 'The only supported ciphers are AES-128-CBC and AES-256-CBC with the correct key lengths.',
                 'title' => 'File missing',
                 'message' => 'The <code>.env</code> file is missing. Make sure you have uploaded the file to the server',
             ]
