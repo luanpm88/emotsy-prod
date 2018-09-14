@@ -3,6 +3,9 @@
 namespace Acelle\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\Queue\Events\JobProcessed;
+use Illuminate\Queue\Events\JobFailed;
+use Illuminate\Queue\Events\JobProcessing;
 use Acelle\Library\Log as MailLog;
 
 class JobServiceProvider extends ServiceProvider
@@ -18,7 +21,7 @@ class JobServiceProvider extends ServiceProvider
         $this->initMailLog();
 
         // mark the SystemJob record as RUNNING
-        \Queue::before(function (\Illuminate\Queue\Events\JobProcessing $event) {
+        \Queue::before(function (JobProcessing $event) {
             $job = $this->getJobObject($event);
             
             // associate the queue job with system_job
@@ -31,13 +34,13 @@ class JobServiceProvider extends ServiceProvider
         });
 
         // mark the SystemJob record as DONE
-        \Queue::after(function (\Illuminate\Queue\Events\JobProcessed $event) {
+        \Queue::after(function (JobProcessed $event) {
             $job = $this->getJobObject($event);
             $job->setDone();
         });
 
         // mark the SystemJob record as FAILED
-        \Queue::failing(function (\Illuminate\Queue\Events\JobFailed $event) {
+        \Queue::failing(function (JobFailed $event) {
             $job = $this->getJobObject($event);
             $job->setFailed();
         });
@@ -59,7 +62,8 @@ class JobServiceProvider extends ServiceProvider
      * @return void
      */
     private function getJobObject($event) {
-        return unserialize($event->data['data']['command']);
+        $data = $event->job->payload();
+        return unserialize($data['data']['command']);
     }
 
     /**

@@ -3,46 +3,38 @@
 namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Acelle\Model\User;
+use Acelle\Model\AutoEvent;
 
 class AutoEventPolicy
 {
     use HandlesAuthorization;
-
-    /**
-     * Create a new policy instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
     
-    public function disable(\Acelle\Model\User $user, \Acelle\Model\AutoEvent $event)
+    public function disable(User $user, AutoEvent $event)
     {
         return $event->automation->customer_id == $user->customer->id && in_array($event->status, [
-                                                                \Acelle\Model\AutoEvent::STATUS_ACTIVE
+                                                                AutoEvent::STATUS_ACTIVE
                                                             ]);
     }
     
-    public function enable(\Acelle\Model\User $user, \Acelle\Model\AutoEvent $event)
+    public function enable(User $user, AutoEvent $event)
     {
         return $event->automation->customer_id == $user->customer->id && in_array($event->status, [
-                                                                \Acelle\Model\AutoEvent::STATUS_INACTIVE
+                                                                AutoEvent::STATUS_INACTIVE
                                                             ]);
     }
     
-    public function update(\Acelle\Model\User $user, \Acelle\Model\AutoEvent $event)
+    public function update(User $user, AutoEvent $event)
     {
         return $event->automation->customer_id == $user->customer->id;
     }
     
-    public function moveUp(\Acelle\Model\User $user, \Acelle\Model\AutoEvent $event)
+    public function moveUp(User $user, AutoEvent $event)
     {
         return $event->automation->customer_id == $user->customer->id && $event->previous_event_id != $event->automation->getInitEvent()->id;
     }
     
-    public function moveDown(\Acelle\Model\User $user, \Acelle\Model\AutoEvent $event)
+    public function moveDown(User $user, AutoEvent $event)
     {
         return $event->automation->customer_id == $user->customer->id && isset($event->nextEvent);
     }

@@ -9,15 +9,6 @@ use Acelle\Library\Log as MailLog;
 
 class SubscriberController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth');
-    }
 
     /**
      * Search items.

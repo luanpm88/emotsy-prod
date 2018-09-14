@@ -3,10 +3,7 @@
 namespace Acelle\Exceptions;
 
 use Exception;
-use Illuminate\Validation\ValidationException;
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
+use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
 class Handler extends ExceptionHandler
@@ -17,10 +14,12 @@ class Handler extends ExceptionHandler
      * @var array
      */
     protected $dontReport = [
-        AuthorizationException::class,
-        HttpException::class,
-        ModelNotFoundException::class,
-        ValidationException::class,
+        \Illuminate\Auth\AuthenticationException::class,
+        \Illuminate\Auth\Access\AuthorizationException::class,
+        \Symfony\Component\HttpKernel\Exception\HttpException::class,
+        \Illuminate\Database\Eloquent\ModelNotFoundException::class,
+        \Illuminate\Session\TokenMismatchException::class,
+        \Illuminate\Validation\ValidationException::class,
     ];
 
     /**
@@ -28,11 +27,28 @@ class Handler extends ExceptionHandler
      *
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
-     * @param \Exception $e
+     * @param  \Exception  $exception
+     * @return void
      */
-    public function report(Exception $e)
+    public function report(Exception $exception)
     {
-        parent::report($e);
+        parent::report($exception);
+    }
+    
+    /**
+     * Convert an authentication exception into an unauthenticated response.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Auth\AuthenticationException  $exception
+     * @return \Illuminate\Http\Response
+     */
+    protected function unauthenticated($request, AuthenticationException $exception)
+    {
+        if ($request->expectsJson()) {
+            return response()->json(['error' => 'Unauthenticated.'], 401);
+        }
+
+        return redirect()->guest('login');
     }
 
     /**
@@ -71,12 +87,12 @@ class Handler extends ExceptionHandler
     private function customErrors()
     {
         return [
-            \PDOException::class => [
+            \Illuminate\Database\QueryException::class => [
                 'title' => 'Cannot connect to MySQL',
-                'message' => 'Make sure MySQL service is running and MySQL connection settings in <code>.env</code> and <code>bootstrap/cache/config.php</code> files are correct'
+                'message' => 'Make sure MySQL service <code>is running</code> and MySQL connection settings in <code>.env</code> and <code>bootstrap/cache/config.php</code> files are correct'
             ],
             \RuntimeException::class => [
-                'match' => 'No supported encrypter found. The cipher and / or key length are invalid',
+                'match' => 'The only supported ciphers are AES-128-CBC and AES-256-CBC with the correct key lengths.',
                 'title' => 'File missing',
                 'message' => 'The <code>.env</code> file is missing. Make sure you have uploaded the file to the server',
             ]

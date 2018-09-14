@@ -12,9 +12,13 @@ class AddTrackingDomainIdToCampaigns extends Migration
      */
     public function up()
     {
-        Schema::table('campaigns', function (Blueprint $table) {
-            $table->integer('tracking_domain_id')->unsigned()->nullable();
-        });
+        try {
+            Schema::table('campaigns', function (Blueprint $table) {
+                $table->integer('tracking_domain_id')->unsigned()->nullable();
+            });
+        } catch (\Exception $ex) {
+            //
+        }
     }
 
     /**

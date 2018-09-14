@@ -7,13 +7,4 @@ use Acelle\Http\Controllers\Controller;
 
 class UserController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth');
-    }
 }

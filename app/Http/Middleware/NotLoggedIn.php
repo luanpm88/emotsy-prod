@@ -33,7 +33,6 @@ class NotLoggedIn
             }
         } catch (\Exception $e) {
         }
-        
         return $next($request);
     }
 }

@@ -3,43 +3,35 @@
 namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Acelle\Model\User;
+use Acelle\Model\Currency;
 
 class CurrencyPolicy
 {
     use HandlesAuthorization;
 
-    /**
-     * Create a new policy instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
-    public function read(\Acelle\Model\User $user, \Acelle\Model\Currency $item)
+    public function read(User $user, Currency $item)
     {
         $can = $user->admin->getPermission('currency_read') != 'no';
 
         return $can;
     }
 
-    public function readAll(\Acelle\Model\User $user, \Acelle\Model\Currency $item)
+    public function readAll(User $user, Currency $item)
     {
         $can = $user->admin->getPermission('currency_read') == 'all';
 
         return $can;
     }
 
-    public function create(\Acelle\Model\User $user, \Acelle\Model\Currency $item)
+    public function create(User $user, Currency $item)
     {
         $can = $user->admin->getPermission('currency_create') == 'yes';
 
         return $can;
     }
 
-    public function update(\Acelle\Model\User $user, \Acelle\Model\Currency $item)
+    public function update(User $user, Currency $item)
     {
         $ability = $user->admin->getPermission('currency_update');
         $can = $ability == 'all'
@@ -48,7 +40,7 @@ class CurrencyPolicy
         return $can;
     }
 
-    public function delete(\Acelle\Model\User $user, \Acelle\Model\Currency $item)
+    public function delete(User $user, Currency $item)
     {
         $ability = $user->admin->getPermission('currency_delete');
         $can = $ability == 'all'
@@ -57,7 +49,7 @@ class CurrencyPolicy
         return $can;
     }
 
-    public function disable(\Acelle\Model\User $user, \Acelle\Model\Currency $item)
+    public function disable(User $user, Currency $item)
     {
         $ability = $user->admin->getPermission('currency_update');
         $can = $ability == 'all'
@@ -66,7 +58,7 @@ class CurrencyPolicy
         return $can && $item->status != 'inactive';
     }
 
-    public function enable(\Acelle\Model\User $user, \Acelle\Model\Currency $item)
+    public function enable(User $user, Currency $item)
     {
         $ability = $user->admin->getPermission('currency_update');
         $can = $ability == 'all'

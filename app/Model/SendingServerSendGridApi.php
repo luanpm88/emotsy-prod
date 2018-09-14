@@ -40,9 +40,9 @@ class SendingServerSendGridApi extends SendingServerSendGrid
     // Inherit class to implementation of this method
     public function send($message, $params = array())
     {
+        $this->setupWebhooks();
+        
         try {
-            $this->setupWebhooks();
-
             $msgId = $message->getHeaders()->get('X-Acelle-Message-Id')->getFieldBody();
 
             $mail = $this->prepareEmail($message);

@@ -7,11 +7,10 @@ use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
-use Illuminate\Foundation\Auth\Access\AuthorizesResources;
 
 class Controller extends BaseController
 {
-    use AuthorizesRequests, AuthorizesResources, DispatchesJobs, ValidatesRequests;
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
     /**
      * Create a new controller instance.
@@ -80,10 +79,10 @@ class Controller extends BaseController
         \Auth::logout();
 
         if ($request->view == 'backend') {
-            session()->set('demo', 'backend');
+            session()->put('demo', 'backend');
             return redirect()->action('Admin\HomeController@index');
         } else {
-            session()->set('demo', 'frontend');
+            session()->put('demo', 'frontend');
             return redirect()->action('HomeController@index');
         }
     }

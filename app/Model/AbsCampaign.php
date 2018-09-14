@@ -29,7 +29,6 @@ use Acelle\Library\StringHelper;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use DB;
 use Carbon\Carbon;
-
 use File;
 
 abstract class AbsCampaign extends Model
@@ -1337,7 +1336,7 @@ abstract class AbsCampaign extends Model
      */
     public function mostOpenSubscribers($number)
     {
-        return \Acelle\Web\Subscriber::selectRaw(\DB::getTablePrefix().'list_subscriber.*, COUNT('.\DB::getTablePrefix().'campaign_track_unsubscribe.id) AS openCount')
+        return \Acelle\Web\Subscriber::selectRaw(DB::getTablePrefix().'list_subscriber.*, COUNT('.DB::getTablePrefix().'campaign_track_unsubscribe.id) AS openCount')
                             ->leftJoin('campaign_track_unsubscribe', 'campaign_track_unsubscribe.subscriber_id', '=', 'list_subscriber.subscriber_id')
                             ->where('campaign_track_unsubscribe.campaign_id', '=', $this->campaign_id)
                             ->groupBy('list_subscriber.subscriber_id')
@@ -1364,7 +1363,7 @@ abstract class AbsCampaign extends Model
      */
     public static function topOpens($number = 5, $customer = null)
     {
-        $records = self::select(\DB::raw(\DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
+        $records = self::select(DB::raw(DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
             ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id');
 
@@ -1385,7 +1384,7 @@ abstract class AbsCampaign extends Model
      */
     public static function topClicks($number = 5, $customer = null)
     {
-        $records = self::select(\DB::raw(\DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
+        $records = self::select(DB::raw(DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
             ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id');
 
@@ -1406,7 +1405,7 @@ abstract class AbsCampaign extends Model
      */
     public static function topLinks($number = 5, $customer = null)
     {
-        $records = Link::select(\DB::raw(\DB::getTablePrefix().'links.*, count(*) as `aggregate`'))
+        $records = Link::select(DB::raw(DB::getTablePrefix().'links.*, count(*) as `aggregate`'))
             ->join('campaign_links', 'campaign_links.link_id', '=', 'links.id')
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaign_links.campaign_id')
             ->join('click_logs', function ($join) {
@@ -1432,7 +1431,7 @@ abstract class AbsCampaign extends Model
      */
     public function getTopLinks($number = 5)
     {
-        $records = ClickLog::select(\DB::raw(\DB::getTablePrefix().'click_logs.*, count(*) as `aggregate`'))
+        $records = ClickLog::select(DB::raw(DB::getTablePrefix().'click_logs.*, count(*) as `aggregate`'))
             ->leftJoin('tracking_logs', 'tracking_logs.message_id', '=', 'click_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
 
@@ -1449,7 +1448,7 @@ abstract class AbsCampaign extends Model
      */
     public function getTopOpenSubscribers($number = 5)
     {
-        $records = Subscriber::select(\DB::raw(\DB::getTablePrefix().'subscribers.*, count(*) as `aggregate`'))
+        $records = Subscriber::select(DB::raw(DB::getTablePrefix().'subscribers.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id')
             ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
             ->where('campaign_id', '=', $this->id);
@@ -1467,7 +1466,7 @@ abstract class AbsCampaign extends Model
      */
     public function getRecentOpenSubscribers($number = 5)
     {
-        $records = Subscriber::select(\DB::raw(\DB::getTablePrefix().'subscribers.*, count(*) as `aggregate`'))
+        $records = Subscriber::select(DB::raw(DB::getTablePrefix().'subscribers.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.subscriber_id', '=', 'subscribers.id')
             ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
             ->where('campaign_id', '=', $this->id);
@@ -1485,7 +1484,7 @@ abstract class AbsCampaign extends Model
      */
     public function topLocations($number = 5, $customer = null)
     {
-        $records = IpLocation::select(\DB::raw(\DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
+        $records = IpLocation::select(DB::raw(DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
             ->join('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
             ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
@@ -1508,7 +1507,7 @@ abstract class AbsCampaign extends Model
      */
     public function topCountries($number = 5, $customer = null)
     {
-        $records = IpLocation::select(\DB::raw(\DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
+        $records = IpLocation::select(DB::raw(DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
             ->join('open_logs', 'open_logs.ip_address', '=', 'ip_locations.ip_address')
             ->join('tracking_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);
@@ -1531,7 +1530,7 @@ abstract class AbsCampaign extends Model
      */
     public function topClickCountries($number = 5, $customer = null)
     {
-        $records = IpLocation::select(\DB::raw(\DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
+        $records = IpLocation::select(DB::raw(DB::getTablePrefix().'ip_locations.*, count(*) as `aggregate`'))
             ->join('click_logs', 'click_logs.ip_address', '=', 'ip_locations.ip_address')
             ->join('tracking_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
             ->where('tracking_logs.campaign_id', '=', $this->id);

@@ -6,26 +6,6 @@ use Illuminate\Http\Request;
 
 class PageController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth', [
-            'except' => [
-                'signUpForm',
-                'signUpThankyouPage',
-                'signUpConfirmationThankyou',
-                'unsubscribeForm',
-                'unsubscribeSuccessPage',
-                'profileUpdateForm',
-                'profileUpdateSuccessPage',
-                'profileUpdateEmailSent',
-            ],
-        ]);
-    }
     
     /**
      * Redirect page if use outside url
@@ -262,11 +242,6 @@ class PageController extends Controller
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
         
-        // redirect if use outside url
-        if ($page->use_outside_url) {
-            return redirect($page->getOutsideUrlWithUid());
-        }
-
         $page->renderContent(null, $subscriber);
 
         if ($subscriber->getSecurityToken('subscribe-confirm') == $request->code && $subscriber->status == 'unconfirmed') {
@@ -282,6 +257,11 @@ class PageController extends Controller
                     return view('somethingWentWrong', ['message' => $ex->getMessage()]);
                 }
             }
+        }
+        
+        // redirect if use outside url
+        if ($page->use_outside_url) {
+            return redirect($page->getOutsideUrlWithUid());
         }
 
         return view('pages.default', [
@@ -469,17 +449,17 @@ class PageController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         $page->renderContent(null, $subscriber);
-        
-        // redirect if use outside url
-        if ($page->use_outside_url) {
-            return redirect($page->getOutsideUrlWithUid());
-        }
 
         // SEND EMAIL
         try {
             $list->sendProfileUpdateEmail($subscriber);
         } catch (\Exception $ex) {
             return view('somethingWentWrong', ['message' => $ex->getMessage()]);
+        }
+        
+        // redirect if use outside url
+        if ($page->use_outside_url) {
+            return redirect($page->getOutsideUrlWithUid());
         }
 
         return view('pages.default', [

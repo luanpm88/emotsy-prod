@@ -111,7 +111,7 @@ class SystemJob extends Model
         // delete all system_jobs & jobs
         DB::transaction(function () {
             // delete jobs
-            $jobs = Job::where('reserved', 0)->get();
+            $jobs = Job::get();
             foreach ($jobs as $job) {
                 $json = json_decode($job->payload, true);
                 try {
@@ -140,7 +140,7 @@ class SystemJob extends Model
         // delete all system_jobs & jobs
         DB::transaction(function () {
             // delete jobs
-            $jobs = Job::where('reserved', 0)->get();
+            $jobs = Job::get();
             foreach ($jobs as $job) {
                 $json = json_decode($job->payload, true);
                 try {

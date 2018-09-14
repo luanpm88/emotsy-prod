@@ -5,9 +5,9 @@
 require 'json'
 
 # Settings
-old_versions = ['3.0.15']          # sort by chronological order
-packages = ['louis']               # vendor packages to be replaced
-dirs = ['resources/lang/default']  # 'resources/lang/default' for example
+old_versions = ['3.0.18-p6']                    # sort by chronological order
+packages = []                                # vendor packages to be replaced
+dirs = []  # 'resources/lang/default' for example
 
 # Auto setting
 release_date = Time.now.to_s

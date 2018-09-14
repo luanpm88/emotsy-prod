@@ -3,24 +3,20 @@
 namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
+use Acelle\Model\User;
+use Acelle\Model\SystemJob;
 
 class SystemJobPolicy
 {
     use HandlesAuthorization;
+    
     public $jobs = [
         'Acelle\Jobs\ImportSubscribersJob',
         'Acelle\Jobs\ExportSubscribersJob',
         'Acelle\Jobs\ExportSegmentsJob',
     ];
-    /**
-     * Create a new policy instance.
-     */
-    public function __construct()
-    {
-        //
-    }
 
-    public function delete(\Acelle\Model\User $user, \Acelle\Model\SystemJob $item)
+    public function delete(User $user, SystemJob $item)
     {
         if (in_array($item->name, $this->jobs)) {
             $data = json_decode($item->data);
@@ -32,7 +28,7 @@ class SystemJobPolicy
         return false;
     }
 
-    public function downloadImportLog(\Acelle\Model\User $user, \Acelle\Model\SystemJob $item)
+    public function downloadImportLog(User $user, SystemJob $item)
     {
         $data = json_decode($item->data);
         $list = \Acelle\Model\MailList::findByUid($data->mail_list_uid);
@@ -42,7 +38,7 @@ class SystemJobPolicy
             $data->status == 'done';
     }
 
-    public function downloadExportCsv(\Acelle\Model\User $user, \Acelle\Model\SystemJob $item)
+    public function downloadExportCsv(User $user, SystemJob $item)
     {
         $data = json_decode($item->data);
         $list = \Acelle\Model\MailList::findByUid($data->mail_list_uid);
@@ -52,7 +48,7 @@ class SystemJobPolicy
             $data->status == 'done';
     }
 
-    public function cancel(\Acelle\Model\User $user, \Acelle\Model\SystemJob $item)
+    public function cancel(User $user, SystemJob $item)
     {
         if (in_array($item->name, $this->jobs)) {
             $data = json_decode($item->data);

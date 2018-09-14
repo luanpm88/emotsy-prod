@@ -189,6 +189,8 @@ class Campaign extends AbsCampaign
                 }
             });
 
+            MailLog::info("{$i} emails sent for the process");
+
             // only mark campaign as done when running as its own process
             // as a child process, just finish and leave the parent process to update campaign status
             if (!$asChildProcess) {
@@ -319,7 +321,7 @@ class Campaign extends AbsCampaign
                     }
                 } else {
                     // Entire list
-                    $conditions[] = '(' . table('subscribers.mail_list_id') . ' = ' . $lists_segment->mail_list_id . ')';
+                    $conditions[] = '('.table('subscribers.mail_list_id').' = '.$lists_segment->mail_list_id.')';
                 }
             }
 

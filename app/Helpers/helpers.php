@@ -258,6 +258,16 @@ function artisan_migrate() {
 }
 
 /**
+ * Run artisan clean up
+ *
+ * @return boolean
+ */
+function artisan_clear() {
+    \Artisan::call('view:clear');
+    \Artisan::call('route:clear');
+}
+
+/**
  * Check if site is in demo mod
  *
  * @return boolean
@@ -464,4 +474,20 @@ function func_enabled($name) {
 function app_version()
 {
     return trim(file_get_contents(base_path('VERSION')));
+}
+
+/**
+ * Extract email from a string
+ * For example: get abc@mail.com from "My Name <abc@mail.com>"
+ *
+ * @return string version
+ */
+function extract_email($str)
+{
+    preg_match("/(?<email>[-0-9a-zA-Z\.+_]+@[-0-9a-zA-Z\.+_]+\.[a-zA-Z]{2,4})/", $str, $matched);
+    if (array_key_exists('email', $matched)) {
+        return $matched['email'];
+    } else {
+        return null;
+    }
 }

@@ -7,15 +7,6 @@ use Acelle\Http\Controllers\Controller;
 
 class CustomerController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth');
-    }
 
     /**
      * Display a listing of the resource.
@@ -370,7 +361,6 @@ class CustomerController extends Controller
         $orig_id = $request->user()->uid;
         \Auth::login($customer->user);
         \Session::put('orig_customer_id', $orig_id);
-
         return redirect()->action('HomeController@index');
     }
 

@@ -7,18 +7,10 @@ use Acelle\Http\Controllers\Controller;
 use Acelle\Library\UpgradeManager;
 use Illuminate\Support\Facades\Log;
 use Acelle\Model\Setting;
+use Illuminate\Support\Facades\Session;
 
 class SettingController extends Controller
 {
-    /**
-     * Create a new controller instance.
-     */
-    public function __construct()
-    {
-        parent::__construct();
-
-        $this->middleware('auth');
-    }
 
     /**
      * Display and update all settings.
@@ -435,8 +427,39 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
             return $this->notAuthorized();
         }
-
+        
+        // Upgrade manager
         $manager = new UpgradeManager();
+        
+        // Redirect URL
+        $pageUrl = action('Admin\SettingController@upgrade');
+        
+        // If upgrade done successfully, perform config:cache
+        // The config:cache must be done in a subsequent process, not in the 'doUpgrade' one
+        if ($request->session()->has('upgraded')) {
+            $request->session()->forget('upgraded');
+            $request->session()->put('reset', true);
+            Session::save();
+            $manager->refreshConfig();
+            echo '<html>
+                <head>
+                    <meta http-equiv="refresh" content="3;'.$pageUrl.'" />
+                <title>Page Moved</title>
+                </head>
+                <body>
+                    Upgrade done, redirecting...
+                </body>
+                </html>';
+            return;
+        }
+        
+        if ($request->session()->has('reset')) {
+            $pageUrl = action('Admin\SettingController@upgrade');
+            $request->session()->forget('reset');
+            Session::save();
+            $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
+        }
+        
         return view('admin.settings.upgrade', [
             'any' => 'any',
             'manager' => $manager,
@@ -453,15 +476,26 @@ class SettingController extends Controller
         if ($request->user()->admin->getPermission('setting_upgrade_manager') != 'yes') {
             return $this->notAuthorized();
         }
-
         $manager = new UpgradeManager();
         $failed = $manager->test();
         if (empty($failed)) {
             $pageUrl = action('Admin\SettingController@upgrade');
             $manager->run();
-            $request->session()->flash('alert-success', trans('messages.upgrade.alert.upgrade_success'));
             Log::info('System successfully upgraded to the new version');
-            return redirect()->away($pageUrl);
+            $request->session()->put('upgraded', true);
+            // Redirect to an entirely new page
+            // Then make a new request from browser to load new config
+            // Simple using redirect() will retain the current setting
+            echo '<html>
+                <head>
+                    <meta http-equiv="refresh" content="3;'.$pageUrl.'" />
+                <title>Page Moved</title>
+                </head>
+                <body>
+                    Upgrade is in progress, please wait...
+                </body>
+                </html>';
+            return;
         } else {
             Log::warning('Cannot upgrade, certain files are not writable');
             return view('admin.settings.upgrade', [
@@ -521,5 +555,83 @@ class SettingController extends Controller
         }
 
         return redirect()->action('Admin\SettingController@upgrade');
+    }
+    
+    /**
+     * Advanced settings.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function advanced(Request $request)
+    {
+        if ($request->user()->admin->getPermission('setting_general') != 'yes') {
+            return $this->notAuthorized();
+        }
+
+        // \Acelle\Model\Setting::updateAll();
+        $settings = \Acelle\Model\Setting::getAll();
+        if (null !== $request->old()) {
+            foreach ($request->old() as $name => $value) {
+                if (isset($settings[$name])) {
+                    $settings[$name]['value'] = $value;
+                }
+            }
+        }
+
+        // validate and save posted data
+        if ($request->isMethod('post')) {
+
+            if($this->isDemoMode()) {
+                return $this->notAuthorized();
+            }
+
+            $rules = [];
+            $this->validate($request, $rules);
+
+            // Save settings
+            foreach ($request->all() as $name => $value) {
+                if ($name != '_token' && isset($settings[$name])) {
+                    // Upload and save image
+                    if ($name == 'site_logo_small' || $name == 'site_logo_big') {
+                        if ($request->hasFile($name) && $request->file($name)->isValid()) {
+                            \Acelle\Model\Setting::uploadSiteLogo($request->file($name), $name);
+                        }
+                    } else {
+                        if ($settings[$name]['cat'] == 'advanced' && $request->user()->admin->getPermission('setting_general') == 'yes') {
+                            \Acelle\Model\Setting::set($name, $value);
+                        }
+                    }
+                }
+            }
+
+            // Redirect to my lists page
+            $request->session()->flash('alert-success', trans('messages.setting.updated'));
+            return redirect()->action('Admin\SettingController@advanced');
+        }
+
+        return view('admin.settings.advanced', [
+            'settings' => $settings,
+        ]);
+    }
+    
+    /**
+     * Advanced settings.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function advancedUpdate(Request $request, $name)
+    {
+        if ($request->user()->admin->getPermission('setting_general') != 'yes') {
+            return $this->notAuthorized();
+        }
+        
+        if($this->isDemoMode()) {
+            return $this->notAuthorized();
+        }
+        
+        // update setting value
+        \Acelle\Model\Setting::set($name, $request->value);
+        
+        echo trans('messages.setting.update.success', ['name' => $name]);
     }
 }

@@ -9,7 +9,7 @@
             <p>{{ trans('messages.admin.settings.system_urls.current_urls_wording') }}</p>
             <ul class="modern-listing mt-0 top-border-none">
             @foreach ($settings as $name => $setting)
-                @if ($setting['cat'] == 'url')
+                @if (array_key_exists('cat', $setting) && $setting['cat'] == 'url')
                     <li>
                         <i class="icon-link text-grey"></i>
                         <h5 class="mt-0 mb-0 text-semibold">
