@@ -46,10 +46,12 @@ class Lockable
      *
      * @return void
      */
-    public function getExclusiveLock($callback)
+    public function getExclusiveLock($callback, $timeout = 5, $exceptionCallback = null)
     {
+        $start = time();
         $reader = fopen($this->file, 'w');
         while (true) {
+            $this->checkTimeout($start, $timeout, $exceptionCallback);
             if (flock($reader, LOCK_EX | LOCK_NB)) {  // acquire an exclusive lock
                 // execute the callback
                 $callback($reader);
@@ -67,10 +69,12 @@ class Lockable
      *
      * @return void
      */
-    public function getSharedLock($callback)
+    public function getSharedLock($callback, $timeout = 5, $exceptionCallback = null)
     {
+        $start = time();
         $reader = fopen($this->file, "r");
         while (true) {
+            $this->checkTimeout($start, $timeout, $exceptionCallback);
             if (flock($reader, LOCK_SH | LOCK_NB)) {  // acquire an exclusive lock
                 // execute the callback
                 $callback($this);
@@ -78,6 +82,23 @@ class Lockable
                 flock($reader, LOCK_UN);    // release the lock
                 fclose($reader);
                 break;
+            }
+        }
+    }
+    
+    /**
+     * Check for timeout
+     *
+     * @return void
+     */
+    public function checkTimeout($startTime, $timeoutDuration, $callback)
+    {
+        echo time() - $startTime;
+        if (time() - $startTime > $timeoutDuration) {
+            if (!is_null($callback)) {
+                $callback();    
+            } else {
+                throw new \Exception("Timeout getting lock #Lockable");
             }
         }
     }

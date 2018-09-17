@@ -38,9 +38,8 @@ class SendingServerAmazonSmtp extends SendingServerAmazon
      */
     public function send($message, $params = array())
     {
+        $this->setupSnsThreadSafe($message);
         try {
-            $this->setupSnsThreadSafe($message);
-
             $transport = AmazonSmtpTransport::newInstance($this->host, (int) $this->smtp_port, $this->smtp_protocol)
               ->setUsername($this->smtp_username)
               ->setPassword($this->smtp_password)
