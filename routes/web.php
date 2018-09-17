@@ -165,7 +165,7 @@ Route::group(['middleware' => ['not_installed']], function () {
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
-    Route::get('/', 'HomeController@index')->middleware('auth');
+    Route::get('/', 'HomeController@index');
     Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
     Route::get('/current_user_uid', 'UserController@showUid');
 
