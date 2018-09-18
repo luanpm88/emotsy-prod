@@ -83,7 +83,7 @@
                             return paypal.rest.payment.create(this.props.env, this.props.client, {
                                 transactions: [
                                     {
-                                        amount: { total: '{{ $subscription->price }}', currency: '{{ $subscription->currency_code }}' }
+                                        amount: { total: '{{ $subscription->getPayPalPrice() }}', currency: '{{ $subscription->currency_code }}' }
                                     }
                                 ]
                             });
