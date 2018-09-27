@@ -37,6 +37,10 @@ use Http\Adapter\Guzzle6\Client as GuzzleAdapter;
 class SendingServerSparkPost extends SendingServer
 {
     const WEBHOOK = 'sparkpost';
+    const HOSTS = [
+        ['text' => 'SparkPost Global', 'value' => 'api.sparkpost.com'],
+        ['text' => 'SparkPost EU', 'value' => 'api.eu.sparkpost.com'],
+    ];
 
     protected $table = 'sending_servers';
     public static $client = null;
@@ -57,7 +61,7 @@ class SendingServerSparkPost extends SendingServer
     {
         if (!self::$client) {
             $httpClient = new GuzzleAdapter(new Client());
-            $sparky = new SparkPost($httpClient, ['key' => $this->api_key]);
+            $sparky = new SparkPost($httpClient, ['key' => $this->api_key, 'host' => $this->host]);
             $sparky->setOptions(['async' => false]);
             self::$client = $sparky;
         }
