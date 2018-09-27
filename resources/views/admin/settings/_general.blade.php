@@ -1,6 +1,12 @@
 @if (Auth::user()->admin->getPermission("setting_general") == 'yes')
     <div class="tab-pane active" id="top-general">
         <div class="row">
+            <div class="col-md-12">
+                <h2 class="text-semibold">Edit your application setting</h2>
+                <h3 class="text-semibold">General</h3>
+            </div>
+        </div>
+        <div class="row">
             <?php $count = 0; ?>
             @foreach ($settings as $name => $setting)
                 @if (isset($setting['cat']) && $setting['cat'] == 'general')
@@ -29,10 +35,12 @@
                 @endif
             @endforeach
         </div>
-        
-        <br />
+        <div class="row">
+            <div class="col-md-12"><p align="right"><a href="{{ action('Admin\SettingController@advanced') }}">View hidden configuration settings</a></p></div>
+        </div>
         <div class="text-left">
             <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
         </div>
+        
     </div>
 @endif
