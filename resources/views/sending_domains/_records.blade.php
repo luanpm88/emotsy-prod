@@ -15,9 +15,7 @@
                 </span>
             </td>
             <td width="20%">
-                <a href="#" data-type="text" data-pk="1" data-url="{{ action('SendingDomainController@updateVerificationTxtName', $server->uid) }}" data-title="{{ trans('messages.sending_domain.verification_hostname.enter') }}" class="inline-editable">
-                    {{ $server->getVerificationTxtName() }}
-                </a>
+                {{ $server->getFullVerificationHostName() }}
             </td>
             <td>{{ $server->verification_token }}</td>
             <td class="text-right" width="1%">
@@ -39,9 +37,7 @@
                 </span>
             </td>
             <td>
-                <a href="#" data-type="text" data-pk="1" data-url="{{ action('SendingDomainController@updateDkimSelector', $server->uid) }}" data-title="{{ trans('messages.sending_domain.dkim_selector.enter') }}" class="inline-editable">
-                    {{ $server->getDkimSelectorParts()[0] }}
-                </a>.{{ $server->getDkimSelectorParts()[1] }}
+                {{ $server->getFullDkimHostName() }}
             </td>
             <td><textarea style="width:100%;border:0;height:100px;resize:none;">{{ $server->getDnsDkimConfig() }}</textarea></td>
             <td class="text-right">
