@@ -213,8 +213,8 @@ class Setting extends Model
                 'options' => ['no', 'yes'],
             ],
             'import_subscribers_commitment' => [
-                'cat' => 'general',
-                'value' => '',
+                'cat' => 'others',
+                'value' => null,
                 'type' => 'textarea',
             ],
             'sending_campaigns_at_once' => [
