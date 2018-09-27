@@ -158,7 +158,6 @@
   'list_fields' => 'Listenfelder',
   'manage_fields' => 'Felder verwalten',
   'manage_list_fields' => 'Felder editieren',
-  'list_information' => 'Listendetails',
   'edit_list' => 'Liste bearbeiten',
   'subscribe' => 'Abonniere',
   'custom_forms_and_emails' => 'Formulare / Seiten',
@@ -2087,4 +2086,9 @@
   'setting.action' => 'Action',
   'setting.enter' => 'Enter :name',
   'setting.update.success' => ':name setting was successfully updated.',
+  'list.title.edit' => 'Edit your mail list',
+  'list.title.setting' => 'Settings',
+  'admin.settings.edit_app_settings' => 'Edit application settings',
+  'subscriber.email.invalid' => 'Invalid email address',
+  'subscriber.email.fail_to_verify' => 'Cannot verify email address',
 ) ?>
