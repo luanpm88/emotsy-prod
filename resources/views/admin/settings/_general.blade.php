@@ -2,8 +2,8 @@
     <div class="tab-pane active" id="top-general">
         <div class="row">
             <div class="col-md-12">
-                <h2 class="text-semibold">Edit your application setting</h2>
-                <h3 class="text-semibold">General</h3>
+                <h2 class="text-semibold">{{ trans('messages.admin.settings.edit_app_settings') }}</h2>
+                <h3 class="text-semibold">{{ trans('messages.general') }}</h3>
             </div>
         </div>
         <div class="row">
