@@ -441,6 +441,7 @@ class SettingController extends Controller
             $request->session()->put('reset', true);
             Session::save();
             $manager->refreshConfig();
+            Setting::writeDefaultSettings();
             echo '<html>
                 <head>
                     <meta http-equiv="refresh" content="3;'.$pageUrl.'" />
