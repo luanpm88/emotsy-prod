@@ -2088,4 +2088,6 @@
   'setting.action' => 'Action',
   'setting.enter' => 'Enter :name',
   'setting.update.success' => ':name setting was successfully updated.',
+  'subscriber.email.invalid' => 'Invalid email address',
+  'subscriber.email.fail_to_verify' => 'Cannot verify email address',
 ) ?>

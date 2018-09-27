@@ -777,6 +777,7 @@ class Subscriber extends Model
         $log->email_verification_server_id = $verifier->id;
         $this->emailVerifications()->save($log);
         MailLog::info(sprintf('Finish verifying %s (%s)', $this->email, $this->id));
+        return $log->isDeliverable();
     }
 
     /**

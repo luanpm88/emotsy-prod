@@ -61,6 +61,16 @@ class Setting extends Model
             return;
         }
     }
+    
+    /**
+     * Check setting EQUAL.
+     *
+     * @return object
+     */
+    public static function isYes($key)
+    {
+        return self::get($key) == 'yes';
+    }
 
     /**
      * Set setting value.
@@ -299,7 +309,7 @@ class Setting extends Model
             ],
             'cronjob_last_execution' => [
                 'cat' => 'monitor',
-                'value' => null,
+                'value' => 0,
                 'type' => 'text',
                 'not_required' => true,
             ],
@@ -330,6 +340,12 @@ class Setting extends Model
             'allow_send_from_unverified_domain' => [
                 'cat' => 'others',
                 'value' => 'yes',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'verify_subscriber_email' => [
+                'cat' => 'others',
+                'value' => 'no',
                 'type' => 'text',
                 'not_required' => true,
             ],
@@ -418,5 +434,24 @@ class Setting extends Model
         self::set($type, $path.$filename);
 
         return true;
+    }
+    
+    /**
+     * Write default settings to DB.
+     *
+     * @var bool
+     */
+    public static function writeDefaultSettings()
+    {
+        foreach (self::defaultSettings() as $name => $setting) {
+            if (!self::where('name', $name)->exists()) {
+                $value = (is_null($setting['value'])) ? '' : $setting['value'];
+                
+                $setting = new self();
+                $setting->name = $name;
+                $setting->value = $value;
+                $setting->save();
+            }
+        }
     }
 }

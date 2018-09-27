@@ -29,6 +29,7 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
 use Acelle\Exceptions\VerificationProcessCancelledException;
+use Acelle\Model\Setting;
 
 class MailList extends Model
 {
@@ -904,13 +905,29 @@ class MailList extends Model
      * Send subscription confirmation email to subscriber.
      */
     public function sendSubscriptionConfirmationEmail($subscriber)
-    {
-        MailLog::info('Sending subscription confirmation email to '.$subscriber->email);
+    {        
         if ($subscriber->isListedInBlacklist()) {
             MailLog::info($subscriber->email.' is already blacklisted.');
             throw new \Exception(trans('messages.subscriber.blacklisted'));
         }
         
+        if (Setting::isYes('verify_subscriber_email')) {
+            MailLog::info('Verifying subscriber email: '.$subscriber->email);
+            // @important: the user must have its own verification server, this will not work for system verification server (even if the user has access to)
+            $verifier = $this->customer->activeEmailVerificationServers->first();
+
+            if (is_null($verifier)) {
+                MailLog::info(sprintf('Contact %s (%s) tries to subscribe to list %s (%s) but there is no verification service available', $subscriber->email, $subscriber->uid, $this->name, $this->uid));
+                throw new \Exception(trans('messages.subscriber.email.fail_to_verify'));
+            }
+
+            if (!$subscriber->verify($verifier)) {
+                MailLog::info(sprintf('Contact %s (%s) tries to subscribe to list %s (%s) but email address is invalid', $subscriber->email, $subscriber->uid, $this->name, $this->uid));
+                throw new \Exception(trans('messages.subscriber.email.invalid'));
+            }
+        }
+        
+        MailLog::info('Sending subscription confirmation email to '.$subscriber->email);
         $list = $this;
 
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
