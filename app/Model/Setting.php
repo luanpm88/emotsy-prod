@@ -343,6 +343,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'allow_turning_off_dkim_signing' => [
+                'cat' => 'others',
+                'value' => 'yes',
+                'type' => 'text',
+                'not_required' => true,
+            ],
             'verify_subscriber_email' => [
                 'cat' => 'others',
                 'value' => 'no',

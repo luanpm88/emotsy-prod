@@ -205,7 +205,6 @@ class SendingDomain extends Model
     {
         return [
             'name' => 'required|regex:/^([a-z0-9A-Z]+(-[a-z0-9A-Z]+)*\.)+[a-zA-Z]{2,}$/',
-            'signing_enabled' => 'required',
         ];
     }
 
@@ -243,7 +242,7 @@ class SendingDomain extends Model
     public function getSpf()
     {
         $spf = Setting::get('spf');
-        if (is_null($spf)) {
+        if (is_null($spf) || empty($spf)) {
             return sprintf('v=spf1 +a +mx +ip4:%s ~all', $this->getHostIpAddress());    
         } else {
             return $spf;
@@ -273,6 +272,14 @@ class SendingDomain extends Model
         } else {
             return Setting::get('verification_hostname');
         }        
+    }
+    
+    /**
+     * Retrieve the full verification hostname (including domain name)
+     */
+    public function getFullVerificationHostName()
+    {
+        return "{$this->getVerificationTxtName()}.{$this->name}.";
     }
 
     /**
@@ -441,6 +448,16 @@ class SendingDomain extends Model
     public function getDkimSelectorParts()
     {
         return explode(".", $this->getDkimSelector());
+    }
+    
+    /**
+     * Get the full DKIM host name (including domain name).
+     *
+     * @return string
+     */
+    public function getFullDkimHostName()
+    {
+        return "{$this->getDkimSelector()}.{$this->name}.";
     }
     
     /**
