@@ -227,7 +227,7 @@ class SettingController extends Controller
             'MAIL_USERNAME' => config("mail.username"),
             'MAIL_PASSWORD' => config("mail.password"),
             'MAIL_ENCRYPTION' => config("mail.encryption"),
-            'MAIL_FROM_EMAIL' => config("mail.from")["address"],
+            'MAIL_FROM_ADDRESS' => config("mail.from")["address"],
             'MAIL_FROM_NAME' => config("mail.from")["name"],
         ];
 
@@ -243,7 +243,7 @@ class SettingController extends Controller
             'env.MAIL_PORT' => 'required',
             'env.MAIL_USERNAME' => 'required',
             'env.MAIL_PASSWORD' => 'required',
-            'env.MAIL_FROM_EMAIL' => 'required|email',
+            'env.MAIL_FROM_ADDRESS' => 'required|email',
             'env.MAIL_FROM_NAME' => 'required',
         ];
 
