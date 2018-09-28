@@ -295,7 +295,7 @@ class UpgradeManager
     {
         // reload the config & run migration
         LaravelLog::info("Updating .env file");
-        $this->mergeEnv(app_path('.env'), app_path('.env.example'));
+        $this->mergeEnv(base_path('.env'), base_path('.env.example'));
         
         LaravelLog::info("Start caching & migrating");
         $files = ['bootstrap/cache/config.php', 'bootstrap/cache/services.php', 'bootstrap/cache/compiled.php'];
