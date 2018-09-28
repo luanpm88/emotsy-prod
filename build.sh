@@ -68,7 +68,7 @@ rm -fr public/upload/templates/*
 rm -fr bootstrap/cache/config.php
 rm -fr php-cs-fixer
 rm -fr composer.phar
-rm -fr .env.example
+# rm -fr .env.example  # keep to merge
 rm -fr doc
 rm -fr reset
 rm -fr apigen.phar
