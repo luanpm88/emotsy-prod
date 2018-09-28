@@ -567,7 +567,7 @@
   'campaign_clicks' => 'Campaign clicks',
   'clicked_links' => 'Clicked links',
   'setting.updated' => 'System settings were successfully updated',
-  'no_more_item' => 'You have exceeded the maximum quota',
+  'no_more_item' => 'You have exceeded the service quota',
   'segment_per_list_max' => 'Max segments per list',
   'sending_server' => 'Sending server',
   'fbl_handler' => 'Feedback loop handler',

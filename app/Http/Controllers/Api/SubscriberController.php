@@ -112,7 +112,7 @@ class SubscriberController extends Controller
 
         // authorize
         if (!$user->can('create', $subscriber)) {
-            return \Response::json(array('message' => trans('no_more_item')), 403);
+            return \Response::json(array('message' => trans('messages.no_more_item')), 403);
         }
 
         // validate and save posted data
