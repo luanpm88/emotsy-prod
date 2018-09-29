@@ -89,7 +89,8 @@ class Handler extends ExceptionHandler
         return [
             \Illuminate\Database\QueryException::class => [
                 'title' => 'Cannot connect to MySQL',
-                'message' => 'Make sure MySQL service <code>is running</code> and MySQL connection settings in <code>.env</code> and <code>bootstrap/cache/config.php</code> files are correct'
+                'message' => 'Make sure MySQL service <code>is running</code> and MySQL connection settings in <code>.env</code> and <code>bootstrap/cache/config.php</code> files are correct',
+                'match' => 'SQLSTATE[HY000] [2002] No such file or directory (SQL: select * from `m_users`'
             ],
             \RuntimeException::class => [
                 'match' => 'The only supported ciphers are AES-128-CBC and AES-256-CBC with the correct key lengths.',
