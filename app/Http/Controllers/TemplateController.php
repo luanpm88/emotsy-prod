@@ -85,7 +85,7 @@ class TemplateController extends Controller
         $template = new Template();
 
         // authorize
-        if (!$request->user()->customer->can('create', $template)) {
+        if (!$request->user()->customer->can('create', Template::class)) {
             return $this->notAuthorized();
         }
 
