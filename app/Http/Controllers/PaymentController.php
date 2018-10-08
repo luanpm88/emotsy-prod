@@ -556,7 +556,7 @@ class PaymentController extends Controller
         // Checkout url
         $data['vendor_id'] = $vendorId;
         $data['vendor_auth_code'] = $payment_method->getOption('vendor_auth_code');
-        if ($subscription->plan->paddle_plan_id!="" || $subscription->plan->$subscription->plan->paddle_plan_id!=null) {
+        if ($subscription->plan->paddle_plan_id!="" || $subscription->plan->paddle_plan_id!=null) {
             $data['product_id'] =$subscription->plan->paddle_plan_id;//'520029';
         }
 
