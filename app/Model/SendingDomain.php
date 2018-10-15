@@ -224,7 +224,15 @@ class SendingDomain extends Model
      */
     public function getDnsDkimConfig()
     {
-        return sprintf('"%s"', $this->getDnsDkimConfigWithoutQuote());
+        return doublequote($this->getDnsDkimConfigWithoutQuote());
+    }
+    
+    /**
+     * Generate the Domain DNS configuration for DKIM.
+     */
+    public function getEscapedDnsDkimConfig()
+    {
+        return str_replace(';', '\;', $this->getDnsDkimConfig());
     }
 
     /**
@@ -243,11 +251,18 @@ class SendingDomain extends Model
     {
         $spf = Setting::get('spf');
         if (is_null($spf) || empty($spf)) {
-            return sprintf('v=spf1 +a +mx +ip4:%s ~all', $this->getHostIpAddress());    
+            return sprintf('v=spf1 +a +mx +ip4:%s ~all', $this->getHostIpAddress());
         } else {
             return $spf;
         }
-        
+    }
+    
+    /**
+     * Get quoted SPF
+     */
+    public function getQuotedSpf()
+    {
+        return sprintf('%s', doublequote($this->getSpf()));
     }
 
     /**
@@ -359,7 +374,7 @@ class SendingDomain extends Model
         $fqdn = sprintf('%s.%s', $this->getVerificationTxtName(), $this->name);
         $results = collect(dns_get_record($fqdn, DNS_TXT));
         $results = $results->where('type', 'TXT')
-                           ->where('txt', $this->verification_token);
+                           ->whereIn('txt', [$this->verification_token, doublequote($this->verification_token)] );
 
         $this->domain_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
         $this->save();
@@ -375,7 +390,7 @@ class SendingDomain extends Model
         $fqdn = sprintf('%s.%s', $this->getDkimSelector(), $this->name);
         $results = collect(dns_get_record($fqdn, DNS_TXT));
         $results = $results->where('type', 'TXT')
-                           ->whereIn('txt', [$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig()]);
+                           ->whereIn('txt', [$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig(), $this->getEscapedDnsDkimConfig()]);
 
         $this->dkim_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
         $this->save();
@@ -390,7 +405,7 @@ class SendingDomain extends Model
     {
         $results = collect(dns_get_record($this->name, DNS_TXT));
         $results = $results->where('type', 'TXT')
-                           ->whereIn('txt', [$this->getSpf(), sprintf('"%s"', $this->getSpf())]);
+                           ->whereIn('txt', [$this->getSpf(), $this->getQuotedSpf()]);
 
         $this->spf_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
         $this->save();
