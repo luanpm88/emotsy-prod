@@ -491,3 +491,13 @@ function extract_email($str)
         return null;
     }
 }
+
+/**
+ * Doublequote a string
+ *
+ * @return string
+ */
+function doublequote($str)
+{
+    return sprintf('"%s"', preg_replace('/^"+|"+$/', '', $str));
+}
