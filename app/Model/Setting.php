@@ -349,6 +349,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'escape_dkim_dns_value' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
             'verify_subscriber_email' => [
                 'cat' => 'others',
                 'value' => 'no',
