@@ -2093,4 +2093,8 @@
   'subscriber.email.invalid' => 'Invalid email address',
   'subscriber.email.fail_to_verify' => 'Cannot verify email address',
   'site_favicon' => 'Site favicon',
+  'trouble_clicking_reset_password_button' => 'If you’re having trouble clicking the ":actionText" button, copy and paste the URL below
+         into your web browser: [:actionUrl](:actionUrl)',
+  'email_greeting.whoops' => 'Whoops!',
+  'email_greeting.hello' => 'Hello!',
 ) ?>
