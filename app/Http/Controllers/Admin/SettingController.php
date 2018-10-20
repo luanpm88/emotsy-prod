@@ -75,7 +75,7 @@ class SettingController extends Controller
             foreach ($request->all() as $name => $value) {
                 if ($name != '_token' && isset($settings[$name])) {
                     // Upload and save image
-                    if ($name == 'site_logo_small' || $name == 'site_logo_big') {
+                    if ($name == 'site_logo_small' || $name == 'site_logo_big' || $name == 'site_favicon') {
                         if ($request->hasFile($name) && $request->file($name)->isValid()) {
                             \Acelle\Model\Setting::uploadSiteLogo($request->file($name), $name);
                         }

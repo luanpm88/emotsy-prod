@@ -2092,4 +2092,5 @@
   'setting.update.success' => ':name setting was successfully updated.',
   'subscriber.email.invalid' => 'Invalid email address',
   'subscriber.email.fail_to_verify' => 'Cannot verify email address',
+  'site_favicon' => 'Site favicon',
 ) ?>
