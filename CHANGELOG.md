@@ -1,3 +1,17 @@
+3.0.19 / 2018-11-01
+==================
+
+ * Added: list subscription notification
+ * Added: verify subscriber email
+ * Changed: require PHP 5.6.4 or higher
+ * Fixed: cannot update system SMTP settings in certain cases
+ * Fixed: automation not triggered for list subscription
+ * Fixed: redirect issue for subscription form
+ * Fixed: favicon not showing up correctly on IE
+ * Fixed: verify-email.org integration issue
+ * Fixed: wrong stats showing up in user dashboard
+ * Fixed: PayPal integration issue with JPY
+
 3.0.18 / 2018-09-05
 ==================
  
