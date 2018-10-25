@@ -431,7 +431,7 @@ class Setting extends Model
      *
      * @var bool
      */
-    public static function uploadSiteLogo($file, $type)
+    public static function uploadSiteLogo($file, $name=null)
     {
         $path = 'images/';
         $upload_path = public_path($path);
@@ -439,8 +439,11 @@ class Setting extends Model
         if (!file_exists($upload_path)) {
             mkdir($upload_path, 0777, true);
         }
+        
+        
+        $md5file = \md5_file($file);
 
-        $filename = $type.'.'.$file->getClientOriginalExtension();
+        $filename = $md5file.'.'.$file->getClientOriginalExtension();
 
         // save to server
         $file->move($upload_path, $filename);
@@ -448,7 +451,7 @@ class Setting extends Model
         // create thumbnails
         $img = \Image::make($upload_path.$filename);
 
-        self::set($type, $path.$filename);
+        self::set($name, $path.$filename);
 
         return true;
     }
