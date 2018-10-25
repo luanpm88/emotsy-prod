@@ -7,7 +7,7 @@
     @endslot
 
     {{-- Body --}}
-    <p> A new contact <a href="{{ route('subscriber', ['uid' => $subscriber->uid, 'list_uid' => $subscriber->mailList->uid]) }}">{{ $subscriber->email }}</a> has been added to mail list <a href="{{ route('mail_list', ['uid' => $subscriber->mailList->uid]) }}">{{ $subscriber->mailList->name }}</a> </p>
+    <p>A new contact <a href="{{ route('subscriber', ['uid' => $subscriber->uid, 'list_uid' => $subscriber->mailList->uid]) }}">{{ $subscriber->email }}</a> has been added to mail list <a href="{{ route('mail_list', ['uid' => $subscriber->mailList->uid]) }}">{{ $subscriber->mailList->name }}</a> </p>
 
     {{-- Subcopy --}}
     @isset($subcopy)

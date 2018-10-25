@@ -368,6 +368,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'send_notification_email_for_list_subscription' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
         ];
     }
 
