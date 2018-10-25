@@ -1,5 +1,5 @@
-@if (\Acelle\Model\Setting::get('site_logo_small'))
-    <link rel="shortcut icon" type="image/png" href="{{ URL::asset(\Acelle\Model\Setting::get('site_favicon')) }}"/>
+@if (\Acelle\Model\Setting::get('site_favicon'))
+    <link rel="shortcut icon" type="image/png" href="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_favicon')) }}"/>
 @else
     <link rel="apple-touch-icon" sizes="57x57" href="{{ URL::asset('favicon/apple-icon-57x57.png') }}">
     <link rel="apple-touch-icon" sizes="60x60" href="{{ URL::asset('favicon/apple-icon-60x60.png') }}">

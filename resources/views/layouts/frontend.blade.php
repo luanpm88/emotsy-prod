@@ -24,7 +24,7 @@
 		<div class="navbar-header">
 			<a class="navbar-brand" href="{{ action('HomeController@index') }}">
 				@if (\Acelle\Model\Setting::get('site_logo_small'))
-                    <img src="{{ URL::asset(\Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
+                    <img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
                 @else
                     <img src="{{ URL::asset('images/default_site_logo_small_' . (Auth::user()->customer->getColorScheme() == "white" ? "dark" : "light") . '.png') }}" alt="">
                 @endif
