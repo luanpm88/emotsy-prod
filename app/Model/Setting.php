@@ -140,6 +140,11 @@ class Setting extends Model
                 'value' => '',
                 'type' => 'image',
             ],
+            'site_favicon' => [
+                'cat' => 'general',
+                'value' => '',
+                'type' => 'image',
+            ],
             'license' => [
                 'cat' => 'license',
                 'value' => '',
