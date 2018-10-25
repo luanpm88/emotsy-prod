@@ -58,7 +58,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
     Route::get('subscribers/email/{email}', 'SubscriberController@showByEmail');
     Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@update');
     Route::get('lists/{list_uid}/subscribers', 'SubscriberController@index');
-    Route::get('lists/{list_uid}/subscribers/{uid}', 'SubscriberController@show');
+    Route::get('lists/{list_uid}/subscribers/{uid}', 'SubscriberController@show')->name('subscriber');
     Route::patch('lists/{list_uid}/subscribers/{uid}/subscribe', 'SubscriberController@subscribe');
     Route::patch('lists/{list_uid}/subscribers/{uid}/unsubscribe', 'SubscriberController@unsubscribe');
     Route::delete('lists/{list_uid}/subscribers/{uid}/delete', 'SubscriberController@delete');
@@ -202,7 +202,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('lists/listing/{page?}', 'MailListController@listing');
     Route::get('lists/delete', 'MailListController@delete');
     Route::get('lists/delete/confirm', 'MailListController@deleteConfirm');
-    Route::get('lists/{uid}/overview', 'MailListController@overview');
+    Route::get('lists/{uid}/overview', 'MailListController@overview')->name('mail_list');
     Route::resource('lists', 'MailListController');
     Route::get('lists/{uid}/edit', 'MailListController@edit');
     Route::patch('lists/{uid}/update', 'MailListController@update');
