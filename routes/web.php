@@ -40,6 +40,9 @@ Route::get('/app/templates/{name?}', [ function ($name) {
     }
 }])->where('name', '.+');
 
+// Setting upload path
+Route::get('setting/{filename}', 'SettingController@file');
+
 Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:api'], function () {
     // Route::group(['namespace' => 'Api', 'prefix' => 'api/v1'], function () {
     Route::get('', 'HomeController@index');

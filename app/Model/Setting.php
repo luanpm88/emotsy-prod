@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
 {
+    const UPLOAD_PATH = 'app/setting/';
+    
     /**
      * Get all items.
      *
@@ -454,6 +456,46 @@ class Setting extends Model
         self::set($name, $path.$filename);
 
         return true;
+    }
+    
+    /**
+     * Upload site logo.
+     *
+     * @var bool
+     */
+    public static function uploadFile($file, $type=null)
+    {
+        $uploadPath = storage_path(self::UPLOAD_PATH);
+        
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+        
+        $md5file = \md5_file($file);
+
+        $filename = $type.'-'.$md5file.'.'.$file->getClientOriginalExtension();
+
+        // save to server
+        $file->move($uploadPath, $filename);
+
+        // create thumbnails
+        $img = \Image::make($uploadPath.$filename);
+
+        self::set($type, $filename);
+
+        return true;
+    }
+    
+    /**
+     * gET uploaded file location.
+     *
+     * @var bool
+     */
+    public static function getUploadFilePath($filename)
+    {
+        $uploadPath = storage_path(self::UPLOAD_PATH);
+
+        return $uploadPath.$filename;
     }
     
     /**

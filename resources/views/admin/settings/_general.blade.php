@@ -18,7 +18,7 @@
                                 'type' => $setting['type'],
                                 'class' => (isset($setting['class']) ? $setting['class'] : "" ),
                                 'name' => $name,
-                                'value' => $setting['value'],
+                                'value' => ($setting['type'] == 'image' ? action('SettingController@file', $setting['value']) : $setting['value']),
                                 'label' => trans('messages.' . $name),
                                 'help_class' => 'setting',
                                 'options' => (isset($setting['options']) ? $setting['options'] : "" ),
