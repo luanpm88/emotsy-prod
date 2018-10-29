@@ -24,7 +24,7 @@ class Currency extends Model
     {
         return array(
             'name' => 'required',
-            'code' => 'required|alpha|size:3',
+            'code' => 'required|alpha|min:2',
             'format' => 'required|substring:{PRICE}',
         );
     }
