@@ -1,4 +1,4 @@
-@if (\Acelle\Model\Setting::get('site_favicon'))
+@if (!$notInstalled && \Acelle\Model\Setting::get('site_favicon'))
     <link rel="shortcut icon" type="image/png" href="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_favicon')) }}"/>
 @else
     <link rel="apple-touch-icon" sizes="57x57" href="{{ URL::asset('favicon/apple-icon-57x57.png') }}">

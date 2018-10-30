@@ -7,7 +7,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	
-	@include('layouts._favicon')
+	@include('layouts._favicon', ['notInstalled' => true])
 
 	@include('layouts._css')
 	
