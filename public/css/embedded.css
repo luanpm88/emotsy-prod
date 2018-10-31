@@ -99,3 +99,9 @@
     font-weight: normal;
     margin-top: 5px;
 }
+.rtl, [dir=rtl] {
+    direction: rtl;
+    unicode-bidi: bidi-override !important;
+    direction: unset !important;
+    text-align:right;
+}
