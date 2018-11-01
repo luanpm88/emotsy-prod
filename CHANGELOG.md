@@ -11,6 +11,7 @@
  * Fixed: verify-email.org integration issue
  * Fixed: wrong stats showing up in user dashboard
  * Fixed: PayPal integration issue with JPY
+ * Fixed: alignment issue with email builder
 
 3.0.18 / 2018-09-05
 ==================
