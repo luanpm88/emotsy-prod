@@ -106,7 +106,7 @@
                 <div class="col-md-6">
                     <h4 class="text-semibold">{{ trans('messages.Copy_paste_onto_your_site') }}</h4>
                         <pre class="language-markup content-group embedded-code"><code></code></pre>
-                        <textarea style="height: 400px" class="form-control main-code hide">@include("lists._embedded_form_content", request()->all())</textarea>
+                        <code style="height: 400px" class="form-control main-code hide">@include("lists._embedded_form_content", request()->all())</code>
                 </div>
                 <div class="col-md-6">
                     <h4 class="text-semibold">{{ trans('messages.preview') }}</h4>
