@@ -82,6 +82,9 @@ rm -fr resources/lang/default
 cp -r resources/lang/en resources/lang/default
 
 # generate unique key
+php artisan cache:clear
+php artisan view:clear
+php artisan route:clear
 php artisan key:generate
 
 # Generate the upgrade patch file
