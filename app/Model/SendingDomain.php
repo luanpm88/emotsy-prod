@@ -294,7 +294,15 @@ class SendingDomain extends Model
      */
     public function getFullVerificationHostName()
     {
-        return "{$this->getVerificationTxtName()}.{$this->name}.";
+        return "{$this->getVerificationTxtName()}.{$this->getDnsHostName()}";
+    }
+    
+    /**
+     * Get DNS host name
+     */
+    public function getDnsHostName()
+    {
+        return "{$this->name}.";
     }
 
     /**

@@ -58,7 +58,7 @@
                     <span class="label label-flat bg-pending square-tag">TXT</span>
                 </span>
             </td>
-            <td>{{ $server->getFullVerificationHostName() }}</td>
+            <td>{{ $server->getDnsHostName() }}</td>
             <td>{{ $server->getQuotedSpf() }}</td>
             <td class="text-right">
                 @if ($server->spfVerified())
