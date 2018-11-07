@@ -44,6 +44,7 @@ class AuthServiceProvider extends ServiceProvider
         \Acelle\Model\EmailVerificationServer::class => \Acelle\Policies\EmailVerificationServerPolicy::class,
         \Acelle\Model\Blacklist::class => \Acelle\Policies\BlacklistPolicy::class,
         \Acelle\Model\SubAccount::class => \Acelle\Policies\SubAccountPolicy::class,
+        \Acelle\Model\Sender::class => \Acelle\Policies\SenderPolicy::class,
     ];
 
     /**
