@@ -914,7 +914,7 @@ class MailList extends Model
         if (Setting::isYes('verify_subscriber_email')) {
             MailLog::info('Verifying subscriber email: '.$subscriber->email);
             // @important: the user must have its own verification server, this will not work for system verification server (even if the user has access to)
-            $verifier = $this->customer->activeEmailVerificationServers->first();
+            $verifier = $this->customer->getEmailVerificaionServers()->first();
 
             if (is_null($verifier)) {
                 MailLog::info(sprintf('Contact %s (%s) tries to subscribe to list %s (%s) but there is no verification service available', $subscriber->email, $subscriber->uid, $this->name, $this->uid));

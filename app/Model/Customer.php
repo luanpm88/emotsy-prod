@@ -1627,8 +1627,6 @@ class Customer extends Model
      */
     public function getEmailVerificaionServers()
     {
-        $result = [];
-
         // Check the customer has permissions using email verification servers and has his own email verification servers
         if ($this->getOption('create_email_verification_servers') == 'yes') {
             $result = $this->activeEmailVerificationServers()->get()->map(function ($server) {
@@ -1651,8 +1649,6 @@ class Customer extends Model
                 }
             }
         }
-
-        return $result;
     }
 
     /**
