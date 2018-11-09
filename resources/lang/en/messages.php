@@ -2124,4 +2124,6 @@
   'sender.status_info.acelle.verified' => 'Email verified!',
   'sender.verify_toggle.verified' => 'Click here to verify <span class="text-bold">:email</span> again',
   'sender.verify_toggle.pending' => 'Click here to change verification type',
+  'sender.dropbox.empty' => '(empty)',
+  'sender.dropbox.error' => 'Sender is not verified',
 ) ?>

@@ -481,6 +481,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::resource('blacklists', 'BlacklistController');
     
     // Sender
+    Route::get('senders/dropbox', 'SenderController@dropbox');
     Route::post('senders/{id}/verify', 'SenderController@verify');
     Route::get('senders/listing/{page?}', 'SenderController@listing');
     Route::get('senders/sort', 'SenderController@sort');

@@ -5,6 +5,7 @@ namespace Acelle\Http\Controllers;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Sender;
+use Acelle\Model\SendingDomain;
 
 class SenderController extends Controller
 {
@@ -167,9 +168,9 @@ class SenderController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $sender->fill($request->all());
+            $sender->name = $request->name;
             
-            $this->validate($request, $sender->rules());
+            $this->validate($request, $sender->editRules());
 
             if ($sender->save()) {
                 $request->session()->flash('alert-success', trans('messages.sender.updated'));
@@ -325,5 +326,60 @@ class SenderController extends Controller
 
         $request->session()->flash('alert-success', trans('messages.sender.import.cancelled'));
         return redirect()->action('SenderController@index');
+    }
+    
+    /**
+     * Dropbox list.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function dropbox(Request $request)
+    {
+        $droplist = [];
+        $keyword = strtolower(trim($request->keyword));
+        // Find all senders
+        $senders = Sender::whereRAW('LOWER(email) LIKE ?', $keyword.'%')->limit(10)->get();
+        
+        foreach($senders as $key => $sender) {
+            $sender->email = strtolower(trim($sender->email));
+            $row = [
+                'text' => $sender->name,
+                'value' => $sender->email,
+                'desc' => str_replace($keyword, '<span class="text-semibold text-primary">'.$keyword.'</span>', $sender->email),
+            ];
+            $droplist[] = $row;
+        }
+        
+        // Domains
+        $parts = explode('@', $keyword);
+        $keyword = isset($parts[1]) ? $parts[1] : null;
+        
+        if (isset($keyword) && !empty($parts[0])) {
+            $domains = SendingDomain::getAllActive();
+            
+            if (!empty($keyword)) {
+                $domains = $domains->whereRaw('LOWER(name) LIKE ?', $keyword.'%')->limit(10);
+            }
+            
+            $domains = $domains->get();
+    
+            foreach($domains as $key => $domain) {
+                $domain->name = strtolower(trim($domain->name));
+                $row = [
+                    'text' => '****@'.str_replace($keyword, '<span class="text-semibold text-primary">'.$keyword.'</span>', $domain->name),
+                    'subfix' => $domain->name,
+                    'desc' => null,
+                ];
+                $droplist[] = $row;
+            }
+        }
+        
+        //return view('senders.dropbox', [
+        //    'droplist' => $droplist,
+        //]);
+        
+        return response()->json($droplist);
     }
 }

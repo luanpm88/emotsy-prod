@@ -111,6 +111,20 @@ class Sender extends Model
     }
     
     /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function editRules()
+    {
+        $rules = array(
+            'name' => 'required',
+        );
+
+        return $rules;
+    }
+    
+    /**
      * Set sender status to pending.
      *
      * @var void

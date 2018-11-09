@@ -11,6 +11,7 @@
 
 			@include('helpers.form_control', [
 				'type' => 'text',
+				'disabled' => isset($sender->id),
 				'name' => 'email',
 				'value' => $sender->email,
 				'help_class' => 'sender',
@@ -19,7 +20,8 @@
 
 		</div>
 		<div class="text-left">
-			<button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+			<button class="btn bg-teal mr-5"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+			<a href="{{ action("SenderController@index") }}" class="btn bg-grey"><i class="icon-cross"></i> {{ trans('messages.cancel') }}</a>
 		</div>
 	</div>
 </div>
