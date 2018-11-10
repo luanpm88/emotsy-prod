@@ -2126,4 +2126,5 @@
   'sender.verify_toggle.pending' => 'Click here to change verification type',
   'sender.dropbox.empty' => '(empty)',
   'sender.dropbox.error' => 'Sender is not verified',
+  'sender.type.none' => 'none',
 ) ?>

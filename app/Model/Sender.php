@@ -29,7 +29,7 @@ class Sender extends Model
     // Statuses
     const STATUS_NEW = 'new';
     const STATUS_PENDING = 'pending';
-    const STATUS_VERIFIED = 'veried';
+    const STATUS_VERIFIED = 'verified';
     
     // Verifiation types
     const VERIFICATION_TYPE_ACELLE = 'acelle';
@@ -210,5 +210,15 @@ class Sender extends Model
     public function getDomain()
     {
         return explode('@', $this->email)[1];
+    }
+    
+    /**
+     * Get domain name from email.
+     *
+     * @return string
+     */
+    public static function getAllVerified()
+    {
+        return self::where('status', '=', self::STATUS_VERIFIED);
     }
 }

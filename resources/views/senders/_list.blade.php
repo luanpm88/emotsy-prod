@@ -42,7 +42,7 @@
 					<span class="text-muted second-line-mobile">{{ trans('messages.email') }}</span>
 				</td>
 				<td>
-					<span class="no-margin kq_search">{{ trans('messages.sender.type.' . $sender->type) }}</span>
+					<span class="no-margin kq_search">{{ $sender->type ? trans('messages.sender.type.' . $sender->type) : trans('messages.sender.type.none') }}</span>
 					<span class="text-muted second-line-mobile">{{ trans('messages.sender.type') }}</span>
 				</td>
 				<td>

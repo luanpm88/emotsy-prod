@@ -340,7 +340,7 @@ class SenderController extends Controller
         $droplist = [];
         $keyword = strtolower(trim($request->keyword));
         // Find all senders
-        $senders = Sender::whereRAW('LOWER(email) LIKE ?', $keyword.'%')->limit(10)->get();
+        $senders = Sender::getAllVerified()->whereRAW('LOWER(email) LIKE ?', $keyword.'%')->limit(10)->get();
         
         foreach($senders as $key => $sender) {
             $sender->email = strtolower(trim($sender->email));
@@ -363,8 +363,7 @@ class SenderController extends Controller
                 $domains = $domains->whereRaw('LOWER(name) LIKE ?', $keyword.'%')->limit(10);
             }
             
-            $domains = $domains->get();
-    
+            $domains = $domains->get();    
             foreach($domains as $key => $domain) {
                 $domain->name = strtolower(trim($domain->name));
                 $row = [
