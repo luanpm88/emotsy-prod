@@ -2126,7 +2126,7 @@
   'sender.verify_toggle.pending' => 'Click here to change verification type',
   'sender.dropbox.empty' => '(empty)',
   'sender.dropbox.error' => 'The email address you entered is not verified yet.
-    Click <a href=":sender_link" target="blank">[here]</a> to verify. You can proceed anyway with an unverified email address',
+    Click <a href=":sender_link" target="blank">here</a> to verify. You can proceed with an unverified sender anyway if you are sure about it',
   'sender.type.none' => 'none',
   'sender.view' => 'View',
   'sender.wording' => 'Acelle Mail requires that you verify your identities (the domains or email addresses that you send email from) to confirm that you own them, and to prevent unauthorized use',
