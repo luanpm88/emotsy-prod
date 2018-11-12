@@ -1839,9 +1839,6 @@ class Customer extends Model
      */
     public function getAllSystemAndOwnDomains()
     {
-        return \Acelle\Model\SendingDomain::getAllActive()->where(function($q) {
-          $q->where('customer_id', $this->id)
-            ->orWhereNotNull('admin_id');
-        });
+        return \Acelle\Model\SendingDomain::getAllActive();
     }
 }

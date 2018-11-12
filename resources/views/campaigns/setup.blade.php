@@ -64,7 +64,9 @@
 						'help_class' => 'campaign',
 						'url' => action('SenderController@dropbox'),
 						'empty' => trans('messages.sender.dropbox.empty'),
-						'error' => trans('messages.sender.dropbox.error'),
+						'error' => trans('messages.sender.dropbox.error', [
+							'sender_link' => action('SenderController@index'),
+						]),
 						'header' => trans('messages.verified_senders'),
 					])
 				</div>

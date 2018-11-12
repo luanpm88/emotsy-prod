@@ -356,24 +356,32 @@ class SenderController extends Controller
         $parts = explode('@', $keyword);
         $keyword = isset($parts[1]) ? $parts[1] : null;
         
-        //if (isset($keyword)) {
-            $domains = $request->user()->customer->getAllSystemAndOwnDomains();
-            
-            if (!empty($keyword)) {
-                $domains = $domains->whereRaw('LOWER(name) LIKE ?', $keyword.'%')->limit(10);
-            }
-            
-            $domains = $domains->get();    
-            foreach($domains as $key => $domain) {
-                $domain->name = strtolower(trim($domain->name));
-                $row = [
-                    'text' => '****@'.str_replace($keyword, '<span class="text-semibold text-primary">'.$keyword.'</span>', $domain->name),
-                    'subfix' => $domain->name,
-                    'desc' => null,
-                ];
-                $droplist[] = $row;
-            }
-        //}
+        $domains = $request->user()->customer->getAllSystemAndOwnDomains();
+        
+        if (!empty($keyword)) {
+            $domains = $domains->whereRaw('LOWER(name) LIKE ?', $keyword.'%')->limit(10);
+        }
+        
+        $domains = $domains->get();    
+        foreach($domains as $key => $domain) {
+            $domain->name = strtolower(trim($domain->name));
+            $row = [
+                'text' => '****@'.str_replace($keyword, '<span class="text-semibold text-primary">'.$keyword.'</span>', $domain->name),
+                'subfix' => $domain->name,
+                'desc' => null,
+            ];
+            $droplist[] = $row;
+        }
+        
+        if (Sender::getAllVerified()->count() == 0 && $request->user()->customer->getAllSystemAndOwnDomains()->count() == 0) {
+            $row = [
+                '_warning' => trans('messages.senders.empty_verified_domain_sender.warning', [
+                    'domain_link' => action('SendingDomainController@index'),
+                    'sender_link' => action('SenderController@index'),
+                ]),
+            ];
+            $droplist[] = $row;
+        }
         
         //return view('senders.dropbox', [
         //    'droplist' => $droplist,

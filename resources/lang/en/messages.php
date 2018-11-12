@@ -2117,7 +2117,7 @@
   'sender.status_info.acelle.pending' => 'To verify <span class="text-bold">:email</span> against :type,
     you will need to add & verify the domain by clicking <a class="text-bold" href=":link">[here]</a> to go to the Sending Domain dashboard.
     Once you have added and verified your domain,
-    the sender &lt;<span class="text-bold text-nowrap">:name :email</span>&gt; will automatically be set as verified.',
+    the sender <code class="text-nowrap">:name &lt;:email&gt;</code> will automatically be set as verified.',
   'sender.status_info.amazon_ses.pending' => 'A verification email has been sent to your email address <span class="text-bold">:email</span>.
     Please check your mailbox and click on the confirmation link.',
   'sender.status_info.amazon_ses.verified' => 'Email verified!',
@@ -2125,7 +2125,11 @@
   'sender.verify_toggle.verified' => 'Click here to verify <span class="text-bold">:email</span> again',
   'sender.verify_toggle.pending' => 'Click here to change verification type',
   'sender.dropbox.empty' => '(empty)',
-  'sender.dropbox.error' => 'Sender is not verified',
+  'sender.dropbox.error' => 'The email address you entered is not verified yet.
+    Click <a href=":sender_link" target="blank">[here]</a> to verify. You can proceed anyway with an unverified email address',
   'sender.type.none' => 'none',
   'sender.view' => 'View',
+  'senders.empty_verified_domain_sender.warning' => 'You have no verified sender.
+    Add and verify a <a href=":domain_link" target="blank">[domain]</a> or
+    <a href=":sender_link" target="blank">[email address]</a> to send email on behalf of.',
 ) ?>
