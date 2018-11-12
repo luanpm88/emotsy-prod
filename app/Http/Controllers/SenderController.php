@@ -356,7 +356,7 @@ class SenderController extends Controller
         $parts = explode('@', $keyword);
         $keyword = isset($parts[1]) ? $parts[1] : null;
         
-        if (isset($keyword) && !empty($parts[0])) {
+        //if (isset($keyword)) {
             $domains = SendingDomain::getAllActive();
             
             if (!empty($keyword)) {
@@ -373,7 +373,7 @@ class SenderController extends Controller
                 ];
                 $droplist[] = $row;
             }
-        }
+        //}
         
         //return view('senders.dropbox', [
         //    'droplist' => $droplist,
