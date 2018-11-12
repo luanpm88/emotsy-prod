@@ -55,12 +55,19 @@
 				])
 				
 				<div class="hiddable-cond" data-control="[name=use_default_sending_server_from_email]" data-hide-value="1">
-					@include('helpers.form_control', ['type' => 'text',
+					@include('helpers.form_control', [
+						'type' => 'autofill',
 						'name' => 'from_email',
 						'label' => trans('messages.from_email'),
 						'value' => $campaign->from_email,
 						'rules' => $rules,
-						'help_class' => 'campaign'
+						'help_class' => 'campaign',
+						'url' => action('SenderController@dropbox'),
+						'empty' => trans('messages.sender.dropbox.empty'),
+						'error' => trans('messages.sender.dropbox.error', [
+							'sender_link' => action('SenderController@index'),
+						]),
+						'header' => trans('messages.verified_senders'),
 					])
 				</div>
 				

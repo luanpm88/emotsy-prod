@@ -21,6 +21,7 @@ class Kernel extends ConsoleKernel
         Commands\UpgradeTranslation::class,
         Commands\RunHandler::class,
         Commands\ImportList::class,
+        Commands\VerifySender::class,
         TinkerCommand::class,
     ];
 
@@ -47,6 +48,9 @@ class Kernel extends ConsoleKernel
 
         // Queued import/export/campaign
         $schedule->command('queue:work --once --tries=3')->everyMinute();
+        
+        // Bounce/feedback handler
+        $schedule->command('sender:verify')->everyFiveMinutes();
     }
     
     /**

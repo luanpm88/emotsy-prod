@@ -493,6 +493,19 @@ function extract_email($str)
 }
 
 /**
+ * Extract domain from an email
+ * For example: get mail.com from "My Name <abc@mail.com>"
+ *
+ * @return string version
+ */
+function extract_domain($email)
+{
+    $email = extract_email($email);
+    $domain = substr(strrchr($email, '@'), 1);
+    return $domain;
+}
+
+/**
  * Doublequote a string
  *
  * @return string

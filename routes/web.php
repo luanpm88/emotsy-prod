@@ -479,6 +479,14 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('blacklists/listing/{page?}', 'BlacklistController@listing');
     Route::get('blacklists/delete', 'BlacklistController@delete');
     Route::resource('blacklists', 'BlacklistController');
+    
+    // Sender
+    Route::get('senders/dropbox', 'SenderController@dropbox');
+    Route::post('senders/{id}/verify', 'SenderController@verify');
+    Route::get('senders/listing/{page?}', 'SenderController@listing');
+    Route::get('senders/sort', 'SenderController@sort');
+    Route::get('senders/delete', 'SenderController@delete');
+    Route::resource('senders', 'SenderController');
 });
 
 // ADMIN AREA
@@ -728,5 +736,5 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/sub_accounts/{uid}/delete/confirm', 'SubAccountController@deleteConfirm');
     Route::delete('admin/sub_accounts/{uid}/delete', 'SubAccountController@delete');
     Route::get('admin/sub_accounts/listing/{page?}', 'SubAccountController@listing');
-    Route::resource('admin/sub_accounts', 'SubAccountController');
+    Route::resource('admin/sub_accounts', 'SubAccountController');    
 });

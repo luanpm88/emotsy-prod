@@ -37,7 +37,8 @@
 	<script type="text/javascript" src="{{ URL::asset('bootstrap3-editable/js/bootstrap-editable.js') }}"></script>
 
 	@yield('page_script')
-
+	
+	<script type="text/javascript" src="{{ URL::asset('js/autofill.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/app.js') }}?v={{ app_version() }}"></script>
 	<!-- /theme JS files -->
 

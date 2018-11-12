@@ -370,6 +370,12 @@ class Setting extends Model
             ],
             'send_notification_email_for_list_subscription' => [
                 'cat' => 'others',
+                'value' => null,
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'aws_verification_server' => [
+                'cat' => 'others',
                 'value' => 'no',
                 'type' => 'text',
                 'not_required' => true,
