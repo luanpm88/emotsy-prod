@@ -11,14 +11,14 @@
 
 @section('page_header')
 
-            <div class="page-title">
-                <ul class="breadcrumb breadcrumb-caret position-right">
-                    <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-                </ul>
-                <h1>
-                    <span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.sending_servers') }}</span>
-                </h1>
-            </div>
+    <div class="page-title">
+        <ul class="breadcrumb breadcrumb-caret position-right">
+            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+        </ul>
+        <h1>
+            <span class="text-semibold"><i class="icon-list2"></i> {{ trans('messages.sending_servers') }}</span>
+        </h1>
+    </div>
 
 @endsection
 

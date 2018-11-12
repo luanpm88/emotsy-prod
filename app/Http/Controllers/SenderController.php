@@ -211,8 +211,11 @@ class SenderController extends Controller
                     return redirect()->action('SenderController@show', $sender->uid);
                 } else if ($sender->type = Sender::VERIFICATION_TYPE_AMAZON_SES) {
                     // Wroking with Amazon SES here...
-                    
                     $sender->setPending();
+                    
+                    // Trigger AWS API to send a verification email
+                    $sender->sendVerificationEmail();
+                    
                     return redirect()->action('SenderController@show', $sender->uid);
                 }
             } else {

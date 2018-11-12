@@ -21,6 +21,7 @@
 @endsection
 
 @section('content')
+    <p>{{ trans('messages.sender.wording') }}</p>
 
     <form class="listing-form"
         data-url="{{ action('SenderController@listing') }}"

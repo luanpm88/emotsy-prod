@@ -155,4 +155,42 @@ class SendingServerAmazon extends SendingServer
             sleep(1); // SNS request rate limit
         });
     }
+    
+    /**
+     * Check an email address if it is verified against AWS
+     *
+     * @return boolean
+     */
+    public function verifyIdentity($email)
+    {
+        $domain = extract_domain($email);
+        
+        $identities = $this->sesClient()->listIdentities([
+            'MaxItems' => 1000, # @todo, need pagination here
+        ])->toArray()['Identities'];
+
+        if (!(in_array($email, $identities) || in_array($domain, $identities))) {
+            return false;
+        }
+        
+        $identitiesWithAttributes = $this->sesClient()->getIdentityVerificationAttributes([
+            'Identities' => $identities
+        ])->toArray()['VerificationAttributes'];
+        
+        $verifiedIdentities = array_keys(array_filter($identitiesWithAttributes, function($r) { return $r['VerificationStatus'] == 'Success'; }));
+        
+        return in_array($email, $verifiedIdentities) || in_array($domain, $verifiedIdentities);
+    }
+    
+    /**
+     * Check an email address if it is verified against AWS
+     *
+     * @return boolean
+     */
+    public function sendVerificationEmail($email)
+    {
+        $this->sesClient()->verifyEmailIdentity([
+            'EmailAddress' => $email,
+        ]);
+    }
 }

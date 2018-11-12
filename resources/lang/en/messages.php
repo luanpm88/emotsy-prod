@@ -2098,7 +2098,7 @@
   'email_greeting.whoops' => 'Whoops!',
   'email_greeting.hello' => 'Hello!',
   'verified_senders' => 'Verified senders',
-  'sender.create' => 'Create sender',
+  'sender.create' => 'New sender',
   'senders.empty.message' => 'You have no sender yet',
   'sender.delete' => 'Delete',
   'sender.delete.confirm' => 'You\'re about to delete sender from the list.',
@@ -2128,4 +2128,5 @@
   'sender.dropbox.error' => 'Sender is not verified',
   'sender.type.none' => 'none',
   'sender.view' => 'View',
+  'sender.wording' => 'Acelle Mail requires that you verify your identities (the domains or email addresses that you send email from) to confirm that you own them, and to prevent unauthorized use'
 ) ?>
