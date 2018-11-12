@@ -49,7 +49,7 @@
                         <strong>{{ trans('messages.type') }}</strong>
                     </div>
                     <div class="size2of3">
-                        <mc:flag class="text-bold">{{ trans('messages.sender.type.' . $sender->type) }}</mc:flag>
+                        <mc:flag class="text-bold">{{ $sender->type ? trans('messages.sender.type.' . $sender->type) : trans('messages.sender.type.none') }}</mc:flag>
                     </div>
                 </li>
                 <li>
@@ -61,6 +61,8 @@
                     </div>
                 </li>
             </ul>
+				
+			<a href="{{ action('SenderController@edit', $sender->uid) }}"><i class="icon-pencil"></i> {{ trans('messages.sender.edit') }}</a>
         </div>
     </div>
 	
@@ -116,7 +118,6 @@
 	@endif
 		
     <div class="sub_section verify_sender_container {{ $sender->status != Acelle\Model\Sender::STATUS_NEW ? 'hide' : '' }}">
-		<hr>
         <h3>{{ trans('messages.sender.verify_sender') }}</h3>
 		
 		<form enctype="multipart/form-data" action="{{ action('SenderController@verify', $sender->uid) }}" method="POST" class="form-vsalidate-jquery">

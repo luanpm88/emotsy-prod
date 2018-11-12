@@ -57,10 +57,10 @@
 				</td>
 				<td class="text-right">
 					<div class="btn-group">
-						@if (Auth::user()->can('update', $sender))
-							<a href="{{ action('SenderController@edit', $sender->uid) }}"
+						@if (Auth::user()->can('read', $sender))
+							<a href="{{ action('SenderController@show', $sender->uid) }}"
 								type="button" class="btn btn-default">
-									{{ trans('messages.sender.edit') }}
+									{{ trans('messages.sender.view') }}
 							</a>
 						@endif
 						<button type="button" class="btn dropdown-toggle" data-toggle="dropdown"><span class="caret ml-0"></span></button>

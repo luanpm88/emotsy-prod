@@ -2127,4 +2127,5 @@
   'sender.dropbox.empty' => '(empty)',
   'sender.dropbox.error' => 'Sender is not verified',
   'sender.type.none' => 'none',
+  'sender.view' => 'View',
 ) ?>

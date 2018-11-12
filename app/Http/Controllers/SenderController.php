@@ -100,7 +100,7 @@ class SenderController extends Controller
             
             if ($sender->save()) {
                 $request->session()->flash('alert-success', trans('messages.sender.created'));
-                return redirect()->action('SenderController@index');
+                return redirect()->action('SenderController@show', $sender->uid);
             }
         }
     }
@@ -174,7 +174,7 @@ class SenderController extends Controller
 
             if ($sender->save()) {
                 $request->session()->flash('alert-success', trans('messages.sender.updated'));
-                return redirect()->action('SenderController@index');
+                return redirect()->action('SenderController@show', $sender->uid);
             }
         }
     }
