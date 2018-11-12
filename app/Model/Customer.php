@@ -1831,4 +1831,17 @@ class Customer extends Model
     {
         return $this->getOption('api_access') == 'yes';
     }
+    
+    /**
+     * Get all customer's and system domains.
+     *
+     * @return bool
+     */
+    public function getAllSystemAndOwnDomains()
+    {
+        return \Acelle\Model\SendingDomain::getAllActive()->where(function($q) {
+          $q->where('customer_id', $this->id)
+            ->orWhereNotNull('admin_id');
+        });
+    }
 }

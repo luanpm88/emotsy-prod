@@ -357,7 +357,7 @@ class SenderController extends Controller
         $keyword = isset($parts[1]) ? $parts[1] : null;
         
         //if (isset($keyword)) {
-            $domains = SendingDomain::getAllActive();
+            $domains = $request->user()->customer->getAllSystemAndOwnDomains();
             
             if (!empty($keyword)) {
                 $domains = $domains->whereRaw('LOWER(name) LIKE ?', $keyword.'%')->limit(10);
