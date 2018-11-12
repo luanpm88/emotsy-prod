@@ -3,6 +3,7 @@
 
  * Added: list subscription notification
  * Added: verify subscriber email
+ * Added: sender verification
  * Changed: require PHP 5.6.4 or higher
  * Fixed: cannot update system SMTP settings in certain cases
  * Fixed: automation not triggered for list subscription
