@@ -106,17 +106,17 @@ $.fn.autofill = function(action, param) {
         var valid = false;
         
         box.dropbox.find('li.autofill-item').each(function() {
-            var dataValue = $(this).attr('data-value');
-            var dataSubfix = $(this).attr('data-subfix');
+            var dataValue = $(this).attr('data-value').trim().toLowerCase();
+            var dataSubfix = $(this).attr('data-subfix').trim().toLowerCase();
             
             // sender
-            if (box.value() == dataValue) {
+            if (box.value().trim().toLowerCase() == dataValue) {
                 valid = true;
                 return;
             }
             
             // domain
-            if (box.value().split('@')[1] == dataSubfix) {
+            if (box.value().split('@')[1].trim().toLowerCase() == dataSubfix) {
                 valid = true;
                 return;
             }
