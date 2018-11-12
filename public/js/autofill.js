@@ -103,13 +103,32 @@ $.fn.autofill = function(action, param) {
     };
     
     updateErrorMessage = function() {
-        //if (!box.dropbox.find('li.autofill-item').length && box.error != '') {
-        //    if (!box.container.parent().find('.autofill-error').length) {
-        //        box.container.after('<span class="helper-block autofill-error text-danger">'+box.error+'</span>');
-        //    }
-        //} else {
-        //    box.container.parent().find('.autofill-error').remove();
-        //}
+        var valid = false;
+        
+        box.dropbox.find('li.autofill-item').each(function() {
+            var dataValue = $(this).attr('data-value').trim().toLowerCase();
+            var dataSubfix = $(this).attr('data-subfix').trim().toLowerCase();
+            
+            // sender
+            if (typeof(box.value()) != 'undefined' && box.value().trim().toLowerCase() == dataValue) {
+                valid = true;
+                return;
+            }
+            
+            // domain
+            if (box.value().split('@').length >= 2 && box.value().split('@')[1].trim().toLowerCase() == dataSubfix) {
+                valid = true;
+                return;
+            }
+        });
+        
+        if (!valid && box.error != '') {
+            if (!box.container.parent().find('.autofill-error').length) {
+                box.container.after('<span class="helper-block autofill-error text-danger">'+box.error+'</span>');
+            }
+        } else {
+            box.container.parent().find('.autofill-error').remove();
+        }
     };
     
     renderDropboxList = function(data) {
@@ -117,31 +136,41 @@ $.fn.autofill = function(action, param) {
         
         if (data.length) {
             data.forEach(function(row) {
-                var html = '<li class="autofill-item" data-value="'+row.value+'" data-subfix="'+row.subfix+'">' +
-                    '<a href="javascript:;">' +
-                        '<label>'+row.text+'</label>';
-                
-                if (row.desc != null) {
-                    html += row.desc;
+                if (typeof(row.value) != 'undefined' || typeof(row.subfix) != 'undefined') {
+                    var html = '<li class="autofill-item" data-value="'+row.value+'" data-subfix="'+row.subfix+'">' +
+                        '<a href="javascript:;" class="autofill-item-a">' +
+                            '<label>'+row.text+'</label>';
+                    
+                    if (row.desc != null) {
+                        html += row.desc;
+                    }
+                    
+                    html += '</a>' +
+                        '</li>';
+                        
+                    box.dropbox.append(html);
                 }
                 
-                html += '</a>' +
-                    '</li>';
+                if (typeof(row._warning) != 'undefined') {
+                    var html = '<li class="">' +
+                        '<span href="javascript:;" class="autofill-item-a">' +
+                            '<label class="text-danger">'+row._warning+'</label>';
                     
-                box.dropbox.append(html);
+                    html += '</span>' +
+                        '</li>';
+                        
+                    box.dropbox.append(html);
+                }
             });
         } else {
-            var html = '<li>' +
-                '<a class="text-center" href="javascript:;">' +
+            var html = '<li class="">' +
+                '<a class="autofill-item-empty text-center" href="javascript:;">' +
                     '<label>'+box.empty+'</label>';
                 '</a>' +
             '</li>';
                 
             box.dropbox.append(html);
         }
-        
-        // update error message
-        updateErrorMessage();
     };
     
     moveUp = function() {
@@ -206,6 +235,7 @@ $.fn.autofill = function(action, param) {
     // Out focus
     box.input.on('focusout', function() {
         setTimeout(function() {hideDropbox();}, 200);
+        updateErrorMessage();
     });
     
     // Key up
