@@ -110,13 +110,13 @@ $.fn.autofill = function(action, param) {
             var dataSubfix = $(this).attr('data-subfix').trim().toLowerCase();
             
             // sender
-            if (box.value().trim().toLowerCase() == dataValue) {
+            if (typeof(box.value()) != 'undefined' && box.value().trim().toLowerCase() == dataValue) {
                 valid = true;
                 return;
             }
             
             // domain
-            if (box.value().split('@')[1].trim().toLowerCase() == dataSubfix) {
+            if (box.value().split('@').length >= 2 && box.value().split('@')[1].trim().toLowerCase() == dataSubfix) {
                 valid = true;
                 return;
             }
