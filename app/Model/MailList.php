@@ -646,6 +646,13 @@ class MailList extends Model
             $new_field = $field->replicate();
             $new_field->mail_list_id = $copy->id;
             $new_field->save();
+            
+            // Copy field options
+            foreach ($field->fieldOptions as $option) {
+                $new_option = $option->replicate();
+                $new_option->field_id = $new_field->id;
+                $new_option->save();
+            }
         }
 
         // update cache
