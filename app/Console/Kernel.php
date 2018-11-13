@@ -22,6 +22,7 @@ class Kernel extends ConsoleKernel
         Commands\RunHandler::class,
         Commands\ImportList::class,
         Commands\VerifySender::class,
+        Commands\SystemCleanup::class,
         TinkerCommand::class,
     ];
 
