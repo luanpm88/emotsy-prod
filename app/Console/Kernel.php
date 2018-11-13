@@ -52,6 +52,9 @@ class Kernel extends ConsoleKernel
         
         // Bounce/feedback handler
         $schedule->command('sender:verify')->everyFiveMinutes();
+        
+        // Bounce/feedback handler
+        $schedule->command('system:cleanup')->daily();
     }
     
     /**
