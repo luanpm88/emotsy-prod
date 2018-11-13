@@ -1649,6 +1649,8 @@ class Customer extends Model
                 }
             }
         }
+        
+        return $result;
     }
 
     /**
