@@ -21,7 +21,7 @@
     {{-- Footer --}}
     @slot('footer')
         @component('mail::footer')
-            © {{ date('Y') }} {{ config('app.name') }}. All rights reserved.
+            {{ \Acelle\Model\Setting::get('site_name') }}
         @endcomponent
     @endslot
 @endcomponent
