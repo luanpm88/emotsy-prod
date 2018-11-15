@@ -45,14 +45,14 @@ class Notification extends Model
      *
      * @return notification record
      */
-    public static function info($attributes)
+    public static function info($attributes, $cleanup = true)
     {
         $default = [
             'level' => static::LEVEL_INFO,
         ];
         
         $attributes = array_merge($default, $attributes);
-        return static::add($attributes);
+        return static::add($attributes, $cleanup);
     }
     
     /**
@@ -60,14 +60,14 @@ class Notification extends Model
      *
      * @return notification record
      */
-    public static function warning($attributes)
+    public static function warning($attributes, $cleanup = true)
     {
         $default = [
             'level' => static::LEVEL_WARNING,
         ];
         
         $attributes = array_merge($default, $attributes);
-        return static::add($attributes);
+        return static::add($attributes, $cleanup);
     }
     
     /**
@@ -75,14 +75,14 @@ class Notification extends Model
      *
      * @return notification record
      */
-    public static function error($attributes)
+    public static function error($attributes, $cleanup = true)
     {
         $default = [
             'level' => static::LEVEL_ERROR,
         ];
         
         $attributes = array_merge($default, $attributes);
-        return static::add($attributes);
+        return static::add($attributes, $cleanup);
     }
     
     /**
@@ -90,13 +90,16 @@ class Notification extends Model
      *
      * @return notification record
      */
-    public static function add($attributes)
+    public static function add($attributes, $cleanup = true)
     {
         $default = [
             'type' => get_called_class(),
             'uid' => uniqid(),
         ];
         $attributes = array_merge($default, $attributes);
+        if ($cleanup) {
+            self::cleanupSimilarNotifications();    
+        }
         return self::create($attributes);
     }
     

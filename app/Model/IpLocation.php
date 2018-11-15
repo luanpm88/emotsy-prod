@@ -54,9 +54,12 @@ class IpLocation extends Model
             $geoip = App::make('Acelle\Library\Contracts\GeoIpInterface');
             $geoip->resolveIp($ip);
             
+            $location->ip_address = $ip;
             $location->country_code = $geoip->getCountryCode();
             $location->country_name = $geoip->getCountryName();
+            $location->region_name = $geoip->getRegionName();
             $location->city = $geoip->getCity();
+            $location->zipcode = $geoip->getZipcode();
             $location->latitude = $geoip->getLatitude();
             $location->longitude = $geoip->getLongitude();
         } catch (\Exception $e) {

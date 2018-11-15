@@ -73,6 +73,16 @@ class Setting extends Model
     {
         return self::get($key) == 'yes';
     }
+    
+    /**
+     * Set YES.
+     *
+     * @return object
+     */
+    public static function setYes($key)
+    {
+        return self::set($key, 'yes');
+    }
 
     /**
      * Set setting value.
@@ -377,6 +387,42 @@ class Setting extends Model
             'aws_verification_server' => [
                 'cat' => 'others',
                 'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'geoip.engine' => [
+                'cat' => 'others',
+                'value' => 'sqlite', # available values are sqlite|nekudo|mysql
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'geoip.enabled' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'geoip.last_message' => [
+                'cat' => 'others',
+                'value' => null,
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'geoip.sqlite.dbname' => [
+                'cat' => 'others',
+                'value' => 'storage/app/ip2locationdb11.db',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'geoip.sqlite.source_url' => [
+                'cat' => 'others',
+                'value' => 'https://drive.google.com/uc?export=download&confirm=Ko-r&id=1ffy7fvhh8rn_pugy5yDmaaHJu4THMjOo',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'geoip.sqlite.source_hash' => [
+                'cat' => 'others',
+                'value' => 'b09b6107c83be6e036a14a54a46ac97a',
                 'type' => 'text',
                 'not_required' => true,
             ],
