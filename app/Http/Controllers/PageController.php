@@ -3,6 +3,9 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Acelle\Events\MailListSubscription;
+use Acelle\Model\Setting;
 
 class PageController extends Controller
 {
@@ -161,6 +164,16 @@ class PageController extends Controller
             $subscriber->save();
             // Update field
             $subscriber->updateFields($request->all());
+            
+            Log::info("Subscriber {$subscriber->email} is added to list {$subscriber->mailList->name} via subscription form");
+
+            // trigger the event
+            if (Setting::isYes('send_notification_email_for_list_subscription')) {
+                Log::info("Sending notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
+                event(new MailListSubscription($list->customer->user, $subscriber));    
+            } else {
+                Log::info("No notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
+            }
 
             if($list->subscribe_confirmation) {
                 // SEND subscription confirmation email

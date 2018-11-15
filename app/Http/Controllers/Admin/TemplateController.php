@@ -68,7 +68,7 @@ class TemplateController extends Controller
         $template = new \Acelle\Model\Template();
 
         // authorize
-        if (!$request->user()->admin->can('create', $template)) {
+        if (!$request->user()->admin->can('create', Template::class)) {
             return $this->notAuthorized();
         }
 
@@ -97,7 +97,7 @@ class TemplateController extends Controller
         $template->admin_id = $request->user()->admin->id;
 
         // authorize
-        if (!$request->user()->admin->can('create', $template)) {
+        if (!$request->user()->admin->can('create', Template::class)) {
             return $this->notAuthorized();
         }
 
@@ -248,11 +248,11 @@ class TemplateController extends Controller
      */
     public function build(Request $request)
     {
-        $template = new \Acelle\Model\Template();
+        $template = new Template();
         $template->name = trans('messages.untitled_template');
 
         // authorize
-        if (!$request->user()->admin->can('create', $template, 'admin')) {
+        if (!$request->user()->admin->can('create', Template::class)) {
             return $this->notAuthorized();
         }
 

@@ -4,7 +4,7 @@
         <div class="text-center subscription-header login-header mb-0">
             <a class="main-logo-big" href="{{ action('HomeController@index') }}">
                 @if (\Acelle\Model\Setting::get('site_logo_big'))
-                    <img src="{{ URL::asset(\Acelle\Model\Setting::get('site_logo_big')) }}" alt="">
+                    <img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_big')) }}" alt="">
                 @else
                     <img src="{{ URL::asset('images/logo_big.png') }}" alt="">
                 @endif

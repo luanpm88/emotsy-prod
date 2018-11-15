@@ -1365,7 +1365,8 @@ abstract class AbsCampaign extends Model
     {
         $records = self::select(DB::raw(DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id');
+            ->join('open_logs', 'open_logs.message_id', '=', 'tracking_logs.message_id')
+            ->where('is_auto', false);
 
         if (isset($customer)) {
             $records = $records->where('campaigns.customer_id', '=', $customer->id);
@@ -1386,7 +1387,8 @@ abstract class AbsCampaign extends Model
     {
         $records = self::select(DB::raw(DB::getTablePrefix().'campaigns.*, count(*) as `aggregate`'))
             ->join('tracking_logs', 'tracking_logs.campaign_id', '=', 'campaigns.id')
-            ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id');
+            ->join('click_logs', 'click_logs.message_id', '=', 'tracking_logs.message_id')
+            ->where('is_auto', false);
 
         if (isset($customer)) {
             $records = $records->where('campaigns.customer_id', '=', $customer->id);

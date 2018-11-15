@@ -29,6 +29,7 @@ use Acelle\Library\Log as MailLog;
 use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
 use Acelle\Exceptions\VerificationProcessCancelledException;
+use Acelle\Model\Setting;
 
 class MailList extends Model
 {
@@ -645,6 +646,13 @@ class MailList extends Model
             $new_field = $field->replicate();
             $new_field->mail_list_id = $copy->id;
             $new_field->save();
+            
+            // Copy field options
+            foreach ($field->fieldOptions as $option) {
+                $new_option = $option->replicate();
+                $new_option->field_id = $new_field->id;
+                $new_option->save();
+            }
         }
 
         // update cache
@@ -904,13 +912,29 @@ class MailList extends Model
      * Send subscription confirmation email to subscriber.
      */
     public function sendSubscriptionConfirmationEmail($subscriber)
-    {
-        MailLog::info('Sending subscription confirmation email to '.$subscriber->email);
+    {        
         if ($subscriber->isListedInBlacklist()) {
             MailLog::info($subscriber->email.' is already blacklisted.');
             throw new \Exception(trans('messages.subscriber.blacklisted'));
         }
         
+        if (Setting::isYes('verify_subscriber_email')) {
+            MailLog::info('Verifying subscriber email: '.$subscriber->email);
+            // @important: the user must have its own verification server, this will not work for system verification server (even if the user has access to)
+            $verifier = $this->customer->getEmailVerificaionServers()->first();
+
+            if (is_null($verifier)) {
+                MailLog::info(sprintf('Contact %s (%s) tries to subscribe to list %s (%s) but there is no verification service available', $subscriber->email, $subscriber->uid, $this->name, $this->uid));
+                throw new \Exception(trans('messages.subscriber.email.fail_to_verify'));
+            }
+
+            if (!$subscriber->verify($verifier)) {
+                MailLog::info(sprintf('Contact %s (%s) tries to subscribe to list %s (%s) but email address is invalid', $subscriber->email, $subscriber->uid, $this->name, $this->uid));
+                throw new \Exception(trans('messages.subscriber.email.invalid'));
+            }
+        }
+        
+        MailLog::info('Sending subscription confirmation email to '.$subscriber->email);
         $list = $this;
 
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_email')->first();
@@ -1051,7 +1075,7 @@ class MailList extends Model
             $reader = \League\Csv\Reader::createFromPath($file);
             // get the headers, using array_filter to strip empty/null header
             // to avoid the error of "InvalidArgumentException: Use a flat array with unique string values in /home/nghi/mailixa/vendor/league/csv/src/Reader.php:305"
-            $headers = array_filter(array_map('strtolower', $reader->fetchOne()));
+            $headers = array_filter(array_map(function($value) { return strtolower(trim($value)); }, $reader->fetchOne()));
             $fields = collect($this->fields)->map(function ($field) {
                 return strtolower($field->tag);
             })->toArray();

@@ -15,11 +15,9 @@
                 </span>
             </td>
             <td width="20%">
-                <a href="#" data-type="text" data-pk="1" data-url="{{ action('SendingDomainController@updateVerificationTxtName', $server->uid) }}" data-title="{{ trans('messages.sending_domain.verification_hostname.enter') }}" class="inline-editable">
-                    {{ $server->getVerificationTxtName() }}
-                </a>
+                {{ $server->getFullVerificationHostName() }}
             </td>
-            <td>{{ $server->verification_token }}</td>
+            <td>{{ doublequote($server->verification_token) }}</td>
             <td class="text-right" width="1%">
                 @if ($server->domainVerified())
                     <span class="text-muted2 list-status pull-left">
@@ -39,11 +37,9 @@
                 </span>
             </td>
             <td>
-                <a href="#" data-type="text" data-pk="1" data-url="{{ action('SendingDomainController@updateDkimSelector', $server->uid) }}" data-title="{{ trans('messages.sending_domain.dkim_selector.enter') }}" class="inline-editable">
-                    {{ $server->getDkimSelectorParts()[0] }}
-                </a>.{{ $server->getDkimSelectorParts()[1] }}
+                {{ $server->getFullDkimHostName() }}
             </td>
-            <td><textarea style="width:100%;border:0;height:100px;resize:none;">{{ $server->getDnsDkimConfig() }}</textarea></td>
+            <td><textarea style="width:100%;border:0;height:100px;resize:none;">{{ \Acelle\Model\Setting::isYes('escape_dkim_dns_value') ? $server->getEscapedDnsDkimConfig() : $server->getDnsDkimConfig() }}</textarea></td>
             <td class="text-right">
                 @if ($server->dkimVerified())
                     <span class="text-muted2 list-status pull-left">
@@ -62,8 +58,8 @@
                     <span class="label label-flat bg-pending square-tag">TXT</span>
                 </span>
             </td>
-            <td>@</td>
-            <td>{{ $server->getSpf() }}</td>
+            <td>{{ $server->getDnsHostName() }}</td>
+            <td>{{ $server->getQuotedSpf() }}</td>
             <td class="text-right">
                 @if ($server->spfVerified())
                     <span class="text-muted2 list-status pull-left">

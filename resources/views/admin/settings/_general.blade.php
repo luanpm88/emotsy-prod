@@ -1,6 +1,12 @@
 @if (Auth::user()->admin->getPermission("setting_general") == 'yes')
     <div class="tab-pane active" id="top-general">
         <div class="row">
+            <div class="col-md-12">
+                <h2 class="text-semibold">{{ trans('messages.admin.settings.edit_app_settings') }}</h2>
+                <h3 class="text-semibold">{{ trans('messages.general') }}</h3>
+            </div>
+        </div>
+        <div class="row">
             <?php $count = 0; ?>
             @foreach ($settings as $name => $setting)
                 @if (isset($setting['cat']) && $setting['cat'] == 'general')
@@ -12,7 +18,7 @@
                                 'type' => $setting['type'],
                                 'class' => (isset($setting['class']) ? $setting['class'] : "" ),
                                 'name' => $name,
-                                'value' => $setting['value'],
+                                'value' => ($setting['type'] == 'image' ? (!empty($setting['value']) ? action('SettingController@file', $setting['value']) : '') : $setting['value']),
                                 'label' => trans('messages.' . $name),
                                 'help_class' => 'setting',
                                 'options' => (isset($setting['options']) ? $setting['options'] : "" ),
@@ -29,10 +35,12 @@
                 @endif
             @endforeach
         </div>
-        
-        <br />
+        <div class="row">
+            <div class="col-md-12"><p align="right"><a href="{{ action('Admin\SettingController@advanced') }}">View hidden configuration settings</a></p></div>
+        </div>
         <div class="text-left">
             <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
         </div>
+        
     </div>
 @endif

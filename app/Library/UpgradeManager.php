@@ -294,6 +294,9 @@ class UpgradeManager
     public function refreshConfig()
     {
         // reload the config & run migration
+        LaravelLog::info("Updating .env file");
+        $this->mergeEnv(base_path('.env'), base_path('.env.example'));
+        
         LaravelLog::info("Start caching & migrating");
         $files = ['bootstrap/cache/config.php', 'bootstrap/cache/services.php', 'bootstrap/cache/compiled.php'];
         foreach ($files as $file) {
@@ -324,6 +327,29 @@ class UpgradeManager
     {
         $dir = base_path('resources/lang/');
 
+    }
+    
+    /**
+     * Merge .env files.
+     *
+     */
+    private function mergeEnv($mainfile, $updatefile) {
+        $maindb = file($mainfile);
+        $updatedb = file($updatefile);
+    
+        $rexp = '/\s*=\s*/';
+        $mainkeys = array_map(function($record) use ($rexp) { $pair = preg_split($rexp, $record); return (empty($pair)) ? null : $pair[0]; }, $maindb);
+    
+        foreach ($updatedb as $updaterecord) {
+            if (empty(trim($updaterecord))) { continue; }
+            list($updatekey, $updatevalue) = preg_split($rexp, $updaterecord);
+            // echo "Checking $updatekey\n";
+            if (!in_array($updatekey, $mainkeys)) {
+                // echo "--> {$updatekey} NOT AVAILABLE\n";
+                $maindb[] = $updaterecord;
+            }
+        }
+        file_put_contents($mainfile, $maindb);
     }
 
     /**

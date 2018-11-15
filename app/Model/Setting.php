@@ -26,6 +26,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Setting extends Model
 {
+    const UPLOAD_PATH = 'app/setting/';
+    
     /**
      * Get all items.
      *
@@ -60,6 +62,16 @@ class Setting extends Model
             // @todo exception case not handled
             return;
         }
+    }
+    
+    /**
+     * Check setting EQUAL.
+     *
+     * @return object
+     */
+    public static function isYes($key)
+    {
+        return self::get($key) == 'yes';
     }
 
     /**
@@ -126,6 +138,11 @@ class Setting extends Model
                 'type' => 'image',
             ],
             'site_logo_big' => [
+                'cat' => 'general',
+                'value' => '',
+                'type' => 'image',
+            ],
+            'site_favicon' => [
                 'cat' => 'general',
                 'value' => '',
                 'type' => 'image',
@@ -203,8 +220,8 @@ class Setting extends Model
                 'options' => ['no', 'yes'],
             ],
             'import_subscribers_commitment' => [
-                'cat' => 'general',
-                'value' => '',
+                'cat' => 'others',
+                'value' => null,
                 'type' => 'textarea',
             ],
             'sending_campaigns_at_once' => [
@@ -299,7 +316,7 @@ class Setting extends Model
             ],
             'cronjob_last_execution' => [
                 'cat' => 'monitor',
-                'value' => null,
+                'value' => 0,
                 'type' => 'text',
                 'not_required' => true,
             ],
@@ -330,6 +347,36 @@ class Setting extends Model
             'allow_send_from_unverified_domain' => [
                 'cat' => 'others',
                 'value' => 'yes',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'allow_turning_off_dkim_signing' => [
+                'cat' => 'others',
+                'value' => 'yes',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'escape_dkim_dns_value' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'verify_subscriber_email' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'send_notification_email_for_list_subscription' => [
+                'cat' => 'others',
+                'value' => null,
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'aws_verification_server' => [
+                'cat' => 'others',
+                'value' => 'no',
                 'type' => 'text',
                 'not_required' => true,
             ],
@@ -398,7 +445,7 @@ class Setting extends Model
      *
      * @var bool
      */
-    public static function uploadSiteLogo($file, $type)
+    public static function uploadSiteLogo($file, $name=null)
     {
         $path = 'images/';
         $upload_path = public_path($path);
@@ -406,8 +453,11 @@ class Setting extends Model
         if (!file_exists($upload_path)) {
             mkdir($upload_path, 0777, true);
         }
+        
+        
+        $md5file = \md5_file($file);
 
-        $filename = $type.'.'.$file->getClientOriginalExtension();
+        $filename = $md5file.'.'.$file->getClientOriginalExtension();
 
         // save to server
         $file->move($upload_path, $filename);
@@ -415,8 +465,67 @@ class Setting extends Model
         // create thumbnails
         $img = \Image::make($upload_path.$filename);
 
-        self::set($type, $path.$filename);
+        self::set($name, $path.$filename);
 
         return true;
+    }
+    
+    /**
+     * Upload site logo.
+     *
+     * @var bool
+     */
+    public static function uploadFile($file, $type=null)
+    {
+        $uploadPath = storage_path(self::UPLOAD_PATH);
+        
+        if (!file_exists($uploadPath)) {
+            mkdir($uploadPath, 0777, true);
+        }
+        
+        $md5file = \md5_file($file);
+
+        $filename = $type.'-'.$md5file.'.'.$file->getClientOriginalExtension();
+
+        // save to server
+        $file->move($uploadPath, $filename);
+
+        // create thumbnails
+        $img = \Image::make($uploadPath.$filename);
+
+        self::set($type, $filename);
+
+        return true;
+    }
+    
+    /**
+     * gET uploaded file location.
+     *
+     * @var bool
+     */
+    public static function getUploadFilePath($filename)
+    {
+        $uploadPath = storage_path(self::UPLOAD_PATH);
+
+        return $uploadPath.$filename;
+    }
+    
+    /**
+     * Write default settings to DB.
+     *
+     * @var bool
+     */
+    public static function writeDefaultSettings()
+    {
+        foreach (self::defaultSettings() as $name => $setting) {
+            if (!self::where('name', $name)->exists()) {
+                $value = (is_null($setting['value'])) ? '' : $setting['value'];
+                
+                $setting = new self();
+                $setting->name = $name;
+                $setting->value = $value;
+                $setting->save();
+            }
+        }
     }
 }

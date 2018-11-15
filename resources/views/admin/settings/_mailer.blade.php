@@ -78,9 +78,9 @@
                 <div class="col-md-6">
                     @include('helpers.form_control', [
                         'type' => 'text',
-                        'name' => 'env[MAIL_FROM_EMAIL]',
+                        'name' => 'env[MAIL_FROM_ADDRESS]',
                         'label' => trans('messages.from_email'),
-                        'value' => (isset($env["MAIL_FROM_EMAIL"]) ? $env["MAIL_FROM_EMAIL"] : ""),
+                        'value' => (isset($env["MAIL_FROM_ADDRESS"]) ? $env["MAIL_FROM_ADDRESS"] : ""),
                         'help_class' => 'env',
                         'rules' => $env_rules
                     ])

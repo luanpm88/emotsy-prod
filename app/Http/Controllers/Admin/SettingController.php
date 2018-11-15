@@ -75,9 +75,9 @@ class SettingController extends Controller
             foreach ($request->all() as $name => $value) {
                 if ($name != '_token' && isset($settings[$name])) {
                     // Upload and save image
-                    if ($name == 'site_logo_small' || $name == 'site_logo_big') {
+                    if ($name == 'site_logo_small' || $name == 'site_logo_big' || $name == 'site_favicon') {
                         if ($request->hasFile($name) && $request->file($name)->isValid()) {
-                            \Acelle\Model\Setting::uploadSiteLogo($request->file($name), $name);
+                            \Acelle\Model\Setting::uploadFile($request->file($name), $name);
                         }
                     } else {
                         if ($settings[$name]['cat'] == 'general' && $request->user()->admin->getPermission('setting_general') == 'yes') {
@@ -227,7 +227,7 @@ class SettingController extends Controller
             'MAIL_USERNAME' => config("mail.username"),
             'MAIL_PASSWORD' => config("mail.password"),
             'MAIL_ENCRYPTION' => config("mail.encryption"),
-            'MAIL_FROM_EMAIL' => config("mail.from")["address"],
+            'MAIL_FROM_ADDRESS' => config("mail.from")["address"],
             'MAIL_FROM_NAME' => config("mail.from")["name"],
         ];
 
@@ -243,7 +243,7 @@ class SettingController extends Controller
             'env.MAIL_PORT' => 'required',
             'env.MAIL_USERNAME' => 'required',
             'env.MAIL_PASSWORD' => 'required',
-            'env.MAIL_FROM_EMAIL' => 'required|email',
+            'env.MAIL_FROM_ADDRESS' => 'required|email',
             'env.MAIL_FROM_NAME' => 'required',
         ];
 
@@ -441,6 +441,7 @@ class SettingController extends Controller
             $request->session()->put('reset', true);
             Session::save();
             $manager->refreshConfig();
+            Setting::writeDefaultSettings();
             echo '<html>
                 <head>
                     <meta http-equiv="refresh" content="3;'.$pageUrl.'" />

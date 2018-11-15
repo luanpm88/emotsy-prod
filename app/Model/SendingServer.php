@@ -358,6 +358,7 @@ class SendingServer extends Model
             'sparkpost-api' => [
                 'cols' => [
                     'name' => 'required',
+                    'host' => 'required',
                     'api_key' => 'required',
                     'default_from_email' => 'email|required',
                 ],

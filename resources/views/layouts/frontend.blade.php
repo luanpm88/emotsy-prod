@@ -24,7 +24,7 @@
 		<div class="navbar-header">
 			<a class="navbar-brand" href="{{ action('HomeController@index') }}">
 				@if (\Acelle\Model\Setting::get('site_logo_small'))
-                    <img src="{{ URL::asset(\Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
+                    <img src="{{ action('SettingController@file', \Acelle\Model\Setting::get('site_logo_small')) }}" alt="">
                 @else
                     <img src="{{ URL::asset('images/default_site_logo_small_' . (Auth::user()->customer->getColorScheme() == "white" ? "dark" : "light") . '.png') }}" alt="">
                 @endif
@@ -65,17 +65,19 @@
 						<i class="icon-magazine"></i> {{ trans('messages.templates') }}
 					</a>
 				</li>
-				@if(
+				@if (
 					Auth::user()->customer->can("read", new Acelle\Model\SendingServer()) ||
 					Auth::user()->customer->can("read", new Acelle\Model\SendingDomain()) ||
                     Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer()) ||
-					Auth::user()->customer->can("read", new Acelle\Model\Blacklist())
+					Auth::user()->customer->can("read", new Acelle\Model\Blacklist()) ||
+					true
 				)
 					<li class="dropdown language-switch"
 						rel0="SendingServerController"
 						rel1="SendingDomainController"
-                        rel2="EmailVerificationServerController"
-						rel3="BlacklistController"
+						rel2="SendingDomainController"
+                        rel3="EmailVerificationServerController"
+						rel4="BlacklistController"
 					>
 						<a class="dropdown-toggle" data-toggle="dropdown">
 							<i class="glyphicon glyphicon-transfer"></i> {{ trans('messages.sending') }}
@@ -96,6 +98,11 @@
 									</a>
 								</li>
 							@endif
+							<li rel0="SenderController">
+								<a href="{{ action('SenderController@index') }}">
+									<i class="icon-user-check"></i> {{ trans('messages.verified_senders') }}
+								</a>
+							</li>
                             @if (Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer()))
 								<li rel0="EmailVerificationServerController">
 									<a href="{{ action('EmailVerificationServerController@index') }}">

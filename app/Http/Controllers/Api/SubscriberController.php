@@ -5,6 +5,9 @@ namespace Acelle\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Library\Log as MailLog;
+use Illuminate\Support\Facades\Log;
+use Acelle\Events\MailListSubscription;
+use Acelle\Model\Setting;
 
 /**
  * /api/v1/lists/{list_id}/subscribers - API controller for managing list's subscribers.
@@ -112,7 +115,7 @@ class SubscriberController extends Controller
 
         // authorize
         if (!$user->can('create', $subscriber)) {
-            return \Response::json(array('message' => trans('no_more_item')), 403);
+            return \Response::json(array('message' => trans('messages.no_more_item')), 403);
         }
 
         // validate and save posted data
@@ -148,6 +151,16 @@ class SubscriberController extends Controller
 
             // update MailList cache
             event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
+            
+            Log::info("Subscriber {$subscriber->email} is added to list {$subscriber->mailList->name} via API");
+
+            // trigger the event
+            if (Setting::isYes('send_notification_email_for_list_subscription')) {
+                Log::info("Sending notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
+                event(new MailListSubscription($user, $subscriber));    
+            } else {
+                Log::info("No notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
+            }
 
             return \Response::json(array(
                 'status' => 1,

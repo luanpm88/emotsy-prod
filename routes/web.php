@@ -40,6 +40,9 @@ Route::get('/app/templates/{name?}', [ function ($name) {
     }
 }])->where('name', '.+');
 
+// Setting upload path
+Route::get('setting/{filename}', 'SettingController@file');
+
 Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:api'], function () {
     // Route::group(['namespace' => 'Api', 'prefix' => 'api/v1'], function () {
     Route::get('', 'HomeController@index');
@@ -55,7 +58,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
     Route::get('subscribers/email/{email}', 'SubscriberController@showByEmail');
     Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@update');
     Route::get('lists/{list_uid}/subscribers', 'SubscriberController@index');
-    Route::get('lists/{list_uid}/subscribers/{uid}', 'SubscriberController@show');
+    Route::get('lists/{list_uid}/subscribers/{uid}', 'SubscriberController@show')->name('subscriber');
     Route::patch('lists/{list_uid}/subscribers/{uid}/subscribe', 'SubscriberController@subscribe');
     Route::patch('lists/{list_uid}/subscribers/{uid}/unsubscribe', 'SubscriberController@unsubscribe');
     Route::delete('lists/{list_uid}/subscribers/{uid}/delete', 'SubscriberController@delete');
@@ -165,7 +168,7 @@ Route::group(['middleware' => ['not_installed']], function () {
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
-    Route::get('/', 'HomeController@index')->middleware('auth');
+    Route::get('/', 'HomeController@index');
     Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
     Route::get('/current_user_uid', 'UserController@showUid');
 
@@ -199,7 +202,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('lists/listing/{page?}', 'MailListController@listing');
     Route::get('lists/delete', 'MailListController@delete');
     Route::get('lists/delete/confirm', 'MailListController@deleteConfirm');
-    Route::get('lists/{uid}/overview', 'MailListController@overview');
+    Route::get('lists/{uid}/overview', 'MailListController@overview')->name('mail_list');
     Route::resource('lists', 'MailListController');
     Route::get('lists/{uid}/edit', 'MailListController@edit');
     Route::patch('lists/{uid}/update', 'MailListController@update');
@@ -476,6 +479,14 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('blacklists/listing/{page?}', 'BlacklistController@listing');
     Route::get('blacklists/delete', 'BlacklistController@delete');
     Route::resource('blacklists', 'BlacklistController');
+    
+    // Sender
+    Route::get('senders/dropbox', 'SenderController@dropbox');
+    Route::post('senders/{id}/verify', 'SenderController@verify');
+    Route::get('senders/listing/{page?}', 'SenderController@listing');
+    Route::get('senders/sort', 'SenderController@sort');
+    Route::get('senders/delete', 'SenderController@delete');
+    Route::resource('senders', 'SenderController');
 });
 
 // ADMIN AREA
@@ -725,5 +736,5 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/sub_accounts/{uid}/delete/confirm', 'SubAccountController@deleteConfirm');
     Route::delete('admin/sub_accounts/{uid}/delete', 'SubAccountController@delete');
     Route::get('admin/sub_accounts/listing/{page?}', 'SubAccountController@listing');
-    Route::resource('admin/sub_accounts', 'SubAccountController');
+    Route::resource('admin/sub_accounts', 'SubAccountController');    
 });

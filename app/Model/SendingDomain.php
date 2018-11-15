@@ -205,7 +205,6 @@ class SendingDomain extends Model
     {
         return [
             'name' => 'required|regex:/^([a-z0-9A-Z]+(-[a-z0-9A-Z]+)*\.)+[a-zA-Z]{2,}$/',
-            'signing_enabled' => 'required',
         ];
     }
 
@@ -225,7 +224,15 @@ class SendingDomain extends Model
      */
     public function getDnsDkimConfig()
     {
-        return sprintf('"%s"', $this->getDnsDkimConfigWithoutQuote());
+        return doublequote($this->getDnsDkimConfigWithoutQuote());
+    }
+    
+    /**
+     * Generate the Domain DNS configuration for DKIM.
+     */
+    public function getEscapedDnsDkimConfig()
+    {
+        return str_replace(';', '\;', $this->getDnsDkimConfig());
     }
 
     /**
@@ -243,12 +250,19 @@ class SendingDomain extends Model
     public function getSpf()
     {
         $spf = Setting::get('spf');
-        if (is_null($spf)) {
-            return sprintf('v=spf1 +a +mx +ip4:%s ~all', $this->getHostIpAddress());    
+        if (is_null($spf) || empty($spf)) {
+            return sprintf('v=spf1 +a +mx +ip4:%s ~all', $this->getHostIpAddress());
         } else {
             return $spf;
         }
-        
+    }
+    
+    /**
+     * Get quoted SPF
+     */
+    public function getQuotedSpf()
+    {
+        return sprintf('%s', doublequote($this->getSpf()));
     }
 
     /**
@@ -273,6 +287,22 @@ class SendingDomain extends Model
         } else {
             return Setting::get('verification_hostname');
         }        
+    }
+    
+    /**
+     * Retrieve the full verification hostname (including domain name)
+     */
+    public function getFullVerificationHostName()
+    {
+        return "{$this->getVerificationTxtName()}.{$this->getDnsHostName()}";
+    }
+    
+    /**
+     * Get DNS host name
+     */
+    public function getDnsHostName()
+    {
+        return "{$this->name}.";
     }
 
     /**
@@ -352,7 +382,7 @@ class SendingDomain extends Model
         $fqdn = sprintf('%s.%s', $this->getVerificationTxtName(), $this->name);
         $results = collect(dns_get_record($fqdn, DNS_TXT));
         $results = $results->where('type', 'TXT')
-                           ->where('txt', $this->verification_token);
+                           ->whereIn('txt', [$this->verification_token, doublequote($this->verification_token)] );
 
         $this->domain_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
         $this->save();
@@ -368,7 +398,7 @@ class SendingDomain extends Model
         $fqdn = sprintf('%s.%s', $this->getDkimSelector(), $this->name);
         $results = collect(dns_get_record($fqdn, DNS_TXT));
         $results = $results->where('type', 'TXT')
-                           ->whereIn('txt', [$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig()]);
+                           ->whereIn('txt', [$this->getDnsDkimConfigWithoutQuote(), $this->getDnsDkimConfig(), $this->getEscapedDnsDkimConfig()]);
 
         $this->dkim_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
         $this->save();
@@ -383,7 +413,7 @@ class SendingDomain extends Model
     {
         $results = collect(dns_get_record($this->name, DNS_TXT));
         $results = $results->where('type', 'TXT')
-                           ->whereIn('txt', [$this->getSpf(), sprintf('"%s"', $this->getSpf())]);
+                           ->whereIn('txt', [$this->getSpf(), $this->getQuotedSpf()]);
 
         $this->spf_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
         $this->save();
@@ -441,6 +471,16 @@ class SendingDomain extends Model
     public function getDkimSelectorParts()
     {
         return explode(".", $this->getDkimSelector());
+    }
+    
+    /**
+     * Get the full DKIM host name (including domain name).
+     *
+     * @return string
+     */
+    public function getFullDkimHostName()
+    {
+        return "{$this->getDkimSelector()}.{$this->name}.";
     }
     
     /**

@@ -1185,4 +1185,22 @@ class Subscription extends Model
         }
         $this->options = json_encode($db_options);
     }
+    
+    /**
+     * Get PayPal price for countries.
+     */
+    public function getPayPalPrice()
+    {
+        $noDecimalCodes = [
+            'JPY',
+        ];
+        
+        if (in_array($this->currency_code, $noDecimalCodes)) {
+            $price = round($this->price, 0);
+        } else {
+            $price = $this->price;
+        }
+        
+        return $price;
+    }
 }

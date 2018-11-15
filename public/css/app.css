@@ -87,7 +87,7 @@ a {
     font-weight: 800;
 }
 .sub_section {
-    margin-bottom: 25px;
+    margin-bottom: 30px;
 }
 .page-container {
     padding-bottom: 100px;
@@ -1566,7 +1566,6 @@ label.col-center {
     text-align: center;
     font-size: 24px;
     line-height: 40px;
-    font-weight: 800;
     background: #00838F;
     border-radius: 50px;
 }
@@ -2660,4 +2659,10 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 }
 .editable-clear-x:after {
   content: none;
+}
+.rtl, [dir=rtl] {
+    direction: rtl;
+    unicode-bidi: bidi-override !important;
+    direction: unset !important;
+    text-align:right;
 }
