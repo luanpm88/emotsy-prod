@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "7ed4391f5ce64a844334dcf4ecd5842d",
+    "content-hash": "173ccecacdf2205ac7bdeccba5750906",
     "packages": [
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -1460,16 +1460,16 @@
         },
         {
             "name": "lawepham/geoip",
-            "version": "1.2",
+            "version": "1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/luanpm88/lawepham-geoip.git",
-                "reference": "35b0a3c40f2598dd9e3618cba70e64565b6df3aa"
+                "reference": "95dd7ffc056494d3b983415bb7f49656e5522306"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/luanpm88/lawepham-geoip/zipball/35b0a3c40f2598dd9e3618cba70e64565b6df3aa",
-                "reference": "35b0a3c40f2598dd9e3618cba70e64565b6df3aa",
+                "url": "https://api.github.com/repos/luanpm88/lawepham-geoip/zipball/95dd7ffc056494d3b983415bb7f49656e5522306",
+                "reference": "95dd7ffc056494d3b983415bb7f49656e5522306",
                 "shasum": ""
             },
             "type": "library",
@@ -1486,10 +1486,10 @@
             ],
             "description": "Get location information from IP",
             "support": {
-                "source": "https://github.com/luanpm88/lawepham-geoip/tree/1.2",
+                "source": "https://github.com/luanpm88/lawepham-geoip/tree/1.3",
                 "issues": "https://github.com/luanpm88/lawepham-geoip/issues"
             },
-            "time": "2018-11-16T08:22:05+00:00"
+            "time": "2018-11-16T08:34:57+00:00"
         },
         {
             "name": "league/csv",

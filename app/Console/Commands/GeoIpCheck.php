@@ -45,7 +45,7 @@ class GeoIpCheck extends Command
         LaravelLog::info('Checking GeoIp database');
         $geoip = App::make('Acelle\Library\Contracts\GeoIpInterface');
         
-        if (!Setting::isYes('geoip.enabled') || !$geoip->isValid()) {
+        if (!Setting::isYes('geoip.enabled')) { // or check $geoip->isValid()
             GeoIpNotification::warning([
                 'title' => 'GeoIp not ready',
                 'message' => 'GeoIp database is being installed in the background. Process started at '.date("M-d-Y H:i:s")]);
