@@ -47,8 +47,8 @@ class GeoIpCheck extends Command
         
         if (!Setting::isYes('geoip.enabled')) { // or check $geoip->isValid()
             GeoIpNotification::warning([
-                'title' => 'GeoIp not ready',
-                'message' => 'GeoIp database is being installed in the background. Process started at '.date("M-d-Y H:i:s")]);
+                'title' => 'GeoIP not ready',
+                'message' => 'GeoIP database is being installed in the background. Process started at '.date("M-d-Y H:i:s")]);
             LaravelLog::info('Setting up GeoIP database');
             
             try {
