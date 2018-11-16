@@ -11,4 +11,5 @@ Interface GeoIpInterface
     public function getZipcode();
     public function getLatitude();
     public function getLongitude();
+    public function setup();
 }
