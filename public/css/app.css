@@ -78,7 +78,7 @@ h1, .h1, h2, .h2, h3, .h3 {
     padding: 0;
 }
 a {
-    color: #00838F;
+    color: #007c89;
 }
 .caret:after {
     font-size: 18px;
@@ -429,7 +429,6 @@ h2 [class^="icon-"] {
     margin: 0 0 20px 0;
 }
 .page-second-nav li a.level-1 {
-    font-weight: 600;
     padding: 10px 0;
     font-size: 15px;
 }
@@ -472,7 +471,7 @@ h2 [class^="icon-"] {
 .checkbox-right-switch label {
     padding-left: 0;
     width: calc(100% - 110px);
-    font-size: 15px;
+    font-size: 17px;
 }
 .checkbox-right-switch .checkbox-description {
     font-size: 14px;
@@ -528,7 +527,7 @@ h2 [class^="icon-"] {
     background: #c8e9e6;
 }
 .pagination > .active > a, .pagination > .active > span, .pagination > .active > a:hover, .pagination > .active > span:hover, .pagination > .active > a:focus, .pagination > .active > span:focus {
-    background: #00838F;
+    background: #007c89;
 }
 .filter-box .select2 {
     max-width: 180px !important;
@@ -814,7 +813,6 @@ ul.campaign-steps > li.active > a, ul.campaign-steps > li.active > a:hover {
     background-color: #fff;
     border-bottom: solid 2px #00695B;
     border-radius: 5px 5px 0 0;
-    font-weight: 600;
     background: #00695C;
     padding: 10px 15px;
     margin-bottom: -2px;
@@ -843,7 +841,6 @@ ul.campaign-steps li.disabled:after {
 }
 .campaign-steps > li {
     margin-right: 50px;
-    font-weight: 600;
 }
 .campaign-steps > li > a {
     padding-right: 0;
@@ -885,7 +882,7 @@ ul.modern-listing li i, .table-row-icon {
     font-size: 30px;
     height: 70px;
     margin-right: 20px;
-    color: #00838F;
+    color: #007c89;
     margin-top: 0;
     width: 30px;
     text-align: center;
@@ -905,7 +902,6 @@ ul.modern-listing li .btn i {
 }
 ul.modern-listing li h4 {
     margin: 0 0 5px;
-    font-weight: 600;
     font-size: 20px;
 }
 ul.modern-listing li p {
@@ -978,7 +974,7 @@ ul.modern-listing li .btn {
     font-family: 'icomoon';
     font-size: 18px;
     line-height: 25px;
-    color: #00838F;
+    color: #007c89;
 }
 .table-checkmark-1:after {
     content: "\ed6c";
@@ -1030,7 +1026,7 @@ input.numeric {
     height: 50px;
     color: #fff;
     text-align: center;
-    background: #00838F;
+    background: #007c89;
     margin-top: -3px;
     border-radius: 50px;
     opacity: 0.8;
@@ -1542,7 +1538,7 @@ label.col-center {
     text-align: center;
     font-size: 24px;
     line-height: 40px;
-    background: #00838F;
+    background: #007c89;
     border-radius: 50px;
 }
 .workflow-form .panel-auto-campaign, .workflow-form .panel-auto-campaign .panel-heading {
@@ -1558,7 +1554,7 @@ label.col-center {
 }
 numbericon {
     display: inline-block;
-    background: #00838F;
+    background: #007c89;
     float: left;
     color: #fff;
     width: 40px;

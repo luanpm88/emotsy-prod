@@ -65,7 +65,7 @@
                 </li>
             </ul>
                 
-            <a href="{{ action('SenderController@edit', $sender->uid) }}" class="btn btn-default" style="min-width: 100px"><i class="icon-pencil"></i> {{ trans('messages.sender.edit') }}</a>
+            <a href="{{ action('SenderController@edit', $sender->uid) }}" class="btn btn-primary bg-grey" style="min-width: 100px"><i class="icon-pencil"></i> {{ trans('messages.sender.edit') }}</a>
         </div>
     </div>
     
