@@ -464,6 +464,7 @@
   'send_at_once' => 'Send at once',
   'url' => 'URL',
   'dashboard' => 'Dashboard',
+  'dashboard.credit.wording' => 'Below is the summary of how you spend your credits',
   'create_template' => 'New template',
   'new' => 'New',
   'custom_pages' => 'Custom page',

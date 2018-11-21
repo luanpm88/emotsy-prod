@@ -11,11 +11,12 @@
     <h1 class="mb-10">{{ trans('messages.frontend_dashboard_hello', ['name' => Auth::user()->customer->displayName()]) }}</h1>
     <p>{{ trans('messages.frontend_dashboard_welcome') }}</p>
 
-    <h3 class="text-teal-800 mb-10 mt-40"><i class="icon-stats-bars4"></i> {{ trans("messages.used_quota") }}</h3>
+    <h3 class=" mb-10 mt-40"><i class="icon-stats-bars4"></i> {{ trans("messages.used_quota") }}</h3>
+    <p>{{ trans('messages.dashboard.credit.wording') }}</p>
     <div class="row quota_box">
         <div class="col-sm-6 col-md-6">
             <div class="content-group-sm">
-                <div class="pull-right text-teal-800 text-semibold">
+                <div class="pull-right  text-semibold">
                     <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->getSendingQuotaUsage()) }}/{{ (Auth::user()->customer->getSendingQuota() == -1) ? '∞' : \Acelle\Library\Tool::format_number(Auth::user()->customer->getSendingQuota()) }}</span>
                     &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySendingQuotaUsage() }}
                 </div>
@@ -28,7 +29,7 @@
         </div>
         <div class="col-sm-6 col-md-6">
             <div class="content-group-sm">
-                <div class="pull-right text-teal-800 text-semibold">
+                <div class="pull-right  text-semibold">
                     <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->listsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxLists()) }}</span>
                     &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayListsUsage() }}
                 </div>
@@ -41,7 +42,7 @@
         </div>
         <div class="col-sm-6 col-md-6">
             <div class="content-group-sm">
-                <div class="pull-right text-teal-800 text-semibold">
+                <div class="pull-right  text-semibold">
                     <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->campaignsCount()) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxCampaigns()) }}</span>
                     &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displayCampaignsUsage() }}
                 </div>
@@ -54,7 +55,7 @@
         </div>
         <div class="col-sm-6 col-md-6">
             <div class="content-group-sm">
-                <div class="pull-right text-teal-800 text-semibold">
+                <div class="pull-right  text-semibold">
                     <span class="text-muted">{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->readCache('SubscriberCount', 0)) }}/{{ \Acelle\Library\Tool::format_number(Auth::user()->customer->maxSubscribers()) }}</span>
                     &nbsp;&nbsp;&nbsp;{{ Auth::user()->customer->displaySubscribersUsage() }}
                 </div>
@@ -67,7 +68,7 @@
         </div>
     </div>
 
-    <h3 class="text-teal-800 mt-40"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h3>
+    <h3 class=" mt-40"><i class="icon-paperplane"></i> {{ trans('messages.recently_sent_campaigns') }}</h3>
 
     @if (Auth::user()->customer->sentCampaigns()->count() == 0)
         <div class="empty-list">
@@ -92,7 +93,7 @@
         <div class="campaign-quickview-container" data-url="{{ action("CampaignController@quickView") }}"></div>
     @endif
 
-    <h3 class="text-teal-800 mt-40"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h3>
+    <h3 class=" mt-40"><i class="icon-address-book2"></i> {{ trans('messages.list_growth') }}</h3>
 
     @if (Auth::user()->customer->lists()->count() == 0)
         <div class="empty-list">
@@ -118,7 +119,7 @@
         <div class="list-quickview-container" data-url="{{ action("MailListController@quickView") }}"></div>
     @endif
 
-    <h3 class="text-teal-800 mt-40"><i class="icon-podium"></i> {{ trans('messages.top_5') }}</h3>
+    <h3 class=" mt-40"><i class="icon-podium"></i> {{ trans('messages.top_5') }}</h3>
     <div class="tabbable">
         <ul class="nav nav-tabs nav-tabs-top">
             <li class="active text-semibold"><a href="#top-tab1" data-toggle="tab">
@@ -264,7 +265,7 @@
         </div>
     </div>
 
-    <h3 class="text-teal-800 mt-40"><i class="icon-history"></i> {{ trans('messages.activity_log') }}</h3>
+    <h3 class=" mt-40"><i class="icon-history"></i> {{ trans('messages.activity_log') }}</h3>
 
     @if (Auth::user()->customer->logs()->count() == 0)
         <div class="empty-list">
