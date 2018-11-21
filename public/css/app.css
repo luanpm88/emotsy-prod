@@ -20,7 +20,6 @@ h2, .h2 {
 h4, .h4 {
     font-size: 17px;
     line-height: 24px;
-    font-weight: 600;
 }
 .navbar-inverse .navbar-nav > .active > a, .navbar-inverse .navbar-nav > .active > a:hover, .navbar-inverse .navbar-nav > .active > a:focus {
     background-color: rgba(0, 0, 0, 0.5);
@@ -65,7 +64,6 @@ h1, .h1 {
 }
 h1, .h1, h2, .h2, h3, .h3 {
     margin-bottom: 30px;
-    font-weight: 600;
 }
 .select2-search--dropdown .select2-search__field {
     border: solid 2px #bbb;
@@ -101,7 +99,6 @@ a {
     padding: 2px 10px;
     margin: 2px 0;
     border-radius: 20px;
-    font-weight: 600;
 }
 .page-title {
     padding: 20px 0 20px 0;
@@ -110,7 +107,10 @@ a {
     margin-left: 0;
 }
 .text-semibold {
-    font-weight: 600;
+    font-weight: 500;
+}
+.text-bold {
+    font-weight: 500;
 }
 textarea.form-control {
     font-weight: normal;
@@ -125,7 +125,6 @@ textarea.form-control {
     border-color: #bbb;
     border-radius: 5px;
     border: solid 2px #ccc;
-    font-weight: 600;
 }
 h3 {
     margin-bottom: 1.14285714em;
@@ -149,9 +148,7 @@ h3 {
 .select2-dropdown {
     border: 2px solid #ccc;
 }
-.select2-results__option {
-    font-weight: 600;
-}
+
 .select2-selection--single {
     height: 37px;
 }
@@ -170,7 +167,7 @@ h3 {
     border-color: #bbb;
     border-radius: 5px;
     border: solid 2px #ccc;
-    font-weight: 600;
+    font-weight: 500;
     padding: 5px 0;
 }
 .dropdown-menu {
@@ -193,7 +190,6 @@ h3 {
 .form-group label {
     margin-bottom: 5px;
     display: block;
-    font-weight: 600;
     line-height: 24px;
 }
 .form-group .help {
@@ -236,14 +232,14 @@ h3 {
 .dropdown-menu > li > a {
     padding: 15px 20px;
     font-size: 13px;
-    font-weight: 600;
+    font-weight: 500;
 }
 .navbar-nav > li > a {
     padding-top: 16px;
     padding-bottom: 16px;
     padding-left: 15px;
     padding-right: 15px;
-    font-weight: 600;
+    font-weight: 500;
     font-size: 13px;
 }
 .page-header-content {
@@ -274,16 +270,13 @@ h3 {
 .table-box tr:last-child td {
     border-bottom: solid 1px #ddd;
 }
-.table-box h5 {
-    font-weight: 600;
-}
+
 .table-box tbody tr td, .table-box tbody tr th {
     vertical-align: top;
     padding: 20px 10px;
 }
 .table-box-head tr th {
     background: #eee;
-    font-weight: 600;
 }
 .table-box-head tr td:first-child {
     padding-left: 20px;
@@ -323,7 +316,6 @@ h3 {
 }
 .filter-box .btn {
     font-size: 13px;
-    font-weight: 600;
     margin-top: -3px;
 }
 .filter-group {
@@ -340,11 +332,10 @@ h2 [class^="icon-"] {
 .filter-group .title {
     margin-right: 10px;
     font-size: 13px;
-    font-weight: 600;
 }
 .stat-num {
     font-size: 17px;
-    font-weight: 600;
+    font-weight: 500;
     margin-bottom: 0px;
 }
 .dropdown-menu > .active > a, .dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
@@ -643,6 +634,9 @@ h2 [class^="icon-"] {
 .nav-tabs > li > a {
     color: #333;
 }
+.nav-tabs > li.active > a {
+    color: #111;
+}
 .keyword_search_button {
     color: #999;
     margin-left: -38px;
@@ -936,7 +930,7 @@ ul.modern-listing li .btn {
 }
 .progress-right-info {
     font-size: 20px;
-    font-weight: 600;
+    font-weight: 500;
 }
 [class^="icon-"], [class*=" icon-"] {
     /*margin-right: 7px;*/
@@ -950,7 +944,7 @@ ul.modern-listing li .btn {
     margin-bottom: 25px;
 }
 .stat-table .stat-row p {
-    font-weight: 600;
+    font-weight: 500;
     margin: 5px 0;
     margin-bottom: 5px;
 }
@@ -958,11 +952,9 @@ ul.modern-listing li .btn {
     padding-left: 10px;
     font-size: 18px;
     margin-top: -5px;
-    font-weight: 600;
 }
 .table-head tbody tr th {
     background: #ddd;
-    font-weight: 600;
     padding: 10px 20px;
 }
 .table-head tbody tr td {
@@ -1010,7 +1002,6 @@ ul.modern-listing li .btn {
 }
 .btn-server-type {
     margin: 10px 10px 0 0;
-    font-weight: 600;
     padding: 15px 20px;
     width: calc(33.3% - 15px);
     text-align: left;
@@ -1072,7 +1063,6 @@ table.table-log tr th {
     padding: 5px 10px;
     background: #efefef;
     color: #333;
-    font-weight: 600;
 }
 table.table-log tr td {
     padding: 10px 10px;
@@ -1087,9 +1077,6 @@ table.table-log tr td:first-child {
     display: block;
     margin-top: -10px;
     margin-bottom: 0;
-}
-.checkbox.unlimited-check label, .checkbox.sending_quota-check label {
-    font-weight: 600;
 }
 input.disabled {
     background-color: #f5f5f5 !important;
@@ -1106,7 +1093,6 @@ input.disabled:hover {
 }
 .checkbox-box-group label {
     display: block;
-    font-weight: 600;
 }
 .checkbox-box-group .switchery {
     position: absolute;
@@ -1203,7 +1189,6 @@ ul.install-steps li.enabled a:hover {
     white-space: nowrap;
     color: #333;
     width: 170px;
-    font-weight: 600;
 }
 .dropdown-menu li ul li a i {
     line-height: 24px;
@@ -1213,7 +1198,6 @@ ul.install-steps li.enabled a:hover {
     display: inline-block;
     font-size: 14px;
     line-height: 9px;
-    font-weight: 600;
 }
 .tags_list .btn {
     margin-bottom: 10px;
@@ -1244,9 +1228,6 @@ ul.install-steps li.enabled a:hover {
 }
 .api-page .list dd {
     padding-left: 40px;
-}
-.api-page .list dt {
-    font-weight: 600;
 }
 .api-page td h4:first-child {
     margin-top: 0;
@@ -1376,7 +1357,6 @@ ul.plans-intro li a {
     padding: 10px;
     text-align: center;
     background: #eee;
-    font-weight: 600;
     font-size: 16px;
 }
 .plan-price-box .price {
@@ -1492,7 +1472,6 @@ ul.no-top-border-list li:first-child {
 .sub-h3 {
     margin: 10px 0 20px 0;
     font-size: 16px;
-    font-style: italic;
 }
 .flag-icon {
     display: inline-block;
@@ -1635,7 +1614,7 @@ ul.automation-confirm li.child-row h5 {
     margin-bottom: 20px;
 }
 .breadcrumb > li {
-    font-weight: 600;
+    font-weight: 400;
 }
 /*.event-inactive .event-campaigns-box, .event-inactive .panel {
     opacity: 0.7;
@@ -1773,7 +1752,6 @@ ul.automation-confirm li.child-row h5 {
     background: rgba(0,0,0,0);
     margin-left: 2px;
     float: left;
-    font-weight: 600;
     position: absolute;
 }
 .dashboard-box .dashboard-icon i {
@@ -2384,7 +2362,6 @@ a.loading, button.loading {
 }
 .btn-xs .badge {
     padding: 1px 5px 1px 5px;
-    font-weight: 600;
 }
 .filter-box .btn {
     border-radius: 5px;
