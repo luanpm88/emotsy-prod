@@ -193,7 +193,6 @@ h3 {
     line-height: 24px;
 }
 .form-group .help {
-    font-family: "Roboto", Helvetica Neue, Helvetica, Arial, sans-serif;
     height: 0;
     opacity: 0;
     padding: 0;
@@ -1008,7 +1007,6 @@ ul.modern-listing li .btn {
 }
 textarea.dkim_box {
     height: 100px;
-    font-family: Menlo,Monaco,Consolas,"Courier New",monospace;
     font-size: 14px;
 }
 .nav-tabs:before {
@@ -1385,7 +1383,6 @@ ul.plans-intro li a {
     width: 100%;
     border: solid 2px #bbb;
     padding: 20px;
-    font-family: Menlo, Monaco, Consolas, "Courier New", monospace;
 }
 .server-avatar i {
     font-size: 45px !important;
