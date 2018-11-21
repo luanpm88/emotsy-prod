@@ -160,7 +160,7 @@ h3 {
     border-radius: 5px;
 }
 .page-title .breadcrumb {
-    margin-bottom: 10px;
+    margin-bottom: 40px;
 }
 .select2-selection--single:not([class*=bg-]), .select2-selection--multiple:not([class*=bg-]):not([class*=border-]) {
     font-size: 13px;

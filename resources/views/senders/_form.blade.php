@@ -1,5 +1,7 @@
 <div class="row">
 	<div class="col-md-6">
+		<p>{{ trans('messages.sender.new.wording') }}</p>
+			
 		<div class="sub_section">
 			@include('helpers.form_control', [
 				'type' => 'text',
