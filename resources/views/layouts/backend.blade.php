@@ -252,6 +252,11 @@
 								</a>
 							</li>
 						@endif
+						<li rel0="PaymentController">
+							<a href="{{ action('Admin\PaymentController@index') }}">
+								<i class="icon-credit-card2"></i> {{ trans('messages.payment_gateways') }}
+							</a>
+						</li>
                     </ul>
 				</li>
 

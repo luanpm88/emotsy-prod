@@ -2133,4 +2133,37 @@
   'senders.empty_verified_domain_sender.warning' => 'You have no verified sender.
     Add and verify a <a href=":domain_link" target="blank">[domain]</a> or
     <a href=":sender_link" target="blank">[email address]</a> to send email on behalf of.',
+  'payment_gateways' => 'Payment gateways',
+  'payment_gateways.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
+    sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
+    Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
+  'payment.status.active' => 'active',
+  'payment.status.inactive' => 'inactive',
+  'payments.cash' => 'Cash',
+  'payments.stripe' => 'Stripe',
+  'payments.cash.list_intro' => 'Pay by Cash',
+  'payments.stripe.list_intro' => 'Pay with Stripe credit card',
+  'payment.cash.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
+    sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
+    Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
+  'payment.stripe.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
+    sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
+    Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
+  'payment.status' => 'Status',
+  'payment.stripe.publishable_key' => 'Publishable key',
+  'payment.stripe.secret_key' => 'Secret key',
+  'payment_gateway.updated' => 'Payment gateway was successfully updated',
+  'payment.options[cash].help' => 'Enable/disable cash payment',
+  'payment.options[status].help' => 'Enable/disable Stripe payment',
+  'payment.options' => 'Payment settings',
+  'subscription.select_payment' => 'Select payment',
+  'subscription.select_payment.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
+    sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
+    Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
+  'purchasing_intro_stripe' => 'Please click the button below so we can setup your account for puchasing the <span class="text-nowrap text-big text-semibold">:plan plan</span>
+                . Your plan price is: <span class="text-nowrap text-big text-semibold">:price</span>',
 ) ?>

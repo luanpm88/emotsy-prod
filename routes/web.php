@@ -487,6 +487,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('senders/sort', 'SenderController@sort');
     Route::get('senders/delete', 'SenderController@delete');
     Route::resource('senders', 'SenderController');
+    
+    // Account subscription
+    Route::get('subscription/checkout', 'AccountSubscriptionController@checkout');
+    Route::get('subscription/preview', 'AccountSubscriptionController@preview');
+    Route::post('subscription/proccess', 'AccountSubscriptionController@proccess');
+    Route::get('subscription/new', 'AccountSubscriptionController@new');
+    Route::get('subscription', 'AccountSubscriptionController@index');
 });
 
 // ADMIN AREA
@@ -736,5 +743,10 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/sub_accounts/{uid}/delete/confirm', 'SubAccountController@deleteConfirm');
     Route::delete('admin/sub_accounts/{uid}/delete', 'SubAccountController@delete');
     Route::get('admin/sub_accounts/listing/{page?}', 'SubAccountController@listing');
-    Route::resource('admin/sub_accounts', 'SubAccountController');    
+    Route::resource('admin/sub_accounts', 'SubAccountController');
+    
+    // Payment gateways
+    Route::post('admin/payment/gateways/update/{name}', 'PaymentController@update');
+    Route::get('admin/payment/gateways/edit/{name}', 'PaymentController@edit');
+    Route::get('admin/payment/gateways/index', 'PaymentController@index');
 });

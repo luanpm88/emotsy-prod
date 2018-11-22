@@ -804,4 +804,43 @@ class Plan extends Model
 
         return true;
     }
+    
+    /**
+     * Check if plan is free.
+     *
+     * @return bool
+     */
+    public function isFree()
+    {
+        return $this->price == 0;
+    }
+    
+    /**
+     * Get stripe price.
+     *
+     * @return string
+     */
+    public function stripePrice()
+    {
+        $currency_rates = [
+            'CLP' => 1,
+            'DJF' => 1,
+            'JPY' => 1,
+            'KMF' => 1,
+            'RWF' => 1,
+            'VUV' => 1,
+            'XAF' => 1,
+            'XOF' => 1,
+            'BIF' => 1,
+            'GNF' => 1,
+            'KRW' => 1,
+            'MGA' => 1,
+            'PYG' => 1,
+            'VND' => 1,
+            'XPF' => 1,
+        ];
+        $rate = isset($currency_rates[$this->currency->code]) ? $currency_rates[$this->currency->code] : 100;
+
+        return $this->price * $rate;
+    }
 }

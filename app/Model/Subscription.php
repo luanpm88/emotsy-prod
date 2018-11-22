@@ -1203,4 +1203,32 @@ class Subscription extends Model
         
         return $price;
     }
+    
+    /**
+     * Set end at datetime from start at.
+     */
+    public function setEndAt() {
+        if (!isset($this->start_at)) {
+            return null;
+        }
+        
+        // end day
+        switch ($this->plan->frequency_unit) {
+            case 'day':
+                $this->end_at = $this->start_at->addDays($this->plan->frequency_amount);
+                break;
+            case 'week':
+                $this->end_at = $this->start_at->addWeeks($this->plan->frequency_amount)->subDays(1);
+                break;
+            case 'month':
+                $this->end_at = $this->start_at->addMonths($this->plan->frequency_amount)->subDays(1);
+                break;
+            case 'year':
+                $this->end_at = $this->start_at->addYears($this->plan->frequency_amount)->subDays(1);
+                break;
+            case 'unlimited':
+                $this->end_at = null;
+                break;
+        }
+    }
 }
