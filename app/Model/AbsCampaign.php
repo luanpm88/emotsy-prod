@@ -598,7 +598,7 @@ abstract class AbsCampaign extends Model
 
         $privateKey = $sendingDomain->dkim_private;
         $domainName = $sendingDomain->name;
-        $selector = $sendingDomain->getDkimSelector();
+        $selector = $sendingDomain->getDkimSelectorParts()[0];
         $signer = new \Swift_Signers_DKIMSigner($privateKey, $domainName, $selector);
         $signer->ignoreHeader('Return-Path');
         $message->attachSigner($signer);
