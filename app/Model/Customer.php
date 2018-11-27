@@ -25,9 +25,14 @@ namespace Acelle\Model;
 use Acelle\Library\QuotaTrackerFile;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
+use Acelle\Cashier\Traits\BillableTrait;
+use Acelle\Cashier\Interfaces\BillableInterface;
 
-class Customer extends Model
+class Customer extends Model implements BillableInterface
 {
+    // Billable trait
+    use BillableTrait;
+    
     protected $quotaTracker;
 
     // Plan status
@@ -1838,5 +1843,25 @@ class Customer extends Model
     public function getAllSystemAndOwnDomains()
     {
         return \Acelle\Model\SendingDomain::getAllActive();
+    }
+    
+    /**
+     * Customer get email.
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email();
+    }
+    
+    /**
+     * Customer get email.
+     *
+     * @return string
+     */
+    public function getGatewayId()
+    {
+        return $this->email();
     }
 }

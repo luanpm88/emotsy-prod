@@ -489,9 +489,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::resource('senders', 'SenderController');
     
     // Account subscription
+    Route::post('subscription/subscribe', 'AccountSubscriptionController@subscribe');
     Route::get('subscription/checkout', 'AccountSubscriptionController@checkout');
     Route::get('subscription/preview', 'AccountSubscriptionController@preview');
-    Route::post('subscription/proccess', 'AccountSubscriptionController@proccess');
+    Route::post('subscription/proccess', 'AccountSubscriptionController@process');
     Route::get('subscription/new', 'AccountSubscriptionController@new');
     Route::get('subscription', 'AccountSubscriptionController@index');
 });

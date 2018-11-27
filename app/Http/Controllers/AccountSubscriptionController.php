@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log as LaravelLog;
 use Acelle\Model\Subscription;
 use Acelle\Model\Setting;
 use Acelle\Model\Plan;
+use Acelle\Cashier\Services\StripeGatewayService;
 
 class AccountSubscriptionController extends Controller
 {
@@ -65,7 +66,7 @@ class AccountSubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      **/
-    public function proccess(Request $request)
+    public function process(Request $request)
     {
         // Get current customer
         $customer = $request->user()->customer;
@@ -86,6 +87,27 @@ class AccountSubscriptionController extends Controller
                 'gateway' => $request->gateway
             ]);
         }
+        
+        
+    }
+    
+    /**
+     * Create/Pay customer subscription.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function subscribe(Request $request)
+    {
+        // init
+        $customer = $request->user()->customer;
+        $gateway = Setting::getPaymentGateway($request->gateway);
+        $plan = Plan::findByUid($request->plan_uid);
+        
+        // subscribe to plan
+        $stripeGateway = new StripeGatewayService($gateway['fields']['secret_key']);
+        $customer->newSubscription($plan, $stripeGateway)->create($request->stripeToken);
     }
     
     /**

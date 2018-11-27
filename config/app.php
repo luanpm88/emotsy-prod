@@ -198,6 +198,8 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         Barryvdh\Queue\AsyncServiceProvider::class,
         Chumper\Zipper\ZipperServiceProvider::class,
+        // Laravel\Cashier\CashierServiceProvider::class,
+        Acelle\Cashier\CashierServiceProvider::class,
     ],
 
     /*
