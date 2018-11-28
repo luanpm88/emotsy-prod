@@ -1,0 +1,42 @@
+body {
+    color: #241c15;
+}
+.mc_section h2 {
+    font-size: 30px;
+    margin-bottom: 24px;
+    font-weight: normal;
+    margin-top: 0;
+}
+.mc_list .mc_list_media {
+    margin: 15px 20px 15px 15px !important;
+}
+.mc_list li {
+    list-style: none;
+    clear: both;
+    padding: 10px;
+    border-bottom: 1px dotted #dedddc;
+    display: flex;
+    justify-content: space-between;
+}
+.mc_list content {
+    flex-grow: 7;
+}
+.mc_list li:first-child {
+    border-top: 1px dotted #dedddc;
+}
+.mc_list li h4 {
+    margin-top: 0;
+    margin-bottom: 2px;
+    font-weight: 600;
+    font-size: 120%;
+}
+.mc_list li p {
+    margin: 0;
+}
+.btn-mc_default {
+    color: #241c15 !important;
+    background-color: #efeeea;
+    font-weight: 600;
+    border: none;
+    padding: 10px 18px;
+}

@@ -1069,7 +1069,7 @@
   'sending_server_intro_smtp' => 'Send emails through a SMTP service',
   'sending_server_intro_sendmail' => 'Send emails through the sendmail program on the hosting system',
   'sending_server_intro_php-mail' => 'Send emails through the built-in mail() function in PHP',
-  'sending_server.speed' => 'Speed limit: :limit',
+  'sending_server.speed' => 'Sending limit :limit',
   'open_uniq_per_total' => ':count unique / opened :total times',
   'clicked_a_link' => 'Clicked a link',
   'count_clicked' => ':count / :total links',
@@ -2136,4 +2136,8 @@
   'senders.empty_verified_domain_sender.warning' => 'You have no verified sender.
     Add and verify a <a href=":domain_link" target="blank">[domain]</a> or
     <a href=":sender_link" target="blank">[email address]</a> to send email on behalf of.',
+  'plan.sending_servers.intro' => 'This feature allows you to add a sending server which will actually send out your campaign emails.
+        You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES, SendGrid,
+        Mailgun, ElasticEmail, SparkPost... You can also take advantage of the the hosting server\'s
+        email capability by creating a "PHP Mail" or "Sendmail" sending server',
 ) ?>
