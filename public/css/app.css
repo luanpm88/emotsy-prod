@@ -612,9 +612,6 @@ h2 [class^="icon-"] {
         margin-bottom: -1px;
         cursor: pointer;
     }
-    .nav-tabs.nav-tabs-top > li > a {
-        color: #777;
-    }
     .nav-tabs.nav-tabs-top > li > a:hover, .nav-tabs.nav-tabs-top > li > a:focus, .nav-tabs.nav-tabs-top > li.active > a {
         color: #333;
     }
