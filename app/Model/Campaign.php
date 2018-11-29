@@ -158,8 +158,10 @@ class Campaign extends AbsCampaign
 
                 foreach ($subscribers as $subscriber) {
                     // @todo: customerneedcheck
-                    if ($this->customer->overQuota()) {
-                        throw new \Exception('Customer has reached sending limit');
+                    while ($this->customer->overQuota()) {
+                        // throw new \Exception('Customer has reached sending limit');
+                        MailLog::warning(sprintf("Campaign `%s` (%s) halted, user exceeds sending limit", $this->name, $this->uid));
+                        sleep(60);
                     }
 
                     $i += 1;
