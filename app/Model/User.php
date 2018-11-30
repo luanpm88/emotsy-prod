@@ -104,7 +104,7 @@ class User extends Authenticatable
         $token = $this->getToken();
         $redirect_url = urlencode($redirect_url);
 
-        $layout->content = str_replace('{ACTIVATION_URL}', action('UserController@activate', ['token' => $token, 'redirect' => $redirect_url]), $layout->content);
+        $layout->content = str_replace('{ACTIVATION_URL}', \Acelle\Model\Setting::get('url_root') . action('UserController@activate', ['token' => $token, 'redirect' => $redirect_url], false), $layout->content);
         $layout->content = str_replace('{CUSTOMER_NAME}', $name, $layout->content);
         
         \Mail::to(json_decode(json_encode(['email' => $this->email, 'name' => trans('messages.to_email_name')])))->send(new \Acelle\Mail\RegistrationConfirmationMailer($layout->content, $layout->subject));
