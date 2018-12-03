@@ -39,6 +39,7 @@
 	@yield('page_script')
 	
 	<script type="text/javascript" src="{{ URL::asset('js/autofill.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('js/modal.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/app.js') }}?v={{ app_version() }}"></script>
 	<!-- /theme JS files -->
 

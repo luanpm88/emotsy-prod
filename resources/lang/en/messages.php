@@ -2140,4 +2140,15 @@
         You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES, SendGrid,
         Mailgun, ElasticEmail, SparkPost... You can also take advantage of the the hosting server\'s
         email capability by creating a "PHP Mail" or "Sendmail" sending server',
+  'plan.sending_servers' => 'Sending servers',
+  'plan.sending_servers.listing' => 'All available sending servers',
+  'plan.sending_servers.add' => 'Add Sending Server',
+  'plan.sending_servers.intro' => 'This feature allows you to add a sending server which will actually send out your campaign emails.
+        You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES,
+        SendGrid, Mailgun, ElasticEmail, SparkPost... You can also take advantage of the the hosting server\'s
+        email capability by creating a "PHP Mail" or "Sendmail" sending server',
+  'plan.sending_identify' => 'Sending Identify',
+  'plan.sending_identify.intro' => 'Verifying an Identity for Amazon SES Sending Authorization. The first step in configuring sending
+        authorization is to prove that you own the email address or domain from which the
+        delegate sender will send email',
 ) ?>

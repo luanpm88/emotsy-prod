@@ -12,7 +12,7 @@
     @include('helpers._' . $type)
 @elseif (!empty($errors))
     <div class="form-group{{ $errors->has($var_name) ? ' has-error' : '' }} control-{{ $type }}">
-        @if (!empty($label) && $type != 'checkbox2')
+        @if (!empty($label) && $type != 'checkbox2' && $type != 'mc_checkbox')
             <label>
                 {!! $label !!}
                 @if ($required)

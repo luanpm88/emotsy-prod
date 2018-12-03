@@ -681,6 +681,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/account/contact', 'AccountController@contact');
 
     // Plan
+    Route::get('admin/plans/{id}/sending_servers/add', 'PlanController@addSendingServer');
+    Route::get('admin/plans/{id}/sending_servers', 'PlanController@sendingServers');
     Route::get('admin/plans/pieChart', 'PlanController@pieChart');
     Route::get('admin/plans/delete/confirm', 'PlanController@deleteConfirm');
     Route::get('admin/plans/select2', 'PlanController@select2');

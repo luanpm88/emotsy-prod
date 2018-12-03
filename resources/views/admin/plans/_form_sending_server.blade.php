@@ -52,42 +52,9 @@
                             @endforeach
                         </ul>
                             
-                            
-                        <div class="row text-muted">
-                            <div class="col-md-6">
-                                <label>{{ trans('messages.select_sending_servers') }}</label>
-                            </div>
-                            <div class="col-md-6">
-                                <label>{{ trans('messages.fitness') }}</label>
-                            </div>
-                        </div>
-                        @foreach (Auth()->user()->admin->getAllSendingServers()->orderBy("name")->get() as $server)
-                            <div class="row mb-5">
-                                <div class="col-md-6">
-                                    @include('helpers.form_control', [
-                                        'type' => 'checkbox2',
-                                        'name' => 'sending_servers[' . $server->uid . '][check]',
-                                        'value' => $relatedSendingServers->contains('sending_server_id', $server->id),
-                                        'label' => $server->name,
-                                        'options' => [false, true],
-                                        'help_class' => $help_class,
-                                        'rules' => $rules
-                                    ])
-                                </div>
-                                <div class="col-md-6" show-with-control="input[name='{{ 'sending_servers[' . $server->uid . '][check]' }}']">
-                                    <?php $found_key = array_search($server->id, array_column($relatedSendingServers->toArray(), 'sending_server_id')) ?>
-                                    @include('helpers.form_control', [
-                                        'type' => 'text',
-                                        'class' => 'numeric',
-                                        'name' => 'sending_servers[' . $server->uid . '][fitness]',
-                                        'label' => '',
-                                        'value' => $found_key !== false ? $relatedSendingServers->toArray()[$found_key]["fitness"] : '100',
-                                        'help_class' => $help_class,
-                                        'rules' => $rules
-                                    ])
-                                </div>
-                            </div>
-                        @endforeach
+                        <a href="{{ $update_link }}" class="btn btn-primary bg-grey">
+                            {{ trans('messages.plan.sending_servers.update') }}
+                        </a>
                     </div>
                 @endif
     

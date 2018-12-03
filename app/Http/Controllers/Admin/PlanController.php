@@ -494,4 +494,46 @@ class PlanController extends Controller
 
         echo trans('messages.plan.copied');
     }
+    
+    /**
+     * Plan sending servers.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendingServers(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        return view('admin.plans.sending_servers', [
+            'plan' => $plan,
+        ]);
+    }
+    
+    /**
+     * Plan sending servers.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function addSendingServer(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+
+        return view('admin.plans.sending_servers_add', [
+            'plan' => $plan,
+        ]);
+    }
 }
