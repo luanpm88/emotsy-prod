@@ -344,7 +344,7 @@ class Setting extends Model
             ],
             'verification_hostname' => [
                 'cat' => 'dns',
-                'value' => 'acellemail',
+                'value' => 'emarketing',
                 'type' => 'text',
                 'not_required' => true,
             ],
