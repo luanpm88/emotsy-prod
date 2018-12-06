@@ -2151,4 +2151,13 @@
   'plan.sending_identify.intro' => 'Verifying an Identity for Amazon SES Sending Authorization. The first step in configuring sending
         authorization is to prove that you own the email address or domain from which the
         delegate sender will send email',
+  'plan.sending_servers.select' => 'Select sending server',
+  'plan.sending_servers.choose' => 'Choose',
+  'plan.sending_server.added' => 'Sending server was successfully added.',
+  'plan.sending_server.removed' => 'Sending server was successfully removed.',
+  'plan.fitness' => 'Fitness',
+  'plan.fitness.save' => 'Save',
+  'plan.sending_servers.update' => 'Update',
+  'plan.sending_servers.fitness.change' => 'Finess',
+  'plan.sending_servers.fitness.updated' => 'Fitnesses was successfully updated.',
 ) ?>

@@ -517,7 +517,7 @@ class PlanController extends Controller
     }
     
     /**
-     * Plan sending servers.
+     * Add plan sending server.
      *
      * @param \Illuminate\Http\Request $request
      *
@@ -531,8 +531,68 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
+        
+        // save posted data
+        if ($request->isMethod('post')) {
+            $plan->addSendingServerByUid($request->sending_server_uid);            
+
+            $request->session()->flash('alert-success', trans('messages.plan.sending_server.added'));
+            return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
+        }
 
         return view('admin.plans.sending_servers_add', [
+            'plan' => $plan,
+        ]);
+    }
+    
+    /**
+     * Remove plan sending server.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function removeSendingServer(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // save posted data
+        $plan->removeSendingServerByUid($request->sending_server_uid);            
+
+        $request->session()->flash('alert-success', trans('messages.plan.sending_server.removed'));
+        return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
+    }
+    
+    /**
+     * Plan sending servers fitnesses.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function fitness(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // update fitness value
+        if ($request->isMethod('post')) {
+            $plan->updateFitnesses($request->sending_servers);            
+            
+            $request->session()->flash('alert-success', trans('messages.plan.sending_servers.fitness.updated'));
+            return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
+        }
+
+        return view('admin.plans.fitness', [
             'plan' => $plan,
         ]);
     }

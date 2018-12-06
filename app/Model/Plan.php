@@ -804,4 +804,38 @@ class Plan extends Model
 
         return true;
     }
+    
+    /**
+     ** Add sending server by uid.
+     **/
+    public function addSendingServerByUid($sendinServerUid)
+    {        
+        $server = SendingServer::findByUid($sendinServerUid);
+        $row = new PlansSendingServer();
+        $row->plan_id = $this->id;
+        $row->sending_server_id = $server->id;
+        $row->fitness = '50';
+        $row->save();
+    }
+    
+    /**
+     ** Remove sending server by uid.
+     **/
+    public function removeSendingServerByUid($sendinServerUid)
+    {
+        $server = SendingServer::findByUid($sendinServerUid);
+        $this->plansSendingServers()->where('sending_server_id', '=', $server->id)->delete();
+    }
+    
+    /**
+     ** Update fitness by sending servers.
+     **/
+    public function updateFitnesses($hash)
+    {
+        foreach($hash as $uid => $value) {
+            $sendingServer = SendingServer::findByUid($uid);
+            \Acelle\Model\PlansSendingServer::where('sending_server_id', '=', $sendingServer->id)
+                ->update(['fitness' => $value]);
+        }
+    }
 }

@@ -1,30 +1,29 @@
-  <div class="modal-dialog mc-modal" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        @include('helpers.form_control', [
-            'type' => 'autofill',
-            'name' => 'from_email',
-            'label' => trans('messages.from_email'),
-            'value' => '',
-            'rules' => [],
-            'help_class' => 'campaign',
-            'url' => action('SenderController@dropbox'),
-            'empty' => trans('messages.sender.dropbox.empty'),
-            'error' => trans('messages.sender.dropbox.error', [
-                'sender_link' => action('SenderController@index'),
-            ]),
-            'header' => trans('messages.verified_senders'),
-        ])
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-mc_primary">Save changes</button>
-        <button type="button" class="btn btn-mc_inline" data-dismiss="modal">Close</button>
-      </div>
+<form enctype="multipart/form-data" action="{{ action('Admin\PlanController@addSendingServer', $plan->uid) }}" method="POST" class="form-validate-jquery">
+    {{ csrf_field() }}
+    <div class="modal-header">
+      <h5 class="modal-title">{{ trans('messages.plan.sending_servers.add') }}</h5>
+      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+      </button>
     </div>
-  </div>
+    <div class="modal-body">
+      @include('helpers.form_control', [
+          'type' => 'select_ajax',
+          'name' => 'sending_server_uid',
+          'class' => 'hook required',
+          'label' => trans('messages.plan.sending_servers.select'),
+          'selected' => [
+            'value' => '',
+            'text' => '',
+          ],
+          'help_class' => 'subscription',
+          'rules' => [],
+          'url' => action('Admin\SendingServerController@select2'),
+          'placeholder' => trans('messages.plan.sending_servers.choose')
+      ])
+    </div>
+    <div class="modal-footer">
+      <button type="submit" class="btn btn-mc_primary">{{ trans('messages.plan.sending_servers.add') }}</button>
+      <button type="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.close') }}</button>
+    </div>
+<form>

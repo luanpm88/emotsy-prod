@@ -8,7 +8,7 @@ $(function() {
         var method = $(this).attr('data-method');
         var load = htmlLoader();
         var html = '<div class="modal fade" role="dialog" id="myModal">'+
-                        '<div class="modal-dialog modal-select">'+
+                        '<div class="modal-dialog modal-lg modal-select">'+
                             '<div class="modal-content">'+
                                 '<p>'+load+'</p>'+    
                             '</div>'+
@@ -25,6 +25,16 @@ $(function() {
                 dataType: 'html',
             }).always(function(response) {
                 $('#myModal .modal-content').html(response);
+                // Select2 ajax
+                $('#myModal .modal-content').find(".select2-ajax").each(function() {
+                    select2Ajax($(this));
+                });
+                
+                customValidate($('#myModal .modal-content').find('form'));
+                $('#myModal .modal-content').find("input.slider").slider();
+                $('#myModal .modal-content').find("input.slider").on("slide", function(slideEvt) {
+                    $(this).closest('li').find('.val').html(slideEvt.value);
+                });
             });
         return false;
     });
@@ -32,9 +42,6 @@ $(function() {
     $('.icon-rm').click(function(){
         $('.modal').addClass('andi');
     });
-    
-    
-    
 });
 
 function htmlLoader() {

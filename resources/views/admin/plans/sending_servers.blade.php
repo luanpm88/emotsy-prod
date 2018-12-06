@@ -31,35 +31,41 @@
                 </h2>
                 <p>{{ trans('messages.plan.sending_servers.intro') }}</p>
             </div>
-            <div class="col-md-2">
-                <a href="{{ action('Admin\PlanController@addSendingServer', $plan->uid) }}" class="btn btn-primary bg-grey modal-control">{{ trans('messages.plan.sending_servers.add') }}</a>
+            <div class="col-md-2 text-right">
+                <a href="{{ action('Admin\PlanController@addSendingServer', $plan->uid) }}" class="btn btn-primary bg-grey mc-modal-control">
+                    {{ trans('messages.plan.sending_servers.add') }}
+                </a>
             </div>
         </div>
         
-        @if(!Auth()->user()->admin->getAllSendingServers()->count())
-            <div class="alert alert-danger mt-20">
-                {!! trans('messages.plan_option.there_no_sending_server') !!}
+        @if(!$plan->plansSendingServers()->count())
+            <div class="empty-list">
+                <i class="icon-server"></i>
+                <span class="line-1">
+                    {{ trans('messages.sending_server_empty_line_1') }}
+                </span>
             </div>
         @else
-            
             <div class="sending-servers">
                 <ul class="mc_list mt-20">
-                    @foreach (Auth()->user()->admin->getAllSendingServers()->orderBy("name")->get() as $server)
+                    @foreach ($plan->plansSendingServers as $planSendingServer)
                         <li>
                             <content>
-                                <span class="mc_list_media server-avatar server-avatar-{{ $server->type }} mr-0">
+                                <span class="mc_list_media server-avatar server-avatar-{{ $planSendingServer->sendingServer->type }} mr-0">
                                     <i class="icon-server"></i>
                                 </span>
-                                <h4>{{ $server->name }}</h4>
+                                <h4>{{ $planSendingServer->sendingServer->name }}</h4>
                                 <p>
-                                    {{ trans('messages.sending_server.speed', ['limit' => $server->displayQuota()]) }}
-                                     · Fitness <span class="text-semibold">100</span>
+                                    {{ trans('messages.sending_server.speed', ['limit' => $planSendingServer->sendingServer->displayQuota()]) }}
+                                     · Fitness <span class="text-semibold"><b>{{ $planSendingServer->fitness }}</b>%</span>
                                 </p>
                                 <p>Domain verification Off · Email verification Off · Settings</p>
                             </content>                                        
                             <actions>
-                                <a href="" class="btn btn-mc_default mr-20">{{ trans('messages.edit') }}</a>
-                                <a href="" class="btn btn-mc_default">{{ trans('messages.remove') }}</a>
+                                <a modal-size="lg" href="{{ action('Admin\PlanController@fitness', ['id' => $plan->uid]) }}" class="btn btn-mc_default mr-20 mc-modal-control">
+                                    {{ trans('messages.plan.sending_servers.fitness.change') }}
+                                </a>
+                                <a link-method="POST" href="{{ action('Admin\PlanController@removeSendingServer', ['id' => $plan->uid, 'sending_server_id' => $planSendingServer->sendingServer->uid]) }}" class="btn btn-mc_default">{{ trans('messages.remove') }}</a>
                             </actions>
                         </li>
                     @endforeach

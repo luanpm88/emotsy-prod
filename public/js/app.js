@@ -299,6 +299,49 @@ function popupwindow(url, title, w, h) {
   return window.open(url, title, 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+screen.height+', top='+top+', left='+left);
 }
 
+function select2Ajax(selectBox) {
+    var url = selectBox.attr("data-url");
+    var placeholder = selectBox.attr("placeholder");
+    if(typeof(placeholder) == 'undefined') {
+        placeholder = "";
+    }
+    selectBox.select2({
+        placeholder: placeholder,
+        allowClear: true,
+        ajax: {
+            url: url,
+            dataType: 'json',
+            delay: 250,
+
+            data: function (params) {
+              return {
+                q: params.term, // search term
+                page: params.page
+              };
+            },
+            processResults: function (data, params) {
+                // parse the results into the format expected by Select2
+                // since we are using custom formatting functions we do not need to
+                // alter the remote JSON data, except to indicate that infinite
+                // scrolling can be used
+                params.page = params.page || 1;
+
+                return {
+                    results: data.items,
+                    pagination: {
+                        more: (params.page * 30) < data.total_count
+                    }
+                };
+            },
+            cache: true
+        },
+        escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+        minimumInputLength: 0,
+        templateResult: formatSelect2TextOption,
+        templateSelection: formatSelect2TextSelected,
+    });
+}
+
 $(function() {
     // Default tooltip
     $('[data-popup=tooltip]').tooltip({
@@ -933,46 +976,7 @@ $(function() {
 
     // Select2 ajax
     $(".select2-ajax").each(function() {
-        var url = $(this).attr("data-url");
-        var placeholder = $(this).attr("placeholder");
-        if(typeof(placeholder) == 'undefined') {
-            placeholder = "";
-        }
-        $(this).select2({
-            placeholder: placeholder,
-            allowClear: true,
-            ajax: {
-                url: url,
-                dataType: 'json',
-                delay: 250,
-
-                data: function (params) {
-                  return {
-                    q: params.term, // search term
-                    page: params.page
-                  };
-                },
-                processResults: function (data, params) {
-                    // parse the results into the format expected by Select2
-                    // since we are using custom formatting functions we do not need to
-                    // alter the remote JSON data, except to indicate that infinite
-                    // scrolling can be used
-                    params.page = params.page || 1;
-
-                    return {
-                        results: data.items,
-                        pagination: {
-                            more: (params.page * 30) < data.total_count
-                        }
-                    };
-                },
-                cache: true
-            },
-            escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
-            minimumInputLength: 0,
-            templateResult: formatSelect2TextOption,
-            templateSelection: formatSelect2TextSelected,
-        });
+        select2Ajax($(this));
     });
 
     // Campaign quickview dashboard

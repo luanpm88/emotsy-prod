@@ -219,5 +219,40 @@ h2.mc-h2 {
     text-decoration: underline;
 }
 .btn.btn-mc_inline:hover {
+    background: none !important;
+    box-shadow: none !important;
+}
+.mc-modal .modal-header {
+  position: relative !important;
+}
+.mc-modal .modal-header .close[type=button] {
     background: none;
+    font-size: 40px;
+    width: 25px;
+    height: 25px;
+    display: block;
+    border-radius: 20px;
+    color: #333;
+    font-weight: normal;
+    margin-top: -20px;
+    margin-right: 0px;
+}
+.slider.slider-horizontal {
+  width: 100%;
+}
+.mc-progress-list {
+  
+}
+.mc-progress-list li {
+  list-style: none;
+  margin-bottom: 25px;
+}
+.mc-progress-list li label {
+  list-style: none;
+  margin: 0;
+  font-size: 100%;
+  font-weight: 600;
+}
+.mc-text-bold {
+  font-weight: bold !important;
 }

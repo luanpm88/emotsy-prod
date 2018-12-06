@@ -525,6 +525,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/layouts', 'LayoutController');
 
     // Sending servers
+    Route::get('admin/sending_servers/select2', 'SendingServerController@select2');
     Route::post('admin/sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('admin/sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('admin/sending_servers/select', 'SendingServerController@select');
@@ -681,6 +682,10 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/account/contact', 'AccountController@contact');
 
     // Plan
+    Route::post('admin/plans/{id}/sending_servers/fitness', 'PlanController@fitness');
+    Route::get('admin/plans/{id}/sending_servers/fitness', 'PlanController@fitness');
+    Route::post('admin/plans/{id}/sending_servers/{sending_server_uid}/remove', 'PlanController@removeSendingServer');
+    Route::post('admin/plans/{id}/sending_servers/add', 'PlanController@addSendingServer');
     Route::get('admin/plans/{id}/sending_servers/add', 'PlanController@addSendingServer');
     Route::get('admin/plans/{id}/sending_servers', 'PlanController@sendingServers');
     Route::get('admin/plans/pieChart', 'PlanController@pieChart');

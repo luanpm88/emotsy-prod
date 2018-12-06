@@ -33,6 +33,7 @@
     <script type="text/javascript" src="{{ URL::asset('js/scrollbar/jquery.mCustomScrollbar.concat.min.js') }}"></script>
 
     <script type="text/javascript" src="{{ URL::asset('js/jquery.cookie.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('rangeslider/bootstrap-slider.js') }}"></script>
 	
 	<script type="text/javascript" src="{{ URL::asset('bootstrap3-editable/js/bootstrap-editable.js') }}"></script>
 
@@ -40,6 +41,7 @@
 	
 	<script type="text/javascript" src="{{ URL::asset('js/autofill.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/modal.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('js/mc_modal.js') }}"></script>
     <script type="text/javascript" src="{{ URL::asset('js/app.js') }}?v={{ app_version() }}"></script>
 	<!-- /theme JS files -->
 

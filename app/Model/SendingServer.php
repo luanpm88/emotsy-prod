@@ -707,4 +707,28 @@ class SendingServer extends Model
     {
         $this->subAccount = $subAccount;
     }
+    
+    /**
+     * Get sending server select2 select options.
+     *
+     * @return array
+     */
+    public static function select2($request)
+    {
+        $data = ['items' => [], 'more' => true];
+
+        $query = self::getAll();
+        if (isset($request->q)) {
+            $keyword = $request->q;
+            $query = $query->where(function ($q) use ($keyword) {
+                $q->orwhere('sending_servers.name', 'like', '%'.$keyword.'%');
+            });
+        }
+
+        foreach ($query->limit(20)->get() as $server) {
+            $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.' . $server->type)];
+        }
+
+        return json_encode($data);
+    }
 }

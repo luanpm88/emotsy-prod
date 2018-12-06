@@ -375,4 +375,16 @@ class SendingServerController extends Controller
             'server' => $server,
         ]);
     }
+    
+    /**
+     * Select2 customer.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function select2(Request $request)
+    {
+        echo \Acelle\Model\SendingServer::select2($request);
+    }
 }
