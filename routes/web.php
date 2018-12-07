@@ -86,7 +86,7 @@ Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:
 });
 
 // For visitor with Web UI, loading the right app language
-Route::group(['middleware' => ['not_logged_in', 'not_installed']], function () {
+Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     // Helper method to generate other routes for authentication
     Auth::routes();
     
