@@ -7,8 +7,18 @@ h1.mc-h1 {
 h2.mc-h2 {
     font-size: 30px;
 }
+.mc_section h3 {
+  font-style: normal;
+  font-size: 22px;
+}
+.mc_section {
+  margin-bottom: 50px;
+}
+.mc_section .form-control, .mc_section .select2 {
+  font-size: 14px;
+}
 .mc_section h2 {
-    font-size: 30px;
+    font-size: 28px;
     margin-bottom: 24px;
     font-weight: normal;
     margin-top: 0;
@@ -48,7 +58,7 @@ h2.mc-h2 {
     background-color: #efeeea;
     font-weight: 600;
     border: none;
-    padding: 10px 18px;
+    padding: 8px 18px;
 }
 .sk-fading-circle {
   margin: 100px auto;
@@ -207,14 +217,14 @@ h2.mc-h2 {
     color: #ffffff;
     background-color: #716b67;
     border: none;
-    padding: 10px 18px;
+    padding: 8px 18px;
     font-weight: 600;
 }
 .btn.btn-mc_inline {
     color: #333;
     background-color: #fff;
     border: none;
-    padding: 10px 18px;
+    padding: 8px 18px;
     font-weight: 600;
     text-decoration: underline;
 }
@@ -255,4 +265,72 @@ h2.mc-h2 {
 }
 .mc-text-bold {
   font-weight: bold !important;
+}
+.mc_section .form-group label {
+  font-weight: 600;
+}
+.mc_section .form-control {
+  border: 1px solid rgba(36,28,21,0.3);
+  border-radius: 2px;
+}
+.mc_section .form-control:focus {
+  outline: none;
+  border: 1px solid #007c89;
+  box-shadow: inset 0 0 0 1px #007c89;
+}
+.mc_section .form-group .help, .mc_section .form-group .help.showed {
+  display: block;
+  opacity: 1;
+  height: auto;
+  background: none;
+  margin: 5px 0 24px 0;
+  color: #777;
+  font-size: 95%;
+  font-weight: normal;
+  padding: 0;
+}
+.mc_section .select2-selection--single:not([class*=bg-]):not([class*=border-]) {
+  border: 1px solid rgba(36,28,21,0.3);
+  background-color: #fff;
+  border-radius: 2px;
+}
+.btn-view-password {
+    float: right;
+    margin-top: -27px;
+    font-size: 20px;
+    margin-right: 10px;
+    cursor: pointer;
+    color: #555;
+}
+.btn-view-password.open {
+}
+input.has-eye {
+  padding-right: 35px;
+}
+.mc_section .select2-selection--single .select2-selection__rendered {
+  font-size: 14px;
+  line-height: 26px;
+}
+.mc_section .table-box-head thead tr {
+  word-break: normal;
+  text-align: left;
+  background-color: #f2f2f2;
+  border-bottom: 1px solid #dedddc;
+  border-top: 1px solid #dedddc;
+  font-weight: 600;
+}
+.small-meta {
+  font-size: 90%;
+  line-height: inherit;
+  opacity: 0.7;
+}
+.mc_section .table-box tbody tr td, .mc_section .table-box tbody tr th {
+  padding: 15px 10px;
+}
+.mc_section .control-checkbox2 {
+  margin-top: 25px;
+}
+.mc_section .bootstrap-switch.bootstrap-switch-animate .bootstrap-switch-container,
+.mc_section .bootstrap-switch.bootstrap-switch-focused .bootstrap-switch-container {
+  line-height: 1 !important;
 }

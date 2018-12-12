@@ -2026,5 +2026,29 @@ $(function() {
     
     // autofill
     $('.autofill').autofill();
-
+    
+    // password eye toggle
+    $(document).on('click', '.btn-view-password', function() {
+        var btn = $(this);
+        var input = btn.closest('div').find('input');
+        
+        console.log(input);
+        
+        if (btn.hasClass('open')) {
+            btn.removeClass('open');
+            input.attr('type', 'password');
+            btn.removeClass('icon-eye-blocked');
+            btn.addClass('icon-eye');
+        } else {
+            btn.addClass('open');
+            input.attr('type', 'text');
+            btn.removeClass('icon-eye');
+            btn.addClass('icon-eye-blocked');
+        }
+        
+        input.focus();
+    });
+    
+    // bootstrap switch    
+    $(".boostrap-switch").bootstrapSwitch();
 });

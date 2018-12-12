@@ -34,6 +34,9 @@ class SendingServer extends Model
     const DELIVERY_STATUS_FAILED = 'failed';
     const STATUS_ACTIVE = 'active';
     const STATUS_INACTIVE = 'inactive';
+    
+    // TYPE
+    const TYPE_AMAZON_API = 'amazon-api';
 
     protected $quotaTracker;
     protected $subAccount;
@@ -52,7 +55,7 @@ class SendingServer extends Model
 
     // Supported server types
     public static $serverMapping = array(
-        'amazon-api' => 'SendingServerAmazonApi',
+        self::TYPE_AMAZON_API => 'SendingServerAmazonApi',
         'amazon-smtp' => 'SendingServerAmazonSmtp',
         'smtp' => 'SendingServerSmtp',
         'sendmail' => 'SendingServerSendmail',
@@ -289,7 +292,7 @@ class SendingServer extends Model
                     'default_from_email' => 'email|required',
                 ],
             ],
-            'amazon-api' => [
+            self::TYPE_AMAZON_API => [
                 'cols' => [
                     'name' => 'required',
                     'aws_access_key_id' => 'required',
@@ -730,5 +733,50 @@ class SendingServer extends Model
         }
 
         return json_encode($data);
+    }
+    
+    /**
+     * Get sending limit types.
+     *
+     * @return array
+     */
+    public static function sendingLimitValues()
+    {
+        return [
+            '100_per_minute' => [
+                'quota_value' => 100,
+                'quota_base' => 1,
+                'quota_unit' => 'minute',
+            ],
+            '1000_per_hour' => [
+                'quota_value' => 1000,
+                'quota_base' => 1,
+                'quota_unit' => 'hour',
+            ],
+            '10000_per_day' => [
+                'quota_value' => 10000,
+                'quota_base' => 1,
+                'quota_unit' => 'day',
+            ],
+        ];
+    }
+    
+    /**
+     * Get sending limit select options.
+     *
+     * @return array
+     */
+    public static function getSendingLimitSelectOptions()
+    {
+        $options = [];
+        
+        foreach (self::sendingLimitValues() as $key => $data) {
+            $options[] = ['text' => trans('messages.sending_servers.quota.' . $key), 'value' => $key];
+        }
+        
+        // Custom
+        $options[] = ['text' => trans('messages.sending_servers.quota.custom'), 'value' => 'custom'];
+
+        return $options;
     }
 }

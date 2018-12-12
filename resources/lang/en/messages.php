@@ -2160,4 +2160,22 @@
   'plan.sending_servers.update' => 'Update',
   'plan.sending_servers.fitness.change' => 'Finess',
   'plan.sending_servers.fitness.updated' => 'Fitnesses was successfully updated.',
+  'sending_servers.configuration_settings' => 'Configuration settings',
+  'sending_servers.amazon_api_key.intro' => 'You are connected to Amazon SES using the API key pairs below',
+  'sending_servers.configuration_settings.intro' => 'Set up a connection to your Amazon Web Service account to send email through Simple Email Service (SES).',
+  'sending_server.name.help' => 'For example: My AWS',
+  'sending_servers.sending_limit.aws.intro' => 'Control how fast your application can send through this connection.
+    Every Amazon SES account has its own set of sending limits. You can find the details of AWS limits here',
+  'sending_servers.speed_limit' => 'Speed limit',
+  'sending_servers.quota.100_per_minute' => '100 emails per minute',
+  'sending_servers.quota.1000_per_hour' => '1,000 emails per hour',
+  'sending_servers.quota.10000_per_day' => '10,000 emails per day',
+  'sending_servers.quota.custom' => 'Custom',
+  'sending_servers.sending_identity' => 'Sending identity',
+  'sending_servers.sending_identity.intro' => 'The following domains were verified against your Amazon SES account.
+    Click <a href=":link">here</a> to find more details in your Amazon dashboard. Choose the domain that users are
+    allowed to send on behalf of (FROM address)',
+  'sending_serbers.go_to_amazon_dashboard' => 'Go to Amazon dashboard',
+  'sending_serbers.add_domain' => 'Add domain',
+  
 ) ?>
