@@ -8,6 +8,7 @@ use App;
 use Acelle\Model\Setting;
 use Acelle\Library\Notification\GeoIp as GeoIpNotification;
 use Exception;
+use Acelle\Library\Lockable;
 
 class GeoIpCheck extends Command
 {
@@ -42,7 +43,19 @@ class GeoIpCheck extends Command
      */
     public function handle()
     {
-        LaravelLog::info('Checking GeoIp database');
+        $lock = new Lockable(storage_path('locks/geoip-setup'));
+        $lock->getExclusiveLock(function() {
+            $this->check();
+        });
+    }
+    
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function check()
+    {
         $geoip = App::make('Acelle\Library\Contracts\GeoIpInterface');
         
         if (!Setting::isYes('geoip.enabled')) { // or check $geoip->isValid()
@@ -53,6 +66,8 @@ class GeoIpCheck extends Command
             
             try {
                 $geoip->setup();
+                Setting::setYes('geoip.enabled');
+                LaravelLog::info('GeoIP database is successfully installed');
                 GeoIpNotification::cleanupSimilarNotifications();
             } catch (Exception $ex) {
                 LaravelLog::error('Installing GeoIp database failed');
@@ -62,9 +77,6 @@ class GeoIpCheck extends Command
                 ]);
                 throw $ex;
             }
-            
-            Setting::setYes('geoip.enabled');
-            LaravelLog::info('GeoIP database is successfully installed');
         } else {
             GeoIpNotification::cleanupSimilarNotifications();
         }
