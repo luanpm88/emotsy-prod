@@ -17,7 +17,7 @@
         "intervention/image": "^2.3",
         "laravel/framework": "5.4.*",
         "laravel/tinker": "^1.0",
-        "lawepham/geoip": "1.4",
+        "lawepham/geoip": "1.5",
         "league/csv": "^8.0",
         "louis/log-viewer": "1.2.*",
         "louis/sendgrid": "dev-master",

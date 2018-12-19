@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "22cda054c7820d902c3465d25a641998",
+    "content-hash": "dd727a22284c2062aefae99d2720cbb1",
     "packages": [
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -1460,16 +1460,16 @@
         },
         {
             "name": "lawepham/geoip",
-            "version": "1.4",
+            "version": "1.5",
             "source": {
                 "type": "git",
                 "url": "https://github.com/luanpm88/lawepham-geoip.git",
-                "reference": "96b3969001c8dfdf402ee2b72cac12c34a5f8f2c"
+                "reference": "dd89a323a640c009fd4f146a59688fd480f0ef06"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/luanpm88/lawepham-geoip/zipball/96b3969001c8dfdf402ee2b72cac12c34a5f8f2c",
-                "reference": "96b3969001c8dfdf402ee2b72cac12c34a5f8f2c",
+                "url": "https://api.github.com/repos/luanpm88/lawepham-geoip/zipball/dd89a323a640c009fd4f146a59688fd480f0ef06",
+                "reference": "dd89a323a640c009fd4f146a59688fd480f0ef06",
                 "shasum": ""
             },
             "type": "library",
@@ -1486,10 +1486,10 @@
             ],
             "description": "Get location information from IP",
             "support": {
-                "source": "https://github.com/luanpm88/lawepham-geoip/tree/master",
+                "source": "https://github.com/luanpm88/lawepham-geoip/tree/1.5",
                 "issues": "https://github.com/luanpm88/lawepham-geoip/issues"
             },
-            "time": "2018-11-30T15:30:51+00:00"
+            "time": "2018-12-19T05:22:57+00:00"
         },
         {
             "name": "league/csv",
@@ -3247,6 +3247,7 @@
                 "jsonpath",
                 "path"
             ],
+            "abandoned": "galbar/jsonpath",
             "time": "2016-12-02T08:05:10+00:00"
         },
         {
