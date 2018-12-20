@@ -21,11 +21,15 @@
 @endsection
 
 @section('content')
-
-    <form enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', ["uid" => $server->uid, "type" => request()->type]) }}" method="POST" class="form-validate-jquery">
-        {{ csrf_field() }}
-        <input type="hidden" name="_method" value="PATCH">
-        @include('admin.sending_servers._form')
-    <form>
+    
+    @if ($server->type == \Acelle\Model\SendingServer::TYPE_AMAZON_API)
+        @include('admin.sending_servers.form.' . $server->type)
+    @else
+        <form enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', ["uid" => $server->uid, "type" => request()->type]) }}" method="POST" class="form-validate-jquery">
+            {{ csrf_field() }}
+            <input type="hidden" name="_method" value="PATCH">
+            @include('admin.sending_servers._form')
+        <form>
+    @endif
 
 @endsection

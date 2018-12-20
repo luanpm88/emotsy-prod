@@ -2177,5 +2177,8 @@
     allowed to send on behalf of (FROM address)',
   'sending_serbers.go_to_amazon_dashboard' => 'Go to Amazon dashboard',
   'sending_serbers.add_domain' => 'Add domain',
-  
+  'sending_limit.save' => 'Save',
+  'sending_limit.close' => 'Close',
+  'sending_server.test_connection' => 'Test Connection',
+  'sending_server.send_a_test_email' => 'Send A Test Email',
 ) ?>

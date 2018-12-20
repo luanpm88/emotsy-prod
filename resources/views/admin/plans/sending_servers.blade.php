@@ -57,7 +57,7 @@
                                 <h4>{{ $planSendingServer->sendingServer->name }}</h4>
                                 <p>
                                     {{ trans('messages.sending_server.speed', ['limit' => $planSendingServer->sendingServer->displayQuota()]) }}
-                                     · Fitness <span class="text-semibold"><b>{{ $planSendingServer->fitness }}</b>%</span>
+                                     · Fitness <span class="text-semibold"><b>{{ $planSendingServer->showFitness() }}</b>%</span>
                                 </p>
                                 <p>Domain verification Off · Email verification Off · Settings</p>
                             </content>                                        

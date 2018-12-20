@@ -2636,3 +2636,6 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
     direction: unset !important;
     text-align:right;
 }
+.modal-trigger {
+  cursor: pointer;
+}

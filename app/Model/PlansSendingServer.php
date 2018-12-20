@@ -10,4 +10,12 @@ class PlansSendingServer extends Model
     {
         return $this->belongsTo('Acelle\Model\SendingServer');
     }
+    
+    public function showFitness()
+    {
+        $sum = PlansSendingServer::where('plan_id', '=', $this->plan_id)
+            ->sum('fitness');
+        
+        return round(($this->fitness/$sum)*100);
+    }
 }

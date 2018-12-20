@@ -1,4 +1,4 @@
-<select name="{{ $name }}" class="select select-search{{ $classes }} {{ isset($class) ? $class : "" }}  {{ isset($required) && !empty($required) ? 'required' : '' }}" {{ isset($multiple) && $multiple == true ? "multiple='multiple'" : "" }}>
+<select {{ isset($disabled) && $disabled == true ? ' disabled="disabled"' : "" }} name="{{ $name }}" class="select select-search{{ $classes }} {{ isset($class) ? $class : "" }}  {{ isset($required) && !empty($required) ? 'required' : '' }}" {{ isset($multiple) && $multiple == true ? "multiple='multiple'" : "" }}>
 	@if (isset($include_blank))
 		<option value="">{{ $include_blank }}</option>
 	@endif

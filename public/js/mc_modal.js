@@ -1,3 +1,17 @@
+function fitnessCalc() {
+    var sum = 0;
+    $('#myModal .modal-content').find("input.slider").each(function() {
+        var number = Math.round(parseFloat($(this).closest('li').find('.val').html()));
+        sum = sum + number;
+    });
+    $('#myModal .modal-content').find("input.slider").each(function() {
+        var number = Math.round(parseFloat($(this).closest('li').find('.val').html()));
+        var percent = Math.round((number/sum)*100);
+        
+        $(this).closest('li').find('.percent').html(percent);
+    });
+}
+
 $(function() {
     $(document).on('click', '.mc-modal-control', function(e) {
         e.preventDefault();
@@ -21,22 +35,25 @@ $(function() {
             modal.modal('show');
         
         $.ajax({
-                url: url,
-                type: method,
-                dataType: 'html',
-            }).always(function(response) {
-                $('#myModal .modal-content').html(response);
-                // Select2 ajax
-                $('#myModal .modal-content').find(".select2-ajax").each(function() {
-                    select2Ajax($(this));
-                });
-                
-                customValidate($('#myModal .modal-content').find('form'));
-                $('#myModal .modal-content').find("input.slider").slider();
-                $('#myModal .modal-content').find("input.slider").on("slide", function(slideEvt) {
-                    $(this).closest('li').find('.val').html(slideEvt.value);
-                });
+            url: url,
+            type: method,
+            dataType: 'html',
+        }).always(function(response) {
+            $('#myModal .modal-content').html(response);
+            // Select2 ajax
+            $('#myModal .modal-content').find(".select2-ajax").each(function() {
+                select2Ajax($(this));
             });
+            
+            customValidate($('#myModal .modal-content').find('form'));
+            // slider
+            $('#myModal .modal-content').find("input.slider").slider();
+            $('#myModal .modal-content').find("input.slider").on("slide", function(slideEvt) {
+                $(this).closest('li').find('.val').html(slideEvt.value);
+                fitnessCalc();
+            });
+            fitnessCalc();
+        });
         return false;
     });
     

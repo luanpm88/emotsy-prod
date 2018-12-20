@@ -294,10 +294,12 @@ class SendingServer extends Model
             ],
             self::TYPE_AMAZON_API => [
                 'cols' => [
-                    'name' => 'required',
                     'aws_access_key_id' => 'required',
                     'aws_secret_access_key' => 'required',
                     'aws_region' => 'required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                     'default_from_email' => 'email|required',
                 ],
             ],
@@ -459,6 +461,30 @@ class SendingServer extends Model
         $rules['quota_value'] = 'required|numeric';
         $rules['quota_base'] = 'required|numeric';
         $rules['quota_unit'] = 'required';
+
+        return $rules;
+    }
+    
+    /**
+     * Get rules.
+     *
+     * @return string
+     */
+    public function getRules()
+    {
+        $rules = SendingServer::types()[$this->type]['cols'];        
+
+        return $rules;
+    }
+    
+    /**
+     * Get configuration rules.
+     *
+     * @return string
+     */
+    public function getConfigRules()
+    {
+        $rules = SendingServer::types()[$this->type]['settings'];        
 
         return $rules;
     }
@@ -727,6 +753,12 @@ class SendingServer extends Model
                 $q->orwhere('sending_servers.name', 'like', '%'.$keyword.'%');
             });
         }
+        
+        // plan
+        if ($request->plan_uid) {
+            $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);            
+            $query = $query->whereNotIn('id', $plan->plansSendingServers()->pluck('sending_server_id')->toArray());
+        }
 
         foreach ($query->limit(20)->get() as $server) {
             $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.' . $server->type)];
@@ -778,5 +810,55 @@ class SendingServer extends Model
         $options[] = ['text' => trans('messages.sending_servers.quota.custom'), 'value' => 'custom'];
 
         return $options;
+    }
+    
+    /**
+     * Get options.
+     *
+     * @return array
+     */
+    public function getOption($name)
+    {
+        if (!isset($this->options)) {
+            return null;
+        }
+        
+        $options = json_decode($this->options, true);
+        
+        return isset($options[$name]) ? $options[$name] : null;
+    }
+    
+    /**
+     * Get amazon domains info.
+     *
+     * @return array
+     */
+    public function getAmazonDomainInfo()
+    {
+        return [
+            [
+                'domain' => 'acellemail.com',
+                'created_at' => \Carbon\Carbon::now()->subDay(2),
+            ],
+            [
+                'domain' => 'bolero.vn',
+                'created_at' => \Carbon\Carbon::now()->subDay(13),
+            ],
+        ];
+    }
+    
+    /**
+     * Check if domain is enabled.
+     *
+     * @return array
+     */
+    public function isDomainEnabled($domain)
+    {
+        $domains = $this->getOption('domains');
+        if (isset($domains) && isset($domains[$domain])) {            
+            return $domains[$domain]['enabled'] == 'yes';
+        }
+        
+        return false;
     }
 }

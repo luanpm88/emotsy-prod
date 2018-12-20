@@ -49,13 +49,13 @@
                                     </content>
                                 </li>
                             @endforeach
-                        </ul>
-                        <br />
-                        <a href="{{ $update_link }}" class="btn btn-primary bg-grey">
-                            {{ trans('messages.plan.sending_servers.update') }}
-                        </a>
+                        </ul>                        
                     </div>                    
-                @endif                
+                @endif
+                <br />
+                <a href="{{ $update_link }}" class="btn btn-primary bg-grey">
+                    {{ trans('messages.plan.sending_servers.update') }}
+                </a>
             </div>
         </div>
         <hr>

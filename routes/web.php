@@ -525,6 +525,10 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/layouts', 'LayoutController');
 
     // Sending servers
+    Route::post('admin/sending_servers/{uid}/config', 'SendingServerController@config');
+    Route::post('admin/sending_servers/sending-limit', 'SendingServerController@sendingLimit');
+    Route::get('admin/sending_servers/sending-limit', 'SendingServerController@sendingLimit');
+    
     Route::get('admin/sending_servers/select2', 'SendingServerController@select2');
     Route::post('admin/sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('admin/sending_servers/{uid}/test', 'SendingServerController@test');

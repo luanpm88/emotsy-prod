@@ -31,10 +31,20 @@ $(function() {
                 });
                 
                 customValidate($('#myModal .modal-content').find('form'));
-                $('#myModal .modal-content').find("input.slider").slider();
-                $('#myModal .modal-content').find("input.slider").on("slide", function(slideEvt) {
-                    $(this).closest('li').find('.val').html(slideEvt.value);
-                });
+                
+                //// slider
+                //$('#myModal .modal-content').find("input.slider").slider();
+                //$('#myModal .modal-content').find("input.slider").on("slide", function(slideEvt) {
+                //    //$(this).closest('li').find('.val').html(slideEvt.value);
+                //    //console.log(slideEvt.value);
+                //    //
+                //    //var sum = 0;
+                //    //$('#myModal .modal-content').find("input.slider").each(function() {
+                //    //    var number = Math.round(parseFloat($(this).closest('li').find('.val').html()));
+                //    //    sum = sum + number;
+                //    //});
+                //    //console.log(sum);
+                //});
             });
         return false;
     });

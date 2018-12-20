@@ -18,7 +18,7 @@
           ],
           'help_class' => 'subscription',
           'rules' => [],
-          'url' => action('Admin\SendingServerController@select2'),
+          'url' => action('Admin\SendingServerController@select2', ['plan_uid' => $plan->uid]),
           'placeholder' => trans('messages.plan.sending_servers.choose')
       ])
     </div>

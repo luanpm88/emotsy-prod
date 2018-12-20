@@ -3,8 +3,9 @@
 <div class="checkbox inline unlimited-check text-semibold {{ isset($class) ? $class : "" }}">
     <label>
         <input {{ $value == $options[1] ? " checked" : "" }}
+            {{ !isset($value) && $default_value == $options[1] ? " checked" : "" }}
             {{ isset($disabled) && $disabled == true ? ' disabled="disabled"' : "" }}
-            id="{{ $name }}" name="{{ $name }}" value="{{ $options[1] }}"
+            name="{{ $name }}" value="{{ $options[1] }}"
             class="styled {{ $classes }}  {{ isset($class) ? $class : "" }}"
             type="checkbox" class="styled">
         {{ $label }}

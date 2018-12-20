@@ -4,6 +4,7 @@ namespace Acelle\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Acelle\Http\Controllers\Controller;
+use Acelle\Model\SendingServer;
 
 class SendingServerController extends Controller
 {
@@ -27,7 +28,7 @@ class SendingServerController extends Controller
         // exlude customer seding servers
         $request->merge(array("no_customer" => true));
 
-        $items = \Acelle\Model\SendingServer::search($request);
+        $items = SendingServer::search($request);
 
         return view('admin.sending_servers.index', [
             'items' => $items,
@@ -106,9 +107,8 @@ class SendingServerController extends Controller
      */
     public function store(Request $request)
     {
-        // Get current user
-        $current_user = $request->user();
-        $server = new \Acelle\Model\SendingServer();
+        // New sending server
+        $server = new SendingServer();        
 
         // authorize
         if (!$request->user()->admin->can('create', $server)) {
@@ -117,13 +117,32 @@ class SendingServerController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $this->validate($request, \Acelle\Model\SendingServer::rules($request->type));
-
-            // Save current user info
+            // options
+            $options = [];
+            
+            // fill values
             $server->fill($request->all());
+            
+            // validation
+            $this->validate($request, $server->getRules());
+            
             $server->admin_id = $request->user()->admin->id;
-            $server->type = $request->type;
-            $server->status = 'active';
+            $server->status = SendingServer::STATUS_ACTIVE;
+            
+            // default name
+            if (!$server->name) {
+                $server->name = trans('messages.' . $server->type);
+            }
+            
+            // default sever quota
+            if (!$server->quota_value) {
+                $server->quota_value = 1000;
+                $server->quota_base = 1;
+                $server->quota_unit = 'hour';
+                $options['sending_limit'] = '1000_per_hour';
+            }
+            
+            $server->options = json_encode($options);
 
             // bounce / feedback hanlder nullable
             if (empty($request->bounce_handler_id)) {
@@ -136,7 +155,7 @@ class SendingServerController extends Controller
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.sending_server.created'));
 
-                return redirect()->action('Admin\SendingServerController@index');
+                return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
             }
         }
     }
@@ -169,6 +188,11 @@ class SendingServerController extends Controller
         }
 
         $server->fill($request->old());
+        
+        // options
+        if (isset($request->old()['options'])) {
+            $server->options = json_encode($request->old()['options']);
+        }
 
         return view('admin.sending_servers.edit', [
             'server' => $server,
@@ -387,5 +411,77 @@ class SendingServerController extends Controller
     public function select2(Request $request)
     {
         echo \Acelle\Model\SendingServer::select2($request);
+    }
+    
+    /**
+     * Sending Limit Form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendingLimit(Request $request)
+    {
+        $server = new \Acelle\Model\SendingServer();
+        
+        $server->fill($request->all());
+        
+        // save posted data
+        if ($request->isMethod('post')) {
+            return view('admin.sending_servers.form._sending_limit', [
+                'quotaValue' => $request->quota_value,
+                'quotaBase' => $request->quota_base,
+                'quotaUnit' => $request->quota_unit,
+            ]);
+        }
+        
+        return view('admin.sending_servers.form.sending_limit', [
+            'server' => $server,
+        ]);
+    }
+    
+    /**
+     * Save sending server config settings.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function config(Request $request, $uid)
+    {
+        // find server
+        $server = SendingServer::findByUid($uid);
+
+        // authorize
+        if (!$request->user()->admin->can('update', $server)) {
+            return $this->notAuthorized();
+        }
+        
+        // Save current user info
+        $server->fill($request->all());
+        
+        // default sever quota
+        if ($request->options) {
+            $server->options = json_encode($request->options);
+        }
+        
+        // Sening limit
+        if ($request->options['sending_limit'] != 'custom') {
+            $limits = SendingServer::sendingLimitValues()[$request->options['sending_limit']];
+            $server->quota_value = $limits['quota_value'];
+            $server->quota_unit = $limits['quota_unit'];
+            $server->quota_base = $limits['quota_base'];
+        }
+
+        // save posted data        
+        $this->validate($request, $server->getConfigRules());
+
+        if ($server->save()) {
+            $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
+
+            return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
+        }
+        
     }
 }

@@ -18,18 +18,32 @@
             @foreach ($plan->plansSendingServers as $planSendingServer)
                 <li>
                     <div class="row">
-                        <div class="col-md-3 text-right">
+                        <div class="col-md-3 text-right pt-10">
                             <label class="">
                                 {{ $planSendingServer->sendingServer->name }}                                        
                             </label>
                         </div>
                         <div class="col-md-7">
+                            <div class="pull-right text-small">
+                                more
+                            </div>
+                            <div class="pull-left text-small">
+                                less
+                            </div>
                             <div>
-                                <input name="sending_servers[{{ $planSendingServer->sendingServer->uid }}]" class="slider" data-slider-value="{{ $planSendingServer->fitness }}" data-slider-min="1" data-slider-max="100" data-slider-step="1" />
-                            </div>                                    
+                                <input name="sending_servers[{{ $planSendingServer->sendingServer->uid }}]" class="slider"
+                                    data-slider-value="{{ $planSendingServer->fitness }}"
+                                    data-slider-min="1"
+                                    data-slider-max="100"
+                                    data-slider-step="1"
+                                    data-slider-tooltip="hide"
+                                />
+                            </div>
+                            
                         </div>
-                        <div class="col-md-2">
-                            <span class="mc-text-bold val">{{ $planSendingServer->fitness }}</span> (%)
+                        <div class="col-md-2 pt-10">
+                            <span class="mc-text-bold val hide">{{ $planSendingServer->fitness }}</span>
+                            <span class="mc-text-bold percent">{{ $planSendingServer->fitness }}</span> (%)
                         </div>
                     </div>
                 </li>
