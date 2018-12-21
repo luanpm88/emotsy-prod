@@ -2072,7 +2072,7 @@ $(function() {
     });
     
     // inline edit
-    $('.modal-edit').modal_edit();
+    $('.select-custom').select_custom();
     
     //
     $(document).on('click', '.switch-form-toggle', function() {

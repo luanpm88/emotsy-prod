@@ -114,27 +114,12 @@
 
                 <p>{{ trans('messages.sending_servers.sending_limit.aws.intro') }}</p>
                     
-                @include('helpers.form_control', [
-                    'type' => 'select',
-                    'class' => '',
-                    'name' => 'options[sending_limit]',
-                    'label' => trans('messages.sending_servers.speed_limit'),
-                    'value' => $server->getOption('sending_limit'),
-                    'help_class' => 'sending_server',
-                    'rules' => [],
-                    'options' => Acelle\Model\SendingServer::getSendingLimitSelectOptions(),
-                ])
-                
-                <div class="mc-text-lg"  toggle-control="select[name='options[sending_limit]']" toggle-show-value="custom">
-                    <div class="modal-edit" data-url="{{ action('Admin\SendingServerController@sendingLimit') }}">
-                    
-                        @include ('admin.sending_servers.form._sending_limit', [
-                            'quotaValue' => $server->quota_value,
-                            'quotaBase' => $server->quota_base,
-                            'quotaUnit' => $server->quota_unit,
-                        ])
-                    
-                    </div>
+                <div class="select-custom" data-url="{{ action('Admin\SendingServerController@sendingLimit', ['uid' => ($server->uid ? $server->uid : 0)]) }}">
+                    @include ('admin.sending_servers.form._sending_limit', [
+                        'quotaValue' => $server->quota_value,
+                        'quotaBase' => $server->quota_base,
+                        'quotaUnit' => $server->quota_unit,
+                    ])
                 </div>
                 
             </div>

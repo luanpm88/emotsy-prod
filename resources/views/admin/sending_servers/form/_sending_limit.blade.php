@@ -1,13 +1,14 @@
-Maximum 
-<span class="mc-text-bold value-text modal-trigger" data-type="number">
-    <val>{{ Acelle\Library\Tool::format_number($quotaValue) }}</val>
-    <input type="hidden" name="quota_value" value="{{ $quotaValue }}" />
-</span>
-email(s) per
-<span class="mc-text-bold value-text modal-trigger" data-type="number">
-    <val>{{ Acelle\Library\Tool::format_number($quotaBase) }}</val>
-    <input type="hidden" name="quota_base" value="{{ $quotaBase }}" />
-</span>
-<span class="mc-text-bold value-text modal-trigger"><val>{{ trans('messages.' . $quotaUnit) }}</val><input type="hidden" name="quota_unit" value="{{ $quotaUnit }}" /></span>(s)
+@include('helpers.form_control', [
+    'type' => 'select',
+    'class' => '',
+    'name' => 'options[sending_limit]',
+    'label' => trans('messages.sending_servers.speed_limit'),
+    'value' => $server->getOption('sending_limit'),
+    'help_class' => 'sending_server',
+    'rules' => [],
+    'options' => $server->getSendingLimitSelectOptions(),
+])
 
-<span class="icon icon-pencil ml-20 modal-trigger"></span>
+<input type="hidden" name="quota_value" value="{{ $quotaValue }}" />
+<input type="hidden" name="quota_base" value="{{ $quotaBase }}" />
+<input type="hidden" name="quota_unit" value="{{ $quotaUnit }}" />

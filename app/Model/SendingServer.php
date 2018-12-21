@@ -502,6 +502,20 @@ class SendingServer extends Model
 
         return $this->quota_value.'/'.$this->quota_base.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base));
     }
+    
+    /**
+     * Quota display.
+     *
+     * @return string
+     */
+    public function displayQuotaHtml()
+    {
+        if ($this->quota_value == -1) {
+            return trans('messages.unlimited');
+        }
+
+        return '<b>'.$this->quota_value.'</b>/<b>'.$this->quota_base.' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->quota_unit, $this->quota_base)).'</b>';
+    }
 
     /**
      * Select options for aws region.
@@ -775,6 +789,11 @@ class SendingServer extends Model
     public static function sendingLimitValues()
     {
         return [
+            'unlimited' => [
+                'quota_value' => -1,
+                'quota_base' => -1,
+                'quota_unit' => 'day',
+            ],
             '100_per_minute' => [
                 'quota_value' => 100,
                 'quota_base' => 1,
@@ -789,7 +808,7 @@ class SendingServer extends Model
                 'quota_value' => 10000,
                 'quota_base' => 1,
                 'quota_unit' => 'day',
-            ],
+            ],            
         ];
     }
     
@@ -798,12 +817,42 @@ class SendingServer extends Model
      *
      * @return array
      */
-    public static function getSendingLimitSelectOptions()
+    public function getSendingLimitSelectOptions()
     {
         $options = [];
+        $current = trans('messages.sending_servers.sending_limit.phrase', [
+            'quota_value' => \Acelle\Library\Tool::format_number($this->quota_value),
+            'quota_base' => \Acelle\Library\Tool::format_number($this->quota_base),
+            'quota_unit' => $this->quota_unit,
+        ]);
+        if ($this->quota_value == -1) {
+            $current = trans('messages.sending_server.quota.unlimited');
+        }
         
-        foreach (self::sendingLimitValues() as $key => $data) {
-            $options[] = ['text' => trans('messages.sending_servers.quota.' . $key), 'value' => $key];
+        $exist = false;
+        foreach (SendingServer::sendingLimitValues() as $key => $data) {            
+            $wording = trans('messages.sending_servers.sending_limit.phrase', [
+                'quota_value' => \Acelle\Library\Tool::format_number($data['quota_value']),
+                'quota_base' => \Acelle\Library\Tool::format_number($data['quota_base']),
+                'quota_unit' => $data['quota_unit'],
+            ]);
+            
+            if ($data['quota_value'] == -1) {
+                $wording = trans('messages.sending_server.quota.unlimited');
+            }
+            
+            $options[] = ['text' => $wording, 'value' => $key];
+            
+            if ($wording == $current) {
+                $exist = true;
+                $this->setOption('sending_limit', $key);
+            }
+        }
+        
+        // exist
+        if (!$exist) {            
+            $options[] = ['text' => $current, 'value' => 'current'];
+            $this->setOption('sending_limit', 'current');
         }
         
         // Custom
@@ -826,6 +875,24 @@ class SendingServer extends Model
         $options = json_decode($this->options, true);
         
         return isset($options[$name]) ? $options[$name] : null;
+    }
+    
+    /**
+     * Get options.
+     *
+     * @return array
+     */
+    public function setOption($name, $value)
+    {
+        if (!isset($this->options)) {
+            $options = [];
+        } else {
+            $options = json_decode($this->options, true);
+        }
+        
+        $options[$name] = $value;
+        
+        $this->options = json_encode($options);
     }
     
     /**

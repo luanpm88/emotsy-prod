@@ -2181,4 +2181,7 @@
   'sending_limit.close' => 'Close',
   'sending_server.test_connection' => 'Test Connection',
   'sending_server.send_a_test_email' => 'Send A Test Email',
+  'sending_servers.fitness' => 'Probability',
+  'sending_servers.sending_limit.phrase' => ':quota_value emails per :quota_base :quota_unit',
+  'sending_server.quota.unlimited' => 'Unlimited',
 ) ?>

@@ -56,15 +56,18 @@
                                 </span>
                                 <h4>{{ $planSendingServer->sendingServer->name }}</h4>
                                 <p>
-                                    {{ trans('messages.sending_server.speed', ['limit' => $planSendingServer->sendingServer->displayQuota()]) }}
-                                     · Fitness <span class="text-semibold"><b>{{ $planSendingServer->showFitness() }}</b>%</span>
+                                    {!! trans('messages.sending_server.speed', ['limit' => $planSendingServer->sendingServer->displayQuotaHtml()]) !!}
                                 </p>
-                                <p>Domain verification Off · Email verification Off · Settings</p>
-                            </content>                                        
+                                <p>Domain verification <b>Off</b> · Email verification <b>Off</b></p>
+                            </content>
+                            <stat>
+                                <div class="single-stat-box pull-left">
+                                    <a modal-size="lg" href="{{ action('Admin\PlanController@fitness', ['id' => $plan->uid]) }}" class="stat-head mc-modal-control">{{ $planSendingServer->showFitness() }}%</a>
+                                    <br />
+                                    <span class="text-muted">{{ trans("messages.sending_servers.fitness") }}</span>
+                                </div>
+                            </stat>
                             <actions>
-                                <a modal-size="lg" href="{{ action('Admin\PlanController@fitness', ['id' => $plan->uid]) }}" class="btn btn-mc_default mr-20 mc-modal-control">
-                                    {{ trans('messages.plan.sending_servers.fitness.change') }}
-                                </a>
                                 <a link-method="POST" href="{{ action('Admin\PlanController@removeSendingServer', ['id' => $plan->uid, 'sending_server_id' => $planSendingServer->sendingServer->uid]) }}" class="btn btn-mc_default">{{ trans('messages.remove') }}</a>
                             </actions>
                         </li>

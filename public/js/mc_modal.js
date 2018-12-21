@@ -22,6 +22,9 @@ $(function() {
         var url = $(this).attr('href');
         var method = $(this).attr('data-method');
         var load = htmlLoader();
+        
+        var modal = $('#myModal');
+        modal.remove();
         var html = '<div class="mc-modal modal fade" role="dialog" id="myModal">'+
                         '<div class="modal-dialog modal-' + size + ' modal-select">'+
                             '<div class="modal-content">'+
@@ -31,7 +34,7 @@ $(function() {
                     '</div>';
         
         $('body').append(html);
-        var modal = $('#myModal');                
+        modal = $('#myModal');                
             modal.modal('show');
         
         $.ajax({

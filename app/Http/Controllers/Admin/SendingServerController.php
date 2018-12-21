@@ -422,16 +422,31 @@ class SendingServerController extends Controller
      */
     public function sendingLimit(Request $request)
     {
-        $server = new \Acelle\Model\SendingServer();
+        if (!$request->uid) {
+            $server = new \Acelle\Model\SendingServer();
+        } else {
+            $server = \Acelle\Model\SendingServer::findByUid($request->uid);
+        }
         
         $server->fill($request->all());
         
+        // Default quota
+        if ($server->quota_value == -1) {
+            $server->quota_value = '1000';
+            $server->quota_base = '1';
+            $server->quota_unit = 'hour';
+            $server->setOption('sending_limit', '1000_per_hour');
+        }
+        
         // save posted data
         if ($request->isMethod('post')) {
+            $selectOptions = $server->getSendingLimitSelectOptions();
+            
             return view('admin.sending_servers.form._sending_limit', [
                 'quotaValue' => $request->quota_value,
                 'quotaBase' => $request->quota_base,
                 'quotaUnit' => $request->quota_unit,
+                'server' => $server,
             ]);
         }
         
@@ -467,7 +482,7 @@ class SendingServerController extends Controller
         }
         
         // Sening limit
-        if ($request->options['sending_limit'] != 'custom') {
+        if ($request->options['sending_limit'] != 'custom' && $request->options['sending_limit'] != 'current') {
             $limits = SendingServer::sendingLimitValues()[$request->options['sending_limit']];
             $server->quota_value = $limits['quota_value'];
             $server->quota_unit = $limits['quota_unit'];

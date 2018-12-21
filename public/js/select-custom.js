@@ -1,4 +1,4 @@
-$.fn.modal_edit = function() {
+$.fn.select_custom = function() {
     $(this).each(function() {
         var box = $(this);
         var url = box.attr('data-url');
@@ -6,6 +6,7 @@ $.fn.modal_edit = function() {
         var content = function() {
             return box.html();
         };
+        var selectbox = box.find('select');
         
         var load = htmlLoader();
         var showModal = function() {
@@ -75,6 +76,20 @@ $.fn.modal_edit = function() {
                         box.find('.modal-trigger').on('click', function() {
                             showModal();
                         });
+                        
+                        // Select2
+                        box.find('select').select2({
+                            minimumResultsForSearch: 101,
+                            templateResult: formatSelect2TextOption,
+                            templateSelection: formatSelect2TextSelected
+                        });
+                        
+                        box.find('select').on('change', function() {
+                            var value = $(this).val();
+                            if (value == 'custom') {
+                                showModal();
+                            }
+                        });
                     });
                     
                     modal.modal('hide');
@@ -86,6 +101,13 @@ $.fn.modal_edit = function() {
         
         trigger.on('click', function() {
             showModal();
+        });
+        
+        selectbox.on('change', function() {
+            var value = $(this).val();
+            if (value == 'custom') {
+                showModal();
+            }
         });
     });
 };

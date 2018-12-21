@@ -6,7 +6,7 @@
 </div>
 <div class="modal-body">
     <div class="mc_section">
-        <form action="{{ action('Admin\SendingServerController@sendingLimit') }}" method="POST">
+        <form action="{{ action('Admin\SendingServerController@sendingLimit', ['uid' => ($server->uid ? $server->uid : 0)]) }}" method="POST">
             {{ csrf_field() }}
         
             <h2 class="text-semibold">{{ trans('messages.sending_quota') }}</h2>
@@ -23,12 +23,6 @@
                         'help_class' => 'sending_server',
                         'default_value' => '1000',
                     ])
-                    <div class="checkbox inline unlimited-check text-semibold">
-                        <label>
-                            <input{{ $server->quota_value  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
-                            {{ trans('messages.unlimited') }}
-                        </label>
-                    </div>
                 </div>
                 <div class="col-md-4">
                     @include('helpers.form_control', [

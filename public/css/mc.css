@@ -39,7 +39,7 @@ h2.mc-h2 {
     justify-content: space-between;
 }
 .mc_list content {
-    flex-grow: 7;
+    white-space: nowrap;
 }
 .mc_list li:first-child {
     border-top: 1px dotted #dedddc;
@@ -358,4 +358,12 @@ input.has-eye {
 .btn.btn-mc_inline:active, .btn.btn-mc_inline:focus {
   background: none !important;
   box-shadow: none !important;
+}
+stat .stat-head {
+  font-size: 120%;
+  font-weight: 600;
+}
+.stat-head.mc-modal-control {
+  color: #333;
+  border-bottom: dashed 1px #333;
 }
