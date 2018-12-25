@@ -91,7 +91,7 @@
             <div class="col-md-6">
                 <h2 class=" mt-20">{{ trans('messages.sending_servers.configuration_settings') }}</h2>
                 <p>
-                    {{ trans('messages.sending_servers.configuration_settings.intro') }}
+                    {{ trans('messages.sending_servers.configuration_settings.aws.intro') }}
                 </p>
 
                 @include('helpers.form_control', [

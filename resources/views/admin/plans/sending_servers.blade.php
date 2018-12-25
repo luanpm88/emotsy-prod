@@ -51,14 +51,13 @@
                     @foreach ($plan->plansSendingServers as $planSendingServer)
                         <li>
                             <content>
-                                <span class="mc_list_media server-avatar server-avatar-{{ $planSendingServer->sendingServer->type }} mr-0">
+                                <span class="mc_list_media mc-server-avatar server-avatar server-avatar-{{ $planSendingServer->sendingServer->type }} mr-0">
                                     <i class="icon-server"></i>
                                 </span>
                                 <h4>{{ $planSendingServer->sendingServer->name }}</h4>
                                 <p>
                                     {!! trans('messages.sending_server.speed', ['limit' => $planSendingServer->sendingServer->displayQuotaHtml()]) !!}
                                 </p>
-                                <p>Domain verification <b>Off</b> · Email verification <b>Off</b></p>
                             </content>
                             <stat>
                                 <div class="single-stat-box pull-left">

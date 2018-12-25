@@ -2157,12 +2157,12 @@
   'plan.sending_server.removed' => 'Sending server was successfully removed.',
   'plan.fitness' => 'Fitness',
   'plan.fitness.save' => 'Save',
-  'plan.sending_servers.update' => 'Update',
+  'plan.sending_servers.settings' => 'Settings',
   'plan.sending_servers.fitness.change' => 'Finess',
   'plan.sending_servers.fitness.updated' => 'Fitnesses was successfully updated.',
   'sending_servers.configuration_settings' => 'Configuration settings',
   'sending_servers.amazon_api_key.intro' => 'You are connected to Amazon SES using the API key pairs below',
-  'sending_servers.configuration_settings.intro' => 'Set up a connection to your Amazon Web Service account to send email through Simple Email Service (SES).',
+  'sending_servers.configuration_settings.aws.intro' => 'Set up a connection to your Amazon Web Service account to send email through Simple Email Service (SES).',
   'sending_server.name.help' => 'For example: My AWS',
   'sending_servers.sending_limit.aws.intro' => 'Control how fast your application can send through this connection.
     Every Amazon SES account has its own set of sending limits. You can find the details of AWS limits here',
@@ -2184,4 +2184,17 @@
   'sending_servers.fitness' => 'Probability',
   'sending_servers.sending_limit.phrase' => ':quota_value emails per :quota_base :quota_unit',
   'sending_server.quota.unlimited' => 'Unlimited',
+  'sending_servers.sending_identity.mailgun.intro' => 'The following domains were verified against your Mailgun account.
+        User can only send from the domains below and is not allowed to send on their own identity',
+  'sending_servers.mailgun_api_key.intro' => 'You are connected to Mailgun using the API key below',
+  'sending_servers.sending_limit.mailgun.intro' => 'Specify speed limit to control how fast your application can send through this connection in
+    terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
+  'sending_servers.configuration_settings.mailgun.intro' => 'Set up a connection to your Mailgun account to send emails.',
+  
+  'sending_servers.sending_identity.sendgrid.intro' => 'The following domains were verified against your Sendgrid account.
+        User can only send from the domains below and is not allowed to send on their own identity',
+  'sending_servers.sendgrid_api_key.intro' => 'You are connected to Sendgrid using the API key below',
+  'sending_servers.sending_limit.sendgrid.intro' => 'Specify speed limit to control how fast your application can send through this connection in
+    terms of email throughput. You can find the details of Sendgrid limits <a href="">here</a>',
+  'sending_servers.configuration_settings.sendgrid.intro' => 'Set up a connection to your Sendgrid account to send emails.',
 ) ?>

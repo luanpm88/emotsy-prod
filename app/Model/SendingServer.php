@@ -37,6 +37,10 @@ class SendingServer extends Model
     
     // TYPE
     const TYPE_AMAZON_API = 'amazon-api';
+    const TYPE_MAILGUN_API = 'mailgun-api';
+    const TYPE_SENDGRID_API = 'sendgrid-api';
+    //const TYPE_MAILGUN_API = 'mailgun-api';
+    //const TYPE_MAILGUN_API = 'mailgun-api';
 
     protected $quotaTracker;
     protected $subAccount;
@@ -60,9 +64,9 @@ class SendingServer extends Model
         'smtp' => 'SendingServerSmtp',
         'sendmail' => 'SendingServerSendmail',
         'php-mail' => 'SendingServerPhpMail',
-        'mailgun-api' => 'SendingServerMailgunApi',
+        self::TYPE_MAILGUN_API => 'SendingServerMailgunApi',
         'mailgun-smtp' => 'SendingServerMailgunSmtp',
-        'sendgrid-api' => 'SendingServerSendGridApi',
+        self::TYPE_SENDGRID_API => 'SendingServerSendGridApi',
         'sendgrid-smtp' => 'SendingServerSendGridSmtp',
         'elasticemail-api' => 'SendingServerElasticEmailApi',
         'elasticemail-smtp' => 'SendingServerElasticEmailSmtp',
@@ -314,18 +318,22 @@ class SendingServer extends Model
                     'default_from_email' => 'email|required',
                 ],
             ],
-            'sendgrid-api' => [
+            self::TYPE_SENDGRID_API => [
                 'cols' => [
-                    'name' => 'required',
                     'api_key' => 'required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                     'default_from_email' => 'email|required',
                 ],
             ],
-            'mailgun-api' => [
-                'cols' => [
+            self::TYPE_MAILGUN_API => [
+                'cols' => [                    
+                    'api_key' => 'required',
+                ],
+                'settings' => [
                     'name' => 'required',
                     'domain' => 'required',
-                    'api_key' => 'required',
                     'default_from_email' => 'email|required',
                 ],
             ],
@@ -901,6 +909,25 @@ class SendingServer extends Model
      * @return array
      */
     public function getAmazonDomainInfo()
+    {
+        return [
+            [
+                'domain' => 'acellemail.com',
+                'created_at' => \Carbon\Carbon::now()->subDay(2),
+            ],
+            [
+                'domain' => 'bolero.vn',
+                'created_at' => \Carbon\Carbon::now()->subDay(13),
+            ],
+        ];
+    }
+    
+    /**
+     * Get Mailgun domains info.
+     *
+     * @return array
+     */
+    public function getMailgunDomainInfo()
     {
         return [
             [

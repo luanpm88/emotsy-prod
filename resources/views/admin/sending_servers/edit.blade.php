@@ -22,8 +22,12 @@
 
 @section('content')
     
-    @if ($server->type == \Acelle\Model\SendingServer::TYPE_AMAZON_API)
-        @include('admin.sending_servers.form.' . $server->type)
+    @if (in_array($server->type, [
+        \Acelle\Model\SendingServer::TYPE_AMAZON_API,
+        \Acelle\Model\SendingServer::TYPE_MAILGUN_API,
+        \Acelle\Model\SendingServer::TYPE_SENDGRID_API,
+    ]))
+            @include('admin.sending_servers.form.' . $server->type)
     @else
         <form enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', ["uid" => $server->uid, "type" => request()->type]) }}" method="POST" class="form-validate-jquery">
             {{ csrf_field() }}

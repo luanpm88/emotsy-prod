@@ -367,3 +367,40 @@ stat .stat-head {
   color: #333;
   border-bottom: dashed 1px #333;
 }
+.mc_list .mc-server-avatar, .mc-server-avatar {
+    height: 36px;
+    margin: 8px 20px 8px 8px !important;
+    padding: 0;
+    width: 36px;
+}
+.mc-server-avatar:after {
+  display: none;
+}
+.mc-server-avatar i:before {
+    content: '';
+    
+}
+.server-avatar-amazon-api, .server-avatar-amazon-smtp {
+    background: url(../images/icons/aws.png) top left/36px 36px no-repeat;
+}
+.server-avatar-sendgrid-api, .server-avatar-sendgrid-smtp {
+    background: url(../images/icons/sendgrid.png) top left/36px 36px no-repeat;
+}
+.server-avatar-mailgun-api, .server-avatar-mailgun-smtp {
+    background: url(../images/icons/mailgun.png) top left/36px 36px no-repeat transparent;
+}
+.server-avatar-elasticemail-api, .server-avatar-elasticemail-smtp {
+    background: url(../images/icons/elasticemail.png) top left/36px 36px no-repeat transparent;
+}
+.server-avatar-sparkpost-api, .server-avatar-sparkpost-smtp {
+    background: url(../images/icons/sparkpost.png) top left/36px 36px no-repeat transparent;
+}
+.server-avatar-smtp {
+    background: url(../images/icons/smtp.png) top left/36px 36px no-repeat transparent;
+}
+.server-avatar-sendmail {
+    background: url(../images/icons/sendmail.png) top left/36px 36px no-repeat transparent;
+}
+.server-avatar-php-mail {
+    background: url(../images/icons/phpmail.png) top left/36px 36px no-repeat transparent;
+}

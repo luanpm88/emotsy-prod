@@ -34,7 +34,7 @@
 											<li>
 												<a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-info bg-info-800">{{ trans('messages.choose') }}</a>
                                                 <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">
-                                                    <span class="server-avatar server-avatar-{{ $key }}">
+                                                    <span class="mc-server-avatar server-avatar server-avatar-{{ $key }}">
                                                         <i class="icon-server"></i>
                                                     </span>
                                                 </a>

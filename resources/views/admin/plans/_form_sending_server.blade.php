@@ -12,49 +12,10 @@
                 </div>
             </label>
             <div class="radio_more_box">
-                <span class="notoping">
-                    @include('helpers.form_control', ['type' => 'checkbox2',
-                        'class' => '',
-                        'name' => 'options[all_sending_servers]',
-                        'value' => $options['all_sending_servers'],
-                        'label' => trans('messages.use_all_sending_servers'),
-                        'options' => ['no','yes'],
-                        'help_class' => $help_class,
-                        'rules' => $rules
-                    ])
-                </span>
-    
-                @if(!$plan->plansSendingServers()->count())
-                    <div class="empty-list">
-                        <i class="icon-server"></i>
-                        <span class="line-1">
-                            {{ trans('messages.sending_server_empty_line_1') }}
-                        </span>
-                    </div>
-                @else
-                    <div class="sending-servers">
-                        <ul class="mc_list mt-20">
-                            @foreach ($plan->plansSendingServers as $planSendingServer)
-                                <li>
-                                    <content>
-                                        <span class="mc_list_media server-avatar server-avatar-{{ $planSendingServer->sendingServer->type }} mr-0">
-                                            <i class="icon-server"></i>
-                                        </span>
-                                        <h4>{{ $planSendingServer->sendingServer->name }}</h4>
-                                        <p>
-                                            {{ trans('messages.sending_server.speed', ['limit' => $planSendingServer->sendingServer->displayQuota()]) }}
-                                             · Fitness <span class="text-semibold"><b>{{ $planSendingServer->fitness }}</b>%</span>
-                                        </p>
-                                        <p>Domain verification Off · Email verification Off · Settings</p>
-                                    </content>
-                                </li>
-                            @endforeach
-                        </ul>                        
-                    </div>                    
-                @endif
-                <br />
+                <input type="hidden" name="options[all_sending_servers]" value="no" />
                 <a href="{{ $update_link }}" class="btn btn-primary bg-grey">
-                    {{ trans('messages.plan.sending_servers.update') }}
+                    {{ trans('messages.plan.sending_servers.settings') }}
+                </a>
                 </a>
             </div>
         </div>
