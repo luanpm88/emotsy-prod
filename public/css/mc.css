@@ -33,13 +33,14 @@ h2.mc-h2 {
 .mc_list li {
     list-style: none;
     clear: both;
-    padding: 10px;
+    padding: 15px 10px;
     border-bottom: 1px dotted #dedddc;
     display: flex;
     justify-content: space-between;
 }
 .mc_list content {
     white-space: nowrap;
+    width: 30%;
 }
 .mc_list li:first-child {
     border-top: 1px dotted #dedddc;
@@ -363,20 +364,22 @@ stat .stat-head {
   font-size: 120%;
   font-weight: 600;
 }
-.stat-head.mc-modal-control {
-  color: #333;
+.mc-modal-control {
   border-bottom: dashed 1px #333;
 }
-.mc_list .mc-server-avatar, .mc-server-avatar {
+.mc_list .mc-server-avatar, .mc-server-avatar, .server-avatar {
     height: 36px;
-    margin: 8px 20px 8px 8px !important;
+    margin: 8px 8px 8px 8px !important;
     padding: 0;
     width: 36px;
 }
-.mc-server-avatar:after {
+.mc-server-avatar, .mc_list .mc-server-avatar {
+  margin: 8px 25px 8px 8px !important;
+}
+.mc-server-avatar:after, .server-avatar:after {
   display: none;
 }
-.mc-server-avatar i:before {
+.mc-server-avatar i:before, .server-avatar i:before {
     content: '';
     
 }
@@ -403,4 +406,8 @@ stat .stat-head {
 }
 .server-avatar-php-mail {
     background: url(../images/icons/phpmail.png) top left/36px 36px no-repeat transparent;
+}
+.stat-head.percent-list {
+  font-weight: normal;
+  font-size: 22px;
 }
