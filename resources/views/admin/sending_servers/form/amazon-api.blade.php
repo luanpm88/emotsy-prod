@@ -170,14 +170,12 @@
                     {{ trans('messages.sending_serbers.go_to_amazon_dashboard') }}
                 </a>
                 <p class="mt-40">
-                    You can also allow your users to verify an identity on their own.
-                    That is, user can request to verify their own email address or domain against your
-                    Amazon SES account
+                    {{ trans('messages.sending_serbers.aws.allow_verify.intro') }}  
                 </p>
                 
                 @include('helpers.form_control', [
                     'type' => 'checkbox2',
-                    'label' => 'Allow verifying user\'s own domains against AWS',
+                    'label' => trans('messages.allow_verify_domain_agains_aws'),
                     'name' => 'options[allow_verify_domain_agains_aws]',
                     'value' => $server->getOption('allow_verify_domain_agains_aws'),
                     'help_class' => 'sending_server',
@@ -186,7 +184,7 @@
                 ])
                 @include('helpers.form_control', [
                     'type' => 'checkbox2',
-                    'label' => 'Allow verifying user\'s own email addresses against AWS',
+                    'label' => trans('messages.allow_verify_email_agains_aws'),
                     'name' => 'options[allow_verify_email_agains_aws]',
                     'value' => $server->getOption('allow_verify_email_agains_aws'),
                     'help_class' => 'sending_server',

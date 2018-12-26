@@ -154,7 +154,7 @@
                 <button class="btn btn-mc_default mr-10">{{ trans('messages.sending_serbers.add_domain') }}</button>
                 <a href="{{ action('Admin\SendingServerController@index') }}" type="button"
                   class="btn btn-mc_default">
-                    {{ trans('messages.sending_serbers.go_to_amazon_dashboard') }}
+                    {{ trans('messages.sending_serbers.go_to_mailgun_dashboard') }}
                 </a>
                 
                 <hr>

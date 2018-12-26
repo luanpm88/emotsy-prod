@@ -39,8 +39,8 @@ class SendingServer extends Model
     const TYPE_AMAZON_API = 'amazon-api';
     const TYPE_MAILGUN_API = 'mailgun-api';
     const TYPE_SENDGRID_API = 'sendgrid-api';
-    //const TYPE_MAILGUN_API = 'mailgun-api';
-    //const TYPE_MAILGUN_API = 'mailgun-api';
+    const TYPE_ELASTICEMAIL_API = 'elasticemail-api';
+    const TYPE_SPARKPOST_API = 'sparkpost-api';
 
     protected $quotaTracker;
     protected $subAccount;
@@ -68,9 +68,9 @@ class SendingServer extends Model
         'mailgun-smtp' => 'SendingServerMailgunSmtp',
         self::TYPE_SENDGRID_API => 'SendingServerSendGridApi',
         'sendgrid-smtp' => 'SendingServerSendGridSmtp',
-        'elasticemail-api' => 'SendingServerElasticEmailApi',
+        self::TYPE_ELASTICEMAIL_API => 'SendingServerElasticEmailApi',
         'elasticemail-smtp' => 'SendingServerElasticEmailSmtp',
-        'sparkpost-api' => 'SendingServerSparkPostApi',
+        self::TYPE_SPARKPOST_API => 'SendingServerSparkPostApi',
         'sparkpost-smtp' => 'SendingServerSparkPostSmtp',
     );
 
@@ -350,10 +350,12 @@ class SendingServer extends Model
                     'default_from_email' => 'email|required',
                 ],
             ],
-            'elasticemail-api' => [
+            self::TYPE_ELASTICEMAIL_API => [
                 'cols' => [
-                    'name' => 'required',
                     'api_key' => 'required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                     'default_from_email' => 'email|required',
                 ],
             ],
@@ -368,11 +370,13 @@ class SendingServer extends Model
                     'default_from_email' => 'email|required',
                 ],
             ],
-            'sparkpost-api' => [
+            self::TYPE_SPARKPOST_API => [
                 'cols' => [
-                    'name' => 'required',
                     'host' => 'required',
                     'api_key' => 'required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                     'default_from_email' => 'email|required',
                 ],
             ],

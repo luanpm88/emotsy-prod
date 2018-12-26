@@ -28,6 +28,8 @@
         \Acelle\Model\SendingServer::TYPE_AMAZON_API,
         \Acelle\Model\SendingServer::TYPE_MAILGUN_API,
         \Acelle\Model\SendingServer::TYPE_SENDGRID_API,
+        \Acelle\Model\SendingServer::TYPE_ELASTICEMAIL_API,
+        \Acelle\Model\SendingServer::TYPE_SPARKPOST_API,
     ]))
             @include('admin.sending_servers.form.' . $server->type)
     @else

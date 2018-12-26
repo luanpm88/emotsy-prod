@@ -84,15 +84,6 @@
                 @include('helpers.form_control', [
                     'type' => 'text',
                     'class' => '',
-                    'name' => 'domain',
-                    'value' => $server->domain,
-                    'help_class' => 'sending_server',
-                    'rules' => $server->getConfigRules(),
-                ])
-                
-                @include('helpers.form_control', [
-                    'type' => 'text',
-                    'class' => '',
                     'name' => 'default_from_email',
                     'value' => $server->default_from_email,
                     'help_class' => 'sending_server',
@@ -154,8 +145,32 @@
                 <button class="btn btn-mc_default mr-10">{{ trans('messages.sending_serbers.add_domain') }}</button>
                 <a href="{{ action('Admin\SendingServerController@index') }}" type="button"
                   class="btn btn-mc_default">
-                    {{ trans('messages.sending_serbers.go_to_amazon_dashboard') }}
+                    {{ trans('messages.sending_serbers.go_to_sendgrid_dashboard') }}
                 </a>
+                    
+                <p class="mt-40">
+                    {{ trans('messages.sending_serbers.sendgrid.allow_verify.intro') }}                    
+                </p>
+                
+                @include('helpers.form_control', [
+                    'type' => 'checkbox2',
+                    'label' => trans('messages.allow_verify_domain_agains_sendgrid'),
+                    'name' => 'options[allow_verify_domain_agains_sendgrid]',
+                    'value' => $server->getOption('allow_verify_domain_agains_sendgrid'),
+                    'help_class' => 'sending_server',
+                    'default_value' => 'yes',
+                    'options' => ['no', 'yes'],
+                ])
+                @include('helpers.form_control', [
+                    'type' => 'checkbox2',
+                    'label' => trans('messages.allow_verify_email_agains_sendgrid'),
+                    'name' => 'options[allow_verify_email_agains_sendgrid]',
+                    'value' => $server->getOption('allow_verify_email_agains_sendgrid'),
+                    'help_class' => 'sending_server',
+                    'default_value' => 'yes',
+                    'options' => ['no', 'yes'],
+                    'disabled' => 'disabled',
+                ])
                 
                 <hr>
                 <div class="mt-20">

@@ -411,3 +411,6 @@ stat .stat-head {
   font-weight: normal;
   font-size: 22px;
 }
+.checker.disabled {
+  color: #888;
+}

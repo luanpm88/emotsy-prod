@@ -1039,8 +1039,8 @@
   'spam-reported' => 'Spam reported',
   'sendgrid-api' => 'Sendgrid API',
   'sendgrid-smtp' => 'Sendgrid SMTP',
-  'sparkpost-api' => 'SparkPost API',
-  'sparkpost-smtp' => 'SparkPost SMTP',
+  'sparkpost-api' => 'Sparkpost API',
+  'sparkpost-smtp' => 'Sparkpost SMTP',
   'elasticemail-api' => 'Elastic Email API',
   'elasticemail-smtp' => 'Elastic Email SMTP',
   'email_existed' => '[:time] ERROR: \':email\' existed',
@@ -1060,8 +1060,8 @@
   'sending_server_intro_amazon-api' => 'Amazon\'s Simple Email service through Web API',
   'sending_server_intro_sendgrid-smtp' => 'SendGrid\'s Email service through SMTP protocol',
   'sending_server_intro_sendgrid-api' => 'SendGrid\'s Email service through Web API v3',
-  'sending_server_intro_sparkpost-smtp' => 'SparkPost\'s Email service through SMTP protocol',
-  'sending_server_intro_sparkpost-api' => 'SparkPost\'s Email service through Web API v1',
+  'sending_server_intro_sparkpost-smtp' => 'Sparkpost\'s Email service through SMTP protocol',
+  'sending_server_intro_sparkpost-api' => 'Sparkpost\'s Email service through Web API v1',
   'sending_server_intro_elasticemail-smtp' => 'Elastic Email\'s service through SMTP protocol',
   'sending_server_intro_elasticemail-api' => 'Elastic Email\'s service through Web API v2',
   'sending_server_intro_mailgun-api' => 'Mailgun\'s Email service through Web API',
@@ -1604,7 +1604,7 @@
   'data' => 'Data',
   'order_id' => 'Order ID',
   'payments_history' => 'Payments history',
-  'sending_server.wording' => 'This feature allows you to add a sending server which will actually send out your campaign emails. You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES, SendGrid, Mailgun, ElasticEmail, SparkPost... You can also take advantage of the the hosting server\'s email capability by creating a "PHP Mail" or "Sendmail" sending server',
+  'sending_server.wording' => 'This feature allows you to add a sending server which will actually send out your campaign emails. You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES, SendGrid, Mailgun, ElasticEmail, Sparkpost... You can also take advantage of the the hosting server\'s email capability by creating a "PHP Mail" or "Sendmail" sending server',
   'log.sending_server.created' => 'The sending server "<a href=":link">:name</a>" was created!',
   'log.sending_server.updated' => 'The sending server "<a href=":link">:name</a>" was updated!',
   'log.sending_server.deleted' => 'The sending server ":name" was deleted!',
@@ -2138,14 +2138,14 @@
     <a href=":sender_link" target="blank">[email address]</a> to send email on behalf of.',
   'plan.sending_servers.intro' => 'This feature allows you to add a sending server which will actually send out your campaign emails.
         You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES, SendGrid,
-        Mailgun, ElasticEmail, SparkPost... You can also take advantage of the the hosting server\'s
+        Mailgun, ElasticEmail, Sparkpost... You can also take advantage of the the hosting server\'s
         email capability by creating a "PHP Mail" or "Sendmail" sending server',
   'plan.sending_servers' => 'Sending servers',
   'plan.sending_servers.listing' => 'All available sending servers',
   'plan.sending_servers.add' => 'Add Sending Server',
   'plan.sending_servers.intro' => 'This feature allows you to add a sending server which will actually send out your campaign emails.
         You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES,
-        SendGrid, Mailgun, ElasticEmail, SparkPost... You can also take advantage of the the hosting server\'s
+        SendGrid, Mailgun, ElasticEmail, Sparkpost... You can also take advantage of the the hosting server\'s
         email capability by creating a "PHP Mail" or "Sendmail" sending server',
   'plan.sending_identify' => 'Sending Identify',
   'plan.sending_identify.intro' => 'Verifying an Identity for Amazon SES Sending Authorization. The first step in configuring sending
@@ -2197,4 +2197,32 @@
   'sending_servers.sending_limit.sendgrid.intro' => 'Specify speed limit to control how fast your application can send through this connection in
     terms of email throughput. You can find the details of Sendgrid limits <a href="">here</a>',
   'sending_servers.configuration_settings.sendgrid.intro' => 'Set up a connection to your Sendgrid account to send emails.',
+  'sending_serbers.sendgrid.allow_verify.intro' => 'You can also allow your users to verify an identity on their own.
+                    That is, user can request to verify their own email address or domain against your
+                    Sendgrid account',
+  'sending_serbers.aws.allow_verify.intro' => 'You can also allow your users to verify an identity on their own.
+                    That is, user can request to verify their own email address or domain against your
+                    Amazon SES account',
+  'allow_verify_domain_agains_sendgrid' => 'Allow verifying user\'s own domains',
+  'allow_verify_email_agains_sendgrid' => 'Allow verifying user\'s own email addresses',
+  'allow_verify_domain_agains_aws' => 'Allow verifying user\'s own domains against AWS',
+  'allow_verify_email_agains_aws' => 'Allow verifying user\'s own email addresses against AWS',
+  'sending_serbers.go_to_sendgrid_dashboard' => 'Go to Sendrid dashboard',
+  'sending_serbers.go_to_mailgun_dashboard' => 'Go to Mailgun dashboard',
+  
+  'sending_servers.sending_identity.elasticemail.intro' => 'The following domains were verified against your Elastic Email account.
+        User can only send from the domains below and is not allowed to send on their own identity',
+  'sending_servers.elasticemail_api_key.intro' => 'You are connected to Elastic Email using the API key below',
+  'sending_servers.sending_limit.elasticemail.intro' => 'Specify speed limit to control how fast your application can send through this connection in
+    terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
+  'sending_servers.configuration_settings.elasticemail.intro' => 'Set up a connection to your Elastic Email account to send emails.',
+  'sending_serbers.go_to_elasticemail_dashboard' => 'Go to Elastic Email dashboard',
+  
+  'sending_servers.sending_identity.sparkpost.intro' => 'The following domains were verified against your Sparkpost account.
+        User can only send from the domains below and is not allowed to send on their own identity',
+  'sending_servers.sparkpost_api_key.intro' => 'You are connected to Sparkpost using the API key below',
+  'sending_servers.sending_limit.sparkpost.intro' => 'Specify speed limit to control how fast your application can send through this connection in
+    terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
+  'sending_servers.configuration_settings.sparkpost.intro' => 'Set up a connection to your Sparkpost account to send emails.',
+  'sending_serbers.go_to_sparkpost_dashboard' => 'Go to Sparkpost dashboard',
 ) ?>
