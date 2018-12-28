@@ -58,6 +58,14 @@ return [
             'fields' => [ 'username', 'api_key' ],
             'result_xpath' => '$.mail.status',
             'result_map' => [ '1' => 'deliverable', '2' => 'risky', '3' => 'undeliverable' ]
+        ], [
+            'id' => 'localmail.io',
+            'name' => 'localmail.io',
+            'uri' => 'https://api.localmail.io/api/mail/verify?key={API_KEY}&email={EMAIL}',
+            'request_type' => 'GET',
+            'fields' => [ 'api_key' ],
+            'result_xpath' => '$.result',
+            'result_map' => [ 'deliverable' => 'deliverable', 'unknown' => 'unknown', 'risky' => 'risky', 'undeliverable' => 'undeliverable' ]
         ],
     ]
 ];
