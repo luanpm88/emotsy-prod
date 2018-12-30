@@ -193,4 +193,54 @@ class SendingServerAmazon extends SendingServer
             'EmailAddress' => $email,
         ]);
     }
+    
+    /**
+     * Check if AWS actions are allowed
+     *
+     * @return boolean
+     */
+    public static function testConnection($key, $secret, $region)
+    {
+        $iamClient = \Aws\Iam\IamClient::factory(array(
+            'credentials' => array(
+                'key' => trim($key),
+                'secret' => trim($secret),
+            ),
+            'region' => $region,
+            'version' => '2010-05-08',
+        ));
+        
+        // getting API caller
+        $arn = $iamClient->getUser()->get('User')['Arn'];
+        
+        $username = array_values(array_slice(explode(':', $arn), -1))[0];
+        if ($username == 'root') {
+            return true;
+        }
+        
+        $actions = ['ses:VerifyEmailIdentity', 'ses:GetIdentityVerificationAttributes', 'ses:ListIdentities', 'ses:SetIdentityFeedbackForwardingEnabled', 'sns:CreateTopic', 'sns:Subscribe', 'sns:SetIdentityNotificationTopic'];
+        $results = $iamClient->simulatePrincipalPolicy(['PolicySourceArn' => $arn, 'ActionNames' => $actions])->toArray();
+        foreach ($results['EvaluationResults'] as $result) {
+            $action = $result['EvalActionName'];
+            $decision = $result['EvalDecision'];
+        
+            if ($decision != 'allowed') {
+                throw new \Exception("Action {$action} is not allowed");
+            }
+        }
+    }
+    
+    /**
+     * Check if AWS actions are allowed for the corresponding instance
+     *
+     * @return boolean
+     */
+    public function test()
+    {
+        self::testConnection(
+            $this->aws_access_key_id,
+            $this->aws_secret_access_key,
+            $this->aws_region
+        );
+    }
 }
