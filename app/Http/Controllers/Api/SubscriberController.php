@@ -97,76 +97,80 @@ class SubscriberController extends Controller
      */
     public function store(Request $request, $list_id)
     {
-        $user = \Auth::guard('api')->user();
-        $list = \Acelle\Model\MailList::findByUid($list_id);
-
-        // authorize
-        if (!is_object($list)) {
-            return \Response::json(array('message' => trans('List not found')), 404);
-        }
-
-        $subscriber = \Acelle\Model\Subscriber::where('mail_list_id', $list->id)->where('email', '=', $request->EMAIL)->first();
-
-        if (is_null($subscriber)) {
-            $subscriber = new \Acelle\Model\Subscriber();
-            $subscriber->mail_list_id = $list->id;
-            $subscriber->from = 'api';
-        }
-
-        // authorize
-        if (!$user->can('create', $subscriber)) {
-            return \Response::json(array('message' => trans('messages.no_more_item')), 403);
-        }
-
-        // validate and save posted data
-        if ($request->isMethod('post')) {
-            $validator = \Validator::make($request->all(), $subscriber->getRules());
-            if ($validator->fails()) {
-                return response()->json($validator->messages(), 403);
+        try {
+            $user = \Auth::guard('api')->user();
+            $list = \Acelle\Model\MailList::findByUid($list_id);
+    
+            // authorize
+            if (!is_object($list)) {
+                return \Response::json(array('message' => trans('List not found')), 404);
             }
-
-            // Save subscriber
-            $subscriber->email = $request->EMAIL;
-
-            if ($list->subscribe_confirmation) {
-                // SEND subscription confirmation email
-                try {
-                    $subscriber->status = \Acelle\Model\Subscriber::STATUS_UNCONFIRMED;
-                    $subscriber->save();
-                    MailLog::info(sprintf('Sending confirmation email to %s who is being added to mail list `%s` (#%s)', $subscriber->email, $list->name, $list->id));
-                    $list->sendSubscriptionConfirmationEmail($subscriber);
-                } catch (\Exception $ex) {
-                    return \Response::json(array('message' => 'Something went wrong adding subscriber. '.$ex->getMessage()), 404);
+    
+            $subscriber = \Acelle\Model\Subscriber::where('mail_list_id', $list->id)->where('email', '=', $request->EMAIL)->first();
+    
+            if (is_null($subscriber)) {
+                $subscriber = new \Acelle\Model\Subscriber();
+                $subscriber->mail_list_id = $list->id;
+                $subscriber->from = 'api';
+            }
+    
+            // authorize
+            if (!$user->can('create', $subscriber)) {
+                return \Response::json(array('message' => trans('messages.no_more_item')), 403);
+            }
+    
+            // validate and save posted data
+            if ($request->isMethod('post')) {
+                $validator = \Validator::make($request->all(), $subscriber->getRules());
+                if ($validator->fails()) {
+                    return response()->json($validator->messages(), 403);
                 }
-            } else {
-                $subscriber->status = \Acelle\Model\Subscriber::STATUS_SUBSCRIBED;
-                $subscriber->save();
+    
+                // Save subscriber
+                $subscriber->email = $request->EMAIL;
+    
+                if ($list->subscribe_confirmation) {
+                    // SEND subscription confirmation email
+                    try {
+                        $subscriber->status = \Acelle\Model\Subscriber::STATUS_UNCONFIRMED;
+                        $subscriber->save();
+                        MailLog::info(sprintf('Sending confirmation email to %s who is being added to mail list `%s` (#%s)', $subscriber->email, $list->name, $list->id));
+                        $list->sendSubscriptionConfirmationEmail($subscriber);
+                    } catch (\Exception $ex) {
+                        return \Response::json(array('message' => 'Something went wrong adding subscriber. '.$ex->getMessage()), 404);
+                    }
+                } else {
+                    $subscriber->status = \Acelle\Model\Subscriber::STATUS_SUBSCRIBED;
+                    $subscriber->save();
+                }
+    
+                // Update field
+                $subscriber->updateFields($request->all());
+    
+                // Log
+                $subscriber->log('created', $user->customer);
+    
+                // update MailList cache
+                event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
+                
+                Log::info("Subscriber {$subscriber->email} is added to list {$subscriber->mailList->name} via API");
+    
+                // trigger the event
+                if (Setting::isYes('send_notification_email_for_list_subscription')) {
+                    Log::info("Sending notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
+                    event(new MailListSubscription($user, $subscriber));    
+                } else {
+                    Log::info("No notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
+                }
+    
+                return \Response::json(array(
+                    'status' => 1,
+                    'message' => ($list->subscribe_confirmation) ? trans('messages.subscriber.confirmation_email_sent') : trans('messages.subscriber.created'),
+                    'subscriber_uid' => $subscriber->uid,
+                ), 200);
             }
-
-            // Update field
-            $subscriber->updateFields($request->all());
-
-            // Log
-            $subscriber->log('created', $user->customer);
-
-            // update MailList cache
-            event(new \Acelle\Events\MailListUpdated($subscriber->mailList));
-            
-            Log::info("Subscriber {$subscriber->email} is added to list {$subscriber->mailList->name} via API");
-
-            // trigger the event
-            if (Setting::isYes('send_notification_email_for_list_subscription')) {
-                Log::info("Sending notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
-                event(new MailListSubscription($user, $subscriber));    
-            } else {
-                Log::info("No notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
-            }
-
-            return \Response::json(array(
-                'status' => 1,
-                'message' => ($list->subscribe_confirmation) ? trans('messages.subscriber.confirmation_email_sent') : trans('messages.subscriber.created'),
-                'subscriber_uid' => $subscriber->uid,
-            ), 200);
+        } catch (\Exception $ex) {
+            return \Response::json(array('message' => $ex->getMessage()), 400);
         }
     }
 

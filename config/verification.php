@@ -50,6 +50,22 @@ return [
             'fields' => [ 'api_key' ],
             'result_xpath' => '$.*.status',
             'result_map' => [ '1' => 'deliverable', '0' => 'undeliverable', '-1' => 'risky' ]
-        ]
+        ], [
+            'id' => 'verifyre.co',
+            'name' => 'verifyre.co',
+            'uri' => 'https://www.verifyre.co/app/check?id={USERNAME}&key={API_KEY}&mail={EMAIL}',
+            'request_type' => 'GET',
+            'fields' => [ 'username', 'api_key' ],
+            'result_xpath' => '$.mail.status',
+            'result_map' => [ '1' => 'deliverable', '2' => 'risky', '3' => 'undeliverable' ]
+        ], [
+            'id' => 'localmail.io',
+            'name' => 'localmail.io',
+            'uri' => 'https://api.localmail.io/api/mail/verify?key={API_KEY}&email={EMAIL}',
+            'request_type' => 'GET',
+            'fields' => [ 'api_key' ],
+            'result_xpath' => '$.result',
+            'result_map' => [ 'deliverable' => 'deliverable', 'unknown' => 'unknown', 'risky' => 'risky', 'undeliverable' => 'undeliverable' ]
+        ],
     ]
 ];

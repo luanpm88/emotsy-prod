@@ -30,6 +30,7 @@ use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
 use DB;
 use Carbon\Carbon;
 use File;
+use Acelle\Model\SendingDomain;
 
 abstract class AbsCampaign extends Model
 {
@@ -578,9 +579,18 @@ abstract class AbsCampaign extends Model
      */
     public function findSendingDomain($email)
     {
-        $domain = substr(strrchr($email, '@'), 1);
+        $domainName = substr(strrchr($email, '@'), 1);
         
-        return $this->customer->activeDkimSendingDomains()->where('name', $domain)->first();
+        if ($domainName == false) {
+            return null;
+        }
+        
+        $domain = $this->customer->activeDkimSendingDomains()->where('name', $domainName)->first();
+        if (is_null($domain)) {
+            $domain = SendingDomain::getAllAdminActive()->where('name', $domainName)->first();    
+        }
+        
+        return $domain;
     }
 
     /**

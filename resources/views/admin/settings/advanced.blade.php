@@ -23,23 +23,17 @@
 @endsection
 
 @section('content')
-			<form action="{{ action('Admin\SettingController@advanced') }}" method="POST" class="form-validate-jqueryz">
-				{{ csrf_field() }}
+    <form action="{{ action('Admin\SettingController@advanced') }}" method="POST" class="form-validate-jqueryz">
+        {{ csrf_field() }}
 
-				<div class="tabbable">
+        <div class="tabbable">
 
-					<div class="tab-content">
+            <div class="tab-content">
 
-						@include("admin.settings._advanced")
-                        
-                        <div class="text-left">
-                            <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
-                        </div>
+                @include("admin.settings._advanced")
 
-					</div>
-				</div>
+            </div>
+        </div>
 
-
-			</form>
-
+    </form>
 @endsection

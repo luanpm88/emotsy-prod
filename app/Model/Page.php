@@ -144,6 +144,62 @@ class Page extends Model
             $this->content = str_replace('{SUBSCRIBER_SUMMARY}', '<p><strong>'.trans('messages.email').':</strong></p><p><strong>'.trans('messages.first_name').':</strong></p><p><strong>'.trans('messages.last_name').':</strong></p>', $this->content);
         }
     }
+    
+    /**
+     * Render transformed subject.
+     *
+     * @var string
+     */
+    public function getTransformedSubject($subscriber)
+    {
+        // BAISC INFO
+        $subject = $this->subject;
+        $subject = str_replace('{LIST_NAME}', $this->mailList->name, $subject);
+        $subject = str_replace('{CONTACT_NAME}', $this->mailList->contact->company, $subject);
+        $subject = str_replace('{CONTACT_STATE}', $this->mailList->contact->state, $subject);
+        $subject = str_replace('{CONTACT_ADDRESS_1}', $this->mailList->contact->address_1, $subject);
+        $subject = str_replace('{CONTACT_ADDRESS_2}', $this->mailList->contact->address_2, $subject);
+        $subject = str_replace('{CONTACT_CITY}', $this->mailList->contact->city, $subject);
+        $subject = str_replace('{CONTACT_ZIP}', $this->mailList->contact->zip, $subject);
+        $subject = str_replace('{CONTACT_COUNTRY}', $this->mailList->contact->country->name, $subject);
+        $subject = str_replace('{CONTACT_PHONE}', $this->mailList->contact->phone, $subject);
+        $subject = str_replace('{CONTACT_EMAIL}', $this->mailList->contact->email, $subject);
+        $subject = str_replace('{CONTACT_URL}', $this->mailList->contact->url, $subject);
+        
+        // FIELDS
+        $subject = str_replace('{SUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.subscribe').' <i class="icon-arrow-right14 position-right"></i></button>', $subject);
+        $subject = str_replace('{EMAIL_FIELD}', view('helpers.form_control', ['type' => 'text', 'name' => 'EMAIL', 'label' => trans('messages.email_address'), 'value' => '', 'rules' => $this->mailList->getFieldRules()])->render(), $subject);
+        $subject = str_replace('{UNSUBSCRIBE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.unsubscribe').' <i class="icon-arrow-right14 position-right"></i></button>', $subject);
+        $subject = str_replace('{UPDATE_PROFILE_BUTTON}', '<button class="btn btn-info bg-teal-800" type="submit">'.trans('messages.update_profile').' <i class="icon-arrow-right14 position-right"></i></button>', $subject);
+        $subject = str_replace('{SUBSCRIBE_URL}', \Acelle\Model\Setting::get('url_root') . action('PageController@signUpForm', $this->mailList->uid, false), $subject);
+        
+        // SUBSCRIBE CONFIRM URL
+        if (isset($subscriber)) {
+            // [SUBSCRIBE_CONFIRM_URL]
+            $subject = str_replace('{SUBSCRIBE_CONFIRM_URL}', \Acelle\Model\Setting::get('url_root') . action('PageController@signUpConfirmationThankyou', array('list_uid' => $this->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('subscribe-confirm')), false), $subject);
+        
+            // Summary
+            $summary = view('subscribers._summary', ['list' => $this->mailList, 'subscriber' => $subscriber])->render();
+            $subject = str_replace('{SUBSCRIBER_SUMMARY}', $summary, $subject);
+        
+            // UBSUBSCRIBE URL
+            $subject = str_replace('{UNSUBSCRIBE_URL}', \Acelle\Model\Setting::get('url_root') . action('PageController@unsubscribeForm', array('list_uid' => $this->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('unsubscribe')), false), $subject);
+        
+            $subject = str_replace('{UPDATE_PROFILE_URL}', \Acelle\Model\Setting::get('url_root') . action('PageController@profileUpdateForm', array('list_uid' => $this->mailList->uid, 'uid' => $subscriber->uid, 'code' => $subscriber->getSecurityToken('update-profile')), false), $subject);
+        
+            // LIST FIELDS
+            foreach ($this->mailList->fields as $field) {
+                $subject = str_replace('{SUBSCRIBER_'.$field->tag.'}', $subscriber->getValueByField($field), $subject);
+            }
+        } else {
+            $subject = str_replace('{SUBSCRIBE_CONFIRM_URL}', "<a href='http://domain.example/secure_token'>http://domain.example/secure_token</a>", $subject);
+            $subject = str_replace('{UPDATE_PROFILE_URL}', 'http://domain.example/secure_token', $subject);
+            $subject = str_replace('{UNSUBSCRIBE_URL}', 'http://domain.example/secure_token', $subject);
+            $subject = str_replace('{SUBSCRIBER_SUMMARY}', '<p><strong>'.trans('messages.email').':</strong></p><p><strong>'.trans('messages.first_name').':</strong></p><p><strong>'.trans('messages.last_name').':</strong></p>', $subject);
+        }
+        
+        return $subject;
+    }
 
     /**
      * Add customer action log.

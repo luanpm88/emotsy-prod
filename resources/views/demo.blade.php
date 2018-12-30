@@ -21,22 +21,22 @@
                 </div>
 
                 <div class="row">
-                    <div class="col-md-1">
+                    <div class="col-md-2">
 
                     </div>
-                    <div class="col-md-5">
-                        <h3 class="mb-0 text-center">{{ trans("messages.frontend") }}</h3>
+                    <div class="col-md-4">
+                        <h4 class="mb-0 text-center">{{ trans("messages.frontend") }}</h3>
                         <a target="_blank" class="demo_pic" href="{{ action("Controller@demoGo", ['view' => 'frontend']) }}">
                             <img style="max-width: 100%" src="{{ url("/images/demo_frontend.png") }}" />
                         </a>
                     </div>
-                    <div class="col-md-5">
-                        <h3 class="mb-0 text-center">{{ trans("messages.backend") }}</h3>
+                    <div class="col-md-4">
+                        <h4 class="mb-0 text-center">{{ trans("messages.backend") }}</h3>
                         <a target="_blank" class="demo_pic" href="{{ action("Controller@demoGo", ['view' => 'backend']) }}">
                             <img style="max-width: 100%" src="{{ url("/images/demo_backend.png") }}" />
                         </a>
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
 
                     </div>
                 </div>

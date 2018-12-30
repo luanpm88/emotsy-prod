@@ -68,7 +68,7 @@ class EmailVerificationServer extends Model
         $uri = array_key_exists('password', $options) ? str_replace('{PASSWORD}', $options['password'], $uri) : $uri;
 
         // actually request to the service
-        $response = $client->request($config['request_type'], $uri);
+        $response = $client->request($config['request_type'], $uri, ['verify' => false]);
 
         // fetch the result
         $raw = (string) $response->getBody();

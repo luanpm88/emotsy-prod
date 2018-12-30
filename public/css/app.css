@@ -110,7 +110,7 @@ a {
     font-weight: 500;
 }
 .text-bold {
-    font-weight: 500;
+    font-weight: 600;
 }
 textarea.form-control {
     font-weight: normal;
@@ -611,9 +611,6 @@ h2 [class^="icon-"] {
         border-width: 0 0 4px 0;
         margin-bottom: -1px;
         cursor: pointer;
-    }
-    .nav-tabs.nav-tabs-top > li > a {
-        color: #777;
     }
     .nav-tabs.nav-tabs-top > li > a:hover, .nav-tabs.nav-tabs-top > li > a:focus, .nav-tabs.nav-tabs-top > li.active > a {
         color: #333;

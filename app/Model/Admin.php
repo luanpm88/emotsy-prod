@@ -386,7 +386,7 @@ class Admin extends Model
     public function getAllSubscriptions()
     {
         $query = \Acelle\Model\Subscription::select('subscriptions.*')
-            ->leftJoin('customers', 'customers.id', '=', 'subscriptions.customer_id');
+            ->join('customers', 'customers.id', '=', 'subscriptions.customer_id');
 
         if (!$this->user->can('readAll', new \Acelle\Model\Customer())) {
             $query = $query->where(function ($q) {
@@ -445,7 +445,7 @@ class Admin extends Model
      */
     public function getLogs()
     {
-        $query = \Acelle\Model\Log::select('logs.*')->leftJoin('customers', 'customers.id', '=', 'logs.customer_id')
+        $query = \Acelle\Model\Log::select('logs.*')->join('customers', 'customers.id', '=', 'logs.customer_id')
             ->leftJoin('admins', 'admins.id', '=', 'customers.admin_id');
 
         if (!$this->user->can('readAll', new \Acelle\Model\Customer())) {
