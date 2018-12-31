@@ -163,23 +163,28 @@ class SendingServerAmazon extends SendingServer
      */
     public function verifyIdentity($email)
     {
-        $domain = extract_domain($email);
-        
+        $domain = extract_domain($email);        
+        $verifiedIdentities = $this->getVerifiedIdentities();
+        return in_array($email, $verifiedIdentities) || in_array($domain, $verifiedIdentities);
+    }
+    
+    /**
+     * Get verified identities (domains and email addresses)
+     *
+     * @return boolean
+     */
+    public function getVerifiedIdentities()
+    {
         $identities = $this->sesClient()->listIdentities([
             'MaxItems' => 1000, # @todo, need pagination here
         ])->toArray()['Identities'];
-
-        if (!(in_array($email, $identities) || in_array($domain, $identities))) {
-            return false;
-        }
         
         $identitiesWithAttributes = $this->sesClient()->getIdentityVerificationAttributes([
             'Identities' => $identities
         ])->toArray()['VerificationAttributes'];
         
         $verifiedIdentities = array_keys(array_filter($identitiesWithAttributes, function($r) { return $r['VerificationStatus'] == 'Success'; }));
-        
-        return in_array($email, $verifiedIdentities) || in_array($domain, $verifiedIdentities);
+        return $verifiedIdentities;
     }
     
     /**
@@ -228,6 +233,8 @@ class SendingServerAmazon extends SendingServer
                 throw new \Exception("Action {$action} is not allowed");
             }
         }
+        
+        return true;
     }
     
     /**
@@ -237,7 +244,7 @@ class SendingServerAmazon extends SendingServer
      */
     public function test()
     {
-        self::testConnection(
+        return self::testConnection(
             $this->aws_access_key_id,
             $this->aws_secret_access_key,
             $this->aws_region
