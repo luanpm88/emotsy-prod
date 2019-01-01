@@ -61,7 +61,7 @@ return [
         ], [
             'id' => 'localmail.io',
             'name' => 'localmail.io',
-            'uri' => 'https://api.localmail.io/api/mail/verify?key={API_KEY}&email={EMAIL}',
+            'uri' => 'https://api.localmail.io/v1/mail/verify?key={API_KEY}&email={EMAIL}',
             'request_type' => 'GET',
             'fields' => [ 'api_key' ],
             'result_xpath' => '$.result',
