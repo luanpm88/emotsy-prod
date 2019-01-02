@@ -514,3 +514,9 @@ function doublequote($str)
 {
     return sprintf('"%s"', preg_replace('/^"+|"+$/', '', $str));
 }
+
+function jsonGet($array, $path) {
+   $jsonObject = new \JsonPath\JsonObject($array);
+   $result = $jsonObject->get($path)[0];
+   return $result;
+}
