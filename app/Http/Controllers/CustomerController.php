@@ -19,7 +19,15 @@ class CustomerController extends Controller
             $customer = new \Acelle\Model\Customer();
         }
         if (!empty($customer->imagePath())) {
-            $img = \Image::make($customer->imagePath());
+            try {
+                $img = \Image::make($customer->imagePath());    
+            } catch(\Intervention\Image\Exception\NotReadableException $ex) {
+                // file not found
+                $customer->image = null;
+                $customer->save();
+                $img = \Image::make(public_path('assets/images/placeholder.jpg'));
+            }
+            
         } else {
             $img = \Image::make(public_path('assets/images/placeholder.jpg'));
         }
