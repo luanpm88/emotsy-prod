@@ -414,3 +414,6 @@ stat .stat-head {
 .checker.disabled {
   color: #888;
 }
+.text-dim {
+  opacity: 0.6;
+}

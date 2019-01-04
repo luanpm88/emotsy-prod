@@ -25,8 +25,10 @@
                             {{ $plan->name }}
                         </span>
                     </h5>
-                    @if (Auth::user()->can('readAll', $plan))
-                        @include ('admin.modules.admin_line', ['admin' => $plan->admin])
+                    @if (is_object($plan->primarySendingServer()))
+                        {{ trans('messages.plans.send_via.wording', ['server' => $plan->primarySendingServer()->name]) }}
+                    @else
+                        <span class="text-warning text-dim">{{ trans('messages.plans.send_via.empty') }}</span>
                     @endif
                 </td>
                 <td>
@@ -43,9 +45,9 @@
                 </td>
                 <td>
                     <h5 class="no-margin text-bold kq_search">
-                        {{ \Acelle\Library\Tool::formatDate($plan->updated_at) }}
+                        {{ \Acelle\Library\Tool::format_number($plan->subscriptionsCount()) }}
                     </h5>
-                    <span class="text-muted">{{ trans('messages.updated_at') }}</span>
+                    <span class="text-muted">{{ trans('messages.subscriptions') }}</span>
                 </td>
                 <td>
                     <span class="text-muted2 list-status pull-left">

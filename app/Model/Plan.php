@@ -875,4 +875,5 @@ class Plan extends Model
         
         return is_object($pss) ? $pss->sendingServer : null;
     }
+    
 }

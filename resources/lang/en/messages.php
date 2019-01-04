@@ -2299,4 +2299,6 @@
   'allow_verify_domain_agains_acelle' => 'Allow verifying user\'s own domains against Acelle Mail',
   'allow_verify_email_agains_acelle' => 'Allow verifying user\'s own email addresses Acelle Mail',
   'allow_unverify_from_email' => 'Allow unverified FROM email addresses',
+  'plans.send_via.wording' => 'Send via :server',
+  'plans.send_via.empty' => 'No sending server selected',
 ) ?>
