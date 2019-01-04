@@ -70,13 +70,13 @@
             @if ($server->id && Auth::user()->admin->can('test', $server) && $errors->isEmpty())
                 <span class="edit-group">
                     <a
-                        href="{{ action('Admin\SendingServerController@testPhpMail', $server->uid) }}"
+                        href="{{ action('Admin\SendingServerController@testConnection', $server->uid) }}"
                         type="button"
                         class="btn btn-mc_primary mr-10 ajax_link"
                         data-method="POST"
                         mask-title="{{ trans('messages.sending_server.testing') }}"
                     >
-                        {{ trans('messages.sending_server.php-mail.check_php_mail') }}
+                        {{ trans('messages.sending_server.test_connection') }}
                     </a>
                         <a
                         href="{{ action('Admin\SendingServerController@test', $server->uid) }}"
