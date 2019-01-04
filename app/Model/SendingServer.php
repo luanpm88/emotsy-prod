@@ -37,10 +37,18 @@ class SendingServer extends Model
     
     // TYPE
     const TYPE_AMAZON_API = 'amazon-api';
-    const TYPE_MAILGUN_API = 'mailgun-api';
+    const TYPE_AMAZON_SMTP = 'amazon-smtp';
     const TYPE_SENDGRID_API = 'sendgrid-api';
+    const TYPE_SENDGRID_SMTP = 'sendgrid-smtp';
+    const TYPE_MAILGUN_API = 'mailgun-api';
+    const TYPE_MAILGUN_SMTP = 'mailgun-smtp';    
     const TYPE_ELASTICEMAIL_API = 'elasticemail-api';
+    const TYPE_ELASTICEMAIL_SMTP = 'elasticemail-smtp';
     const TYPE_SPARKPOST_API = 'sparkpost-api';
+    const TYPE_SPARKPOST_SMTP = 'sparkpost-smtp';
+    const TYPE_PHP_MAIL = 'php-mail';
+    const TYPE_SENDMAIL = 'sendmail';
+    const TYPE_SMTP = 'smtp';  
 
     protected $quotaTracker;
     protected $subAccount;
@@ -60,18 +68,18 @@ class SendingServer extends Model
     // Supported server types
     public static $serverMapping = array(
         self::TYPE_AMAZON_API => 'SendingServerAmazonApi',
-        'amazon-smtp' => 'SendingServerAmazonSmtp',
-        'smtp' => 'SendingServerSmtp',
-        'sendmail' => 'SendingServerSendmail',
-        'php-mail' => 'SendingServerPhpMail',
+        self::TYPE_AMAZON_SMTP => 'SendingServerAmazonSmtp',
+        self::TYPE_SMTP => 'SendingServerSmtp',
+        self::TYPE_SENDMAIL => 'SendingServerSendmail',
+        self::TYPE_PHP_MAIL => 'SendingServerPhpMail',
         self::TYPE_MAILGUN_API => 'SendingServerMailgunApi',
-        'mailgun-smtp' => 'SendingServerMailgunSmtp',
+        self::TYPE_MAILGUN_SMTP => 'SendingServerMailgunSmtp',
         self::TYPE_SENDGRID_API => 'SendingServerSendGridApi',
-        'sendgrid-smtp' => 'SendingServerSendGridSmtp',
+        self::TYPE_SENDGRID_SMTP => 'SendingServerSendGridSmtp',
         self::TYPE_ELASTICEMAIL_API => 'SendingServerElasticEmailApi',
-        'elasticemail-smtp' => 'SendingServerElasticEmailSmtp',
+        self::TYPE_ELASTICEMAIL_SMTP => 'SendingServerElasticEmailSmtp',
         self::TYPE_SPARKPOST_API => 'SendingServerSparkPostApi',
-        'sparkpost-smtp' => 'SendingServerSparkPostSmtp',
+        self::TYPE_SPARKPOST_SMTP => 'SendingServerSparkPostSmtp',
     );
 
     /**
@@ -102,8 +110,12 @@ class SendingServer extends Model
     public static function mapServerType($server)
     {
         $class_name = '\Acelle\Model\\'.self::$serverMapping[$server->type];
-
-        return $class_name::find($server->id);
+        
+        if ($server->id) {
+            return $class_name::find($server->id);
+        } else {
+            return new $class_name(['type' => $server->type]);
+        }        
     }
 
     /**
@@ -282,9 +294,8 @@ class SendingServer extends Model
     public static function types()
     {
         return [
-            'amazon-smtp' => [
-                'cols' => [
-                    'name' => 'required',
+            self::TYPE_AMAZON_SMTP => [
+                'cols' => [                    
                     'host' => 'required',
                     'aws_access_key_id' => 'required',
                     'aws_secret_access_key' => 'required',
@@ -293,7 +304,9 @@ class SendingServer extends Model
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
                     'smtp_protocol' => 'required',
-                    'default_from_email' => 'email|required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                 ],
             ],
             self::TYPE_AMAZON_API => [
@@ -304,18 +317,18 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
-                    'default_from_email' => 'email|required',
                 ],
             ],
-            'sendgrid-smtp' => [
+            self::TYPE_SENDGRID_SMTP => [
                 'cols' => [
-                    'name' => 'required',
                     'api_key' => 'required',
                     'host' => 'required',
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
-                    'default_from_email' => 'email|required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                 ],
             ],
             self::TYPE_SENDGRID_API => [
@@ -324,22 +337,19 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
-                    'default_from_email' => 'email|required',
                 ],
             ],
             self::TYPE_MAILGUN_API => [
-                'cols' => [                    
+                'cols' => [
                     'api_key' => 'required',
+                    'domain' => 'required',
                 ],
                 'settings' => [
                     'name' => 'required',
-                    'domain' => 'required',
-                    'default_from_email' => 'email|required',
                 ],
             ],
-            'mailgun-smtp' => [
+            self::TYPE_MAILGUN_SMTP => [
                 'cols' => [
-                    'name' => 'required',
                     'domain' => 'required',
                     'api_key' => 'required',
                     'host' => 'required',
@@ -347,7 +357,9 @@ class SendingServer extends Model
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
                     'smtp_protocol' => 'required',
-                    'default_from_email' => 'email|required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                 ],
             ],
             self::TYPE_ELASTICEMAIL_API => [
@@ -356,18 +368,18 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
-                    'default_from_email' => 'email|required',
                 ],
             ],
-            'elasticemail-smtp' => [
+            self::TYPE_ELASTICEMAIL_SMTP => [
                 'cols' => [
-                    'name' => 'required',
                     'api_key' => 'required',
                     'host' => 'required',
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
-                    'default_from_email' => 'email|required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                 ],
             ],
             self::TYPE_SPARKPOST_API => [
@@ -377,49 +389,52 @@ class SendingServer extends Model
                 ],
                 'settings' => [
                     'name' => 'required',
-                    'default_from_email' => 'email|required',
                 ],
             ],
-            'sparkpost-smtp' => [
+            self::TYPE_SPARKPOST_SMTP => [
                 'cols' => [
-                    'name' => 'required',
                     'api_key' => 'required',
                     'host' => 'required',
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
                     'smtp_protocol' => '',
-                    'default_from_email' => 'email|required',
+                ],
+                'settings' => [
+                    'name' => 'required',
                 ],
             ],
-            'smtp' => [
+            self::TYPE_SMTP => [
                 'cols' => [
-                    'name' => 'required',
                     'host' => 'required',
                     'smtp_username' => 'required',
                     'smtp_password' => 'required',
                     'smtp_port' => 'required',
-                    'smtp_protocol' => '',
+                    'smtp_protocol' => '',                    
+                ],
+                'settings' => [
+                    'name' => 'required',
                     'bounce_handler_id' => '',
                     'feedback_loop_handler_id' => '',
-                    'default_from_email' => 'email|required',
                 ],
             ],
-            'sendmail' => [
+            self::TYPE_SENDMAIL => [
                 'cols' => [
-                    'name' => 'required',
                     'sendmail_path' => 'required',
-                    'bounce_handler_id' => '',
-                    'feedback_loop_handler_id' => '',
-                    'default_from_email' => 'email|required',
                 ],
-            ],
-            'php-mail' => [
-                'cols' => [
+                'settings' => [
                     'name' => 'required',
                     'bounce_handler_id' => '',
                     'feedback_loop_handler_id' => '',
-                    'default_from_email' => 'email|required',
+                ],
+            ],
+            self::TYPE_PHP_MAIL => [
+                'cols' => [                    
+                ],
+                'settings' => [
+                    'name' => 'required',
+                    'bounce_handler_id' => '',
+                    'feedback_loop_handler_id' => '',
                 ],
             ],
         ];
@@ -484,9 +499,36 @@ class SendingServer extends Model
      */
     public function getRules()
     {
-        $rules = SendingServer::types()[$this->type]['cols'];        
+        $rules = SendingServer::types()[$this->type]['cols'];
 
         return $rules;
+    }
+    
+    /**
+     * Test connection.
+     *
+     * @return object
+     */
+    public function validConnection($request)
+    {
+        $validator = \Validator::make($request->all(), $this->getRules());
+        
+        // test amazon api connection
+        if ($this->type == SendingServer::TYPE_AMAZON_API) {
+            $validator->after(function ($validator) {
+                try {
+                    \Acelle\Model\SendingServerAmazon::testConnection(
+                        $this->aws_access_key_id,
+                        $this->aws_secret_access_key,
+                        $this->aws_region
+                    );
+                } catch (\Exception $e) {
+                    $validator->errors()->add('aws_access_key_id', $e->getMessage());
+                }
+            });
+        }
+        
+        return $validator;
     }
     
     /**
@@ -946,6 +988,32 @@ class SendingServer extends Model
     }
     
     /**
+     * Get local identity info.
+     *
+     * @return array
+     */
+    public function getLocalIdentityInfo()
+    {
+        return [
+            [
+                'type' => 'domain',
+                'name' => 'acellemail.com',
+                'created_at' => \Carbon\Carbon::now()->subDay(2),
+            ],
+            [
+                'type' => 'domain',
+                'name' => 'bolero.vn',
+                'created_at' => \Carbon\Carbon::now()->subDay(13),
+            ],
+            [
+                'type' => 'email',
+                'name' => 'system@acellemail.com',
+                'created_at' => \Carbon\Carbon::now()->subDay(13),
+            ],
+        ];
+    }
+    
+    /**
      * Check if domain is enabled.
      *
      * @return array
@@ -953,6 +1021,21 @@ class SendingServer extends Model
     public function isDomainEnabled($domain)
     {
         $domains = $this->getOption('domains');
+        if (isset($domains) && isset($domains[$domain])) {            
+            return $domains[$domain]['enabled'] == 'yes';
+        }
+        
+        return false;
+    }
+    
+    /**
+     * Check if domain is enabled.
+     *
+     * @return array
+     */
+    public function isIdentityEnabled($type, $domain)
+    {
+        $domains = $this->getOption($type . 's');
         if (isset($domains) && isset($domains[$domain])) {            
             return $domains[$domain]['enabled'] == 'yes';
         }

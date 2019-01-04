@@ -1,34 +1,49 @@
+@if (!$server->id)
 <form action="{{ action('Admin\SendingServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
     <input type="hidden" name="type" value="{{ $server->type }}" />
+@else
+<form enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', [$server->uid, $server->type]) }}" method="POST" class="form-validate-jqueryz">
+    <input type="hidden" name="_method" value="PATCH">
+    {{ csrf_field() }}
+@endif
     
-    <div class="mc_section">
-        <h2>{{ trans('messages.' . $server->type) }}</h2>
-            
+    <div class="mc_section">            
         <p>{{ trans('messages.sending_servers.mailgun_api_key.intro') }}</p>
         
         <div class="row">
             <div class="col-md-6">
                 @include('helpers.form_control', [
-                    'type' => 'text',
+                    'type' => 'password',
                     'class' => '',
                     'name' => 'api_key',
                     'value' => $server->api_key,
                     'help_class' => 'sending_server',
                     'rules' => $server->getRules(),
-                    'disabled' => $server->id,
+                    'eye' => true,
+                    'disabled' =>($server->id && $errors->isEmpty()),
+                ])
+                
+                @include('helpers.form_control', [
+                    'type' => 'text',
+                    'class' => '',
+                    'name' => 'domain',
+                    'value' => $server->domain,
+                    'help_class' => 'sending_server',
+                    'rules' => $server->getRules(),
+                    'disabled' =>($server->id && $errors->isEmpty()),
                 ])
             </div>
         </div>
         <div class="text-left">
-            @if ($server->id && Auth::user()->admin->can('test', $server))
+            @if ($server->id && Auth::user()->admin->can('test', $server) && $errors->isEmpty())
                 <span class="edit-group">
                     <a
-                        href="{{ action('Admin\SendingServerController@test', $server->uid) }}"
+                        href="{{ action('Admin\SendingServerController@testConnection', $server->uid) }}"
                         type="button"
-                        class="btn btn-mc_primary mr-10 modal_link"
-                        data-in-form="true"
-                        data-method="GET"
+                        class="btn btn-mc_primary mr-10 ajax_link"
+                        data-method="POST"
+                        mask-title="{{ trans('messages.sending_server.testing') }}"
                     >
                         {{ trans('messages.sending_server.test_connection') }}
                     </a>
@@ -61,7 +76,7 @@
         </div>
     </div>
 </form>
-@if ($server->id)
+@if ($server->id && $errors->isEmpty())
 <form action="{{ action('Admin\SendingServerController@config', $server->uid) }}" method="POST" class="form-validate-jqueryz">
     {{ csrf_field() }}
     <div class="mc_section">
@@ -80,24 +95,6 @@
                     'help_class' => 'sending_server',
                     'rules' => $server->getConfigRules(),
                 ])
-                
-                @include('helpers.form_control', [
-                    'type' => 'text',
-                    'class' => '',
-                    'name' => 'domain',
-                    'value' => $server->domain,
-                    'help_class' => 'sending_server',
-                    'rules' => $server->getConfigRules(),
-                ])
-                
-                @include('helpers.form_control', [
-                    'type' => 'text',
-                    'class' => '',
-                    'name' => 'default_from_email',
-                    'value' => $server->default_from_email,
-                    'help_class' => 'sending_server',
-                    'rules' => $server->getConfigRules(),
-                ])
 
                 <p>{!! trans('messages.sending_servers.sending_limit.mailgun.intro') !!}</p>
                     
@@ -112,60 +109,8 @@
             </div>
         </div>
     </div>
-    <div class="mc_section boxing">
-        <div class="row">
-            <div class="col-md-6">
-                <h3 class="mt-0">{{ trans('messages.sending_servers.sending_identity') }}</h3>
-                <p>
-                    {!! trans('messages.sending_servers.sending_identity.mailgun.intro', ['link' => '']) !!}                    
-                </p>
-                <table class="table table-box table-box-head field-list">
-                    <thead>
-                        <tr>
-                            <td>{{ trans('messages.created_at') }}</td>
-                            <td>{{ trans('messages.domain') }}</td>
-                            <td>{{ trans('messages.status') }}</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($server->getMailgunDomainInfo() as $domain)
-                            <tr class="odd">
-                                <td>
-                                    {{ $domain['created_at']->diffForHumans() }}
-                                    <br><span class="small-meta">Disabled on 12/05/2018</span>
-                                    <input type="hidden" name="options[domains][{{ $domain['domain'] }}][created_at]" value="{{ $domain['created_at'] }}"
-                                        
-                                    />
-                                    <input type="hidden" name="options[domains][{{ $domain['domain'] }}][enabled]" value="no" />
-                                </td>
-                                <td>
-                                    {{ $domain['domain'] }}
-                                </td>
-                                <td>
-                                    <input type="checkbox" name="options[domains][{{ $domain['domain'] }}][enabled]" value="yes" class="switchery"
-                                        {{ $server->isDomainEnabled($domain['domain']) ? " checked" : "" }}
-                                    />
-                                </td>
-                            </tr>
-                        @endforeach
-                    </tbody>
-                </table>
-                <br>
-                <button class="btn btn-mc_default mr-10">{{ trans('messages.sending_serbers.add_domain') }}</button>
-                <a href="{{ action('Admin\SendingServerController@index') }}" type="button"
-                  class="btn btn-mc_default">
-                    {{ trans('messages.sending_serbers.go_to_mailgun_dashboard') }}
-                </a>
-                
-                <hr>
-                <div class="mt-20">
-                    <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-                    <a href="{{ action('Admin\SendingServerController@index') }}" type="button" class="btn btn-mc_inline">
-                        {{ trans('messages.cancel') }}
-                    </a>
-                </div>
-            </div>
-        </div>
-    </div>
+    
+    @include('admin.sending_servers.form.mailgun-sender-identity')
+    
 </form>
 @endif

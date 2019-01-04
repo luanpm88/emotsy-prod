@@ -1937,7 +1937,7 @@
   'test_sending_server' => 'Sending a test message',
   'test_sending_server.intro' => 'Fill in the form below and hit the Send button to test the your server.',
   'email_review' => 'Email review',
-  'sending_server.test_success' => 'Test message was successfully sent!',
+  'sending_server.test_email_sent' => 'Test message was successfully sent!',
   'bounce_handler.test_success' => 'Connection tested',
   'feedback_loop_handler.test_success' => 'Connection tested',
   'bounce_handler.testing_connection' => 'Testing connection...',
@@ -2221,8 +2221,82 @@
   'sending_servers.sending_identity.sparkpost.intro' => 'The following domains were verified against your Sparkpost account.
         User can only send from the domains below and is not allowed to send on their own identity',
   'sending_servers.sparkpost_api_key.intro' => 'You are connected to Sparkpost using the API key below',
-  'sending_servers.sending_limit.sparkpost.intro' => 'Specify speed limit to control how fast your application can send through this connection in
-    terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
+  'sending_servers.sending_limit.sparkpost.intro' => 'Sparkpost speed limit to control how fast your application can send through this connection in
+    terms of email throughput. You can find the details of Sparkpost limits <a href="">here</a>',
   'sending_servers.configuration_settings.sparkpost.intro' => 'Set up a connection to your Sparkpost account to send emails.',
   'sending_serbers.go_to_sparkpost_dashboard' => 'Go to Sparkpost dashboard',
+  'plan.sending_server.primary.updated' => 'Primary sending server was successfully updated.',
+  'sending_servers.set_primary' => 'Set primary',
+  'sending_servers.primary' => 'primary',
+  'plan.sending_identify.intro.amazon-api' => 'You are using Amazon SES as your primary delivery method.
+        Amazon SES requires that users verify their identities (the domains or email addresses that you send
+        email from) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
+        be used as FROM email address when setting campaign email.
+        Bounce and feedback loop is handled by Amazon SES through API without users having
+        to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.amazon-smtp' => 'You are using Amazon SES as your primary delivery method.
+        Amazon SES requires that users verify their identities (the domains or email addresses that you send
+        email from) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
+        be used as FROM email address when setting campaign email.
+        Bounce and feedback loop is handled by Amazon SES through API without users having
+        to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.smtp' => 'It is recommended that users verify their own identities (domains or
+        email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
+        be used as FROM email address. Users will need to set up a bounce/feedback handler
+        (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
+  'plan.sending_identify.intro.sendmail' => 'It is recommended that users verify their own identities (domains or
+        email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
+        be used as FROM email address. Users will need to set up a bounce/feedback handler
+        (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
+  'plan.sending_identify.intro.php-mail' => 'It is recommended that users verify their own identities (domains or
+        email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
+        be used as FROM email address. Users will need to set up a bounce/feedback handler
+        (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
+  'plan.sending_identify.intro.mailgun-api' => 'You are using [Mailgun] as your primary delivery method.
+        [Mailgun] only allows sending from a verified sending domain that you register against [Mailgun].
+        Bounce and feedback loop is handled by
+        [Mailgun] through API without users having to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.mailgun-smtp' => 'You are using [Mailgun] as your primary delivery method.
+        [Mailgun] only allows sending from a verified sending domain that you register against [Mailgun].
+        Bounce and feedback loop is handled by
+        [Mailgun] through API without users having to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.sendgrid-api' => 'It is recommended that users verify their own identities (domains or
+        email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
+        be used as FROM email address. Users will need to set up a bounce/feedback handler
+        (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
+  'plan.sending_identify.intro.sendgrid-smtp' => 'It is recommended that users verify their own identities (domains or
+        email addresses) to confirm their ownership, and to prevent unauthorized use. Only verified identity can
+        be used as FROM email address. Users will need to set up a bounce/feedback handler
+        (in Sending > Bounce/Feedback Handler) to process bounced/feedback messages.',
+  'plan.sending_identify.intro.elasticemail-api' => 'You are using [Elasticemail] as your primary delivery method.
+        [Elasticemail] only allows sending from a verified sending domain that you register against [Elasticemail].
+        Bounce and feedback loop is handled by
+        [Elasticemail] through API without users having to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.elasticemail-smtp' => 'You are using [Elasticemail] as your primary delivery method.
+        [Elasticemail] only allows sending from a verified sending domain that you register against [Elasticemail].
+        Bounce and feedback loop is handled by
+        [Elasticemail] through API without users having to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.sparkpost-api' => 'You are using [Sparkpost] as your primary delivery method.
+        [Sparkpost] only allows sending from a verified sending domain that you register against [Sparkpost].
+        Bounce and feedback loop is handled by
+        [Sparkpost] through API without users having to configure anything at Acelle Mail',
+  'plan.sending_identify.intro.sparkpost-smtp' => 'You are using [Sparkpost] as your primary delivery method.
+        [Sparkpost] only allows sending from a verified sending domain that you register against [Sparkpost].
+        Bounce and feedback loop is handled by
+        [Sparkpost] through API without users having to configure anything at Acelle Mail',
+  'sending_server.testing' => 'Checking server connection...',
+  'sending_server.test_success' => 'The sending server is valid',
+  'sending_servers.php-mail.intro' => 'Configure Acelle Mail to send emails directly through the hosting server\'s through PHP
+        `mail()` function. Make sure the function is not disabled on your hosting server',
+  'sending_server.php-mail.check_php_mail' => 'Check PHP Mail',
+  'sending_servers.local_identity.intro' => 'Specify the delivery domains that users can use. That is, user can specify a
+        FROM email address that does match one of the following domains',
+  'sending_server.identity_type.domain' => 'domain',
+  'sending_server.identity_type.email' => 'email',
+  'sending_serbers.php-mail.allow_verify.intro' => 'You can also allow your users to verify an identity on their own.
+        That is, user can add their own email addresses or domains and verify against Acelle Mail.
+        Once verified, user can use their own FROM email address when sending',
+  'allow_verify_domain_agains_acelle' => 'Allow verifying user\'s own domains against Acelle Mail',
+  'allow_verify_email_agains_acelle' => 'Allow verifying user\'s own email addresses Acelle Mail',
+  'allow_unverify_from_email' => 'Allow unverified FROM email addresses',
 ) ?>

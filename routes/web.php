@@ -416,6 +416,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::resource('subscriptions', 'SubscriptionController');
 
     // Sending servers
+    Route::post('sending_servers/{uid}/test-connection', 'SendingServerController@testConnection');
     Route::post('sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('sending_servers/{uid}/test', 'SendingServerController@test');
     Route::get('sending_servers/select', 'SendingServerController@select');
@@ -525,6 +526,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/layouts', 'LayoutController');
 
     // Sending servers
+    Route::post('admin/sending_servers/{uid}/test-php-mail', 'SendingServerController@testPhpMail');
+    Route::post('admin/sending_servers/{uid}/test-connection', 'SendingServerController@testConnection');
+    
     Route::post('admin/sending_servers/{uid}/config', 'SendingServerController@config');
     Route::post('admin/sending_servers/sending-limit', 'SendingServerController@sendingLimit');
     Route::get('admin/sending_servers/sending-limit', 'SendingServerController@sendingLimit');
@@ -686,6 +690,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/account/contact', 'AccountController@contact');
 
     // Plan
+    Route::post('admin/plans/{id}/sending_servers/{sending_server_uid}/set-primary', 'PlanController@setPrimarySendingServer');
     Route::post('admin/plans/{id}/sending_servers/fitness', 'PlanController@fitness');
     Route::get('admin/plans/{id}/sending_servers/fitness', 'PlanController@fitness');
     Route::post('admin/plans/{id}/sending_servers/{sending_server_uid}/remove', 'PlanController@removeSendingServer');

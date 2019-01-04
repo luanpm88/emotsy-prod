@@ -469,7 +469,7 @@ class Subscription extends Model
             'unsubscribe_url_required' => 'yes',
             'access_when_offline' => 'no',
             //'create_sending_servers' => 'no',
-            'create_sending_domains' => 'no',
+            'create_sending_domains' => 'yes',
             'sending_servers_max' => '0',
             'sending_domains_max' => '0',
             'all_email_verification_servers' => 'no',

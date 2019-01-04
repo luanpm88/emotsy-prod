@@ -296,7 +296,7 @@ class Plan extends Model
             'unsubscribe_url_required' => 'yes',
             'access_when_offline' => 'no',
             //'create_sending_servers' => 'no',
-            'create_sending_domains' => 'no',
+            'create_sending_domains' => 'yes',
             'sending_servers_max' => '-1',
             'sending_domains_max' => '-1',
             'all_email_verification_servers' => 'yes',
@@ -815,6 +815,12 @@ class Plan extends Model
         $row->plan_id = $this->id;
         $row->sending_server_id = $server->id;
         $row->fitness = '50';
+        
+        // First primary
+        if (!$this->plansSendingServers()->where('is_primary', '=', true)->count()) {
+            $row->is_primary = true;
+        }
+        
         $row->save();
     }
     
@@ -825,6 +831,27 @@ class Plan extends Model
     {
         $server = SendingServer::findByUid($sendinServerUid);
         $this->plansSendingServers()->where('sending_server_id', '=', $server->id)->delete();
+        
+        // First primary
+        $query = $this->plansSendingServers()->where('is_primary', '=', true);
+        if (!$query->count()) {
+            $first = $this->plansSendingServers()->first();
+            if (is_object($first)) {
+                $first->is_primary = true;
+                $first->save();
+            }
+        }
+    }
+    
+    /**
+     ** Remove sending server by uid.
+     **/
+    public function setPrimarySendingServer($sendinServerUid)
+    {        
+        $this->plansSendingServers()->update(['is_primary' => false]);
+        
+        $server = SendingServer::findByUid($sendinServerUid);
+        $this->plansSendingServers()->where('sending_server_id', '=', $server->id)->update(['is_primary' => true]);
     }
     
     /**
@@ -837,5 +864,15 @@ class Plan extends Model
             \Acelle\Model\PlansSendingServer::where('sending_server_id', '=', $sendingServer->id)
                 ->update(['fitness' => $value]);
         }
+    }
+    
+    /**
+     ** Get Primary sending server.
+     **/
+    public function primarySendingServer()
+    {
+        $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
+        
+        return is_object($pss) ? $pss->sendingServer : null;
     }
 }
