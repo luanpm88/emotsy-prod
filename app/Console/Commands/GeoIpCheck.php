@@ -68,7 +68,7 @@ class GeoIpCheck extends Command
             
             GeoIpNotification::warning([
                 'title' => 'GeoIP not ready',
-                'message' => 'GeoIP database is being installed in the background. Process started at '.date("M-d-Y H:i:s")]);
+                'message' => 'GeoIP database is being installed in the background. Process '.getmypid().' started at '.date("M-d-Y H:i:s")]);
             LaravelLog::info('Setting up GeoIP database');
             
             try {
