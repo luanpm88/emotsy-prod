@@ -325,7 +325,7 @@ input.has-eye {
   line-height: inherit;
   opacity: 0.7;
 }
-.mc_section .table-box tbody tr td, .mc_section .table-box tbody tr th {
+.mc_section .table-box tbody tr td, .mc_section .table-box thead tr td {
   padding: 15px 10px;
 }
 .mc_section .control-checkbox2 {
@@ -413,4 +413,7 @@ stat .stat-head {
 }
 .checker.disabled {
   color: #888;
+}
+.text-dim {
+  opacity: 0.6;
 }

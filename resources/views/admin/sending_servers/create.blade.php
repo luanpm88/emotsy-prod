@@ -24,19 +24,6 @@
 
 @section('content')
 
-    @if (in_array($server->type, [
-        \Acelle\Model\SendingServer::TYPE_AMAZON_API,
-        \Acelle\Model\SendingServer::TYPE_MAILGUN_API,
-        \Acelle\Model\SendingServer::TYPE_SENDGRID_API,
-        \Acelle\Model\SendingServer::TYPE_ELASTICEMAIL_API,
-        \Acelle\Model\SendingServer::TYPE_SPARKPOST_API,
-    ]))
-            @include('admin.sending_servers.form.' . $server->type)
-    @else
-        <form action="{{ action('Admin\SendingServerController@store', ["type" => request()->type]) }}" method="POST" class="form-validate-jquery">
-            {{ csrf_field() }}
+    @include('admin.sending_servers.form.' . $server->type)
     
-            @include('admin.sending_servers._form')
-        <form>
-    @endif
 @endsection

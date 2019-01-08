@@ -192,11 +192,11 @@
 								</li>
 							@endif
 							@if (Auth::user()->admin->getPermission("sending_domain_read") != 'no')
-								<li rel0="SendingDomainController">
+								<!--<li rel0="SendingDomainController">
 									<a href="{{ action('Admin\SendingDomainController@index') }}">
 										<i class="icon-earth"></i> {{ trans('messages.sending_domains') }}
 									</a>
-								</li>
+								</li>-->
 							@endif
 							@if (Auth::user()->admin->getPermission("email_verification_server_read") != 'no')
 								<li rel0="EmailVerificationServerController">

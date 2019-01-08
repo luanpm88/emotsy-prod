@@ -79,13 +79,15 @@ class SendingServerController extends Controller
     public function create(Request $request)
     {
         $server = new \Acelle\Model\SendingServer();
+        $server->type = $request->type;
+        $server = \Acelle\Model\SendingServer::mapServerType($server);        
         $server->status = 'active';
         $server->uid = '0';
         $server->quota_value = '1000';
         $server->quota_base = '1';
         $server->quota_unit = 'hour';
         $server->fill($request->old());
-        $server->type = $request->type;
+        
         $server->name = trans('messages.' . $request->type);
 
         // authorize
@@ -124,7 +126,13 @@ class SendingServerController extends Controller
             $server->fill($request->all());
             
             // validation
-            $this->validate($request, $server->getRules());
+            $validator = $server->validConnection($request); //\Validator::make($request->all(), $server->getRules());            
+                      
+            if ($validator->fails()) {
+                return redirect()->action('Admin\SendingServerController@create', $server->type)
+                            ->withErrors($validator)
+                            ->withInput();
+            }
             
             $server->admin_id = $request->user()->admin->id;
             $server->status = SendingServer::STATUS_ACTIVE;
@@ -181,6 +189,7 @@ class SendingServerController extends Controller
     public function edit(Request $request, $id)
     {
         $server = \Acelle\Model\SendingServer::findByUid($id);
+        $server = \Acelle\Model\SendingServer::mapServerType($server);
 
         // authorize
         if (!$request->user()->admin->can('update', $server)) {
@@ -220,10 +229,17 @@ class SendingServerController extends Controller
 
         // save posted data
         if ($request->isMethod('patch')) {
-            $this->validate($request, \Acelle\Model\SendingServer::rules($request->type));
-
             // Save current user info
             $server->fill($request->all());
+            
+            // validation
+            $validator = $server->validConnection($request);
+            
+            if ($validator->fails()) {
+                return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type])
+                            ->withErrors($validator)
+                            ->withInput();
+            }
 
             // bounce / feedback hanlder nullable
             if (empty($request->bounce_handler_id)) {
@@ -236,7 +252,7 @@ class SendingServerController extends Controller
             if ($server->save()) {
                 $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
 
-                return redirect()->action('Admin\SendingServerController@index');
+                return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
             }
         }
     }
@@ -391,7 +407,7 @@ class SendingServerController extends Controller
 
             echo json_encode([
                 'status' => 'success', // or success
-                'message' => trans('messages.sending_server.test_success')
+                'message' => trans('messages.sending_server.test_email_sent')
             ]);
             return;
         }
@@ -399,6 +415,48 @@ class SendingServerController extends Controller
         return view('admin.sending_servers.test', [
             'server' => $server,
         ]);
+    }
+    
+    /**
+     * Test Sending server.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function testConnection(Request $request, $uid)
+    {
+        $server = \Acelle\Model\SendingServer::findByUid($uid);
+        $server = \Acelle\Model\SendingServer::mapServerType($server);
+
+        // authorize
+        if (!$request->user()->admin->can('update', $server)) {
+            return $this->notAuthorized();
+        }
+        
+        try {
+            $server->test();
+            
+            return trans('messages.sending_server.test_success');
+        } catch (\Exception $e) {
+            $server->disable();
+            
+            return $e->getMessage();
+        }
+    }
+    
+    /**
+     * Test PHP mail work.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function testPhpMail(Request $request)
+    {
+        return trans('messages.sending_server.test_success');
     }
     
     /**
@@ -491,6 +549,14 @@ class SendingServerController extends Controller
 
         // save posted data        
         $this->validate($request, $server->getConfigRules());
+        
+        // bounce / feedback hanlder nullable
+        if (empty($request->bounce_handler_id)) {
+            $server->bounce_handler_id = null;
+        }
+        if (empty($request->feedback_loop_handler_id)) {
+            $server->feedback_loop_handler_id = null;
+        }
 
         if ($server->save()) {
             $request->session()->flash('alert-success', trans('messages.sending_server.updated'));

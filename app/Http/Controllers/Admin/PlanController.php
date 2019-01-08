@@ -569,6 +569,29 @@ class PlanController extends Controller
     }
     
     /**
+     * Set primary plan sending server.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function setPrimarySendingServer(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // save posted data
+        $plan->setPrimarySendingServer($request->sending_server_uid);            
+
+        $request->session()->flash('alert-success', trans('messages.plan.sending_server.primary.updated'));
+        return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
+    }
+    
+    /**
      * Plan sending servers fitnesses.
      *
      * @param \Illuminate\Http\Request $request

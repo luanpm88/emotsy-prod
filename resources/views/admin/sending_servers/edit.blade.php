@@ -12,6 +12,8 @@
             <div class="page-title">
                 <ul class="breadcrumb breadcrumb-caret position-right">
                     <li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
+                    <li><a href="{{ action("Admin\SendingServerController@index") }}">{{ trans('messages.sending_servers') }}</a></li>
+                    <li>{{ trans('messages.edit') }}</li>
                 </ul>
                 <h1>
                     <span class="text-semibold"><i class="icon-pencil"></i> {{ $server->name }}</span>
@@ -22,20 +24,6 @@
 
 @section('content')
     
-    @if (in_array($server->type, [
-        \Acelle\Model\SendingServer::TYPE_AMAZON_API,
-        \Acelle\Model\SendingServer::TYPE_MAILGUN_API,
-        \Acelle\Model\SendingServer::TYPE_SENDGRID_API,
-        \Acelle\Model\SendingServer::TYPE_ELASTICEMAIL_API,
-        \Acelle\Model\SendingServer::TYPE_SPARKPOST_API,
-    ]))
-            @include('admin.sending_servers.form.' . $server->type)
-    @else
-        <form enctype="multipart/form-data" action="{{ action('Admin\SendingServerController@update', ["uid" => $server->uid, "type" => request()->type]) }}" method="POST" class="form-validate-jquery">
-            {{ csrf_field() }}
-            <input type="hidden" name="_method" value="PATCH">
-            @include('admin.sending_servers._form')
-        <form>
-    @endif
+    @include('admin.sending_servers.form.' . $server->type)
 
 @endsection

@@ -11,11 +11,26 @@ class PlansSendingServer extends Model
         return $this->belongsTo('Acelle\Model\SendingServer');
     }
     
+     /**
+     * Show fitness.
+     *
+     * @var string
+     */
     public function showFitness()
     {
         $sum = PlansSendingServer::where('plan_id', '=', $this->plan_id)
             ->sum('fitness');
         
         return round(($this->fitness/$sum)*100);
+    }
+    
+     /**
+     * Check if is primary.
+     *
+     * @var boolean
+     */
+    public function isPrimary()
+    {
+        return $this->is_primary;
     }
 }
