@@ -13,7 +13,7 @@
         <div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
     </div>
 @elseif (is_object(\Auth::user()->customer)
-    && !is_object(\Auth::user()->customer->getCurrentSubscription())
+    && !is_object(\Auth::user()->customer->subscription())
     && !\Auth::user()->customer->notHaveAnyPlan() &&
     !\Auth::user()->customer->hasAdminAccount()
 )

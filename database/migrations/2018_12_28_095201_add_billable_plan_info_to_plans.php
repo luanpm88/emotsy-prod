@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddGatewayIdToCustomers extends Migration
+class AddBillablePlanInfoToPlans extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AddGatewayIdToCustomers extends Migration
      */
     public function up()
     {
-        Schema::table('customers', function (Blueprint $table) {
-            $table->string('gateway_id');
+        Schema::table('plans', function (Blueprint $table) {
+            $table->string('remote_plan_id')->nullable();
         });
     }
 
@@ -25,8 +25,8 @@ class AddGatewayIdToCustomers extends Migration
      */
     public function down()
     {
-        Schema::table('customers', function (Blueprint $table) {
-            $table->dropColumn('gateway_id');
+        Schema::table('plans', function (Blueprint $table) {
+            $table->dropColumn('remote_plan_id');
         });
     }
 }

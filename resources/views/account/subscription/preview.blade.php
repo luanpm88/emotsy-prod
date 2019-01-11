@@ -1,33 +1,13 @@
-@if (is_object($subscription->plan))
+@if (isset($plan))
     <div class="row">
         <div class="col-md-6 plan-left">
-            <ul class="dotted-list topborder section mb-0">
-                <li class="border-bottom-0">
-                    <div class="unit size1of2 text-bold">
-                        <strong>{{ trans('messages.price') }}</strong>
-                    </div>
-                    <div class="lastUnit size1of2">
-                        <h5 class="mt-0 mb-0 text-semibold">
-                            <mc:flag>
-                                @if ($subscription->price)
-                                    {{ Acelle\Library\Tool::format_price($subscription->price, $subscription->currency_format) }}
-                                @else
-                                    {{ trans('messages.free') }}
-                                @endif
-                            </mc:flag>
-                        </h5>
-                    </div>
-                </li>
-            </ul>
-
-            @include('subscriptions._details', ['subscription' => $subscription])
-           
+            @include('plans._details', ['plan' => $plan])
         </div>
     </div>
         
-    @if ($subscription->isFree())
+    @if ($plan->isFree())
         <div class="text-left">
-            <a link-method="POST" href="{{ action('AccountSubscriptionController@process', ['plan_uid' => $subscription->plan->uid]) }}" class="btn bg-teal">
+            <a link-method="POST" href="{{ action('AccountSubscriptionController@process', ['plan_uid' => $plan->uid]) }}" class="btn bg-teal">
             {{ trans('messages.get_started') }}
             <i class="icon-arrow-right7"></i></a>
         </div>
@@ -39,7 +19,7 @@
         <div class="list-boxes">
             @foreach ($gateways as $name => $gateway)
                 <div class="list-box {{ trans('messages.payment.status.' . $gateway['status']) }}">
-                    <a link-method="POST" href="{{ action('AccountSubscriptionController@process', ['plan_uid' => $subscription->plan->uid, 'gateway' => $name]) }}">
+                    <a link-method="POST" href="{{ action('AccountSubscriptionController@process', ['plan_uid' => $plan->uid, 'gateway' => $name]) }}">
                         <label>{{ trans('messages.payments.' . $name) }}</label>
                         <p>{{ trans('messages.payments.' . $name . '.list_intro') }}</p>
                     </a>

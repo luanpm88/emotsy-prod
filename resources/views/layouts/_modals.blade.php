@@ -192,7 +192,7 @@
 
 			<!-- Alert if customer have any subscription but none of them is active -->
 			@if (is_object(\Auth::user()->customer)
-				&& !is_object(\Auth::user()->customer->getCurrentSubscription())
+				&& !is_object(\Auth::user()->customer->subscription())
 				&& !\Auth::user()->customer->notHaveAnyPlan())
 				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 					<h4 class="ui-pnotify-title">

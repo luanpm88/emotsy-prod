@@ -43,25 +43,18 @@
                                 'class' => 'subsciption-plan-select hook',
                                 'name' => 'plan_uid',
                                 'label' => trans('messages.select_plan'),
-                                'selected' => [
-                                    'value' => is_object($subscription->plan) ? $subscription->plan->uid : '',
-                                    'text' => is_object($subscription->plan) ? $subscription->plan->name : ''
-                                ],
                                 'help_class' => 'subscription',
-                                'rules' => $subscription->rules(),
                                 'url' => action('PlanController@select2'),
                                 'placeholder' => trans('messages.select_plan')
                             ])                            
                         </form>
                     </div>
                 </div>
-                
                 <div class="ajax-detail-box" data-url="{{ action('AccountSubscriptionController@preview') }}" data-form=".subscription-form">
-                    @include('subscriptions.preview', [
-                        'subscription' => $subscription
+                    @include('account.subscription.preview', [
+                        'plan' => null,
                     ])
                 </div>
-                
             </div>
         </div>
     </div>

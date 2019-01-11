@@ -2165,5 +2165,19 @@
     sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
     Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
   'purchasing_intro_stripe' => 'Please click the button below so we can setup your account for puchasing the <span class="text-nowrap text-big text-semibold">:plan plan</span>
-                . Your plan price is: <span class="text-nowrap text-big text-semibold">:price</span>',
+                . Your plan price is: <span class="text-nowrap text-big text-bold">:price</span>',
+  'subscription.current_subscription.recurring.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
+        Next invoice will be billed in <strong>:remain</strong>, on <strong>:end_at</strong>.',
+  'subscription.cancel.confirm' => 'You\'re about to cancel :number subscription. You\'re still subscribed until the end of period',
+  'subscription.cancelled' => 'The subscription was successfully cancelled',
+  'subscription.current_subscription.cancel_at_end_of_period.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
+        The subscription will be end in <strong>:remain</strong>, on <strong>:end_at</strong>.',
+  'subscription.resume' => 'Resume',
+  'plan_details' => 'Plan details',
+  'subscription.resume.confirm' => 'You\'re about to resume :number subscription.',
+  'subscription.resumed' => 'The subscription was successfully resumed',
+  'subscription.cancel' => 'Cancel',
+  'subscription.cancel_now' => 'Cancel now',
+  'subscription.cancel_now.confirm' => 'You\'re about to cancel :number subscription immediately.',
+  'subscription.cancelled_now' => 'The subscription was successfully cancelled',
 ) ?>
