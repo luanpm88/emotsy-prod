@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use Acelle\Cashier\Traits\BillableTrait;
 use Acelle\Cashier\Interfaces\BillableInterface;
+use Acelle\Model\Plan;
 
 class Customer extends Model implements BillableInterface
 {
@@ -154,11 +155,6 @@ class Customer extends Model implements BillableInterface
         return $this->hasMany('Acelle\Model\Automation');
     }
 
-    public function subscriptions()
-    {
-        return $this->hasMany('Acelle\Model\Subscription')->orderBy('created_at', 'desc');
-    }
-
     public function sendingDomains()
     {
         return $this->hasMany('Acelle\Model\SendingDomain');
@@ -187,6 +183,22 @@ class Customer extends Model implements BillableInterface
     public function blacklists()
     {
         return $this->hasMany('Acelle\Model\Blacklist');
+    }
+    public function subscriptions()
+    {
+        return $this->hasMany('Acelle\Model\Subscription', 'local_owner_id')->orderBy('created_at', 'desc');
+    }
+    
+    /**
+     * Get a subscription instance by name.
+     *
+     * @param  string  $subscription
+     * @return \Laravel\Cashier\Subscription|null
+     */
+    public function subscription()
+    {
+        $subscription = $this->subscriptions()->first();
+        return $subscription->ended() ? null : $this->subscriptions()->first();
     }
 
     /**
@@ -363,34 +375,6 @@ class Customer extends Model implements BillableInterface
                         ->where('subscribers.created_at', '<=', $end);
 
         return $query->count();
-    }
-
-    /**
-     * Get customer options.
-     *
-     * @return string
-     */
-    public function getOptions()
-    {
-        //@todo how to get option from subscription/plan
-        $subscription = $this->getCurrentSubscription();
-        if (is_object($subscription)) {
-            return $subscription->getOptions();
-        } else {
-            return \Acelle\Model\Subscription::defaultOptions();
-        }
-    }
-
-    /**
-     * Get customer option.
-     *
-     * @return string
-     */
-    public function getOption($name)
-    {
-        $options = $this->getOptions();
-        // @todo: chỗ này cần raise 1 cái exception chứ ko phải là trả về rỗng (trả vể rỗng để "dìm" lỗi đi à?)
-        return isset($options[$name]) ? $options[$name] : '';
     }
 
     /**
@@ -728,7 +712,7 @@ class Customer extends Model implements BillableInterface
      */
     public function getSendingQuotaUsage()
     {
-        $current = $this->getCurrentSubscription();
+        $current = $this->subscription();
         if (is_null($current)) {
             return 0;
         }
@@ -744,7 +728,7 @@ class Customer extends Model implements BillableInterface
      */
     public function getSendingQuotaUsagePercentage()
     {
-        $current = $this->getCurrentSubscription();
+        $current = $this->subscription();
         if (is_null($current)) {
             return 0;
         }
@@ -772,11 +756,9 @@ class Customer extends Model implements BillableInterface
      */
     public function getQuotaHash()
     {
-        $current = $this->getCurrentSubscription();
-
         $quota = [
-            'start' => (isset($current->start_at) ? $current->start_at->timestamp : null),
-            'max' => $current->getOption('email_max'),
+            'start' => (isset($current->created_at) ? $current->created_at->timestamp : null),
+            'max' => $this->getOption('email_max'),
         ];
 
         return $quota;
@@ -824,7 +806,7 @@ class Customer extends Model implements BillableInterface
      */
     public function getQuotaTracker()
     {
-        $current = $this->getCurrentSubscription();
+        $current = $this->subscription();
 
         if (is_null($current)) {
             throw new \Exception('User not subscribed to any active plan');
@@ -939,91 +921,6 @@ class Customer extends Model implements BillableInterface
         if ($request->_remove_image == 'true') {
             $this->removeImage();
             $this->image = '';
-        }
-    }
-
-    /**
-     * Get customer current subscriptions.
-     *
-     * @return Subscription
-     */
-    public function getCurrentSubscriptions()
-    {
-        return $subsciption = $this->subscriptions()
-            ->where(function ($query) {
-                $query->where('subscriptions.start_at', '<=', \Carbon\Carbon::now()->endOfDay())
-                    ->orWhereNull('subscriptions.start_at');
-            })->where(function ($query) {
-                $query->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay())
-                    ->orWhereNull('subscriptions.end_at');
-            });
-    }
-
-    /**
-     * Get customer current subscription.
-     *
-     * @return Subscription
-     */
-    public function getCurrentSubscription()
-    {
-        if (!$this->currentSubscription) {
-            $this->currentSubscription = $this->getCurrentSubscriptions()
-            ->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_ACTIVE)
-            ->first();
-        }
-
-        return $this->currentSubscription;
-    }
-
-    /**
-     * Get customer next subscriptions.
-     *
-     * @return Subscription
-     */
-    public function getNextSubscription()
-    {
-        return $subsciption = $this->subscriptions()
-            ->where('subscriptions.start_at', '>', \Carbon\Carbon::now()->endOfDay())
-            ->first();
-    }
-
-    /**
-     * Get customer current subscription.
-     *
-     * @return Subscription
-     */
-    public function getCurrentSubscriptionIgnoreStatus()
-    {
-        return $subsciption = $this->getCurrentSubscriptions()
-            ->first();
-    }
-
-    /**
-     * Get customer current pending subscription.
-     *
-     * @return Subscription
-     */
-    public function getCurrentInactiveSubscription()
-    {
-        return $subsciption = $this->subscriptions()
-            ->where('status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
-            ->first();
-    }
-
-    /**
-     * Get next subscription start at.
-     *
-     * @return Date
-     */
-    public function getNextScriptionStartAt()
-    {
-        $last_subscription = $this->subscriptions()
-            ->orderBy('created_at', 'desc')->first();
-
-        if (is_object($last_subscription) && isset($last_subscription->end_at)) {
-            return $last_subscription->end_at->addDay(1);
-        } else {
-            return \Acelle\Library\Tool::customerDateTime(\Carbon\Carbon::now());
         }
     }
 
@@ -1491,7 +1388,7 @@ class Customer extends Model implements BillableInterface
      */
     public function currentPlanName()
     {
-        $current_subscription = $this->getCurrentSubscription();
+        $current_subscription = $this->subscription();
 
         return is_object($this->user->admin) ?
             trans('messages.admin_default_plan') :
@@ -1509,7 +1406,7 @@ class Customer extends Model implements BillableInterface
     public function getNotOutdatedSubscriptions()
     {
         return $subsciption = $this->subscriptions()
-            ->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->startOfDay());
+            ->where('subscriptions.ends_at', '>=', \Carbon\Carbon::now()->startOfDay());
     }
 
     /**
@@ -1519,8 +1416,7 @@ class Customer extends Model implements BillableInterface
      */
     public function getNotOutdatedInactiveSubscriptions()
     {
-        return $subsciption = $this->getNotOutdatedSubscriptions()
-            ->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE);
+        return $subsciption = $this->getNotOutdatedSubscriptions();
     }
 
     /**
@@ -1639,7 +1535,7 @@ class Customer extends Model implements BillableInterface
             });
         // If customer dont have permission creating sending servers
         } else {
-            $subscription = $this->getCurrentSubscription();
+            $subscription = $this->subscription();
 
             // Check if has email verification servers for current subscription
             if (is_object($subscription)) {
@@ -1674,7 +1570,7 @@ class Customer extends Model implements BillableInterface
             });
         // If customer dont have permission creating sending domain
         } else {
-            $subscription = $this->getCurrentSubscription();
+            $subscription = $this->subscription();
 
             // Check if has email verification servers for current subscription
             $result = \Acelle\Model\SendingDomain::getAllAdminActive()->get()->map(function ($server) {
@@ -1824,16 +1720,6 @@ class Customer extends Model implements BillableInterface
             }
         }
     }
-
-    /**
-     * Check if customer has api access.
-     *
-     * @return bool
-     */
-    public function canUseApi()
-    {
-        return $this->getOption('api_access') == 'yes';
-    }
     
     /**
      * Get all customer's and system domains.
@@ -1845,23 +1731,108 @@ class Customer extends Model implements BillableInterface
         return \Acelle\Model\SendingDomain::getAllActive();
     }
     
-    /**
-     * Customer get email.
-     *
-     * @return string
-     */
-    public function getEmail()
-    {
-        return $this->email();
-    }
+    //====================================== NEW SUBSCRIPTION =======================================
     
     /**
      * Customer get email.
      *
      * @return string
      */
-    public function getGatewayId()
+    public function getBillableEmail()
     {
         return $this->email();
+    }
+    
+    /**
+     * Customer get remote owner id.
+     *
+     * @return string
+     */
+    public function getRemoteOwnerId()
+    {
+        return $this->remote_owner_id;
+    }
+    
+    /**
+     * Customer get local owner id.
+     *
+     * @return string
+     */
+    public function getLocalOwnerId()
+    {
+        return $this->id;
+    }
+    
+    /**
+     * Update billable owner id.
+     *
+     * @return void
+     */
+    public function updateRemoteOwnerId($ownerId)
+    {
+        $this->remote_owner_id = $ownerId;
+        $this->save();
+    }
+    
+    /**
+     * Update billable card brand.
+     *
+     * @return void
+     */
+    public function updateBillableCardBrand($cardBrand)
+    {
+        $this->billable_card_brand = $cardBrand;
+        $this->save();
+    }
+    
+    /**
+     * Update billable card last four.
+     *
+     * @return void
+     */
+    public function updateBillableCardLastFour($cardLastFour)
+    {
+        $this->billable_card_last_four = $cardLastFour;
+        $this->save();
+    }
+    
+    /**
+     * Get customer options.
+     *
+     * @return string
+     */
+    public function getOptions()
+    {
+        //@todo how to get option from subscription/plan
+        $subscription = $this->subscription();
+        
+        if (is_object($subscription)) {
+            // Find plan  
+            return $subscription->plan->getOptions();
+        } else {
+            return [];
+        }
+    }
+
+    /**
+     * Get customer option.
+     *
+     * @return string
+     */
+    public function getOption($name)
+    {
+        $options = $this->getOptions();
+        // @todo: chỗ này cần raise 1 cái exception chứ ko phải là trả về rỗng (trả vể rỗng để "dìm" lỗi đi à?)
+        return isset($options[$name]) ? $options[$name] : null;
+    }
+    
+    /**
+     * Check if customer has api access.
+     *
+     * @return bool
+     */
+    public function canUseApi()
+    {
+        return $this->getOption('api_access') == 'yes';
     }
 }
