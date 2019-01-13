@@ -46,10 +46,10 @@
 
     <table class="hide">
         <tr class="block full_width_banner">
-            <td>
-                <table class="" align="center">
+            <td class="width600">
+                <table class="" align="">
                     <tr>
-                        <td class="full-width-image">
+                        <td class="full-width-image width600">
                             <img src="{{ url("images/icons/image_placeholder_wide.png") }}" width="600" alt="" />
                         </td>
                     </tr>
@@ -333,7 +333,7 @@
             <td class="one-column">
                 <table width="100%">
                     <tr>
-                        <td class="inner contents">
+                        <td class="inner contents width600">
                             <hr>
                             <p>
                                 <em>Copyright &copy; {CONTACT_NAME}, All rights reserved.</em><br />
