@@ -314,3 +314,6 @@ clear:both;
     direction: unset !important;
     text-align:right;
 }
+.width600 {
+    width: 600px;
+}
