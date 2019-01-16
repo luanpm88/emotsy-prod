@@ -426,6 +426,19 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'delivery.sendmail' => [
+                'cat' => 'others',
+                'value' => 'yes',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'delivery.phpmail' => [
+                'cat' => 'others',
+                'value' => 'yes',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            
         ];
     }
 

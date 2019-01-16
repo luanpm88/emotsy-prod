@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Acelle\Library\QuotaTrackerFile;
+use Acelle\Model\Setting;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
@@ -1744,6 +1745,14 @@ class Customer extends Model
             if ($this->isAllowCreateSendingServerType($type)) {
                 $types[$type] = $server;
             }
+        }
+        
+        if (!Setting::isYes('delivery.sendmail')) {
+            unset($types['sendmail']); 
+        }
+        
+        if (!Setting::isYes('delivery.phpmail')) {
+            unset($types['php-mail']); 
         }
 
         return $types;
