@@ -220,9 +220,9 @@
                 
                 @include('helpers.form_control', [
                     'type' => 'checkbox2',
-                    'label' => trans('messages.allow_verify_domain_agains_acelle'),
-                    'name' => 'options[allow_verify_domain_agains_acelle]',
-                    'value' => $server->getOption('allow_verify_domain_agains_acelle'),
+                    'label' => trans('messages.allow_verify_domain_against_acelle'),
+                    'name' => 'options[allow_verify_domain_against_acelle]',
+                    'value' => $server->getOption('allow_verify_domain_against_acelle'),
                     'help_class' => 'sending_server',
                     'default_value' => 'yes',
                     'options' => ['no', 'yes'],
@@ -230,9 +230,9 @@
                 
                 @include('helpers.form_control', [
                     'type' => 'checkbox2',
-                    'label' => trans('messages.allow_verify_email_agains_acelle'),
-                    'name' => 'options[allow_verify_email_agains_acelle]',
-                    'value' => $server->getOption('allow_verify_email_agains_acelle'),
+                    'label' => trans('messages.allow_verify_email_against_acelle'),
+                    'name' => 'options[allow_verify_email_against_acelle]',
+                    'value' => $server->getOption('allow_verify_email_against_acelle'),
                     'help_class' => 'sending_server',
                     'default_value' => 'yes',
                     'options' => ['no', 'yes'],

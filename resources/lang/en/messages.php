@@ -2203,10 +2203,10 @@
   'sending_serbers.aws.allow_verify.intro' => 'You can also allow your users to verify an identity on their own.
                     That is, user can request to verify their own email address or domain against your
                     Amazon SES account',
-  'allow_verify_domain_agains_sendgrid' => 'Allow verifying user\'s own domains',
-  'allow_verify_email_agains_sendgrid' => 'Allow verifying user\'s own email addresses',
-  'allow_verify_domain_agains_aws' => 'Allow verifying user\'s own domains against AWS',
-  'allow_verify_email_agains_aws' => 'Allow verifying user\'s own email addresses against AWS',
+  'allow_verify_domain_against_sendgrid' => 'Allow verifying user\'s own domains',
+  'allow_verify_email_against_sendgrid' => 'Allow verifying user\'s own email addresses',
+  'allow_verify_domain_against_aws' => 'Allow verifying user\'s own domains against AWS',
+  'allow_verify_email_against_aws' => 'Allow verifying user\'s own email addresses against AWS',
   'sending_serbers.go_to_sendgrid_dashboard' => 'Go to Sendrid dashboard',
   'sending_serbers.go_to_mailgun_dashboard' => 'Go to Mailgun dashboard',
   
@@ -2296,8 +2296,8 @@
   'sending_serbers.php-mail.allow_verify.intro' => 'You can also allow your users to verify an identity on their own.
         That is, user can add their own email addresses or domains and verify against Acelle Mail.
         Once verified, user can use their own FROM email address when sending',
-  'allow_verify_domain_agains_acelle' => 'Allow verifying user\'s own domains against Acelle Mail',
-  'allow_verify_email_agains_acelle' => 'Allow verifying user\'s own email addresses Acelle Mail',
+  'allow_verify_domain_against_acelle' => 'Allow verifying user\'s own domains against Acelle Mail',
+  'allow_verify_email_against_acelle' => 'Allow verifying user\'s own email addresses Acelle Mail',
   'allow_unverify_from_email' => 'Allow unverified FROM email addresses',
   'plans.send_via.wording' => 'Send via :server',
   'plans.send_via.empty' => 'No sending server selected',
