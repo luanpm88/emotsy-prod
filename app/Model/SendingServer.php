@@ -1042,4 +1042,54 @@ class SendingServer extends Model
         
         return false;
     }
+    
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail
+     *
+     * @return boolean
+     */
+    public function allowVerifyingOwnDomains()
+    {
+        return json_decode($this->options, true)['allow_verify_domain_against_acelle'] == 'yes';
+    }
+    
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail
+     *
+     * @return boolean
+     */
+    public function allowVerifyingOwnEmails()
+    {
+        return json_decode($this->options, true)['allow_verify_email_against_acelle'] == 'yes';
+    }
+    
+    /**
+     * Allow user to verify his/her own emails against AWS
+     *
+     * @return boolean
+     */
+    public function allowVerifyingOwnDomainsRemotely()
+    {
+        return json_decode($this->options, true)['allow_verify_domain_remotely'] == 'yes';
+    }
+    
+    /**
+     * Allow user to verify his/her own emails against AWS
+     *
+     * @return boolean
+     */
+    public function allowVerifyingOwnEmailsRemotely()
+    {
+        return json_decode($this->options, true)['allow_verify_email_remotely'] == 'yes';
+    }
+    
+    /**
+     * Allow user send from unverified FROM email address
+     *
+     * @return boolean
+     */
+    public function allowUnverifiedFromEmailAddress()
+    {
+        return json_decode($this->options, true)['allow_unverified_from_email'] == 'yes';
+    }
 }

@@ -1203,4 +1203,64 @@ class Subscription extends Model
         
         return $price;
     }
+    
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail
+     *
+     * @return boolean
+     */
+    private function getPrimarySendingServer()
+    {
+        return $this->plan->primarySendingServer();
+    }
+    
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail
+     *
+     * @return boolean
+     */
+    public function allowVerifyingOwnDomains()
+    {
+        return $this->getPrimarySendingServer()->allowVerifyingOwnDomains();
+    }
+    
+    /**
+     * Allow user to verify his/her own sending domain against Acelle Mail
+     *
+     * @return boolean
+     */
+    public function allowVerifyingOwnEmails()
+    {
+        return $this->getPrimarySendingServer()->allowVerifyingOwnEmails();
+    }
+    
+    /**
+     * Allow user to verify his/her own emails against AWS
+     *
+     * @return boolean
+     */
+    public function allowVerifyingOwnDomainsRemotely()
+    {
+        return $this->getPrimarySendingServer()->allowVerifyingOwnDomainsRemotely();
+    }
+    
+    /**
+     * Allow user to verify his/her own emails against AWS
+     *
+     * @return boolean
+     */
+    public function allowVerifyingOwnEmailsRemotely()
+    {
+        return $this->getPrimarySendingServer()->allowVerifyingOwnEmailsRemotely();
+    }
+    
+    /**
+     * Allow user send from unverified FROM email address
+     *
+     * @return boolean
+     */
+    public function allowUnverifiedFromEmailAddress()
+    {
+        return $this->getPrimarySendingServer()->allowUnverifiedFromEmailAddress();
+    }
 }
