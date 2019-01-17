@@ -872,7 +872,7 @@ class Plan extends Model
     public function primarySendingServer()
     {
         $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
-        
+        // @todo: quăng 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
         return is_object($pss) ? $pss->sendingServer : null;
     }
     
