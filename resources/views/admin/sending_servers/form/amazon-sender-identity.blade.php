@@ -39,9 +39,9 @@
             
             @include('helpers.form_control', [
                 'type' => 'checkbox2',
-                'label' => trans('messages.allow_verify_domain_agains_aws'),
-                'name' => 'options[allow_verify_domain_agains_aws]',
-                'value' => $server->getOption('allow_verify_domain_agains_aws'),
+                'label' => trans('messages.allow_verify_domain_against_aws'),
+                'name' => 'options[allow_verify_domain_remotely]',
+                'value' => $server->getOption('allow_verify_domain_remotely'),
                 'help_class' => 'sending_server',
                 'default_value' => 'yes',
                 'options' => ['no', 'yes'],
@@ -49,9 +49,9 @@
             
             @include('helpers.form_control', [
                 'type' => 'checkbox2',
-                'label' => trans('messages.allow_verify_email_agains_aws'),
-                'name' => 'options[allow_verify_email_agains_aws]',
-                'value' => $server->getOption('allow_verify_email_agains_aws'),
+                'label' => trans('messages.allow_verify_email_against_aws'),
+                'name' => 'options[allow_verify_email_remotely]',
+                'value' => $server->getOption('allow_verify_email_remotely'),
                 'help_class' => 'sending_server',
                 'default_value' => 'no',
                 'options' => ['no', 'yes'],
