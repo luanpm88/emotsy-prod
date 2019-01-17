@@ -916,19 +916,59 @@ class SendingServer extends Model
     }
     
     /**
+     * Default options.
+     *
+     * @return array
+     */
+    public static function defaultOptions()
+    {
+        return [
+            'domains' => [],
+            'emails' => [],
+            'allow_unverified_from_email' => 'no',
+            'allow_verify_domain_remotely' => 'no',
+            'allow_verify_email_remotely' => 'no',
+            'allow_verify_domain_remotely' => 'no',
+            'allow_verify_email_remotely' => 'no',
+        ];
+    }
+    
+    /**
      * Get options.
+     *
+     * @return array
+     */
+    public function getOptions()
+    {
+        $savedOptions = isset($this->options) ? json_decode($this->options, true) : [];
+        return array_merge(SendingServer::defaultOptions(), $savedOptions);
+    }
+    
+    /**
+     * Get option.
      *
      * @return array
      */
     public function getOption($name)
     {
-        if (!isset($this->options)) {
-            return null;
-        }
-        
-        $options = json_decode($this->options, true);
+        $options = $this->getOptions();
         
         return isset($options[$name]) ? $options[$name] : null;
+    }
+    
+    /**
+     * Get options.
+     *
+     * @return array
+     */
+    public function setOptions($options)
+    {
+        $savingOptions = $this->getOptions();
+        foreach($options as $key => $option) {
+            $savingOptions[$key] = $option;
+        }
+        
+        $this->options = json_encode($savingOptions);
     }
     
     /**
@@ -954,17 +994,11 @@ class SendingServer extends Model
      *
      * @return array
      */
-    public function getAmazonDomainInfo()
+    public function getVerifiedIdentities()
     {
         return [
-            [
-                'domain' => 'acellemail.com',
-                'created_at' => \Carbon\Carbon::now()->subDay(2),
-            ],
-            [
-                'domain' => 'bolero.vn',
-                'created_at' => \Carbon\Carbon::now()->subDay(13),
-            ],
+            'acellemail.com',
+            'bolero.vn',
         ];
     }
     
@@ -1014,18 +1048,15 @@ class SendingServer extends Model
     }
     
     /**
-     * Check if domain is enabled.
+     * Get domains.
      *
      * @return array
      */
-    public function isDomainEnabled($domain)
+    public function getDomains()
     {
         $domains = $this->getOption('domains');
-        if (isset($domains) && isset($domains[$domain])) {            
-            return $domains[$domain]['enabled'] == 'yes';
-        }
         
-        return false;
+        return $domains ? $domains : [];
     }
     
     /**
@@ -1033,14 +1064,23 @@ class SendingServer extends Model
      *
      * @return array
      */
-    public function isIdentityEnabled($type, $domain)
+    public function isDomainEnabled($domain)
     {
-        $domains = $this->getOption($type . 's');
-        if (isset($domains) && isset($domains[$domain])) {            
-            return $domains[$domain]['enabled'] == 'yes';
-        }
+        $domains = $this->getDomains();
         
-        return false;
+        return in_array($domain, $domains);
+    }
+    
+    /**
+     * Check if domain is enabled.
+     *
+     * @return array
+     */
+    public function isIdentityEnabled($type, $value)
+    {
+        $values = $this->getOption($type . 's');
+        
+        return in_array($values, $value);
     }
     
     /**

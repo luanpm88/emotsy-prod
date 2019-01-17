@@ -8,28 +8,19 @@
             <table class="table table-box table-box-head field-list">
                 <thead>
                     <tr>
-                        <td>{{ trans('messages.created_at') }}</td>
                         <td>{{ trans('messages.domain') }}</td>
                         <td>{{ trans('messages.status') }}</td>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($server->getMailgunDomainInfo() as $domain)
+                    @foreach ($server->getVerifiedIdentities() as $domain)
                         <tr class="odd">
                             <td>
-                                {{ $domain['created_at']->diffForHumans() }}
-                                <br><span class="small-meta">Disabled on 12/05/2018</span>
-                                <input type="hidden" name="options[domains][{{ $domain['domain'] }}][created_at]" value="{{ $domain['created_at'] }}"
-                                    
-                                />
-                                <input type="hidden" name="options[domains][{{ $domain['domain'] }}][enabled]" value="no" />
+                                {{ $domain }}
                             </td>
                             <td>
-                                {{ $domain['domain'] }}
-                            </td>
-                            <td>
-                                <input type="checkbox" name="options[domains][{{ $domain['domain'] }}][enabled]" value="yes" class="switchery"
-                                    {{ $server->isDomainEnabled($domain['domain']) ? " checked" : "" }}
+                                <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
+                                    {{ $server->isDomainEnabled($domain) ? " checked" : "" }}
                                 />
                             </td>
                         </tr>
@@ -50,19 +41,17 @@
             @include('helpers.form_control', [
                 'type' => 'checkbox2',
                 'label' => trans('messages.allow_verify_domain_agains_sendgrid'),
-                'name' => 'options[allow_verify_domain_agains_sendgrid]',
-                'value' => $server->getOption('allow_verify_domain_agains_sendgrid'),
+                'name' => 'options[allow_verify_domain_remotely]',
+                'value' => $server->getOption('allow_verify_domain_remotely'),
                 'help_class' => 'sending_server',
-                'default_value' => 'yes',
                 'options' => ['no', 'yes'],
             ])
             @include('helpers.form_control', [
                 'type' => 'checkbox2',
                 'label' => trans('messages.allow_verify_email_agains_sendgrid'),
-                'name' => 'options[allow_verify_email_agains_sendgrid]',
-                'value' => $server->getOption('allow_verify_email_agains_sendgrid'),
+                'name' => 'options[allow_verify_email_remotely]',
+                'value' => $server->getOption('allow_verify_email_remotely'),
                 'help_class' => 'sending_server',
-                'default_value' => 'yes',
                 'options' => ['no', 'yes'],
                 'disabled' => 'disabled',
             ])

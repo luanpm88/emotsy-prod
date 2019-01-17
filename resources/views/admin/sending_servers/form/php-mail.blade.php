@@ -115,30 +115,19 @@
                 <table class="table table-box table-box-head field-list">
                     <thead>
                         <tr>
-                            <td>{{ trans('messages.name') }}</td>
-                            <td>{{ trans('messages.type') }}</td>
+                            <td>{{ trans('messages.domain') }}</td>
                             <td>{{ trans('messages.status') }}</td>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($server->getLocalIdentityInfo() as $item)
+                        @foreach ($server->getVerifiedIdentities() as $domain)
                             <tr class="odd">
                                 <td>
-                                    {{ $item['name'] }}                                    
-                                    <input type="hidden"
-                                        name="options[{{ $item['type'] }}s][{{ $item['name'] }}][created_at]"
-                                        value="{{ $item['created_at'] }}"
-                                    />
-                                    <input type="hidden" name="options[{{ $item['type'] }}s][{{ $item['name'] }}][enabled]" value="no" />
+                                    {{ $domain }}
                                 </td>
                                 <td>
-                                    {{ trans('messages.sending_server.identity_type.' . $item['type']) }}
-                                </td>
-                                <td>
-                                    <input type="checkbox"
-                                        name="options[{{ $item['type'] }}s][{{ $item['name'] }}][enabled]"
-                                        value="yes" class="switchery"
-                                        {{ $server->isIdentityEnabled($item['type'], $item['name']) ? " checked" : "" }}
+                                    <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
+                                        {{ $server->isDomainEnabled($domain) ? " checked" : "" }}
                                     />
                                 </td>
                             </tr>
@@ -162,7 +151,6 @@
                     'name' => 'options[allow_unverified_from_email]',
                     'value' => $server->getOption('allow_unverified_from_email'),
                     'help_class' => 'sending_server',
-                    'default_value' => 'yes',
                     'options' => ['no', 'yes'],
                 ])
                 
@@ -172,7 +160,6 @@
                     'name' => 'options[allow_verify_domain_against_acelle]',
                     'value' => $server->getOption('allow_verify_domain_against_acelle'),
                     'help_class' => 'sending_server',
-                    'default_value' => 'yes',
                     'options' => ['no', 'yes'],
                 ])
                 
@@ -182,7 +169,6 @@
                     'name' => 'options[allow_verify_email_against_acelle]',
                     'value' => $server->getOption('allow_verify_email_against_acelle'),
                     'help_class' => 'sending_server',
-                    'default_value' => 'yes',
                     'options' => ['no', 'yes'],
                 ])
                 

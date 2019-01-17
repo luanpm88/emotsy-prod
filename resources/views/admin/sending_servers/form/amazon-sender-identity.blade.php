@@ -19,7 +19,7 @@
                                 {{ $domain }}
                             </td>
                             <td>
-                                <input type="checkbox" name="options[domains][{{ $domain }}][enabled]" value="yes" class="switchery"
+                                <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
                                     {{ $server->isDomainEnabled($domain) ? " checked" : "" }}
                                 />
                             </td>
@@ -43,7 +43,6 @@
                 'name' => 'options[allow_verify_domain_remotely]',
                 'value' => $server->getOption('allow_verify_domain_remotely'),
                 'help_class' => 'sending_server',
-                'default_value' => 'yes',
                 'options' => ['no', 'yes'],
             ])
             
@@ -53,7 +52,6 @@
                 'name' => 'options[allow_verify_email_remotely]',
                 'value' => $server->getOption('allow_verify_email_remotely'),
                 'help_class' => 'sending_server',
-                'default_value' => 'no',
                 'options' => ['no', 'yes'],
             ])
             <hr>

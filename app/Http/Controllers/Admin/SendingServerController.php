@@ -536,7 +536,7 @@ class SendingServerController extends Controller
         
         // default sever quota
         if ($request->options) {
-            $server->options = json_encode($request->options);
+            $server->setOptions($request->options); // options = json_encode($request->options);
         }
         
         // Sening limit
