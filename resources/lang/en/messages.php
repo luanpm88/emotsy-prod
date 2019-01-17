@@ -2298,7 +2298,7 @@
         Once verified, user can use their own FROM email address when sending',
   'allow_verify_domain_against_acelle' => 'Allow verifying user\'s own domains against Acelle Mail',
   'allow_verify_email_against_acelle' => 'Allow verifying user\'s own email addresses Acelle Mail',
-  'allow_unverify_from_email' => 'Allow unverified FROM email addresses',
+  'allow_unverified_from_email' => 'Allow unverified FROM email addresses',
   'plans.send_via.wording' => 'Send via :server',
   'plans.send_via.empty' => 'No sending server selected',
 ) ?>

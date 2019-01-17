@@ -210,9 +210,9 @@
                     
                 @include('helpers.form_control', [
                     'type' => 'checkbox2',
-                    'label' => trans('messages.allow_unverify_from_email'),
-                    'name' => 'options[allow_unverify_from_email]',
-                    'value' => $server->getOption('allow_unverify_from_email'),
+                    'label' => trans('messages.allow_unverified_from_email'),
+                    'name' => 'options[allow_unverified_from_email]',
+                    'value' => $server->getOption('allow_unverified_from_email'),
                     'help_class' => 'sending_server',
                     'default_value' => 'yes',
                     'options' => ['no', 'yes'],
