@@ -66,8 +66,7 @@
 					</a>
 				</li>
 				@if (
-					Auth::user()->customer->can("read", new Acelle\Model\SendingServer()) ||
-					Auth::user()->customer->can("read", new Acelle\Model\SendingDomain()) ||
+					Auth::user()->customer->can("read", new Acelle\Model\SendingServer()) ||					
                     Auth::user()->customer->can("read", new Acelle\Model\EmailVerificationServer()) ||
 					Auth::user()->customer->can("read", new Acelle\Model\Blacklist()) ||
 					true
@@ -75,7 +74,7 @@
 					<li class="dropdown language-switch"
 						rel0="SendingServerController"
 						rel1="SendingDomainController"
-						rel2="SendingDomainController"
+						rel2="SenderController"
                         rel3="EmailVerificationServerController"
 						rel4="BlacklistController"
 					>
@@ -91,14 +90,7 @@
 									</a>
 								</li>
 							@endif
-							@if (Auth::user()->customer->can("read", new Acelle\Model\SendingDomain()))
-								<li rel0="SendingDomainController">
-									<a href="{{ action('SendingDomainController@index') }}">
-										<i class="icon-earth"></i> {{ trans('messages.sending_domains') }}
-									</a>
-								</li>
-							@endif
-							<li rel0="SenderController">
+							<li rel0="SenderController" rel1="SendingDomainController">
 								<a href="{{ action('SenderController@index') }}">
 									<i class="icon-user-check"></i> {{ trans('messages.verified_senders') }}
 								</a>
