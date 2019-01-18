@@ -1142,4 +1142,14 @@ class SendingServer extends Model
     {
         return true;
     }
+    
+    /**
+     * Get verified identities
+     *
+     * @return boolean
+     */
+    public function getVerifiedIdentities()
+    {
+        return [];
+    }
 }
