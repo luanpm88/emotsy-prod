@@ -1137,6 +1137,9 @@ class SendingServer extends Model
      */
     public function getVerifiedIdentities()
     {
-        return [];
+        return [
+            'acellemail.com',
+            'bolero.vn',
+        ];
     }
 }
