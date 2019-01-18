@@ -1263,4 +1263,14 @@ class Subscription extends Model
     {
         return $this->getPrimarySendingServer()->allowUnverifiedFromEmailAddress();
     }
+    
+    /**
+     * Get verified identities
+     *
+     * @return array
+     */
+    public function getVerifiedIdentities()
+    {
+        return $this->getPrimarySendingServer()->getVerifiedIdentities();
+    }
 }
