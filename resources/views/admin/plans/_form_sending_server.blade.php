@@ -13,7 +13,7 @@
             </label>
             <div class="radio_more_box">
                 <input type="hidden" name="options[all_sending_servers]" value="no" />
-                 @if ($options['sending_server_option'] == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM)
+                 @if ($plan->id && $options['sending_server_option'] == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM)
                     <a href="{{ $update_link }}" class="btn btn-primary bg-grey">
                         {{ trans('messages.plan.sending_servers.settings') }}
                     </a>
