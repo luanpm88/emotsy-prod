@@ -2301,4 +2301,5 @@
   'allow_unverified_from_email' => 'Allow unverified FROM email addresses',
   'plans.send_via.wording' => 'Send via :server',
   'plans.send_via.empty' => 'No sending server selected',
+  'sending_server.aws.add_domain_redirect_confirm' => 'You need to login to your AWS console to add a sending domain. Do you want to proceed?',
 ) ?>

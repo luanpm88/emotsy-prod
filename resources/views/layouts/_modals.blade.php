@@ -1,3 +1,29 @@
+    <!-- Basic modal -->
+	<div id="confirm-modal" class="modal fade">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
+					<div class="modal-header bg-teal">
+						<button type="button" class="close" data-dismiss="modal">&times;</button>
+						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
+					</div>
+
+					<div class="modal-body">
+
+							<h6></h6>
+
+					</div>
+
+					<div class="modal-footer">
+						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+						<a class="btn bg-info-800 link-confirm-button">{{ trans('messages.ok') }}</a>
+					</div>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- /basic modal -->
+    
     <a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#delete_confirm_model">aa</a>
 	<!-- Basic modal -->
 	<div id="delete_confirm_model" class="modal fade new-modal">

@@ -526,6 +526,8 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/layouts', 'LayoutController');
 
     // Sending servers
+    Route::get('admin/sending_servers/aws-region-host', 'SendingServerController@awsRegionHost');
+    
     Route::post('admin/sending_servers/{uid}/test-php-mail', 'SendingServerController@testPhpMail');
     Route::post('admin/sending_servers/{uid}/test-connection', 'SendingServerController@testConnection');
     

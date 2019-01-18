@@ -493,6 +493,23 @@ function extract_email($str)
 }
 
 /**
+ * Extract name from a string
+ * For example: get abc@mail.com from "My Name <abc@mail.com>"
+ *
+ * @return string version
+ */
+function extract_name($str)
+{
+   $parts = explode("<", $str);
+   if (count($parts) > 0) {
+      return trim($parts[0]);
+   }
+   
+   $parts = explode("@", extract_email($str));
+   return $parts[0];
+}
+
+/**
  * Extract domain from an email
  * For example: get mail.com from "My Name <abc@mail.com>"
  *

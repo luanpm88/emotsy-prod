@@ -67,19 +67,22 @@
                     >
                         {{ trans('messages.sending_server.send_a_test_email') }}
                     </a>
+                    <a href="javascript:;" type="button" class="btn btn-mc_inline switch-form-toggle"
+                        data-disabled="true"
+                        data-edit="{{ trans('messages.edit') }}"
+                        data-cancel="{{ trans('messages.cancel') }}">
+                            {{ trans('messages.edit') }}
+                    </a>
                 </span>
                 <span class="cancel-group hide">
                     <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
+                    <a href="{{ action('Admin\SendingServerController@edit', [$server->uid, $server->type]) }}" type="button" class="btn btn-mc_inline">
+                        {{ trans('messages.cancel') }}
+                    </a>
                 </span>
-                <a href="javascript:;" type="button" class="btn btn-mc_inline switch-form-toggle"
-                    data-disabled="true"
-                    data-edit="{{ trans('messages.edit') }}"
-                    data-cancel="{{ trans('messages.cancel') }}">
-                        {{ trans('messages.edit') }}
-                </a>
             @else
                 <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-                <a href="{{ action('Admin\SendingServerController@index') }}" type="button" class="btn btn-mc_inline">
+                <a href="{{ action('Admin\SendingServerController@edit', [$server->uid, $server->type]) }}" type="button" class="btn btn-mc_inline">
                     {{ trans('messages.cancel') }}
                 </a>
             @endif

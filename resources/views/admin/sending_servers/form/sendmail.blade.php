@@ -147,10 +147,6 @@
                 </table>
                 <br>
                 <button class="btn btn-mc_default mr-10">{{ trans('messages.sending_serbers.add_domain') }}</button>
-                <a href="{{ action('Admin\SendingServerController@index') }}" type="button"
-                  class="btn btn-mc_default">
-                    {{ trans('messages.sending_serbers.go_to_sendgrid_dashboard') }}
-                </a>
                     
                 <p class="mt-40">
                     {{ trans('messages.sending_serbers.php-mail.allow_verify.intro') }}                    

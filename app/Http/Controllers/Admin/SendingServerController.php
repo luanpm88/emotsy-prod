@@ -565,4 +565,29 @@ class SendingServerController extends Controller
         }
         
     }
+    
+    /**
+     * Sending Limit Form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function awsRegionHost(Request $request)
+    {
+        if ($request->uid) {
+            $server = SendingServer::findByUid($request->uid);
+        } else {
+            $server = new SendingServer();
+        }
+        
+        foreach(SendingServer::awsRegionSelectOptions() as $option) {
+            if (isset($option['host']) && $option['value'] == $request->aws_region) {
+                $server->host = $option['host'];
+            }
+        }
+        return view('admin.sending_servers.form._aws_region_host', [
+            'server' => $server,
+        ]);
+    }
 }

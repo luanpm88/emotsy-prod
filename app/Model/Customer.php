@@ -184,6 +184,18 @@ class Customer extends Model
     {
         return $this->hasMany('Acelle\Model\Blacklist');
     }
+    
+    public function senders()
+    {
+        return $this->hasMany('Acelle\Model\Sender')->where('status', '=', \Acelle\Model\Sender::STATUS_VERIFIED);
+    }
+    
+    public function activeVerifiedSendingDomains()
+    {
+        return $this->sendingDomains()
+            ->where('status', '=', \Acelle\Model\SendingDomain::STATUS_ACTIVE)
+            ->where('domain_verified', '=', \Acelle\Model\SendingDomain::VERIFIED);
+    }
 
     /**
      * Bootstrap any application services.
@@ -1847,5 +1859,66 @@ class Customer extends Model
     public function getAllSystemAndOwnDomains()
     {
         return \Acelle\Model\SendingDomain::getAllActive();
+    }
+    
+    /**
+     * Get all verified identities.
+     *
+     * @return array
+     */
+    public function getVerifiedIdentities()
+    {
+        $list = [];
+        
+        // own emails
+        $senders = $this->senders()->get();
+        foreach ($senders as $sender) {
+            $list[] = $sender->name . " <" . $sender->email . ">";
+        }
+        
+        // own domain
+        $domains = $this->activeVerifiedSendingDomains()->get();
+        foreach ($domains as $domain) {
+            $list[] = $domain->name;
+        }
+        
+        // plan emails
+        $list = array_merge($this->getCurrentSubscription()->getVerifiedIdentities(), $list);
+        
+        return $list;
+    }
+    
+    /**
+     * Get all verified identities.
+     *
+     * @return array
+     */
+    public function verifiedIdentitiesDroplist($keyword = null)
+    {
+        $droplist = [];
+        
+        foreach ($this->getVerifiedIdentities() as $item) {
+                // check if email
+                if (extract_email($item) !== null) {
+                    $email = extract_email($item);
+                    if ( $keyword && strpos(strtolower($email), $keyword) !== false ) {
+                        $droplist[] = [
+                            'text' => extract_name($item),
+                            'value' => $email,
+                            'desc' => str_replace($keyword, '<span class="text-semibold text-primary">'.$keyword.'</span>', $email),
+                        ];
+                    }
+                } else { // domains are alse
+                    if ( $keyword && strpos(strtolower($item), $keyword) !== false ) {
+                        $droplist[] = [
+                            'text' => '****@'.str_replace($keyword, '<span class="text-semibold text-primary">'.$keyword.'</span>', $item),
+                            'subfix' => $item,
+                            'desc' => null,
+                        ];
+                    }
+                }
+        }
+        
+        return $droplist;
     }
 }

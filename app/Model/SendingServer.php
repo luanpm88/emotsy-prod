@@ -514,7 +514,7 @@ class SendingServer extends Model
         $validator = \Validator::make($request->all(), $this->getRules());
         
         // test amazon api connection
-        if ($this->type == SendingServer::TYPE_AMAZON_API) {
+        if ($this->type == SendingServer::TYPE_AMAZON_API || $this->type == SendingServer::TYPE_AMAZON_SMTP) {
             $validator->after(function ($validator) {
                 try {
                     \Acelle\Model\SendingServerAmazon::testConnection(
@@ -580,13 +580,9 @@ class SendingServer extends Model
     {
         return [
             ['value' => '', 'text' => trans('messages.choose')],
-            ['value' => 'us-east-1', 'text' => 'US East (N. Virginia)'],
-            ['value' => 'us-west-2', 'text' => 'US West (Oregon)'],
-            ['value' => 'ap-southeast-1', 'text' => 'Asia Pacific (Singapore)'],
-            ['value' => 'ap-southeast-2', 'text' => 'Asia Pacific (Sydney)'],
-            ['value' => 'ap-northeast-1', 'text' => 'Asia Pacific (Tokyo)'],
-            ['value' => 'eu-central-1', 'text' => 'EU (Frankfurt)'],
-            ['value' => 'eu-west-1', 'text' => 'EU (Ireland)'],
+            ['value' => 'us-east-1', 'text' => 'US East (N. Virginia)', 'host' => 'email-smtp.us-east-1.amazonaws.com'],
+            ['value' => 'us-west-2', 'text' => 'US West (Oregon)', 'host' => 'email-smtp.us-west-2.amazonaws.com'],
+            ['value' => 'eu-west-1', 'text' => 'EU (Ireland)', 'host' => 'email-smtp.eu-west-1.amazonaws.com'],
         ];
     }
 

@@ -2095,4 +2095,48 @@ $(function() {
             form.find('.cancel-group').removeClass('hide');
         }
     });
+    
+    // Link confirm
+    $(document).on("click", "a[confirm]", function(e) {
+        var url = $(this).attr("href");
+        var target = $(this).attr("target");
+        var confirm = $(this).attr("confirm");
+
+        // Finding modal
+        var modal = $('#confirm-modal');
+        
+        modal.find('.modal-body h6').html(confirm);
+        modal.find('.modal-footer .link-confirm-button').attr("href", url);
+        modal.find('.modal-footer .link-confirm-button').attr("target", target);
+        
+        modal.modal("show");
+        
+
+        e.stopImmediatePropagation();
+        e.preventDefault();
+    });
+    
+    // Link confirm
+    $(document).on("click", "#confirm-modal .link-confirm-button", function() {
+        $('.modal').modal("hide");
+    });
+    
+    // Ajax box
+    $('.ajax_box').each(function() {
+        var box = $(this);
+        var url = box.attr('data-url');
+        var control = $(box.attr('data-control'));
+        
+        control.change(function() {
+            $.ajax({
+                method: 'GET',
+                url: url,
+                data: box.closest('form').serialize(),
+            })
+            .done(function(response) {
+                box.html(response);
+            });
+        });
+        control.trigger('change');
+    });
 });

@@ -14,14 +14,20 @@
         <div class="row">
             <div class="col-md-6">
                 @include('helpers.form_control', [
-                    'type' => 'text',
+                    'type' => 'select',
                     'class' => '',
-                    'name' => 'host',
-                    'value' => $server->host,
+                    'name' => 'aws_region',
+                    'value' => $server->aws_region,
                     'help_class' => 'sending_server',
+                    'options' => Acelle\Model\SendingServer::awsRegionSelectOptions(),
                     'rules' => $server->getRules(),
-                    'disabled' =>($server->id && $errors->isEmpty()),                    
+                    'disabled' => ($server->id && $errors->isEmpty()),
                 ])
+                
+                <div class="ajax_box"
+                    data-url="{{ action('Admin\SendingServerController@awsRegionHost', ['uid' => $server->uid]) }}"
+                    data-control="[name=aws_region]">
+                </div>
                 
                 @include('helpers.form_control', [
                     'type' => 'text',
@@ -41,17 +47,6 @@
                     'help_class' => 'sending_server',
                     'rules' => $server->getRules(),
                     'eye' => true,
-                    'disabled' => ($server->id && $errors->isEmpty()),
-                ])
-                
-                @include('helpers.form_control', [
-                    'type' => 'select',
-                    'class' => '',
-                    'name' => 'aws_region',
-                    'value' => $server->aws_region,
-                    'help_class' => 'sending_server',
-                    'options' => Acelle\Model\SendingServer::awsRegionSelectOptions(),
-                    'rules' => $server->getRules(),
                     'disabled' => ($server->id && $errors->isEmpty()),
                 ])
                 

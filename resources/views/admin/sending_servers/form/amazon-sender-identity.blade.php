@@ -28,8 +28,10 @@
                 </tbody>
             </table>
             <br>
-            <button class="btn btn-mc_default mr-10">{{ trans('messages.sending_serbers.add_domain') }}</button>
-            <a href="{{ action('Admin\SendingServerController@index') }}" type="button"
+            <a target="_blank" confirm="{{ trans('messages.sending_server.aws.add_domain_redirect_confirm') }}" href="https://us-west-2.console.aws.amazon.com/ses/home?region={{ $server->type }}" class="btn btn-mc_default mr-10">
+                {{ trans('messages.sending_serbers.add_domain') }}
+            </a>
+            <a target="_blank" href="https://us-west-2.console.aws.amazon.com/ses/home?region={{ $server->aws_region }}" type="button"
               class="btn btn-mc_default">
                 {{ trans('messages.sending_serbers.go_to_amazon_dashboard') }}
             </a>

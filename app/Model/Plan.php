@@ -876,4 +876,14 @@ class Plan extends Model
         return is_object($pss) ? $pss->sendingServer : null;
     }
     
+    /**
+     * Get all verified identities.
+     *
+     * @return array
+     */
+    public function getVerifiedIdentities()
+    {
+        return $this->primarySendingServer()->getVerifiedIdentities();
+    }
+    
 }
