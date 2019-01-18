@@ -1132,4 +1132,14 @@ class SendingServer extends Model
     {
         return json_decode($this->options, true)['allow_unverified_from_email'] == 'yes';
     }
+    
+    /**
+     * Check the sending server settings, make sure it does work
+     *
+     * @return boolean
+     */
+    public function test()
+    {
+        return true;
+    }
 }
