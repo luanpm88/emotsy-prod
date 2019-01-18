@@ -990,19 +990,6 @@ class SendingServer extends Model
     }
     
     /**
-     * Get amazon domains info.
-     *
-     * @return array
-     */
-    public function getVerifiedIdentities()
-    {
-        return [
-            'acellemail.com',
-            'bolero.vn',
-        ];
-    }
-    
-    /**
      * Get Mailgun domains info.
      *
      * @return array
@@ -1146,7 +1133,7 @@ class SendingServer extends Model
     /**
      * Get verified identities
      *
-     * @return boolean
+     * @return array
      */
     public function getVerifiedIdentities()
     {
