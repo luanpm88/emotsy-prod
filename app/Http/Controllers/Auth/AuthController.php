@@ -83,26 +83,4 @@ class AuthController extends Controller
         
         return redirect()->intended('/');
     }
-    
-    /**
-     * Validate the user login request.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return void
-     */
-    protected function validateLogin(\Illuminate\Http\Request $request)
-    {
-        $rules = [
-            $this->loginUsername() => 'required',
-            'password' => 'required'
-        ];
-        
-        if (\Acelle\Model\Setting::get('login_recaptcha') == 'yes') {
-            if(!\Acelle\Library\Tool::checkReCaptcha($request)) {
-                $rules['recaptcha_invalid'] = 'required';
-            }
-        }
-        
-        $this->validate($request, $rules);
-    }
 }
