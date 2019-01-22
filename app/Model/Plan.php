@@ -41,7 +41,15 @@ class Plan extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'frequency_amount', 'frequency_unit', 'price', 'color', 'currency_id', 'tax_billing_required', 'paddle_plan_id', 'admin_id',
+        'name',
+        'frequency_amount',
+        'frequency_unit',
+        'price',
+        'color',
+        'currency_id',
+        'tax_billing_required',
+        'paddle_plan_id',
+        'admin_id',
     ];
 
     /**
@@ -70,6 +78,65 @@ class Plan extends Model
         if ($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
             $rules['options.sending_server_subaccount_uid'] = 'required';
         }
+
+        return $rules;
+    }
+    
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function generalRules()
+    {
+        $rules = array(
+            'name' => 'required',
+            'currency_id' => 'required',
+            'frequency_amount' => 'required|min:1',
+            'frequency_unit' => 'required',
+            'price' => 'required|min:0',
+            'color' => 'required',
+        );
+
+        return $rules;
+    }
+    
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function quotaRules()
+    {
+        $rules = array(
+            'options.email_max' => 'required',
+            'options.list_max' => 'required',
+            'options.subscriber_max' => 'required',
+            'options.subscriber_per_list_max' => 'required',
+            'options.segment_per_list_max' => 'required',
+            'options.campaign_max' => 'required',
+            'options.automation_max' => 'required',
+            'options.max_process' => 'required',
+            'options.max_size_upload_total' => 'required',
+            'options.max_file_size_upload' => 'required',
+        );
+
+        return $rules;
+    }
+    
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function sendingLimitRules()
+    {
+        $rules = array(
+            'options.sending_limit' => 'required',
+            'options.sending_quota' => 'required',
+            'options.sending_quota_time' => 'required',
+            'options.sending_quota_time_unit' => 'required',
+        );
 
         return $rules;
     }
@@ -270,6 +337,86 @@ class Plan extends Model
             ['value' => 'unlimited', 'text' => trans('messages.plan_time_unlimited')],
         ];
     }
+    
+    /**
+     * Get sending limit types.
+     *
+     * @return array
+     */
+    public static function sendingLimitValues()
+    {
+        return [
+            'unlimited' => [
+                'quota_value' => -1,
+                'quota_base' => -1,
+                'quota_unit' => 'day',
+            ],
+            '100_per_minute' => [
+                'quota_value' => 100,
+                'quota_base' => 1,
+                'quota_unit' => 'minute',
+            ],
+            '1000_per_hour' => [
+                'quota_value' => 1000,
+                'quota_base' => 1,
+                'quota_unit' => 'hour',
+            ],
+            '10000_per_day' => [
+                'quota_value' => 10000,
+                'quota_base' => 1,
+                'quota_unit' => 'day',
+            ],            
+        ];
+    }
+    
+    /**
+     * Get sending limit select options.
+     *
+     * @return array
+     */
+    public function getSendingLimitSelectOptions()
+    {
+        $options = [];
+        $current = trans('messages.plans.sending_limit.phrase', [
+            'quota_value' => \Acelle\Library\Tool::format_number($this->getOption('sending_quota')),
+            'quota_base' => \Acelle\Library\Tool::format_number($this->getOption('sending_quota_time')),
+            'quota_unit' => $this->getOption('sending_quota_time_unit'),
+        ]);
+        if ($this->getOption('sending_quota') == -1) {
+            $current = trans('messages.plans.sending_limit.unlimited');
+        }
+        
+        $exist = false;
+        foreach (Plan::sendingLimitValues() as $key => $data) {            
+            $wording = trans('messages.plans.sending_limit.phrase', [
+                'quota_value' => \Acelle\Library\Tool::format_number($data['quota_value']),
+                'quota_base' => \Acelle\Library\Tool::format_number($data['quota_base']),
+                'quota_unit' => $data['quota_unit'],
+            ]);
+            
+            if ($data['quota_value'] == -1) {
+                $wording = trans('messages.plans.sending_limit.unlimited');
+            }
+            
+            $options[] = ['text' => $wording, 'value' => $key];
+            
+            if ($wording == $current) {
+                $exist = true;
+                $this->asignOption('sending_limit', $key);
+            }
+        }
+        
+        // exist
+        if (!$exist) {
+            $options[] = ['text' => $current, 'value' => 'current'];
+            $this->asignOption('sending_limit', 'current');
+        }
+        
+        // Custom
+        $options[] = ['text' => trans('messages.plans.sending_limit.custom'), 'value' => 'custom'];
+
+        return $options;
+    }
 
     /**
      * Default options for new plan.
@@ -286,6 +433,7 @@ class Plan extends Model
             'segment_per_list_max' => '-1',
             'campaign_max' => '-1',
             'automation_max' => '-1',
+            'sending_limit' => '1000_per_hour',
             'sending_quota' => '-1',
             'sending_quota_time' => '-1',
             'sending_quota_time_unit' => 'day',
@@ -725,6 +873,17 @@ class Plan extends Model
 
         $this->options = json_encode($options);
         $this->save();
+    }
+    
+    /**
+     * Set option.
+     */
+    public function asignOption($name, $value)
+    {
+        $options = json_decode($this->options, true);
+        $options[$name] = $value;
+
+        $this->options = json_encode($options);
     }
 
     /**

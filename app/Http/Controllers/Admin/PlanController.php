@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 
 use Acelle\Http\Requests;
 use Acelle\Http\Controllers\Controller;
+use \Acelle\Model\Plan;
 
 class PlanController extends Controller
 {
@@ -617,6 +618,128 @@ class PlanController extends Controller
 
         return view('admin.plans.fitness', [
             'plan' => $plan,
+        ]);
+    }
+    
+    /**
+     * Plan general information.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function general(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // validation
+        if (!empty($request->old())) {
+            $plan->fill($request->old());
+        }
+        
+        // update data
+        if ($request->isMethod('post')) {
+            $plan->fill($request->all());
+        
+            $this->validate($request, $plan->generalRules());
+
+            $plan->save();
+            
+            $request->session()->flash('alert-success', trans('messages.plan.updated'));
+            return redirect()->action('Admin\PlanController@general', $plan->uid);
+        }
+
+        return view('admin.plans.general', [
+            'plan' => $plan,
+        ]);
+    }
+    
+    /**
+     * Plan quota information.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function quota(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // validation
+        if (isset($request->old()['options'])) {
+            $plan->options = json_encode($request->old()['options']);
+        }
+        
+        // update data
+        if ($request->isMethod('post')) {
+            // fill options from request
+            $plan->fillOptions($request->options);
+
+            if (isset($request->options['sending_limit'])) {
+                // Sening limit
+                if ($request->options['sending_limit'] != 'custom' && $request->options['sending_limit'] != 'current') {
+                    $limits = Plan::sendingLimitValues()[$request->options['sending_limit']];
+                    $plan->asignOption('sending_quota', $limits['quota_value']);
+                    $plan->asignOption('sending_quota_time', $limits['quota_unit']);
+                    $plan->asignOption('sending_quota_time_unit', $limits['quota_base']);
+                }
+            
+                $this->validate($request, $plan->sendingLimitRules());
+            } else {
+                $this->validate($request, $plan->quotaRules());
+            }
+            
+            $plan->save();
+            
+            $request->session()->flash('alert-success', trans('messages.plan.updated'));
+            return redirect()->action('Admin\PlanController@quota', $plan->uid);
+        }
+
+        return view('admin.plans.quota', [
+            'plan' => $plan,
+            'options' => $plan->getOptions(),
+        ]);
+    }
+    
+    /**
+     * Sending Limit Form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendingLimit(Request $request)
+    {
+        if (!$request->uid) {
+            $plan = new Plan();
+        } else {
+            $plan = Plan::findByUid($request->uid);
+        }
+        
+        // save posted data
+        if ($request->isMethod('post')) {
+            $plan->fillOptions($request->options);
+            return view('admin.plans._sending_limit', [
+                'options' => $plan->getOptions(),
+                'plan' => $plan,
+            ]);
+        }
+        
+        return view('admin.plans.sending_limit', [
+            'plan' => $plan,
+            'options' => $plan->getOptions(),
         ]);
     }
 }
