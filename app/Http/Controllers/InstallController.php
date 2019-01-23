@@ -570,6 +570,12 @@ class InstallController extends Controller
             ],
             [
                 'type' => 'requirement',
+                'name' => 'SQLite3 Extension',
+                'check' => class_exists('SQLite3'),
+                'note' => 'PHP SQLite3 Extension is required.',
+            ],
+            [
+                'type' => 'requirement',
                 'name' => 'PHP GD Library',
                 'check' => (extension_loaded('gd') && function_exists('gd_info')),
                 'note' => 'PHP GD Library is required.',

@@ -63,6 +63,11 @@ if (!extension_loaded('xml')) {
     echo "ERROR: PHP XML extension is required.<br />";
     $valid = false;
 }
+if (!class_exists('SQLite3')) {
+    echo "ERROR: PHP SQLite3 extension is required.<br />";
+    $valid = false;
+}
+
 // proc_close() check =========
 $proc_close_enabled = true;
 try {
