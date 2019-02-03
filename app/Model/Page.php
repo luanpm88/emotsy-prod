@@ -240,12 +240,12 @@ class Page extends Model
     /**
      * Get outside url with subscriber uid.
      */
-    public function getOutsideUrlWithUid()
+    public function getOutsideUrlWithUid($subscriber)
     {
         if (parse_url($this->outside_url, PHP_URL_QUERY)) {
-            return $this->outside_url . "&subscriber_id=" . $this->uid;
+            return $this->outside_url . "&subscriber_id=" . $subscriber->uid;
         } else {
-            return $this->outside_url . "?subscriber_id=" . $this->uid;
+            return $this->outside_url . "?subscriber_id=" . $subscriber->uid;
         }
     }
 }

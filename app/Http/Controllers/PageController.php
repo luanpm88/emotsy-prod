@@ -224,13 +224,14 @@ class PageController extends Controller
         $list = \Acelle\Model\MailList::findByUid($request->list_uid);
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_thankyou_page')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
+        $subscriber = \Acelle\Model\Subscriber::findByUid($request->subscriber_uid);
         
         // redirect if use outside url
         if ($page->use_outside_url) {
-            return redirect($page->getOutsideUrlWithUid());
+            return redirect($page->getOutsideUrlWithUid($subscriber));
         }
 
-        $subscriber = \Acelle\Model\Subscriber::findByUid($request->subscriber_uid);
+        
 
         $page->renderContent(null, $subscriber);
 
@@ -274,7 +275,7 @@ class PageController extends Controller
         
         // redirect if use outside url
         if ($page->use_outside_url) {
-            return redirect($page->getOutsideUrlWithUid());
+            return redirect($page->getOutsideUrlWithUid($subscriber));
         }
 
         return view('pages.default', [
@@ -346,7 +347,7 @@ class PageController extends Controller
         
         // redirect if use outside url
         if ($page->use_outside_url) {
-            return redirect($page->getOutsideUrlWithUid());
+            return redirect($page->getOutsideUrlWithUid($subscriber));
         }
 
         return view('pages.default', [
@@ -436,7 +437,7 @@ class PageController extends Controller
         
         // redirect if use outside url
         if ($page->use_outside_url) {
-            return redirect($page->getOutsideUrlWithUid());
+            return redirect($page->getOutsideUrlWithUid($subscriber));
         }
 
         return view('pages.default', [
@@ -472,7 +473,7 @@ class PageController extends Controller
         
         // redirect if use outside url
         if ($page->use_outside_url) {
-            return redirect($page->getOutsideUrlWithUid());
+            return redirect($page->getOutsideUrlWithUid($subscriber));
         }
 
         return view('pages.default', [
