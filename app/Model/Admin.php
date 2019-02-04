@@ -232,6 +232,7 @@ class Admin extends Model
     public static function filter($request)
     {
         $query = self::select('admins.*')
+                        ->join('users', 'admins.user_id', '=', 'users.id')
                         ->leftJoin('admin_groups', 'admin_groups.id', '=', 'admins.admin_group_id');
 
         // Keyword
