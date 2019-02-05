@@ -14,10 +14,10 @@ if (!version_compare(PHP_VERSION, '5.6.4', '>=')) {
     $valid = false;
 }
 
-if (!empty(ini_get('open_basedir'))) {
-    echo "ERROR: Please disable the <strong>open_basedir</strong> setting to continue.<br />";
-    $valid = false;
-}
+//if (!empty(ini_get('open_basedir'))) {
+//    echo "ERROR: Please disable the <strong>open_basedir</strong> setting to continue.<br />";
+//    $valid = false;
+//}
 
 if (!function_exists('mysqli_connect')) {
     echo "ERROR: Mysqli Extension is required.<br />";

@@ -30,10 +30,10 @@ if (!extension_loaded('mbstring')) {
 }
 
 // Check if open_basedir is in effect
-if (!empty(ini_get('open_basedir'))) {
-    echo "ERROR: Please disable the <strong>open_basedir</strong> setting to continue.<br />";
-    exit(0);
-}
+//if (!empty(ini_get('open_basedir'))) {
+//    echo "ERROR: Please disable the <strong>open_basedir</strong> setting to continue.<br />";
+//    exit(0);
+//}
 
 // Check directory permission
 if (!(file_exists('../storage/app') && is_dir('../storage/app') && (is_writable('../storage/app')))) {

@@ -156,7 +156,7 @@ class Tool
      */
     public static function dateTime($datetime)
     {
-        $timezone = Tool::currentTimezone();
+        $timezone = self::currentTimezone();
         $result = $datetime;
         $result = $result->timezone($timezone);
 
@@ -259,9 +259,10 @@ class Tool
      */
     public static function systemTimeFromString($string)
     {
-        $timezone = Tool::currentTimezone();
+        $timezone = self::currentTimezone();
         $time = \Carbon\Carbon::createFromFormat('Y-m-d H:i', $string, $timezone);
         $time = self::systemTime($time);
+
         return $time;
     }
 
@@ -272,7 +273,8 @@ class Tool
      *
      * @return string
      */
-    public static function returnBytes($val) {
+    public static function returnBytes($val)
+    {
         //$val = trim($val);
         //$last = strtolower($val[strlen($val)-1]);
         //switch($last)
@@ -294,7 +296,8 @@ class Tool
      *
      * @return string
      */
-    public static function maxFileUploadInBytes() {
+    public static function maxFileUploadInBytes()
+    {
         //select maximum upload size
         $max_upload = self::returnBytes(ini_get('upload_max_filesize'));
         //select post limit
@@ -312,7 +315,8 @@ class Tool
      *
      * @return array
      */
-    public static function dayOfWeekSelectOptions() {
+    public static function dayOfWeekSelectOptions()
+    {
         return [
             ['value' => '1', 'text' => trans('messages.Monday')],
             ['value' => '2', 'text' => trans('messages.Tuesday')],
@@ -331,9 +335,10 @@ class Tool
      *
      * @return array
      */
-    public static function weekdaysArray() {
+    public static function weekdaysArray()
+    {
         $array = [];
-        foreach(self::dayOfWeekSelectOptions() as $day) {
+        foreach (self::dayOfWeekSelectOptions() as $day) {
             $array[$day['value']] = $day['text'];
         }
 
@@ -347,7 +352,8 @@ class Tool
      *
      * @return array
      */
-    public static function monthSelectOptions() {
+    public static function monthSelectOptions()
+    {
         return [
             ['value' => '1', 'text' => trans('messages.January')],
             ['value' => '2', 'text' => trans('messages.February')],
@@ -371,9 +377,10 @@ class Tool
      *
      * @return array
      */
-    public static function monthsArray() {
+    public static function monthsArray()
+    {
         $array = [];
-        foreach(self::monthSelectOptions() as $day) {
+        foreach (self::monthSelectOptions() as $day) {
             $array[$day['value']] = $day['text'];
         }
 
@@ -387,7 +394,8 @@ class Tool
      *
      * @return array
      */
-    public static function weekSelectOptions() {
+    public static function weekSelectOptions()
+    {
         return [
             ['value' => '1', 'text' => trans('messages.1st_week')],
             ['value' => '2', 'text' => trans('messages.2nd_week')],
@@ -404,9 +412,10 @@ class Tool
      *
      * @return array
      */
-    public static function weeksArray() {
+    public static function weeksArray()
+    {
         $array = [];
-        foreach(self::weekSelectOptions() as $day) {
+        foreach (self::weekSelectOptions() as $day) {
             $array[$day['value']] = $day['text'];
         }
 
@@ -420,11 +429,13 @@ class Tool
      *
      * @return array
      */
-    public static function dayOfMonthSelectOptions() {
+    public static function dayOfMonthSelectOptions()
+    {
         $arr = [];
-        for($i=1; $i < 32; $i++) {
+        for ($i = 1; $i < 32; ++$i) {
             $arr[] = ['value' => $i, 'text' => $i];
         }
+
         return $arr;
     }
 
@@ -435,13 +446,15 @@ class Tool
      *
      * @return string
      */
-    public static function dayStringFromTimestamp($timestamp) {
-        if(isset($timestamp) && $timestamp != '0000-00-00 00:00:00') {
+    public static function dayStringFromTimestamp($timestamp)
+    {
+        if (isset($timestamp) && $timestamp != '0000-00-00 00:00:00') {
             // @todo: hard day format code: 'Y-m-d'
             $result = \Acelle\Library\Tool::dateTime($timestamp)->format('Y-m-d');
         } else {
             $result = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('Y-m-d');
         }
+
         return $result;
     }
 
@@ -452,13 +465,15 @@ class Tool
      *
      * @return string
      */
-    public static function timeStringFromTimestamp($timestamp) {
-        if(isset($timestamp) && $timestamp != '0000-00-00 00:00:00') {
+    public static function timeStringFromTimestamp($timestamp)
+    {
+        if (isset($timestamp) && $timestamp != '0000-00-00 00:00:00') {
             // @todo: hard day format code: 'H:i'
             $result = \Acelle\Library\Tool::dateTime($timestamp)->format('H:i');
         } else {
             $result = \Acelle\Library\Tool::dateTime(\Carbon\Carbon::now())->format('H:i');
         }
+
         return $result;
     }
 
@@ -469,10 +484,11 @@ class Tool
      *
      * @return string
      */
-    public static function numberArrayToWeekdaysArray($numbers) {
+    public static function numberArrayToWeekdaysArray($numbers)
+    {
         $weekdays_texts = self::weekdaysArray();
         $weekdays = [];
-        foreach($numbers as $number) {
+        foreach ($numbers as $number) {
             $weekdays[] = $weekdays_texts[$number];
         }
 
@@ -486,10 +502,11 @@ class Tool
      *
      * @return string
      */
-    public static function numberArrayToWeeksArray($numbers) {
+    public static function numberArrayToWeeksArray($numbers)
+    {
         $weeks_texts = self::weeksArray();
         $weeks = [];
-        foreach($numbers as $number) {
+        foreach ($numbers as $number) {
             $weeks[] = $weeks_texts[$number];
         }
 
@@ -503,10 +520,11 @@ class Tool
      *
      * @return string
      */
-    public static function numberArrayToMonthsArray($numbers) {
+    public static function numberArrayToMonthsArray($numbers)
+    {
         $month_texts = self::monthsArray();
         $months = [];
-        foreach($numbers as $number) {
+        foreach ($numbers as $number) {
             $months[] = $month_texts[$number];
         }
 
@@ -520,15 +538,17 @@ class Tool
      *
      * @return string
      */
-    public static function getDayNamesFromArrayOfNumber($numbers) {
+    public static function getDayNamesFromArrayOfNumber($numbers)
+    {
         $names = [];
 
-        $ends = array('th','st','nd','rd','th','th','th','th','th','th');
-        foreach($numbers as $number) {
-            if (($number %100) >= 11 && ($number%100) <= 13)
-               $names[] = $number. 'th';
-            else
-               $names[] = $number. $ends[$number % 10];
+        $ends = array('th', 'st', 'nd', 'rd', 'th', 'th', 'th', 'th', 'th', 'th');
+        foreach ($numbers as $number) {
+            if (($number % 100) >= 11 && ($number % 100) <= 13) {
+                $names[] = $number.'th';
+            } else {
+                $names[] = $number.$ends[$number % 10];
+            }
         }
 
         return $names;
@@ -558,19 +578,20 @@ class Tool
      *
      * @return string
      */
-    public static function phpPathsSelectOptions($paths) {
+    public static function phpPathsSelectOptions($paths)
+    {
         $options = [];
 
-        foreach($paths as $path) {
+        foreach ($paths as $path) {
             $options[] = [
                 'text' => $path,
-                'value' => $path
+                'value' => $path,
             ];
         }
 
         $options[] = [
             'text' => trans('messages.php_bin_manual'),
-            'value' => 'manual'
+            'value' => 'manual',
         ];
 
         return $options;
@@ -581,16 +602,21 @@ class Tool
      *
      * @param string
      *
-     * @return boolean
+     * @return bool
      */
-    public static function checkPHPBinPath($path) {
+    public static function checkPHPBinPath($path)
+    {
         $result = '';
-        if (!file_exists($path) || !is_executable($path)) {
-            return $result;
+        try {
+            if (!file_exists($path) || !is_executable($path)) {
+                return $result;
+            }
+        } catch (\Exception $ex) {
+            // open_basedir in effect
         }
 
-        if(exec_enabled()) {
-            $exec_script = $path . " " . base_path() . '/php_bin_test.php 2>&1';
+        if (exec_enabled()) {
+            $exec_script = $path.' '.base_path().'/php_bin_test.php 2>&1';
             $result = exec($exec_script, $output);
         } else {
             $result = 'ok';
@@ -606,16 +632,17 @@ class Tool
      *
      * @return string
      */
-    public static function availableSystemBackgroundMethodSelectOptions() {
+    public static function availableSystemBackgroundMethodSelectOptions()
+    {
         $options = [
             [
                 'text' => trans('messages.database_job_type'),
                 'value' => 'database',
                 'description' => trans('messages.database_job_type_desc'),
-            ]
+            ],
         ];
 
-        if(true) {
+        if (true) {
             $options[] = [
                 'text' => trans('messages.async_job_type'),
                 'description' => trans('messages.async_job_type_desc'),
@@ -635,7 +662,8 @@ class Tool
      *
      * @return string
      */
-    public static function cronjobUpdateController($request, $controller) {
+    public static function cronjobUpdateController($request, $controller)
+    {
 
         // Suggestion paths
         $paths = [
@@ -655,9 +683,9 @@ class Tool
         ];
 
         // try to detect system's PHP CLI
-        if(exec_enabled()) {
+        if (exec_enabled()) {
             try {
-                $paths = array_unique(array_merge($paths, explode(" ", exec("whereis php"))));
+                $paths = array_unique(array_merge($paths, explode(' ', exec('whereis php'))));
             } catch (\Exception $e) {
                 // @todo: system logging here
                 echo $e->getMessage();
@@ -666,8 +694,16 @@ class Tool
 
         // validate detected / default PHP CLI
         // Because array_filter() preserves keys, you should consider the resulting array to be an associative array even if the original array had integer keys for there may be holes in your sequence of keys. This means that, for example, json_encode() will convert your result array into an object instead of an array. Call array_values() on the result array to guarantee json_encode() gives you an array.
-        $paths = array_values(array_filter($paths, function($path) {
-            return is_executable($path) && preg_match("/php[0-9\.a-z]{0,3}$/i", $path);
+        $paths = array_values(array_filter($paths, function ($path) {
+            $checked = true;
+            try {
+                $checked = $checked && is_executable($path);
+            } catch (\Exception $ex) {
+                // in case of open_basedir, just throw skip it
+                $checked = true;
+            }
+
+            return $checked && preg_match("/php[0-9\.a-z]{0,3}$/i", $path);
         }));
 
         $rules = [];
@@ -678,8 +714,8 @@ class Tool
         $php_bin_path_value = empty($paths) ? '' : $paths[0];
 
         $setting_php_bin_path = \Acelle\Model\Setting::get('php_bin_path');
-        if(!empty($setting_php_bin_path)) {
-            if(in_array($setting_php_bin_path, $paths)) {
+        if (!empty($setting_php_bin_path)) {
+            if (in_array($setting_php_bin_path, $paths)) {
                 $php_bin_path = $setting_php_bin_path;
             } else {
                 $php_bin_path = 'manual';
@@ -688,26 +724,26 @@ class Tool
         }
 
         if (!empty($request->old())) {
-            $php_bin_path = $request->old()["php_bin_path"];
-            $php_bin_path_value = $request->old()["php_bin_path_value"];
-            $queue_driver = $request->old()["queue_driver"];
+            $php_bin_path = $request->old()['php_bin_path'];
+            $php_bin_path_value = $request->old()['php_bin_path_value'];
+            $queue_driver = $request->old()['queue_driver'];
         }
 
         // create remote token if empty
-        if(empty(\Acelle\Model\Setting::get('remote_job_token'))) {
+        if (empty(\Acelle\Model\Setting::get('remote_job_token'))) {
             \Acelle\Model\Setting::set('remote_job_token', str_random(60));
         }
 
         $request->session()->forget('cron_jobs');
         $error = '';
         $valid = false;
-        if($request->isMethod('post')) {
+        if ($request->isMethod('post')) {
             $php_bin_path = $request->php_bin_path;
             $php_bin_path_value = $request->php_bin_path_value;
             $queue_driver = $request->queue_driver;
 
             // If type == database
-            if($request->queue_driver == 'database') {
+            if ($request->queue_driver == 'database') {
                 $rules = [
                     'php_bin_path_value' => 'required',
                     'queue_driver' => 'required',
@@ -715,7 +751,7 @@ class Tool
 
                 // Check valid path
                 $check = \Acelle\Library\Tool::checkPHPBinPath($php_bin_path_value);
-                if($check != 'ok') {
+                if ($check != 'ok') {
                     $rules['php_bin_path_invalid'] = 'required';
                 }
 
@@ -729,11 +765,11 @@ class Tool
             $request->session()->put('cron_jobs', true);
 
             // Update .env
-            if(in_array($queue_driver, ['database', 'async']) && config('queue.default') != $queue_driver) {
+            if (in_array($queue_driver, ['database', 'async']) && config('queue.default') != $queue_driver) {
                 \Acelle\Model\Setting::setEnv('QUEUE_DRIVER', $queue_driver);
             }
 
-            if($request->queue_driver == 'async') {
+            if ($request->queue_driver == 'async') {
                 return 'done';
             }
 
@@ -758,39 +794,44 @@ class Tool
      *
      * @return string
      */
-    public static function showReCaptcha($errors=NULL) {
+    public static function showReCaptcha($errors = null)
+    {
         ?>
             <div class="recaptcha-box">
                 <script src='https://www.google.com/recaptcha/api.js?hl=<?php echo language_code() ?>'></script>
                 <div class="g-recaptcha" data-sitekey="6LfyISoTAAAAABJV8zycUZNLgd0sj-sBFjctzXKw"></div>
-                <?php if (isset($errors) && $errors->has('recaptcha_invalid')) { ?>
+                <?php if (isset($errors) && $errors->has('recaptcha_invalid')) {
+    ?>
                     <span class="help-block text-danger">
                         <strong><?php echo $errors->first('recaptcha_invalid'); ?></strong>
                     </span>
-                <?php } ?>
+                <?php 
+} ?>
             </div>
         <?php
+
     }
 
     /**
      * Check re-captcha success.
      *
-     * @return boolean
+     * @return bool
      */
-    public static function checkReCaptcha($request) {
-        if(!isset($request->all()["g-recaptcha-response"])) {
+    public static function checkReCaptcha($request)
+    {
+        if (!isset($request->all()['g-recaptcha-response'])) {
             return false;
         }
 
         // Check recaptch
         $client = new \GuzzleHttp\Client();
         $res = $client->post('https://www.google.com/recaptcha/api/siteverify', ['verify' => false, 'form_params' => [
-            'secret' => "6LfyISoTAAAAAC0hJ916unwi0m_B0p7fAvCRK4Kp",
+            'secret' => '6LfyISoTAAAAAC0hJ916unwi0m_B0p7fAvCRK4Kp',
             'remoteip' => $request->ip(),
-            'response' => $request->all()["g-recaptcha-response"]
+            'response' => $request->all()['g-recaptcha-response'],
         ]]);
 
-        return json_decode($res->getBody(), true)["success"];
+        return json_decode($res->getBody(), true)['success'];
     }
 
     /**
@@ -800,10 +841,11 @@ class Tool
      *
      * @return array
      */
-    public static function numberSelectOptions($min=1, $max=100) {
+    public static function numberSelectOptions($min = 1, $max = 100)
+    {
         $options = [];
 
-        for($i = $min; $i <= $max; $i++) {
+        for ($i = $min; $i <= $max; ++$i) {
             $options[] = ['value' => $i, 'text' => $i];
         }
 
@@ -817,8 +859,9 @@ class Tool
      *
      * @return string
      */
-    public static function format_price($price, $format='{PRICE}') {
-        return str_replace('{PRICE}', Tool::format_number($price), $format);
+    public static function format_price($price, $format = '{PRICE}')
+    {
+        return str_replace('{PRICE}', self::format_number($price), $format);
     }
 
     /**
@@ -828,10 +871,11 @@ class Tool
      *
      * @return string
      */
-    public static function format_number($number) {
-        if(is_numeric( $number ) && floor( $number ) != $number) {
+    public static function format_number($number)
+    {
+        if (is_numeric($number) && floor($number) != $number) {
             return number_format($number, 2, trans('messages.dec_point'), trans('messages.thousands_sep'));
-        } elseif (is_numeric( $number )) {
+        } elseif (is_numeric($number)) {
             return number_format($number, 0, trans('messages.dec_point'), trans('messages.thousands_sep'));
         } else {
             return $number;
@@ -851,16 +895,17 @@ class Tool
     }
 
     /**
-     * Replace HTML url
+     * Replace HTML url.
      *
      * @return text
      */
-    public static function replaceHtmlUrl($content, $path) {
+    public static function replaceHtmlUrl($content, $path)
+    {
         // find all link in html content
         preg_match_all('/(?<=src=|background=|href=|url\()(\'|")?(?<url>.*?)(?=\1|\))/i', $content, $matches);
         $srcs = array_unique($matches['url']);
 
-        foreach($srcs as $key => $src) {
+        foreach ($srcs as $key => $src) {
             $srcs[$key] = htmlspecialchars_decode($src);
             $srcs[$key] = str_replace('"', '', $srcs[$key]);
             $srcs[$key] = str_replace('\'', '', $srcs[$key]);
@@ -883,11 +928,12 @@ class Tool
     }
 
     /**
-     * Check current view if exist
+     * Check current view if exist.
      *
-     * @return boolean
+     * @return bool
      */
-    public static function currentView() {
+    public static function currentView()
+    {
         return \Request::is('admin*') ? 'backend' : 'frontend';
     }
 
@@ -898,9 +944,9 @@ class Tool
      */
     public static function currentTimezone()
     {
-        if (Tool::currentView() == 'frontend') {
+        if (self::currentView() == 'frontend') {
             $timezone = is_object(\Auth::user()) && is_object(\Auth::user()->customer) ? \Auth::user()->customer->timezone : '+00:00';
-        } elseif (Tool::currentView() == 'backend') {
+        } elseif (self::currentView() == 'backend') {
             $timezone = is_object(\Auth::user()) && is_object(\Auth::user()->admin) ? \Auth::user()->admin->timezone : '+00:00';
         } else {
             $timezone = '+00:00';
@@ -914,42 +960,44 @@ class Tool
      *
      * @var string
      */
-    public static function getDirectorySize($path){
+    public static function getDirectorySize($path)
+    {
         $bytestotal = 0;
         $path = realpath($path);
-        if($path!==false){
-            foreach(new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS)) as $object){
+        if ($path !== false) {
+            foreach (new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($path, \FilesystemIterator::SKIP_DOTS)) as $object) {
                 $bytestotal += $object->getSize();
             }
         }
+
         return $bytestotal;
     }
 
     /**
      * Formats a line (passed as a fields  array) as CSV and returns the CSV as a string.
-     * Adapted from http://us3.php.net/manual/en/function.fputcsv.php#87120
-    */
-    public static function arrayToCsv( array &$fields, $delimiter = ';', $enclosure = '"', $encloseAll = false, $nullToMysqlNull = false ) {
+     * Adapted from http://us3.php.net/manual/en/function.fputcsv.php#87120.
+     */
+    public static function arrayToCsv(array &$fields, $delimiter = ';', $enclosure = '"', $encloseAll = false, $nullToMysqlNull = false)
+    {
         $delimiter_esc = preg_quote($delimiter, '/');
         $enclosure_esc = preg_quote($enclosure, '/');
 
         $output = array();
-        foreach ( $fields as $field ) {
+        foreach ($fields as $field) {
             if ($field === null && $nullToMysqlNull) {
                 $output[] = 'NULL';
                 continue;
             }
 
             // Enclose fields containing $delimiter, $enclosure or whitespace
-            if ( $encloseAll || preg_match( "/(?:${delimiter_esc}|${enclosure_esc}|\s)/", $field ) ) {
-                $output[] = $enclosure . str_replace($enclosure, $enclosure . $enclosure, $field) . $enclosure;
-            }
-            else {
+            if ($encloseAll || preg_match("/(?:${delimiter_esc}|${enclosure_esc}|\s)/", $field)) {
+                $output[] = $enclosure.str_replace($enclosure, $enclosure.$enclosure, $field).$enclosure;
+            } else {
                 $output[] = $field;
             }
         }
 
-        return implode( $delimiter, $output );
+        return implode($delimiter, $output);
     }
 
     /**
@@ -957,7 +1005,8 @@ class Tool
      *
      * @var string
      */
-    public static function isValidEmail($email){
+    public static function isValidEmail($email)
+    {
         return filter_var($email, FILTER_VALIDATE_EMAIL) !== false;
     }
 }
