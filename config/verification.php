@@ -66,6 +66,14 @@ return [
             'fields' => [ 'api_key' ],
             'result_xpath' => '$.result',
             'result_map' => [ 'deliverable' => 'deliverable', 'unknown' => 'unknown', 'risky' => 'risky', 'undeliverable' => 'undeliverable' ]
+        ], [
+            'id' => 'debounce.io',
+            'name' => 'debounce.io',
+            'uri' => 'https://api.debounce.io/v1/?api={API_KEY}&email={EMAIL}',
+            'request_type' => 'GET',
+            'fields' => [ 'api_key' ],
+            'result_xpath' => '$.debounce.result',
+            'result_map' => [ 'Safe to Send' => 'deliverable', 'Unknown' => 'unknown', 'Risky' => 'risky', 'Invalid' => 'undeliverable' ]
         ],
     ]
 ];
