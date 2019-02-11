@@ -241,57 +241,33 @@ class PlanController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function save(Request $request, $uid)
     {
         // Get current user
-        $user = $request->user();
-        $plan = \Acelle\Model\Plan::findByUid($id);
+        $plan = Plan::findByUid($uid);
 
         // authorize
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-
-        // prevent action from demo mod
-        if ($this->isDemoMode()) {
-            return $this->notAuthorized();
+        
+        $plan->fillRequest($request);
+        
+        if ($request->options) {
+            if (isset($request->options['sending_limit'])) {
+                $this->validate($request, $plan->sendingLimitRules());
+            }
+            
+            if (isset($request->options['email_max'])) {
+                $this->validate($request, $plan->resourcesRules());
+            }
+        } else {
+            $this->validate($request, $plan->generalRules());
         }
 
-        // save posted data
-        if ($request->isMethod('patch')) {
-            $plan->fill($request->all());
-            // $plan->options = json_encode($request->options);
-            $plan->fillOptions($request->options);
-
-            $this->validate($request, $plan->rules());
-
-            $rules = [];
-            if (isset($request->sending_servers)) {
-                foreach ($request->sending_servers as $key => $param) {
-                    if ($param['check']) {
-                        $rules['sending_servers.'.$key.'.fitness'] = 'required';
-                    }
-                }
-            }
-            $this->validate($request, $rules);
-
-            $plan->save();
-
-            // For sending servers
-            if (isset($request->sending_servers)) {
-                $plan->updateSendingServers($request->sending_servers);
-            }
-
-            // For email verification servers
-            if (isset($request->email_verification_servers)) {
-                $plan->updateEmailVerificationServers($request->email_verification_servers);
-            }
-            //update single plan on server like paypal, paddle,stripe_credit_card
-            //if payment method is active
-            $plan->createPlanOnServer($request->all(), $plan);
-            $request->session()->flash('alert-success', trans('messages.plan.updated'));
-            return redirect()->action('Admin\PlanController@edit', $plan->uid);
-        }
+        $plan->save();
+        
+        return redirect()->back()->with('alert-success', trans('messages.plan.updated'));
     }
 
     /**
@@ -678,34 +654,7 @@ class PlanController extends Controller
         }
         
         // validation
-        if (isset($request->old()['options'])) {
-            $plan->options = json_encode($request->old()['options']);
-        }
-        
-        // update data
-        if ($request->isMethod('post')) {
-            // fill options from request
-            $plan->fillOptions($request->options);
-
-            if (isset($request->options['sending_limit'])) {
-                // Sening limit
-                if ($request->options['sending_limit'] != 'custom' && $request->options['sending_limit'] != 'current') {
-                    $limits = Plan::sendingLimitValues()[$request->options['sending_limit']];
-                    $plan->asignOption('sending_quota', $limits['quota_value']);
-                    $plan->asignOption('sending_quota_time', $limits['quota_unit']);
-                    $plan->asignOption('sending_quota_time_unit', $limits['quota_base']);
-                }
-            
-                $this->validate($request, $plan->sendingLimitRules());
-            } else {
-                $this->validate($request, $plan->quotaRules());
-            }
-            
-            $plan->save();
-            
-            $request->session()->flash('alert-success', trans('messages.plan.updated'));
-            return redirect()->action('Admin\PlanController@quota', $plan->uid);
-        }
+        $plan->fillRequest($request);
 
         return view('admin.plans.quota', [
             'plan' => $plan,
@@ -740,6 +689,34 @@ class PlanController extends Controller
         return view('admin.plans.sending_limit', [
             'plan' => $plan,
             'options' => $plan->getOptions(),
+        ]);
+    }
+    
+    /**
+     * Billing cycle form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function billingCycle(Request $request)
+    {
+        if (!$request->uid) {
+            $plan = new Plan();
+        } else {
+            $plan = Plan::findByUid($request->uid);
+        }
+        
+        // save posted data
+        if ($request->isMethod('post')) {
+            $plan->fill($request->all());
+            return view('admin.plans._billing_cycle', [
+                'plan' => $plan,
+            ]);
+        }
+        
+        return view('admin.plans.billing_cycle', [
+            'plan' => $plan,
         ]);
     }
 }

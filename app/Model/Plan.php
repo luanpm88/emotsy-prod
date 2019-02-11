@@ -106,7 +106,7 @@ class Plan extends Model
      *
      * @var array
      */
-    public function quotaRules()
+    public function resourcesRules()
     {
         $rules = array(
             'options.email_max' => 'required',
@@ -370,6 +370,29 @@ class Plan extends Model
     }
     
     /**
+     * Get billing recurs available values.
+     *
+     * @return array
+     */
+    public static function billingCycleValues()
+    {
+        return [
+            'daily' => [
+                'frequency_amount' => 1,
+                'frequency_unit' => 'day',
+            ],
+            'monthly' => [
+                'frequency_amount' => 1,
+                'frequency_unit' => 'month',
+            ],
+            'yearly' => [
+                'frequency_amount' => 1,
+                'frequency_unit' => 'year',
+            ],  
+        ];
+    }
+    
+    /**
      * Get sending limit select options.
      *
      * @return array
@@ -417,6 +440,42 @@ class Plan extends Model
 
         return $options;
     }
+    
+    /**
+     * Get billing recurs select options.
+     *
+     * @return array
+     */
+    public function getBillingCycleSelectOptions()
+    {
+        $options = [];
+        
+        $this->asignOption('billing_cycle', 'other');
+        foreach (Plan::billingCycleValues() as $key => $data) {            
+            $wording = trans('messages.plan.billing_cycle.' . $key);            
+            $options[] = ['text' => $wording, 'value' => $key];
+            
+            // is other values
+            if ($data['frequency_amount'] == $this->frequency_amount && $data['frequency_unit'] == $this->frequency_unit) {
+                $this->asignOption('billing_cycle', $key);
+            }
+        }
+
+        // exist
+        if ($this->getOption('billing_cycle') == 'other') {
+            $wording = trans('messages.plan.billing_cycle.phrase', [
+                'frequency_amount' => format_number($this->frequency_amount),
+                'frequency_unit' => $this->frequency_unit,
+            ]);
+            
+            $options[] = ['text' => $wording, 'value' => 'other'];
+        }
+        
+        // Custom
+        $options[] = ['text' => trans('messages.plan.billing_cycle.custom'), 'value' => 'custom'];
+
+        return $options;
+    }
 
     /**
      * Default options for new plan.
@@ -433,6 +492,7 @@ class Plan extends Model
             'segment_per_list_max' => '-1',
             'campaign_max' => '-1',
             'automation_max' => '-1',
+            'billing_cycle' => 'monthly',
             'sending_limit' => '1000_per_hour',
             'sending_quota' => '-1',
             'sending_quota_time' => '-1',
@@ -548,6 +608,16 @@ class Plan extends Model
         } else {
             return strtolower(\Acelle\Library\Tool::format_number($this->getOption('sending_quota')).' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase('email', $this->getOption('sending_quota'))).' / '.$this->getOption('sending_quota_time').' '.trans('messages.'.\Acelle\Library\Tool::getPluralPrase($this->getOption('sending_quota_time_unit'), $this->getOption('sending_quota'))));
         }
+    }
+    
+    /**
+     * Display plan price.
+     *
+     * @return array
+     */
+    public function displayPrice()
+    {
+        return format_price($this->price, $this->currency->format);
     }
 
     /**
@@ -889,16 +959,53 @@ class Plan extends Model
     /**
      * Fill option from request.
      */
-    public function fillOptions($options)
+    public function fillOptions($options=[])
     {
         $defaultOptions = self::defaultOptions();
-        $dbOptions = $this->options ? json_decode($this->options, true) : $defaultOptions;
+        $saveOptions = $this->options ? array_merge($defaultOptions, json_decode($this->options, true)) : $defaultOptions;
         if (!empty($options)) {
             foreach ($options as $key => $value) {
-                $dbOptions[$key] = $value;
+                $saveOptions[$key] = $value;
             }
         }
-        $this->options = json_encode($dbOptions);
+        
+        // Sening limit
+        if (isset($options['sending_limit']) && $options['sending_limit'] != 'custom' && $options['sending_limit'] != 'current') {
+            $limits = Plan::sendingLimitValues()[$options['sending_limit']];
+            $saveOptions['sending_quota'] = $limits['quota_value'];
+            $saveOptions['sending_quota_time'] = $limits['quota_unit'];
+            $saveOptions['sending_quota_time_unit'] = $limits['quota_base'];
+        }
+            
+        $this->options = json_encode($saveOptions);
+    }
+    
+    /**
+     * Fill from request.
+     */
+    public function fillRequest($request)
+    {
+        $this->fill($request->all());
+        
+        // fill options
+        if (isset($request->options)) {
+            // Fill all options
+            $this->fillOptions($request->options);
+        }
+        
+        // old request
+        if (isset($request->old()['options'])) {
+            // Fill all options
+            $this->fillOptions($request->old()['options']);
+        }
+        
+        // billing cycle
+        $billingCycle = $this->getOption('billing_cycle');
+        if (isset($billingCycle) && $billingCycle != 'custom' && $billingCycle != 'other') {
+            $limits = Plan::billingCycleValues()[$billingCycle];
+            $this->frequency_amount = $limits['frequency_amount'];
+            $this->frequency_unit = $limits['frequency_unit'];
+        }
     }
 
     /**

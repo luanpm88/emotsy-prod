@@ -537,3 +537,30 @@ function jsonGet($array, $path) {
    $result = $jsonObject->get($path)[0];
    return $result;
 }
+
+/**
+* Format price.
+*
+* @param string
+*
+* @return string
+*/
+function format_number($number) {
+   if(is_numeric( $number ) && floor( $number ) != $number) {
+       return number_format($number, 2, trans('messages.dec_point'), trans('messages.thousands_sep'));
+   } elseif (is_numeric( $number )) {
+       return number_format($number, 0, trans('messages.dec_point'), trans('messages.thousands_sep'));
+   } else {
+       return $number;
+   }
+}
+/**
+* Format price.
+*
+* @param string
+*
+* @return string
+*/
+function format_price($price, $format='{PRICE}') {
+   return str_replace('{PRICE}', format_number($price), $format);
+}

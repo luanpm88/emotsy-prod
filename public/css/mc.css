@@ -431,3 +431,35 @@ stat .stat-head {
   padding-left: 35px;
   font-size: 100%;
 }
+.stats-boxes {
+  display: flex;
+  margin-bottom: 30px;
+}
+.stats-boxes .stats-box {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    border: 1px solid #bdbbb9;
+    border-left: 0 none;
+    text-align: center;
+    vertical-align: baseline;
+}
+.stats-boxes .stats-box:first-child {
+    border-left: 1px solid #bdbbb9;
+    border-radius: 4px 0 0 4px;
+}
+.stats-boxes .stats-box:last-child {
+    border-radius: 0 4px 4px 0;
+}
+.stats-boxes .stats-box h3 {
+    margin: 0 0 6px 0;
+    font-size: 24px;
+}
+.stats-boxes .stats-box p {
+    margin: 0;
+}
+.width1of3 {
+  width: 33.3%;
+}
+.width1of4 {
+  width: 25%;
+}

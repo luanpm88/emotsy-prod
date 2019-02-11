@@ -26,12 +26,15 @@
     
     @include('admin.plans._menu')
     
-    <div class="row">
-        <div class="col-md-8">
-            <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@quota', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
-                {{ csrf_field() }}
+    <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@save', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
+        {{ csrf_field() }}
+        
+        <div class="row">
+            <div class="col-md-6">
                 <div class="mc_section">
                     <h2>{{ trans('messages.plan.sending_limit') }}</h2>
+                        
+                    <p>{{ trans('messages.plan.sending_limit.intro') }}</p>
                         
                     <div class="select-custom" data-url="{{ action('Admin\PlanController@sendingLimit', $plan->uid) }}">
                         @include ('admin.plans._sending_limit', [
@@ -43,9 +46,13 @@
                     <a href="{{ action('Admin\PlanController@index') }}" type="button" class="btn btn-mc_inline">
                         {{ trans('messages.cancel') }}
                     </a>
-                </div>                
-            </form>
-            <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@quota', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
+                </div>
+            </div>
+        </div>
+    </form>
+    <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@save', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
+        <div class="row">
+            <div class="col-md-8">
                 {{ csrf_field() }}
                 <div class="mc_section">
                     <h2>{{ trans('messages.plan.resources') }}</h2>
@@ -58,7 +65,7 @@
                             'label' => trans('messages.max_emails'),
                             'help_class' => 'plan',
                             'options' => ['true', 'false'],
-                            'rules' => $plan->quotaRules(),
+                            'rules' => $plan->resourcesRules(),
                             'unlimited_check' => true,
                         ])
                     </div>
@@ -71,7 +78,7 @@
                             'label' => trans('messages.max_lists'),
                             'help_class' => 'plan',
                             'options' => ['true', 'false'],
-                            'rules' => $plan->quotaRules(),
+                            'rules' => $plan->resourcesRules(),
                             'unlimited_check' => true,
                         ])
                     </div>
@@ -84,7 +91,7 @@
                             'label' => trans('messages.max_subscribers'),
                             'help_class' => 'plan',
                             'options' => ['true', 'false'],
-                            'rules' => $plan->quotaRules(),
+                            'rules' => $plan->resourcesRules(),
                             'unlimited_check' => true,
                         ])
                     </div>
@@ -96,7 +103,7 @@
                             'value' => $options['subscriber_per_list_max'],
                             'label' => trans('messages.max_subscribers_per_list'),
                             'help_class' => 'plan',
-                            'rules' => $plan->quotaRules(),
+                            'rules' => $plan->resourcesRules(),
                             'unlimited_check' => true,
                         ])
                     </div>
@@ -108,7 +115,7 @@
                             'value' => $options['segment_per_list_max'],
                             'label' => trans('messages.segment_per_list_max'),
                             'help_class' => 'plan',
-                            'rules' => $plan->quotaRules(),
+                            'rules' => $plan->resourcesRules(),
                             'unlimited_check' => true,
                         ])
                     </div>
@@ -119,7 +126,7 @@
                             'value' => $options['campaign_max'],
                             'label' => trans('messages.max_campaigns'),
                             'help_class' => 'plan',
-                            'rules' => $plan->quotaRules(),
+                            'rules' => $plan->resourcesRules(),
                             'unlimited_check' => true,
                         ])
                     </div>
@@ -130,7 +137,7 @@
                             'value' => $options['automation_max'],
                             'label' => trans('messages.max_automations'),
                             'help_class' => 'plan',
-                            'rules' => $plan->quotaRules(),
+                            'rules' => $plan->resourcesRules(),
                             'unlimited_check' => true,
                         ])
                     </div>
@@ -143,7 +150,7 @@
                                     'label' => trans('messages.max_number_of_processes'),
                                     'options' => \Acelle\Model\Plan::multiProcessSelectOptions(),
                                     'help_class' => 'plan',
-                                    'rules' => $plan->quotaRules(),
+                                    'rules' => $plan->resourcesRules(),
                                 ])
                             </div>
                         </div>
@@ -156,7 +163,7 @@
                             'value' => $options['max_size_upload_total'],
                             'label' => trans('messages.max_size_upload_total'),
                             'help_class' => 'plan',
-                            'rules' => $plan->quotaRules(),
+                            'rules' => $plan->resourcesRules(),
                             'unlimited_check' => true,
                         ])
                     </div>
@@ -168,7 +175,7 @@
                             'value' => $options['max_file_size_upload'],
                             'label' => trans('messages.max_file_size_upload'),
                             'help_class' => 'plan',
-                            'rules' => $plan->quotaRules(),
+                            'rules' => $plan->resourcesRules(),
                             'unlimited_check' => true,
                         ])
                     </div>
@@ -181,7 +188,7 @@
                             'label' => trans('messages.unsubscribe_url_required'),
                             'options' => ['no','yes'],
                             'help_class' => 'plan',
-                            'rules' => $plan->quotaRules()
+                            'rules' => $plan->resourcesRules()
                         ])
                     </div>
                     <div class="boxing">
@@ -192,7 +199,7 @@
                             'label' => trans('messages.access_when_offline'),
                             'options' => ['no','yes'],
                             'help_class' => 'plan',
-                            'rules' => $plan->quotaRules()
+                            'rules' => $plan->resourcesRules()
                         ])
                     </div>
                     <div class="boxing">
@@ -203,7 +210,7 @@
                             'label' => trans('messages.can_import_list'),
                             'options' => ['no','yes'],
                             'help_class' => 'plan',
-                            'rules' => $plan->quotaRules()
+                            'rules' => $plan->resourcesRules()
                         ])
                     </div>
                     <div class="boxing">
@@ -214,7 +221,7 @@
                             'label' => trans('messages.can_export_list'),
                             'options' => ['no','yes'],
                             'help_class' => 'plan',
-                            'rules' => $plan->quotaRules()
+                            'rules' => $plan->resourcesRules()
                         ])
                     </div>
                     <div class="boxing">
@@ -225,7 +232,7 @@
                             'label' => trans('messages.can_use_api'),
                             'options' => ['no','yes'],
                             'help_class' => 'plan',
-                            'rules' => $plan->quotaRules()
+                            'rules' => $plan->resourcesRules()
                         ])
                     </div>
                 </div>
@@ -233,7 +240,8 @@
                 <a href="{{ action('Admin\PlanController@index') }}" type="button" class="btn btn-mc_inline">
                     {{ trans('messages.cancel') }}
                 </a>
-            </form>
+            </div>
         </div>
-    </div>
+    </form>
+        
 @endsection

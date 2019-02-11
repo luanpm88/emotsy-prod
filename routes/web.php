@@ -692,15 +692,17 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/account/contact', 'AccountController@contact');
 
     // Plan
+    Route::match(['get', 'post'], 'admin/plans/{uid}/billing-cycle', 'PlanController@billingCycle');
     Route::match(['get', 'post'], 'admin/plans/{uid}/sending-limit', 'PlanController@sendingLimit');
     Route::get('admin/plans/{uid}/email-verification', 'PlanController@emailVerification');
     Route::get('admin/plans/{uid}/general', 'PlanController@general');    
-    Route::match(['get', 'post'], 'admin/plans/{uid}/quota', 'PlanController@quota');
+    Route::get('admin/plans/{uid}/quota', 'PlanController@quota');
     Route::get('admin/plans/{uid}/security', 'PlanController@security');
     Route::get('admin/plans/{uid}/email-footer', 'PlanController@emailFooter');
     Route::get('admin/plans/{uid}/payment', 'PlanController@payment');
     Route::get('admin/plans/{uid}/billing-history', 'PlanController@billingHistory');
-    Route::match(['get', 'post'], 'admin/plans/{uid}/general', 'PlanController@general');
+    Route::get('admin/plans/{uid}/general', 'PlanController@general');
+    Route::post('admin/plans/{uid}/save', 'PlanController@save');
     
     Route::post('admin/plans/{id}/sending_servers/{sending_server_uid}/set-primary', 'PlanController@setPrimarySendingServer');
     Route::match(['get', 'post'], 'admin/plans/{id}/sending_servers/fitness', 'PlanController@fitness');
@@ -716,8 +718,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/plans/delete', 'PlanController@delete');
     Route::get('admin/plans/disable', 'PlanController@disable');
     Route::get('admin/plans/enable', 'PlanController@enable');
-    Route::resource('admin/plans', 'PlanController');
     Route::post('admin/plans/copy', 'PlanController@copy');
+    Route::resource('admin/plans', 'PlanController');    
+    
     // Currency
     Route::get('admin/currencies/select2', 'CurrencyController@select2');
     Route::get('admin/currencies/listing/{page?}', 'CurrencyController@listing');

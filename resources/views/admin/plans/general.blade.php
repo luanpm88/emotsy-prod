@@ -26,11 +26,47 @@
     
     @include('admin.plans._menu')
     
-    <div class="row">
-        <div class="col-md-6">
-            <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@general', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
-                {{ csrf_field() }}                
-                <div class="mc_section">
+    
+    <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@save', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
+        {{ csrf_field() }}                
+        <div class="mc_section">
+            <h2>{{ trans('messages.plan.general.details') }}</h2>
+            
+            <p>{{ trans('messages.plan.general.details.intro') }}</p>
+                
+            <div class="row">
+                <div class="col-md-6">
+                    
+                    <div class="stats-boxes">
+                        <div class="width1of4 stats-box">
+                            <h3>
+                                <a href="">{{ $plan->displayPrice() }}</a>
+                            </h3>
+                            <p>{{ trans('messages.plan.quota_time.wording', [
+                                'amount' => format_number($plan->frequency_amount),
+                                'unit' => trans('messages.' . $plan->frequency_unit),
+                            ]) }}</p>
+                        </div>
+                        <div class="width1of4 stats-box">
+                            <h3>
+                                <a href="">{{ $plan->displayTotalQuota() }}</a>
+                            </h3>
+                            <p>{{ trans('messages.plan.sending_credits') }}</p>
+                        </div>
+                        <div class="width1of4 stats-box">
+                            <h3>
+                                <a href="">Stripe</a>
+                            </h3>
+                            <p>{{ trans('messages.plan.payment') }}</p>
+                        </div>
+                        <div class="width1of4 stats-box">
+                            <h3>
+                                <a href="">Amazon</a>
+                            </h3>
+                            <p>{{ trans('messages.plan.delivery') }}</p>
+                        </div>
+                    </div>
+                    
                     @include('helpers.form_control', [
                         'type' => 'text',
                         'name' => 'name',
@@ -62,26 +98,11 @@
                         'placeholder' => trans('messages.select_currency')
                     ])
                     
-                    <div class="row">
-                        <div class="col-md-6">
-                            @include('helpers.form_control', [
-                                'class' => 'numeric',
-                                'type' => 'text',
-                                'name' => 'frequency_amount',
-                                'value' => $plan->frequency_amount,
-                                'help_class' => 'plan',
-                                'rules' => $plan->generalRules(),
-                            ])
-                        </div>
-                        <div class="col-md-6">                        
-                            @include('helpers.form_control', ['type' => 'select',
-                                'name' => 'frequency_unit',
-                                'value' => $plan->frequency_unit,
-                                'options' => $plan->timeUnitOptions(),
-                                'help_class' => 'plan',
-                            ])
-                        </div>
-                    </div>
+                    <div class="select-custom" data-url="{{ action('Admin\PlanController@billingCycle', $plan->uid) }}">
+                        @include ('admin.plans._billing_cycle', [
+                            'plan' => $plan,
+                        ])
+                    </div>                    
                     
                     @include('helpers.form_control', [
                         'type' => 'select',
@@ -101,13 +122,13 @@
                         'options' => [false,true],
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules()
-                    ])                    
-                </div>
-                <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-                <a href="{{ action('Admin\PlanController@index') }}" type="button" class="btn btn-mc_inline">
-                    {{ trans('messages.cancel') }}
-                </a>
-            </form>
+                    ])
+                 </div>
+            </div>
         </div>
-    </div>
+        <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
+        <a href="{{ action('Admin\PlanController@index') }}" type="button" class="btn btn-mc_inline">
+            {{ trans('messages.cancel') }}
+        </a>
+    </form>
 @endsection
