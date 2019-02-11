@@ -58,4 +58,16 @@ class LoginController extends Controller
         
         $this->validate($request, $rules);
     }
+    
+    public function authenticated($request, $user)
+    {
+        // If user is not activated
+        if (!$user->activated) {
+            $uid = $user->uid;
+            auth()->logout();
+            return view('notActivated', ['uid' => $uid]);
+        }
+        
+        return redirect()->intended('/');
+    }
 }

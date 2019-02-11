@@ -70,17 +70,5 @@ class AuthController extends Controller
             'email' => $data['email'],
             'password' => bcrypt($data['password']),
         ]);
-    }
-
-    public function authenticated($request, $user)
-    {
-        // If user is not activated
-        if (!$user->activated) {
-            $uid = $user->uid;
-            auth()->logout();
-            return view('notActivated', ['uid' => $uid]);
-        }
-        
-        return redirect()->intended('/');
-    }
+    }    
 }
