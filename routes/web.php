@@ -692,6 +692,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::post('admin/account/contact', 'AccountController@contact');
 
     // Plan
+    Route::get('admin/plans/{uid}/sending-server', 'PlanController@sendingServer');
     Route::match(['get', 'post'], 'admin/plans/{uid}/billing-cycle', 'PlanController@billingCycle');
     Route::match(['get', 'post'], 'admin/plans/{uid}/sending-limit', 'PlanController@sendingLimit');
     Route::get('admin/plans/{uid}/email-verification', 'PlanController@emailVerification');

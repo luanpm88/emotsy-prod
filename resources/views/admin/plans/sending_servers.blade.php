@@ -15,7 +15,7 @@
             <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
             <li><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
         </ul>
-        <h1 class="mc-h1 mb-0">
+        <h1 class="mc-h1">
             <span class="text-semibold">{{ $plan->name }}</span>
         </h1>
     </div>
@@ -23,6 +23,9 @@
 @endsection
 
 @section('content')
+    
+    @include('admin.plans._menu')
+    
     <div class="mc-section">
         <div class="row">
             <div class="col-md-10">

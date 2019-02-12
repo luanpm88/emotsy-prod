@@ -69,7 +69,8 @@
                     
                     @include('helpers.form_control', [
                         'type' => 'text',
-                        'name' => 'name',
+                        'name' => 'plan[general][name]',
+                        'label' => trans('messages.plan.name'),
                         'value' => $plan->name,
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules()
@@ -78,7 +79,8 @@
                     @include('helpers.form_control', [
                         'class' => 'numeric',
                         'type' => 'text',
-                        'name' => 'price',
+                        'name' => 'plan[general][price]',
+                        'label' => trans('messages.plan.price'),
                         'value' => $plan->price,
                         'help_class' => 'plan',
                         'rules' => $plan->generalRules()
@@ -86,8 +88,8 @@
                     
                     @include('helpers.form_control', [
                         'type' => 'select_ajax',
-                        'name' => 'currency_id',
-                        'label' => trans('messages.currency'),
+                        'name' => 'plan[general][currency_id]',
+                        'label' => trans('messages.plan.currency'),
                         'selected' => [
                             'value' => $plan->currency_id,
                             'text' => is_object($plan->currency) ? $plan->currency->displayName() : ''
@@ -107,7 +109,8 @@
                     @include('helpers.form_control', [
                         'type' => 'select',
                         'class' => '',
-                        'name' => 'color',
+                        'name' => 'plan[general][color]',
+                        'label' => trans('messages.plan.color'),
                         'value' => $plan->color,
                         'help_class' => 'admin',
                         'options' => $plan->colors("color"),
@@ -117,7 +120,9 @@
                     @include('helpers.form_control', [
                         'class' => '',
                         'type' => 'checkbox2',
-                        'name' => 'tax_billing_required',
+                        'name' => 'plan[general][tax_billing_required]',
+                        'label' => trans('messages.plan.tax_billing_required'),
+                        'help' => trans('messages.plan.tax_billing_required.help'),
                         'value' => $plan->tax_billing_required,
                         'options' => [false,true],
                         'help_class' => 'plan',

@@ -210,6 +210,15 @@ return [
                 'mail_list_uid' => 'List'
             ],
         ],
+        'plan' => [
+            'general' => [
+                'name' => 'name',
+                'currency_id' => 'currency',
+                'frequency_amount' => 'frequency amount',
+                'frequency_unit' => 'frequency unit',
+                'price' => 'price',
+                'color' => 'color',
+            ],
+        ],
     ],
-
 ];

@@ -54,9 +54,9 @@
                     </li>
                 </ul>
             </li>
-            <li rel0="PlanController/sendingServers">
-                <a href="{{ action('Admin\PlanController@sendingServers', $plan->uid) }}" class="level-1">
-                    {{ trans('messages.plan.sending_servers') }}
+            <li rel0="PlanController/sendingServer" rel1="PlanController/sendingServers">
+                <a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}" class="level-1">
+                    {{ trans('messages.plan.sending_server') }}
                 </a>
             </li>
             <li rel0="PlanController/emailVerification">

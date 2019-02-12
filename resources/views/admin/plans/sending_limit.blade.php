@@ -8,6 +8,8 @@
     <div class="mc_section">
         <form action="{{ action('Admin\PlanController@sendingLimit', ['uid' => $plan->uid]) }}" method="POST">
             {{ csrf_field() }}
+            
+            <input type="hidden" name="plan[options][sending_limit]" value="other" />
         
             <h2 class="text-semibold">{{ trans('messages.plan.sending_limit') }}</h2>
             
@@ -18,15 +20,15 @@
                     @include('helpers.form_control', [
                         'type' => 'text',
                         'class' => 'numeric',
-                        'name' => 'options[sending_quota]',
-                        'value' => $options['sending_quota'],
+                        'name' => 'plan[options][sending_quota]',
+                        'value' => $plan->getOption('sending_quota'),
                         'label' => trans('messages.sending_quota'),
                         'help_class' => 'plan',
                         'rules' => $plan->rules()
                     ])
                     <div class="checkbox inline unlimited-check text-semibold">
                         <label>
-                            <input{{ $options['sending_quota']  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
+                            <input{{ $plan->getOption('sending_quota')  == -1 ? " checked=checked" : "" }} type="checkbox" class="styled">
                             {{ trans('messages.unlimited') }}
                         </label>
                     </div>
@@ -35,8 +37,8 @@
                     @include('helpers.form_control', [
                         'type' => 'text',
                         'class' => 'numeric',
-                        'name' => 'options[sending_quota_time]',
-                        'value' => $options['sending_quota_time'],
+                        'name' => 'plan[options][sending_quota_time]',
+                        'value' => $plan->getOption('sending_quota_time'),
                         'label' => trans('messages.quota_time'),
                         'help_class' => 'plan',
                         'rules' => $plan->rules()
@@ -44,8 +46,8 @@
                 </div>
                 <div class="col-md-4">
                     @include('helpers.form_control', ['type' => 'select',
-                        'name' => 'options[sending_quota_time_unit]',
-                        'value' => $options['sending_quota_time_unit'],
+                        'name' => 'plan[options][sending_quota_time_unit]',
+                        'value' => $plan->getOption('sending_quota_time_unit'),
                         'label' => trans('messages.quota_time_unit'),
                         'options' => Acelle\Model\Plan::quotaTimeUnitOptions(),
                         'help_class' => 'plan',

@@ -59,6 +59,12 @@
                 {!! trans('messages.' . $help_class . '.' . $name . '.help') !!}
             </div>
         @endif
+        
+        @if (isset($help))
+            <div class="help alert alert-info">
+                {!! $help !!}
+            </div>
+        @endif
 
         @if ($type != 'textarea')
             @if ($errors->has($var_name))

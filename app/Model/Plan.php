@@ -23,6 +23,8 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Validator;
+use Illuminate\Validation\ValidationException;
 
 class Plan extends Model
 {
@@ -77,6 +79,39 @@ class Plan extends Model
 
         if ($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
             $rules['options.sending_server_subaccount_uid'] = 'required';
+        }
+
+        return $rules;
+    }
+    
+    /**
+     * The rules for validation.
+     *
+     * @var array
+     */
+    public function validationRules()
+    {
+        $rules = [
+            'general' => [
+                'plan.general.name' => 'required',
+                'plan.general.currency_id' => 'required',
+                'plan.general.frequency_amount' => 'required|min:1',
+                'plan.general.frequency_unit' => 'required',
+                'plan.general.price' => 'required|min:0',
+                'plan.general.color' => 'required',
+            ],
+            'options' => [],
+        ];
+
+        $options = self::defaultOptions();
+        foreach ($options as $type => $option) {
+            if ($type != 'sending_server_subaccount_uid') {
+                $rules['options']['plan.options.'.$type] = 'sometimes|required';
+            }
+        }
+
+        if ($this->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
+            $rules['options']['plan.options.sending_server_subaccount_uid'] = 'sometimes|required';
         }
 
         return $rules;
@@ -400,43 +435,25 @@ class Plan extends Model
     public function getSendingLimitSelectOptions()
     {
         $options = [];
-        $current = trans('messages.plans.sending_limit.phrase', [
-            'quota_value' => \Acelle\Library\Tool::format_number($this->getOption('sending_quota')),
-            'quota_base' => \Acelle\Library\Tool::format_number($this->getOption('sending_quota_time')),
-            'quota_unit' => $this->getOption('sending_quota_time_unit'),
-        ]);
-        if ($this->getOption('sending_quota') == -1) {
-            $current = trans('messages.plans.sending_limit.unlimited');
-        }
         
-        $exist = false;
         foreach (Plan::sendingLimitValues() as $key => $data) {            
-            $wording = trans('messages.plans.sending_limit.phrase', [
-                'quota_value' => \Acelle\Library\Tool::format_number($data['quota_value']),
-                'quota_base' => \Acelle\Library\Tool::format_number($data['quota_base']),
-                'quota_unit' => $data['quota_unit'],
+            $wording = trans('messages.plan.sending_limit.' . $key);            
+            $options[] = ['text' => $wording, 'value' => $key];
+        }
+
+        // exist
+        if ($this->getOption('sending_limit') == 'other') {
+            $wording = trans('messages.plan.sending_limit.phrase', [
+                'quota_value' => format_number($this->getOption('sending_quota')),
+                'quota_base' => format_number($this->getOption('sending_quota_time')),
+                'quota_unit' => $this->getOption('sending_quota_time_unit'),
             ]);
             
-            if ($data['quota_value'] == -1) {
-                $wording = trans('messages.plans.sending_limit.unlimited');
-            }
-            
-            $options[] = ['text' => $wording, 'value' => $key];
-            
-            if ($wording == $current) {
-                $exist = true;
-                $this->asignOption('sending_limit', $key);
-            }
-        }
-        
-        // exist
-        if (!$exist) {
-            $options[] = ['text' => $current, 'value' => 'current'];
-            $this->asignOption('sending_limit', 'current');
+            $options[] = ['text' => $wording, 'value' => 'other'];
         }
         
         // Custom
-        $options[] = ['text' => trans('messages.plans.sending_limit.custom'), 'value' => 'custom'];
+        $options[] = ['text' => trans('messages.plan.sending_limit.custom'), 'value' => 'custom'];
 
         return $options;
     }
@@ -450,15 +467,9 @@ class Plan extends Model
     {
         $options = [];
         
-        $this->asignOption('billing_cycle', 'other');
         foreach (Plan::billingCycleValues() as $key => $data) {            
             $wording = trans('messages.plan.billing_cycle.' . $key);            
             $options[] = ['text' => $wording, 'value' => $key];
-            
-            // is other values
-            if ($data['frequency_amount'] == $this->frequency_amount && $data['frequency_unit'] == $this->frequency_unit) {
-                $this->asignOption('billing_cycle', $key);
-            }
         }
 
         // exist
@@ -517,6 +528,10 @@ class Plan extends Model
             'sending_server_option' => self::SENDING_SERVER_OPTION_SYSTEM,
             'sending_server_subaccount_uid' => null,
             'api_access' => 'yes',
+            'email_footer_enabled' => 'no',
+            'email_footer_trial_period_only' => 'no',
+            'html_footer' => '',
+            'plain_text_footer' => '',
         ];
 
         // Sending server types
@@ -968,14 +983,6 @@ class Plan extends Model
                 $saveOptions[$key] = $value;
             }
         }
-        
-        // Sening limit
-        if (isset($options['sending_limit']) && $options['sending_limit'] != 'custom' && $options['sending_limit'] != 'current') {
-            $limits = Plan::sendingLimitValues()[$options['sending_limit']];
-            $saveOptions['sending_quota'] = $limits['quota_value'];
-            $saveOptions['sending_quota_time'] = $limits['quota_unit'];
-            $saveOptions['sending_quota_time_unit'] = $limits['quota_base'];
-        }
             
         $this->options = json_encode($saveOptions);
     }
@@ -983,20 +990,28 @@ class Plan extends Model
     /**
      * Fill from request.
      */
-    public function fillRequest($request)
+    public function fillAll($request)
     {
-        $this->fill($request->all());
+        // if has general params
+        if (isset($request->plan['general'])) {            
+            $this->fill($request->plan['general']);            
+        }
         
-        // fill options
-        if (isset($request->options)) {
-            // Fill all options
-            $this->fillOptions($request->options);
+        // if has options params
+        if (isset($request->plan['options'])) {
+            $this->fillOptions($request->plan['options']);
         }
         
         // old request
-        if (isset($request->old()['options'])) {
-            // Fill all options
-            $this->fillOptions($request->old()['options']);
+        if ($request->old()) {
+            if (isset($request->old()['plan']['general'])) {
+                // fill all attributes
+                $this->fill($request->old()['plan']['general']);
+            }
+            if (isset($request->old()['plan']['options'])) {
+                // fill all options
+                $this->fillOptions($request->old()['plan']['options']);
+            }
         }
         
         // billing cycle
@@ -1006,6 +1021,39 @@ class Plan extends Model
             $this->frequency_amount = $limits['frequency_amount'];
             $this->frequency_unit = $limits['frequency_unit'];
         }
+        
+        // billing cycle
+        $sendingLimit = $this->getOption('sending_limit');
+        if (isset($sendingLimit) && $sendingLimit != 'custom' && $sendingLimit != 'other') {
+            $limits = Plan::sendingLimitValues()[$sendingLimit];
+            $this->asignOption('sending_quota', $limits['quota_value']);
+            $this->asignOption('sending_quota_time', $limits['quota_base']);
+            $this->asignOption('sending_quota_time_unit', $limits['quota_unit']);
+        }
+    }
+    
+    /**
+     * Fill from request.
+     */
+    public function saveAll($request)
+    {
+        $this->fillAll($request);
+        
+        $rules = [];
+        foreach(array_keys($request->plan) as $key) {
+            echo $key;
+            if (isset($this->validationRules()[$key])) {
+                $rules = array_merge($rules, $this->validationRules()[$key]);                
+            }
+        }
+        
+        $validator = Validator::make($request->all(), $rules);
+        if ($validator->fails()) {
+            throw new ValidationException($validator);
+        }
+
+        return $this->save();
+        
     }
 
     /**

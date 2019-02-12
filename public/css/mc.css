@@ -463,3 +463,10 @@ stat .stat-head {
 .width1of4 {
   width: 25%;
 }
+.form-group-checkboxes {
+  margin-top: 30px;
+  margin-bottom: 10px;
+}
+.form-group-checkboxes .form-group {
+  padding-top: 0;
+}

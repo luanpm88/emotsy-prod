@@ -251,21 +251,7 @@ class PlanController extends Controller
             return $this->notAuthorized();
         }
         
-        $plan->fillRequest($request);
-        
-        if ($request->options) {
-            if (isset($request->options['sending_limit'])) {
-                $this->validate($request, $plan->sendingLimitRules());
-            }
-            
-            if (isset($request->options['email_max'])) {
-                $this->validate($request, $plan->resourcesRules());
-            }
-        } else {
-            $this->validate($request, $plan->generalRules());
-        }
-
-        $plan->save();
+        $plan->saveAll($request);
         
         return redirect()->back()->with('alert-success', trans('messages.plan.updated'));
     }
@@ -473,6 +459,30 @@ class PlanController extends Controller
     }
     
     /**
+     * Plan sending server setting.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendingServer(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // fill all
+        $plan->fillAll($request);
+
+        return view('admin.plans.sending_server', [
+            'plan' => $plan,
+        ]);
+    }
+    
+    /**
      * Plan sending servers.
      *
      * @param \Illuminate\Http\Request $request
@@ -614,22 +624,8 @@ class PlanController extends Controller
             return $this->notAuthorized();
         }
         
-        // validation
-        if (!empty($request->old())) {
-            $plan->fill($request->old());
-        }
-        
-        // update data
-        if ($request->isMethod('post')) {
-            $plan->fill($request->all());
-        
-            $this->validate($request, $plan->generalRules());
-
-            $plan->save();
-            
-            $request->session()->flash('alert-success', trans('messages.plan.updated'));
-            return redirect()->action('Admin\PlanController@general', $plan->uid);
-        }
+        // fill all params
+        $plan->fillAll($request);
 
         return view('admin.plans.general', [
             'plan' => $plan,
@@ -653,12 +649,62 @@ class PlanController extends Controller
             return $this->notAuthorized();
         }
         
-        // validation
-        $plan->fillRequest($request);
+        // fill all
+        $plan->fillAll($request);
 
         return view('admin.plans.quota', [
             'plan' => $plan,
             'options' => $plan->getOptions(),
+        ]);
+    }
+    
+    /**
+     * Plan security information.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function security(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // fill all
+        $plan->fillAll($request);
+
+        return view('admin.plans.security', [
+            'plan' => $plan,
+        ]);
+    }
+    
+    /**
+     * Plan email footer information.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function emailFooter(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // fill all
+        $plan->fillAll($request);
+
+        return view('admin.plans.email_footer', [
+            'plan' => $plan,
         ]);
     }
     
@@ -679,16 +725,14 @@ class PlanController extends Controller
         
         // save posted data
         if ($request->isMethod('post')) {
-            $plan->fillOptions($request->options);
+            $plan->fillAll($request);
             return view('admin.plans._sending_limit', [
-                'options' => $plan->getOptions(),
                 'plan' => $plan,
             ]);
         }
         
         return view('admin.plans.sending_limit', [
             'plan' => $plan,
-            'options' => $plan->getOptions(),
         ]);
     }
     
@@ -709,7 +753,7 @@ class PlanController extends Controller
         
         // save posted data
         if ($request->isMethod('post')) {
-            $plan->fill($request->all());
+            $plan->fillAll($request);
             return view('admin.plans._billing_cycle', [
                 'plan' => $plan,
             ]);
