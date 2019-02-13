@@ -2359,4 +2359,11 @@
         Normally, you can enable this option for trial period',
     'plan.sending_server' => 'Sending server',
     'plan.sending_server.intro' => 'Choose how customer subscrbibed the plan can use sending servers for sending emails.',
+    'plan.email_verification.intro' => 'Setting up email verification servers for the plan',
+    'plan.email_verification.use_own' => 'Use own email verfication servers',
+    'plan.email_verification.use_own.intro' => 'Customer is allowed to add their own sending servers',
+    'plan.email_verification.use_system' => 'Use system\'s email verfication servers',
+    'plan.email_verification.use_system.intro' => 'Customer is not allowed to add email verfication servers.
+        Emails shall be sent using system\'s email verfication servers added by administrator',
+    'plan.email_verification.select_server' => 'Select email verification server(s) that customer can use:',
 ) ?>

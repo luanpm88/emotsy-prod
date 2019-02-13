@@ -1002,6 +1002,11 @@ class Plan extends Model
             $this->fillOptions($request->plan['options']);
         }
         
+        //// if has email verifications
+        //if (isset($request->plan['email_verification_servers'])) {
+        //    $this->fillPlansEmailVerificationServers($request->plan['email_verification_servers']);
+        //}
+        
         // old request
         if ($request->old()) {
             if (isset($request->old()['plan']['general'])) {
@@ -1012,6 +1017,9 @@ class Plan extends Model
                 // fill all options
                 $this->fillOptions($request->old()['plan']['options']);
             }
+            //if (isset($request->old()['plan']['email_verification_servers'])) {
+            //    $this->fillPlansEmailVerificationServers($request->old()['plan']['email_verification_servers']);
+            //}
         }
         
         // billing cycle
@@ -1041,7 +1049,6 @@ class Plan extends Model
         
         $rules = [];
         foreach(array_keys($request->plan) as $key) {
-            echo $key;
             if (isset($this->validationRules()[$key])) {
                 $rules = array_merge($rules, $this->validationRules()[$key]);                
             }
@@ -1051,9 +1058,13 @@ class Plan extends Model
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }
-
-        return $this->save();
         
+        $this->save();
+        
+        // For email verification servers
+        if (isset($request->plan['email_verification_servers'])) {
+            $this->updateEmailVerificationServers($request->plan['email_verification_servers']);
+        }
     }
 
     /**

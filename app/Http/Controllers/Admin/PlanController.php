@@ -483,6 +483,30 @@ class PlanController extends Controller
     }
     
     /**
+     * Plan sending server setting.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function emailVerification(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // fill all
+        $plan->fillAll($request);
+
+        return view('admin.plans.email_verification', [
+            'plan' => $plan,
+        ]);
+    }
+    
+    /**
      * Plan sending servers.
      *
      * @param \Illuminate\Http\Request $request
