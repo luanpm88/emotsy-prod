@@ -36,4 +36,38 @@ class LoginController extends Controller
     {
         $this->middleware('guest', ['except' => 'logout']);
     }
+    
+    /**
+     * Validate the user login request.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return void
+     */
+    protected function validateLogin(\Illuminate\Http\Request $request)
+    {
+        $rules = [
+            $this->username() => 'required',
+            'password' => 'required'
+        ];
+        
+        if (\Acelle\Model\Setting::get('login_recaptcha') == 'yes') {
+            if(!\Acelle\Library\Tool::checkReCaptcha($request)) {
+                $rules['recaptcha_invalid'] = 'required';
+            }
+        }
+        
+        $this->validate($request, $rules);
+    }
+    
+    public function authenticated($request, $user)
+    {
+        // If user is not activated
+        if (!$user->activated) {
+            $uid = $user->uid;
+            auth()->logout();
+            return view('notActivated', ['uid' => $uid]);
+        }
+        
+        return redirect()->intended('/');
+    }
 }

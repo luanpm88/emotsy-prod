@@ -1,3 +1,16 @@
+3.0.20 / 2019-02-12
+==================
+
+ * Added: support debounce.io email verification service
+ * Added: compatibility with open_basedir
+ * Added: support localmail.io verification service
+ * Added: support verifyre.co verification service
+ * Fixed: memory outage issue with GeoIP
+ * Fixed: orphan administrator accounts not loading
+ * Fixed: no longer use socket_create function
+ * Fixed: verify sender identity against AWS
+ * Fixed: SSL issue with email verification
+
 3.0.19 / 2018-11-01
 ==================
 

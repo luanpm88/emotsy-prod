@@ -26,6 +26,7 @@ use Illuminate\Console\Command;
 use Acelle\Model\BounceHandler;
 use Acelle\Model\FeedbackLoopHandler;
 use Acelle\Library\Log;
+use Acelle\Library\Lockable;
 
 class RunHandler extends Command
 {
@@ -58,12 +59,11 @@ class RunHandler extends Command
      */
     public function handle()
     {
-        try {
+        $lock = new Lockable(storage_path('locks/bounce-feedback-handler'));
+        $lock->getExclusiveLock(function() {
             $this->execRunHandler();
-            Log::info('Handlers finished!');
-        } catch (\Exception $e) {
-            Log::error('Something went wrong: '.$e->getMessage());
-        }
+        });
+        Log::info('Handlers finished!');
     }
     
     /**
@@ -76,20 +76,6 @@ class RunHandler extends Command
         // guarantee that only one process can be run at one time
         // use socket as lock
         Log::info('Try to start handling process...');
-        $socket = socket_create(AF_INET, SOCK_STREAM, SOL_TCP);
-        if (false === $socket) {
-            throw new Exception("can't create socket: ".socket_last_error($socket));
-        }
-
-        // hide warning, because error will be checked manually
-        if (false === @socket_bind($socket, '127.0.0.1', 60204)) {
-            // some other process is already running
-            Log::warning('Another handling process is already running. Terminated!');
-            exit;
-        } else {
-            // just go ahead
-            Log::info('Started!');
-        }
 
         // abuse
         $handlers = FeedbackLoopHandler::get();

@@ -240,12 +240,18 @@ class Page extends Model
     /**
      * Get outside url with subscriber uid.
      */
-    public function getOutsideUrlWithUid()
+    public function getOutsideUrlWithUid($subscriber)
     {
+        $url = $this->outside_url;
+        // LIST FIELDS
+        foreach ($this->mailList->fields as $field) {
+            $url = str_replace('{SUBSCRIBER_'.$field->tag.'}',urlencode($subscriber->getValueByField($field)), $url);
+        }
+            
         if (parse_url($this->outside_url, PHP_URL_QUERY)) {
-            return $this->outside_url . "&subscriber_id=" . $this->uid;
+            return $url . "&subscriber_id=" . $subscriber->uid;
         } else {
-            return $this->outside_url . "?subscriber_id=" . $this->uid;
+            return $url . "?subscriber_id=" . $subscriber->uid;
         }
     }
 }

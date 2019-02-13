@@ -199,8 +199,12 @@ class Sender extends Model
     {
         $options = [
             ['value' => self::VERIFICATION_TYPE_ACELLE, 'text' => trans('messages.sender.type.' . self::VERIFICATION_TYPE_ACELLE)],
-            ['value' => self::VERIFICATION_TYPE_AMAZON_SES, 'text' => trans('messages.sender.type.' . self::VERIFICATION_TYPE_AMAZON_SES)],
         ];
+        
+        // @todo: code smell!
+        if (Setting::get('aws_verification_server') != 'no') {
+            $options[] = ['value' => self::VERIFICATION_TYPE_AMAZON_SES, 'text' => trans('messages.sender.type.' . self::VERIFICATION_TYPE_AMAZON_SES)];
+        }
 
         return $options;
     }
