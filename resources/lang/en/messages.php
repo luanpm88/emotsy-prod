@@ -2358,7 +2358,7 @@
     'plan.email_footer.intro' => 'Include a footer in every out-going email message to reflect your brand.
         Normally, you can enable this option for trial period',
     'plan.sending_server' => 'Sending server',
-    'plan.sending_server.intro' => 'Choose how customer subscrbibed the plan can use sending servers for sending emails.',
+    'plan.sending_server.intro' => 'Choose how emails are actually delivered for users subscribing to this plan',
     'plan.email_verification.intro' => 'Setting up email verification servers for the plan',
     'plan.email_verification.use_own' => 'Use own email verfication servers',
     'plan.email_verification.use_own.intro' => 'Customer is allowed to add their own sending servers',
