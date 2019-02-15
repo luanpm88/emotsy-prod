@@ -26,7 +26,7 @@
     
     @include('admin.plans._menu')
     
-    <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@save', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
+    <form id="planSendingServerSetting" enctype="multipart/form-data" action="{{ action('Admin\PlanController@save', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
         {{ csrf_field() }}
         
         <div class="row">
@@ -47,12 +47,15 @@
                                 </div>
                             </label>
                             <div class="radio_more_box">
-                                <input type="hidden" name="plan[options][all_sending_servers]" value="no" />
-                                 @if ($plan->id && $plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM)
-                                    <a href="{{ action('Admin\PlanController@sendingServers', $plan->uid) }}" class="btn btn-primary bg-grey">
-                                        {{ trans('messages.plan.sending_servers.settings') }}
-                                    </a>
+                                @if ($plan->plansSendingServers->count() == 0)
+                                    <div class="alert alert-danger">
+                                        {{ trans('messages.plan.sending_servers.empty_warning') }}
+                                    </div>
                                 @endif
+                                <input type="hidden" name="plan[options][all_sending_servers]" value="no" />
+                                <a href="{{ action('Admin\PlanController@sendingServers', $plan->uid) }}" class="btn btn-mc_default">
+                                    {{ trans('messages.plan.manage_sending_servers') }}
+                                </a>
                             </div>
                         </div>
                         <hr>
@@ -129,7 +132,7 @@
                             <div class="radio_more_box">
                                 @if (Auth()->user()->admin->getSubaccountSendingServers()->count())
                                     <div class="row">
-                                        <div class="col-md-6">
+                                        <div class="col-md-12">
                                             @include('helpers.form_control', [
                                                 'type' => 'select',
                                                 'class' => 'numeric',
@@ -152,12 +155,11 @@
                         </div>
                     </div>
                 </div>
-                
+                    
                 <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
                 <a href="{{ action('Admin\PlanController@index') }}" type="button" class="btn btn-mc_inline">
                     {{ trans('messages.cancel') }}
                 </a>
-                
             </div>
         </div>
     </form>
@@ -230,6 +232,17 @@
                 }
             });
             $('input[name="plan[options][all_sending_server_types]"]').trigger("change");
+            
+            // Sending servers type checking setting
+            $(document).on("change", "input[name='plan[options][sending_server_option]']", function(e) {
+                // Finding modal
+                var modal = $('#confirm-modal');
+                
+                modal.find('.modal-body h6').html('{{ trans('messages.plan.sending_server.change_confirm') }}');
+                modal.find('.modal-footer .link-confirm-button').attr("onclick", "$('#planSendingServerSetting').submit()");
+                
+                modal.modal("show");
+            });
         });
     </script>
         

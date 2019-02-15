@@ -95,10 +95,10 @@ class Plan extends Model
             'general' => [
                 'plan.general.name' => 'required',
                 'plan.general.currency_id' => 'required',
-                'plan.general.frequency_amount' => 'required|min:1',
-                'plan.general.frequency_unit' => 'required',
+                'plan.general.frequency_amount' => 'sometimes|required|min:1',
+                'plan.general.frequency_unit' => 'sometimes|required',
                 'plan.general.price' => 'required|min:0',
-                'plan.general.color' => 'required',
+                'plan.general.color' => 'sometimes|required',
             ],
             'options' => [],
         ];
@@ -1043,10 +1043,8 @@ class Plan extends Model
     /**
      * Fill from request.
      */
-    public function saveAll($request)
+    public function validate($request)
     {
-        $this->fillAll($request);
-        
         $rules = [];
         foreach(array_keys($request->plan) as $key) {
             if (isset($this->validationRules()[$key])) {
@@ -1054,7 +1052,18 @@ class Plan extends Model
             }
         }
         
-        $validator = Validator::make($request->all(), $rules);
+        return Validator::make($request->all(), $rules);
+    }
+    
+    /**
+     * Fill from request.
+     */
+    public function saveAll($request)
+    {
+        $this->fillAll($request);
+        
+        $validator = $this->validate($request);
+        
         if ($validator->fails()) {
             throw new ValidationException($validator);
         }

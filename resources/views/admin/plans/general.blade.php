@@ -35,12 +35,12 @@
             <p>{{ trans('messages.plan.general.details.intro') }}</p>
                 
             <div class="row">
-                <div class="col-md-6">
+                <div class="col-md-7">
                     
                     <div class="stats-boxes">
                         <div class="width1of4 stats-box">
                             <h3>
-                                <a href="">{{ $plan->displayPrice() }}</a>
+                                {{ $plan->displayPrice() }}
                             </h3>
                             <p>{{ trans('messages.plan.quota_time.wording', [
                                 'amount' => format_number($plan->frequency_amount),
@@ -49,7 +49,7 @@
                         </div>
                         <div class="width1of4 stats-box">
                             <h3>
-                                <a href="">{{ $plan->displayTotalQuota() }}</a>
+                                <a href="{{ action('Admin\PlanController@quota', $plan->uid) }}">{{ $plan->displayTotalQuota() }}</a>
                             </h3>
                             <p>{{ trans('messages.plan.sending_credits') }}</p>
                         </div>
@@ -61,7 +61,19 @@
                         </div>
                         <div class="width1of4 stats-box">
                             <h3>
-                                <a href="">Amazon</a>
+                                @if ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM)
+                                    @if ($plan->primarySendingServer())
+                                        <a href="{{ action('Admin\PlanController@sendingServers', $plan->uid) }}">
+                                            {{ trans('messages.' . $plan->primarySendingServer()->type) }}
+                                        </a>
+                                    @else
+                                        <a class="text-warning" href="{{ action('Admin\PlanController@sendingServers', $plan->uid) }}">
+                                            {{ trans('messages.plan.sending_server.not_set') }}
+                                        </a>
+                                    @endif
+                                @else
+                                    {{ trans('messages.plan.sending_server.custom') }}
+                                @endif
                             </h3>
                             <p>{{ trans('messages.plan.delivery') }}</p>
                         </div>

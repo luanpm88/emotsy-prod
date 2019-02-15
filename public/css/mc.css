@@ -211,6 +211,12 @@ h2.mc-h2 {
     text-align: center;
     padding: 18px;
 }
+.mc-modal .modal-body {
+    padding: 30px 40px 15px 40px;
+}
+.mc-modal .modal-footer {
+    padding: 15px 40px 30px 40px;
+}
 .mc-modal .modal-title {
     font-weight: 600;
 }
@@ -469,4 +475,14 @@ stat .stat-head {
 }
 .form-group-checkboxes .form-group {
   padding-top: 0;
+}
+.mc-modal-back {
+    float: left;
+    color: #333;
+    padding-top: 3px;
+}
+.mc-modal-back i {
+}
+.mc-modal h6 {
+  margin: 0;
 }

@@ -28,15 +28,18 @@
     
     <div class="mc-section">
         <div class="row">
-            <div class="col-md-10">
+            <div class="col-md-8">
                 <h2 class="mc-h2 mt-0">
                     <span class="text-semibold">{{ trans('messages.plan.sending_servers.listing') }}</span>
                 </h2>
                 <p>{{ trans('messages.plan.sending_servers.intro') }}</p>
             </div>
-            <div class="col-md-2 text-right">
-                <a href="{{ action('Admin\PlanController@addSendingServer', $plan->uid) }}" class="btn btn-primary bg-grey mc-modal-control">
+            <div class="col-md-4 text-right">
+                <a href="{{ action('Admin\PlanController@addSendingServer', $plan->uid) }}" class="btn btn-primary mr-5 bg-grey mc-modal-control">
                     {{ trans('messages.plan.sending_servers.add') }}
+                </a>
+                <a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}" class="btn btn-mc_default">
+                    {{ trans('messages.plan.back_to_sending_server_setting') }}
                 </a>
             </div>
         </div>

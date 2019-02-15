@@ -2366,4 +2366,15 @@
     'plan.email_verification.use_system.intro' => 'Customer is not allowed to add email verfication servers.
         Emails shall be sent using system\'s email verfication servers added by administrator',
     'plan.email_verification.select_server' => 'Select email verification server(s) that customer can use:',
+    'plan.sending_server.not_set' => 'Not set',
+    'plan.new_plan' => 'Add a new plan',
+    'plan.wizard.next' => 'Next',
+    'plan.wizard.cancel' => 'Cancel',
+    'plan.wizard.finish' => 'Finish',
+    'plan.save_and_manage_sending_servers' => 'Save & Manage sending servers',
+    'plan.manage_sending_servers' => 'Manage sending servers',
+    'plan.back_to_sending_server_setting' => 'Back to plan setting',
+    'plan.sending_servers.empty_warning' => 'There are no sending servers selected',
+    'plan.sending_server.custom' => 'Custom',
+    'plan.sending_server.change_confirm' => 'You are about to change plan sending server setting',
 ) ?>

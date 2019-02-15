@@ -253,6 +253,11 @@ class PlanController extends Controller
         
         $plan->saveAll($request);
         
+        # redirect to sending servers page when needed
+        if ($request->use_system_sending_server) {
+            return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
+        }
+        
         return redirect()->back()->with('alert-success', trans('messages.plan.updated'));
     }
 
@@ -784,6 +789,78 @@ class PlanController extends Controller
         }
         
         return view('admin.plans.billing_cycle', [
+            'plan' => $plan,
+        ]);
+    }
+    
+    /**
+     * Sending Limit Form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function wizard(Request $request)
+    {
+        if (!$request->uid) {
+            $plan = new Plan();
+        } else {
+            $plan = Plan::findByUid($request->uid);
+        }
+        // fill all
+        $plan->fillAll($request);
+        
+        // save posted data
+        if ($request->isMethod('post')) {
+            $validator = $plan->validate($request);
+            
+            if ($validator->fails()) {
+                return redirect()
+                    ->action('Admin\PlanController@wizard')
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+            
+            $plan->saveAll($request);
+            
+            return redirect()->action('Admin\PlanController@wizardSendingServer', $plan->uid);
+        }
+        
+        return view('admin.plans.wizard', [
+            'plan' => $plan,
+        ]);
+    }
+    
+    /**
+     * Sending Limit Form.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function wizardSendingServer(Request $request)
+    {
+        $plan = Plan::findByUid($request->uid);
+        // fill all
+        $plan->fillAll($request);
+        
+        // save posted data
+        if ($request->isMethod('post')) {
+            $validator = $plan->validate($request);
+            
+            if ($validator->fails()) {
+                return redirect()
+                    ->action('Admin\PlanController@wizardSendingServer', $plan->uid)
+                    ->withErrors($validator)
+                    ->withInput();
+            }
+            
+            $plan->saveAll($request);
+            
+             return 'success';
+        }
+        
+        return view('admin.plans.wizard_sending_server', [
             'plan' => $plan,
         ]);
     }
