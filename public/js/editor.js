@@ -94,6 +94,6 @@ $(document).ready(function() {
         ],
         external_filemanager_path:APP_URL.replace('/index.php','')+"/filemanager/",
         filemanager_title:"Responsive Filemanager" ,
-        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager/plugin.min.js"}
+        external_plugins: { "filemanager" : APP_URL.replace('/index.php','')+"/filemanager/plugin.min.js"},
     });
 });

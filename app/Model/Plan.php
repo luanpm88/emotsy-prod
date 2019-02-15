@@ -105,7 +105,7 @@ class Plan extends Model
 
         $options = self::defaultOptions();
         foreach ($options as $type => $option) {
-            if ($type != 'sending_server_subaccount_uid') {
+            if ($type != 'sending_server_subaccount_uid' && !in_array($type, ['plain_text_footer', 'html_footer'])) {
                 $rules['options']['plan.options.'.$type] = 'sometimes|required';
             }
         }
@@ -528,7 +528,7 @@ class Plan extends Model
             'sending_server_option' => self::SENDING_SERVER_OPTION_SYSTEM,
             'sending_server_subaccount_uid' => null,
             'api_access' => 'yes',
-            'email_footer_enabled' => 'no',
+            'email_footer_enabled' => 'yes',
             'email_footer_trial_period_only' => 'no',
             'html_footer' => '',
             'plain_text_footer' => '',
@@ -602,7 +602,7 @@ class Plan extends Model
     public static function multiProcessSelectOptions()
     {
         $options = [['value' => 1, 'text' => trans('messages.one_single_process')]];
-        for ($i = 2; $i < 101; ++$i) {
+        for ($i = 2; $i < 4; ++$i) {
             $options[] = ['value' => $i, 'text' => $i];
         }
 

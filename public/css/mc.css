@@ -486,3 +486,7 @@ stat .stat-head {
 .mc-modal h6 {
   margin: 0;
 }
+.checkbox.disabled .checker span.checked {
+  background: #777;
+  border-color: #777;
+}
