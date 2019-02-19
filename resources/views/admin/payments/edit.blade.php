@@ -49,8 +49,8 @@
         @if (!empty($gateway['fields']))
             <h3>{{ trans('messages.payment.options') }}</h3>
             <div class="row">
-                @foreach ($gateway['fields'] as $name => $field)
-                    <div class="col-md-4">
+				<div class="col-md-6">
+					@foreach ($gateway['fields'] as $name => $field)                    
                         @include('helpers.form_control', [
                             'type' => 'text',
                             'name' => 'options['.$name.']',
@@ -58,9 +58,9 @@
                             'label' => trans('messages.payment.' . $gateway['name'] . '.' . $name),
                             'help_class' => 'payment',
                             'rules' => ['options.' . $name => 'required'],
-                        ])
-                    </div>
-                @endforeach
+                        ])                    
+					@endforeach
+				</div>
             </div>
         @endif
         <hr>

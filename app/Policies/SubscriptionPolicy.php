@@ -206,4 +206,18 @@ class SubscriptionPolicy
 
         return $can;
     }
+    
+    public function changePlan(User $user, Subscription $subscription, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = false;
+                break;
+            case 'customer':
+                $can = isset($subscription) && !$subscription->ended();
+                break;
+        }
+
+        return $can;
+    }
 }

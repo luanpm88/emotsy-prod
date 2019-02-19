@@ -26,19 +26,14 @@ class AccountSubscriptionController extends Controller
         
         // Get current subscription
         $subscription = $customer->subscription();
-
+        
         // If has no subscription
         if (!$subscription) {
             return redirect()->action('AccountSubscriptionController@new');
         }
         
-        // Gateway setting
-        $gateway = Setting::getPaymentGateway($subscription->gateway);
-        $class = '\\Acelle\\Cashier\\Services\\' . ucfirst($gateway['name']) . 'GatewayService';
-        $gatewayService = new $class($gateway['fields']['secret_key']);
-        
-        $subscriptionParam = $gatewayService->retrieveSubscription($subscription->remote_id);
-        
+        // Gateway setting                
+        $subscriptionParam = $subscription->retrieveSubscription();        
 
         return view('account.subscription.index', [
             'subscription' => $subscription,
@@ -107,8 +102,8 @@ class AccountSubscriptionController extends Controller
         
         // subscribe to plan
         $class = '\\Acelle\\Cashier\\Services\\' . ucfirst($gateway['name']) . 'GatewayService';
-        $gatewayService = new $class($gateway['fields']['secret_key']);
-        $subscription = $customer->newSubscription($plan, $gatewayService)->create($request->stripeToken);
+        $gatewayService = new $class($gateway['fields']);
+        $subscription = $customer->newSubscription($plan, $gatewayService)->create($request);
         
         $request->session()->flash('alert-success', trans('messages.subscription.created'));
         return redirect()->action('AccountSubscriptionController@index');
@@ -161,14 +156,12 @@ class AccountSubscriptionController extends Controller
      */
     public function cancel(Request $request)
     {
-        $subscription = \Acelle\Model\Subscription::find($request->id);
+        $customer = $request->user()->customer;        
+        // Get current subscription
+        $subscription = $customer->subscription();
 
-        if ($request->user()->customer->can('cancel', $subscription)) {
-            $gateway = Setting::getPaymentGateway($subscription->gateway);
-            $class = '\\Acelle\\Cashier\\Services\\' . ucfirst($gateway['name']) . 'GatewayService';
-            $gatewayService = new $class($gateway['fields']['secret_key']);
-        
-            $subscription->cancel($gatewayService);
+        if ($request->user()->customer->can('cancel', $subscription)) {        
+            $subscription->cancel();
         }
 
         // Redirect to my subscription page
@@ -190,7 +183,7 @@ class AccountSubscriptionController extends Controller
         if ($request->user()->customer->can('resume', $subscription)) {
             $gateway = Setting::getPaymentGateway($subscription->gateway);
             $class = '\\Acelle\\Cashier\\Services\\' . ucfirst($gateway['name']) . 'GatewayService';
-            $gatewayService = new $class($gateway['fields']['secret_key']);
+            $gatewayService = new $class($gateway['fields']);
         
             $subscription->resume($gatewayService);
         }
@@ -214,7 +207,7 @@ class AccountSubscriptionController extends Controller
         if ($request->user()->customer->can('cancelNow', $subscription)) {
             $gateway = Setting::getPaymentGateway($subscription->gateway);
             $class = '\\Acelle\\Cashier\\Services\\' . ucfirst($gateway['name']) . 'GatewayService';
-            $gatewayService = new $class($gateway['fields']['secret_key']);
+            $gatewayService = new $class($gateway['fields']);
         
             $subscription->cancelNow($gatewayService);
         }
@@ -222,5 +215,36 @@ class AccountSubscriptionController extends Controller
         // Redirect to my subscription page
         $request->session()->flash('alert-success', trans('messages.subscription.cancelled_now'));
         return redirect()->action('AccountSubscriptionController@index');
+    }
+    
+    /**
+     * Change plan.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function changePlan(Request $request, $id)
+    {
+        $subscription = Subscription::find($request->id);
+        $plan = Plan::findByUid($request->plan_uid);
+        
+        if ($request->isMethod('post')) {
+            if ($request->user()->customer->can('changePlan', $subscription)) {
+                $gateway = Setting::getPaymentGateway($subscription->gateway);
+                $class = '\\Acelle\\Cashier\\Services\\' . ucfirst($gateway['name']) . 'GatewayService';
+                $gatewayService = new $class($gateway['fields']);
+            
+                $subscription->swap($gatewayService, $plan);
+            }
+    
+            // Redirect to my subscription page
+            $request->session()->flash('alert-success', trans('messages.subscription.cancelled_now'));
+            return redirect()->action('AccountSubscriptionController@index');
+        }
+        
+        return view('account.subscription.change_plan', [
+            'subscription' => $subscription,
+        ]);
     }
 }

@@ -544,6 +544,10 @@ class Plan extends Model implements PlanInterface
         if ($request->user()->admin && !$request->user()->admin->can('readAll', new \Acelle\Model\Plan())) {
             $query = $query->where('plans.admin_id', '=', $request->user()->admin->id);
         }
+        
+        if ($request->except) {
+            $query = $query->where('id', '<>', $request->except);
+        }
 
         foreach ($query->limit(20)->get() as $plan) {
             $data['items'][] = ['id' => $plan->uid, 'text' => htmlspecialchars($plan->name).'|||'.htmlspecialchars(\Acelle\Library\Tool::format_price($plan->price, $plan->currency->format))];

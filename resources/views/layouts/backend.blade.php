@@ -395,7 +395,6 @@
 		</div>
 		<!-- /page content -->
 
-
 		<!-- Footer -->
 		<div class="footer text-muted">
 			{!! trans('messages.copy_right') !!}

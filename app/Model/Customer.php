@@ -198,7 +198,18 @@ class Customer extends Model implements BillableInterface
     public function subscription()
     {
         $subscription = $this->subscriptions()->first();
-        return $subscription->ended() ? null : $this->subscriptions()->first();
+        
+        if(is_object($subscription)) {
+            $subscription = $subscription->ended() ? null : $subscription;
+            
+            if ( $subscription ) {
+                // resolve gatway service
+                $config = Setting::getPaymentGateway($subscription->gateway);
+                $subscription->resolveGatewayService($config);
+            }
+        }
+        
+        return $subscription;
     }
 
     /**

@@ -55,7 +55,7 @@
                     
                     @if (\Auth::user()->customer->can('cancel', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
-                            href="{{ action('AccountSubscriptionController@cancel', ["id" => $subscription->id]) }}"
+                            href="{{ action('AccountSubscriptionController@cancel') }}"
                             class="btn bg-grey-600 mr-10"
                         >
                             {{ trans('messages.subscription.cancel') }}
@@ -76,7 +76,15 @@
                         >
                             {{ trans('messages.subscription.cancel_now') }}
                         </a>
-                    @endif                    
+                    @endif
+                    @if (\Auth::user()->customer->can('changePlan', $subscription))
+                        <a 
+                            href="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->id]) }}"
+                            class="btn bg-grey-600 mr-10 modal_link"
+                        >
+                            {{ trans('messages.subscription.change_plan') }}
+                        </a>
+                    @endif    
                 @endif
             </div>
             <div class="sub-section">

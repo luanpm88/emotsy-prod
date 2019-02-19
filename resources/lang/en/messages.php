@@ -2180,4 +2180,20 @@
   'subscription.cancel_now' => 'Cancel now',
   'subscription.cancel_now.confirm' => 'You\'re about to cancel :number subscription immediately.',
   'subscription.cancelled_now' => 'The subscription was successfully cancelled',
+  'subscription.change_plan' => 'Change plan',
+  'subscription.change_plan.wording' => 'Select plan below to change',
+  'payments.braintree' => 'Braintree',
+  'payments.braintree.list_intro' => 'Pay with Braintree',
+  'payment.braintree.environment' => 'Environment',
+  'payment.braintree.merchant_id' => 'Merchant ID',
+  'payment.braintree.public_key' => 'Public key',
+  'payment.braintree.private_key' => 'Private key',
+  'payment.braintree.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+    Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
+    sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
+    Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
+  'purchasing_intro_braintree' => 'Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the Pay with Braintree option
+        . Your plan price is: <a><strong>:price</strong></a>',
+  'payment.braintree.request_payment_method' => 'Request payment method',
+  'payment.braintree.pay' => 'Pay',
 ) ?>

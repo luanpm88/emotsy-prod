@@ -20,4 +20,8 @@ class Subscription extends \Acelle\Cashier\Models\Subscription
     {
         return $this->belongsTo('Acelle\Model\Customer', 'local_owner_id');
     }
+    public function owner()
+    {
+        return $this->customer;
+    }
 }
