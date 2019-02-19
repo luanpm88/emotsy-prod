@@ -713,6 +713,31 @@ class PlanController extends Controller
     }
     
     /**
+     * Plan payment information.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param string $uid
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function payment(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // fill all
+        $plan->fillAll($request);
+
+        return view('admin.plans.payment', [
+            'plan' => $plan,
+        ]);
+    }
+    
+    /**
      * Plan email footer information.
      *
      * @param \Illuminate\Http\Request $request

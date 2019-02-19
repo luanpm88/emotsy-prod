@@ -2377,4 +2377,6 @@
     'plan.sending_servers.empty_warning' => 'There are no sending servers selected',
     'plan.sending_server.custom' => 'Custom',
     'plan.sending_server.change_confirm' => 'You are about to change plan sending server setting',
+    'plan.payment.intro' => 'Connect your plan to a payment gateway like Stripe or Braintree/Paypal,
+        to accept payment online',
 ) ?>

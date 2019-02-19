@@ -49,7 +49,7 @@
                                     'label' => trans('messages.max_number_of_processes'),
                                     'options' => \Acelle\Model\Plan::multiProcessSelectOptions(),
                                     'help_class' => 'plan',
-                                    'rules' => $plan->resourcesRules(),
+                                    'rules' => $plan->validationRules()['general'],
                                 ])
                             </div>
                         </div>
