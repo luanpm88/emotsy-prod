@@ -2442,4 +2442,6 @@
           . Your plan price is: <a><strong>:price</strong></a>',
     'payment.braintree.request_payment_method' => 'Request payment method',
     'payment.braintree.pay' => 'Pay',
+    'plan.choose_a_payment_gateway' => 'Choose a payment gateway',
+    'plan.choose_a_payment_gateway.help' => 'You are connecting to Stripe, which allows you to get paid from users\' credit cards (VISA, Master, etc.)',
 ) ?>

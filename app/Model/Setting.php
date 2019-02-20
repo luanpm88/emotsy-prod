@@ -628,6 +628,22 @@ class Setting extends Model
     }
     
     /**
+     * Get payments gateways select option.
+     *
+     * @var array
+     */
+    public static function getActivePaymentGatewaySelectOptions()
+    {
+        $options = [];
+        
+        foreach(self::getActivePaymentGateways() as $gateway) {
+            $options[] = ['text' => trans('messages.payments.' . $gateway['name']), 'value' => $gateway['name']];
+        }
+        
+        return $options;
+    }
+    
+    /**
      * Get payments gateway by name.
      *
      * @var array

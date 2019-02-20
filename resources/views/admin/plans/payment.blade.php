@@ -38,10 +38,12 @@
                     @include('helpers.form_control', [
                         'type' => 'select',
                         'class' => '',
-                        'name' => 'plan[general][payment_gateway]',
-                        'value' => $plan->payment_gateway,
+                        'name' => 'plan[options][payment_gateway]',
+                        'label' => trans('messages.plan.choose_a_payment_gateway'),
+                        'value' => $plan->getOption('payment_gateway'),
                         'help_class' => 'plan',
-                        'options' => $plan->colors("color"),
+                        'options' => \Acelle\Model\Setting::getActivePaymentGatewaySelectOptions(),
+                        'help' => trans('messages.plan.choose_a_payment_gateway.help'),
                         'rules' => '',
                     ])
                     
