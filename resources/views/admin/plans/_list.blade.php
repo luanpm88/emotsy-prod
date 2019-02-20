@@ -44,12 +44,6 @@
                     <span class="text-muted">{{ trans('messages.sending_total_quota_label') }}</span>
                 </td>
                 <td>
-                    <h5 class="no-margin text-bold kq_search">
-                        {{ \Acelle\Library\Tool::format_number($plan->subscriptionsCount()) }}
-                    </h5>
-                    <span class="text-muted">{{ trans('messages.subscriptions') }}</span>
-                </td>
-                <td>
                     <span class="text-muted2 list-status pull-left">
                         <span class="label label-flat bg-{{ $plan->status }}">{{ trans('messages.plan_status_' . $plan->status) }}</span>
                     </span>
