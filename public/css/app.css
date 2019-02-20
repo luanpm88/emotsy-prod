@@ -2636,3 +2636,45 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 .modal-trigger {
   cursor: pointer;
 }
+.list-boxes {
+  display: flex;
+}
+.list-box {
+  border: solid 1.5px #aaa;
+  margin-right: 20px;
+  padding: 10px 20px;
+  width: 25%;
+  opacity: 0.6;
+  border-radius: 5px;
+}
+.list-box:hover, .list-box.active  {
+  border-color: #aaa;
+  opacity: 1;
+}
+.list-box:hover {
+  box-shadow: 2px 2px 2px rgba(0,0,0,0.1);
+}
+.list-box a {
+  color: #333;
+  display: block;
+}
+.list-box label {
+    font-weight: 800;
+    text-transform: uppercase;
+    font-size: 120%;
+}
+.list-box-footer {
+  padding-top: 10px;
+  margin-top: 10px;
+  border-top: solid 1px #aaa;
+}
+.flex {
+  display: flex;
+  justify-content: space-between;
+}
+.space-between {
+  justify-content: space-between;
+}
+.text-big {
+  font-size: 20px !important;
+}

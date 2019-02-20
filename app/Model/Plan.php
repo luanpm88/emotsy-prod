@@ -25,8 +25,9 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Validator;
 use Illuminate\Validation\ValidationException;
+use Acelle\Cashier\Interfaces\PlanInterface;
 
-class Plan extends Model
+class Plan extends Model implements PlanInterface
 {
     // Plan status
     const STATUS_INACTIVE = 'inactive';
@@ -776,6 +777,10 @@ class Plan extends Model
         if ($request->user()->admin && !$request->user()->admin->can('readAll', new \Acelle\Model\Plan())) {
             $query = $query->where('plans.admin_id', '=', $request->user()->admin->id);
         }
+        
+        if ($request->except) {
+            $query = $query->where('id', '<>', $request->except);
+        }
 
         foreach ($query->limit(20)->get() as $plan) {
             $data['items'][] = ['id' => $plan->uid, 'text' => htmlspecialchars($plan->name).'|||'.htmlspecialchars(\Acelle\Library\Tool::format_price($plan->price, $plan->currency->format))];
@@ -1220,4 +1225,123 @@ class Plan extends Model
         return $this->primarySendingServer()->getVerifiedIdentities();
     }
     
+    /**
+     * Check if plan is free.
+     *
+     * @return bool
+     */
+    public function isFree()
+    {
+        return $this->price == 0;
+    }
+    
+    /**
+     * Get stripe price.
+     *
+     * @return string
+     */
+    public function stripePrice()
+    {
+        $currency_rates = [
+            'CLP' => 1,
+            'DJF' => 1,
+            'JPY' => 1,
+            'KMF' => 1,
+            'RWF' => 1,
+            'VUV' => 1,
+            'XAF' => 1,
+            'XOF' => 1,
+            'BIF' => 1,
+            'GNF' => 1,
+            'KRW' => 1,
+            'MGA' => 1,
+            'PYG' => 1,
+            'VND' => 1,
+            'XPF' => 1,
+        ];
+        $rate = isset($currency_rates[$this->currency->code]) ? $currency_rates[$this->currency->code] : 100;
+
+        return $this->price * $rate;
+    }
+    
+    /**
+     * PlanInterface: get remote plan id.
+     *
+     * @return string
+     */
+    public function getRemotePlanId()
+    {
+        return $this->remote_plan_id;
+    }
+    
+    /**
+     * PlanInterface: get local id.
+     *
+     * @return string
+     */
+    public function getLocalPlanId()
+    {
+        return $this->id;
+    }
+    
+    /**
+     * PlanInterface: get name.
+     *
+     * @return string
+     */
+    public function getBillableName()
+    {
+        return $this->name;
+    }
+    
+    /**
+     * PlanInterface: get interval.
+     *
+     * @return string
+     */
+    public function getBillableInterval()
+    {
+        return $this->frequency_unit;
+    }
+    
+    /**
+     * PlanInterface: get interval count.
+     *
+     * @return string
+     */
+    public function getBillableIntervalCount()
+    {
+        return $this->frequency_amount;
+    }
+    
+    /**
+     * PlanInterface: get currency.
+     *
+     * @return string
+     */
+    public function getBillableCurrency()
+    {
+        return $this->currency->code;
+    }
+    
+    /**
+     * PlanInterface: get interval count.
+     *
+     * @return string
+     */
+    public function getBillableAmount()
+    {
+        return $this->price;
+    }
+    
+    /**
+     * PlanInterface: update plan id.
+     *
+     * @return void
+     */
+    public function updateRemotePlanId($planId)
+    {
+        $this->remote_plan_id = $planId;
+        $this->save();
+    }
 }

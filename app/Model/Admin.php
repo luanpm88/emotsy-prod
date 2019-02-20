@@ -387,7 +387,7 @@ class Admin extends Model
     public function getAllSubscriptions()
     {
         $query = \Acelle\Model\Subscription::select('subscriptions.*')
-            ->join('customers', 'customers.id', '=', 'subscriptions.customer_id');
+            ->leftJoin('customers', 'customers.id', '=', 'subscriptions.local_owner_id');
 
         if (!$this->user->can('readAll', new \Acelle\Model\Customer())) {
             $query = $query->where(function ($q) {
@@ -408,7 +408,7 @@ class Admin extends Model
     {
         $query = $this->getAllSubscriptions()
             ->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
-            ->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->endOfDay())
+            ->where('subscriptions.ends_at', '>=', \Carbon\Carbon::now()->endOfDay())
             ->count();
 
         return $query == 0 ? '' : $query;
@@ -423,7 +423,7 @@ class Admin extends Model
     {
         $query = $this->getAllSubscriptions()
             //->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
-            ->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->endOfDay())
+            ->where('subscriptions.ends_at', '>=', \Carbon\Carbon::now()->endOfDay())
             ->orderBy('subscriptions.created_at', 'desc')->limit($number);
 
         return $query->get();

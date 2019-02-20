@@ -28,6 +28,10 @@ class Setting extends Model
 {
     const UPLOAD_PATH = 'app/setting/';
     
+    // Payment status
+    const PAYMENT_STATUS_ACTIVE = 'active';
+    const PAYMENT_STATUS_INACTIVE = 'inactive';
+    
     /**
      * Get all items.
      *
@@ -586,5 +590,94 @@ class Setting extends Model
                 $setting->save();
             }
         }
+    }
+    
+    /**
+     * Get payments gateways.
+     *
+     * @var array
+     */
+    public static function getPaymentGateways()
+    {
+        $payments = [];
+        
+        foreach(config('payment.gateways') as $name => $gateway) {
+            $payments[$name] = self::getPaymentGateway($name);
+        }
+        
+        return $payments;
+    }
+    
+    /**
+     * Get payments gateways.
+     *
+     * @var array
+     */
+    public static function getActivePaymentGateways()
+    {
+        $payments = [];
+        
+        foreach(config('payment.gateways') as $name => $gateway) {
+            $gateway = self::getPaymentGateway($name);
+            if ($gateway['status'] == self::PAYMENT_STATUS_ACTIVE) {
+                $payments[$name] = $gateway;
+            }
+        }
+        
+        return $payments;
+    }
+    
+    /**
+     * Get payments gateway by name.
+     *
+     * @var array
+     */
+    public static function getPaymentGateway($name)
+    {
+        $gateway = config('payment.gateways')[$name];
+        $gateway['name'] = $name;
+        
+        // Get value form databatase
+        $statusName = 'payment.' . $name . '.status';
+        $status = self::where('name', $statusName)->first();        
+        if (is_object($status)) {
+           $gateway['status'] = $status->value;
+        }
+        
+        // Fields
+        foreach ($gateway['fields'] as $key => $value ) {            
+            $fieldName = 'payment.' . $name . '.' . $key;
+            $field = self::where('name', $fieldName)->first();        
+            if (is_object($field)) {
+               $gateway['fields'][$key] = $field->value;
+            }
+        }
+        
+        return $gateway;
+    }
+    
+    /**
+     * Get payment status select options.
+     *
+     * @var array
+     */
+    public static function paymentStatusSelectOptions()
+    {
+        return [self::PAYMENT_STATUS_INACTIVE, self::PAYMENT_STATUS_ACTIVE];
+    }
+    
+    /**
+     * Update payment gateway.
+     *
+     * @var void
+     */
+    public static function updatePaymentGateway($name, $params)
+    {
+        foreach ($params as $key => $value) {
+            $setting = 'payment.' . $name . '.' . $key;
+            
+            self::set($setting, $value);
+        }
+        
     }
 }

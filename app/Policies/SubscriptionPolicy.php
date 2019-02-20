@@ -4,7 +4,7 @@ namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Acelle\Model\User;
-use Acelle\Model\Subscription;
+use Acelle\Cashier\Models\Subscription;
 
 class SubscriptionPolicy
 {
@@ -80,8 +80,7 @@ class SubscriptionPolicy
                     || ($ability == 'own' && $user->admin->id == $subscription->customer->admin_id);
                 break;
             case 'customer':
-                $can = $user->customer->id == $subscription->customer_id &&
-                    $subscription->status == Subscription::STATUS_INACTIVE;
+                $can = isset($subscription) && $subscription->valid();
                 break;
         }
 
@@ -164,5 +163,61 @@ class SubscriptionPolicy
         }
 
         return $can && $subscription->paid == true && !$subscription->isOld();
+    }
+    
+    public function cancel(User $user, Subscription $subscription, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = false;
+                break;
+            case 'customer':
+                $can = isset($subscription) && (!$subscription->cancelled() || $subscription->recurring());
+                break;
+        }
+
+        return $can;
+    }
+    
+    public function resume(User $user, Subscription $subscription, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = false;
+                break;
+            case 'customer':
+                $can = isset($subscription) && $subscription->cancelled();
+                break;
+        }
+
+        return $can;
+    }
+    
+    public function cancelNow(User $user, Subscription $subscription, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = false;
+                break;
+            case 'customer':
+                $can = isset($subscription) && !$subscription->ended();
+                break;
+        }
+
+        return $can;
+    }
+    
+    public function changePlan(User $user, Subscription $subscription, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = false;
+                break;
+            case 'customer':
+                $can = isset($subscription) && !$subscription->ended();
+                break;
+        }
+
+        return $can;
     }
 }

@@ -25,6 +25,7 @@ namespace Acelle\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Acelle\Notifications\ResetPassword;
+use Acelle\Cashier\Billable;
 
 class User extends Authenticatable
 {

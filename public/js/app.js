@@ -1767,6 +1767,53 @@ $(function() {
         .done(function( data ) {
             modal.find('.modal-dialog').html(data);
             modal.modal('show');
+            
+            //
+            customValidate(modal.find("form"));
+            
+            // Select2 ajax
+            modal.find(".select2-ajax").each(function() {
+                var url = $(this).attr("data-url");
+                var placeholder = $(this).attr("placeholder");
+                if(typeof(placeholder) == 'undefined') {
+                    placeholder = "";
+                }
+                $(this).select2({
+                    placeholder: placeholder,
+                    allowClear: true,
+                    ajax: {
+                        url: url,
+                        dataType: 'json',
+                        delay: 250,
+        
+                        data: function (params) {
+                          return {
+                            q: params.term, // search term
+                            page: params.page
+                          };
+                        },
+                        processResults: function (data, params) {
+                            // parse the results into the format expected by Select2
+                            // since we are using custom formatting functions we do not need to
+                            // alter the remote JSON data, except to indicate that infinite
+                            // scrolling can be used
+                            params.page = params.page || 1;
+        
+                            return {
+                                results: data.items,
+                                pagination: {
+                                    more: (params.page * 30) < data.total_count
+                                }
+                            };
+                        },
+                        cache: true
+                    },
+                    escapeMarkup: function (markup) { return markup; }, // let our custom formatter work
+                    minimumInputLength: 0,
+                    templateResult: formatSelect2TextOption,
+                    templateSelection: formatSelect2TextSelected,
+                });
+            });
 
             // Remove loading effect
             a_.removeClass('loading');
