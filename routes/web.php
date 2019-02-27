@@ -496,9 +496,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::post('subscription/{id}/resume', 'AccountSubscriptionController@resume');
     Route::post('subscription/cancel', 'AccountSubscriptionController@cancel');
     Route::post('subscription/subscribe', 'AccountSubscriptionController@subscribe');
-    Route::get('subscription/checkout', 'AccountSubscriptionController@checkout');
+    Route::match(['get', 'post'], 'subscription/subscribe-with-card', 'AccountSubscriptionController@subscribeWithCard');
     Route::get('subscription/preview', 'AccountSubscriptionController@preview');
-    Route::post('subscription/proccess', 'AccountSubscriptionController@process');
     Route::get('subscription/new', 'AccountSubscriptionController@new');
     Route::get('subscription', 'AccountSubscriptionController@index');
 });
@@ -785,6 +784,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/sub_accounts', 'SubAccountController');
     
     // Payment gateways
+    Route::post('admin/payment/gateways/{name}/set-primary', 'PaymentController@setPrimary');
     Route::post('admin/payment/gateways/update/{name}', 'PaymentController@update');
     Route::get('admin/payment/gateways/edit/{name}', 'PaymentController@edit');
     Route::get('admin/payment/gateways/index', 'PaymentController@index');

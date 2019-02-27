@@ -442,7 +442,11 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
-            
+            'system.payment_gateway' => [
+                'cat' => 'others',
+                'value' => '',
+                'type' => 'text',
+            ],
         ];
     }
 

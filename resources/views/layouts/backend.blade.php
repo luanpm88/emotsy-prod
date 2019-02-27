@@ -43,9 +43,7 @@
 					</a>
 				</li>
 
-				@if (Auth::user()->can("read", new Acelle\Model\Customer())
-					|| Auth::user()->admin->can("read", new Acelle\Model\Subscription())
-				)
+				@if (Auth::user()->can("read", new Acelle\Model\Customer()))
 					<li class="dropdown language-switch"
 						rel0="CustomerGroupController"
 						rel1="CustomerController"
@@ -59,13 +57,6 @@
 								<li rel0="CustomerController">
 									<a href="{{ action('Admin\CustomerController@index') }}">
 										<i class="icon-users"></i> {{ trans('messages.customers') }}
-									</a>
-								</li>
-							@endif
-							@if (Auth::user()->admin->can("read", new Acelle\Model\Subscription()))
-								<li rel0="SubscriptionController">
-									<a href="{{ action('Admin\SubscriptionController@index') }}">
-										<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
 									</a>
 								</li>
 							@endif

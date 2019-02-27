@@ -35,7 +35,7 @@
                         <h3 class="text-semibold">{{ trans('messages.subscribe_to_a_plan') }}</h3>
                         <p>{!! trans('messages.subscribe_to_a_plan_intro') !!}</p>
                             
-                        <form enctype="multipart/form-data" action="{{ action('AccountSubscriptionController@process') }}" method="POST" class="form-validate-jqueryz subscription-form">
+                        <form enctype="multipart/form-data" action="{{ action('AccountSubscriptionController@subscribe') }}" method="POST" class="form-validate-jqueryz subscription-form">
                             {{ csrf_field() }}
         
                             @include('helpers.form_control', [

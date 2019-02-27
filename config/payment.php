@@ -2,11 +2,11 @@
 
 return [
     'gateways' => [
-        'cash' => [
-            'name' => 'cash',
-            'status' => 'active',
-            'fields' => [],
-        ],
+        //'cash' => [
+        //    'name' => 'cash',
+        //    'status' => 'active',
+        //    'fields' => [],
+        //],
         'stripe' => [
             'name' => 'stripe',
             'status' => 'inactive',

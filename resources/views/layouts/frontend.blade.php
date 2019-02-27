@@ -157,13 +157,11 @@
 								<span class="">{{ trans('messages.used_quota') }}</span>
 							</a>
 						</li>
-						@if (Auth::user()->customer->can("read", new Acelle\Model\Subscription()))
-							<li rel0="AccountSubscriptionController\index">
-								<a href="{{ action('AccountSubscriptionController@index') }}">
-									<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
-								</a>
-							</li>
-						@endif
+						<li rel0="AccountSubscriptionController\index">
+							<a href="{{ action('AccountSubscriptionController@index') }}">
+								<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
+							</a>
+						</li>
 						<li><a href="{{ action("AccountController@profile") }}"><i class="icon-profile"></i> {{ trans('messages.account') }}</a></li>
 						@if (Auth::user()->customer->canUseApi())
 							<li rel0="AccountController/api">

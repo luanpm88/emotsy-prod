@@ -165,6 +165,8 @@
     </form>
     
     <script>
+        var current_option = $("input[name='plan[options][sending_server_option]']:checked").val();
+    
         $(document).ready(function() {
             // all sending servers checking
             $(document).on("change", "input[name='plan[options][all_sending_servers]']", function(e) {
@@ -242,6 +244,10 @@
                 modal.find('.modal-footer .link-confirm-button').attr("onclick", "$('#planSendingServerSetting').submit()");
                 
                 modal.modal("show");
+            });
+            
+            $('#confirm-modal .modal-footer [data-dismiss="modal"]').click(function() {
+                location.reload();
             });
         });
     </script>

@@ -26,14 +26,14 @@ use Acelle\Library\QuotaTrackerFile;
 use Acelle\Model\Setting;
 use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
-use Acelle\Cashier\Traits\BillableTrait;
-use Acelle\Cashier\Interfaces\BillableInterface;
+use Acelle\Cashier\Traits\BillableUserTrait;
+use Acelle\Cashier\Interfaces\BillableUserInterface;
 use Acelle\Model\Plan;
 
-class Customer extends Model implements BillableInterface
+class Customer extends Model implements BillableUserInterface
 {
-    // Billable trait
-    use BillableTrait;
+    // Billable user trait
+    use BillableUserTrait;
     
     protected $quotaTracker;
 
@@ -196,33 +196,6 @@ class Customer extends Model implements BillableInterface
         return $this->sendingDomains()
             ->where('status', '=', \Acelle\Model\SendingDomain::STATUS_ACTIVE)
             ->where('domain_verified', '=', \Acelle\Model\SendingDomain::VERIFIED);
-    }
-    public function subscriptions()
-    {
-        return $this->hasMany('Acelle\Model\Subscription', 'local_owner_id')->orderBy('created_at', 'desc');
-    }
-    
-    /**
-     * Get a subscription instance by name.
-     *
-     * @param  string  $subscription
-     * @return \Laravel\Cashier\Subscription|null
-     */
-    public function subscription()
-    {
-        $subscription = $this->subscriptions()->first();
-        
-        if(is_object($subscription)) {
-            $subscription = $subscription->ended() ? null : $subscription;
-            
-            if ( $subscription ) {
-                // resolve gatway service
-                $config = Setting::getPaymentGateway($subscription->gateway);
-                $subscription->resolveGatewayService($config);
-            }
-        }
-        
-        return $subscription;
     }
 
     /**
@@ -736,10 +709,6 @@ class Customer extends Model implements BillableInterface
      */
     public function getSendingQuotaUsage()
     {
-        $current = $this->subscription();
-        if (is_null($current)) {
-            return 0;
-        }
         $tracker = $this->getQuotaTracker();
 
         return $tracker->getUsage();
@@ -752,11 +721,6 @@ class Customer extends Model implements BillableInterface
      */
     public function getSendingQuotaUsagePercentage()
     {
-        $current = $this->subscription();
-        if (is_null($current)) {
-            return 0;
-        }
-
         $max = $this->getSendingQuota();
         $count = $this->getSendingQuotaUsage();
 
@@ -830,12 +794,6 @@ class Customer extends Model implements BillableInterface
      */
     public function getQuotaTracker()
     {
-        $current = $this->subscription();
-
-        if (is_null($current)) {
-            throw new \Exception('User not subscribed to any active plan');
-        }
-
         if (!$this->quotaTracker) {
             $this->initQuotaTracker();
         }
@@ -1294,26 +1252,6 @@ class Customer extends Model implements BillableInterface
     }
 
     /**
-     * Subscriptions count.
-     *
-     * @return number
-     */
-    public function subscriptionsCount()
-    {
-        return $this->subscriptions()->count();
-    }
-
-    /**
-     * Check if customer dosen't have any plan.
-     *
-     * @return bool
-     */
-    public function notHaveAnyPlan()
-    {
-        return $this->subscriptionsCount() == 0;
-    }
-
-    /**
      * Count customer automations.
      *
      * @return number
@@ -1421,28 +1359,7 @@ class Customer extends Model implements BillableInterface
                 trans('messages.no_plan')
             );
     }
-
-    /**
-     * Get customer subscription not include old one.
-     *
-     * @return Subscription
-     */
-    public function getNotOutdatedSubscriptions()
-    {
-        return $subsciption = $this->subscriptions()
-            ->where('subscriptions.ends_at', '>=', \Carbon\Carbon::now()->startOfDay());
-    }
-
-    /**
-     * Get customer current pending subscription not include old one.
-     *
-     * @return Subscription
-     */
-    public function getNotOutdatedInactiveSubscriptions()
-    {
-        return $subsciption = $this->getNotOutdatedSubscriptions();
-    }
-
+    
     /**
      * Get total file size usage.
      *
@@ -1763,7 +1680,7 @@ class Customer extends Model implements BillableInterface
         return \Acelle\Model\SendingDomain::getAllActive();
     }
     
-    //====================================== NEW SUBSCRIPTION =======================================
+    //====================================== BILLABLE USER INTERFACE =======================================
     
     /**
      * Customer get email.
@@ -1780,9 +1697,9 @@ class Customer extends Model implements BillableInterface
      *
      * @return string
      */
-    public function getRemoteOwnerId()
+    public function getBillableId()
     {
-        return $this->remote_owner_id;
+        return $this->uid;
     }
     
     /**
@@ -1836,11 +1753,11 @@ class Customer extends Model implements BillableInterface
     public function getOptions()
     {
         //@todo how to get option from subscription/plan
-        $subscription = $this->subscription();
+        $plan = Plan::first();
         
-        if (is_object($subscription)) {
+        if (is_object($plan)) {
             // Find plan  
-            return $subscription->plan->getOptions();
+            return $plan->getOptions();
         } else {
             return [];
         }

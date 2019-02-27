@@ -38,8 +38,8 @@
                             {!! trans('messages.subscription.current_subscription.recurring.wording', [
                                 'plan' => $plan->name,
                                 'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
-                                'remain' => $currentPeriodEndAt->diffForHumans(),
-                                'end_at' => \Acelle\Library\Tool::formatDate($currentPeriodEndAt)
+                                'remain' => $currentPeriodEnd->diffForHumans(),
+                                'next_on' => \Acelle\Library\Tool::formatDate($currentPeriodEnd)
                             ]) !!}
                         </p>
                     @else

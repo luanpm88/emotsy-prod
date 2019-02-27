@@ -25,9 +25,11 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Validator;
 use Illuminate\Validation\ValidationException;
-use Acelle\Cashier\Interfaces\PlanInterface;
+use Acelle\Cashier\Interfaces\BillablePlanInterface;
+use Acelle\Cashier\Services\StripePaymentGateway;
+use Acelle\Cashier\Services\BraintreePaymentGateway;
 
-class Plan extends Model implements PlanInterface
+class Plan extends Model implements BillablePlanInterface
 {
     // Plan status
     const STATUS_INACTIVE = 'inactive';
@@ -1265,24 +1267,16 @@ class Plan extends Model implements PlanInterface
         return $this->price * $rate;
     }
     
+    //====================================== BILLABLE PLAN INTERFACE =======================================
+    
     /**
      * PlanInterface: get remote plan id.
      *
      * @return string
      */
-    public function getRemotePlanId()
+    public function getBillableId()
     {
-        return $this->remote_plan_id;
-    }
-    
-    /**
-     * PlanInterface: get local id.
-     *
-     * @return string
-     */
-    public function getLocalPlanId()
-    {
-        return $this->id;
+        return $this->uid;
     }
     
     /**
@@ -1336,13 +1330,17 @@ class Plan extends Model implements PlanInterface
     }
     
     /**
-     * PlanInterface: update plan id.
+     * PlanInterface: get payment service.
      *
-     * @return void
+     * @return string
      */
-    public function updateRemotePlanId($planId)
+    public function getPaymentGatewayService()
     {
-        $this->remote_plan_id = $planId;
-        $this->save();
+        $gateway = $this->getOption('payment_gateway');
+        $config = Setting::getPaymentGateway($gateway);
+        
+        if ($gateway == 'stripe') {
+            return new StripePaymentGateway($config['fields']['secret_key']);
+        }
     }
 }

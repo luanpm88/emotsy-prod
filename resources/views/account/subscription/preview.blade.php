@@ -5,9 +5,9 @@
         </div>
     </div>
         
-    @if ($plan->isFree())
+    @if (false && $plan->isFree())
         <div class="text-left">
-            <a link-method="POST" href="{{ action('AccountSubscriptionController@process', ['plan_uid' => $plan->uid]) }}" class="btn bg-teal">
+            <a link-method="POST" href="{{ action('AccountSubscriptionController@subscribe', ['plan_uid' => $plan->uid]) }}" class="btn bg-teal">
             {{ trans('messages.get_started') }}
             <i class="icon-arrow-right7"></i></a>
         </div>
@@ -16,15 +16,10 @@
             
         <p>{{ trans('messages.subscription.select_payment.wording') }}</p>
             
-        <div class="list-boxes">
-            @foreach ($gateways as $name => $gateway)
-                <div class="list-box {{ trans('messages.payment.status.' . $gateway['status']) }}">
-                    <a link-method="POST" href="{{ action('AccountSubscriptionController@process', ['plan_uid' => $plan->uid, 'gateway' => $name]) }}">
-                        <label>{{ trans('messages.payments.' . $name) }}</label>
-                        <p>{{ trans('messages.payments.' . $name . '.list_intro') }}</p>
-                    </a>
-                </div>
-            @endforeach
-        </div>
+        <a link-method="POST"
+            class="btn btn-mc_primary"
+            href="{{ action('AccountSubscriptionController@subscribe', ['plan_uid' => $plan->uid]) }}">
+            {{ trans('messages.payment.pay_now') }}
+        </a>
     @endif
 @endif

@@ -23,6 +23,7 @@ class AccountSubscriptionController extends Controller
     public function index(Request $request)
     {
         $customer = $request->user()->customer;
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
         
         // Get current subscription
         $subscription = $customer->subscription();
@@ -33,12 +34,12 @@ class AccountSubscriptionController extends Controller
         }
         
         // Gateway setting                
-        $subscriptionParam = $subscription->retrieveSubscription();        
+        $subscriptionParam = $subscription->retrieve($gateway);
 
         return view('account.subscription.index', [
             'subscription' => $subscription,
             'plan' => $subscription->plan,
-            'currentPeriodEndAt' => Carbon::createFromTimestamp($subscriptionParam->currentPeriodEnd),
+            'currentPeriodEnd' => Carbon::createFromTimestamp($subscriptionParam->currentPeriodEnd),
         ]);
     }
 
@@ -61,70 +62,56 @@ class AccountSubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      **/
-    public function process(Request $request)
-    {
-        // Get current customer
-        $customer = $request->user()->customer;
-        $plan = Plan::findByUid($request->plan_uid);
-        
-        // Check if plan is free
-        if ($plan->isFree()) {
-            $subscription = $customer->createSubscriptionWithoutPayment($plan);
-            
-            // enable right once
-            $subscription->enable();
-            
-            $request->session()->flash('alert-success', trans('messages.subscription.created'));
-            return redirect()->action('AccountSubscriptionController@index');
-        } else {
-            return redirect()->action('AccountSubscriptionController@checkout', [
-                'plan_uid' => $plan->uid,
-                'gateway' => $request->gateway
-            ]);
-        }
-        
-        
-    }
-    
-    /**
-     * Create/Pay customer subscription.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
     public function subscribe(Request $request)
     {
-        // init
+        // Get current customer
         $customer = $request->user()->customer;
-        $gateway = Setting::getPaymentGateway($request->gateway);
         $plan = Plan::findByUid($request->plan_uid);
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
         
-        // subscribe to plan
-        $class = '\\Acelle\\Cashier\\Services\\' . ucfirst($gateway['name']) . 'GatewayService';
-        $gatewayService = new $class($gateway['fields']);
-        $subscription = $customer->newSubscription($plan, $gatewayService)->create($request);
-        
-        $request->session()->flash('alert-success', trans('messages.subscription.created'));
-        return redirect()->action('AccountSubscriptionController@index');
+        // check if customer already has carf information
+        if ($customer->billableUserHasCard($gateway)) {
+            $customer->createSubscription($plan, $gateway);
+            
+            // Redirect to my subscription page
+            $request->session()->flash('alert-success', trans('messages.subscription.cancelled'));
+            return redirect()->action('AccountSubscriptionController@index');
+        } else {
+            // new customer
+            return redirect()->action('AccountSubscriptionController@subscribeWithCard', [
+                'plan_uid' => $plan->uid,
+            ]);
+        }
     }
     
     /**
-     * Subscription checkout with payment.
+     * Subscribe with card information.
      *
      * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      **/
-    public function checkout(Request $request)
+    public function subscribeWithCard(Request $request)
     {
         // Get current customer
         $customer = $request->user()->customer;
         $plan = Plan::findByUid($request->plan_uid);
-        $gateway = Setting::getPaymentGateway($request->gateway);
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
         
-        return view('account.subscription.checkout', [
-            'gateway' => $gateway,
+        if ($request->isMethod('post')) {
+            // update card
+            $customer->billableUserUpdateCard($gateway, $request->all());
+            
+            // subscribe to plan
+            $customer->createSubscription($plan, $gateway);
+            
+            // Redirect to my subscription page
+            $request->session()->flash('alert-success', trans('messages.subscription.cancelled'));
+            return redirect()->action('AccountSubscriptionController@index');
+        }
+        
+        return view('account.subscription.subscribe_with_card', [
+            'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
             'plan' => $plan,
         ]);
     }

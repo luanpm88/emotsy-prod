@@ -4,7 +4,7 @@ namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Acelle\Model\User;
-use Acelle\Cashier\Models\Subscription;
+use Acelle\Cashier\Subscription;
 
 class SubscriptionPolicy
 {

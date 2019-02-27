@@ -53,4 +53,20 @@ class PaymentController extends Controller
         $request->session()->flash('alert-success', trans('messages.payment_gateway.updated'));
         return redirect()->action('Admin\PaymentController@index');
     }
+    
+    /**
+     * Set payment gateway as primary.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @param int                      $name
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function setPrimary(Request $request, $name)
+    {
+        Setting::set('system.payment_gateway', $name);
+        
+        $request->session()->flash('alert-success', trans('messages.payment_gateway.updated'));
+        return redirect()->action('Admin\PaymentController@index');
+    }
 }

@@ -832,6 +832,9 @@ class PlanController extends Controller
         } else {
             $plan = Plan::findByUid($request->uid);
         }
+        
+        $plan->status = Plan::STATUS_INACTIVE;
+        
         // fill all
         $plan->fillAll($request);
         

@@ -2413,7 +2413,7 @@
     'purchasing_intro_stripe' => 'Please click the button below so we can setup your account for puchasing the <span class="text-nowrap text-big text-semibold">:plan plan</span>
                   . Your plan price is: <span class="text-nowrap text-big text-bold">:price</span>',
     'subscription.current_subscription.recurring.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
-          Next invoice will be billed in <strong>:remain</strong>, on <strong>:end_at</strong>.',
+          Next invoice will be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
     'subscription.cancel.confirm' => 'You\'re about to cancel :number subscription. You\'re still subscribed until the end of period',
     'subscription.cancelled' => 'The subscription was successfully cancelled',
     'subscription.current_subscription.cancel_at_end_of_period.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
@@ -2444,4 +2444,8 @@
     'payment.braintree.pay' => 'Pay',
     'plan.choose_a_payment_gateway' => 'Choose a payment gateway',
     'plan.choose_a_payment_gateway.help' => 'You are connecting to Stripe, which allows you to get paid from users\' credit cards (VISA, Master, etc.)',
+    'payment.edit' => 'Edit',
+    'payment.set_primary' => 'Set Primary',
+    'payment.primary' => 'Primary',
+    'payment.pay_now' => 'Pay now',
 ) ?>

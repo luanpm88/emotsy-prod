@@ -29,13 +29,25 @@
     <div class="list-boxes">
         @foreach ($gateways as $name => $gateway)
             <div class="list-box {{ trans('messages.payment.status.' . $gateway['status']) }}">
-                <a href="{{ action('Admin\PaymentController@edit', $name) }}">
+                <div>
                     <label>{{ trans('messages.payments.' . $name) }}</label>
                     <p>{{ trans('messages.payments.' . $name . '.list_intro') }}</p>
                     <div class="list-box-footer">
-                        <div><span class="label label-info bg-{{ trans('messages.payment.status.' . $gateway['status']) }}">{{ trans('messages.payment.status.' . $gateway['status']) }}</span></div>
+                        <span class="label label-info mr-10 mt-5 bg-{{ trans('messages.payment.status.' . $gateway['status']) }}">{{ trans('messages.payment.status.' . $gateway['status']) }}</span>
+                        @if (\Acelle\Model\Setting::get('system.payment_gateway') == $name)
+                            <span class="label label-info mt-5 bg-primary">{{ trans('messages.payment.primary') }}</span>
+                        @endif
+                        <a class="btn btn-mc_inline pull-right" href="{{ action('Admin\PaymentController@edit', $name) }}">
+                            {{ trans('messages.payment.edit') }}
+                        </a>
+                        
+                        @if (\Acelle\Model\Setting::get('system.payment_gateway') !== $name)
+                            <a class="btn btn-mc_default pull-right" link-method="POST" href="{{ action('Admin\PaymentController@setPrimary', $name) }}">
+                                {{ trans('messages.payment.set_primary') }}
+                            </a>
+                        @endif
                     </div>
-                </a>
+                </div>
             </div>
         @endforeach
     </div>

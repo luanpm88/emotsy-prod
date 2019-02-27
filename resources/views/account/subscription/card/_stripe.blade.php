@@ -1,4 +1,4 @@
-<form action="{{ action('AccountSubscriptionController@subscribe', [
+<form action="{{ action('AccountSubscriptionController@subscribeWithCard', [
     'gateway' => $gateway['name'],
     'plan_uid' => $plan->uid,
     '_token' => csrf_token(),

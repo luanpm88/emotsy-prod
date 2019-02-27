@@ -37,7 +37,7 @@
                     ]) !!}
                 </p>
                 
-                @include("account.subscription.checkout._" . $gateway['name'])
+                @include("account.subscription.card._" . $gateway['name'])
                 
 			</div>
 		</div>

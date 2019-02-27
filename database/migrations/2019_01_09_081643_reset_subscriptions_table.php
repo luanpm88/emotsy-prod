@@ -18,13 +18,12 @@ class ResetSubscriptionsTable extends Migration
         
         Schema::create('subscriptions', function ($table) {
             $table->increments('id');
-            $table->string('gateway');
-            $table->string('remote_id');
-            $table->unsignedInteger('local_owner_id');
-            $table->unsignedInteger('local_plan_id');
-            $table->integer('quantity');
-            $table->timestamp('trial_ends_at')->nullable();
-            $table->timestamp('ends_at')->nullable();
+            $table->uuid('uid');
+            $table->string('user_id');
+            $table->string('plan_id');
+            $table->timestampTz('trial_ends_at')->nullable();
+            $table->timestampTz('ends_at')->nullable();
+            
             $table->timestamps();
         });
     }

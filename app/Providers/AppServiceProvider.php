@@ -65,5 +65,13 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
+        $this->app->bind('Acelle\Cashier\PaymentGateway', function ($app) {
+            if (\Acelle\Model\Setting::get('system.payment_gateway') == 'stripe') {
+                $config = \Acelle\Model\Setting::getPaymentGateway('stripe');
+                return new \Acelle\Cashier\Services\StripePaymentGateway($config['fields']['secret_key']);
+            } elseif (\Acelle\Model\Setting::get('system.payment_gateway') == 'braintree') {
+                
+            }
+        });
     }
 }
