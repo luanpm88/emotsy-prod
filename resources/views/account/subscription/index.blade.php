@@ -47,8 +47,8 @@
                             {!! trans('messages.subscription.current_subscription.cancel_at_end_of_period.wording', [
                                 'plan' => $plan->name,
                                 'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
-                                'remain' => $currentPeriodEndAt->diffForHumans(),
-                                'end_at' => \Acelle\Library\Tool::formatDate($currentPeriodEndAt)
+                                'remain' => $currentPeriodEnd->diffForHumans(),
+                                'end_at' => \Acelle\Library\Tool::formatDate($currentPeriodEnd)
                             ]) !!}
                         </p>
                     @endif
@@ -63,7 +63,7 @@
                     @endif
                     @if (\Auth::user()->customer->can('resume', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
-                            href="{{ action('AccountSubscriptionController@resume', ["id" => $subscription->id]) }}"
+                            href="{{ action('AccountSubscriptionController@resume') }}"
                             class="btn bg-teal-800 mr-10"
                         >
                             {{ trans('messages.subscription.resume') }}
@@ -71,7 +71,7 @@
                     @endif
                     @if (\Auth::user()->customer->can('cancelNow', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
-                            href="{{ action('AccountSubscriptionController@cancelNow', ["id" => $subscription->id]) }}"
+                            href="{{ action('AccountSubscriptionController@cancelNow') }}"
                             class="btn bg-grey-600 mr-10"
                         >
                             {{ trans('messages.subscription.cancel_now') }}
@@ -79,7 +79,7 @@
                     @endif
                     @if (\Auth::user()->customer->can('changePlan', $subscription))
                         <a 
-                            href="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->id]) }}"
+                            href="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->uid]) }}"
                             class="btn bg-grey-600 mr-10 modal_link"
                         >
                             {{ trans('messages.subscription.change_plan') }}

@@ -60,6 +60,11 @@
 									</a>
 								</li>
 							@endif
+							<li rel0="SubscriptionController">
+								<a href="{{ action('Admin\SubscriptionController@index') }}">
+									<i class="icon-quill4"></i> {{ trans('messages.subscriptions') }}
+								</a>
+							</li>
 						</ul>
 					</li>
 				@endif

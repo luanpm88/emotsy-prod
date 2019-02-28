@@ -26,7 +26,7 @@
                                         'name' => 'plan_uid',
                                         'label' => '',
                                         'help_class' => 'subscription',
-                                        'url' => action('PlanController@select2', ['except' => $subscription->local_plan_id]),
+                                        'url' => action('PlanController@select2', ['except' => $subscription->plan_id]),
                                         'placeholder' => trans('messages.select_plan')
                                     ])                            
                                 

@@ -4,7 +4,7 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log as LaravelLog;
-use Acelle\Model\Subscription;
+use Acelle\Cashier\Subscription;
 use Acelle\Model\Setting;
 use Acelle\Model\Plan;
 use Acelle\Cashier\Services\StripeGatewayService;
@@ -146,9 +146,10 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;        
         // Get current subscription
         $subscription = $customer->subscription();
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
 
         if ($request->user()->customer->can('cancel', $subscription)) {        
-            $subscription->cancel();
+            $subscription->cancel($gateway);
         }
 
         // Redirect to my subscription page
@@ -165,14 +166,13 @@ class AccountSubscriptionController extends Controller
      */
     public function resume(Request $request)
     {
-        $subscription = \Acelle\Model\Subscription::find($request->id);
+        $customer = $request->user()->customer;        
+        // Get current subscription
+        $subscription = $customer->subscription();
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
 
         if ($request->user()->customer->can('resume', $subscription)) {
-            $gateway = Setting::getPaymentGateway($subscription->gateway);
-            $class = '\\Acelle\\Cashier\\Services\\' . ucfirst($gateway['name']) . 'GatewayService';
-            $gatewayService = new $class($gateway['fields']);
-        
-            $subscription->resume($gatewayService);
+            $subscription->resume($gateway);
         }
 
         // Redirect to my subscription page
@@ -189,14 +189,13 @@ class AccountSubscriptionController extends Controller
      */
     public function cancelNow(Request $request)
     {
-        $subscription = \Acelle\Model\Subscription::find($request->id);
+        $customer = $request->user()->customer;        
+        // Get current subscription
+        $subscription = $customer->subscription();
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
 
         if ($request->user()->customer->can('cancelNow', $subscription)) {
-            $gateway = Setting::getPaymentGateway($subscription->gateway);
-            $class = '\\Acelle\\Cashier\\Services\\' . ucfirst($gateway['name']) . 'GatewayService';
-            $gatewayService = new $class($gateway['fields']);
-        
-            $subscription->cancelNow($gatewayService);
+            $subscription->cancelNow($gateway);
         }
 
         // Redirect to my subscription page
@@ -213,21 +212,18 @@ class AccountSubscriptionController extends Controller
      **/
     public function changePlan(Request $request, $id)
     {
-        $subscription = Subscription::find($request->id);
+        $subscription = Subscription::findByUid($request->id);
         $plan = Plan::findByUid($request->plan_uid);
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
         
         if ($request->isMethod('post')) {
             if ($request->user()->customer->can('changePlan', $subscription)) {
-                $gateway = Setting::getPaymentGateway($subscription->gateway);
-                $class = '\\Acelle\\Cashier\\Services\\' . ucfirst($gateway['name']) . 'GatewayService';
-                $gatewayService = new $class($gateway['fields']);
-            
-                $subscription->swap($gatewayService, $plan);
+                $subscription->swap($plan, $gateway);
+                
+                // Redirect to my subscription page
+                $request->session()->flash('alert-success', trans('messages.subscription.plan_changed'));
+                return redirect()->action('AccountSubscriptionController@index');
             }
-    
-            // Redirect to my subscription page
-            $request->session()->flash('alert-success', trans('messages.subscription.cancelled_now'));
-            return redirect()->action('AccountSubscriptionController@index');
         }
         
         return view('account.subscription.change_plan', [

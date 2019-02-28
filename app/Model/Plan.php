@@ -783,6 +783,7 @@ class Plan extends Model implements BillablePlanInterface
         
         if ($request->except) {
             $query = $query->where('id', '<>', $request->except);
+            $query = $query->where('uid', '<>', $request->except);
         }
 
         foreach ($query->limit(20)->get() as $plan) {

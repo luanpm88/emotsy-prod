@@ -703,12 +703,12 @@ input.error {
     border-color: #2196F3;
     color: #fff;
 }
-.bg-deliverable, .bg-current_active, .bg-current, .bg-cron-running, .bg-running, .bg-starting, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
+.bg-recurring, .bg-deliverable, .bg-current_active, .bg-current, .bg-cron-running, .bg-running, .bg-starting, .bg-pending-sending, .bg-active, .bg-confirmed, .bg-paid, .bg-sending, .bg-subscribed {
     background-color: #4CAF50;
     border-color: #4CAF50;
     color: #fff;
 }
-.bg-unknown, .bg-expired, .bg-past, .bg-spam-reported, .bg-pending, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done {
+.bg-ended, .bg-unknown, .bg-expired, .bg-past, .bg-spam-reported, .bg-pending, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done {
     background-color: #777;
     border-color: #777;
     color: #fff;
