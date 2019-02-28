@@ -490,8 +490,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::resource('senders', 'SenderController');
     
     // Account subscription
-    Route::post('subscription/{id}/change-plan', 'AccountSubscriptionController@changePlan');
-    Route::get('subscription/{id}/change-plan', 'AccountSubscriptionController@changePlan');
+    Route::post('subscription/change-plan', 'AccountSubscriptionController@changePlan');
+    Route::get('subscription/change-plan', 'AccountSubscriptionController@changePlan');
     Route::post('subscription/cancel-now', 'AccountSubscriptionController@cancelNow');
     Route::post('subscription/resume', 'AccountSubscriptionController@resume');
     Route::post('subscription/cancel', 'AccountSubscriptionController@cancel');

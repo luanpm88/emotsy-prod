@@ -210,9 +210,11 @@ class AccountSubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      **/
-    public function changePlan(Request $request, $id)
+    public function changePlan(Request $request)
     {
-        $subscription = Subscription::findByUid($request->id);
+        $customer = $request->user()->customer;        
+        // Get current subscription
+        $subscription = $customer->subscription();
         $plan = Plan::findByUid($request->plan_uid);
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
         

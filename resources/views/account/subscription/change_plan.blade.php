@@ -17,7 +17,7 @@
                             <div class="col-md-12">                                
                                 <p>{!! trans('messages.subscription.change_plan.wording') !!}</p>
                                     
-                                <form enctype="multipart/form-data" action="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->id]) }}" method="POST" class="form-validate-jquery">
+                                <form enctype="multipart/form-data" action="{{ action('AccountSubscriptionController@changePlan') }}" method="POST" class="form-validate-jquery">
                                     {{ csrf_field() }}
                 
                                     @include('helpers.form_control', [
