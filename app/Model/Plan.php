@@ -28,6 +28,7 @@ use Illuminate\Validation\ValidationException;
 use Acelle\Cashier\Interfaces\BillablePlanInterface;
 use Acelle\Cashier\Services\StripePaymentGateway;
 use Acelle\Cashier\Services\BraintreePaymentGateway;
+use Acelle\Model\PlansEmailVerificationServer;
 
 class Plan extends Model implements BillablePlanInterface
 {
@@ -1343,5 +1344,36 @@ class Plan extends Model implements BillablePlanInterface
         if ($gateway == 'stripe') {
             return new StripePaymentGateway($config['fields']['secret_key']);
         }
+    }
+    
+    /**
+     * Get all .
+     *
+     * @var bool
+     */
+    public function activePlansEmailVerificationServers()
+    {
+        return $this->plansEmailVerificationServers()
+            ->where('status', '=', PlansEmailVerificationServer::STATUS_ACTIVE);
+    }
+    
+    /**
+     * Get list of available email verification servers.
+     *
+     * @var bool
+     */
+    public function getEmailVerificaionServers()
+    {
+        if ($this->getOption('all_email_verification_servers') == 'yes') {
+            $result = \Acelle\Model\EmailVerificationServer::getAllAdminActive()->get()->map(function ($server) {
+                return $server;
+            });
+        } else {
+            $result = $this->activePlansEmailVerificationServers()->get()->map(function ($server) {
+                return $server->emailVerificationServer;
+            });
+        }
+        
+        return $result;
     }
 }

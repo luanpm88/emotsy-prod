@@ -217,6 +217,18 @@
 					<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
 				</div>
 			@endif
+			
+			@if (is_object(\Auth::user()->customer) &&
+				!is_object(\Auth::user()->customer->subscription()))
+				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
+					<h4 class="ui-pnotify-title text-nowrap">
+					{!! trans('messages.not_have_any_plan_notification', [
+						'link' => action('AccountSubscriptionController@index'),
+					]) !!}
+					</h4>
+					<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
+				</div>
+			@endif
 		@endif
 
 		@if (\Acelle\Library\Tool::currentView() == 'backend')

@@ -1603,7 +1603,7 @@ class MailList extends Model
     public function getCurrentSubscription()
     {
         if (empty($this->currentSubscription)) {
-            $this->currentSubscription = $this->customer->getCurrentSubscription();
+            $this->currentSubscription = $this->customer->subscription();
         }
 
         return $this->currentSubscription;
@@ -1709,8 +1709,8 @@ class MailList extends Model
                     });
                 }
             }
-        } elseif ($subscription->useSubAccount()) {
-            $result[] = [$subscription->subAccount->sending_server_id, '100'];
+        //} elseif ($subscription->useSubAccount()) {
+        //    $result[] = [$subscription->subAccount->sending_server_id, '100'];
         }
 
         $assoc = [];

@@ -49,9 +49,7 @@ class Customer extends Model implements BillableUserInterface
     protected $fillable = [
         'name', 'first_name', 'last_name', 'timezone', 'language_id', 'color_scheme',
     ];
-
-    protected $currentSubscription;
-
+    
     /**
      * The rules for validation.
      *
@@ -1350,12 +1348,10 @@ class Customer extends Model implements BillableUserInterface
      */
     public function currentPlanName()
     {
-        $current_subscription = $this->subscription();
-
         return is_object($this->user->admin) ?
             trans('messages.admin_default_plan') :
-            (is_object($current_subscription) ?
-                $current_subscription->plan_name :
+            (is_object($this->subscription()) ?
+                $this->subscription()->plan->name :
                 trans('messages.no_plan')
             );
     }
@@ -1471,28 +1467,14 @@ class Customer extends Model implements BillableUserInterface
     {
         // Check the customer has permissions using email verification servers and has his own email verification servers
         if ($this->getOption('create_email_verification_servers') == 'yes') {
-            $result = $this->activeEmailVerificationServers()->get()->map(function ($server) {
+            return $this->activeEmailVerificationServers()->get()->map(function ($server) {
                 return $server;
             });
         // If customer dont have permission creating sending servers
         } else {
-            $subscription = $this->subscription();
-
-            // Check if has email verification servers for current subscription
-            if (is_object($subscription)) {
-                if ($subscription->getOption('all_email_verification_servers') == 'yes') {
-                    $result = \Acelle\Model\EmailVerificationServer::getAllAdminActive()->get()->map(function ($server) {
-                        return $server;
-                    });
-                } else {
-                    $result = $subscription->activeSubscriptionsEmailVerificationServers()->get()->map(function ($server) {
-                        return $server->emailVerificationServer;
-                    });
-                }
-            }
+            // Get server from the plan
+            return  $this->subscription()->plan->getEmailVerificaionServers();
         }
-        
-        return $result;
     }
 
     /**
@@ -1511,8 +1493,6 @@ class Customer extends Model implements BillableUserInterface
             });
         // If customer dont have permission creating sending domain
         } else {
-            $subscription = $this->subscription();
-
             // Check if has email verification servers for current subscription
             $result = \Acelle\Model\SendingDomain::getAllAdminActive()->get()->map(function ($server) {
                 return $server;
@@ -1752,12 +1732,9 @@ class Customer extends Model implements BillableUserInterface
      */
     public function getOptions()
     {
-        //@todo how to get option from subscription/plan
-        $plan = Plan::first();
-        
-        if (is_object($plan)) {
+        if (is_object($this->subscription())) {
             // Find plan  
-            return $plan->getOptions();
+            return $this->subscription()->plan->getOptions();
         } else {
             return [];
         }
@@ -1806,8 +1783,8 @@ class Customer extends Model implements BillableUserInterface
             $list[] = $domain->name;
         }
         
-        // plan emails
-        $list = array_merge($this->getCurrentSubscription()->getVerifiedIdentities(), $list);
+        // plan sending server emails
+        // $list = array_merge($this->Subscription()->getVerifiedIdentities(), $list);
         
         return $list;
     }

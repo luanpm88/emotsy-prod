@@ -2,25 +2,11 @@
 
 <!-- Alert if customer don't have any subscription -->
 @if (is_object(\Auth::user()->customer) &&
-    \Auth::user()->customer->notHaveAnyPlan() &&
-    !\Auth::user()->customer->hasAdminAccount())
+    !is_object(\Auth::user()->customer->subscription()))
     <div class="alert alert-warning mt-20">
         <h4 class="ui-pnotify-title text-nowrap">
         {!! trans('messages.not_have_any_plan_notification', [
-            'link' => action('SubscriptionController@selectPlan'),
-        ]) !!}
-        </h4>
-        <div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
-    </div>
-@elseif (is_object(\Auth::user()->customer)
-    && !is_object(\Auth::user()->customer->subscription())
-    && !\Auth::user()->customer->notHaveAnyPlan() &&
-    !\Auth::user()->customer->hasAdminAccount()
-)
-    <div class="alert alert-warning mt-20">
-        <h4 class="ui-pnotify-title text-nowrap">
-        {!! trans('messages.not_have_active_plan_notification', [
-            'link' => action('AccountController@subscription'),
+            'link' => action('AccountSubscriptionController@index'),
         ]) !!}
         </h4>
         <div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
