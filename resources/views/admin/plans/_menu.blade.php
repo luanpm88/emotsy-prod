@@ -33,7 +33,7 @@
                     </li>
                 </ul>
             </li>
-            <li  class="dropdown"
+            <!--<li  class="dropdown"
                 rel0="PlanController/payment"
                 rel1="PlanController/billingHistory"
             >
@@ -53,7 +53,7 @@
                         </a>
                     </li>
                 </ul>
-            </li>
+            </li>-->
             <li rel0="PlanController/sendingServer" rel1="PlanController/sendingServers">
                 <a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}" class="level-1">
                     {{ trans('messages.plan.sending_server') }}

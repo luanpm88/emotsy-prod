@@ -2458,4 +2458,5 @@
     'subscription.status.recurring' => 'Recurring',
     'subscription.created_at' => 'Created at',
     'subscription.updated_at' => 'Updated at',
+    'payment.braintree' => 'Braintree',
 ) ?>

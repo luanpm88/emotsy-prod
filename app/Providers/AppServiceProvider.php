@@ -70,7 +70,13 @@ class AppServiceProvider extends ServiceProvider
                 $config = \Acelle\Model\Setting::getPaymentGateway('stripe');
                 return new \Acelle\Cashier\Services\StripePaymentGateway($config['fields']['secret_key']);
             } elseif (\Acelle\Model\Setting::get('system.payment_gateway') == 'braintree') {
-                
+                $config = \Acelle\Model\Setting::getPaymentGateway('braintree');
+                return new \Acelle\Cashier\Services\BraintreePaymentGateway(
+                    $config['fields']['environment'],
+                    $config['fields']['merchant_id'],
+                    $config['fields']['public_key'],
+                    $config['fields']['private_key']
+                );
             }
         });
     }
