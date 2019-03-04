@@ -2403,7 +2403,7 @@
     'payment.stripe.secret_key' => 'Secret key',
     'payment_gateway.updated' => 'Payment gateway was successfully updated',
     'payment.options[cash].help' => 'Enable/disable cash payment',
-    'payment.options[status].help' => 'Enable/disable Stripe payment',
+    'payment.options[status].help' => 'Enable/disable payment',
     'payment.options' => 'Payment settings',
     'subscription.select_payment' => 'Select payment',
     'subscription.select_payment.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
@@ -2459,4 +2459,13 @@
     'subscription.created_at' => 'Created at',
     'subscription.updated_at' => 'Updated at',
     'payment.braintree' => 'Braintree',
+    'payments.coinpayments' => 'Coin-Payments',
+    'payments.coinpayments.list_intro' => 'Multiple Cryptocurrencies accepted via CoinPayments',
+    'payment.coinpayments.wording' => 'Multiple Cryptocurrencies accepted via CoinPayments',
+    'payment.coinpayments.merchant_id' => 'Merchant ID',
+    'payment.coinpayments.public_key' => 'Public key',
+    'payment.coinpayments.private_key' => 'Private key',
+    'payment.coinpayments.ipn_secret' => 'IPN secret',
+    'purchasing_intro_coinpayments' => 'Please click the button below so we can setup your account for puchasing the <span class="text-nowrap text-big text-semibold">:plan plan</span>
+        . Your plan price is: <span class="text-nowrap text-big text-bold">:price</span>',
 ) ?>

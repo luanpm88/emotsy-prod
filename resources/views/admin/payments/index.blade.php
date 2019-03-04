@@ -28,7 +28,7 @@
     
     <div class="list-boxes">
         @foreach ($gateways as $name => $gateway)
-            <div class="list-box {{ trans('messages.payment.status.' . $gateway['status']) }}">
+            <div class="list-box {{ trans('messages.payment.status.' . $gateway['status']) }}  bg-{{ $gateway['name'] }}">
                 <div>
                     <label>{{ trans('messages.payments.' . $name) }}</label>
                     <p>{{ trans('messages.payments.' . $name . '.list_intro') }}</p>

@@ -77,6 +77,14 @@ class AppServiceProvider extends ServiceProvider
                     $config['fields']['public_key'],
                     $config['fields']['private_key']
                 );
+            } elseif (\Acelle\Model\Setting::get('system.payment_gateway') == 'coinpayments') {
+                $config = \Acelle\Model\Setting::getPaymentGateway('coinpayments');
+                return new \Acelle\Cashier\Services\CoinpaymentsPaymentGateway(
+                    $config['fields']['merchant_id'],
+                    $config['fields']['public_key'],
+                    $config['fields']['private_key'],
+                    $config['fields']['ipn_secret']
+                );
             }
         });
     }

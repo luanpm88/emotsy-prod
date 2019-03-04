@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "415012437da4a121e9bb342ac99ee60a",
+    "content-hash": "d105f5bfb90d54de1862463a85627766",
     "packages": [
         {
             "name": "acelle/cashier",
@@ -1231,6 +1231,91 @@
             ],
             "description": "Highlight PHP code in terminal",
             "time": "2018-09-29T18:48:56+00:00"
+        },
+        {
+            "name": "kevupton/laravel-coinpayments",
+            "version": "v1.1.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kevupton/laravel-coinpayments.git",
+                "reference": "b8d50ec551885605425213f30b7c23eb911fa941"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kevupton/laravel-coinpayments/zipball/b8d50ec551885605425213f30b7c23eb911fa941",
+                "reference": "b8d50ec551885605425213f30b7c23eb911fa941",
+                "shasum": ""
+            },
+            "require": {
+                "doctrine/dbal": "^2.6",
+                "kevupton/laravel-package-service-provider": "^0.0.5",
+                "php": ">=5.5"
+            },
+            "require-dev": {
+                "laravel/laravel": "^5.5",
+                "laravel/lumen": "^5.5"
+            },
+            "type": "extension",
+            "autoload": {
+                "psr-4": {
+                    "Kevupton\\LaravelCoinpayments\\": "src/Kevupton/LaravelCoinpayments/"
+                },
+                "files": [
+                    "src/Kevupton/LaravelCoinpayments/Helpers/helpers.php",
+                    "src/Kevupton/LaravelCoinpayments/Helpers/constants.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Kevin Upton",
+                    "email": "uptonkg@gmail.com"
+                }
+            ],
+            "description": "Coinpayments for Laravel",
+            "keywords": [
+                "coinpayments",
+                "laravel",
+                "lumen"
+            ],
+            "time": "2018-07-15T03:53:01+00:00"
+        },
+        {
+            "name": "kevupton/laravel-package-service-provider",
+            "version": "v0.0.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/kevupton/laravel-package-service-provider.git",
+                "reference": "cd07327faaa28423ce47c973ed4194b29af90f37"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/kevupton/laravel-package-service-provider/zipball/cd07327faaa28423ce47c973ed4194b29af90f37",
+                "reference": "cd07327faaa28423ce47c973ed4194b29af90f37",
+                "shasum": ""
+            },
+            "require-dev": {
+                "laravel/laravel": "^5.5",
+                "laravel/lumen": "^5.5"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Kevupton\\LaravelPackageServiceProvider\\": "src/Kevupton/LaravelPackageServiceProvider/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "authors": [
+                {
+                    "name": "Kevin Upton",
+                    "email": "uptonkg@gmail.com"
+                }
+            ],
+            "description": "Service provider for laravel to allow for multiple implementations",
+            "time": "2018-03-27T22:32:38+00:00"
         },
         {
             "name": "laravel/framework",

@@ -25,5 +25,15 @@ return [
                 'private_key' => null,
             ],
         ],
+        'coinpayments' => [
+            'name' => 'coinpayments',
+            'status' => 'inactive',
+            'fields' => [
+                'merchant_id' => null,
+                'public_key' => null,
+                'private_key' => null,
+                'ipn_secret' => null,
+            ],
+        ],
     ],
 ];
