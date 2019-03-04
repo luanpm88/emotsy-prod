@@ -490,6 +490,29 @@ stat .stat-head {
   background: #777;
   border-color: #777;
 }
-.bg-coinpayments {
-  background: url("../images/coinpayments-logo.png") top right / 140px no-repeat;
+.bg-coinpayments, .bg-stripe, .bg-braintree {
+  position: relative;
+}
+.bg-coinpayments::after, .bg-stripe::after, .bg-braintree::after {
+  content: "";
+  background-image: url("../images/coinpayments-logo.png");
+  background-size: 140px auto;
+  background-repeat: no-repeat;
+  background-position: top right;
+  opacity: 0.5;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  position: absolute;
+  z-index: -1;   
+}
+.bg-coinpayments::after {
+  background-image: url("../images/coinpayments-logo.png");
+}
+.bg-stripe::after {
+  background-image: url("../images/stripe-logo.png");
+}
+.bg-braintree::after {
+  background-image: url("../images/braintree-logo.png");
 }
