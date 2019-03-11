@@ -93,7 +93,6 @@ class Lockable
      */
     public function checkTimeout($startTime, $timeoutDuration, $callback)
     {
-        echo time() - $startTime;
         if (time() - $startTime > $timeoutDuration) {
             if (!is_null($callback)) {
                 $callback();    
