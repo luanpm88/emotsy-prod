@@ -754,7 +754,7 @@
   'mail_driver' => 'Method for sending system mail',
   'php_mail' => 'PHP mail()',
   'pause' => 'Pause',
-  'restart' => 'Restart',
+  'restart' => 'Resume',
   'api' => 'API',
   'mailgun-smtp' => 'Mailgun SMTP',
   'mailgun-api' => 'Mailgun API',
