@@ -1022,7 +1022,7 @@ class CampaignController extends Controller
     {
         $log = new \Acelle\Model\OpenLog();
         $log->message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
-        $location = \Acelle\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
+        $location = \Acelle\Model\IpLocation::add($this->getRemoteIPAddress());
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
 
@@ -1881,4 +1881,20 @@ class CampaignController extends Controller
             ]);
         }
     }
+    
+    /**
+     * Get client IP address.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return string
+     */
+    private function getRemoteIPAddress() {
+	    if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
+            $ip = preg_split('/\s*,\s*/', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
+            return $ip;
+	    } else { 
+	        return $_SERVER['REMOTE_ADDR'];
+	    }
+	}
 }
