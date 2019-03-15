@@ -109,10 +109,9 @@
         }, {
             "type": "vcs",
             "url": "https://github.com/luanpm88/lawepham-geoip"
-        },
-        {
-            "type": "path",
-            "url": "../acelle-cashier"
+        }, {
+            "type": "vcs",
+            "url": "https://github.com/luanpm88/acelle-cashier"
         }
     ]
 }

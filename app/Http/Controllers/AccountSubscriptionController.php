@@ -65,6 +65,10 @@ class AccountSubscriptionController extends Controller
         $subscription = $customer->subscription();
         $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
         
+        if (!isset($subscription)) {
+            return redirect()->action('AccountSubscriptionController@index');
+        }
+        
         //// Gateway setting                
         $subscriptionParam = $customer->retrieveSubscription($gatewayService);
         
