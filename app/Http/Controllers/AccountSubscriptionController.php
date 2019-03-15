@@ -30,8 +30,13 @@ class AccountSubscriptionController extends Controller
         
         // check subscription status
         if (is_object($subscription)) {
-            //// Gateway setting                
-            $subscriptionParam = $customer->retrieveSubscription($gateway);
+            try {
+                //// Gateway setting
+                $subscriptionParam = $customer->retrieveSubscription($gateway);
+            } catch (\Exception $e) {
+                $subscription->markAsCancelled();
+                return redirect()->action('AccountSubscriptionController@new');
+            }
         
             if(!$subscription->active()) {
                 if ($subscription->isPending()) {
@@ -69,8 +74,13 @@ class AccountSubscriptionController extends Controller
             return redirect()->action('AccountSubscriptionController@index');
         }
         
-        //// Gateway setting                
-        $subscriptionParam = $customer->retrieveSubscription($gatewayService);
+        try {
+            //// Gateway setting
+            $subscriptionParam = $customer->retrieveSubscription($gatewayService);
+        } catch (\Exception $e) {
+            $subscription->markAsCancelled();
+            return redirect()->action('AccountSubscriptionController@new');
+        }
         
         //
         if (!$subscription->isPending()) {
