@@ -33,6 +33,7 @@ use File;
 use Acelle\Model\SendingDomain;
 use Acelle\Model\SendingServer;
 use Acelle\Model\Subscriber;
+use Acelle\Model\TrackingLog;
 
 abstract class AbsCampaign extends Model
 {
@@ -933,7 +934,8 @@ abstract class AbsCampaign extends Model
      */
     public function deliveredCount()
     {
-        return $this->trackingLogs()->where('status', '=', 'sent')->count();
+        // including bounced, feedbcak...
+        return $this->trackingLogs()->where('status', '!=', TrackingLog::STATUS_FAILED)->count();
     }
 
     /**
@@ -943,7 +945,7 @@ abstract class AbsCampaign extends Model
      */
     public function failedCount()
     {
-        return $this->trackingLogs()->where('status', '=', 'failed')->count();
+        return $this->trackingLogs()->where('status', '=', TrackingLog::STATUS_FAILED)->count();
     }
     
     /**
@@ -953,7 +955,7 @@ abstract class AbsCampaign extends Model
      */
     public function notDeliveredCount()
     {
-        return $this->activeSubscribersCount() - $this->trackingLogs()->count();
+        return $this->subscribersCount() - $this->trackingLogs()->count();
     }
 
     /**
@@ -985,7 +987,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return $this->notDeliveredCount() / $total;
+        return $this->failedCount() / $total;
     }
     
     /**
@@ -995,13 +997,13 @@ abstract class AbsCampaign extends Model
      */
     public function notDeliveredRate($cache = false)
     {
-        $total = $this->activeSubscribersCount($cache);
+        $total = $this->subscribersCount($cache);
 
         if ($total == 0) {
             return 0;
         }
 
-        return $this->failedCount() / $total;
+        return $this->notDeliveredCount() / $total;
     }
 
     /**
@@ -2221,7 +2223,7 @@ abstract class AbsCampaign extends Model
      */
     public function activeSubscribersCount()
     {
-        return distinctCount($this->subscribers([], ['email_verifications'])->where('status', Subscriber::STATUS_SUBSCRIBED));
+        return distinctCount($this->subscribers([], ['email_verifications'])->where('subscribers.status', Subscriber::STATUS_SUBSCRIBED), 'subscribers.email');
     }
 
     /**

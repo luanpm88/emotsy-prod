@@ -27,6 +27,7 @@ use Illuminate\Database\Eloquent\Model;
 class TrackingLog extends Model
 {
     const STATUS_SENT = 'sent';
+    const STATUS_FAILED = 'failed';
     const STATUS_BOUNCED = 'bounced';
     const STATUS_FEEDBACK_ABUSE = 'feedback-abuse';
     const STATUS_FEEDBACK_SPAM = 'feedback-spam';
