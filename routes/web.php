@@ -168,6 +168,22 @@ Route::group(['middleware' => ['not_installed']], function () {
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
+    // Account subscription
+    Route::get('subscription/pending', 'AccountSubscriptionController@pending');
+    Route::post('subscription/change-plan', 'AccountSubscriptionController@changePlan');
+    Route::get('subscription/change-plan', 'AccountSubscriptionController@changePlan');
+    Route::post('subscription/cancel-now', 'AccountSubscriptionController@cancelNow');
+    Route::post('subscription/resume', 'AccountSubscriptionController@resume');
+    Route::post('subscription/cancel', 'AccountSubscriptionController@cancel');
+    Route::post('subscription/subscribe', 'AccountSubscriptionController@subscribe');
+    Route::match(['get', 'post'], 'subscription/checkout', 'AccountSubscriptionController@checkout');
+    Route::match(['get', 'post'], 'subscription/update-card', 'AccountSubscriptionController@updateCard');
+    Route::get('subscription/preview', 'AccountSubscriptionController@preview');
+    Route::get('subscription/new', 'AccountSubscriptionController@new');
+    Route::get('subscription', 'AccountSubscriptionController@index');
+});
+
+Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription']], function () {
     Route::get('/', 'HomeController@index');
     Route::get('frontend/docs/api/v1', 'Controller@docsApiV1');
     Route::get('/current_user_uid', 'UserController@showUid');
@@ -488,18 +504,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('senders/sort', 'SenderController@sort');
     Route::get('senders/delete', 'SenderController@delete');
     Route::resource('senders', 'SenderController');
-    
-    // Account subscription
-    Route::post('subscription/change-plan', 'AccountSubscriptionController@changePlan');
-    Route::get('subscription/change-plan', 'AccountSubscriptionController@changePlan');
-    Route::post('subscription/cancel-now', 'AccountSubscriptionController@cancelNow');
-    Route::post('subscription/resume', 'AccountSubscriptionController@resume');
-    Route::post('subscription/cancel', 'AccountSubscriptionController@cancel');
-    Route::post('subscription/subscribe', 'AccountSubscriptionController@subscribe');
-    Route::match(['get', 'post'], 'subscription/subscribe-with-card', 'AccountSubscriptionController@subscribeWithCard');
-    Route::get('subscription/preview', 'AccountSubscriptionController@preview');
-    Route::get('subscription/new', 'AccountSubscriptionController@new');
-    Route::get('subscription', 'AccountSubscriptionController@index');
 });
 
 // ADMIN AREA

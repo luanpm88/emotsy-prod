@@ -2,7 +2,6 @@
     @foreach (['danger', 'warning', 'success', 'info', 'error', 'warning'] as $msg)
 
         @if(Session::has('alert-' . $msg))
-
             $(document).ready(function() {
                 // Success alert
                 swal({

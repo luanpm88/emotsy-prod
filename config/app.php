@@ -201,7 +201,6 @@ return [
         Chumper\Zipper\ZipperServiceProvider::class,
         // Laravel\Cashier\CashierServiceProvider::class,
         Acelle\Cashier\CashierServiceProvider::class,
-        Kevupton\LaravelCoinpayments\Providers\LaravelCoinpaymentsServiceProvider::class
     ],
 
     /*

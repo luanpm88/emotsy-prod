@@ -24,6 +24,12 @@
 @section('content')
 
     @include("account._menu")
+    
+    @if (!\Auth::user()->customer->subscriptionValid())
+        <div class="alert alert-danger">
+            {{ trans('messages.subscription.invalid') }}
+        </div>
+    @endif
 
     <div class="row">
         <div class="col-md-12">

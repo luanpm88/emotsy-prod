@@ -12,14 +12,14 @@
             <i class="icon-arrow-right7"></i></a>
         </div>
     @else
-        <h3>{{ trans('messages.subscription.select_payment') }}</h3>
+        <h3>{{ trans('messages.subscription.payment') }}</h3>
             
-        <p>{{ trans('messages.subscription.select_payment.wording') }}</p>
+        <p>{!! trans('messages.subscription.payment.wording') !!}</p>
             
         <a link-method="POST"
             class="btn btn-mc_primary"
             href="{{ action('AccountSubscriptionController@subscribe', ['plan_uid' => $plan->uid]) }}">
-            {{ trans('messages.payment.pay_now') }}
+            {{ trans('messages.subscription.payment.checkout') }}
         </a>
     @endif
 @endif

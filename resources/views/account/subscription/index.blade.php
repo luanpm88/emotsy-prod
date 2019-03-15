@@ -42,7 +42,32 @@
                                 'next_on' => \Acelle\Library\Tool::formatDate($currentPeriodEnd)
                             ]) !!}
                         </p>
-                    @else
+                            
+                        @if (\Auth::user()->customer->can('cancel', $subscription))
+                            <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
+                                href="{{ action('AccountSubscriptionController@cancel') }}"
+                                class="btn bg-grey-600 mr-10"
+                            >
+                                {{ trans('messages.subscription.cancel') }}
+                            </a>
+                        @endif
+                        @if (\Auth::user()->customer->can('cancelNow', $subscription))
+                            <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
+                                href="{{ action('AccountSubscriptionController@cancelNow') }}"
+                                class="btn bg-grey-600 mr-10"
+                            >
+                                {{ trans('messages.subscription.cancel_now') }}
+                            </a>
+                        @endif
+                        @if (\Auth::user()->customer->can('changePlan', $subscription))
+                            <a 
+                                href="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->uid]) }}"
+                                class="btn bg-grey-600 mr-10 modal_link"
+                            >
+                                {{ trans('messages.subscription.change_plan') }}
+                            </a>
+                        @endif
+                    @elseif ($gateway->isSupportRecurring())
                         <p>
                             {!! trans('messages.subscription.current_subscription.cancel_at_end_of_period.wording', [
                                 'plan' => $plan->name,
@@ -51,40 +76,50 @@
                                 'end_at' => \Acelle\Library\Tool::formatDate($currentPeriodEnd)
                             ]) !!}
                         </p>
-                    @endif
-                    
-                    @if (\Auth::user()->customer->can('cancel', $subscription))
-                        <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel.confirm') }}"
-                            href="{{ action('AccountSubscriptionController@cancel') }}"
-                            class="btn bg-grey-600 mr-10"
-                        >
-                            {{ trans('messages.subscription.cancel') }}
-                        </a>
-                    @endif
-                    @if (\Auth::user()->customer->can('resume', $subscription))
-                        <a link-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
-                            href="{{ action('AccountSubscriptionController@resume') }}"
-                            class="btn bg-teal-800 mr-10"
-                        >
-                            {{ trans('messages.subscription.resume') }}
-                        </a>
-                    @endif
-                    @if (\Auth::user()->customer->can('cancelNow', $subscription))
-                        <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
-                            href="{{ action('AccountSubscriptionController@cancelNow') }}"
-                            class="btn bg-grey-600 mr-10"
-                        >
-                            {{ trans('messages.subscription.cancel_now') }}
-                        </a>
-                    @endif
-                    @if (\Auth::user()->customer->can('changePlan', $subscription))
-                        <a 
-                            href="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->uid]) }}"
-                            class="btn bg-grey-600 mr-10 modal_link"
-                        >
-                            {{ trans('messages.subscription.change_plan') }}
-                        </a>
-                    @endif    
+                            
+                        @if (\Auth::user()->customer->can('resume', $subscription))
+                            <a link-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
+                                href="{{ action('AccountSubscriptionController@resume') }}"
+                                class="btn bg-teal-800 mr-10"
+                            >
+                                {{ trans('messages.subscription.resume') }}
+                            </a>
+                        @endif
+                        @if (\Auth::user()->customer->can('cancelNow', $subscription))
+                            <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
+                                href="{{ action('AccountSubscriptionController@cancelNow') }}"
+                                class="btn bg-grey-600 mr-10"
+                            >
+                                {{ trans('messages.subscription.cancel_now') }}
+                            </a>
+                        @endif
+                    @else
+                        <p>
+                            {!! trans('messages.subscription.current_subscription.cancel_at_end_of_period_no_recurring_supported.wording', [
+                                'plan' => $plan->name,
+                                'money' => Acelle\Library\Tool::format_price($plan->price, $plan->currency->format),
+                                'remain' => $currentPeriodEnd->diffForHumans(),
+                                'end_at' => \Acelle\Library\Tool::formatDate($currentPeriodEnd)
+                            ]) !!}
+                        </p>
+                            
+                        @if (\Auth::user()->customer->can('renew', $subscription))
+                            <a link-method="POST" link-confirm="{{ trans('messages.subscription.renew.confirm') }}"
+                                href="{{ action('AccountSubscriptionController@renew') }}"
+                                class="btn bg-teal-800 mr-10"
+                            >
+                                {{ trans('messages.subscription.renew') }}
+                            </a>
+                        @endif
+                        @if (\Auth::user()->customer->can('cancelNow', $subscription))
+                            <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
+                                href="{{ action('AccountSubscriptionController@cancelNow') }}"
+                                class="btn bg-grey-600 mr-10"
+                            >
+                                {{ trans('messages.subscription.cancel_now') }}
+                            </a>
+                        @endif                        
+                    @endif 
                 @endif
             </div>
             <div class="sub-section">

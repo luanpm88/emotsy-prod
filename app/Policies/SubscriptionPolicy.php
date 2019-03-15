@@ -92,4 +92,61 @@ class SubscriptionPolicy
 
         return $can;
     }
+    
+    ////
+    public function create(User $user, Subscription $subscription, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = false;
+                break;
+            case 'customer':
+                $can = !isset($subscription);
+                break;
+        }
+
+        return $can;
+    }
+    
+    public function subscribe(User $user, Subscription $subscription, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = false;
+                break;
+            case 'customer':
+                $can = $subscription->isPending();
+                break;
+        }
+
+        return $can;
+    }
+    
+    public function checkout(User $user, Subscription $subscription, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = false;
+                break;
+            case 'customer':
+                $can = $subscription->isPending();
+                break;
+        }
+
+        return $can;
+    }
+    
+    public function updateCard(User $user, Subscription $subscription, $role)
+    {
+        switch ($role) {
+            case 'admin':
+                $can = false;
+                break;
+            case 'customer':
+                $can = $subscription->isPending();
+                break;
+        }
+
+        return $can;
+    }
 }
