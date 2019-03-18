@@ -1851,7 +1851,7 @@ abstract class AbsCampaign extends Model
     public function cleanupFailedLog()
     {
         // clean up failed log so that they will be included in resend
-        $this->trackingLogs()->where('status', SendingServer::DELIVERY_STATUS_FAILED)->count();
+        $this->trackingLogs()->where('status', SendingServer::DELIVERY_STATUS_FAILED)->delete();
     }
     
     
