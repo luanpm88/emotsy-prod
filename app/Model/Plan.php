@@ -1332,21 +1332,6 @@ class Plan extends Model implements BillablePlanInterface
     }
     
     /**
-     * PlanInterface: get payment service.
-     *
-     * @return string
-     */
-    public function getPaymentGatewayService()
-    {
-        $gateway = $this->getOption('payment_gateway');
-        $config = Setting::getPaymentGateway($gateway);
-        
-        if ($gateway == 'stripe') {
-            return new StripePaymentGateway($config['fields']['secret_key']);
-        }
-    }
-    
-    /**
      * Get all .
      *
      * @var bool

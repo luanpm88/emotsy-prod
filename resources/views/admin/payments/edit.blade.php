@@ -31,20 +31,6 @@
         <p>
             {!! trans('messages.payment.' . $gateway['name'] . '.wording') !!}
         </p>
-            
-        <div class="row">
-            <div class="col-md-4">
-                @include('helpers.form_control', [
-                    'type' => 'switch',
-                    'name' => 'options[status]',
-                    'value' => $gateway['status'],
-                    'label' => trans('messages.payment.status'),
-                    'options' => Acelle\Model\Setting::paymentStatusSelectOptions(),
-                    'help_class' => 'payment',
-                    'rules' => ['options.status' => 'required']
-                ])
-            </div>
-        </div>
         
         @if (!empty($gateway['fields']))
             <h3>{{ trans('messages.payment.options') }}</h3>

@@ -2,32 +2,21 @@
 
 return [
     'gateways' => [
-        //'cash' => [
-        //    'name' => 'cash',
-        //    'status' => 'active',
-        //    'fields' => [],
-        //],
+        'direct' => [
+            'name' => 'direct',
+            'fields' => [
+                'database_path' => 'app/direct_payment.sqlite3',
+            ],
+        ],
         'stripe' => [
             'name' => 'stripe',
-            'status' => 'inactive',
             'fields' => [
                 'publishable_key' => null,
                 'secret_key' => null,
             ],
         ],
-        'braintree' => [
-            'name' => 'braintree',
-            'status' => 'inactive',
-            'fields' => [
-                'environment' => null,
-                'merchant_id' => null,
-                'public_key' => null,
-                'private_key' => null,
-            ],
-        ],
         'coinpayments' => [
             'name' => 'coinpayments',
-            'status' => 'inactive',
             'fields' => [
                 'merchant_id' => null,
                 'public_key' => null,

@@ -129,7 +129,7 @@ class SubscriptionPolicy
                 $can = false;
                 break;
             case 'customer':
-                $can = $subscription->isPending();
+                $can = $subscription->isNew();
                 break;
         }
 

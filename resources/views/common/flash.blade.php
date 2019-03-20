@@ -5,7 +5,7 @@
             $(document).ready(function() {
                 // Success alert
                 swal({
-                    title: "{{ preg_replace('/[\r\n]+/', ' ', Session::get('alert-' . $msg)) }}",
+                    title: '{!! preg_replace('/[\r\n]+/', ' ', Session::get('alert-' . $msg)) !!}',
                     text: "",
                     confirmButtonColor: "#00695C",
                     type: "{{ $msg }}",

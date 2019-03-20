@@ -2475,11 +2475,20 @@
     'subscription.payment.checkout' => 'Checkout',
     'subscription.invalid' => 'You are not subscribed to any active plan. Please subscription to a plan to use app.',
     'subscription.pending.intro' => '',
-    'subscription.pending.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>). Please wait for processing your subscription.
+    'subscription.pending.coinpayments.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>). Please wait for processing your subscription.
         If you haven\'t purchase the plan, please follow the checkout guide from CointPayments.net in your
         mailbox with title <strong class="text-nowrap">[CoinPayments.net] New Payment Submitted</strong>.<br/><br/> <strong>OR</strong> <br/>',
     'subscription.payment.checkout_again' => 'Checkout again',
     'subscription.current_subscription.cancel_at_end_of_period_no_recurring_supported.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
           The subscription will be end in <strong>:remain</strong>, on <strong>:end_at</strong>.',
+    'payments.direct' => 'Direct payment',
+    'payments.direct.list_intro' => 'Payment are created and saved local server.',
+    'payment.direct.wording' => 'Payment are created and saved local server. Manually update payment records via app.',
+    'payment.direct.database_path' => 'Database file path',
+    'payment_gateway.not_valid' => 'Something went wrong: :message',
+    'subscription.pending.direct.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).
+        Please wait for processing your subscription.
+        If you haven\'t purchase the plan, please follow the checkout guide from Acelle Mail App in your
+        mailbox with title <strong class="text-nowrap">[Acelle Mail] New Payment Submitted</strong>.<br/><br/> <strong>OR</strong> <br/>',
 ) ?>
 

@@ -1,10 +1,10 @@
 <h3 class="text-semibold">{{ trans('messages.subscription.checkout') }}</h3>
 <p>
-    {!! trans('messages.subscription.pending.wording', [
+    {!! trans('messages.subscription.pending.coinpayments.wording', [
         'plan' => $subscription->plan->name,
         'money' => Acelle\Library\Tool::format_price($subscription->plan->price, $subscription->plan->currency->format),
     ]) !!}
-    {!! trans('messages.subscription.pending.intro') !!}</p>
+</p>
         
 <a link-method="POST"
     class="btn btn-mc_primary"

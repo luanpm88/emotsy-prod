@@ -29,17 +29,20 @@ class AccountSubscriptionController extends Controller
         $subscription = $customer->subscription();
         
         // check subscription status
-        if (is_object($subscription)) {
-            try {
-                //// Gateway setting
-                $subscriptionParam = $customer->retrieveSubscription($gateway);
-            } catch (\Exception $e) {
-                $subscription->markAsCancelled();
-                return redirect()->action('AccountSubscriptionController@new');
-            }
-        
+        if (is_object($subscription)) {        
             if(!$subscription->active()) {
-                if ($subscription->isPending()) {
+                try {
+                    $subscription->sync($gateway);
+                } catch (\Exception $ex) {
+                    $subscription->markAsCancelled();
+                    
+                    // can found remote subscription
+                    return redirect()->action('AccountSubscriptionController@index');
+                }
+                
+                if ($subscription->isNew()) {
+                    return redirect()->action('AccountSubscriptionController@checkout');
+                } elseif ($subscription->isPending()) {
                     return redirect()->action('AccountSubscriptionController@pending');
                 } else {
                     return redirect()->action('AccountSubscriptionController@new');
@@ -48,7 +51,10 @@ class AccountSubscriptionController extends Controller
         } else {
             return redirect()->action('AccountSubscriptionController@new');
         }
-
+        
+        // retrieve subscription info
+        $subscriptionParam = $customer->retrieveSubscription($gateway);
+        
         return view('account.subscription.index', [
             'subscription' => $subscription,
             'gateway' => $gateway,
@@ -72,14 +78,6 @@ class AccountSubscriptionController extends Controller
         
         if (!isset($subscription)) {
             return redirect()->action('AccountSubscriptionController@index');
-        }
-        
-        try {
-            //// Gateway setting
-            $subscriptionParam = $customer->retrieveSubscription($gatewayService);
-        } catch (\Exception $e) {
-            $subscription->markAsCancelled();
-            return redirect()->action('AccountSubscriptionController@new');
         }
         
         //
@@ -133,14 +131,7 @@ class AccountSubscriptionController extends Controller
             $subscription = $customer->createSubscription($plan, $gateway);
         }
         
-        // check if customer already has carf information
-        if ($customer->billableUserHasCard($gateway)) {
-            // checkout page
-            return redirect()->action('AccountSubscriptionController@checkout');
-        } else {
-            // update card info
-            return redirect()->action('AccountSubscriptionController@updateCard');
-        }
+        return redirect()->action('AccountSubscriptionController@checkout');
     }
     
     /**
@@ -157,17 +148,12 @@ class AccountSubscriptionController extends Controller
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
         $subscription = $customer->subscription();
         
-        // Authorization
-        if (!$request->user()->customer->can('updateCard', $subscription)) {
-            return redirect()->action('AccountSubscriptionController@index');
-        }
-        
         if ($request->isMethod('post')) {
             // update card
             $customer->billableUserUpdateCard($gateway, $request->all());
             
             // Redirect to my subscription page
-            $request->session()->flash('alert-success', trans('messages.subscription.success'));
+            $request->session()->flash('alert-success', trans('messages.subscription.created'));
             return redirect()->action('AccountSubscriptionController@checkout');
         }
         
@@ -192,9 +178,10 @@ class AccountSubscriptionController extends Controller
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
         $subscription = $customer->subscription();
         
-        // Authorization
-        if (!$request->user()->customer->can('checkout', $subscription)) {
-            return redirect()->action('AccountSubscriptionController@index');
+        // check if customer already has carf information
+        if (!$customer->billableUserHasCard($gateway)) {
+            // update card info
+            return redirect()->action('AccountSubscriptionController@updateCard');
         }
         
         if ($request->isMethod('post')) {
@@ -203,7 +190,7 @@ class AccountSubscriptionController extends Controller
             
             // Redirect to my subscription page
             $request->session()->flash('alert-success', trans('messages.subscription.created'));
-            return redirect()->action('AccountSubscriptionController@index');
+            return redirect()->action('AccountSubscriptionController@pending');
         }
         
         return view('account.subscription.checkout', [

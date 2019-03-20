@@ -623,9 +623,7 @@ class Setting extends Model
         
         foreach(config('payment.gateways') as $name => $gateway) {
             $gateway = self::getPaymentGateway($name);
-            if ($gateway['status'] == self::PAYMENT_STATUS_ACTIVE) {
-                $payments[$name] = $gateway;
-            }
+            $payments[$name] = $gateway;
         }
         
         return $payments;
@@ -674,6 +672,43 @@ class Setting extends Model
         }
         
         return $gateway;
+    }
+    
+    /**
+     * Get payments gateway by name.
+     *
+     * @var array
+     */
+    public static function getPaymentGatewayService($name, $fields=null)
+    {
+        $config = \Acelle\Model\Setting::getPaymentGateway($name);
+        
+        if (isset($fields)) {
+            $config['fields'] = $fields;
+        }
+        
+        switch ($name) {
+            case 'direct':
+                return new \Acelle\Cashier\Services\DirectPaymentGateway($config['fields']['database_path']);
+            case 'stripe':
+                return new \Acelle\Cashier\Services\StripePaymentGateway($config['fields']['secret_key']);
+            case 'braintree':
+                return new \Acelle\Cashier\Services\BraintreePaymentGateway(
+                    $config['fields']['environment'],
+                    $config['fields']['merchant_id'],
+                    $config['fields']['public_key'],
+                    $config['fields']['private_key']
+                );
+            case 'coinpayments':
+                return new \Acelle\Cashier\Services\CoinpaymentsPaymentGateway(
+                    $config['fields']['merchant_id'],
+                    $config['fields']['public_key'],
+                    $config['fields']['private_key'],
+                    $config['fields']['ipn_secret']
+                );
+            default:
+                return false;
+        }
     }
     
     /**

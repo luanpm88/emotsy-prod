@@ -4,21 +4,16 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "c3c20d6006b66180aaa2666f46bbb5c8",
+    "content-hash": "ec757041f161139bef70e650f4adf4cf",
     "packages": [
         {
             "name": "acelle/cashier",
             "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/luanpm88/acelle-cashier.git",
-                "reference": "c576be79884329cda0e7631f5c0458c9da40bda8"
-            },
             "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/c576be79884329cda0e7631f5c0458c9da40bda8",
+                "type": "path",
+                "url": "../acelle-cashier",
                 "reference": "c576be79884329cda0e7631f5c0458c9da40bda8",
-                "shasum": ""
+                "shasum": null
             },
             "require": {
                 "dompdf/dompdf": "^0.8.0",
@@ -76,8 +71,7 @@
             "support": {
                 "issues": "https://github.com/laravel/cashier/issues",
                 "source": "https://github.com/laravel/cashier"
-            },
-            "time": "2019-03-15T09:30:30+00:00"
+            }
         },
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -134,16 +128,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.90.3",
+            "version": "3.90.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "12ba8071bcc3d79cbfbf8cca77f59f146816b17a"
+                "reference": "6b8821a0d9c28dba9fc62d9997f36ccfc7fc2e53"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/12ba8071bcc3d79cbfbf8cca77f59f146816b17a",
-                "reference": "12ba8071bcc3d79cbfbf8cca77f59f146816b17a",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/6b8821a0d9c28dba9fc62d9997f36ccfc7fc2e53",
+                "reference": "6b8821a0d9c28dba9fc62d9997f36ccfc7fc2e53",
                 "shasum": ""
             },
             "require": {
@@ -212,7 +206,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2019-03-14T18:32:41+00:00"
+            "time": "2019-03-18T18:09:25+00:00"
         },
         {
             "name": "barryvdh/laravel-async-queue",
@@ -909,16 +903,16 @@
         },
         {
             "name": "erusev/parsedown",
-            "version": "1.7.1",
+            "version": "v1.7.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/erusev/parsedown.git",
-                "reference": "92e9c27ba0e74b8b028b111d1b6f956a15c01fc1"
+                "reference": "d60bcdc46978357759ecb13cb4b078da783f8faf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/erusev/parsedown/zipball/92e9c27ba0e74b8b028b111d1b6f956a15c01fc1",
-                "reference": "92e9c27ba0e74b8b028b111d1b6f956a15c01fc1",
+                "url": "https://api.github.com/repos/erusev/parsedown/zipball/d60bcdc46978357759ecb13cb4b078da783f8faf",
+                "reference": "d60bcdc46978357759ecb13cb4b078da783f8faf",
                 "shasum": ""
             },
             "require": {
@@ -951,7 +945,7 @@
                 "markdown",
                 "parser"
             ],
-            "time": "2018-03-08T01:11:30+00:00"
+            "time": "2019-03-17T17:19:46+00:00"
         },
         {
             "name": "guzzlehttp/guzzle",
@@ -3494,16 +3488,16 @@
         },
         {
             "name": "stripe/stripe-php",
-            "version": "v6.30.5",
+            "version": "v6.31.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/stripe/stripe-php.git",
-                "reference": "1ffc751e7ee2d68b3e4a0068f5537b8334945467"
+                "reference": "a44a095af88057922a08b03daaf79d6859e12e2d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/1ffc751e7ee2d68b3e4a0068f5537b8334945467",
-                "reference": "1ffc751e7ee2d68b3e4a0068f5537b8334945467",
+                "url": "https://api.github.com/repos/stripe/stripe-php/zipball/a44a095af88057922a08b03daaf79d6859e12e2d",
+                "reference": "a44a095af88057922a08b03daaf79d6859e12e2d",
                 "shasum": ""
             },
             "require": {
@@ -3546,7 +3540,7 @@
                 "payment processing",
                 "stripe"
             ],
-            "time": "2019-03-11T20:45:23+00:00"
+            "time": "2019-03-18T23:36:33+00:00"
         },
         {
             "name": "swiftmailer/swiftmailer",
