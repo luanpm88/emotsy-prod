@@ -22,7 +22,7 @@ class MailListController extends Controller
         $user = \Auth::guard('api')->user();
 
         $lists = \Acelle\Model\MailList::getAll()
-            ->select('uid', 'name', 'default_subject', 'from_email', 'from_name', 'status', 'created_at', 'updated_at')
+            ->select('id', 'uid', 'name', 'default_subject', 'from_email', 'from_name', 'status', 'created_at', 'updated_at')
             ->where('customer_id', '=', $user->customer->id)
             ->get();
 
@@ -73,12 +73,13 @@ class MailListController extends Controller
         $list['fields'] = [];
         foreach ($item->getFields as $key => $field) {
             $list['fields'][] = [
+                'key' => $field->tag, // for Zapier
                 'label' => $field->label,
-                'type' => $field->type,
+                'type' => 'string', // for Zapier
                 'tag' => $field->tag,
                 'default_value' => $field->default_value,
                 'visible' => $field->visible,
-                'required' => $field->required,
+                'required' => $field->required ? true : false,
                 'custom_order' => $field->custom_order,
             ];
         }

@@ -14,8 +14,15 @@ use Illuminate\Http\Request;
 */
 
 Route::group(['namespace' => 'Api', 'prefix' => 'v1', 'middleware' => 'auth:api'], function () {
-    // Route::group(['namespace' => 'Api', 'prefix' => 'api/v1'], function () {
-    Route::get('', 'HomeController@index');
+    //
+    Route::get('', function(){
+        return \Response::json(\Auth::guard('api')->user());
+    });
+
+    // Simple authentication
+    Route::get('me', function() {
+        return \Response::json(\Auth::guard('api')->user());
+    });
 
     // List
     Route::resource('lists', 'MailListController');
