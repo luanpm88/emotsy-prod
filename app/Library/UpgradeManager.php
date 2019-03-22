@@ -413,12 +413,18 @@ class UpgradeManager
             if (empty($tmppath)) {
                 continue;
             }
-
-            if (!file_exists($tmppath)) {
-                break;
-            } else {
+            
+            try {
+                if (!file_exists($tmppath)) {
+                    break;
+                } else {
+                    $parent = $tmppath;
+                }    
+            } catch (\Exception $ex) {
+                LaravelLog::warning($path.' not in open_basedir: '.ini_get('open_basedir'));
                 $parent = $tmppath;
             }
+            
         }
 
         return is_writable($parent);
@@ -499,10 +505,16 @@ class UpgradeManager
             if (empty($tmppath)) {
                 continue;
             }
-
-            if (!file_exists($tmppath)) {
-                mkdir($tmppath);
+            
+            try {
+                if (!file_exists($tmppath)) {
+                    mkdir($tmppath);
+                }    
+            } catch (\Exception $ex) {
+                LaravelLog::warning($tmppath.' not in open_basedir (skip mkdir): '.ini_get('open_basedir'));
+                $parent = $tmppath;
             }
+            
         }
     }
 
