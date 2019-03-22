@@ -47,8 +47,8 @@
 							@elseif ($subscription->isPending())
 								<span class="label label-flat bg-pending">{{ trans('messages.subscription.status.pending') }}</span>
 							@endif
-								
 						@else
+							<span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>		
 							@if ($subscription->ended())
 								<span class="label label-flat bg-ended">{{ trans('messages.subscription.status.ended') }}</span>						
 							@endif
@@ -76,11 +76,20 @@
 					@endif
 					@if(
 						\Auth::user()->admin->can('cancelNow', $subscription) ||
-						\Auth::user()->admin->can('changePlan', $subscription)
+						\Auth::user()->admin->can('changePlan', $subscription) ||
+						\Auth::user()->admin->can('invoices', $subscription)
 					)
 						<div class="btn-group">
 							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
+								@if (\Auth::user()->admin->can('invoices', $subscription))
+									<li>
+										<a class="modal_link"
+										  href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}">
+											{{ trans('messages.subscription.logs') }}
+										</a>
+									</li>
+								@endif
 								@if (\Auth::user()->admin->can('cancelNow', $subscription))
 									<li>
 										<a data-method="POST" link-confirm="messages.subscription.cancel_now.confirm"

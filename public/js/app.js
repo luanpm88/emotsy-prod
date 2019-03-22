@@ -1724,13 +1724,30 @@ $(function() {
         var url = $(this).attr("href");
         var a_ = $(this);
         var method = $(this).attr('data-method');
+        var load = htmlLoader();
+        var size = $(this).attr('data-size');
+        
+        if (typeof(size) === 'undefined') {
+            size = 'lg';
+        }
 
         // Finding modal
         var modal = $('#ajax-modal[rel="'+url+'"]');
         if (!modal.length) {
-            $('body').append('<div id="ajax-modal" rel="'+url+'" class="modal fade ajax-modal"><div class="modal-dialog modal-md"></div></div>');
+            var html = '<div class="modal fade" role="dialog" id="ajax-modal" rel="'+url+'">'+
+                '<div class="modal-dialog modal-'+size+' modal-select">'+
+                    '<div class="modal-content">'+
+                        '<div class="modal-body">'+
+                            load+
+                        '</div>'+
+                    '</div>'+
+                '</div>'+
+            '</div>';
+            
+            $('body').append(html);
             modal = $('#ajax-modal[rel="'+url+'"]');
         }
+        modal.modal('show');
 
         // Skip if previous ajax calling
         if (a_.hasClass('loading')) {
@@ -1765,8 +1782,7 @@ $(function() {
             data: data
         })
         .done(function( data ) {
-            modal.find('.modal-dialog').html(data);
-            modal.modal('show');
+            modal.find('.modal-dialog').html(data);            
             
             //
             customValidate(modal.find("form"));

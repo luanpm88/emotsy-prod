@@ -1043,6 +1043,37 @@ class SendingServer extends Model
     }
     
     /**
+     * Add domain.
+     *
+     * @return array
+     */
+    public function addDomain($domain)
+    {
+        $domains = $this->getOption('domains');
+        $domains[] = $domain;
+        
+        $this->setOption('domains', $domains);
+        $this->save();
+    }
+    
+    /**
+     * Add domain.
+     *
+     * @return array
+     */
+    public function removeDomain($domain)
+    {
+        $domains = $this->getOption('domains');
+        
+        if (($key = array_search($domain, $domains)) !== false) {
+            unset($domains[$key]);
+        }
+        
+        $this->setOption('domains', $domains);
+        $this->save();
+    }
+    
+    /**
      * Check if domain is enabled.
      *
      * @return array
@@ -1133,9 +1164,6 @@ class SendingServer extends Model
      */
     public function getVerifiedIdentities()
     {
-        return [
-            'acellemail.com',
-            'bolero.vn',
-        ];
+        return $this->getOption("domains");
     }
 }

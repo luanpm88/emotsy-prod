@@ -81,6 +81,20 @@ class SubscriptionPolicy
         return $can;
     }
     
+    public function invoices(User $user, Subscription $subscription, $role)
+    {
+        $can = isset($subscription);
+        
+        switch ($role) {
+            case 'admin':
+                break;
+            case 'customer':
+                break;
+        }
+
+        return $can;
+    }
+    
     public function changePlan(User $user, Subscription $subscription, $role)
     {
         switch ($role) {

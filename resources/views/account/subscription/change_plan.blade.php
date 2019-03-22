@@ -1,4 +1,4 @@
-<div class="modal-content">
+<div class="modal-content modal-sm">
     
         {{ csrf_field() }}
         <div class="modal-header bg-grey">

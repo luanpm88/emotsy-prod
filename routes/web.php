@@ -42,6 +42,7 @@ Route::get('/app/templates/{name?}', [ function ($name) {
 
 // Setting upload path
 Route::get('setting/{filename}', 'SettingController@file');
+Route::get('/no-plan', 'AccountSubscriptionController@noPlan');
 
 Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:api'], function () {
     // Route::group(['namespace' => 'Api', 'prefix' => 'api/v1'], function () {
@@ -542,6 +543,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/layouts', 'LayoutController');
 
     // Sending servers
+    Route::post('admin/sending_servers/{uid}/remove-domain/{domain}', 'SendingServerController@removeDomain');
+    Route::post('admin/sending_servers/{uid}/add-domain', 'SendingServerController@addDomain');
+    Route::get('admin/sending_servers/{uid}/add-domain', 'SendingServerController@addDomain');
     Route::get('admin/sending_servers/aws-region-host', 'SendingServerController@awsRegionHost');
     
     Route::post('admin/sending_servers/{uid}/test-php-mail', 'SendingServerController@testPhpMail');
@@ -750,6 +754,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/currencies', 'CurrencyController');
 
     // Subscription
+    Route::get('admin/subscriptions/{id}/invoices', 'SubscriptionController@invoices');
     Route::post('admin/subscriptions/{id}/change-plan', 'SubscriptionController@changePlan');
     Route::get('admin/subscriptions/{id}/change-plan', 'SubscriptionController@changePlan');
     Route::post('admin/subscriptions/{id}/cancel-now', 'SubscriptionController@cancelNow');

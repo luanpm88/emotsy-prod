@@ -178,16 +178,21 @@
                                     {{ $domain }}
                                 </td>
                                 <td>
-                                    <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
-                                        {{ $server->isDomainEnabled($domain) ? " checked" : "" }}
-                                    />
+                                    <a href="{{ action('Admin\SendingServerController@removeDomain', [$server->uid, $domain]) }}"
+                                        link-confirm="{{ trans('messages.sending_server.domain.remove_domain.confirm') }}"
+                                        class="text-warning" link-method="POST">
+                                          {{ trans('messages.sending_serbers.remove_domain') }}
+                                    </a>
                                 </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
                 <br>
-                <button class="btn btn-mc_default mr-10">{{ trans('messages.sending_serbers.add_domain') }}</button>
+                <a href="{{ action('Admin\SendingServerController@addDomain', $server->uid) }}"
+                  class="btn btn-mc_default mr-10 modal_link" data-size="md">
+                    {{ trans('messages.sending_serbers.add_domain') }}
+                </a>
                     
                 <p class="mt-40">
                     {{ trans('messages.sending_serbers.php-mail.allow_verify.intro') }}                    

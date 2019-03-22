@@ -12,7 +12,17 @@ use Carbon\Carbon;
 use Acelle\Cashier\SubscriptionParam;
 
 class AccountSubscriptionController extends Controller
-{
+{    
+    /**
+     * No plan accounce page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function noPlan()
+    {
+        return view('account.subscription.no_plan');
+    }
+    
     /**
      * Customer subscription main page.
      *
@@ -28,28 +38,29 @@ class AccountSubscriptionController extends Controller
         // Get current subscription
         $subscription = $customer->subscription();
         
-        // check subscription status
-        if (is_object($subscription)) {        
-            if(!$subscription->active()) {
-                try {
-                    $subscription->sync($gateway);
-                } catch (\Exception $ex) {
-                    $subscription->markAsCancelled();
-                    
-                    // can found remote subscription
-                    return redirect()->action('AccountSubscriptionController@index');
-                }
-                
-                if ($subscription->isNew()) {
-                    return redirect()->action('AccountSubscriptionController@checkout');
-                } elseif ($subscription->isPending()) {
-                    return redirect()->action('AccountSubscriptionController@pending');
-                } else {
-                    return redirect()->action('AccountSubscriptionController@new');
-                }
-            }
-        } else {
+        // Customer dose not have subscription
+        if (!is_object($subscription)) {
             return redirect()->action('AccountSubscriptionController@new');
+        }
+        
+        // try to sync subscription information
+        try {
+            $subscription->sync($gateway);
+        } catch (\Exception $ex) {
+            // can not found remote subscription
+            $subscription->markAsCancelled();
+            return redirect()->action('AccountSubscriptionController@index');
+        }
+        
+        // check subscription status          
+        if(!$subscription->active()) {
+            if ($subscription->isNew()) {
+                return redirect()->action('AccountSubscriptionController@checkout');
+            } elseif ($subscription->isPending()) {
+                return redirect()->action('AccountSubscriptionController@pending');
+            } else {
+                return redirect()->action('AccountSubscriptionController@new');
+            }
         }
         
         // retrieve subscription info
@@ -129,10 +140,13 @@ class AccountSubscriptionController extends Controller
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
         $subscription = $customer->subscription();
         
-        // Create subscription
-        if (!is_object($subscription)) {
-            $subscription = $customer->createSubscription($plan, $gateway);
+        // Subscription is already exist
+        if (is_object($subscription)) {
+            return redirect()->action('AccountSubscriptionController@index');
         }
+        
+        // Create subscription
+        $subscription = $customer->createSubscription($plan, $gateway);
         
         return redirect()->action('AccountSubscriptionController@checkout');
     }
@@ -181,7 +195,7 @@ class AccountSubscriptionController extends Controller
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
         $subscription = $customer->subscription();
         
-        // check if customer already has carf information
+        // check if customer already has card information
         if (!$customer->billableUserHasCard($gateway)) {
             // update card info
             return redirect()->action('AccountSubscriptionController@updateCard');

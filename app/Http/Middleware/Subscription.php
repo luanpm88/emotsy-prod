@@ -20,10 +20,10 @@ class Subscription
         
         if (is_object($subscription)) {
             if(!$subscription->active()) {
-                return redirect()->action('AccountSubscriptionController@index');
+                return redirect()->action('AccountSubscriptionController@noPlan');
             }
         } else {
-            return redirect()->action('AccountSubscriptionController@index');
+            return redirect()->action('AccountSubscriptionController@noPlan');
         }
 
         return $next($request);

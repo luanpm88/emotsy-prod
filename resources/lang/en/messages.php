@@ -2497,7 +2497,16 @@
     'invoice.amount' => 'Amount',
     'invoice.description' => 'Description',
     'invoice.status' => 'Status',
-    'subscription.logs' => 'Subscription Logs/Invoices',
+    'subscription.logs' => 'Logs / Invoices',
     'subscription.logs.empty' => 'No records found',
+    'no_plan.title' => 'You are not subscribed to any plan !',
+    'no_plan.wording' => 'You need to subscribe to a plan for using the application. Click link bellow to access to your subscription page.',
+    'manage_your_subscription' => 'Manage your subscription',
+    'payment.coinpayments' => 'CoinPayments',
+    'sending_server.add_domain.wording' => 'Enter new domain name here to add domain to sending server',
+    'sending_server.add_domain' => 'Add domain',
+    'sending_serbers.remove_domain' => 'Delete',
+    'sending_server.domain.removed' => 'Domain was removed subccessfully',    
+    'sending_server.domain.remove_domain.confirm' => 'You are about to remove domain from list',
 ) ?>
 

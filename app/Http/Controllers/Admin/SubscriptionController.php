@@ -168,4 +168,23 @@ class SubscriptionController extends Controller
             'subscription' => $subscription,
         ]);
     }
+    
+    /**
+     * Subscription invoices.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function invoices(Request $request, $id)
+    {
+        // Get current subscription
+        $subscription = Subscription::findByUid($request->id);
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        
+        return view('admin.subscriptions.invoices', [
+            'subscription' => $subscription,
+            'gateway' => $gateway,
+        ]);
+    }
 }

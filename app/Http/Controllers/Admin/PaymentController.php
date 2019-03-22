@@ -53,7 +53,7 @@ class PaymentController extends Controller
         $gatewayService = Setting::getPaymentGatewayService($name, $request->options);
         
         try {
-            $gatewayService->valid();            
+            $gatewayService->validate();            
             Setting::updatePaymentGateway($name, $request->options);
             
             $request->session()->flash('alert-success', trans('messages.payment_gateway.updated'));
@@ -83,7 +83,7 @@ class PaymentController extends Controller
         $service = Setting::getPaymentGatewayService($name);
         
         try {
-            $service->valid();
+            $service->validate();
             
             Setting::set('system.payment_gateway', $name);
             
