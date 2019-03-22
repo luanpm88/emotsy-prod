@@ -156,7 +156,7 @@ class SubscriptionController extends Controller
         
         if ($request->isMethod('post')) {
             if ($request->user()->customer->can('changePlan', $subscription)) {
-                $subscription->swap($plan, $gateway);
+                $subscription->user->changePlan($plan, $gateway);
                 
                 // Redirect to my subscription page
                 $request->session()->flash('alert-success', trans('messages.subscription.plan_changed'));

@@ -53,7 +53,9 @@ class SubscriptionPolicy
     
     public function resume(User $user, Subscription $subscription, $role)
     {
-        $can = isset($subscription) && $subscription->cancelled() && !$subscription->ended();
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        
+        $can = $gateway->isSupportRecurring() && isset($subscription) && $subscription->cancelled() && !$subscription->ended();
         
         switch ($role) {
             case 'admin':                

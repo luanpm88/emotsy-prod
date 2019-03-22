@@ -85,6 +85,9 @@ class AccountSubscriptionController extends Controller
             return redirect()->action('AccountSubscriptionController@index');
         }
         
+        // retrieve subscription info
+        $subscription->retrieve($gatewayService);
+        
         return view('account.subscription.pending', [
             'subscription' => $subscription,
             'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),

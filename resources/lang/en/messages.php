@@ -2456,6 +2456,9 @@
     'subscription.status.active' => 'Active',
     'subscription.status.cancelled' => 'Cancelled',
     'subscription.status.recurring' => 'Recurring',
+    'subscription.status.new' => 'New',
+    'subscription.status.pending' => 'Pending',
+    'subscription.status.done' => 'Done',
     'subscription.created_at' => 'Created at',
     'subscription.updated_at' => 'Updated at',
     'payment.braintree' => 'Braintree',
@@ -2490,5 +2493,11 @@
         Please wait for processing your subscription.
         If you haven\'t purchase the plan, please follow the checkout guide from Acelle Mail App in your
         mailbox with title <strong class="text-nowrap">[Acelle Mail] New Payment Submitted</strong>.<br/><br/> <strong>OR</strong> <br/>',
+    'invoice.datetime' => 'Datetime',
+    'invoice.amount' => 'Amount',
+    'invoice.description' => 'Description',
+    'invoice.status' => 'Status',
+    'subscription.logs' => 'Subscription Logs/Invoices',
+    'subscription.logs.empty' => 'No records found',
 ) ?>
 

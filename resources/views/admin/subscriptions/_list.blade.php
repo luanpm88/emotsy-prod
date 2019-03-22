@@ -41,17 +41,23 @@
 				</td>
 				<td>
                     <span class="text-muted2 list-status pull-left">
-						@if ($subscription->ended())
-							<span class="label label-flat bg-ended">{{ trans('messages.subscription.status.ended') }}</span>						
-						@endif
-						@if ($subscription->active())
-							<span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>						
-						@endif
-						@if ($subscription->cancelled() && !$subscription->ended())
-							<span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.cancelled') }}</span>						
-						@endif
-						@if ($subscription->recurring())
-							<span class="label label-flat bg-info">{{ trans('messages.subscription.status.recurring') }}</span>						
+						@if (!$subscription->active())
+							@if ($subscription->isNew())
+								<span class="label label-flat bg-new">{{ trans('messages.subscription.status.new') }}</span>
+							@elseif ($subscription->isPending())
+								<span class="label label-flat bg-pending">{{ trans('messages.subscription.status.pending') }}</span>
+							@endif
+								
+						@else
+							@if ($subscription->ended())
+								<span class="label label-flat bg-ended">{{ trans('messages.subscription.status.ended') }}</span>						
+							@endif
+							@if ($subscription->cancelled() && !$subscription->ended())
+								<span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.cancelled') }}</span>						
+							@endif
+							@if ($subscription->recurring())
+								<span class="label label-flat bg-info">{{ trans('messages.subscription.status.recurring') }}</span>						
+							@endif
 						@endif
 					</span>
                 </td>

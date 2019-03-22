@@ -698,7 +698,7 @@ input.error {
 }
 .table-sub .label {
 }
-.bg-waiting, .bg-ready, .bg-sent, .bg-finished, .bg-pending_active {
+.bg-pending, .bg-waiting, .bg-ready, .bg-sent, .bg-finished, .bg-pending_active {
     background-color: #2196F3;
     border-color: #2196F3;
     color: #fff;
@@ -708,7 +708,7 @@ input.error {
     border-color: #4CAF50;
     color: #fff;
 }
-.bg-ended, .bg-unknown, .bg-expired, .bg-past, .bg-spam-reported, .bg-pending, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done {
+.bg-ended, .bg-unknown, .bg-expired, .bg-past, .bg-spam-reported, .bg-not_sent, .bg-canceled, .bg-cancelled, .bg-unactive, .bg-disabled, .bg-unsubscribed, .bg-unconfirmed, .bg-draft, .bg-blacklisted, .bg-done {
     background-color: #777;
     border-color: #777;
     color: #fff;
