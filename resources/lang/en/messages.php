@@ -875,7 +875,7 @@
   'no file' => 'No file',
   'view type number missing' => 'View type number missing',
   'Not enought Memory' => 'Not enought Memory',
-  'max_size_reached' => 'Your image folder has reach its maximale size of %d MB.',
+  'max_size_reached' => 'Your image folder has reach its maximale size of %d MB. Please contact your system or check your plan setting',
   'B' => 'B',
   'KB' => 'KB',
   'MB' => 'MB',
