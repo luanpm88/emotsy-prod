@@ -1,3 +1,12 @@
+3.0.21 / 2019-03-21
+==================
+
+ * Added: support Zapier integration
+ * Added: retry failed deliveries
+ * Added: system error notification
+ * Fixed: open/click tracking not working correctly
+ * Fixed: incorrect user IP detection
+
 3.0.20 / 2019-02-12
 ==================
 
