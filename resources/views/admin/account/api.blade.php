@@ -28,22 +28,18 @@
 
     <h4 class="text-semibold">{{ trans('messages.api_endpoint') }}</h4>
 
-    <code style="font-size: 18px;">
-        {{ action("Api\HomeController@index") }}/</code>
+    <p style="margin-bottom: 30px"><code style="font-size: 18px;">
+        {{ url('api/v1') }}</code></p>
 
-    <br /><br />
     <h4 class="text-semibold">{{ trans('messages.api_docs') }}</h4>
 
-    <code style="font-size: 18px;">
-        <a target="_blank" href="{{ action("Admin\ApiController@doc") }}">{{ action("Admin\ApiController@doc") }} <i class="icon-link"></i></a></code>
+    <p style="margin-bottom: 30px"><code style="font-size: 18px;">
+        <a target="_blank" href="{{ action("Admin\ApiController@doc") }}">{{ action("Admin\ApiController@doc") }} <i class="icon-link"></i></a></code></p>
 
-    <br /><br />
     <h4 class="text-semibold mt-20">{{ trans('messages.your_api_token') }}</h4>
 
-    <code style="font-size: 18px;">
-        {{ Auth::user()->api_token }}</code>
-    <br />
-    <br />
+    <p style="margin-bottom: 30px"><code style="font-size: 18px;">
+        {{ Auth::user()->api_token }}</code></p>
     <p class="alert alert-info">{!! trans('messages.api_token_guide', ["link" => action("Api\MailListController@index", ["api_token" => "YOUR_API_TOKEN"])]) !!}</p>
 
     <a class="btn btn-info bg-teal-600" href="{{ action("Admin\AccountController@renewToken") }}">{{ trans('messages.renew_token')}}</a>
