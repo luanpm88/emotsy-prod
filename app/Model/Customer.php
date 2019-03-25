@@ -195,6 +195,16 @@ class Customer extends Model implements BillableUserInterface
             ->where('status', '=', \Acelle\Model\SendingDomain::STATUS_ACTIVE)
             ->where('domain_verified', '=', \Acelle\Model\SendingDomain::VERIFIED);
     }
+    
+    /**
+     * Get active subscription.
+     *
+     * @return void
+     */
+    public function activeSubscription()
+    {
+        return (is_object($this->subscription()) && $this->subscription()->active()) ? $this->subscription() : null;
+    }
 
     /**
      * Bootstrap any application services.
@@ -1350,8 +1360,8 @@ class Customer extends Model implements BillableUserInterface
     {
         return is_object($this->user->admin) ?
             trans('messages.admin_default_plan') :
-            (is_object($this->subscription()) ?
-                $this->subscription()->plan->name :
+            (is_object($this->activeSubscription()) ?
+                $this->activeSubscription()->plan->name :
                 trans('messages.no_plan')
             );
     }
@@ -1473,7 +1483,7 @@ class Customer extends Model implements BillableUserInterface
         // If customer dont have permission creating sending servers
         } else {
             // Get server from the plan
-            return  $this->subscription()->plan->getEmailVerificaionServers();
+            return  $this->activeSubscription()->plan->getEmailVerificaionServers();
         }
     }
 
@@ -1732,9 +1742,9 @@ class Customer extends Model implements BillableUserInterface
      */
     public function getOptions()
     {
-        if (is_object($this->subscription())) {
+        if (is_object($this->activeSubscription())) {
             // Find plan  
-            return $this->subscription()->plan->getOptions();
+            return $this->activeSubscription()->plan->getOptions();
         } else {
             return [];
         }
@@ -1810,9 +1820,11 @@ class Customer extends Model implements BillableUserInterface
                         ];
                     }
                 } else { // domains are alse
-                    if ( $keyword && strpos(strtolower($item), $keyword) !== false ) {
+                    $dKey = explode('@', $keyword);
+                    $dKey = isset($dKey[1]) ? $dKey[1] : null;
+                    if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) !== false )) {
                         $droplist[] = [
-                            'text' => '****@'.str_replace($keyword, '<span class="text-semibold text-primary">'.$keyword.'</span>', $item),
+                            'text' => '****@'.str_replace($dKey, '<span class="text-semibold text-primary">'.$dKey.'</span>', $item),
                             'subfix' => $item,
                             'desc' => null,
                         ];

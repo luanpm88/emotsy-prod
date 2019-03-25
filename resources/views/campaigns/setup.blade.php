@@ -57,6 +57,7 @@
 				<div class="hiddable-cond" data-control="[name=use_default_sending_server_from_email]" data-hide-value="1">
 					@include('helpers.form_control', [
 						'type' => 'autofill',
+						'id' => 'sender_from_input',
 						'name' => 'from_email',
 						'label' => trans('messages.from_email'),
 						'value' => $campaign->from_email,
@@ -134,5 +135,15 @@
 		</div>
 		
 	<form>
+	
+	<script>
+		$(document).ready(function() {
+			var box = $('#sender_from_input').autofill();
+			box.loadDropbox(function() {
+				$('#sender_from_input').focusout();
+				box.updateErrorMessage();
+			})
+		})
+	</script>
 				
 @endsection

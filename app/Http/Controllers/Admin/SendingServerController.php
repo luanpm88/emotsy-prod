@@ -642,4 +642,19 @@ class SendingServerController extends Controller
         $request->session()->flash('alert-success', trans('messages.sending_server.domain.removed'));
         return redirect()->action('Admin\SendingServerController@edit', [$server->uid, $server->type]);
     }
+    
+    /**
+     * Dropbox list.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function fromDropbox(Request $request)
+    {
+        $server = SendingServer::findByUid($request->uid);
+        
+        $droplist = $server->verifiedIdentitiesDroplist(strtolower(trim($request->keyword)));        
+        return response()->json($droplist);
+    }
 }

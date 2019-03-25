@@ -60,6 +60,6 @@
         </div>
     </div>
         
-    @include('account.subscription._invoices', ['subscription' => $subscription, 'gateway' => $gateway])
+    @include('account.subscription._invoices', ['subscription' => $subscription, 'gateway' => $gatewayService])
 
 @endsection

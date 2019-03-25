@@ -28,7 +28,6 @@
                 </tbody>
             </table>
             <br>
-            <button class="btn btn-mc_default mr-10">{{ trans('messages.sending_serbers.add_domain') }}</button>
             <a href="{{ action('Admin\SendingServerController@index') }}" type="button"
               class="btn btn-mc_default">
                 {{ trans('messages.sending_serbers.go_to_sendgrid_dashboard') }}
@@ -40,7 +39,7 @@
             
             @include('helpers.form_control', [
                 'type' => 'checkbox2',
-                'label' => trans('messages.allow_verify_domain_agains_sendgrid'),
+                'label' => trans('messages.allow_verify_domain_against_sendgrid'),
                 'name' => 'options[allow_verify_domain_remotely]',
                 'value' => $server->getOption('allow_verify_domain_remotely'),
                 'help_class' => 'sending_server',
@@ -48,7 +47,7 @@
             ])
             @include('helpers.form_control', [
                 'type' => 'checkbox2',
-                'label' => trans('messages.allow_verify_email_agains_sendgrid'),
+                'label' => trans('messages.allow_verify_email_against_sendgrid'),
                 'name' => 'options[allow_verify_email_remotely]',
                 'value' => $server->getOption('allow_verify_email_remotely'),
                 'help_class' => 'sending_server',

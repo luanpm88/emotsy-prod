@@ -1603,7 +1603,7 @@ class MailList extends Model
     public function getCurrentSubscription()
     {
         if (empty($this->currentSubscription)) {
-            $this->currentSubscription = $this->customer->subscription();
+            $this->currentSubscription = $this->customer->activeSubscription();
         }
 
         return $this->currentSubscription;
@@ -1697,7 +1697,7 @@ class MailList extends Model
         } elseif ($this->customer->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM) {
             // Check if has sending servers for current subscription
             if (is_object($subscription)) {
-                if ($subscription->getOption('all_sending_servers') == 'yes') {
+                if ($subscription->plan->getOption('all_sending_servers') == 'yes') {
                     if (\Acelle\Model\SendingServer::getAllAdminActive()->count()) {
                         $result = \Acelle\Model\SendingServer::getAllAdminActive()->get()->map(function ($server) {
                             return [$server->id, '100'];

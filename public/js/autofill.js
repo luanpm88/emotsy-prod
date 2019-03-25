@@ -51,9 +51,9 @@ $.fn.autofill = function(action, param) {
     
     // Show dropbox
     showDropbox = function() {
-        if (box.value() != '') {
+        //if (box.value() != '') {
             box.container.removeClass('hide');
-        }
+        //}
     };
     
     // Hide dropbox
@@ -66,7 +66,7 @@ $.fn.autofill = function(action, param) {
         if (box.value() != '') {
             showDropbox();
         } else {
-            hideDropbox();
+            // hideDropbox();
         }
     };
     
@@ -102,7 +102,7 @@ $.fn.autofill = function(action, param) {
         }
     };
     
-    updateErrorMessage = function() {
+    box.updateErrorMessage = function() {
         var valid = false;
         
         box.dropbox.find('li.autofill-item').each(function() {
@@ -194,7 +194,7 @@ $.fn.autofill = function(action, param) {
     };
     
     // jax load dropbox content
-    loadDropbox = function() {
+    box.loadDropbox = function(callback) {
         maskDropbox();
         
         if(box.xhr != null && box.xhr.readyState != 4){
@@ -220,6 +220,11 @@ $.fn.autofill = function(action, param) {
             });
             
             unmaskDropbox();
+            
+            // callback
+            if (typeof(callback) !== 'undefined') {
+                callback();
+            }
         });
     };
     
@@ -229,20 +234,20 @@ $.fn.autofill = function(action, param) {
     // On focus
     box.input.on('focus', function() {
         showDropbox();
-        loadDropbox();
+        box.loadDropbox();
     });
     
     // Out focus
     box.input.on('focusout', function() {
         setTimeout(function() {hideDropbox();}, 200);
-        updateErrorMessage();
+        box.updateErrorMessage();
     });
     
     // Key up
     box.input.on('keyup', function(event) {        
         if(event.keyCode !== 13 && event.keyCode !== 38 && event.keyCode !== 40 ) {
             toggleDropbox();
-            loadDropbox();
+            box.loadDropbox();
         }
         if(event.keyCode == 38) {
             moveUp();

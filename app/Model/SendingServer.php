@@ -1164,6 +1164,42 @@ class SendingServer extends Model
      */
     public function getVerifiedIdentities()
     {
-        return $this->getOption("domains");
+        return array_merge($this->getOption("domains"), $this->getOption("emails"));
+    }
+    
+    /**
+     * Get all verified identities.
+     *
+     * @return array
+     */
+    public function verifiedIdentitiesDroplist($keyword = null)
+    {
+        $droplist = [];        
+        
+        foreach ($this->getVerifiedIdentities() as $item) {
+                // check if email
+                if (extract_email($item) !== null) {
+                    $email = extract_email($item);
+                    if ( $keyword && strpos(strtolower($email), $keyword) !== false ) {
+                        $droplist[] = [
+                            'text' => extract_name($item),
+                            'value' => $email,
+                            'desc' => str_replace($keyword, '<span class="text-semibold text-primary">'.$keyword.'</span>', $email),
+                        ];
+                    }
+                } else { // domains are alse
+                    $dKey = explode('@', $keyword);
+                    $dKey = isset($dKey[1]) ? $dKey[1] : null;
+                    if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) !== false )) {
+                        $droplist[] = [
+                            'text' => '****@'.str_replace($dKey, '<span class="text-semibold text-primary">'.$dKey.'</span>', $item),
+                            'subfix' => $item,
+                            'desc' => null,
+                        ];
+                    }
+                }
+        }
+        
+        return $droplist;
     }
 }

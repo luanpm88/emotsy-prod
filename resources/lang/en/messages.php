@@ -2508,5 +2508,15 @@
     'sending_serbers.remove_domain' => 'Delete',
     'sending_server.domain.removed' => 'Domain was removed subccessfully',    
     'sending_server.domain.remove_domain.confirm' => 'You are about to remove domain from list',
+    'subscription.top_up' => 'Top-up',
+    'subscription.top_up.wording' => 'The <strong>:plan</strong> plan is being ended in <strong>:remain</strong>, on <strong>:on</strong>.
+        So you should pay top-up for the next period.
+        Click the button bellow to process.',
+    'subscription.payment.pay_top_up' => 'Pay top-up',
+    'subscription.top_up' => 'Top-up',
+    'subscription.top_up.coinpayments' => 'Select button bellow and fill your payment infomation to pay top-up fees.',
+    'subscription_done.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully processed. Thanks for your purchasing.<br>
+        Click <a href=":link">here</a> to check your subscription status.<br><br>--<br>Acelle Team',
+    'subscription_done.email_subject' => 'Subscription was created successfully',
 ) ?>
 

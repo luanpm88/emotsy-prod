@@ -170,6 +170,7 @@ Route::group(['middleware' => ['not_installed']], function () {
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
     // Account subscription
+    Route::match(['get', 'post'], 'subscription/top-up', 'AccountSubscriptionController@topUp');
     Route::get('subscription/pending', 'AccountSubscriptionController@pending');
     Route::post('subscription/change-plan', 'AccountSubscriptionController@changePlan');
     Route::get('subscription/change-plan', 'AccountSubscriptionController@changePlan');
@@ -543,6 +544,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/layouts', 'LayoutController');
 
     // Sending servers
+    Route::get('admin/sending_servers/{uid}/senders/dropbox', 'SendingServerController@fromDropbox');
     Route::post('admin/sending_servers/{uid}/remove-domain/{domain}', 'SendingServerController@removeDomain');
     Route::post('admin/sending_servers/{uid}/add-domain', 'SendingServerController@addDomain');
     Route::get('admin/sending_servers/{uid}/add-domain', 'SendingServerController@addDomain');

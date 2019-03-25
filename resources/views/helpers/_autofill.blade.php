@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-6">
 @endif
-            <div class="autofill">
+            <div {{ isset($id) ? "id=" . $id : 'class="autofill"' }}>
                 <input
                     header="{{ isset($header) ? $header : "" }}"
                     empty-message="{{ isset($empty) ? $empty : "" }}"

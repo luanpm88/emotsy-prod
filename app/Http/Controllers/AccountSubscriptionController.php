@@ -102,6 +102,7 @@ class AccountSubscriptionController extends Controller
         return view('account.subscription.pending', [
             'subscription' => $subscription,
             'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
+            'gatewayService' => $gatewayService,
         ]);
     }
     
@@ -147,6 +148,9 @@ class AccountSubscriptionController extends Controller
         
         // Create subscription
         $subscription = $customer->createSubscription($plan, $gateway);
+        
+        
+        \Mail::to($customer->user->email)->send(new \Acelle\Mail\SubscriptionDoneMailer($subscription));
         
         return redirect()->action('AccountSubscriptionController@checkout');
     }
@@ -330,6 +334,27 @@ class AccountSubscriptionController extends Controller
         
         return view('account.subscription.change_plan', [
             'subscription' => $subscription,
+        ]);
+    }
+    
+    /**
+     * Top-up subscription.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function topUp(Request $request)
+    {
+        // Get current customer
+        $customer = $request->user()->customer;
+        $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
+        $subscription = $customer->subscription();
+        
+        return view('account.subscription.top_up', [
+            'subscription' => $subscription,
+            'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
+            'gatewayService' => $gatewayService,
         ]);
     }
 }

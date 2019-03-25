@@ -2075,8 +2075,8 @@ $(function() {
         },
     });
     
-    // autofill
-    $('.autofill').autofill();
+    //// autofill
+    //$('.autofill').autofill();
     
     // password eye toggle
     $(document).on('click', '.btn-view-password', function() {
