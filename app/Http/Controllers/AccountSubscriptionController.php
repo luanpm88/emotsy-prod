@@ -149,8 +149,15 @@ class AccountSubscriptionController extends Controller
         // Create subscription
         $subscription = $customer->createSubscription($plan, $gateway);
         
+        try {
+            \Mail::to($customer->user->email)->send(new \Acelle\Mail\SubscriptionDoneMailer($subscription));
+        } catch (\Exception $e) {
+            $request->session()->flash('alert-error', 'Can not send email: ' . $e->getMessage());
+        }
         
-        \Mail::to($customer->user->email)->send(new \Acelle\Mail\SubscriptionDoneMailer($subscription));
+        if ($plan->isFree()) {
+            return redirect()->action('AccountSubscriptionController@index');
+        }
         
         return redirect()->action('AccountSubscriptionController@checkout');
     }
