@@ -2518,5 +2518,6 @@
     'subscription_done.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully processed. Thanks for your purchasing.<br>
         Click <a href=":link">here</a> to check your subscription status.<br><br>--<br>Acelle Team',
     'subscription_done.email_subject' => 'Subscription was created successfully',
+    'no_primary_payment' => 'No Primary Payment Gateway selected. Go to Admin / Setting / Payment Gateways to select on.',
 ) ?>
 

@@ -32,6 +32,10 @@ class AccountSubscriptionController extends Controller
      **/
     public function index(Request $request)
     {
+        if (!Setting::get('system.payment_gateway')) {
+            return view('noPrimaryPayment');
+        }
+        
         $customer = $request->user()->customer;
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
         
