@@ -159,7 +159,8 @@ class AccountSubscriptionController extends Controller
             $request->session()->flash('alert-error', 'Can not send email: ' . $e->getMessage());
         }
         
-        if ($plan->isFree()) {
+        // if plan is free and dose not support recurring. Just create subscription local.
+        if ($plan->isFree() && !$gateway->isSupportRecurring()) {
             return redirect()->action('AccountSubscriptionController@index');
         }
         
