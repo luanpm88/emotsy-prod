@@ -2515,9 +2515,11 @@
     'subscription.payment.pay_top_up' => 'Pay top-up',
     'subscription.top_up' => 'Top-up',
     'subscription.top_up.coinpayments' => 'Select button bellow and fill your payment infomation to pay top-up fees.',
-    'subscription_done.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully processed. Thanks for your purchasing.<br>
+    'subscription_done.coinpayments.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully processed. Thanks for your purchasing.<br>
         Click <a href=":link">here</a> to check your subscription status.<br><br>--<br>Acelle Team',
     'subscription_done.email_subject' => 'Subscription was created successfully',
     'no_primary_payment' => 'No Primary Payment Gateway selected. Go to Admin / Setting / Payment Gateways to select on.',
+    'subscription_done.direct.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
+        Click <a href=":link">here</a> to check your subscription status and process with payment.<br><br>--<br>Acelle Team',
 ) ?>
 

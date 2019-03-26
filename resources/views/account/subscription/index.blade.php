@@ -132,7 +132,7 @@
         
     @include('account.subscription._invoices', ['subscription' => $subscription])
     
-    @if (false && $subscription->active() && !$gateway->isSupportRecurring())
+    @if ($subscription->active() && !$gateway->isSupportRecurring())
         @include('account.subscription._topup', ['subscription' => $subscription])
     @endif
     

@@ -48,12 +48,12 @@ class AccountSubscriptionController extends Controller
         }
         
         // try to sync subscription information
+        // try to sync subscription information
         try {
             $subscription->sync($gateway);
         } catch (\Exception $ex) {
             // can not found remote subscription
-            $subscription->markAsCancelled();
-            return redirect()->action('AccountSubscriptionController@index');
+            return redirect()->action('AccountSubscriptionController@checkout');
         }
         
         // check subscription status          
@@ -157,11 +157,6 @@ class AccountSubscriptionController extends Controller
             \Mail::to($customer->user->email)->send(new \Acelle\Mail\SubscriptionDoneMailer($subscription));
         } catch (\Exception $e) {
             $request->session()->flash('alert-error', 'Can not send email: ' . $e->getMessage());
-        }
-        
-        // if plan is free and dose not support recurring. Just create subscription local.
-        if ($plan->isFree() && !$gateway->isSupportRecurring()) {
-            return redirect()->action('AccountSubscriptionController@index');
         }
         
         return redirect()->action('AccountSubscriptionController@checkout');
