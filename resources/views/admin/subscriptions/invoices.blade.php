@@ -17,8 +17,9 @@
                                     
                                 <table class="table table-box pml-table table-log mt-10">
                                     <tr>
-                                        <th>{{ trans('messages.invoice.datetime') }}</th>
+                                        <th>{{ trans('messages.invoice.created_at') }}</th>
                                         <th>{{ trans('messages.invoice.description') }}</th>
+                                        <th>{{ trans('messages.invoice.period_ends_at') }}</th>
                                         <th>{{ trans('messages.invoice.amount') }}</th>
                                         <th>{{ trans('messages.invoice.status') }}</th>
                                     </tr>
@@ -26,14 +27,19 @@
                                         <tr>
                                             <td>
                                                 <span class="no-margin kq_search">
-                                                    {{ Acelle\Library\Tool::formatDateTime(Carbon\Carbon::createFromTimestamp($invoice->time)) }}
+                                                    {{ Acelle\Library\Tool::formatDate(Carbon\Carbon::createFromTimestamp($invoice->createdAt)) }}
                                                 </span>
                                             </td>
                                             <td>
                                                 <span class="no-margin kq_search">
-                                                    {{ $invoice->description }}
+                                                    {!! $invoice->description !!}
                                                 </span>
                                             </td>
+                                            <td>
+                                                <span class="no-margin kq_search">
+                                                    {{ Acelle\Library\Tool::formatDate(Carbon\Carbon::createFromTimestamp($invoice->periodEndsAt)) }}
+                                                </span>
+                                            </td>                        
                                             <td>
                                                 <span class="no-margin kq_search">
                                                     {{ $invoice->amount }}

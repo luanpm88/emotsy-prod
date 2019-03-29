@@ -171,7 +171,7 @@ Route::group(['middleware' => ['not_installed']], function () {
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
     // Account subscription
     Route::get('subscriptions/invoices/download-raw', 'AccountSubscriptionController@downloadRawInvoice');
-    Route::get('subscriptions/change-plan-no-recurring/{plan_id}', 'AccountSubscriptionController@changePlanNoRecurring');
+    Route::match(['get', 'post'], 'subscriptions/change-plan-no-recurring/{plan_id}', 'AccountSubscriptionController@changePlanNoRecurring');
     Route::match(['get', 'post'], 'subscription/renew', 'AccountSubscriptionController@renew');
     Route::get('subscription/pending', 'AccountSubscriptionController@pending');
     Route::post('subscription/change-plan', 'AccountSubscriptionController@changePlan');
@@ -757,7 +757,9 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::get('admin/currencies/enable', 'CurrencyController@enable');
     Route::resource('admin/currencies', 'CurrencyController');
 
-    // Subscription    
+    // Subscription
+    Route::post('admin/subscriptions/{id}/approve-pending-invoice', 'SubscriptionController@approvePendingInvoice');
+    Route::post('admin/subscriptions/{id}/set-done', 'SubscriptionController@setDone');
     Route::get('admin/subscriptions/{id}/invoices', 'SubscriptionController@invoices');
     Route::post('admin/subscriptions/{id}/change-plan', 'SubscriptionController@changePlan');
     Route::get('admin/subscriptions/{id}/change-plan', 'SubscriptionController@changePlan');

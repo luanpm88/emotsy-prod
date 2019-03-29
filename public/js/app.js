@@ -798,6 +798,10 @@ $(function() {
             catch(e)
             {
             }
+            
+            if (typeof(msg) == 'object') {
+                
+            }
 
             // Reload table if exists
             if ($(".listing-form").length > 0) {

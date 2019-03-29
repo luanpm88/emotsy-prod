@@ -31,7 +31,7 @@
 
             <div class="sub-section">
 				<p>
-                    {!! trans('messages.subscription.top_up.' . $gateway['name'], [
+                    {!! trans('messages.subscription.renew.' . $gateway['name'] . '.wording', [
                         'plan' => $subscription->plan->name,
                         'price' => Acelle\Library\Tool::format_price($subscription->plan->price, $subscription->plan->currency->format)
                     ]) !!}

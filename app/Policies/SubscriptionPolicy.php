@@ -186,4 +186,35 @@ class SubscriptionPolicy
 
         return $can;
     }
+    
+    public function setDone(User $user, Subscription $subscription, $role)
+    {
+        $can = !$subscription->isDone();
+        
+        switch ($role) {
+            case 'admin':
+                break;
+            case 'customer':
+                $can = false;
+                break;
+        }
+
+        return $can;
+    }
+    
+    public function approvePendingInvoice(User $user, Subscription $subscription, $role)
+    {
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $can = $subscription->checkPendingPaymentForFuture($gateway);
+        
+        switch ($role) {
+            case 'admin':
+                break;
+            case 'customer':
+                $can = false;
+                break;
+        }
+
+        return $can;
+    }
 }

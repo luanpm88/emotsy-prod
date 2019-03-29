@@ -77,6 +77,7 @@
                             <a 
                                 href="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->uid]) }}"
                                 class="btn bg-grey-600 mr-10 modal_link"
+                                data-size="sm"
                             >
                                 {{ trans('messages.subscription.change_plan') }}
                             </a>

@@ -52,6 +52,7 @@ class AccountSubscriptionController extends Controller
         try {
             $subscription->sync($gateway);
         } catch (\Exception $ex) {
+            $subscription->markAsCancelled();
             // can not found remote subscription
             $request->session()->flash('alert-error', $ex->getMessage());
             return redirect()->action('AccountSubscriptionController@noPlan');
@@ -367,8 +368,23 @@ class AccountSubscriptionController extends Controller
         $newPlan = Plan::findByUid($request->plan_id);
         $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
         
+        // @todo can not change to lower one
+        if ($customer->calcChangePlan($newPlan)['amount'] < 0) {
+            // Redirect to my subscription page
+            $request->session()->flash('alert-error', trans('messages.subscription.plan_changed.lower_error'));
+            return redirect()->action('AccountSubscriptionController@index');
+        }
+        
         // Authorization
         if (!$request->user()->customer->can('changePlan', $subscription)) {
+            return redirect()->action('AccountSubscriptionController@index');
+        }
+        
+        if ($request->isMethod('post')) {
+            $customer->changePlan($newPlan, $gatewayService);
+            
+            // Redirect to my subscription page
+            $request->session()->flash('alert-success', trans('messages.subscription.plan_changed'));
             return redirect()->action('AccountSubscriptionController@index');
         }
         
@@ -397,10 +413,9 @@ class AccountSubscriptionController extends Controller
         
         if ($request->isMethod('post')) {            
             // subscribe to plan
-            $subscription->charge($gateway);
+            $subscription->renew($gatewayService);
             
             // Redirect to my subscription page
-            $request->session()->flash('alert-success', trans('messages.subscription.top_up.paid'));
             return redirect()->action('AccountSubscriptionController@index');
         }
         

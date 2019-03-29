@@ -73,6 +73,7 @@ class SubscriptionController extends Controller
 
         return view('admin.subscriptions._list', [
             'subscriptions' => $subscriptions,
+            'gateway' => \App::make('Acelle\Cashier\PaymentGateway'),
         ]);
     }
     
@@ -186,5 +187,65 @@ class SubscriptionController extends Controller
             'subscription' => $subscription,
             'gateway' => $gateway,
         ]);
+    }
+    
+    /**
+     * Approve subscription pending.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function setDone(Request $request, $id)
+    {
+        // Get current subscription
+        $subscription = Subscription::findByUid($request->id);
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        
+        try {
+            $subscription->setDone($gateway);
+        } catch (\Exception $ex) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => $ex->getMessage(),
+            ]);
+            return;
+        }
+        
+        echo json_encode([
+            'status' => 'success',
+            'message' => trans('messages.subscription.set_done.success'),
+        ]);
+        return;
+    }
+    
+    /**
+     * Approve subscription pending.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function approvePendingInvoice(Request $request, $id)
+    {
+        // Get current subscription
+        $subscription = Subscription::findByUid($request->id);
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        
+        try {
+            $subscription->approvePendingInvoice($gateway);
+        } catch (\Exception $ex) {
+            echo json_encode([
+                'status' => 'error',
+                'message' => $ex->getMessage(),
+            ]);
+            return;
+        }
+        
+        echo json_encode([
+            'status' => 'success',
+            'message' => trans('messages.subscription.approve_pending_invoice.success'),
+        ]);
+        return;
     }
 }

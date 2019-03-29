@@ -782,9 +782,13 @@ class Plan extends Model implements BillablePlanInterface
             $query = $query->where('plans.admin_id', '=', $request->user()->admin->id);
         }
         
-        if ($request->except) {
-            $query = $query->where('id', '<>', $request->except);
-            $query = $query->where('uid', '<>', $request->except);
+        if ($request->change_from_uid) {
+            $plan = \Acelle\Model\Plan::findByUid($request->change_from_uid);
+            
+            $query = $query->where('id', '<>', $request->change_from_uid);
+            $query = $query->where('uid', '<>', $request->change_from_uid);
+            $query = $query->where('frequency_amount', '=', $plan->frequency_amount);
+            $query = $query->where('frequency_unit', '=', $plan->frequency_unit);
         }
 
         foreach ($query->limit(20)->get() as $plan) {

@@ -48,6 +48,9 @@
 								<span class="label label-flat bg-pending">{{ trans('messages.subscription.status.pending') }}</span>
 							@endif
 						@else
+							@if ($subscription->checkPendingPaymentForFuture($gateway))
+								<span class="label label-flat bg-warning">{{ trans('messages.invoice.status.pending') }}</span>						
+							@endif
 							<span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>		
 							@if ($subscription->ended())
 								<span class="label label-flat bg-ended">{{ trans('messages.subscription.status.ended') }}</span>						
@@ -77,11 +80,28 @@
 					@if(
 						\Auth::user()->admin->can('cancelNow', $subscription) ||
 						\Auth::user()->admin->can('changePlan', $subscription) ||
-						\Auth::user()->admin->can('invoices', $subscription)
+						\Auth::user()->admin->can('invoices', $subscription) ||
+						\Auth::user()->admin->can('setDone', $subscription)
 					)
 						<div class="btn-group">
 							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret ml-0"></span></button>
 							<ul class="dropdown-menu dropdown-menu-right">
+								@if (\Auth::user()->admin->can('approvePendingInvoice', $subscription))
+									<li>
+										<a data-method="POST" link-confirm="{{ trans('messages.subscription.approve_pending_invoice.confirm') }}"
+										  href="{{ action('Admin\SubscriptionController@approvePendingInvoice', $subscription->uid) }}">
+											{{ trans('messages.subscription.approve_pending_invoice') }}
+										</a>
+									</li>
+								@endif
+								@if (\Auth::user()->admin->can('setDone', $subscription))
+									<li>
+										<a data-method="POST" link-confirm="{{ trans('messages.subscription.set_done.confirm') }}"
+										  href="{{ action('Admin\SubscriptionController@setDone', $subscription->uid) }}">
+											{{ trans('messages.subscription.approve_payment') }}
+										</a>
+									</li>
+								@endif
 								@if (\Auth::user()->admin->can('invoices', $subscription))
 									<li>
 										<a class="modal_link"
@@ -92,7 +112,7 @@
 								@endif
 								@if (\Auth::user()->admin->can('cancelNow', $subscription))
 									<li>
-										<a data-method="POST" link-confirm="messages.subscription.cancel_now.confirm"
+										<a data-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
 										  href="{{ action('Admin\SubscriptionController@cancelNow', $subscription->uid) }}">
 											{{ trans('messages.subscription.cancel_now') }}
 										</a>

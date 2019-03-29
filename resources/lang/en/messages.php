@@ -2484,6 +2484,8 @@
     'subscription.future_pending.coinpayments' => 'You have currently payment pending. Please wait for processing your payment.
         If you haven\'t purchase the plan, please follow the checkout guide from CointPayments.net in your
         mailbox with title <strong class="text-nowrap">[CoinPayments.net] ...</strong>.',
+    'subscription.future_pending.direct' => 'You have currently payment pending. Please wait for processing your payment.
+        If you haven\'t purchase the plan, please follow the checkout guide bellow:.....',
     'subscription.payment.checkout_again' => 'Checkout again',
     'subscription.current_subscription.cancel_at_end_of_period_no_recurring_supported.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
           The subscription will be end in <strong>:remain</strong>, on <strong>:end_at</strong>.',
@@ -2517,12 +2519,14 @@
         Click the button bellow to process.',
     'subscription.payment.pay_top_up' => 'Pay top-up',
     'subscription.top_up' => 'Top-up',
-    'subscription.top_up.coinpayments' => 'Select button bellow and fill your payment infomation to pay top-up fees.',
+    'subscription.renew.coinpayments.wording' => 'Select button bellow and fill your payment infomation to pay top-up fees.',
     'subscription_done.coinpayments.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully processed. Thanks for your purchasing.<br>
         Click <a href=":link">here</a> to check your subscription status.<br><br>--<br>Acelle Team',
     'subscription_done.email_subject' => 'Subscription was created successfully',
     'no_primary_payment' => 'No Primary Payment Gateway selected. Go to Admin / Setting / Payment Gateways to select on.',
     'subscription_done.direct.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
+        Click <a href=":link">here</a> to check your subscription status and process with payment.<br><br>--<br>Acelle Team',
+    'subscription_done.stripe.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
         Click <a href=":link">here</a> to check your subscription status and process with payment.<br><br>--<br>Acelle Team',
     'subscription.next_invoice' => 'Next invoice',
     'subscription.next_invoice.empty' => 'No invoices found',
@@ -2538,5 +2542,17 @@
     'subscription.change_plan.checkout.coinpayments' => 'You are about to change plan from <strong>:current_plan</strong> to <strong>:new_plan</strong>.
         The extra amount need to purchase amount for new plan is <strong>:amount</strong>. The subscription will be ended on <strong>:end_on</strong>',
     'subscription.download_raw_invoices' => 'Download invoices (raw)',
+    'subscription.approve_payment' => 'Approve payment',
+    'subscription.set_done.confirm' => 'You are about to approve payment status for the subscription. This can not be un-done.',
+    'subscription.set_done.success' => 'The subscription invoice was approved successfully.',
+    'subscription.renew.checkout' => 'Checkout',
+    'subscription.renew.direct.wording' => 'Click the button bellow to renew the subscription for <strong>:plan</strong> plan.
+        The total amoutn is <strong>:price</strong>.',
+    'subscription.approve_pending_invoice' => 'Approve pending invoice',
+    'subscription.approve_pending_invoice.confirm' => 'You have pending invoice. Do you want to approve it. This can not be un-done.',
+    'subscription.approve_pending_invoice.success' => 'The pending invoice was approved successfully.',
+    'invoice.status.pending' => 'invoice pending',
+    'subscription.change_now' => 'Change now',
+    'subscription.plan_changed.lower_error' => 'Can not change from higher plan to lower one',
 ) ?>
 
