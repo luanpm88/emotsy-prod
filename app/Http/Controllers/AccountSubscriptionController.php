@@ -32,6 +32,7 @@ class AccountSubscriptionController extends Controller
      **/
     public function index(Request $request)
     {
+        // Check if system dosen't have payment gateway
         if (!Setting::get('system.payment_gateway')) {
             return view('noPrimaryPayment');
         }
@@ -48,12 +49,12 @@ class AccountSubscriptionController extends Controller
         }
         
         // try to sync subscription information
-        // try to sync subscription information
         try {
             $subscription->sync($gateway);
         } catch (\Exception $ex) {
             // can not found remote subscription
-            return redirect()->action('AccountSubscriptionController@checkout');
+            $request->session()->flash('alert-error', $ex->getMessage());
+            return redirect()->action('AccountSubscriptionController@noPlan');
         }
         
         // check subscription status          
@@ -75,6 +76,8 @@ class AccountSubscriptionController extends Controller
             'gateway' => $gateway,
             'plan' => $subscription->plan,
             'currentPeriodEnd' => Carbon::createFromTimestamp($subscriptionParam->currentPeriodEnd),
+            'hasPendingPaymentForFuture' => $subscription->checkPendingPaymentForFuture($gateway),
+            'goingToExpire' => $subscription->goingToExpire(Setting::get('system.end_period_last_days')),
         ]);
     }
 
@@ -331,7 +334,12 @@ class AccountSubscriptionController extends Controller
             return redirect()->action('AccountSubscriptionController@index');
         }
         
-        if ($request->isMethod('post')) {            
+        if ($request->isMethod('post')) {
+            if (!$gateway->isSupportRecurring()) {
+                // update card info
+                return redirect()->action('AccountSubscriptionController@changePlanNoRecurring', [$plan->uid]);
+            }
+        
             $customer->changePlan($plan, $gateway);
             
             // Redirect to my subscription page
@@ -345,23 +353,80 @@ class AccountSubscriptionController extends Controller
     }
     
     /**
+     * Change plan.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function changePlanNoRecurring(Request $request)
+    {
+        $customer = $request->user()->customer;        
+        // Get current subscription
+        $subscription = $customer->subscription();
+        $newPlan = Plan::findByUid($request->plan_id);
+        $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
+        
+        // Authorization
+        if (!$request->user()->customer->can('changePlan', $subscription)) {
+            return redirect()->action('AccountSubscriptionController@index');
+        }
+        
+        return view('account.subscription.change_plan_no_recurring', [
+            'subscription' => $subscription,
+            'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
+            'gatewayService' => $gatewayService,
+            'customer' => $customer,
+            'newPlan' => $newPlan,
+        ]);
+    }
+    
+    /**
      * Top-up subscription.
      *
      * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Http\Response
      **/
-    public function topUp(Request $request)
+    public function renew(Request $request)
     {
         // Get current customer
         $customer = $request->user()->customer;
         $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
         $subscription = $customer->subscription();
         
-        return view('account.subscription.top_up', [
+        if ($request->isMethod('post')) {            
+            // subscribe to plan
+            $subscription->charge($gateway);
+            
+            // Redirect to my subscription page
+            $request->session()->flash('alert-success', trans('messages.subscription.top_up.paid'));
+            return redirect()->action('AccountSubscriptionController@index');
+        }
+        
+        return view('account.subscription.renew', [
             'subscription' => $subscription,
             'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
             'gatewayService' => $gatewayService,
+        ]);
+    }
+    
+    /**
+     * Download raw invoices.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function downloadRawInvoice(Request $request)
+    {
+        $subscription = $request->user()->customer->subscription();
+        $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
+        
+        
+        return response(var_export($subscription->getRawInvoices($gatewayService)), 200, [
+            'Content-Type' => 'application/json',
+            'Content-Disposition' => 'attachment; filename="payment_logs.txt"',
         ]);
     }
 }

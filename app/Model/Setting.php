@@ -447,6 +447,11 @@ class Setting extends Model
                 'value' => '',
                 'type' => 'text',
             ],
+            'system.end_period_last_days' => [
+                'cat' => 'general',
+                'value' => '10',
+                'type' => 'text',
+            ],
         ];
     }
 

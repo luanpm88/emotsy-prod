@@ -4,6 +4,7 @@ namespace Acelle\Policies;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Acelle\Model\User;
+use Acelle\Model\Setting;
 use Acelle\Cashier\Subscription;
 
 class SubscriptionPolicy
@@ -103,6 +104,26 @@ class SubscriptionPolicy
                 break;
             case 'customer':
                 $can = isset($subscription) && !$subscription->ended();
+                break;
+        }
+
+        return $can;
+    }
+    
+    public function renew(User $user, Subscription $subscription, $role)
+    {
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $can = isset($subscription) && $subscription->active() && !$gateway->isSupportRecurring();
+        
+        $lastDays = Setting::get('system.end_period_last_days');
+        $goingToExpire = $subscription->goingToExpire($lastDays);
+        
+        $can = $can && $goingToExpire;
+        
+        switch ($role) {
+            case 'admin':
+                break;
+            case 'customer':
                 break;
         }
 

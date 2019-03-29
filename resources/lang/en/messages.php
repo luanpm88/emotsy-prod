@@ -2481,6 +2481,9 @@
     'subscription.pending.coinpayments.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>). Please wait for processing your subscription.
         If you haven\'t purchase the plan, please follow the checkout guide from CointPayments.net in your
         mailbox with title <strong class="text-nowrap">[CoinPayments.net] New Payment Submitted</strong>.<br/><br/> <strong>OR</strong> <br/>',
+    'subscription.future_pending.coinpayments' => 'You have currently payment pending. Please wait for processing your payment.
+        If you haven\'t purchase the plan, please follow the checkout guide from CointPayments.net in your
+        mailbox with title <strong class="text-nowrap">[CoinPayments.net] ...</strong>.',
     'subscription.payment.checkout_again' => 'Checkout again',
     'subscription.current_subscription.cancel_at_end_of_period_no_recurring_supported.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
           The subscription will be end in <strong>:remain</strong>, on <strong>:end_at</strong>.',
@@ -2521,5 +2524,19 @@
     'no_primary_payment' => 'No Primary Payment Gateway selected. Go to Admin / Setting / Payment Gateways to select on.',
     'subscription_done.direct.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
         Click <a href=":link">here</a> to check your subscription status and process with payment.<br><br>--<br>Acelle Team',
+    'subscription.next_invoice' => 'Next invoice',
+    'subscription.next_invoice.empty' => 'No invoices found',
+    'subscription.renew' => 'Renew',
+    'system.end_period_last_days' => 'Number of days before subscription period end',
+    'subscription.renew.warning' => 'The subscription is going to expired in <strong>:remain</strong>, on <strong>:next_on</strong>.
+        You should renew the plan for not interrupted when using app',
+    'invoice.created_at' => 'Created at',
+    'invoice.period_ends_at' => 'Period ends at',
+    'invoice.subscribe_to_plan' => 'Subscribe to plan <strong>:plan</strong>',
+    'invoice.renew_plan' => 'Renew plan <strong>:plan</strong>',
+    'invoice.change_plan' => 'Change to <strong>:new_plan</strong> plan',
+    'subscription.change_plan.checkout.coinpayments' => 'You are about to change plan from <strong>:current_plan</strong> to <strong>:new_plan</strong>.
+        The extra amount need to purchase amount for new plan is <strong>:amount</strong>. The subscription will be ended on <strong>:end_on</strong>',
+    'subscription.download_raw_invoices' => 'Download invoices (raw)',
 ) ?>
 

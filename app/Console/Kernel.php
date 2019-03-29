@@ -5,6 +5,7 @@ namespace Acelle\Console;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 use Acelle\Model\Automation;
+use Acelle\Cashier\Subscription;
 use Acelle\Model\Setting;
 use Laravel\Tinker\Console\TinkerCommand;
 
@@ -59,6 +60,14 @@ class Kernel extends ConsoleKernel
         
         // GeoIp database check
         $schedule->command('geoip:check')->everyMinute()->withoutOverlapping();
+        
+        // Automation
+        $schedule->call(function () {
+            $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+            foreach(Subscription::whereNull('ends_at')->orWhere('ends_at', '>=', \Carbon\Carbon::now())->get() as $subscription) {
+                $subscription->sync($gateway);
+            }
+        })->name('subscription:run')->everyFiveMinutes();
     }
     
     /**

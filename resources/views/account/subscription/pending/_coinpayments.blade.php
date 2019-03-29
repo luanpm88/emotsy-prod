@@ -1,5 +1,5 @@
 <h3 class="text-semibold">{{ trans('messages.subscription.checkout') }}</h3>
-<p>
+<p class="">
     {!! trans('messages.subscription.pending.coinpayments.wording', [
         'plan' => $subscription->plan->name,
         'money' => Acelle\Library\Tool::format_price($subscription->plan->price, $subscription->plan->currency->format),

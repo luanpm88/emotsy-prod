@@ -33,7 +33,7 @@
                 <div class="row">
                     <div class="col-md-6">
                         
-                        @include('account.subscription.pending._' . $gateway["name"])
+                        @include('account.subscription.pending._' . \Acelle\Model\Setting::get('system.payment_gateway'))
                             
                     </div>
                 </div>

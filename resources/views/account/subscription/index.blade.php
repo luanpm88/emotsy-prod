@@ -27,6 +27,20 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6">
+        
+            @if ($hasPendingPaymentForFuture)
+                <p class="alert alert-warning mb-40">
+                    {!! trans('messages.subscription.future_pending.' . \Acelle\Model\Setting::get('system.payment_gateway')) !!}
+                </p>
+            @elseif ($goingToExpire)
+                <p class="alert alert-warning mb-40">
+                    {!! trans('messages.subscription.renew.warning', [
+                        'remain' => $currentPeriodEnd->diffForHumans(),
+                        'next_on' => \Acelle\Library\Tool::formatDate($currentPeriodEnd),
+                    ]) !!}
+                </p>
+            @endif
+        
             <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
 
             <div class="sub-section">
@@ -102,12 +116,10 @@
                                 'end_at' => \Acelle\Library\Tool::formatDate($currentPeriodEnd)
                             ]) !!}
                         </p>
-                            
-                        @if (\Auth::user()->customer->can('renew', $subscription))
-                            <a link-method="POST" link-confirm="{{ trans('messages.subscription.renew.confirm') }}"
-                                href="{{ action('AccountSubscriptionController@renew') }}"
-                                class="btn bg-teal-800 mr-10"
-                            >
+                        
+                        @if (\Auth::user()->customer->can('renew', $subscription) && !$hasPendingPaymentForFuture)
+                            <a class="btn btn-mc_primary mr-10"
+                                href="{{ action('AccountSubscriptionController@renew') }}">
                                 {{ trans('messages.subscription.renew') }}
                             </a>
                         @endif
@@ -118,7 +130,16 @@
                             >
                                 {{ trans('messages.subscription.cancel_now') }}
                             </a>
-                        @endif                        
+                        @endif
+                        @if (\Auth::user()->customer->can('changePlan', $subscription) && !$hasPendingPaymentForFuture)
+                            <a 
+                                href="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->uid]) }}"
+                                class="btn bg-grey-600 mr-10 modal_link"
+                                data-size="sm"
+                            >
+                                {{ trans('messages.subscription.change_plan') }}
+                            </a>
+                        @endif
                     @endif 
                 @endif
             </div>
@@ -130,10 +151,6 @@
         </div>
     </div>
         
-    @include('account.subscription._invoices', ['subscription' => $subscription])
-    
-    @if ($subscription->active() && !$gateway->isSupportRecurring())
-        @include('account.subscription._topup', ['subscription' => $subscription])
-    @endif
+    @include('account.subscription._invoices')
     
 @endsection

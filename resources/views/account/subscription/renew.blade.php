@@ -37,7 +37,7 @@
                     ]) !!}
                 </p>
                 
-                @include("account.subscription.top_up._" . $gateway['name'])
+                @include("account.subscription.renew._" . $gateway['name'])
                 
 			</div>
         </div>
