@@ -189,7 +189,7 @@ class SubscriptionPolicy
     
     public function setDone(User $user, Subscription $subscription, $role)
     {
-        $can = !$subscription->isDone();
+        $can = $subscription->isPending();
         
         switch ($role) {
             case 'admin':

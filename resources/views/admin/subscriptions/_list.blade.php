@@ -42,7 +42,9 @@
 				<td>
                     <span class="text-muted2 list-status pull-left">
 						@if (!$subscription->active())
-							@if ($subscription->isNew())
+							@if ($subscription->ended())
+								<span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.ended') }}</span>
+							@elseif ($subscription->isNew())
 								<span class="label label-flat bg-new">{{ trans('messages.subscription.status.new') }}</span>
 							@elseif ($subscription->isPending())
 								<span class="label label-flat bg-pending">{{ trans('messages.subscription.status.pending') }}</span>
@@ -115,14 +117,6 @@
 										<a data-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
 										  href="{{ action('Admin\SubscriptionController@cancelNow', $subscription->uid) }}">
 											{{ trans('messages.subscription.cancel_now') }}
-										</a>
-									</li>
-								@endif
-								@if (\Auth::user()->admin->can('changePlan', $subscription))
-									<li>
-										<a href="{{ action('Admin\SubscriptionController@changePlan', $subscription->uid) }}"
-										  class="modal_link">
-											{{ trans('messages.subscription.change_plan') }}
 										</a>
 									</li>
 								@endif

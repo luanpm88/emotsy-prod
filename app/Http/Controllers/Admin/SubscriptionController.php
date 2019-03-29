@@ -248,4 +248,23 @@ class SubscriptionController extends Controller
         ]);
         return;
     }
+    
+    /**
+     * Download raw invoices.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function downloadRawInvoice(Request $request, $id)
+    {
+        $subscription = Subscription::findByUid($id);
+        $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
+        
+        
+        return response(var_export($subscription->getRawInvoices($gatewayService)), 200, [
+            'Content-Type' => 'application/json',
+            'Content-Disposition' => 'attachment; filename="payment_logs.txt"',
+        ]);
+    }
 }
