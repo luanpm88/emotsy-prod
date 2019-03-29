@@ -76,6 +76,7 @@ class EmailVerificationServer extends Model
         $result = $jsonObject->get($config['result_xpath'])[0];
 
         // map the result value to those of Acelle Mail
+        $result = is_bool($result) ? json_encode($result) : $result;
         if (!array_key_exists($result, $config['result_map'])) {
             throw new \Exception('Unexpected result from verification service: '.$raw);
         }
