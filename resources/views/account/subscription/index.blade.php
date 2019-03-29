@@ -32,7 +32,7 @@
                 <p class="alert alert-warning mb-40">
                     {!! trans('messages.subscription.future_pending.' . \Acelle\Model\Setting::get('system.payment_gateway')) !!}
                 </p>
-            @elseif ($goingToExpire)
+            @elseif ($goingToExpire && (\Acelle\Model\Setting::get('system.renew_free_plan') == 'yes' || (\Acelle\Model\Setting::get('system.renew_free_plan') == 'no' && !$subscription->plan->isFree())))
                 <p class="alert alert-warning mb-40">
                     {!! trans('messages.subscription.renew.warning', [
                         'remain' => $currentPeriodEnd->diffForHumans(),

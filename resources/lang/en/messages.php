@@ -2553,5 +2553,8 @@
     'invoice.status.pending' => 'invoice pending',
     'subscription.change_now' => 'Change now',
     'subscription.plan_changed.lower_error' => 'Can not change from higher plan to lower one',
+    'payment.settings' => 'Settings',
+    'system.renew_free_plan' => 'Can renew free plan',
+    'setting.renew_free_plan.help' => 'Customers who are subscribing to a Free plan can not renew the plan. Need to change to a no-free plan first.',
 ) ?>
 

@@ -114,6 +114,7 @@ class SubscriptionPolicy
     {
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
         $can = isset($subscription) && $subscription->active() && !$gateway->isSupportRecurring();
+        $can = $can && (Setting::get('system.renew_free_plan') == 'yes' || (Setting::get('system.renew_free_plan') == 'no' && !$subscription->plan->isFree()));
         
         $lastDays = Setting::get('system.end_period_last_days');
         $goingToExpire = $subscription->goingToExpire($lastDays);

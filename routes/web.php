@@ -612,6 +612,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/languages', 'LanguageController');
 
     // Settings
+    Route::post('admin/settings/payment', 'SettingController@payment');
     Route::post('admin/settings/advanced/{name}/update', 'SettingController@advancedUpdate');
     Route::get('admin/settings/advanced', 'SettingController@advanced');
     Route::post('admin/settings/upgrade/cancel', 'SettingController@cancelUpgrade');

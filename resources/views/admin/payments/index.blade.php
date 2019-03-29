@@ -26,29 +26,71 @@
 	
     <p>{{ trans('messages.payment_gateways.wording') }}</p>
     
-    <div class="list-boxes">
-        @foreach ($gateways as $name => $gateway)
-            <div class="list-box bg-{{ $gateway['name'] }}">
-                <div>
-                    <label>{{ trans('messages.payments.' . $name) }}</label>
-                    <p>{{ trans('messages.payments.' . $name . '.list_intro') }}</p>
-                    <div class="list-box-footer">
-                        @if (\Acelle\Model\Setting::get('system.payment_gateway') == $name)
-                            <span class="label label-info mt-5 bg-primary">{{ trans('messages.payment.primary') }}</span>
-                        @endif
-                        <a class="btn btn-mc_inline pull-right" href="{{ action('Admin\PaymentController@edit', $name) }}">
-                            {{ trans('messages.payment.edit') }}
-                        </a>
-                        
-                        @if (\Acelle\Model\Setting::get('system.payment_gateway') !== $name)
-                            <a class="btn btn-mc_default pull-right" link-method="POST" href="{{ action('Admin\PaymentController@setPrimary', $name) }}">
-                                {{ trans('messages.payment.set_primary') }}
-                            </a>
-                        @endif
+    <div class="row">
+        <div class="col-md-12">
+            <div class="list-boxes">
+                @foreach ($gateways as $name => $gateway)
+                    <div class="list-box bg-{{ $gateway['name'] }}">
+                        <div>
+                            <label>{{ trans('messages.payments.' . $name) }}</label>
+                            <p>{{ trans('messages.payments.' . $name . '.list_intro') }}</p>
+                            <div class="list-box-footer">
+                                @if (\Acelle\Model\Setting::get('system.payment_gateway') == $name)
+                                    <span class="label label-info mt-5 bg-primary">{{ trans('messages.payment.primary') }}</span>
+                                @endif
+                                <a class="btn btn-mc_inline pull-right" href="{{ action('Admin\PaymentController@edit', $name) }}">
+                                    {{ trans('messages.payment.edit') }}
+                                </a>
+                                
+                                @if (\Acelle\Model\Setting::get('system.payment_gateway') !== $name)
+                                    <a class="btn btn-mc_default pull-right" link-method="POST" href="{{ action('Admin\PaymentController@setPrimary', $name) }}">
+                                        {{ trans('messages.payment.set_primary') }}
+                                    </a>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </div>
+        
+    <div class="sub-section">
+        <h2>{{ trans('messages.payment.settings') }}</h2>
+        <form action="{{ action('Admin\SettingController@payment') }}" method="POST" class="form-validate-jqueryz">
+            {{ csrf_field() }}
+            <div class="row">
+                <div class="col-md-6">
+                    @include('helpers.form_control', [
+                        'type' => 'number',
+                        'name' => 'end_period_last_days',
+                        'value' => \Acelle\Model\Setting::get('system.end_period_last_days'),
+                        'label' => trans('messages.system.end_period_last_days'),
+                        'help_class' => 'setting',
+                        'rules' => ['end_period_last_days' => 'required'],
+                    ])
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="form-group checkbox-right-switch">
+                        @include('helpers.form_control', [
+                            'type' => 'checkbox',
+                            'name' => 'renew_free_plan',
+                            'value' => \Acelle\Model\Setting::get('system.renew_free_plan'),
+                            'label' => trans('messages.system.renew_free_plan'),
+                            'help_class' => 'setting',
+                            'options' => ['no', 'yes'],
+                            'rules' => ['renew_free_plan' => 'required'],
+                        ])
                     </div>
                 </div>
             </div>
-        @endforeach
+                
+            <button class="btn btn-mc_primary">
+                {{ trans('messages.save') }}
+            </a>
+        </form>
     </div>
 				
 @endsection

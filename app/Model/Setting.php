@@ -448,8 +448,13 @@ class Setting extends Model
                 'type' => 'text',
             ],
             'system.end_period_last_days' => [
-                'cat' => 'general',
+                'cat' => 'payment',
                 'value' => '10',
+                'type' => 'text',
+            ],
+            'system.renew_free_plan' => [
+                'cat' => 'payment',
+                'value' => 'no',
                 'type' => 'text',
             ],
         ];
