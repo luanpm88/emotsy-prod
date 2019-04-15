@@ -44,48 +44,6 @@ Route::get('/app/templates/{name?}', [ function ($name) {
 Route::get('setting/{filename}', 'SettingController@file');
 Route::get('/no-plan', 'AccountSubscriptionController@noPlan');
 
-Route::group(['namespace' => 'Api', 'prefix' => 'api/v1', 'middleware' => 'auth:api'], function () {
-    // Route::group(['namespace' => 'Api', 'prefix' => 'api/v1'], function () {
-    Route::get('', 'HomeController@index');
-
-    // List
-    Route::resource('lists', 'MailListController');
-
-    // Campaign
-    Route::resource('campaigns', 'CampaignController');
-
-    // Subscriber
-    Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@update');
-    Route::get('subscribers/email/{email}', 'SubscriberController@showByEmail');
-    Route::patch('lists/{list_uid}/subscribers/{uid}/update', 'SubscriberController@update');
-    Route::get('lists/{list_uid}/subscribers', 'SubscriberController@index');
-    Route::get('lists/{list_uid}/subscribers/{uid}', 'SubscriberController@show')->name('subscriber');
-    Route::patch('lists/{list_uid}/subscribers/{uid}/subscribe', 'SubscriberController@subscribe');
-    Route::patch('lists/{list_uid}/subscribers/{uid}/unsubscribe', 'SubscriberController@unsubscribe');
-    Route::delete('lists/{list_uid}/subscribers/{uid}/delete', 'SubscriberController@delete');
-    Route::post('lists/{list_uid}/subscribers/store', 'SubscriberController@store');
-
-    // Automation
-    Route::post('automations/{uid}/api/call', 'AutomationController@apiCall');
-
-    // Sending server
-    Route::resource('sending_servers', 'SendingServerController');
-
-    // Plan
-    Route::resource('plans', 'PlanController');
-
-    // Customer
-    Route::patch('customers/{uid}/disable', 'CustomerController@disable');
-    Route::patch('customers/{uid}/enable', 'CustomerController@enable');
-    Route::resource('customers', 'CustomerController');
-
-    // Subscription
-    Route::resource('subscriptions', 'SubscriptionController');
-
-    // File
-    Route::post('file/upload', 'FileController@upload');
-});
-
 // For visitor with Web UI, loading the right app language
 Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
     // Helper method to generate other routes for authentication

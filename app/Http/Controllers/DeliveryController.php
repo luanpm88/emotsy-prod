@@ -258,7 +258,12 @@ class DeliveryController extends Controller
 
             $feedbackLog = new FeedbackLog();
             $feedbackLog->runtime_message_id = $responseMessage['mail']['messageId'];
-            $feedbackLog->feedback_type = $feedback['complaintFeedbackType'];
+            try {
+                $feedbackLog->feedback_type = $feedback['complaintFeedbackType'];
+            } catch (\Exception $ex) {
+                $feedbackLog->feedback_type = 'unknown';
+            }
+            
             $feedbackLog->raw_feedback_content = $message['Message'];
             $feedbackLog->save();
             MailLog::info('Feedback recorded for message '.$feedbackLog->runtime_message_id);

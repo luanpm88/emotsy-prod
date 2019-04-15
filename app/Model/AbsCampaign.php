@@ -31,6 +31,9 @@ use DB;
 use Carbon\Carbon;
 use File;
 use Acelle\Model\SendingDomain;
+use Acelle\Model\SendingServer;
+use Acelle\Model\Subscriber;
+use Acelle\Model\TrackingLog;
 
 abstract class AbsCampaign extends Model
 {
@@ -931,7 +934,8 @@ abstract class AbsCampaign extends Model
      */
     public function deliveredCount()
     {
-        return $this->trackingLogs()->where('status', '=', 'sent')->count();
+        // including bounced, feedbcak...
+        return $this->trackingLogs()->where('status', '!=', TrackingLog::STATUS_FAILED)->count();
     }
 
     /**
@@ -941,7 +945,17 @@ abstract class AbsCampaign extends Model
      */
     public function failedCount()
     {
-        return $this->trackingLogs()->where('status', '=', 'failed')->count();
+        return $this->trackingLogs()->where('status', '=', TrackingLog::STATUS_FAILED)->count();
+    }
+    
+    /**
+     * Count failed processed.
+     *
+     * @return number
+     */
+    public function notDeliveredCount()
+    {
+        return $this->subscribersCount() - $this->trackingLogs()->count();
     }
 
     /**
@@ -958,6 +972,38 @@ abstract class AbsCampaign extends Model
         }
 
         return $this->deliveredCount() / $total;
+    }
+    
+    /**
+     * Count delivery success rate.
+     *
+     * @return number
+     */
+    public function failedRate($cache = false)
+    {
+        $total = $this->subscribersCount($cache);
+
+        if ($total == 0) {
+            return 0;
+        }
+
+        return $this->failedCount() / $total;
+    }
+    
+    /**
+     * Count delivery success rate.
+     *
+     * @return number
+     */
+    public function notDeliveredRate($cache = false)
+    {
+        $total = $this->subscribersCount($cache);
+
+        if ($total == 0) {
+            return 0;
+        }
+
+        return $this->notDeliveredCount() / $total;
     }
 
     /**
@@ -1786,6 +1832,29 @@ abstract class AbsCampaign extends Model
         // and queue again
         $this->queue();
     }
+    
+    /**
+     * Re-send the campaign for sending.
+     */
+    public function resend()
+    {
+        // clean up failed log so that they will be included in resend
+        $this->cleanupFailedLog();
+
+        // and queue again
+        $this->requeue();
+    }
+    
+    /**
+     * Re-send the campaign for sending.
+     */
+    public function cleanupFailedLog()
+    {
+        // clean up failed log so that they will be included in resend
+        $this->trackingLogs()->where('status', SendingServer::DELIVERY_STATUS_FAILED)->delete();
+    }
+    
+    
 
     /**
      * Overwrite the delete() method to also clear the pending jobs.
@@ -2041,6 +2110,9 @@ abstract class AbsCampaign extends Model
         // cache indexes
         $index = [
             // @note: SubscriberCount must come first as its value shall be used by the others
+            'ActiveSubscriberCount' => function (&$campaign) {
+                return $campaign->activeSubscribersCount(); // spepcial key that requires true update
+            },
             'SubscriberCount' => function (&$campaign) {
                 return $campaign->subscribersCount(false); // spepcial key that requires true update
             },
@@ -2049,6 +2121,18 @@ abstract class AbsCampaign extends Model
             },
             'DeliveredCount' => function (&$campaign) {
                 return $campaign->deliveredCount();
+            },
+            'FailedDeliveredRate' => function (&$campaign) {
+                return $campaign->failedRate(true);
+            },
+            'FailedDeliveredCount' => function (&$campaign) {
+                return $campaign->failedCount();
+            },
+            'NotDeliveredRate' => function (&$campaign) {
+                return $campaign->notDeliveredRate(true);
+            },
+            'NotDeliveredCount' => function (&$campaign) {
+                return $campaign->notDeliveredCount();
             },
             'ClickedRate' => function (&$campaign) {
                 return $campaign->clickedEmailsRate();
@@ -2130,6 +2214,16 @@ abstract class AbsCampaign extends Model
         // email_verifications join is required in case of segment condition (for example: 'deliverable' or 'risky')
         // return distinctCount($this->subscribers([], []), 'subscribers.email');
         return distinctCount($this->subscribers([], ['email_verifications']), 'subscribers.email');
+    }
+    
+    /**
+     * Count subscribers.
+     *
+     * @return int
+     */
+    public function activeSubscribersCount()
+    {
+        return distinctCount($this->subscribers([], ['email_verifications'])->where('subscribers.status', Subscriber::STATUS_SUBSCRIBED), 'subscribers.email');
     }
 
     /**

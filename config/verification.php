@@ -74,6 +74,14 @@ return [
             'fields' => [ 'api_key' ],
             'result_xpath' => '$.debounce.result',
             'result_map' => [ 'Safe to Send' => 'deliverable', 'Unknown' => 'unknown', 'Risky' => 'risky', 'Invalid' => 'undeliverable' ]
+        ], [
+            'id' => 'emailchecker.com',
+            'name' => 'emailchecker.com',
+            'uri' => 'https://api.emailverifyapi.com/v3/lookups/json?email={EMAIL}&key={API_KEY}',
+            'request_type' => 'GET',
+            'fields' => [ 'api_key' ],
+            'result_xpath' => '$.deliverable',
+            'result_map' => [ 'true' => 'deliverable', 'false' => 'undeliverable' ]
         ],
     ]
 ];

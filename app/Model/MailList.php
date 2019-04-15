@@ -164,7 +164,9 @@ class MailList extends Model
         // detele
         static::deleted(function ($item) {
             //  Delete contact when list deleted
-            $item->contact->delete();
+            if (!is_null($item->contact)) {
+                $item->contact->delete();
+            }
 
             // Delete import jobs
             $item->importJobs()->delete();
@@ -1190,8 +1192,8 @@ class MailList extends Model
                 $tmpFields = implode(',', array_map(function ($field) {
                     return "`{$field}` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci";
                 }, $availableFields));
-                DB::statement("DROP TEMPORARY TABLE IF EXISTS {$tmpTable};
-                               CREATE TEMPORARY TABLE {$tmpTable}({$tmpFields});
+                DB::statement("DROP TABLE IF EXISTS {$tmpTable};
+                               CREATE TABLE {$tmpTable}({$tmpFields});
                                CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`email`);");
 
                 // Insert subscriber fields from the batch to the temporary table
@@ -1243,7 +1245,7 @@ class MailList extends Model
                 $system_job->updateStatus(['processed' => $processed_count]);
 
                 // Cleanup
-                DB::statement("DROP TEMPORARY TABLE IF EXISTS {$tmpTable};");
+                DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
 
                 // Actually write to the database
                 DB::commit();
@@ -1326,8 +1328,8 @@ class MailList extends Model
                 $tmpFields = implode(',', array_map(function ($field) {
                     return "`{$field}` VARCHAR(255) CHARACTER SET utf8 COLLATE utf8_unicode_ci";
                 }, $availableFields));
-                DB::statement("DROP TEMPORARY TABLE IF EXISTS {$tmpTable};
-                               CREATE TEMPORARY TABLE {$tmpTable}({$tmpFields});
+                DB::statement("DROP TABLE IF EXISTS {$tmpTable};
+                               CREATE TABLE {$tmpTable}({$tmpFields});
                                CREATE INDEX _index_email_{$tmpTable} ON {$tmpTable}(`email`);");
 
                 // Insert subscriber fields from the batch to the temporary table
@@ -1374,7 +1376,7 @@ class MailList extends Model
                 }
 
                 // Cleanup
-                DB::statement("DROP TEMPORARY TABLE IF EXISTS {$tmpTable};");
+                DB::statement("DROP TABLE IF EXISTS {$tmpTable};");
 
                 // Actually write to the database
                 DB::commit();
