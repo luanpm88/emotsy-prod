@@ -231,7 +231,12 @@ class Plan extends Model implements BillablePlanInterface
 
     public function subscriptions()
     {
-        return $this->hasMany('Acelle\Cashier\Subscription', 'plan_id', 'uid');
+        return $this->hasMany('Acelle\Cashier\Subscription', 'plan_id', 'uid')
+            ->where(function($query){
+                $query->whereNull('ends_at')
+                      ->orWhere('ends_at', '>=', \Carbon\Carbon::now());
+            })
+            ->orderBy('created_at', 'desc');
     }
 
     public function plansEmailVerificationServers()
