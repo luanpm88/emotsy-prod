@@ -484,7 +484,7 @@ function app_version()
  */
 function extract_email($str)
 {
-    preg_match("/(?<email>[-0-9a-zA-Z\.+_]+@[-0-9a-zA-Z\.+_]+\.[a-zA-Z]{2,4})/", $str, $matched);
+    preg_match("/(?<email>[-0-9a-zA-Z\.+_]+@[-0-9a-zA-Z\.+_]+\.[a-zA-Z]+)/", $str, $matched);
     if (array_key_exists('email', $matched)) {
         return $matched['email'];
     } else {
