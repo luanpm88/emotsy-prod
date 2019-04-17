@@ -2566,5 +2566,7 @@
   'plan.info.subscriber_count' => 'There are <strong>:count</strong> customer(s) currently subscribed to this plan.
     Click <a href=":link"><strong>here</strong></a> to see more details.',
   'admin.no_primary_payment' => 'No Primary Payment Gateway selected. Click <a href=":link"><strong>here</strong></a> to select one.',
+  'save_and_set_primary' => 'Save & Set Primary',
+  'gateway.error.subscription_exist' => 'Can not change payment gateway because there are one or more active subscriptions.',
 ) ?>
 

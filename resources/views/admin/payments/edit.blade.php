@@ -62,7 +62,10 @@
         @endif
         <hr>
         <div class="text-left">
-            <button class="btn bg-teal"><i class="icon-check"></i> {{ trans('messages.save') }}</button>
+            <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
+			@if (\Acelle\Model\Setting::get('system.payment_gateway') !== $gateway['name'])
+				<input type="submit" class="btn btn-mc_primary bg-teal" name="save_and_set_primary" value="{{ trans('messages.save_and_set_primary') }}" />
+			@endif
         </div>
     <form>
 	
