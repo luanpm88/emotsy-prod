@@ -2489,7 +2489,7 @@
     If you haven\'t purchase the plan, please follow the checkout guide from CointPayments.net in your
     mailbox with title <strong class="text-nowrap">[CoinPayments.net] ...</strong>.',
   'subscription.future_pending.direct' => 'You have currently payment pending. Please wait for processing your payment.
-    If you haven\'t purchase the plan, please follow the checkout guide bellow: <br />...[Payment guide here...]',
+    If you haven\'t purchase the plan, please follow the checkout guide bellow:',
   'subscription.payment.checkout_again' => 'Checkout again',
   'subscription.current_subscription.cancel_at_end_of_period_no_recurring_supported.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
       The subscription will be end in <strong>:remain</strong>, on <strong>:end_at</strong>.',
