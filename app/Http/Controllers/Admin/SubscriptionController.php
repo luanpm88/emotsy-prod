@@ -30,9 +30,15 @@ class SubscriptionController extends Controller
             $request->merge(array("customer_admin_id" => $request->user()->admin->id));
         }
         $subscriptions = Subscription::all();
+        
+        $plan = null;
+        if ($request->plan_uid) {
+            $plan = Plan::findByUid($request->plan_uid);
+        }
 
         return view('admin.subscriptions.index', [
             'subscriptions' => $subscriptions,
+            'plan' => $plan,
         ]);
     }
 
@@ -43,6 +49,12 @@ class SubscriptionController extends Controller
      */
     public function listing(Request $request)
     {
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        
+        if(!$gateway) {
+            return view('admin.subscriptions.no_gateway');
+        }
+        
         // authorize
         if (!$request->user()->admin->can('read', new Subscription())) {
             return $this->notAuthorized();
@@ -73,7 +85,7 @@ class SubscriptionController extends Controller
 
         return view('admin.subscriptions._list', [
             'subscriptions' => $subscriptions,
-            'gateway' => \App::make('Acelle\Cashier\PaymentGateway'),
+            'gateway' => $gateway,
         ]);
     }
     

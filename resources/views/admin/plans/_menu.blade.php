@@ -67,3 +67,10 @@
         </ul>
     </div>
 </div>
+    
+<div class="alert alert-info">
+    {!! trans('messages.plan.info.subscriber_count', [
+        'count' => $plan->customersCount(),
+        'link' => action('Admin\SubscriptionController@index', ['plan_uid' => $plan->uid]),
+    ]) !!}
+</div>

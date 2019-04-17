@@ -26,10 +26,12 @@
                         </span>
                     </h5>
                     @if (is_object($plan->primarySendingServer()))
-                        {{ trans('messages.plans.send_via.wording', ['server' => $plan->primarySendingServer()->name]) }}
+                        {{ trans('messages.plans.send_via.wording', ['server' => $plan->primarySendingServer()->name]) }} -                         
                     @else
-                        <span class="text-danger">{{ trans('messages.plans.send_via.empty') }}</span>
+                        <span class="text-danger">{{ trans('messages.plans.send_via.empty') }}</span><br/>
                     @endif
+                    {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}
+                    
                 </td>
                 <td>
                     <h5 class="no-margin text-bold kq_search">

@@ -36,15 +36,26 @@
             <h3>{{ trans('messages.payment.options') }}</h3>
             <div class="row">
 				<div class="col-md-6">
-					@foreach ($gateway['fields'] as $name => $field)                    
-                        @include('helpers.form_control', [
-                            'type' => 'text',
-                            'name' => 'options['.$name.']',
-                            'value' => $field,
-                            'label' => trans('messages.payment.' . $gateway['name'] . '.' . $name),
-                            'help_class' => 'payment',
-                            'rules' => ['options.' . $name => 'required'],
-                        ])                    
+					@foreach ($gateway['fields'] as $name => $field)
+						@if ($name == 'notice')
+							@include('helpers.form_control', [
+								'type' => 'textarea',
+								'name' => 'options['.$name.']',
+								'value' => $field,
+								'label' => trans('messages.payment.' . $gateway['name'] . '.' . $name),
+								'help_class' => 'payment',
+								'rules' => ['options.' . $name => 'required'],
+							])
+						@else
+							@include('helpers.form_control', [
+								'type' => 'text',
+								'name' => 'options['.$name.']',
+								'value' => $field,
+								'label' => trans('messages.payment.' . $gateway['name'] . '.' . $name),
+								'help_class' => 'payment',
+								'rules' => ['options.' . $name => 'required'],
+							])
+						@endif
 					@endforeach
 				</div>
             </div>

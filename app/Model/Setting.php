@@ -662,6 +662,10 @@ class Setting extends Model
      */
     public static function getPaymentGateway($name)
     {
+        if (!isset(config('payment.gateways')[$name])) {
+            return null;
+        }
+        
         $gateway = config('payment.gateways')[$name];
         $gateway['name'] = $name;
         
@@ -699,7 +703,7 @@ class Setting extends Model
         
         switch ($name) {
             case 'direct':
-                return new \Acelle\Cashier\Services\DirectPaymentGateway($config['fields']['database_path']);
+                return new \Acelle\Cashier\Services\DirectPaymentGateway($config['fields']['notice']);
             case 'stripe':
                 return new \Acelle\Cashier\Services\StripePaymentGateway($config['fields']['secret_key']);
             case 'braintree':

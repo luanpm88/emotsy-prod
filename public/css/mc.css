@@ -490,10 +490,10 @@ stat .stat-head {
   background: #777;
   border-color: #777;
 }
-.bg-coinpayments, .bg-stripe, .bg-braintree {
+.bg-coinpayments, .bg-stripe, .bg-braintree, .bg-direct {
   position: relative;
 }
-.bg-coinpayments::after, .bg-stripe::after, .bg-braintree::after {
+.bg-coinpayments::after, .bg-stripe::after, .bg-braintree::after, .bg-direct::after {
   content: "";
   background-image: url("../images/coinpayments-logo.png");
   background-size: 140px auto;
@@ -511,8 +511,22 @@ stat .stat-head {
   background-image: url("../images/coinpayments-logo.png");
 }
 .bg-stripe::after {
-  background-image: url("../images/stripe-logo.png");
+    background-image: url(../images/stripe-logo.svg);
+    background-size: 74px;
+    background-position: right 15px;
+    margin-right: 19px;
 }
 .bg-braintree::after {
   background-image: url("../images/braintree-logo.png");
+}
+.bg-direct::after {
+    background-image: url(../images/direct-payment-logo.jpg);
+    background-size: 85px;
+    margin-top: -10px;
+}
+.plan-list-color-icon {
+    height: 60px;
+}
+#confirm-modal h6 {
+  font-weight: normal;
 }
