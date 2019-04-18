@@ -2354,7 +2354,7 @@
   'plan.set_a_limit' => 'Set a limit',
   'plan.process_limit.intro' => 'Acelle Mail supports forking multiple processes for sending multiple times faster in terms of
     email throughput. However, it will consume multiple times more CPU and memory as a tradeoff.',
-  'plan.resource.intro' => 'Resource intro...',
+  'plan.resource.intro' => 'Set up your plan\'s quota to limit the resources or services that users subscribed to this plan can use',
   'plan.enabled_email_footer' => 'Enable email footer',
   'plan.email_footer_trial_period_only' => 'For trial period only',
   'plan.html_footer' => 'HTML footer',
@@ -2420,8 +2420,7 @@
       Next invoice will be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
   'subscription.cancel.confirm' => 'You\'re about to cancel :number subscription. You\'re still subscribed until the end of period',
   'subscription.cancelled' => 'The subscription was successfully cancelled',
-  'subscription.current_subscription.cancel_at_end_of_period.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
-      The subscription will be end in <strong>:remain</strong>, on <strong>:end_at</strong>.',
+  'subscription.current_subscription.cancel_at_end_of_period.wording' => 'You are currently subscribed to <strong>:plan</strong> plan (<strong>:money</strong>). Your subscription will expire in <strong>:remain</strong>, on <strong>:end_at</strong>',
   'subscription.resume' => 'Resume',
   'plan_details' => 'Plan details',
   'subscription.resume.confirm' => 'You\'re about to resume :number subscription.',
@@ -2514,7 +2513,7 @@
   'sending_server.add_domain.wording' => 'Enter new domain name here to add domain to sending server',
   'sending_server.add_domain' => 'Add domain',
   'sending_serbers.remove_domain' => 'Delete',
-  'sending_server.domain.removed' => 'Domain was removed subccessfully',  
+  'sending_server.domain.removed' => 'Domain was removed subccessfully',
   'sending_server.domain.remove_domain.confirm' => 'You are about to remove domain from list',
   'subscription.top_up' => 'Top-up',
   'subscription.top_up.wording' => 'The <strong>:plan</strong> plan is being ended in <strong>:remain</strong>, on <strong>:on</strong>.
@@ -2526,7 +2525,7 @@
   'subscription_done.coinpayments.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully processed. Thanks for your purchasing.<br>
     Click <a href=":link">here</a> to check your subscription status.<br><br>--<br>Acelle Team',
   'subscription_done.email_subject' => 'Subscription was created successfully',
-  'no_primary_payment' => 'No Primary Payment Gateway selected. Go to Admin / Setting / Payment Gateways to select on.',
+  'no_primary_payment' => 'No Primary Payment Gateway selected. Go to Admin / Setting / Payment Gateways to select one',
   'subscription_done.direct.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
     Click <a href=":link">here</a> to check your subscription status and process with payment.<br><br>--<br>Acelle Team',
   'subscription_done.stripe.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
