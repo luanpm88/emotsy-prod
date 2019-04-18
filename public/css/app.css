@@ -2640,7 +2640,7 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 }
 .list-box {
   margin-right: 20px;
-  border: solid 1.5px #aaa;  
+  border: solid 1px #bbb;  
   padding: 10px 20px;
   border-radius: 5px;
   width: 45%;

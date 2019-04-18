@@ -2488,7 +2488,7 @@
     If you haven\'t purchase the plan, please follow the checkout guide from CointPayments.net in your
     mailbox with title <strong class="text-nowrap">[CoinPayments.net] ...</strong>.',
   'subscription.future_pending.direct' => 'You have currently payment pending. Please wait for processing your payment.
-    If you haven\'t purchase the plan, please follow the checkout guide bellow: <br />...[Payment guide here...]',
+    If you haven\'t purchase the plan, please follow the checkout guide bellow:',
   'subscription.payment.checkout_again' => 'Checkout again',
   'subscription.current_subscription.cancel_at_end_of_period_no_recurring_supported.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
       The subscription will be end in <strong>:remain</strong>, on <strong>:end_at</strong>.',
@@ -2499,7 +2499,7 @@
   'payment_gateway.not_valid' => 'Something went wrong: :message',
   'subscription.pending.direct.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).
     Please wait for processing your subscription.
-    If you haven\'t purchase the plan, please follow the steps:<br />...[Payment guide here...]<br/><br/> <strong>OR</strong> <br/>',
+    If you haven\'t purchase the plan, please follow the steps bellow: <br/>',
   'invoice.datetime' => 'Datetime',
   'invoice.amount' => 'Amount',
   'invoice.description' => 'Description',
@@ -2525,7 +2525,7 @@
   'subscription_done.coinpayments.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully processed. Thanks for your purchasing.<br>
     Click <a href=":link">here</a> to check your subscription status.<br><br>--<br>Acelle Team',
   'subscription_done.email_subject' => 'Subscription was created successfully',
-  'no_primary_payment' => 'No Primary Payment Gateway selected. Go to Admin / Setting / Payment Gateways to select one',
+  'no_primary_payment' => 'No Payment Gateway selected. Please go to Admin / Setting / Payment Gateways to select one',
   'subscription_done.direct.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
     Click <a href=":link">here</a> to check your subscription status and process with payment.<br><br>--<br>Acelle Team',
   'subscription_done.stripe.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
@@ -2559,5 +2559,13 @@
   'payment.settings' => 'Settings',
   'system.renew_free_plan' => 'Can renew free plan',
   'setting.renew_free_plan.help' => 'Customers who are subscribing to a Free plan can not renew the plan. Need to change to a no-free plan first.',
+  'payment.direct.notice' => 'Payment notice/guide',
+  'plans.subscriber_count' => ':count subscriber(s)',
+  'payment.direct' => 'Direct',
+  'plan.info.subscriber_count' => 'There are <strong>:count</strong> customer(s) currently subscribed to this plan.
+    Click <a href=":link"><strong>here</strong></a> to see more details.',
+  'admin.no_primary_payment' => 'No Primary Payment Gateway selected. Click <a href=":link"><strong>here</strong></a> to select one.',
+  'save_and_set_primary' => 'Save & Set Primary',
+  'gateway.error.subscription_exist' => 'Can not change payment gateway because there are one or more active subscriptions.',
 ) ?>
 

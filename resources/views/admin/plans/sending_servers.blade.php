@@ -94,11 +94,15 @@
     
     @if (is_object($plan->primarySendingServer()))
         <div class="mc-section">
-            <h2 class="mc-h2 mt-0">
-                <span class="text-semibold">{{ trans('messages.plan.sending_identify') }}</span>
-            </h2>
-        
-            <p>{!! trans('messages.plan.sending_identify.intro.' . $plan->primarySendingServer()->type) !!}</p>
+            <div class="row">
+                <div class="col-md-6">
+                    <h2 class="mc-h2 mt-0">
+                        <span class="text-semibold">{{ trans('messages.plan.sending_identify') }}</span>
+                    </h2>
+                
+                    <p>{!! trans('messages.plan.sending_identify.intro.' . $plan->primarySendingServer()->type) !!}</p>
+                </div>
+            </div>
         </div>
     @endif
 @endsection

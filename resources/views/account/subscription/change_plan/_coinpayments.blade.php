@@ -1,3 +1,20 @@
+@php
+	$metadata = $subscription->getMetadata();
+	$transactions = isset($metadata->transactions) ? $metadata->transactions : [];
+	
+	$tid = 'Transaction ID: ' . uniqid();
+	
+	$transactions[] = [
+		'id' => $tid,
+		'createdAt' => \Carbon\Carbon::now()->timestamp,
+		'planId' => $newPlan->getBillableId(),
+		'periodEndsAt' => $subscription->ends_at->timestamp,
+		'amount' => Acelle\Library\Tool::format_price($customer->calcChangePlan($newPlan)['amount'], $newPlan->currency->format),
+	];
+	
+	$subscription->updateMetadata(['transactions' => $transactions]);
+@endphp
+
 <p>
 	{!! trans('messages.subscription.change_plan.checkout.coinpayments', [
 		'price' => $customer->calcChangePlan($newPlan)['amount'],
@@ -19,12 +36,7 @@
 			'new_plan' => $newPlan->name,
 	]) }}">
 	<input type="hidden" name="item_number" value="{{ $subscription->uid }}">
-	<input type="hidden" name="item_desc" value="{{ json_encode([
-		'createdAt' => \Carbon\Carbon::now()->timestamp,
-		'planId' => $newPlan->getBillableId(),
-		'periodEndsAt' => $subscription->ends_at->timestamp,
-		'amount' => Acelle\Library\Tool::format_price($customer->calcChangePlan($newPlan)['amount'], $newPlan->currency->format),
-	]) }}">
+	<input type="hidden" name="item_desc" value="{{ $tid }}">
 	<input type="hidden" name="success_url" value="{{ action('AccountSubscriptionController@index') }}">
 	<input type="image" src="https://www.coinpayments.net/images/pub/CP-main-large.png" alt="Buy Now with CoinPayments.net">
 </form>

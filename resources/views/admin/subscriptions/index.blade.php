@@ -58,6 +58,9 @@
                                 class="select2-ajax"
                                 name="plan_uid"
                                 data-url="{{ action('Admin\PlanController@select2') }}">
+                                    @if ($plan)
+                                        <option value="{{ $plan->uid }}">{{ $plan->name }}</option>
+                                    @endif
                             </select>
                         </span>
                     </div>

@@ -5,7 +5,7 @@ return [
         'direct' => [
             'name' => 'direct',
             'fields' => [
-                'database_path' => 'app/direct_payment.sqlite3',
+                'notice' => 'How to pay plan guide....',
             ],
         ],
         'stripe' => [

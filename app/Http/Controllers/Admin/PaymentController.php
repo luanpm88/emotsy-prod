@@ -8,6 +8,7 @@ use Acelle\Http\Requests;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Setting;
 use Illuminate\Support\MessageBag;
+use Acelle\Cashier\Subscription;
 
 class PaymentController extends Controller
 {
@@ -56,6 +57,21 @@ class PaymentController extends Controller
             $gatewayService->validate();            
             Setting::updatePaymentGateway($name, $request->options);
             
+            if ($request->save_and_set_primary) {
+                $sc = Subscription::where(function($query){
+                    $query->whereNull('ends_at')
+                          ->orWhere('ends_at', '>=', \Carbon\Carbon::now());
+                })
+                ->orderBy('created_at', 'desc')
+                ->count();
+                
+                if ($sc > 0) {
+                    throw new \Exception(trans('messages.gateway.error.subscription_exist'));
+                }
+                
+                Setting::set('system.payment_gateway', $name);
+            }
+            
             $request->session()->flash('alert-success', trans('messages.payment_gateway.updated'));
             return redirect()->action('Admin\PaymentController@index');
         } catch (\Exception $ex) {
@@ -81,6 +97,22 @@ class PaymentController extends Controller
     public function setPrimary(Request $request, $name)
     {
         $service = Setting::getPaymentGatewayService($name);
+        
+        try {
+            $sc = Subscription::where(function($query){
+                    $query->whereNull('ends_at')
+                          ->orWhere('ends_at', '>=', \Carbon\Carbon::now());
+                })
+                ->orderBy('created_at', 'desc')
+                ->count();
+                
+            if ($sc > 0) {
+                throw new \Exception(trans('messages.gateway.error.subscription_exist'));
+            }
+        } catch (\Exception $ex) {            
+            $request->session()->flash('alert-error', trans('messages.payment_gateway.not_valid', ['message' => $ex->getMessage()]));
+            return redirect()->action('Admin\PaymentController@index');
+        }
         
         try {
             $service->validate();

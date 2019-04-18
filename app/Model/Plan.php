@@ -29,6 +29,7 @@ use Acelle\Cashier\Interfaces\BillablePlanInterface;
 use Acelle\Cashier\Services\StripePaymentGateway;
 use Acelle\Cashier\Services\BraintreePaymentGateway;
 use Acelle\Model\PlansEmailVerificationServer;
+use Acelle\Cashier\Subscription;
 
 class Plan extends Model implements BillablePlanInterface
 {
@@ -230,7 +231,12 @@ class Plan extends Model implements BillablePlanInterface
 
     public function subscriptions()
     {
-        return $this->hasMany('Acelle\Model\Subscription');
+        return $this->hasMany('Acelle\Cashier\Subscription', 'plan_id', 'uid')
+            ->where(function($query){
+                $query->whereNull('ends_at')
+                      ->orWhere('ends_at', '>=', \Carbon\Carbon::now());
+            })
+            ->orderBy('created_at', 'desc');
     }
 
     public function plansEmailVerificationServers()
@@ -859,9 +865,9 @@ class Plan extends Model implements BillablePlanInterface
      *
      * @return int
      */
-    public function cutomersCount()
+    public function customersCount()
     {
-        return $this->subscriptions()->distinct('customer_id')->count('customer_id');
+        return $this->subscriptions()->distinct('user_id')->count('user_id');
     }
 
     /**

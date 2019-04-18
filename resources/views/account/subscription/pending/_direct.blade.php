@@ -4,6 +4,10 @@
         'plan' => $subscription->plan->name,
         'money' => Acelle\Library\Tool::format_price($subscription->plan->price, $subscription->plan->currency->format),
     ]) !!}
+    
+    <div class="alert alert-info">
+        {!! $gatewayService->notice !!}
+    </div>
 </p>
 @if (\Auth::user()->customer->can('cancelNow', $subscription))
     <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
