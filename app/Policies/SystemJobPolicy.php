@@ -55,7 +55,7 @@ class SystemJobPolicy
             $list = \Acelle\Model\MailList::findByUid($data->mail_list_uid);
 
             return $list->customer_id == $user->customer->id &&
-                $item->isRunning();
+                ($item->isRunning() || $item->isNew());
         }
 
         return false;
