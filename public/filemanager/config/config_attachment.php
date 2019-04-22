@@ -159,7 +159,7 @@ $config = array(
     | in Megabytes
     |
     */
-    'MaxSizeTotal' =>24,// false,
+    'MaxSizeTotal' => false,
 
     /*
     |--------------------------------------------------------------------------
