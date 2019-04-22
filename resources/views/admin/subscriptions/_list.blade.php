@@ -51,17 +51,17 @@
 							@endif
 						@else
 							@if ($subscription->checkPendingPaymentForFuture($gateway))
-								<span class="label label-flat bg-warning">{{ trans('messages.invoice.status.pending') }}</span>						
+								<span class="label label-flat bg-warning">{{ trans('messages.invoice.status.pending') }}</span>
 							@endif
-							<span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>		
+							<span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>
 							@if ($subscription->ended())
-								<span class="label label-flat bg-ended">{{ trans('messages.subscription.status.ended') }}</span>						
+								<span class="label label-flat bg-ended">{{ trans('messages.subscription.status.ended') }}</span>
 							@endif
 							@if ($subscription->cancelled() && !$subscription->ended())
-								<span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.cancelled') }}</span>						
+								<span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.cancelled') }}</span>
 							@endif
 							@if ($subscription->recurring())
-								<span class="label label-flat bg-info">{{ trans('messages.subscription.status.recurring') }}</span>						
+								<span class="label label-flat bg-info">{{ trans('messages.subscription.status.recurring') }}</span>
 							@endif
 						@endif
 					</span>
@@ -117,6 +117,14 @@
 										<a data-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
 										  href="{{ action('Admin\SubscriptionController@cancelNow', $subscription->uid) }}">
 											{{ trans('messages.subscription.cancel_now') }}
+										</a>
+									</li>
+								@endif
+								@if (\Auth::user()->admin->can('delete', $subscription))
+									<li>
+										<a data-method="DELETE" link-confirm="{{ trans('messages.subscription.delete.confirm') }}"
+										  href="{{ action('Admin\SubscriptionController@delete', ['id' => $subscription->uid]) }}">
+											{{ trans('messages.subscription.delete') }}
 										</a>
 									</li>
 								@endif

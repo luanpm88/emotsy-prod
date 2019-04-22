@@ -3,7 +3,7 @@
         <div class="col-md-6">
             <h3 class="mt-0">{{ trans('messages.sending_servers.sending_identity') }}</h3>
             <p>
-                {!! trans('messages.sending_servers.sending_identity.sendgrid.intro', ['link' => '']) !!}                    
+                {!! trans('messages.sending_servers.sending_identity.sendgrid.intro', ['link' => '']) !!}
             </p>
             <table class="table table-box table-box-head field-list">
                 <thead>
@@ -28,15 +28,15 @@
                 </tbody>
             </table>
             <br>
-            <a href="{{ action('Admin\SendingServerController@index') }}" type="button"
+            <a href="https://app.sendgrid.com" type="button" target="_blank"
               class="btn btn-mc_default">
                 {{ trans('messages.sending_serbers.go_to_sendgrid_dashboard') }}
             </a>
-                
+
             <p class="mt-40">
-                {{ trans('messages.sending_serbers.sendgrid.allow_verify.intro') }}                    
+                {{ trans('messages.sending_serbers.sendgrid.allow_verify.intro') }}
             </p>
-            
+
             @include('helpers.form_control', [
                 'type' => 'checkbox2',
                 'label' => trans('messages.allow_verify_domain_against_sendgrid'),
@@ -54,7 +54,7 @@
                 'options' => ['no', 'yes'],
                 'disabled' => 'disabled',
             ])
-            
+
             <hr>
             <div class="mt-20">
                 <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>

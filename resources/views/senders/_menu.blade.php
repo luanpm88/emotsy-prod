@@ -6,11 +6,13 @@
                 <i class="icon-envelop2 mr-10"></i> {{ trans('messages.email_addresses') }}
                 </a>
             </li>
-            <li rel0="SendingDomainController">
-                <a href="{{ action('SendingDomainController@index') }}" class="level-1">
-                <i class="icon-earth mr-10"></i> {{ trans('messages.domains') }}
-                </a>
-            </li>            
+            @if (Auth::user()->customer->can('read', new \Acelle\Model\SendingDomain())) {
+                <li rel0="SendingDomainController">
+                    <a href="{{ action('SendingDomainController@index') }}" class="level-1">
+                    <i class="icon-earth mr-10"></i> {{ trans('messages.domains') }}
+                    </a>
+                </li>
+            @endif
         </ul>
     </div>
 </div>

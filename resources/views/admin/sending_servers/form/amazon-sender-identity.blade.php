@@ -3,7 +3,7 @@
         <div class="col-md-6">
             <h3 class="mt-0">{{ trans('messages.sending_servers.sending_identity') }}</h3>
             <p>
-                {!! trans('messages.sending_servers.sending_identity.intro', ['link' => '']) !!}                    
+                {!! trans('messages.sending_servers.sending_identity.intro', ['link' => '']) !!}
             </p>
             <table class="table table-box table-box-head field-list">
                 <thead>
@@ -31,14 +31,14 @@
             <a target="_blank" confirm="{{ trans('messages.sending_server.aws.add_domain_redirect_confirm') }}" href="https://us-west-2.console.aws.amazon.com/ses/home?region={{ $server->type }}" class="btn btn-mc_default mr-10">
                 {{ trans('messages.sending_serbers.add_domain') }}
             </a>
-            <a target="_blank" href="https://us-west-2.console.aws.amazon.com/ses/home?region={{ $server->aws_region }}" type="button"
+            <a target="_blank" href="https://console.aws.amazon.com/ses/home?region={{ $server->aws_region }}" type="button"
               class="btn btn-mc_default">
                 {{ trans('messages.sending_serbers.go_to_amazon_dashboard') }}
             </a>
             <p class="mt-40">
-                {{ trans('messages.sending_serbers.aws.allow_verify.intro') }}  
+                {{ trans('messages.sending_serbers.aws.allow_verify.intro') }}
             </p>
-            
+
             @include('helpers.form_control', [
                 'type' => 'checkbox2',
                 'label' => trans('messages.allow_verify_domain_against_aws'),
@@ -47,7 +47,7 @@
                 'help_class' => 'sending_server',
                 'options' => ['no', 'yes'],
             ])
-            
+
             @include('helpers.form_control', [
                 'type' => 'checkbox2',
                 'label' => trans('messages.allow_verify_email_against_aws'),
