@@ -3,7 +3,7 @@
         <div class="col-md-6">
             <h3 class="mt-0">{{ trans('messages.sending_servers.sending_identity') }}</h3>
             <p>
-                {!! trans('messages.sending_servers.sending_identity.elasticemail.intro', ['link' => '']) !!}                    
+                {!! trans('messages.sending_servers.sending_identity.elasticemail.intro', ['link' => '']) !!}
             </p>
             <table class="table table-box table-box-head field-list">
                 <thead>
@@ -29,11 +29,11 @@
             </table>
             <br>
             <button class="btn btn-mc_default mr-10">{{ trans('messages.sending_serbers.add_domain') }}</button>
-            <a href="{{ action('Admin\SendingServerController@index') }}" type="button"
+            <a  href="https://elasticemail.com/account/" type="button" target="_blank"
               class="btn btn-mc_default">
                 {{ trans('messages.sending_serbers.go_to_elasticemail_dashboard') }}
             </a>
-            
+
             <hr>
             <div class="mt-20">
                 <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>

@@ -7,42 +7,42 @@
     <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
 
     <script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
-        
+
     <script>
         $(document).on('click', '.mc-modal-back', function(e) {
             e.preventDefault();
-            
+
             mcModal.goToUrl($(this).attr('href'));
         });
-        
+
         var initMcModal = function() {
             var mcModal = {};
             mcModal.modal = $('#mcModal');
             mcModal.show = function() {
-                var load = htmlLoader();                
+                var load = htmlLoader();
                 var html = '<div class="mc-modal modal fade" role="dialog" id="mcModal">'+
                     '<div class="modal-dialog modal-lg modal-select">'+
                         '<div class="modal-content">'+
-                            '<div class="p-10">'+load+'</div>'+    
+                            '<div class="p-10">'+load+'</div>'+
                         '</div>'+
                     '</div>'+
                 '</div>';
-                
+
                 mcModal.modal.remove();
                 $('body').append(html);
                 mcModal.modal = $('#mcModal');
-                
+
                 mcModal.modal.modal('show');
             };
-            
+
             mcModal.goToUrl = function(url, method) {
                 if (typeof(method) === 'undefined') {
                     method = 'GET';
                 }
-                
+
                 // show modal
                 mcModal.show();
-                
+
                 // ajax load url
                 $.ajax({
                     url: url,
@@ -51,21 +51,21 @@
                     mcModal.fill(response);
                 });
             }
-            
+
             mcModal.fill = function(html) {
-                mcModal.modal.find('.modal-content').html(html);                    
+                mcModal.modal.find('.modal-content').html(html);
                 applyJs(mcModal.modal);
             }
-            
+
             return mcModal;
         };
-        
+
         var mcModal = initMcModal();
-        
+
         $(document).ready(function() {
             $('.modal-action').click(function(e) {
                 e.preventDefault();
-                
+
                 mcModal.goToUrl($(this).attr('href'));
             });
         });
@@ -86,6 +86,18 @@
 @endsection
 
 @section('content')
+
+    @if (!$gateway)
+        @include('admin.subscriptions.no_gateway')
+    @else
+        <div class="alert alert-info">
+            {!! trans('messages.current_payment_intro', [
+                'name' => $gateway['name'],
+                'link' => action('Admin\PaymentController@index'),
+            ]) !!}
+        </div>
+    @endif
+
 	<p>{{ trans('messages.plan_create_message') }}</p>
 
     <form class="listing-form"

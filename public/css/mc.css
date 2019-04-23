@@ -194,7 +194,7 @@ h2.mc-h2 {
     opacity: 0; }
   40% {
     opacity: 1; } }
-    
+
 .mc-section {
     margin-bottom: 60px;
 }
@@ -258,7 +258,7 @@ h2.mc-h2 {
   width: 100%;
 }
 .mc-progress-list {
-  
+
 }
 .mc-progress-list li {
   list-style: none;
@@ -353,7 +353,7 @@ input.has-eye {
 }
 .inline-edit:hover {
   color: #007c89;
-  border-color: #007c89;  
+  border-color: #007c89;
 }
 .mc-text-lg {
 }
@@ -387,7 +387,7 @@ stat .stat-head {
 }
 .mc-server-avatar i:before, .server-avatar i:before {
     content: '';
-    
+
 }
 .server-avatar-amazon-api, .server-avatar-amazon-smtp {
     background: url(../images/icons/aws.png) top left/36px 36px no-repeat;
@@ -505,7 +505,7 @@ stat .stat-head {
   bottom: 0;
   right: 0;
   position: absolute;
-  z-index: -1;   
+  z-index: -1;
 }
 .bg-coinpayments::after {
   background-image: url("../images/coinpayments-logo.png");
@@ -529,4 +529,12 @@ stat .stat-head {
 }
 #confirm-modal h6 {
   font-weight: normal;
+}
+.subscription-status-icon {
+    width: 35px;
+    height: 35px;
+    border-radius: 100px;
+    color: #fff;
+    padding: 10px;
+    margin-right: 13px;
 }

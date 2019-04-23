@@ -3,3 +3,6 @@
     'plan' => $planName,
     'link' => $link,
 ]) !!}</p>
+    
+--<br>
+{{ \Acelle\Model\Setting::get('site_name') }}

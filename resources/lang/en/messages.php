@@ -2194,7 +2194,7 @@
   'sending_servers.sending_limit.mailgun.intro' => 'Specify speed limit to control how fast your application can send through this connection in
     terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
   'sending_servers.configuration_settings.mailgun.intro' => 'Set up a connection to your Mailgun account to send emails.',
-  
+
   'sending_servers.sending_identity.sendgrid.intro' => 'The following domains were verified against your Sendgrid account.
       User can only send from the domains below and is not allowed to send on their own identity',
   'sending_servers.sendgrid_api_key.intro' => 'You are connected to Sendgrid using the API key below',
@@ -2213,7 +2213,7 @@
   'allow_verify_email_against_aws' => 'Allow verifying user\'s own email addresses against AWS',
   'sending_serbers.go_to_sendgrid_dashboard' => 'Go to Sendrid dashboard',
   'sending_serbers.go_to_mailgun_dashboard' => 'Go to Mailgun dashboard',
-  
+
   'sending_servers.sending_identity.elasticemail.intro' => 'The following domains were verified against your Elastic Email account.
       User can only send from the domains below and is not allowed to send on their own identity',
   'sending_servers.elasticemail_api_key.intro' => 'You are connected to Elastic Email using the API key below',
@@ -2221,7 +2221,7 @@
     terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
   'sending_servers.configuration_settings.elasticemail.intro' => 'Set up a connection to your Elastic Email account to send emails.',
   'sending_serbers.go_to_elasticemail_dashboard' => 'Go to Elastic Email dashboard',
-  
+
   'sending_servers.sending_identity.sparkpost.intro' => 'The following domains were verified against your Sparkpost account.
       User can only send from the domains below and is not allowed to send on their own identity',
   'sending_servers.sparkpost_api_key.intro' => 'You are connected to Sparkpost using the API key below',
@@ -2523,13 +2523,13 @@
   'subscription.top_up' => 'Top-up',
   'subscription.renew.coinpayments.wording' => 'Select button bellow and fill your payment infomation to pay top-up fees.',
   'subscription_done.coinpayments.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully processed. Thanks for your purchasing.<br>
-    Click <a href=":link">here</a> to check your subscription status.<br><br>--<br>Acelle Team',
+    Click <a href=":link">here</a> to check your subscription status.',
   'subscription_done.email_subject' => 'Subscription was created successfully',
   'no_primary_payment' => 'No Payment Gateway selected. Please go to Admin / Setting / Payment Gateways to select one',
   'subscription_done.direct.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
-    Click <a href=":link">here</a> to check your subscription status and process with payment.<br><br>--<br>Acelle Team',
+    Click <a href=":link">here</a> to check your subscription status and process with payment.',
   'subscription_done.stripe.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully created.<br>
-    Click <a href=":link">here</a> to check your subscription status and process with payment.<br><br>--<br>Acelle Team',
+    Click <a href=":link">here</a> to check your subscription status and process with payment.',
   'subscription.next_invoice' => 'Next invoice',
   'subscription.next_invoice.empty' => 'No invoices found',
   'subscription.renew' => 'Renew',
@@ -2567,5 +2567,9 @@
   'admin.no_primary_payment' => 'No Primary Payment Gateway selected. Click <a href=":link"><strong>here</strong></a> to select one.',
   'save_and_set_primary' => 'Save & Set Primary',
   'gateway.error.subscription_exist' => 'Can not change payment gateway because there are one or more active subscriptions.',
+  'subscription.delete' => 'Delete',
+  'subscription.delete.confirm' => 'You\'re about to delete :number subscription completely. This can not be un-done.',
+  'current_payment_intro' => 'Payment for your service plans are handled by <strong>:name</strong>. Click <a href=":link"><strong>here</strong></a> to manage payment gateways.',
+  'subscribed_by' => 'Subscribed by :name',
+  'subscribed_on' => 'Subscribed on',
 ) ?>
-

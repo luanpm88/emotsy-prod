@@ -6,7 +6,8 @@ use Illuminate\Http\Request;
 
 use Acelle\Http\Requests;
 use Acelle\Http\Controllers\Controller;
-use \Acelle\Model\Plan;
+use Acelle\Model\Plan;
+use Acelle\Model\Setting;
 
 class PlanController extends Controller
 {
@@ -32,6 +33,7 @@ class PlanController extends Controller
 
         return view('admin.plans.index', [
             'plans' => $plans,
+            'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
         ]);
     }
 
@@ -250,14 +252,14 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         $plan->saveAll($request);
-        
+
         # redirect to sending servers page when needed
         if ($request->use_system_sending_server) {
             return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
         }
-        
+
         return redirect()->back()->with('alert-success', trans('messages.plan.updated'));
     }
 
@@ -462,7 +464,7 @@ class PlanController extends Controller
 
         echo trans('messages.plan.copied');
     }
-    
+
     /**
      * Plan sending server setting.
      *
@@ -478,7 +480,7 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         // fill all
         $plan->fillAll($request);
 
@@ -486,7 +488,7 @@ class PlanController extends Controller
             'plan' => $plan,
         ]);
     }
-    
+
     /**
      * Plan sending server setting.
      *
@@ -502,7 +504,7 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         // fill all
         $plan->fillAll($request);
 
@@ -510,7 +512,7 @@ class PlanController extends Controller
             'plan' => $plan,
         ]);
     }
-    
+
     /**
      * Plan sending servers.
      *
@@ -531,7 +533,7 @@ class PlanController extends Controller
             'plan' => $plan,
         ]);
     }
-    
+
     /**
      * Add plan sending server.
      *
@@ -547,10 +549,10 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         // save posted data
         if ($request->isMethod('post')) {
-            $plan->addSendingServerByUid($request->sending_server_uid);            
+            $plan->addSendingServerByUid($request->sending_server_uid);
 
             $request->session()->flash('alert-success', trans('messages.plan.sending_server.added'));
             return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
@@ -560,7 +562,7 @@ class PlanController extends Controller
             'plan' => $plan,
         ]);
     }
-    
+
     /**
      * Remove plan sending server.
      *
@@ -576,14 +578,14 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         // save posted data
-        $plan->removeSendingServerByUid($request->sending_server_uid);            
+        $plan->removeSendingServerByUid($request->sending_server_uid);
 
         $request->session()->flash('alert-success', trans('messages.plan.sending_server.removed'));
         return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
     }
-    
+
     /**
      * Set primary plan sending server.
      *
@@ -599,14 +601,14 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         // save posted data
-        $plan->setPrimarySendingServer($request->sending_server_uid);            
+        $plan->setPrimarySendingServer($request->sending_server_uid);
 
         $request->session()->flash('alert-success', trans('messages.plan.sending_server.primary.updated'));
         return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
     }
-    
+
     /**
      * Plan sending servers fitnesses.
      *
@@ -622,11 +624,11 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         // update fitness value
         if ($request->isMethod('post')) {
-            $plan->updateFitnesses($request->sending_servers);            
-            
+            $plan->updateFitnesses($request->sending_servers);
+
             $request->session()->flash('alert-success', trans('messages.plan.sending_servers.fitness.updated'));
             return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
         }
@@ -635,7 +637,7 @@ class PlanController extends Controller
             'plan' => $plan,
         ]);
     }
-    
+
     /**
      * Plan general information.
      *
@@ -652,7 +654,7 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         // fill all params
         $plan->fillAll($request);
 
@@ -660,7 +662,7 @@ class PlanController extends Controller
             'plan' => $plan,
         ]);
     }
-    
+
     /**
      * Plan quota information.
      *
@@ -677,7 +679,7 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         // fill all
         $plan->fillAll($request);
 
@@ -686,7 +688,7 @@ class PlanController extends Controller
             'options' => $plan->getOptions(),
         ]);
     }
-    
+
     /**
      * Plan security information.
      *
@@ -703,7 +705,7 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         // fill all
         $plan->fillAll($request);
 
@@ -711,7 +713,7 @@ class PlanController extends Controller
             'plan' => $plan,
         ]);
     }
-    
+
     /**
      * Plan payment information.
      *
@@ -728,7 +730,7 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         // fill all
         $plan->fillAll($request);
 
@@ -736,7 +738,7 @@ class PlanController extends Controller
             'plan' => $plan,
         ]);
     }
-    
+
     /**
      * Plan email footer information.
      *
@@ -753,7 +755,7 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
-        
+
         // fill all
         $plan->fillAll($request);
 
@@ -761,7 +763,7 @@ class PlanController extends Controller
             'plan' => $plan,
         ]);
     }
-    
+
     /**
      * Sending Limit Form.
      *
@@ -776,7 +778,7 @@ class PlanController extends Controller
         } else {
             $plan = Plan::findByUid($request->uid);
         }
-        
+
         // save posted data
         if ($request->isMethod('post')) {
             $plan->fillAll($request);
@@ -784,12 +786,12 @@ class PlanController extends Controller
                 'plan' => $plan,
             ]);
         }
-        
+
         return view('admin.plans.sending_limit', [
             'plan' => $plan,
         ]);
     }
-    
+
     /**
      * Billing cycle form.
      *
@@ -804,7 +806,7 @@ class PlanController extends Controller
         } else {
             $plan = Plan::findByUid($request->uid);
         }
-        
+
         // save posted data
         if ($request->isMethod('post')) {
             $plan->fillAll($request);
@@ -812,12 +814,12 @@ class PlanController extends Controller
                 'plan' => $plan,
             ]);
         }
-        
+
         return view('admin.plans.billing_cycle', [
             'plan' => $plan,
         ]);
     }
-    
+
     /**
      * Sending Limit Form.
      *
@@ -832,33 +834,33 @@ class PlanController extends Controller
         } else {
             $plan = Plan::findByUid($request->uid);
         }
-        
+
         $plan->status = Plan::STATUS_INACTIVE;
-        
+
         // fill all
         $plan->fillAll($request);
-        
+
         // save posted data
         if ($request->isMethod('post')) {
             $validator = $plan->validate($request);
-            
+
             if ($validator->fails()) {
                 return redirect()
                     ->action('Admin\PlanController@wizard')
                     ->withErrors($validator)
                     ->withInput();
             }
-            
+
             $plan->saveAll($request);
-            
+
             return redirect()->action('Admin\PlanController@wizardSendingServer', $plan->uid);
         }
-        
+
         return view('admin.plans.wizard', [
             'plan' => $plan,
         ]);
     }
-    
+
     /**
      * Sending Limit Form.
      *
@@ -871,23 +873,23 @@ class PlanController extends Controller
         $plan = Plan::findByUid($request->uid);
         // fill all
         $plan->fillAll($request);
-        
+
         // save posted data
         if ($request->isMethod('post')) {
             $validator = $plan->validate($request);
-            
+
             if ($validator->fails()) {
                 return redirect()
                     ->action('Admin\PlanController@wizardSendingServer', $plan->uid)
                     ->withErrors($validator)
                     ->withInput();
             }
-            
+
             $plan->saveAll($request);
-            
+
              return 'success';
         }
-        
+
         return view('admin.plans.wizard_sending_server', [
             'plan' => $plan,
         ]);

@@ -30,7 +30,7 @@ class SubscriptionController extends Controller
             $request->merge(array("customer_admin_id" => $request->user()->admin->id));
         }
         $subscriptions = Subscription::all();
-        
+
         $plan = null;
         if ($request->plan_uid) {
             $plan = Plan::findByUid($request->plan_uid);
@@ -50,11 +50,11 @@ class SubscriptionController extends Controller
     public function listing(Request $request)
     {
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
-        
+
         if(!$gateway) {
             return view('admin.subscriptions.no_gateway');
         }
-        
+
         // authorize
         if (!$request->user()->admin->can('read', new Subscription())) {
             return $this->notAuthorized();
@@ -64,23 +64,23 @@ class SubscriptionController extends Controller
         if (!$request->user()->admin->can('readAll', new Subscription())) {
             $request->merge(array("customer_admin_id" => $request->user()->admin->id));
         }
-        
+
         $subscriptions = Subscription::select('subscriptions.*');
-        
+
         if ($request->filters) {
             if (isset($request->filters["customer_uid"])) {
                 $subscriptions = $subscriptions->where('user_id', $request->filters["customer_uid"]);
             }
-            
+
             if (isset($request->filters["plan_uid"])) {
                 $subscriptions = $subscriptions->where('plan_id', $request->filters["plan_uid"]);
             }
         }
-        
+
         if (!empty($request->sort_order)) {
             $subscriptions = $subscriptions->orderBy($request->sort_order, $request->sort_direction);
         }
-        
+
         $subscriptions = $subscriptions->paginate($request->per_page);
 
         return view('admin.subscriptions._list', [
@@ -88,7 +88,7 @@ class SubscriptionController extends Controller
             'gateway' => $gateway,
         ]);
     }
-    
+
     /**
      * Cancel subscription at the end of current period.
      *
@@ -102,13 +102,13 @@ class SubscriptionController extends Controller
         $subscription = Subscription::findByUid($request->id);
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
 
-        if ($request->user()->admin->can('cancel', $subscription)) {        
+        if ($request->user()->admin->can('cancel', $subscription)) {
             $subscription->cancel($gateway);
         }
-        
+
         echo trans('messages.subscription.cancelled');
     }
-    
+
     /**
      * Cancel subscription at the end of current period.
      *
@@ -122,13 +122,13 @@ class SubscriptionController extends Controller
         $subscription = Subscription::findByUid($request->id);
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
 
-        if ($request->user()->admin->can('resume', $subscription)) {        
+        if ($request->user()->admin->can('resume', $subscription)) {
             $subscription->resume($gateway);
         }
-        
+
         echo trans('messages.subscription.resumed');
     }
-    
+
     /**
      * Cancel now subscription at the end of current period.
      *
@@ -142,13 +142,13 @@ class SubscriptionController extends Controller
         $subscription = Subscription::findByUid($request->id);
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
 
-        if ($request->user()->admin->can('cancelNow', $subscription)) {        
+        if ($request->user()->admin->can('cancelNow', $subscription)) {
             $subscription->cancelNow($gateway);
         }
 
         echo trans('messages.subscription.cancelled_now');
     }
-    
+
     /**
      * Change plan.
      *
@@ -163,25 +163,25 @@ class SubscriptionController extends Controller
         $plan = Plan::findByUid($request->plan_uid);
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
 
-        if (! $request->user()->admin->can('changePlan', $subscription)) {        
+        if (! $request->user()->admin->can('changePlan', $subscription)) {
             return $this->notAuthorized();
         }
-        
+
         if ($request->isMethod('post')) {
             if ($request->user()->customer->can('changePlan', $subscription)) {
-                $subscription->user->changePlan($plan, $gateway);
-                
+                $customer->user->changePlan($plan, $gateway);
+
                 // Redirect to my subscription page
                 $request->session()->flash('alert-success', trans('messages.subscription.plan_changed'));
                 return back();
             }
         }
-        
+
         return view('admin.subscriptions.change_plan', [
             'subscription' => $subscription,
         ]);
     }
-    
+
     /**
      * Subscription invoices.
      *
@@ -194,13 +194,13 @@ class SubscriptionController extends Controller
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
-        
+
         return view('admin.subscriptions.invoices', [
             'subscription' => $subscription,
             'gateway' => $gateway,
         ]);
     }
-    
+
     /**
      * Approve subscription pending.
      *
@@ -213,7 +213,7 @@ class SubscriptionController extends Controller
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
-        
+
         try {
             $subscription->setDone($gateway);
         } catch (\Exception $ex) {
@@ -223,14 +223,14 @@ class SubscriptionController extends Controller
             ]);
             return;
         }
-        
+
         echo json_encode([
             'status' => 'success',
             'message' => trans('messages.subscription.set_done.success'),
         ]);
         return;
     }
-    
+
     /**
      * Approve subscription pending.
      *
@@ -243,7 +243,7 @@ class SubscriptionController extends Controller
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
-        
+
         try {
             $subscription->approvePendingInvoice($gateway);
         } catch (\Exception $ex) {
@@ -253,14 +253,14 @@ class SubscriptionController extends Controller
             ]);
             return;
         }
-        
+
         echo json_encode([
             'status' => 'success',
             'message' => trans('messages.subscription.approve_pending_invoice.success'),
         ]);
         return;
     }
-    
+
     /**
      * Download raw invoices.
      *
@@ -272,11 +272,30 @@ class SubscriptionController extends Controller
     {
         $subscription = Subscription::findByUid($id);
         $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
-        
-        
+
+
         return response(var_export($subscription->getRawInvoices($gatewayService)), 200, [
             'Content-Type' => 'application/json',
             'Content-Disposition' => 'attachment; filename="payment_logs.txt"',
         ]);
+    }
+
+    /**
+     * Delete subscription.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function delete(Request $request)
+    {
+        // Get current subscription
+        $subscription = Subscription::findByUid($request->id);
+
+        if ($request->user()->admin->can('delete', $subscription)) {
+            $subscription->delete();
+        }
+
+        echo trans('messages.subscription.deleted');
     }
 }

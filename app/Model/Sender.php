@@ -33,18 +33,18 @@ class Sender extends Model
     const STATUS_NEW = 'new';
     const STATUS_PENDING = 'pending';
     const STATUS_VERIFIED = 'verified';
-    
+
     // Verifiation types
     const VERIFICATION_TYPE_ACELLE = 'acelle';
     const VERIFICATION_TYPE_AMAZON_SES = 'amazon_ses';
-    
+
     /**
      * Items per page.
      *
      * @var array
      */
     public static $itemsPerPage = 25;
-    
+
     /**
      * Filter items.
      *
@@ -72,12 +72,12 @@ class Sender extends Model
 
         return $query;
     }
-    
+
     public function customer()
     {
         return $this->belongsTo('Acelle\Model\Customer');
     }
-    
+
     public static function pending()
     {
         return self::where('status', self::STATUS_PENDING);
@@ -98,7 +98,7 @@ class Sender extends Model
 
         return $query;
     }
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -107,7 +107,7 @@ class Sender extends Model
     protected $fillable = [
         'name', 'email', 'type',
     ];
-    
+
     /**
      * The rules for validation.
      *
@@ -122,7 +122,7 @@ class Sender extends Model
 
         return $rules;
     }
-    
+
     /**
      * The rules for validation.
      *
@@ -136,7 +136,7 @@ class Sender extends Model
 
         return $rules;
     }
-    
+
     /**
      * Set sender status to pending.
      *
@@ -147,7 +147,7 @@ class Sender extends Model
         $this->status = Sender::STATUS_PENDING;
         $this->save();
     }
-    
+
     /**
      * The rules for verification.
      *
@@ -161,7 +161,7 @@ class Sender extends Model
 
         return $rules;
     }
-    
+
     /**
      * Bootstrap any application services.
      */
@@ -179,7 +179,7 @@ class Sender extends Model
             $item->uid = $uid;
         });
     }
-    
+
     /**
      * Find item by uid.
      *
@@ -189,7 +189,7 @@ class Sender extends Model
     {
         return self::where('uid', '=', $uid)->first();
     }
-    
+
     /**
      * Verification type select options.
      *
@@ -198,9 +198,9 @@ class Sender extends Model
     public static function verificationTypeSelectOptions()
     {
         $options = [
-            ['value' => self::VERIFICATION_TYPE_ACELLE, 'text' => trans('messages.sender.type.' . self::VERIFICATION_TYPE_ACELLE)],
+            ['value' => self::VERIFICATION_TYPE_ACELLE, 'text' => \Acelle\Model\Setting::get('site_name')],
         ];
-        
+
         // @todo: code smell!
         if (Setting::get('aws_verification_server') != 'no') {
             $options[] = ['value' => self::VERIFICATION_TYPE_AMAZON_SES, 'text' => trans('messages.sender.type.' . self::VERIFICATION_TYPE_AMAZON_SES)];
@@ -208,7 +208,7 @@ class Sender extends Model
 
         return $options;
     }
-    
+
     /**
      * Check if sender is verified.
      *
@@ -218,7 +218,7 @@ class Sender extends Model
     {
         return $this->status == Sender::STATUS_VERIFIED;
     }
-    
+
     /**
      * Get domain name from email.
      *
@@ -228,7 +228,7 @@ class Sender extends Model
     {
         return explode('@', $this->email)[1];
     }
-    
+
     /**
      * Get domain name from email.
      *
@@ -238,7 +238,7 @@ class Sender extends Model
     {
         return self::where('status', '=', self::STATUS_VERIFIED);
     }
-    
+
     /**
      * Verify sender.
      *
@@ -253,11 +253,11 @@ class Sender extends Model
             $domain = extract_domain($this->email);
             $this->status = $this->customer->getSendingDomains()->contains(function($r) use($domain) { return $r->name == $domain; }) ? self::STATUS_VERIFIED : self::STATUS_PENDING;
         }
-        
+
         $this->save();
         LaravelLog::info(sprintf('Verify sender %s (%s) done, status: %s', $this->email, $this->type, $this->status));
     }
-    
+
     /**
      * Get AWS Verification Server.
      *
@@ -267,7 +267,7 @@ class Sender extends Model
     {
         return SendingServerAmazonApi::findByUid(Setting::get('aws_verification_server'));
     }
-    
+
     /**
      * Get AWS Verification Server.
      *
