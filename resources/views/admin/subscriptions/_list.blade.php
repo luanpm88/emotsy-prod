@@ -5,23 +5,29 @@
 		@foreach ($subscriptions as $key => $subscription)
 			<tr>
 				<td width="1%">
-					<img width="80" class="img-circle mr-10" src="{{ action('CustomerController@avatar', $subscription->user->uid) }}" alt="">
+					@if ($subscription->ended())
+						<i class="icon-dash bg-grey subscription-status-icon"></i>
+					@elseif ($subscription->isPending() || $subscription->isNew())
+						<i class="icon-sync bg-warning subscription-status-icon"></i>
+					@else
+						<i class="icon-checkmark bg-success subscription-status-icon"></i>
+					@endif
 				</td>
 				<td>
 					<h5 class="no-margin text-bold">
-						<a class="kq_search" href="#">
-							{{ $subscription->user->displayName() }}
-						</a>
+						<span class="kq_search" href="#">
+							{{ $subscription->plan->name }}
+						</span>
 					</h5>
-					<div class="text-muted">{{ $subscription->user->user->email }}</div>
+					<div class="text-muted">{{ trans('messages.subscribed_by', ['name' => $subscription->user->displayName()]) }}</div>
 				</td>
-				<td>
+				<td width="15%">
                     <h5 class="no-margin">
-                        <span class="kq_search">{{ $subscription->plan->name }}</span>
+                        <span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->created_at) }}</span>
                     </h5>
-                    <span class="text-muted2">{{ trans('messages.plan') }}</span>
+                    <span class="text-muted2">{{ trans('messages.subscribed_on') }}</span>
                 </td>
-				<td>
+				<td width="15%">
 					@if ($subscription->ended())
 						<h5 class="no-margin">
 							<span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
@@ -53,12 +59,14 @@
 							@if ($subscription->checkPendingPaymentForFuture($gateway))
 								<span class="label label-flat bg-warning">{{ trans('messages.invoice.status.pending') }}</span>
 							@endif
-							<span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>
+							@if (!$subscription->recurring())
+								<span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>
+							@endif
 							@if ($subscription->ended())
 								<span class="label label-flat bg-ended">{{ trans('messages.subscription.status.ended') }}</span>
 							@endif
 							@if ($subscription->cancelled() && !$subscription->ended())
-								<span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.cancelled') }}</span>
+								<!--<span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.cancelled') }}</span>-->
 							@endif
 							@if ($subscription->recurring())
 								<span class="label label-flat bg-info">{{ trans('messages.subscription.status.recurring') }}</span>
