@@ -17,6 +17,7 @@ use Acelle\Model\SendingServerElasticEmail;
 use Acelle\Model\SendingServerSparkPost;
 use Acelle\Model\FeedbackLog;
 use Acelle\Model\Blacklist;
+use Acelle\Library\Notification\BackendError as BackendErrorNotification;
 
 class DeliveryController extends Controller
 {
@@ -175,17 +176,16 @@ class DeliveryController extends Controller
         MailLog::configure(storage_path().'/logs/handler-aws.log');
 
         try {
-            MailLog::info('validating message...');
+            MailLog::info('Validating message...');
             // Create a message from the post data and validate its signature
             $message = Message::fromRawPostData();
             $validator = new MessageValidator();
             $validator->validate($message);
-            MailLog::info('message validated!');
+            MailLog::info('Message validated!');
         } catch (\Exception $e) {
             // Pretend we're not here if the message is invalid
-            MailLog::warning('not an Amazon push');
             MailLog::warning($e->getMessage());
-
+            BackendErrorNotification::warning('Cannot handle AWS bounce/feedback. '.$e->getMessage(), false);
             return;
         }
 
