@@ -18,6 +18,8 @@ use Acelle\Model\SendingServerSparkPost;
 use Acelle\Model\FeedbackLog;
 use Acelle\Model\Blacklist;
 use Acelle\Library\Notification\BackendError as BackendErrorNotification;
+use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Validator;
 
 class DeliveryController extends Controller
 {
@@ -274,5 +276,87 @@ class DeliveryController extends Controller
                 MailLog::warning('Cannot mark subscriber as Abuse-Reported. ' . $e->getMessage());
             }
         }
+    }
+    
+    /**
+     * Receive bounce/feedback report via API.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function report(Request $request)
+    {
+        // Retrieve input
+        $params = $request->all();
+                
+        // Validation rules
+        $rules = [
+            'event' => 'required|in:bounce,feedback',
+            'message_id' => 'required',
+        ];
+        
+        // Custom error messages
+        $msg = [
+            'event.in' => 'Invalid event. Possible values are: bounce, feedback',
+            'bounce_type.in' => 'Invalid bounce type. Possible values are: hard, soft',
+            'feedback_type.in' => 'Invalid feedback type. Possible values are: spam, abuse',
+        ];
+        
+        // Execute validation
+        $validation = Validator::make($params, $rules, $msg);
+        
+        // Rules for bounce
+        $validation->sometimes('bounce_type', 'required|in:hard,soft', function($input) {
+            return $input->event == 'bounce';
+        });
+        
+        // Rules for feedback
+        $validation->sometimes('feedback_type', 'required|in:spam,abuse', function($input) {
+            return $input->event == 'feedback';
+        });
+        
+        // Return 400 if validation fails
+        if ($validation->fails()) {
+            return response()->json(['error' => $validation->errors()->toArray()], 400);
+        }
+        
+        // Proceed with blacklisting
+        if ($params['event'] == 'feedback') {
+            $feedbackLog = new FeedbackLog();
+            $feedbackLog->runtime_message_id = StringHelper::cleanupMessageId($params['message_id']);
+            // For Mailgun, runtime_message_id EQUIV. message_id
+            $feedbackLog->message_id = $feedbackLog->runtime_message_id;
+            $feedbackLog->feedback_type = $params['feedback_type'];
+            $feedbackLog->raw_feedback_content = (array_key_exists('response', $params)) ? $params['response'] : '';
+            $feedbackLog->save();
+            MailLog::info('Feedback recorded (from API) for message '.$feedbackLog->runtime_message_id);
+            
+            $subscriber = $feedbackLog->findSubscriberByRuntimeMessageId();
+            if (!is_null($subscriber)) {
+                MailLog::info('Adding email to abuse list');
+                $feedbackLog->findSubscriberByRuntimeMessageId()->markAsSpamReported();
+            } else {
+                MailLog::warning('Subscriber not found');
+            }
+        } elseif ($params['event'] == 'bounce') {
+            $bounceLog = new BounceLog();
+            $bounceLog->runtime_message_id = StringHelper::cleanupMessageId($params['message_id']);
+            // For Mailgun, runtime_message_id EQUIV. message_id
+            $bounceLog->message_id = $bounceLog->runtime_message_id;
+            $bounceLog->bounce_type = $params['bounce_type'];
+            $bounceLog->raw = (array_key_exists('response', $params)) ? $params['response'] : '';
+            $bounceLog->save();
+            MailLog::info('Bounce recorded for message '.$bounceLog->runtime_message_id);
+            $subscriber = $bounceLog->findSubscriberByRuntimeMessageId();
+            if (!is_null($subscriber)) {
+                MailLog::info('Adding email to blacklist');
+                $bounceLog->findSubscriberByRuntimeMessageId()->sendToBlacklist($bounceLog->raw);    
+            } else {
+                MailLog::warning('Subscriber not found');
+            }
+        }
+        
+        return response()->json(['status' => 'ok'], 200);
     }
 }
