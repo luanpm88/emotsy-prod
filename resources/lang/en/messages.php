@@ -2140,4 +2140,7 @@
   'senders.empty_verified_domain_sender.warning' => 'You have no verified sender.
     Add and verify a <a href=":domain_link" target="blank">[domain]</a> or
     <a href=":sender_link" target="blank">[email address]</a> to send email on behalf of.',
+  'login.email' => 'Email',
+  'login.password' => 'Password',
+  'login.remember_me' => 'Remember me on this device',
 ) ?>
