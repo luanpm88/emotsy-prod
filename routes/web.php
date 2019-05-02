@@ -11,6 +11,15 @@
 |
 */
 
+// UX routes
+Route::get('/assets/ux/{name?}', [ function ($name) {
+    $path = base_path("resources/views/ux/assets/$name");
+    $mime_type = \Acelle\Library\Tool::getFileType($path);
+    if (\File::exists($path)) {
+        return response()->file($path, array('Content-Type' => $mime_type));
+    }
+}])->where('name', '.+');
+
 // Automation
 Route::resource('automation', 'AutomationController');
 
