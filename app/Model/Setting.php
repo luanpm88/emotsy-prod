@@ -438,6 +438,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'theme.beta' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
             
         ];
     }
