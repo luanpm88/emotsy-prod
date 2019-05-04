@@ -57,7 +57,6 @@ rm -fr storage/framework/sessions/*
 rm -fr storage/installed
 touch storage/recache
 touch storage/logs/mail.log
-touch storage/logs/laravel.log
 rm -fr .authenticate
 rm -fr .git*
 rm -fr database/seeds/DatabaseSeeder.php

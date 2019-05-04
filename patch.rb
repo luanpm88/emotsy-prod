@@ -7,7 +7,7 @@ require 'json'
 # Settings
 old_versions = ['4.0.0']              # sort by chronological order
 packages = []                         # vendor packages to be replaced, for example packages = ['lawepham']
-dirs = []                             # for example dirs = ['resources/lang/default']
+dirs = ['resources/lang/default']     # for example dirs = ['resources/lang/default']
 
 # Auto setting
 release_date = Time.now.to_s

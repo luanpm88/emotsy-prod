@@ -2572,4 +2572,7 @@
   'current_payment_intro' => 'Payment for your service plans are handled by <strong>:name</strong>. Click <a href=":link"><strong>here</strong></a> to manage payment gateways.',
   'subscribed_by' => 'Subscribed by :name',
   'subscribed_on' => 'Subscribed on',
+  'login.email' => 'Email',
+  'login.password' => 'Password',
+  'login.remember_me' => 'Remember me on this device',
 ) ?>

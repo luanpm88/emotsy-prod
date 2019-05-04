@@ -199,8 +199,10 @@ return [
         Intervention\Image\ImageServiceProvider::class,
         Barryvdh\Queue\AsyncServiceProvider::class,
         Chumper\Zipper\ZipperServiceProvider::class,
+
         // Laravel\Cashier\CashierServiceProvider::class,
         Acelle\Cashier\CashierServiceProvider::class,
+        TwigBridge\ServiceProvider::class,
     ],
 
     /*
@@ -253,6 +255,7 @@ return [
         'Yaml' => Symfony\Component\Yaml\Yaml::class,
         'Zipper' => Chumper\Zipper\Zipper::class,
         'Geoip'=> Lawepham\Geoip\Facades\LaweGeoipFacade::class,
+        'Twig' => TwigBridge\Facade\Twig::class,        
     ],
 
     /*

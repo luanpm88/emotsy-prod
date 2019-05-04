@@ -166,7 +166,7 @@
 						}
 
 						if (result.data.status == "running" || result.data.status == "new") {
-							setTimeout("check_process()", 1000);
+							setTimeout("check_process()", 3000);
 							form.find(".before").addClass('hide');
 							form.find(".processing").removeClass('hide');
 							form.find('.finish').addClass('hide');
@@ -236,7 +236,7 @@
 					success: function (data) {
 						check_process();
 
-						if(data == 'max_file_upload') {
+						if (data == 'max_file_upload') {
 							// Success alert
 							swal({
 								title: '{{ trans('messages.file_import_to_large') }}',
@@ -254,7 +254,19 @@
 					cache: false,
 					contentType: false,
 					processData: false
-				});
+				}).fail(function( jqXHR, textStatus, errorThrown ) {
+                    swal({
+                        title: errorThrown,
+                        text: "",
+                        confirmButtonColor: "#00695C",
+                        type: "error",
+                        allowOutsideClick: true,
+                        confirmButtonText: LANG_OK,
+                    });
+
+                    form.find('.retry').trigger('click');
+                    return;
+                });
 			}
 
 			return false;
