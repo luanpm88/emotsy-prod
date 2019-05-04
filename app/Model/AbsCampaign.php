@@ -1058,7 +1058,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->clickedLinkCount() / $url_count) * 100, 0);
+        return round(($this->clickedLinkCount() / $url_count), 0);
     }
 
     /**
@@ -1086,7 +1086,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->clickCount() / $open_count) * 100, 0);
+        return round(($this->clickCount() / $open_count), 0);
     }
 
     /**
@@ -1102,7 +1102,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->clickedEmailsCount() / $open_count) * 100, 2);
+        return round(($this->clickedEmailsCount() / $open_count), 2);
     }
 
     /**
@@ -1118,7 +1118,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->clickCount() / $open_count) * 100, 0);
+        return round(($this->clickCount() / $open_count), 0);
     }
 
     /**
@@ -1182,7 +1182,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->openCount() / $delivered_count) * 100, 0);
+        return round(($this->openCount() / $delivered_count), 0);
     }
 
     /**
@@ -1214,7 +1214,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->openUniqCount() / $delivered_count) * 100, 2);
+        return round(($this->openUniqCount() / $delivered_count), 2);
     }
 
     /**
@@ -1240,7 +1240,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->feedbackCount() / $delivered_count) * 100, 0);
+        return round(($this->feedbackCount() / $delivered_count), 0);
     }
 
     /**
@@ -1266,7 +1266,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->bounceCount() / $delivered_count) * 100, 0);
+        return round(($this->bounceCount() / $delivered_count), 0);
     }
 
     /**
@@ -1292,7 +1292,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->hardBounceCount() / $delivered_processed_count) * 100, 0);
+        return round(($this->hardBounceCount() / $delivered_processed_count), 0);
     }
 
     /**
@@ -1318,7 +1318,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->softBounceCount() / $tracking_count) * 100, 0);
+        return round(($this->softBounceCount() / $tracking_count), 0);
     }
 
     /**
@@ -1344,7 +1344,7 @@ abstract class AbsCampaign extends Model
             return 0;
         }
 
-        return round(($this->unsubscribeCount() / $delivered_count) * 100, 0);
+        return round(($this->unsubscribeCount() / $delivered_count), 0);
     }
 
     /**
