@@ -4,6 +4,7 @@ namespace Acelle\Http\Controllers\Auth;
 
 use Acelle\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Acelle\Model\Setting;
 
 class LoginController extends Controller
 {
@@ -49,16 +50,16 @@ class LoginController extends Controller
             $this->username() => 'required',
             'password' => 'required'
         ];
-        
-        if (\Acelle\Model\Setting::get('login_recaptcha') == 'yes') {
-            if(!\Acelle\Library\Tool::checkReCaptcha($request)) {
+
+        if (Setting::isYes('login_recaptcha') && !Setting::isYes('theme.beta')) {
+            if (!\Acelle\Library\Tool::checkReCaptcha($request)) {
                 $rules['recaptcha_invalid'] = 'required';
             }
         }
-        
+
         $this->validate($request, $rules);
     }
-    
+
     public function authenticated($request, $user)
     {
         // If user is not activated
