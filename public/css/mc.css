@@ -203,16 +203,17 @@ h2.mc-h2 {
 }
 .mc-modal .modal-header {
     position: static !important;
-    background-color: #efeeea;
+    background-color: #fff;
     outline: 0 none;
     height: auto;
     width: 100% !important;
     font-weight: 500;
     text-align: center;
     padding: 18px;
+    border-bottom: solid 1px #bdbbb9;
 }
 .mc-modal .modal-body {
-    padding: 30px 40px 15px 40px;
+    padding: 30px 40px 30px 40px;
 }
 .mc-modal .modal-footer {
     padding: 15px 40px 30px 40px;
@@ -253,6 +254,7 @@ h2.mc-h2 {
     font-weight: normal;
     margin-top: -20px;
     margin-right: 0px;
+    font-family: serif;
 }
 .slider.slider-horizontal {
   width: 100%;
@@ -485,6 +487,7 @@ stat .stat-head {
 }
 .mc-modal h6 {
   margin: 0;
+  font-weight: normal;
 }
 .checkbox.disabled .checker span.checked {
   background: #777;

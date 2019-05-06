@@ -58,11 +58,11 @@
 
 	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#link_confirm_model">Open modal</a>
 	<!-- Basic modal -->
-	<div id="link_confirm_model" class="modal fade">
+	<div id="link_confirm_model" class="modal mc-modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
-					<div class="modal-header bg-info-800">
+					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
@@ -74,8 +74,8 @@
 					</div>
 
 					<div class="modal-footer">
-						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
-						<a class="btn bg-info-800 link-confirm-button ajax_link">{{ trans('messages.confirm') }}</a>
+						<button type="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+						<a class="btn btn-mc_primary link-confirm-button ajax_link">{{ trans('messages.confirm') }}</a>
 					</div>
 				</form>
 			</div>

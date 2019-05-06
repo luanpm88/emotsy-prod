@@ -26,7 +26,7 @@
                         </span>
                     </h5>
                     @if (is_object($plan->primarySendingServer()))
-                        {{ trans('messages.plans.send_via.wording', ['server' => $plan->primarySendingServer()->name]) }} -                         
+                        {{ trans('messages.plans.send_via.wording', ['server' => trans('messages.' . $plan->primarySendingServer()->type)]) }} -                         
                     @else
                         <span class="text-danger">{{ trans('messages.plans.send_via.empty') }}</span><br/>
                     @endif

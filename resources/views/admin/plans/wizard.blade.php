@@ -38,6 +38,12 @@
                         'rules' => $plan->generalRules()
                     ])
                     
+                    <div class="select-custom-2" data-url="{{ action('Admin\PlanController@billingCycle', '00') }}">
+                        @include ('admin.plans._billing_cycle', [
+                            'plan' => $plan,
+                        ])
+                    </div>
+                    
                     @include('helpers.form_control', [
                         'type' => 'select_ajax',
                         'name' => 'plan[general][currency_id]',
@@ -77,4 +83,6 @@
         
         return false;
     });
+    
+    $('.select-custom-2').select_custom();
 </script>
