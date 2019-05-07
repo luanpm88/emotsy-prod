@@ -632,7 +632,7 @@
   'open_map' => 'Opens - Map',
   'last_open' => 'Last open',
   'login_as_this_user' => 'Login as this user',
-  'current_login_as' => 'You are currently logged in as <span class="text-semibold">:name</span>',
+  'current_login_as' => 'You are currently logged in as <strong>:name</strong>',
   'click_to_return_to_origin_user' => 'Click <a href=":link" class="text-semibold text-white">here</a> to return to your account',
   'no_activity_logs' => 'You haven\'t had any activities recently',
   'activity_log' => 'Activity log',
@@ -2575,4 +2575,9 @@
   'login.email' => 'Email',
   'login.password' => 'Password',
   'login.remember_me' => 'Remember me on this device',
+  'customer.admin_area' => 'Admin Area',
+  'customer.back_to_admin' => 'Back to Admin',
+  'subscription.start_from' => 'Start from',
+  'subscription.next_billing_date' => 'Next billing date',
+  'profile_of' => ':name\'s information',
 ) ?>

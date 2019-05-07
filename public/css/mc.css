@@ -541,3 +541,26 @@ stat .stat-head {
     padding: 10px;
     margin-right: 13px;
 }
+.user-switch-area {
+    position: fixed;
+    top: 100px;
+    right: 10px;
+    z-index: 10000;
+    border: solid 1px #ccc;
+    border-radius: 100%;
+    height: 40px;
+    width: 40px;
+    background: #fff;
+    padding: 7px 6px;
+    color: #333;
+    opacity: 0.9;
+}
+.user-switch-area i {
+    font-size: 24px;
+}
+.user-switch-area:hover {
+  opacity: 1;
+}
+.user-switch-area:hover i {
+  color: #333;
+}

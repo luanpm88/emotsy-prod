@@ -174,18 +174,15 @@
 		</div>
 	</div>
 	<!-- /basic modal -->
+	
+	@if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
+		<a href="{{ action('CustomerController@adminArea') }}" class="user-switch-area mc-modal-control">
+			<i class="icon-vcard"></i>
+		</a>
+	@endif
 
 	<div class="ui-pnotify bg-warning" style="background-color: rgba(255,87,34,0.7); width: auto; right: 20px; top: auto; bottom: 20px; opacity: 1; display: block; overflow: visible; cursor: auto;">
 		<div class="btn-close-pnotify"><i class="icon-cross2"></i></div>
-		@if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
-			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-				<h4 class="ui-pnotify-title">{!! trans('messages.current_login_as', ["name" => Auth::user()->customer->displayName()]) !!}</h4>
-				<div class="ui-pnotify-text">
-					{!! trans('messages.click_to_return_to_origin_user', ["link" => action("CustomerController@loginBack")]) !!}
-				</div>
-				<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
-			</div>
-		@endif
 		@if (null !== Session::get('orig_admin_id') && Auth::user()->admin)
 			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 				<h4 class="ui-pnotify-title">{!! trans('messages.current_login_as', ["name" => Auth::user()->admin->displayName()]) !!}</h4>
