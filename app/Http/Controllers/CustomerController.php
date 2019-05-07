@@ -79,10 +79,13 @@ class CustomerController extends Controller
         $customer = $request->user()->customer;
         $subscription = $customer->subscription();
         
-        $next_billing_date = $subscription->ends_at;
-        if($subscription->active()) {
-            $subscriptionParam = $customer->retrieveSubscription($gateway);
-            $next_billing_date = \Carbon\Carbon::createFromTimestamp($subscriptionParam->currentPeriodEnd);
+        $next_billing_date = null;
+        if (is_object($subscription)) {
+            $next_billing_date = $subscription->ends_at;
+            if($subscription->active()) {
+                $subscriptionParam = $customer->retrieveSubscription($gateway);
+                $next_billing_date = \Carbon\Carbon::createFromTimestamp($subscriptionParam->currentPeriodEnd);
+            }
         }
         
         return view('customers.admin_area', [

@@ -542,25 +542,32 @@ stat .stat-head {
     margin-right: 13px;
 }
 .user-switch-area {
+    vertical-align: sub;
+    transform: rotate(90deg);
+    white-space: nowrap;
     position: fixed;
     top: 100px;
-    right: 10px;
-    z-index: 10000;
-    border: solid 1px #ccc;
-    border-radius: 100%;
-    height: 40px;
-    width: 40px;
+    right: -35px;
+    border: solid 1px #F44336;
+    border-radius: 0 0 3px 3px;
+    height: auto;
+    width: auto;
     background: #fff;
-    padding: 7px 6px;
+    padding: 4px 10px;
     color: #333;
-    opacity: 0.9;
+    opacity: 0.85;
+    font-size: 13px;
+    background: #F44336;
+    font-weight: 600;
+    color: #fff;
 }
 .user-switch-area i {
     font-size: 24px;
 }
-.user-switch-area:hover {
+.user-switch-area:hover, .user-switch-area:focus {
   opacity: 1;
+  color: #fff;
 }
 .user-switch-area:hover i {
-  color: #333;
+  color: #fff;
 }

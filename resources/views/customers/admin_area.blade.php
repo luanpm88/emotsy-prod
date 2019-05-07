@@ -7,7 +7,7 @@
 <div class="modal-body">
     <p class="alert alert-info">{!! trans('messages.current_login_as', ["name" => Auth::user()->customer->displayName()]) !!}</p>
 
-    <h5 class="mt-0 mb-10"><i class="icon-magazine"></i> {{ trans('messages.profile_of', ['name' => $customer->displayName()]) }}</h5>
+    <h5 class="mt-0 mb-10"><i class="icon-magazine"></i> {{ trans('messages.subscription_of', ['name' => $customer->displayName()]) }}</h5>
     
     @if (isset($subscription))
         <ul class="dotted-list topborder section">
@@ -99,7 +99,10 @@
                 </div>
             </li>
         </ul>
-        
+    @else
+        <div class="alert alert-warning mb-0">
+            {{ trans('messages.customer_has_no_plan') }}
+        </div>
     @endif
 </div>
 <div class="modal-footer text-left">

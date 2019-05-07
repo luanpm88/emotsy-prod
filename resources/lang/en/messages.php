@@ -2581,11 +2581,12 @@
   'customer.back_to_admin' => 'Back to Admin',
   'subscription.start_from' => 'Start from',
   'subscription.next_billing_date' => 'Next billing date',
-  'profile_of' => ':name\'s information',
+  'subscription_of' => ':name\'s subscription',
   'invoice.status.claimed' => 'Payment claimed',
   'subscription.review_payment_notice' => 'Review payment guide',
   'subscription.claim_payment' => 'I have paid already!',
   'subscription.claim_payment.confirm' => 'You\'re about to claim that you have already paid the plan.',
   'invoice.status.future_payment.pending' => 'Next invoice is pending',
   'invoice.status.future_payment.claimed' => 'Next invoice was claimed',
+  'customer_has_no_plan' => 'Customer doesn\'t have any payment method',
 ) ?>

@@ -177,7 +177,7 @@
 	
 	@if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
 		<a href="{{ action('CustomerController@adminArea') }}" class="user-switch-area mc-modal-control">
-			<i class="icon-vcard"></i>
+			{{ trans('messages.customer.admin_area') }}
 		</a>
 	@endif
 
