@@ -138,6 +138,8 @@ Route::group(['middleware' => ['not_installed']], function () {
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
     // Account subscription
+    
+    Route::post('subscription/payment-claim', 'AccountSubscriptionController@paymentClaim');
     Route::get('subscriptions/invoices/download-raw', 'AccountSubscriptionController@downloadRawInvoice');
     Route::match(['get', 'post'], 'subscriptions/change-plan-no-recurring/{plan_id}', 'AccountSubscriptionController@changePlanNoRecurring');
     Route::match(['get', 'post'], 'subscription/renew', 'AccountSubscriptionController@renew');

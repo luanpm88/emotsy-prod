@@ -444,4 +444,24 @@ class AccountSubscriptionController extends Controller
             'Content-Disposition' => 'attachment; filename="payment_logs.txt"',
         ]);
     }
+    
+    /**
+     * Claim subscription.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function paymentClaim(Request $request)
+    {
+        // Get current customer
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription();
+        
+        // subscribe to plan
+        $subscription->claimPayment();
+        
+        // Redirect to my subscription page
+        return redirect()->action('AccountSubscriptionController@index');
+    }
 }
