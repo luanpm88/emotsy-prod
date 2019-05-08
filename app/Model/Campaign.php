@@ -82,6 +82,7 @@ class Campaign extends AbsCampaign
     {
         // processes to fork
         $count = (int) $this->customer->getOption('max_process');
+        $count = ($count > 2) ? 2 : $count; // @todo do not use more than 2 processes
 
         MailLog::info("Forking {$count} process(es)");
         $parentPid = getmypid();
