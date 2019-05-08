@@ -138,6 +138,8 @@ Route::group(['middleware' => ['not_installed']], function () {
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
     // Account subscription
+    
+    Route::post('subscription/payment-claim', 'AccountSubscriptionController@paymentClaim');
     Route::get('subscriptions/invoices/download-raw', 'AccountSubscriptionController@downloadRawInvoice');
     Route::match(['get', 'post'], 'subscriptions/change-plan-no-recurring/{plan_id}', 'AccountSubscriptionController@changePlanNoRecurring');
     Route::match(['get', 'post'], 'subscription/renew', 'AccountSubscriptionController@renew');
@@ -153,6 +155,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('subscription/preview', 'AccountSubscriptionController@preview');
     Route::get('subscription/new', 'AccountSubscriptionController@new');
     Route::get('subscription', 'AccountSubscriptionController@index');
+    
+    // Customer login back
+    Route::get('customers/login-back', 'CustomerController@loginBack');
+    Route::get('customers/admin-area', 'CustomerController@adminArea');
 });
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscription']], function () {
@@ -337,8 +343,6 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::resource('campaigns', 'CampaignController');
     Route::get('campaigns/{uid}/edit', 'CampaignController@edit');
     Route::patch('campaigns/{uid}/update', 'CampaignController@update');
-
-    Route::get('customers/login-back', 'CustomerController@loginBack');
 
     Route::get('users/login-back', 'UserController@loginBack');
 

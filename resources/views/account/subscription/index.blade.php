@@ -28,7 +28,7 @@
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6">
         
-            @if ($hasPendingPaymentForFuture)                
+            @if ($hasPendingPaymentForFuture)
                 @include('account.subscription.future_pending._' . \Acelle\Model\Setting::get('system.payment_gateway'))
             @elseif ($goingToExpire && (\Acelle\Model\Setting::get('system.renew_free_plan') == 'yes' || (\Acelle\Model\Setting::get('system.renew_free_plan') == 'no' && !$subscription->plan->isFree())))
                 <p class="alert alert-warning mb-40">

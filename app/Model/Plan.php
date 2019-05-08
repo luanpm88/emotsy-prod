@@ -1013,8 +1013,12 @@ class Plan extends Model implements BillablePlanInterface
     public function fillAll($request)
     {
         // if has general params
-        if (isset($request->plan['general'])) {            
-            $this->fill($request->plan['general']);            
+        if (isset($request->plan['general'])) {
+            $params = $request->plan['general'];
+            if ($params['frequency_amount'] == '') {
+                $params['frequency_amount'] = 1;
+            }
+            $this->fill($params);            
         }
         
         // if has options params

@@ -632,7 +632,7 @@
   'open_map' => 'Opens - Map',
   'last_open' => 'Last open',
   'login_as_this_user' => 'Login as this user',
-  'current_login_as' => 'You are currently logged in as <span class="text-semibold">:name</span>',
+  'current_login_as' => 'You are currently logged in as <strong>:name</strong>',
   'click_to_return_to_origin_user' => 'Click <a href=":link" class="text-semibold text-white">here</a> to return to your account',
   'no_activity_logs' => 'You haven\'t had any activities recently',
   'activity_log' => 'Activity log',
@@ -2487,8 +2487,10 @@
   'subscription.future_pending.coinpayments' => 'You have currently payment pending. Please wait for processing your payment.
     If you haven\'t purchase the plan, please follow the checkout guide from CointPayments.net in your
     mailbox with title <strong class="text-nowrap">[CoinPayments.net] ...</strong>.',
-  'subscription.future_pending.direct' => 'You have currently payment pending. Please wait for processing your payment.
-    If you haven\'t purchase the plan, please follow the checkout guide bellow:',
+  'subscription.future_pending.direct' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).
+    Please follow the steps bellow to purchase your plan:',
+  'subscription.claimed.direct' => 'Please wait for processing your subscription.
+    If you haven\'t purchase the plan, please review the payment guide bellow:',
   'subscription.payment.checkout_again' => 'Checkout again',
   'subscription.current_subscription.cancel_at_end_of_period_no_recurring_supported.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
       The subscription will be end in <strong>:remain</strong>, on <strong>:end_at</strong>.',
@@ -2575,4 +2577,16 @@
   'login.email' => 'Email',
   'login.password' => 'Password',
   'login.remember_me' => 'Remember me on this device',
+  'customer.admin_area' => 'Admin Area',
+  'customer.back_to_admin' => 'Back to Admin',
+  'subscription.start_from' => 'Start from',
+  'subscription.next_billing_date' => 'Next billing date',
+  'subscription_of' => ':name\'s subscription',
+  'invoice.status.claimed' => 'Payment claimed',
+  'subscription.review_payment_notice' => 'Review payment guide',
+  'subscription.claim_payment' => 'I have paid already!',
+  'subscription.claim_payment.confirm' => 'You\'re about to claim that you have already paid the plan.',
+  'invoice.status.future_payment.pending' => 'Next invoice is pending',
+  'invoice.status.future_payment.claimed' => 'Next invoice was claimed',
+  'customer_has_no_plan' => 'Customer doesn\'t have any payment method',
 ) ?>

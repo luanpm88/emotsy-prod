@@ -3,6 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Acelle\Cashier\Subscription;
 
 class CustomerController extends Controller
 {
@@ -59,5 +60,39 @@ class CustomerController extends Controller
         \Auth::login($orig_user);
         
         return redirect()->action('Admin\CustomerController@index');
+    }
+    
+    /**
+     * Admin area.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function adminArea(Request $request)
+    {
+        $id = \Session::get('orig_customer_id');
+        $orig_user = \Acelle\Model\User::findByUid($id);
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        
+        // Get current subscription
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription();
+        
+        $next_billing_date = null;
+        if (is_object($subscription)) {
+            $next_billing_date = $subscription->ends_at;
+            if($subscription->active()) {
+                $subscriptionParam = $customer->retrieveSubscription($gateway);
+                $next_billing_date = \Carbon\Carbon::createFromTimestamp($subscriptionParam->currentPeriodEnd);
+            }
+        }
+        
+        return view('customers.admin_area', [
+            'customer' => $customer,
+            'subscription' => $subscription,
+            'next_billing_date' => $next_billing_date,
+            'gateway' => $gateway,
+        ]);
     }
 }

@@ -58,11 +58,11 @@
 
 	<a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#link_confirm_model">Open modal</a>
 	<!-- Basic modal -->
-	<div id="link_confirm_model" class="modal fade">
+	<div id="link_confirm_model" class="modal mc-modal fade">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<form class="confirm-link-form" onkeypress="return event.keyCode != 13;">
-					<div class="modal-header bg-info-800">
+					<div class="modal-header">
 						<button type="button" class="close" data-dismiss="modal">&times;</button>
 						<h4 class="modal-title">{{ trans('messages.are_you_sure') }}</h4>
 					</div>
@@ -74,8 +74,8 @@
 					</div>
 
 					<div class="modal-footer">
-						<button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
-						<a class="btn bg-info-800 link-confirm-button ajax_link">{{ trans('messages.confirm') }}</a>
+						<button type="button" class="btn btn-mc_inline" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
+						<a class="btn btn-mc_primary link-confirm-button ajax_link">{{ trans('messages.confirm') }}</a>
 					</div>
 				</form>
 			</div>
@@ -174,18 +174,15 @@
 		</div>
 	</div>
 	<!-- /basic modal -->
+	
+	@if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
+		<a href="{{ action('CustomerController@adminArea') }}" class="user-switch-area mc-modal-control">
+			{{ trans('messages.customer.admin_area') }}
+		</a>
+	@endif
 
 	<div class="ui-pnotify bg-warning" style="background-color: rgba(255,87,34,0.7); width: auto; right: 20px; top: auto; bottom: 20px; opacity: 1; display: block; overflow: visible; cursor: auto;">
 		<div class="btn-close-pnotify"><i class="icon-cross2"></i></div>
-		@if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
-			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
-				<h4 class="ui-pnotify-title">{!! trans('messages.current_login_as', ["name" => Auth::user()->customer->displayName()]) !!}</h4>
-				<div class="ui-pnotify-text">
-					{!! trans('messages.click_to_return_to_origin_user', ["link" => action("CustomerController@loginBack")]) !!}
-				</div>
-				<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
-			</div>
-		@endif
 		@if (null !== Session::get('orig_admin_id') && Auth::user()->admin)
 			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 				<h4 class="ui-pnotify-title">{!! trans('messages.current_login_as', ["name" => Auth::user()->admin->displayName()]) !!}</h4>

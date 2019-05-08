@@ -203,16 +203,17 @@ h2.mc-h2 {
 }
 .mc-modal .modal-header {
     position: static !important;
-    background-color: #efeeea;
+    background-color: #fff;
     outline: 0 none;
     height: auto;
     width: 100% !important;
     font-weight: 500;
     text-align: center;
     padding: 18px;
+    border-bottom: solid 1px #bdbbb9;
 }
 .mc-modal .modal-body {
-    padding: 30px 40px 15px 40px;
+    padding: 30px 40px 30px 40px;
 }
 .mc-modal .modal-footer {
     padding: 15px 40px 30px 40px;
@@ -253,6 +254,7 @@ h2.mc-h2 {
     font-weight: normal;
     margin-top: -20px;
     margin-right: 0px;
+    font-family: serif;
 }
 .slider.slider-horizontal {
   width: 100%;
@@ -485,6 +487,7 @@ stat .stat-head {
 }
 .mc-modal h6 {
   margin: 0;
+  font-weight: normal;
 }
 .checkbox.disabled .checker span.checked {
   background: #777;
@@ -537,4 +540,34 @@ stat .stat-head {
     color: #fff;
     padding: 10px;
     margin-right: 13px;
+}
+.user-switch-area {
+    vertical-align: sub;
+    transform: rotate(90deg);
+    white-space: nowrap;
+    position: fixed;
+    top: 100px;
+    right: -35px;
+    border: solid 1px #F44336;
+    border-radius: 0 0 3px 3px;
+    height: auto;
+    width: auto;
+    background: #fff;
+    padding: 4px 10px;
+    color: #333;
+    opacity: 0.85;
+    font-size: 13px;
+    background: #F44336;
+    font-weight: 600;
+    color: #fff;
+}
+.user-switch-area i {
+    font-size: 24px;
+}
+.user-switch-area:hover, .user-switch-area:focus {
+  opacity: 1;
+  color: #fff;
+}
+.user-switch-area:hover i {
+  color: #fff;
 }

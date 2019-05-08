@@ -55,7 +55,7 @@
                         </div>
                         <div class="width1of4 stats-box">
                             <h3>
-                                <a href="">{{ trans('messages.payment.' . Acelle\Model\Setting::get('system.payment_gateway')) }}</a>
+                                <a href="{{ action('Admin\PaymentController@index') }}">{{ trans('messages.payment.' . Acelle\Model\Setting::get('system.payment_gateway')) }}</a>
                             </h3>
                             <p>{{ trans('messages.plan.payment') }}</p>
                         </div>

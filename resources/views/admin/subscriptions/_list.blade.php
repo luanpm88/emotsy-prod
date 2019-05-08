@@ -52,24 +52,24 @@
 								<span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.ended') }}</span>
 							@elseif ($subscription->isNew())
 								<span class="label label-flat bg-new">{{ trans('messages.subscription.status.new') }}</span>
-							@elseif ($subscription->isPending())
-								<span class="label label-flat bg-pending">{{ trans('messages.subscription.status.pending') }}</span>
+							@elseif ($subscription->isPending())								
+								@if ($subscription->isPaymentClaimed())
+									<span class="label label-flat bg-pending">{{ trans('messages.invoice.status.claimed') }}</span>
+								@else
+									<span class="label label-flat bg-pending">{{ trans('messages.subscription.status.pending') }}</span>
+								@endif
 							@endif
 						@else
-							@if ($subscription->checkPendingPaymentForFuture($gateway))
-								<span class="label label-flat bg-warning">{{ trans('messages.invoice.status.pending') }}</span>
-							@endif
-							@if (!$subscription->recurring())
-								<span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>
-							@endif
-							@if ($subscription->ended())
-								<span class="label label-flat bg-ended">{{ trans('messages.subscription.status.ended') }}</span>
-							@endif
-							@if ($subscription->cancelled() && !$subscription->ended())
-								<!--<span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.cancelled') }}</span>-->
-							@endif
 							@if ($subscription->recurring())
 								<span class="label label-flat bg-info">{{ trans('messages.subscription.status.recurring') }}</span>
+							@elseif ($subscription->checkPendingPaymentForFuture($gateway))
+								@if ($subscription->isPaymentClaimed())
+									<div class="label label-flat bg-warning">{{ trans('messages.invoice.status.future_payment.claimed') }}</div>
+								@else
+									<div class="label label-flat bg-info">{{ trans('messages.invoice.status.future_payment.pending') }}</div>
+								@endif
+							@else
+								<span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>
 							@endif
 						@endif
 					</span>

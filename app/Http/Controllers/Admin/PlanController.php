@@ -801,15 +801,16 @@ class PlanController extends Controller
      */
     public function billingCycle(Request $request)
     {
-        if (!$request->uid) {
+        if (!$request->uid || $request->uid == '00') {
             $plan = new Plan();
+            $plan->uid = '00';
         } else {
             $plan = Plan::findByUid($request->uid);
         }
 
         // save posted data
         if ($request->isMethod('post')) {
-            $plan->fillAll($request);
+            $plan->fillAll($request);            
             return view('admin.plans._billing_cycle', [
                 'plan' => $plan,
             ]);

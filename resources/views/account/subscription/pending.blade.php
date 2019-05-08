@@ -29,7 +29,7 @@
         <div class="col-md-12">
             <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
                 
-            <div class="sub-section">
+            <div class="">
                 <div class="row">
                     <div class="col-md-6">
                         

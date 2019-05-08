@@ -1,19 +1,3 @@
 <h3 class="text-semibold">{{ trans('messages.subscription.checkout') }}</h3>
-<p>
-    {!! trans('messages.subscription.pending.direct.wording', [
-        'plan' => $subscription->plan->name,
-        'money' => Acelle\Library\Tool::format_price($subscription->plan->price, $subscription->plan->currency->format),
-    ]) !!}
-    
-    <div class="alert alert-info">
-        {!! $gatewayService->notice !!}
-    </div>
-</p>
-@if (\Auth::user()->customer->can('cancelNow', $subscription))
-    <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
-        href="{{ action('AccountSubscriptionController@cancelNow') }}"
-        class="btn bg-grey-600 mr-10"
-    >
-        {{ trans('messages.subscription.cancel_now') }}
-    </a>
-@endif
+
+@include('account.subscription.future_pending._' . \Acelle\Model\Setting::get('system.payment_gateway'), ['gateway' => $gatewayService])
