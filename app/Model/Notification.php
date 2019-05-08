@@ -123,4 +123,14 @@ class Notification extends Model
         static::where('type', get_called_class())->delete();
     }
     
+    /**
+     * Clean up notifications of the same type / title as the called class
+     *
+     * @return void
+     */
+    public static function cleanupDuplicateNotifications($title)
+    {
+        static::where('title', $title)->delete();
+    }
+    
 }
