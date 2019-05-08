@@ -54,8 +54,16 @@ class Handler extends ExceptionHandler
                         $value['message'] = $value['message']($exception);
                     }
                     BackendErrorNotification::warning($value, false);
+                } else {
+                    // Just report any error for debugging
+                    // Comment it out once done
+                    $errorTitle = $exception->getMessage();
+                    BackendErrorNotification::cleanupDuplicateNotifications($errorTitle);
+                    BackendErrorNotification::warning([ 'title' => $errorTitle, 'message' => date('Y-m-d').' '.$exception->getMessage() ], false);
                 }
             }
+            
+            
         } catch (Exception $e) {
             // just keep silent
         }
