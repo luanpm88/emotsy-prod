@@ -14,6 +14,7 @@ Homestead.json
 /public/source
 /public/thumbs
 /storage/tmp
+/storage/locks
 /composer.phar
 /public/campaign_attachment
 VERSION
