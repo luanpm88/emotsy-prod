@@ -381,7 +381,6 @@ class SendingServerController extends Controller
         }
 
         $server->fill($request->all());
-        $server->type = $request->type;
 
         // authorize
         if (!$current_user->admin->can('test', $server)) {
