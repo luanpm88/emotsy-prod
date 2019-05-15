@@ -47,7 +47,7 @@ class Kernel extends ConsoleKernel
         })->name('automation:run')->everyFiveMinutes();
 
         // Bounce/feedback handler
-        $schedule->command('handler:run')->everyFiveMinutes();
+        $schedule->command('handler:run')->everyThirtyMinutes();
 
         // Queued import/export/campaign
         $schedule->command('queue:work --once --tries=3')->everyMinute();
