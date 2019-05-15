@@ -3,6 +3,7 @@
 namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Acelle\Model\Notification as AppNotification;
 
 class InstallController extends Controller
 {
@@ -488,6 +489,7 @@ class InstallController extends Controller
     {
         $next_page = action('InstallController@finish');
         artisan_config_cache();
+        AppNotification::cleanup();
         return redirect()->away($next_page);
     }
 
@@ -725,7 +727,7 @@ class InstallController extends Controller
 
         $env_file = fopen(base_path('.env'), 'w') or die('Unable to open file!');
         $config_string = 'APP_ENV=production
-APP_DEBUG=false
+APP_DEBUG=true
 APP_KEY='.$app_key.'
 
 DB_HOST='.(isset($database['hostname']) ? $database['hostname'] : '').'
