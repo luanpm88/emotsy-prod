@@ -514,3 +514,13 @@ function doublequote($str)
 {
     return sprintf('"%s"', preg_replace('/^"+|"+$/', '', $str));
 }
+
+/**
+ * Check if the app is initiated
+ *
+ * @return boolean
+ */
+function isInitiated()
+{
+    return file_exists(storage_path('app/installed'));
+}

@@ -16,20 +16,10 @@ class Installed
      */
     public function handle($request, Closure $next)
     {
-        if ($this->alreadyInstalled()) {
+        if (isInitiated()) {
             return redirect()->action('HomeController@index');
         }
 
         return $next($request);
-    }
-
-    /**
-     * If application is already installed.
-     *
-     * @return bool
-     */
-    public function alreadyInstalled()
-    {
-        return file_exists(storage_path('app/installed'));
     }
 }
