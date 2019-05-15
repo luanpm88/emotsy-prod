@@ -52,8 +52,7 @@ class SendingServerAmazonApi extends SendingServerAmazon
                 'status' => self::DELIVERY_STATUS_SENT,
             );
         } catch (\Exception $e) {
-            MailLog::warning('Sending failed');
-            MailLog::warning($e->getMessage());
+            $this->raiseSendingError($e);
 
             return array(
                 'status' => self::DELIVERY_STATUS_FAILED,
