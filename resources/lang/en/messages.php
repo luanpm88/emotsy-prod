@@ -2586,4 +2586,5 @@
   'invoice.status.future_payment.pending' => 'Next invoice is pending',
   'invoice.status.future_payment.claimed' => 'Next invoice was claimed',
   'customer_has_no_plan' => 'Customer doesn\'t have any payment method',
+  'subscription.checkout.processing_payment' => 'Processing your payment... Please wait!'
 ) ?>

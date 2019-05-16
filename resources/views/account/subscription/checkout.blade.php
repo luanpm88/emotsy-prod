@@ -33,19 +33,23 @@
                 <div class="row">
                     <div class="col-md-6">
                         <h3 class="text-semibold">{{ trans('messages.subscription.checkout') }}</h3>
-                        <p>{!! trans('messages.subscription.checkout.intro') !!}</p>
+                        <p>{!! trans('messages.subscription.checkout.processing_payment') !!}</p>
                             
-                        <a link-method="POST"
+                        <a id="pay_now" style="display: none" link-method="POST"
                             class="btn btn-mc_primary"
                             href="{{ action('AccountSubscriptionController@checkout') }}">
                             {{ trans('messages.payment.pay_now') }}
                         </a>
+                            
+                        <script>
+                            setTimeout(function() { $('#pay_now').click() }, 2000);
+                        </script>
                     </div>
                 </div>
                 
             </div>
 
-            <div class="sub-section">
+            <!--<div class="sub-section">
                 <div class="row">
                     <div class="col-md-6">
                         <h3 class="text-semibold">{{ trans('messages.subscription.plan') }}</h3>
@@ -61,7 +65,7 @@
                     </div>
                 </div>
                 
-            </div>
+            </div>-->
         </div>
     </div>
 
