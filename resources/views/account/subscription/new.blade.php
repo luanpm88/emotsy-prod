@@ -22,23 +22,22 @@
 @endsection
 
 @section('content')
-
-    @include("account._menu")
-    
     @if (!\Auth::user()->customer->subscriptionValid())
-        <div class="alert alert-danger">
-            {{ trans('messages.subscription.invalid') }}
-        </div>
+        @include('elements._notification', [
+            'level' => 'warning',
+            'message' => trans('messages.subscription.invalid')
+        ])
     @endif
+    
+    @include("account._menu")
 
     <div class="row">
         <div class="col-md-12">
             <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
-
+            
             <div class="sub-section">
                 <div class="row">
                     <div class="col-md-6">
-                        <h3 class="text-semibold">{{ trans('messages.subscribe_to_a_plan') }}</h3>
                         <p>{!! trans('messages.subscribe_to_a_plan_intro') !!}</p>
                             
                         <form enctype="multipart/form-data" action="{{ action('AccountSubscriptionController@subscribe') }}" method="POST" class="form-validate-jqueryz subscription-form">

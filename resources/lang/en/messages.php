@@ -1722,7 +1722,6 @@
       Please finish the payment or wait for the payment confirmation to activate your subscription',
   'purchasing_intro_braintree_credit_card' => 'Please fill out the below information so we can setup your account for puchasing the <a><strong>:plan plan</strong></a> with the pay by Credit Card option
           . Your plan price is: <a><strong>:price</strong></a>',
-  'subscribe_to_a_plan' => 'Subscribe to a plan',
   'subscribe_to_a_plan_intro' => 'Thank you for signing up with Acelle Mail. You are not currently subscribed to any plan yet. Below are the available plans for you to choose from:',
   'subscribe_plan' => 'Subscribe',
   'purchasing_intro_braintree_paypal' => 'Please click the PayPal checkout button below to proceed with the payment for your subscription to <a><strong>:plan plan</strong></a>, the price is <a><strong>:price</strong></a>',
