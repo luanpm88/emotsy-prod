@@ -1794,7 +1794,7 @@ class Customer extends Model implements BillableUserInterface
         }
         
         // plan sending server emails
-        // $list = array_merge($this->Subscription()->getVerifiedIdentities(), $list);
+        $list = array_merge($this->activeSubscription()->plan->getVerifiedIdentities(), $list);
         
         return $list;
     }
