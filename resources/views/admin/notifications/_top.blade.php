@@ -1,5 +1,7 @@
 @foreach ($notifications as $n)
-    <div class="alert alert-{{$n->level}}">
-        {{$n->message}}
-    </div>
+    @include('elements._notification', [
+        'level' => $n->level,
+        'title' => $n->title,
+        'message' => $n->message]
+    )
 @endforeach

@@ -5,7 +5,8 @@
 <link href="https://fonts.googleapis.com/css?family=Montserrat:300,300i,400,400i,500,500i,600,600i,700,700i,800,800i&amp;subset=vietnamese" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css?family=Source+Code+Pro:400,600" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('assets/css/icons/icomoon/styles.css') }}" rel="stylesheet" type="text/css">
-<link href="{{ URL::asset('assets/css/icons/fontawesome/styles.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ URL::asset('assets/css/icons/fontawesome/css/light.min.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ URL::asset('assets/css/icons/fontawesome/css/fontawesome.min.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('assets/css/bootstrap.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('assets/css/core.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('assets/css/components.css') }}" rel="stylesheet" type="text/css">

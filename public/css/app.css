@@ -2388,7 +2388,7 @@ a.loading, button.loading {
 }
 .alert {
     border: none;
-    border-radius: 7px;
+    border-radius: 4px;
 }
 .mb-40 {
     margin-bottom: 40px;
@@ -2676,4 +2676,17 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 }
 .text-big {
   font-size: 20px !important;
+}
+.alert h4 {
+  margin-bottom: 0;
+  font-weight: 600;
+  font-size:14px;
+}
+.alert p {
+  font-size: 14px;
+  margin: 0;
+}
+
+.alert .fal {
+  font-size: 22px;
 }
