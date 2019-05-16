@@ -2165,7 +2165,7 @@
   'plan.sending_servers.fitness.change' => 'Finess',
   'plan.sending_servers.fitness.updated' => 'Fitnesses was successfully updated.',
   'sending_servers.configuration_settings' => 'Configuration settings',
-  'sending_servers.amazon_api_key.intro' => 'You are connected to Amazon SES using the API key pairs below',
+  'sending_servers.amazon_api_key.intro' => 'Amazon Simple Email Service (Amazon SES) is a cloud-based email sending service designed to help digital marketers and application developers send marketing, notification, and transactional emails. Obtain your Amazon SES key pairs and fill in the form below to get connected',
   'sending_servers.configuration_settings.aws.intro' => 'Set up a connection to your Amazon Web Service account to send email through Simple Email Service (SES).',
   'sending_server.name.help' => 'For example: My AWS',
   'sending_servers.sending_limit.aws.intro' => 'Control how fast your application can send through this connection.
@@ -2398,10 +2398,7 @@
     Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
     sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
     Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
-  'payment.stripe.wording' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-    Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
-    sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
-    Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
+  'payment.stripe.wording' => 'Stripe is a technology company based in San Francisco, California. Its software allows individuals and businesses to make and receive payments over the Internet. Stripe provides the technical, fraud prevention, and banking infrastructure required to operate online payment systems.',
   'payment.status' => 'Status',
   'payment.stripe.publishable_key' => 'Publishable key',
   'payment.stripe.secret_key' => 'Secret key',
