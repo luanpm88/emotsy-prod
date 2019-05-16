@@ -25,7 +25,7 @@
     @if (!\Auth::user()->customer->subscriptionValid())
         @include('elements._notification', [
             'level' => 'warning',
-            'message' => trans('messages.subscription.invalid')
+            'message' => trans('messages.no_plan.title')
         ])
     @endif
     

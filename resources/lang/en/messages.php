@@ -2482,7 +2482,6 @@
   'subscription.plan' => 'Plan',
   'subscription.plan.wording' => 'Your are currently subscribing to <strong>:plan</strong> plan. Let take a quick look over it.',
   'subscription.payment.checkout' => 'Checkout',
-  'subscription.invalid' => 'You are not subscribed to any active plan. Please subscription to a plan to use app.',
   'subscription.pending.intro' => '',
   'subscription.pending.coinpayments.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>). Please wait for processing your subscription.
     If you haven\'t purchase the plan, please follow the checkout guide from CointPayments.net in your
@@ -2511,7 +2510,7 @@
   'invoice.status' => 'Status',
   'subscription.logs' => 'Logs / Invoices',
   'subscription.logs.empty' => 'No records found',
-  'no_plan.title' => 'You are not subscribed to any plan !',
+  'no_plan.title' => 'You are not subscribed to any plan!',
   'no_plan.wording' => 'You need to subscribe to a plan for using the application. Click link bellow to access to your subscription page.',
   'manage_your_subscription' => 'Manage your subscription',
   'payment.coinpayments' => 'CoinPayments',
