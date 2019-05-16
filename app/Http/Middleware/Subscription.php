@@ -19,8 +19,8 @@ class Subscription
         $subscription = $request->user()->customer->subscription();        
         
         if (is_object($subscription)) {
-            if(!$subscription->active()) {
-                if($subscription->isNew() || $subscription->isPending()) {
+            if (!$subscription->active()) {
+                if ($subscription->isNew() || $subscription->isPending()) {
                     return redirect()->action('AccountSubscriptionController@index');
                 } else {
                     return redirect()->action('AccountSubscriptionController@noPlan');

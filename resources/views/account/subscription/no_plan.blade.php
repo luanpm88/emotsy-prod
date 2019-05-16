@@ -15,7 +15,7 @@
             <li class="active">{{ trans('messages.subscription') }}</li>
         </ul>
         <h1>
-            <span class="text-semibold"><i class="icon-quill4"></i> {{ Auth::user()->customer->displayName() }}</span>
+            <span class="text-semibold">{{ Auth::user()->customer->displayName() }}</span>
         </h1>
     </div>
 
@@ -25,10 +25,11 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6">
-            <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
-
             <div class="sub-section">
-                <h3 class="text-semibold text-warning">{{ trans('messages.no_plan.title') }} </h3>
+                @include('elements._notification', [
+                    'level' => 'warning',
+                    'message' => trans('messages.no_plan.title')
+                ])
 
                 <p>{{ trans('messages.no_plan.wording') }}</p>
                     
