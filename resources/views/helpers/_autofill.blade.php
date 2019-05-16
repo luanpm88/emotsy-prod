@@ -6,7 +6,7 @@
                 <input
                     header="{{ isset($header) ? $header : "" }}"
                     empty-message="{{ isset($empty) ? $empty : "" }}"
-                    error-message="{{ isset($error) ? $error : "" }}"
+                    error-message='{{ isset($error) ? $error : "" }}'
                     autocomplete="new-password"
                     {{ isset($disabled) && $disabled == true ? ' disabled="disabled"' : "" }}
                     id="{{ $name }}" placeholder="{{ isset($placeholder) ? $placeholder : "" }}"

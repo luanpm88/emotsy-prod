@@ -501,10 +501,9 @@ function extract_email($str)
 function extract_name($str)
 {
    $parts = explode("<", $str);
-   if (count($parts) > 0) {
+   if (count($parts) > 1) {
       return trim($parts[0]);
    }
-   
    $parts = explode("@", extract_email($str));
    return $parts[0];
 }

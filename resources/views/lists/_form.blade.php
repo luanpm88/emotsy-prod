@@ -8,7 +8,23 @@
                 @include('helpers.form_control', ['type' => 'text', 'name' => 'name', 'value' => $list->name, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
         </div>
         <div class="col-md-6">
-                @include('helpers.form_control', ['type' => 'text', 'name' => 'from_email', 'label' => trans('messages.default_from_email_address'), 'value' => $list->from_email, 'help_class' => 'list', 'rules' => Acelle\Model\MailList::$rules])
+            <div class="hiddable-cond" data-control="[name=use_default_sending_server_from_email]" data-hide-value="1">
+                @include('helpers.form_control', [
+                    'type' => 'autofill',
+                    'id' => 'sender_from_input',
+                    'name' => 'from_email',
+                    'label' => trans('messages.from_email'),
+                    'value' => $list->from_email,
+                    'help_class' => 'list',
+                    'rules' => Acelle\Model\MailList::$rules,
+                    'url' => action('SenderController@dropbox'),
+                    'empty' => trans('messages.sender.dropbox.empty'),
+                    'error' => trans('messages.sender.dropbox.error', [
+                        'sender_link' => action('SenderController@index'),
+                    ]),
+                    'header' => trans('messages.verified_senders'),
+                ])
+            </div>
         </div>
     </div>
     <div class="row">
@@ -178,3 +194,14 @@
         });
     </script>
 @endif
+
+<script>
+    $(document).ready(function() {
+        // auto fill
+        var box = $('#sender_from_input').autofill();
+        box.loadDropbox(function() {
+            $('#sender_from_input').focusout();
+            box.updateErrorMessage();
+        });
+    });
+</script>

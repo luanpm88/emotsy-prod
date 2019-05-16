@@ -34,7 +34,7 @@ class Customer extends Model implements BillableUserInterface
 {
     // Billable user trait
     use BillableUserTrait;
-    
+
     protected $quotaTracker;
 
     // Plan status
@@ -49,7 +49,7 @@ class Customer extends Model implements BillableUserInterface
     protected $fillable = [
         'name', 'first_name', 'last_name', 'timezone', 'language_id', 'color_scheme',
     ];
-    
+
     /**
      * The rules for validation.
      *
@@ -163,7 +163,7 @@ class Customer extends Model implements BillableUserInterface
     {
         return $this->sendingDomains()->where('status', '=', SendingDomain::STATUS_ACTIVE);
     }
-    
+
     public function activeDkimSendingDomains()
     {
         return $this->activeSendingDomains()->where('dkim_verified', true);
@@ -183,19 +183,19 @@ class Customer extends Model implements BillableUserInterface
     {
         return $this->hasMany('Acelle\Model\Blacklist');
     }
-    
+
     public function senders()
     {
         return $this->hasMany('Acelle\Model\Sender')->where('status', '=', \Acelle\Model\Sender::STATUS_VERIFIED);
     }
-    
+
     public function activeVerifiedSendingDomains()
     {
         return $this->sendingDomains()
             ->where('status', '=', \Acelle\Model\SendingDomain::STATUS_ACTIVE)
             ->where('domain_verified', '=', \Acelle\Model\SendingDomain::VERIFIED);
     }
-    
+
     /**
      * Get active subscription.
      *
@@ -1365,7 +1365,7 @@ class Customer extends Model implements BillableUserInterface
                 trans('messages.no_plan')
             );
     }
-    
+
     /**
      * Get total file size usage.
      *
@@ -1577,13 +1577,13 @@ class Customer extends Model implements BillableUserInterface
                 $types[$type] = $server;
             }
         }
-        
+
         if (!Setting::isYes('delivery.sendmail')) {
-            unset($types['sendmail']); 
+            unset($types['sendmail']);
         }
-        
+
         if (!Setting::isYes('delivery.phpmail')) {
-            unset($types['php-mail']); 
+            unset($types['php-mail']);
         }
 
         return $types;
@@ -1659,7 +1659,7 @@ class Customer extends Model implements BillableUserInterface
             }
         }
     }
-    
+
     /**
      * Get all customer's and system domains.
      *
@@ -1669,9 +1669,9 @@ class Customer extends Model implements BillableUserInterface
     {
         return \Acelle\Model\SendingDomain::getAllActive();
     }
-    
+
     //====================================== BILLABLE USER INTERFACE =======================================
-    
+
     /**
      * Customer get email.
      *
@@ -1681,7 +1681,7 @@ class Customer extends Model implements BillableUserInterface
     {
         return $this->email();
     }
-    
+
     /**
      * Customer get remote owner id.
      *
@@ -1691,7 +1691,7 @@ class Customer extends Model implements BillableUserInterface
     {
         return $this->uid;
     }
-    
+
     /**
      * Customer get local owner id.
      *
@@ -1701,7 +1701,7 @@ class Customer extends Model implements BillableUserInterface
     {
         return $this->id;
     }
-    
+
     /**
      * Update billable owner id.
      *
@@ -1712,7 +1712,7 @@ class Customer extends Model implements BillableUserInterface
         $this->remote_owner_id = $ownerId;
         $this->save();
     }
-    
+
     /**
      * Update billable card brand.
      *
@@ -1723,7 +1723,7 @@ class Customer extends Model implements BillableUserInterface
         $this->billable_card_brand = $cardBrand;
         $this->save();
     }
-    
+
     /**
      * Update billable card last four.
      *
@@ -1734,7 +1734,7 @@ class Customer extends Model implements BillableUserInterface
         $this->billable_card_last_four = $cardLastFour;
         $this->save();
     }
-    
+
     /**
      * Get customer options.
      *
@@ -1743,7 +1743,7 @@ class Customer extends Model implements BillableUserInterface
     public function getOptions()
     {
         if (is_object($this->activeSubscription())) {
-            // Find plan  
+            // Find plan
             return $this->activeSubscription()->plan->getOptions();
         } else {
             return [];
@@ -1761,7 +1761,7 @@ class Customer extends Model implements BillableUserInterface
         // @todo: chỗ này cần raise 1 cái exception chứ ko phải là trả về rỗng (trả vể rỗng để "dìm" lỗi đi à?)
         return isset($options[$name]) ? $options[$name] : null;
     }
-    
+
     /**
      * Check if customer has api access.
      *
@@ -1771,7 +1771,7 @@ class Customer extends Model implements BillableUserInterface
     {
         return $this->getOption('api_access') == 'yes';
     }
-    
+
     /**
      * Get all verified identities.
      *
@@ -1780,25 +1780,25 @@ class Customer extends Model implements BillableUserInterface
     public function getVerifiedIdentities()
     {
         $list = [];
-        
+
         // own emails
         $senders = $this->senders()->get();
         foreach ($senders as $sender) {
             $list[] = $sender->name . " <" . $sender->email . ">";
         }
-        
+
         // own domain
         $domains = $this->activeVerifiedSendingDomains()->get();
         foreach ($domains as $domain) {
             $list[] = $domain->name;
         }
-        
+
         // plan sending server emails
         $list = array_merge($this->activeSubscription()->plan->getVerifiedIdentities(), $list);
-        
+
         return $list;
     }
-    
+
     /**
      * Get all verified identities.
      *
@@ -1807,31 +1807,38 @@ class Customer extends Model implements BillableUserInterface
     public function verifiedIdentitiesDroplist($keyword = null)
     {
         $droplist = [];
-        
+
         foreach ($this->getVerifiedIdentities() as $item) {
                 // check if email
                 if (extract_email($item) !== null) {
                     $email = extract_email($item);
-                    if ( $keyword && strpos(strtolower($email), $keyword) !== false ) {
+                    if (!$keyword) {
                         $droplist[] = [
                             'text' => extract_name($item),
                             'value' => $email,
-                            'desc' => str_replace($keyword, '<span class="text-semibold text-primary">'.$keyword.'</span>', $email),
+                            'desc' => $email,
+                        ];
+                    }
+                    else if ( strpos(strtolower($email), $keyword) === 0 ) {
+                        $droplist[] = [
+                            'text' => extract_name($item),
+                            'value' => $email,
+                            'desc' => str_replace($keyword, '<span class="text-semibold text-primary"><strong>'.$keyword.'</strong></span>', $email),
                         ];
                     }
                 } else { // domains are alse
                     $dKey = explode('@', $keyword);
                     $dKey = isset($dKey[1]) ? $dKey[1] : null;
-                    if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) !== false )) {
+                    if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
                         $droplist[] = [
-                            'text' => '****@'.str_replace($dKey, '<span class="text-semibold text-primary">'.$dKey.'</span>', $item),
+                            'text' => '****@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
                             'subfix' => $item,
                             'desc' => null,
                         ];
                     }
                 }
         }
-        
+
         return $droplist;
     }
 }
