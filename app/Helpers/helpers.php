@@ -563,3 +563,13 @@ function format_number($number) {
 function format_price($price, $format='{PRICE}') {
    return str_replace('{PRICE}', format_number($price), $format);
 }
+
+/**
+ * Check if the app is initiated
+ *
+ * @return boolean
+ */
+function isInitiated()
+{
+    return file_exists(storage_path('app/installed'));
+}

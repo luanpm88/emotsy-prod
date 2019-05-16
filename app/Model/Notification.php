@@ -132,5 +132,14 @@ class Notification extends Model
     {
         static::where('title', $title)->delete();
     }
-    
+
+    /**
+     * Clean up all notifications.
+     *
+     * @return void
+     */
+    public static function cleanup()
+    {
+        static::query()->delete();
+    }
 }

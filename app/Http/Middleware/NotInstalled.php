@@ -16,20 +16,10 @@ class NotInstalled
      */
     public function handle($request, Closure $next)
     {
-        if (!$this->alreadyInstalled($request)) {
+        if (!isInitiated()) {
             return redirect()->action('InstallController@starting');
         }
 
         return $next($request);
-    }
-
-    /**
-     * If application is already installed.
-     *
-     * @return bool
-     */
-    public function alreadyInstalled($request)
-    {
-        return file_exists(storage_path('app/installed'));
     }
 }
