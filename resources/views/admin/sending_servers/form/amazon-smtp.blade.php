@@ -7,12 +7,12 @@
     <input type="hidden" name="_method" value="PATCH">
     {{ csrf_field() }}
 @endif
-    
-    <div class="mc_section">            
-        <p>{{ trans('messages.sending_servers.amazon_api_key.intro') }}</p>
-        
+
+    <div class="mc_section">
         <div class="row">
             <div class="col-md-6">
+                <p>{{ trans('messages.sending_servers.amazon_smtp.intro') }}</p>
+
                 @include('helpers.form_control', [
                     'type' => 'select',
                     'class' => '',
@@ -23,12 +23,12 @@
                     'rules' => $server->getRules(),
                     'disabled' => ($server->id && $errors->isEmpty()),
                 ])
-                
+
                 <div class="ajax_box"
                     data-url="{{ action('Admin\SendingServerController@awsRegionHost', ['uid' => $server->uid]) }}"
                     data-control="[name=aws_region]">
                 </div>
-                
+
                 @include('helpers.form_control', [
                     'type' => 'text',
                     'class' => '',
@@ -38,7 +38,7 @@
                     'rules' => $server->getRules(),
                     'disabled' => ($server->id && $errors->isEmpty()),
                 ])
-                
+
                 @include('helpers.form_control', [
                     'type' => 'password',
                     'class' => '',
@@ -49,7 +49,7 @@
                     'eye' => true,
                     'disabled' => ($server->id && $errors->isEmpty()),
                 ])
-                
+
                 @include('helpers.form_control', [
                     'type' => 'text',
                     'class' => '',
@@ -59,7 +59,7 @@
                     'rules' => $server->getRules(),
                     'disabled' =>($server->id && $errors->isEmpty()),
                 ])
-                
+
                 @include('helpers.form_control', [
                     'type' => 'password',
                     'class' => '',
@@ -70,7 +70,7 @@
                     'eye' => true,
                     'disabled' =>($server->id && $errors->isEmpty()),
                 ])
-                
+
                 @include('helpers.form_control', [
                     'type' => 'text',
                     'class' => '',
@@ -80,7 +80,7 @@
                     'rules' => $server->getRules(),
                     'disabled' =>($server->id && $errors->isEmpty()),
                 ])
-                
+
                 @include('helpers.form_control', [
                     'type' => 'text',
                     'class' => '',
@@ -94,7 +94,7 @@
         </div>
         <div class="text-left">
             @if ($server->id && Auth::user()->admin->can('test', $server)  && $errors->isEmpty())
-                <span class="edit-group">                
+                <span class="edit-group">
                     <a
                         href="{{ action('Admin\SendingServerController@testConnection', $server->uid) }}"
                         type="button"
@@ -129,7 +129,7 @@
                     {{ trans('messages.cancel') }}
                 </a>
             @endif
-            
+
         </div>
     </div>
 </form>
@@ -154,7 +154,7 @@
                 ])
 
                 <p>{{ trans('messages.sending_servers.sending_limit.aws.intro') }}</p>
-                    
+
                 <div class="select-custom" data-url="{{ action('Admin\SendingServerController@sendingLimit', ['uid' => ($server->uid ? $server->uid : 0)]) }}">
                     @include ('admin.sending_servers.form._sending_limit', [
                         'quotaValue' => $server->quota_value,
@@ -162,12 +162,12 @@
                         'quotaUnit' => $server->quota_unit,
                     ])
                 </div>
-                
+
             </div>
         </div>
     </div>
-        
+
     @include('admin.sending_servers.form.amazon-sender-identity')
-    
+
 </form>
 @endif

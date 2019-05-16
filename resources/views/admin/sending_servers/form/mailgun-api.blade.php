@@ -7,12 +7,12 @@
     <input type="hidden" name="_method" value="PATCH">
     {{ csrf_field() }}
 @endif
-    
-    <div class="mc_section">            
-        <p>{{ trans('messages.sending_servers.mailgun_api_key.intro') }}</p>
-        
+
+    <div class="mc_section">
         <div class="row">
             <div class="col-md-6">
+                <p>{{ trans('messages.sending_servers.mailgun_api_key.intro') }}</p>
+
                 @include('helpers.form_control', [
                     'type' => 'password',
                     'class' => '',
@@ -23,7 +23,7 @@
                     'eye' => true,
                     'disabled' =>($server->id && $errors->isEmpty()),
                 ])
-                
+
                 @include('helpers.form_control', [
                     'type' => 'text',
                     'class' => '',
@@ -72,7 +72,7 @@
                     {{ trans('messages.cancel') }}
                 </a>
             @endif
-            
+
         </div>
     </div>
 </form>
@@ -97,7 +97,7 @@
                 ])
 
                 <p>{!! trans('messages.sending_servers.sending_limit.mailgun.intro') !!}</p>
-                    
+
                 <div class="select-custom" data-url="{{ action('Admin\SendingServerController@sendingLimit', ['uid' => ($server->uid ? $server->uid : 0)]) }}">
                     @include ('admin.sending_servers.form._sending_limit', [
                         'quotaValue' => $server->quota_value,
@@ -105,12 +105,12 @@
                         'quotaUnit' => $server->quota_unit,
                     ])
                 </div>
-                
+
             </div>
         </div>
     </div>
-    
+
     @include('admin.sending_servers.form.mailgun-sender-identity')
-    
+
 </form>
 @endif

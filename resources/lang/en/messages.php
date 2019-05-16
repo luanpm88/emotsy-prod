@@ -2166,6 +2166,9 @@
   'plan.sending_servers.fitness.updated' => 'Fitnesses was successfully updated.',
   'sending_servers.configuration_settings' => 'Configuration settings',
   'sending_servers.amazon_api_key.intro' => 'Amazon Simple Email Service (Amazon SES) is a cloud-based email sending service designed to help digital marketers and application developers send marketing, notification, and transactional emails. Obtain your Amazon SES key pairs and fill in the form below to get connected',
+  'sending_servers.amazon_smtp.intro' => 'Amazon Simple Email Service (Amazon SES) is a cloud-based email sending service designed
+    to help digital marketers and application developers send marketing, notification, and transactional emails.
+    Obtain your Amazon SMTP settings and fill in the form below to get connected',
   'sending_servers.configuration_settings.aws.intro' => 'Set up a connection to your Amazon Web Service account to send email through Simple Email Service (SES).',
   'sending_server.name.help' => 'For example: My AWS',
   'sending_servers.sending_limit.aws.intro' => 'Control how fast your application can send through this connection.
@@ -2191,6 +2194,7 @@
   'sending_servers.sending_identity.mailgun.intro' => 'The following domains were verified against your Mailgun account.
       User can only send from the domains below and is not allowed to send on their own identity',
   'sending_servers.mailgun_api_key.intro' => 'You are connected to Mailgun using the API key below',
+  'sending_servers.mailgun_smtp.intro' => 'You are connected to Mailgun using the SMTP below',
   'sending_servers.sending_limit.mailgun.intro' => 'Specify speed limit to control how fast your application can send through this connection in
     terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
   'sending_servers.configuration_settings.mailgun.intro' => 'Set up a connection to your Mailgun account to send emails.',
@@ -2198,6 +2202,7 @@
   'sending_servers.sending_identity.sendgrid.intro' => 'The following domains were verified against your Sendgrid account.
       User can only send from the domains below and is not allowed to send on their own identity',
   'sending_servers.sendgrid_api_key.intro' => 'You are connected to Sendgrid using the API key below',
+  'sending_servers.sendgrid_smtp.intro' => 'You are connected to Sendgrid using the SMTP below',
   'sending_servers.sending_limit.sendgrid.intro' => 'Specify speed limit to control how fast your application can send through this connection in
     terms of email throughput. You can find the details of Sendgrid limits <a href="">here</a>',
   'sending_servers.configuration_settings.sendgrid.intro' => 'Set up a connection to your Sendgrid account to send emails.',
@@ -2217,6 +2222,7 @@
   'sending_servers.sending_identity.elasticemail.intro' => 'The following domains were verified against your Elastic Email account.
       User can only send from the domains below and is not allowed to send on their own identity',
   'sending_servers.elasticemail_api_key.intro' => 'You are connected to Elastic Email using the API key below',
+  'sending_servers.elasticemail_smtp.intro' => 'You are connected to Elastic Email using the SMTP below',
   'sending_servers.sending_limit.elasticemail.intro' => 'Specify speed limit to control how fast your application can send through this connection in
     terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
   'sending_servers.configuration_settings.elasticemail.intro' => 'Set up a connection to your Elastic Email account to send emails.',
@@ -2225,6 +2231,7 @@
   'sending_servers.sending_identity.sparkpost.intro' => 'The following domains were verified against your Sparkpost account.
       User can only send from the domains below and is not allowed to send on their own identity',
   'sending_servers.sparkpost_api_key.intro' => 'You are connected to Sparkpost using the API key below',
+  'sending_servers.sparkpost_smtp.intro' => 'You are connected to Sparkpost using the SMTP below',
   'sending_servers.sending_limit.sparkpost.intro' => 'Sparkpost speed limit to control how fast your application can send through this connection in
     terms of email throughput. You can find the details of Sparkpost limits <a href="">here</a>',
   'sending_servers.configuration_settings.sparkpost.intro' => 'Set up a connection to your Sparkpost account to send emails.',

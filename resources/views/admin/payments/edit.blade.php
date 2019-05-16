@@ -1,15 +1,15 @@
 @extends('layouts.backend')
 
 @section('title', trans('messages.payments.' . $gateway['name']))
-	
+
 @section('page_script')
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-		
+
     <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
 @endsection
 
 @section('page_header')
-	
+
     <div class="page-title">
         <ul class="breadcrumb breadcrumb-caret position-right">
             <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
@@ -20,18 +20,22 @@
             <span class="text-semibold"><i class="icon-credit-card2"></i> {{ trans('messages.payments.' . $gateway['name']) }}</span>
         </h1>
     </div>
-				
+
 @endsection
 
 @section('content')
-	
+
     <form enctype="multipart/form-data" action="{{ action('Admin\PaymentController@update', $gateway['name']) }}" method="POST" class="form-validate-jquery">
         {{ csrf_field() }}
-        
-        <p>
-            {!! trans('messages.payment.' . $gateway['name'] . '.wording') !!}
-        </p>
-        
+
+		<div class="row">
+			<div class="col-md-6">
+				<p>
+					{!! trans('messages.payment.' . $gateway['name'] . '.wording') !!}
+				</p>
+			</div>
+		</div>
+
         @if (!empty($gateway['fields']))
             <h3>{{ trans('messages.payment.options') }}</h3>
             <div class="row">
@@ -68,5 +72,5 @@
 			@endif
         </div>
     <form>
-	
+
 @endsection

@@ -8,11 +8,11 @@
     {{ csrf_field() }}
 @endif
     
-    <div class="mc_section">            
-        <p>{{ trans('messages.sending_servers.amazon_api_key.intro') }}</p>
-        
+    <div class="mc_section">
         <div class="row">
             <div class="col-md-6">
+                <p>{{ trans('messages.sending_servers.amazon_api_key.intro') }}</p>
+                    
                 @include('helpers.form_control', [
                     'type' => 'text',
                     'class' => '',
