@@ -2180,7 +2180,7 @@
   'sending_servers.quota.custom' => 'Custom',
   'sending_servers.sending_identity' => 'Sending identity',
   'sending_servers.sending_identity.intro' => 'The following domains were verified against your Amazon SES account.
-    Click <a href=":link">here</a> to find more details in your Amazon dashboard. Choose the domain that users are
+    Click <a target="_blank" href=":link">here</a> to find more details in your Amazon dashboard. Choose the domain that users are
     allowed to send on behalf of (FROM address)',
   'sending_serbers.go_to_amazon_dashboard' => 'Go to Amazon dashboard',
   'sending_serbers.add_domain' => 'Add domain',

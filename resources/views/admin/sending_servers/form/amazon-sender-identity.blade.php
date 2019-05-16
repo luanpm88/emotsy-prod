@@ -3,7 +3,7 @@
         <div class="col-md-6">
             <h3 class="mt-0">{{ trans('messages.sending_servers.sending_identity') }}</h3>
             <p>
-                {!! trans('messages.sending_servers.sending_identity.intro', ['link' => '']) !!}
+                {!! trans('messages.sending_servers.sending_identity.intro', ['link' => 'https://us-west-2.console.aws.amazon.com/ses/home#verified-senders-domain']) !!}
             </p>
             <table class="table table-box table-box-head field-list">
                 <thead>
