@@ -39,10 +39,10 @@
                 <div class="row">
                     <div class="col-md-6">
                         <p>{!! trans('messages.subscribe_to_a_plan_intro') !!}</p>
-                            
+
                         <form enctype="multipart/form-data" action="{{ action('AccountSubscriptionController@subscribe') }}" method="POST" class="form-validate-jqueryz subscription-form">
                             {{ csrf_field() }}
-        
+
                             @include('helpers.form_control', [
                                 'type' => 'select_ajax',
                                 'class' => 'subsciption-plan-select hook',
@@ -51,7 +51,7 @@
                                 'help_class' => 'subscription',
                                 'url' => action('PlanController@select2'),
                                 'placeholder' => trans('messages.select_plan')
-                            ])                            
+                            ])
                         </form>
                     </div>
                 </div>

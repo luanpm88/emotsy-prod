@@ -12,7 +12,7 @@ use Carbon\Carbon;
 use Acelle\Cashier\SubscriptionParam;
 
 class AccountSubscriptionController extends Controller
-{    
+{
     /**
      * No plan accounce page.
      *
@@ -22,7 +22,7 @@ class AccountSubscriptionController extends Controller
     {
         return view('account.subscription.no_plan');
     }
-    
+
     /**
      * Customer subscription main page.
      *
@@ -36,29 +36,35 @@ class AccountSubscriptionController extends Controller
         if (!Setting::get('system.payment_gateway')) {
             return view('noPrimaryPayment');
         }
-        
+
         $customer = $request->user()->customer;
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
-        
+
         // Get current subscription
         $subscription = $customer->subscription();
-        
+
         // Customer dose not have subscription
         if (!is_object($subscription)) {
             return redirect()->action('AccountSubscriptionController@new');
         }
-        
+
         // try to sync subscription information
         try {
             $subscription->sync($gateway);
         } catch (\Exception $ex) {
-            $subscription->markAsCancelled();
+            // $subscription->markAsCancelled();
             // can not found remote subscription
-            $request->session()->flash('alert-error', $ex->getMessage());
-            return redirect()->action('AccountSubscriptionController@noPlan');
+            // $request->session()->flash('alert-error', $ex->getMessage());
+
+            if ($subscription->isNew()) {
+                return redirect()->action('AccountSubscriptionController@checkout');
+            } else {
+                $subscription->markAsCancelled();
+                $request->session()->flash('alert-error', $ex->getMessage());
+            }
         }
-        
-        // check subscription status          
+
+        // check subscription status
         if(!$subscription->active()) {
             if ($subscription->isNew()) {
                 return redirect()->action('AccountSubscriptionController@checkout');
@@ -68,10 +74,10 @@ class AccountSubscriptionController extends Controller
                 return redirect()->action('AccountSubscriptionController@new');
             }
         }
-        
+
         // retrieve subscription info
         $subscriptionParam = $customer->retrieveSubscription($gateway);
-        
+
         return view('account.subscription.index', [
             'subscription' => $subscription,
             'gateway' => $gateway,
@@ -94,26 +100,26 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         $subscription = $customer->subscription();
         $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
-        
+
         if (!isset($subscription)) {
             return redirect()->action('AccountSubscriptionController@index');
         }
-        
+
         //
         if (!$subscription->isPending()) {
             return redirect()->action('AccountSubscriptionController@index');
         }
-        
+
         // retrieve subscription info
         $subscription->retrieve($gatewayService);
-        
+
         return view('account.subscription.pending', [
             'subscription' => $subscription,
             'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
             'gatewayService' => $gatewayService,
         ]);
     }
-    
+
     /**
      * New customer subscription.
      *
@@ -125,15 +131,15 @@ class AccountSubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription();
-        
+
         // Authorization
         if (isset($subscription)) {
             return redirect()->action('AccountSubscriptionController@index');
         }
-        
+
         return view('account.subscription.new');
     }
-    
+
     /**
      * Store customer subscription.
      *
@@ -148,24 +154,24 @@ class AccountSubscriptionController extends Controller
         $plan = Plan::findByUid($request->plan_uid);
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
         $subscription = $customer->subscription();
-        
+
         // Subscription is already exist
         if (is_object($subscription)) {
             return redirect()->action('AccountSubscriptionController@index');
         }
-        
+
         // Create subscription
         $subscription = $customer->createSubscription($plan, $gateway);
-        
+
         try {
             \Mail::to($customer->user->email)->send(new \Acelle\Mail\SubscriptionDoneMailer($subscription));
         } catch (\Exception $e) {
             $request->session()->flash('alert-error', 'Can not send email: ' . $e->getMessage());
         }
-        
+
         return redirect()->action('AccountSubscriptionController@checkout');
     }
-    
+
     /**
      * Subscribe with card information.
      *
@@ -179,23 +185,23 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
         $subscription = $customer->subscription();
-        
+
         if ($request->isMethod('post')) {
             // update card
             $customer->billableUserUpdateCard($gateway, $request->all());
-            
+
             // Redirect to my subscription page
-            $request->session()->flash('alert-success', trans('messages.subscription.created'));
+            // $request->session()->flash('alert-success', trans('messages.subscription.created'));
             return redirect()->action('AccountSubscriptionController@checkout');
         }
-        
+
         return view('account.subscription.update_card', [
             'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
             'plan' => $subscription->plan,
             'subscription' => $subscription,
         ]);
     }
-    
+
     /**
      * Subscription checkout page.
      *
@@ -209,27 +215,27 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
         $subscription = $customer->subscription();
-        
+
         // check if customer already has card information
         if (!$customer->billableUserHasCard($gateway)) {
             // update card info
             return redirect()->action('AccountSubscriptionController@updateCard');
         }
-        
+
         if ($request->isMethod('post')) {
             // subscribe to plan
             $subscription->charge($gateway);
-            
+
             // Redirect to my subscription page
             $request->session()->flash('alert-success', trans('messages.subscription.created'));
             return redirect()->action('AccountSubscriptionController@pending');
         }
-        
+
         return view('account.subscription.checkout', [
             'subscription' => $subscription,
         ]);
     }
-    
+
     /**
      * Subscription preview.
      *
@@ -247,7 +253,7 @@ class AccountSubscriptionController extends Controller
             'plan' => $plan,
         ]);
     }
-    
+
     /**
      * Cancel subscription at the end of current period.
      *
@@ -261,7 +267,7 @@ class AccountSubscriptionController extends Controller
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
         $subscription = $customer->subscription();
 
-        if ($request->user()->customer->can('cancel', $subscription)) {        
+        if ($request->user()->customer->can('cancel', $subscription)) {
             $subscription->cancel($gateway);
         }
 
@@ -269,7 +275,7 @@ class AccountSubscriptionController extends Controller
         $request->session()->flash('alert-success', trans('messages.subscription.cancelled'));
         return redirect()->action('AccountSubscriptionController@index');
     }
-    
+
     /**
      * Cancel subscription at the end of current period.
      *
@@ -291,7 +297,7 @@ class AccountSubscriptionController extends Controller
         $request->session()->flash('alert-success', trans('messages.subscription.resumed'));
         return redirect()->action('AccountSubscriptionController@index');
     }
-    
+
     /**
      * Cancel now subscription at the end of current period.
      *
@@ -301,7 +307,7 @@ class AccountSubscriptionController extends Controller
      */
     public function cancelNow(Request $request)
     {
-        $customer = $request->user()->customer;        
+        $customer = $request->user()->customer;
         // Get current subscription
         $subscription = $customer->subscription();
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
@@ -314,7 +320,7 @@ class AccountSubscriptionController extends Controller
         $request->session()->flash('alert-success', trans('messages.subscription.cancelled_now'));
         return redirect()->action('AccountSubscriptionController@index');
     }
-    
+
     /**
      * Change plan.
      *
@@ -324,35 +330,35 @@ class AccountSubscriptionController extends Controller
      **/
     public function changePlan(Request $request)
     {
-        $customer = $request->user()->customer;        
+        $customer = $request->user()->customer;
         // Get current subscription
         $subscription = $customer->subscription();
         $plan = Plan::findByUid($request->plan_uid);
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
-        
+
         // Authorization
         if (!$request->user()->customer->can('changePlan', $subscription)) {
             return redirect()->action('AccountSubscriptionController@index');
         }
-        
+
         if ($request->isMethod('post')) {
             if (!$gateway->isSupportRecurring()) {
                 // update card info
                 return redirect()->action('AccountSubscriptionController@changePlanNoRecurring', [$plan->uid]);
             }
-        
+
             $customer->changePlan($plan, $gateway);
-            
+
             // Redirect to my subscription page
             $request->session()->flash('alert-success', trans('messages.subscription.plan_changed'));
             return redirect()->action('AccountSubscriptionController@index');
         }
-        
+
         return view('account.subscription.change_plan', [
             'subscription' => $subscription,
         ]);
     }
-    
+
     /**
      * Change plan.
      *
@@ -362,32 +368,32 @@ class AccountSubscriptionController extends Controller
      **/
     public function changePlanNoRecurring(Request $request)
     {
-        $customer = $request->user()->customer;        
+        $customer = $request->user()->customer;
         // Get current subscription
         $subscription = $customer->subscription();
         $newPlan = Plan::findByUid($request->plan_id);
         $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
-        
+
         // @todo can not change to lower one
         if ($customer->calcChangePlan($newPlan)['amount'] < 0) {
             // Redirect to my subscription page
             $request->session()->flash('alert-error', trans('messages.subscription.plan_changed.lower_error'));
             return redirect()->action('AccountSubscriptionController@index');
         }
-        
+
         // Authorization
         if (!$request->user()->customer->can('changePlan', $subscription)) {
             return redirect()->action('AccountSubscriptionController@index');
         }
-        
+
         if ($request->isMethod('post')) {
             $customer->changePlan($newPlan, $gatewayService);
-            
+
             // Redirect to my subscription page
             $request->session()->flash('alert-success', trans('messages.subscription.plan_changed'));
             return redirect()->action('AccountSubscriptionController@index');
         }
-        
+
         return view('account.subscription.change_plan_no_recurring', [
             'subscription' => $subscription,
             'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
@@ -396,7 +402,7 @@ class AccountSubscriptionController extends Controller
             'newPlan' => $newPlan,
         ]);
     }
-    
+
     /**
      * Top-up subscription.
      *
@@ -410,22 +416,22 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
         $subscription = $customer->subscription();
-        
-        if ($request->isMethod('post')) {            
+
+        if ($request->isMethod('post')) {
             // subscribe to plan
             $subscription->renew($gatewayService);
-            
+
             // Redirect to my subscription page
             return redirect()->action('AccountSubscriptionController@index');
         }
-        
+
         return view('account.subscription.renew', [
             'subscription' => $subscription,
             'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
             'gatewayService' => $gatewayService,
         ]);
     }
-    
+
     /**
      * Download raw invoices.
      *
@@ -437,14 +443,14 @@ class AccountSubscriptionController extends Controller
     {
         $subscription = $request->user()->customer->subscription();
         $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
-        
-        
+
+
         return response(var_export($subscription->getRawInvoices($gatewayService)), 200, [
             'Content-Type' => 'application/json',
             'Content-Disposition' => 'attachment; filename="payment_logs.txt"',
         ]);
     }
-    
+
     /**
      * Claim subscription.
      *
@@ -457,10 +463,10 @@ class AccountSubscriptionController extends Controller
         // Get current customer
         $customer = $request->user()->customer;
         $subscription = $customer->subscription();
-        
+
         // subscribe to plan
         $subscription->claimPayment();
-        
+
         // Redirect to my subscription page
         return redirect()->action('AccountSubscriptionController@index');
     }
