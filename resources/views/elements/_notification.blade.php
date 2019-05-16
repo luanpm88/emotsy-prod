@@ -9,7 +9,9 @@
         <i class="fal {{ $icons[$level] }}"></i>
     </div>
     <div>
-        <h4>{{ $n->title }}</h4>
-        <p>{{$n->message}}</p>
+        @isset($title)
+            <h4>{{ $title }}</h4>
+        @endisset
+        <p>{{ $message }}</p>
     </div>
 </div>
