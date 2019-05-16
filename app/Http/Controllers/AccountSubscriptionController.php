@@ -191,7 +191,7 @@ class AccountSubscriptionController extends Controller
             $customer->billableUserUpdateCard($gateway, $request->all());
 
             // Redirect to my subscription page
-            $request->session()->flash('alert-success', trans('messages.subscription.created'));
+            // $request->session()->flash('alert-success', trans('messages.subscription.created'));
             return redirect()->action('AccountSubscriptionController@checkout');
         }
 
