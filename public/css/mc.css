@@ -571,3 +571,6 @@ stat .stat-head {
 .user-switch-area:hover i {
   color: #fff;
 }
+.autofill-item-a label {
+  font-weight: 600;
+}
