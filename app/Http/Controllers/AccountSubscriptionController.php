@@ -58,7 +58,7 @@ class AccountSubscriptionController extends Controller
 
             if ($subscription->isNew()) {
                 return redirect()->action('AccountSubscriptionController@checkout');
-            } elseif {
+            } else {
                 $subscription->markAsCancelled();
                 $request->session()->flash('alert-error', $ex->getMessage());
             }
