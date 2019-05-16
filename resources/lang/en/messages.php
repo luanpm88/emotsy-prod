@@ -2511,7 +2511,7 @@
   'subscription.logs' => 'Logs / Invoices',
   'subscription.logs.empty' => 'No records found',
   'no_plan.title' => 'You are not subscribed to any plan!',
-  'no_plan.wording' => 'You need to subscribe to a plan for using the application. Click link bellow to access to your subscription page.',
+  'no_plan.wording' => 'You need to subscribe to a plan in order to experience the application. Click the button below to go to your subscription page.',
   'manage_your_subscription' => 'Manage your subscription',
   'payment.coinpayments' => 'CoinPayments',
   'sending_server.add_domain.wording' => 'Enter new domain name here to add domain to sending server',
