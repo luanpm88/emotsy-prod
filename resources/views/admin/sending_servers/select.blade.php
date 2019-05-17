@@ -5,20 +5,20 @@
 @section('page_script')
     <script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/interactions.min.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('assets/js/core/libraries/jquery_ui/touch.min.js') }}"></script>
-		
-	<script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>		
+
+	<script type="text/javascript" src="{{ URL::asset('js/listing.js') }}"></script>
 @endsection
 
 @section('page_header')
 
-			<div class="page-title">				
+			<div class="page-title">
 				<ul class="breadcrumb breadcrumb-caret position-right">
 					<li><a href="{{ action("Admin\HomeController@index") }}">{{ trans('messages.home') }}</a></li>
 				</ul>
-                
+
 				<h1>
 					<span class="text-semibold"><i class="icon-plus2"></i> {{ trans('messages.select_sending_servers_type') }}</span>
-				</h1>				
+				</h1>
 			</div>
 
 @endsection
@@ -28,9 +28,9 @@
 								<div class="col-md-1"></div>
 								<div class="col-md-10">
                                     <ul class="modern-listing big-icon no-top-border-list mt-0">
-									
+
 										@foreach (Acelle\Model\SendingServer::types() as $key => $type)
-											
+
 											<li>
 												<a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}" class="btn btn-info bg-info-800">{{ trans('messages.choose') }}</a>
                                                 <a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">
@@ -41,13 +41,13 @@
 												<h4><a href="{{ action('Admin\SendingServerController@create', ["type" => $key]) }}">{{ trans('messages.' . $key) }}</a></h4>
 												<p>
 													{{ trans('messages.sending_server_intro_' . $key) }}
-												</p>                        
+												</p>
 											</li>
-											
-										@endforeach									
-										
+
+										@endforeach
+
 									</ul>
-									<div class="pull-right">
+									<div class="">
 										<a href="{{ action('Admin\SendingServerController@index') }}" type="button" class="btn bg-grey">
 											<i class="icon-cross2"></i> {{ trans('messages.cancel') }}
 										</a>
