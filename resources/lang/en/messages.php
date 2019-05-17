@@ -2614,4 +2614,5 @@
   'subscription.click_here_to_cancel_now' => 'Click here if you want to change other plan',
   'payment.stripe' => 'Stripe',
   'subscription.pay_with_stripe' => 'Pay with Stripe',
+  'notify.clear_all' => 'Clear all',
 ) ?>

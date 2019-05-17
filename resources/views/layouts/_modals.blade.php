@@ -23,7 +23,7 @@
 		</div>
 	</div>
 	<!-- /basic modal -->
-    
+
     <a style="display: none" type="button" class="btn btn-default btn-sm" data-toggle="modal" data-target="#delete_confirm_model">aa</a>
 	<!-- Basic modal -->
 	<div id="delete_confirm_model" class="modal fade new-modal">
@@ -174,17 +174,17 @@
 		</div>
 	</div>
 	<!-- /basic modal -->
-	
+
 	@if (null !== Session::get('orig_customer_id') && Auth::user()->customer)
 		<a href="{{ action('CustomerController@adminArea') }}" class="user-switch-area mc-modal-control">
 			{{ trans('messages.customer.admin_area') }}
 		</a>
 	@endif
 
-	<div class="ui-pnotify bg-warning" style="background-color: rgba(255,87,34,0.7); width: auto; right: 20px; top: auto; bottom: 20px; opacity: 1; display: block; overflow: visible; cursor: auto;">
-		<div class="btn-close-pnotify"><i class="icon-cross2"></i></div>
+	<div class="ui-pnotify alert-warning mc-notify-wanring" style="width: auto; right: 20px; top: auto; bottom: 20px; opacity: 1; display: block; overflow: visible; cursor: auto;">
+		<div class="btn-close-pnotify">{{ trans('messages.notify.clear_all') }}</div>
 		@if (null !== Session::get('orig_admin_id') && Auth::user()->admin)
-			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
+			<div class="alert ui-pnotify-container alert-warning ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 				<h4 class="ui-pnotify-title">{!! trans('messages.current_login_as', ["name" => Auth::user()->admin->displayName()]) !!}</h4>
 				<div class="ui-pnotify-text">
 					{!! trans('messages.click_to_return_to_origin_user', ["link" => action("Admin\AdminController@loginBack")]) !!}
@@ -193,7 +193,7 @@
 			</div>
 		@endif
 		@if (Acelle\Model\Setting::get("site_online") == 'false')
-			<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
+			<div class="alert ui-pnotify-container alert-warning ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 				<h4 class="ui-pnotify-title">{!! trans('messages.site_is_offline') !!}</h4>
 				<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
 			</div>
@@ -205,7 +205,7 @@
 				is_object(\Auth::user()->customer) &&
 				\Auth::user()->customer->getOption("sending_server_option") == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN &&
 				!\Auth::user()->customer->activeSendingServers()->count())
-				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
+				<div class="alert ui-pnotify-container alert-warning ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 					<h4 class="ui-pnotify-title">
 					{!! trans('messages.not_have_any_customer_sending_server', [
 						'link' => action('SendingServerController@select'),
@@ -214,10 +214,10 @@
 					<div style="margin-top: 10px; clear: both; text-align: right; display: none;"></div>
 				</div>
 			@endif
-			
+
 			@if (is_object(\Auth::user()->customer) &&
 				!is_object(\Auth::user()->customer->subscription()))
-				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
+				<div class="alert ui-pnotify-container alert-warning ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 					<h4 class="ui-pnotify-title text-nowrap">
 					{!! trans('messages.not_have_any_plan_notification', [
 						'link' => action('AccountSubscriptionController@index'),
@@ -233,7 +233,7 @@
 			@if (
 				!\Acelle\Model\SendingServer::getAllAdminActive()->count()
 			)
-				<div class="alert ui-pnotify-container alert-primary ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
+				<div class="alert ui-pnotify-container alert-warning ui-pnotify-shadow" style="min-height: 16px; overflow: hidden;">
 					<h4 class="ui-pnotify-title">
 					{!! trans('messages.not_have_any_admin_sending_server', [
 						'link' => action('Admin\SendingServerController@select'),

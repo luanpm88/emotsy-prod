@@ -574,3 +574,35 @@ stat .stat-head {
 .autofill-item-a label {
   font-weight: 600;
 }
+.mc-notify-wanring {
+  background: none;
+}
+.mc-notify-wanring .alert h4 {
+  font-weight: normal;
+}
+.mc-notify-wanring .btn-close-pnotify {
+    position: absolute;
+    top: -22px;
+    right: 0px;
+    padding: 3px;
+    line-height: 16px;
+    margin: 0;
+    cursor: pointer;
+    z-index: 10;
+    width: auto;
+    height: auto;
+    background: #fff;
+    display: none;
+    font-style: italic;
+    font-size: 13px;
+    text-decoration: underline;
+}
+.mc-notify-wanring .btn-close-pnotify i {
+    font-size: 18px;
+}
+.mc-notify-wanring:hover .btn-close-pnotify {
+    display: block;
+}
+.mc-notify-wanring .ui-pnotify-container {
+  margin-bottom: 5px;
+}
