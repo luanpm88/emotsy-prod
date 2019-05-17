@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/luanpm88/acelle-cashier.git",
-                "reference": "ee9803f35e9567bb119974f18ef8dba597fd79ab"
+                "reference": "d3e00dcde9e276991f857f55c87f2d1492457271"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/ee9803f35e9567bb119974f18ef8dba597fd79ab",
-                "reference": "ee9803f35e9567bb119974f18ef8dba597fd79ab",
+                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/d3e00dcde9e276991f857f55c87f2d1492457271",
+                "reference": "d3e00dcde9e276991f857f55c87f2d1492457271",
                 "shasum": ""
             },
             "require": {
@@ -77,7 +77,7 @@
                 "issues": "https://github.com/laravel/cashier/issues",
                 "source": "https://github.com/laravel/cashier"
             },
-            "time": "2019-05-17T07:48:51+00:00"
+            "time": "2019-05-17T08:30:32+00:00"
         },
         {
             "name": "aws/aws-php-sns-message-validator",

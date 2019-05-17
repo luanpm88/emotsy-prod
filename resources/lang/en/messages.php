@@ -2596,7 +2596,7 @@
   'invoice.status.future_payment.pending' => 'Next invoice is pending',
   'invoice.status.future_payment.claimed' => 'Next invoice was claimed',
   'customer_has_no_plan' => 'Customer doesn\'t have any payment method',
-  'subscription.checkout.processing_payment' => 'Processing your payment... Please wait!',
+  'subscription.checkout.processing_payment' => 'Processing your payment... please wait!',
   'subscription.payment.next' => 'Next',
   'subscription.card_list' => 'Your card information',
   'card.last4' => 'Last 4 number',
@@ -2613,4 +2613,5 @@
   'subscription.direct.confirm' => 'Confirm',
   'subscription.click_here_to_cancel_now' => 'Click here if you want to change other plan',
   'payment.stripe' => 'Stripe',
+  'subscription.pay_with_stripe' => 'Pay with Stripe',
 ) ?>

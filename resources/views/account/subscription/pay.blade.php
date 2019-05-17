@@ -32,7 +32,6 @@
             <div class="sub-section">
                 <div class="row">
                     <div class="col-md-6">
-                        <h3 class="text-semibold">{{ trans('messages.subscription.checkout') }}</h3>
                         <p>{!! trans('messages.subscription.checkout.processing_payment') !!}</p>
 
                         <a id="pay_now" style="display: none" link-method="POST"

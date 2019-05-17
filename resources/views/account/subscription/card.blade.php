@@ -28,20 +28,18 @@
 
 			@include("account.subscription._billing_information")
 
-            <div class="sub-section">
-				<p>
-                    {!! trans('messages.purchasing_intro_' . $gateway['name'], [
-                        'plan' => $subscription->plan->name,
-                        'price' => Acelle\Library\Tool::format_price($subscription->plan->price, $subscription->plan->currency->format)
-                    ]) !!}
-                </p>
-			</div>
+            <p>
+				{!! trans('messages.purchasing_intro_' . $gateway['name'], [
+					'plan' => $subscription->plan->name,
+					'price' => Acelle\Library\Tool::format_price($subscription->plan->price, $subscription->plan->currency->format)
+				]) !!}
+			</p>
 
             @include("account.subscription.card._" . $gateway['name'])
 
 
             @if (\Auth::user()->customer->can('cancelNow', $subscription))
-                <hr>
+                <hr class="mt-40">
                 <p>
                     <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
                         href="{{ action('AccountSubscriptionController@cancelNow') }}"
