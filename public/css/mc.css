@@ -574,6 +574,3 @@ stat .stat-head {
 .autofill-item-a label {
   font-weight: 600;
 }
-.ui-pnotify {
-    top: inherit !important;
-}

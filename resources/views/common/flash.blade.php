@@ -18,11 +18,10 @@
                     title: '{{ trans('messages.notify.' . $msg)}}',
                     text: '{!! preg_replace('/[\r\n]+/', ' ', Session::get('alert-' . $msg)) !!}',
                     type: "{{ $msg }}",
-                    stack: {
-                        "dir1": "up",
-                        "dir2": "right",
-                        "firstpos1": 10,
-                        "firstpos2": 10
+                    before_open: function(PNotify) {
+                        PNotify.elem.css({
+                            "top":"60px"
+                        });
                     }
                 });
 
