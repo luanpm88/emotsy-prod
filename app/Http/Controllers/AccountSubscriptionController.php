@@ -48,31 +48,22 @@ class AccountSubscriptionController extends Controller
             return redirect()->action('AccountSubscriptionController@new');
         }
 
+        // is New
+        if ($subscription->isNew()) {
+            return redirect()->action('AccountSubscriptionController@card');
+        }
+
+        // is New
+        if ($subscription->isPending()) {
+            return redirect()->action('AccountSubscriptionController@pending');
+        }
+
         // try to sync subscription information
         try {
             $subscription->sync($gateway);
         } catch (\Exception $ex) {
-            // $subscription->markAsCancelled();
-            // can not found remote subscription
-            // $request->session()->flash('alert-error', $ex->getMessage());
-
-            if ($subscription->isNew()) {
-                return redirect()->action('AccountSubscriptionController@checkout');
-            } else {
-                $subscription->markAsCancelled();
-                $request->session()->flash('alert-error', $ex->getMessage());
-            }
-        }
-
-        // check subscription status
-        if(!$subscription->active()) {
-            if ($subscription->isNew()) {
-                return redirect()->action('AccountSubscriptionController@checkout');
-            } elseif ($subscription->isPending()) {
-                return redirect()->action('AccountSubscriptionController@pending');
-            } else {
-                return redirect()->action('AccountSubscriptionController@new');
-            }
+            $subscription->markAsCancelled();
+            $request->session()->flash('alert-error', $ex->getMessage());
         }
 
         // retrieve subscription info
@@ -85,6 +76,128 @@ class AccountSubscriptionController extends Controller
             'currentPeriodEnd' => Carbon::createFromTimestamp($subscriptionParam->currentPeriodEnd),
             'hasPendingPaymentForFuture' => $subscription->checkPendingPaymentForFuture($gateway),
             'goingToExpire' => $subscription->goingToExpire(Setting::get('system.end_period_last_days')),
+        ]);
+    }
+
+    /**
+     * New customer subscription.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function new(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription();
+
+        return view('account.subscription.new');
+    }
+
+    /**
+     * Store customer subscription.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function create(Request $request)
+    {
+        // Get current customer
+        $customer = $request->user()->customer;
+        $plan = Plan::findByUid($request->plan_uid);
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $subscription = $customer->subscription();
+
+        // Create subscription
+        $subscription = $customer->createSubscription($plan, $gateway);
+
+        try {
+            \Mail::to($customer->user->email)->send(new \Acelle\Mail\SubscriptionDoneMailer($subscription));
+        } catch (\Exception $e) {
+            $request->session()->flash('alert-error', 'Can not send email: ' . $e->getMessage());
+        }
+
+        return redirect()->action('AccountSubscriptionController@card');
+    }
+
+    /**
+     * Card information.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function card(Request $request)
+    {
+        // Get current customer
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription();
+        $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
+
+        return view('account.subscription.card', [
+            'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
+            'customer' => $customer,
+            'gatewayService' => $gatewayService,
+            'subscription' => $subscription,
+        ]);
+    }
+
+    /**
+     * Subscribe with card information.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function updateCard(Request $request)
+    {
+        // Get current customer
+        $customer = $request->user()->customer;
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $subscription = $customer->subscription();
+
+        if ($request->isMethod('post')) {
+            // update card
+            $customer->billableUserUpdateCard($gateway, $request->all());
+
+            // Redirect to my subscription page
+            // $request->session()->flash('alert-success', trans('messages.subscription.created'));
+            return redirect()->action('AccountSubscriptionController@pay');
+        }
+
+        return view('account.subscription.update_card', [
+            'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
+            'plan' => $subscription->plan,
+            'subscription' => $subscription,
+        ]);
+    }
+
+    /**
+     * Subscription pay.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function pay(Request $request)
+    {
+        // Get current customer
+        $customer = $request->user()->customer;
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $subscription = $customer->subscription();
+
+        if ($request->isMethod('post')) {
+            // subscribe to plan
+            $subscription->charge($gateway);
+
+            // Redirect to my subscription page
+            $request->session()->flash('alert-success', trans('messages.subscription.finished', ['plan' => $subscription->plan->name]));
+            return redirect()->action('AccountSubscriptionController@index');
+        }
+
+        return view('account.subscription.pay', [
+            'subscription' => $subscription,
         ]);
     }
 
@@ -117,122 +230,6 @@ class AccountSubscriptionController extends Controller
             'subscription' => $subscription,
             'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
             'gatewayService' => $gatewayService,
-        ]);
-    }
-
-    /**
-     * New customer subscription.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function new(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $subscription = $customer->subscription();
-
-        // Authorization
-        if (isset($subscription)) {
-            return redirect()->action('AccountSubscriptionController@index');
-        }
-
-        return view('account.subscription.new');
-    }
-
-    /**
-     * Store customer subscription.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function subscribe(Request $request)
-    {
-        // Get current customer
-        $customer = $request->user()->customer;
-        $plan = Plan::findByUid($request->plan_uid);
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
-        $subscription = $customer->subscription();
-
-        // Subscription is already exist
-        if (is_object($subscription)) {
-            return redirect()->action('AccountSubscriptionController@index');
-        }
-
-        // Create subscription
-        $subscription = $customer->createSubscription($plan, $gateway);
-
-        try {
-            \Mail::to($customer->user->email)->send(new \Acelle\Mail\SubscriptionDoneMailer($subscription));
-        } catch (\Exception $e) {
-            $request->session()->flash('alert-error', 'Can not send email: ' . $e->getMessage());
-        }
-
-        return redirect()->action('AccountSubscriptionController@checkout');
-    }
-
-    /**
-     * Subscribe with card information.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function updateCard(Request $request)
-    {
-        // Get current customer
-        $customer = $request->user()->customer;
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
-        $subscription = $customer->subscription();
-
-        if ($request->isMethod('post')) {
-            // update card
-            $customer->billableUserUpdateCard($gateway, $request->all());
-
-            // Redirect to my subscription page
-            // $request->session()->flash('alert-success', trans('messages.subscription.created'));
-            return redirect()->action('AccountSubscriptionController@checkout');
-        }
-
-        return view('account.subscription.update_card', [
-            'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
-            'plan' => $subscription->plan,
-            'subscription' => $subscription,
-        ]);
-    }
-
-    /**
-     * Subscription checkout page.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function checkout(Request $request)
-    {
-        // Get current customer
-        $customer = $request->user()->customer;
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
-        $subscription = $customer->subscription();
-
-        // check if customer already has card information
-        if (!$customer->billableUserHasCard($gateway)) {
-            // update card info
-            return redirect()->action('AccountSubscriptionController@updateCard');
-        }
-
-        if ($request->isMethod('post')) {
-            // subscribe to plan
-            $subscription->charge($gateway);
-
-            // Redirect to my subscription page
-            $request->session()->flash('alert-success', trans('messages.subscription.created'));
-            return redirect()->action('AccountSubscriptionController@pending');
-        }
-
-        return view('account.subscription.checkout', [
-            'subscription' => $subscription,
         ]);
     }
 

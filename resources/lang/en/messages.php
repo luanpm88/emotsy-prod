@@ -1586,7 +1586,7 @@
   'expiration_date' => 'Expiration Date',
   'card_number' => 'Card number',
   'cvv' => 'CVV',
-  'pay_by_credit_card' => '<i class="icon-credit-card"></i> Pay by credit card',
+  'pay_by_credit_card' => 'Pay by credit card',
   'subscription_paid_finish_messages' => '<h2 class="text-semibold mt-0 text-teal-800">Congratulation!</h2>
       <p>You are successfully subscribed to the plan <span class="text-bold">:plan</span>. Now your account is activated.<br />Let choose an action below for next step.</p>',
   'something_error_accur' => 'An unexpected error occurred. Please check again.',
@@ -2418,8 +2418,12 @@
     Sed ac ultrices nibh. Mauris porta, augue id condimentum feugiat, ipsum lectus sagittis est, accumsan blandit
     sapien eros tincidunt nulla. Nam massa nisl, facilisis quis rhoncus quis, blandit ac sem.
     Pellentesque ornare ante sit amet dolor cursus, nec egestas nisi scelerisque.',
-  'purchasing_intro_stripe' => 'Please click the button below so we can setup your account for puchasing the <span class="text-nowrap text-big text-semibold">:plan plan</span>
-          . Your plan price is: <span class="text-nowrap text-big text-bold">:price</span>',
+  'purchasing_intro_stripe' => 'You are subscribing to <span class="text-nowrap text-big text-semibold">:plan</span> plan
+          . Your plan price is: <span class="text-nowrap text-big text-bold">:price</span>
+          . Please select your card bellow to process the payment.',
+  'purchasing_intro_direct' => 'You are subscribing to <span class="text-nowrap text-big text-semibold">:plan</span> plan
+          . Your plan price is: <span class="text-nowrap text-big text-bold">:price</span>
+          . Click confirm button below to accept and get payment guide.',
   'subscription.current_subscription.recurring.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
       Next invoice will be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
   'subscription.cancel.confirm' => 'You\'re about to cancel :number subscription. You\'re still subscribed until the end of period',
@@ -2592,5 +2596,20 @@
   'invoice.status.future_payment.pending' => 'Next invoice is pending',
   'invoice.status.future_payment.claimed' => 'Next invoice was claimed',
   'customer_has_no_plan' => 'Customer doesn\'t have any payment method',
-  'subscription.checkout.processing_payment' => 'Processing your payment... Please wait!'
+  'subscription.checkout.processing_payment' => 'Processing your payment... Please wait!',
+  'subscription.payment.next' => 'Next',
+  'subscription.card_list' => 'Your card information',
+  'card.last4' => 'Last 4 number',
+  'subscription.pay_with_this_card' => 'Pay with this card',
+  'subscription.pay_with_new_card' => 'Pay with new card',
+  'card.holder' => 'Card holder',
+  'customer.no_card' => 'You haven\'t had card information yet',
+  'notify.success' => 'Success',
+  'notify.danger' => 'Danger',
+  'notify.warning' => 'Warning',
+  'notify.info' => 'Information',
+  'notify.error' => 'Error',
+  'subscription.finished' => 'Thank you! You are now subscribed to <strong>:plan</strong> plan.',
+  'subscription.direct.confirm' => 'Confirm',
+  'subscription.click_here_to_cancel_now' => 'Click here if you want to change other plan',
 ) ?>

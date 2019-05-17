@@ -28,19 +28,19 @@
             'message' => trans('messages.no_plan.title')
         ])
     @endif
-    
+
     @include("account._menu")
 
     <div class="row">
         <div class="col-md-12">
             <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
-            
+
             <div class="sub-section">
                 <div class="row">
                     <div class="col-md-6">
                         <p>{!! trans('messages.subscribe_to_a_plan_intro') !!}</p>
 
-                        <form enctype="multipart/form-data" action="{{ action('AccountSubscriptionController@subscribe') }}" method="POST" class="form-validate-jqueryz subscription-form">
+                        <form enctype="multipart/form-data" action="" method="POST" class="form-validate-jqueryz subscription-form">
                             {{ csrf_field() }}
 
                             @include('helpers.form_control', [
