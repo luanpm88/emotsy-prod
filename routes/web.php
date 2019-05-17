@@ -480,6 +480,10 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::get('senders/sort', 'SenderController@sort');
     Route::get('senders/delete', 'SenderController@delete');
     Route::resource('senders', 'SenderController');
+
+    // Notifications
+    Route::resource('notifications', 'NotificationController');
+    Route::post('notifications/{id}/hide', 'NotificationController@hide');
 });
 
 // ADMIN AREA

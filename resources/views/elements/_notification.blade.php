@@ -1,10 +1,17 @@
 <?php
-  $icons = [
-      'warning' =>  'fa-exclamation-circle',
-      'info' =>  'fa-info-circle'
-  ]
+    $icons = [
+        'warning' =>  'fa-exclamation-circle',
+        'info' =>  'fa-info-circle'
+    ];
+
+    if (isset($params)) {
+        $paramsString = implode(' ', collect($params)
+            ->map(function($value, $key) { return "$key=\"$value\""; })
+            ->values()->all()
+        );
+    }
 ?>
-<div title="Click to suppress notification messages" class="alert alert-{{ $level }}" style="display: flex; flex-direction: row; align-items: center; cursor: pointer">
+<div {!! $paramsString or '' !!} title="Click to suppress notification messages" class="alert alert-{{ $level }}" style="display: flex; flex-direction: row; align-items: center; cursor: pointer">
     <div style="margin-right:15px">
         <i class="fal {{ $icons[$level] }}"></i>
     </div>

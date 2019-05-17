@@ -110,7 +110,7 @@ class Notification extends Model
      */
     public static function top($limit = 3)
     {
-        return static::limit($limit)->get();
+        return static::where('visibility', true)->limit($limit)->get();
     }
     
     /**
@@ -141,5 +141,26 @@ class Notification extends Model
     public static function cleanup()
     {
         static::query()->delete();
+    }
+    
+    /**
+     * Find item by uid.
+     *
+     * @return object
+     */
+    public static function findByUid($uid)
+    {
+        return self::where('uid', '=', $uid)->first();
+    }
+    
+    /**
+     * Hide item.
+     *
+     * @return object
+     */
+    public function hide()
+    {
+        $this->visibility = false;
+        return $this->save();
     }
 }

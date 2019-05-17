@@ -977,6 +977,7 @@
   'admin_groups.custom_order.updated' => 'Admin groups order were successfully updated',
   'admin_group_empty_line_1' => 'You have no admin group',
   'create_admin' => 'Create admin',
+  'admin.dashboard.notification_delete_confirm' => 'Are you sure you have resolved the issue and you want to suppress this notification?',
   'admin.updated' => 'Admin was successfully updated',
   'admin.created' => 'Admin was successfully created',
   'admins.disabled' => 'Admin was successfully disabled',
