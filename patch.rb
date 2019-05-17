@@ -5,7 +5,7 @@
 require 'json'
 
 # Settings
-old_versions = ['4.0.0']              # sort by chronological order
+old_versions = ['4.0.1']              # sort by chronological order
 packages = []                         # vendor packages to be replaced, for example packages = ['lawepham']
 dirs = ['resources/lang/default']     # for example dirs = ['resources/lang/default']
 
@@ -18,6 +18,11 @@ last_supported = old_versions[0]
 new_version = ARGV[2]
 output = ARGV[0]
 gitdir = ARGV[1]
+
+if last_supported == new_version
+  puts "No upgrade package needed"
+  exit(0)
+end
 
 # Get deleted files
 deleted = []
