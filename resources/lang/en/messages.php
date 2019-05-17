@@ -2612,4 +2612,5 @@
   'subscription.finished' => 'Thank you! You are now subscribed to <strong>:plan</strong> plan.',
   'subscription.direct.confirm' => 'Confirm',
   'subscription.click_here_to_cancel_now' => 'Click here if you want to change other plan',
+  'payment.stripe' => 'Stripe',
 ) ?>

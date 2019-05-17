@@ -48,6 +48,15 @@ class AccountSubscriptionController extends Controller
             return redirect()->action('AccountSubscriptionController@new');
         }
 
+        // try to sync subscription information
+        try {
+            $subscription->sync($gateway);
+        } catch (\Exception $ex) {
+            // $subscription->markAsCancelled();
+            $request->session()->flash('alert-error', $ex->getMessage());
+            return redirect()->action('AccountSubscriptionController@card');
+        }
+
         // is New
         if ($subscription->isNew()) {
             return redirect()->action('AccountSubscriptionController@card');
@@ -56,14 +65,6 @@ class AccountSubscriptionController extends Controller
         // is New
         if ($subscription->isPending()) {
             return redirect()->action('AccountSubscriptionController@pending');
-        }
-
-        // try to sync subscription information
-        try {
-            $subscription->sync($gateway);
-        } catch (\Exception $ex) {
-            $subscription->markAsCancelled();
-            $request->session()->flash('alert-error', $ex->getMessage());
         }
 
         // retrieve subscription info
