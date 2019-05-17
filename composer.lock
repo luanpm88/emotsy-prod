@@ -4,16 +4,21 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "2109933c44914d2a0d967405455796f3",
+    "content-hash": "6de4a5399bbadd632f294229ea7ef10e",
     "packages": [
         {
             "name": "acelle/cashier",
             "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/luanpm88/acelle-cashier.git",
+                "reference": "90240037f956e84d849e0d74eb529ea25636003f"
+            },
             "dist": {
-                "type": "path",
-                "url": "../acelle-cashier",
-                "reference": "0736c6d1a20d9f16d146a8dd010125d22d47f63b",
-                "shasum": null
+                "type": "zip",
+                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/90240037f956e84d849e0d74eb529ea25636003f",
+                "reference": "90240037f956e84d849e0d74eb529ea25636003f",
+                "shasum": ""
             },
             "require": {
                 "dompdf/dompdf": "^0.8.0",
@@ -71,7 +76,8 @@
             "support": {
                 "issues": "https://github.com/laravel/cashier/issues",
                 "source": "https://github.com/laravel/cashier"
-            }
+            },
+            "time": "2019-05-17T04:36:22+00:00"
         },
         {
             "name": "aws/aws-php-sns-message-validator",
