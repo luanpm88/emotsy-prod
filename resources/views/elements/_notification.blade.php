@@ -19,6 +19,6 @@
         @isset($title)
             <h4>{{ $title }}</h4>
         @endisset
-        <p>{{ $message }}</p>
+        <p>{!! $message !!}</p>
     </div>
 </div>
