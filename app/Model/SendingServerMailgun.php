@@ -102,4 +102,16 @@ class SendingServerMailgun extends SendingServer
             MailLog::warning('Cannot set up Mailgun webhook: '.$e->getMessage());
         }
     }
+    
+    /**
+     * Get verified identities (domains and email addresses)
+     *
+     * @return boolean
+     */
+    public function getVerifiedIdentities()
+    {
+        $response = $this->client()->get('domains');
+        $json = json_decode(json_encode($response), true);
+        return array_map(function($domain){ return $domain['name']; }, $json['http_response_body']['items']);
+    }
 }
