@@ -175,4 +175,17 @@ class SendingServerSendGrid extends SendingServer
 
         return $mail;
     }
+    
+    /**
+     * Get verified identities (domains and email addresses)
+     *
+     * @return boolean
+     */
+    public function getVerifiedIdentities()
+    {
+        $response = $this->client()->client->whitelabel()->domains()->get();
+        $json = json_decode($response->body(), true);
+        $validDomains = array_filter($json, function($domain) { return $domain['valid'] == true; });
+        return array_map(function($domain){ return $domain['domain']; }, $validDomains);
+    }
 }
