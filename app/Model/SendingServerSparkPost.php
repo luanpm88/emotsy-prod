@@ -263,4 +263,21 @@ class SendingServerSparkPost extends SendingServer
             MailLog::warning('Cannot find associated tracking log for message '.$feedbackLog->runtime_message_id);
         }
     }
+    
+    /**
+     * Get verified identities (domains and email addresses)
+     *
+     * @return boolean
+     */
+    public function getVerifiedIdentities()
+    {
+        $response = $this->client()->request('GET', 'sending-domains', [ 'ownership_verified' => 'true' ]);
+
+        if ($response->getStatusCode() != 200) {
+            throw new \Exception($response->getBody(true));
+        }
+
+        $domains = $response->getBody();
+        return array_map(function($domain){ return $domain['domain']; }, $domains['results']);
+    }
 }
