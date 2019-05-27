@@ -243,4 +243,20 @@ class SendingServerElasticEmail extends SendingServer
         $json = json_decode($response, true);
         return $json['data'];
     }
+    
+    /**
+     * Check the sending server settings, make sure it does work
+     *
+     * @return boolean
+     */
+    public function test()
+    {
+        $response = file_get_contents(self::API_ENDPOINT.'/domain/list?apikey='.$this->api_key);
+        $json = json_decode($response, true);
+        if ($json['success'] == false) {
+            throw new \Exception('Failed to connect to ElasticEmail: '.$response);
+        }
+        
+        return true;
+    }
 }
