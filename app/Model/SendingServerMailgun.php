@@ -114,4 +114,15 @@ class SendingServerMailgun extends SendingServer
         $json = json_decode(json_encode($response), true);
         return array_map(function($domain){ return $domain['name']; }, $json['http_response_body']['items']);
     }
+    
+    /**
+     * Check the sending server settings, make sure it does work
+     *
+     * @return boolean
+     */
+    public function test()
+    {
+        $response = $this->client()->get('domains');
+        return true;
+    }
 }
