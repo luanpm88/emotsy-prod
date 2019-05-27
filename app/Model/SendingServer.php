@@ -515,19 +515,13 @@ class SendingServer extends Model
         $validator = \Validator::make($request->all(), $this->getRules());
         
         // test amazon api connection
-        if ($this->type == SendingServer::TYPE_AMAZON_API || $this->type == SendingServer::TYPE_AMAZON_SMTP) {
-            $validator->after(function ($validator) {
-                try {
-                    \Acelle\Model\SendingServerAmazon::testConnection(
-                        $this->aws_access_key_id,
-                        $this->aws_secret_access_key,
-                        $this->aws_region
-                    );
-                } catch (\Exception $e) {
-                    $validator->errors()->add('aws_access_key_id', $e->getMessage());
-                }
-            });
-        }
+        $validator->after(function ($validator) {
+            try {
+                $this->test();
+            } catch (\Exception $e) {
+                $validator->errors()->add('connection', $e->getMessage());
+            }
+        });
         
         return $validator;
     }
