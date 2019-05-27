@@ -37,7 +37,7 @@ return [
         ], [
             'id' => 'proofy.io',
             'name' => 'proofy.io',
-            'uri' => 'https://api.proofy.io/check?aid={USERNAME}&key={API_KEY}&mail={EMAIL}',
+            'uri' => 'https://api.proofy.io/verifyaddr?aid={USERNAME}&key={API_KEY}&email={EMAIL}',
             'request_type' => 'GET',
             'fields' => [ 'username', 'api_key' ],
             'result_xpath' => '$.mail.statusName',
