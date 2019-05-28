@@ -1025,7 +1025,7 @@ class CampaignController extends Controller
         $messageId = StringHelper::base64UrlDecode($request->message_id);
 
         if (!TrackingLog::where('message_id', $messageId)->exists()) {
-            LaravelLog::warning('Tracking log not available for message: '.$messageId);
+            LaravelLog::warning('Open tracking log not available for message: '.$messageId);
             return response()->file(public_path('images/transparent.gif'));
         }
 
@@ -1039,6 +1039,7 @@ class CampaignController extends Controller
         // The second parameter of the constructor function is false, meanining immediate update
         try {
             $log->save();
+            LaravelLog::info('Open log recorded: '.$messageId);
             event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList));
         } catch (\Exception $ex) {
             // in case TrackingLog record does not exist yet (open before logged!)
@@ -1055,9 +1056,16 @@ class CampaignController extends Controller
     public function click(Request $request)
     {
         $decoded_url = \Acelle\Library\StringHelper::base64UrlDecode($request->url);
+        $messageId = StringHelper::base64UrlDecode($request->message_id);
+
+        if (!TrackingLog::where('message_id', $messageId)->exists()) {
+            LaravelLog::warning('Click tracking log not available, redirect anyway: '.$messageId);
+            return redirect()->away($decoded_url);
+        }
+        
         // redirect base64_decode($url);
         $log = new \Acelle\Model\ClickLog();
-        $log->message_id = \Acelle\Library\StringHelper::base64UrlDecode($request->message_id);
+        $log->message_id = $messageId;
         $location = \Acelle\Model\IpLocation::add($_SERVER['REMOTE_ADDR']);
         $log->ip_address = $location->ip_address;
         $log->user_agent = $_SERVER['HTTP_USER_AGENT'];
@@ -1065,13 +1073,9 @@ class CampaignController extends Controller
 
         // Trigger the CampaignUpdate event to update the campaign cache information
         // The second parameter of the constructor function is false, meanining immediate update
-        try {
-            $log->save();
-            event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList));
-        } catch (\Exception $ex) {
-            // in case TrackingLog record does not exist yet (open before logged!)
-            LaravelLog::warning('Cannot save click tracking log for X message: '.$log->message_id);
-        }
+        $log->save();
+        LaravelLog::info('Click log recorded: '.$messageId);
+        event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList));
 
         return redirect()->away($decoded_url);
     }
