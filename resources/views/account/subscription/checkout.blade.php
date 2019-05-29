@@ -42,7 +42,7 @@
                         </a>
 
                         <script>
-                            setTimeout(function() { $('#pay_now').click() }, 2000);
+                            // setTimeout(function() { $('#pay_now').click() }, 2000);
                         </script>
                     </div>
                 </div>
