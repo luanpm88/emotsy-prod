@@ -111,6 +111,8 @@
   'one_by_one' => 'One-by-one',
   'list.created' => 'List was successfully created',
   'list.updated' => 'List was successfully updated',
+  'sending_server.connect_failed' => 'Failed to connect to the remote service, please check your connection. Sending server is DISABLED',
+  'sending_server.identities_list_failed' => 'Failed to retrieve identities list',
   'sending_server.created' => 'Sending server was successfully created',
   'sending_server.updated' => 'Sending server was successfully updated',
   'sending_server.deleted' => 'Sending server was successfully deleted',

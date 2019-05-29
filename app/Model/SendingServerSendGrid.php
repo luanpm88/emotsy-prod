@@ -185,6 +185,9 @@ class SendingServerSendGrid extends SendingServer
     {
         $response = $this->client()->client->whitelabel()->domains()->get();
         $json = json_decode($response->body(), true);
+        if (array_key_exists('errors', $json)) {
+            throw new \Exception('Failed to connect to SendGrid: '.$response->body());
+        }
         $validDomains = array_filter($json, function($domain) { return $domain['valid'] == true; });
         return array_map(function($domain){ return $domain['domain']; }, $validDomains);
     }

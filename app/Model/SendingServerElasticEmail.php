@@ -241,6 +241,9 @@ class SendingServerElasticEmail extends SendingServer
     {
         $response = file_get_contents(self::API_ENDPOINT.'/domain/list?apikey='.$this->api_key);
         $json = json_decode($response, true);
+        if ($json['success'] == false) {
+            throw new \Exception($json['error']);
+        }
         return $json['data'];
     }
     

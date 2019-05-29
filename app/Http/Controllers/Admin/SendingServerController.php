@@ -8,7 +8,6 @@ use Acelle\Model\SendingServer;
 
 class SendingServerController extends Controller
 {
-
     /**
      * Display a listing of the resource.
      *
@@ -198,6 +197,30 @@ class SendingServerController extends Controller
 
         $server->fill($request->old());
         
+        $notices = [];
+        
+        try {
+            $server->test();
+        } catch (\Exception $ex) {
+            $server->disable();
+            
+            $notices[] = [
+                'title' => trans('messages.sending_server.connect_failed'),
+                'message' => $ex->getMessage()
+            ];
+        }
+        
+        $identities = null;
+        
+        try {
+            $identities = $server->getVerifiedIdentities();
+        } catch (\Exception $ex) {
+            $notices[] = [
+                'title' => trans('messages.sending_server.identities_list_failed'),
+                'message' => $ex->getMessage(),
+            ];
+        }
+        
         // options
         if (isset($request->old()['options'])) {
             $server->options = json_encode($request->old()['options']);
@@ -205,6 +228,8 @@ class SendingServerController extends Controller
 
         return view('admin.sending_servers.edit', [
             'server' => $server,
+            'notices' => $notices,
+            'identities' => $identities,
         ]);
     }
 

@@ -5,28 +5,36 @@
             <p>
                 {!! trans('messages.sending_servers.sending_identity.mailgun.intro', ['link' => '']) !!}
             </p>
-            <table class="table table-box table-box-head field-list">
-                <thead>
-                    <tr>
-                        <td>{{ trans('messages.domain') }}</td>
-                        <td>{{ trans('messages.status') }}</td>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach ($server->getVerifiedIdentities() as $domain)
-                        <tr class="odd">
-                            <td>
-                                {{ $domain }}
-                            </td>
-                            <td>
-                                <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
-                                    {{ $server->isDomainEnabled($domain) ? " checked" : "" }}
-                                />
-                            </td>
+            @if (is_null($identities))
+                @include('elements._notification', [
+                    'level' => 'warning',
+                    'title' => 'Error fetching identities list',
+                    'message' => 'Please check your connection',
+                ])
+            @else
+                <table class="table table-box table-box-head field-list">
+                    <thead>
+                        <tr>
+                            <td>{{ trans('messages.domain') }}</td>
+                            <td>{{ trans('messages.status') }}</td>
                         </tr>
-                    @endforeach
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        @foreach ($identities as $domain)
+                            <tr class="odd">
+                                <td>
+                                    {{ $domain }}
+                                </td>
+                                <td>
+                                    <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
+                                        {{ $server->isDomainEnabled($domain) ? " checked" : "" }}
+                                    />
+                                </td>
+                            </tr>
+                        @endforeach
+                    </tbody>
+                </table>
+            @endif
             <br>
             <button class="btn btn-mc_default mr-10">{{ trans('messages.sending_serbers.add_domain') }}</button>
             <a href="https://app.mailgun.com" type="button" target="_blank"

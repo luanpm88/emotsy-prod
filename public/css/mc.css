@@ -276,7 +276,7 @@ h2.mc-h2 {
   font-weight: bold !important;
 }
 .mc_section .form-group label {
-  font-weight: 600;
+  font-weight: 500;
 }
 .mc_section .form-control {
   border: 1px solid rgba(36,28,21,0.3);
@@ -432,7 +432,6 @@ stat .stat-head {
   font-weight: 600;
 }
 .mc_section .control-checkbox2 {
-  padding-top: 25px;
   margin-top: 0;
 }
 .mc_section .control-checkbox2 .help {

@@ -123,30 +123,38 @@
                 <p>
                     {!! trans('messages.sending_servers.local_identity.intro') !!}                    
                 </p>
-                <table class="table table-box table-box-head field-list">
-                    <thead>
-                        <tr>
-                            <td>{{ trans('messages.domain') }}</td>
-                            <td>{{ trans('messages.status') }}</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($server->getVerifiedIdentities() as $domain)
-                            <tr class="odd">
-                                <td>
-                                    {{ $domain }}
-                                </td>
-                                <td>
-                                    <a href="{{ action('Admin\SendingServerController@removeDomain', [$server->uid, $domain]) }}"
-                                        link-confirm="{{ trans('messages.sending_server.domain.remove_domain.confirm') }}"
-                                        class="text-warning" link-method="POST">
-                                          {{ trans('messages.sending_serbers.remove_domain') }}
-                                    </a>
-                                </td>
+                @if (is_null($identities))
+                    @include('elements._notification', [
+                        'level' => 'warning',
+                        'title' => 'Error fetching identities list',
+                        'message' => 'Please check your connection',
+                    ])
+                @else
+                    <table class="table table-box table-box-head field-list">
+                        <thead>
+                            <tr>
+                                <td>{{ trans('messages.domain') }}</td>
+                                <td>{{ trans('messages.status') }}</td>
                             </tr>
-                        @endforeach
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody>
+                            @foreach ($identities as $domain)
+                                <tr class="odd">
+                                    <td>
+                                        {{ $domain }}
+                                    </td>
+                                    <td>
+                                        <a href="{{ action('Admin\SendingServerController@removeDomain', [$server->uid, $domain]) }}"
+                                            link-confirm="{{ trans('messages.sending_server.domain.remove_domain.confirm') }}"
+                                            class="text-warning" link-method="POST">
+                                              {{ trans('messages.sending_serbers.remove_domain') }}
+                                        </a>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                @endif
                 <br>
                 <a href="{{ action('Admin\SendingServerController@addDomain', $server->uid) }}"
                   class="btn btn-mc_default mr-10 modal_link" data-size="md">
