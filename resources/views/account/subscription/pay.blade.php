@@ -3,6 +3,7 @@
 @section('content')
 
     @include('layouts._css')
+    @include('layouts._js')
 
     <div class="row">
         <div class="col-md-2"></div>
@@ -26,7 +27,7 @@
                         </a>
     
                         <script>
-                            // setTimeout(function() { $('#pay_now').click() }, 2000);
+                            setTimeout(function() { $('#pay_now').click() }, 2000);
                         </script>
                     </div>
                 </div>
