@@ -55,7 +55,13 @@
                         </div>
                         <div class="width1of4 stats-box">
                             <h3>
-                                <a href="{{ action('Admin\PaymentController@index') }}">{{ trans('messages.payment.' . Acelle\Model\Setting::get('system.payment_gateway')) }}</a>
+                                
+                                @if (Acelle\Model\Setting::get('system.payment_gateway'))
+                                    <a href="{{ action('Admin\PaymentController@index') }}">{{ trans('messages.payment.' . Acelle\Model\Setting::get('system.payment_gateway')) }}</a>
+                                @else
+                                    <a class="text-warning" href="{{ action('Admin\PaymentController@index') }}">{{ trans('messages.payment.not_set') }}</a>
+                                @endif
+                                
                             </h3>
                             <p>{{ trans('messages.plan.payment') }}</p>
                         </div>

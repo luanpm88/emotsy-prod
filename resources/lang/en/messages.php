@@ -2617,4 +2617,7 @@
   'payment.stripe' => 'Stripe',
   'subscription.pay_with_stripe' => 'Pay with Stripe',
   'notify.clear_all' => 'Clear all',
+  'payment.not_set' => 'Not set!',
+  'subscription.checkout.processing_payment.intro' => 'This process is automatic. Please do not close this browser/tab or change page.<br>
+    Your browser will redirect to next page shortly.',
 ) ?>

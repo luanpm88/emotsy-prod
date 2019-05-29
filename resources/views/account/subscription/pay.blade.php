@@ -1,51 +1,36 @@
-@extends('layouts.frontend')
-
-@section('title', trans('messages.subscriptions'))
-
-@section('page_script')
-    <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
-    <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
-@endsection
-
-@section('page_header')
-
-    <div class="page-title">
-        <ul class="breadcrumb breadcrumb-caret position-right">
-            <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
-            <li class="active">{{ trans('messages.subscription') }}</li>
-        </ul>
-        <h1>
-            <span class="text-semibold"><i class="icon-profile"></i> {{ Auth::user()->customer->displayName() }}</span>
-        </h1>
-    </div>
-
-@endsection
+@extends('layouts.none')
 
 @section('content')
 
-    @include("account._menu")
+    @include('layouts._css')
 
     <div class="row">
-        <div class="col-md-12">
-            <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
-
+        <div class="col-md-2"></div>
+        <div class="col-md-8 text-center" style="margin-top: 30vh">
+            <div class="mb-40">
+                <img src="{{ url('images/loading.gif') }}" />
+            </div>
+            <h1 class="text-semibold mb-10">{!! trans('messages.subscription.checkout.processing_payment') !!}</h1>
+    
             <div class="sub-section">
                 <div class="row">
-                    <div class="col-md-6">
-                        <p>{!! trans('messages.subscription.checkout.processing_payment') !!}</p>
-
+                    <div class="col-md-12">
+                        
+                    
+                        <p class="text-muted">{!! trans('messages.subscription.checkout.processing_payment.intro') !!}</p>
+    
                         <a id="pay_now" style="display: none" link-method="POST"
                             class="btn btn-mc_primary"
                             href="{{ action('AccountSubscriptionController@pay') }}">
                             {{ trans('messages.payment.pay_now') }}
                         </a>
-
+    
                         <script>
-                            setTimeout(function() { $('#pay_now').click() }, 2000);
+                            // setTimeout(function() { $('#pay_now').click() }, 2000);
                         </script>
                     </div>
                 </div>
-
+    
             </div>
         </div>
     </div>

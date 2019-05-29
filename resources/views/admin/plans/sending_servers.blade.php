@@ -14,6 +14,10 @@
         <ul class="breadcrumb breadcrumb-caret position-right">
             <li><a href="{{ action("HomeController@index") }}">{{ trans('messages.home') }}</a></li>
             <li><a href="{{ action("Admin\PlanController@index") }}">{{ trans('messages.plans') }}</a></li>
+            <li><a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}">
+                    {{ $plan->name }}
+                </a>
+            </li>
         </ul>
         <h1 class="mc-h1">
             <span class="text-semibold">{{ $plan->name }}</span>
