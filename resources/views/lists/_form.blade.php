@@ -198,7 +198,12 @@
 <script>
     $(document).ready(function() {
         // auto fill
-        var box = $('#sender_from_input').autofill();
+        var box = $('#sender_from_input').autofill({
+            messages: {
+                header_found: '{{ trans('messages.sending_identity') }}',
+                header_not_found: '{{ trans('messages.sending_identity.not_found.header') }}'
+            }
+        });
         box.loadDropbox(function() {
             $('#sender_from_input').focusout();
             box.updateErrorMessage();

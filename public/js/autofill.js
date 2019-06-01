@@ -1,4 +1,4 @@
-$.fn.autofill = function(action, param) {
+$.fn.autofill = function(options) {
     var box = this;
     box.input = box.find('.autofill-input');
     box.value = function() {
@@ -11,6 +11,20 @@ $.fn.autofill = function(action, param) {
     box.url = box.input.attr('data-url');
     box.current = null;
     box.xhr = null;
+    
+    // Options
+    if (typeof(options) == 'undefined') {
+        box.options = {};
+    } else {
+        box.options = options;
+    }
+    
+    // Messages
+    if (typeof(box.options.messages) == 'undefined') {
+        box.messages = {};
+    } else {
+        box.messages = box.options.messages;
+    }
 
     // dropdown list
     box.loadingRow = '<li class="loader-box"><a class="loader" href="javascript:;"><div class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></a></li>';
@@ -126,8 +140,14 @@ $.fn.autofill = function(action, param) {
             if (!box.container.parent().find('.autofill-error').length) {
                 box.container.after('<div class="helper-block autofill-error alert alert-warning">'+box.error+'</div>');
             }
+            // Change box title
+            box.container.find('.header').addClass('text-warning');
+            box.container.find('.header').html(box.messages.header_not_found);
         } else {
             box.container.parent().find('.autofill-error').remove();
+            // Change box title
+            box.container.find('.header').removeClass('text-warning');
+            box.container.find('.header').html(box.messages.header_found);
         }
     };
 
@@ -255,6 +275,8 @@ $.fn.autofill = function(action, param) {
         if(event.keyCode == 40) {
             moveDown();
         }
+        
+        box.updateErrorMessage();
     });
 
     // Key down

@@ -1807,30 +1807,35 @@ class Customer extends Model implements BillableUserInterface
     public function verifiedIdentitiesDroplist($keyword = null)
     {
         $droplist = [];
-
+        $topList = [];
+        $bottomList = [];
+        
+        if (!$keyword) {
+            $keyword = '###';
+        }
+        
         foreach ($this->getVerifiedIdentities() as $item) {
                 // check if email
                 if (extract_email($item) !== null) {
                     $email = extract_email($item);
-                    if (!$keyword) {
-                        $droplist[] = [
-                            'text' => extract_name($item),
-                            'value' => $email,
-                            'desc' => $email,
-                        ];
-                    }
-                    else if ( strpos(strtolower($email), $keyword) === 0 ) {
-                        $droplist[] = [
+                    if ( strpos(strtolower($email), $keyword) === 0 ) {
+                        $topList[] = [
                             'text' => extract_name($item),
                             'value' => $email,
                             'desc' => str_replace($keyword, '<span class="text-semibold text-primary"><strong>'.$keyword.'</strong></span>', $email),
+                        ];
+                    } else {
+                        $bottomList[] = [
+                            'text' => extract_name($item),
+                            'value' => $email,
+                            'desc' => $email,
                         ];
                     }
                 } else { // domains are alse
                     $dKey = explode('@', $keyword);
                     $dKey = isset($dKey[1]) ? $dKey[1] : null;
                     if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
-                        $droplist[] = [
+                        $topList[] = [
                             'text' => '****@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
                             'subfix' => $item,
                             'desc' => null,
@@ -1838,6 +1843,8 @@ class Customer extends Model implements BillableUserInterface
                     }
                 }
         }
+        
+        $droplist = array_merge($topList, $bottomList);
 
         return $droplist;
     }

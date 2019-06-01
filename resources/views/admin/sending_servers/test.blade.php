@@ -76,7 +76,13 @@
     
 <script>
     //$(document).ready(function() {
-        var box = $('#sender_from_input').autofill();
+        // auto fill
+        var box = $('#sender_from_input').autofill({
+            messages: {
+                header_found: '{{ trans('messages.sending_identity') }}',
+                header_not_found: '{{ trans('messages.sending_identity.not_found.header') }}'
+            }
+        });
         box.loadDropbox(function() {
         })
     //})

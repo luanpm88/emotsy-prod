@@ -2620,4 +2620,6 @@
   'payment.not_set' => 'Not set!',
   'subscription.checkout.processing_payment.intro' => 'This process is automatic. Please do not close this browser/tab or change page.<br>
     Your browser will redirect to next page shortly.',
+  'sending_identity.not_found.header' => 'No identity matches your FROM email address',
+  'sending_identity' => 'Sending Identity',
 ) ?>
