@@ -455,6 +455,22 @@ class SendingServer extends Model
 
         return $options;
     }
+    
+    /**
+     * Get sparkpost select options.
+     *
+     * @return array
+     */
+    public static function getSparkpostHostnameSelectOptions()
+    {
+        $options = [
+            ['text' => trans('messages.choose'), 'value' => ''],
+            ['text' => 'SparkPost Global', 'value' => 'api.sparkpost.com'],
+            ['text' => 'SparkPost EU', 'value' => 'api.eu.sparkpost.com'],
+        ];
+
+        return $options;
+    }
 
     /**
      * Get sending server's quota.

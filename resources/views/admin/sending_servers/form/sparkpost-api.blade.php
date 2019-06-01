@@ -12,15 +12,16 @@
         <div class="row">
             <div class="col-md-6">
                 <p>{{ trans('messages.sending_servers.sparkpost_api_key.intro') }}</p>
-
+                
                 @include('helpers.form_control', [
-                    'type' => 'text',
+                    'type' => 'select',
                     'class' => '',
                     'name' => 'host',
                     'value' => $server->host,
                     'help_class' => 'sending_server',
+                    'options' => Acelle\Model\SendingServer::getSparkpostHostnameSelectOptions(),
                     'rules' => $server->getRules(),
-                    'disabled' =>($server->id && $errors->isEmpty()),
+                    'disabled' => ($server->id && $errors->isEmpty()),
                 ])
 
                 @include('helpers.form_control', [
