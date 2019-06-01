@@ -1834,13 +1834,13 @@ class Customer extends Model implements BillableUserInterface
                 } else { // domains are alse
                     $dKey = explode('@', $keyword);
                     $dKey = isset($dKey[1]) ? $dKey[1] : null;
-                    if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
+                    // if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
                         $topList[] = [
                             'text' => '****@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
                             'subfix' => $item,
                             'desc' => null,
                         ];
-                    }
+                    // }
                 }
         }
         

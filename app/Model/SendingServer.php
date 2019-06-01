@@ -1185,31 +1185,45 @@ class SendingServer extends Model
      */
     public function verifiedIdentitiesDroplist($keyword = null)
     {
-        $droplist = [];        
+        $droplist = [];
+        $topList = [];
+        $bottomList = [];
+        
+        if (!$keyword) {
+            $keyword = '###';
+        }
         
         foreach ($this->getVerifiedIdentities() as $item) {
                 // check if email
                 if (extract_email($item) !== null) {
                     $email = extract_email($item);
-                    if ( $keyword && strpos(strtolower($email), $keyword) !== false ) {
-                        $droplist[] = [
+                    if ( strpos(strtolower($email), $keyword) === 0 ) {
+                        $topList[] = [
                             'text' => extract_name($item),
                             'value' => $email,
-                            'desc' => str_replace($keyword, '<span class="text-semibold text-primary">'.$keyword.'</span>', $email),
+                            'desc' => str_replace($keyword, '<span class="text-semibold text-primary"><strong>'.$keyword.'</strong></span>', $email),
+                        ];
+                    } else {
+                        $bottomList[] = [
+                            'text' => extract_name($item),
+                            'value' => $email,
+                            'desc' => $email,
                         ];
                     }
                 } else { // domains are alse
                     $dKey = explode('@', $keyword);
                     $dKey = isset($dKey[1]) ? $dKey[1] : null;
-                    if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) !== false )) {
-                        $droplist[] = [
-                            'text' => '****@'.str_replace($dKey, '<span class="text-semibold text-primary">'.$dKey.'</span>', $item),
+                    // if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
+                        $topList[] = [
+                            'text' => '****@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
                             'subfix' => $item,
                             'desc' => null,
                         ];
-                    }
+                    // }
                 }
         }
+        
+        $droplist = array_merge($topList, $bottomList);
         
         return $droplist;
     }
