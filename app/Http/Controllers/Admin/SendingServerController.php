@@ -629,18 +629,25 @@ class SendingServerController extends Controller
         
         // save posted data
         if ($request->isMethod('post')) {
+            $valid = true;
+            
             // validation
             $validator = \Validator::make($request->all(), [
-                'domain' => 'required|regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i|not_in:' . implode(',', $server->getDomains()),
+                'domain' => 'required|regex:/^(?!:\/\/)(?=.{1,255}$)((.{1,63}\.){1,127}(?![0-9]*$)[a-z0-9-]+\.?)$/i',
             ]);
             
-            if ($validator->fails()) {
+            if (in_array(strtolower($request->domain), $server->getDomains())) {
+                $validator->errors()->add('domain', trans('messages.sending_identity.exist_error'));
+                $valid = false;
+            }
+            
+            if (!$valid || $validator->fails()) {
                 return redirect()->action('Admin\SendingServerController@addDomain', $server->uid)
                             ->withErrors($validator)
                             ->withInput();
             }
             
-            $server->addDomain($request->domain);            
+            $server->addDomain(strtolower($request->domain));            
             $request->session()->flash('alert-success', trans('messages.sending_server.updated'));
             return;
         }

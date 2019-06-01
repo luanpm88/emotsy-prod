@@ -8,12 +8,12 @@
     <div class="modal-body">
         <div class="row">
             <div class="col-md-12">
-                <h2 class="text-semibold">{{ trans('messages.sending_server.add_domain') }}</h2>
+                <h2 class="text-semibold">{{ trans('messages.sending_server.add_email_domain') }}</h2>
         
                 <div class="mb-20">
                     <div class="row">
                         <div class="col-md-12">                                
-                            <p>{!! trans('messages.sending_server.add_domain.wording') !!}</p>
+                            <p>{!! trans('messages.sending_server.add_email_domain.wording') !!}</p>
                                 
                             <form id="addDomain" action="{{ action('Admin\SendingServerController@addDomain', $server->uid) }}" method="POST" class="form-validate-jquery">
                                 {{ csrf_field() }}
@@ -27,7 +27,7 @@
                                 ])
                                 
                                 <button type="submit" class="btn btn-primary bg-grey-600">
-                                    {{ trans('messages.sending_server.add_domain') }}
+                                    {{ trans('messages.sending_server.add_email_domain') }}
                                 </button>
                             </form>
                         </div>

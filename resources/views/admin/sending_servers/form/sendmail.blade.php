@@ -156,7 +156,7 @@
                                         <a href="{{ action('Admin\SendingServerController@removeDomain', [$server->uid, $domain]) }}"
                                             link-confirm="{{ trans('messages.sending_server.domain.remove_domain.confirm') }}"
                                             class="text-warning" link-method="POST">
-                                              {{ trans('messages.sending_serbers.remove_domain') }}
+                                              {{ trans('messages.sending_serbers.remove_email_domain') }}
                                         </a>
                                     </td>
                                 </tr>
@@ -167,7 +167,7 @@
                 <br>
                 <a href="{{ action('Admin\SendingServerController@addDomain', $server->uid) }}"
                   class="btn btn-mc_default mr-10 modal_link" data-size="md">
-                    {{ trans('messages.sending_serbers.add_domain') }}
+                    {{ trans('messages.sending_serbers.add_email_domain') }}
                 </a>
                     
                 <p class="mt-40">
