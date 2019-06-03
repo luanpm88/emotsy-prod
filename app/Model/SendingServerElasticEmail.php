@@ -237,6 +237,11 @@ class SendingServerElasticEmail extends SendingServer
         return $jsonResponse->data->transactionid;
     }
     
+    /**
+     * Get verified domains.
+     *
+     * @return Array
+     */
     public function getVerifiedIdentities()
     {
         $response = file_get_contents(self::API_ENDPOINT.'/domain/list?apikey='.$this->api_key);
@@ -244,7 +249,9 @@ class SendingServerElasticEmail extends SendingServer
         if ($json['success'] == false) {
             throw new \Exception($json['error']);
         }
-        return $json['data'];
+
+        $domains = array_map(function($e) { return $e['domain']; }, $json['data']);
+        return $domains;
     }
     
     /**
