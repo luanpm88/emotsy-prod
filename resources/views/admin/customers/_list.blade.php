@@ -26,7 +26,7 @@
                     <span class="text-muted2">{{ trans('messages.current_plan') }}</span>
                 </td>
                 <td class="stat-fix-size">
-                    @if (is_object($item->subscription()))
+                    @if (is_object($item->subscription))
                         <div class="single-stat-box pull-left ml-20">
                             <span class="no-margin text-teal-800 stat-num">{{ $item->displaySendingQuotaUsage() }}</span>
                             <div class="progress progress-xxs">

@@ -2,7 +2,7 @@
 
 <!-- Alert if customer don't have any subscription -->
 @if (is_object(\Auth::user()->customer) &&
-    !is_object(\Auth::user()->customer->subscription()))
+    !is_object(\Auth::user()->customer->subscription))
     <div class="alert alert-warning mt-20">
         <h4 class="ui-pnotify-title text-nowrap">
         {!! trans('messages.not_have_any_plan_notification', [

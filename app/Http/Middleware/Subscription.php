@@ -16,7 +16,7 @@ class Subscription
      */
     public function handle($request, Closure $next)
     {
-        $subscription = $request->user()->customer->subscription();        
+        $subscription = $request->user()->customer->subscription;
         
         if (is_object($subscription)) {
             if (!$subscription->active()) {

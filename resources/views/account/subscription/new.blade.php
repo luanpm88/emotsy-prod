@@ -22,12 +22,6 @@
 @endsection
 
 @section('content')
-    @if (!\Auth::user()->customer->subscriptionValid())
-        @include('elements._notification', [
-            'level' => 'warning',
-            'message' => trans('messages.no_plan.title')
-        ])
-    @endif
 
     @include("account._menu")
 

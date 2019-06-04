@@ -77,7 +77,7 @@ class CustomerController extends Controller
         
         // Get current subscription
         $customer = $request->user()->customer;
-        $subscription = $customer->subscription();
+        $subscription = $customer->subscription;
         
         $next_billing_date = null;
         if (is_object($subscription)) {
