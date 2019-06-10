@@ -897,7 +897,7 @@ class Subscriber extends Model
      */
     public function isActive()
     {
-        return ($this->status == STATUS_SUBSCRIBED);
+        return ($this->status == self::STATUS_SUBSCRIBED);
     }
 
     /**
