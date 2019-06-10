@@ -351,27 +351,32 @@ class LanguageController extends Controller
             if (!$request->hasFile('file')) {
                 $rules['file_not_found'] = 'required';
             }
+            
             $this->validate($request, $rules);
-
+            
             // check if file is zip achive
             $file_ext = $request->file('file')->guessExtension();
             if ($file_ext != 'zip') {
                 $rules['not_zip_archive'] = 'required';
+                $this->validate($request, $rules);
             }
-            $this->validate($request, $rules);
-
+            
             // move file to temp place
-            $tmp_path = storage_path('tmp/');
-            $file_name = $request->file('file')->getClientOriginalName();
+            $tmp_path = storage_path('tmp');
+            $file_name = 'language-package';
             $request->file('file')->move($tmp_path, $file_name);
-            $tmp_zip = $tmp_path.'/'.$file_name;
+            
+            // after moving, request['file'] will no longer be there
+            $rules = [];
+            $tmp_zip = storage_path("tmp/{$file_name}");
+            $openZip = $zip->open($tmp_zip, \ZipArchive::CREATE);
 
             // read zip file check if zip archive invalid
-            if ($zip->open($tmp_zip, \ZipArchive::CREATE) !== true) {
-                $rules['zip_archive_unvalid'] = 'required';
+            if ($openZip !== TRUE) {
+                $rules["zip_archive_unvalid"] = 'required';
+                $this->validate($request, $rules);
             }
-            $this->validate($request, $rules);
-
+            
             // unzip template archive and remove zip file
             $zip->extractTo($language->languageDir());
             $zip->close();
