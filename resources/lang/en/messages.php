@@ -2519,7 +2519,7 @@
   'subscription.logs' => 'Logs / Invoices',
   'subscription.logs.empty' => 'No records found',
   'no_plan.title' => 'You are not subscribed to any plan!',
-  'no_plan.wording' => 'You need to subscribe to a plan in order to experience the application. Click the button below to go to your subscription page.',
+  'select_plan.wording' => 'You need to subscribe to a plan in order to experience the application. Choose one of plans below to subcribe for using the app:',
   'manage_your_subscription' => 'Manage your subscription',
   'payment.coinpayments' => 'CoinPayments',
   'sending_server.add_domain.wording' => 'Enter new domain name here to add domain to sending server',
@@ -2627,4 +2627,12 @@
   'sending_identity.not_found.header' => 'No identity matches your FROM email address',
   'sending_identity' => 'Sending Identity',
   'sending_identity.exist_error' => 'Email/domain already exists!',
+  'plan.description' => 'Description',
+  'plan.pricing' => 'Pricing',
+  'plan.starting_at' => 'Starting At',
+  'plan.select' => 'Select',
+  'plan.review.wording' => 'Thank you for subscribing to Acelle Mail. Please review your selected plan below and procceed with the payment and get started.',
+  'payment.proceed_with_payment' => 'Proceed with Payment',
+  'payment.agree_service_intro' => 'By clicking the <strong><i>Proceed with payment</i></strong> button, you are paying for :plan plan, and you agree to Acelle Mail <i>Term of Use</i> and <i>Privacy Policy</i>.'
+  'plan.review' => 'Plan review',
 ) ?>
