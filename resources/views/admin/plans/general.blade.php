@@ -136,7 +136,7 @@
                             'plan' => $plan,
                         ])
                     </div>                    
-                    
+                    <!--
                     @include('helpers.form_control', [
                         'type' => 'select',
                         'class' => '',
@@ -147,6 +147,7 @@
                         'options' => $plan->colors("color"),
                         'rules' => '',
                     ])
+                    -->
                     
                     @include('helpers.form_control', [
                         'class' => '',
