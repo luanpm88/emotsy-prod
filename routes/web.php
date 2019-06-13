@@ -138,7 +138,12 @@ Route::group(['middleware' => ['not_installed']], function () {
 
 Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function () {
     // Account subscription
-
+    Route::get('subscription/checkout', 'AccountSubscriptionController@checkout');
+    Route::get('subscription/review', 'AccountSubscriptionController@review');
+    Route::get('subscription/select-plan', 'AccountSubscriptionController@selectPlan');
+    Route::get('subscription', 'AccountSubscriptionController@index');
+    
+    
     Route::post('subscription/payment-claim', 'AccountSubscriptionController@paymentClaim');
     Route::get('subscriptions/invoices/download-raw', 'AccountSubscriptionController@downloadRawInvoice');
     Route::match(['get', 'post'], 'subscriptions/change-plan-no-recurring/{plan_id}', 'AccountSubscriptionController@changePlanNoRecurring');
@@ -157,7 +162,7 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::get('subscription/card', 'AccountSubscriptionController@card');
     Route::post('subscription/create', 'AccountSubscriptionController@create');
     Route::get('subscription/new', 'AccountSubscriptionController@new');
-    Route::get('subscription', 'AccountSubscriptionController@index');
+    
 
     // Customer login back
     Route::get('customers/login-back', 'CustomerController@loginBack');
