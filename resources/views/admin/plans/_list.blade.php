@@ -27,7 +27,7 @@
                     @if (is_object($plan->primarySendingServer()))
                         <span class="text-muted">{{ trans('messages.plans.send_via.wording', ['server' => trans('messages.' . $plan->primarySendingServer()->type)]) }} &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}</span>
                     @else
-                        <span class="text-muted"><span class="text-danger">{{ trans('messages.plans.send_via.empty') }}</span></span>
+                        <span class="text-muted"><span class="text-danger"><i class="fal fa-minus-circle"></i> {{ trans('messages.plans.send_via.empty') }}</span></span>
                     @endif
                 </td>
                 <td>
