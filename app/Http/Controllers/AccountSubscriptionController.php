@@ -14,16 +14,6 @@ use Acelle\Cashier\SubscriptionParam;
 class AccountSubscriptionController extends Controller
 {
     /**
-     * No plan accounce page.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function noPlan()
-    {
-        return view('account.subscription.no_plan');
-    }
-
-    /**
      * Customer subscription main page.
      *
      * @param \Illuminate\Http\Request $request
@@ -45,38 +35,111 @@ class AccountSubscriptionController extends Controller
 
         // Customer dose not have subscription
         if (!is_object($subscription)) {
-            return redirect()->action('AccountSubscriptionController@new');
+            return redirect()->action('AccountSubscriptionController@selectPlan');
         }
-
-        // try to sync subscription information
-        try {
-            $subscription->sync($gateway);
-        } catch (\Exception $ex) {
-            // $subscription->markAsCancelled();
-            $request->session()->flash('alert-error', $ex->getMessage());
-            return redirect()->action('AccountSubscriptionController@card');
-        }
-
-        // is New
+        
+        // Check if subscriotion is new
         if ($subscription->isNew()) {
-            return redirect()->action('AccountSubscriptionController@card');
+            return redirect()->action('AccountSubscriptionController@review');
         }
 
-        // is New
-        if ($subscription->isPending()) {
-            return redirect()->action('AccountSubscriptionController@pending');
+        //// try to sync subscription information
+        //try {
+        //    $subscription->sync($gateway);
+        //} catch (\Exception $ex) {
+        //    // $subscription->markAsCancelled();
+        //    $request->session()->flash('alert-error', $ex->getMessage());
+        //    return redirect()->action('AccountSubscriptionController@card');
+        //}
+        //
+        //// is New
+        //if ($subscription->isNew()) {
+        //    return redirect()->action('AccountSubscriptionController@card');
+        //}
+        //
+        //// is New
+        //if ($subscription->isPending()) {
+        //    return redirect()->action('AccountSubscriptionController@pending');
+        //}
+        //
+        //// retrieve subscription info
+        //$subscriptionParam = $subscription->retrieve($gateway);
+        //
+        //return view('account.subscription.index', [
+        //    'subscription' => $subscription,
+        //    'gateway' => $gateway,
+        //    'plan' => $subscription->plan,
+        //    'currentPeriodEnd' => Carbon::createFromTimestamp($subscriptionParam->currentPeriodEnd),
+        //    'hasPendingPaymentForFuture' => $subscription->checkPendingPaymentForFuture($gateway),
+        //    'goingToExpire' => $subscription->goingToExpire(Setting::get('system.end_period_last_days')),
+        //]);
+    }
+    
+    /**
+     * Slect plan.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function selectPlan(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription;
+        $plans = Plan::getAllActive()->get();
+        $colWidth = round(85 / Plan::getAllActive()->count());
+
+        return view('account.subscription.select_plan', [
+            'plans' => $plans,
+            'colWidth' => $colWidth,
+        ]);
+    }
+    
+    /**
+     * Store customer subscription.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function create(Request $request)
+    {
+        // Get current customer
+        $customer = $request->user()->customer;
+        $plan = Plan::findByUid($request->plan_uid);
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+
+        // Create subscription
+        $subscription = $gateway->createSubscription($customer, $plan);
+
+        try {
+            \Mail::to($customer->user->email)->send(new \Acelle\Mail\SubscriptionDoneMailer($subscription));
+        } catch (\Exception $e) {
+            $request->session()->flash('alert-error', 'Can not send email: ' . $e->getMessage());
         }
 
-        // retrieve subscription info
-        $subscriptionParam = $subscription->retrieve($gateway);
-
-        return view('account.subscription.index', [
+        return redirect()->action('AccountSubscriptionController@review');
+    }
+    
+    /**
+     * Review customer subscription.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function review(Request $request)
+    {
+        // Get current customer
+        $customer = $request->user()->customer;
+        $plan = Plan::findByUid($request->plan_uid);
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        
+        $subscription = $customer->subscription;
+        
+        return view('account.subscription.review', [
             'subscription' => $subscription,
-            'gateway' => $gateway,
             'plan' => $subscription->plan,
-            'currentPeriodEnd' => Carbon::createFromTimestamp($subscriptionParam->currentPeriodEnd),
-            'hasPendingPaymentForFuture' => $subscription->checkPendingPaymentForFuture($gateway),
-            'goingToExpire' => $subscription->goingToExpire(Setting::get('system.end_period_last_days')),
         ]);
     }
 
@@ -93,34 +156,7 @@ class AccountSubscriptionController extends Controller
         $subscription = $customer->subscription;
 
         return view('account.subscription.new');
-    }
-
-    /**
-     * Store customer subscription.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function create(Request $request)
-    {
-        // Get current customer
-        $customer = $request->user()->customer;
-        $plan = Plan::findByUid($request->plan_uid);
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
-        $subscription = $customer->subscription;
-
-        // Create subscription
-        $subscription = $customer->createSubscription($plan, $gateway);
-
-        try {
-            \Mail::to($customer->user->email)->send(new \Acelle\Mail\SubscriptionDoneMailer($subscription));
-        } catch (\Exception $e) {
-            $request->session()->flash('alert-error', 'Can not send email: ' . $e->getMessage());
-        }
-
-        return redirect()->action('AccountSubscriptionController@card');
-    }
+    }   
 
     /**
      * Card information.
