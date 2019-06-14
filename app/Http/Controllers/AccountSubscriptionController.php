@@ -142,6 +142,30 @@ class AccountSubscriptionController extends Controller
             'plan' => $subscription->plan,
         ]);
     }
+    
+    /**
+     * Subscription checkout page.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function checkout(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription;
+        $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
+        
+        //// redirect to service
+        //return redirect()->action('\Acelle\Cashier\Controllers\StripeController@checkout', [
+        //    'subscription_id' => $subscription->uid
+        //]);
+        
+        return view('account.subscription.checkout', [
+            'gatewayService' => $gatewayService,
+            'subscription' => $subscription
+        ]);
+    }
 
     /**
      * New customer subscription.

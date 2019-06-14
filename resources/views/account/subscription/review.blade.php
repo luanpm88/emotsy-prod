@@ -57,7 +57,7 @@
             <div class="sub-section">
                 <div class="row">
                     <div class="col-md-4">
-                        <a link-method="POST"
+                        <a
                             class="btn btn-mc_primary"
                             href="{{ action('AccountSubscriptionController@checkout') }}">
                             {{ trans('messages.payment.proceed_with_payment') }}

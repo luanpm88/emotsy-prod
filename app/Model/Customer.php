@@ -99,7 +99,8 @@ class Customer extends Model implements BillableUserInterface
      */
     public function subscription()
     {
-        return $this->hasOne('Acelle\Cashier\Subscription', 'user_id', 'uid');
+        return $this->hasOne('Acelle\Cashier\Subscription', 'user_id', 'uid')
+            ->orderBy('created_at', 'desc');
     }
     
     public function contact()

@@ -711,7 +711,7 @@ class Setting extends Model
             case 'direct':
                 return new \Acelle\Cashier\Services\DirectPaymentGateway($config['fields']['notice']);
             case 'stripe':
-                return new \Acelle\Cashier\Services\StripePaymentGateway($config['fields']['secret_key']);
+                return new \Acelle\Cashier\Services\StripePaymentGateway($config['fields']['secret_key'], $config['fields']['publishable_key']);
             case 'braintree':
                 return new \Acelle\Cashier\Services\BraintreePaymentGateway(
                     $config['fields']['environment'],

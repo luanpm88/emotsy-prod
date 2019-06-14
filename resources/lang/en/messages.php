@@ -2633,6 +2633,6 @@
   'plan.select' => 'Select',
   'plan.review.wording' => 'Thank you for subscribing to Acelle Mail. Please review your selected plan below and procceed with the payment and get started.',
   'payment.proceed_with_payment' => 'Proceed with Payment',
-  'payment.agree_service_intro' => 'By clicking the <strong><i>Proceed with payment</i></strong> button, you are paying for :plan plan, and you agree to Acelle Mail <i>Term of Use</i> and <i>Privacy Policy</i>.'
+  'payment.agree_service_intro' => 'By clicking the <strong><i>Proceed with payment</i></strong> button, you are paying for :plan plan, and you agree to Acelle Mail <i>Term of Use</i> and <i>Privacy Policy</i>.',
   'plan.review' => 'Plan review',
 ) ?>
