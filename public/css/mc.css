@@ -606,3 +606,46 @@ stat .stat-head {
 .mc-notify-wanring .ui-pnotify-container {
   margin-bottom: 5px;
 }
+.price-table .section-title {
+  text-transform: uppercase;
+  font-weight: 600;
+  font-size: 16px;
+}
+.price-box {
+  
+}
+.price-table td {
+  padding: 20px;
+  vertical-align: top;
+}
+.price-table .plan-title {
+  font-size: 28px;
+  margin-bottom: 15px;
+  display: block;
+}
+.price-table .plan-price {
+  font-size: 30px;
+  display: block;
+}
+.btn.btn-mc_mk {
+  width: 70%;
+  background: #007c89;
+}
+.bg-mc_lightblue {
+  background: rgba(197,219,242,.3);
+}
+.mc-inline-list {
+    padding: 0;
+}
+.mc-inline-list li {
+    list-style: none;
+    padding: 10px 0px;
+    border-bottom: solid 1px #e0e0e0;
+}
+.mc-inline-list li value {
+    display: block;
+    font-size: 24px;
+}
+.mc-inline-list li desc {
+  
+}
