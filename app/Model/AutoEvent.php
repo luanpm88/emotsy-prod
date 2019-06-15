@@ -453,6 +453,12 @@ class AutoEvent extends Model
         if (empty($this->data)) {
             return trans('messages.event_not_set_yet');
         }
+        
+        if ($this->automation->defaultMailList()->exists()) {
+            $mailListName = $this->automation->defaultMailList->name;
+        } else {
+            $mailListName = "#not set";
+        }
 
         $msg = '';
         switch ($this->event_type) {
@@ -480,24 +486,24 @@ class AutoEvent extends Model
             case self::TYPE_LIST_SUBSCRIPTION:
                 if (!empty($this->getDataValue('delay_value'))) {
                     $msg = trans('messages.event_type_list_subscription_description_with_delay', [
-                        'list_name' => $this->automation->defaultMailList->name,
+                        'list_name' => $mailListName,
                         'delay' => $this->getDelayMessage(),
                     ]);
                 } else {
                     $msg = trans('messages.event_type_list_subscription_description', [
-                        'list_name' => $this->automation->defaultMailList->name,
+                        'list_name' => $mailListName,
                     ]);
                 }
                 break;
             case self::TYPE_LIST_UNSUBSCRIPTION:
                 if (!empty($this->getDataValue('delay_value'))) {
                     $msg = trans('messages.event_type_list_unsubscription_description_with_delay', [
-                        'list_name' => $this->automation->defaultMailList->name,
+                        'list_name' => $mailListName,
                         'delay' => $this->getDelayMessage(),
                     ]);
                 } else {
                     $msg = trans('messages.event_type_list_unsubscription_description', [
-                        'list_name' => $this->automation->defaultMailList->name,
+                        'list_name' => $mailListName,
                     ]);
                 }
                 break;
