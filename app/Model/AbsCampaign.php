@@ -99,13 +99,13 @@ abstract class AbsCampaign extends Model
             'from_name' => 'required',
             'reply_to' => 'required|email',
         );
-    
+
         if($this->use_default_sending_server_from_email) {
             $rules['from_email'] = 'email';
         } else {
             $rules['from_email'] = 'required|email';
         }
-        
+
         return $rules;
     }
 
@@ -117,17 +117,17 @@ abstract class AbsCampaign extends Model
         $rules = array(
             'type' => 'required',
             'name' => 'required',
-            'subject' => 'required',            
+            'subject' => 'required',
             'from_name' => 'required',
             'reply_to' => 'required|email',
         );
-        
+
         if($this->use_default_sending_server_from_email) {
             $rules['from_email'] = 'email';
         } else {
             $rules['from_email'] = 'required|email';
         }
-        
+
         return $rules;
     }
 
@@ -330,13 +330,13 @@ abstract class AbsCampaign extends Model
             }
         }
         $message->setSubject($this->getSubject($subscriber, $msgId));
-        
+
         if ($this->useSendingServerFromEmailAddress()) {
             $message->setFrom($server->default_from_email);
         } else {
             $message->setFrom(array($this->from_email => $this->from_name));
         }
-        
+
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
         $message->setEncoder(\Swift_Encoding::get8bitEncoding());
@@ -360,7 +360,7 @@ abstract class AbsCampaign extends Model
 
         return array($message, $msgId);
     }
-    
+
     /**
      * Check if the campaign setting is "use sending server's FROM email address"
      *
@@ -583,16 +583,16 @@ abstract class AbsCampaign extends Model
     public function findSendingDomain($email)
     {
         $domainName = substr(strrchr($email, '@'), 1);
-        
+
         if ($domainName == false) {
             return null;
         }
-        
+
         $domain = $this->customer->activeDkimSendingDomains()->where('name', $domainName)->first();
         if (is_null($domain)) {
-            $domain = SendingDomain::getAllAdminActive()->where('name', $domainName)->first();    
+            $domain = SendingDomain::getAllAdminActive()->where('name', $domainName)->first();
         }
-        
+
         return $domain;
     }
 
@@ -947,7 +947,7 @@ abstract class AbsCampaign extends Model
     {
         return $this->trackingLogs()->where('status', '=', TrackingLog::STATUS_FAILED)->count();
     }
-    
+
     /**
      * Count failed processed.
      *
@@ -973,7 +973,7 @@ abstract class AbsCampaign extends Model
 
         return $this->deliveredCount() / $total;
     }
-    
+
     /**
      * Count delivery success rate.
      *
@@ -989,7 +989,7 @@ abstract class AbsCampaign extends Model
 
         return $this->failedCount() / $total;
     }
-    
+
     /**
      * Count delivery success rate.
      *
@@ -1832,7 +1832,7 @@ abstract class AbsCampaign extends Model
         // and queue again
         $this->queue();
     }
-    
+
     /**
      * Re-send the campaign for sending.
      */
@@ -1844,7 +1844,7 @@ abstract class AbsCampaign extends Model
         // and queue again
         $this->requeue();
     }
-    
+
     /**
      * Re-send the campaign for sending.
      */
@@ -1853,8 +1853,8 @@ abstract class AbsCampaign extends Model
         // clean up failed log so that they will be included in resend
         $this->trackingLogs()->where('status', SendingServer::DELIVERY_STATUS_FAILED)->delete();
     }
-    
-    
+
+
 
     /**
      * Overwrite the delete() method to also clear the pending jobs.
@@ -2215,7 +2215,7 @@ abstract class AbsCampaign extends Model
         // return distinctCount($this->subscribers([], []), 'subscribers.email');
         return distinctCount($this->subscribers([], ['email_verifications']), 'subscribers.email');
     }
-    
+
     /**
      * Count subscribers.
      *
@@ -2287,5 +2287,40 @@ abstract class AbsCampaign extends Model
                 $this->tracking_domain_id = null;
             }
         }
+    }
+
+    /**
+     * Generate SpamScore.
+     */
+    public function score()
+    {
+        $score = <<<EOT
+0.8/5.0
+Spam detection software, running on the system "vm.local",
+has NOT identified this incoming email as spam.  The original
+message has been attached to this so you can view it or label
+similar future email.  If you have any questions, see
+@@CONTACT_ADDRESS@@ for details.
+
+Content preview:  Uncover The worldDiscover The Wonders Capture the wonder
+  and trill of travel with quiz.  CLICK TO VISIT A single place to discover
+  a story. CLICK TO VISIT In good company travel and published destina [...]
+
+
+Content analysis details:   (0.8 points, 5.0 required)
+
+ pts rule name              description
+---- ---------------------- --------------------------------------------------
+ 0.0 URIBL_BLOCKED          ADMINISTRATOR NOTICE: The query to URIBL was
+                            blocked.  See
+                            http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
+                             for more information.
+                            [URIs: wanderlust-magazine.com]
+ 0.8 HTML_IMAGE_RATIO_02    BODY: HTML has a low ratio of text to image
+                            area
+ 0.0 HTML_MESSAGE           BODY: HTML included in message
+ 0.0 T_DKIM_INVALID         DKIM-Signature header exists but is not valid
+EOT;
+        return $score;
     }
 }
