@@ -848,6 +848,7 @@ ul.campaign-steps li:first-child:after {
 }
 .nav-tabs > li {
     font-size: 15px;
+    margin-right: 20px;
 }
 textarea.plain_text_content {
     height: 350px;
@@ -1010,9 +1011,6 @@ input.numeric {
 }
 .mb-0 {
     margin-bottom: 0 !important;
-}
-.nav-tabs > li {
-    margin-right: 40px;
 }
 .modern-listing.top-border-none li:first-child {
     border-top: 0;
