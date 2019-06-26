@@ -2145,7 +2145,7 @@
   'login.remember_me' => 'Remember me on this device',
   'campaign.check_spam_score' => 'Check Spam Score',
   'campaign.spam_score' => 'Spam Score',
-  'plan.setting' => 'Setting',
+  'plan.setting' => 'Email Settings',
   'plan.enabled_email_footer' => 'Enable email footer',
   'plan.email_footer_trial_period_only' => 'For trial period only',
   'plan.html_footer' => 'HTML footer',
