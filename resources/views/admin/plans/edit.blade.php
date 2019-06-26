@@ -6,6 +6,9 @@
     <script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
 
     <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
+    
+    <script type="text/javascript" src="{{ URL::asset('tinymce/tinymce.min.js') }}"></script>
+    <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
 @endsection
 
 @section('page_header')
