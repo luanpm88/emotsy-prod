@@ -498,6 +498,16 @@ abstract class AbsCampaign extends Model
     }
 
     /**
+     * Append footer
+     *
+     * @return string.
+     */
+    public function appendFooter($body, $footer)
+    {
+        return $body.$footer;
+    }
+
+    /**
      * Append Open Tracking URL
      * Append open-tracking URL to every email message.
      */
@@ -554,6 +564,11 @@ abstract class AbsCampaign extends Model
             $body = $this->appendOpenTrackingUrl($body, $msgId);
         }
 
+        // Append footer
+        if ($this->footerEnabled()) {
+            $body = $this->appendFooter($body, $this->getHtmlFooter());
+        }
+
         // Transform tags
         $body = $this->tagMessage($body, $subscriber, $msgId, $server);
 
@@ -564,6 +579,36 @@ abstract class AbsCampaign extends Model
     }
 
     /**
+     * Check if email footer enabled.
+     *
+     * @return string
+     */
+    public function footerEnabled()
+    {
+        return ($this->customer->getCurrentSubscription()->plan->getOption('email_footer_enabled') == 'yes') ? true : false;
+    }
+
+    /**
+     * Get HTML footer.
+     *
+     * @return string
+     */
+    public function getHtmlFooter()
+    {
+        return $this->customer->getCurrentSubscription()->plan->getOption('html_footer');
+    }
+
+    /**
+     * Get PLAIN TEXT footer.
+     *
+     * @return string
+     */
+    public function getPlainTextFooter()
+    {
+        return $this->customer->getCurrentSubscription()->plan->getOption('plain_text_footer');
+    }
+
+    /**
      * Build Email HTML content.
      *
      * @return string
@@ -571,6 +616,11 @@ abstract class AbsCampaign extends Model
     public function getPlainContent($subscriber, $msgId, $server = null)
     {
         $plain = $this->tagMessage($this->plain, $subscriber, $msgId, $server);
+
+        // Append footer
+        if ($this->footerEnabled()) {
+            $body = $this->appendFooter($plain, $this->getPlainTextFooter());
+        }
 
         return $plain;
     }
@@ -2294,33 +2344,72 @@ abstract class AbsCampaign extends Model
      */
     public function score()
     {
-        $score = <<<EOT
-0.8/5.0
-Spam detection software, running on the system "vm.local",
-has NOT identified this incoming email as spam.  The original
-message has been attached to this so you can view it or label
-similar future email.  If you have any questions, see
-@@CONTACT_ADDRESS@@ for details.
+        try {
+            $score = $this->execSpamc();
+        } catch (\Exception $ex) {
+            $score = $ex->getMessage();
+        }
 
-Content preview:  Uncover The worldDiscover The Wonders Capture the wonder
-  and trill of travel with quiz.  CLICK TO VISIT A single place to discover
-  a story. CLICK TO VISIT In good company travel and published destina [...]
-
-
-Content analysis details:   (0.8 points, 5.0 required)
-
- pts rule name              description
----- ---------------------- --------------------------------------------------
- 0.0 URIBL_BLOCKED          ADMINISTRATOR NOTICE: The query to URIBL was
-                            blocked.  See
-                            http://wiki.apache.org/spamassassin/DnsBlocklists#dnsbl-block
-                             for more information.
-                            [URIs: wanderlust-magazine.com]
- 0.8 HTML_IMAGE_RATIO_02    BODY: HTML has a low ratio of text to image
-                            area
- 0.0 HTML_MESSAGE           BODY: HTML included in message
- 0.0 T_DKIM_INVALID         DKIM-Signature header exists but is not valid
-EOT;
         return $score;
+    }
+
+    /**
+     * Generate SpamScore.
+     */
+    private function execSpamc()
+    {
+        $message = $this->getSampleMessage()->toString();
+
+        // Execute SPAMC
+        $desc = [
+            0 => array('pipe', 'r'), // 0 is STDIN for process
+            1 => array('pipe', 'w'), // 1 is STDOUT for process
+            2 => array('pipe', 'w')  // 2 is STDERR for process
+        ];
+
+        // command to invoke markup engine
+        $cmd = "spamc -R";
+
+        // spawn the process
+        $p = proc_open($cmd, $desc, $pipes);
+
+        // send the wiki content as input to the markup engine
+        // and then close the input pipe so the engine knows
+        // not to expect more input and can start processing
+        fwrite($pipes[0], $message);
+        fclose($pipes[0]);
+
+        // read the output from the engine
+        $stdout = stream_get_contents($pipes[1]);
+        $stderr = stream_get_contents($pipes[2]);
+
+        // all done! Clean up
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        proc_close($p);
+
+        if (!empty($err)) {
+            throw new \Exception('Error: cannot get SpamScore: '.$stderr);
+        }
+
+        return $stdout;
+    }
+
+    /**
+     * Get sample message.
+     */
+    public function getSampleMessage()
+    {
+        // Build a valid message with a fake contact
+        // build a temporary subscriber oject used to pass through the sending methods
+        $subscriber = $this->createStdClassSubscriber(['email' => 'admin@outlook.com']);
+
+        // Throw exception in case no server available
+        $server = $this->pickSendingServer();
+
+        // build the message from campaign information
+        list($message, $msgId) = $this->prepareEmail($subscriber, $server);
+
+        return $message;
     }
 }
