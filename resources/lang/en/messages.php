@@ -2143,4 +2143,6 @@
   'login.email' => 'Email',
   'login.password' => 'Password',
   'login.remember_me' => 'Remember me on this device',
+  'campaign.check_spam_score' => 'Check Spam Score',
+  'campaign.spam_score' => 'Spam Score',
 ) ?>

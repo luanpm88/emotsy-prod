@@ -1895,4 +1895,20 @@ class CampaignController extends Controller
 	        return $_SERVER['REMOTE_ADDR'];
 	    }
 	}
+    
+    /**
+     * Get spam score.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return string
+     */
+    public function spamScore(Request $request, $uid) {
+        // Get current user
+        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+        
+	    return view('campaigns.spam_score', [
+            'campaign' => $campaign,
+        ]);
+	}
 }

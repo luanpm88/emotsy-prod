@@ -32,14 +32,17 @@
 @section('content')
 
         <div class="pull-right">
+				<a href="{{ action('CampaignController@spamScore', $campaign->uid) }}" type="button" class="btn btn-primary bg-grey mr-10 modal-control">
+						<i class="icon icon-check mr-5"></i> {{ trans('messages.campaign.check_spam_score') }}
+				</a>
 				@if ($campaign->template_source == 'builder')
-					<a href="{{ action('CampaignController@templateRebuild', $campaign->uid) }}" type="button" class="btn bg-info-800 mr-10">
-						<i class="icon icon-pencil"></i> {{ trans('messages.edit') }}
+					<a href="{{ action('CampaignController@templateRebuild', $campaign->uid) }}" type="button" class="btn btn-info bg-teal-800 mr-10">
+						<i class="icon icon-pencil mr-5"></i> {{ trans('messages.edit') }}
 					</a>
 				@endif
 				@if ($campaign->type != 'plain-text')
 					<a href="{{ action('CampaignController@templateSelect', $campaign->uid) }}" class="btn btn-info bg-teal-800">
-						<i class="icon-loop"></i> {{ trans('messages.change_template') }}
+						<i class="icon-loop mr-5"></i> {{ trans('messages.change_template') }}
 					</a>
 				@endif
         </div>
