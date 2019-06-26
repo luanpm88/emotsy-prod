@@ -309,7 +309,7 @@ class Plan extends Model
             'sending_server_option' => self::SENDING_SERVER_OPTION_SYSTEM,
             'sending_server_subaccount_uid' => null,
             'api_access' => 'yes',
-            'email_footer_enabled' => 'yes',
+            'email_footer_enabled' => 'no',
             'email_footer_trial_period_only' => 'no',
             'html_footer' => '',
             'plain_text_footer' => '',
