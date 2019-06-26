@@ -27,13 +27,13 @@ use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
-use DB;
-use Carbon\Carbon;
-use File;
 use Acelle\Model\SendingDomain;
 use Acelle\Model\SendingServer;
 use Acelle\Model\Subscriber;
 use Acelle\Model\TrackingLog;
+use DB;
+use Carbon\Carbon;
+use File;
 
 abstract class AbsCampaign extends Model
 {
@@ -100,7 +100,7 @@ abstract class AbsCampaign extends Model
             'reply_to' => 'required|email',
         );
 
-        if($this->use_default_sending_server_from_email) {
+        if ($this->use_default_sending_server_from_email) {
             $rules['from_email'] = 'email';
         } else {
             $rules['from_email'] = 'required|email';
@@ -122,7 +122,7 @@ abstract class AbsCampaign extends Model
             'reply_to' => 'required|email',
         );
 
-        if($this->use_default_sending_server_from_email) {
+        if ($this->use_default_sending_server_from_email) {
             $rules['from_email'] = 'email';
         } else {
             $rules['from_email'] = 'required|email';
@@ -362,7 +362,7 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Check if the campaign setting is "use sending server's FROM email address"
+     * Check if the campaign setting is "use sending server's FROM email address".
      *
      * @return mixed
      */
@@ -498,7 +498,7 @@ abstract class AbsCampaign extends Model
     }
 
     /**
-     * Append footer
+     * Append footer.
      *
      * @return string.
      */
@@ -635,7 +635,7 @@ abstract class AbsCampaign extends Model
         $domainName = substr(strrchr($email, '@'), 1);
 
         if ($domainName == false) {
-            return null;
+            return;
         }
 
         $domain = $this->customer->activeDkimSendingDomains()->where('name', $domainName)->first();
@@ -680,7 +680,7 @@ abstract class AbsCampaign extends Model
         'reply_to', 'track_open',
         'track_click', 'sign_dkim', 'track_fbl',
         'html', 'plain', 'template_source',
-        'tracking_domain_id', 'use_default_sending_server_from_email'
+        'tracking_domain_id', 'use_default_sending_server_from_email',
     ];
 
     /**
@@ -1904,8 +1904,6 @@ abstract class AbsCampaign extends Model
         $this->trackingLogs()->where('status', SendingServer::DELIVERY_STATUS_FAILED)->delete();
     }
 
-
-
     /**
      * Overwrite the delete() method to also clear the pending jobs.
      */
@@ -2364,11 +2362,15 @@ abstract class AbsCampaign extends Model
         $desc = [
             0 => array('pipe', 'r'), // 0 is STDIN for process
             1 => array('pipe', 'w'), // 1 is STDOUT for process
-            2 => array('pipe', 'w')  // 2 is STDERR for process
+            2 => array('pipe', 'w'),  // 2 is STDERR for process
         ];
 
         // command to invoke markup engine
-        $cmd = "spamc -R";
+        $cmd = Setting::get('spamassassin.command');
+
+        if (is_null($cmd)) {
+            $cmd = 'spamc -R'; // default value
+        }
 
         // spawn the process
         $p = proc_open($cmd, $desc, $pipes);
