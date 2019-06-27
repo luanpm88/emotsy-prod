@@ -37,7 +37,7 @@
 
             <ul class="modern-listing">
                 <li>
-                    <a href="{{ action('CampaignController@preview', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
+                    <a href="{{ action('CampaignController@templatePreview', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
                     <!-- {{ $count = $campaign->subscribersCount() }} -->
                     @if ($score['result'] == true)
                         <i class="icon-checkmark4"></i>
