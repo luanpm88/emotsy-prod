@@ -19,17 +19,6 @@
                     'help_class' => $help_class,
                     'rules' => $rules,
                 ])
-                
-                @include('helpers.form_control', [
-                    'class' => 'hidden',
-                    'type' => 'checkbox2',
-                    'name' => 'options[email_footer_trial_period_only]',
-                    'label' => trans('messages.plan.email_footer_trial_period_only'),
-                    'value' => $options['email_footer_trial_period_only'],
-                    'options' => ['no','yes'],
-                    'help_class' => $help_class,
-                    'rules' => $rules,
-                ])
             </div>
             
             @include('helpers.form_control', [
