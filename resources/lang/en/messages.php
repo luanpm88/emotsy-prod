@@ -2431,7 +2431,8 @@
       Next invoice will be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
   'subscription.cancel.confirm' => 'You\'re about to cancel :number subscription. You\'re still subscribed until the end of period',
   'subscription.cancelled' => 'The subscription was successfully cancelled',
-  'subscription.current_subscription.cancel_at_end_of_period.wording' => 'You are currently subscribed to <strong>:plan</strong> plan (<strong>:money</strong>). Your subscription will expire in <strong>:remain</strong>, on <strong>:end_at</strong>',
+  'subscription.current_subscription.cancel_at_end_of_period.wording' => 'You are currently subscribed to <strong>:plan</strong> plan (<strong>:money</strong>).
+      Your subscription will expire in <strong>:remain</strong>, on <strong>:end_at</strong>',
   'subscription.resume' => 'Resume',
   'plan_details' => 'Plan details',
   'subscription.resume.confirm' => 'You\'re about to resume :number subscription.',

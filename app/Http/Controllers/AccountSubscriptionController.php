@@ -29,7 +29,7 @@ class AccountSubscriptionController extends Controller
 
         $customer = $request->user()->customer;
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
-
+        
         // Get current subscription
         $subscription = $customer->subscription;
 
@@ -38,10 +38,19 @@ class AccountSubscriptionController extends Controller
             return redirect()->action('AccountSubscriptionController@selectPlan');
         }
         
+        // retrieve subscription info
+        $subscriptionParam = $gateway->sync($subscription);
+        
         // Check if subscriotion is new
         if ($subscription->isNew()) {
             return redirect()->action('AccountSubscriptionController@review');
         }
+        
+        return view('account.subscription.index', [
+            'subscription' => $subscription,
+            'gateway' => $gateway,
+            'plan' => $subscription->plan,
+        ]);
 
         //// try to sync subscription information
         //try {
@@ -156,16 +165,89 @@ class AccountSubscriptionController extends Controller
         $subscription = $customer->subscription;
         $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
         
-        //// redirect to service
-        //return redirect()->action('\Acelle\Cashier\Controllers\StripeController@checkout', [
-        //    'subscription_id' => $subscription->uid
-        //]);
-        
         return view('account.subscription.checkout', [
             'gatewayService' => $gatewayService,
             'subscription' => $subscription
         ]);
     }
+    
+    /**
+     * Subscription charge.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function charge(Request $request)
+    {
+        // Get current customer
+        $customer = $request->user()->customer;
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $subscription = $customer->subscription;
+
+        if ($request->isMethod('post')) {
+            // subscribe to plan
+            $gateway->charge($subscription);
+
+            // Redirect to my subscription page
+            $request->session()->flash('alert-success', trans('messages.subscription.finished', ['plan' => $subscription->plan->name]));
+            return redirect()->action('AccountSubscriptionController@index');
+        }
+
+        return view('account.subscription.charge', [
+            'subscription' => $subscription,
+        ]);
+    }
+    
+    /**
+     * Cancel subscription at the end of current period.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cancel(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $subscription = $customer->subscription;
+
+        if ($request->user()->customer->can('cancel', $subscription)) {
+            $gateway->cancelSubscription($subscription);
+        }
+
+        // Redirect to my subscription page
+        $request->session()->flash('alert-success', trans('messages.subscription.cancelled'));
+        return redirect()->action('AccountSubscriptionController@index');
+    }
+
+    /**
+     * Cancel subscription at the end of current period.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function resume(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $subscription = $customer->subscription;
+
+        if ($request->user()->customer->can('resume', $subscription)) {
+            $subscription->resume($gateway);
+        }
+
+        // Redirect to my subscription page
+        $request->session()->flash('alert-success', trans('messages.subscription.resumed'));
+        return redirect()->action('AccountSubscriptionController@index');
+    }
+    
+    
+    
+    
+    
+    
 
     /**
      * New customer subscription.
@@ -312,49 +394,7 @@ class AccountSubscriptionController extends Controller
         ]);
     }
 
-    /**
-     * Cancel subscription at the end of current period.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function cancel(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
-        $subscription = $customer->subscription;
-
-        if ($request->user()->customer->can('cancel', $subscription)) {
-            $subscription->cancel($gateway);
-        }
-
-        // Redirect to my subscription page
-        $request->session()->flash('alert-success', trans('messages.subscription.cancelled'));
-        return redirect()->action('AccountSubscriptionController@index');
-    }
-
-    /**
-     * Cancel subscription at the end of current period.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function resume(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
-        $subscription = $customer->subscription;
-
-        if ($request->user()->customer->can('resume', $subscription)) {
-            $subscription->resume($gateway);
-        }
-
-        // Redirect to my subscription page
-        $request->session()->flash('alert-success', trans('messages.subscription.resumed'));
-        return redirect()->action('AccountSubscriptionController@index');
-    }
+    
 
     /**
      * Cancel now subscription at the end of current period.
