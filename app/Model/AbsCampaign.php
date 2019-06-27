@@ -2343,12 +2343,28 @@ abstract class AbsCampaign extends Model
     public function score()
     {
         try {
-            $score = $this->execSpamc();
+            $test = $this->execSpamc();
+            preg_match ('/\s*(?<score>[0-9\.\/]+)\s*/', $test, $score);
+
+            if (!array_key_exists('score', $score)) {
+                throw new \Exception('Cannot get SpamScore: '.$test);
+            }
+
+            $score = $score['score'];
+            list($current, $max) = preg_split ('/\//', $score);
+
+            $passed = ( $current <= $max ) ? true : false;
         } catch (\Exception $ex) {
-            $score = $ex->getMessage();
+            $passed = false;
+            $score = 'N/A';
+            $test = $ex->getMessage();
         }
 
-        return $score;
+        return [
+            'result' => $passed,
+            'score' => $score,
+            'details' => $test
+        ];
     }
 
     /**
@@ -2390,7 +2406,7 @@ abstract class AbsCampaign extends Model
         fclose($pipes[2]);
         proc_close($p);
 
-        if (!empty($err)) {
+        if (!empty($err) || empty($stdout)) {
             throw new \Exception('Error: cannot get SpamScore: '.$stderr);
         }
 

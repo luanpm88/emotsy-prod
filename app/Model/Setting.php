@@ -450,6 +450,12 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'spamassassin.required' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
 
         ];
     }
