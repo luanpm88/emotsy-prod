@@ -2153,4 +2153,7 @@
   'plan.email_footer.intro' => 'Include a footer in every out-going email message to reflect your brand.
     Normally, you can enable this option for trial period',
   'plan.email_footer' => 'Email footer',
+  'campaign.score.passed' => 'PASSED',
+  'campaign.score.failed' => 'FAILED',
+  'campaign.send_without_score_passed.warning' => 'Your message does not pass SpamScore test, are you sure you want to proceed anyway?',
 ) ?>

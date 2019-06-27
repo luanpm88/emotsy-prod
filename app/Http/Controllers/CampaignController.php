@@ -578,6 +578,7 @@ class CampaignController extends Controller
 
         return view('campaigns.confirm', [
             'campaign' => $campaign,
+            'score' => $campaign->score(),
         ]);
     }
 
@@ -1908,7 +1909,7 @@ class CampaignController extends Controller
         $campaign = \Acelle\Model\Campaign::findByUid($uid);
         
 	    return view('campaigns.spam_score', [
-            'campaign' => $campaign,
+            'score' => $campaign->score(),
         ]);
 	}
 }
