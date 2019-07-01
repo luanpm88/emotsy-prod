@@ -2650,11 +2650,14 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
     content: "\ecb4";
 }
 .table-bodered-heading {
-  border: solid 1px #ddd;
+  border: solid 1px #dedddc;
 }
 .table-bodered-heading thead tr {
   background: #eee;
 }
 .table-bodered-heading thead tr th {
   font-weight: 600;
+}
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+  border-color: #dedddc;
 }
