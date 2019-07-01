@@ -2342,28 +2342,47 @@ abstract class AbsCampaign extends Model
      */
     public function score()
     {
-        try {
-            $test = $this->execSpamc();
-            preg_match ('/\s*(?<score>[0-9\.\/]+)\s*/', $test, $score);
+        // raw output
+        $test = $this->execSpamc();
 
-            if (!array_key_exists('score', $score)) {
-                throw new \Exception('Cannot get SpamScore: '.$test);
+        // Get scores / thresholds
+        preg_match ('/\s*(?<score>[0-9\.\/]+)\s*/', $test, $score);
+
+        if (!array_key_exists('score', $score)) {
+            throw new \Exception('Cannot get SpamScore: '.$test);
+        }
+
+        $score = $score['score'];
+        list($current, $threshold) = preg_split ('/\//', $score);
+        $passed = ( $current <= $threshold ) ? true : false;
+
+        // get the details
+        $json = [];
+
+        $firstMatch = false;
+        foreach(preg_split("/((\r?\n)|(\r\n?))/", $test) as $line){
+            preg_match('/^\s*(?<score>[\-0-9\.]+)\s+(?<rule>[\w]+)\s+(?<desc>.*)/', $line, $result);
+
+            if (array_key_exists('score', $result) && array_key_exists('rule', $result) && array_key_exists('desc', $result)) {
+                $firstMatch = true;
+                $json[] = [
+                    'score' => $result['score'],
+                    'rule' => $result['rule'],
+                    'desc' => $result['desc'],
+                    'status' => ($result['score'] > 0.0) ? 'failed' : (($result['score'] == 0.0) ? 'neutral' : 'passed')
+                ];
+            } elseif ($firstMatch) {
+                $lastRecord = end($json);
+                $lastRecord['desc'] .= " ".trim($line);
+                // replace last record
+                $json[sizeof($json) - 1] = $lastRecord;
             }
-
-            $score = $score['score'];
-            list($current, $max) = preg_split ('/\//', $score);
-
-            $passed = ( $current <= $max ) ? true : false;
-        } catch (\Exception $ex) {
-            $passed = false;
-            $score = 'N/A';
-            $test = $ex->getMessage();
         }
 
         return [
             'result' => $passed,
             'score' => $score,
-            'details' => $test
+            'details' => $json
         ];
     }
 
