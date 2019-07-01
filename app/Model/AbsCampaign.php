@@ -2342,31 +2342,6 @@ abstract class AbsCampaign extends Model
      */
     public function score()
     {
-        return [
-            "result" => true,
-            "score" => "2.0/5.0",
-            "details" => [
-                [
-                    "score" => "-0.0",
-                    "rule" => "NO_RELAYS",
-                    "desc" => "Informational: message was not relayed via SMTP",
-                    "status" => "success",
-                ],
-                [
-                    "score" => "2.0",
-                    "rule" => "HTML_MESSAGE",
-                    "desc" => "BODY: HTML included in message",
-                    "status" => "failed",
-                ],
-                [
-                    "score" => "-0.0",
-                    "rule" => "NO_RECEIVED",
-                    "desc" => "Informational: message has no Received headers  ",
-                    "status" => "neutral",
-                ],
-            ],
-        ];
-        
         // raw output
         $test = $this->execSpamc();
 
