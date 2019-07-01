@@ -31,8 +31,8 @@
             <tbody>
                 @foreach ($score['details'] as $test)
                     <tr class="campaign-row-{{ $test['status'] }}">
-                        <td><i class="icon icon-check mr-5"></i> {{ $test['rule'] }}</td>
-                        <td>{{ $test['score'] }}</td>
+                        <td style="white-space: nowrap"><i class="icon icon-check mr-5" title="{{ $test['status'] }}"></i> {{ $test['rule'] }}</td>
+                        <td title="{{ $test['status'] }}">{{ $test['score'] }}</td>
                         <td>{{ $test['desc'] }}</td>
                     </tr>
                 @endforeach
