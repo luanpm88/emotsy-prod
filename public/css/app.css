@@ -2631,3 +2631,30 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
     direction: unset !important;
     text-align:right;
 }
+.campaign-row-neutral {
+  color: #777;
+}
+.campaign-row-success {
+  color: #4CAF50;
+}
+.campaign-row-failed {
+  color: #F44336;
+}
+.campaign-row-success .icon-check:before {
+    content: "\e9db";
+}
+.campaign-row-failed .icon-check:before {
+    content: "\ed64";
+}
+.campaign-row-neutral .icon-check:before {
+    content: "\ecb4";
+}
+.table-bodered-heading {
+  border: solid 1px #ddd;
+}
+.table-bodered-heading thead tr {
+  background: #eee;
+}
+.table-bodered-heading thead tr th {
+  font-weight: 600;
+}

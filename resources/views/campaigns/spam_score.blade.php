@@ -14,9 +14,32 @@
 </div>
 <div class="modal-body">
     <div class="mc_section mb-0">
-        <pre>{{ $score['details'] }}</pre>
+        @if ($score['result'] == true)
+            <p>{{ trans('messages.campaign.score.passed.intro') }}</p>
+        @else
+            <p>{{ trans('messages.campaign.score.failed.intro') }}</p>
+        @endif
+        
+        <table class="table table-bodered-heading">
+            <thead>
+                <tr class="">
+                    <th>{{ trans('messages.campaign.score.test') }}</th>
+                    <th>{{ trans('messages.campaign.score') }}</th>
+                    <th>{{ trans('messages.campaign.score.description') }}</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($score['details'] as $test)
+                    <tr class="campaign-row-{{ $test['status'] }}">
+                        <td><i class="icon icon-check mr-5"></i> {{ $test['rule'] }}</td>
+                        <td>{{ $test['score'] }}</td>
+                        <td>{{ $test['desc'] }}</td>
+                    </tr>
+                @endforeach
+            </tbody>
+        </table>
     </div>
 </div>
-<div class="modal-footer text-center">
+<div class="modal-footer text-left">
     <a href="javascript:;" class="btn btn-primary bg-grey mr-10" data-dismiss="modal">{{ trans('messages.close') }}</a>
 </div>

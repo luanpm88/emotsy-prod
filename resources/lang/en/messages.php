@@ -2156,4 +2156,9 @@
   'campaign.score.passed' => 'PASSED',
   'campaign.score.failed' => 'FAILED',
   'campaign.send_without_score_passed.warning' => 'Your message does not pass SpamScore test, are you sure you want to proceed anyway?',
+  'campaign.score.failed.intro' => 'Your email isn’t ready to send. Below are the details of email test results',
+  'campaign.score.passed.intro' => 'Your email is ready to send. Below are the details of email test results',
+  'campaign.score.test' => 'Test',
+  'campaign.score' => 'Score',
+  'campaign.score.description' => 'Description',
 ) ?>

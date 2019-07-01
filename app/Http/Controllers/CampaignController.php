@@ -1908,8 +1908,14 @@ class CampaignController extends Controller
         // Get current user
         $campaign = \Acelle\Model\Campaign::findByUid($uid);
         
+        try {
+            $score = $campaign->score();
+        } catch (\Exception $e) {
+            return response()->json('Cannot get score. Make sure you setup for SpamAssassin correctly', 500); // Status code here
+        }
+        
 	    return view('campaigns.spam_score', [
-            'score' => $campaign->score(),
+            'score' => $score,
         ]);
 	}
 }

@@ -20,18 +20,22 @@ $(function() {
             modal.modal('show');
         
         $.ajax({
-                url: url,
-                type: method,
-                dataType: 'html',
-            }).always(function(response) {
-                $('#myModal .modal-content').html(response);
-                // Select2 ajax
-                $('#myModal .modal-content').find(".select2-ajax").each(function() {
-                    select2Ajax($(this));
-                });
-                
-                customValidate($('#myModal .modal-content').find('form'));
+            url: url,
+            type: method,
+            dataType: 'html',
+        }).always(function(response) {
+            $('#myModal .modal-content').html(response);
+            // Select2 ajax
+            $('#myModal .modal-content').find(".select2-ajax").each(function() {
+                select2Ajax($(this));
             });
+            
+            customValidate($('#myModal .modal-content').find('form'));
+        }).error(function (jqXHR) {
+            html = '<div class="modal-body"><prex class="text-danger">' + jqXHR.responseText + '</prex></div>';
+            
+            $('#myModal .modal-content').html(html);
+        });
         return false;
     });
     
