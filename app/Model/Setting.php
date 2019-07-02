@@ -229,6 +229,12 @@ class Setting extends Model
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
             ],
+            'custom_script' => [
+                'cat' => 'general',
+                'value' => '',
+                'type' => 'textarea',
+                'not_required' => 'yes',
+            ],
             'import_subscribers_commitment' => [
                 'cat' => 'others',
                 'value' => null,
