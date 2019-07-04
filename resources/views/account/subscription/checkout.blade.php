@@ -11,7 +11,9 @@
     <div class="row">
         <div class="col-md-12">
             
-            @include("cashier::" . $gatewayService->name . ".checkout")
+            @include("cashier::" . $gatewayService->name . ".checkout", [
+                'return_url' => action('AccountSubscriptionController@index')
+            ])
             
         </div>
     </div>

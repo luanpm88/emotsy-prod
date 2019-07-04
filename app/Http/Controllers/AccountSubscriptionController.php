@@ -51,37 +51,6 @@ class AccountSubscriptionController extends Controller
             'gateway' => $gateway,
             'plan' => $subscription->plan,
         ]);
-
-        //// try to sync subscription information
-        //try {
-        //    $subscription->sync($gateway);
-        //} catch (\Exception $ex) {
-        //    // $subscription->markAsCancelled();
-        //    $request->session()->flash('alert-error', $ex->getMessage());
-        //    return redirect()->action('AccountSubscriptionController@card');
-        //}
-        //
-        //// is New
-        //if ($subscription->isNew()) {
-        //    return redirect()->action('AccountSubscriptionController@card');
-        //}
-        //
-        //// is New
-        //if ($subscription->isPending()) {
-        //    return redirect()->action('AccountSubscriptionController@pending');
-        //}
-        //
-        //// retrieve subscription info
-        //$subscriptionParam = $subscription->retrieve($gateway);
-        //
-        //return view('account.subscription.index', [
-        //    'subscription' => $subscription,
-        //    'gateway' => $gateway,
-        //    'plan' => $subscription->plan,
-        //    'currentPeriodEnd' => Carbon::createFromTimestamp($subscriptionParam->currentPeriodEnd),
-        //    'hasPendingPaymentForFuture' => $subscription->checkPendingPaymentForFuture($gateway),
-        //    'goingToExpire' => $subscription->goingToExpire(Setting::get('system.end_period_last_days')),
-        //]);
     }
     
     /**
@@ -163,11 +132,10 @@ class AccountSubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
         
-        return view('account.subscription.checkout', [
-            'gatewayService' => $gatewayService,
-            'subscription' => $subscription
+        return redirect()->action('\Acelle\Cashier\Controllers\StripeController@checkout', [
+            'subscription_id' => $subscription->uid,
+            'return_url' => action('AccountSubscriptionController@index'),
         ]);
     }
     
