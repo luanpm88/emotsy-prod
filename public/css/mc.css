@@ -533,13 +533,8 @@ stat .stat-head {
   font-weight: normal;
 }
 .subscription-status-icon {
-    width: 45px;
-    height: 35px;
-    border-radius: 100px;
-    color: #fff;
     padding: 10px;
-    margin-right: 13px;
-    font-size: 26px;
+    font-size: 32px;
 }
 .user-switch-area {
     vertical-align: sub;

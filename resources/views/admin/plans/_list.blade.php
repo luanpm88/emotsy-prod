@@ -20,18 +20,15 @@
                 </td>
                 <td>
                     <h5 class="no-margin text-bold">
-                        <i class="icon-square plan-list-color-icon" style="color: {{ $plan->color }}"></i>
                         <span class="kq_search" href="{{ action('Admin\PlanController@edit', $plan->uid) }}">
                             {{ $plan->name }}
                         </span>
                     </h5>
                     @if (is_object($plan->primarySendingServer()))
-                        {{ trans('messages.plans.send_via.wording', ['server' => trans('messages.' . $plan->primarySendingServer()->type)]) }} -                         
+                        <span class="text-muted">{{ trans('messages.plans.send_via.wording', ['server' => trans('messages.' . $plan->primarySendingServer()->type)]) }} &bull; {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}</span>
                     @else
-                        <span class="text-danger">{{ trans('messages.plans.send_via.empty') }}</span><br/>
+                        <span class="text-muted"><span class="text-danger"><i class="fal fa-minus-circle"></i> {{ trans('messages.plans.send_via.empty') }}</span></span>
                     @endif
-                    {{ trans('messages.plans.subscriber_count', ['count' => $plan->customersCount()]) }}
-                    
                 </td>
                 <td>
                     <h5 class="no-margin text-bold kq_search">

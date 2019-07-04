@@ -25,15 +25,26 @@
 @section('content')
     
     @include('admin.plans._menu')
-    
-    
+
     <form enctype="multipart/form-data" action="{{ action('Admin\PlanController@save', $plan->uid) }}" method="POST" class="form-validate-jqueryx">
         {{ csrf_field() }}                
         <div class="mc_section">
-            <h2>{{ trans('messages.plan.general.details') }}</h2>
-            
-            <p>{{ trans('messages.plan.general.details.intro') }}</p>
-                
+            <div class="row">
+                <div class="col-md-7">
+                    <h2>{{ trans('messages.plan.general.overview') }}</h2>
+                        
+                    @include('elements._notification', [
+                        'level' => 'info',
+                        'message' => trans('messages.plan.info.subscriber_count', [
+                            'count' => $plan->customersCount(),
+                            'link' => action('Admin\SubscriptionController@index', ['plan_uid' => $plan->uid]),
+                        ])
+                    ])
+                    
+                    <p>{{ trans('messages.plan.general.details.intro') }}</p>
+                </div>
+            </div>
+
             <div class="row">
                 <div class="col-md-7">
                     
@@ -84,6 +95,8 @@
                             <p>{{ trans('messages.plan.delivery') }}</p>
                         </div>
                     </div>
+                        
+                    <h2>{{ trans('messages.plan.general.details') }}</h2>
                     
                     @include('helpers.form_control', [
                         'type' => 'text',
@@ -123,7 +136,7 @@
                             'plan' => $plan,
                         ])
                     </div>                    
-                    
+                    <!--
                     @include('helpers.form_control', [
                         'type' => 'select',
                         'class' => '',
@@ -134,6 +147,7 @@
                         'options' => $plan->colors("color"),
                         'rules' => '',
                     ])
+                    -->
                     
                     @include('helpers.form_control', [
                         'class' => '',

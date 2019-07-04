@@ -453,6 +453,12 @@ class AutoEvent extends Model
         if (empty($this->data)) {
             return trans('messages.event_not_set_yet');
         }
+        
+        if ($this->automation->defaultMailList()->exists()) {
+            $mailListName = $this->automation->defaultMailList->name;
+        } else {
+            $mailListName = "#not set";
+        }
 
         $msg = '';
         switch ($this->event_type) {
@@ -480,24 +486,24 @@ class AutoEvent extends Model
             case self::TYPE_LIST_SUBSCRIPTION:
                 if (!empty($this->getDataValue('delay_value'))) {
                     $msg = trans('messages.event_type_list_subscription_description_with_delay', [
-                        'list_name' => $this->automation->defaultMailList->name,
+                        'list_name' => $mailListName,
                         'delay' => $this->getDelayMessage(),
                     ]);
                 } else {
                     $msg = trans('messages.event_type_list_subscription_description', [
-                        'list_name' => $this->automation->defaultMailList->name,
+                        'list_name' => $mailListName,
                     ]);
                 }
                 break;
             case self::TYPE_LIST_UNSUBSCRIPTION:
                 if (!empty($this->getDataValue('delay_value'))) {
                     $msg = trans('messages.event_type_list_unsubscription_description_with_delay', [
-                        'list_name' => $this->automation->defaultMailList->name,
+                        'list_name' => $mailListName,
                         'delay' => $this->getDelayMessage(),
                     ]);
                 } else {
                     $msg = trans('messages.event_type_list_unsubscription_description', [
-                        'list_name' => $this->automation->defaultMailList->name,
+                        'list_name' => $mailListName,
                     ]);
                 }
                 break;
@@ -1074,6 +1080,13 @@ class AutoEvent extends Model
         // @todo: retrieve the first subscriber only, what if there are more than one subscribers?
         if (!empty($subscribers) && !is_null($subscribers)) {
             $trigger->subscriber_id = $subscribers[0]->id;
+            // Hack, dirty -> check for subscriber status (active or not)
+            // Do not fire inactive subscriber
+            $subscriber = Subscriber::find($trigger->subscriber_id);
+            if (!$subscriber->isActive()) {
+                MailLog::info(sprintf('Subscriber %s is not active, not firing. Automation: %s, Event type: %s, Event ID: %s', $subscriber->email, $this->automation->name, $this->event_type, $this->id));
+                return;
+            }
         }
 
         $this->autoTriggers()->save($trigger);

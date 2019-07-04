@@ -48,9 +48,15 @@
                             </label>
                             <div class="radio_more_box">
                                 @if ($plan->plansSendingServers->count() == 0)
-                                    <div class="alert alert-danger">
-                                        {{ trans('messages.plan.sending_servers.empty_warning') }}
-                                    </div>
+                                    @include('elements._notification', [
+                                        'level' => 'warning',
+                                        'message' => trans('messages.plan.sending_servers.empty_warning')
+                                    ])
+                                @else
+                                    @include('elements._notification', [
+                                        'level' => 'info',
+                                        'message' => trans('messages.plans.send_via.wording', ['server' => trans('messages.' . $plan->primarySendingServer()->type)])
+                                    ])
                                 @endif
                                 <input type="hidden" name="plan[options][all_sending_servers]" value="no" />
                                 <a href="{{ action('Admin\PlanController@sendingServers', $plan->uid) }}" class="btn btn-mc_default">
