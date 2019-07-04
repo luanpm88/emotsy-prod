@@ -61,6 +61,24 @@
                             {{ trans('messages.subscription.cancel') }}
                         </a>
                     @endif
+                    
+                    @if (\Auth::user()->customer->can('resume', $subscription))
+                        <a link-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
+                            href="{{ action('AccountSubscriptionController@resume') }}"
+                            class="btn bg-grey-600 mr-10"
+                        >
+                            {{ trans('messages.subscription.resume') }}
+                        </a>
+                    @endif
+                    
+                    @if (\Auth::user()->customer->can('cancelNow', $subscription))
+                        <a link-method="POST" link-confirm="{{ trans('messages.subscription.cancel_now.confirm') }}"
+                            href="{{ action('AccountSubscriptionController@cancelNow') }}"
+                            class="btn bg-grey-600 mr-10"
+                        >
+                            {{ trans('messages.subscription.cancel_now') }}
+                        </a>
+                    @endif
                 @endif
             </div>
             <div class="sub-section">

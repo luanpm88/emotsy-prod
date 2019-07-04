@@ -41,7 +41,7 @@ class SubscriptionPolicy
 
     public function cancel(User $user, Subscription $subscription, $role)
     {
-        $can = isset($subscription) && (!$subscription->cancelled() || $subscription->recurring());
+        $can = $subscription->isActive() && $subscription->isRecurring();
         switch ($role) {
             case 'admin':
                 break;
@@ -56,7 +56,7 @@ class SubscriptionPolicy
     {
         $gateway = \App::make('Acelle\Cashier\PaymentGateway');
 
-        $can = $gateway->isSupportRecurring() && isset($subscription) && $subscription->cancelled() && !$subscription->ended();
+        $can = $gateway->isSupportRecurring() && $subscription->cancelled() && !$subscription->ended();
 
         switch ($role) {
             case 'admin':
@@ -70,7 +70,7 @@ class SubscriptionPolicy
 
     public function cancelNow(User $user, Subscription $subscription, $role)
     {
-        $can = isset($subscription) && !$subscription->ended();
+        $can = !$subscription->ended();
 
         switch ($role) {
             case 'admin':

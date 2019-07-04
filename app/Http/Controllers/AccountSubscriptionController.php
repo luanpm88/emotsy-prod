@@ -41,6 +41,11 @@ class AccountSubscriptionController extends Controller
         // retrieve subscription info
         $subscriptionParam = $gateway->sync($subscription);
         
+        // if subscription is ended atfer sygned
+        if ($subscription->ended()) {
+            return redirect()->action('AccountSubscriptionController@selectPlan');
+        }
+        
         // Check if subscriotion is new
         if ($subscription->isNew()) {
             return redirect()->action('AccountSubscriptionController@review');
@@ -181,7 +186,7 @@ class AccountSubscriptionController extends Controller
         $subscription = $customer->subscription;
 
         if ($request->user()->customer->can('cancel', $subscription)) {
-            $gateway->cancelSubscription($subscription);
+            $gateway->cancel($subscription);
         }
 
         // Redirect to my subscription page
@@ -203,11 +208,34 @@ class AccountSubscriptionController extends Controller
         $subscription = $customer->subscription;
 
         if ($request->user()->customer->can('resume', $subscription)) {
-            $subscription->resume($gateway);
+            $gateway->resume($subscription);
         }
 
         // Redirect to my subscription page
         $request->session()->flash('alert-success', trans('messages.subscription.resumed'));
+        return redirect()->action('AccountSubscriptionController@index');
+    }
+    
+    /**
+     * Cancel now subscription at the end of current period.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function cancelNow(Request $request)
+    {
+        $customer = $request->user()->customer;
+        // Get current subscription
+        $subscription = $customer->subscription;
+        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+
+        if ($request->user()->customer->can('cancelNow', $subscription)) {
+            $gateway->cancelNow($subscription);
+        }
+
+        // Redirect to my subscription page
+        $request->session()->flash('alert-success', trans('messages.subscription.cancelled_now'));
         return redirect()->action('AccountSubscriptionController@index');
     }
     
@@ -362,30 +390,6 @@ class AccountSubscriptionController extends Controller
         ]);
     }
 
-    
-
-    /**
-     * Cancel now subscription at the end of current period.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function cancelNow(Request $request)
-    {
-        $customer = $request->user()->customer;
-        // Get current subscription
-        $subscription = $customer->subscription;
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
-
-        if ($request->user()->customer->can('cancelNow', $subscription)) {
-            $subscription->cancelNow($gateway);
-        }
-
-        // Redirect to my subscription page
-        $request->session()->flash('alert-success', trans('messages.subscription.cancelled_now'));
-        return redirect()->action('AccountSubscriptionController@index');
-    }
 
     /**
      * Change plan.

@@ -100,6 +100,7 @@ class Customer extends Model implements BillableUserInterface
     public function subscription()
     {
         return $this->hasOne('Acelle\Cashier\Subscription', 'user_id', 'uid')
+            ->where('status', '<>', Subscription::STATUS_ENDED)
             ->orderBy('created_at', 'desc');
     }
     
