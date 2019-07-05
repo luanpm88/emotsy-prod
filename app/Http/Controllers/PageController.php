@@ -9,7 +9,7 @@ use Acelle\Model\Setting;
 
 class PageController extends Controller
 {
-    
+
     /**
      * Redirect page if use outside url
      */
@@ -42,7 +42,7 @@ class PageController extends Controller
         // storing
         if ($request->isMethod('post')) {
             $page->fill($request->all());
-            
+
             $validate = 'required';
             foreach ($layout->tags() as $tag) {
                 if ($tag['required']) {
@@ -51,7 +51,7 @@ class PageController extends Controller
             }
 
             $rules = array();
-            
+
             // Check if use outside url
             if ($request->use_outside_url) {
                 $rules['outside_url'] = 'active_url';
@@ -59,11 +59,11 @@ class PageController extends Controller
                 $rules['content'] = $validate;
                 $rules['subject'] = 'required';
             }
-            
+
             // Validation
             $this->validate($request, $rules);
 
-            // save            
+            // save
             $page->save();
 
             // Log
@@ -164,18 +164,18 @@ class PageController extends Controller
             $subscriber->save();
             // Update field
             $subscriber->updateFields($request->all());
-            
+
             Log::info("Subscriber {$subscriber->email} is added to list {$subscriber->mailList->name} via subscription form");
 
             // trigger the event
             if (Setting::isYes('send_notification_email_for_list_subscription')) {
                 Log::info("Sending notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
-                event(new MailListSubscription($list->customer->user, $subscriber));    
+                event(new MailListSubscription($list->customer->user, $subscriber));
             } else {
                 Log::info("No notification email for subscriber {$subscriber->email}, list {$subscriber->mailList->name}");
             }
 
-            if($list->subscribe_confirmation) {
+            if ($list->subscribe_confirmation) {
                 // SEND subscription confirmation email
                 try {
                     $list->sendSubscriptionConfirmationEmail($subscriber);
@@ -183,13 +183,18 @@ class PageController extends Controller
                     return view('somethingWentWrong', ['message' => $ex->getMessage()]);
                 }
 
-                return redirect()->action('PageController@signUpThankyouPage', ['list_uid' => $list->uid, 'subscriber_uid' => $subscriber->uid]);
+                return redirect()->action('PageController@signUpConfirmationThankyou', [
+                        'list_uid' => $list->uid,
+                        'uid' => $subscriber->uid,
+                        'code' => 'empty',
+                    ]
+                );
             } else {
                 // change status to subscribed
                 $subscriber->updateStatus('subscribed');
 
                 // Send welcome email
-                if($list->send_welcome_email) {
+                if ($list->send_welcome_email) {
                     // SEND subscription confirmation email
                     try {
                         $list->sendSubscriptionWelcomeEmail($subscriber);
@@ -199,9 +204,11 @@ class PageController extends Controller
                 }
 
                 // find display thank you page
-                $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_thankyou')->first();
-                $page = \Acelle\Model\Page::findPage($list, $layout);
-                $page->renderContent(null, $subscriber);
+                return redirect()->action('PageController@signUpThankyouPage', [
+                        'list_uid' => $list->uid,
+                        'subscriber_uid' => $subscriber->uid
+                    ]
+                );
             }
         }
 
@@ -225,13 +232,11 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_thankyou_page')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->subscriber_uid);
-        
+
         // redirect if use outside url
         if ($page->use_outside_url) {
             return redirect($page->getOutsideUrlWithUid($subscriber));
         }
-
-        
 
         $page->renderContent(null, $subscriber);
 
@@ -255,7 +260,7 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_thankyou')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
-        
+
         $page->renderContent(null, $subscriber);
 
         if ($subscriber->getSecurityToken('subscribe-confirm') == $request->code && $subscriber->status == 'unconfirmed') {
@@ -272,7 +277,7 @@ class PageController extends Controller
                 }
             }
         }
-        
+
         // redirect if use outside url
         if ($page->use_outside_url) {
             return redirect($page->getOutsideUrlWithUid($subscriber));
@@ -344,7 +349,7 @@ class PageController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         $page->renderContent(null, $subscriber);
-        
+
         // redirect if use outside url
         if ($page->use_outside_url) {
             return redirect($page->getOutsideUrlWithUid($subscriber));
@@ -434,7 +439,7 @@ class PageController extends Controller
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
         $page->renderContent(null, $subscriber);
-        
+
         // redirect if use outside url
         if ($page->use_outside_url) {
             return redirect($page->getOutsideUrlWithUid($subscriber));
@@ -470,7 +475,7 @@ class PageController extends Controller
         } catch (\Exception $ex) {
             return view('somethingWentWrong', ['message' => $ex->getMessage()]);
         }
-        
+
         // redirect if use outside url
         if ($page->use_outside_url) {
             return redirect($page->getOutsideUrlWithUid($subscriber));
