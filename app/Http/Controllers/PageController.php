@@ -9,9 +9,8 @@ use Acelle\Model\Setting;
 
 class PageController extends Controller
 {
-
     /**
-     * Redirect page if use outside url
+     * Redirect page if use outside url.
      */
     public function checkOutsideUrlRedirect($page)
     {
@@ -142,9 +141,9 @@ class PageController extends Controller
 
         // Create subscriber
         if ($request->isMethod('post')) {
-            $subscriber = \Acelle\Model\Subscriber::where("email", "=", strtolower($request->EMAIL))
-                ->where("mail_list_id", "=", $list->id)->first();
-            if(!is_object($subscriber)) {
+            $subscriber = \Acelle\Model\Subscriber::where('email', '=', strtolower($request->EMAIL))
+                ->where('mail_list_id', '=', $list->id)->first();
+            if (!is_object($subscriber)) {
                 $subscriber = new \Acelle\Model\Subscriber($request->all());
                 $subscriber->mail_list_id = $list->id;
             }
@@ -155,7 +154,7 @@ class PageController extends Controller
             $subscriber->email = $request->EMAIL;
             $subscriber->ip = $request->ip();
             $subscriber->from = 'web';
-            if($list->subscribe_confirmation) {
+            if ($list->subscribe_confirmation) {
                 $subscriber->status = 'unconfirmed';
             } else {
                 $subscriber->status = 'subscribed';
@@ -206,7 +205,7 @@ class PageController extends Controller
                 // find display thank you page
                 return redirect()->action('PageController@signUpThankyouPage', [
                         'list_uid' => $list->uid,
-                        'subscriber_uid' => $subscriber->uid
+                        'subscriber_uid' => $subscriber->uid,
                     ]
                 );
             }
@@ -268,7 +267,7 @@ class PageController extends Controller
             $subscriber->save();
 
             // Send welcome email
-            if($list->send_welcome_email) {
+            if ($list->send_welcome_email) {
                 // SEND subscription confirmation email
                 try {
                     $list->sendSubscriptionWelcomeEmail($subscriber);
@@ -315,7 +314,7 @@ class PageController extends Controller
                 $subscriber->save();
 
                 // Send goodbye email
-                if($list->unsubscribe_notification) {
+                if ($list->unsubscribe_notification) {
                     // SEND subscription confirmation email
                     try {
                         $list->sendUnsubscriptionNotificationEmail($subscriber);
@@ -324,6 +323,7 @@ class PageController extends Controller
                     }
                 }
             }
+
             return redirect()->action('PageController@unsubscribeSuccessPage', ['list_uid' => $list->uid, 'uid' => $subscriber->uid]);
         }
 
