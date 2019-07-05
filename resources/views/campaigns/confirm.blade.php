@@ -36,27 +36,29 @@
             </div>
 
             <ul class="modern-listing">
-                <li>
-                    <a href="{{ action('CampaignController@templatePreview', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
-                    <!-- {{ $count = $campaign->subscribersCount() }} -->
-                    @if ($score['result'] == true)
-                        <i class="icon-checkmark4"></i>
-                    @else
-                        @if (!Acelle\Model\Setting::isYes('spamassassin.required'))
-                            <i class="icon-exclamation text-warning"></i>
-                        @else
-                            <i class="icon-cross2 text-danger"></i>
-                        @endif
-                    @endif
-                    <h4>{{ trans('messages.campaign.spam_score') }}</h4>
-                    <p>
+                @if (!is_null($score))
+                    <li>
+                        <a href="{{ action('CampaignController@templatePreview', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
+                        <!-- {{ $count = $campaign->subscribersCount() }} -->
                         @if ($score['result'] == true)
-                            <span class="badge badge-success">{{ trans('messages.campaign.score.passed') }} {{ $score['score'] }}</span>
+                            <i class="icon-checkmark4"></i>
                         @else
-                            <span class="badge badge-warning">{{ trans('messages.campaign.score.failed') }} {{ $score['score'] }}</span>
+                            @if (!Acelle\Model\Setting::isYes('spamassassin.required'))
+                                <i class="icon-exclamation text-warning"></i>
+                            @else
+                                <i class="icon-cross2 text-danger"></i>
+                            @endif
                         @endif
-                    </p>
-                </li>
+                        <h4>{{ trans('messages.campaign.spam_score') }}</h4>
+                        <p>
+                            @if ($score['result'] == true)
+                                <span class="badge badge-success">{{ trans('messages.campaign.score.passed') }} {{ $score['score'] }}</span>
+                            @else
+                                <span class="badge badge-warning">{{ trans('messages.campaign.score.failed') }} {{ $score['score'] }}</span>
+                            @endif
+                        </p>
+                    </li>
+                @endif
                 <li>
                     <a href="{{ action('CampaignController@recipients', $campaign->uid) }}" class="btn btn-info bg-grey">{{ trans('messages.edit') }}</a>
                     <!-- {{ $count = $campaign->subscribersCount() }} -->
@@ -114,7 +116,7 @@
                     @if (!Acelle\Model\Setting::isYes('spamassassin.required'))
                         <!--1.	Show ra error như dưới nhưng vẫn cho gửi campaign
                         2.	Khi user click Send thì show 1 cái confirm box: “Your message does not pass SpamScore test, are you sure you want to proceed anyway?”-->
-                        
+
                         <br />
                         <div class="text-right">
                             <span
@@ -123,11 +125,14 @@
                                 {{ trans('messages.preview') }} <i class="icon-eye"></i>
                             </span>
                             <button class="btn btn-lg bg-grey mr-5 send-a-test-email-link" data-uid="{{ $campaign->uid }}">{{ trans('messages.send_a_test_email') }} <i class="icon-envelop3 ml-5"></i> </button>
-                            
-                            <span onclick="$('#spam_score_confirm_model').modal('show')" class="btn btn-lg bg-teal-800">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </span>
-                            <button style="display: none" class="btn btn-lg bg-teal-800 send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
+                            @if (!is_null($score))
+                                <span onclick="$('#spam_score_confirm_model').modal('show')" class="btn btn-lg bg-teal-800">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </span>
+                                <button style="display: none" class="btn btn-lg bg-teal-800 send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
+                            @else
+                                <button class="btn btn-lg bg-teal-800 send-campaign-button">{{ trans('messages.send') }} <i class="icon-paperplane ml-5"></i> </button>
+                            @endif
                         </div>
-                            
+
                         <!-- Basic modal -->
                         <div id="spam_score_confirm_model" class="modal fade">
                             <div class="modal-dialog">
@@ -137,13 +142,11 @@
                                             <button type="button" class="close" data-dismiss="modal">&times;</button>
                                             <h3 class="modal-title"><strong>{{ trans('messages.are_you_sure') }}</strong></h3>
                                         </div>
-                    
+
                                         <div class="modal-body">
-                    
-                                                <p>{{ trans('messages.campaign.send_without_score_passed.warning') }}</p>
-                    
+                                            <p>{{ trans('messages.campaign.send_without_score_passed.warning') }}</p>
                                         </div>
-                    
+
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-link" data-dismiss="modal">{{ trans('messages.cancel') }}</button>
                                             <a class="btn bg-grey link-confirm-button" onclick="$('.send-campaign-button').click()">{{ trans('messages.confirm') }}</a>
@@ -167,7 +170,7 @@
                     </div>
                 @endif
 
-                    
+
             @endif
         </form>
         <br><br><br>
