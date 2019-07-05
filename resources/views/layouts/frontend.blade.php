@@ -231,5 +231,7 @@
 
 	@include("layouts._modals")
 
+        {!! \Acelle\Model\Setting::get('custom_script') !!}
+
 </body>
 </html>
