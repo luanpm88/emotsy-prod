@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Schema;
 use URL;
+use Acelle\Model\Setting;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -62,6 +63,17 @@ class AppServiceProvider extends ServiceProvider
         Validator::replacer('license_error', function ($message, $attribute, $rule, $parameters) {
             return str_replace(':error', $parameters[0], $message);
         });
+        
+        // Payment config load from database
+        $gateway = Setting::get('system.payment_gateway');
+        config(['cashier.gateway' => $gateway]);
+        if ($gateway) {
+            foreach (config('cashier.gateways')[$gateway]['fields'] as $key => $value ) {
+                config(['cashier.gateways.' . $gateway . '.fields.' . $key => Setting::get('payment.' . $gateway . '.' . $key)]);
+            }
+        }
+        
+            
     }
 
     /**
@@ -69,8 +81,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->bind('Acelle\Cashier\PaymentGateway', function ($app) {
-            return \Acelle\Model\Setting::getPaymentGatewayService(\Acelle\Model\Setting::get('system.payment_gateway'));
-        });
     }
 }

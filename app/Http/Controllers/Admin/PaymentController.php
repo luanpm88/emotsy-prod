@@ -8,6 +8,7 @@ use Acelle\Http\Requests;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Setting;
 use Illuminate\Support\MessageBag;
+use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Subscription;
 
 class PaymentController extends Controller
@@ -51,7 +52,7 @@ class PaymentController extends Controller
     public function update(Request $request, MessageBag $message_bag, $name)
     {
         $errors = new MessageBag;
-        $gatewayService = Setting::getPaymentGatewayService($name, $request->options);
+        $gatewayService = Cashier::getPaymentGateway($name, $request->options);
 
         try {
             $gatewayService->validate();
@@ -91,7 +92,7 @@ class PaymentController extends Controller
      */
     public function setPrimary(Request $request, $name)
     {
-        $service = Setting::getPaymentGatewayService($name);
+        $service = Cashier::getPaymentGateway($name);
 
         try {
             $sc = Subscription::count();

@@ -5,6 +5,7 @@ namespace Acelle\Policies;
 use Illuminate\Auth\Access\HandlesAuthorization;
 use Acelle\Model\User;
 use Acelle\Model\Setting;
+use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Subscription;
 
 class SubscriptionPolicy
@@ -54,7 +55,7 @@ class SubscriptionPolicy
 
     public function resume(User $user, Subscription $subscription, $role)
     {
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
 
         $can = $gateway->isSupportRecurring() && $subscription->cancelled() && !$subscription->ended();
 
@@ -112,7 +113,7 @@ class SubscriptionPolicy
 
     public function renew(User $user, Subscription $subscription, $role)
     {
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
         $can = isset($subscription) && $subscription->active() && !$gateway->isSupportRecurring();
         $can = $can && (Setting::get('system.renew_free_plan') == 'yes' || (Setting::get('system.renew_free_plan') == 'no' && !$subscription->plan->isFree()));
 
@@ -205,7 +206,7 @@ class SubscriptionPolicy
 
     public function approvePendingInvoice(User $user, Subscription $subscription, $role)
     {
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
         $can = $subscription->checkPendingPaymentForFuture($gateway);
 
         switch ($role) {

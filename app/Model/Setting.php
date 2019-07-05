@@ -23,6 +23,7 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Cashier\Cashier;
 
 class Setting extends Model
 {
@@ -64,7 +65,7 @@ class Setting extends Model
             return self::defaultSettings()[$name]['value'];
         } else {
             // @todo exception case not handled
-            return;
+            return null;
         }
     }
     
@@ -619,46 +620,7 @@ class Setting extends Model
      */
     public static function getPaymentGateways()
     {
-        $payments = [];
-        
-        foreach(config('payment.gateways') as $name => $gateway) {
-            $payments[$name] = self::getPaymentGateway($name);
-        }
-        
-        return $payments;
-    }
-    
-    /**
-     * Get payments gateways.
-     *
-     * @var array
-     */
-    public static function getActivePaymentGateways()
-    {
-        $payments = [];
-        
-        foreach(config('payment.gateways') as $name => $gateway) {
-            $gateway = self::getPaymentGateway($name);
-            $payments[$name] = $gateway;
-        }
-        
-        return $payments;
-    }
-    
-    /**
-     * Get payments gateways select option.
-     *
-     * @var array
-     */
-    public static function getActivePaymentGatewaySelectOptions()
-    {
-        $options = [];
-        
-        foreach(self::getActivePaymentGateways() as $gateway) {
-            $options[] = ['text' => trans('messages.payments.' . $gateway['name']), 'value' => $gateway['name']];
-        }
-        
-        return $options;
+        return config('cashier.gateways');
     }
     
     /**
@@ -668,67 +630,13 @@ class Setting extends Model
      */
     public static function getPaymentGateway($name)
     {
-        if (!isset(config('payment.gateways')[$name])) {
+        if (!isset(config('cashier.gateways')[$name])) {
             return null;
         }
         
-        $gateway = config('payment.gateways')[$name];
-        $gateway['name'] = $name;
-        
-        // Get value form databatase
-        $statusName = 'payment.' . $name . '.status';
-        $status = self::where('name', $statusName)->first();        
-        if (is_object($status)) {
-           $gateway['status'] = $status->value;
-        }
-        
-        // Fields
-        foreach ($gateway['fields'] as $key => $value ) {            
-            $fieldName = 'payment.' . $name . '.' . $key;
-            $field = self::where('name', $fieldName)->first();        
-            if (is_object($field)) {
-               $gateway['fields'][$key] = $field->value;
-            }
-        }
+        $gateway = config('cashier.gateways')[$name];
         
         return $gateway;
-    }
-    
-    /**
-     * Get payments gateway by name.
-     *
-     * @var array
-     */
-    public static function getPaymentGatewayService($name, $fields=null)
-    {
-        $config = \Acelle\Model\Setting::getPaymentGateway($name);
-        
-        if (isset($fields)) {
-            $config['fields'] = $fields;
-        }
-        
-        switch ($name) {
-            case 'direct':
-                return new \Acelle\Cashier\Services\DirectPaymentGateway($config['fields']['notice']);
-            case 'stripe':
-                return new \Acelle\Cashier\Services\StripePaymentGateway($config['fields']['secret_key'], $config['fields']['publishable_key']);
-            case 'braintree':
-                return new \Acelle\Cashier\Services\BraintreePaymentGateway(
-                    $config['fields']['environment'],
-                    $config['fields']['merchant_id'],
-                    $config['fields']['public_key'],
-                    $config['fields']['private_key']
-                );
-            case 'coinpayments':
-                return new \Acelle\Cashier\Services\CoinpaymentsPaymentGateway(
-                    $config['fields']['merchant_id'],
-                    $config['fields']['public_key'],
-                    $config['fields']['private_key'],
-                    $config['fields']['ipn_secret']
-                );
-            default:
-                return false;
-        }
     }
     
     /**

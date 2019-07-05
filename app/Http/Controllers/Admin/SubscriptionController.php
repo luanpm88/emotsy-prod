@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Acelle\Http\Requests;
 use Acelle\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log as LaravelLog;
+use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Subscription;
 use Acelle\Model\Plan;
 
@@ -49,7 +50,7 @@ class SubscriptionController extends Controller
      */
     public function listing(Request $request)
     {
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
 
         if(!$gateway) {
             return view('admin.subscriptions.no_gateway');
@@ -100,7 +101,7 @@ class SubscriptionController extends Controller
     {
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->admin->can('cancel', $subscription)) {
             $subscription->cancel($gateway);
@@ -120,7 +121,7 @@ class SubscriptionController extends Controller
     {
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->admin->can('resume', $subscription)) {
             $subscription->resume($gateway);
@@ -140,7 +141,7 @@ class SubscriptionController extends Controller
     {
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->admin->can('cancelNow', $subscription)) {
             $subscription->cancelNow($gateway);
@@ -161,7 +162,7 @@ class SubscriptionController extends Controller
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
         $plan = Plan::findByUid($request->plan_uid);
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
 
         if (! $request->user()->admin->can('changePlan', $subscription)) {
             return $this->notAuthorized();
@@ -193,7 +194,7 @@ class SubscriptionController extends Controller
     {
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
 
         return view('admin.subscriptions.invoices', [
             'subscription' => $subscription,
@@ -212,7 +213,7 @@ class SubscriptionController extends Controller
     {
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
 
         try {
             $subscription->setDone($gateway);
@@ -242,7 +243,7 @@ class SubscriptionController extends Controller
     {
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
 
         try {
             $subscription->approvePendingInvoice($gateway);
@@ -271,7 +272,7 @@ class SubscriptionController extends Controller
     public function downloadRawInvoice(Request $request, $id)
     {
         $subscription = Subscription::findByUid($id);
-        $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
+        $gatewayService = Cashier::getPaymentGateway();
 
 
         return response(var_export($subscription->getRawInvoices($gatewayService)), 200, [

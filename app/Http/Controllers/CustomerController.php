@@ -4,6 +4,7 @@ namespace Acelle\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Acelle\Cashier\Subscription;
+use Acelle\Cashier\Cashier;
 
 class CustomerController extends Controller
 {
@@ -73,7 +74,7 @@ class CustomerController extends Controller
     {
         $id = \Session::get('orig_customer_id');
         $orig_user = \Acelle\Model\User::findByUid($id);
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
         
         // Get current subscription
         $customer = $request->user()->customer;

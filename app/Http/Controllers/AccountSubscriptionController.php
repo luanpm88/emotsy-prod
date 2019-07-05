@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Log as LaravelLog;
 use Acelle\Cashier\Subscription;
 use Acelle\Model\Setting;
 use Acelle\Model\Plan;
+use Acelle\Cashier\Cashier;
 use Acelle\Cashier\Services\StripeGatewayService;
 use Carbon\Carbon;
 use Acelle\Cashier\SubscriptionParam;
@@ -28,7 +29,7 @@ class AccountSubscriptionController extends Controller
         }
 
         $customer = $request->user()->customer;
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
         
         // Get current subscription
         $subscription = $customer->subscription;
@@ -90,10 +91,10 @@ class AccountSubscriptionController extends Controller
         // Get current customer
         $customer = $request->user()->customer;
         $plan = Plan::findByUid($request->plan_uid);
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
 
         // Create subscription
-        $subscription = $gateway->createSubscription($customer, $plan);
+        $subscription = $gateway->create($customer, $plan);
 
         try {
             \Mail::to($customer->user->email)->send(new \Acelle\Mail\SubscriptionDoneMailer($subscription));
@@ -116,7 +117,7 @@ class AccountSubscriptionController extends Controller
         // Get current customer
         $customer = $request->user()->customer;
         $plan = Plan::findByUid($request->plan_uid);
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
         
         $subscription = $customer->subscription;
         
@@ -138,7 +139,7 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
         
-        return redirect()->action('\Acelle\Cashier\Controllers\StripeController@checkout', [
+        return redirect()->action("\Acelle\Cashier\Controllers\\" . ucfirst(config('cashier.gateway')) . "Controller@checkout", [
             'subscription_id' => $subscription->uid,
             'return_url' => action('AccountSubscriptionController@index'),
         ]);
@@ -155,7 +156,7 @@ class AccountSubscriptionController extends Controller
     {
         // Get current customer
         $customer = $request->user()->customer;
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
         $subscription = $customer->subscription;
 
         if ($request->isMethod('post')) {
@@ -182,7 +183,7 @@ class AccountSubscriptionController extends Controller
     public function cancel(Request $request)
     {
         $customer = $request->user()->customer;
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
         $subscription = $customer->subscription;
 
         if ($request->user()->customer->can('cancel', $subscription)) {
@@ -204,7 +205,7 @@ class AccountSubscriptionController extends Controller
     public function resume(Request $request)
     {
         $customer = $request->user()->customer;
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
         $subscription = $customer->subscription;
 
         if ($request->user()->customer->can('resume', $subscription)) {
@@ -228,7 +229,7 @@ class AccountSubscriptionController extends Controller
         $customer = $request->user()->customer;
         // Get current subscription
         $subscription = $customer->subscription;
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->customer->can('cancelNow', $subscription)) {
             $gateway->cancelNow($subscription);
@@ -272,7 +273,7 @@ class AccountSubscriptionController extends Controller
         // Get current customer
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
+        $gatewayService = Cashier::getPaymentGateway();
 
         return view('account.subscription.card', [
             'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
@@ -293,7 +294,7 @@ class AccountSubscriptionController extends Controller
     {
         // Get current customer
         $customer = $request->user()->customer;
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
         $subscription = $customer->subscription;
 
         if ($request->isMethod('post')) {
@@ -323,7 +324,7 @@ class AccountSubscriptionController extends Controller
     {
         // Get current customer
         $customer = $request->user()->customer;
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
         $subscription = $customer->subscription;
 
         if ($request->isMethod('post')) {
@@ -351,7 +352,7 @@ class AccountSubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
+        $gatewayService = Cashier::getPaymentGateway();
 
         if (!isset($subscription)) {
             return redirect()->action('AccountSubscriptionController@index');
@@ -373,25 +374,6 @@ class AccountSubscriptionController extends Controller
     }
 
     /**
-     * Subscription preview.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function preview(Request $request)
-    {
-        // Get subscription
-        $plan = Plan::findByUid($request->plan_uid);
-        $gateways = Setting::getActivePaymentGateways();
-
-        return view('account.subscription.preview', [
-            'gateways' => $gateways,
-            'plan' => $plan,
-        ]);
-    }
-
-
-    /**
      * Change plan.
      *
      * @param \Illuminate\Http\Request $request
@@ -404,7 +386,7 @@ class AccountSubscriptionController extends Controller
         // Get current subscription
         $subscription = $customer->subscription;
         $plan = Plan::findByUid($request->plan_uid);
-        $gateway = \App::make('Acelle\Cashier\PaymentGateway');
+        $gateway = Cashier::getPaymentGateway();
 
         // Authorization
         if (!$request->user()->customer->can('changePlan', $subscription)) {
@@ -442,7 +424,7 @@ class AccountSubscriptionController extends Controller
         // Get current subscription
         $subscription = $customer->subscription;
         $newPlan = Plan::findByUid($request->plan_id);
-        $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
+        $gatewayService = Cashier::getPaymentGateway();
 
         // @todo can not change to lower one
         if ($customer->calcChangePlan($newPlan)['amount'] < 0) {
@@ -484,7 +466,7 @@ class AccountSubscriptionController extends Controller
     {
         // Get current customer
         $customer = $request->user()->customer;
-        $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
+        $gatewayService = Cashier::getPaymentGateway();
         $subscription = $customer->subscription;
 
         if ($request->isMethod('post')) {
@@ -512,7 +494,7 @@ class AccountSubscriptionController extends Controller
     public function downloadRawInvoice(Request $request)
     {
         $subscription = $request->user()->customer->subscription;
-        $gatewayService = \App::make('Acelle\Cashier\PaymentGateway');
+        $gatewayService = Cashier::getPaymentGateway();
 
 
         return response(var_export($subscription->getRawInvoices($gatewayService)), 200, [
