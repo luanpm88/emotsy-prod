@@ -19,7 +19,7 @@ class Subscription
         $subscription = $request->user()->customer->subscription;
         
         // Check if customer dose not have subscription
-        if (!is_object($subscription)) {
+        if (!is_object($subscription) || !$subscription->isActive()) {
             return redirect()->action('AccountSubscriptionController@index');
         }
 

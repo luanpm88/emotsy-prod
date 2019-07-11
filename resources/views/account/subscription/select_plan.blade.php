@@ -57,11 +57,18 @@
                                         {{ \Acelle\Library\Tool::format_price($plan->price, $plan->currency->format) }}
                                     </div>
                                     <div>{{ $plan->displayFrequencyTime() }}</div>
-                                    <a link-method="POST"
-                                        href="{{ action('AccountSubscriptionController@create', ['plan_uid' => $plan->uid]) }}"
+                                        
+                                    <a
+                                        href="{{ action('AccountSubscriptionController@review', ['plan_uid' => $plan->uid]) }}"
                                         class="btn btn-mc_primary btn-mc_mk mt-30">
                                             {{ trans('messages.plan.select') }}
                                     </a>
+                                        
+                                    <!--<a link-method="POST"
+                                        href="{{ action('AccountSubscriptionController@create', ['plan_uid' => $plan->uid]) }}"
+                                        class="btn btn-mc_primary btn-mc_mk mt-30">
+                                            {{ trans('messages.plan.select') }}
+                                    </a>-->
                                 </td>
                             @endforeach
                         </tr>

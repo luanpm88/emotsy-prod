@@ -39,17 +39,22 @@ class AccountSubscriptionController extends Controller
             return redirect()->action('AccountSubscriptionController@selectPlan');
         }
         
+        // Check if subscriotion is new
+        if ($subscription->isNew()) {
+            return redirect()->action('AccountSubscriptionController@checkout');
+        }
+        
         // retrieve subscription info
         $subscriptionParam = $gateway->sync($subscription);
+        
+        // Check if subscriotion is new
+        if ($subscription->isPending()) {
+            return redirect()->action('AccountSubscriptionController@checkout');
+        }
         
         // if subscription is ended atfer sygned
         if ($subscription->ended()) {
             return redirect()->action('AccountSubscriptionController@selectPlan');
-        }
-        
-        // Check if subscriotion is new
-        if ($subscription->isNew()) {
-            return redirect()->action('AccountSubscriptionController@review');
         }
         
         return view('account.subscription.index', [
@@ -94,7 +99,7 @@ class AccountSubscriptionController extends Controller
         $gateway = Cashier::getPaymentGateway();
 
         // Create subscription
-        $subscription = $gateway->create($customer, $plan);
+        $subscription = $gateway->create($customer, $plan);        
 
         try {
             \Mail::to($customer->user->email)->send(new \Acelle\Mail\SubscriptionDoneMailer($subscription));
@@ -102,7 +107,7 @@ class AccountSubscriptionController extends Controller
             $request->session()->flash('alert-error', 'Can not send email: ' . $e->getMessage());
         }
 
-        return redirect()->action('AccountSubscriptionController@review');
+        return redirect()->action('AccountSubscriptionController@checkout');
     }
     
     /**
@@ -117,13 +122,9 @@ class AccountSubscriptionController extends Controller
         // Get current customer
         $customer = $request->user()->customer;
         $plan = Plan::findByUid($request->plan_uid);
-        $gateway = Cashier::getPaymentGateway();
-        
-        $subscription = $customer->subscription;
         
         return view('account.subscription.review', [
-            'subscription' => $subscription,
-            'plan' => $subscription->plan,
+            'plan' => $plan,
         ]);
     }
     
@@ -138,6 +139,11 @@ class AccountSubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
+        
+        // Authorization
+        if (!$request->user()->customer->can('checkout', $subscription)) {
+            return $this->notAuthorized();
+        }
         
         return redirect()->action("\Acelle\Cashier\Controllers\\" . ucfirst(config('cashier.gateway')) . "Controller@checkout", [
             'subscription_id' => $subscription->uid,
@@ -238,6 +244,67 @@ class AccountSubscriptionController extends Controller
         // Redirect to my subscription page
         $request->session()->flash('alert-success', trans('messages.subscription.cancelled_now'));
         return redirect()->action('AccountSubscriptionController@index');
+    }
+    
+    /**
+     * Change plan.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function changePlan(Request $request)
+    {        
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription;
+        
+        // Authorization
+        if (!$request->user()->customer->can('changePlan', $subscription)) {
+            return $this->notAuthorized();
+        }
+        
+        if ($request->isMethod('post')) {
+            $gateway = Cashier::getPaymentGateway();
+            $plan = Plan::findByUid($request->plan_uid);
+            
+            // change plan
+            $gateway->changePlan($subscription, $plan);
+            
+            $request->session()->flash('alert-success', trans('messages.subscription.plan_changed'));
+            return redirect()->action('AccountSubscriptionController@index');
+        }
+        
+        return view('account.subscription.change_plan', [
+            'subscription' => $subscription,
+        ]);
+    
+        //$customer = $request->user()->customer;
+        //// Get current subscription
+        //$subscription = $customer->subscription;
+        //$plan = Plan::findByUid($request->plan_uid);
+        //$gateway = Cashier::getPaymentGateway();
+        //
+        //// Authorization
+        //if (!$request->user()->customer->can('changePlan', $subscription)) {
+        //    return redirect()->action('AccountSubscriptionController@index');
+        //}
+        //
+        //if ($request->isMethod('post')) {
+        //    if (!$gateway->isSupportRecurring()) {
+        //        // update card info
+        //        return redirect()->action('AccountSubscriptionController@changePlanNoRecurring', [$plan->uid]);
+        //    }
+        //    
+        //    $gateway->changePlan($customer, $plan);
+        //
+        //    // Redirect to my subscription page
+        //    $request->session()->flash('alert-success', trans('messages.subscription.plan_changed'));
+        //    return redirect()->action('AccountSubscriptionController@index');
+        //}
+        //
+        //return view('account.subscription.change_plan', [
+        //    'subscription' => $subscription,
+        //]);
     }
     
     
@@ -373,43 +440,7 @@ class AccountSubscriptionController extends Controller
         ]);
     }
 
-    /**
-     * Change plan.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function changePlan(Request $request)
-    {
-        $customer = $request->user()->customer;
-        // Get current subscription
-        $subscription = $customer->subscription;
-        $plan = Plan::findByUid($request->plan_uid);
-        $gateway = Cashier::getPaymentGateway();
-
-        // Authorization
-        if (!$request->user()->customer->can('changePlan', $subscription)) {
-            return redirect()->action('AccountSubscriptionController@index');
-        }
-
-        if ($request->isMethod('post')) {
-            if (!$gateway->isSupportRecurring()) {
-                // update card info
-                return redirect()->action('AccountSubscriptionController@changePlanNoRecurring', [$plan->uid]);
-            }
-            
-            $gateway->changePlan($customer, $plan);
-
-            // Redirect to my subscription page
-            $request->session()->flash('alert-success', trans('messages.subscription.plan_changed'));
-            return redirect()->action('AccountSubscriptionController@index');
-        }
-
-        return view('account.subscription.change_plan', [
-            'subscription' => $subscription,
-        ]);
-    }
+    
 
     /**
      * Change plan.
@@ -497,7 +528,7 @@ class AccountSubscriptionController extends Controller
         $gatewayService = Cashier::getPaymentGateway();
 
 
-        return response(var_export($subscription->getRawInvoices($gatewayService)), 200, [
+        return response(var_export($gatewayService->getRawInvoices($subscription)), 200, [
             'Content-Type' => 'application/json',
             'Content-Disposition' => 'attachment; filename="payment_logs.txt"',
         ]);

@@ -104,7 +104,7 @@ class SubscriptionController extends Controller
         $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->admin->can('cancel', $subscription)) {
-            $subscription->cancel($gateway);
+            $gateway->cancel($subscription);
         }
 
         echo trans('messages.subscription.cancelled');
@@ -124,7 +124,7 @@ class SubscriptionController extends Controller
         $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->admin->can('resume', $subscription)) {
-            $subscription->resume($gateway);
+            $gateway->resume($subscription);
         }
 
         echo trans('messages.subscription.resumed');
@@ -144,7 +144,7 @@ class SubscriptionController extends Controller
         $gateway = Cashier::getPaymentGateway();
 
         if ($request->user()->admin->can('cancelNow', $subscription)) {
-            $subscription->cancelNow($gateway);
+            $gateway->cancelNow($subscription);
         }
 
         echo trans('messages.subscription.cancelled_now');
@@ -209,14 +209,14 @@ class SubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      **/
-    public function setDone(Request $request, $id)
+    public function setActive(Request $request, $id)
     {
         // Get current subscription
         $subscription = Subscription::findByUid($request->id);
         $gateway = Cashier::getPaymentGateway();
 
         try {
-            $subscription->setDone($gateway);
+            $gateway->setActive($subscription);
         } catch (\Exception $ex) {
             echo json_encode([
                 'status' => 'error',
@@ -227,7 +227,7 @@ class SubscriptionController extends Controller
 
         echo json_encode([
             'status' => 'success',
-            'message' => trans('messages.subscription.set_done.success'),
+            'message' => trans('messages.subscription.set_active.success'),
         ]);
         return;
     }

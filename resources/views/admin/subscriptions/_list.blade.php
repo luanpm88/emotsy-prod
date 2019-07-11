@@ -47,31 +47,7 @@
 				</td>
 				<td>
                     <span class="text-muted2 list-status pull-left">
-						@if (!$subscription->active())
-							@if ($subscription->ended())
-								<span class="label label-flat bg-cancelled">{{ trans('messages.subscription.status.ended') }}</span>
-							@elseif ($subscription->isNew())
-								<span class="label label-flat bg-new">{{ trans('messages.subscription.status.new') }}</span>
-							@elseif ($subscription->isPending())								
-								@if ($subscription->isPaymentClaimed())
-									<span class="label label-flat bg-pending">{{ trans('messages.invoice.status.claimed') }}</span>
-								@else
-									<span class="label label-flat bg-pending">{{ trans('messages.subscription.status.pending') }}</span>
-								@endif
-							@endif
-						@else
-							@if ($subscription->recurring())
-								<span class="label label-flat bg-info">{{ trans('messages.subscription.status.recurring') }}</span>
-							@elseif ($subscription->checkPendingPaymentForFuture($gateway))
-								@if ($subscription->isPaymentClaimed())
-									<div class="label label-flat bg-warning">{{ trans('messages.invoice.status.future_payment.claimed') }}</div>
-								@else
-									<div class="label label-flat bg-info">{{ trans('messages.invoice.status.future_payment.pending') }}</div>
-								@endif
-							@else
-								<span class="label label-flat bg-active">{{ trans('messages.subscription.status.active') }}</span>
-							@endif
-						@endif
+						<span class="label label-flat bg-{{ $subscription->status }}">{{ trans('messages.subscription.status.' . $subscription->status) }}</span>
 					</span>
                 </td>
 				<td class="text-right">
@@ -91,7 +67,7 @@
 						\Auth::user()->admin->can('cancelNow', $subscription) ||
 						\Auth::user()->admin->can('changePlan', $subscription) ||
 						\Auth::user()->admin->can('invoices', $subscription) ||
-						\Auth::user()->admin->can('setDone', $subscription)
+						\Auth::user()->admin->can('setActive', $subscription)
 					)
 						<div class="btn-group">
 							<button type="button" class="btn dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret ml-0"></span></button>
@@ -104,11 +80,11 @@
 										</a>
 									</li>
 								@endif
-								@if (\Auth::user()->admin->can('setDone', $subscription))
+								@if (\Auth::user()->admin->can('setActive', $subscription))
 									<li>
-										<a data-method="POST" link-confirm="{{ trans('messages.subscription.set_done.confirm') }}"
-										  href="{{ action('Admin\SubscriptionController@setDone', $subscription->uid) }}">
-											{{ trans('messages.subscription.approve_payment') }}
+										<a data-method="POST" link-confirm="{{ trans('messages.subscription.set_active.confirm') }}"
+										  href="{{ action('Admin\SubscriptionController@setActive', $subscription->uid) }}">
+											{{ trans('messages.subscription.set_active') }}
 										</a>
 									</li>
 								@endif

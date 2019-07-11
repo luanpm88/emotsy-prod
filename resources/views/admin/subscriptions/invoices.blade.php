@@ -24,7 +24,7 @@
                                             <th>{{ trans('messages.invoice.amount') }}</th>
                                             <th>{{ trans('messages.invoice.status') }}</th>
                                         </tr>
-                                        @forelse ($subscription->getInvoices($gateway) as $key => $invoice)
+                                        @forelse ($gateway->getInvoices($subscription) as $key => $invoice)
                                             <tr>
                                                 <td>
                                                     <span class="no-margin kq_search">

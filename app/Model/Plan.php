@@ -1346,6 +1346,16 @@ class Plan extends Model implements BillablePlanInterface
     }
     
     /**
+     * PlanInterface: get interval count.
+     *
+     * @return string
+     */
+    public function getBillableFormattedPrice()
+    {
+        return \Acelle\Library\Tool::format_price($this->price, $this->currency->format);
+    }
+    
+    /**
      * Get all .
      *
      * @var bool

@@ -2561,9 +2561,9 @@
   'subscription.change_plan.checkout.coinpayments' => 'You are about to change plan from <strong>:current_plan</strong> to <strong>:new_plan</strong>.
     The extra amount need to purchase amount for new plan is <strong>:amount</strong>. The subscription will be ended on <strong>:end_on</strong>',
   'subscription.download_raw_invoices' => 'Download invoices (raw)',
-  'subscription.approve_payment' => 'Approve payment',
-  'subscription.set_done.confirm' => 'You are about to approve payment status for the subscription. This can not be un-done.',
-  'subscription.set_done.success' => 'The subscription invoice was approved successfully.',
+  'subscription.set_active' => 'Set active',
+  'subscription.set_active.confirm' => 'You are about to approve payment status for the subscription. This can not be un-done.',
+  'subscription.set_active.success' => 'The subscription invoice was approved successfully.',
   'subscription.renew.checkout' => 'Checkout',
   'subscription.renew.direct.wording' => 'Click the button bellow to renew the subscription for <strong>:plan</strong> plan.
     The total amoutn is <strong>:price</strong>.',
@@ -2637,4 +2637,5 @@
   'payment.proceed_with_payment' => 'Proceed with Payment',
   'payment.agree_service_intro' => 'By clicking the <strong><i>Proceed with payment</i></strong> button, you are paying for :plan plan, and you agree to Acelle Mail <i>Term of Use</i> and <i>Privacy Policy</i>.',
   'plan.review' => 'Plan review',
+  'payment.coinpayments.receive_currency' => 'Receive Currency Code',
 ) ?>

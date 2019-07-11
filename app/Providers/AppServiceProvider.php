@@ -65,14 +65,15 @@ class AppServiceProvider extends ServiceProvider
         });
         
         // Payment config load from database
-        $gateway = Setting::get('system.payment_gateway');
-        config(['cashier.gateway' => $gateway]);
-        if ($gateway) {
-            foreach (config('cashier.gateways')[$gateway]['fields'] as $key => $value ) {
-                config(['cashier.gateways.' . $gateway . '.fields.' . $key => Setting::get('payment.' . $gateway . '.' . $key)]);
+        if (isInitiated()) {
+            $gateway = Setting::get('system.payment_gateway');
+            config(['cashier.gateway' => $gateway]);
+            if ($gateway) {
+                foreach (config('cashier.gateways')[$gateway]['fields'] as $key => $value ) {
+                    config(['cashier.gateways.' . $gateway . '.fields.' . $key => Setting::get('payment.' . $gateway . '.' . $key)]);
+                }
             }
         }
-        
             
     }
 

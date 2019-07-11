@@ -56,8 +56,7 @@ class SubscriptionPolicy
     public function resume(User $user, Subscription $subscription, $role)
     {
         $gateway = Cashier::getPaymentGateway();
-
-        $can = $gateway->isSupportRecurring() && $subscription->cancelled() && !$subscription->ended();
+        $can = $gateway->isSupportRecurring() && $subscription->cancelled() && !$subscription->isEnded();
 
         switch ($role) {
             case 'admin':
@@ -71,7 +70,7 @@ class SubscriptionPolicy
 
     public function cancelNow(User $user, Subscription $subscription, $role)
     {
-        $can = !$subscription->ended();
+        $can = !$subscription->isEnded();
 
         switch ($role) {
             case 'admin':
@@ -104,7 +103,7 @@ class SubscriptionPolicy
                 $can = false;
                 break;
             case 'customer':
-                $can = isset($subscription) && !$subscription->ended();
+                $can = $subscription->isActive();
                 break;
         }
 
@@ -189,7 +188,7 @@ class SubscriptionPolicy
         return $can;
     }
 
-    public function setDone(User $user, Subscription $subscription, $role)
+    public function setActive(User $user, Subscription $subscription, $role)
     {
         $can = $subscription->isPending();
 
@@ -206,23 +205,23 @@ class SubscriptionPolicy
 
     public function approvePendingInvoice(User $user, Subscription $subscription, $role)
     {
-        $gateway = Cashier::getPaymentGateway();
-        $can = $subscription->checkPendingPaymentForFuture($gateway);
-
-        switch ($role) {
-            case 'admin':
-                break;
-            case 'customer':
-                $can = false;
-                break;
-        }
-
-        return $can;
+        //$gateway = Cashier::getPaymentGateway();
+        //$can = $subscription->checkPendingPaymentForFuture($gateway);
+        //
+        //switch ($role) {
+        //    case 'admin':
+        //        break;
+        //    case 'customer':
+        //        $can = false;
+        //        break;
+        //}
+        //
+        //return $can;
     }
 
     public function delete(User $user, Subscription $subscription, $role)
     {
-        $can = isset($subscription) && $subscription->ended();
+        $can = $subscription->isEnded();
 
         switch ($role) {
             case 'admin':

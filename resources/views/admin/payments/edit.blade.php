@@ -6,6 +6,9 @@
 	<script type="text/javascript" src="{{ URL::asset('assets/js/plugins/forms/styling/uniform.min.js') }}"></script>
 
     <script type="text/javascript" src="{{ URL::asset('js/validate.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('tinymce/tinymce.min.js') }}"></script>
+        
+    <script type="text/javascript" src="{{ URL::asset('js/editor.js') }}"></script>
 @endsection
 
 @section('page_header')
@@ -35,35 +38,11 @@
 				</p>
 			</div>
 		</div>
+		
+		<h3>{{ trans('messages.payment.options') }}</h3>
+			
+		@include('admin.payments._' . $gateway['name'])
 
-        @if (!empty($gateway['fields']))
-            <h3>{{ trans('messages.payment.options') }}</h3>
-            <div class="row">
-				<div class="col-md-6">
-					@foreach ($gateway['fields'] as $name => $field)
-						@if ($name == 'notice')
-							@include('helpers.form_control', [
-								'type' => 'textarea',
-								'name' => 'options['.$name.']',
-								'value' => $field,
-								'label' => trans('messages.payment.' . $gateway['name'] . '.' . $name),
-								'help_class' => 'payment',
-								'rules' => ['options.' . $name => 'required'],
-							])
-						@else
-							@include('helpers.form_control', [
-								'type' => 'text',
-								'name' => 'options['.$name.']',
-								'value' => $field,
-								'label' => trans('messages.payment.' . $gateway['name'] . '.' . $name),
-								'help_class' => 'payment',
-								'rules' => ['options.' . $name => 'required'],
-							])
-						@endif
-					@endforeach
-				</div>
-            </div>
-        @endif
         <hr>
         <div class="text-left">
             <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>

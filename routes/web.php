@@ -745,7 +745,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     // Subscription
     Route::get('subscriptions/{id}/invoices/download-raw', 'SubscriptionController@downloadRawInvoice');
     Route::post('admin/subscriptions/{id}/approve-pending-invoice', 'SubscriptionController@approvePendingInvoice');
-    Route::post('admin/subscriptions/{id}/set-done', 'SubscriptionController@setDone');
+    Route::post('admin/subscriptions/{id}/set-active', 'SubscriptionController@setActive');
     Route::get('admin/subscriptions/{id}/invoices', 'SubscriptionController@invoices');
     Route::post('admin/subscriptions/{id}/change-plan', 'SubscriptionController@changePlan');
     Route::get('admin/subscriptions/{id}/change-plan', 'SubscriptionController@changePlan');

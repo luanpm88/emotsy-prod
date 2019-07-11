@@ -1789,7 +1789,9 @@ $(function() {
             modal.find('.modal-dialog').html(data);            
             
             //
-            customValidate(modal.find("form"));
+            if (typeof(customValidate) !== 'undefined') {
+                customValidate(modal.find("form"));
+            }
             
             // Select2 ajax
             modal.find(".select2-ajax").each(function() {
