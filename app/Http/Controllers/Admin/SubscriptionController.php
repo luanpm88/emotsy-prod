@@ -275,7 +275,7 @@ class SubscriptionController extends Controller
         $gatewayService = Cashier::getPaymentGateway();
 
 
-        return response(var_export($subscription->getRawInvoices($gatewayService)), 200, [
+        return response(var_export($gatewayService->getRawInvoices($subscription)), 200, [
             'Content-Type' => 'application/json',
             'Content-Disposition' => 'attachment; filename="payment_logs.txt"',
         ]);
