@@ -98,12 +98,14 @@ class SubscriptionPolicy
 
     public function changePlan(User $user, Subscription $subscription, $role)
     {
+        $gateway = Cashier::getPaymentGateway();
+        
         switch ($role) {
             case 'admin':
                 $can = false;
                 break;
             case 'customer':
-                $can = $subscription->isActive();
+                $can = $subscription->isActive() && !$gateway->hasPending($subscription);
                 break;
         }
 
@@ -113,7 +115,7 @@ class SubscriptionPolicy
     public function renew(User $user, Subscription $subscription, $role)
     {
         $gateway = Cashier::getPaymentGateway();
-        $can = isset($subscription) && $subscription->active() && !$gateway->isSupportRecurring();
+        $can = $subscription->isActive() && !$gateway->hasPending($subscription);
         $can = $can && (Setting::get('system.renew_free_plan') == 'yes' || (Setting::get('system.renew_free_plan') == 'no' && !$subscription->plan->isFree()));
 
         $lastDays = Setting::get('system.end_period_last_days');
@@ -167,7 +169,7 @@ class SubscriptionPolicy
                 $can = false;
                 break;
             case 'customer':
-                $can = $subscription->isNew();
+                $can = $subscription->isNew() || $subscription->isPending();
                 break;
         }
 
@@ -190,7 +192,8 @@ class SubscriptionPolicy
 
     public function setActive(User $user, Subscription $subscription, $role)
     {
-        $can = $subscription->isPending();
+        $gateway = Cashier::getPaymentGateway();
+        $can = $subscription->isPending() || $gateway->hasPending($subscription);
 
         switch ($role) {
             case 'admin':

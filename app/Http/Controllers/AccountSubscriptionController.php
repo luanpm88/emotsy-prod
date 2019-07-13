@@ -151,33 +151,33 @@ class AccountSubscriptionController extends Controller
         ]);
     }
     
-    /**
-     * Subscription charge.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function charge(Request $request)
-    {
-        // Get current customer
-        $customer = $request->user()->customer;
-        $gateway = Cashier::getPaymentGateway();
-        $subscription = $customer->subscription;
-
-        if ($request->isMethod('post')) {
-            // subscribe to plan
-            $gateway->charge($subscription);
-
-            // Redirect to my subscription page
-            $request->session()->flash('alert-success', trans('messages.subscription.finished', ['plan' => $subscription->plan->name]));
-            return redirect()->action('AccountSubscriptionController@index');
-        }
-
-        return view('account.subscription.charge', [
-            'subscription' => $subscription,
-        ]);
-    }
+    ///**
+    // * Subscription charge.
+    // *
+    // * @param \Illuminate\Http\Request $request
+    // *
+    // * @return \Illuminate\Http\Response
+    // **/
+    //public function charge(Request $request)
+    //{
+    //    // Get current customer
+    //    $customer = $request->user()->customer;
+    //    $gateway = Cashier::getPaymentGateway();
+    //    $subscription = $customer->subscription;
+    //
+    //    if ($request->isMethod('post')) {
+    //        // subscribe to plan
+    //        $gateway->charge($subscription);
+    //
+    //        // Redirect to my subscription page
+    //        $request->session()->flash('alert-success', trans('messages.subscription.finished', ['plan' => $subscription->plan->name]));
+    //        return redirect()->action('AccountSubscriptionController@index');
+    //    }
+    //
+    //    return view('account.subscription.charge', [
+    //        'subscription' => $subscription,
+    //    ]);
+    //}
     
     /**
      * Cancel subscription at the end of current period.
@@ -267,11 +267,16 @@ class AccountSubscriptionController extends Controller
             $gateway = Cashier::getPaymentGateway();
             $plan = Plan::findByUid($request->plan_uid);
             
-            // change plan
-            $gateway->changePlan($subscription, $plan);
+            try {
+                // change plan
+                $gateway->changePlan($subscription, $plan);
+            } catch (\Exception $e) {
+                $request->session()->flash('alert-error', 'Can not change plan: ' . $e->getMessage());
+                return redirect()->action('AccountSubscriptionController@index');
+            }
             
             $request->session()->flash('alert-success', trans('messages.subscription.plan_changed'));
-            return redirect()->action('AccountSubscriptionController@index');
+            return redirect()->away(Cashier::getPendingUrl($subscription, action('AccountSubscriptionController@index')));
         }
         
         return view('account.subscription.change_plan', [
@@ -305,143 +310,8 @@ class AccountSubscriptionController extends Controller
         //return view('account.subscription.change_plan', [
         //    'subscription' => $subscription,
         //]);
-    }
+    }    
     
-    
-    
-    
-    
-    
-
-    /**
-     * New customer subscription.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function new(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
-
-        return view('account.subscription.new');
-    }   
-
-    /**
-     * Card information.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function card(Request $request)
-    {
-        // Get current customer
-        $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
-        $gatewayService = Cashier::getPaymentGateway();
-
-        return view('account.subscription.card', [
-            'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
-            'customer' => $customer,
-            'gatewayService' => $gatewayService,
-            'subscription' => $subscription,
-        ]);
-    }
-
-    /**
-     * Subscribe with card information.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function updateCard(Request $request)
-    {
-        // Get current customer
-        $customer = $request->user()->customer;
-        $gateway = Cashier::getPaymentGateway();
-        $subscription = $customer->subscription;
-
-        if ($request->isMethod('post')) {
-            // update card
-            $gateway->billableUserUpdateCard($customer, $request->all());
-
-            // Redirect to my subscription page
-            // $request->session()->flash('alert-success', trans('messages.subscription.created'));
-            return redirect()->action('AccountSubscriptionController@pay');
-        }
-
-        return view('account.subscription.update_card', [
-            'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
-            'plan' => $subscription->plan,
-            'subscription' => $subscription,
-        ]);
-    }
-
-    /**
-     * Subscription pay.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function pay(Request $request)
-    {
-        // Get current customer
-        $customer = $request->user()->customer;
-        $gateway = Cashier::getPaymentGateway();
-        $subscription = $customer->subscription;
-
-        if ($request->isMethod('post')) {
-            // subscribe to plan
-            $subscription->charge($gateway);
-
-            // Redirect to my subscription page
-            $request->session()->flash('alert-success', trans('messages.subscription.finished', ['plan' => $subscription->plan->name]));
-            return redirect()->action('AccountSubscriptionController@index');
-        }
-
-        return view('account.subscription.pay', [
-            'subscription' => $subscription,
-        ]);
-    }
-
-    /**
-     * New customer subscription.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function pending(Request $request)
-    {
-        $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
-        $gatewayService = Cashier::getPaymentGateway();
-
-        if (!isset($subscription)) {
-            return redirect()->action('AccountSubscriptionController@index');
-        }
-
-        //
-        if (!$subscription->isPending()) {
-            return redirect()->action('AccountSubscriptionController@index');
-        }
-
-        // retrieve subscription info
-        $subscription->retrieve($gatewayService);
-
-        return view('account.subscription.pending', [
-            'subscription' => $subscription,
-            'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
-            'gatewayService' => $gatewayService,
-        ]);
-    }
-
-    
-
     /**
      * Change plan.
      *
@@ -449,71 +319,202 @@ class AccountSubscriptionController extends Controller
      *
      * @return \Illuminate\Http\Response
      **/
-    public function changePlanNoRecurring(Request $request)
-    {
-        $customer = $request->user()->customer;
-        // Get current subscription
-        $subscription = $customer->subscription;
-        $newPlan = Plan::findByUid($request->plan_id);
-        $gatewayService = Cashier::getPaymentGateway();
-
-        // @todo can not change to lower one
-        if ($customer->calcChangePlan($newPlan)['amount'] < 0) {
-            // Redirect to my subscription page
-            $request->session()->flash('alert-error', trans('messages.subscription.plan_changed.lower_error'));
-            return redirect()->action('AccountSubscriptionController@index');
-        }
-
-        // Authorization
-        if (!$request->user()->customer->can('changePlan', $subscription)) {
-            return redirect()->action('AccountSubscriptionController@index');
-        }
-
-        if ($request->isMethod('post')) {
-            $gatewayService->changePlan($customer, $newPlan);
-
-            // Redirect to my subscription page
-            $request->session()->flash('alert-success', trans('messages.subscription.plan_changed'));
-            return redirect()->action('AccountSubscriptionController@index');
-        }
-
-        return view('account.subscription.change_plan_no_recurring', [
-            'subscription' => $subscription,
-            'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
-            'gatewayService' => $gatewayService,
-            'customer' => $customer,
-            'newPlan' => $newPlan,
-        ]);
-    }
-
-    /**
-     * Top-up subscription.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
     public function renew(Request $request)
-    {
-        // Get current customer
+    {        
         $customer = $request->user()->customer;
-        $gatewayService = Cashier::getPaymentGateway();
         $subscription = $customer->subscription;
-
-        if ($request->isMethod('post')) {
-            // subscribe to plan
-            $subscription->renew($gatewayService);
-
-            // Redirect to my subscription page
-            return redirect()->action('AccountSubscriptionController@index');
+        $gateway = Cashier::getPaymentGateway();
+        
+        // Authorization
+        if (!$request->user()->customer->can('renew', $subscription)) {
+            return $this->notAuthorized();
         }
-
-        return view('account.subscription.renew', [
-            'subscription' => $subscription,
-            'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
-            'gatewayService' => $gatewayService,
-        ]);
+        
+        // check if status is not pending
+        if ($gateway->hasPending($subscription)) {
+            throw new \Exception("Can not renew pending subscription!");
+        }
+        
+        $gateway->renew($subscription);
+        
+        return redirect()->away(Cashier::getPendingUrl($subscription, action('AccountSubscriptionController@index')));
     }
+    
+    
+    
+
+    ///**
+    // * New customer subscription.
+    // *
+    // * @param \Illuminate\Http\Request $request
+    // *
+    // * @return \Illuminate\Http\Response
+    // **/
+    //public function new(Request $request)
+    //{
+    //    $customer = $request->user()->customer;
+    //    $subscription = $customer->subscription;
+    //
+    //    return view('account.subscription.new');
+    //}   
+
+    ///**
+    // * Card information.
+    // *
+    // * @param \Illuminate\Http\Request $request
+    // *
+    // * @return \Illuminate\Http\Response
+    // **/
+    //public function card(Request $request)
+    //{
+    //    // Get current customer
+    //    $customer = $request->user()->customer;
+    //    $subscription = $customer->subscription;
+    //    $gatewayService = Cashier::getPaymentGateway();
+    //
+    //    return view('account.subscription.card', [
+    //        'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
+    //        'customer' => $customer,
+    //        'gatewayService' => $gatewayService,
+    //        'subscription' => $subscription,
+    //    ]);
+    //}
+    //
+    ///**
+    // * Subscribe with card information.
+    // *
+    // * @param \Illuminate\Http\Request $request
+    // *
+    // * @return \Illuminate\Http\Response
+    // **/
+    //public function updateCard(Request $request)
+    //{
+    //    // Get current customer
+    //    $customer = $request->user()->customer;
+    //    $gateway = Cashier::getPaymentGateway();
+    //    $subscription = $customer->subscription;
+    //
+    //    if ($request->isMethod('post')) {
+    //        // update card
+    //        $gateway->billableUserUpdateCard($customer, $request->all());
+    //
+    //        // Redirect to my subscription page
+    //        // $request->session()->flash('alert-success', trans('messages.subscription.created'));
+    //        return redirect()->action('AccountSubscriptionController@pay');
+    //    }
+    //
+    //    return view('account.subscription.update_card', [
+    //        'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
+    //        'plan' => $subscription->plan,
+    //        'subscription' => $subscription,
+    //    ]);
+    //}
+
+    ///**
+    // * Subscription pay.
+    // *
+    // * @param \Illuminate\Http\Request $request
+    // *
+    // * @return \Illuminate\Http\Response
+    // **/
+    //public function pay(Request $request)
+    //{
+    //    // Get current customer
+    //    $customer = $request->user()->customer;
+    //    $gateway = Cashier::getPaymentGateway();
+    //    $subscription = $customer->subscription;
+    //
+    //    if ($request->isMethod('post')) {
+    //        // subscribe to plan
+    //        $subscription->charge($gateway);
+    //
+    //        // Redirect to my subscription page
+    //        $request->session()->flash('alert-success', trans('messages.subscription.finished', ['plan' => $subscription->plan->name]));
+    //        return redirect()->action('AccountSubscriptionController@index');
+    //    }
+    //
+    //    return view('account.subscription.pay', [
+    //        'subscription' => $subscription,
+    //    ]);
+    //}
+    //
+    ///**
+    // * New customer subscription.
+    // *
+    // * @param \Illuminate\Http\Request $request
+    // *
+    // * @return \Illuminate\Http\Response
+    // **/
+    //public function pending(Request $request)
+    //{
+    //    $customer = $request->user()->customer;
+    //    $subscription = $customer->subscription;
+    //    $gatewayService = Cashier::getPaymentGateway();
+    //
+    //    if (!isset($subscription)) {
+    //        return redirect()->action('AccountSubscriptionController@index');
+    //    }
+    //
+    //    //
+    //    if (!$subscription->isPending()) {
+    //        return redirect()->action('AccountSubscriptionController@index');
+    //    }
+    //
+    //    // retrieve subscription info
+    //    $subscription->retrieve($gatewayService);
+    //
+    //    return view('account.subscription.pending', [
+    //        'subscription' => $subscription,
+    //        'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
+    //        'gatewayService' => $gatewayService,
+    //    ]);
+    //}
+
+    
+
+    ///**
+    // * Change plan.
+    // *
+    // * @param \Illuminate\Http\Request $request
+    // *
+    // * @return \Illuminate\Http\Response
+    // **/
+    //public function changePlanNoRecurring(Request $request)
+    //{
+    //    $customer = $request->user()->customer;
+    //    // Get current subscription
+    //    $subscription = $customer->subscription;
+    //    $newPlan = Plan::findByUid($request->plan_id);
+    //    $gatewayService = Cashier::getPaymentGateway();
+    //
+    //    // @todo can not change to lower one
+    //    if ($customer->calcChangePlan($newPlan)['amount'] < 0) {
+    //        // Redirect to my subscription page
+    //        $request->session()->flash('alert-error', trans('messages.subscription.plan_changed.lower_error'));
+    //        return redirect()->action('AccountSubscriptionController@index');
+    //    }
+    //
+    //    // Authorization
+    //    if (!$request->user()->customer->can('changePlan', $subscription)) {
+    //        return redirect()->action('AccountSubscriptionController@index');
+    //    }
+    //
+    //    if ($request->isMethod('post')) {
+    //        $gatewayService->changePlan($customer, $newPlan);
+    //
+    //        // Redirect to my subscription page
+    //        $request->session()->flash('alert-success', trans('messages.subscription.plan_changed'));
+    //        return redirect()->action('AccountSubscriptionController@index');
+    //    }
+    //
+    //    return view('account.subscription.change_plan_no_recurring', [
+    //        'subscription' => $subscription,
+    //        'gateway' => Setting::getPaymentGateway(Setting::get('system.payment_gateway')),
+    //        'gatewayService' => $gatewayService,
+    //        'customer' => $customer,
+    //        'newPlan' => $newPlan,
+    //    ]);
+    //}
 
     /**
      * Download raw invoices.
@@ -534,23 +535,23 @@ class AccountSubscriptionController extends Controller
         ]);
     }
 
-    /**
-     * Claim subscription.
-     *
-     * @param \Illuminate\Http\Request $request
-     *
-     * @return \Illuminate\Http\Response
-     **/
-    public function paymentClaim(Request $request)
-    {
-        // Get current customer
-        $customer = $request->user()->customer;
-        $subscription = $customer->subscription;
-
-        // subscribe to plan
-        $subscription->claimPayment();
-
-        // Redirect to my subscription page
-        return redirect()->action('AccountSubscriptionController@index');
-    }
+    ///**
+    // * Claim subscription.
+    // *
+    // * @param \Illuminate\Http\Request $request
+    // *
+    // * @return \Illuminate\Http\Response
+    // **/
+    //public function paymentClaim(Request $request)
+    //{
+    //    // Get current customer
+    //    $customer = $request->user()->customer;
+    //    $subscription = $customer->subscription;
+    //
+    //    // subscribe to plan
+    //    $subscription->claimPayment();
+    //
+    //    // Redirect to my subscription page
+    //    return redirect()->action('AccountSubscriptionController@index');
+    //}
 }

@@ -47,7 +47,11 @@
 				</td>
 				<td>
                     <span class="text-muted2 list-status pull-left">
-						<span class="label label-flat bg-{{ $subscription->status }}">{{ trans('messages.subscription.status.' . $subscription->status) }}</span>
+						@if (!$gateway->hasPending($subscription))
+							<span class="label label-flat bg-{{ $subscription->status }}">{{ trans('messages.subscription.status.' . $subscription->status) }}</span>
+						@else
+							<span class="label label-flat bg-active_with_pending">{{ trans('messages.subscription.status.active_pending') }}</span>
+						@endif
 					</span>
                 </td>
 				<td class="text-right">

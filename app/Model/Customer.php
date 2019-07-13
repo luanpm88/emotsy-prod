@@ -1898,30 +1898,5 @@ class Customer extends Model implements BillableUserInterface
         $gateway->createSubscription($subscription);
 
         return $subscription;
-    }
-    
-    /**
-     * user want to change plan.
-     *
-     * @return bollean
-     */
-    public function calcChangePlan($plan)
-    {
-        $currentSubscription = $this->subscription;
-        $remainDays = $currentSubscription->ends_at->diffInDays(\Carbon\Carbon::now());
-
-        // amout per day of current plan
-        $currentAmount = $currentSubscription->plan->price;
-        $periodDays = $currentSubscription->ends_at->diffInDays($currentSubscription->periodStartAt());
-        $remainDays = $currentSubscription->ends_at->diffInDays(\Carbon\Carbon::now());
-        $currentPerDayAmount = ($currentAmount/$periodDays);
-        $newAmount = ($plan->price/$periodDays)*$remainDays;
-        $remainAmount = $currentPerDayAmount*$remainDays;
-
-        $amount = $newAmount - $remainAmount;
-
-        return [
-            'amount' => $amount,
-        ];
-    }
+    }   
 }

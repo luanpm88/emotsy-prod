@@ -743,6 +743,7 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/currencies', 'CurrencyController');
 
     // Subscription
+    Route::post('admin/subscriptions/{id}/renew', 'SubscriptionController@renew');
     Route::get('subscriptions/{id}/invoices/download-raw', 'SubscriptionController@downloadRawInvoice');
     Route::post('admin/subscriptions/{id}/approve-pending-invoice', 'SubscriptionController@approvePendingInvoice');
     Route::post('admin/subscriptions/{id}/set-active', 'SubscriptionController@setActive');

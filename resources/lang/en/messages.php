@@ -2431,6 +2431,7 @@
   'subscription.current_subscription.recurring.wording' => 'You are currently subscribed to <strong>:plan</strong> (<strong>:money</strong>).<br>
       Next invoice will be billed in <strong>:remain</strong>, on <strong>:next_on</strong>.',
   'subscription.cancel.confirm' => 'You\'re about to cancel :number subscription. You\'re still subscribed until the end of period',
+  'subscription.renew.confirm' => 'You\'re about to renew :number subscription.',
   'subscription.cancelled' => 'The subscription was successfully cancelled',
   'subscription.current_subscription.cancel_at_end_of_period.wording' => 'You are currently subscribed to <strong>:plan</strong> plan (<strong>:money</strong>).
       Your subscription will expire in <strong>:remain</strong>, on <strong>:end_at</strong>',
@@ -2638,4 +2639,5 @@
   'payment.agree_service_intro' => 'By clicking the <strong><i>Proceed with payment</i></strong> button, you are paying for :plan plan, and you agree to Acelle Mail <i>Term of Use</i> and <i>Privacy Policy</i>.',
   'plan.review' => 'Plan review',
   'payment.coinpayments.receive_currency' => 'Receive Currency Code',
+  'subscription.status.active_pending' => 'Change pending',
 ) ?>

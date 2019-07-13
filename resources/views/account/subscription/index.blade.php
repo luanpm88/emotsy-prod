@@ -27,6 +27,13 @@
 
     <div class="row">
         <div class="col-sm-12 col-md-6 col-lg-6">
+        
+            @if ($gateway->hasPending($subscription))
+                <div class="alert alert-warning">
+                    {!! $gateway->getPendingNotice($subscription) !!}
+                </div>
+            @endif
+        
             <h2 class="text-semibold">{{ trans('messages.subscription') }}</h2>
 
             <div class="sub-section">
@@ -51,6 +58,16 @@
                                 'end_at' => \Acelle\Library\Tool::formatDate($subscription->current_period_ends_at)
                             ]) !!}
                         </p>
+                    @endif
+                    
+                    @if (\Auth::user()->customer->can('renew', $subscription))
+                        <a  link-method="POST" link-confirm="{{ trans('messages.subscription.renew.confirm') }}"
+                            href="{{ action('AccountSubscriptionController@renew') }}"
+                            class="btn bg-grey-600 mr-10"
+                            data-size="sm"
+                        >
+                            {{ trans('messages.subscription.renew') }}
+                        </a>
                     @endif
                     
                     @if (\Auth::user()->customer->can('cancel', $subscription))
