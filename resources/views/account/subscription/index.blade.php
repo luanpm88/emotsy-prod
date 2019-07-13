@@ -61,8 +61,8 @@
                     @endif
                     
                     @if (\Auth::user()->customer->can('renew', $subscription))
-                        <a  link-method="POST" link-confirm="{{ trans('messages.subscription.renew.confirm') }}"
-                            href="{{ action('AccountSubscriptionController@renew') }}"
+                        <a 
+                            href="{{ Acelle\Cashier\Cashier::getRenewUrl($subscription, action('AccountSubscriptionController@index')) }}"
                             class="btn bg-grey-600 mr-10"
                             data-size="sm"
                         >

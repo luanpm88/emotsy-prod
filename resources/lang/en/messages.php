@@ -2639,5 +2639,5 @@
   'payment.agree_service_intro' => 'By clicking the <strong><i>Proceed with payment</i></strong> button, you are paying for :plan plan, and you agree to Acelle Mail <i>Term of Use</i> and <i>Privacy Policy</i>.',
   'plan.review' => 'Plan review',
   'payment.coinpayments.receive_currency' => 'Receive Currency Code',
-  'subscription.status.active_pending' => 'Change pending',
+  'subscription.status.active_pending' => 'Update pending',
 ) ?>

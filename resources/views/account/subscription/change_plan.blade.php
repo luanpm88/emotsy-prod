@@ -17,13 +17,12 @@
                             <div class="col-md-12">                                
                                 <p>{!! trans('messages.subscription.change_plan.wording') !!}</p>
                                     
-                                <form enctype="multipart/form-data" action="{{ action('AccountSubscriptionController@changePlan') }}" method="POST" class="form-validate-jquery">
-                                    {{ csrf_field() }}
-                
+                                <form enctype="multipart/form-data" action="{{ Acelle\Cashier\Cashier::getChangePlanUrl($subscription, action('AccountSubscriptionController@index')) }}" method="GET" class="form-validate-jquery">
+                                    <input type='hidden' name='return_url' value='{{ action('AccountSubscriptionController@index') }}' />
                                     @include('helpers.form_control', [
                                         'type' => 'select_ajax',
                                         'class' => 'subsciption-plan-select hook required',
-                                        'name' => 'plan_uid',
+                                        'name' => 'plan_id',
                                         'label' => '',
                                         'help_class' => 'subscription',
                                         'url' => action('PlanController@select2', ['change_from_uid' => $subscription->plan->uid]),

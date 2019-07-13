@@ -68,9 +68,9 @@ class AppServiceProvider extends ServiceProvider
         if (isInitiated()) {
             $gateway = Setting::get('system.payment_gateway');
             config(['cashier.gateway' => $gateway]);
-            if ($gateway) {
-                foreach (config('cashier.gateways')[$gateway]['fields'] as $key => $value ) {
-                    config(['cashier.gateways.' . $gateway . '.fields.' . $key => Setting::get('payment.' . $gateway . '.' . $key)]);
+            foreach (config('cashier.gateways') as $gw => $data) {
+                foreach ($data['fields'] as $key => $value ) {
+                    config(['cashier.gateways.' . $gw . '.fields.' . $key => Setting::get('payment.' . $gw . '.' . $key)]);
                 }
             }
         }

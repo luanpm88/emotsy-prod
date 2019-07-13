@@ -106,6 +106,11 @@ class AccountSubscriptionController extends Controller
         } catch (\Exception $e) {
             $request->session()->flash('alert-error', 'Can not send email: ' . $e->getMessage());
         }
+        
+        // Check if subscriotion is new
+        if ($subscription->isActive()) {
+            return redirect()->action('AccountSubscriptionController@index');
+        }
 
         return redirect()->action('AccountSubscriptionController@checkout');
     }

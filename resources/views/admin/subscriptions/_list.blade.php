@@ -47,10 +47,10 @@
 				</td>
 				<td>
                     <span class="text-muted2 list-status pull-left">
-						@if (!$gateway->hasPending($subscription))
+						@if (!$subscription->isActive() || !$gateway->hasPending($subscription))
 							<span class="label label-flat bg-{{ $subscription->status }}">{{ trans('messages.subscription.status.' . $subscription->status) }}</span>
 						@else
-							<span class="label label-flat bg-active_with_pending">{{ trans('messages.subscription.status.active_pending') }}</span>
+							<a href="{{ action('Admin\SubscriptionController@invoices', $subscription->uid) }}" class="modal_link label label-flat bg-active_with_pending">{{ trans('messages.subscription.status.active_pending') }}</a>
 						@endif
 					</span>
                 </td>

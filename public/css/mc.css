@@ -658,3 +658,7 @@ stat .stat-head {
 .bg-active_with_pending {
   background: #17a2b8;
 }
+a.bg-active_with_pending:hover {
+  background: #17a2b8 !important;
+  opacity: 0.8;
+}
