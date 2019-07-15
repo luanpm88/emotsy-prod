@@ -77,6 +77,11 @@ class AccountSubscriptionController extends Controller
         $subscription = $customer->subscription;
         $plans = Plan::getAllActive()->get();
         $colWidth = round(85 / Plan::getAllActive()->count());
+        
+        if (isset($subscription)) {
+            $request->session()->flash('alert-error', 'Already subscribed a plan!');
+            return redirect()->action('AccountSubscriptionController@index');
+        }
 
         return view('account.subscription.select_plan', [
             'plans' => $plans,
@@ -126,7 +131,13 @@ class AccountSubscriptionController extends Controller
     {
         // Get current customer
         $customer = $request->user()->customer;
+        $subscription = $customer->subscription;
         $plan = Plan::findByUid($request->plan_uid);
+        
+        if (isset($subscription)) {
+            $request->session()->flash('alert-error', 'Already subscribed a plan!');
+            return redirect()->action('AccountSubscriptionController@index');
+        }
         
         return view('account.subscription.review', [
             'plan' => $plan,
