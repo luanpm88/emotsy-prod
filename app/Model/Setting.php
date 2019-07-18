@@ -462,7 +462,18 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
-
+            'mta.api_endpoint' => [
+                'cat' => 'others',
+                'value' => null,
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'mta.api_key' => [
+                'cat' => 'others',
+                'value' => null,
+                'type' => 'text',
+                'not_required' => true,
+            ],
         ];
     }
 

@@ -113,6 +113,7 @@ class SendingDomainController extends Controller
             $server->status = 'active';
 
             if ($server->save()) {
+                $server->syncToMta();
                 $request->session()->flash('alert-success', trans('messages.sending_domain.created'));
 
                 return redirect()->action('Admin\SendingDomainController@show', $server->uid);
@@ -130,7 +131,7 @@ class SendingDomainController extends Controller
     public function show($id)
     {
         $server = \Acelle\Model\SendingDomain::findByUid($id);
-        
+
         return view('admin.sending_domains.show', [
             'server' => $server,
         ]);
@@ -251,7 +252,7 @@ class SendingDomainController extends Controller
         // Redirect to my lists page
         echo trans('messages.sending_domains.deleted');
     }
-    
+
     /**
      * Verify sending domain.
      *
@@ -264,7 +265,7 @@ class SendingDomainController extends Controller
         $server = \Acelle\Model\SendingDomain::findByUid($id);
         $server->verify();
     }
-    
+
     /**
      * sending domain's records.
      *
@@ -280,7 +281,7 @@ class SendingDomainController extends Controller
             'server' => $server,
         ]);
     }
-    
+
     /**
      * update VerificationTxtName.
      *
@@ -292,7 +293,7 @@ class SendingDomainController extends Controller
     public function updateVerificationTxtName($id, Request $request)
     {
         $server = \Acelle\Model\SendingDomain::findByUid($id);
-        
+
         // authorize
         if (!$request->user()->admin->can('update', $server)) {
             return $this->notAuthorized();
@@ -303,7 +304,7 @@ class SendingDomainController extends Controller
                 ->header('Content-Type', 'text/plain');
         }
     }
-    
+
     /**
      * update VerificationTxtName.
      *
@@ -315,7 +316,7 @@ class SendingDomainController extends Controller
     public function updateDkimSelector($id, Request $request)
     {
         $server = \Acelle\Model\SendingDomain::findByUid($id);
-        
+
         // authorize
         if (!$request->user()->admin->can('update', $server)) {
             return $this->notAuthorized();
