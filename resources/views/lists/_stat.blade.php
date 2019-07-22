@@ -1,20 +1,20 @@
                 <div class="row">
                     <div class="col-md-6">
                         <div class="content-group-sm">
-                            <div class="pull-right progress-right-info text-teal-800">{{ $list->readCache('UniqOpenRate') }}%</div>
+                            <div class="pull-right progress-right-info text-teal-800">{{ number_to_percentage($list->readCache('UniqOpenRate')) }}</div>
                             <h5 class="text-semibold">{{ trans('messages.average_open_rate') }}</h5>
                             <div class="progress progress-sm">
-                                <div class="progress-bar bg-teal-600" style="width: {{ $list->readCache('UniqOpenRate') }}%">
+                                <div class="progress-bar bg-teal-600" style="width: {{ number_to_percentage($list->readCache('UniqOpenRate')) }}">
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-6">
                         <div class="content-group-sm">
-                            <div class="pull-right progress-right-info text-teal-800">{{ $list->readCache('ClickedRate') }}%</div>
+                            <div class="pull-right progress-right-info text-teal-800">{{ number_to_percentage($list->readCache('ClickedRate')) }}</div>
                             <h5 class="text-semibold">{{ trans('messages.average_click_rate') }}</h5>
                             <div class="progress progress-sm">
-                                <div class="progress-bar bg-teal-600" style="width: {{ $list->readCache('ClickedRate') }}%">
+                                <div class="progress-bar bg-teal-600" style="width: {{ number_to_percentage($list->readCache('ClickedRate')) }}">
                                 </div>
                             </div>
                         </div>
