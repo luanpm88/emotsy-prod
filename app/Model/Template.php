@@ -521,4 +521,26 @@ class Template extends Model
         
         return $template;
     }
+    
+    /**
+     * Template tags.
+     *
+     * All availabel template tags
+     */
+    public static function builderTags($list = null)
+    {
+        $tags = Template::tags($list);
+        
+        $result = [];
+        foreach($tags as $tag) {
+            $result[] = [
+                'type' => 'label',
+                'text' => '{' . $tag['name'] . '}',
+                'tag' => '{' . $tag['name'] . '}',
+                'required' => true,
+            ];
+        }
+
+        return $result;
+    }
 }

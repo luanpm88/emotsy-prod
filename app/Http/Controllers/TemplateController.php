@@ -507,4 +507,86 @@ class TemplateController extends Controller
             'template' => $template,
         ]);
     }
+    
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function builderEdit(Request $request, $uid)
+    {
+        // Generate info
+        $user = $request->user();
+        $template = Template::findByUid($uid);
+
+        // authorize
+        if (!$request->user()->customer->can('update', $template)) {
+            return $this->notAuthorized();
+        }
+        
+        // validate and save posted data
+        if ($request->isMethod('patch')) {
+            $rules = array(
+                'content' => 'required',
+            );
+
+            $this->validate($request, $rules);
+
+            //// Save template
+            //$template->fill($request->all());
+            //
+            ////// update content
+            //
+            //$template->save();
+            //
+            //// Redirect to my lists page
+            //$request->session()->flash('alert-success', trans('messages.template.updated'));
+            //
+            //return redirect()->action('TemplateController@index');
+        }
+
+        return view('templates.builder.edit', [
+            'template' => $template,
+        ]);
+    }
+    
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function builderEditContent(Request $request, $uid)
+    {
+        // Generate info
+        $user = $request->user();
+        $template = Template::findByUid($uid);
+
+        return view('templates.builder.content', [
+            'content' => $template->content,
+        ]);
+    }
+    
+    /**
+     * Upload asset to builder.
+     *
+     * @param int $id
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function builderAsset(Request $request, $uid)
+    {
+        $template = Template::findByUid($uid);
+        
+        $path = $request->file('file')->storeAs(
+            'templates/assets/' . $template->uid, md5($request->file('file')), 'public'
+        );
+        
+        return response()->json([
+            'url' => \Storage::url($path)
+        ]);
+    }
 }

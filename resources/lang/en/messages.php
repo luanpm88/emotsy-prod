@@ -2162,4 +2162,6 @@
   'campaign.score' => 'Score',
   'campaign.score.description' => 'Description',
   'custom_script' => 'Copy and paste your custom scripts in the box below. It will be included in every page',
+  'buider.try_new' => 'Try new Builder',
+  'builder.beta' => 'beta',
 ) ?>
