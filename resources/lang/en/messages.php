@@ -2143,16 +2143,12 @@
     Add and verify a <a href=":domain_link" target="blank">[domain]</a> or
     <a href=":sender_link" target="blank">[email address]</a> to send email on behalf of.',
   'plan.sending_servers.intro' => 'This feature allows you to add a sending server which will actually send out your campaign emails.
-      You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES, SendGrid,
-      Mailgun, ElasticEmail, Sparkpost... You can also take advantage of the the hosting server\'s
+      You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES,
+      SendGrid, Mailgun, ElasticEmail, Sparkpost... You can also take advantage of the the hosting server\'s
       email capability by creating a "PHP Mail" or "Sendmail" sending server',
   'plan.sending_servers' => 'Sending servers',
   'plan.sending_servers.listing' => 'All available sending servers',
   'plan.sending_servers.add' => 'Add Sending Server',
-  'plan.sending_servers.intro' => 'This feature allows you to add a sending server which will actually send out your campaign emails.
-      You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES,
-      SendGrid, Mailgun, ElasticEmail, Sparkpost... You can also take advantage of the the hosting server\'s
-      email capability by creating a "PHP Mail" or "Sendmail" sending server',
   'plan.sending_identify' => 'Sending Identify',
   'plan.sending_identify.intro' => 'Verifying an Identity for Amazon SES Sending Authorization. The first step in configuring sending
       authorization is to prove that you own the email address or domain from which the
@@ -2201,7 +2197,6 @@
   'sending_servers.sending_limit.mailgun.intro' => 'Specify speed limit to control how fast your application can send through this connection in
     terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
   'sending_servers.configuration_settings.mailgun.intro' => 'Set up a connection to your Mailgun account to send emails.',
-
   'sending_servers.sending_identity.sendgrid.intro' => 'The following domains were verified against your Sendgrid account.
       User can only send from the domains below and is not allowed to send on their own identity',
   'sending_servers.sendgrid_api_key.intro' => 'You are connected to Sendgrid using the API key below',
@@ -2221,7 +2216,6 @@
   'allow_verify_email_against_aws' => 'Allow verifying user\'s own email addresses against AWS',
   'sending_serbers.go_to_sendgrid_dashboard' => 'Go to Sendrid dashboard',
   'sending_serbers.go_to_mailgun_dashboard' => 'Go to Mailgun dashboard',
-
   'sending_servers.sending_identity.elasticemail.intro' => 'The following domains were verified against your Elastic Email account.
       User can only send from the domains below and is not allowed to send on their own identity',
   'sending_servers.elasticemail_api_key.intro' => 'You are connected to Elastic Email using the API key below',
@@ -2230,7 +2224,6 @@
     terms of email throughput. You can find the details of SendGrid limits <a href="">here</a>',
   'sending_servers.configuration_settings.elasticemail.intro' => 'Set up a connection to your Elastic Email account to send emails.',
   'sending_serbers.go_to_elasticemail_dashboard' => 'Go to Elastic Email dashboard',
-
   'sending_servers.sending_identity.sparkpost.intro' => 'The following domains were verified against your Sparkpost account.
       User can only send from the domains below and is not allowed to send on their own identity',
   'sending_servers.sparkpost_api_key.intro' => 'You are connected to Sparkpost using the API key below',
@@ -2323,7 +2316,6 @@
   'plan.quota' => 'Quota',
   'plan.security' => 'Security',
   'plan.billing' => 'Billing',
-  'plan.sending_servers' => 'Sending servers',
   'plan.email_verification' => 'Email verification',
   'plan.email_footer' => 'Email footer',
   'plan.payment' => 'Payment',
@@ -2340,7 +2332,6 @@
   'plan.general.details.intro' => 'A plan, or service plan, is the group of services and limits that you have agreed to provide to your customer. A plan allows you to centrally plan and standardize your service offerings. Set up your plan details below:',
   'plan.quota_time.wording' => 'per :amount :unit(s)',
   'plan.sending_credits' => 'Sending credits',
-  'plan.payment' => 'Payment',
   'plan.delivery' => 'Delivery',
   'plan.billing_cycle' => 'Billing cycle',
   'plan.billing_cycle.daily' => 'Daily',
@@ -2538,7 +2529,6 @@
     So you should pay top-up for the next period.
     Click the button bellow to process.',
   'subscription.payment.pay_top_up' => 'Pay top-up',
-  'subscription.top_up' => 'Top-up',
   'subscription.renew.coinpayments.wording' => 'Select button bellow and fill your payment infomation to pay top-up fees.',
   'subscription_done.coinpayments.email' => 'Hello :customer, <br/>Your subscription to :plan plan was successfully processed. Thanks for your purchasing.<br>
     Click <a href=":link">here</a> to check your subscription status.',
@@ -2643,13 +2633,6 @@
   'campaign.check_spam_score' => 'Check Spam Score',
   'campaign.spam_score' => 'Spam Score',
   'plan.setting' => 'Email Settings',
-  'plan.enabled_email_footer' => 'Enable email footer',
-  'plan.email_footer_trial_period_only' => 'For trial period only',
-  'plan.html_footer' => 'HTML footer',
-  'plan.plain_text_footer' => 'Plain text footer',
-  'plan.email_footer.intro' => 'Include a footer in every out-going email message to reflect your brand.
-    Normally, you can enable this option for trial period',
-  'plan.email_footer' => 'Email footer',
   'campaign.score.passed' => 'PASSED',
   'campaign.score.failed' => 'FAILED',
   'campaign.send_without_score_passed.warning' => 'Your message does not pass SpamScore test, are you sure you want to proceed anyway?',
