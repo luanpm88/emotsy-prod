@@ -77,7 +77,7 @@ class Plan extends Model implements BillablePlanInterface
 
         $options = self::defaultOptions();
         foreach ($options as $type => $option) {
-            if ($type != 'sending_server_subaccount_uid') {
+            if ($type != 'sending_server_subaccount_uid' && $type != 'email_footer_enabled' && $type != 'email_footer_trial_period_only' && $type != 'html_footer' && $type != 'plain_text_footer') {
                 $rules['options.'.$type] = 'required';
             }
         }
@@ -538,7 +538,7 @@ class Plan extends Model implements BillablePlanInterface
             'sending_server_option' => self::SENDING_SERVER_OPTION_SYSTEM,
             'sending_server_subaccount_uid' => null,
             'api_access' => 'yes',
-            'email_footer_enabled' => 'yes',
+            'email_footer_enabled' => 'no',
             'email_footer_trial_period_only' => 'no',
             'html_footer' => '',
             'plain_text_footer' => '',

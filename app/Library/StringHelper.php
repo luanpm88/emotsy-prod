@@ -171,4 +171,25 @@ class StringHelper
         $content = mb_convert_encoding($content, 'UTF-8', $from);
         file_put_contents($file, $content);
     }
+
+    /**
+     * Check if a (UTF-8 encoded) file contains BOM
+     * Fix it (remove BOM chars) if any
+     *
+     * @param String file path
+     */
+    public static function checkAndRemoveUTF8BOM($file)
+    {
+        $bom = pack('H*','EFBBBF');
+        $text = file_get_contents($file);
+        $matched = preg_match("/^$bom/", $text, $result);
+
+        if (!$matched) {
+            return false;
+        }
+
+        $text = preg_replace("/^$bom/", '', $text);
+        file_put_contents($file, $text);
+        return true;
+    }
 }

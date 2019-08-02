@@ -23,6 +23,8 @@
 namespace Acelle\Model;
 
 use Illuminate\Database\Eloquent\Model;
+use Acelle\Library\MtaSync;
+use Acelle\Model\Setting;
 
 class SendingDomain extends Model
 {
@@ -226,7 +228,7 @@ class SendingDomain extends Model
     {
         return doublequote($this->getDnsDkimConfigWithoutQuote());
     }
-    
+
     /**
      * Generate the Domain DNS configuration for DKIM.
      */
@@ -256,7 +258,7 @@ class SendingDomain extends Model
             return $spf;
         }
     }
-    
+
     /**
      * Get quoted SPF
      */
@@ -286,9 +288,9 @@ class SendingDomain extends Model
             return $this->verification_hostname;
         } else {
             return Setting::get('verification_hostname');
-        }        
+        }
     }
-    
+
     /**
      * Retrieve the full verification hostname (including domain name)
      */
@@ -296,7 +298,7 @@ class SendingDomain extends Model
     {
         return "{$this->getVerificationTxtName()}.{$this->getDnsHostName()}";
     }
-    
+
     /**
      * Get DNS host name
      */
@@ -367,9 +369,31 @@ class SendingDomain extends Model
      */
     public function verify()
     {
+        // Verify Host, DKIM and SPF
         $this->verifyDomainDns();
         $this->verifyDkim();
         $this->verifySpf();
+
+        $this->syncToMta();
+    }
+
+    /**
+     * Sync to MTA.
+     */
+    public function syncToMta()
+    {
+        // Sync domain with MTA
+        $mtaEndpoint = Setting::get('mta.api_endpoint');
+
+        if (!is_null($mtaEndpoint)) {
+            $mta = new MtaSync($mtaEndpoint, Setting::get('mta.api_key'));
+            $mta->addDomain($this->name, [
+                'host_verified' => $this->domain_verified,
+                'dkim_verified' => $this->dkim_verified,
+                'spf_verified' => $this->spf_verified,
+                'added_by' => 'Acelle',
+            ]);
+        }
     }
 
     /**
@@ -464,7 +488,7 @@ class SendingDomain extends Model
             return Setting::get('dkim_selector').'._domainkey';
         }
     }
-    
+
     /**
      * Get DKIM selector parts.
      *
@@ -474,7 +498,7 @@ class SendingDomain extends Model
     {
         return explode(".", $this->getDkimSelector());
     }
-    
+
     /**
      * Get the full DKIM host name (including domain name).
      *
@@ -484,7 +508,7 @@ class SendingDomain extends Model
     {
         return "{$this->getDkimSelector()}.{$this->name}.";
     }
-    
+
     /**
      * Set DKIM selector.
      *
@@ -499,7 +523,7 @@ class SendingDomain extends Model
         }
         return false;
     }
-    
+
     /**
      * Set VerificationTxtName.
      *

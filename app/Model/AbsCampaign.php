@@ -27,13 +27,13 @@ use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\Log as MailLog;
 use Acelle\Library\StringHelper;
 use TijsVerkoyen\CssToInlineStyles\CssToInlineStyles;
-use DB;
-use Carbon\Carbon;
-use File;
 use Acelle\Model\SendingDomain;
 use Acelle\Model\SendingServer;
 use Acelle\Model\Subscriber;
 use Acelle\Model\TrackingLog;
+use DB;
+use Carbon\Carbon;
+use File;
 
 abstract class AbsCampaign extends Model
 {
@@ -99,13 +99,13 @@ abstract class AbsCampaign extends Model
             'from_name' => 'required',
             'reply_to' => 'required|email',
         );
-    
-        if($this->use_default_sending_server_from_email) {
+
+        if ($this->use_default_sending_server_from_email) {
             $rules['from_email'] = 'email';
         } else {
             $rules['from_email'] = 'required|email';
         }
-        
+
         return $rules;
     }
 
@@ -117,17 +117,17 @@ abstract class AbsCampaign extends Model
         $rules = array(
             'type' => 'required',
             'name' => 'required',
-            'subject' => 'required',            
+            'subject' => 'required',
             'from_name' => 'required',
             'reply_to' => 'required|email',
         );
-        
-        if($this->use_default_sending_server_from_email) {
+
+        if ($this->use_default_sending_server_from_email) {
             $rules['from_email'] = 'email';
         } else {
             $rules['from_email'] = 'required|email';
         }
-        
+
         return $rules;
     }
 
@@ -330,13 +330,13 @@ abstract class AbsCampaign extends Model
             }
         }
         $message->setSubject($this->getSubject($subscriber, $msgId));
-        
+
         if ($this->useSendingServerFromEmailAddress()) {
             $message->setFrom($server->default_from_email);
         } else {
             $message->setFrom(array($this->from_email => $this->from_name));
         }
-        
+
         $message->setTo($subscriber->email);
         $message->setReplyTo($this->reply_to);
         $message->setEncoder(\Swift_Encoding::get8bitEncoding());
@@ -360,9 +360,9 @@ abstract class AbsCampaign extends Model
 
         return array($message, $msgId);
     }
-    
+
     /**
-     * Check if the campaign setting is "use sending server's FROM email address"
+     * Check if the campaign setting is "use sending server's FROM email address".
      *
      * @return mixed
      */
@@ -498,6 +498,16 @@ abstract class AbsCampaign extends Model
     }
 
     /**
+     * Append footer.
+     *
+     * @return string.
+     */
+    public function appendFooter($body, $footer)
+    {
+        return $body.$footer;
+    }
+
+    /**
      * Append Open Tracking URL
      * Append open-tracking URL to every email message.
      */
@@ -554,6 +564,11 @@ abstract class AbsCampaign extends Model
             $body = $this->appendOpenTrackingUrl($body, $msgId);
         }
 
+        // Append footer
+        if ($this->footerEnabled()) {
+            $body = $this->appendFooter($body, $this->getHtmlFooter());
+        }
+
         // Transform tags
         $body = $this->tagMessage($body, $subscriber, $msgId, $server);
 
@@ -564,6 +579,36 @@ abstract class AbsCampaign extends Model
     }
 
     /**
+     * Check if email footer enabled.
+     *
+     * @return string
+     */
+    public function footerEnabled()
+    {
+        return ($this->customer->getCurrentSubscription()->plan->getOption('email_footer_enabled') == 'yes') ? true : false;
+    }
+
+    /**
+     * Get HTML footer.
+     *
+     * @return string
+     */
+    public function getHtmlFooter()
+    {
+        return $this->customer->getCurrentSubscription()->plan->getOption('html_footer');
+    }
+
+    /**
+     * Get PLAIN TEXT footer.
+     *
+     * @return string
+     */
+    public function getPlainTextFooter()
+    {
+        return $this->customer->getCurrentSubscription()->plan->getOption('plain_text_footer');
+    }
+
+    /**
      * Build Email HTML content.
      *
      * @return string
@@ -571,6 +616,11 @@ abstract class AbsCampaign extends Model
     public function getPlainContent($subscriber, $msgId, $server = null)
     {
         $plain = $this->tagMessage($this->plain, $subscriber, $msgId, $server);
+
+        // Append footer
+        if ($this->footerEnabled()) {
+            $body = $this->appendFooter($plain, $this->getPlainTextFooter());
+        }
 
         return $plain;
     }
@@ -583,16 +633,16 @@ abstract class AbsCampaign extends Model
     public function findSendingDomain($email)
     {
         $domainName = substr(strrchr($email, '@'), 1);
-        
+
         if ($domainName == false) {
-            return null;
+            return;
         }
-        
+
         $domain = $this->customer->activeDkimSendingDomains()->where('name', $domainName)->first();
         if (is_null($domain)) {
-            $domain = SendingDomain::getAllAdminActive()->where('name', $domainName)->first();    
+            $domain = SendingDomain::getAllAdminActive()->where('name', $domainName)->first();
         }
-        
+
         return $domain;
     }
 
@@ -630,7 +680,7 @@ abstract class AbsCampaign extends Model
         'reply_to', 'track_open',
         'track_click', 'sign_dkim', 'track_fbl',
         'html', 'plain', 'template_source',
-        'tracking_domain_id', 'use_default_sending_server_from_email'
+        'tracking_domain_id', 'use_default_sending_server_from_email',
     ];
 
     /**
@@ -947,7 +997,7 @@ abstract class AbsCampaign extends Model
     {
         return $this->trackingLogs()->where('status', '=', TrackingLog::STATUS_FAILED)->count();
     }
-    
+
     /**
      * Count failed processed.
      *
@@ -973,7 +1023,7 @@ abstract class AbsCampaign extends Model
 
         return $this->deliveredCount() / $total;
     }
-    
+
     /**
      * Count delivery success rate.
      *
@@ -989,7 +1039,7 @@ abstract class AbsCampaign extends Model
 
         return $this->failedCount() / $total;
     }
-    
+
     /**
      * Count delivery success rate.
      *
@@ -1832,7 +1882,7 @@ abstract class AbsCampaign extends Model
         // and queue again
         $this->queue();
     }
-    
+
     /**
      * Re-send the campaign for sending.
      */
@@ -1844,7 +1894,7 @@ abstract class AbsCampaign extends Model
         // and queue again
         $this->requeue();
     }
-    
+
     /**
      * Re-send the campaign for sending.
      */
@@ -1853,8 +1903,6 @@ abstract class AbsCampaign extends Model
         // clean up failed log so that they will be included in resend
         $this->trackingLogs()->where('status', SendingServer::DELIVERY_STATUS_FAILED)->delete();
     }
-    
-    
 
     /**
      * Overwrite the delete() method to also clear the pending jobs.
@@ -2215,7 +2263,7 @@ abstract class AbsCampaign extends Model
         // return distinctCount($this->subscribers([], []), 'subscribers.email');
         return distinctCount($this->subscribers([], ['email_verifications']), 'subscribers.email');
     }
-    
+
     /**
      * Count subscribers.
      *
@@ -2287,5 +2335,118 @@ abstract class AbsCampaign extends Model
                 $this->tracking_domain_id = null;
             }
         }
+    }
+
+    /**
+     * Generate SpamScore.
+     */
+    public function score()
+    {
+        // raw output
+        $test = $this->execSpamc();
+
+        // Get scores / thresholds
+        preg_match ('/\s*(?<score>[0-9\.\/]+)\s*/', $test, $score);
+
+        if (!array_key_exists('score', $score)) {
+            throw new \Exception('Cannot get SpamScore: '.$test);
+        }
+
+        $score = $score['score'];
+        list($current, $threshold) = preg_split ('/\//', $score);
+        $passed = ( $current <= $threshold ) ? true : false;
+
+        // get the details
+        $json = [];
+
+        $firstMatch = false;
+        foreach(preg_split("/((\r?\n)|(\r\n?))/", $test) as $line){
+            preg_match('/^\s*(?<score>[\-0-9\.]+)\s+(?<rule>[\w]+)\s+(?<desc>.*)/', $line, $result);
+
+            if (array_key_exists('score', $result) && array_key_exists('rule', $result) && array_key_exists('desc', $result)) {
+                $firstMatch = true;
+                $json[] = [
+                    'score' => $result['score'],
+                    'rule' => $result['rule'],
+                    'desc' => $result['desc'],
+                    'status' => ($result['score'] > 0.0) ? 'failed' : (($result['score'] == 0.0) ? 'neutral' : 'passed')
+                ];
+            } elseif ($firstMatch) {
+                $lastRecord = end($json);
+                $lastRecord['desc'] .= " ".trim($line);
+                // replace last record
+                $json[sizeof($json) - 1] = $lastRecord;
+            }
+        }
+
+        return [
+            'result' => $passed,
+            'score' => $score,
+            'details' => $json
+        ];
+    }
+
+    /**
+     * Generate SpamScore.
+     */
+    private function execSpamc()
+    {
+        $message = $this->getSampleMessage()->toString();
+
+        // Execute SPAMC
+        $desc = [
+            0 => array('pipe', 'r'), // 0 is STDIN for process
+            1 => array('pipe', 'w'), // 1 is STDOUT for process
+            2 => array('pipe', 'w'),  // 2 is STDERR for process
+        ];
+
+        // command to invoke markup engine
+        $cmd = Setting::get('spamassassin.command');
+
+        if (is_null($cmd)) {
+            $cmd = 'spamc -R'; // default value
+        }
+
+        // spawn the process
+        $p = proc_open($cmd, $desc, $pipes);
+
+        // send the wiki content as input to the markup engine
+        // and then close the input pipe so the engine knows
+        // not to expect more input and can start processing
+        fwrite($pipes[0], $message);
+        fclose($pipes[0]);
+
+        // read the output from the engine
+        $stdout = stream_get_contents($pipes[1]);
+        $stderr = stream_get_contents($pipes[2]);
+
+        // all done! Clean up
+        fclose($pipes[1]);
+        fclose($pipes[2]);
+        proc_close($p);
+
+        if (!empty($err) || empty($stdout)) {
+            throw new \Exception('Error: cannot get SpamScore: '.$stderr);
+        }
+
+        return $stdout;
+    }
+
+    /**
+     * Get sample message.
+     */
+    public function getSampleMessage()
+    {
+        // Build a valid message with a fake contact
+        // build a temporary subscriber oject used to pass through the sending methods
+        $subscriber = $this->createStdClassSubscriber(['email' => 'admin@outlook.com']);
+
+        // Throw exception in case no server available
+        $server = $this->pickSendingServer();
+
+        // build the message from campaign information
+        list($message, $msgId) = $this->prepareEmail($subscriber, $server);
+
+        return $message;
     }
 }

@@ -648,7 +648,7 @@ class MailList extends Model
             $new_field = $field->replicate();
             $new_field->mail_list_id = $copy->id;
             $new_field->save();
-            
+
             // Copy field options
             foreach ($field->fieldOptions as $option) {
                 $new_option = $option->replicate();
@@ -914,12 +914,12 @@ class MailList extends Model
      * Send subscription confirmation email to subscriber.
      */
     public function sendSubscriptionConfirmationEmail($subscriber)
-    {        
+    {
         if ($subscriber->isListedInBlacklist()) {
             MailLog::info($subscriber->email.' is already blacklisted.');
             throw new \Exception(trans('messages.subscriber.blacklisted'));
         }
-        
+
         if (Setting::isYes('verify_subscriber_email')) {
             MailLog::info('Verifying subscriber email: '.$subscriber->email);
             // @important: the user must have its own verification server, this will not work for system verification server (even if the user has access to)
@@ -935,7 +935,7 @@ class MailList extends Model
                 throw new \Exception(trans('messages.subscriber.email.invalid'));
             }
         }
-        
+
         MailLog::info('Sending subscription confirmation email to '.$subscriber->email);
         $list = $this;
 
@@ -1070,6 +1070,7 @@ class MailList extends Model
                 \Acelle\Library\StringHelper::toUTF8($file, $encoding);
             } else {
                 MailLog::info('File encoding is UTF-8');
+                \Acelle\Library\StringHelper::checkAndRemoveUTF8BOM($file);
             }
 
             // Read CSV files

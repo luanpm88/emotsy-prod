@@ -28,11 +28,11 @@ use Acelle\Cashier\Cashier;
 class Setting extends Model
 {
     const UPLOAD_PATH = 'app/setting/';
-    
+
     // Payment status
     const PAYMENT_STATUS_ACTIVE = 'active';
     const PAYMENT_STATUS_INACTIVE = 'inactive';
-    
+
     /**
      * Get all items.
      *
@@ -58,7 +58,7 @@ class Setting extends Model
     public static function get($name)
     {
         $setting = self::where('name', $name)->first();
-        
+
         if (is_object($setting)) {
             return $setting->value;
         } elseif (isset(self::defaultSettings()[$name])) {
@@ -68,7 +68,7 @@ class Setting extends Model
             return null;
         }
     }
-    
+
     /**
      * Check setting EQUAL.
      *
@@ -78,7 +78,7 @@ class Setting extends Model
     {
         return self::get($key) == 'yes';
     }
-    
+
     /**
      * Set YES.
      *
@@ -233,6 +233,12 @@ class Setting extends Model
                 'value' => 'yes',
                 'type' => 'checkbox',
                 'options' => ['no', 'yes'],
+            ],
+            'custom_script' => [
+                'cat' => 'general',
+                'value' => '',
+                'type' => 'textarea',
+                'not_required' => 'yes',
             ],
             'import_subscribers_commitment' => [
                 'cat' => 'others',
@@ -464,6 +470,30 @@ class Setting extends Model
                 'type' => 'text',
                 'not_required' => true,
             ],
+            'spamassassin.command' => [
+                'cat' => 'others',
+                'value' => 'spamc -R',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'spamassassin.required' => [
+                'cat' => 'others',
+                'value' => 'no',
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'mta.api_endpoint' => [
+                'cat' => 'others',
+                'value' => null,
+                'type' => 'text',
+                'not_required' => true,
+            ],
+            'mta.api_key' => [
+                'cat' => 'others',
+                'value' => null,
+                'type' => 'text',
+                'not_required' => true,
+            ],
         ];
     }
 
@@ -529,7 +559,7 @@ class Setting extends Model
      *
      * @var bool
      */
-    public static function uploadSiteLogo($file, $name=null)
+    public static function uploadSiteLogo($file, $name = null)
     {
         $path = 'images/';
         $upload_path = public_path($path);
@@ -537,8 +567,7 @@ class Setting extends Model
         if (!file_exists($upload_path)) {
             mkdir($upload_path, 0777, true);
         }
-        
-        
+
         $md5file = \md5_file($file);
 
         $filename = $md5file.'.'.$file->getClientOriginalExtension();
@@ -553,20 +582,20 @@ class Setting extends Model
 
         return true;
     }
-    
+
     /**
      * Upload site logo.
      *
      * @var bool
      */
-    public static function uploadFile($file, $type=null)
+    public static function uploadFile($file, $type = null)
     {
         $uploadPath = storage_path(self::UPLOAD_PATH);
-        
+
         if (!file_exists($uploadPath)) {
             mkdir($uploadPath, 0777, true);
         }
-        
+
         $md5file = \md5_file($file);
 
         $filename = $type.'-'.$md5file.'.'.$file->getClientOriginalExtension();
@@ -581,7 +610,7 @@ class Setting extends Model
 
         return true;
     }
-    
+
     /**
      * gET uploaded file location.
      *
@@ -593,7 +622,7 @@ class Setting extends Model
 
         return $uploadPath.$filename;
     }
-    
+
     /**
      * Write default settings to DB.
      *
@@ -604,7 +633,7 @@ class Setting extends Model
         foreach (self::defaultSettings() as $name => $setting) {
             if (!self::where('name', $name)->exists()) {
                 $value = (is_null($setting['value'])) ? '' : $setting['value'];
-                
+
                 $setting = new self();
                 $setting->name = $name;
                 $setting->value = $value;

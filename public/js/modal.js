@@ -18,7 +18,7 @@ $(function() {
         $('body').append(html);
         var modal = $('#myModal');                
             modal.modal('show');
-        
+
         $.ajax({
                 url: url,
                 type: method,
@@ -29,22 +29,12 @@ $(function() {
                 $('#myModal .modal-content').find(".select2-ajax").each(function() {
                     select2Ajax($(this));
                 });
-                
+
                 customValidate($('#myModal .modal-content').find('form'));
-                
-                //// slider
-                //$('#myModal .modal-content').find("input.slider").slider();
-                //$('#myModal .modal-content').find("input.slider").on("slide", function(slideEvt) {
-                //    //$(this).closest('li').find('.val').html(slideEvt.value);
-                //    //console.log(slideEvt.value);
-                //    //
-                //    //var sum = 0;
-                //    //$('#myModal .modal-content').find("input.slider").each(function() {
-                //    //    var number = Math.round(parseFloat($(this).closest('li').find('.val').html()));
-                //    //    sum = sum + number;
-                //    //});
-                //    //console.log(sum);
-                //});
+            }).error(function (jqXHR) {
+                html = '<div class="modal-body"><prex class="text-danger">' + jqXHR.responseText + '</prex></div>';
+
+                $('#myModal .modal-content').html(html);
             });
         return false;
     });

@@ -159,7 +159,7 @@ h3 {
     border-radius: 5px;
 }
 .page-title .breadcrumb {
-    margin-bottom: 40px;
+    margin-bottom: 10px;
 }
 .select2-selection--single:not([class*=bg-]), .select2-selection--multiple:not([class*=bg-]):not([class*=border-]) {
     font-size: 13px;
@@ -847,6 +847,7 @@ ul.campaign-steps li:first-child:after {
 }
 .nav-tabs > li {
     font-size: 15px;
+    margin-right: 20px;
 }
 textarea.plain_text_content {
     height: 350px;
@@ -1009,9 +1010,6 @@ input.numeric {
 }
 .mb-0 {
     margin-bottom: 0 !important;
-}
-.nav-tabs > li {
-    margin-right: 40px;
 }
 .modern-listing.top-border-none li:first-child {
     border-top: 0;
@@ -2684,4 +2682,34 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 
 .alert .fal {
   font-size: 22px;
+}
+.campaign-row-neutral {
+  color: #777;
+}
+.campaign-row-success {
+  color: #4CAF50;
+}
+.campaign-row-failed {
+  color: #F44336;
+}
+.campaign-row-success .icon-check:before {
+    content: "\e9db";
+}
+.campaign-row-failed .icon-check:before {
+    content: "\ed64";
+}
+.campaign-row-neutral .icon-check:before {
+    content: "\ecb4";
+}
+.table-bodered-heading {
+  border: solid 1px #dedddc;
+}
+.table-bodered-heading thead tr {
+  background: #eee;
+}
+.table-bodered-heading thead tr th {
+  font-weight: 600;
+}
+.table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
+  border-color: #dedddc;
 }

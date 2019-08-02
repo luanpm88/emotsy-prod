@@ -18,8 +18,12 @@ class AppServiceProvider extends ServiceProvider
         ini_set('memory_limit', '-1');
         ini_set('pcre.backtrack_limit', 1000000000);
 
-        // To force SSL, uncomment the following line
-        // URL::forceScheme('https');
+        // HTTP or HTTPS
+        // parse_url will return either 'http' or 'https'
+        $scheme = parse_url(config('app.url'), PHP_URL_SCHEME);
+        if (!empty($scheme)) {
+            URL::forceScheme($scheme);
+        }
 
         // Fix Laravel 5.4 error
         // [Illuminate\Database\QueryException]
@@ -37,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
                 $view->with(compact('controller', 'action'));
             });
         }
-        
+
         // extend substring validator
         Validator::extend('substring', function ($attribute, $value, $parameters, $validator) {
             $tag = $parameters[0];

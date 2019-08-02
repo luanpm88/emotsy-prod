@@ -16,6 +16,9 @@
         <li class="text-semibold"><a href="#top-tab6" data-toggle="tab">
             <i class="icon-database-check"></i> {{ trans('messages.email_verification_servers') }}</a>
         </li>
+        <li class="text-semibold"><a href="#top-tab7" data-toggle="tab">
+            <i class="icon-gear"></i> {{ trans('messages.plan.setting') }}</a>
+        </li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane active" id="top-tab1">
@@ -225,6 +228,12 @@
                     @endforeach
                 </div>
             </div>
+        </div>
+        <div class="tab-pane" id="top-tab7">
+            @include('admin.plans._form_setting', [
+                'help_class' => 'plan',
+                'rules' => $plan->rules()
+            ])
         </div>
     </div>
 </div>

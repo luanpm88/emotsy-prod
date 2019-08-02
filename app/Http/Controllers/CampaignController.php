@@ -285,10 +285,10 @@ class CampaignController extends Controller
         if ($request->isMethod('post')) {
             // Fill values
             $campaign->fillAttributes($request->all());
-            
+
             // Check validation
             $this->validate($request, $campaign->rules());
-            
+
             // authorize
             if (Gate::denies('send-from', $campaign->from_email)) {
                 $validator = Validator::make([], []); // Empty data and rules fields
@@ -303,7 +303,7 @@ class CampaignController extends Controller
 
             return redirect()->action('CampaignController@template', ['uid' => $campaign->uid]);
         }
-        
+
         $rules = $campaign->rules();
 
         return view('campaigns.setup', [
@@ -578,8 +578,15 @@ class CampaignController extends Controller
             return redirect()->action('CampaignController@index');
         }
 
+        try {
+            $score = $campaign->score();
+        } catch (\Exception $e) {
+            $score = null;
+        }
+
         return view('campaigns.confirm', [
             'campaign' => $campaign,
+            'score' => $score,
         ]);
     }
 
@@ -1890,7 +1897,7 @@ class CampaignController extends Controller
             ]);
         }
     }
-    
+
     /**
      * Get client IP address.
      *
@@ -1902,8 +1909,30 @@ class CampaignController extends Controller
 	    if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
             $ip = preg_split('/\s*,\s*/', $_SERVER['HTTP_X_FORWARDED_FOR'])[0];
             return $ip;
-	    } else { 
+	    } else {
 	        return $_SERVER['REMOTE_ADDR'];
 	    }
+	}
+
+    /**
+     * Get spam score.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return string
+     */
+    public function spamScore(Request $request, $uid) {
+        // Get current user
+        $campaign = \Acelle\Model\Campaign::findByUid($uid);
+
+        try {
+            $score = $campaign->score();
+        } catch (\Exception $e) {
+            return response()->json('Cannot get score. Make sure you setup for SpamAssassin correctly', 500); // Status code here
+        }
+
+	    return view('campaigns.spam_score', [
+            'score' => $score,
+        ]);
 	}
 }
