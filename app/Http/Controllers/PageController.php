@@ -260,6 +260,11 @@ class PageController extends Controller
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
 
+        if (is_null($subscriber)) {
+            echo "Subscriber no longer exists";
+            return;
+        }
+
         $page->renderContent(null, $subscriber);
 
         if ($subscriber->getSecurityToken('subscribe-confirm') == $request->code && $subscriber->status == 'unconfirmed') {
