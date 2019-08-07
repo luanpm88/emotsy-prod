@@ -25,6 +25,8 @@ namespace Acelle\Model;
 use Illuminate\Database\Eloquent\Model;
 use Acelle\Library\MtaSync;
 use Acelle\Model\Setting;
+use Mika56\SPFCheck\SPFCheck;
+use Mika56\SPFCheck\DNSRecordGetterDirect;
 
 class SendingDomain extends Model
 {
@@ -435,11 +437,10 @@ class SendingDomain extends Model
      */
     public function verifySpf()
     {
-        $results = collect(dns_get_record($this->name, DNS_TXT));
-        $results = $results->where('type', 'TXT')
-                           ->whereIn('txt', [$this->getSpf(), $this->getQuotedSpf()]);
+        $checker = new SPFCheck(new DNSRecordGetterDirect("8.8.8.8"));
+        $check = $checker->isIPAllowed($this->getHostIpAddress(), $this->name);
 
-        $this->spf_verified = $results->isEmpty() ? self::UNVERIFIED : self::VERIFIED;
+        $this->spf_verified = ( $check == SPFCheck::RESULT_PASS ) ? self::VERIFIED : self::UNVERIFIED;
         $this->save();
     }
 
