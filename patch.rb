@@ -6,7 +6,7 @@ require 'json'
 
 # Settings
 old_versions = ['3.0.18-p6']                    # sort by chronological order
-packages = ['lawepham', 'rcrowe', 'twig', 'mika56']       # vendor packages to be replaced
+packages = ['lawepham', 'rcrowe', 'twig', 'mika56', 'purplepixie']       # vendor packages to be replaced
 dirs = ['resources/lang/default']               # 'resources/lang/default' for example
 
 # Auto setting
