@@ -387,7 +387,7 @@ class SendingDomain extends Model
         // Sync domain with MTA
         $mtaEndpoint = Setting::get('mta.api_endpoint');
 
-        if (!is_null($mtaEndpoint)) {
+        if (!empty($mtaEndpoint)) {
             $mta = new MtaSync($mtaEndpoint, Setting::get('mta.api_key'));
             $mta->addDomain($this->name, [
                 'host_verified' => $this->domain_verified,
