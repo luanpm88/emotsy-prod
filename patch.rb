@@ -108,6 +108,7 @@ end
 
 for dir in meta[:dirs]
   `rm -fr  #{File.join(output, subdir, dir)}`
+  `mkdir -p #{File.join(output, subdir, dir)}`
   `cp -r #{dir} #{File.join(output, subdir, dir)}`
 end
 

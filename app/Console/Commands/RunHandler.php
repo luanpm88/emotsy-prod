@@ -65,7 +65,7 @@ class RunHandler extends Command
         });
         Log::info('Handlers finished!');
     }
-    
+
     /**
      * Actually run the handler.
      *
@@ -77,9 +77,9 @@ class RunHandler extends Command
         // use socket as lock
         Log::info('Try to start handling process...');
 
-        // abuse
-        $handlers = FeedbackLoopHandler::get();
-        Log::info(sizeof($handlers).' feedback loop handlers found');
+        // bounce
+        $handlers = BounceHandler::get();
+        Log::info(sizeof($handlers).' bounce handlers found');
         $count = 1;
         foreach ($handlers as $handler) {
             Log::info('Starting handler '.$handler->name." ($count/".sizeof($handlers).')');
@@ -88,9 +88,9 @@ class RunHandler extends Command
             $count += 1;
         }
 
-        // bounce
-        $handlers = BounceHandler::get();
-        Log::info(sizeof($handlers).' bounce handlers found');
+        // abuse
+        $handlers = FeedbackLoopHandler::get();
+        Log::info(sizeof($handlers).' feedback loop handlers found');
         $count = 1;
         foreach ($handlers as $handler) {
             Log::info('Starting handler '.$handler->name." ($count/".sizeof($handlers).')');

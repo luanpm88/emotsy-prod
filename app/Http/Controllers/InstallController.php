@@ -729,6 +729,7 @@ class InstallController extends Controller
         $config_string = 'APP_ENV=production
 APP_DEBUG=true
 APP_KEY='.$app_key.'
+APP_URL='.url('/').'
 
 DB_HOST='.(isset($database['hostname']) ? $database['hostname'] : '').'
 DB_DATABASE='.(isset($database['database_name']) ? $database['database_name'] : '').'
