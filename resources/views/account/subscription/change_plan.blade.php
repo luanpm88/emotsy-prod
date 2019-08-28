@@ -17,7 +17,7 @@
                             <div class="col-md-12">                                
                                 <p>{!! trans('messages.subscription.change_plan.wording') !!}</p>
                                     
-                                <form enctype="multipart/form-data" action="{{ Acelle\Cashier\Cashier::getChangePlanUrl($subscription, action('AccountSubscriptionController@index')) }}" method="GET" class="form-validate-jquery">
+                                <form enctype="multipart/form-data" action="{{ $gateway->getChangePlanUrl($subscription, action('AccountSubscriptionController@index')) }}" method="GET" class="form-validate-jquery">
                                     <input type='hidden' name='return_url' value='{{ action('AccountSubscriptionController@index') }}' />
                                     @include('helpers.form_control', [
                                         'type' => 'select_ajax',

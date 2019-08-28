@@ -273,14 +273,14 @@ class AccountSubscriptionController extends Controller
     {        
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
+        $gateway = Cashier::getPaymentGateway();
         
         // Authorization
         if (!$request->user()->customer->can('changePlan', $subscription)) {
             return $this->notAuthorized();
         }
         
-        if ($request->isMethod('post')) {
-            $gateway = Cashier::getPaymentGateway();
+        if ($request->isMethod('post')) {            
             $plan = Plan::findByUid($request->plan_uid);
             
             try {
@@ -292,11 +292,12 @@ class AccountSubscriptionController extends Controller
             }
             
             $request->session()->flash('alert-success', trans('messages.subscription.plan_changed'));
-            return redirect()->away(Cashier::getPendingUrl($subscription, action('AccountSubscriptionController@index')));
+            return redirect()->away(Cashier::StripeControllerUrl($subscription, action('AccountSubscriptionController@index')));
         }
         
         return view('account.subscription.change_plan', [
             'subscription' => $subscription,
+            'gateway' => $gateway,
         ]);
     
         //$customer = $request->user()->customer;
@@ -353,7 +354,7 @@ class AccountSubscriptionController extends Controller
         
         $gateway->renew($subscription);
         
-        return redirect()->away(Cashier::getPendingUrl($subscription, action('AccountSubscriptionController@index')));
+        return redirect()->away($gateway->getPendingUrl($subscription, action('AccountSubscriptionController@index')));
     }
     
     
