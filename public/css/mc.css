@@ -662,3 +662,34 @@ a.bg-active_with_pending:hover {
   background: #17a2b8 !important;
   opacity: 0.8;
 }
+.announce_box {
+    padding: 15px;
+    margin-bottom: 35px;
+    background: #c5dbf2;
+}
+.announce_box label {
+    margin: 0;
+    font-size: 98%;
+}
+.announce_box h4 {
+    margin: 0 0 15px 0;
+    font-size: 14px;
+    font-weight: 700;
+}
+.announce_box p {
+    font-size: 100%;
+    margin-bottom: 0;
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.radio_box rtitle {
+    font-size: 16px;
+    font-weight: 600;
+    font-size: 100%;
+}
+.modal-body p {
+  font-size: 100%;
+}

@@ -2146,6 +2146,8 @@
       You can configure a standard SMTP connection or connect to a 3rd services like Amazon SES,
       SendGrid, Mailgun, ElasticEmail, Sparkpost... You can also take advantage of the the hosting server\'s
       email capability by creating a "PHP Mail" or "Sendmail" sending server',
+  'plan.sending_servers.list_intro' => 'Below are the sending servers available for users subscribed to this plan.
+      Emails sent out by users will be delivered by these servers',
   'plan.sending_servers' => 'Sending servers',
   'plan.sending_servers.listing' => 'All available sending servers',
   'plan.sending_servers.add' => 'Add Sending Server',
@@ -2642,4 +2644,12 @@
   'campaign.score' => 'Score',
   'campaign.score.description' => 'Description',
   'custom_script' => 'Copy and paste your custom scripts in the box below. It will be included in every page',
+  'plan_option.delivery_setting' => 'Delivery setting',
+  'plan_option.change' => 'Change',
+  'plan.sending_server.option' => 'Sending server option',
+  'plan.sending_servers.own.setting' => 'Options',
+  'plan.sending_servers.own.setting.intro' => 'Below are available options for configuring how customers can use their own sending servers.',
+  'plan.sending_server.saved' => 'Plan sending server setting was successfully saved.',
+  'plan.sending_servers.sub_account.setting' => 'Setting',
+  'plan.sending_servers.sub_account.setting.intro' => 'Below are available options for configuring how customers can use their own sending servers for subaccount creation.',
 ) ?>

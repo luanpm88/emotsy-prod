@@ -480,11 +480,79 @@ class PlanController extends Controller
         if (\Gate::denies('update', $plan)) {
             return $this->notAuthorized();
         }
+        
+        if ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SYSTEM) {
+            return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
+        } else if ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_OWN) {
+            return redirect()->action('Admin\PlanController@sendingServerOwn', $plan->uid);
+        } else if ($plan->getOption('sending_server_option') == \Acelle\Model\Plan::SENDING_SERVER_OPTION_SUBACCOUNT) {
+            return redirect()->action('Admin\PlanController@sendingServerSubaccount', $plan->uid);
+        }
 
         // fill all
         $plan->fillAll($request);
 
         return view('admin.plans.sending_server', [
+            'plan' => $plan,
+        ]);
+    }
+    
+    /**
+     * Plan sending server subaccount setting.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendingServerSubaccount(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // save posted data
+        if ($request->isMethod('post')) {
+            $plan->fillAll($request);            
+            $plan->save();
+            
+            $request->session()->flash('alert-success', trans('messages.plan.sending_server.saved'));
+            return redirect()->action('Admin\PlanController@sendingServerSubaccount', $plan->uid);
+        }
+
+        return view('admin.plans.sending_server.subaccount', [
+            'plan' => $plan,
+        ]);
+    }
+    
+    /**
+     * Plan sending server own setting.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendingServerOwn(Request $request, $uid)
+    {
+        $plan = \Acelle\Model\Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // save posted data
+        if ($request->isMethod('post')) {
+            $plan->fillAll($request);            
+            $plan->save();
+            
+            $request->session()->flash('alert-success', trans('messages.plan.sending_server.saved'));
+            return redirect()->action('Admin\PlanController@sendingServerOwn', $plan->uid);
+        }
+
+        return view('admin.plans.sending_server.own', [
             'plan' => $plan,
         ]);
     }
@@ -529,7 +597,7 @@ class PlanController extends Controller
             return $this->notAuthorized();
         }
 
-        return view('admin.plans.sending_servers', [
+        return view('admin.plans.sending_server.system', [
             'plan' => $plan,
         ]);
     }
@@ -892,6 +960,35 @@ class PlanController extends Controller
         }
 
         return view('admin.plans.wizard_sending_server', [
+            'plan' => $plan,
+        ]);
+    }
+    
+    /**
+     * Plan sending server change option.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function sendingServerOption(Request $request, $uid)
+    {
+        $plan = Plan::findByUid($uid);
+
+        // authorize
+        if (\Gate::denies('update', $plan)) {
+            return $this->notAuthorized();
+        }
+        
+        // save posted data
+        if ($request->isMethod('post')) {
+            $plan->fillAll($request);            
+            $plan->save();
+            
+            return redirect()->action('Admin\PlanController@sendingServer', $plan->uid);
+        }
+        
+        return view('admin.plans.sending_server_option', [
             'plan' => $plan,
         ]);
     }

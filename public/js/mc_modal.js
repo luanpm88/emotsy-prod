@@ -56,6 +56,11 @@ $(function() {
                 fitnessCalc();
             });
             fitnessCalc();
+            
+            // uniform
+            $('#myModal .modal-content').find(".styled, .multiselect-container input").uniform({
+                radioClass: 'choice'
+            });
         });
         return false;
     });

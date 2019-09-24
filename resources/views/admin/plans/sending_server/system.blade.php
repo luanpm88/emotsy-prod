@@ -31,19 +31,31 @@
     @include('admin.plans._menu')
     
     <div class="mc-section">
-        <div class="row">
+        <div class="announce_box">
+            <div class="row flex-center">
+                <div class="col-md-8">                    
+                    <label>{{ trans('messages.plan_option.delivery_setting') }}</label>
+                    <h4>{{ trans('messages.plan_option.system_s_sending_server') }}</h4>
+                    <p>{{ trans('messages.plan_option.system_s_sending_server.intro') }}</p>
+                </div>
+                <div class="col-md-4 text-right">
+                    <a class="btn btn-mc_primary mr-20 mc-modal-control" modal-size="lg" href="{{ action('Admin\PlanController@sendingServerOption', [
+                        'id' => $plan->uid]) }}">
+                            {{ trans('messages.plan_option.change') }}</a>
+                </div>
+            </div>
+        </div>
+            
+        <div class="row flex-center">
             <div class="col-md-8">
-                <h2 class="mc-h2 mt-0">
+                <h2 class="mc-h2 mt-0 mb-10">
                     <span class="text-semibold">{{ trans('messages.plan.sending_servers.listing') }}</span>
                 </h2>
-                <p>{{ trans('messages.plan.sending_servers.intro') }}</p>
+                <p>{{ trans('messages.plan.sending_servers.list_intro') }}</p>
             </div>
             <div class="col-md-4 text-right">
                 <a href="{{ action('Admin\PlanController@addSendingServer', $plan->uid) }}" class="btn btn-primary mr-5 bg-grey mc-modal-control">
                     {{ trans('messages.plan.sending_servers.add') }}
-                </a>
-                <a href="{{ action('Admin\PlanController@sendingServer', $plan->uid) }}" class="btn btn-mc_default">
-                    {{ trans('messages.plan.back_to_sending_server_setting') }}
                 </a>
             </div>
         </div>
