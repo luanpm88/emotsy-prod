@@ -606,8 +606,21 @@ stat .stat-head {
   font-weight: 600;
   font-size: 16px;
 }
-.price-box {
-  
+.price-line {
+  float: left;
+  width: 200px;
+  padding: 30px 15px;
+}
+.price-header {
+  height: 200px;
+}
+.price-item {
+}
+.price-line:nth-child(2) {
+  background: #edf4fc;
+}
+.price-table {
+  margin-left: -15px;
 }
 .price-table td {
   padding: 20px;

@@ -38,20 +38,16 @@
         <div class="col-md-12">
             <div class="sub-section">
                 <div class="price-box">
-                    <table class="price-table">
-                        <tr>
-                            <td class="bg-mc_lightblue" width="15%"><label class="section-title">{{ trans('messages.plan') }}</label></td>
-                            @foreach ($plans as $plan)
-                                <td width="{{ $colWidth }}%">
+                    <div class="price-table">
+                
+                        @foreach ($plans as $plan)
+                            <div class="price-line">
+                                <div class="price-header">
                                     <lable class="plan-title">{{ $plan->name }}</lable>
                                     <p>{{ $plan->description }}</p>
-                                </td>
-                            @endforeach
-                        </tr>
-                        <tr>
-                            <td class="bg-mc_lightblue" width="15%"><label class="section-title">{{ trans('messages.plan.pricing') }}</label></td>
-                            @foreach ($plans as $plan)
-                                <td width="{{ $colWidth }}%" class="text-center">
+                                </div>
+                                
+                                <div class="price-item text-center">
                                     <div>{{ trans('messages.plan.starting_at') }}</div>
                                     <div class="plan-price">
                                         {{ \Acelle\Library\Tool::format_price($plan->price, $plan->currency->format) }}
@@ -63,16 +59,12 @@
                                         class="btn btn-mc_primary btn-mc_mk mt-30">
                                             {{ trans('messages.plan.select') }}
                                     </a>
-                                        
-                                    <!--<a link-method="POST"
-                                        href="{{ action('AccountSubscriptionController@create', ['plan_uid' => $plan->uid]) }}"
-                                        class="btn btn-mc_primary btn-mc_mk mt-30">
-                                            {{ trans('messages.plan.select') }}
-                                    </a>-->
-                                </td>
-                            @endforeach
-                        </tr>
-                    </table>
+                                    
+                                </div>
+                            </div>
+                        @endforeach
+                    
+                    </div>
                 </div>
             </div>
         </div>
