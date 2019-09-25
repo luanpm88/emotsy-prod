@@ -19,10 +19,10 @@ class AppServiceProvider extends ServiceProvider
 
         // HTTP or HTTPS
         // parse_url will return either 'http' or 'https'
-        $scheme = parse_url(config('app.url'), PHP_URL_SCHEME);
-        if (!empty($scheme)) {
-            URL::forceScheme($scheme);
-        }
+        //$scheme = parse_url(config('app.url'), PHP_URL_SCHEME);
+        //if (!empty($scheme)) {
+        //    URL::forceScheme($scheme);
+        //}
 
         // Fix Laravel 5.4 error
         // [Illuminate\Database\QueryException]
