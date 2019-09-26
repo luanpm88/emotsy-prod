@@ -625,9 +625,12 @@ class PlanController extends Controller
             $request->session()->flash('alert-success', trans('messages.plan.sending_server.added'));
             return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
         }
+        
+        $noSendingServer = \Acelle\Model\SendingServer::getAll()->whereNotIn('id', $plan->plansSendingServers()->pluck('sending_server_id')->toArray())->count();
 
         return view('admin.plans.sending_servers_add', [
             'plan' => $plan,
+            'noSendingServer' => $noSendingServer,
         ]);
     }
 

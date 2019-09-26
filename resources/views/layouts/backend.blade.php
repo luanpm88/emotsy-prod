@@ -72,7 +72,6 @@
 				@if (
 					Auth::user()->can("read", new Acelle\Model\Plan())
 					|| Auth::user()->can("read", new Acelle\Model\Currency())
-					|| Auth::user()->can("read", new Acelle\Model\PaymentMethod())
 				)
 					<li class="dropdown language-switch"
 						rel0="PlanController"
@@ -94,13 +93,6 @@
 								<li rel0="CurrencyController">
 									<a href="{{ action('Admin\CurrencyController@index') }}">
 										<i class="icon-coins"></i> {{ trans('messages.currencies') }}
-									</a>
-								</li>
-							@endif
-							@if (Auth::user()->can("read", new Acelle\Model\PaymentMethod()))
-								<li rel0="PaymentMethodController">
-									<a href="{{ action('Admin\PaymentMethodController@index') }}">
-										<i class="icon-credit-card2"></i> {{ trans('messages.payment_methods') }}
 									</a>
 								</li>
 							@endif

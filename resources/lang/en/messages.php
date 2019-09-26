@@ -2383,6 +2383,8 @@
   'plan.manage_sending_servers' => 'Manage sending servers',
   'plan.back_to_sending_server_setting' => 'Back to plan setting',
   'plan.sending_servers.empty_warning' => 'There is no sending server selected for this plan',
+  'plan.sending_servers.add_empty_warning' => 'There is no available sending server for this plan.
+    Click <a target="_blank" href=":link"><strong>here</strong></a> to add one.',
   'plan.sending_server.custom' => 'Custom',
   'plan.sending_server.change_confirm' => 'You are about to change plan sending server setting',
   'plan.payment.intro' => 'Connect your plan to a payment gateway like Stripe or Braintree/Paypal,

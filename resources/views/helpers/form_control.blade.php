@@ -26,14 +26,6 @@
             </label>
         @endif
 
-        @if ($type == 'textarea')
-            @if ($errors->has($var_name))
-                <span class="help-block">
-                    <strong>{{ $errors->first($var_name) }}</strong>
-                </span>
-            @endif
-        @endif
-
         @if (!empty($prefix))
             <span class="prefix">
                 {!! $prefix !!}
@@ -66,12 +58,10 @@
             </div>
         @endif
 
-        @if ($type != 'textarea')
-            @if ($errors->has($var_name))
-                <span class="help-block">
-                    <strong>{{ $errors->first($var_name) }}</strong>
-                </span>
-            @endif
+        @if ($errors->has($var_name))
+            <span class="help-block">
+                <strong>{{ $errors->first($var_name) }}</strong>
+            </span>
         @endif
     </div>
 @endif

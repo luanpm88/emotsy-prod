@@ -59,10 +59,10 @@ function customValidate(selector) {
                 error.insertAfter( element.parents(".form-group").find('.select2') );
             }
 
-            // Select2
-            else if (element.is("textarea")) {
-                error.insertBefore( element.parents(".form-group") );
-            }
+            //// Select2
+            //else if (element.is("textarea")) {
+            //    error.insertBefore( element.parents(".form-group") );
+            //}
 
             // Input group, styled file input
             else if (element.parent().hasClass('uploader') || element.parents().hasClass('input-group')) {
