@@ -1,4 +1,4 @@
-<?php return array(
+<?php return array (
   'datetime_format' => 'd-m-Y, H:i',
   'datetime_format_2' => 'Y-m-d, H:i:s',
   'time_format' => 'H:i',
@@ -2140,4 +2140,26 @@
   'senders.empty_verified_domain_sender.warning' => 'No tienes un remitente verificado.
     Agregar y verificar  <a href=":domain_link" target="blank">[domain]</a> o
     <a href=":sender_link" target="blank">[email address]</a> enviar un correo electrónico en nombre de.',
+  'login.email' => 'Email',
+  'login.password' => 'Password',
+  'login.remember_me' => 'Remember me on this device',
+  'campaign.check_spam_score' => 'Check Spam Score',
+  'campaign.spam_score' => 'Spam Score',
+  'plan.setting' => 'Email Settings',
+  'plan.enabled_email_footer' => 'Enable email footer',
+  'plan.email_footer_trial_period_only' => 'For trial period only',
+  'plan.html_footer' => 'HTML footer',
+  'plan.plain_text_footer' => 'Plain text footer',
+  'plan.email_footer.intro' => 'Include a footer in every out-going email message to reflect your brand.
+    Normally, you can enable this option for trial period',
+  'plan.email_footer' => 'Email footer',
+  'campaign.score.passed' => 'PASSED',
+  'campaign.score.failed' => 'FAILED',
+  'campaign.send_without_score_passed.warning' => 'Your message does not pass SpamScore test, are you sure you want to proceed anyway?',
+  'campaign.score.failed.intro' => 'Your email isn’t ready to send. Below are the details of email test results',
+  'campaign.score.passed.intro' => 'Your email is ready to send. Below are the details of email test results',
+  'campaign.score.test' => 'Test',
+  'campaign.score' => 'Score',
+  'campaign.score.description' => 'Description',
+  'custom_script' => 'Copy and paste your custom scripts in the box below. It will be included in every page',
 ) ?>
