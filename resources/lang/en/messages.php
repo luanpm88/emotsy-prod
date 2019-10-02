@@ -2654,4 +2654,7 @@
   'plan.sending_server.saved' => 'Plan sending server setting was successfully saved.',
   'plan.sending_servers.sub_account.setting' => 'Setting',
   'plan.sending_servers.sub_account.setting.intro' => 'Below are available options for configuring how customers can use their own sending servers for subaccount creation.',
+  'plan.no_available_plan' => 'There are no available plans now. Please try again later!',
+  'customers.desc' => 'Manage your system users who subscribe to a plan',
+  'subscriptions.desc' => 'Manage user subscriptions. See who suscribe to which plan.',
 ) ?>

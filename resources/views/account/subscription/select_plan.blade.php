@@ -37,35 +37,48 @@
     <div class="row">
         <div class="col-md-12">
             <div class="sub-section">
-                <div class="price-box">
-                    <div class="price-table">
-                
-                        @foreach ($plans as $plan)
-                            <div class="price-line">
-                                <div class="price-header">
-                                    <lable class="plan-title">{{ $plan->name }}</lable>
-                                    <p>{{ $plan->description }}</p>
-                                </div>
-                                
-                                <div class="price-item text-center">
-                                    <div>{{ trans('messages.plan.starting_at') }}</div>
-                                    <div class="plan-price">
-                                        {{ \Acelle\Library\Tool::format_price($plan->price, $plan->currency->format) }}
-                                    </div>
-                                    <div>{{ $plan->displayFrequencyTime() }}</div>
-                                        
-                                    <a
-                                        href="{{ action('AccountSubscriptionController@review', ['plan_uid' => $plan->uid]) }}"
-                                        class="btn btn-mc_primary btn-mc_mk mt-30">
-                                            {{ trans('messages.plan.select') }}
-                                    </a>
-                                    
-                                </div>
-                            </div>
-                        @endforeach
-                    
+            
+                @if (empty($plans))
+                    <div class="row">
+                        <div class="col-md-6">
+                            @include('elements._notification', [
+                                'level' => 'danger',
+                                'message' => trans('messages.plan.no_available_plan')
+                            ])
+                        </div>
                     </div>
-                </div>
+                @else
+                    <div class="price-box">
+                        <div class="price-table">
+                    
+                            @foreach ($plans as $plan)
+                                <div class="price-line">
+                                    <div class="price-header">
+                                        <lable class="plan-title">{{ $plan->name }}</lable>
+                                        <p>{{ $plan->description }}</p>
+                                    </div>
+                                    
+                                    <div class="price-item text-center">
+                                        <div>{{ trans('messages.plan.starting_at') }}</div>
+                                        <div class="plan-price">
+                                            {{ \Acelle\Library\Tool::format_price($plan->price, $plan->currency->format) }}
+                                        </div>
+                                        <div>{{ $plan->displayFrequencyTime() }}</div>
+                                            
+                                        <a
+                                            href="{{ action('AccountSubscriptionController@review', ['plan_uid' => $plan->uid]) }}"
+                                            class="btn btn-mc_primary btn-mc_mk mt-30">
+                                                {{ trans('messages.plan.select') }}
+                                        </a>
+                                        
+                                    </div>
+                                </div>
+                            @endforeach
+                        
+                        </div>
+                    </div>
+                @endif
+
             </div>
         </div>
     </div>

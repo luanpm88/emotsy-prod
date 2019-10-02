@@ -75,7 +75,7 @@ class AccountSubscriptionController extends Controller
     {
         $customer = $request->user()->customer;
         $subscription = $customer->subscription;
-        $plans = Plan::getAllActive()->get();
+        $plans = Plan::getAvailablePlans();
         $colWidth = round(85 / Plan::getAllActive()->count());
         
         if (isset($subscription)) {

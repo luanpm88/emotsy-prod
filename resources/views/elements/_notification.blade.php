@@ -1,7 +1,8 @@
 <?php
     $icons = [
         'warning' =>  'fa-exclamation-circle',
-        'info' =>  'fa-info-circle'
+        'info' =>  'fa-info-circle',
+        'danger' =>  'fa-info-circle'
     ];
 
     if (isset($params)) {

@@ -1,6 +1,6 @@
 @if (is_object($plan))
     <div class="panel panel-plan box-{{ $plan->status }}">
-        <div class="panel-heading" style="background-color: {{ $plan->color }}; color: white">
+        <div class="panel-heading" style="background-color: {{ ($plan->color ? $plan->color : '#888') }}; color: white">
             <h4 class="pull-left panel-title text-center">													
                 {{ $plan->name }}
             </h4>

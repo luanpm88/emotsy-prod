@@ -1241,7 +1241,13 @@ class Plan extends Model implements BillablePlanInterface
      */
     public function getVerifiedIdentities()
     {
-        return $this->primarySendingServer()->getVerifiedIdentities();
+        $server = $this->primarySendingServer();
+        
+        if (isset($server)) {
+            return $this->primarySendingServer()->getVerifiedIdentities();
+        } else {
+            return [];
+        }        
     }
     
     /**
@@ -1384,5 +1390,54 @@ class Plan extends Model implements BillablePlanInterface
         }
         
         return $result;
+    }
+    
+    /**
+     * Check if plan has primary sending server
+     *
+     * @var bool
+     */
+    public function hasPrimarySendingServer()
+    {
+        return is_object($this->primarySendingServer());
+    }
+    
+    /**
+     * Check if plan is active
+     *
+     * @var bool
+     */
+    public function isActive()
+    {
+        return $this->status == PlansEmailVerificationServer::STATUS_ACTIVE;
+    }
+    
+    /**
+     * Check if plan is available
+     *
+     * @var bool
+     */
+    public function isAvailable()
+    {
+        return $this->isActive() && $this->hasPrimarySendingServer();
+    }
+    
+    /**
+     * Get all available plans for customer register
+     *
+     * @var bool
+     */
+    public static function getAvailablePlans()
+    {
+        $plans = Plan::getAllActive()->get();
+        
+        $aPlans = [];
+        foreach($plans as $plan) {
+            if ($plan->isAvailable()) {
+                $aPlans[] = $plan;
+            }
+        }
+        
+        return $aPlans;
     }
 }

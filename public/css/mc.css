@@ -706,3 +706,11 @@ a.bg-active_with_pending:hover {
 .modal-body p {
   font-size: 100%;
 }
+.mc-dropdown > li > a {
+  font-size: 16px;
+}
+.mc-dropdown > li > a > subtitle {
+  display: block;
+  font-size: 13px;
+  margin: 2px 0 0 0;
+}
