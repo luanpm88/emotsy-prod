@@ -70,7 +70,7 @@ class SubscriptionPolicy
 
     public function cancelNow(User $user, Subscription $subscription, $role)
     {
-        $can = !$subscription->isEnded();
+        $can = !$subscription->isEnded() && !$subscription->isNew();
 
         switch ($role) {
             case 'admin':
@@ -224,7 +224,7 @@ class SubscriptionPolicy
 
     public function delete(User $user, Subscription $subscription, $role)
     {
-        $can = $subscription->isEnded();
+        $can = $subscription->isEnded() || $subscription->isNew();
 
         switch ($role) {
             case 'admin':
