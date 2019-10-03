@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/luanpm88/acelle-cashier.git",
-                "reference": "ab60f9ee377df128c6afaab9c964a37aeee07f9d"
+                "reference": "99c8f6bd6f5241ffd27917fa70731d736d38e82d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/ab60f9ee377df128c6afaab9c964a37aeee07f9d",
-                "reference": "ab60f9ee377df128c6afaab9c964a37aeee07f9d",
+                "url": "https://api.github.com/repos/luanpm88/acelle-cashier/zipball/99c8f6bd6f5241ffd27917fa70731d736d38e82d",
+                "reference": "99c8f6bd6f5241ffd27917fa70731d736d38e82d",
                 "shasum": ""
             },
             "require": {
@@ -77,7 +77,7 @@
                 "issues": "https://github.com/laravel/cashier/issues",
                 "source": "https://github.com/laravel/cashier"
             },
-            "time": "2019-10-02T04:24:19+00:00"
+            "time": "2019-10-03T02:56:38+00:00"
         },
         {
             "name": "aws/aws-php-sns-message-validator",
@@ -134,16 +134,16 @@
         },
         {
             "name": "aws/aws-sdk-php",
-            "version": "3.112.12",
+            "version": "3.112.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/aws/aws-sdk-php.git",
-                "reference": "b8c1e71eaefe44342283ef7240efabcc87197dd4"
+                "reference": "0326ba62f6ee0bb075f2b875631ec4abee93bee1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/b8c1e71eaefe44342283ef7240efabcc87197dd4",
-                "reference": "b8c1e71eaefe44342283ef7240efabcc87197dd4",
+                "url": "https://api.github.com/repos/aws/aws-sdk-php/zipball/0326ba62f6ee0bb075f2b875631ec4abee93bee1",
+                "reference": "0326ba62f6ee0bb075f2b875631ec4abee93bee1",
                 "shasum": ""
             },
             "require": {
@@ -213,7 +213,7 @@
                 "s3",
                 "sdk"
             ],
-            "time": "2019-10-01T18:07:57+00:00"
+            "time": "2019-10-02T18:39:21+00:00"
         },
         {
             "name": "barryvdh/laravel-async-queue",
