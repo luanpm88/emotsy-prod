@@ -328,6 +328,9 @@ input.has-eye {
   border-top: 1px solid #dedddc;
   font-weight: 600;
 }
+.mc_section .table-box-head thead td {
+  border-bottom: 1px solid #dedddc;
+}
 .small-meta {
   font-size: 90%;
   line-height: inherit;
@@ -713,4 +716,9 @@ a.bg-active_with_pending:hover {
   display: block;
   font-size: 13px;
   margin: 2px 0 0 0;
+}
+.badge-lg {
+    font-size: 13px;
+    border-radius: 50px;
+    padding: 0px 10px;
 }

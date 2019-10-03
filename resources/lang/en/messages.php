@@ -2661,4 +2661,5 @@
   'subscriptions.desc' => 'Manage user subscriptions. See who suscribe to which plan.',
   'subscription.next_billing' => 'Next billing',
   'subscription.expire' => 'Expire',
+  'sending_identity.status.active' => 'active',
 ) ?>
