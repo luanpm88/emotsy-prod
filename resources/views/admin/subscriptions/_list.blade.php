@@ -19,7 +19,10 @@
 							{{ $subscription->plan->name }}
 						</span>
 					</h5>
-					<div class="text-muted">{{ trans('messages.subscribed_by', ['name' => $subscription->user->displayName()]) }}</div>
+					<div class="text-muted">{!! trans('messages.subscribed_by', [
+						'name' => $subscription->user->displayName(),
+						'customer_link' => action('Admin\CustomerController@edit', $subscription->user->uid)
+					]) !!}</div>
 				</td>
 				<td width="15%">
                     <h5 class="no-margin">

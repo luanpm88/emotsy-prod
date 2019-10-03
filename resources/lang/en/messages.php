@@ -2584,7 +2584,7 @@
   'subscription.delete' => 'Delete',
   'subscription.delete.confirm' => 'You\'re about to delete :number subscription completely. This can not be un-done.',
   'current_payment_intro' => 'Payment for your service plans is currently handled by <strong>:name</strong>. Click <a href=":link"><strong>here</strong></a> to manage payment gateways.',
-  'subscribed_by' => 'Subscribed by :name',
+  'subscribed_by' => 'Subscribed by <a href=":customer_link">:name</a>',
   'subscribed_on' => 'Subscribed on',
   'login.email' => 'Email',
   'login.password' => 'Password',
