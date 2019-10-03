@@ -32,6 +32,7 @@
                 <i class="icon-quill4"></i>
                 {{ trans('messages.recent_subscriptions') }}
             </h3>
+            <p style="margin-bottom: 30px" class="link-inline">{!! trans('messages.admin.dashboard.recent_subscriptions.wording', [ 'here' => action('Admin\SubscriptionController@index') ]) !!}</p>
             <ul class="modern-listing mt-0 mb-0 top-border-none type2">
                 @forelse (Auth::user()->admin->recentSubscriptions() as $subscription)
                     <li class="">
@@ -82,6 +83,7 @@
                 <i class="icon-users"></i>
                 {{ trans('messages.recent_customers') }}
             </h3>
+            <p style="margin-bottom: 30px" class="link-inline">{!! trans('messages.admin.dashboard.recent_customers.wording', [ 'here' => action('Admin\CustomerController@index') ]) !!}</p>
             <ul class="modern-listing mt-0 mb-0 top-border-none type2">
                 @forelse(Auth::user()->admin->recentCustomers() as $customer)
                     <li class="">

@@ -2661,3 +2661,6 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
   border-color: #dedddc;
 }
+p.link-inline a {
+  text-decoration: underline;
+}
