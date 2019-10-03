@@ -108,14 +108,20 @@
                     @endif
                 @endif
             </div>
-            <div class="sub-section">
-                <h3 class="text-semibold">{{ trans('messages.plan_details') }} </h3>
-
-                @include('plans._details', ['plan' => $plan])
-            </div>
         </div>
     </div>
         
     @include('account.subscription._invoices')
+                
+    <div class="sub-section">
+        <div class="row">
+            <div class="col-sm-12 col-md-6 col-lg-6">
+                <h2 class="text-semibold mb-10">{{ trans('messages.plan_details') }} </h2>
+                <p>{{ trans('messages.plan_details.intro') }}</p>
+        
+                @include('plans._details', ['plan' => $plan])
+            </div>
+        </div>
+    </div>
     
 @endsection

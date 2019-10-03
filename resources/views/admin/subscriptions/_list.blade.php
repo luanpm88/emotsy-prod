@@ -8,9 +8,9 @@
 					@if ($subscription->ended())
 						<i class="icon-dash subscription-status-icon"></i>
 					@elseif ($subscription->isPending() || $subscription->isNew())
-						<i class="fal fa-sync subscription-status-icon"></i>
+						<i class="fa fa-sync subscription-status-icon"></i>
 					@else
-						<i class="fal fa-check subscription-status-icon"></i>
+						<i class="fa fa-check subscription-status-icon"></i>
 					@endif
 				</td>
 				<td>
@@ -23,7 +23,7 @@
 				</td>
 				<td width="15%">
                     <h5 class="no-margin">
-                        <span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->created_at) }}</span>
+                        <span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->created_at)->format('M d, Y') }}</span>
                     </h5>
                     <span class="text-muted2">{{ trans('messages.subscribed_on') }}</span>
                 </td>
@@ -32,17 +32,17 @@
 						<h5 class="no-margin">
 							<span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
 						</h5>
-						<span class="text-muted2">{{ trans('messages.subscription.ended_on') }}</span>
+						<span class="text-muted2">{{ trans('messages.subscription.expire') }}</span>
 					@elseif ($subscription->cancelled())
 						<h5 class="no-margin">
-							<span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
+							<span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}</span>
 						</h5>
-						<span class="text-muted2">{{ trans('messages.subscription.ends_on') }}</span>
+						<span class="text-muted2">{{ trans('messages.subscription.next_billing') }}</span>
 					@else
 						<h5 class="no-margin">
-							<span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->updated_at) }}</span>
+							<span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}</span>
 						</h5>
-						<span class="text-muted2">{{ trans('messages.subscription.updated_at') }}</span>
+						<span class="text-muted2">{{ trans('messages.subscription.next_billing') }}</span>
 					@endif
 				</td>
 				<td>
