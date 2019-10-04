@@ -1080,9 +1080,15 @@ class CampaignController extends Controller
 
         // Trigger the CampaignUpdate event to update the campaign cache information
         // The second parameter of the constructor function is false, meanining immediate update
-        $log->save();
-        LaravelLog::info('Click log recorded: '.$messageId);
-        event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList));
+        try {
+            $log->save();
+            LaravelLog::info('Click log recorded: '.$messageId);
+            event(new \Acelle\Events\MailListUpdated($log->trackingLog->subscriber->mailList));
+        } catch (\Exception $ex) {
+            // in case TrackingLog record does not exist yet (open before logged!)
+            LaravelLog::warning('Cannot save click tracking log for X message: '.$log->message_id);
+            // throw new \Exception('Cannot save click tracking log'.$ex->getMessage());
+        }
 
         return redirect()->away($decoded_url);
     }
