@@ -132,6 +132,7 @@
                         <thead>
                             <tr>
                                 <td>{{ trans('messages.domain') }}</td>
+                                <td>{{ trans('messages.status') }}</td>
                                 <td>{{ trans('messages.action') }}</td>
                             </tr>
                         </thead>
@@ -140,6 +141,9 @@
                                 <tr class="odd">
                                     <td>
                                         {{ $domain }}
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-success badge-lg">{{ trans('messages.sending_identity.status.active') }}</span>
                                     </td>
                                     <td>
                                         <a href="{{ action('Admin\SendingServerController@removeDomain', [$server->uid, $domain]) }}"
