@@ -11,7 +11,7 @@
   'forgot_password' => 'Forgot Password?',
   'login' => 'Log In',
   'copy_right_light' => '© 2019. <span class="text-white">Acelle Email Marketing Application</span> by <a href="http://acellemail.com" class="text-white" target="_blank">acellemail.com</a>',
-  'copy_right' => '© 2019. Acelle Email Marketing Application by <a href="http://acellemail.com" class="" target="_blank">acellemail.com</a>',
+  'copy_right' => '© 2019. Acelle Email Marketing Application by <a title="Go to AcelleMail home page." class="xtooltip" href="http://acellemail.com" class="" target="_blank">acellemail.com</a>',
   'send_password_reset_link' => 'Send Password Reset Link',
   'password_reset' => 'Password Reset',
   'password_reset.help' => 'We\'ll email you instructions on how to reset your password.',
