@@ -33,7 +33,8 @@
     <div class="mc-section">
         <div class="announce_box">
             <div class="row flex-center">
-                <div class="col-md-8">                    
+                <div class="col-md-8">
+                    <i class="announce_box-icon lnr lnr-apartment"></i>
                     <label>{{ trans('messages.plan_option.delivery_setting') }}</label>
                     <h4>{{ trans('messages.plan_option.system_s_sending_server') }}</h4>
                     <p>{{ trans('messages.plan_option.system_s_sending_server.intro') }}</p>

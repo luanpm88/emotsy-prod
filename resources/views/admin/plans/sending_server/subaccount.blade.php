@@ -36,7 +36,8 @@
         <div class="mc-section">
             <div class="announce_box">
                 <div class="row flex-center">
-                    <div class="col-md-8">                    
+                    <div class="col-md-8">
+                        <i class="announce_box-icon lnr lnr-users"></i>
                         <label>{{ trans('messages.plan_option.delivery_setting') }}</label>
                         <h4>{{ trans('messages.plan_option.sub_account') }}</h4>
                         <p>{{ trans('messages.plan_option.sub_account.intro') }}</p>
