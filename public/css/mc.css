@@ -613,6 +613,7 @@ stat .stat-head {
   float: left;
   width: 200px;
   padding: 30px 15px;
+  border-top: solid 1px #aaa;
 }
 .price-header {
   height: 200px;
@@ -623,7 +624,7 @@ stat .stat-head {
   background: #edf4fc;
 }
 .price-table {
-  margin-left: -15px;
+  margin-top: -30px;
 }
 .price-table td {
   padding: 20px;
