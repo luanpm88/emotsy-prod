@@ -22,10 +22,10 @@
                         </div>
                         <div class="col-md-7">
                             <div class="pull-right text-small">
-                                more
+                                {{ trans('messages.plan.fitness.more') }}
                             </div>
                             <div class="pull-left text-small">
-                                less
+                                {{ trans('messages.plan.fitness.less') }}
                             </div>
                             <div>
                                 <input name="sending_servers[{{ $planSendingServer->sendingServer->uid }}]" class="slider"

@@ -2662,4 +2662,6 @@
   'subscription.next_billing' => 'Next billing',
   'subscription.expire' => 'Expire',
   'sending_identity.status.active' => 'active',
+  'plan.fitness.more' => 'more',
+  'plan.fitness.less' => 'less',
 ) ?>
