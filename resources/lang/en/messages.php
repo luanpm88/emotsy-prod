@@ -1,8 +1,8 @@
 <?php return array (
-  'datetime_format' => 'Y-m-d, H:i',
-  'datetime_format_2' => 'Y-m-d, H:i:s',
+  'datetime_format' => 'M dS, Y H:i',
+  'datetime_format_2' => 'M dS, Y H:i:s',
   'time_format' => 'H:i',
-  'date_format' => 'Y-m-d',
+  'date_format' => 'M d, Y',
   'j_date_format' => 'yyyy-mm-dd',
   'datetime_string_formated' => ':date, :time',
   'email' => 'Email',
