@@ -8,9 +8,9 @@
 					@if ($subscription->ended())
 						<i class="icon-dash subscription-status-icon"></i>
 					@elseif ($subscription->isPending() || $subscription->isNew())
-						<i class="fa fa-sync subscription-status-icon"></i>
+						<i class="lnr lnr-sync subscription-status-icon"></i>
 					@else
-						<i class="fa fa-check subscription-status-icon"></i>
+						<i class="lnr lnr-checkmark-circle subscription-status-icon"></i>
 					@endif
 				</td>
 				<td>

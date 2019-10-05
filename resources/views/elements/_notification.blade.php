@@ -1,8 +1,8 @@
 <?php
     $icons = [
-        'warning' =>  'fa-exclamation-circle',
-        'info' =>  'fa-info-circle',
-        'danger' =>  'fa-info-circle'
+        'warning' =>  'lnr lnr-warning',
+        'info' =>  'lnr lnr-checkmark-circle',
+        'danger' =>  'lnr lnr-question-circle'
     ];
 
     if (isset($params)) {
@@ -14,7 +14,7 @@
 ?>
 <div {!! $paramsString or '' !!} title="Click to suppress notification messages" class="alert alert-{{ $level }}" style="display: flex; flex-direction: row; align-items: center; cursor: pointer">
     <div style="margin-right:15px">
-        <i class="fa {{ $icons[$level] }}"></i>
+        <i class="{{ $icons[$level] }}"></i>
     </div>
     <div>
         @isset($title)
