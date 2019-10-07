@@ -624,7 +624,6 @@ stat .stat-head {
   background: #edf4fc;
 }
 .price-table {
-  margin-top: -30px;
 }
 .price-table td {
   padding: 20px;
@@ -750,4 +749,58 @@ a.bg-active_with_pending:hover {
 }
 .tooltipster-sidetip.tooltipster-light .tooltipster-content {
     color: #333;
+}
+table.table-log tr th {
+    padding: 10px 10px;
+}
+.iframe-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100vh;
+  z-index: 10000;
+  background: #eee;
+}
+.iframe-modal iframe {
+  width: 100%;
+  height: 100%;
+}
+.iframe-modal-header {
+  display: flex;
+  background: #f3f3f3;
+  height: 60px;
+  padding: 0 20px;
+  align-items: center;
+}
+.iframe-modal-header .title {
+  flex: 1 1 auto;
+  font-weight: 600;
+  color: #333;
+}
+.iframe-modal-header .close {
+  font-weight: bold;
+  font-size: 24px;
+}
+.price-selectable .price-line {
+  border-left: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  border-top: 1px solid #ddd;
+}
+.price-selectable .price-line:last-child {
+  border-right: 1px solid #ddd;
+}
+.price-selectable .price-line.selected {
+  border: 1px solid #007c90;
+}
+.iframe-modal-body {
+  padding: 20px;
+  height: calc(100vh - 60px);
+  overflow: auto;
+}
+.price-selectable .price-line:nth-child(2) {
+    background: #fff;
+}
+.price-selectable .price-line.current {
+    background: #f8f8f8;
 }

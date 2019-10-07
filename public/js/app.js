@@ -607,6 +607,11 @@ $(function() {
             $(".link-confirm-button").attr("link-method", $(this).attr('link-method'));
             $(".link-confirm-button").removeClass("ajax_link");
         }
+        
+        // direct link
+        if ($(this).hasClass('direct-link')) {
+            $(".link-confirm-button").removeClass("ajax_link");
+        }
 
         e.stopImmediatePropagation();
         e.preventDefault();

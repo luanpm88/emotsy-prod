@@ -1235,6 +1235,16 @@ class Plan extends Model implements BillablePlanInterface
     }
     
     /**
+     ** Get Primary sending server.
+     **/
+    public function primarySendingServerAdded()
+    {
+        $pss = $this->plansSendingServers()->where('is_primary', '=', true)->first();
+        // @todo: quăng 1 cái exception nếu $pss null, ko return null sẽ gây lỗi tiềm ẩn
+        return is_object($pss) ? $pss->updated_at : null;
+    }
+    
+    /**
      * Get all verified identities.
      *
      * @return array

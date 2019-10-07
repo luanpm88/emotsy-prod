@@ -100,7 +100,7 @@
                     @if (\Auth::user()->customer->can('changePlan', $subscription))
                         <a 
                             href="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->uid]) }}"
-                            class="btn btn-mc_default modal_link"
+                            class="btn btn-mc_default change_plan_button"
                             data-size="sm"
                         >
                             {{ trans('messages.subscription.change_plan') }}
@@ -123,5 +123,18 @@
             </div>
         </div>
     </div>
+        
+    <script>
+        var changePlanModal = new IframeModal();
+        
+        $(function() {
+            $('.change_plan_button').click(function(e) {
+                e.preventDefault();
+                
+                var src = $(this).attr('href');
+                changePlanModal.load(src);
+            });
+        });
+    </script>
     
 @endsection
