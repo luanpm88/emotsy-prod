@@ -7,7 +7,7 @@ class IframeModal {
             
             this.modal = modal;            
         }
-        this.iframe = this.modal.find('iframe');
+        this.iframe = this.modal.find('.iframe-modal');
         this.modal.css('display', 'none');
     }
     
@@ -26,12 +26,21 @@ class IframeModal {
         $('html').css('overflow', 'auto');
     }
     
-    load(src) {        
+    load(src) {
+        var _this = this;
         this.src = src;
         this.show();
-        this.iframe.attr('src', this.src);
+        //this.iframe.attr('src', this.src);
+        //
+        //console.log(this.modal);
         
-        console.log(this.modal);
+        $.ajax({
+            url: src,
+            type: 'GET',
+            dataType: 'html',
+        }).always(function(response) {
+            _this.iframe.html(response);
+        });
     }
 }
 var GlobalIframeModal = IframeModal;
