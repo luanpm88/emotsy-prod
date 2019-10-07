@@ -804,3 +804,6 @@ table.table-log tr th {
 .price-selectable .price-line.current {
     background: #f8f8f8;
 }
+.iframe-modal iframe {
+  border: none;
+}
