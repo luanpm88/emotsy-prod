@@ -2664,4 +2664,5 @@
   'sending_identity.status.active' => 'active',
   'plan.fitness.more' => 'more',
   'plan.fitness.less' => 'less',
+  'invoice.action' => 'Action',
 ) ?>

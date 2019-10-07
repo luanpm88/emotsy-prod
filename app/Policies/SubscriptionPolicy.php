@@ -115,7 +115,7 @@ class SubscriptionPolicy
     public function renew(User $user, Subscription $subscription, $role)
     {
         $gateway = Cashier::getPaymentGateway();
-        $can = $subscription->isActive() && !$gateway->hasPending($subscription);
+        $can = $subscription->isActive() && !$gateway->hasPending($subscription) && !$gateway->isSupportRecurring();
         $can = $can && (Setting::get('system.renew_free_plan') == 'yes' || (Setting::get('system.renew_free_plan') == 'no' && !$subscription->plan->isFree()));
 
         $lastDays = Setting::get('system.end_period_last_days');
