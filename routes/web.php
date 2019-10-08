@@ -234,6 +234,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::post('lists/{list_uid}/pages/{alias}/preview', 'PageController@preview');
 
     // Template
+    Route::post('templates/builder/create', 'TemplateController@builderCreate');
+    Route::get('templates/builder/create', 'TemplateController@builderCreate');
     Route::post('templates/{uid}/builder/edit/asset', 'TemplateController@builderAsset');
     Route::get('templates/{uid}/builder/edit/content', 'TemplateController@builderEditContent');
     Route::post('templates/{uid}/builder/edit', 'TemplateController@builderEdit');

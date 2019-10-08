@@ -2164,4 +2164,8 @@
   'custom_script' => 'Copy and paste your custom scripts in the box below. It will be included in every page',
   'buider.try_new' => 'Try new Builder',
   'builder.beta' => 'beta',
+  'template.new_template' => 'New template',
+  'template.name_your_new_template' => 'Name your new template',
+  'template.select_your_template' => 'Select one of template layouts below',
+  'template.create_and_design' => 'Start Design',
 ) ?>

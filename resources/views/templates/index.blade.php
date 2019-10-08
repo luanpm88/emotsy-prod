@@ -82,6 +82,9 @@
 							<a href="{{ action('TemplateController@buildSelect') }}" type="button" class="btn bg-info-800">
 								<i class="icon icon-plus2"></i> {{ trans('messages.create') }}
 							</a>
+                            <a href="{{ action('TemplateController@builderCreate') }}" type="button" class="btn bg-info-800">
+								<i class="icon icon-plus2"></i> {{ trans('messages.create') }}
+							</a>
 						</div>
 					</div>
 					

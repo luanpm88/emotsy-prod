@@ -533,18 +533,6 @@ class TemplateController extends Controller
             );
 
             $this->validate($request, $rules);
-
-            //// Save template
-            //$template->fill($request->all());
-            //
-            ////// update content
-            //
-            //$template->save();
-            //
-            //// Redirect to my lists page
-            //$request->session()->flash('alert-success', trans('messages.template.updated'));
-            //
-            //return redirect()->action('TemplateController@index');
         }
 
         return view('templates.builder.edit', [
@@ -587,6 +575,34 @@ class TemplateController extends Controller
         
         return response()->json([
             'url' => \Storage::url($path)
+        ]);
+    }
+    
+    /**
+     * Create template / temlate selection.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function builderCreate(Request $request)
+    {
+        $template = new Template();
+        $template->name = trans('messages.untitled_template');
+        
+        // validate and save posted data
+        if ($request->isMethod('patch')) {
+            $rules = array(
+                'name' => 'required',
+            );
+
+            $this->validate($request, $rules);
+            
+            
+        }
+
+        return view('templates.builder.create', [
+            'template' => $template,
         ]);
     }
 }

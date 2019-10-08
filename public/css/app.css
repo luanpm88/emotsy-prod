@@ -2661,3 +2661,20 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 .table > thead > tr > th, .table > tbody > tr > th, .table > tfoot > tr > th, .table > thead > tr > td, .table > tbody > tr > td, .table > tfoot > tr > td {
   border-color: #dedddc;
 }
+.select-template-layout .panel-template-style {
+  border-width: 1.5px;
+}
+.select-template-layout.selected .panel-template-style {
+  border-color: #166dba;
+  position: relative;
+}
+.select-template-layout.selected .panel-template-style:before {
+    content: '\ed6c';
+    font-family: 'icomoon';
+    right: 0;
+    position: absolute;
+    color: #fff;
+    background: #166dba;
+    border-radius: 0 0 0 100px;
+    padding: 2px 3px 6px 11px;
+}
