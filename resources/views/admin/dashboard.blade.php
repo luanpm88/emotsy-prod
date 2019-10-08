@@ -40,17 +40,17 @@
                             <div class="col-sm-5 col-md-5">
                                 <h6 class="mt-0 mb-0 text-semibold">
                                     <a href="{{ action('Admin\CustomerController@subscriptions', $subscription->customer->uid) }}">
-                                        <i class="icon-clipboard2"></i>
+                                        <i class="lnr lnr-license"></i>
                                         {{ $subscription->plan_name }}
                                     </a>
                                 </h6>
                                 <p class="mb-0">
                                     <!--<img width="40" class="img-circle mr-10 pull-left" src="{{ action('CustomerController@avatar', $subscription->customer->uid) }}" alt="">-->
-                                    <i class="icon-user" style="
+                                    <!--<i class="icon-user" style="
                                         font-size: 14px;
                                         padding: 0;
                                         margin: 5px 0 0 -8px;
-                                        height: auto;"></i>
+                                        height: auto;"></i>-->
                                     {{ $subscription->customer->displayName() }}
                                 </p>
                             </div>
@@ -125,6 +125,7 @@
         <i class="icon-history position-left"></i>
         {{ trans('messages.activities') }}
     </h3>
+    <p style="margin-bottom: 30px" class="link-inline">{!! trans('messages.admin.dashboard.recent_activity.wording', [ 'here' => action('Admin\CustomerController@index') ]) !!}</p>
     @if (\Auth::user()->admin->getLogs()->count() == 0)
         <div class="empty-list">
             <i class="icon-history"></i>
@@ -148,7 +149,15 @@
                                     <div class="panel-heading">
                                         <h6 class="panel-title text-semibold">{{ $log->customer->displayName() }}</h6>
                                         <div class="heading-elements">
-                                            <span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at ? $log->created_at->diffForHumans() : '' }}</span>
+                                            <span class="heading-text"><i class="position-left text-bold lnr lnr-clock"></i>
+                                                @if ($log->created_at)
+                                                    @if ($log->created_at->lessThan(\Carbon\Carbon::now()->subMonth(1)))
+                                                        {{ \Acelle\Library\Tool::formatDateTime($log->created_at) }}
+                                                    @else
+                                                        {{ $log->created_at->diffForHumans() }}
+                                                    @endif
+                                                @endif
+                                            </span>
                                         </div>
                                     </div>
 

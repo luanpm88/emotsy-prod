@@ -423,7 +423,7 @@ class Admin extends Model
     {
         $query = $this->getAllSubscriptions()
             //->where('subscriptions.status', '=', \Acelle\Model\Subscription::STATUS_INACTIVE)
-            ->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->endOfDay())
+            //->where('subscriptions.end_at', '>=', \Carbon\Carbon::now()->endOfDay())
             ->orderBy('subscriptions.created_at', 'desc')->limit($number);
 
         return $query->get();
