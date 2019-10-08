@@ -173,7 +173,7 @@
         </div>
     @endif
 
-    <div class="sub-section mb-20">
+    <div class="sub-section mb-20 mt-30" style="margin-top: 60px">
         <h3 class="text-semibold mt-40">{{ trans('messages.resources_statistics') }}</h3>
         <p>{{ trans('messages.resources_statistics_intro') }}</p>
         <div class="row">
