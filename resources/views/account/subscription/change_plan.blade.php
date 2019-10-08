@@ -1,44 +1,67 @@
-<div class="modal-content modal-sm">
+    <div class="iframe-modal-header">
+        <div class="title">{{ trans('messages.subscription.change_plan') }}</div>
+        <div class="close" onclick="parent.GlobalIframeModal.hide()"><i class="lnr lnr-cross"></i></div>
+    </div>
     
-        {{ csrf_field() }}
-        <div class="modal-header bg-grey">
-            <h5 class="modal-title">{{ trans('messages.subscription') }}</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                <span aria-hidden="true">&times;</span>
-            </button>
-        </div>
-        <div class="modal-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <h2 class="text-semibold">{{ trans('messages.subscription.change_plan') }}</h2>
-            
-                    <div class="mb-20">
+    <div class="iframe-modal-body">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <div class="sub-section">
+                
+                    <h2>{{ trans('messages.subscription.select_a_plan') }}</h2>
+                    <p>{{ trans('messages.subscription.change_plan.select_below') }}</p>
+                
+                    @if (empty($plans))
                         <div class="row">
-                            <div class="col-md-12">                                
-                                <p>{!! trans('messages.subscription.change_plan.wording') !!}</p>
-                                    
-                                <form enctype="multipart/form-data" action="{{ $gateway->getChangePlanUrl($subscription, action('AccountSubscriptionController@index')) }}" method="GET" class="form-validate-jquery">
-                                    <input type='hidden' name='return_url' value='{{ action('AccountSubscriptionController@index') }}' />
-                                    @include('helpers.form_control', [
-                                        'type' => 'select_ajax',
-                                        'class' => 'subsciption-plan-select hook required',
-                                        'name' => 'plan_id',
-                                        'label' => '',
-                                        'help_class' => 'subscription',
-                                        'url' => action('PlanController@select2', ['change_from_uid' => $subscription->plan->uid]),
-                                        'placeholder' => trans('messages.select_plan')
-                                    ])                            
-                                
-                                    
-                                    <button type="submit" class="btn btn-primary bg-grey-600">
-                                        {{ trans('messages.subscription.change_plan') }}
-                                    </button>
-                                </form>
+                            <div class="col-md-6">
+                                @include('elements._notification', [
+                                    'level' => 'danger',
+                                    'message' => trans('messages.plan.no_available_plan')
+                                ])
                             </div>
                         </div>
-                    </div>
+                    @else
+                        <div class="price-box price-selectable">
+                            <div class="price-table">
+                        
+                                @foreach ($plans as $plan)
+                                    <div class="price-line {{ $subscription->plan->uid == $plan->uid ? 'current' : '' }}">
+                                        <div class="price-header">
+                                            <lable class="plan-title">{{ $plan->name }}</lable>
+                                            <p>{{ $plan->description }}</p>
+                                        </div>
+                                        
+                                        <div class="price-item text-center">
+                                            <div>{{ trans('messages.plan.starting_at') }}</div>
+                                            <div class="plan-price">
+                                                {{ \Acelle\Library\Tool::format_price($plan->price, $plan->currency->format) }}
+                                            </div>
+                                            <div>{{ $plan->displayFrequencyTime() }}</div>
+                                            
+                                            @if ($subscription->plan->uid == $plan->uid)
+                                                <a
+                                                    href="javascript:;"
+                                                    class="btn btn-mc_default mt-30" disabled>
+                                                        {{ trans('messages.plan.current_subscribed') }}
+                                                </a>
+                                            @else
+                                                <a
+                                                    href="{{ $gateway->getChangePlanUrl($subscription, $plan->uid, action('AccountSubscriptionController@index')) }}"
+                                                    class="btn btn-mc_primary btn-mc_mk mt-30">
+                                                        {{ trans('messages.plan.select') }}
+                                                </a>
+                                            @endif
+                                        </div>
+                                    </div>
+                                @endforeach
+                            
+                            </div>
+                        </div>
+                    @endif
+        
                 </div>
             </div>
+            <div class="col-md-1"></div>
         </div>
-
-</div>
+    </div>

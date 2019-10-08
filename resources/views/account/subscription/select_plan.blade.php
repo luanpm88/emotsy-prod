@@ -49,7 +49,7 @@
                     </div>
                 @else
                     <div class="price-box">
-                        <div class="price-table">
+                        <div class="price-table" style="margin-top: -30px;">
                     
                             @foreach ($plans as $plan)
                                 <div class="price-line">

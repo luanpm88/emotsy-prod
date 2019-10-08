@@ -13,6 +13,9 @@
 <link href="{{ URL::asset('assets/css/colors.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('css/app.css') }}?v={{ app_version() }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('css/theme.css') }}" rel="stylesheet" type="text/css">
+<link rel="stylesheet" href="{{ URL::asset('assets/css/icons/linearicons/style.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('assets/tooltipster/css/tooltipster.bundle.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('assets/tooltipster/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css') }}">
 <!-- /global stylesheets -->
 <link href="{{ URL::asset('rangeslider/css/bootstrap-slider.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('css/autofill.css') }}" rel="stylesheet" type="text/css">

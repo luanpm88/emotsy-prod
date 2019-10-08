@@ -82,7 +82,7 @@
                     @if (\Auth::user()->customer->can('resume', $subscription))
                         <a link-method="POST" link-confirm="{{ trans('messages.subscription.resume.confirm') }}"
                             href="{{ action('AccountSubscriptionController@resume') }}"
-                            class="btn bg-grey-600 mr-10"
+                            class="btn btn-mc_default mr-10"
                         >
                             {{ trans('messages.subscription.resume') }}
                         </a>
@@ -100,7 +100,7 @@
                     @if (\Auth::user()->customer->can('changePlan', $subscription))
                         <a 
                             href="{{ action('AccountSubscriptionController@changePlan', ["id" => $subscription->uid]) }}"
-                            class="btn bg-grey-600 mr-10 modal_link"
+                            class="btn btn-mc_default change_plan_button"
                             data-size="sm"
                         >
                             {{ trans('messages.subscription.change_plan') }}
@@ -123,5 +123,18 @@
             </div>
         </div>
     </div>
+        
+    <script>
+        var changePlanModal = new IframeModal();
+        
+        $(function() {
+            $('.change_plan_button').click(function(e) {
+                e.preventDefault();
+                
+                var src = $(this).attr('href');
+                changePlanModal.load(src);
+            });
+        });
+    </script>
     
 @endsection

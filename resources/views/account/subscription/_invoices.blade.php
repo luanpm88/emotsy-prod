@@ -12,6 +12,7 @@
                     <th>{{ trans('messages.invoice.period_ends_at') }}</th>
                     <th>{{ trans('messages.invoice.amount') }}</th>
                     <th>{{ trans('messages.invoice.status') }}</th>
+                    <th>{{ trans('messages.invoice.action') }}</th>
                 </tr>
                 @forelse ($gateway->getInvoices($subscription) as $key => $invoice)
                     <tr>
@@ -37,8 +38,13 @@
                         </td>
                         <td>
                             <span class="no-margin kq_search">
-                                {{ $invoice->status }}
+                                <span class="label label-flat label-success bg-{{ $invoice->status }}">{{ $invoice->status }}</span>
                             </span>
+                        </td>
+                        <td>
+                            <button class="btn btn-mc_default btn-disabled" disabled>
+                                {{ trans('messages.edit') }}
+                            </button>
                         </td>
                     </tr>
                 @empty
@@ -49,14 +55,6 @@
                     </te>
                 @endforelse
             </table>
-                
-            <a target="_blank"
-                href="{{ action('AccountSubscriptionController@downloadRawInvoice') }}"
-                class="btn bg-grey-600 mr-10 mt-20"
-                data-size="sm"
-            >
-                {{ trans('messages.subscription.download_raw_invoices') }}
-            </a>
         </div>
     </div>
 </div>

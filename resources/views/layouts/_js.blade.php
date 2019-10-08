@@ -36,6 +36,8 @@
 	<script type="text/javascript" src="{{ URL::asset('rangeslider/bootstrap-slider.js') }}"></script>
 	
 	<script type="text/javascript" src="{{ URL::asset('bootstrap3-editable/js/bootstrap-editable.js') }}"></script>
+		
+	<script type="text/javascript" src="{{ URL::asset('assets/tooltipster/js/tooltipster.bundle.js') }}"></script>	
 
 	@yield('page_script')
 	
@@ -43,6 +45,7 @@
 	<script type="text/javascript" src="{{ URL::asset('js/select-custom.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/modal.js') }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/mc_modal.js') }}"></script>
+		<script type="text/javascript" src="{{ URL::asset('js/iframe_modal.js') }}"></script>
         <script type="text/javascript" src="{{ URL::asset('js/app.js') }}?v={{ app_version() }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/mc.js') }}"></script>
 	<!-- /theme JS files -->

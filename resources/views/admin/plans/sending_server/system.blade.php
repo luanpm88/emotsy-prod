@@ -33,7 +33,8 @@
     <div class="mc-section">
         <div class="announce_box">
             <div class="row flex-center">
-                <div class="col-md-8">                    
+                <div class="col-md-8">
+                    <i class="announce_box-icon lnr lnr-apartment"></i>
                     <label>{{ trans('messages.plan_option.delivery_setting') }}</label>
                     <h4>{{ trans('messages.plan_option.system_s_sending_server') }}</h4>
                     <p>{{ trans('messages.plan_option.system_s_sending_server.intro') }}</p>
@@ -89,7 +90,10 @@
                                 <div class="single-stat-box pull-left">
                                     <span class="stat-head percent-list">{{ $planSendingServer->showFitness() }}%</span>
                                     <br />
-                                    <span class="text-muted">{{ trans("messages.sending_servers.fitness") }} - <a modal-size="lg" class="mc-modal-control" href="{{ action('Admin\PlanController@fitness', ['id' => $plan->uid]) }}">{{ trans('messages.edit') }}</a></span>
+                                    <span class="text-muted">{{ trans("messages.sending_servers.fitness") }}
+                                    @if ($plan->plansSendingServers()->count() > 1)
+                                        - <a modal-size="lg" class="mc-modal-control" href="{{ action('Admin\PlanController@fitness', ['id' => $plan->uid]) }}">{{ trans('messages.edit') }}</a></span>
+                                    @endif
                                 </div>
                             </stat>
                             <actions style='width: 30%; text-align: right'>                                
@@ -117,6 +121,58 @@
                     </h2>
                 
                     <p>{!! trans('messages.plan.sending_identify.intro.' . $plan->primarySendingServer()->type) !!}</p>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <table class="table table-box pml-table table-log mt-10">
+                        <tbody>
+                            <tr>
+                                <th>{{ trans('messages.sending_server.domain_email') }}</th>
+                                <th>{{ trans('messages.sending_server.server') }}</th>
+                                <th>{{ trans('messages.sending_server.date_added') }}</th>
+                                <th>{{ trans('messages.sending_server.status') }}</th>
+                                <th>{{ trans('messages.sending_server.action') }}</th>
+                            </tr>
+                        </tbody>
+                        <tbody>
+                            @forelse ($plan->primarySendingServer()->getVerifiedIdentities() as $domain)
+                                <tr class="odd">
+                                    <td>
+                                        <strong>{{ $domain }}</strong>
+                                        <div class="text-muted2">{{ trans('messages.identity.supported') }}</div>
+                                    </td>
+                                    <td>
+                                        <span>{{ $plan->primarySendingServer()->name }}</span>
+                                    </td>
+                                    <td>
+                                        <span>
+                                            {{ Acelle\Library\Tool::formatDate($plan->primarySendingServer()->updated_at) }}
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span class="badge badge-success badge-lg">{{ trans('messages.sending_identity.status.active') }}</span>
+                                    </td>
+                                    <td>
+                                        <a class="direct-link"
+                                          confirm-button='{{ trans('messages.go_to') }}'
+                                          link-confirm="{{ trans('messages.go_to_sending_server_page') }}"
+                                          href="{{ action('Admin\SendingServerController@edit', ["uid" => $plan->primarySendingServer()->uid, "type" => $plan->primarySendingServer()->type]) }}">
+                                            <input type="checkbox" name="options[domains][]" value="{{ $domain }}" class="switchery"
+                                                checked readonly
+                                            />
+                                        </a>
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td class="text-center" colspan="5">
+                                        {{ trans('messages.subscription.logs.empty') }}
+                                    </td>
+                                </te>
+                            @endforelse
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
