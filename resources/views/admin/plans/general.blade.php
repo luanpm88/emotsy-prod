@@ -32,7 +32,7 @@
             <div class="row">
                 <div class="col-md-7">
                     <h2>{{ trans('messages.plan.general.overview') }}</h2>
-                        
+                    <!--
                     @include('elements._notification', [
                         'level' => 'info',
                         'message' => trans('messages.plan.info.subscriber_count', [
@@ -40,7 +40,7 @@
                             'link' => action('Admin\SubscriptionController@index', ['plan_uid' => $plan->uid]),
                         ])
                     ])
-                    
+                    -->
                     <p>{{ trans('messages.plan.general.details.intro') }}</p>
                 </div>
             </div>
