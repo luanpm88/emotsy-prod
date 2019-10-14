@@ -103,6 +103,10 @@ Route::group(['middleware' => ['not_installed', 'not_logged_in']], function () {
 
     Route::get('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
     Route::post('payments/paddle/card/{subscription_uid}/hook', 'PaymentController@paddle_card_hook');
+    
+    // Customer registration
+    Route::post('users/register', 'UserController@register');
+    Route::get('users/register', 'UserController@register');
 });
 
 // Without authentication

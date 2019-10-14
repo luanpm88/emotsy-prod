@@ -1498,8 +1498,8 @@
   'subscription.wording' => 'This feature allows you to monitor the details of your customers\' subscription. You can approve the payment, enable or disable a subscription. You can also create new subsciptions for your existing customers',
   'registration_confirmation_email' => 'Registration confirmation email',
   'registration_confirmation_email_subject' => 'Acelle Mail - Registration confirmation',
-  'activation_email_sent_content' => '<p>We need to confirm your email address to complete the registration process.</p>
-  <p>To complete the registration process, please click the link in the email we just sent you.</p>',
+  'activation_email_sent_content' => '<p>We need to confirm your email address to complete the registration process.
+    To complete the registration process, please click the link in the email we just sent you.</p>',
   'activation_email_resent_content' => '<p>Please click the link in the email we just sent you.</p>',
   'activation_email_sent_title' => 'Registration confirmation',
   'you_are_not_activated' => 'Your account hasn\'t been activated. Please check your inbox for confirmation email or resend it again.',
@@ -2676,4 +2676,11 @@
   'subscription.change_plan.select_below' => 'Select the plan you want to change below. Changing plan can be un-done so make sure you want to change.',
   'subscription.select_a_plan' => 'Select a Plan',
   'plan.current_subscribed' => 'Current subscribed',
+  'create_your_account' => 'Create your Acelle Email account',
+  'register.intro' => 'Manage your contacts, generate leads, run a marketing campaign,... Join us at Acelle Mail to enjoy doing
+    every day sales & marketing without any hassle. If you already have an account? <a href=":login">Login</a>',
+  'get_started' => 'Get Started!',
+  'register.agreement_intro' => 'By clicking the "Get Started!" button, you are creating a Mailchimp account,
+    and you agree to Mailchimp\'s Terms of Use and Privacy Policy.',
+  'email_confirmation' => 'Email Confirmation',
 ) ?>
