@@ -2680,7 +2680,7 @@
   'register.intro' => 'Manage your contacts, generate leads, run a marketing campaign,... Join us at Acelle Mail to enjoy doing
     every day sales & marketing without any hassle. If you already have an account? <a href=":login">Login</a>',
   'get_started' => 'Get Started!',
-  'register.agreement_intro' => 'By clicking the "Get Started!" button, you are creating a Mailchimp account,
+  'register.agreement_intro' => 'By clicking the "Get Started!" button, you are creating a Acelle Mail account,
     and you agree to Mailchimp\'s Terms of Use and Privacy Policy.',
   'email_confirmation' => 'Email Confirmation',
 ) ?>
