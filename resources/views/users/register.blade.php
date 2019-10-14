@@ -25,7 +25,7 @@
             </div>
             <div class="col-md-5">
                 
-                <h1 class="mb-10">{{ trans('messages.create_your_account') }}</h1>
+                <h1 class="mb-20">{{ trans('messages.create_your_account') }}</h1>
                 <p>{!! trans('messages.register.intro', [
                     'login' => url("/login"),
                 ]) !!}</p>
