@@ -1,8 +1,8 @@
 <?php return array (
-  'datetime_format' => 'Y-m-d, H:i',
-  'datetime_format_2' => 'Y-m-d, H:i:s',
+  'datetime_format' => 'M d, Y, H:i A',
+  'datetime_format_2' => 'M d, Y, H:i:s',
   'time_format' => 'H:i',
-  'date_format' => 'Y-m-d',
+  'date_format' => 'M d, Y',
   'j_date_format' => 'yyyy-mm-dd',
   'datetime_string_formated' => ':date, :time',
   'email' => 'Email',
@@ -2164,4 +2164,5 @@
   'campaign.score' => 'Score',
   'campaign.score.description' => 'Description',
   'custom_script' => 'Copy and paste your custom scripts in the box below. It will be included in every page',
+  'admin.dashboard.recent_activity.wording' => 'By default, all activities of customers are logged for investigating. Visit <a href=":here"> Customers Dashboard</a> to see the full list',
 ) ?>
