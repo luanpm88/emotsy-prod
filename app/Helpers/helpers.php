@@ -51,7 +51,7 @@ function quote($value)
  */
 function db_quote($value)
 {
-    return "'$value'";
+    return \DB::connection()->getPdo()->quote($value);
 }
 
 /**

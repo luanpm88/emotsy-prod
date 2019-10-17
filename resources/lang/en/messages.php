@@ -59,6 +59,8 @@
   'jvalidate_max' => 'Please enter a value less than or equal to {0}.',
   'jvalidate_min' => 'Please enter a value greater than or equal to {0}.',
   'profile.email.help' => 'This email is what you use to log in to the system.',
+  'admin.dashboard.recent_customers.wording' => 'Your plan performance during the last period. See how people are subscribing to your which service plans. Visit <a href=":here">Customers Dashboard</a> to see the full list',
+  'admin.dashboard.recent_subscriptions.wording' => 'Active users who recently subscribed or were added by system administrator. Visit <a href=":here"> Subscriptions Management Dashboard</a> to see the full list',
   'first_name' => 'First name',
   'last_name' => 'Last name',
   'first_name_tag' => 'FIRST_NAME',
@@ -2683,4 +2685,5 @@
   'register.agreement_intro' => 'By clicking the "Get Started!" button, you are creating a Acelle Mail account,
     and you agree to Mailchimp\'s Terms of Use and Privacy Policy.',
   'email_confirmation' => 'Email Confirmation',
+  'admin.dashboard.recent_activity.wording' => 'By default, all activities of customers are logged for investigating. Visit <a href=":here"> Customers Dashboard</a> to see the full list',
 ) ?>

@@ -202,34 +202,34 @@ class Segment extends Model
             if (isset($condition->field_id)) {
                 switch ($condition->operator) {
                     case 'equal':
-                        $cond = 'LOWER(sf'.$number.".value) = '".$keyword."'";
+                        $cond = 'LOWER(sf'.$number.".value) = ".db_quote($keyword);
                         break;
                     case 'not_equal':
-                        $cond = 'LOWER(sf'.$number.".value) != '".$keyword."'";
+                        $cond = 'LOWER(sf'.$number.".value) != ".db_quote($keyword);
                         break;
                     case 'contains':
-                        $cond = 'LOWER(sf'.$number.".value) LIKE '%".$keyword."%'";
+                        $cond = 'LOWER(sf'.$number.".value) LIKE ".db_quote('%'.$keyword.'%');
                         break;
                     case 'not_contains':
-                        $cond = 'LOWER(sf'.$number.".value) NOT LIKE '%".$keyword."%'";
+                        $cond = 'LOWER(sf'.$number.".value) NOT LIKE ".db_quote('%'.$keyword.'%');
                         break;
                     case 'starts':
-                        $cond = 'LOWER(sf'.$number.".value) LIKE '".$keyword."%'";
+                        $cond = 'LOWER(sf'.$number.".value) LIKE ".db_quote('%'.$keyword.'%');
                         break;
                     case 'ends':
-                        $cond = 'LOWER(sf'.$number.".value) LIKE '%".$keyword."'";
+                        $cond = 'LOWER(sf'.$number.".value) LIKE ".db_quote('%'.$keyword.'%');
                         break;
                     case 'greater':
-                        $cond = 'sf'.$number.".value > '".$keyword."'";
+                        $cond = 'sf'.$number.".value > ".db_quote($keyword);
                         break;
                     case 'less':
-                        $cond = 'sf'.$number.".value < '".$keyword."'";
+                        $cond = 'sf'.$number.".value < ".db_quote($keyword);
                         break;
                     case 'not_starts':
-                        $cond = 'sf'.$number.".value NOT LIKE '".$keyword."%'";
+                        $cond = 'sf'.$number.".value NOT LIKE ".db_quote($keyword.'%');
                         break;
                     case 'not_ends':
-                        $cond = 'LOWER(sf'.$number.".value) NOT LIKE '%".$keyword."'";
+                        $cond = 'LOWER(sf'.$number.".value) NOT LIKE ".db_quote('%'.$keyword);
                         break;
                     case 'not_blank':
                         $cond = '(LOWER(sf'.$number.".value) != '' AND LOWER(sf".$number.'.value) IS NOT NULL)';
@@ -295,8 +295,10 @@ class Segment extends Model
         if (!empty($conditions['joins'])) {
             foreach ($conditions['joins'] as $joining) {
                 $query = $query->leftJoin($joining['table'], function ($join) use ($joining) {
+                    // Example: sf5da53d2f9c856.subscriber_id => m_subscribers.id
                     $join->on($joining['ons'][0][0], '=', $joining['ons'][0][1]);
                     if (isset($joining['ons'][1])) {
+                        // Example: sf5da53d2f9c856.field_id = 6
                         $join->on($joining['ons'][1][0], '=', $joining['ons'][1][1]);
                     }
                 });

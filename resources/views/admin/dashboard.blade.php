@@ -32,6 +32,7 @@
                 <i class="icon-quill4"></i>
                 {{ trans('messages.recent_subscriptions') }}
             </h3>
+            <p style="margin-bottom: 30px" class="link-inline">{!! trans('messages.admin.dashboard.recent_subscriptions.wording', [ 'here' => action('Admin\SubscriptionController@index') ]) !!}</p>
             <ul class="modern-listing mt-0 mb-0 top-border-none type2">
                 @forelse (Auth::user()->admin->recentSubscriptions() as $subscription)
                     <li class="">
@@ -97,6 +98,7 @@
                 <i class="icon-users"></i>
                 {{ trans('messages.recent_customers') }}
             </h3>
+            <p style="margin-bottom: 30px" class="link-inline">{!! trans('messages.admin.dashboard.recent_customers.wording', [ 'here' => action('Admin\CustomerController@index') ]) !!}</p>
             <ul class="modern-listing mt-0 mb-0 top-border-none type2">
                 @forelse(Auth::user()->admin->recentCustomers() as $customer)
                     <li class="">
@@ -138,6 +140,7 @@
         <i class="icon-history position-left"></i>
         {{ trans('messages.activities') }}
     </h3>
+    <p style="margin-bottom: 30px" class="link-inline">{!! trans('messages.admin.dashboard.recent_activity.wording', [ 'here' => action('Admin\CustomerController@index') ]) !!}</p>
     @if (\Auth::user()->admin->getLogs()->count() == 0)
         <div class="empty-list">
             <i class="icon-history"></i>
@@ -161,7 +164,15 @@
                                     <div class="panel-heading">
                                         <h6 class="panel-title text-semibold">{{ $log->customer->displayName() }}</h6>
                                         <div class="heading-elements">
-                                            <span class="heading-text"><i class="icon-history position-left text-success"></i> {{ $log->created_at ? $log->created_at->diffForHumans() : '' }}</span>
+                                            <span class="heading-text"><i class="position-left text-bold lnr lnr-clock"></i>
+                                                @if ($log->created_at)
+                                                    @if ($log->created_at->lessThan(\Carbon\Carbon::now()->subMonth(1)))
+                                                        {{ \Acelle\Library\Tool::formatDateTime($log->created_at) }}
+                                                    @else
+                                                        {{ $log->created_at->diffForHumans() }}
+                                                    @endif
+                                                @endif
+                                            </span>
                                         </div>
                                     </div>
 
@@ -177,7 +188,7 @@
         </div>
     @endif
 
-    <div class="sub-section mb-20">
+    <div class="sub-section mb-20 mt-30" style="margin-top: 60px">
         <h3 class="text-semibold mt-40">{{ trans('messages.resources_statistics') }}</h3>
         <p>{{ trans('messages.resources_statistics_intro') }}</p>
         <div class="row">
