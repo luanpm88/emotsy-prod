@@ -2168,4 +2168,6 @@
   'template.name_your_new_template' => 'Name your new template',
   'template.select_your_template' => 'Select one of template layouts below',
   'template.create_and_design' => 'Start Design',
+  'layouts' => 'Layouts',
+  'template.need_select_template' => 'Please select layout or template for the template',
 ) ?>

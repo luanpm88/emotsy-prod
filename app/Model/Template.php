@@ -27,6 +27,7 @@ use Validator;
 use Acelle\Library\Tool;
 use ZipArchive;
 use Illuminate\Validation\ValidationException;
+use Sunra\PhpSimple\HtmlDomParser;
 
 class Template extends Model
 {
@@ -370,6 +371,8 @@ class Template extends Model
             $copy->content = str_replace($this->getUploadUri(), $copy->getUploadUri(), $copy->content);
             $copy->save();
         }
+        
+        return $copy;
     }
 
     /**
@@ -542,5 +545,44 @@ class Template extends Model
         }
 
         return $result;
+    }
+    
+    /**
+     * Create template from layout.
+     *
+     * All availabel template tags
+     */
+    public static function createTemplateFromLayout($layout)
+    {
+        $template = new Template();
+        $template->save();
+        
+        $sDir = storage_path('layouts/' . $layout);
+        $dDir = $template->getUploadDir();
+        
+        // Copy source code
+        \Acelle\Library\Tool::xcopy($sDir, $dDir);
+        
+        // get layout content
+        $template->content = file_get_contents($sDir . '/index.html');
+        
+        // change content
+        $document = HtmlDomParser::str_get_html($template->content);
+        foreach($document->find('img, script') as $element) {            
+            if (preg_match('/^http/', $element->src) == 0) {
+                $element->src = '/' . $template->getUploadUri() . '/' . $element->src;
+            }
+        }
+        foreach($document->find('link') as $element) {            
+            if (preg_match('/^http/', $element->href) == 0) {
+                $element->href = '/' . $template->getUploadUri() . '/' . $element->href;
+            }
+        }
+        $template->content =  $document;
+        
+        // save template
+        $template->save();
+        
+        return $template;
     }
 }

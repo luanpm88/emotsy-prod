@@ -2662,19 +2662,48 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
   border-color: #dedddc;
 }
 .select-template-layout .panel-template-style {
-  border-width: 1.5px;
+  border-width: 1px;
+  padding: 2px;
 }
 .select-template-layout.selected .panel-template-style {
   border-color: #166dba;
   position: relative;
+  background: #d2e3f2;
 }
-.select-template-layout.selected .panel-template-style:before {
+.select-template-layout.selected:before {
     content: '\ed6c';
     font-family: 'icomoon';
-    right: 0;
+    right: 20px;
     position: absolute;
     color: #fff;
     background: #166dba;
     border-radius: 0 0 0 100px;
     padding: 2px 3px 6px 11px;
+    z-index: 1;
+}
+.mc-tabs > li {
+  padding: 0 15px;
+  margin-right: 10px;
+}
+.mc-tabs > li:first-child {
+  padding-left: 0;
+}
+.mc-tabs > li > a {
+  padding: 9px 0;
+  font-weight: 600;
+}
+.nav-tabs > li.active > a, .nav-tabs > li.active > a:hover, .nav-tabs > li.active > a:focus {
+  border: none;
+    border-bottom: 2px solid #26A69A;
+    border-bottom-color: #26A69A;
+}
+.template-boxes .panel-template-style {
+  border-color: transparent;
+}
+.template-boxes .panel-body {
+    padding: 0;
+}
+.template-boxes .panel-body img {
+    border: solid 1px #aaa;
+    border-radius: 3px;
 }

@@ -527,12 +527,15 @@ class TemplateController extends Controller
         }
         
         // validate and save posted data
-        if ($request->isMethod('patch')) {
+        if ($request->isMethod('post')) {
             $rules = array(
                 'content' => 'required',
             );
 
             $this->validate($request, $rules);
+            
+            $template->content = $request->content;
+            $template->save();
         }
 
         return view('templates.builder.edit', [
@@ -587,22 +590,51 @@ class TemplateController extends Controller
      */
     public function builderCreate(Request $request)
     {
+        $customer = $request->user()->customer;
+        
         $template = new Template();
         $template->name = trans('messages.untitled_template');
         
+        // Gallery
+        $templates = Template::where('customer_id', '=', null);;
+        
         // validate and save posted data
-        if ($request->isMethod('patch')) {
-            $rules = array(
-                'name' => 'required',
-            );
-
-            $this->validate($request, $rules);
+        if ($request->isMethod('post')) {
+            if ($request->layout) {
+                $template = Template::createTemplateFromLayout($request->layout);
+                $template->customer_id = $customer->id;
+                $template->name = $request->name;
+                
+                $template->save();
+            }
             
+            if ($request->template) {
+                $currentTemplate = Template::findByUid($request->template);
+                
+                $template = $currentTemplate->copy($request->name, $customer);
+            }
             
+            return redirect()->action('TemplateController@builderEdit', $template->uid);
         }
 
         return view('templates.builder.create', [
             'template' => $template,
+            'templates' => $templates,
+        ]);
+    }
+    
+    /**
+     * Display a listing of the resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function builderTemplates(Request $request)
+    {
+        $request->merge(array("customer_id" => $request->user()->customer->id));
+        $templates = Template::search($request)->paginate($request->per_page);
+
+        return view('templates.builder.templates', [
+            'templates' => $templates,
         ]);
     }
 }
