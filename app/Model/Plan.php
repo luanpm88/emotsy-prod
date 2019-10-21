@@ -1251,13 +1251,20 @@ class Plan extends Model implements BillablePlanInterface
      */
     public function getVerifiedIdentities()
     {
-        $server = $this->primarySendingServer();
+        //$server = $this->primarySendingServer();
+        //
+        //if (isset($server)) {
+        //    return $this->primarySendingServer()->getVerifiedIdentities();
+        //} else {
+        //    return [];
+        //}
+        $result = [];
         
-        if (isset($server)) {
-            return $this->primarySendingServer()->getVerifiedIdentities();
-        } else {
-            return [];
-        }        
+        foreach ($this->sendingServers()->get() as $sendingServer) {
+            $result = array_merge($result, $sendingServer->getVerifiedIdentities());
+        }
+        
+        return array_unique($result);
     }
     
     /**
@@ -1449,5 +1456,15 @@ class Plan extends Model implements BillablePlanInterface
         }
         
         return $aPlans;
+    }
+    
+    /**
+     * Get all sending servers
+     *
+     * @var collect
+     */
+    public function sendingServers()
+    {
+        return SendingServer::whereIn('id', $this->plansSendingServers()->pluck('sending_server_id')->toArray());
     }
 }

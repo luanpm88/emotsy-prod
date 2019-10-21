@@ -1862,10 +1862,14 @@ class Customer extends Model implements BillableUserInterface
                     }
                 } else { // domains are alse
                     $dKey = explode('@', $keyword);
+                    $eKey = $dKey[0];
                     $dKey = isset($dKey[1]) ? $dKey[1] : null;
                     // if ( (!isset($dKey) || $dKey == '') || ($dKey && strpos(strtolower($item), $dKey) === 0 )) {
+                        if ($keyword == '###') {
+                            $eKey = '****';
+                        }
                         $topList[] = [
-                            'text' => '****@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
+                            'text' => $eKey . '@'.str_replace($dKey, '<span class="text-semibold text-primary"><strong>'.$dKey.'</strong></span>', $item),
                             'subfix' => $item,
                             'desc' => null,
                         ];

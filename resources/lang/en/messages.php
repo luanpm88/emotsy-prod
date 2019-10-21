@@ -2685,5 +2685,8 @@
   'register.agreement_intro' => 'By clicking the "Get Started!" button, you are creating a Acelle Mail account,
     and you agree to Mailchimp\'s Terms of Use and Privacy Policy.',
   'email_confirmation' => 'Email Confirmation',
-  'admin.dashboard.recent_activity.wording' => 'By default, all activities of customers are logged for investigating. Visit <a href=":here"> Customers Dashboard</a> to see the full list',
+  'admin.dashboard.recent_activity.wording' => 'By default, all activities of customers are logged for investigating.
+    Visit <a href=":here"> Customers Dashboard</a> to see the full list',
+  'sending_server.added' => 'added',
+  'plan.sending_server.already_added' => 'The sending server was already added',
 ) ?>

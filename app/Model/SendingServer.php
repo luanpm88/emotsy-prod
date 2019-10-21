@@ -831,12 +831,20 @@ class SendingServer extends Model
         
         // plan
         if ($request->plan_uid) {
-            $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);            
-            $query = $query->whereNotIn('id', $plan->plansSendingServers()->pluck('sending_server_id')->toArray());
+            $plan = \Acelle\Model\Plan::findByUid($request->plan_uid);
+            $existIds = $plan->plansSendingServers()->pluck('sending_server_id')->toArray();
         }
 
         foreach ($query->limit(20)->get() as $server) {
-            $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.' . $server->type)];
+            if ($request->plan_uid && in_array($server->id, $existIds)) {
+                $data['items'][] = [
+                    'id' => $server->uid,
+                    'text' => $server->name.' ('.trans('messages.sending_server.added').')'.'|||'.trans('messages.' . $server->type),
+                    'disabled' => true
+                ];
+            } else {
+                $data['items'][] = ['id' => $server->uid, 'text' => $server->name.'|||'.trans('messages.' . $server->type)];
+            }            
         }
 
         return json_encode($data);

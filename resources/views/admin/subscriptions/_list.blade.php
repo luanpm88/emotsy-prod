@@ -41,9 +41,9 @@
 							<span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}</span>
 						</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.next_billing') }}</span>
-					@elseif (!$subscription->isNew())
+					@elseif (!$subscription->isNew() && isset($subscription->current_period_ends_at))
 						<h5 class="no-margin">
-							<span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->updated_at)->diffForHumans() }}</span>
+							<span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}</span>
 						</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.next_billing') }}</span>
 					@endif

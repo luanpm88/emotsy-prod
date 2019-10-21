@@ -136,7 +136,7 @@
                             </tr>
                         </tbody>
                         <tbody>
-                            @forelse ($plan->primarySendingServer()->getVerifiedIdentities() as $domain)
+                            @forelse ($plan->getVerifiedIdentities() as $domain)
                                 <tr class="odd">
                                     <td>
                                         <strong>{{ $domain }}</strong>

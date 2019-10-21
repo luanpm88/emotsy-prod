@@ -8,6 +8,7 @@ use Acelle\Http\Requests;
 use Acelle\Http\Controllers\Controller;
 use Acelle\Model\Plan;
 use Acelle\Model\Setting;
+use Acelle\Model\SendingServer;
 
 class PlanController extends Controller
 {
@@ -620,17 +621,24 @@ class PlanController extends Controller
 
         // save posted data
         if ($request->isMethod('post')) {
-            $plan->addSendingServerByUid($request->sending_server_uid);
+            $sendingServer = SendingServer::findByUid($request->sending_server_uid);
+            $existIds = $plan->plansSendingServers()->pluck('sending_server_id')->toArray();
+            
+            // check if sending server is already added
+            if (in_array($sendingServer->id, $existIds)) {
+                $request->session()->flash('alert-error', trans('messages.plan.sending_server.already_added'));
+                return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
+            }            
+            
+            $plan->addSendingServerByUid($sendingServer->uid);
 
             $request->session()->flash('alert-success', trans('messages.plan.sending_server.added'));
             return redirect()->action('Admin\PlanController@sendingServers', $plan->uid);
         }
-        
-        $noSendingServer = \Acelle\Model\SendingServer::getAll()->whereNotIn('id', $plan->plansSendingServers()->pluck('sending_server_id')->toArray())->count();
 
         return view('admin.plans.sending_servers_add', [
             'plan' => $plan,
-            'noSendingServer' => $noSendingServer,
+            'noSendingServer' => true,
         ]);
     }
 

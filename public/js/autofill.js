@@ -130,7 +130,13 @@ $.fn.autofill = function(options) {
             }
 
             // domain
-            if (box.value().split('@').length >= 2 && box.value().split('@')[1].trim().toLowerCase() == dataSubfix) {
+            if (box.value().split('@').length >= 2 && dataSubfix.indexOf(box.value().split('@')[1].trim().toLowerCase()) == 0) {
+                valid = true;
+                return;
+            }
+            
+            // domain
+            if (box.value().split('@').length < 2 || box.value()[box.value().length-1] == '@') {
                 valid = true;
                 return;
             }
