@@ -28,26 +28,28 @@
     
     <div class="row">
         <div class="col-md-12">
-            <div class="list-boxes">
+            <div class="mc-list-setting mt-20">
                 @foreach ($gateways as $name => $gateway)
-                    <div class="list-box bg-{{ $gateway['name'] }}">
-                        <div>
-                            <label>{{ trans('messages.payments.' . $name) }}</label>
-                            <p>{{ trans('messages.payments.' . $name . '.list_intro') }}</p>
-                            <div class="list-box-footer">
+                    <div class="list-setting bg-{{ $gateway['name'] }} {{ \Acelle\Model\Setting::get('system.payment_gateway') == $name ? 'current' : '' }}">
+                        <div class="list-setting-main">
+                            <div class="title">
+                                <label>{{ trans('messages.payments.' . $name) }}</label>
                                 @if (\Acelle\Model\Setting::get('system.payment_gateway') == $name)
-                                    <span class="label label-info mt-5 bg-primary">{{ trans('messages.payment.primary') }}</span>
-                                @endif
-                                <a class="btn btn-mc_inline pull-right" href="{{ action('Admin\PaymentController@edit', $name) }}">
-                                    {{ trans('messages.payment.edit') }}
-                                </a>
-                                
-                                @if (\Acelle\Model\Setting::get('system.payment_gateway') !== $name)
-                                    <a class="btn btn-mc_default pull-right" link-method="POST" href="{{ action('Admin\PaymentController@setPrimary', $name) }}">
-                                        {{ trans('messages.payment.set_primary') }}
-                                    </a>
+                                    <span class="label label-info bg-primary ml-4">{{ trans('messages.payment.primary') }}</span>
                                 @endif
                             </div>
+                            <p>{{ trans('messages.payments.' . $name . '.list_intro') }}</p>
+                        </div>
+                        <div class="list-setting-footer">
+                            @if (\Acelle\Model\Setting::get('system.payment_gateway') !== $name)
+                                <a class="btn btn-mc_default" link-method="POST" href="{{ action('Admin\PaymentController@setPrimary', $name) }}">
+                                    {{ trans('messages.payment.set_primary') }}
+                                </a>
+                            @endif
+                            
+                            <a class="btn btn-mc_primary ml-5" href="{{ action('Admin\PaymentController@edit', $name) }}">
+                                {{ trans('messages.payment.edit') }}
+                            </a>
                         </div>
                     </div>
                 @endforeach
@@ -55,7 +57,7 @@
         </div>
     </div>
         
-    <div class="sub-section">
+    <div class="sub-section mt-40">
         <h2>{{ trans('messages.payment.settings') }}</h2>
         <form action="{{ action('Admin\SettingController@payment') }}" method="POST" class="form-validate-jqueryz">
             {{ csrf_field() }}

@@ -509,8 +509,7 @@ stat .stat-head {
   background-image: url("../images/coinpayments-logo.png");
   background-size: 140px auto;
   background-repeat: no-repeat;
-  background-position: top right;
-  opacity: 0.5;
+  background-position: left center;
   top: 0;
   left: 0;
   bottom: 0;
@@ -520,12 +519,13 @@ stat .stat-head {
 }
 .bg-coinpayments::after {
   background-image: url("../images/coinpayments-logo.png");
+  background-size: 80px;
 }
 .bg-stripe::after {
     background-image: url(../images/stripe-logo.svg);
-    background-size: 74px;
-    background-position: right 15px;
+    background-size: 66px;
     margin-right: 19px;
+    background-position: 7px 18px;
 }
 .bg-braintree::after {
   background-image: url("../images/braintree-logo.png");
@@ -534,6 +534,7 @@ stat .stat-head {
     background-image: url(../images/direct-payment-logo.jpg);
     background-size: 85px;
     margin-top: -10px;
+    margin-left: -5px;
 }
 .plan-list-color-icon {
     height: 60px;
@@ -861,4 +862,31 @@ table.table-log tr th {
 }
 .mc-form .form-group label {
     font-weight: 600;
+}
+.list-setting {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: solid 1px #ddd;
+    margin-bottom: 20px;
+    padding-left: 100px;
+}
+.list-setting .list-setting-main, .list-setting::after {
+  opacity: 0.5;
+}
+.list-setting.current .list-setting-main, .list-setting.current::after {
+  opacity: 1;
+}
+.list-setting label {
+    font-size: 22px;
+    margin-bottom: 0;
+}
+.list-setting-main .label {
+  display: inline-block;
+  margin-left: 20px;  
+}
+.list-setting-main .title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
 }
