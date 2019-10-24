@@ -27,10 +27,6 @@
 @endsection
 
 @section('content')
-
-    <form enctype="multipart/form-data" action="{{ action('Admin\PaymentController@update', $gateway['name']) }}" method="POST" class="form-validate-jquery">
-        {{ csrf_field() }}
-
 		<div class="row">
 			<div class="col-md-6">
 				<p>
@@ -41,15 +37,6 @@
 		
 		<h3>{{ trans('messages.payment.options') }}</h3>
 			
-		@include('admin.payments._' . $gateway['name'])
-
-        <hr>
-        <div class="text-left">
-            <button class="btn btn-mc_primary mr-10">{{ trans('messages.save') }}</button>
-			@if (\Acelle\Model\Setting::get('system.payment_gateway') !== $gateway['name'])
-				<input type="submit" class="btn btn-mc_primary bg-teal" name="save_and_set_primary" value="{{ trans('messages.save_and_set_primary') }}" />
-			@endif
-        </div>
-    <form>
+		@include('admin.payments._' . $gateway['name']) 
 
 @endsection

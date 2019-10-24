@@ -2689,4 +2689,10 @@
     Visit <a href=":here"> Customers Dashboard</a> to see the full list',
   'sending_server.added' => 'added',
   'plan.sending_server.already_added' => 'The sending server was already added',
+  'braintree.plan_mapping' => 'Plan mapping',
+  'braintree.plan_mapping.intro' => 'Mapping remote plans to local plans so Braintree can know how to add subscription.
+    This will change local plan price and billing recycle time too.',
+  'payment_gateway.braintree.mapping_updated' => 'Braintree plans were mapped',
+  'payment.setting' => 'Setting',
+  '' => '',
 ) ?>

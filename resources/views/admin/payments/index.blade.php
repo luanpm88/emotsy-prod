@@ -42,13 +42,13 @@
                         </div>
                         <div class="list-setting-footer">
                             @if (\Acelle\Model\Setting::get('system.payment_gateway') !== $name)
-                                <a class="btn btn-mc_default" link-method="POST" href="{{ action('Admin\PaymentController@setPrimary', $name) }}">
+                                <a class="btn btn-mc_primary" link-method="POST" href="{{ action('Admin\PaymentController@setPrimary', $name) }}">
                                     {{ trans('messages.payment.set_primary') }}
                                 </a>
                             @endif
                             
-                            <a class="btn btn-mc_primary ml-5" href="{{ action('Admin\PaymentController@edit', $name) }}">
-                                {{ trans('messages.payment.edit') }}
+                            <a class="btn btn-mc_default ml-5" href="{{ action('Admin\PaymentController@edit', $name) }}">
+                                {{ trans('messages.payment.setting') }}
                             </a>
                         </div>
                     </div>
