@@ -8,33 +8,17 @@
             <p>{{ trans('messages.automation.action.intro') }}</p>
                 
             <div class="line-list">
-                <div class="line-item">
-                    <div class="line-icon">
-                        <i class="lnr lnr-envelope"></i>
+                @foreach ($types as $type)
+                    <div class="line-item action-select-but" data-type="{{ $type }}">
+                        <div class="line-icon">
+                            <i class="lnr lnr-{{ trans('messages.automation.action.' . $type . '.icon') }}"></i>
+                        </div>
+                        <div class="line-body">
+                            <h4 class="text-teal-800">{{ trans('messages.automation.action.' . $type) }}</h4>
+                            <p>{{ trans('messages.automation.action.' . $type . '.desc') }}</p>
+                        </div>
                     </div>
-                    <div class="line-body">
-                        <h4 class="text-teal-800">Send an Email</h4>
-                        <p>Design or send automated or regular emails to your contacts.</p>
-                    </div>
-                </div>
-                <div class="line-item">
-                    <div class="line-icon">
-                        <i class="lnr lnr-alarm"></i>
-                    </div>
-                    <div class="line-body">
-                        <h4 class="text-teal-800">Wait</h4>
-                        <p>Design or send automated or regular emails to your contacts.</p>
-                    </div>
-                </div>
-                <div class="line-item">
-                    <div class="line-icon">
-                        <i class="lnr lnr-code"></i>
-                    </div>
-                    <div class="line-body">
-                        <h4 class="text-teal-800">Condition</h4>
-                        <p>Design or send automated or regular emails to your contacts.</p>
-                    </div>
-                </div>
+                @endforeach
             </div>
         </div>
     </div>

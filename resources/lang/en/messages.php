@@ -2726,4 +2726,20 @@
   'automation.add_an_action' => 'Add an Action',
   'automation.action.intro' => 'Streamline your communication and personlize each customer\' experience. Use automation
         to create an email or series of emails that send when triggered by specific date, event or contact\'s activities.',
+  'automation.action.send-an-email' => 'Send an Email',
+  'automation.action.wait' => 'Wait',
+  'automation.action.condition' => 'Condition',
+  'automation.action.send-an-email.desc' => 'Design or send automated or regular emails to your contacts.',
+  'automation.action.wait.desc' => 'Design or send automated or regular emails to your contacts.',
+  'automation.action.condition.desc' => 'Design or send automated or regular emails to your contacts.',
+  'automation.action.send-an-email.icon' => 'envelope',
+  'automation.action.wait.icon' => 'alarm',
+  'automation.action.condition.icon' => 'code',
+  'automation.action.wait.intro' => 'Set your automation workflow wait for a while before procceeding with next action.
+        How long do you want to wait, please choose below.',
+  'automation.action.send-an-email.intro' => 'Choose one of the conditions below for your workflow. Acelle Mail will evaluate the condition
+        and branch off your workflow accordingly.',
+  'automation.action.condition.intro' => 'Choose one of the conditions below for your workflow. Acelle Mail will evaluate the condition
+        and branch off your workflow accordingly.',
+  'automation.action.set_up_your_condition' => 'Set up your condition',
 ) ?>

@@ -86,3 +86,6 @@
     border-color: #bbb;
     background-color: #fff;
 }
+.select2-container {
+    z-index: 100000;
+}

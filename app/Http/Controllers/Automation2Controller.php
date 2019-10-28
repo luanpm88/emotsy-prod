@@ -75,6 +75,26 @@ class Automation2Controller extends Controller
      */
     public function actionSelectPupop(Request $request)
     {
-        return view('automation2.actionSelectPupop');
+        $types = [
+            'send-an-email',
+            'wait',
+            'condition',
+        ];
+        return view('automation2.actionSelectPupop', [
+            'types' => $types,
+        ]);
+    }
+    
+    /**
+     * Select action type confirm.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function actionSelectConfirm(Request $request)
+    {
+        sleep(0.5);
+        return view('automation2.actionSelectConfirm', [
+            'type' => $request->type,
+        ]);
     }
 }

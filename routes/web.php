@@ -499,6 +499,8 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
     
     // Automation2
+    Route::post('automation2/action/select', 'Automation2Controller@actionSelect');
+    Route::get('automation2/action/select/confirm', 'Automation2Controller@actionSelectConfirm');
     Route::get('automation2/action/select', 'Automation2Controller@actionSelectPupop');
     Route::post('automation2/trigger/select', 'Automation2Controller@triggerSelect');
     Route::get('automation2/trigger/select/confirm', 'Automation2Controller@triggerSelectConfirm');

@@ -36,10 +36,53 @@
 			>
 					Add action
 			</button>
+			<br>
+			<button class="btn btn-mc_primary action mt-20"
+				data-type="wait"
+			>
+					[Action] Wait 30 minutes
+			</button>
 		</div>
 	</div>
 		
 	<script>
+		function SelectActionConfirm(type) {
+			var url = '{{ action('Automation2Controller@actionSelectConfirm') }}' + '?type=' + type;
+			
+			var popup = new Popup(url, function() {
+				console.log('Confirm action type popup loaded!');
+				
+				// set back event
+				popup.back = function() {
+					OpenActionSelectPopup();
+				};
+				
+				//// when click confirm select trigger type
+				//popup.popup.find('.select-trigger-confirm').click(function() {
+				//	var url = $(this).attr('data-url');
+				//	var data = $('#trigger-select').serialize();
+				//	
+				//	// show loading effect
+				//	popup.loading();
+				//	
+				//	$.ajax({
+				//		url: url,
+				//		type: 'POST',
+				//		data: data,
+				//	}).always(function(response) {
+				//		// todo: when trigger selected
+				//		console.log('Trigger was selected');
+				//		
+				//		popup.hide();
+				//		
+				//		notify('success', '{{ trans('messages.notify.success') }}', response.message);
+				//	});
+				//});
+			});
+			
+			popup.load();
+		}
+	
 		function OpenActionSelectPopup() {
 			var popup = new Popup('{{ action('Automation2Controller@actionSelectPupop') }}', function() {
 				console.log('Select action popup loaded!');
@@ -49,13 +92,13 @@
 					Popup.hide();
 				};
 				
-				//// when click on trigger type
-				//popup.popup.find('.trigger-select-but').click(function() {
-				//	var type = $(this).attr('data-type');
-				//	
-				//	// show select trigger confirm box
-				//	SelectTriggerConfirm(type);
-				//});
+				// when click on action type
+				popup.popup.find('.action-select-but').click(function() {
+					var type = $(this).attr('data-type');
+					
+					// show select trigger confirm box
+					SelectActionConfirm(type);
+				});
 			});
 			
 			popup.load();
@@ -146,6 +189,16 @@
 				
 				// Open action types select list
 				OpenActionSelectPopup();
+			});
+			
+			// Click on exist action
+			$(document).on('click', '.action', function() {
+				console.log('click on one action!');
+				
+				var type = $(this).attr('data-type');
+				
+				// Open action types select list
+				SelectActionConfirm(type);
 			});
 		});
 	</script>
