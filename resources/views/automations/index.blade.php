@@ -79,7 +79,7 @@
 								<i class="icon icon-plus2"></i> {{ trans('messages.Create_automation') }}
 							</a>
                             <a href="{{ action("Automation2Controller@create") }}" type="button" class="btn bg-info-800">
-								<i class="icon icon-plus2"></i> {{ trans('messages.Create_automation') }}
+								<i class="icon icon-plus2"></i> {{ trans('messages.Create_automation') }} (New)
 							</a>
 						</div>
 					</div>
