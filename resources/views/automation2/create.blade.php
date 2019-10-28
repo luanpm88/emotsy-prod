@@ -57,27 +57,29 @@
 					OpenActionSelectPopup();
 				};
 				
-				//// when click confirm select trigger type
-				//popup.popup.find('.select-trigger-confirm').click(function() {
-				//	var url = $(this).attr('data-url');
-				//	var data = $('#trigger-select').serialize();
-				//	
-				//	// show loading effect
-				//	popup.loading();
-				//	
-				//	$.ajax({
-				//		url: url,
-				//		type: 'POST',
-				//		data: data,
-				//	}).always(function(response) {
-				//		// todo: when trigger selected
-				//		console.log('Trigger was selected');
-				//		
-				//		popup.hide();
-				//		
-				//		notify('success', '{{ trans('messages.notify.success') }}', response.message);
-				//	});
-				//});
+				// when click confirm select trigger type
+				popup.popup.find('.select-action-confirm').click(function(e) {
+					e.preventDefault();
+				
+					var url = $(this).attr('data-url');
+					var data = $('#action-select').serialize();
+					
+					// show loading effect
+					popup.loading();
+					
+					$.ajax({
+						url: url,
+						type: 'POST',
+						data: data,
+					}).always(function(response) {
+						// todo: when trigger selected
+						console.log('Action was selected');
+						
+						popup.hide();
+						
+						notify('success', '{{ trans('messages.notify.success') }}', response.message);
+					});
+				});
 			});
 			
 			popup.load();

@@ -97,4 +97,20 @@ class Automation2Controller extends Controller
             'type' => $request->type,
         ]);
     }
+    
+    /**
+     * Select trigger type.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function actionSelect(Request $request)
+    {
+        sleep(2);
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Action was successfully added.',
+            'label' => '[Trigger] ' . trans('messages.automation.action.' . $request->type),
+        ]);
+    }
 }
