@@ -37,7 +37,12 @@
 	
 	<script type="text/javascript" src="{{ URL::asset('bootstrap3-editable/js/bootstrap-editable.js') }}"></script>
 		
-	<script type="text/javascript" src="{{ URL::asset('assets/tooltipster/js/tooltipster.bundle.js') }}"></script>	
+	<script type="text/javascript" src="{{ URL::asset('assets/tooltipster/js/tooltipster.bundle.js') }}"></script>
+		
+	<script type="text/javascript" src="{{ URL::asset('assets/timepicker/jquery.timepicker.js') }}"></script>
+		
+	<script type="text/javascript" src="{{ URL::asset('assets/datepicker/dist/datepicker.min.js') }}"></script>
+	
 
 	@yield('page_script')
 	
@@ -48,6 +53,7 @@
 		<script type="text/javascript" src="{{ URL::asset('js/iframe_modal.js') }}"></script>
         <script type="text/javascript" src="{{ URL::asset('js/app.js') }}?v={{ app_version() }}"></script>
 	<script type="text/javascript" src="{{ URL::asset('js/mc.js') }}"></script>
+	<script type="text/javascript" src="{{ URL::asset('js/popup.js') }}"></script>
 	<!-- /theme JS files -->
 
 	@include('layouts._script_vars')

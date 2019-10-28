@@ -10,6 +10,17 @@
 	@include('layouts._css')
 
 	@include('layouts._js')
+	
+	<!-- Custom langue -->
+	<script>
+		var LANG_CODE = 'en-US';
+	</script>
+	@if (Auth::user()->customer->getLanguageCodeFull())
+		<script type="text/javascript" src="{{ URL::asset('assets/datepicker/i18n/datepicker.' . Auth::user()->customer->getLanguageCodeFull() . '.js') }}"></script>
+		<script>
+			LANG_CODE = '{{ Auth::user()->customer->getLanguageCodeFull() }}';
+		</script>
+	@endif
 
 	<script>
 		$.cookie('last_language_code', '{{ Auth::user()->customer->getLanguageCode() }}');

@@ -867,6 +867,16 @@ class Customer extends Model implements BillableUserInterface
     {
         return is_object($this->language) ? $this->language->code : null;
     }
+    
+    /**
+     * Get customer language code.
+     *
+     * @return string
+     */
+    public function getLanguageCodeFull()
+    {
+        return is_object($this->language) ? ($this->language->code . '-' . strtoupper($this->language->region_code)) : null;
+    }
 
     /**
      * Get customer select2 select options.

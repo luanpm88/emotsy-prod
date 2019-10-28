@@ -9,6 +9,53 @@
 *
 * ---------------------------------------------------------------------------- */
 
+function initJs(container) {
+    // Select2
+    container.find('select').select2({
+        minimumResultsForSearch: 101,
+        templateResult: formatSelect2TextOption,
+        templateSelection: formatSelect2TextSelected
+    });
+    
+    // pick a time
+    // Time picker
+    if (container.find(".pickatime").length) {
+        container.find(".pickatime").AnyTime_picker({
+            format: "%H:%i"
+        });
+    }
+    
+    // time selector
+    container.find('.time-selector').timepicker({
+        timeFormat: 'h:mm p',
+        interval: 30,
+        defaultTime: '11',
+        startTime: '10:00',
+        dynamic: false,
+        dropdown: true,
+        scrollbar: true
+    });
+    
+    // date selector
+    $('.date-selector').datepicker({
+        format: 'yyyy-mm-dd',
+        language: LANG_CODE
+    });
+}
+
+function notify(type, title, message) {
+    new PNotify({
+        title: title,
+        text: message,
+        type: type,
+        before_open: function(PNotify) {
+            PNotify.elem.css({
+                "top":"60px"
+            });
+        }
+    });
+}
+
 function removeMaskLoading() {
     $('.mask-loading-effect').remove();
 }
@@ -135,6 +182,20 @@ function pickadateMask(selector) {
         updatePickadateDateMask($(this));
     });
     $(document).on('focusout', selector, function() {
+        var value = $(this).parent().find('.date-mask-control').html();
+        var date = moment(value, LANG_DATE_FORMAT.toUpperCase()); //Get the current date
+        $(this).val(date.format('yyyy-mm-dd'.toUpperCase()));
+    });
+}
+
+function pickadateMask2(selector) {
+    selector.change(function() {
+        updatePickadateDateMask($(this));
+    });
+    selector.each(function() {
+        updatePickadateDateMask($(this));
+    });
+    selector.focusout(function() {
         var value = $(this).parent().find('.date-mask-control').html();
         var date = moment(value, LANG_DATE_FORMAT.toUpperCase()); //Get the current date
         $(this).val(date.format('yyyy-mm-dd'.toUpperCase()));

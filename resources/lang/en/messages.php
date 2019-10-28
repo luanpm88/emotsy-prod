@@ -2694,5 +2694,36 @@
     This will change local plan price and billing recycle time too.',
   'payment_gateway.braintree.mapping_updated' => 'Braintree plans were mapped',
   'payment.setting' => 'Setting',
-  '' => '',
+  'automation.create' => 'Create Automation',
+  'automation.automation_trigger' => 'Automation Trigger',
+  'automation.trigger.intro' => 'A trigger is the action that starts an automation. For example,
+    Acelle Mail can trigger an automated email when someone subscribes to your audience or purchases a certain product.
+    Acelle Mail offers a wide selection of preset automation types with built-in triggers, ranging from abandoned
+    cart emails to a simple welcome message.',
+  'automation.trigger.welcome-new-subscriber' => 'Welcome new subscribers',
+  'automation.trigger.say-happy-birthday' => 'Say `Happy birthday`',
+  'automation.trigger.subscriber-added-date' => 'Subscriber added date',
+  'automation.trigger.specific-date' => 'Specific date',
+  'automation.trigger.say-goodbye-subscriber' => 'Say goodbye to subscriber',
+  'automation.trigger.api-3-0' => 'API 3.0',
+  'automation.trigger.welcome-new-subscriber.desc' => 'Introduce yourself | your agonization to people when they sign up for your audience.',
+  'automation.trigger.say-happy-birthday.desc' => 'Celebrate with an exclusive offer or cheerful message that sends based
+        on the birthday field in your audience.',
+  'automation.trigger.subscriber-added-date.desc' => 'Send an email based on when a subscriber joined your audience.',
+  'automation.trigger.specific-date.desc' => 'Send a one-time message based on an individual date field, like an appointment.',
+  'automation.trigger.say-goodbye-subscriber.desc' => 'Send an email to say sorry when a subscriber unsubscribe from your audience.',
+  'automation.trigger.api-3-0.desc' => 'Trigger an email series with an API call via Acelle Mail, if you\'ve got a developer on hand.',
+  'automation.trigger.welcome-new-subscriber.intro' => 'Trigger when user subscribes to your list. Normally, it is recommended that you send a
+        welcome email to warmly greet your new subscriber as well as offer him/her your products or service',
+  'automation.trigger.say-happy-birthday.intro' => 'Celebrate with an exclusive offer or cheerful message that sends based
+        on the birthday field in your audience.',
+  'automation.trigger.subscriber-added-date.intro' => 'Send an email based on when a subscriber joined your audience.',
+  'automation.trigger.specific-date.intro' => 'Send a one-time message based on an individual date field, like an appointment.',
+  'automation.trigger.say-goodbye-subscriber.intro' => 'Send an email to say sorry when a subscriber unsubscribe from your audience.',
+  'automation.trigger.api-3-0.intro' => 'Automation is trigger when the following API endpoint is executed',
+  'automation.trigger.select_confirm' => 'Confirm',
+  'notify.success' => 'Success',
+  'automation.add_an_action' => 'Add an Action',
+  'automation.action.intro' => 'Streamline your communication and personlize each customer\' experience. Use automation
+        to create an email or series of emails that send when triggered by specific date, event or contact\'s activities.',
 ) ?>

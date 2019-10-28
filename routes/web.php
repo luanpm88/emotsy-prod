@@ -497,6 +497,13 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend', 'subscriptio
     // Notifications
     Route::resource('notifications', 'NotificationController');
     Route::post('notifications/{id}/hide', 'NotificationController@hide');
+    
+    // Automation2
+    Route::get('automation2/action/select', 'Automation2Controller@actionSelectPupop');
+    Route::post('automation2/trigger/select', 'Automation2Controller@triggerSelect');
+    Route::get('automation2/trigger/select/confirm', 'Automation2Controller@triggerSelectConfirm');
+    Route::get('automation2/trigger/select', 'Automation2Controller@triggerSelectPupop');
+    Route::get('automation2/create', 'Automation2Controller@create');
 });
 
 // ADMIN AREA

@@ -16,8 +16,12 @@
 <link rel="stylesheet" href="{{ URL::asset('assets/css/icons/linearicons/style.css') }}">
 <link rel="stylesheet" href="{{ URL::asset('assets/tooltipster/css/tooltipster.bundle.css') }}">
 <link rel="stylesheet" href="{{ URL::asset('assets/tooltipster/css/plugins/tooltipster/sideTip/themes/tooltipster-sideTip-light.min.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('assets/timepicker/jquery.timepicker.css') }}">
+<link rel="stylesheet" href="{{ URL::asset('assets/datepicker/dist/datepicker.min.css') }}">
 <!-- /global stylesheets -->
 <link href="{{ URL::asset('rangeslider/css/bootstrap-slider.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('css/autofill.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('bootstrap3-editable/css/bootstrap-editable.css') }}" rel="stylesheet" type="text/css">
 <link href="{{ URL::asset('css/mc.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ URL::asset('css/popup.css') }}" rel="stylesheet" type="text/css">
+<link href="{{ URL::asset('css/loading.css') }}" rel="stylesheet" type="text/css">
