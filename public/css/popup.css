@@ -58,7 +58,8 @@
 .popup-body {
     padding: 20px;
     overflow: auto;
-    height: calc(100vh - 110px);
+    max-height: calc(100vh - 110px);
+    padding-bottom: 60px;
 }
 .popup-body .select2 {
     width: auto !important;
