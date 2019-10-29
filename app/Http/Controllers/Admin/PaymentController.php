@@ -54,7 +54,7 @@ class PaymentController extends Controller
     public function update(Request $request, MessageBag $message_bag, $name)
     {
         $errors = new MessageBag;
-        $gatewayService = Cashier::getPaymentGateway($name, $request->options);
+        $gatewayService = Cashier::getPaymentGateway($name, $request->options);        
         
         try {
             $gatewayService->validate();
@@ -80,6 +80,7 @@ class PaymentController extends Controller
             return view('admin.payments.edit', [
                 'gateway' => Setting::getPaymentGateway($name),
                 'errors' => $errors,
+                'service' => $gatewayService,
             ]);
         }
     }

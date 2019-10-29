@@ -49,7 +49,7 @@ class AccountSubscriptionController extends Controller
         
         // Check if subscriotion is new
         if ($subscription->isPending()) {
-            return redirect()->action('AccountSubscriptionController@checkout');
+            return redirect()->action('AccountSubscriptionController@pending');
         }
         
         // if subscription is ended atfer sygned
@@ -162,6 +162,29 @@ class AccountSubscriptionController extends Controller
         }
         
         return redirect()->action("\Acelle\Cashier\Controllers\\" . ucfirst(config('cashier.gateway')) . "Controller@checkout", [
+            'subscription_id' => $subscription->uid,
+            'return_url' => action('AccountSubscriptionController@index'),
+        ]);
+    }
+    
+    /**
+     * Subscription pending page.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @return \Illuminate\Http\Response
+     **/
+    public function pending(Request $request)
+    {
+        $customer = $request->user()->customer;
+        $subscription = $customer->subscription;
+        
+        // Authorization
+        if (!$request->user()->customer->can('checkout', $subscription)) {
+            return $this->notAuthorized();
+        }
+        
+        return redirect()->action("\Acelle\Cashier\Controllers\\" . ucfirst(config('cashier.gateway')) . "Controller@pending", [
             'subscription_id' => $subscription->uid,
             'return_url' => action('AccountSubscriptionController@index'),
         ]);
