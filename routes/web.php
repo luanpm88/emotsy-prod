@@ -801,7 +801,6 @@ Route::group(['namespace' => 'Admin', 'middleware' => ['not_installed', 'auth', 
     Route::resource('admin/sub_accounts', 'SubAccountController');
 
     // Payment gateways
-    Route::post('admin/payment/gateways/braintree/mapping', 'PaymentController@braintreeMapping');
     Route::post('admin/payment/gateways/{name}/set-primary', 'PaymentController@setPrimary');
     Route::post('admin/payment/gateways/update/{name}', 'PaymentController@update');
     Route::get('admin/payment/gateways/edit/{name}', 'PaymentController@edit');
