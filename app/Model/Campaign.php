@@ -259,7 +259,7 @@ class Campaign extends AbsCampaign
         # Subscriber specific
         if (!$this->isStdClassSubscriber($subscriber)) {
             $tags['UPDATE_PROFILE_URL'] = $this->generateUpdateProfileUrl($subscriber);
-            $tags['UNSUBSCRIBE_URL'] = $this->generateUnsubscribeUrl($msgId);
+            $tags['UNSUBSCRIBE_URL'] = $this->generateUnsubscribeUrl($msgId, $subscriber);
             $tags['WEB_VIEW_URL'] = $this->generateWebViewerUrl($msgId);
 
             # Subscriber custom fields
@@ -305,7 +305,7 @@ class Campaign extends AbsCampaign
             $conditions = [];
             foreach ($this->listsSegments as $lists_segment) {
                 if (!empty($lists_segment->segment_id)) {
-                    // Segment 
+                    // Segment
                     $conds = $lists_segment->segment->getSubscribersConditions();
                     if (!empty($conds['joins'])) {
                         foreach ($conds['joins'] as $joining) {

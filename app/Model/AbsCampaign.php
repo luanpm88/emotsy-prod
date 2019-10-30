@@ -534,7 +534,7 @@ abstract class AbsCampaign extends Model
             'X-Acelle-Customer-Id' => $this->customer->uid,
             'X-Acelle-Message-Id' => $msgId,
             'X-Acelle-Sending-Server-Id' => $server->uid,
-            'List-Unsubscribe' => '<'.$this->generateUnsubscribeUrl($msgId).'>',
+            'List-Unsubscribe' => '<'.$this->generateUnsubscribeUrl($msgId, $subscriber).'>',
             'Precedence' => 'bulk',
         );
     }
@@ -1654,9 +1654,13 @@ abstract class AbsCampaign extends Model
         return $records->take($number);
     }
 
-    public function generateUnsubscribeUrl($msgId)
+    public function generateUnsubscribeUrl($msgId, $subscriber)
     {
+        // OPTION 1: immediately opt out
         $path = route('unsubscribeUrl', ['message_id' => StringHelper::base64UrlEncode($msgId)], false);
+
+        // OPTION 2: unsubscribe form
+        $path = route('unsubscribeForm', ['list_uid' => $subscriber->mailList->uid, 'code' => $subscriber->getSecurityToken('unsubscribe'), 'uid' => $subscriber->uid], false);
 
         return $this->buildPublicUrl($path);
     }
