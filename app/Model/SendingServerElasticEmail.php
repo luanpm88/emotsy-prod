@@ -57,7 +57,7 @@ class SendingServerElasticEmail extends SendingServer
      */
     public function addUnsubscribeUrl($message)
     {
-        return str_replace('{UNSUBSCRIBE_URL}', '{unsubscribe:{UNSUBSCRIBE_URL}}', $message);
+        return $message;
     }
 
     /**
@@ -160,18 +160,14 @@ class SendingServerElasticEmail extends SendingServer
             return true;
         }
 
-        try {
-            $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
+        $subscribeUrl = StringHelper::joinUrl(Setting::get('url_delivery_handler'), self::WEBHOOK);
 
-            $response = file_get_contents(self::API_ENDPOINT.'/account/updatehttpnotification?apikey='.$this->api_key.'&url='.$subscribeUrl.'&settings={sent:false,opened:false,clicked:false,unsubscribed:false,complaints:true,error:true}');
-            if ($response == '{"success":true}') {
-                MailLog::info('webhook set!');
-                self::$isWebhookSetup = true;
-            } else {
-                throw new \Exception('Cannot setup webhook. Response from server: '.$response);
-            }
-        } catch (\Exception $e) {
-            MailLog::warning($e->getMessage());
+        $response = file_get_contents(self::API_ENDPOINT.'/account/updatehttpnotification?apikey='.$this->api_key.'&url='.$subscribeUrl.'&settings={sent:false,opened:false,clicked:false,unsubscribed:false,complaints:true,error:true}');
+        if ($response == '{"success":true}') {
+            MailLog::info('webhook set!');
+            self::$isWebhookSetup = true;
+        } else {
+            throw new \Exception('Cannot setup webhook. Response from server: '.$response);
         }
     }
 
