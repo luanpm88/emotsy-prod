@@ -2694,5 +2694,6 @@
     This will change local plan price and billing recycle time too.',
   'payment_gateway.braintree.mapping_updated' => 'Braintree plans were mapped',
   'payment.setting' => 'Setting',
-  '' => '',
+  'subscription.subscription_end' => 'Ends at',
+  'subscription.ended' => 'Ended',
 ) ?>

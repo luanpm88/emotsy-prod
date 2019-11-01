@@ -31,19 +31,21 @@
                     <span class="text-muted2">{{ trans('messages.subscribed_on') }}</span>
                 </td>
 				<td width="15%">
-					@if ($subscription->ended())
+					@if ($subscription->isEnded())
 						<h5 class="no-margin">
-							<span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
-						</h5>
-						<span class="text-muted2">{{ trans('messages.subscription.expire') }}</span>
+								<span class="kq_search">{{ Acelle\Library\Tool::formatDate($subscription->ends_at) }}</span>
+							</h5>
+						<span class="text-muted2">{{ trans('messages.subscription.subscription_end') }}</span>
 					@elseif ($subscription->cancelled())
 						<h5 class="no-margin">
 							<span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}</span>
 						</h5>
-						<span class="text-muted2">{{ trans('messages.subscription.next_billing') }}</span>
-					@elseif (!$subscription->isNew() && isset($subscription->current_period_ends_at))
+						<span class="text-muted2">{{ trans('messages.subscription.subscription_end') }}</span>
+					@elseif ($subscription->isRecurring())
 						<h5 class="no-margin">
-							<span class="kq_search">{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}</span>
+							<span class="kq_search">
+								{{ Acelle\Library\Tool::dateTime($subscription->current_period_ends_at)->diffForHumans() }}
+							</span>
 						</h5>
 						<span class="text-muted2">{{ trans('messages.subscription.next_billing') }}</span>
 					@endif
