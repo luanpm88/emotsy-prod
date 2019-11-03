@@ -176,11 +176,7 @@ class PageController extends Controller
 
             if ($list->subscribe_confirmation) {
                 // SEND subscription confirmation email
-                try {
-                    $list->sendSubscriptionConfirmationEmail($subscriber);
-                } catch (\Exception $ex) {
-                    return view('somethingWentWrong', ['message' => $ex->getMessage()]);
-                }
+                $list->sendSubscriptionConfirmationEmail($subscriber);
 
                 return redirect()->action('PageController@signUpConfirmationThankyou', [
                         'list_uid' => $list->uid,
