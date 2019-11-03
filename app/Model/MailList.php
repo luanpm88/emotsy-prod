@@ -1589,7 +1589,7 @@ class MailList extends Model
         // Create a message
         $message = \Swift_Message::newInstance($title)
           ->setFrom(array($subscriber->mailList->from_email => $subscriber->mailList->from_name))
-          ->setTo(array($subscriber->email, $subscriber->email => trans('messages.to_email_name')))
+          ->setTo(array($subscriber->email, $subscriber->email => $subscriber->getFullName(trans('messages.to_email_name'))))
           ->addPart($body, 'text/html');
 
         try {

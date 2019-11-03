@@ -29,7 +29,7 @@ use Acelle\Notifications\ResetPassword;
 class User extends Authenticatable
 {
     use Notifiable;
-     
+
     /**
      * The attributes that are mass assignable.
      *
@@ -38,7 +38,7 @@ class User extends Authenticatable
     protected $fillable = [
         'name', 'email', 'password',
     ];
-    
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -100,14 +100,16 @@ class User extends Authenticatable
      */
     public function sendActivationMail($name = null, $redirect_url = null)
     {
+
         $layout = \Acelle\Model\Layout::where('alias', 'registration_confirmation_email')->first();
         $token = $this->getToken();
         $redirect_url = urlencode($redirect_url);
 
         $layout->content = str_replace('{ACTIVATION_URL}', \Acelle\Model\Setting::get('url_root') . action('UserController@activate', ['token' => $token, 'redirect' => $redirect_url], false), $layout->content);
         $layout->content = str_replace('{CUSTOMER_NAME}', $name, $layout->content);
-        
-        \Mail::to(json_decode(json_encode(['email' => $this->email, 'name' => trans('messages.to_email_name')])))->send(new \Acelle\Mail\RegistrationConfirmationMailer($layout->content, $layout->subject));
+
+        $name = is_null($name) ? trans('messages.to_email_name') : $name;
+        \Mail::to(json_decode(json_encode(['email' => $this->email, 'name' => $name])))->send(new \Acelle\Mail\RegistrationConfirmationMailer($layout->content, $layout->subject));
     }
 
     /**
@@ -196,7 +198,7 @@ class User extends Authenticatable
     {
         return base_path('public/source/'.$this->uid.'/');
     }
-    
+
     /**
     * Send the password reset notification.
     *
