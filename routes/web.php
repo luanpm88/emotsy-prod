@@ -262,6 +262,11 @@ Route::group(['middleware' => ['not_installed', 'auth', 'frontend']], function (
     Route::patch('templates/{uid}/update', 'TemplateController@update');
 
     // Campaign
+    Route::get('campaigns/{uid}/template/upload', 'CampaignController@templateUpload');
+    Route::get('campaigns/{uid}/template/theme', 'CampaignController@templateTheme');
+    Route::get('campaigns/{uid}/template/layout', 'CampaignController@templateLayout');
+    Route::get('campaigns/{uid}/template/create', 'CampaignController@templateCreate');
+    
     Route::get('campaigns/{uid}/spam-score', 'CampaignController@spamScore');
     Route::get('campaigns/{from_uid}/copy-move-from/{action}', 'CampaignController@copyMoveForm');
     Route::post('campaigns/{uid}/resend', 'CampaignController@resend');

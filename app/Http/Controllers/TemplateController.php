@@ -596,7 +596,7 @@ class TemplateController extends Controller
         $template->name = trans('messages.untitled_template');
         
         // Gallery
-        $templates = Template::where('customer_id', '=', null);;
+        $templates = Template::where('customer_id', '=', null);
         
         // validate and save posted data
         if ($request->isMethod('post')) {

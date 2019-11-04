@@ -7,8 +7,8 @@
     
     @include('layouts._favicon')
     
-    <link href="{{ URL::asset('builder/dist/builder.css') }}" rel="stylesheet" type="text/css">
-    <script type="text/javascript" src="{{ URL::asset('builder/dist/builder.js') }}"></script>
+    <link href="{{ URL::asset('builder/builder.css') }}" rel="stylesheet" type="text/css">
+    <script type="text/javascript" src="{{ URL::asset('builder/builder.js') }}"></script>
     
     <script>
         var CSRF_TOKEN = "{{ csrf_token() }}";
@@ -23,7 +23,7 @@
                 saveUrl: '{{ action('TemplateController@builderEdit', $template->uid) }}',
                 saveMethod: 'POST',
                 tags: {!! json_encode(Acelle\Model\Template::builderTags((isset($list) ? $list : null))) !!},
-                root: '{{ URL::asset('builder/dist') }}/',
+                root: '{{ URL::asset('builder') }}/',
             });
           
             editor.init();

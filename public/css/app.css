@@ -848,7 +848,7 @@ ul.campaign-steps li:first-child:after {
 }
 .nav-tabs > li {
     font-size: 15px;
-    margin-right: 20px;
+    margin-right: 30px;
 }
 textarea.plain_text_content {
     height: 350px;
@@ -2739,4 +2739,50 @@ p.link-inline a {
     border-radius: 5px;
     overflow: hidden;
     box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
+}
+.hover-list {
+  padding: 0;
+}
+.hover-list li {
+  display: flex;
+  list-style: none;
+  padding: 15px;
+  border: dashed 1.5px #fff;
+}
+.hover-list li:hover {
+  border: dashed 1.5px #aaa;
+}
+.hover-list li i {
+  font-size: 28px;
+  margin-right: 20px;
+  color: #333;
+  margin-top: 6px;
+}
+.hover-list li .list-body {
+  padding-right: 100px;
+  width: 100%;
+}
+.hover-list li .list-body h4 {
+  margin: 0 0 3px 0;
+  font-size: 15px;
+  font-weight: 600;
+  color: #00695B;
+}
+.hover-list li .list-body p {
+  font-size: 14px;
+  margin: 0;
+}
+.hover-list li .list-action {
+  align-items: center;
+  display: flex;
+  visibility: hidden;
+}
+.hover-list li:hover .list-action {
+  visibility: visible;
+}
+.btn {
+  padding: 7px 18px;
+}
+.nav > li > a {
+    padding: 0 0 5px 0;
 }
