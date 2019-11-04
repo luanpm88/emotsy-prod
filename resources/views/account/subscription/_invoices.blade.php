@@ -28,12 +28,20 @@
                         </td>
                         <td>
                             <span class="no-margin kq_search">
-                                {{ Acelle\Library\Tool::formatDate(Carbon\Carbon::createFromTimestamp($invoice->periodEndsAt)) }}
+                                @if ($invoice->periodEndsAt)
+                                    {{ Acelle\Library\Tool::formatDate(Carbon\Carbon::createFromTimestamp($invoice->periodEndsAt)) }}
+                                @else
+                                    {{ trans('messages.n_a') }}
+                                @endif
                             </span>
                         </td>                        
                         <td>
                             <span class="no-margin kq_search">
-                                {{ $invoice->amount }}
+                                @if ($invoice->amount)
+                                    {{ $invoice->amount }}
+                                @else
+                                    {{ trans('messages.n_a') }}
+                                @endif
                             </span>
                         </td>
                         <td>

@@ -2696,4 +2696,5 @@
   'payment.setting' => 'Setting',
   'subscription.subscription_end' => 'Ends at',
   'subscription.ended' => 'Ended',
+  'n_a' => 'N/A',
 ) ?>
