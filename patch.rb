@@ -5,8 +5,8 @@
 require 'json'
 
 # Settings
-old_versions = ['3.0.18-p6']                    # sort by chronological order
-packages = ['lawepham', 'rcrowe', 'twig']       # vendor packages to be replaced
+old_versions = ['3.0.21-p17']                    # sort by chronological order
+packages = ['mika56', 'purplepixie']       # vendor packages to be replaced
 dirs = ['resources/lang/default']               # 'resources/lang/default' for example
 
 # Auto setting
@@ -103,6 +103,7 @@ end
 
 for dir in meta[:dirs]
   `rm -fr  #{File.join(output, subdir, dir)}`
+  `mkdir -p #{File.join(output, subdir, dir)}`
   `cp -r #{dir} #{File.join(output, subdir, dir)}`
 end
 

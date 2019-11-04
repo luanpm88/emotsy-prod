@@ -176,11 +176,7 @@ class PageController extends Controller
 
             if ($list->subscribe_confirmation) {
                 // SEND subscription confirmation email
-                try {
-                    $list->sendSubscriptionConfirmationEmail($subscriber);
-                } catch (\Exception $ex) {
-                    return view('somethingWentWrong', ['message' => $ex->getMessage()]);
-                }
+                $list->sendSubscriptionConfirmationEmail($subscriber);
 
                 return redirect()->action('PageController@signUpConfirmationThankyou', [
                         'list_uid' => $list->uid,
@@ -259,6 +255,11 @@ class PageController extends Controller
         $layout = \Acelle\Model\Layout::where('alias', 'sign_up_confirmation_thankyou')->first();
         $page = \Acelle\Model\Page::findPage($list, $layout);
         $subscriber = \Acelle\Model\Subscriber::findByUid($request->uid);
+
+        if (is_null($subscriber)) {
+            echo "Subscriber no longer exists";
+            return;
+        }
 
         $page->renderContent(null, $subscriber);
 

@@ -1,8 +1,8 @@
 <?php return array (
-  'datetime_format' => 'Y-m-d, H:i',
-  'datetime_format_2' => 'Y-m-d, H:i:s',
+  'datetime_format' => 'M d, Y, H:i A',
+  'datetime_format_2' => 'M d, Y, H:i:s',
   'time_format' => 'H:i',
-  'date_format' => 'Y-m-d',
+  'date_format' => 'M d, Y',
   'j_date_format' => 'yyyy-mm-dd',
   'datetime_string_formated' => ':date, :time',
   'email' => 'Email',
@@ -59,6 +59,8 @@
   'jvalidate_max' => 'Please enter a value less than or equal to {0}.',
   'jvalidate_min' => 'Please enter a value greater than or equal to {0}.',
   'profile.email.help' => 'This email is what you use to log in to the system.',
+  'admin.dashboard.recent_customers.wording' => 'Your plan performance during the last period. See how people are subscribing to your which service plans. Visit <a href=":here">Customers Dashboard</a> to see the full list',
+  'admin.dashboard.recent_subscriptions.wording' => 'Active users who recently subscribed or were added by system administrator. Visit <a href=":here"> Subscriptions Management Dashboard</a> to see the full list',
   'first_name' => 'First name',
   'last_name' => 'Last name',
   'first_name_tag' => 'FIRST_NAME',
@@ -2170,4 +2172,5 @@
   'template.create_and_design' => 'Start Design',
   'layouts' => 'Layouts',
   'template.need_select_template' => 'Please select layout or template for the template',
+  'admin.dashboard.recent_activity.wording' => 'By default, all activities of customers are logged for investigating. Visit <a href=":here"> Customers Dashboard</a> to see the full list',
 ) ?>

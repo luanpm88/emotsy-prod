@@ -55,9 +55,9 @@
 					</td>
 					<td class="stat-fix-size-sm">
 						<div class="single-stat-box pull-left ml-20">
-							<span class="no-margin text-teal-800 stat-num">{{ $item->readCache('UniqOpenRate') }}%</span>
+							<span class="no-margin text-teal-800 stat-num">{{ number_to_percentage($item->readCache('UniqOpenRate')) }}</span>
 							<div class="progress progress-xxs">
-								<div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('UniqOpenRate') }}%">
+								<div class="progress-bar progress-bar-info" style="width: {{ number_to_percentage($item->readCache('UniqOpenRate')) }}">
 								</div>
 							</div>
 							<span class="text-muted">{{ trans('messages.open_rate') }}</span>
@@ -65,9 +65,9 @@
 					</td>
 					<td class="stat-fix-size-sm">
 						<div class="single-stat-box pull-left ml-20">
-							<span class="no-margin text-teal-800 stat-num">{{ $item->readCache('ClickedRate') }}%</span>
+							<span class="no-margin text-teal-800 stat-num">{{ number_to_percentage($item->readCache('ClickedRate')) }}</span>
 							<div class="progress progress-xxs">
-								<div class="progress-bar progress-bar-info" style="width: {{ $item->readCache('ClickedRate') }}%">
+								<div class="progress-bar progress-bar-info" style="width: {{ number_to_percentage($item->readCache('ClickedRate')) }}">
 								</div>
 							</div>
 							<span class="text-muted">{{ trans('messages.click_rate') }}</span>

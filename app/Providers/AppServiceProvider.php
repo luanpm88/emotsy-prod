@@ -5,6 +5,7 @@ namespace Acelle\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Schema;
+use URL;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -15,12 +16,19 @@ class AppServiceProvider extends ServiceProvider
     {
         ini_set('memory_limit', '-1');
         ini_set('pcre.backtrack_limit', 1000000000);
-        
+
+        // HTTP or HTTPS
+        // parse_url will return either 'http' or 'https'
+        //$scheme = parse_url(config('app.url'), PHP_URL_SCHEME);
+        //if (!empty($scheme)) {
+        //    URL::forceScheme($scheme);
+        //}
+
         // Fix Laravel 5.4 error
         // [Illuminate\Database\QueryException]
         // SQLSTATE[42000]: Syntax error or access violation: 1071 Specified key was too long; max key length is 767 bytes
         Schema::defaultStringLength(191);
-        
+
         if (!\App::runningInConsole()){
             // This is just a trick for getting Controller name in view
             // See https://stackoverflow.com/questions/29549660/get-laravel-5-controller-name-in-view
@@ -32,7 +40,7 @@ class AppServiceProvider extends ServiceProvider
                 $view->with(compact('controller', 'action'));
             });
         }
-        
+
         // extend substring validator
         Validator::extend('substring', function ($attribute, $value, $parameters, $validator) {
             $tag = $parameters[0];

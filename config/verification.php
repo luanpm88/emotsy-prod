@@ -34,6 +34,7 @@ return [
             'fields' => [ 'api_key' ],
             'result_xpath' => '$.status',
             'result_map' => [ '1' => 'deliverable', '0' => 'undeliverable', '-1' => 'unknown' ]
+        /*
         ], [
             'id' => 'proofy.io',
             'name' => 'proofy.io',
@@ -42,6 +43,7 @@ return [
             'fields' => [ 'username', 'api_key' ],
             'result_xpath' => '$.mail.statusName',
             'result_map' => [ 'deliverable' => 'deliverable', 'undeliverable' => 'undeliverable', 'risky' => 'risky' ]
+        */
         ], [
             'id' => 'everifier.org',
             'name' => 'everifier.org',

@@ -1035,9 +1035,7 @@ input.numeric {
 }
 .action-log-box {
     height: 400px;
-    border: dashed 2px #ddd;
-    padding: 15px;
-    background: #f5f5f5;
+    background: none;
 }
 .mCS-minimal.mCSB_scrollTools .mCSB_dragger .mCSB_dragger_bar {
     background: #00695C !important;
@@ -2706,4 +2704,39 @@ canvas[data-zr-dom-id='_zrender_hover_'] {
 .template-boxes .panel-body img {
     border: solid 1px #aaa;
     border-radius: 3px;
+}
+p.link-inline a {
+  text-decoration: underline;
+}
+.timeline-icon img {
+    width: 45px;
+    height: 45px;
+    
+}
+.timeline-icon {
+  border: none;
+  padding: 2px 0 0 1px;
+}
+.timeline-container:after {
+  width: 1px;
+}
+.timeline-icon:after {
+  height: 1.5px;
+  margin-top: 0;
+}
+.timeline-row .panel-heading {
+  padding: 15px 8px 15px 20px;
+  padding-bottom: 8px;
+}
+.timeline-row .panel-heading h6 {
+  font-weight: 600;
+}
+.timeline-container {
+  padding-right: 30px;
+}
+.timeline-content {
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    overflow: hidden;
+    box-shadow: 2px 2px 8px rgba(0, 0, 0, 0.2);
 }

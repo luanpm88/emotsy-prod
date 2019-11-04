@@ -1070,7 +1070,7 @@ class CampaignController extends Controller
         } catch (\Exception $ex) {
             // in case TrackingLog record does not exist yet (open before logged!)
             LaravelLog::warning('Cannot save click tracking log for X message: '.$log->message_id);
-            throw new \Exception('Cannot save click tracking log'.$ex->getMessage());
+            // throw new \Exception('Cannot save click tracking log'.$ex->getMessage());
         }
 
         return redirect()->away($decoded_url);
