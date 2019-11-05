@@ -30,6 +30,8 @@ use Acelle\Library\RouletteWheel;
 use Acelle\Library\StringHelper;
 use Acelle\Exceptions\VerificationProcessCancelledException;
 use Acelle\Model\Setting;
+use Acelle\Model\Customer;
+
 
 class MailList extends Model
 {
@@ -622,13 +624,18 @@ class MailList extends Model
     /**
      * Copy new list.
      */
-    public function copy($name)
+    public function copy($name, $customer=null)
     {
         $copy = $this->replicate(['cache']);
         $copy->name = $name;
         $copy->created_at = \Carbon\Carbon::now();
         $copy->updated_at = \Carbon\Carbon::now();
         $copy->custom_order = 0;
+        
+        if ($customer) {
+            $copy->customer_id = $customer->id;
+        }
+        
         $copy->save();
 
         // Contact
@@ -1879,5 +1886,67 @@ class MailList extends Model
     public function segmentsCount()
     {
         return $this->segments()->count();
+    }
+    
+    /**
+     * Copy new list.
+     */
+    public function copyAll($name, $customer=null)
+    {
+        $copy = $this->replicate(['cache']);
+        $copy->name = $name;
+        $copy->created_at = \Carbon\Carbon::now();
+        $copy->updated_at = \Carbon\Carbon::now();
+        $copy->custom_order = 0;
+        
+        if ($customer) {
+            $copy->customer_id = $customer->id;
+        }
+        
+        $copy->save();
+
+        // Contact
+        if (is_object($this->contact)) {
+            $new_contact = $this->contact->replicate();
+            $new_contact->save();
+
+            // update contact
+            $copy->contact_id = $new_contact->id;
+            $copy->save();
+        }
+
+        // Remove default fields
+        $copy->fields()->delete();
+        // Fields
+        foreach ($this->fields as $field) {
+            $new_field = $field->replicate();
+            $new_field->mail_list_id = $copy->id;
+            $new_field->save();
+
+            // Copy field options
+            foreach ($field->fieldOptions as $option) {
+                $new_option = $option->replicate();
+                $new_option->field_id = $new_field->id;
+                $new_option->save();
+            }
+        }
+        
+        // copy all subscribers
+        foreach($this->subscribers as $subscriber) {
+            $subscriber->copy($copy);
+        }
+        
+        // update cache
+        $copy->updateCache();
+    }
+    
+    /**
+     * Segments count.
+     */
+    public function cloneForCustomers($customers)
+    {
+        foreach($customers as $customer) {
+            $this->copyAll($this->name, $customer);
+        }
     }
 }

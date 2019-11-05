@@ -2165,4 +2165,10 @@
   'campaign.score.description' => 'Description',
   'custom_script' => 'Copy and paste your custom scripts in the box below. It will be included in every page',
   'admin.dashboard.recent_activity.wording' => 'By default, all activities of customers are logged for investigating. Visit <a href=":here"> Customers Dashboard</a> to see the full list',
+  'list.clone_for_other_users' => 'Clone for other users',
+  'list.select_customer_for_clone_list' => 'Clone :list list',
+  'list.select_customer_for_clone_list.intro' => 'Select one or more customers below and click Start Clone button to clone this list for',
+  'list.start_clone' => 'Start Clone',
+  'click_here_select_customer' => 'Click here to select customer',
+  'list.clone_for.success' => 'List was successfully cloned.',
 ) ?>

@@ -8,6 +8,7 @@ use Acelle\Model\MailList;
 use Acelle\Model\EmailVerificationServer;
 use Acelle\Events\MailListSubscription;
 use Acelle\Model\Setting;
+use Acelle\Model\Customer;
 
 class MailListController extends Controller
 {
@@ -875,5 +876,42 @@ class MailListController extends Controller
         }
 
         return response()->json($result);
+    }
+    
+    /**
+     * Clone list for other users
+     *
+     */
+    public function cloneForCustomersChoose(Request $request, $uid)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+        $customers = Customer::where('id', '!=', $list->customer_id);
+        
+        $options = [];
+        foreach($customers->get() as $customer) {
+            $options[] = ['text' => $customer->displayName(), 'value' => $customer->uid];
+        }
+        
+        return view('lists.cloneForCustomersChoose', [
+            'list' => $list,
+            'options' => $options,
+        ]);
+    }
+    
+    /**
+     * Clone list for other users
+     *
+     */
+    public function cloneForCustomers(Request $request, $uid)
+    {
+        $list = \Acelle\Model\MailList::findByUid($request->uid);
+        $customers = Customer::WhereIn('uid', $request->customers);
+        
+        $list->cloneForCustomers($customers->get());
+        
+        return response()->json([
+            'status' => 'success',
+            'message' => trans('messages.list.clone_for.success'),
+        ]);
     }
 }
